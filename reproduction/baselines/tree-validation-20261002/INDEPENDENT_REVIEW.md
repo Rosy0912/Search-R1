@@ -103,3 +103,131 @@ P2状态：**已解决**（针对这次已审代码内容；此前未归约的�
 
 
 最终P2修复提交 `c7091e792d930c6e2488c395a1dbd324ce0eec73`；独立核对提交后objectives/dp_actor/新Gloo测试三个文件hash与审查内容完全相同。追加相关回归 `test_paper_ddp.py`（含多算法、empty rank、全局空监督AdamW不推进）与 `test_paper_metric_logging.py`：**2 passed**，见 `evidence/distributed-paper-metrics-regression.txt`。没有扩展或重复完整suite。远端资产直接下载进展为主agent提供信息，真实GPU尚未运行；不据此声明环境/资产验收完成。
+
+## 2026-10-03 短Slurm硬件Gate脚本独立复核
+
+复核本chat `work/gpu_hardware_gate.sh`、`work/gpu_hardware_probe.py`、`work/expected-gpu-uuids.json`（脚本不是训练生产代码；内容SHA256见 `evidence/hardware-gate-script-review.json`）。本审查仅静态核对、bash语法检查、Python compile与8项UUID唯一性检查，未另行启动远端作业。
+
+结论：**未发现阻碍按计划执行短硬件Gate的问题。** 脚本要求environment.ready、非空SLURM_JOB_ID以及SLURM_JOB_NODELIST=h100-9；进入common preflight获取同用户共享UUID lease，锁后复查双15%阈值；内层再次validate_gpu_lease核对8个可见设备、继承FD/inode/实际锁，并再次读取占用与进程，要求实际UUID集合完全匹配固定h100-9八卡。低占用既有compute process仅记录，不结束。脚本中没有Ray、模型、检索启动，也无kill/清理其他进程指令。Slurm独占8卡的实际申请/分配仍由主agent调度入口负责，脚本env与UUID检查不替代scheduler资源证明。
+
+NCCL/BF16阶段使用torchrun单节点8rank/LOCAL_RANK逐卡，all_reduce rank之和期望28，8rank各执行BF16矩阵乘并检验finite。collective通信本身为FP32 rank tensor，BF16部分为逐卡matmul；不应将此描述成BF16 NCCL通信带宽或长时稳定性测量。随机空闲localhost端口可能被竞态占用，若失败应以本轮退出和日志为准，不跳过gate。
+
+Flash阶段只在CUDA device0执行BF16 attention，显式转FP32构造scaled QK、softmax及V计算reference，检查finite与max absolute error<.03；覆盖B2/S128/H2/D64、非causal、dropout0的一个shape。不是八卡Flash逐卡验收，也不覆盖causal/长序列/反向；这符合当前短基础硬件Gate范围。全8卡torch可见性和名称会记录，但不能把设备名称列表解释为每卡Flash已测试。
+
+shell set-e确保NCCL步骤失败不继续写Flash成功record；hardware-acceptance.json标明production_model_inference=false，硬件结果对应Slurm job ID且引用hardware-cuda.log。后续必须保留本轮完整stdout/GPU占用快照、两个日志与record，并与实际job资源/UUID共同验收，不只看一行成功标记。
+
+主agent提供信息：h100-9固定生产Python依赖已准备（已有cuBLAS覆盖例外）、共同split holdout3393/train166222，final51713。此次硬件脚本审查不独立背书全部资产hash/数据身份/CPU-GPU检索排序一致性。即使本Gate成功，也只证明限定NCCL/BF16/Flash基础运行，不等价于Qwen2.5-3B/vLLM/FSDP/offload推理、两actual update smoke、五步保存加载或Tree-GRPO效果复现。
+
+## 2026-10-03 真实模型与CPU/GPU FP16检索脚本只读审查
+
+复核chat `work/real_model_gate.sh`、`work/real_model_probe.py`、Agent3结果目录的 `bapo-retrieval-parity.py`。脚本hash及语法检查/比较器合成探针见 `evidence/model-parity-script-review.json`；本审查未执行GPU/资产读取、未改脚本或其他生产代码。主agent提供真实environment/split/hardware/model Gate通过，生产训练仍0；本次只审这些Gate的代码范围。
+
+真实模型wrapper限制Slurm h100-9、8个固定UUID和common lease/占用复查，继承offline设置，不启动Ray训练/检索、不结束原小进程。probe加载固定Qwen模型前逐条校验model manifest文件，vLLM TP1、maxlen1024/eager、GPU memory fraction .12，单prompt greedy最多16token。结果只声明token生成且production_search_training=false。**模型实例实际只使用GPU0**，8卡为分配和可见性条件；已通过也不能表示8卡vLLM replica、3B FSDP/offload、搜索交互或训练梯度已验收。
+
+检索脚本沿真实DenseRetriever/encoder/index/load_docs，CPU和GPU均E5 FP16、mean pooling/query cap256、top3/top50；GPU FAISS原路径固定useFloat16/shard，CPU FAISS仍原CPU index，二者index数值路径不同。CPU模式在torch导入前清空可见GPU；GPU模式要求Slurm与8卡common leases、双15%复查。输出完整query、doc ID/rank/score/内容hash/来源/资源及实际faiss_import_path，重复检索不同会拒绝；大型index/corpus只有指定hash-large-assets才标asset_identity_verified=true。compare报告相同资产与否、matched-ID score delta/rank偏移及only-A/B，**永远DIFFERENCE_REPORT_ONLY**；相同/不同合成输入均独立验证没有自动PASS。不以summary平均overlap掩盖逐query top3变化。
+
+**部署前提：** 原样parity脚本本身不固定h100-9/Tree预期UUID，且不创建或约束GPU FAISS overlay，仅记录加载路径。Tree必须用专用wrapper额外核节点/固定八UUID，并以该Tree独立root的只读GPU-FAISS overlay在单个检索子进程注入PYTHONPATH及必要动态库路径；不得pip替换生产环境CPU FAISS或把overlay全局export至训练env。需要记录overlay包/库hash与实际faiss_import_path，CPU与GPU recipe/model/index/corpus内容身份均核对。没有这些caller证据，本脚本单独不足以证明overlay隔离或正确Tree节点；此为复用条件，不要求改生产检索数学。
+
+**差异须人工审查：** 不同top3 doc ID或排序、共享doc内容hash不符、资产身份不一致、重复稳定性失败均需要逐query记录；top50差异单列，其score阈值/排序边界与top3输出不能混为一谈。可以利用保存embeddings的GPU-encoder/CPU-index模式与embeddings-in ablation区分encoder FP16差异和GPU FAISS FP16量化差异，ablation也只产生差异报告，不构成训练协议替换。默认14条固定query是有限sanity coverage，零差异也不证明所有搜索query全局等价。原H20历史CPU/GPU FP32 top3 overlap .976既是不同数值recipe，又存在真实差异，不能移用为当前CPU FP16通过证据。当前未给Tree真实FP16逐query结果，所以尚不能判断具体差异是否可接受；若改变检索观察内容，需按PLAN对差异进行真实解释及决定，不能静默用旧经验放行。
+
+## 2026-10-03 检索Gate/等待派发/资产派生只读审查
+
+复核本chat `work/real_retrieval_gate.sh`、`wait_and_run_retrieval.sh`、`supervise_asset_copy.sh`、`prepare_derived_assets.py`及原样复制的 `real_retrieval_probe.py`；同时只读核对其download status写入方copy_direct_assets.py。语法与compile通过，parity副本与Agent3来源逐byte一致。当前审查文件hash见 `evidence/retrieval-dispatch-script-review.json`；未改scripts、未启动远端或训练。
+
+资源与测量范围符合计划：Tree wrapper确实固定h100-9/Slurm八卡UUID/common lease启动复查，CPU child清空CUDA且PYTHONPATH只指repo；GPU reference的FAISS overlay只通过各子进程的PYTHONPATH注入，不覆盖训练env。三个FP16模式加CPU embeddings复用的GPU-index测量，hash-large-assets、repeats2、固定query与recipe相同；结果只写measurements.ready，不运行训练、不自动声明一致。run目录按Slurm job ID且mkdir拒绝覆盖；gate退出保存job/time/exit code，整个CPU/GPU测量期间持有八卡，不能只计算GPU CUDA动作时间。
+
+等待派发在head先flock锁与dispatched.marker，未ready前没有srun/GPU预约；资产ready后仅一次srun h100-9 8H100/exclusive，32CPU/256G/2h，失败保留exit和marker，需要明确人工重试而非自动重复申请。GPU条件由common preflight实际验UUID与双阈值，并保留既有低占用进程。监督下载最多20次，既有hash正确文件复用、partial保留，未见结束其它进程或共享目录改写。
+
+发现两个P2可靠性问题（已反馈主agent，未自行改scripts）：
+
+1. copy_direct_assets.py在目标status上直接write_text，写入时存在短暂空/不完整JSON；prepare_derived_assets.py轮询直接json.loads且无容错，可因这次正常写入竞态终止。等待dispatcher只等derived.ready，对派生异常未直接检测，会持续等待。建议status原子写替换，或reader对临时解析失败等待，并将派生终止写exit供派发读取。此问题使自动执行链可靠性有条件，不能仅凭“后台已启动”认定会完成。
+2. 2880轮sleep30秒不构成严格24h wall-clock截止，因每轮SSH检查还可用几十秒（两次检查/连接超时）。建议absolute/monotonic deadline或修正报告为“最多2880轮，至少24h睡眠再加SSH”；srun排队阶段也无该循环deadline。等待本身没有持有GPU，但报告不能声称严格24h后自动退出。
+
+资产派生使用status.complete信任下载方已hash所有源，拼接part_aa/part_ab并gzip解码到临时文件后replace，记录真实派生输出hash与size；旧dest移至previous保留。source_sha256当前从manifest抄入，并未在这次拼接/gzip读取中独立核对源byte hash。只要上游verified assets真正保持不变则数学正确，仍应标为信任上游的来源身份；更强ready证据可在派生过程中验证实际source hash。ready marker不代表FAISS/corpus成功加载，该边界文本已正确说明。未见源corpus/index内容改变或非真实替代检索。
+
+GPU-encoder/CPU-index测量也使用overlay FAISS构建，可能不同于生产CPU FAISS版本；保存CPU embeddings后GPU-index复用可排除encoder差异，但剩余差异包含index/GPU backend/FAISS build/tie ordering，不应全部断言只来自FP16量化。报告已记录faiss_version/import_path，应联合分析top3/top50逐query内容/rank/score及同内容身份，不自动放行。主agent解决上述可靠性项后可继续自动测量；真实检索差异仍待人工判断。
+
+
+上述资产/等待可靠性P2已在后续脚本内容中修复并独立复核：status由同目录pending.PID写入再原子replace，旧已运行downloader可能短暂发布不完整JSON的reader增加JSONDecodeError兼容；等待改为epoch绝对deadline 86400秒，因此SSH耗时不再每轮额外扩增总体24h。存在至多当前SSH检查与sleep30的越界余量，进入srun后的scheduler排队不属于资产等待deadline。单引号remote命令保留$(cat...)在目标端执行，未误在head读取目标路径。
+
+派生函数现在对concat各source读取时同步SHA并与manifest比对，压缩源先核compressed byte SHA再gzip解码，成功才replace派生成品与最终ready。真实上游asset仍须保持不可变；任何校验失败都会保留partial/building与旧dest，并拒绝ready，而非继续申请GPU。
+
+独立toy验证执行现有派生脚本（只把root替换为临时目录；旧JSON竞态case只把sleep替换为下一次合法status发布）：合法拼接/gzip内容及派生hash正确、空JSON恢复、损坏part拒绝且旧index不变、损坏compressed源拒绝ready，**4场景通过**。证据 `evidence/derived-assets-toy-review.py/.json`；最终脚本hash及deadline边界 `evidence/retrieval-dispatch-fix-review.json`。原初次审查hash/问题记录保留为历史，不覆盖为“从未有问题”。
+
+最终判断：已解决所报两个P2并强化源hash证据，未发现新的资源隔离或真实测量阻碍，可继续按该wrapper派发检索差异测量。仍只是测量准备审查；FAISS加载后的真实doc/rank/score报告未产出，CPU/GPU FP16一致性、训练smoke和效果均不能自动判PASS。
+
+## 2026-10-03 检查点CPU验收器与只读peer资产复用审查
+
+只读审查chat `work/check_real_checkpoint.py`及 `copy_verified_peer_assets.py`，最终内容hash记录 `evidence/checkpoint-peer-script-review-hashes.json`。本次未改生产脚本、未读取或接受真实训练checkpoint、未启动GPU/远端copy。
+
+验收器最初存在P1：默认HF from_pretrained可自动初始化missing weights，而后续完整state_dict/finite/非零delta检查可能错误接纳不完整checkpoint。主agent已修为output_loading_info并拒绝missing/unexpected/mismatched/error；初始直接比较state keys与safetensors keys也会拒绝合法tied alias，现只容许与已保存tensor同storage pointer的别名，其他额外key拒绝。移除low_cpu_mem_usage附带的accelerate依赖，保留CPU float32完整重载、逐base shard同shape/finite/delta、tokenizer词表/BOS/EOS、CPU前向finite与checkpoint各文件hash及成本记录。nonzero delta不代表效果改善或每个tensor都必须更新；不宣称optimizer/RNG/dataloader精确resume。
+
+审查者用Mac现有CPU环境构造真正tiny Qwen2 HF safetensors及WordLevel tokenizer，执行最终未修改的验收器源码副本（只为隔离临时目录复制脚本，无运行逻辑替换）：更新权重正例通过、与base完全相同负例拒绝、删除q_proj.weight的缺权重负例拒绝、tied embedding合法更新正例通过。**4个验收器fixture case满足预期**，脚本与输出 `evidence/checkpoint-validator-toy-review.py/.json`。首次尝试旧low_cpu版因Mac缺兼容accelerate无法进入重载，该环境问题未当成负例通过；最终测试无此替换/依赖，生产脚本旧P1已解决。production Linux RSS计量使用KiB×1024；Mac ru_maxrss本为bytes，此处toy只检查验收逻辑、不使用其RAM结果作为生产资源数据。
+
+只读peer复用脚本在head通过已有h100-11 alias运行cat固定TOP-D资产路径，目标h100-9 receiver写Tree ownroot的unique peer-copy文件，同时统计实际size/streaming SHA，与固定原manifest相同才保留旧dest至previous并原子replace。源仅cat，无源目录、训练环境、凭证或进程改动。源端或目标SSH非零退出、size/SHA不符均拒绝本轮成功并保留自身partial；父进程关闭重复管道FD避免悬挂。三份fixed filename/size/SHA已静态核对路径边界，主agent报告来源三SHA全部实际匹配，此信息不代替目标streaming核验。
+
+复制完成新增调用Tree ownnode的原downloadhelper逐项全manifest再次核验并原子发布status，再由已审派生脚本核source SHA；若有其它未完整资产，helper只在Tree ownroot补下载，未写peer。脚本本身无重复copy锁，主agent应像本轮已说明的那样先只读核已有自有head session再重试，不凭SSH未知结果启动第二个copy。该复用为授权的只读公共资产方式，不需要训练/教师数据混用，也不把peer的环境或checkpoint视为Tree实验产物。
+
+结论：修复后的检查点验收器及固定peer-copy路径未发现新增阻碍。当前只是验收器测试和资产复制安全性检查；真实Tree生产checkpoint与参数delta验收尚未发生。
+
+## 2026-10-03 运行期资源守卫与分阶段训练launcher审查
+
+只读审查chat `resource_guard.py`与 `train_tree_stage.sh`，脚本hash及来源记录 `evidence/resource-guard-launcher-review-hashes.json`。本轮未实际调用NVML/GPU/scancel、未派发训练。浏览独立核对 [NVIDIA官方NVML文档](https://docs.nvidia.com/deploy/archive/R550/nvml-api/group__nvmlDeviceQueries.html)：process utilization的NotFound指游标之后没有sample entries，NotSupported表示不支持；sample timestamp为CPU微秒，游标返回严格更新样本。脚本只将NotFound当空样本，其他NVML错误终止自身作业，符合该语义。
+
+初次静态反馈发现self/other cgroup模糊job substring及compute+graphics同PID memory覆盖问题；主agent修复为完整job_ID路径segment，并对每条foreign memory先验合法范围、同PID取max后按不同PID求和。守卫先证明自身同job cgroup与节点，再取得固定UUID handles；scancel目标只能此数字job_ID，未操作外国PID或global Ray服务。Ray等同cgroup进程为own，foreign memory或SM上界超15%即记录STOP_OWN_JOB并scancel自身。当前游标从启动epoch微秒开始、后续max sample推进，避免误判启动前历史负载。
+
+各foreign PID采样期SM peak之和是保守上界：不同PID不同时间的peak也相加，可超过真实同一时刻利用率；可能提前停止自身，不能将其称精确设备SM利用率。已退出PID仅在fresh NVML名单也消失时忽略memory；sample未知则保守计foreign，较高活动取消。已识别own PID历史时间缓存只豁免不晚于最后known-owner观测时间的旧sample；更晚未知sample不盲目豁免，仍可能导致false-positive自身停止。这是有限5秒polling观测，不能宣称连续即时完整NVML trace。
+
+独立执行真实守卫源码配合fake NVML/procfs/clock/scancel，10场景输出 `evidence/resource-guard-probe-final.json`：NotFound基线完成poll；foreign memory/SM超阈值、未知memory、NotSupported、同PID graphics覆盖、unknown compute memory再known graphics均拒绝；job1234与job12345拒绝且不取消未验证job；departed known-own历史sample通过，更新的unknown departed sample拒绝。脚本为 `evidence/resource-guard-probe.py`。正常case仅用注入EndPoll结束无限loop，此人工异常也进入mock取消流程，不能误读为真实正常轮询会自行取消。该测试不等于真实NVML硬件guard验收。
+
+launcher分two/five/formal为3/6/501总步，对应2/5/500actual outer；要求已人工审真实retrieval-acceptance状态及所引证据SHA，five/formal要求前一stage accepted。Slurm h100-9及八固定UUID门槛、commonlease训练入口、production模块与c7091e7差量为零、独立run/runtime/cache/端口及CPU-only检索、局部repo PYTHONPATH/no GPU FAISS overlay、offline原WandB logger均可见。run输出completed标记只表示进程成功，不自动写stage accepted，真实参数delta/模型重载/finite更新仍需后续审查。
+
+初次launcher只在retriever启动期检查guard存活，存在守卫死亡而scancel失败时训练继续的P1；主agent已补父launcher在训练前及训练期间每5秒监控guard/retriever，任一死亡即scancel本job，scancel失败也TERM自身driver并退出，由Slurm清理自身Ray cgroup。TERM/INT/EXIT记录cost并清理自有retriever/guard，不执行foreign PID或全局ray stop。shell语法检查通过；尚未通过真实训练动态触发stop/retriever failure演练。
+
+最终判断：已审资源守卫/launcher所报问题已解决，未发现新的静态阻碍；只有在真实检索差异接受、上一stage验收和Slurm资源条件实际满足时才可启动相应阶段。本审查不执行或授权自动dispatch，生产训练仍0。主agent提供retrieval job2854的14固定query/两轮性能是有限测量，不能推出真实512题搜索吞吐或CPU/GPU等价。
+
+## 2026-10-03 Slurm2854真实检索测量独立结果审查
+
+独立重算三原始measurement与两个comparison JSON，脚本 `evidence/review-retrieval-results.py` 断言通过；保存逐query两模式集合、顺序、内容hash与matched-ID score delta到 `evidence/retrieval-independent-result-review.json`（含五输入文件SHA）。自包含结果报告在本chat `outputs/TREE_RETRIEVAL_REVIEW_2854.md`，14条query逐条列top3 ID/最大得分差及两GPU路径top50变动位置。
+
+三模式固定source a545a0d2349be9f4d591576f56f62b7d35d1bed8、同retrieval_server SHA、Slurm2854，recipe与verified资产身份完全相同。生产CPU FP16 E5 / FP32 IndexFlatIP、GPU FP16 E5 / CPU IndexFlatIP、GPU FP16 E5 / 八卡sharded float16 GPU index；仅GPU child导入ownroot GPUFAISS overlay。14query两repeat稳定性由probe实际rows等值检查强制，资源记录有两轮；本次独立review重算已保存第一轮结果并核对summary，不声称能从JSON重建未另存的第二轮文档。
+
+CPU对两GPU路径top3共14/14 ID、顺序、内容hash完全相同，最大matched score delta3.975033760070801e-4。top50集合/内容hash共14/14完全相同，但仅5/14排序相同，9/14重排，最大delta4.2307376861572266e-4。两GPU路径embedding hash相同、CPU不同，encoder变化已经足以出现这9条重排；Apollo query8两GPU路径具体排名却有额外11/12互换，因此不能说所有变动位置完全相同，也不能把变化只归因GPU index quantization。CPU embeddings / GPU index ablation尚待证据。
+
+结论：这些真实测量足以支持Tree top3 CPU部署有限sanity gate的下一阶段两次实际更新smoke审查。当前observation formatter只使用contents按rank编号、不使用scores，这14条top3观测未变化。没有观察到需要阻止此有限阶段的top3差异；须披露并接受top50重排，不能推广CoSearch top50排序等价或全部生产query等价。14query（batch upper512）CPU两轮search36.746/22.541秒含top3和top50、load73.952秒/self peak67.48GB不能证明512吞吐，真实smoke仍须记录latency/RAM/timeout、六叶、finite loss/gradient、非零参数delta、actual outer updates、GPU峰值与checkpoint重载。本review不写acceptance记录、不派发训练；生产训练完成状态仍未取得证据。
+
+## 2026-10-03 CPU embedding / GPU index ablation与console精度差量复核
+
+补充独立脚本 `evidence/review-ablation-logger.py` 执行通过，证据 `evidence/ablation-and-logger-independent.json` 包含逐query变动、输入SHA和日志roundtrip。真实Slurm2854 GPU index复用CPU embedding hash完全相同，同verified资产/recipe/source；top3共14/14 IDs/order/content同，max score delta1.1920928955078125e-7。top50共13/14排序同，集合/content全同，max delta1.7881393432617188e-7；唯一Apollo query8排名11/12（11729878/11729861）交换，CPU两条同分0.8659123182296753，GPU也同分0.8659123778343201。支持这14条中索引路径只见微量误差与并列排列，不能外推全部query。完整report已补到chat outputs/TREE_RETRIEVAL_REVIEW_2854.md，原报告的pending说明由此更新。
+
+只读核diff：aggregate_logger.py唯一.3f改.17g，不修改dict、metrics生产、actor梯度/目标、backend。原函数真实普通float/np.float32/np.float64/np.int64/500/1e-12/负小数回读与float(value)逐项完全相同，输入不变。小梯度不再console四舍五入到0，未发现阻碍。此结论限定普通real-valued训练metrics；不以此宣称任意大整数/complex均可无损解析。W&B0.30旧datastore API限制与已成功offline logger区分，尚未复核真实训练日志。新生产SHA需由主agent冻结/部署，当前独立复核以已核logger文件SHA为准；生产训练仍未启动。
+
+## 2026-10-03 logger冻结SHA与独立真实stage验收器准备
+
+重读launcher已将production freeze改为aed28e176da946dc6cff73cfb23fac5cf2a879a8；shell语法通过，其余入口/lease/ownPID守卫边界保持此前审查结论。本轮不派发训练。源文件hash见evidence/stage-validator-source-hashes.json。
+
+独立CPU-only工具chat work/validate_tree_stage.py要求指定two/five/formal（分别2/5/500真实更新），解析console精确.17g数值（去ANSI/Ray前缀），要求完整有序1..N记录、无重复、每步actual count=step、optimizer_steps正整数、grad_norm正有限，七必需actor指标及全部打印指标finite；两步产物不能通过五步验收。核cost成功/8卡/stage、resolved预算N+1与smoke模式、tree方法、checkpoint在自身run、actor和algorithm均final global_step_N、algorithm_state来源与resolved一致且不声称resume支持。要求调用base等于resolved actor model路径，随后实际CPU调用已审check_real_checkpoint.py，完整HF重载/加载缺失拒绝/tokenizer/finite全部权重与forward/相对base非零参数delta/全HF hash；该步骤任何失败无最终report。输出只REAL_STAGE_EVIDENCE_READY_FOR_INDEPENDENT_REVIEW、not_stage_acceptance=true，绝不写*-stage-acceptance.json。
+
+12项fixture检查通过（evidence/stage-validator-probe.py/json）：two/five精确通过，two当five/five当two/重复/非finite/零optimizer/零grad/缺metric拒绝，结构检查、wrong algorithm globalstep拒绝、无真实产物拒绝。结构fixture故意非真实weights，未调用HF路径，不能冒充真实checkpoint。HF验收器本身此前tiny Qwen正/未更新/缺权重反例已审；本轮没有真实训练产物，因此没有完整stage成功、GPU训练或效果验收结论。
+
+局限：console信息是记录证据而非可证明每rank完整trace；正grad_norm为保守sanity条件，不证明每张卡每叶都有非零梯度；algorithm_state只存globalstep/来源，未存actual_update/optimizer/RNG/dataloader，不能宣称精确恢复。本工具不能代替资源守卫NVML trace、六叶rollout来源/观测mask检查或后续七集效果验证，需要人工审查相应证据；checkpoint参数delta为相对immutable base的最终差异，不证明第二步相对第一步独立delta。报告输出是review-ready，最终stage接受仍由主agent在实际产物审查后决定。
+
+## 2026-10-03 Slurm2866未进入训练的Ray/Click兼容性失败与修复范围
+
+真实outputs/evidence/two-2866-infra-failure.log含cost exit1，Ray CLI import时add_command_alias/copy.deepcopy抛Sentinel ValueError，launcher尚未执行实际run.sh训练。该作业不能计入actual updates、checkpoint或smoke成功。独立浏览[Ray官方repo issue56747](https://github.com/ray-project/ray/issues/56747)：正文实报Click8.3.0及yanked8.2.2，8.2.1可用，提出<=8.2.1；将现场8.5.0相同栈归因该兼容性问题是证据支持的推断，需ownenv真实CLI探针验证，而非官方正文明确测试8.5。
+
+[PyPI8.2.1元数据](https://pypi.org/pypi/click/8.2.1/json)独立确认wheel SHA61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b，102215bytes，Python>=3.10，未yank，匹配目标Python3.10。仅own Tree env把Click固定8.2.1且不升级依赖是有限CLI infra修复，无需变动核心算法/model/batch。核查时本地production HEAD与launcher freeze均aed28e176da946dc6cff73cfb23fac5cf2a879a8，search_r1/verl相对该commit diff空；linux-requirements.txt当前仍8.5.0，后续真实新environment freeze应记录8.2.1，不能继续把旧freeze当运行版本。
+
+证据evidence/click-cli-compatibility-review.json保留故障log/launcher SHA、官方来源、旧/new Click。实际ownenv wheel安装SHA、ray --version及pip check、新freeze尚待主agent结果；本轮独立审查只判定修复范围合理，不宣称CLI修复真实通过，更不宣称两更新smoke通过。
+
+### Click兼容性修复真实证据最终复核
+
+真实click-compatibility-fix.log显示own Tree env Python3.10.12只卸载Click8.5.0/安装8.2.1 wheel，ray --version返回2.40.0。复读fix_click.py，先SHA核对官方wheel再写own wheelhouse，uv pip --python ownenv --no-deps仅改变Click。完整freeze独立集合diff确认唯一删除click==8.5.0、增加ownwheelhouse的Click8.2.1 direct URL，其余163包行相同；差量保存evidence/click-freeze-independent.diff，源hash追加click-cli-compatibility-review.json。
+
+新dependency check与旧check的依赖检查内容相同，仅末尾增加ray, version 2.40.0。仍只有原允许torch/cublas12.4.5.8对12.1.3.1的不匹配，未新增依赖错误；不能称pip check完全零错误。production search_r1/verl相对aed28e1无diff。修复已取得真实CLI通过证据，未发现范围阻碍。Ray start/actor实际更新仍需新作业证据；2866仍是训练前失败，不计更新或smoke成功。
+
+## 2026-10-03 Ray短socket目录与诊断设计（尚非真实更新验收）
+
+真实2867日志AF_UNIX socket path超107bytes，训练前失败。只读复核新launcher：新RUN/runtime为持久目标，/tmp/sst-tree-JOBID经不存在/非悬空symlink双检查再ln-s，不复用现有路径，head temp为SHORT/ray，run.sh直接拼RAY_TMPDIR不realpath，故保持短socket拼写及持久数据。shell语法通过；不改production数学/配置冻结aed。建议GNU ln-sT进一步避免检查后目录竞争时默认往目录内建link的边界，常规唯一job路径未发现静态阻碍；尚需实际新job启动证据，不能将路径检查当smoke完成。
+
+已提供只读设计chat outputs/TREE_DIAGNOSTIC_DESIGN.md：env opt-in、branch即时hash/source/tree/trajectory继承、每问题2roots*3leaf分组、retained observation mask/steps零与-1、compose/padding/后续lossmask长度及来源、context差异单独report、无文本和无RNG副作用、有意义mutation/开关等值测试。尚未实现或修改运行source，无此真实训练诊断产物，故当前stage验收仍缺六叶/sharedprefix/mask原始证据。

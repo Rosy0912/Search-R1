@@ -1,0 +1,60 @@
+[
+  {
+    "name": "two",
+    "fixture_only": true,
+    "accepted": true
+  },
+  {
+    "name": "five",
+    "fixture_only": true,
+    "accepted": true
+  },
+  {
+    "name": "two_not_five",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "five_not_two",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "duplicate",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "nonfinite",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "zero_optimizer",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "zero_grad",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "missing_metric",
+    "fixture_only": true,
+    "accepted": false
+  },
+  {
+    "name": "structure_only",
+    "accepted_structure": true,
+    "real_hf_not_tested": true
+  },
+  {
+    "name": "wrong_state_refused",
+    "accepted": false
+  },
+  {
+    "name": "absent_artifacts_refused",
+    "accepted": false
+  }
+]

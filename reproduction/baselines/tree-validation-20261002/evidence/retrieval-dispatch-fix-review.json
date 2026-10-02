@@ -1,0 +1,16 @@
+{
+  "sha256": {
+    "real_retrieval_gate.sh": "c9505536375e1d239aa019b9d82f7880156210f64a41ef4dcae50d11dad7ea9f",
+    "wait_and_run_retrieval.sh": "ce650da59cc020d28404671576aab525597600a8fe440fe7c89544b788f26aa3",
+    "supervise_asset_copy.sh": "e67e191bafa515012d329b0d63f6550c0b9995f031afdd03c670699a2c021e6c",
+    "prepare_derived_assets.py": "61b18c47bc9da2c1ef60d692f3f1a918f054b8bad9cf197bc4fd2b835965c3dc",
+    "real_retrieval_probe.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "copy_direct_assets.py": "36193953e2d8b474e288391dfdcc06f464a0f81ecd41f256087712cb98b69d5b"
+  },
+  "status_atomic_replace": true,
+  "legacy_partial_json_handled": true,
+  "source_hash_verified_during_derivation": true,
+  "asset_wait_deadline": "86400 epoch seconds; at most in-flight SSH checks and sleep30 overrun, scheduler queue excluded",
+  "toy_cases_passed": 4,
+  "real_gpu_or_download_executed_by_reviewer": false
+}

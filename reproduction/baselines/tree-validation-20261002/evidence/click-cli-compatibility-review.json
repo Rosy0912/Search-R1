@@ -1,0 +1,31 @@
+{
+  "failure_job": 2866,
+  "failure_phase": "ray_cli_import_before_training",
+  "old_core_commit": "aed28e176da946dc6cff73cfb23fac5cf2a879a8",
+  "local_core_diff_empty": true,
+  "old_click": "8.5.0",
+  "proposed_click": "8.2.1",
+  "wheel_sha256": "61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b",
+  "wheel_size": 102215,
+  "requires_python": ">=3.10",
+  "official_issue": "https://github.com/ray-project/ray/issues/56747",
+  "pypi": "https://pypi.org/pypi/click/8.2.1/json",
+  "actual_new_environment_cli_probe_received": true,
+  "stage_accepted": false,
+  "file_sha256": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/two-2866-infra-failure.log": "8461041fb30a88e43bb1cf85e17419455c4018b3b0a5c786f8e47b5f65ebd247",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/train_tree_stage.sh": "1729af126015d96df6b2974a4bc2d1c5678e4644129639e90d2d60cabee83876"
+  },
+  "new_ray_cli_version": "2.40.0",
+  "environment_delta_only_click": true,
+  "new_dependency_check_same_findings_plus_ray_version": true,
+  "permitted_cublas_exception_unchanged": true,
+  "final_evidence_sha256": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/environment-freeze.txt": "7cbe1ae92bd632662764990512e0dd866b00cbd978aff4afbe16d985b34eee6c",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/environment-freeze-click-compatibility.txt": "8723c7867e635871d9aac1d2b37ac8799a1360c9ded26f328575ed501309dcc1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/environment-click-compatibility-check.txt": "47cbe337e9eaad548a1c4c80c81e43d58c1633dd1b4acbb1d9d9871c6f894ac8",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/click-compatibility-fix.log": "8dc3f1d948c48e9da9b8a60bfc7ffb08d1842bbfc4f88b83ccab5eb74a6537f6",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/fix_click.py": "cc4c46b1ca5ac2f13ac7768386e9c14cf71d4eb95a102fbc425fcffb5012090e",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/click-compatibility.json": "7bf449788d7d6fa165dd06f64ec0819573ba454ec815901b09f547fbcb0e5ff5"
+  }
+}

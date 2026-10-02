@@ -1,0 +1,30 @@
+{
+  "simulation_only": true,
+  "changes": "temporary root substitution; legacy scenario substitutes poll delay with a valid status publication",
+  "cases": [
+    {
+      "case": "valid",
+      "source_hash_rejection": false,
+      "ready_marker": true,
+      "passed": true
+    },
+    {
+      "case": "legacy_partial_json",
+      "source_hash_rejection": false,
+      "ready_marker": true,
+      "passed": true
+    },
+    {
+      "case": "corrupt_part",
+      "source_hash_rejection": true,
+      "ready_marker": false,
+      "passed": true
+    },
+    {
+      "case": "corrupt_compressed",
+      "source_hash_rejection": true,
+      "ready_marker": false,
+      "passed": true
+    }
+  ]
+}

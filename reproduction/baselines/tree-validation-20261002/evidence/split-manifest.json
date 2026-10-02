@@ -1,0 +1,53 @@
+{
+  "content_identity": {
+    "version": 1,
+    "split_version": 1,
+    "train_sources": [
+      "640411949a2c64ad492581f3ac2242a81a0f871e4a1c86c54140a4d6baad765f"
+    ],
+    "excluded_sources": [
+      "1174a4d5b29c28ad7e82f58a42f1c25aafb2a5ac15fb64a7d980579432c41f5a",
+      "af397b98b1601b517c01663171ffe543573005b9d31d24cace482480751a6756"
+    ],
+    "fraction": 0.02,
+    "seed": 42,
+    "prompt_key": "prompt",
+    "train": {
+      "questions_sha256": "d851357d6a9f5f48098f03b104f0354ff5feb0a79554a558268f0d346ecc3eff",
+      "rows_sha256": "4b3033960e1cad9aa13f81cebf0c4d27c0948a82b79dbdf96cace4d3f7bf88a3"
+    },
+    "holdout": {
+      "questions_sha256": "ae529173ea25cbd58534f460a6d83d4f211670ee90ec411f2ff1357da766c1f5",
+      "rows_sha256": "16d5f6446474685d0f05f2f0087519ee26f896c711cab060431f235ca32190bb"
+    },
+    "sha256": "fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524"
+  },
+  "specification": {
+    "train": [
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/data/paper-grpo/train.parquet",
+        "sha256": "640411949a2c64ad492581f3ac2242a81a0f871e4a1c86c54140a4d6baad765f"
+      }
+    ],
+    "final": [
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/data/paper-grpo/test.parquet",
+        "sha256": "1174a4d5b29c28ad7e82f58a42f1c25aafb2a5ac15fb64a7d980579432c41f5a"
+      },
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/data/paper-grpo/validation-64.parquet",
+        "sha256": "af397b98b1601b517c01663171ffe543573005b9d31d24cace482480751a6756"
+      }
+    ],
+    "fraction": 0.02,
+    "seed": 42,
+    "prompt_key": "prompt",
+    "version": 1
+  },
+  "train_rows": 166222,
+  "holdout_rows": 3393,
+  "sha256": {
+    "train.parquet": "e5e774fd1f5777a8be91103facaccb711cfd9593d7563e9d5afe04e6b1a52bea",
+    "stage-validation.parquet": "c4c42dc200de0b0561f7e9b0d2bc067c732cfe7e158f1718882bb0a8f2c84fbb"
+  }
+}

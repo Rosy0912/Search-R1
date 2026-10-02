@@ -1,0 +1,215 @@
+{
+  "rows": [
+    {
+      "query_index": 1,
+      "query": "What is the capital of France?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    },
+    {
+      "query_index": 2,
+      "query": "Who wrote Pride and Prejudice?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    },
+    {
+      "query_index": 3,
+      "query": "What is the largest planet in the Solar System?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 4,
+      "query": "Where is Mount Everest located?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    },
+    {
+      "query_index": 5,
+      "query": "Who painted the Mona Lisa?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 6,
+      "query": "What is the chemical symbol for gold?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 7,
+      "query": "Which country contains the ancient city of Petra?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 8,
+      "query": "When did the Apollo 11 mission land on the Moon?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [
+          11,
+          12
+        ],
+        "max_delta": 1.7881393432617188e-07,
+        "changed_entries": [
+          {
+            "id": 11729878,
+            "cpu_rank": 11,
+            "gpu_rank": 12,
+            "cpu_score": 0.8659123182296753,
+            "gpu_score": 0.8659123778343201
+          },
+          {
+            "id": 11729861,
+            "cpu_rank": 12,
+            "gpu_rank": 11,
+            "cpu_score": 0.8659123182296753,
+            "gpu_score": 0.8659123778343201
+          }
+        ]
+      }
+    },
+    {
+      "query_index": 9,
+      "query": "What language is primarily spoken in Brazil?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    },
+    {
+      "query_index": 10,
+      "query": "Who developed the theory of general relativity?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 0.0
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 11,
+      "query": "Which river flows through Cairo?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    },
+    {
+      "query_index": 12,
+      "query": "What is the tallest building in the world?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 13,
+      "query": "Who was the first person to win two Nobel Prizes?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.1920928955078125e-07
+      }
+    },
+    {
+      "query_index": 14,
+      "query": "Which ocean lies between Africa and Australia?",
+      "3": {
+        "changed_rank_positions": [],
+        "max_delta": 5.960464477539063e-08
+      },
+      "50": {
+        "changed_rank_positions": [],
+        "max_delta": 1.7881393432617188e-07
+      }
+    }
+  ],
+  "summary": {
+    "3": {
+      "exact_rank_queries": 14,
+      "queries": 14,
+      "mean_overlap_fraction": 1.0,
+      "max_matched_id_score_abs_delta": 1.1920928955078125e-07
+    },
+    "50": {
+      "exact_rank_queries": 13,
+      "queries": 14,
+      "mean_overlap_fraction": 1.0,
+      "max_matched_id_score_abs_delta": 1.7881393432617188e-07
+    }
+  },
+  "logger_source_sha256": "e90faa13d7f17f436c5747a21f5550ad56c234f984f75dc6d6aa1432bb8d3ff6",
+  "logger_roundtrip": {
+    "rendered": "step:500 - loss:0.12345678901234568 - grad:9.9999999999999998e-13 - large:1.234567890123456e+18 - float32:0.12345679104328156 - tiny32:9.999999960041972e-13 - updates:500 - npint:500 - negative:-1.234567891234567e-24",
+    "all_values_exact_to_float": true,
+    "input_unchanged": true
+  },
+  "input_sha256": {
+    "retrieval-gpu-index-cpu-embeddings.json": "9e6ca2e5f9ddc21695a2fa9984b9daebe77848eae42c1f9d648c97588f752a60",
+    "retrieval-index-only-difference.json": "618355737fba1ff646fcd7be270bf640a691d27dbd1178a24535b845c7c80488"
+  }
+}

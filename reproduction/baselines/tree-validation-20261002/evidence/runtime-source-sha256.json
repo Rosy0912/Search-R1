@@ -1,0 +1,19 @@
+{
+  "script-sha256.json": "f5c72998e2d9e7964656fa6650766cee93197d7ee5a3549afff2a8014bee8d7e",
+  "copy_verified_peer_assets.py": "97f1ef7ae16bbdf403e84fef40ed2c3a9766ad0cbd240bcb5598bacdf66462b3",
+  "prepare_derived_assets.py": "61b18c47bc9da2c1ef60d692f3f1a918f054b8bad9cf197bc4fd2b835965c3dc",
+  "supervise_asset_copy.sh": "e67e191bafa515012d329b0d63f6550c0b9995f031afdd03c670699a2c021e6c",
+  "check_real_checkpoint.py": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97",
+  "real_retrieval_probe.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+  "expected-gpu-uuids.json": "afefc6b20298a0cfb9594b70988369ed529e4c3088e40d26c3486ce0c2c50127",
+  "gpu_hardware_gate.sh": "22f295f62e3907adb6e147ddafd43dd882273a33004df21103a57a4dbc3946f8",
+  "resource_guard.py": "7b1a5ec3a3676ac96a6dca0eae0b9b9b2183d1c33de8b8175869be4666244691",
+  "wait_and_run_retrieval.sh": "ce650da59cc020d28404671576aab525597600a8fe440fe7c89544b788f26aa3",
+  "gpu_hardware_probe.py": "b1b27461e89dd86dee5169a0ce96a0e9cf7455ff97ef2d2035fb0785f0cb5e00",
+  "copy_direct_assets.py": "36193953e2d8b474e288391dfdcc06f464a0f81ecd41f256087712cb98b69d5b",
+  "train_tree_stage.sh": "0758fa0affba3a565d9b0594eabdc4163bbd519d43db453abfd9d71d65678338",
+  "real_model_probe.py": "12c0665b4d9ca7eda9bc60463f380aaeb9f17be20282543e2d45504853f3792b",
+  "real_model_gate.sh": "dace1c1edc301b360536c2a2f6ca588e2ef01003e1f9dc9280296553749c79a2",
+  "real_retrieval_gate.sh": "c9505536375e1d239aa019b9d82f7880156210f64a41ef4dcae50d11dad7ea9f",
+  "validate_tree_stage.py": "45a8a48e353eb7d6379268ed1b9c38528624d2137d5fcc43ec4eec2632acb3a0"
+}
