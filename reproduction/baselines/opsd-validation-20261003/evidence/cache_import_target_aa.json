@@ -1,0 +1,19 @@
+{
+  "source": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo/assets-root/assets/wiki/part_aa",
+  "target": "/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/wiki/part_aa",
+  "source_before": {
+    "device": 1048584,
+    "inode": 81145727,
+    "size": 42949672960,
+    "mtime_ns": 1790951111000000000
+  },
+  "source_after": {
+    "device": 1048584,
+    "inode": 81145727,
+    "size": 42949672960,
+    "mtime_ns": 1790951111000000000
+  },
+  "size": 42949672960,
+  "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+  "seconds": 75.43886332958937
+}

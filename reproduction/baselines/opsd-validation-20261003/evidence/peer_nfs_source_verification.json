@@ -1,0 +1,56 @@
+{
+  "time_utc": "2026-10-02T20:56:31.827650+00:00",
+  "reviewer": "independent opsd_review",
+  "source_root": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo/assets-root/assets/wiki",
+  "read_from_node": "h100-10",
+  "nfs_mount": {
+    "target": "/mnt/shared/workspace/training_data_node_5",
+    "source": "h100-5:/dataset",
+    "fstype": "nfs4"
+  },
+  "source_manifest_matches_fixed": true,
+  "source_revision": "a4d31160a035f30764604f4827cd8f1d0315eb86",
+  "source_realpaths_unchanged": true,
+  "source_write_performed": false,
+  "source_hash_process_write_bytes": 0,
+  "assets": {
+    "part_aa": {
+      "size_bytes": 42949672960,
+      "mtime_before": "2026-10-02 22:25:11.000000000 +0800",
+      "device": 1048584,
+      "inode": 81145727,
+      "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+      "current_full_hash_matches": true,
+      "size_mtime_device_inode_unchanged_after": true
+    },
+    "part_ab": {
+      "size_bytes": 21609402413,
+      "mtime_before": "2026-10-02 22:43:55.000000000 +0800",
+      "device": 1048584,
+      "inode": 81145730,
+      "sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+      "current_full_hash_matches": true,
+      "size_mtime_device_inode_unchanged_after": true
+    }
+  },
+  "network_probe": {
+    "range_bytes": 1048576,
+    "proxy": "10.33.0.16:3128",
+    "hf_mirror": {
+      "http_status": 206,
+      "bytes_per_second": 216890,
+      "seconds": 4.834591
+    },
+    "huggingface_official": {
+      "http_status": 206,
+      "bytes_per_second": 330976,
+      "seconds": 3.16813
+    },
+    "conclusion": "single 1MiB range measurements not sustained throughput or a demonstrated material faster replacement"
+  },
+  "gpu_or_five_iteration_acceptance": false,
+  "optional_ab_rehash_pending": false,
+  "initial_combined_hash_timed_out_in_ab": true,
+  "initial_combined_hash_timeout_seconds": 240,
+  "all_two_current_source_hashes_verified": true
+}

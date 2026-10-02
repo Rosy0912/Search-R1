@@ -1,0 +1,16 @@
+{
+  "time_utc": "2026-10-02T20:55:05.883320+00:00",
+  "script": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/import_cache.py",
+  "sha256": "4b23af2e94a8f31f449add13c0716b047b9902e7901559467f5e7fc522375172",
+  "static_result": "PASS",
+  "local_real_copy_cases": 4,
+  "cases": [
+    "correct full SHA promotes",
+    "wrong SHA rejects and retains candidate",
+    "source mtime change rejects and retains candidate",
+    "existing candidate rejected without overwrite"
+  ],
+  "reviewer_started_remote_copy_or_download": false,
+  "requires_external_single_writer_condition": "Parent explicitly stops only own aria2/task waiter; preserve original partial/bitmap",
+  "gpu_or_five_iteration_verified": false
+}
