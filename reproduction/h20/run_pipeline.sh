@@ -37,6 +37,8 @@ if [ ! -f "$BASE/assets/wiki/wiki-18.jsonl" ]; then
   gzip -dc "$BASE/assets/wiki/wiki-18.jsonl.gz" > "$BASE/assets/wiki/wiki-18.jsonl.partial"
   mv "$BASE/assets/wiki/wiki-18.jsonl.partial" "$BASE/assets/wiki/wiki-18.jsonl"
 fi
+stage REAL_INDEX_GPU_RETRIEVAL_PREFLIGHT
+PYTHONPATH="$BASE/retriever-gpu-lib:$BASE/repo" python "$BASE/gpu_retrieval_preflight.py" > "$BASE/logs/gpu-retrieval-preflight.log" 2>&1
 stage STARTING_RETRIEVER
 python "$BASE/gpu_guard.py"
 python - <<'PY'
@@ -45,10 +47,10 @@ s=socket.socket()
 s.bind(('127.0.0.1',8000))
 s.close()
 PY
-CUDA_VISIBLE_DEVICES=0 python "$BASE/retriever_local.py" \
+PYTHONPATH="$BASE/retriever-gpu-lib:$BASE/repo" CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python "$BASE/retriever_local.py" \
   --index_path "$BASE/assets/wiki/e5_Flat.index" \
   --corpus_path "$BASE/assets/wiki/wiki-18.jsonl" \
-  --topk 3 --retriever_name e5 --retriever_model "$BASE/assets/e5-base-v2" \
+  --topk 3 --retriever_name e5 --retriever_model "$BASE/assets/e5-base-v2" --faiss_gpu \
   > "$BASE/logs/retriever.log" 2>&1 &
 RETRIEVER_PID=$!
 # Stop only the recorded retriever identity, using Linux pidfd.

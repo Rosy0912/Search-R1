@@ -1,5 +1,6 @@
 """Keep the upstream retrieval implementation; bind its HTTP server locally."""
 import runpy
+import torch  # Preload the project's CUDA/cuBLAS libraries before GPU FAISS.
 import uvicorn
 
 original_run = uvicorn.run

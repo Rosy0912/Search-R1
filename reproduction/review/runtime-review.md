@@ -82,3 +82,13 @@ CPU测试 `tests/reproduction/test_final_checkpoint.py` 用 AST 直接抽取真�
 `turns_stats` 原始计数从1开始会使显示动作数多1；主 agent 将仅将统计初值改0并补回归断言。静态调用链确认该字段用于日志动作数/有效动作比例，不决定生成循环或优化；真实worker调用次数已有测试约束。统计修复后应重新跑相应CPU回归，不为修日志指标重启已有训练。
 
 **发布判定：审查范围内未剩余代码发布阻断，允许发布已审查实现与明确的复现进度/兼容差异。** 这不是“保证不存在任何错误”，也不是500步论文性能验收。CPU float32检索相对官方GPU float16排序差异仍须保留说明；完整训练结果须通过新增full验收门禁及固定checkpoint复评后才能报告。更广泛的硬件迁移或依赖变更需要重新运行实测集成门禁。
+
+## 17:15 后续适配复查与证据范围
+
+按用户修正，训练前和中间评测使用64题：7源、每源4个长度层、层内SHA256确定性选取，问题和全局index唯一。仅终端 `_prepare_final_validation` 切换全量7源；`acceptance_step=5` 只额外保存，不return、重置优化器或另起训练，随后在同一进程继续500次更新。新增只读五步门禁要求step1–5实际训练metrics有限、fresh完整step5 checkpoint及抽查参数非零变化，不停止trainer；首步warmup学习率为0，因此“五次真实迭代”不等于每步都有非零参数变化。
+
+CPU检索吞吐不足后改为独立 `retriever-gpu-lib` overlay，训练venv的faiss-cpu/NumPy未替换；仅检索子进程加PYTHONPATH，使用上游8卡shard/FP16分支。wheel来自第三方PyPI发行版，SHA256核对PyPI元数据，不将其称为FAISS官方wheel。root报告同一约21M×768索引的14跨源问题top3集合41/42重合（97.6%）、排序位置score最大差约2.2e-5；512条重复展开向量GPU索引search约0.149秒。该计时不包含E5编码/HTTP，该小样本不证明全面逐结果等价。FP16索引约32GB分8卡，另有scratch与E5显存；最终仍以真实训练峰值验收。
+
+GPU HTTP首次请求在E5的cuBLAS路径失败，root确认两种import顺序均载入项目cuBLAS12.4，因此未将import顺序当成已证实根因。端点改 `async def` 且不await/offload，使同步encode+search固定在初始化资源的event-loop/main线程并序列化；JSON检索协议/排序计算不改，Torch-first预载仅作兼容预防。此方向符合[FastAPI同步端点线程池行为](https://fastapi.tiangolo.com/async/)及[FAISS GPU资源单调用线程约束](https://github.com/facebookresearch/faiss/wiki/Threads-and-asynchronous-calls)。增加trainer启动前真实HTTP top3门禁；代价是查询时会阻塞同服务其它HTTP响应，当前专用localhost服务可接受。
+
+**17:15 后续实际运行证据由root统一报告，并非本reviewer运行GPU：**真实HTTP top3及64题验证已成功，正式step1已完成（reward mean0.036、grad_norm0.148），任务在step2继续；目标环境47项CPUtests全部通过、0skip，包括真实FastAPI ASGI并发线程身份与五步门禁拒绝测试。本reviewer执行的是静态复查和此前明确标记的CPU测试，没有占用GPU。**尚未通过五步验收，不能据step1声称五步成功；完整500步及最终全量EM仍待正式门禁。**

@@ -433,6 +433,25 @@ class RayPPOTrainer(object):
             self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps
             self.config.critic.optim.total_training_steps = total_training_steps
 
+    def _prepare_final_validation(self):
+        """Switch only terminal evaluation to the complete held-out data."""
+        files=self.config.data.get('final_val_files')
+        if not files:
+            return
+        from torch.utils.data import DataLoader
+        from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
+        self.val_dataset=RLHFDataset(
+            parquet_files=files, tokenizer=self.tokenizer,
+            prompt_key=self.config.data.prompt_key,
+            max_prompt_length=self.config.data.max_prompt_length,
+            filter_prompts=True,
+            return_raw_chat=self.config.data.get('return_raw_chat',False),
+            truncation='error')
+        self.val_dataloader=DataLoader(
+            dataset=self.val_dataset, batch_size=self.config.data.val_batch_size,
+            shuffle=False, drop_last=False, collate_fn=collate_fn)
+        print(f'Final validation dataset size: {len(self.val_dataset)}',flush=True)
+
     def _validate(self):
         """
         The training loop of PPO with global metric computation.
@@ -833,6 +852,7 @@ class RayPPOTrainer(object):
 
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
+                             self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
                              self.global_steps + 1 >= self.total_training_steps):
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
@@ -853,6 +873,7 @@ class RayPPOTrainer(object):
 
                     # perform validation after training
                     if self.val_reward_fn is not None:
+                        self._prepare_final_validation()
                         val_metrics = self._validate()
                         pprint(f'Final validation metrics: {val_metrics}')
                         print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)

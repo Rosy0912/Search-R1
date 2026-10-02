@@ -324,7 +324,10 @@ class QueryRequest(BaseModel):
 app = FastAPI()
 
 @app.post("/retrieve")
-def retrieve_endpoint(request: QueryRequest):
+async def retrieve_endpoint(request: QueryRequest):
+    # GPU FAISS resources and the encoder are initialized on the main thread.
+    # A sync FastAPI endpoint moves calls into worker threads; keep CUDA work
+    # on this event-loop thread, serialized with the resource initialization.
     """
     Endpoint that accepts queries and performs retrieval.
     Input format:

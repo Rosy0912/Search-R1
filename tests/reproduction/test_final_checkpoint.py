@@ -69,6 +69,9 @@ class FakeTrainer:
         self.events.append(("validate", self.global_steps, self.weight))
         return {"em": self.weight}
 
+    def _prepare_final_validation(self):
+        self.events.append(("final_data",self.global_steps,self.weight))
+
 
 class FinalCheckpointTest(unittest.TestCase):
     def test_off_boundary_final_save_matches_final_validation(self):
@@ -98,6 +101,16 @@ class FinalCheckpointTest(unittest.TestCase):
         real_iteration_tail()(trainer)
         self.assertEqual([e for e in trainer.events if e[0] == "save"], [])
         self.assertEqual(trainer.events[-1], ("validate", 1005, 1))
+
+    def test_step_five_saves_without_stopping_training(self):
+        trainer=FakeTrainer(1,501)
+        trainer.config.trainer.acceptance_step=5
+        run=real_iteration_tail()
+        for _ in range(6):
+            run(trainer)
+        self.assertEqual([e for e in trainer.events if e[0]=='save'], [('save',5,5)])
+        self.assertEqual(trainer.global_steps,7)
+        self.assertFalse(any(e[0]=='final_data' for e in trainer.events))
 
 
 if __name__ == "__main__":

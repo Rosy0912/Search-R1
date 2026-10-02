@@ -50,4 +50,10 @@ PY
 
 `environment-acceptance.json`、`environment-dependency-check.txt`、`environment-freeze.txt`、`environment-source-commit.txt` 与差异记录可审计安装结果。`environment.ready` 仅代表固定版本、导入及允许的声明例外通过；**不代表GPU兼容或论文复现成功**。唯一训练pipeline还必须完成8卡NCCL/BF16、真实推理、检索、真实短训练及checkpoint/最终EM检查。训练脚本继续使用 `NCCL_NVLS_ENABLE=0`。
 
-本次只完成shell/Python语法检查、对当前venv元数据验证（唯一Torch-cuBLAS例外，无其它冲突）；**没有真正执行新环境clean rebuild或在bootstrap中运行GPU计算**。首次新建环境后必须执行上述集成门禁，不能将准备好的脚本视作已实测重建成功。
+固定训练环境已在独立目录真实重建，并完成8卡NCCL/BF16及真实3B推理；结果见 `../acceptance.md`。首次在其它环境重建仍必须执行集成门禁。
+
+## 隔离的 GPU 检索 overlay
+
+另运行 `bash /data/search-r1/bootstrap_retriever.sh`，将 `faiss-gpu-cu12==1.8.0.2` 装到项目的 `retriever-gpu-lib`，只有retriever及其preflight使用该PYTHONPATH，不替换训练venv中的faiss-cpu、Torch或NumPy。该PyPI wheel基于FAISS1.8.0，来自第三方faiss-wheels构建，不是Meta官方二进制发行；固定cp310/Linux x86_64包SHA256为 `7ea5e6aa82897fd0c1af3b1decc9c8659a4398fed42de1d7746715b64bbf9bf9`。它沿用当前cuBLAS12.4.5.8和NumPy1.26.4；依赖解析禁用，避免触动训练环境。PyPI该旧版本曾因NumPy2兼容性被yank，此项目明确使用NumPy1.26.4，并已实际导入和GPU索引验收。
+
+下载优先目标远端，超时后按下载记忆从Mac中转，同样先验证SHA再安装。脚本使用项目锁，已有训练时拒绝修改overlay。上游 `--faiss_gpu` 参数启用8卡分片FP16索引；real-index preflight比较14个跨源真实问题的CPU/GPU top3，并计时512条索引查询。该检查仅有限样本数值核对，不证明全量排序一致。

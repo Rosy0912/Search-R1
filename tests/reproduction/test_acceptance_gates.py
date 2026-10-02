@@ -126,6 +126,97 @@ class AcceptanceGatesTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.run_gate("verify_full_run")
 
+    def prepare_five(self):
+        self.five=self.base/'checkpoints/paper-grpo-qwen2.5-3b/actor/global_step_5'
+        self.weights(self.five,2)
+        (self.base/'logs/training-run-started.txt').write_text(str(self.started))
+        self.log.write_text(''.join(f'step:{i} - critic/rewards/mean:0.125 - actor/grad_norm:0.300\n' for i in range(1,7)))
+
+    def test_five_real_updates_fresh_weights_pass(self):
+        self.prepare_five()
+        self.run_gate('verify_five_updates')
+
+    def test_fewer_than_five_updates_is_rejected(self):
+        self.prepare_five()
+        self.log.write_text('step:5 - val/test_score/nq:0.125\n')
+        with self.assertRaises(AssertionError):
+            self.run_gate('verify_five_updates')
+
+    def test_nonfinite_update_is_rejected(self):
+        self.prepare_five()
+        self.log.write_text(self.log.read_text().replace('actor/grad_norm:0.300','actor/grad_norm:nan'))
+        with self.assertRaises(AssertionError):
+            self.run_gate('verify_five_updates')
+
+    def test_stale_five_checkpoint_is_rejected(self):
+        self.prepare_five()
+        shard=self.five/'model-00002-of-00002.safetensors'
+        os.utime(shard,(self.started-100,self.started-100))
+        with self.assertRaises(AssertionError):
+            self.run_gate('verify_five_updates')
+
+    def mutate_checkpoint(self, gate, mutation):
+        if gate=='verify_five_updates':
+            self.prepare_five()
+            directory=self.five
+        else:
+            directory=self.full
+        index=directory/'model.safetensors.index.json'
+        mapping=json.loads(index.read_text())['weight_map']
+        if mutation=='omit':
+            # Self-consistent index+remaining shard: old gates accepted this.
+            missing=mapping.pop('second.weight')
+            (directory/missing).unlink()
+        elif mutation=='shape':
+            save_file({'second.weight':np.full((3,2),2,dtype=np.float32)},str(directory/mapping['second.weight']))
+        elif mutation=='nan':
+            # Keep the sampled q_proj finite/changed; corrupt another tensor.
+            save_file({'second.weight':np.full((2,2),np.nan,dtype=np.float32)},str(directory/mapping['second.weight']))
+        elif mutation=='reshard':
+            mapping={key:'model-all.safetensors' for key in mapping}
+            save_file({key:np.full((2,2),2,dtype=np.float32) for key in mapping},str(directory/'model-all.safetensors'))
+        else:
+            raise AssertionError(mutation)
+        index.write_text(json.dumps({'weight_map':mapping}))
+
+    def test_five_self_consistent_omitted_parameter_is_rejected(self):
+        self.mutate_checkpoint('verify_five_updates','omit')
+        with self.assertRaisesRegex(AssertionError,'keys differ'):
+            self.run_gate('verify_five_updates')
+
+    def test_full_self_consistent_omitted_parameter_is_rejected(self):
+        self.mutate_checkpoint('verify_full_run','omit')
+        with self.assertRaisesRegex(AssertionError,'keys differ'):
+            self.run_gate('verify_full_run')
+
+    def test_five_wrong_parameter_shape_is_rejected(self):
+        self.mutate_checkpoint('verify_five_updates','shape')
+        with self.assertRaisesRegex(AssertionError,'shape differs'):
+            self.run_gate('verify_five_updates')
+
+    def test_full_wrong_parameter_shape_is_rejected(self):
+        self.mutate_checkpoint('verify_full_run','shape')
+        with self.assertRaisesRegex(AssertionError,'shape differs'):
+            self.run_gate('verify_full_run')
+
+    def test_five_non_sampled_parameter_nan_is_rejected(self):
+        self.mutate_checkpoint('verify_five_updates','nan')
+        with self.assertRaisesRegex(AssertionError,'Nonfinite checkpoint tensor'):
+            self.run_gate('verify_five_updates')
+
+    def test_full_non_sampled_parameter_nan_is_rejected(self):
+        self.mutate_checkpoint('verify_full_run','nan')
+        with self.assertRaisesRegex(AssertionError,'Nonfinite checkpoint tensor'):
+            self.run_gate('verify_full_run')
+
+    def test_five_valid_reshard_is_accepted(self):
+        self.mutate_checkpoint('verify_five_updates','reshard')
+        self.run_gate('verify_five_updates')
+
+    def test_full_valid_reshard_is_accepted(self):
+        self.mutate_checkpoint('verify_full_run','reshard')
+        self.run_gate('verify_full_run')
+
 
 if __name__ == "__main__":
     unittest.main()
