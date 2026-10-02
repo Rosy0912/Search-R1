@@ -1,0 +1,72 @@
+{
+  "checked_at": "2026-10-02T19:33:48.448899+00:00",
+  "target_host": "baai-a800",
+  "stage": "PREPARING_NOT_TRAINING",
+  "completed_new_updates": 0,
+  "resume_checkpoint_step": 100,
+  "source_last_completed_update": 149,
+  "source_failed_update": 150,
+  "unsaved_lost_updates": 49,
+  "weight_continuation_approval": "pending",
+  "trainer_gpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "retriever_gpus": [
+    4,
+    5,
+    6
+  ],
+  "foreign_gpu": 7,
+  "environment": {
+    "dependencies_install_completed": true,
+    "flash_attention": "direct_download_stalled; local_relay_started",
+    "environment_acceptance_passed": false
+  },
+  "assets_bytes_observed": "7.5GiB; partial and verified combined, not complete",
+  "checkpoint_transfer": "incomplete; local partial57901056 bytes; no fresh transfer hash verification",
+  "gpu_instant": {
+    "0_to_6_memory_MiB_each": 4,
+    "0_to_6_util_percent_each": 0,
+    "7_memory_MiB": 68494,
+    "7_util_percent": 0
+  },
+  "gpu_interval_peak": "not collected on A800; instantaneous only",
+  "new_reward": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "reward_console_precision": 3,
+  "last_source_evaluation_step": 100,
+  "last_source_EM_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  }
+}
