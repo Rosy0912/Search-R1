@@ -97,3 +97,22 @@ def test_unpatched_hf_generation_accepts_generic_tokenizer_and_validation_costs(
         assert ranker.cost['validation_score_forward_tokens'] > 0
     finally:
         TinyModels.tearDownClass()
+
+
+def test_retriever_cannot_silently_reduce_fifty_candidate_protocol():
+    from unittest.mock import patch
+    ranker = GenerativeRanker.__new__(GenerativeRanker)
+    ranker.config = SimpleNamespace(candidates=50)
+    manager = SimpleNamespace(config=SimpleNamespace(search_url='http://unused/retrieve'),
+                              postprocess_predictions=lambda _: (['search'], ['capital France']))
+    document = {'document': {'contents': 'Paris'}}
+    for row in ([document] * 3, [document] * 49,
+                [{'document': {'contents': 123}}] * 50):
+        response = SimpleNamespace(raise_for_status=lambda: None, json=lambda: {'result': [row]})
+        with patch('requests.post', return_value=response):
+            try:
+                ranker.execute(manager, ['<search>capital France</search>'], [object()], True)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('Reduced candidates or malformed documents must fail before ranking')

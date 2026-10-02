@@ -1,0 +1,6 @@
+
+
+
+{"matcher": [["I live in Hague", ["The Hague"], false, false], ["THE Hague.", ["The Hague"], true, true], ["foobar", ["foo-bar"], false, false], ["foo-bar", ["foo-bar"], true, true], ["A cafe\u0301 in Paris", ["CAF\u00c9"], true, true], ["Roman", ["Rome"], false, false], ["a", [""], false, false], ["yes", ["yes"], true, true]]}
+{"identical_response_weight_decay_zero": {"grad_l2": 1.6403066071598565e-07, "parameter_delta_l1": 0.00016725615246236322, "events": 3}}
+{"different_response_weight_decay_zero": {"grad_l2": 0.3948707195287532, "parameter_delta_l1": 0.008089714428479056, "events": 3}}

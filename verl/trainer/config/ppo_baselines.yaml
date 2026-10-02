@@ -111,6 +111,7 @@ baselines:
   ranker:
     model_path: null
     device: cpu
+    weight_decay: 0.01
     candidates: 50
     keep: 3
     max_new_tokens: 256

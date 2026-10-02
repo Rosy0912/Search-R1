@@ -55,7 +55,12 @@ def _baseline_validation(function):
         old = controller.ranker.validation
         controller.ranker.validation = True
         try:
-            return function(self, *args, **kwargs)
+            metrics = function(self, *args, **kwargs)
+            if isinstance(metrics, dict):
+                metrics.update(controller.ranker.cost_metrics())
+                print('COSEARCH_VALIDATION_FINAL_COST_JSON=' + json.dumps(controller.ranker.cost_metrics(),
+                                                                         sort_keys=True), flush=True)
+            return metrics
         finally:
             controller.ranker.validation = old
     return wrapped

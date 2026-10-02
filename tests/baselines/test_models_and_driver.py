@@ -93,15 +93,18 @@ class TinyModels(unittest.TestCase):
         c = config('cosearch').baselines.ranker
         c.model_path = self.tmp.name
         c.min_group_size = 3
+        c.weight_decay = 0.
         ranker = GenerativeRanker(c)
         ranker.question_uids = ['q'] * 3
-        docs = [{'document': {'contents': d}} for d in ['Paris', 'Rome', 'Berlin']]
+        docs = [{'document': {'contents': d}} for d in ['Paris', 'Rome', 'Berlin', 'Madrid']]
         manager = SimpleNamespace(tokenizer=CharTokenizer())
         # Deterministic valid actions still use actual HF forward/scoring/optimizer.
         def generate(input_ids, **kwargs):
             self.assertEqual(kwargs['generation_config'].repetition_penalty, 1.)
             self.assertEqual(kwargs['generation_config'].no_repeat_ngram_size, 0)
-            response = torch.tensor([ranker.tokenizer.encode('<ranking>[1,2,3]</ranking>')])
+            actions = ['<ranking>[1,2,3]</ranking>', '<ranking>[2,3,4]</ranking>',
+                       '<ranking>[2,1,3]</ranking>']
+            response = torch.tensor([ranker.tokenizer.encode(actions[len(ranker.events) % 3])])
             return torch.cat((input_ids, response), 1)
         ranker.model.generation_config.repetition_penalty = 1.05
         with patch.object(ranker.model, 'generate', side_effect=generate):
@@ -111,6 +114,9 @@ class TinyModels(unittest.TestCase):
         rewards = {str(i): (float(i == 0), ['Paris'], True) for i in range(3)}
         metrics = ranker.update(rewards)
         self.assertEqual(metrics['ranker/training_events'], 3)
+        self.assertEqual(metrics['ranker/informative_groups_with_distinct_rankings'], 1)
+        self.assertGreater(metrics['ranker/gradient_norm_max'], 1.e-5)
+        self.assertGreater(metrics['ranker/parameter_probe_delta_l1'], 0.)
         self.assertEqual(ranker.cost['optimizer_steps'], 1)
         self.assertFalse(torch.equal(before, ranker.model.lm_head.weight))
         with patch.object(ranker.model, 'generate', side_effect=generate):

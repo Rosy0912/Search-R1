@@ -8,6 +8,9 @@ import json
 import os
 import re
 import unicodedata
+import resource
+import sys
+import time
 import regex
 import torch
 import torch.nn.functional as F
@@ -114,6 +117,7 @@ def semantic_groups(events, similarity=.8, split_availability=False):
 class GenerativeRanker:
     def __init__(self, config):
         from transformers import AutoTokenizer, AutoModelForCausalLM
+        started, cpu_started = time.perf_counter(), time.process_time()
         self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained(config.model_path)
         if self.tokenizer.pad_token_id is None:
@@ -125,11 +129,22 @@ class GenerativeRanker:
                                            weight_decay=config.get('weight_decay', .01))
         self.events = []
         self.cost = dict(generated_tokens=0, prefill_tokens=0, optimizer_steps=0, score_forward_tokens=0,
-                         training_forward_tokens=0, validation_generated_tokens=0, validation_prefill_tokens=0)
+                         training_forward_tokens=0, validation_generated_tokens=0, validation_prefill_tokens=0,
+                         model_load_wall_seconds=time.perf_counter() - started,
+                         model_load_cpu_seconds=time.process_time() - cpu_started)
         self.question_uids = []
         self.validation = False
 
+    def cost_metrics(self):
+        # Driver RSS includes dependencies and trainer state, not only this ranker.
+        rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        divisor = 1024 ** 2 if sys.platform == 'darwin' else 1024
+        metrics = {f'ranker/{k}_cumulative': v for k, v in self.cost.items()}
+        metrics['ranker/driver_peak_rss_mib'] = rss / divisor
+        return metrics
+
     def rank(self, initial_question, query, docs, state):
+        started, cpu_started = time.perf_counter(), time.process_time()
         keep = min(self.config.keep, len(docs))
         if not keep:
             return []
@@ -138,6 +153,9 @@ class GenerativeRanker:
                   f'Select exactly {keep} distinct document IDs ordered by relevance. '
                   'Think briefly, then output <ranking>[1, 2, ...]</ranking>.\n')
         inputs = self.tokenizer(prompt, return_tensors='pt', return_token_type_ids=False).to(self.device)
+        prefix = 'validation_' if self.validation else ''
+        self.cost[prefix + 'prompt_tokens_max'] = max(self.cost.get(prefix + 'prompt_tokens_max', 0),
+                                                     inputs.input_ids.numel())
         if inputs.input_ids.shape[1] + self.config.max_new_tokens > self.model.config.max_position_embeddings:
             raise ValueError('Ranker candidate context exceeds model limit')
         self.model.eval()
@@ -157,7 +175,11 @@ class GenerativeRanker:
             logits = self.model(generated, use_cache=False).logits[:, inputs.input_ids.shape[1] - 1:-1]
             logp = F.log_softmax(logits.float() / self.config.temperature, -1).gather(-1, response[..., None]).squeeze(-1)
         ranking = parse_ranking(self.tokenizer.decode(response[0], skip_special_tokens=True), len(docs), keep)
-        prefix = 'validation_' if self.validation else ''
+        for name, value in [('rank_calls', 1), ('legal_rankings', int(ranking is not None)),
+                            ('fallback_rankings', int(ranking is None)),
+                            ('rank_wall_seconds', time.perf_counter() - started),
+                            ('rank_cpu_seconds', time.process_time() - cpu_started)]:
+            self.cost[prefix + name] = self.cost.get(prefix + name, 0) + value
         self.cost[prefix + 'prefill_tokens'] += inputs.input_ids.numel()
         self.cost[prefix + 'generated_tokens'] += response.numel()
         self.cost.setdefault(prefix + 'score_forward_tokens', 0)
@@ -183,6 +205,12 @@ class GenerativeRanker:
             docs = response.json()['result']
             if len(docs) != len(indices):
                 raise ValueError('Retriever returned wrong candidate batch size')
+            for row in docs:
+                if not isinstance(row, list) or len(row) != self.config.candidates:
+                    raise ValueError(f'CoSearch requires exactly {self.config.candidates} candidates per query')
+                if any(not isinstance(d, dict) or not isinstance(d.get('document'), dict)
+                       or not isinstance(d['document'].get('contents'), str) for d in row):
+                    raise ValueError('CoSearch candidate lacks document.contents text')
         observation = [''] * len(states)
         done, valid, searches = [], [], []
         doc_index = 0
@@ -207,6 +235,7 @@ class GenerativeRanker:
         return observation, done, valid, searches
 
     def update(self, rewards_by_trajectory):
+        started, cpu_started = time.perf_counter(), time.process_time()
         events = []
         for e in self.events:
             main, targets, legal = rewards_by_trajectory[e['trajectory_uid']]
@@ -236,6 +265,12 @@ class GenerativeRanker:
                    'ranker/trivial_answer_events': sum(e['answers_are_trivial'] for e in events),
                    'ranker/invalid_ranking_events': sum(e['ranking'] is None for e in events),
                    'ranker/effective_nonzero_advantage_events': sum(float(advantage[i]) != 0. for i in chosen)}
+        metrics['ranker/informative_groups'] = len(informative)
+        metrics['ranker/informative_groups_with_distinct_rankings'] = sum(
+            len({tuple(events[i]['ranking']) if events[i]['ranking'] is not None else None
+                 for i, key in enumerate(keys) if key == group}) > 1 for group in informative)
+        metrics['ranker/gradient_norm_max'] = 0.
+        metrics['ranker/parameter_probe_delta_l1'] = 0.
         # Keep dropout disabled while taking gradients, matching rollout old logprobs.
         self.model.eval()
         for _ in range(self.config.epochs):
@@ -256,9 +291,25 @@ class GenerativeRanker:
                 norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.grad_clip)
                 if not torch.isfinite(norm):
                     raise ValueError('Nonfinite ranker gradients; optimizer step refused')
+                metrics['ranker/gradient_norm_max'] = max(metrics['ranker/gradient_norm_max'], float(norm))
+                # Bounded samples prove an actual change without duplicating 3B weights.
+                # Delta alone can include AdamW/momentum/roundoff: do not call it RL success.
+                probes = []
+                for parameter in self.model.parameters():
+                    if parameter.grad is not None:
+                        flat = parameter.detach().reshape(-1)
+                        count = min(8, flat.numel())
+                        index = (torch.arange(count, device=flat.device, dtype=torch.long)
+                                 * (flat.numel() - 1) // max(count - 1, 1))
+                        probes.append((parameter, index, flat[index].clone()))
                 self.optimizer.step()
+                metrics['ranker/parameter_probe_delta_l1'] += sum(
+                    float((parameter.detach().reshape(-1)[index] - before).abs().sum())
+                    for parameter, index, before in probes)
                 self.cost['optimizer_steps'] += 1
-        metrics.update({f'ranker/{k}_cumulative': v for k, v in self.cost.items()})
+        self.cost['update_wall_seconds'] = self.cost.get('update_wall_seconds', 0) + time.perf_counter() - started
+        self.cost['update_cpu_seconds'] = self.cost.get('update_cpu_seconds', 0) + time.process_time() - cpu_started
+        metrics.update(self.cost_metrics())
         return metrics
 
     def save(self, directory):
