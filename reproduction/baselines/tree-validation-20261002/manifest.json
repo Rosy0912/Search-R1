@@ -1,10 +1,10 @@
 {
   "method": "tree_grpo",
-  "status": "cpu_and_independent_review_passed_gpu_not_started",
+  "status": "cpu_review_passed_production_assets_environment_preparing",
   "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
   "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
   "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
-  "common_setup_commit": null,
+  "common_setup_commit": "297e1c140677dc621302f1d49fefdb31023fd2b7",
   "branch": "reproduce/tree-grpo",
   "remote_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
   "node": "h100-9",
@@ -17,7 +17,9 @@
     "baselines_passed": 45,
     "reproduction_tests": 61,
     "reproduction_skipped": 1,
-    "independent_related_passed": 32
+    "independent_related_passed": 32,
+    "complete_pytest_passed": 151,
+    "complete_pytest_skipped": 1
   },
   "asset_and_split_identity": null,
   "environment_ready": false,
@@ -29,5 +31,23 @@
     "six leaves versus five GRPO trajectories",
     "paper equal-leaf token average differs from author token-mean implementation"
   ],
-  "notes": "No production metrics. A successful short Slurm allocation probe does not constitute GPU training acceptance."
+  "notes": "No production metrics. A successful short Slurm allocation probe does not constitute GPU training acceptance.",
+  "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
+  "integrated_code_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "remote_deployed_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "network_blocker": null,
+  "gpu_and_assets_acceptance": {
+    "nccl_bf16": false,
+    "flash_vllm": false,
+    "cpu_retrieval_equivalence": false,
+    "production_tree_smoke": false,
+    "five_step_checkpoint": false,
+    "formal_500_updates": false,
+    "final_51713_questions": false
+  },
+  "network_progress": "Existing local SOCKS restored SSH; existing cluster proxy 10.33.0.16:3128 verified by 32MiB immutable wiki range; full assets not yet verified.",
+  "updated_at": "2026-10-03T03:35:46.417648+08:00",
+  "latest_cpu_gate_evidence": "cpu-all-dp-metrics-20261003.txt",
+  "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b"
 }
