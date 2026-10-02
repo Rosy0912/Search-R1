@@ -79,3 +79,17 @@ NVML/nvidia-smi各时点memory.used包含分配卡上全部GPU上下文/进程�
 - step5保存后每rank worker audit/allocator日志已静态核对，需原始worker日志确认8rank齐全。HF重载仍明确在worker退出/Slurm清理后新进程或另一个授权allocation执行；job training-finished标记只说明训练进程退出，**不说明五iter/重载/最终独立验收通过**。初后student weight hash差、teacher初末immutable hash及实际reload推理仍是最终验收证据。
 
 负责人报告此次完整CPU gate139passed/1skipped；此处只标为负责人报告，独立本轮实跑为2项focused、真实2rank CPU Gloo观测collective、tiny数学等效与资源函数fixture。**最终观测delta与所读启动脚本在所审范围内通过，无剩余已证实的新算法或脚本启动阻断。** 检索一致性实际差异、Linux8rank NCCL/Flash/FSDP/offload/3B吞吐、端口/cgroup真实格式、峰值、连续五outer和HF重载仍PENDING，必须以实际日志和产物复审，不能用脚本静态通过当GPU完成。
+
+## 10. 967b6a2及检索审核闸门最终闭环
+
+新增部署源码commit：`967b6a293e660f444fc02f9636266a83f1dd1e32`。本次还读取其后尚未提交的 `runtime/job.sh` 审核闸门差异，文件SHA另见manifest，不把该未提交闸门冒称已经在967b6a2中。
+
+actor将每rank的optimizer_steps/skipped、local micro loss均值/finite和grad_norm均值/finite加入同一观测gather，原loss/gradient列表和优化执行未改。独立AST执行实际标量块验证非空列表均值与finite标记、update/skipped计数准确；全空mini不伪造loss/grad finite=1，而是保留optimizer0/skipped计数（最终真实五iter要求不得拿全空更新通过）。loss_mean仍是各rank本地micro-normalized贡献的均值，不是重新计算的global teacher/student objective；finite及实际更新次数验收口径成立。最新实际actor版本又经真实CPU Gloo两rank收集probe通过，仍未执行8rank NCCL或GPU。
+
+resource_sample初始读取parent start_ticks，后续轮次同时检查PID存活和start_ticks一致；PID复用则停止，父proc消失亦停止。来源index19正确，此读取不改变被测进程。job_processes仍按PID/starttime归因，nominal2秒采样口径保留。
+
+新job执行真实CPU/GPU检索比较后写pending记录并最多等待240×30秒（2小时）accepted标记，**标记缺失或非法时在HTTP检索/Ray/训练启动之前set-e退出**。脚本没有自动生成accepted，阈值OK不再等同审核完成。
+
+初版仅检查marker存在可能沿用旧证据，已通知并加固：启动拒绝任何既有run目录；accepted必须JSON绑定当前SLURM_JOB_ID及当前retrieval-comparison.json完整SHA256，放行时重新读并核对，错job/证据变化/错误JSON均拒绝。每job独立新run防止旧标记复用；未审阅真实ordered content/ID/score差异前，负责人及本审查者都不应写accepted。最终HTTP内容/score、ownership检查在批准后仍需通过；批准参考对比不等于批准五iter结果。
+
+最终读取的bash语法检查通过，独立证据新增 `runtime_final_rank_gather_probe.json/.stderr` 与 `runtime_rank_scalar_probe.json`。**可冻结/提交本次观测和所审闸门并在实际门禁满足后运行；静态/CPU范围内无剩余已证实新阻断。** 大资产完整hash、真实检索差异审核/accepted、连续五GPU iter、step5保存/真实HF重载和最终subagent日志审查继续PENDING。本审查不会因为部署已经推送或阈值标志出现提前认定真实验收完成。

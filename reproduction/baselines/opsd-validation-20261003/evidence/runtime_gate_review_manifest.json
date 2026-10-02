@@ -1,0 +1,14 @@
+{
+  "head": "967b6a293e660f444fc02f9636266a83f1dd1e32",
+  "files": {
+    "search_r1/baselines/actor.py": "b202c0b7a3b5f6862a97da2f4f65b6dfa80ff04765efb5b6e96b68e296e72196",
+    "reproduction/baselines/opsd-validation-20261003/runtime/job.sh": "0a33d49e21e453dac407e5a464ffb989051e2d32322e5b988c7ba1b833e871b9",
+    "reproduction/baselines/opsd-validation-20261003/runtime/resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "reproduction/baselines/opsd-validation-20261003/RUNTIME_DELTA_REVIEW.md": "099d7f45fe30c056fe9c3df0522d0b5b844906506e3134ccc0b19fad3fb8808c"
+  },
+  "gate_scope": "job.sh uncommitted hardened delta after 967b6a2",
+  "requires_current_job_and_comparison_sha": true,
+  "rejects_preexisting_run": true,
+  "static_CPU_review": "PASS",
+  "real_GPU_retrieval_and_five_iters": "PENDING"
+}

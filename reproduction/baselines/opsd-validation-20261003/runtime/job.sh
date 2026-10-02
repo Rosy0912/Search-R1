@@ -5,6 +5,7 @@ export SEARCH_R1_BASE=/mnt/data/shaoshitong/search-r1-rl/opsd
 export SEARCH_R1_ASSETS="$SEARCH_R1_BASE/assets-root" SEARCH_R1_REPO="$SEARCH_R1_BASE/repo"
 root=$SEARCH_R1_BASE
 run="$root/runs/opsd-acceptance-$SLURM_JOB_ID"
+[[ ! -e "$run" ]]
 mkdir -p "$run/evidence" "$run/runtime/tmp" "$run/runtime/ray"
 export OPSD_EVIDENCE="$run/evidence" SEARCH_R1_BASELINE_OUTPUT="$run/output" SEARCH_R1_BASELINE_RUN_ROOT="$run/runtime"
 export TMPDIR="$run/runtime/tmp" RAY_TMPDIR="$run/runtime/ray" HF_HOME="$root/cache/hf" XDG_CACHE_HOME="$run/runtime/cache"
@@ -48,6 +49,22 @@ inv,proc=gpu_snapshot();check_selected_gpus(os.environ['CUDA_VISIBLE_DEVICES'].s
 print('POST_MODEL_PREFLIGHT_GPU_IDLE_OK',flush=True)
 PYCODE
 PYTHONPATH="$root/retriever-gpu-lib:$SEARCH_R1_REPO" python -u "$root/tools/runtime/retrieval_compare.py"
+# Independent review reads exact real comparison evidence before training.
+printf '%s\n' "$OPSD_EVIDENCE/retrieval-comparison.json" > "$run/retrieval-review-pending.txt"
+for attempt in $(seq 1 240); do
+    [[ -f "$OPSD_EVIDENCE/retrieval.accepted" ]] && break
+    sleep 30
+done
+[[ -f "$OPSD_EVIDENCE/retrieval.accepted" ]]
+python - <<'PYCODE'
+import hashlib,json,os
+from pathlib import Path
+out=Path(os.environ['OPSD_EVIDENCE'])
+record=json.loads((out/'retrieval.accepted').read_text())
+assert record['slurm_job_id']==os.environ['SLURM_JOB_ID']
+assert record['comparison_sha256']==hashlib.sha256((out/'retrieval-comparison.json').read_bytes()).hexdigest()
+print('CURRENT_RETRIEVAL_EVIDENCE_REVIEWED',flush=True)
+PYCODE
 python -u reproduction/h20/retriever_local.py --index_path "$SEARCH_R1_ASSETS/assets/wiki/e5_Flat.index" --corpus_path "$SEARCH_R1_ASSETS/assets/wiki/wiki-18.jsonl" --retriever_model "$SEARCH_R1_ASSETS/assets/e5-base-v2" --device cpu --host 127.0.0.1 --port 18084 --threads 8 > "$run/retriever.log" 2>&1 &
 retriever_pid=$!
 printf '%s\n' "$retriever_pid" > "$OPSD_EVIDENCE/retriever.pid"

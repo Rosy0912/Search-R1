@@ -1,0 +1,17 @@
+{
+  "actual_scalar_block_nonempty": {
+    "teacher/gradient_tensors_per_rank": 0,
+    "actor/optimizer_steps": 10,
+    "actor/skipped_empty_minibatches": 0,
+    "actor/opsd_loss_mean": 3.0,
+    "actor/opsd_loss_finite": 1,
+    "actor/grad_norm_mean": 9.0,
+    "actor/grad_norm_finite": 1
+  },
+  "all_empty_minis_observations": {
+    "actor/optimizer_steps": 0,
+    "actor/skipped_empty_minibatches": 10
+  },
+  "empty_has_no_false_finite_success": true,
+  "scope": "AST scalar observation block only; no gradients/GPU"
+}

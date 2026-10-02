@@ -13,10 +13,14 @@
   "teacher/trainable_parameters_per_rank/rank_0": 0,
   "teacher/gradient_tensors_per_rank/rank_0": 0,
   "teacher/student_optimizer_membership_per_rank/rank_0": 0,
+  "actor/optimizer_steps/rank_0": 0,
+  "actor/skipped_empty_minibatches/rank_0": 1,
   "teacher/parameters_per_rank/rank_1": 11,
   "teacher/scored_tokens_cumulative_per_rank/rank_1": 21,
   "teacher/cpu_seconds_cumulative_per_rank/rank_1": 2.0,
   "teacher/trainable_parameters_per_rank/rank_1": 0,
   "teacher/gradient_tensors_per_rank/rank_1": 0,
-  "teacher/student_optimizer_membership_per_rank/rank_1": 0
+  "teacher/student_optimizer_membership_per_rank/rank_1": 0,
+  "actor/optimizer_steps/rank_1": 0,
+  "actor/skipped_empty_minibatches/rank_1": 1
 }
