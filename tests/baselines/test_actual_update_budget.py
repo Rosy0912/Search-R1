@@ -1,4 +1,4 @@
-"""Run the real driver tail: an empty actor update cannot consume GRPO/GiGPO budget."""
+"""Run the real driver tail: empty updates cannot consume the outer update budget."""
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -7,7 +7,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'reproduction'))
 from test_final_checkpoint import real_iteration_tail, FakeTrainer
 
 
-@pytest.mark.parametrize('method',['grpo','gigpo'])
+@pytest.mark.parametrize('method',['grpo','gigpo','tree_grpo'])
 def test_zero_actor_update_refuses_budget_and_checkpoint(method):
     t=FakeTrainer(5,6)
     t.config.baselines=SimpleNamespace(method=method)
@@ -16,7 +16,7 @@ def test_zero_actor_update_refuses_budget_and_checkpoint(method):
     assert not any(e[0] in ('save','final_data') for e in t.events)
 
 
-@pytest.mark.parametrize('method',['grpo','gigpo'])
+@pytest.mark.parametrize('method',['grpo','gigpo','tree_grpo'])
 def test_multiple_optimizer_steps_count_as_one_outer_update(method):
     t=FakeTrainer(1,501)
     t.config.baselines=SimpleNamespace(method=method)
@@ -27,7 +27,7 @@ def test_multiple_optimizer_steps_count_as_one_outer_update(method):
     assert t.global_steps==3
 
 
-@pytest.mark.parametrize('method',['grpo','gigpo'])
+@pytest.mark.parametrize('method',['grpo','gigpo','tree_grpo'])
 def test_warmup_skip_refuses_budget_and_checkpoint(method):
     t=FakeTrainer(5,6)
     t.config.baselines=SimpleNamespace(method=method)
