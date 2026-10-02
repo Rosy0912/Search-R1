@@ -43,3 +43,13 @@ G1生成padding分支 `search_r1/llm_agent/generation.py:197`重新构造DataPro
 root已补 `reproduction/evidence/active-run-source-snapshot.json`，记录6个核心/launcher远端磁盘hash与本地一致，明确这是采集时的on-disk快照、不是loaded Python module证明。这一透明边界处理合理；后续仍应保存已打印的resolved配置和部署时间线。root最后报告step4完成（reward mean0.041）、step5进行，**尚未五步验收通过**。
 
 不要因G1 reward看起来更高而更换底座、修改EM、打开强制回答、改组大小或引入probe。若用户最终确认要比较的是Search-E1，应先读取正确仓库，再单独审查其算法和配方，不借G1名称补推断。完整Search-R1结果仍须实际五步验收与最终500步checkpoint/全量评估证据。
+
+## 实际第五步后的序列化规则修正
+
+实际第五步完成后，新增严格gate首次拒绝checkpoint，原因是**本审查补丁最初对canonical serialized keys作了过严的exact-set要求**，没有覆盖FSDP/HF保存时的合法tied-weight冗余。这不是训练缺少参数的证据。本reviewer随后只读远端确认：底座434 keys、checkpoint435 keys，canonical keys无缺失，唯一extra为 `lm_head.weight`；两份真实config均为Qwen2ForCausalLM且tie_word_embeddings=True。root CPU检查saved embed/head的151936×2048 FP32 tensor精确相等、均有限。
+
+保存链为 `fsdp_workers.py:509–527`：FSDP FULL_STATE_DICT→HF save_pretrained。[Transformers4.46.3 Qwen2源码](https://raw.githubusercontent.com/huggingface/transformers/v4.46.3/src/transformers/models/qwen2/modeling_qwen2.py)声明 `_tied_weights_keys=['lm_head.weight']`；canonical发布文件的去冗余形式与本次FSDP收集后保存的重复形式可以不同。
+
+应root明确授权，两gate本地修正为**当前Qwen profile的窄规则**：所有canonical keys仍必须存在；仅可额外包含lm_head.weight，且canonical有embed/无head，两份config均严格匹配model_type=qwen2、architectures=[Qwen2ForCausalLM]、tie_word_embeddings=true。额外head shape必须对应canonical embed；所有saved tensor仍逐CPU检查finite；saved embed/head还必须dtype相同、torch.equal精确相等。任意其它extra、缺canonical参数、未知/缺config、untied配置、head/embed不一致均拒绝。没有放松为一般missing-key白名单，也没有加载模型或修改训练。
+
+新增两gate各3项CPU回归：合法tied duplicate通过、数值不一致拒绝、untied配置不能白名单化head，共6项；此前8项完整性/shape/NaN/reshard回归保留。3文件AST语法通过，扩充后61项目标CPU测试及实际第五步全部finite检查由root统一执行，本文此刻不提前宣称已通过。训练已继续第6步，验收脚本修正不停止trainer。

@@ -8,9 +8,17 @@ The CPU FP32 retriever was abandoned before any full-profile parameter update be
 
 The first GPU HTTP integration attempt failed in the encoder's cuBLAS call despite the isolated index check passing. Both import orders loaded the same project cuBLAS libraries. The endpoint was changed to `async def` so the encoder and GPU FAISS calls remain serialized on their initialization/event-loop thread; this accords with GPU FAISS resource thread affinity. A subsequent **real HTTP top-three request and full 64-question check passed**, followed by a real training iteration. This supports the repair; the precise causal attribution of the original cuBLAS error remains an inference. The wrapper also preloads Torch's CUDA libraries.
 
-**47 CPU tests passed with no skips**, including real FastAPI ASGI concurrent-request/thread-identity checks and five-update acceptance rejection cases. [Current tests](evidence/cpu-tests-64.txt), [64-question audit](evidence/validation-64-audit.json). Five-update checkpoint acceptance is still pending until its actual result is recorded below. Historical two-step smoke evidence remains relevant but is not the new five-iteration acceptance.
+**61 CPU tests passed with no skips**, including real FastAPI ASGI concurrent-request/thread-identity checks and checkpoint key/shape/finite checks. [Current tests](evidence/cpu-tests-64.txt), [64-question audit](evidence/validation-64-audit.json). Historical two-step smoke evidence remains relevant but is not the new five-iteration acceptance.
 
-Recorded 2026-10-02. Algorithm/runtime code revision: `b251ba6`; upstream parent: `598e61bd1d36895726d28a8d06b3a15bed19f5d3`.
+### Five-update progress acceptance passed
+
+On 2026-10-02 around 17:46 Asia/Shanghai, the read-only verifier accepted the actual step-5 checkpoint. All canonical serialized parameters are present with matching shapes, all saved tensors are finite, and the inspected query-projection parameter changed from the base model. [Actual acceptance](evidence/five-updates-acceptance.json). The same trainer entered step 6 and continues toward 500; this is progress acceptance, not final benchmark reproduction.
+
+The first strengthened gate was too strict about serialization: the base omits tied `lm_head.weight`, while FSDP/HF saved an explicit copy. Both configs declare Qwen2 tied embeddings, and actual CPU comparison found the saved head exactly equal to its embedding. The verifier now allows only this known extra alias, requires matching Qwen2 architecture/tied configs, matching shape/dtype and exact values, and still requires every canonical key. Unequal/untied duplicates and missing parameters are rejected by real CPU tests. This fixes a verifier false rejection without changing training weights or behavior.
+
+First-five reward means: **0.036, 0.036, 0.049, 0.041, 0.038**, rounded to three decimals by console logging. They fluctuate and do not yet establish a sustained improvement. Sampled GPU memory reached 141,877 MiB on one device (98.7% of 143,771 MiB); the sampling interval is recorded in [GPU evidence](evidence/training-gpu-sampled-peaks.json), not asserted to cover the whole run.
+
+Recorded 2026-10-02. The original reviewed revision was `b251ba6`; current deployed trainer/retriever changes and source hashes are recorded in [the active source snapshot](evidence/active-run-source-snapshot.json). Upstream parent: `598e61bd1d36895726d28a8d06b3a15bed19f5d3`. Publication branch: `search-r1`.
 
 Two independent reviewers examined paper logic and server/runtime adaptations, then reviewed the corrections. Their final reports identify no remaining publication blocker: [logic review](review/logic-review.md), [runtime review](review/runtime-review.md). This is bounded review evidence, not a guarantee that all bugs are absent.
 
@@ -27,6 +35,6 @@ The smoke process imported generation code before the metric-only action-counter
 
 ## Full experiment still pending
 
-The corrected **GRPO variant** launched on 2026-10-02 at 15:22:41 Asia/Shanghai, from the original base model, with all seven validation datasets. [Stage snapshot](evidence/pipeline-stage.txt), [dataset audit](evidence/dataset-audit.json).
+The earlier full-prevalidation and slow CPU-retrieval attempts were stopped before any full-profile parameter update; logs were retained. The active **GRPO variant** started on 2026-10-02 around 17:04 Asia/Shanghai from the original base model, using 64-question early checks and eight-GPU FP16 retrieval. Tmux: `searchr1-train-gpu`. [Dataset audit](evidence/dataset-audit.json).
 
-Training uses 169,615 examples and evaluation covers 51,713 examples. Completion requires 500 update calls, a fresh complete step-500 checkpoint, and final EM with the exact seven dataset counts. These results are not yet available. Eight H20 GPUs and CPU FAISS FP32 are disclosed departures from the paper/example hardware and index precision; this is not the default PPO main-table reproduction and no paper-score equivalence is claimed.
+Training uses 169,615 examples and final evaluation covers 51,713 examples. Completion requires 500 update calls, a fresh complete step-500 checkpoint, and final EM with the exact seven dataset counts. These results are not yet available. Eight H20 GPUs replace the paper hardware; GPU FP16 follows the upstream retrieval path. This is not the default PPO main-table reproduction and no paper-score equivalence is claimed.

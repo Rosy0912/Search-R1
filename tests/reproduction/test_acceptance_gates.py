@@ -217,6 +217,59 @@ class AcceptanceGatesTest(unittest.TestCase):
         self.mutate_checkpoint('verify_full_run','reshard')
         self.run_gate('verify_full_run')
 
+    def prepare_tied_qwen(self, gate, same_values=True, tied=True):
+        if gate=='verify_five_updates':
+            self.prepare_five()
+            directory=self.five
+        else:
+            directory=self.full
+        canonical=self.base/'assets/qwen2.5-3b'
+        embedding='model.embed_tokens.weight'
+        alias='lm_head.weight'
+        config={'model_type':'qwen2','architectures':['Qwen2ForCausalLM'],
+                'tie_word_embeddings':True}
+        for path,value in [(canonical,1),(directory,2)]:
+            index=path/'model.safetensors.index.json'
+            mapping=json.loads(index.read_text())['weight_map']
+            mapping[embedding]='embedding.safetensors'
+            save_file({embedding:np.full((2,2),value,dtype=np.float32)},str(path/'embedding.safetensors'))
+            if path==directory:
+                mapping[alias]='head.safetensors'
+                save_file({alias:np.full((2,2),value if same_values else value+1,dtype=np.float32)},str(path/'head.safetensors'))
+            index.write_text(json.dumps({'weight_map':mapping}))
+            settings=dict(config)
+            if path==directory and not tied:
+                settings['tie_word_embeddings']=False
+            (path/'config.json').write_text(json.dumps(settings))
+
+    def test_five_equal_configured_tied_qwen_duplicate_is_accepted(self):
+        self.prepare_tied_qwen('verify_five_updates')
+        self.run_gate('verify_five_updates')
+
+    def test_full_equal_configured_tied_qwen_duplicate_is_accepted(self):
+        self.prepare_tied_qwen('verify_full_run')
+        self.run_gate('verify_full_run')
+
+    def test_five_unequal_tied_qwen_duplicate_is_rejected(self):
+        self.prepare_tied_qwen('verify_five_updates',same_values=False)
+        with self.assertRaisesRegex(AssertionError,'Inconsistent tied'):
+            self.run_gate('verify_five_updates')
+
+    def test_full_unequal_tied_qwen_duplicate_is_rejected(self):
+        self.prepare_tied_qwen('verify_full_run',same_values=False)
+        with self.assertRaisesRegex(AssertionError,'Inconsistent tied'):
+            self.run_gate('verify_full_run')
+
+    def test_five_untied_config_cannot_whitelist_extra_head(self):
+        self.prepare_tied_qwen('verify_five_updates',tied=False)
+        with self.assertRaisesRegex(AssertionError,'keys differ'):
+            self.run_gate('verify_five_updates')
+
+    def test_full_untied_config_cannot_whitelist_extra_head(self):
+        self.prepare_tied_qwen('verify_full_run',tied=False)
+        with self.assertRaisesRegex(AssertionError,'keys differ'):
+            self.run_gate('verify_full_run')
+
 
 if __name__ == "__main__":
     unittest.main()

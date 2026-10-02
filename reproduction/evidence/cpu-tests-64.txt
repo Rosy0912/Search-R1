@@ -2,13 +2,19 @@ test_complete_final_checkpoint_and_seven_evals_pass (test_acceptance_gates.Accep
 test_corrupt_final_shard_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_current_smoke_checkpoint_passes (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_fewer_than_five_updates_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_five_equal_configured_tied_qwen_duplicate_is_accepted (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_five_non_sampled_parameter_nan_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_five_real_updates_fresh_weights_pass (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_five_self_consistent_omitted_parameter_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_five_unequal_tied_qwen_duplicate_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_five_untied_config_cannot_whitelist_extra_head (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_five_valid_reshard_is_accepted (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_five_wrong_parameter_shape_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_full_equal_configured_tied_qwen_duplicate_is_accepted (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_full_non_sampled_parameter_nan_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_full_self_consistent_omitted_parameter_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_full_unequal_tied_qwen_duplicate_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_full_untied_config_cannot_whitelist_extra_head (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_full_valid_reshard_is_accepted (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_full_wrong_parameter_shape_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
 test_incomplete_dataset_evaluation_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
@@ -57,7 +63,7 @@ test_actual_metric_aggregation_reports_per_dataset_count (test_reward_and_valida
 test_actual_validation_loader_call_keeps_entire_tail (test_reward_and_validation.ValidationCoverage) ... ok
 test_all_manifest_entries_have_official_content_digest (test_runtime_adaptations.AssetsTest) ... ok
 test_git_blob_header_is_required (test_runtime_adaptations.AssetsTest) ... ok
-test_invalid_full_partial_is_preserved_before_fresh_download (test_runtime_adaptations.AssetsTest) ... RETAINED_REJECTED_PARTIAL /tmp/tmptg_tfvim/assets/test/input.json.partial.rejected.1790933733102611775
+test_invalid_full_partial_is_preserved_before_fresh_download (test_runtime_adaptations.AssetsTest) ... RETAINED_REJECTED_PARTIAL /tmp/tmpcjz055gw/assets/test/input.json.partial.rejected.1790934298589833248
 START test/input.json 21
 VERIFIED test/input.json 21
 ok
@@ -72,6 +78,6 @@ test_reused_pid_other_uid_or_other_command_is_rejected (test_runtime_adaptations
 test_same_nonretriever_identity_is_rejected (test_runtime_adaptations.IdentityTest) ... ok
 
 ----------------------------------------------------------------------
-Ran 55 tests in 0.258s
+Ran 61 tests in 0.315s
 
 OK
