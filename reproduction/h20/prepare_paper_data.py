@@ -4,10 +4,12 @@ import hashlib
 from pathlib import Path
 import runpy
 import sys
+import os
 from datasets import Dataset
-BASE=Path('/data/search-r1')
-sys.path.insert(0,str(BASE/'repo'))
-prefix=runpy.run_path(str(BASE/'repo/scripts/data_process/qa_search_train_merge.py'))['make_prefix']
+BASE=Path(os.environ.get('SEARCH_R1_ASSETS', os.environ.get('SEARCH_R1_BASE', '/data/search-r1'))).expanduser()
+REPO=Path(os.environ.get('SEARCH_R1_REPO', str(Path(__file__).resolve().parents[2])))
+sys.path.insert(0,str(REPO))
+prefix=runpy.run_path(str(REPO/'scripts/data_process/qa_search_train_merge.py'))['make_prefix']
 SOURCES=['nq','triviaqa','popqa','hotpotqa','2wikimultihopqa','musique','bamboogle']
 
 def diverse_validation(validation):

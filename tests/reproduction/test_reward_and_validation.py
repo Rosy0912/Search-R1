@@ -129,7 +129,7 @@ class ValidationCoverage(unittest.TestCase):
                                kwonlyargs=[], kw_defaults=[], defaults=[]),
             body=method.body[start:], decorator_list=[])
         module = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
-        namespace = dict(np=np)
+        namespace = dict(np=np, qa_rows=[], self=SimpleNamespace(config={}))
         exec(compile(module, 'ray_trainer.py', 'exec'), namespace)
         metrics = namespace['summarize'](torch.tensor([1., 0., 1., 1., 0.]),
                                          np.array(['nq', 'nq', 'hotpotqa', 'hotpotqa', 'hotpotqa']))
