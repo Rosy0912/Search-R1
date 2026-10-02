@@ -1,6 +1,6 @@
 # Agent 6 提交后独立复审
 
-对象：`work/cosearch@9c3d7ccd37e67b71ed8b225eba451065f33ab480`，追加复审 `c5d9c83` probe修复。共同部署source `297e1c1` / cherry-pick `cd86c9d`采用owner已独立冻结的审查，不在此重复作全面门禁审查。没有修改被审查repo或启动训练。
+对象：`work/cosearch@9c3d7ccd37e67b71ed8b225eba451065f33ab480`，追加复审 `c5d9c83` probe修复，最终追加至 `30d3aebf78ee66ecaf08e17afce16407376f0133`。共同部署source `297e1c1` / cherry-pick `cd86c9d`采用owner已独立冻结的审查，不在此重复作全面门禁审查。没有修改被审查repo或启动训练。
 
 **最终结论：ranker核心诊断/strict50补丁通过代码与CPU复审；probe prompt问题在c5d9c83已修复，可以继续真实能力探测。真实模型/检索/联合GPU/效果仍未放行。** 全部来源和方法偏离沿用初审 `work/review-cosearch.md`，不把CPU条件通过写成效果通过。
 
@@ -38,3 +38,48 @@
 ## 后续真实验收门槛
 
 修正probe上下文后跑冻结3B base+真实50候选合法率/长度/CPU/RSS能力；按共同Slurm/UUID门禁通过8卡基础验收；实际actor→retriever→ranker→双更新的2 outer update，记录有效奖励差异、实质梯度及参数变化而非仅events；5步save/load；再500实际更新与新GRPO公平比较、最终51,713题F1/EM/format及累计成本。真实失败若需要换ranker/截断passage/改预算，仍按计划由用户选方案。
+
+## 2026-10-03 最终增量复审：9db1568、30d3aeb
+
+**提交后复审通过（静态/受控CPU范围）；此前probe空train和异常报告两个P2均已关闭。真实联合效果仍未验证。** 当前git worktree clean，本轮没有编辑repo。
+
+9db1568注册sys.excepthook，在tokenizer/config/data/retrieval/model/generate未捕获异常时写status=failed、error_type/error_message/RSS，并保留已记录query/generation。读取data后空frame明确ValueError。独立用实际tiny本地tokenizer/config、真正空parquet在独立子进程调用完整probe脚本：exit1，输出JSON status=failed、error_type=ValueError、message=Cannot probe an empty training dataset；另用不存在model目录触发真实AutoTokenizer失败：exit1且报告OSError/failed。两例真实Darwin RSS分别约255.30/244.41MiB，换算正确。无需mock rank generation或伪造reward。context overflow原先显式status+SystemExit(2)路径不经excepthook覆盖，保留用户选择状态。
+
+hook不是kill/OOM崩溃保险：SIGKILL或进程外终止不能触发Python异常hook，写盘自身失败也不保证报告；这属于正常边界，无新增要求阻止probe。
+
+30d3aeb只改变dp_actor metrics reduction：paper_objective各micro已经以整个mini分母归一，pg/entropy/reference-KL现在累加到mini一次记录；clipfrac/PPO-KL用micro policy-weight mass与跨rank mini mass/world比值加权。所有新增weight mass、micro_mass及metric值detach/取item，新增all_reduce仅操作mask weight的副本sum；policy_loss、loss.backward、optimizer step、优势/ratio/clip/entropy/KL数学未更改。CoSearch属于policy_weights的序列等权token PPO分支，不传GiGPO step_ids，core ranker optimizer完全不触及。
+
+独立执行新原始logging回归：**1 passed**（原测试GiGPO）。额外将该actual actor测试夹具的method与attach_policy_weights均改为CoSearch在内存运行，同样比较micro1/micro2：pg、entropy、reference-KL、clipfrac、PPO-KL一致，实际SGD参数更新一致，通过。测试用实际DataParallelPPOActor.update_policy但CPU替代cuda和简单model forward，范围如实限制，不称FSDP/CUDA通过。
+
+跨rank额外collective发生于所有rank共同的非空mini分支；局部空rank仍参与，global空mini继续先共同跳过。报告权重归约修复未修改有效policy梯度，且未发现CoSearch新增数学缺陷。现实资产/环境已准备进度来自owner，本审查没有独立重复72GiB SHA校验/Slurm硬件验收，不将其记录为本reviewer真实验收证据。
+
+## 2026-10-03 固定Linux依赖兼容增量：cda530e
+
+实际读取 `work/linux-cpu-gate-retry.log`，141 passed/1 failed 的异常来自TensorDict0.5 `get('step_ids')`缺省KeyError。dp_actor只在GiGPO select step_ids，其他paper_objective故意缺此字段，以调用token-ratio路径。cda530e唯一改为`data.get('step_ids', None)`，正确恢复optional契约；GiGPO select仍强制required step_ids，未默认伪造action信息，也没有更改ratio/梯度。扫描verl/search_r1的batch/micro/data/tensor get，没有找到另一处同类TensorDict optional访问。
+
+独立阅读 `outputs/evidence/linux-cpu-gate-fixed.log` 结尾确认固定Linux环境 **142 passed**。该运行由owner执行，本reviewer核实日志；本reviewer另在本地实际运行paper_metric_logging和paper_ddp，**2 passed**。因此兼容修复复审通过，不表示GPU/真实效果已完成。
+
+### work/retrieval_compare.py 只读静态审查（尚未运行结果）
+
+该脚本从resolved训练文件取14条原题query，无gold或最终测试。直接复用当前Encoder，CPU/GPU均E5 FP16、mean pool、256 query tokens、同query前缀和归一化；FAISS沿用同Flat index，GPU cloner useFloat16+8卡shard，与原DenseRetriever配置一致。CPU-cq/CPU-gq/GPU-gq三路ID对照可区分encoder与FAISS排序差异。语法检查通过，本reviewer未运行真实index/模型。
+
+建议在作为验收证据前补齐：
+
+- `score_max_absolute_delta`当前cs-gs按rank位置比较，不同ID时是“第k名检索分数差”，不是“同文档FP16数值误差”。应标明语义并保存中间iscores/iids，另对相同ID对齐计算encoder-only/FAISS-only score delta；只看未对齐最大差容易错误归因。
+- 断言实际lenqueries=14、三路ID全部>=0且<ntotal、iscores finite（当前只检查cs/gs）。防止短输入/小index返-1导致虚假overlap；记录实际数据源和query token长度。
+- head14可能全属NQ，不能称覆盖NQ+Hotpot分布。该小样本能进行能力对照，不能证明全部训练subquery等价。计划要求固定真实query，必要时补训练Hotpot或长短分层，不使用最终题选择。
+- index IDs只有在同一资产hash/index→corpus映射下才代表同内容；本轮外部manifest已经冻结，建议结果JSON引用实际模型/index/corpus manifest SHA以使证据可移植。
+
+top3/top50 exact order不一致并不自动意味着脚本错误，FP16 encoder/index可能改变邻近分数和排序；应保留每query对照，报告幅度并在用户既定协议下处理差异，不能发现差异后换mock/不同retriever或隐瞒。真实检索结果尚未运行，不能提前签等价通过。
+
+## 2026-10-03 实际更新预算与检索诊断最后增量：7617ee9
+
+只读检查0ec6412（共同已review767cc9b的cherry-pick）与7617ee9。新guard在actor/update与after_actor之后、周期validation/save/global_steps递增之前检查actor/optimizer_steps；CoSearch现在和GRPO/GiGPO一样，0或缺省0直接RuntimeError，actual_outer_updates和global_steps都不前进，亦不保存虚假的新checkpoint。critic_warmup导致本轮未调用actor同样停止而不消费预算。它是明确fail-fast，**不是自动重采样或跳过本轮继续训练**；失败轮仍有rollout/检索等实际成本，预算不递增不能当成本为0。
+
+真正执行多于1个actor optimizer step的outer iteration仍仅actual_outer_updates+1，符合500实际outer update预算。actor KL/advantage/loss/梯度/ranker reward均未修改。位置上after_actor仍先于guard，因此本轮失败不提供事务rollback；不承诺已经发生的辅助更新可撤销。这不改变“零actor/warmup不能消费budget”的验收结论。
+
+独立本地实际运行 `tests/baselines/test_actual_update_budget.py`：**9 passed**（GRPO/GiGPO/CoSearch × 零更新、多step单outer计数、warmup三情形）。测试提取并执行真实driver尾部，运输/actor返回为夹具，不称GPU整链通过。owner报告远端固定Linux `logs/linux-cpu-gate-budget.log` 为151 passed；该日志本轮尚未落本reviewer本地，不冒称独立运行或全文核实151项。
+
+再次只读检查work/retrieval_compare.py：现已明确first14非代表性、保存actual data_sources、严格len14、三路IDs范围合法与iscores有限、保存中间GPU encoder/CPU index IDs及scores；原cs-gs字段更名sorted_rank_score_max_absolute_delta，另三路对shared document ID对齐计算score差。这些关闭前述主要诊断建议，比较分解保持正确，没有gold或最终题。shared-ID score仅覆盖top50交集，不是全部候选全集数值误差；JSON计数已明确该范围。token长度/manifest SHA引用可作为后续增强，不改变此能力对照的静态条件通过结论。
+
+**最终状态：7617ee9预算guard与更新后的检索对照静态复审通过。真正CPU/GPU retrieval equivalence、base合法rank生成/非零联合学习、500更新与七集合效果仍必须实际验证，本报告不提前签字。**
