@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-03T02:34:29+08:00",
+  "status": "connection_timeout",
+  "direct_jump_endpoint": "120.92.211.161:2224",
+  "direct_result": "TCP connect timeout",
+  "proxy_retry_endpoint": "127.0.0.1:12123",
+  "proxy_retry_result": "SSH banner exchange timeout",
+  "last_successful_check": "2026-10-02T21:10:42+08:00",
+  "last_verified_completed_updates": 48,
+  "last_verified_reward": 0.289,
+  "last_verified_validation_step": 0,
+  "new_measurements_available": false,
+  "current_training_state": "unknown; no remote stop/restart command executed"
+}
