@@ -62,6 +62,21 @@ class DistillationActor(DataParallelPPOActor):
         metrics.update(self.teacher.audit_metrics(self.actor_optimizer))
         observations = {key: value for key, value in metrics.items()
                         if key.startswith(("teacher/", "teacher_worker/"))}
+        observations['actor/samples'] = len(data)
+        old_log_probs = data.batch.get('old_log_probs', None)
+        observations['actor/old_log_probs_present'] = int(old_log_probs is not None)
+        if old_log_probs is not None:
+            observations['actor/old_log_probs_finite'] = int(torch.isfinite(old_log_probs).all().item())
+        mask = data.batch['loss_mask']
+        observations['actor/supervised_tokens'] = int(mask.sum().item())
+        attention = data.batch.get('attention_mask', None)
+        info = data.batch.get('info_mask', None)
+        if attention is not None and info is not None:
+            width = data.batch['responses'].shape[-1]
+            valid = torch.all((mask == 0) | (mask == 1))
+            valid &= torch.all(mask <= attention[:, -width:])
+            valid &= torch.equal(mask, info[:, -width:])
+            observations['actor/loss_mask_valid'] = int(valid.item())
         observations['actor/optimizer_steps'] = updates
         observations['actor/skipped_empty_minibatches'] = skipped
         for key in ('actor/opsd_loss', 'actor/grad_norm'):

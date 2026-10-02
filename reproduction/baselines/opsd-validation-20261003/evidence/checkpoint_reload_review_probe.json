@@ -1,0 +1,33 @@
+{
+  "legitimate_tied_export": {
+    "saved_head": false,
+    "saved_embedding": true,
+    "loaded_tied": true,
+    "loading_info": {
+      "missing_keys": [],
+      "unexpected_keys": [],
+      "mismatched_keys": [],
+      "error_msgs": []
+    }
+  },
+  "missing_real_parameter": {
+    "loading_info": {
+      "missing_keys": [
+        "model.layers.0.self_attn.q_proj.weight"
+      ],
+      "unexpected_keys": [],
+      "mismatched_keys": [],
+      "error_msgs": []
+    },
+    "finite_forward": true
+  },
+  "same_vocab_different_tokenization": {
+    "same_vocab": true,
+    "a_ids": [
+      1
+    ],
+    "b_ids": [
+      2
+    ]
+  }
+}

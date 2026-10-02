@@ -1,0 +1,57 @@
+{
+  "valid_tied_changed": {
+    "accepted": true,
+    "changes_keys": [
+      "model.layers.0.self_attn.q_proj.weight",
+      "model.layers.0.self_attn.v_proj.weight",
+      "model.layers.0.mlp.down_proj.weight",
+      "model.embed_tokens.weight"
+    ],
+    "tensor_count": 14
+  },
+  "missing_tensor": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "Export lacks model tensors"
+  },
+  "wrong_shape": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "('Tensor shape changed', 'model.layers.0.self_attn.q_proj.weight')"
+  },
+  "unequal_tied_alias": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "Declared tied aliases have different values"
+  },
+  "equal_tied_alias": {
+    "accepted": true,
+    "changes_keys": [
+      "model.layers.0.self_attn.q_proj.weight",
+      "model.layers.0.self_attn.v_proj.weight",
+      "model.layers.0.mlp.down_proj.weight",
+      "model.embed_tokens.weight"
+    ],
+    "tensor_count": 15
+  },
+  "same_vocab_changed_normalizer": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "Tokenizer structural rules changed"
+  },
+  "changed_rms_epsilon": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "Model computation configuration changed"
+  },
+  "changed_sliding_window": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "Model computation configuration changed"
+  },
+  "saved_token_id_mismatch": {
+    "accepted": false,
+    "error": "AssertionError",
+    "message": "('Saved model/tokenizer ID mismatch', 'eos_token_id')"
+  }
+}

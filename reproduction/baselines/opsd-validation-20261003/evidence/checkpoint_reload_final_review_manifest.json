@@ -1,0 +1,13 @@
+{
+  "reviewed_at_utc": "2026-10-02T20:31:46.001775+00:00",
+  "reviewed_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/checkpoint_reload.py",
+  "sha256": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+  "runtime_copy_identical": true,
+  "result": "PASS static and CPU preflight; original findings closed",
+  "probe_cases": 9,
+  "probe_executes": "actual source prefix through four full-tensor change assertion",
+  "probe_environment": "CPU transformers 4.46.3",
+  "gpu_executed": false,
+  "production_3b_reload_verified": false,
+  "five_iterations_or_effectiveness_verified": false
+}

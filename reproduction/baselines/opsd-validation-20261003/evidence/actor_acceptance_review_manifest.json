@@ -1,0 +1,7 @@
+{
+  "actor_sha256": "2a3a6b30dc030d53e2fc4d918a92855af7a04ff99b1941361392bd9e633509ee",
+  "comparison_base": "594492ee00ea2e4f9720f9f26d677c763abb14d1",
+  "update_policy_ast_identical_after_removing_new_observation_statements": true,
+  "observation_only_input_mutation_probe": "7cases passed; tensor values and version counters unchanged",
+  "gpu_acceptance": false
+}

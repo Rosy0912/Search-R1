@@ -1,0 +1,54 @@
+{
+  "cases": {
+    "valid": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 1,
+      "actor/supervised_tokens": 3,
+      "actor/loss_mask_valid": 1
+    },
+    "fractional_mask": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 1,
+      "actor/supervised_tokens": 2,
+      "actor/loss_mask_valid": 0
+    },
+    "negative_mask": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 1,
+      "actor/supervised_tokens": 1,
+      "actor/loss_mask_valid": 0
+    },
+    "attention_excluded": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 1,
+      "actor/supervised_tokens": 3,
+      "actor/loss_mask_valid": 0
+    },
+    "info_mismatch": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 1,
+      "actor/supervised_tokens": 3,
+      "actor/loss_mask_valid": 0
+    },
+    "nan_old_lp": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 1,
+      "actor/old_log_probs_finite": 0,
+      "actor/supervised_tokens": 3,
+      "actor/loss_mask_valid": 1
+    },
+    "absent_old_lp": {
+      "actor/samples": 2,
+      "actor/old_log_probs_present": 0,
+      "actor/supervised_tokens": 3,
+      "actor/loss_mask_valid": 1
+    }
+  },
+  "input_versions_and_values_unchanged": true,
+  "scope": "actual AST observation block; CPU only; no optimizer/GPU"
+}
