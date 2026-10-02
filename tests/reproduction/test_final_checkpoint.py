@@ -5,6 +5,7 @@ Only RPC workers and metric/timer dependencies are replaced by CPU doubles.
 This checks checkpoint timing and model identity, not PPO or GPU numerics.
 """
 import ast
+import json
 from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
@@ -33,7 +34,7 @@ def real_iteration_tail():
         body=body, decorator_list=[])
     compiled = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
     namespace = {
-        "metrics": {}, "timing_raw": {}, "batch": object(),
+        "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,
         "_timer": lambda *args: nullcontext(), "reduce_metrics": lambda x: x,
         "compute_data_metrics": lambda **kwargs: {},
         "compute_timing_metrics": lambda **kwargs: {}, "pprint": lambda x: None,

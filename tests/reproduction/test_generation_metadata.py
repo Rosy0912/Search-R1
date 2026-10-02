@@ -126,14 +126,16 @@ class MetadataRegression(unittest.TestCase):
         self.assertEqual(len(worker.calls), 4)
         self.assertEqual(output.meta_info['active_mask'], [True, True, True])
         self.assertEqual(output.meta_info['valid_search_stats'], [4, 4, 4])
+        self.assertEqual(output.meta_info['turns_stats'], [4, 4, 4])
 
     def test_legacy_default_retains_extra_final_generation(self):
         manager, worker = self.manager(2)
         manager.config.max_turns = 4
         self.assertTrue(manager.config.force_final_answer)
         batch = self.batch(3, {'do_sample': True})
-        manager.run_llm_loop(batch, batch.batch['input_ids'])
+        output = manager.run_llm_loop(batch, batch.batch['input_ids'])
         self.assertEqual(len(worker.calls), 5)
+        self.assertEqual(output.meta_info['turns_stats'], [5, 5, 5])
 
     def test_nine_validation_samples_keep_greedy_flags_in_eight_plus_one_tail(self):
         manager, worker = self.manager(8)
