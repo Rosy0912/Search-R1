@@ -6,8 +6,9 @@
 `codex/search-r1-rl-baselines`。没有修改原复现 agent 的 checkout、H20 环境、数据或正在运行的任务。
 
 当前状态：六种算法的入口、rollout/reward/advantage/optimizer 数据流已实现，
-CPU 集成和独立论文/源码审查已完成；**不等于通过真实 GPU 短训练或复现论文指标**。
-正式 CUDA/FSDP/vLLM 验收、资源预算和全量七集评估仍待完成。
+CPU 集成和独立论文/源码审查已完成；A800 两卡 tiny CUDA/FSDP 更新和辅助 ranker
+短测试已通过。**正式 3B/vLLM 训练验收、资源预算和全量七集评估仍待完成**。
+GPU 测试范围和原始记录见 [A800 测试报告](gpu-validation.md)。
 
 ## 1. 控制变量
 
@@ -139,7 +140,7 @@ python -m unittest discover -s tests/reproduction -v
   3B FP32 每份权重约12GB，8份会明显占RAM，另有模型激活和加载峰值。
 - OPSD 分块 loss **仍保留完整 student logits 和各 chunk autograd 图**；chunk16不意味着
   memory bounded。默认起点每rank micro1，full-logits显式估计预算4GiB；这只是提前拒绝
-  过大分配，不能替代真实峰值显存验收。FSDP/offload路径未在GPU实际跑过。
+  过大分配，不能替代真实峰值显存验收。tiny FSDP 路径已通过；正式 3B、remove-padding 和 offload 路径仍待 GPU 验收。
 - ranker 默认 CPU unsharded FP32，独立 AdamW；可指定额外专用设备，但不得挤占原任务。
   大 ranker CPU 训练可能很慢；50候选超过model context会明确报错，不偷偷丢文档。
   记录生成/prefill、scoring/training forward tokens、optimizer steps和参数数；validation
@@ -162,11 +163,12 @@ python -m unittest discover -s tests/reproduction -v
 新测试24项通过：真实 DataProto、六方法 actual fit driver（GPU transport mock）、
 真实离线 tiny Qwen teacher/student loss和非零optimizer更新、真实HF ranker更新、
 两进程Gloo/DDP全局token权重、零动作/预算/padding/树parent去重/IDK gate/无效格式。
-原40项回归通过，1项仅适用于Linux procfs，在Mac跳过。证据见 `evidence/`。
+原40项回归中39项通过，1项仅适用于Linux procfs，在Mac跳过。证据见 `evidence/`。
 
 独立审查记录：[GiGPO/Tree](review-gigpo-tree.md)、[TOP-D/OPSD](review-topd-opsd.md)、
 [BAPO/CoSearch](review-bapo-cosearch.md)。首轮、二轮发现并修复的具体问题保留在报告里。
-PASS 范围是CPU测试和源码审查，不是“保证无bug”或真实GPU验收。
+算法审查 PASS 范围是 CPU 测试和源码审查；新增真实 GPU 测试的范围单列于
+[A800 测试报告](gpu-validation.md)，不能据此宣称正式训练或论文指标已复现。
 
 ## 6. 论文和固定源码
 

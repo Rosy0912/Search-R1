@@ -44,5 +44,9 @@
     "verl/trainer/ppo/ray_trainer.py": "e98b1aaa8ae9e3af34d752e24b67291b370533ebf7d17cdf1adabb81f4a66382",
     "verl/workers/actor/dp_actor.py": "4ed41c2905ab388a74afc3fe82e756f9ec7b12ac5689a17593661c3638393d3c",
     "verl/workers/fsdp_workers.py": "d229b44494861913e99e67af7780e251334ae8eb31a513339f54a886cd9a1376"
+  },
+  "tiny_cuda_fsdp_smoke": {
+    "passed": true,
+    "evidence": "gpu-a800-20261002-run2/manifest.json"
   }
 }
