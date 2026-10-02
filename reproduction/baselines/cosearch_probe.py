@@ -40,10 +40,19 @@ def save():
     report['process_peak_rss_mib'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / divisor
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n')
 
+original_excepthook = sys.excepthook
+def record_failure(kind, error, traceback):
+    report.update(status='failed', error_type=kind.__name__, error_message=str(error))
+    save()
+    original_excepthook(kind, error, traceback)
+sys.excepthook = record_failure
+
 tokenizer = AutoTokenizer.from_pretrained(args.model, local_files_only=True)
 limit = AutoConfig.from_pretrained(args.model, local_files_only=True).max_position_embeddings
 report['model_context_limit'] = limit
 data = pd.read_parquet(args.train).head(args.questions)
+if data.empty:
+    raise ValueError('Cannot probe an empty training dataset')
 inputs = []
 for _, row in data.iterrows():
     chat = row['prompt'].tolist() if hasattr(row['prompt'], 'tolist') else row['prompt']
