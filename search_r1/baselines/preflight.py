@@ -3,6 +3,7 @@ import argparse
 import fcntl
 import importlib
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -30,10 +31,13 @@ def check_selected_gpus(selected, inventory, processes):
         if len(matches) != 1:
             raise ValueError(f'Cannot resolve allocated GPU {device}')
         record = matches[0]
+        if (not all(math.isfinite(record[k]) for k in ('utilization', 'memory_used', 'memory_total'))
+                or record['memory_total'] <= 0 or record['memory_used'] < 0
+                or not 0 <= record['utilization'] <= 100):
+            raise RuntimeError(f'Allocated GPU {device} has unknown/invalid occupancy')
         if record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15:
             raise RuntimeError(f'Allocated GPU {device} exceeds the 15% idle thresholds')
-        if record['uuid'] in processes:
-            raise RuntimeError(f'Allocated GPU {device} already has a compute process')
+        # Existing processes are recorded, never stopped; eligibility uses both thresholds.
         records.append(record)
     if len({r['uuid'] for r in records}) != len(records):
         raise ValueError('GPU indices and UUIDs resolve to duplicate devices')
@@ -127,6 +131,8 @@ def gpu_snapshot():
     apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
                                     '--format=csv,noheader,nounits'], text=True)
     processes = {line.split(',')[0].strip() for line in apps.splitlines() if ',' in line}
+    print('BASELINE_GPU_OCCUPANCY_JSON=' + json.dumps(dict(inventory=parse_gpu_inventory(inventory),
+          compute_processes=apps.splitlines()), sort_keys=True), flush=True)
     return parse_gpu_inventory(inventory), processes
 
 
