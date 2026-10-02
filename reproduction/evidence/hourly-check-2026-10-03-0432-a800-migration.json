@@ -1,0 +1,91 @@
+{
+  "checked_at": "2026-10-02T20:36:42.558233+00:00",
+  "target_host": "baai-a800",
+  "stage": "PREPARING_NOT_TRAINING",
+  "new_updates": 0,
+  "new_reward": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "last_source_eval_step": 100,
+  "last_source_eval_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "source_checkpoint_step": 100,
+  "source_completed_step": 149,
+  "optimizer_resume_state_available": false,
+  "weight_continuation_approval": "pending",
+  "resource_approval": "4 trainer GPUs0-3;3 retriever GPUs4-6;leave7 foreign SGLang",
+  "assets_initial_attempt": {
+    "failed": [
+      "wiki/part_aa",
+      "wiki/part_ab"
+    ],
+    "cause": "aria2 missing libssh2.so.1 and libcares.so.2; exit127, not proof of network stall",
+    "other_28_assets": "verified by source manifest"
+  },
+  "assets_retry": "project-only library dependencies extracted; aria2 --version passes; retry in tmux searchr1-assets",
+  "index_latest_partial_apparent_sizes": {
+    "part_aa": "36GiB",
+    "part_ab": "18GiB"
+  },
+  "index_integrity": "partial/not yet accepted; apparent size does not establish downloaded range completion",
+  "flash_wheel": {
+    "local_bytes": 187788763,
+    "local_sha256": "a8719a86d0cd12a105739151f9e45ac8c2ecb840a83ed7a080a88d1645a98440",
+    "local_verified": true,
+    "target_relay_observed": "59MiB partial; target hash not yet verified",
+    "upload_exec_session": 57450,
+    "after_target_verification": "upload task removes only completed local wheel relay; target env watcher resumes bootstrap"
+  },
+  "checkpoint_local_partial_bytes": 338362368,
+  "checkpoint_download_exec_session": 43921,
+  "checkpoint_download": "active, append resumed at57901056; final source hash still required; no upload yet",
+  "gpu_instant_memory_MiB": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    68494
+  ],
+  "gpu_instant_util_percent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "gpu_interval_peak": "not sampled; no A800 training yet"
+}
