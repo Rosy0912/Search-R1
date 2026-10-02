@@ -217,7 +217,7 @@ def main_task(config):
                             val_reward_fn=val_reward_fn,
                             )
     trainer.init_workers()
-    trainer.fit()
+    return trainer.fit()
 
 
 if __name__ == '__main__':
