@@ -5,7 +5,7 @@ from unittest.mock import patch
 import torch
 import numpy as np
 from verl import DataProto
-from search_r1.baselines.bapo_validation import BapoValidationManager
+from search_r1.baselines.bapo_validation import BapoValidationManager, validation_answer_counts
 from search_r1.llm_agent.generation import LLMGenerationManager
 
 
@@ -39,6 +39,8 @@ class ValidationCost(unittest.TestCase):
         self.assertEqual(metrics['val/cost/trajectories'], 3)
         self.assertEqual(metrics['val/cost/retrieval_calls'], 3)
         self.assertEqual(metrics['val/cost/generation_rows'], 8)
+        self.assertEqual(metrics['val/bapo/idk_count'], 0)
+        self.assertEqual(metrics['val/bapo/answered_coverage'], 1.)
         expected = 4*(len('<search>capital</search>')+len('<answer>Paris</answer>'))
         self.assertEqual(metrics['val/cost/generated_tokens'], expected)
 
@@ -75,9 +77,37 @@ class ValidationCost(unittest.TestCase):
         self.assertEqual(manager.cost['retrieval_requests'], 1)
         self.assertGreaterEqual(manager.cost['retrieval_wall_seconds'], 0.)
         batch = DataProto.from_dict({'input_ids': torch.ones(3,2,dtype=torch.long)})
-        with patch.object(LLMGenerationManager, 'run_llm_loop', return_value=result):
+        with patch.object(LLMGenerationManager, 'run_llm_loop', return_value=result), \
+             patch('search_r1.baselines.bapo_validation.validation_answer_counts',
+                   return_value=dict(idk_count=0,answered_count=3,invalid_count=0)):
             self.assertIs(manager.run_llm_loop(batch, batch.batch['input_ids']), result)
         self.assertEqual(manager.cost['trajectories'], 3)
+
+    def test_idk_diagnostics_ignore_observations_invalid_actions_and_padding(self):
+        from test_algorithms import CharTokenizer, padded
+        tokenizer = CharTokenizer()
+        obs = '<information>I do not know</information>'
+        texts = ['<answer>I do not know</answer>',
+                 '<answer>I do not know<answer></answer>',
+                 obs+'<answer>Paris</answer>']
+        ids = padded([tokenizer.encode(t) for t in texts], 0)
+        info = (ids != 0).long(); info[2,:len(obs)] = 0
+        output = DataProto.from_dict(dict(responses=ids,attention_mask=(ids!=0).long(),info_mask=info))
+        self.assertEqual(validation_answer_counts(output, tokenizer),
+                         dict(idk_count=1,answered_count=1,invalid_count=1))
+        # Real padding removal excludes a generated IDK copy from diagnostics.
+        padding_ids = padded([tokenizer.encode('<answer>Paris</answer>')]*3+
+                             [tokenizer.encode('<answer>I do not know</answer>')], 0)
+        def generate(batch):
+            return DataProto.from_dict(dict(responses=padding_ids,
+                attention_mask=(padding_ids!=0).long(),info_mask=(padding_ids!=0).long()))
+        config = SimpleNamespace(num_gpus=4,max_prompt_length=4096,max_obs_length=500,max_start_length=2048)
+        manager = BapoValidationManager(tokenizer,SimpleNamespace(generate_sequences=generate),config,True)
+        batch = DataProto.from_dict(dict(input_ids=torch.ones(3,2,dtype=torch.long),
+                                        attention_mask=torch.ones(3,2,dtype=torch.long)))
+        trimmed = manager._generate_with_gpu_padding(batch)
+        self.assertEqual(validation_answer_counts(trimmed,tokenizer),
+                         dict(idk_count=0,answered_count=3,invalid_count=0))
 
 
 if __name__ == '__main__':

@@ -608,6 +608,7 @@ class RayPPOTrainer(object):
 
         if validation_manager_class is not LLMGenerationManager:
             metric_dict.update({'val/cost/' + key: value for key, value in generation_manager.cost.items()})
+            metric_dict.update({'val/bapo/' + key: value for key, value in generation_manager.answer_metrics().items()})
         if qa_rows:
             from search_r1.baselines.evaluation import aggregate_answer_metrics
             metric_dict.update(aggregate_answer_metrics(qa_rows))

@@ -1,6 +1,24 @@
 """Read-only cost accounting for the unchanged Search-R1 validation path."""
 import time
 from search_r1.llm_agent.generation import LLMGenerationManager
+from .bapo import answer_from_spans, is_idk, legal_action_records
+
+
+def validation_answer_counts(output, tokenizer):
+    from verl.trainer.main_ppo import decode_model_response_spans
+    width = output.batch['responses'].shape[1]
+    mask = output.batch['attention_mask'][:, -width:].bool() & output.batch['info_mask'][:, -width:].bool()
+    counts = dict(idk_count=0, answered_count=0, invalid_count=0)
+    for ids, row_mask in zip(output.batch['responses'], mask):
+        spans = decode_model_response_spans(tokenizer, ids, row_mask)
+        answer = answer_from_spans(spans)
+        if answer is None or not legal_action_records([dict(text=s) for s in spans]):
+            counts['invalid_count'] += 1
+        elif is_idk(answer):
+            counts['idk_count'] += 1
+        else:
+            counts['answered_count'] += 1
+    return counts
 
 
 class CountedRollout:
@@ -25,12 +43,22 @@ class BapoValidationManager(LLMGenerationManager):
         self.cost = dict(generated_tokens=0, prefill_tokens=0, generation_rows=0,
                          trajectories=0, retrieval_calls=0, retrieval_requests=0,
                          retrieval_wall_seconds=0.)
+        self.answer_counts = dict(idk_count=0, answered_count=0, invalid_count=0)
         worker = CountedRollout(actor_rollout_wg, tokenizer.pad_token_id, self.cost)
         super().__init__(tokenizer, worker, config, is_validation)
 
     def run_llm_loop(self, gen_batch, initial_input_ids):
         self.cost['trajectories'] += len(gen_batch)
-        return super().run_llm_loop(gen_batch, initial_input_ids)
+        output = super().run_llm_loop(gen_batch, initial_input_ids)
+        for key, value in validation_answer_counts(output, self.tokenizer).items():
+            self.answer_counts[key] += value
+        return output
+
+    def answer_metrics(self):
+        n = self.cost['trajectories']
+        return dict(**self.answer_counts,
+                    idk_ratio=self.answer_counts['idk_count'] / max(1, n),
+                    answered_coverage=self.answer_counts['answered_count'] / max(1, n))
 
     def _batch_search(self, queries):
         self.cost['retrieval_calls'] += len(queries)
