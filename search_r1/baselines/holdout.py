@@ -68,6 +68,26 @@ def split_frames(train, final, fraction=.02, seed=42, prompt_key='prompt'):
     return train.loc[~mask].reset_index(drop=True), train.loc[mask].reset_index(drop=True)
 
 
+def frame_identity(frame, prompt_key='prompt'):
+    questions = sorted(set(frame[prompt_key].map(question_key)))
+    rows = sorted(json.dumps(plain(row), sort_keys=True, ensure_ascii=False)
+                  for row in frame.to_dict('records'))
+    return dict(questions_sha256=hashlib.sha256('\n'.join(questions).encode()).hexdigest(),
+                rows_sha256=hashlib.sha256('\n'.join(rows).encode()).hexdigest())
+
+
+def content_identity(specification, train, holdout):
+    content = dict(version=1, split_version=specification['version'],
+                   train_sources=sorted(item['sha256'] for item in specification['train']),
+                   excluded_sources=sorted(item['sha256'] for item in specification['final']),
+                   fraction=specification['fraction'], seed=specification['seed'],
+                   prompt_key=specification['prompt_key'],
+                   train=frame_identity(train, specification['prompt_key']),
+                   holdout=frame_identity(holdout, specification['prompt_key']))
+    content['sha256'] = hashlib.sha256(json.dumps(content, sort_keys=True).encode()).hexdigest()
+    return content
+
+
 def prepare_common_holdout(config):
     settings = config.baselines.holdout
     if not settings.enabled:
@@ -97,7 +117,8 @@ def prepare_common_holdout(config):
                 staging.mkdir()
                 retained.to_parquet(staging / 'train.parquet', index=False)
                 holdout.to_parquet(staging / 'stage-validation.parquet', index=False)
-                manifest = dict(specification=specification, train_rows=len(retained), holdout_rows=len(holdout),
+                manifest = dict(content_identity=content_identity(specification, retained, holdout),
+                    specification=specification, train_rows=len(retained), holdout_rows=len(holdout),
                     sha256={name: file_hash(staging / name) for name in ('train.parquet', 'stage-validation.parquet')})
                 (staging / 'manifest.json').write_text(json.dumps(manifest, indent=2))
                 os.rename(staging, output)
@@ -107,6 +128,9 @@ def prepare_common_holdout(config):
         for name, expected in manifest['sha256'].items():
             if file_hash(output / name) != expected:
                 raise ValueError('Common split has been modified: ' + name)
+    if 'content_identity' not in manifest:
+        raise ValueError('Legacy split missing content_identity; use a new common-data directory')
+    print('BASELINE_SPLIT_MANIFEST_JSON=' + json.dumps(manifest, sort_keys=True), flush=True)
     config.data.train_files = str(output / 'train.parquet')
     config.baselines.bapo.stage_validation_files = str(output / 'stage-validation.parquet')
     return manifest

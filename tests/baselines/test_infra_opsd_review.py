@@ -11,7 +11,7 @@ from search_r1.baselines.preflight import check_selected_gpus
 from search_r1.baselines.actor import DistillationActor
 
 
-def test_idle_boundary_and_existing_process_refusal():
+def test_idle_boundary_with_existing_process():
     inventory = {'0': dict(uuid='GPU-a', memory_used=15., memory_total=100., utilization=15.)}
     assert len(check_selected_gpus(['0'], inventory, set())) == 1
     for field in ('memory_used', 'utilization'):
@@ -21,11 +21,14 @@ def test_idle_boundary_and_existing_process_refusal():
             raise AssertionError('busy GPU accepted')
         except RuntimeError:
             pass
-    try:
-        check_selected_gpus(['0'], inventory, {'GPU-a'})
-        raise AssertionError('existing job accepted')
-    except RuntimeError:
-        pass
+    assert len(check_selected_gpus(['0'], inventory, {'GPU-a'})) == 1
+    for field, value in [('memory_total', 0.), ('memory_used', float('nan')), ('utilization', float('nan'))]:
+        invalid = {'0': dict(inventory['0'], **{field: value})}
+        try:
+            check_selected_gpus(['0'], invalid, {'GPU-a'})
+            raise AssertionError('unknown occupancy accepted')
+        except RuntimeError:
+            pass
     try:
         check_selected_gpus(['0', 'GPU-a'], inventory, set())
         raise AssertionError('duplicate physical GPU accepted')
