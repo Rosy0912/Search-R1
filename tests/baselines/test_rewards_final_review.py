@@ -56,6 +56,7 @@ def test_real_fit_stage_only_observes_updated_actor(warmup, actor_steps):
     t.kl_ctrl = SimpleNamespace(value=0.)
     ctrl = Controller.__new__(Controller)
     ctrl.trainer, ctrl.config, ctrl.method = t, c.baselines, 'bapo'
+    ctrl.tree_rng = None
     ctrl.stage = BoundaryStage()
     # A stalled model would switch after the next observation: skipped iterations must not switch it.
     ctrl.stage.best = .2
