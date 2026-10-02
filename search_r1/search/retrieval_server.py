@@ -35,11 +35,11 @@ def load_docs(corpus, doc_idxs):
     results = [corpus[int(idx)] for idx in doc_idxs]
     return results
 
-def load_model(model_path: str, use_fp16: bool = False):
+def load_model(model_path: str, use_fp16: bool = False, device: str = "cuda"):
     model_config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
     model = AutoModel.from_pretrained(model_path, trust_remote_code=True)
     model.eval()
-    model.cuda()
+    model.to(device)
     if use_fp16: 
         model = model.half()
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True, trust_remote_code=True)
@@ -62,14 +62,15 @@ def pooling(
         raise NotImplementedError("Pooling method not implemented!")
 
 class Encoder:
-    def __init__(self, model_name, model_path, pooling_method, max_length, use_fp16):
+    def __init__(self, model_name, model_path, pooling_method, max_length, use_fp16, device="cuda"):
         self.model_name = model_name
         self.model_path = model_path
         self.pooling_method = pooling_method
         self.max_length = max_length
         self.use_fp16 = use_fp16
+        self.device = device
 
-        self.model, self.tokenizer = load_model(model_path=model_path, use_fp16=use_fp16)
+        self.model, self.tokenizer = load_model(model_path=model_path, use_fp16=use_fp16, device=device)
         self.model.eval()
 
     @torch.no_grad()
@@ -94,7 +95,7 @@ class Encoder:
                                 truncation=True,
                                 return_tensors="pt"
                                 )
-        inputs = {k: v.cuda() for k, v in inputs.items()}
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
         if "T5" in type(self.model).__name__:
             # T5-based retrieval model
@@ -118,7 +119,8 @@ class Encoder:
         query_emb = query_emb.astype(np.float32, order="C")
         
         del inputs, output
-        torch.cuda.empty_cache()
+        if self.device != "cpu":
+            torch.cuda.empty_cache()
 
         return query_emb
 
@@ -220,7 +222,8 @@ class DenseRetriever(BaseRetriever):
             model_path = config.retrieval_model_path,
             pooling_method = config.retrieval_pooling_method,
             max_length = config.retrieval_query_max_length,
-            use_fp16 = config.retrieval_use_fp16
+            use_fp16 = config.retrieval_use_fp16,
+            device = config.encoder_device
         )
         self.topk = config.retrieval_topk
         self.batch_size = config.retrieval_batch_size
@@ -263,7 +266,8 @@ class DenseRetriever(BaseRetriever):
             scores.extend(batch_scores)
             
             del batch_emb, batch_scores, batch_idxs, query_batch, flat_idxs, batch_results
-            torch.cuda.empty_cache()
+            if self.config.encoder_device != "cpu":
+                torch.cuda.empty_cache()
             
         if return_score:
             return results, scores
@@ -299,7 +303,8 @@ class Config:
         retrieval_pooling_method: str = "mean",
         retrieval_query_max_length: int = 256,
         retrieval_use_fp16: bool = False,
-        retrieval_batch_size: int = 128
+        retrieval_batch_size: int = 128,
+        encoder_device: str = "cuda"
     ):
         self.retrieval_method = retrieval_method
         self.retrieval_topk = retrieval_topk
@@ -313,6 +318,9 @@ class Config:
         self.retrieval_query_max_length = retrieval_query_max_length
         self.retrieval_use_fp16 = retrieval_use_fp16
         self.retrieval_batch_size = retrieval_batch_size
+        self.encoder_device = encoder_device
+        if encoder_device == "cpu" and faiss_gpu:
+            raise ValueError("CPU retrieval cannot use GPU FAISS")
 
 
 class QueryRequest(BaseModel):
@@ -371,7 +379,18 @@ if __name__ == "__main__":
     parser.add_argument("--retriever_model", type=str, default="intfloat/e5-base-v2", help="Path of the retriever model.")
     parser.add_argument('--faiss_gpu', action='store_true', help='Use GPU for computation')
 
+    parser.add_argument('--device', choices=['cpu', 'cuda'], default='cuda')
+    parser.add_argument('--host', default='0.0.0.0')
+    parser.add_argument('--port', type=int, default=8000)
+    parser.add_argument('--threads', type=int, default=8)
+    parser.add_argument('--encoder_fp32', action='store_true')
     args = parser.parse_args()
+    if args.threads < 1:
+        parser.error('--threads must be positive')
+    if args.device == 'cpu' and args.faiss_gpu:
+        parser.error('--device cpu is incompatible with --faiss_gpu')
+    torch.set_num_threads(args.threads)
+    faiss.omp_set_num_threads(args.threads)
     
     # 1) Build a config (could also parse from arguments).
     #    In real usage, you'd parse your CLI arguments or environment variables.
@@ -384,7 +403,8 @@ if __name__ == "__main__":
         retrieval_model_path=args.retriever_model,
         retrieval_pooling_method="mean",
         retrieval_query_max_length=256,
-        retrieval_use_fp16=True,
+        retrieval_use_fp16=not args.encoder_fp32,
+        encoder_device=args.device,
         retrieval_batch_size=512,
     )
 
@@ -392,4 +412,4 @@ if __name__ == "__main__":
     retriever = get_retriever(config)
     
     # 3) Launch the server. By default, it listens on http://127.0.0.1:8000
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=args.host, port=args.port)

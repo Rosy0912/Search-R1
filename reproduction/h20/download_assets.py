@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 
-BASE = Path('/data/search-r1')
+BASE = Path(os.environ.get('SEARCH_R1_ASSETS', os.environ.get('SEARCH_R1_BASE', '/data/search-r1'))).expanduser()
 
 def digest(path):
     h = hashlib.sha256()
