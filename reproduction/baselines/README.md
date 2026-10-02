@@ -10,6 +10,10 @@ CPU 集成和独立论文/源码审查已完成；A800 两卡 tiny CUDA/FSDP 更
 短测试已通过。**正式 3B/vLLM 训练验收、资源预算和全量七集评估仍待完成**。
 GPU 测试范围和原始记录见 [A800 测试报告](gpu-validation.md)。
 
+2026-10-02 新增六名独立单算法 agent 的[汇总审查](audit-20261002/SUMMARY.md)。
+发现共享空 mask NaN、前缀错配、BAPO scorer 和 CoSearch 命中标签差异等尚未修复问题；
+当前为有条件通过接入审查，不能放行宣称等价复现的正式训练。
+
 ## 1. 控制变量
 
 继承 reviewed base 的 Qwen2.5-3B **base**、原始 Search-R1 prompt、NQ+HotpotQA 混合
