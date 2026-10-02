@@ -5,9 +5,34 @@ import torch
 
 from tests.baselines.test_algorithms import manager, batch
 from search_r1.baselines.rollout import SearchRollout
+from search_r1.baselines.controller import Controller
 
 
 class TreeBatching(unittest.TestCase):
+    def test_controller_tree_sampling_continues_across_updates_and_replays_seed(self):
+        def session():
+            config = SimpleNamespace(
+                method='tree_grpo', seed=42, context_alignment='report',
+                gigpo=SimpleNamespace(anchor_mode='observation'),
+                bapo=SimpleNamespace(patience=5),
+                tree=SimpleNamespace(rounds=1, expansions=2, leaves=3))
+            controller = Controller(SimpleNamespace(config=SimpleNamespace(baselines=config)))
+            states, traces = [], []
+            for _ in range(2):
+                obj, worker, queries = manager(gpus=8)
+                output, sources = controller.generate(obj, batch(obj.tokenizer, 2), None, {})
+                states.append(controller.tree_rng.getstate())
+                traces.append((obj.tokenizer.batch_decode(output.batch['responses']),
+                               sources.tolist(), queries, [len(call) for call in worker.calls]))
+            return states, traces
+
+        states, traces = session()
+        replay_states, replay_traces = session()
+        self.assertNotEqual(states[0], states[1])
+        self.assertEqual(states, replay_states)
+        self.assertEqual(traces, replay_traces)
+        self.assertTrue(all(len(trace[0]) == 6 for trace in traces))
+
     def test_cross_root_children_share_one_generation_batch(self):
         obj, worker, queries = manager(gpus=8)
         engine = SearchRollout(obj)

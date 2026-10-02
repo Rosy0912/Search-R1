@@ -1,6 +1,7 @@
 """Opt-in hooks for the reviewed Ray trainer; no changes to baseline inputs."""
 import json
 import os
+import random
 from collections import Counter
 from pathlib import Path
 import torch
@@ -123,6 +124,7 @@ class Controller:
     def __init__(self, trainer):
         self.trainer = trainer
         self.config = trainer.config.baselines
+        self.tree_rng = random.Random(self.config.seed) if self.config.method == 'tree_grpo' else None
         torch.manual_seed(self.config.seed)
         self.method = self.config.method
         self.stage = BoundaryStage(patience=self.config.bapo.patience)
@@ -161,6 +163,10 @@ class Controller:
     def generate(self, manager, gen_batch, qa_batch, metrics):
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
                                self.config.context_alignment)
+        if self.tree_rng is not None:
+            # Keep parent/leaf sampling continuous across outer updates while
+            # constructing a fresh engine and cost ledger for each rollout.
+            engine.rng = self.tree_rng
         if self.ranker:
             self.ranker.question_uids = qa_batch.non_tensor_batch['index'].tolist()
             self.ranker.validation = False
