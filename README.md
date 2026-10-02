@@ -1,3 +1,5 @@
+> Reviewed H20 reproduction: see [reproduction/README.md](reproduction/README.md) for the pinned environment, paper-GRPO profile, upstream fixes and acceptance evidence. Full paper metrics remain pending. The original upstream README follows below.
+
 # Search-R1: Train your LLMs to reason and call a search engine with reinforcement learning
 
 <div align="center">

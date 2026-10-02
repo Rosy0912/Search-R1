@@ -120,3 +120,15 @@ tests/e2e/toy_examples/deepspeed/synchronous/output.txt
 log/
 
 **logs
+# Reviewed deployment artifacts (never version credentials or downloaded assets)
+reproduction/h20/assets/
+reproduction/h20/cache/
+reproduction/h20/env/
+reproduction/h20/ray/
+reproduction/h20/tmp/
+reproduction/h20/wheelhouse/
+reproduction/h20/logs/
+.relay/
+auth.json
+*.pem
+*.key
