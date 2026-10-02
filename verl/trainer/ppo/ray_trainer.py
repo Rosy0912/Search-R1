@@ -905,9 +905,9 @@ class RayPPOTrainer(object):
                             self.baseline_controller.after_actor(batch, metrics)
 
                     baseline_settings = getattr(self.config, 'baselines', None)
-                    if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo'):
+                    if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo', 'cosearch'):
                         if metrics.get('actor/optimizer_steps', 0) <= 0:
-                            raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
+                            raise RuntimeError(f'{baseline_settings.method} outer iteration performed no actor update; budget cannot advance')
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
