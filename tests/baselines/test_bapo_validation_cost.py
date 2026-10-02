@@ -3,12 +3,45 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 import torch
+import numpy as np
 from verl import DataProto
 from search_r1.baselines.bapo_validation import BapoValidationManager
 from search_r1.llm_agent.generation import LLMGenerationManager
 
 
 class ValidationCost(unittest.TestCase):
+    def test_actual_validator_returns_full_generation_cost_without_score_change(self):
+        from test_models_and_driver import config
+        from test_algorithms import CharTokenizer, Worker, padded
+        from verl.trainer.ppo.ray_trainer import RayPPOTrainer
+        from verl.trainer.main_ppo import RewardManager
+        c = config('bapo')
+        c.trainer.n_gpus_per_node = 4
+        t = RayPPOTrainer.__new__(RayPPOTrainer)
+        t.config, t.tokenizer = c, CharTokenizer()
+        t.tokenizer.eos_token_id = 1
+        t.actor_rollout_wg = Worker(t.tokenizer)
+        t.val_reward_fn = RewardManager(t.tokenizer, 0)
+        t.baseline_controller = SimpleNamespace(method='bapo', ranker=None)
+        ids = padded([t.tokenizer.encode('Question: capital?')]*3, 0, True)
+        t.val_dataloader = [dict(input_ids=ids, attention_mask=(ids != 0).long(),
+            position_ids=torch.arange(ids.shape[1]).repeat(3,1),
+            reward_model=np.array([{'ground_truth': {'target': ['Paris']}}]*3,dtype=object),
+            data_source=np.array(['nq']*3,dtype=object))]
+        def retrieve(url, json):
+            return SimpleNamespace(json=lambda: {'result':
+                [[{'document': {'contents': 'title\nParis'}}]]*len(json['queries'])})
+        with patch('search_r1.llm_agent.generation.requests.post',
+                   side_effect=retrieve):
+            metrics = t._validate()
+        self.assertEqual(metrics['val/test_score/nq'], 1.)
+        self.assertEqual(metrics['val/evaluated_count/nq'], 3)
+        self.assertEqual(metrics['val/cost/trajectories'], 3)
+        self.assertEqual(metrics['val/cost/retrieval_calls'], 3)
+        self.assertEqual(metrics['val/cost/generation_rows'], 8)
+        expected = 4*(len('<search>capital</search>')+len('<answer>Paris</answer>'))
+        self.assertEqual(metrics['val/cost/generated_tokens'], expected)
+
     def test_counts_padding_before_original_manager_trims_output(self):
         calls = []
         def generate(batch):
