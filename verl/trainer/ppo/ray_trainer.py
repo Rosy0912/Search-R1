@@ -904,6 +904,12 @@ class RayPPOTrainer(object):
                     if getattr(self, 'baseline_controller', None) is not None and self.baseline_controller.method == 'topd':
                         from search_r1.baselines.topd_runtime_audit import require_actual_update
                         require_actual_update(metrics)
+                    baseline_settings = getattr(self.config, 'baselines', None)
+                    if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo'):
+                        if metrics.get('actor/optimizer_steps', 0) <= 0:
+                            raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
+                        self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+                        metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
