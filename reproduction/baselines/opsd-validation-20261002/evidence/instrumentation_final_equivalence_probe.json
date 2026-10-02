@@ -1,0 +1,20 @@
+
+
+
+{
+  "loss_bitwise_equal": true,
+  "loss": 0.0021548715885728598,
+  "gradient_tensors_bitwise_equal": 15,
+  "teacher_has_no_gradient": true,
+  "cost_metrics_before_synthetic_clock": {
+    "teacher/cpu_seconds_cumulative_per_rank": 0.0003260000000000485,
+    "teacher/wall_seconds_cumulative_per_rank": 0.00032533400000001045,
+    "teacher/load_cpu_seconds_per_rank": 0.0032760000000000566,
+    "teacher/load_wall_seconds_per_rank": 0.00327741700000006,
+    "teacher/model_bytes_per_rank": 49056,
+    "teacher_worker/peak_rss_bytes_per_rank": 365248512
+  },
+  "clock_delta_accounting_passed": true,
+  "darwin_linux_rss_units_passed": true,
+  "scope": "CPU tiny; not 3B or FSDP or isolated teacher memory attribution"
+}

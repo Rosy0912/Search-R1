@@ -1,0 +1,25 @@
+{
+  "head": "1620c2edb13809d19cc3f5af4a298ccd75488104",
+  "scope": "Uncommitted observability delta to frozen HEAD; no GPU claims",
+  "files": {
+    "search_r1/baselines/distillation.py": "bfa408ec4f2c9222d87f115c0ce9c91c123bd97c1e0bfdf1a8430f7b763e7b1b",
+    "search_r1/baselines/actor.py": "a3932a79be5a2b006442862f1d42746c5e842019c2dc9a85fd9c0676f683df49",
+    "tests/baselines/test_models_and_driver.py": "73dc917556bd1120cb08fa72711a2ea5c3366b66c13c981152b164e539d0786e",
+    "tests/baselines/test_infra_opsd_review.py": "802e5222d45f4ffeedae235c50c5f05d21443b04436b2d893264cc58759f168f",
+    "docs/superpowers/specs/2026-10-02-opsd-validation-design.md": "f47591d0d421d63b9192f573f93349530de532e5edb73322af362c124d86ccc3",
+    "reproduction/baselines/opsd-validation-20261002/INDEPENDENT_REVIEW.md": "99323cce2db237e4f724f272530f4f3d8ae39b24cfa502135e4c23a6c44b5959",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_equivalence_probe.json": "64853c4fb056ffa513057c5a6919629f36ab7084f4efa9ecdf699cdec7d946e1",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_equivalence_probe.py": "e08e8052fd1d9c3c1d6e031a6bb35ea6171a605fb85f42cdcedc0ebaec886554",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_equivalence_probe.stderr": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_focused_pytest.txt": "26d128827414b96bd41173d8b8d45d37336089ff980da13fcbfe195dd0e05f9b",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumented_author_loss_probe.json": "56d47655843fce4f41e1101448a59441a5d6e4f258924af2fdf20c649241ba53",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumented_author_loss_probe.stderr": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721"
+  },
+  "equivalence": {
+    "loss_bitwise_equal": true,
+    "student_gradient_tensors_bitwise_equal": 15,
+    "author_loss_cases_passed": 16,
+    "focused_pytest_passed": 2
+  },
+  "initial_timing_boundary_finding": "CPU projection timer includes default blocking CPU-to-CUDA transfer; notified owner; final follow-up pending"
+}

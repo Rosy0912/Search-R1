@@ -57,4 +57,5 @@ class DistillationActor(DataParallelPPOActor):
         metrics['actor/skipped_empty_minibatches'] = skipped
         metrics['teacher/parameters_per_rank'] = self.teacher.parameter_count
         metrics['teacher/scored_tokens_cumulative_per_rank'] = self.teacher.scored_tokens
+        metrics.update(self.teacher.cost_metrics())
         return metrics

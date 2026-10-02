@@ -1,0 +1,22 @@
+{
+  "head": "1620c2edb13809d19cc3f5af4a298ccd75488104",
+  "scope": "Final observability working-tree diff only",
+  "files": {
+    "search_r1/baselines/distillation.py": "bfa408ec4f2c9222d87f115c0ce9c91c123bd97c1e0bfdf1a8430f7b763e7b1b",
+    "search_r1/baselines/actor.py": "a3932a79be5a2b006442862f1d42746c5e842019c2dc9a85fd9c0676f683df49",
+    "tests/baselines/test_models_and_driver.py": "73dc917556bd1120cb08fa72711a2ea5c3366b66c13c981152b164e539d0786e",
+    "tests/baselines/test_infra_opsd_review.py": "802e5222d45f4ffeedae235c50c5f05d21443b04436b2d893264cc58759f168f",
+    "docs/superpowers/specs/2026-10-02-opsd-validation-design.md": "f47591d0d421d63b9192f573f93349530de532e5edb73322af362c124d86ccc3",
+    "reproduction/baselines/opsd-validation-20261002/INDEPENDENT_REVIEW.md": "1603f2ecf5a47aa83d3655a7bc6a756438043f443ac5a2ce7c50b0aacddf57d0",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_final_equivalence_probe.json": "7fe558dabb446f45f196a572a2d733b5d93f96eb06e28fb20fb1e2a3f0750ebd",
+    "reproduction/baselines/opsd-validation-20261002/evidence/instrumentation_final_equivalence_probe.stderr": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721"
+  },
+  "equivalence": {
+    "loss_bitwise_equal": true,
+    "student_gradient_tensors_bitwise_equal": 15,
+    "teacher_gradient_absent": true,
+    "clock_accumulation_and_rss_units": true
+  },
+  "I1_timing_boundary": "Resolved: CPU projection measured separately from transfer",
+  "review_result": "PASS for observability delta; production 3B/FSDP/effectiveness remains unverified"
+}

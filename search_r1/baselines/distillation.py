@@ -1,6 +1,9 @@
 """Full-vocabulary OPSD loss and explicit teacher/student target alignment."""
 import math
-from contextlib import nullcontext
+import resource
+import sys
+import time
+from contextlib import contextmanager, nullcontext
 import torch
 import torch.nn.functional as F
 
@@ -61,7 +64,7 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
     tid, tmask, positions = teacher_inputs(tokenizer, tensors['prompts'], tensors['responses'],
                                            tensors['attention_mask'][:, -width:], targets,
                                            teacher.model.config.max_position_embeddings)
-    with torch.no_grad():
+    with teacher.measure(), torch.no_grad():
         hidden = teacher.model.base_model(input_ids=tid.to(teacher.device),
                                           attention_mask=tmask.to(teacher.device),
                                           use_cache=False).last_hidden_state
@@ -83,8 +86,10 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
         stop = min(start + settings.chunk_size, width)
         pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(teacher.device)
         features = hidden.gather(1, pos[..., None].expand(-1, -1, hidden.shape[-1]))
-        with torch.no_grad():
-            target_logits = teacher.model.get_output_embeddings()(features).to(device)
+        with teacher.measure(), torch.no_grad():
+            target_logits = teacher.model.get_output_embeddings()(features)
+        # CUDA copies may wait for the student stream; exclude that from CPU teacher timing.
+        target_logits = target_logits.to(device)
         valid = tensors['loss_mask'][:, start:stop].bool()
         source_logits = torch.where(valid[..., None], student[:, start:stop], 0.)
         target_logits = torch.where(valid[..., None], target_logits, 0.)
@@ -121,6 +126,8 @@ class FrozenTeacher:
     """
     def __init__(self, path, student_tokenizer, device='cpu'):
         from transformers import AutoModelForCausalLM, AutoTokenizer
+        wall_start, cpu_start = time.perf_counter(), time.process_time()
+        self.cpu_seconds = self.wall_seconds = 0.
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         if self.tokenizer.get_vocab() != student_tokenizer.get_vocab():
             raise ValueError('Teacher/student token-to-id vocabularies differ')
@@ -133,7 +140,35 @@ class FrozenTeacher:
                                                         attn_implementation='eager').to(self.device)
         self.model.eval().requires_grad_(False)
         self.parameter_count = sum(p.numel() for p in self.model.parameters())
+        self.model_bytes = sum(t.numel() * t.element_size()
+                               for t in list(self.model.parameters()) + list(self.model.buffers()))
         self.scored_tokens = 0
+        self.load_wall_seconds = time.perf_counter() - wall_start
+        self.load_cpu_seconds = time.process_time() - cpu_start
+
+    @contextmanager
+    def measure(self):
+        """Measure teacher intervals; process CPU time includes every worker CPU thread.
+
+        These are interval costs, not a profiler's exclusive CPU attribution.
+        CPU teacher timing excludes the subsequent transfer to student CUDA.
+        """
+        wall_start, cpu_start = time.perf_counter(), time.process_time()
+        try:
+            yield
+        finally:
+            self.wall_seconds += time.perf_counter() - wall_start
+            self.cpu_seconds += time.process_time() - cpu_start
+
+    def cost_metrics(self):
+        # ru_maxrss includes student/optimizer/worker overhead, not isolated teacher RAM.
+        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        return {'teacher/cpu_seconds_cumulative_per_rank': self.cpu_seconds,
+                'teacher/wall_seconds_cumulative_per_rank': self.wall_seconds,
+                'teacher/load_cpu_seconds_per_rank': self.load_cpu_seconds,
+                'teacher/load_wall_seconds_per_rank': self.load_wall_seconds,
+                'teacher/model_bytes_per_rank': self.model_bytes,
+                'teacher_worker/peak_rss_bytes_per_rank': peak if sys.platform == 'darwin' else peak * 1024}
 
     @torch.no_grad()
     def log_probs(self, prompts, responses, attention, temperature=1., targets=None, chunk=16):
@@ -141,13 +176,15 @@ class FrozenTeacher:
                                               targets, self.model.config.max_position_embeddings)
         ids, mask = ids.to(self.device), mask.to(self.device)
         self.scored_tokens += int(mask.sum())
-        hidden = self.model.base_model(input_ids=ids, attention_mask=mask, use_cache=False).last_hidden_state
+        with self.measure():
+            hidden = self.model.base_model(input_ids=ids, attention_mask=mask, use_cache=False).last_hidden_state
         result = torch.zeros_like(responses, dtype=torch.float32)
         for start in range(0, responses.shape[1], chunk):
             stop = min(start + chunk, responses.shape[1])
             pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(self.device)
             features = hidden.gather(1, pos[..., None].expand(-1, -1, hidden.shape[-1]))
-            logits = self.model.get_output_embeddings()(features).float() / temperature
+            with self.measure():
+                logits = self.model.get_output_embeddings()(features).float() / temperature
             labels = responses[:, start:stop].to(self.device)
             logp = F.log_softmax(logits, -1).gather(-1, labels[..., None]).squeeze(-1)
             result[:, start:stop] = logp.cpu() * attention[:, start:stop].cpu()

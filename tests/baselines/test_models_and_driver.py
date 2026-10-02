@@ -89,6 +89,14 @@ class TinyModels(unittest.TestCase):
         self.assertGreater(sum(float(p.grad.abs().sum()) for p in student.parameters() if p.grad is not None), 0)
         optimizer.step()
         self.assertFalse(torch.equal(before, student.lm_head.weight))
+        costs = teacher.cost_metrics()
+        for name in ('teacher/cpu_seconds_cumulative_per_rank', 'teacher/wall_seconds_cumulative_per_rank',
+                     'teacher/load_cpu_seconds_per_rank', 'teacher/load_wall_seconds_per_rank',
+                     'teacher/model_bytes_per_rank', 'teacher_worker/peak_rss_bytes_per_rank'):
+            self.assertGreater(costs[name], 0)
+        self.assertEqual(costs['teacher/model_bytes_per_rank'],
+                         sum(p.numel() * p.element_size() for p in teacher.model.parameters())
+                         + sum(p.numel() * p.element_size() for p in teacher.model.buffers()))
     def test_real_ranker_parameters_update_and_invalid_main_filter(self):
         c = config('cosearch').baselines.ranker
         c.model_path = self.tmp.name

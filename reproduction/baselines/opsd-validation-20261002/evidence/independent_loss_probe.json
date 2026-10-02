@@ -1,0 +1,140 @@
+
+
+
+{
+  "author_loss_cases": [
+    {
+      "beta": 0.0,
+      "temperature": 1.0,
+      "clip": null,
+      "loss": 36.9829216003418,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 0.0,
+      "temperature": 1.0,
+      "clip": 0.05,
+      "loss": 1.0006747245788574,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 0.0,
+      "temperature": 1.1,
+      "clip": null,
+      "loss": 31.57260513305664,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 0.0,
+      "temperature": 1.1,
+      "clip": 0.05,
+      "loss": 0.8869685530662537,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 0.2,
+      "temperature": 1.0,
+      "clip": null,
+      "loss": 2.9557180404663086,
+      "max_gradient_error": 1.4901161193847656e-08
+    },
+    {
+      "beta": 0.2,
+      "temperature": 1.0,
+      "clip": 0.05,
+      "loss": 1.6110455989837646,
+      "max_gradient_error": 1.862645149230957e-08
+    },
+    {
+      "beta": 0.2,
+      "temperature": 1.1,
+      "clip": null,
+      "loss": 1.8301537036895752,
+      "max_gradient_error": 1.862645149230957e-08
+    },
+    {
+      "beta": 0.2,
+      "temperature": 1.1,
+      "clip": 0.05,
+      "loss": 1.3018213510513306,
+      "max_gradient_error": 2.0489096641540527e-08
+    },
+    {
+      "beta": 0.5,
+      "temperature": 1.0,
+      "clip": null,
+      "loss": 3.661545753479004,
+      "max_gradient_error": 2.9802322387695312e-08
+    },
+    {
+      "beta": 0.5,
+      "temperature": 1.0,
+      "clip": 0.05,
+      "loss": 1.3295344114303589,
+      "max_gradient_error": 1.1175870895385742e-08
+    },
+    {
+      "beta": 0.5,
+      "temperature": 1.1,
+      "clip": null,
+      "loss": 3.4174909591674805,
+      "max_gradient_error": 2.60770320892334e-08
+    },
+    {
+      "beta": 0.5,
+      "temperature": 1.1,
+      "clip": 0.05,
+      "loss": 1.6241276264190674,
+      "max_gradient_error": 1.30385160446167e-08
+    },
+    {
+      "beta": 1.0,
+      "temperature": 1.0,
+      "clip": null,
+      "loss": 25.47865104675293,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 1.0,
+      "temperature": 1.0,
+      "clip": 0.05,
+      "loss": 0.15591326355934143,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 1.0,
+      "temperature": 1.1,
+      "clip": null,
+      "loss": 29.345050811767578,
+      "max_gradient_error": 0.0
+    },
+    {
+      "beta": 1.0,
+      "temperature": 1.1,
+      "clip": 0.05,
+      "loss": 0.07650087773799896,
+      "max_gradient_error": 0.0
+    }
+  ],
+  "tiny_alignment_and_gradient": {
+    "batch": 2,
+    "student_prompt_lengths": [
+      5,
+      10
+    ],
+    "teacher_prompt_lengths": [
+      52,
+      51
+    ],
+    "response_lengths": [
+      5,
+      1
+    ],
+    "supervised_tokens": 4,
+    "chunk1_loss": 0.002151941182091832,
+    "full_teacher_expected": 0.002151820110157132,
+    "teacher_gradient_absent": true,
+    "student_gradient_finite_nonzero": true
+  },
+  "scope": "CPU tiny random Qwen; not 3B/FSDP/GPU/search effectiveness"
+}
