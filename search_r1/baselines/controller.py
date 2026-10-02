@@ -172,7 +172,18 @@ class Controller:
             self.ranker.validation = False
             self.ranker.events.clear()
         tree = self.config.tree if self.method == 'tree_grpo' else None
+        audit_dir = os.environ.get('SEARCH_R1_TREE_AUDIT_DIR')
+        if tree is not None and audit_dir:
+            from .tree_audit import TreeAudit
+            self.tree_audit_sequence = getattr(self, 'tree_audit_sequence', 0) + 1
+            engine.audit = TreeAudit(audit_dir, os.environ.get('SEARCH_R1_BASELINE_OUTPUT'),
+                                     self.trainer.global_steps, self.tree_audit_sequence,
+                                     qa_batch.non_tensor_batch['index'].tolist())
+            engine.audit.report['algorithm_source_commit'] = getattr(self.config, 'algorithm_source_commit', None)
+            engine.audit.report['base_commit'] = getattr(self.config, 'base_commit', None)
         output, sources = engine.run(gen_batch, tree)
+        if engine.audit is not None:
+            self.latest_tree_audit = engine.audit
         costs = engine.cost.copy()
         if self.method == 'bapo' and not self.stage.early:
             states = engine.last_states
@@ -191,6 +202,14 @@ class Controller:
                 output, sources = engine.compose(states)
         metrics.update({'rollout/' + k: v for k, v in costs.items()})
         return output, sources
+
+    def audit_actor_batch(self, batch):
+        if self.method != 'tree_grpo' or not os.environ.get('SEARCH_R1_TREE_AUDIT_DIR'):
+            return
+        audit = getattr(self, 'latest_tree_audit', None)
+        if audit is None:
+            raise ValueError('Actor Tree audit has no completed rollout evidence')
+        audit.policy_batch(batch, self.trainer.global_steps)
 
     def main_f1_reward(self, data):
         answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)

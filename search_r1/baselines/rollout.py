@@ -77,6 +77,7 @@ class SearchRollout:
         self.context_alignment = context_alignment
         self.ranker = ranker
         self.rng = random.Random(seed)
+        self.audit = None
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
                          trajectories=0, padded_rows=0, context_mismatches=0)
 
@@ -202,6 +203,7 @@ class SearchRollout:
         self.cost = dict.fromkeys(self.cost, 0)
         states = self.initial_states(gen_batch)
         self.tree_candidate_counts = []
+        roots = states[:]
         snapshots = self.complete(states, gen_batch.meta_info)
         if tree is not None:
             leaves_by_root = [[root] for root in states]
@@ -213,7 +215,12 @@ class SearchRollout:
                 children, owners = [], []
                 for root_index, nodes in enumerate(snapshots):
                     if nodes:
-                        children.extend(self.rng.choice(nodes).branch() for _ in range(tree.expansions))
+                        for _ in range(tree.expansions):
+                            parent = self.rng.choice(nodes)
+                            child = parent.branch()
+                            if self.audit is not None:
+                                self.audit.branch(parent, child)
+                            children.append(child)
                         owners.extend([root_index] * tree.expansions)
                 if not children:
                     break
@@ -237,4 +244,7 @@ class SearchRollout:
                 selected.extend(self.rng.sample(leaves, tree.leaves))
             states = selected
         self.last_states = states
-        return self.compose(states)
+        output, sources = self.compose(states)
+        if self.audit is not None:
+            self.audit.finish(states, output, sources, roots, tree, self.tokenizer.pad_token_id)
+        return output, sources

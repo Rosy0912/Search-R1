@@ -893,6 +893,9 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            audit_controller = getattr(self, 'baseline_controller', None)
+                            if hasattr(audit_controller, 'audit_actor_batch'):
+                                audit_controller.audit_actor_batch(batch)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
