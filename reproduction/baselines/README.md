@@ -1,9 +1,10 @@
 # Search-R1 上的六种算法移植
 
 基线固定为私有仓库 `shaoshitong/Search-R1` 的
-`b251ba6b503217a59cd3395c1326d7b66b602989`。本地独立目录：
+`9ab694499ad3913b67499f7a4ea13da6b544d459`（分支 `search-r1`）。算法实现迁移自旧独立分支 `6818496`，原始审计的b251基点保留在历史报告。
+[迁移报告](migration-search-r1-20261002/REPORT.md)说明兼容处理和最新验收。本地独立目录：
 `/Users/shaoshitong/Documents/Search-R1-RL-Baselines`；分支
-`codex/search-r1-rl-baselines`。没有修改原复现 agent 的 checkout、H20 环境、数据或正在运行的任务。
+`search-rl-algorithm`。没有修改原复现 agent 的 checkout、H20 环境、数据或正在运行的任务。
 
 当前状态：六种算法的入口、rollout/reward/advantage/optimizer 数据流已实现，
 CPU 集成和独立论文/源码审查已完成；A800 两卡 tiny CUDA/FSDP 更新和辅助 ranker
@@ -19,7 +20,8 @@ GPU 测试范围和原始记录见 [A800 测试报告](gpu-validation.md)。
 
 继承 reviewed base 的 Qwen2.5-3B **base**、原始 Search-R1 prompt、NQ+HotpotQA 混合
 169,615 条原训练数据中按问题固定划分 98%训练/2%阶段验证（六算法与新增GRPO共用），
-七个最终评测集 51,713 条不参与阶段切换，Wiki18/E5-base-v2 检索器保持。
+周期验证按新基座使用validation-64，训练终端切到全部七集51,713题；两者均不参与阶段切换，
+Wiki18/E5-base-v2 检索器保持。
 四个动作、无额外最终强制生成、每动作最多 500 token、observation 500 token、
 起始前缀 2048、rolling/right-side cap 4096、检索 top-k=3、采样温度/top-p=1。
 学习率 1e-6，warmup ratio=.285，500 个外层更新（旧 driver 门限 501）。

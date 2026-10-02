@@ -96,7 +96,12 @@ def validate_assets_and_retriever(config):
         AutoTokenizer.from_pretrained(str(path), local_files_only=True)
         if not any(path.glob('*.safetensors')) and not any(path.glob('pytorch_model*.bin')):
             raise ValueError(f'Missing model weights: {path}')
-    for value in paths(config.data.train_files) + paths(config.data.val_files):
+    dataset_paths = paths(config.data.train_files) + paths(config.data.val_files)
+    if config.data.get('final_val_files'):
+        dataset_paths += paths(config.data.final_val_files)
+    if method == 'bapo':
+        dataset_paths += paths(config.baselines.bapo.stage_validation_files)
+    for value in dataset_paths:
         if not Path(value).expanduser().is_file():
             raise ValueError(f'Missing dataset: {value}')
     count = config.baselines.ranker.candidates if method == 'cosearch' else config.retriever.topk

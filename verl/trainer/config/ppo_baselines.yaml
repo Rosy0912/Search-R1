@@ -5,9 +5,10 @@ defaults:
 # Inputs are shared read-only. Outputs MUST be in a separate run directory.
 data:
   train_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/train.parquet
-  val_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/test.parquet
+  val_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/validation-64.parquet
+  final_val_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/test.parquet
   train_batch_size: 512
-  val_batch_size: 256
+  val_batch_size: 64
   max_prompt_length: 4096
   max_response_length: 500
   max_start_length: 2048
@@ -57,6 +58,8 @@ trainer:
   total_training_steps: 501
   save_freq: 100
   test_freq: 50
+  acceptance_step: 5
+  val_before_train: true
   project_name: Search-R1-RL-Baselines
   experiment_name: ${baselines.method}-qwen2.5-3b
   logger: [console]
@@ -65,6 +68,8 @@ trainer:
 
 baselines:
   method: gigpo
+  base_commit: 9ab694499ad3913b67499f7a4ea13da6b544d459
+  algorithm_source_commit: 68184965c532fe30fef0d89c3ea19f976ac3bd63
   seed: 42
   context_alignment: report
   holdout:

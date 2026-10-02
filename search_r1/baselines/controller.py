@@ -86,7 +86,10 @@ def validate_config(config):
         holdout = config.baselines.bapo.stage_validation_files
         if config.baselines.bapo.stage_validation_freq < 1:
             raise ValueError('BAPO stage validation frequency must be positive')
-        if not holdout or canonical_paths(holdout) & canonical_paths(config.data.val_files):
+        evaluation_paths = canonical_paths(config.data.val_files)
+        if config.data.get('final_val_files'):
+            evaluation_paths |= canonical_paths(config.data.final_val_files)
+        if not holdout or canonical_paths(holdout) & evaluation_paths:
             raise ValueError('BAPO requires independent stage_validation_files; never use final test sets')
     if method == 'cosearch':
         ranker = config.baselines.ranker
@@ -137,6 +140,13 @@ class Controller:
             keys = question_keys(dataset, prompt_key)
             if keys & (question_keys(trainer.val_dataset, prompt_key) | question_keys(trainer.train_dataset, prompt_key)):
                 raise ValueError('BAPO stage holdout overlaps training or final-test questions')
+            final_files = trainer.config.data.get('final_val_files')
+            if final_files:
+                final_dataset = RLHFDataset(final_files, trainer.tokenizer,
+                    prompt_key=prompt_key, max_prompt_length=trainer.config.data.max_prompt_length,
+                    filter_prompts=True, return_raw_chat=False, truncation='error')
+                if keys & question_keys(final_dataset, prompt_key):
+                    raise ValueError('BAPO stage holdout overlaps full final-test questions')
             self.stage_dataset = dataset
             self.stage_loader = DataLoader(dataset, batch_size=trainer.config.data.val_batch_size,
                                            shuffle=False, drop_last=False, collate_fn=collate_fn)
@@ -282,7 +292,8 @@ class Controller:
         if self.ranker:
             self.ranker.save(os.path.join(directory, 'ranker'))
         state = dict(method=self.method, global_step=step, bapo=self.stage.state_dict(),
-                     base_commit='b251ba6b503217a59cd3395c1326d7b66b602989',
+                     base_commit=self.config.base_commit,
+                     algorithm_source_commit=self.config.algorithm_source_commit,
                      teacher_path=self.config.distillation.teacher_path,
                      resume_supported=False)
         temporary = os.path.join(directory, 'state.json.tmp')

@@ -1,3 +1,6 @@
+> 本分支 `search-rl-algorithm` 基于 `search-r1@9ab6944`，加入 GiGPO、Tree-GRPO、BAPO、OPSD、TOP-D、CoSearch。
+> 配方与使用方式见 [算法文档](reproduction/baselines/README.md)，迁移和验收见 [迁移报告](reproduction/baselines/migration-search-r1-20261002/REPORT.md)。
+
 > Reviewed H20 reproduction: see [reproduction/README.md](reproduction/README.md) for the pinned environment, paper-GRPO profile, upstream fixes and acceptance evidence. Full paper metrics remain pending. The original upstream README follows below.
 
 # Search-R1: Train your LLMs to reason and call a search engine with reinforcement learning

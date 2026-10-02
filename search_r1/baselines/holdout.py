@@ -73,7 +73,10 @@ def prepare_common_holdout(config):
     if not settings.enabled:
         raise ValueError('All new baseline/GRPO comparisons require the common holdout split')
     inputs = [str(Path(p).expanduser().resolve()) for p in paths(config.data.train_files)]
-    finals = [str(Path(p).expanduser().resolve()) for p in paths(config.data.val_files)]
+    evaluation_files = paths(config.data.val_files)
+    if config.data.get('final_val_files'):
+        evaluation_files += paths(config.data.final_val_files)
+    finals = sorted({str(Path(p).expanduser().resolve()) for p in evaluation_files})
     specification = dict(train=[dict(path=p, sha256=file_hash(p)) for p in inputs],
                          final=[dict(path=p, sha256=file_hash(p)) for p in finals],
                          fraction=float(settings.fraction), seed=int(settings.seed),
