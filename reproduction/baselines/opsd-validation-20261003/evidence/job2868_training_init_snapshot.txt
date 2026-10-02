@@ -1,0 +1,29 @@
+2026-10-03 05:35:18,167	INFO scripts.py:823 -- Local node IP: 10.33.0.18
+Traceback (most recent call last):
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/ray", line 10, in <module>
+    sys.exit(main())
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/ray/scripts/scripts.py", line 2668, in main
+    return cli()
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/click/core.py", line 1442, in __call__
+    return self.main(*args, **kwargs)
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/click/core.py", line 1363, in main
+    rv = self.invoke(ctx)
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/click/core.py", line 1830, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/click/core.py", line 1226, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/click/core.py", line 794, in invoke
+    return callback(*args, **kwargs)
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/ray/autoscaler/_private/cli_logger.py", line 823, in wrapper
+    return f(*args, **kwargs)
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/ray/scripts/scripts.py", line 850, in start
+    node = ray._private.node.Node(
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/ray/_private/node.py", line 332, in __init__
+    self._ray_params.update_pre_selected_port()
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/ray/_private/parameter.py", line 349, in update_pre_selected_port
+    raise ValueError(
+ValueError: Ray component worker_ports is trying to use a port number 16384 that is used by other components.
+Port information: {'gcs': 'random', 'object_manager': 'random', 'node_manager': 'random', 'gcs_server': 16384, 'client_server': 'random', 'dashboard': 8265, 'dashboard_agent_grpc': 55404, 'dashboard_agent_http': 52365, 'dashboard_grpc': 'random', 'runtime_env_agent': 64488, 'metrics_export': 65460, 'redis_shards': 'random', 'worker_ports': '9998 ports from 10002 to 19999'}
+If you allocate ports, please make sure the same port is not used by multiple components.
+srun: error: h100-10: task 0: Exited with exit code 1
+1

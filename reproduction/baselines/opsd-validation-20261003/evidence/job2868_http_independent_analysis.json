@@ -1,0 +1,20 @@
+{
+  "job_id": "2868",
+  "actual_live_http_independently_verified": {
+    "3": {
+      "queries": 8,
+      "each_row_documents": 3,
+      "ordered_content_exact": true,
+      "max_abs_score_delta": 1.7881393432617188e-07,
+      "seconds": 42.1317344866693
+    },
+    "50": {
+      "queries": 8,
+      "each_row_documents": 50,
+      "ordered_content_exact": true,
+      "max_abs_score_delta": 2.384185791015625e-07,
+      "seconds": 81.35879946872592
+    }
+  },
+  "raw_sha256": "a801b89f92a53660f0da6f2a9500d0faf2eefaee1836d1566cfbc4df177cea3b"
+}

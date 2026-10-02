@@ -45,6 +45,25 @@ inv,proc=gpu_snapshot(); records=check_selected_gpus(os.environ['CUDA_VISIBLE_DE
 assert len(records)==8
 print('EIGHT_GPU_THRESHOLD_PREFLIGHT_OK',records,flush=True)
 PY
+# Check the actual isolated Ray runtime before loading expensive model/index assets.
+ray start --head --port=16384 --num-gpus=8 --num-cpus=80 --object-store-memory=8589934592 --include-dashboard=false --min-worker-port=30000 --max-worker-port=30999 --temp-dir="$runtime/ray"
+export RAY_ADDRESS=127.0.0.1:16384
+python - <<'PYRAY'
+import os,ray
+from pathlib import Path
+ray.init(address=os.environ['RAY_ADDRESS'])
+resources=ray.cluster_resources()
+assert resources.get('GPU')==8 and resources.get('CPU')==80, resources
+@ray.remote(num_cpus=1)
+def own_job_task():
+    import os
+    from pathlib import Path
+    return {'pid':os.getpid(),'job':os.environ['SLURM_JOB_ID'],'cgroup':Path('/proc/self/cgroup').read_text()}
+result=ray.get(own_job_task.remote(),timeout=60)
+assert result['job']==os.environ['SLURM_JOB_ID'] and ('job_'+result['job']+'/') in result['cgroup'],result
+print('RAY_ISOLATED_CPU_TASK_OK',resources,result,flush=True)
+ray.shutdown()
+PYRAY
 # Wheel was installed before job-lock acquisition; trainer environment remains CPU FAISS.
 torchrun --standalone --nproc_per_node=8 reproduction/h20/cuda_preflight.py
 python -u "$root/tools/runtime/model_preflight.py"
@@ -85,8 +104,6 @@ listeners=subprocess.check_output(['ss','-ltnp','sport = :18084'],text=True)
 assert f'pid={pid},' in listeners,listeners
 print('CPU_RETRIEVER_OWN_PID_JOB_PORT_CONFIRMED',flush=True)
 PYCODE
-ray start --head --port=16384 --num-gpus=8 --num-cpus=80 --object-store-memory=8589934592 --include-dashboard=false --temp-dir="$runtime/ray"
-export RAY_ADDRESS=127.0.0.1:16384
 args=(actor_rollout_ref.actor.ppo_micro_batch_size=8 retriever.url=http://127.0.0.1:18084/retrieve trainer.total_training_steps=6 trainer.smoke_only=true trainer.val_before_train=true trainer.test_freq=5 trainer.experiment_name=opsd-acceptance-5 actor_rollout_ref.rollout.log_prob_micro_batch_size=8 actor_rollout_ref.ref.log_prob_micro_batch_size=8)
 bash reproduction/baselines/run.sh opsd "${args[@]}" --cfg job --resolve > "$OPSD_EVIDENCE/resolved.yaml"
 "$root/tools/uv-env/bin/uv" pip freeze --python "$root/env/bin/python" > "$OPSD_EVIDENCE/environment-freeze.txt"
