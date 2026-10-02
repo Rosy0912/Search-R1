@@ -934,6 +934,11 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
+                if (getattr(self, 'baseline_controller', None) is not None
+                        and self.baseline_controller.method == 'bapo'):
+                    print('BAPO_TRAIN_METRICS_JSON=' + json.dumps(
+                        dict(step=self.global_steps, metrics=metrics), sort_keys=True,
+                        default=lambda value: value.item(), allow_nan=False), flush=True)
 
                 self.global_steps += 1
 
@@ -955,6 +960,13 @@ class RayPPOTrainer(object):
         
         loss_mask = batch.batch['info_mask'][:, -response_length:]
         batch.batch['loss_mask'] = loss_mask
+
+        if getattr(getattr(self, 'baseline_controller', None), 'method', None) == 'bapo':
+            metrics['bapo/mask_binary_errors'] = int(((loss_mask != 0) & (loss_mask != 1)).sum())
+            steps = batch.batch['step_ids']
+            metrics['bapo/mask_on_observation_tokens'] = int((loss_mask.bool() & (steps < 0) & response_mask.bool()).sum())
+            metrics['bapo/model_tokens_missing_loss'] = int((~loss_mask.bool() & (steps >= 0) & response_mask.bool()).sum())
+            metrics['bapo/mask_on_padding_tokens'] = int((loss_mask.bool() & ~response_mask.bool()).sum())
 
         metrics.update({
             'state_tokens/total': loss_mask.sum().item(),

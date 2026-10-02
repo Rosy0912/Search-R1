@@ -228,6 +228,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         metrics = {}
         updates = skipped = 0
+        bapo_logprob_stats = []
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
@@ -274,6 +275,12 @@ class DataParallelPPOActor(BasePPOActor):
 
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
+
+                if self.config.get('baseline_method') == 'bapo':
+                    valid = response_mask.bool()
+                    bapo_logprob_stats.append(torch.stack((
+                        (~torch.isfinite(old_log_prob) & valid).sum(),
+                        (~torch.isfinite(log_prob) & valid).sum(), valid.sum())).detach())
 
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
@@ -326,4 +333,11 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if self.config.get('baseline_method') == 'bapo':
+            stats = torch.stack(bapo_logprob_stats).sum(0).tolist() if bapo_logprob_stats else [0, 0, 0]
+            for key, value in zip(('old_logprob_nonfinite', 'new_logprob_nonfinite', 'loss_tokens'), stats):
+                metrics['bapo/' + key] = value
+            norms = metrics.get('actor/grad_norm', [])
+            metrics['bapo/grad_norm_min'] = min(norms) if norms else 0.
+            metrics['bapo/grad_norm_max'] = max(norms) if norms else 0.
         return metrics
