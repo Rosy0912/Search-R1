@@ -15,7 +15,7 @@ from packaging.version import Version
 
 EXPECTED = {
     "torch": "2.4.0", "vllm": "0.6.3", "transformers": "4.46.3",
-    "datasets": "3.2.0", "ray": "2.40.0", "tensordict": "0.5.0",
+    "datasets": "3.2.0", "ray": "2.40.0", "click": "8.2.1", "tensordict": "0.5.0",
     "numpy": "1.26.4", "faiss-cpu": "1.8.0.post1", "setuptools": "70.3.0",
     "flash-attn": "2.7.4.post1", "nvidia-cublas-cu12": "12.4.5.8",
     "xformers": "0.0.27.post2", "torchdata": "0.8.0",
@@ -52,7 +52,7 @@ def main():
     assert sys.version_info[:2] == (3, 10)
     actual = {name: metadata.version(name) for name in EXPECTED}
     assert all(Version(actual[n]).public == v for n, v in EXPECTED.items()), actual
-    for module in ["torch", "vllm", "flash_attn", "ray", "transformers", "datasets", "faiss", "verl"]:
+    for module in ["torch", "vllm", "flash_attn", "ray", "ray.scripts.scripts", "transformers", "datasets", "faiss", "verl"]:
         importlib.import_module(module)
     exceptions, unexpected = inspect_dependencies()
     result = {"versions": actual, "permitted_dependency_exceptions": exceptions,

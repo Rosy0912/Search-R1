@@ -1,0 +1,66 @@
+87c03c26dd1695e426d2b9e2821cc9090614874b
+JobId=2860 JobName=opsd-acceptance-5
+   UserId=root(0) GroupId=root(0) MCS_label=N/A
+   Priority=4294899206 Nice=0 Account=(null) QOS=(null)
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:01 TimeLimit=2-00:00:00 TimeMin=N/A
+   SubmitTime=2026-10-03T05:02:36 EligibleTime=2026-10-03T05:02:36
+   AccrueTime=2026-10-03T05:02:36
+   StartTime=2026-10-03T05:02:36 EndTime=2026-10-05T05:02:36 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-03T05:02:36 Scheduler=Main
+   Partition=gpu AllocNode:Sid=h100-16:249242
+   ReqNodeList=h100-10 ExcNodeList=(null)
+   NodeList=h100-10
+   BatchHost=h100-10
+   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=192,mem=1T,node=1,billing=192
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=96 MinMemoryNode=1T MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=(null)
+   WorkDir=/root
+   StdErr=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-2860.out
+   StdIn=/dev/null
+   StdOut=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-2860.out
+   Power=
+   TresPerNode=gres:gpu:h100:8
+   
+
+OWN_PORTS_FREE
+BASELINE_GPU_OCCUPANCY_JSON={"compute_processes": [], "inventory": {"0": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"}, "1": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"}, "2": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-db94211b-42d5-88d0-f626-60e777af3be6"}, "3": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-308b13c1-44ea-47b7-7b33-01a928099618"}, "4": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"}, "5": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"}, "6": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"}, "7": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"}}}
+EIGHT_GPU_THRESHOLD_PREFLIGHT_OK [{'uuid': 'GPU-2c3bdc08-b976-0fb5-79bd-04def458046b', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-6e00764e-3916-65f2-436e-568aa0c70fc5', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-db94211b-42d5-88d0-f626-60e777af3be6', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-308b13c1-44ea-47b7-7b33-01a928099618', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-525a9efc-446e-333d-11ff-e1f2213d15c8', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-d61d94cd-3d24-fa07-8761-33961a14d995', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}, {'uuid': 'GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5', 'memory_used': 0.0, 'memory_total': 81559.0, 'utilization': 0.0}]
+GPU_NCCL_BF16_OK 8 2.4.0+cu121
+REAL_FLASH_BF16_FORWARD_BACKWARD_OK
+/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+No module named 'vllm._version'
+  from vllm.version import __version__ as VLLM_VERSION
+WARNING 10-03 05:03:04 config.py:380] To see benefits of async output processing, enable CUDA graph. Since, enforce-eager is enabled, async output processor cannot be used
+INFO 10-03 05:03:04 llm_engine.py:237] Initializing an LLM engine (vdev) with config: model='/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b', speculative_config=None, tokenizer='/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config=None, rope_scaling=None, rope_theta=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=1024, download_dir=None, load_format=LoadFormat.AUTO, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=True, kv_cache_dtype=auto, quantization_param_path=None, device_config=cuda, decoding_config=DecodingConfig(guided_decoding_backend='outlines'), observability_config=ObservabilityConfig(otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=0, served_model_name=/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b, use_v2_block_manager=True, num_scheduler_steps=1, chunked_prefill_enabled=False multi_step_stream_outputs=True, enable_prefix_caching=False, use_async_output_proc=False, use_cached_outputs=False, mm_processor_kwargs=None)
+INFO 10-03 05:03:05 selector.py:115] Using XFormers backend.
+/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_fwd")
+/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_bwd")
+INFO 10-03 05:03:05 model_runner.py:1060] Starting to load model /mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b...
+INFO 10-03 05:03:05 selector.py:115] Using XFormers backend.
+
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:00<00:00,  2.87it/s]
+
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.34it/s]
+
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.45it/s]
+
+INFO 10-03 05:03:07 model_runner.py:1071] Loading model weights took 5.7915 GB
+INFO 10-03 05:03:08 gpu_executor.py:122] # GPU blocks: 3732, # CPU blocks: 7281
+INFO 10-03 05:03:08 gpu_executor.py:126] Maximum concurrency for 1024 tokens per request: 58.31x
+
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  3.90it/s, est. speed input: 19.51 toks/s, output: 62.43 toks/s]
+Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  3.90it/s, est. speed input: 19.51 toks/s, output: 62.43 toks/s]
+REAL_3B_VLLM_CUDA_OK ' Paris. The capital of the United States is Washington, D.C. The capital'
+BASELINE_GPU_OCCUPANCY_JSON={"compute_processes": [], "inventory": {"0": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 1.0, "uuid": "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"}, "1": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"}, "2": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-db94211b-42d5-88d0-f626-60e777af3be6"}, "3": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-308b13c1-44ea-47b7-7b33-01a928099618"}, "4": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"}, "5": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"}, "6": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"}, "7": {"memory_total": 81559.0, "memory_used": 0.0, "utilization": 0.0, "uuid": "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"}}}
+POST_MODEL_PREFLIGHT_GPU_IDLE_OK

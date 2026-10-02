@@ -1,0 +1,14 @@
+{
+  "review_time_utc": "2026-10-02T21:15:45.432215+00:00",
+  "click_expected_and_both_pins": "8.2.1",
+  "dependency_inspection_ast_unchanged": true,
+  "additional_ready_import": "ray.scripts.scripts",
+  "cuBLAS_exception_not_expanded": true,
+  "files_sha256": {
+    "reproduction/h20/check_environment.py": "8360e128cca67aa2cd41a8cec81b54d17798be105c205e5edae9e62fd138df93",
+    "reproduction/h20/requirements-h20.txt": "81efc232e9f472fa492d517a51909a1da4b67f0f496d09dc51f95dbc7d868ae7",
+    "reproduction/h20/constraints-h20.txt": "4e78f95da43590835400d962559fc0d42183d37d686349d1dca928a99575fda9"
+  },
+  "result": "PASS static repair consistency; real environment check evidence still required",
+  "gpu_training_or_five_iterations_accepted": false
+}

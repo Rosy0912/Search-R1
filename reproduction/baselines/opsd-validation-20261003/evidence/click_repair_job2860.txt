@@ -1,0 +1,9 @@
+Using Python 3.10.12 environment at: /mnt/data/shaoshitong/search-r1-rl/opsd/env
+Resolved 1 package in 1.13s
+Prepared 1 package in 187ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 40ms
+ - click==8.5.0
+ + click==8.2.1
+ray, version 2.40.0
+RAY_CLI_IMPORT_OK

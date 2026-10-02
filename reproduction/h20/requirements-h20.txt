@@ -5,6 +5,8 @@ vllm==0.6.3
 transformers==4.46.3
 datasets==3.2.0
 ray==2.40.0
+# Ray 2.40 CLI deep-copies Click commands; Click 8.3 Sentinel breaks startup.
+click==8.2.1
 tensordict==0.5.0
 numpy==1.26.4
 faiss-cpu==1.8.0.post1

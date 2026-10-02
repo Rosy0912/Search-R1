@@ -1,0 +1,562 @@
+{
+  "slurm_job_id": "2860",
+  "comparison_sha256": "076718989a6e516408cd06bffe5a965563935b41792ab5db2fcc8d476241b96e",
+  "all_query_top3_ids_contents_and_order_exact": true,
+  "all_query_top50_unique_id_and_content_sets_exact": true,
+  "rows": [
+    {
+      "query_index": 0,
+      "query": "total number of death row inmates in the us",
+      "top3_ids": [
+        12964449,
+        16754807,
+        6823959
+      ],
+      "top3_scores_cpu": [
+        0.8882257342338562,
+        0.8820832967758179,
+        0.8803211450576782
+      ],
+      "top3_scores_gpu": [
+        0.8882196545600891,
+        0.8821263313293457,
+        0.8803468346595764
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 4,
+      "first_moved_cpu_rank": 17,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 2,
+      "max_reversed_cpu_score_gap": 6.586313247680664e-05,
+      "max_same_id_score_delta": 8.064508438110352e-05,
+      "moved": [
+        {
+          "id": 4634118,
+          "cpu_rank": 17,
+          "gpu_rank": 18,
+          "cpu_score": 0.8571306467056274,
+          "gpu_score": 0.8571483492851257,
+          "content_sha256": "f2a72d29436e6d37903c6dbeb33b03a4552ef98520a1e997f0bff12c58b5561b"
+        },
+        {
+          "id": 2739628,
+          "cpu_rank": 18,
+          "gpu_rank": 17,
+          "cpu_score": 0.857116162776947,
+          "gpu_score": 0.8571488261222839,
+          "content_sha256": "52e3e92f759a4d76b828b2e62e7549998a2460849bf5127108c0d0b8dff78739"
+        },
+        {
+          "id": 15460378,
+          "cpu_rank": 31,
+          "gpu_rank": 32,
+          "cpu_score": 0.8436086177825928,
+          "gpu_score": 0.843598484992981,
+          "content_sha256": "ff8995b2c8adbbb1fd04bb54be0d5590bdee60b6549e965e69faef0961148590"
+        },
+        {
+          "id": 20217647,
+          "cpu_rank": 32,
+          "gpu_rank": 31,
+          "cpu_score": 0.843542754650116,
+          "gpu_score": 0.8436233997344971,
+          "content_sha256": "f30cf959bf10b3ef3ee9e5292834e3b69678006166e2f945b6e76743958237c4"
+        }
+      ]
+    },
+    {
+      "query_index": 1,
+      "query": "what is the meaning of by hook or cook",
+      "top3_ids": [
+        17932575,
+        269947,
+        3539512
+      ],
+      "top3_scores_cpu": [
+        0.8388446569442749,
+        0.8329086303710938,
+        0.8257539868354797
+      ],
+      "top3_scores_gpu": [
+        0.8387698531150818,
+        0.8329249620437622,
+        0.8257550597190857
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 4,
+      "first_moved_cpu_rank": 20,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 2,
+      "max_reversed_cpu_score_gap": 1.8417835235595703e-05,
+      "max_same_id_score_delta": 7.593631744384766e-05,
+      "moved": [
+        {
+          "id": 18145899,
+          "cpu_rank": 20,
+          "gpu_rank": 21,
+          "cpu_score": 0.8162549734115601,
+          "gpu_score": 0.8162416219711304,
+          "content_sha256": "382035c850d0689b48e045f31c1fc798bcb7258c01e3f607ab15fbaf1a958445"
+        },
+        {
+          "id": 1779007,
+          "cpu_rank": 21,
+          "gpu_rank": 20,
+          "cpu_score": 0.8162365555763245,
+          "gpu_score": 0.8162508010864258,
+          "content_sha256": "c247a85781f0190767d9f5a91f48ed9c0238bd9f678bdac9018d32dde749ffb6"
+        },
+        {
+          "id": 17271032,
+          "cpu_rank": 34,
+          "gpu_rank": 35,
+          "cpu_score": 0.8105303049087524,
+          "gpu_score": 0.8104919791221619,
+          "content_sha256": "f47a9dc12ac836642b40c42734643077c0f918fbfa50217d162f71e88f1fd781"
+        },
+        {
+          "id": 6662564,
+          "cpu_rank": 35,
+          "gpu_rank": 34,
+          "cpu_score": 0.8105276823043823,
+          "gpu_score": 0.8105147480964661,
+          "content_sha256": "51d98661a100570bf76f8864083bdb1227144b6f009cd1f6e0b9e49d8a52d59b"
+        }
+      ]
+    },
+    {
+      "query_index": 2,
+      "query": "who plays the army guy in pitch perfect 3",
+      "top3_ids": [
+        2244147,
+        6670881,
+        6680847
+      ],
+      "top3_scores_cpu": [
+        0.8626410961151123,
+        0.8584326505661011,
+        0.8390429019927979
+      ],
+      "top3_scores_gpu": [
+        0.8626817464828491,
+        0.8584710359573364,
+        0.8390860557556152
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 4,
+      "first_moved_cpu_rank": 37,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 2,
+      "max_reversed_cpu_score_gap": 4.8995018005371094e-05,
+      "max_same_id_score_delta": 9.179115295410156e-05,
+      "moved": [
+        {
+          "id": 10215573,
+          "cpu_rank": 37,
+          "gpu_rank": 38,
+          "cpu_score": 0.8116017580032349,
+          "gpu_score": 0.8115910887718201,
+          "content_sha256": "c46eac857615dbe4e4f279a725ec59268167443f69ba1415d07bee608be4b1d1"
+        },
+        {
+          "id": 14351546,
+          "cpu_rank": 38,
+          "gpu_rank": 37,
+          "cpu_score": 0.8115527629852295,
+          "gpu_score": 0.8115944266319275,
+          "content_sha256": "76783118ace73c3303229f8e86d8c67fdb7fa9b57b2873cdc3babe37cfbaca31"
+        },
+        {
+          "id": 12333789,
+          "cpu_rank": 44,
+          "gpu_rank": 45,
+          "cpu_score": 0.8101897835731506,
+          "gpu_score": 0.8102111220359802,
+          "content_sha256": "b21003d92df3f21e53f2a1a04b7e76bf1ce0642bc4e406753515be67b1543c48"
+        },
+        {
+          "id": 18947318,
+          "cpu_rank": 45,
+          "gpu_rank": 44,
+          "cpu_score": 0.8101810812950134,
+          "gpu_score": 0.8102217316627502,
+          "content_sha256": "994a695d272e341babe824d1f7ebcdfeeb50ad74378b6834db0d69931cb48b66"
+        }
+      ]
+    },
+    {
+      "query_index": 3,
+      "query": "Which magazine was started first Arthur's Magazine or First for Women?",
+      "top3_ids": [
+        95403,
+        95404,
+        14417198
+      ],
+      "top3_scores_cpu": [
+        0.8365017175674438,
+        0.831436812877655,
+        0.8239043354988098
+      ],
+      "top3_scores_gpu": [
+        0.8365376591682434,
+        0.8314675092697144,
+        0.8239458203315735
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 2,
+      "first_moved_cpu_rank": 21,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 1,
+      "max_reversed_cpu_score_gap": 2.086162567138672e-05,
+      "max_same_id_score_delta": 0.00010466575622558594,
+      "moved": [
+        {
+          "id": 4077806,
+          "cpu_rank": 21,
+          "gpu_rank": 22,
+          "cpu_score": 0.7995642423629761,
+          "gpu_score": 0.7996101975440979,
+          "content_sha256": "35f6d6e41fa330ffd6dbd7e819d4243ec09c177d49caea325870a96fd248e4a1"
+        },
+        {
+          "id": 8198272,
+          "cpu_rank": 22,
+          "gpu_rank": 21,
+          "cpu_score": 0.7995433807373047,
+          "gpu_score": 0.7996190786361694,
+          "content_sha256": "7ac75e0110cd3ae30797c3866b08ae28104cb4d2dbe18fa731a0938f51c92d03"
+        }
+      ]
+    },
+    {
+      "query_index": 4,
+      "query": "Interpretations of Fight Club is a movie that starred what person know for their roles in low-budget arthouse and independent films?",
+      "top3_ids": [
+        5674930,
+        20480681,
+        16538856
+      ],
+      "top3_scores_cpu": [
+        0.7986185550689697,
+        0.7940043210983276,
+        0.7921910285949707
+      ],
+      "top3_scores_gpu": [
+        0.7985854744911194,
+        0.7939974665641785,
+        0.792222261428833
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 10,
+      "first_moved_cpu_rank": 12,
+      "max_rank_displacement": 2,
+      "inverted_pairs": 7,
+      "max_reversed_cpu_score_gap": 3.7610530853271484e-05,
+      "max_same_id_score_delta": 8.398294448852539e-05,
+      "moved": [
+        {
+          "id": 7233243,
+          "cpu_rank": 12,
+          "gpu_rank": 13,
+          "cpu_score": 0.7769153714179993,
+          "gpu_score": 0.7768486738204956,
+          "content_sha256": "9bc3507f87cc8ba9659d2d23538b51b0b91dbfe086f5336a7c4c284c50419387"
+        },
+        {
+          "id": 20480690,
+          "cpu_rank": 13,
+          "gpu_rank": 12,
+          "cpu_score": 0.7768932580947876,
+          "gpu_score": 0.7768893837928772,
+          "content_sha256": "cabe78fe7f5507a50288aa92479d44a9ddff82f72681edd1c5b3bc0f8110f927"
+        },
+        {
+          "id": 3040546,
+          "cpu_rank": 18,
+          "gpu_rank": 19,
+          "cpu_score": 0.7721141576766968,
+          "gpu_score": 0.772097647190094,
+          "content_sha256": "6367d72a4f730f9f71965a56ad628c1691af2c7a145f4bf4d5e53ca90083656d"
+        },
+        {
+          "id": 3040545,
+          "cpu_rank": 19,
+          "gpu_rank": 18,
+          "cpu_score": 0.7721141576766968,
+          "gpu_score": 0.772097647190094,
+          "content_sha256": "6367d72a4f730f9f71965a56ad628c1691af2c7a145f4bf4d5e53ca90083656d"
+        },
+        {
+          "id": 11003313,
+          "cpu_rank": 25,
+          "gpu_rank": 26,
+          "cpu_score": 0.7671865224838257,
+          "gpu_score": 0.7671195864677429,
+          "content_sha256": "151de729ccf6914b9fd9117494390521381f15cc43af2eeb64d10f531c8643de"
+        },
+        {
+          "id": 11483639,
+          "cpu_rank": 26,
+          "gpu_rank": 25,
+          "cpu_score": 0.7671815752983093,
+          "gpu_score": 0.7671246528625488,
+          "content_sha256": "a279ece950d31467481e57f200cfe62e124194419956281ef5426eb6baf1deb2"
+        },
+        {
+          "id": 6750718,
+          "cpu_rank": 42,
+          "gpu_rank": 43,
+          "cpu_score": 0.7651703953742981,
+          "gpu_score": 0.7651143074035645,
+          "content_sha256": "9614325414d5f754d0aaa720fbebd4e3db9bf748ed4f6988fb2761a1b7f04e28"
+        },
+        {
+          "id": 12979901,
+          "cpu_rank": 43,
+          "gpu_rank": 42,
+          "cpu_score": 0.7651593089103699,
+          "gpu_score": 0.7651604413986206,
+          "content_sha256": "d88523da79387495ab05bf99eee052c528c11b9627aafbd3547e809e90fd1201"
+        },
+        {
+          "id": 2281667,
+          "cpu_rank": 45,
+          "gpu_rank": 47,
+          "cpu_score": 0.7646238803863525,
+          "gpu_score": 0.7645699977874756,
+          "content_sha256": "a3b93a901ff1f55b5d3c691e5c78f2e0645cb7d8ec84e58d4f651daf4e45ce06"
+        },
+        {
+          "id": 12585612,
+          "cpu_rank": 47,
+          "gpu_rank": 45,
+          "cpu_score": 0.7645862698554993,
+          "gpu_score": 0.7645778059959412,
+          "content_sha256": "eda2cf57b84ab75d12e04d40ae833903fb0a6392b5f18465a7064f3176a5d494"
+        }
+      ]
+    },
+    {
+      "query_index": 5,
+      "query": "Vietnam national cricket team will debut at what competitions at  Kinrara Oval",
+      "top3_ids": [
+        7100828,
+        18379889,
+        9720087
+      ],
+      "top3_scores_cpu": [
+        0.8688913583755493,
+        0.8656046986579895,
+        0.8575000762939453
+      ],
+      "top3_scores_gpu": [
+        0.8688403964042664,
+        0.8655343055725098,
+        0.8576095700263977
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 8,
+      "first_moved_cpu_rank": 32,
+      "max_rank_displacement": 2,
+      "inverted_pairs": 5,
+      "max_reversed_cpu_score_gap": 0.0001233220100402832,
+      "max_same_id_score_delta": 0.00012123584747314453,
+      "moved": [
+        {
+          "id": 8149979,
+          "cpu_rank": 32,
+          "gpu_rank": 33,
+          "cpu_score": 0.8169484734535217,
+          "gpu_score": 0.8169218897819519,
+          "content_sha256": "eaaad69aef0a1993594a08f5070532db0af4b6832e1157f60922dc878547198e"
+        },
+        {
+          "id": 3621777,
+          "cpu_rank": 33,
+          "gpu_rank": 32,
+          "cpu_score": 0.8169162273406982,
+          "gpu_score": 0.8169555068016052,
+          "content_sha256": "135c8a6f0a4db611f5a578fb9524ee5f76f99335be378dd909b748aea5818376"
+        },
+        {
+          "id": 56392,
+          "cpu_rank": 38,
+          "gpu_rank": 40,
+          "cpu_score": 0.8158526420593262,
+          "gpu_score": 0.8158174753189087,
+          "content_sha256": "527bc11f76b6ca280e4e134566079579c571dfae73baecf815aaecf235390e22"
+        },
+        {
+          "id": 16983355,
+          "cpu_rank": 39,
+          "gpu_rank": 38,
+          "cpu_score": 0.8158220052719116,
+          "gpu_score": 0.8158607482910156,
+          "content_sha256": "9a5d491b3940b85bdd330cbf77266150a6b3da56a2daf2a804dd537f34fd90e1"
+        },
+        {
+          "id": 5936165,
+          "cpu_rank": 40,
+          "gpu_rank": 39,
+          "cpu_score": 0.8157293200492859,
+          "gpu_score": 0.8158185482025146,
+          "content_sha256": "fd9a387e21a8d3e2c9ba91a50617062cef3d434ec8ba47ad66e6ff495b59ef0e"
+        },
+        {
+          "id": 13027324,
+          "cpu_rank": 41,
+          "gpu_rank": 43,
+          "cpu_score": 0.8154332041740417,
+          "gpu_score": 0.8153884410858154,
+          "content_sha256": "6ac78c35da16c1737845ff8325e9dd4793952cf607695a83ae0d01911999bae9"
+        },
+        {
+          "id": 3621778,
+          "cpu_rank": 42,
+          "gpu_rank": 41,
+          "cpu_score": 0.8154197931289673,
+          "gpu_score": 0.8154566287994385,
+          "content_sha256": "7b94b3172b8541a1407f34b735f3534aff820fdefc970345caa9bca9228dd7df"
+        },
+        {
+          "id": 15091065,
+          "cpu_rank": 43,
+          "gpu_rank": 42,
+          "cpu_score": 0.8153182864189148,
+          "gpu_score": 0.8154090046882629,
+          "content_sha256": "6b62ef7e6211525b7b845dee1a5821dff09268634cc45725bd623d77d9304ba7"
+        }
+      ]
+    },
+    {
+      "query_index": 6,
+      "query": "What is the capital of France?",
+      "top3_ids": [
+        1039175,
+        9447685,
+        2543511
+      ],
+      "top3_scores_cpu": [
+        0.8460636138916016,
+        0.8412661552429199,
+        0.8387601971626282
+      ],
+      "top3_scores_gpu": [
+        0.8461213111877441,
+        0.8413554430007935,
+        0.838849663734436
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 6,
+      "first_moved_cpu_rank": 24,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 3,
+      "max_reversed_cpu_score_gap": 1.990795135498047e-05,
+      "max_same_id_score_delta": 0.00011897087097167969,
+      "moved": [
+        {
+          "id": 8717833,
+          "cpu_rank": 24,
+          "gpu_rank": 25,
+          "cpu_score": 0.8254944682121277,
+          "gpu_score": 0.8255476951599121,
+          "content_sha256": "b5f047d074ae15532f964647d164053a394118d3a2e0b0b560df034a7ec0da29"
+        },
+        {
+          "id": 16136916,
+          "cpu_rank": 25,
+          "gpu_rank": 24,
+          "cpu_score": 0.8254848718643188,
+          "gpu_score": 0.8255966305732727,
+          "content_sha256": "c59945df4a2e8910c1de1b9666955f79e2b880b570ef25a012bf532fecffe399"
+        },
+        {
+          "id": 6684948,
+          "cpu_rank": 47,
+          "gpu_rank": 48,
+          "cpu_score": 0.8196759223937988,
+          "gpu_score": 0.8197407722473145,
+          "content_sha256": "04af9b3b56307bad304e0af8a514a19394678a8f22ec29e414995bbd949041bb"
+        },
+        {
+          "id": 15489871,
+          "cpu_rank": 48,
+          "gpu_rank": 47,
+          "cpu_score": 0.8196560144424438,
+          "gpu_score": 0.8197565674781799,
+          "content_sha256": "2573874241e183acd83c5a5c26472ba3813e7ee7084386cc9cab3fd8d5637bee"
+        },
+        {
+          "id": 10065990,
+          "cpu_rank": 49,
+          "gpu_rank": 50,
+          "cpu_score": 0.8194563388824463,
+          "gpu_score": 0.8195431232452393,
+          "content_sha256": "ee35705d2975efe47db4b4cf470b5ffed9375ed5bbdca1a05fab6c777c1bec90"
+        },
+        {
+          "id": 14159814,
+          "cpu_rank": 50,
+          "gpu_rank": 49,
+          "cpu_score": 0.8194502592086792,
+          "gpu_score": 0.8195459246635437,
+          "content_sha256": "5975229ac45957128eeaf23c90bd24490235b07595e2722225910a74880388df"
+        }
+      ]
+    },
+    {
+      "query_index": 7,
+      "query": "Which river flows through London?",
+      "top3_ids": [
+        18990009,
+        18990010,
+        2182608
+      ],
+      "top3_scores_cpu": [
+        0.8707985281944275,
+        0.8668520450592041,
+        0.864599347114563
+      ],
+      "top3_scores_gpu": [
+        0.8703787326812744,
+        0.8664355278015137,
+        0.8641474843025208
+      ],
+      "same_all_50_unique_ids": true,
+      "same_content_hash_for_each_matched_id": true,
+      "moved_positions": 2,
+      "first_moved_cpu_rank": 44,
+      "max_rank_displacement": 1,
+      "inverted_pairs": 1,
+      "max_reversed_cpu_score_gap": 8.285045623779297e-06,
+      "max_same_id_score_delta": 0.000479280948638916,
+      "moved": [
+        {
+          "id": 19595905,
+          "cpu_rank": 44,
+          "gpu_rank": 45,
+          "cpu_score": 0.8403999209403992,
+          "gpu_score": 0.8399206399917603,
+          "content_sha256": "6c7c0f212a9f2897e68f25902554c2783cc76004f08d3149551f624adb699658"
+        },
+        {
+          "id": 16723619,
+          "cpu_rank": 45,
+          "gpu_rank": 44,
+          "cpu_score": 0.8403916358947754,
+          "gpu_score": 0.8399480581283569,
+          "content_sha256": "2a5dd99b78a3e29daadce873daea2ba7bffd6b7ede2db3f3003f5dd51c1c60c9"
+        }
+      ]
+    }
+  ],
+  "decision": "ACCEPT CPU retrieval adaptation for this real 8-query probe; exact top3, top50 only close-score reorder; require subsequent live HTTP match to CPU and do not claim universal equivalence",
+  "gpu_training_or_five_steps_accepted": false
+}

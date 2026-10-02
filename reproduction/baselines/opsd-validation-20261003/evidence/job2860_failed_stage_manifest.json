@@ -1,0 +1,24 @@
+{
+  "review_time_utc": "2026-10-02T21:13:07.788679+00:00",
+  "slurm_job_id": "2860",
+  "commit": "87c03c26dd1695e426d2b9e2821cc9090614874b",
+  "state": "FAILED",
+  "exit_code": "1:0",
+  "completed_outer_updates": 0,
+  "real_gpu_nccl_bf16": true,
+  "real_flash_bf16_forward_backward": true,
+  "real_3b_vllm_cuda": true,
+  "retrieval_sample_adaptation_accepted": true,
+  "actual_cpu_http_verified": true,
+  "trainer_launch_failed": "Ray CLI deepcopy Click Sentinel",
+  "actual_dependency_versions": {
+    "ray": "2.40.0",
+    "click": "8.5.0",
+    "torch": "2.4.0",
+    "transformers": "4.46.3"
+  },
+  "independent_review_complete_for_failed_attempt": true,
+  "five_iteration_acceptance_complete": false,
+  "effectiveness_verified": false,
+  "hf_checkpoint_reload_verified": false
+}
