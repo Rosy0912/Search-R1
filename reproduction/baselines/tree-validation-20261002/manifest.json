@@ -1,0 +1,33 @@
+{
+  "method": "tree_grpo",
+  "status": "cpu_and_independent_review_passed_gpu_not_started",
+  "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
+  "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
+  "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
+  "common_setup_commit": null,
+  "branch": "reproduce/tree-grpo",
+  "remote_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
+  "node": "h100-9",
+  "slurm_allocation_probe": 2844,
+  "allocation_held": false,
+  "formal_outer_updates": 0,
+  "smoke_outer_updates": 0,
+  "independent_review": "INDEPENDENT_REVIEW.md",
+  "cpu_gate": {
+    "baselines_passed": 45,
+    "reproduction_tests": 61,
+    "reproduction_skipped": 1,
+    "independent_related_passed": 32
+  },
+  "asset_and_split_identity": null,
+  "environment_ready": false,
+  "gpu_hardware_integration_passed": false,
+  "model_and_reward_protocol_changed": false,
+  "known_protocol_deviations": [
+    "Search-R1 generation/scoring context window mismatch retained and counted",
+    "four turns, no forced final action",
+    "six leaves versus five GRPO trajectories",
+    "paper equal-leaf token average differs from author token-mean implementation"
+  ],
+  "notes": "No production metrics. A successful short Slurm allocation probe does not constitute GPU training acceptance."
+}
