@@ -2,7 +2,7 @@
 import torch
 from verl.workers.actor.dp_actor import DataParallelPPOActor
 from verl.utils.py_functional import append_to_dict
-from .distillation import FrozenTeacher, opsd_loss, global_token_denominator
+from .distillation import FrozenTeacher, opsd_loss, global_token_count
 from .rollout import select_rows
 
 
@@ -25,6 +25,7 @@ class DistillationActor(DataParallelPPOActor):
         metrics = {}
         settings = self.config.distillation
         updates = 0
+        skipped = 0
         mini_size = self.config.ppo_mini_batch_size
         micro_size = self.config.ppo_micro_batch_size
         if micro_size < 1 or mini_size % micro_size:
@@ -34,7 +35,11 @@ class DistillationActor(DataParallelPPOActor):
             for offset in range(0, len(data), mini_size):
                 mini = select_rows(data, slice(offset, offset + mini_size))
                 width = mini.batch['responses'].shape[1]
-                denominator = global_token_denominator(mini.batch['loss_mask'])
+                total, world = global_token_count(mini.batch['loss_mask'])
+                if total.item() == 0:
+                    skipped += 1
+                    continue
+                denominator = total / world
                 self.actor_optimizer.zero_grad()
                 for micro_offset in range(0, len(mini), micro_size):
                     micro = select_rows(mini, slice(micro_offset, micro_offset + micro_size))
@@ -49,6 +54,7 @@ class DistillationActor(DataParallelPPOActor):
                 append_to_dict(metrics, {'actor/grad_norm': float(grad_norm.detach())})
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
+        metrics['actor/skipped_empty_minibatches'] = skipped
         metrics['teacher/parameters_per_rank'] = self.teacher.parameter_count
         metrics['teacher/scored_tokens_cumulative_per_rank'] = self.teacher.scored_tokens
         return metrics

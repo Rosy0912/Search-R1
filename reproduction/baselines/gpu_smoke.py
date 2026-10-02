@@ -43,6 +43,7 @@ def worker(rank, world, port, root):
     from verl.workers.actor.dp_actor import DataParallelPPOActor
     from search_r1.baselines.actor import DistillationActor
     from search_r1.baselines.advantages import gigpo, tree_grpo, topd, grouped_center
+    from search_r1.baselines.objectives import attach_policy_weights
     from search_r1.baselines.rollout import padded
     from search_r1.baselines.bapo import BoundaryStage, boundary_scores
     from search_r1.baselines.cosearch import GenerativeRanker
@@ -71,7 +72,7 @@ def worker(rank, world, port, root):
         uid = ['q'] * 4
         scores = torch.zeros_like(mask)
         scores[:, -1] = torch.tensor([1., 0., 1., 0.])
-        for method in ('gigpo', 'tree_grpo', 'bapo', 'topd', 'opsd'):
+        for method in ('gigpo', 'tree_grpo', 'bapo', 'topd', 'opsd', 'cosearch'):
             # New model/optimizer for every algorithm. No user weights are opened.
             model = Qwen2ForCausalLM.from_pretrained(checkpoint, attn_implementation='flash_attention_2',
                                                    torch_dtype=torch.float32).to(device)
@@ -85,8 +86,10 @@ def worker(rank, world, port, root):
                                   component_clip=.05, max_student_logits_gib=1.)))
             actor = DistillationActor(config, model, optimizer, tokenizer) if method == 'opsd' else DataParallelPPOActor(config, model, optimizer)
             batch = DataProto.from_dict(dict(prompts=prompts, responses=response, input_ids=inputs,
-                            attention_mask=attention, position_ids=positions, loss_mask=mask),
-                non_tensors={'reward_model': np.array([{'ground_truth': {'target': ['Paris']}}] * 4, dtype=object)},
+                            attention_mask=attention, position_ids=positions, loss_mask=mask,
+                            info_mask=torch.cat(((prompts != tokenizer.pad_token_id).long(), mask), 1),
+                            step_ids=step_ids),
+                non_tensors={'uid': np.asarray(uid), 'reward_model': np.array([{'ground_truth': {'target': ['Paris']}}] * 4, dtype=object)},
                 meta_info=dict(temperature=1., micro_batch_size=1, use_dynamic_bsz=False, max_token_len=4096)).to(device)
             old = actor.compute_log_prob(batch)
             self_check = actor.compute_log_prob(batch)
@@ -99,6 +102,8 @@ def worker(rank, world, port, root):
             elif method == 'bapo':
                 outcomes = boundary_scores(['Paris', 'wrong', 'Paris', 'wrong'], [['Paris']] * 4, uid, BoundaryStage())
                 adv = grouped_center(torch.tensor(outcomes, device=device), uid)[:, None] * mask.to(device)
+            elif method == 'cosearch':
+                adv = grouped_center(scores.sum(-1).to(device), uid)[:, None] * mask.to(device)
             elif method == 'topd':
                 # Controlled nonconstant teacher logp checks proximal CUDA/PPO path.
                 teacher = old + scores.to(device) + torch.arange(old.shape[1], device=device)[None, :] * .01
@@ -106,6 +111,8 @@ def worker(rank, world, port, root):
             else:
                 adv = torch.zeros_like(old)
             batch.batch['advantages'] = adv
+            if method in ('gigpo', 'tree_grpo', 'topd', 'cosearch'):
+                attach_policy_weights(batch, method)
             before = [p.detach().clone() for p in model.parameters()]
             metrics = actor.update_policy(batch)
             torch.cuda.synchronize()

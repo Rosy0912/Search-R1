@@ -94,6 +94,8 @@ def clip_by_value(x, tensor_min, tensor_max):
 
 def entropy_from_logits(logits: torch.Tensor):
     """Calculate entropy from logits."""
+    if not torch.isfinite(logits).all():
+        raise ValueError('Nonfinite logits: refuse entropy/backward before masking')
     pd = torch.nn.functional.softmax(logits, dim=-1)
     entropy = torch.logsumexp(logits, dim=-1) - torch.sum(pd * logits, dim=-1)
     return entropy
@@ -101,12 +103,14 @@ def entropy_from_logits(logits: torch.Tensor):
 
 def masked_sum(values, mask, axis=None):
     """Compute mean of tensor with a masked values."""
-    return (values * mask).sum(axis=axis)
+    return (torch.where(mask != 0, values, torch.zeros_like(values)) * mask).sum(axis=axis)
 
 
 def masked_mean(values, mask, axis=None):
     """Compute mean of tensor with a masked values."""
-    return (values * mask).sum(axis=axis) / mask.sum(axis=axis)
+    numerator = masked_sum(values, mask, axis=axis)
+    denominator = mask.sum(axis=axis)
+    return numerator / torch.where(denominator != 0, denominator, torch.ones_like(denominator))
 
 
 def masked_var(values, mask, unbiased=True):

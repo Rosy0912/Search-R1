@@ -114,7 +114,8 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, 
 
     # compute kl between ref_policy and current policy
     if 'ref_log_prob' in data.batch.keys():
-        kld = core_algos.kl_penalty(data.batch['old_log_probs'], data.batch['ref_log_prob'],
+        kld = core_algos.kl_penalty(torch.where(response_mask.bool(), data.batch['old_log_probs'], 0.),
+                                    torch.where(response_mask.bool(), data.batch['ref_log_prob'], 0.),
                                     kl_penalty=kl_penalty)  # (batch_size, response_length)
         kld = kld * response_mask
         beta = kl_ctrl.value
@@ -378,7 +379,7 @@ class RayPPOTrainer(object):
         self._create_dataloader()
         self._init_logger()
         self.baseline_controller = None
-        if self.config.get('baselines') is not None:
+        if self.config.get('baselines') is not None and self.config.baselines.method != 'grpo':
             from search_r1.baselines.controller import Controller, validate_config
             validate_config(self.config)
             self.baseline_controller = Controller(self)
@@ -871,8 +872,10 @@ class RayPPOTrainer(object):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
-                        if getattr(self, 'baseline_controller', None) is not None:
-                            metrics.update(self.baseline_controller.stage_validation())
+                    if (getattr(self, 'baseline_controller', None) is not None
+                            and metrics.get('actor/optimizer_steps', 0) > 0):
+                        with _timer('stage_testing', timing_raw):
+                            metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or

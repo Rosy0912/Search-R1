@@ -165,7 +165,7 @@ class Driver(unittest.TestCase):
                     self.assertEqual(data.meta_info['temperature'], 1.)
                     self.assertEqual(data.batch['loss_mask'].shape, data.batch['responses'].shape)
                     updates.append(data)
-                    return DataProto(meta_info={'metrics': {'actor/fake_gpu_update': 1.}})
+                    return DataProto(meta_info={'metrics': {'actor/fake_gpu_update': 1., 'actor/optimizer_steps': 1.}})
                 worker.update_actor = update_actor
                 t.actor_rollout_wg = worker
                 ids = padded([t.tokenizer.encode('Question: capital?')], 0, True)
@@ -183,6 +183,11 @@ class Driver(unittest.TestCase):
                 controller.stage = BoundaryStage()
                 controller.ranker = controller.teacher = None
                 if method == 'bapo':
+                    t.val_dataloader = ['final']
+                    t.val_dataset = 'final'
+                    controller.stage_loader = ['holdout']
+                    controller.stage_dataset = 'holdout'
+                    t._validate = lambda: {'val/test_score/nq': 0.2, 'val/evaluated_count/nq': 1}
                     t.reward_fn = BoundaryReward(t.tokenizer, controller.stage)
                 elif method == 'topd':
                     class Scorer:
@@ -208,6 +213,10 @@ class Driver(unittest.TestCase):
                            lambda self, queries: ['Paris'] * len(queries)):
                     t.fit()
                 self.assertEqual(len(updates), 1)
+                if method == 'bapo':
+                    self.assertEqual(controller.stage.best, 0.2)
+                    self.assertEqual(t.val_dataloader, ['final'])
+                    self.assertIsNone(t.val_reward_fn)
                 self.assertEqual(len(updates[0]), 6 if method == 'tree_grpo' else 2)
 
 
