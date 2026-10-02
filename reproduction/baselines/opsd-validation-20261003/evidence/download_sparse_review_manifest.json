@@ -1,0 +1,18 @@
+{
+  "time_utc": "2026-10-02T20:12:19.758556+00:00",
+  "reviewer": "independent opsd_review",
+  "result": "PASS static and CPU only; no deployment blocker",
+  "files_sha256": {
+    "reproduction/h20/download_assets.py": "3b9bf496bb7a1bb61107d972e5af8ea4e0fedf5ca6e277cecae2ce8362478b39",
+    "tests/reproduction/test_runtime_adaptations.py": "02dc4d5374f6ae3c3e91d73e406f840b34e75b2c7a341831ae750c6d3ee4c495"
+  },
+  "regression": "10 passed, 1 skipped (Linux procfs absent on Mac)",
+  "extra_cases": [
+    "actual zero-block 65MiB sparse interruption retention",
+    "success code but invalid upstream SHA rejected",
+    "correct complete size/SHA promoted",
+    "64MiB curl threshold"
+  ],
+  "remote_download_executed_by_reviewer": false,
+  "gpu_or_five_iteration_acceptance": false
+}

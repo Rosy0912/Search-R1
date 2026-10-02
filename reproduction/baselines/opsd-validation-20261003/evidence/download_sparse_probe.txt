@@ -1,0 +1,39 @@
+START sparse_interrupted 68157440
+RELAY_NEEDED sparse_interrupted curl_exit 1
+START sparse_false_success 68157440
+SHA_MISMATCH sparse_false_success
+START sparse_verified_success 68157440
+VERIFIED sparse_verified_success 68157440
+RETAINED_REJECTED_PARTIAL /var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/tmp81lwkj4e/assets/boundary_curl.partial.rejected.1790971878521170000
+START boundary_curl 67108864
+RELAY_NEEDED boundary_curl curl_exit 1
+{
+  "sparse_interrupted": {
+    "ok": false,
+    "promoted": false,
+    "sparse_allocated_bytes_before": 0,
+    "logical_bytes": 68157440,
+    "tool": "aria2c"
+  },
+  "sparse_false_success": {
+    "ok": false,
+    "promoted": false,
+    "sparse_allocated_bytes_before": 0,
+    "logical_bytes": 68157440,
+    "tool": "aria2c"
+  },
+  "sparse_verified_success": {
+    "ok": true,
+    "promoted": true,
+    "sparse_allocated_bytes_before": 0,
+    "logical_bytes": 68157440,
+    "tool": "aria2c"
+  },
+  "boundary_curl": {
+    "ok": false,
+    "promoted": false,
+    "sparse_allocated_bytes_before": 0,
+    "logical_bytes": 67108864,
+    "tool": "curl"
+  }
+}

@@ -39,7 +39,12 @@ def fetch(a):
     # Canonical metadata and hashes were fetched from huggingface.co on Mac.
     url = 'https://hf-mirror.com'+prefix+a['repo']+'/resolve/'+a['revision']+'/'+a['file']
     temp = dest.with_name(dest.name+'.partial')
-    if temp.exists() and a['size'] and temp.stat().st_size >= a['size']:
+    # A sparse aria2 file can have its final logical size while chunks are missing.
+    # Preserve its bitmap/partial pair so interrupted transfers really resume.
+    use_aria2 = (a['size'] or 0) > 64*1024**2
+    aria_state = temp.with_name(temp.name+'.aria2')
+    if (temp.exists() and a['size'] and temp.stat().st_size >= a['size']
+            and not (use_aria2 and aria_state.exists())):
         if valid(temp, a):
             temp.replace(dest)
             return True
@@ -50,7 +55,7 @@ def fetch(a):
             aria_state.replace(rejected.with_name(rejected.name+'.aria2'))
         print('RETAINED_REJECTED_PARTIAL', rejected, flush=True)
     print('START', a['path'], a['size'], flush=True)
-    if (a['size'] or 0) > 8*1024**3:
+    if use_aria2:
         command = ['aria2c','--continue=true','--file-allocation=none',
             '--max-connection-per-server=8','--split=8','--min-split-size=64M',
             '--connect-timeout=10','--timeout=60','--lowest-speed-limit=1024',
@@ -63,7 +68,7 @@ def fetch(a):
             '--retry','2','--retry-delay','3','-C','-','-o',str(temp),url]
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode:
-        print('RELAY_NEEDED', a['path'], 'curl_exit', result.returncode, flush=True)
+        print('RELAY_NEEDED', a['path'], 'transfer_exit', result.returncode, flush=True)
         return False
     if a['size'] and temp.stat().st_size != a['size']:
         print('SIZE_MISMATCH', a['path'], flush=True)

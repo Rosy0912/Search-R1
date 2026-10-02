@@ -1,0 +1,80 @@
+{
+  "reviewer": "independent opsd_review",
+  "captured_at": "2026-10-02T20:02:33.126377+00:00",
+  "scope": "read-only H20 fixed asset source; no remote allocation or service reuse; no target transfer attestation",
+  "ssh_route": {
+    "alias": "jump_h20-1",
+    "options": [
+      "-T",
+      "-o BatchMode=yes",
+      "-o ConnectTimeout=15",
+      "-o StrictHostKeyChecking=yes"
+    ],
+    "credentials_included": false
+  },
+  "source_root": "/data/search-r1/assets",
+  "local_fixed_manifest": "reproduction/h20/assets.json",
+  "source_manifest_compared": true,
+  "source_manifest_comparison": "All three revision/size/sha256 fields matched the local fixed manifest in the preceding read-only inspection.",
+  "historical_verification_summary": {
+    "path": "/data/search-r1/logs/asset-verification.json",
+    "asset_count": 30,
+    "content_hashes_verified": 30,
+    "failed": [],
+    "is_current_rehash": false
+  },
+  "assets": [
+    {
+      "manifest": {
+        "repo": "PeterJinGo/wiki-18-corpus",
+        "kind": "dataset",
+        "revision": "69c1c00ffe7c5554c68d8548355cb22e46aabc51",
+        "file": "wiki-18.jsonl.gz",
+        "path": "wiki/wiki-18.jsonl.gz",
+        "size": 5123307260,
+        "sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+        "git_blob_sha1": null
+      },
+      "source_path": "/data/search-r1/assets/wiki/wiki-18.jsonl.gz",
+      "observed_size_bytes": 5123307260,
+      "current_sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+      "current_full_rehash_complete": true,
+      "hash_matches_manifest": true
+    },
+    {
+      "manifest": {
+        "repo": "PeterJinGo/wiki-18-e5-index",
+        "kind": "dataset",
+        "revision": "a4d31160a035f30764604f4827cd8f1d0315eb86",
+        "file": "part_aa",
+        "path": "wiki/part_aa",
+        "size": 42949672960,
+        "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+        "git_blob_sha1": null
+      },
+      "source_path": "/data/search-r1/assets/wiki/part_aa",
+      "observed_size_bytes": 42949672960,
+      "current_sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+      "current_full_rehash_complete": true,
+      "hash_matches_manifest": true
+    },
+    {
+      "manifest": {
+        "repo": "PeterJinGo/wiki-18-e5-index",
+        "kind": "dataset",
+        "revision": "a4d31160a035f30764604f4827cd8f1d0315eb86",
+        "file": "part_ab",
+        "path": "wiki/part_ab",
+        "size": 21609402413,
+        "sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+        "git_blob_sha1": null
+      },
+      "source_path": "/data/search-r1/assets/wiki/part_ab",
+      "observed_size_bytes": 21609402413,
+      "current_sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+      "current_full_rehash_complete": true,
+      "hash_matches_manifest": true
+    }
+  ],
+  "current_all_three_full_rehash_verified": true
+}

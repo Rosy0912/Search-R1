@@ -118,6 +118,25 @@ class AssetsTest(unittest.TestCase):
         self.assertEqual(sorted(p.read_bytes() for p in preserved),
                          sorted([rejected_payload, b"old resume state"]))
 
+    def test_sparse_aria2_final_logical_size_preserves_incomplete_progress(self):
+        a = asset(self.payload)
+        a['size'] = 65 * 1024**2
+        dest = self.base / "assets" / a['path']
+        dest.parent.mkdir(parents=True)
+        partial = dest.with_name(dest.name + '.partial')
+        with partial.open('wb') as f:
+            f.truncate(a['size'])
+        state = partial.with_name(partial.name + '.aria2')
+        state.write_bytes(b'in-progress bitmap fixture')
+        with patch.object(self.module.subprocess, 'run', return_value=
+                subprocess.CompletedProcess(['aria2c'], 1, '', 'interrupted')) as run:
+            self.assertFalse(self.module.fetch(a))
+        self.assertEqual(run.call_args.args[0][0], 'aria2c')
+        self.assertEqual(partial.stat().st_size, a['size'])
+        self.assertEqual(state.read_bytes(), b'in-progress bitmap fixture')
+        self.assertFalse(list(dest.parent.glob(partial.name + '.rejected.*')))
+        self.assertFalse(dest.exists())
+
     def test_network_failure_keeps_partial_and_does_not_promote(self):
         a = asset(self.payload)
         dest = self.base / "assets" / a["path"]
