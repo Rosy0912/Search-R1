@@ -1,0 +1,21 @@
+{
+  "review_time_utc": "2026-10-02T21:27:16.166365+00:00",
+  "script_sha256": "7a664f48c760231e3d24e9c5b81743d1f88fe88bdfacf097a28b580eebaab74b",
+  "runtime_copy_byte_identical": true,
+  "bash_syntax_pass": true,
+  "production_placeholder_socket_bytes": 83,
+  "old_failed_actual_socket_bytes": 141,
+  "actual_linux_probe": {
+    "short_bytes": 90,
+    "short_real_bind_success": true,
+    "long_bytes": 161,
+    "long_real_bind_rejected": true,
+    "gpu_allocation_or_ray_start": false,
+    "temporary_probe_cleaned_after_context": true
+  },
+  "isolation": "fresh job-specific dirs reject existing including dangling links; atomic top-level mkdir",
+  "persistent_results": "run/output and run/evidence/resources.ndjson unchanged",
+  "archiving_requirement": "archive actual referenced /tmp runtime/ray logs, not symlink alone",
+  "result": "PASS static and actual Linux AF_UNIX bind preflight",
+  "real_ray_restart_or_five_iterations_verified": false
+}

@@ -5,12 +5,16 @@ export SEARCH_R1_BASE=/mnt/data/shaoshitong/search-r1-rl/opsd
 export SEARCH_R1_ASSETS="$SEARCH_R1_BASE/assets-root" SEARCH_R1_REPO="$SEARCH_R1_BASE/repo"
 root=$SEARCH_R1_BASE
 run="$root/runs/opsd-acceptance-$SLURM_JOB_ID"
-[[ ! -e "$run" ]]
-mkdir -p "$run/evidence" "$run/runtime/tmp" "$run/runtime/ray"
-export OPSD_EVIDENCE="$run/evidence" SEARCH_R1_BASELINE_OUTPUT="$run/output" SEARCH_R1_BASELINE_RUN_ROOT="$run/runtime"
-export TMPDIR="$run/runtime/tmp" RAY_TMPDIR="$run/runtime/ray" HF_HOME="$root/cache/hf" XDG_CACHE_HOME="$run/runtime/cache"
+runtime="/tmp/o4-$SLURM_JOB_ID"
+[[ ! -e "$run" && ! -L "$run" && ! -e "$runtime" && ! -L "$runtime" ]]
+mkdir -p "$root/runs"
+mkdir "$run" "$runtime"
+mkdir "$run/evidence" "$runtime/tmp" "$runtime/ray"
+ln -s "$runtime" "$run/runtime"
+export OPSD_EVIDENCE="$run/evidence" SEARCH_R1_BASELINE_OUTPUT="$run/output" SEARCH_R1_BASELINE_RUN_ROOT="$runtime"
+export TMPDIR="$runtime/tmp" RAY_TMPDIR="$runtime/ray" HF_HOME="$root/cache/hf" XDG_CACHE_HOME="$runtime/cache"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 WANDB_MODE=offline TOKENIZERS_PARALLELISM=false
-export NCCL_NVLS_ENABLE=0 VLLM_ATTENTION_BACKEND=XFORMERS OMP_NUM_THREADS=8 RAY_DEDUP_LOGS=0
+export NCCL_NVLS_ENABLE=0 VLLM_ATTENTION_BACKEND=XFORMERS OMP_NUM_THREADS=8 RAY_DEDUP_LOGS=0 RAY_USAGE_STATS_ENABLED=0 VLLM_NO_USAGE_STATS=1
 export OPSD_TEACHER="$SEARCH_R1_ASSETS/assets/qwen2.5-3b" OPSD_GLOBAL_MICROBATCH=8
 unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
 source "$root/env/bin/activate"
@@ -20,7 +24,9 @@ exec 9>"$root/gpu-job.lock"
 flock -n 9
 [[ "${SLURM_CPUS_PER_TASK:-0}" -ge 96 ]]
 python - <<'PYCODE'
-import socket
+import os,socket
+# Ray appends its timestamp/session/socket names to this directory.
+assert len(os.fsencode(os.environ['RAY_TMPDIR']+'/session_2026-10-03_05-22-02_615594_9999999999/sockets/plasma_store')) <= 107
 for port in (18084,16384):
     with socket.socket() as s: s.bind(('127.0.0.1',port))
 print('OWN_PORTS_FREE',flush=True)
@@ -79,7 +85,7 @@ listeners=subprocess.check_output(['ss','-ltnp','sport = :18084'],text=True)
 assert f'pid={pid},' in listeners,listeners
 print('CPU_RETRIEVER_OWN_PID_JOB_PORT_CONFIRMED',flush=True)
 PYCODE
-ray start --head --port=16384 --num-gpus=8 --num-cpus=80 --object-store-memory=8589934592 --include-dashboard=false --temp-dir="$run/runtime/ray"
+ray start --head --port=16384 --num-gpus=8 --num-cpus=80 --object-store-memory=8589934592 --include-dashboard=false --temp-dir="$runtime/ray"
 export RAY_ADDRESS=127.0.0.1:16384
 args=(actor_rollout_ref.actor.ppo_micro_batch_size=8 retriever.url=http://127.0.0.1:18084/retrieve trainer.total_training_steps=6 trainer.smoke_only=true trainer.val_before_train=true trainer.test_freq=5 trainer.experiment_name=opsd-acceptance-5 actor_rollout_ref.rollout.log_prob_micro_batch_size=8 actor_rollout_ref.ref.log_prob_micro_batch_size=8)
 bash reproduction/baselines/run.sh opsd "${args[@]}" --cfg job --resolve > "$OPSD_EVIDENCE/resolved.yaml"

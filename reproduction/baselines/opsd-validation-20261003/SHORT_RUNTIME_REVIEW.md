@@ -1,0 +1,11 @@
+# Independent short runtime path review
+
+**PASS static and actual Linux AF_UNIX preflight.** Job2864's actual failure was Ray plasma socket path141bytes exceeding107. Source `job.sh` now uses `/tmp/o4-$SLURM_JOB_ID` for task runtime, consistent short TMPDIR/RAY_TMPDIR/Ray `--temp-dir` and the baseline run-root/cache path. `run.sh` respects the supplied run-root. Production result/output/evidence paths remain in the persistent job directory, with `run/runtime` a discoverable symlink to the short runtime.
+
+It rejects existing run/runtime paths including dangling symlinks; top-level directories use atomic non-`-p` mkdir, so collisions fail without entering or overwriting another task directory. The parent/root container has a shared `/tmp`, but job-specific names, existence refusal, per-task GPU lock and Slurm allocation preserve the existing isolation model. No cleanup of foreign paths/processes is added. Bash syntax and duplicate runtime-source consistency pass.
+
+The reviewer ran an actual Linux AF_UNIX bind probe in a uniquely owned temporary `/tmp/o4-rv-*` directory. A90byte path with the real Ray session/socket suffix bound successfully; a161byte version was rejected. The fixture was automatically removed. The production conservative timestamp/10digitPID placeholder is83bytes. This check requires no Ray cluster, model/GPU or other service and does not claim an actual Ray restart succeeded. Evidence: `evidence/short_runtime_review_manifest.json`.
+
+Resource sampling still targets the job shell PID and exact cgroup process membership, with `resources.ndjson` under persistent `run/evidence`; moving sockets/cache does not drop those observations. It retains the already identified service-scope memory-cgroup attribution caveat. Preserve actual raw Ray worker/session logs reached by `run/runtime/ray` before any temporary-directory removal: archiving a symlink alone will not capture its target contents. The parent has been informed; no additional implementation change is required.
+
+RAY_USAGE_STATS_ENABLED=0 and VLLM_NO_USAGE_STATS=1 affect usage reporting only. Training settings, math, source asset identity, current-job retrieval gate and result locations remain unchanged. Use a fresh Slurm job and its own comparison/marker. Actual Ray/actor startup and five-outer/final-checkpoint/HF-CUDA acceptance remain pending.

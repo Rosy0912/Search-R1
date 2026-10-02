@@ -9,6 +9,10 @@
     "reproduction/h20/requirements-h20.txt": "81efc232e9f472fa492d517a51909a1da4b67f0f496d09dc51f95dbc7d868ae7",
     "reproduction/h20/constraints-h20.txt": "4e78f95da43590835400d962559fc0d42183d37d686349d1dca928a99575fda9"
   },
-  "result": "PASS static repair consistency; real environment check evidence still required",
-  "gpu_training_or_five_iterations_accepted": false
+  "result": "PASS source consistency and actual repaired environment gate",
+  "gpu_training_or_five_iterations_accepted": false,
+  "actual_all_expected_versions_match": true,
+  "actual_only_original_cublas_exception": true,
+  "actual_unexpected_dependency_failures": [],
+  "actual_environment_sha256": "f4d54bd4e0d0ce662a78fd3799d366fa5f10eed4b333bda94042467d91c1c569"
 }

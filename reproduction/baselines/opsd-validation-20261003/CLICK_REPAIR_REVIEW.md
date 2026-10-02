@@ -1,0 +1,13 @@
+# Independent Click/Ray repair review
+
+**PASS for the scoped source/environment repair.** `requirements-h20.txt`, `constraints-h20.txt` and `check_environment.EXPECTED` consistently require Click8.2.1. The checker now imports `ray.scripts.scripts`, which executes the CLI command-alias construction that actually failed in job2860; importing only `ray` was insufficient. It does not start a Ray cluster or run GPU operations. Existing version checks and dependency auditing remain in force.
+
+The reviewer confirmed the entire `inspect_dependencies` AST is identical to the committed source: no new allowlist entry, no Click mismatch exception and no relaxation of the one exact Torch/cuBLAS exception. The main gate still requires exactly one permitted exception and zero unexpected failures. The dependency inspection evaluates currently applicable non-extra dependencies; it is not proof of every optional extras set, nor of GPU/FSDP/model runtime compatibility.
+
+Actual repair log `/mnt/data/shaoshitong/search-r1-rl/opsd/logs/click-repair-20261003.txt` shows only Click8.5.0 uninstalled and8.2.1 installed, followed by `ray, version 2.40.0` and `RAY_CLI_IMPORT_OK`. This matches the scoped compatibility fix supported by [official Ray issue56747](https://github.com/ray-project/ray/issues/56747). No Ray/Torch version or OPSD math changes are required or accepted by this delta. The reviewer did not install packages or change services. Source SHA evidence is in `evidence/click_repair_review_manifest.json`.
+
+Full Linux3.10/x86_64 `check_environment.py` must succeed with the real revised environment and retain its JSON (new Click version, original sole cuBLAS exception, empty unexpected conflicts) before the parent restores its ready marker. That outcome is still distinct from fresh-job actor/FSDP and actual five-outer/HF reload acceptance. Keep job2860 failed startup evidence and use a fresh run directory/job-bound retrieval marker for rerun.
+
+## Actual complete environment gate closure
+
+The reviewer subsequently read and saved the actual `environment-acceptance-after-click.json`: all14expected package versions match (Click8.2.1, Ray2.40.0, original Torch/vLLM/Flash versions), exactly the original Torch/cuBLAS exception remains, and `unexpected_dependency_failures` is empty. `gpu_integration_tested=false` is accurately retained. Raw evidence is `evidence/click_repaired_actual_environment.json` with SHA256 `f4d54bd4e0d0ce662a78fd3799d366fa5f10eed4b333bda94042467d91c1c569`. The complete environment gate is now independently closed; fresh-job training/retrieval marker/five-iteration acceptance remains separate.
