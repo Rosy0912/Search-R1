@@ -1,0 +1,113 @@
+{
+  "heartbeat_trigger_utc": "2026-10-02T22:33:01.048Z",
+  "recorded_at": "2026-10-02T23:45:08.006209+00:00",
+  "target_host": "baai-a800",
+  "stage": "PREPARING_NOT_TRAINING",
+  "new_updates": 0,
+  "new_reward": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "last_source_eval_step": 100,
+  "last_source_eval_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "weight_continuation_approval": "pending",
+  "source_checkpoint_step": 100,
+  "source_last_completed_step": 149,
+  "assets_materialization": {
+    "completed": true,
+    "index_bytes": 64559075373,
+    "index_sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+    "corpus_bytes": 14393579520,
+    "corpus_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+    "method": "concat two upstream-verified index parts; decompress upstream-verified corpus; size/hash before rename"
+  },
+  "checkpoint_local_archive": {
+    "bytes": 12497675939,
+    "sha256": "f5b9e0d987a7fcb352b1614e9ce4c6b5df1c9c78f3fc83a4fbe247b9f81f7f6a",
+    "verified": true,
+    "retained_until_target_verified_extracted": true
+  },
+  "checkpoint_upload": {
+    "first_session": 67163,
+    "first_result": "exit255 SSH server not responding; target partial retained",
+    "resume_session": 63173,
+    "resume_offset": 47284224,
+    "active": true,
+    "target_verified": false,
+    "duplicate_write_guard": "remote flock and expected offset; at most3 reconnect attempts"
+  },
+  "retrieval_preflight": {
+    "physical_gpus": [
+      4,
+      5,
+      6
+    ],
+    "script": "gpu_retrieval_preflight_a800.py",
+    "changes_from_h20": "assert GPU count3; mode description; independent evidence filename only",
+    "process_guard": "no pre-existing compute processes on assigned UUIDs",
+    "started": true,
+    "result": "passed; process exited and allocated GPUs released",
+    "metrics": {
+      "faiss_version": "1.8.0",
+      "query_count": 14,
+      "index_vectors": 21015324,
+      "index_dimension": 768,
+      "mode": "3-GPU sharded FP16 upstream path; physical devices4,5,6",
+      "cpu_seconds_14_queries": 9.434245302341878,
+      "gpu_seconds_512_queries": 0.36598083656281233,
+      "clone_seconds": 10.616011912934482,
+      "top3_id_overlap": 0.9761904761904762,
+      "max_score_delta": 2.181529998779297e-05
+    }
+  },
+  "gpu_latest_instant_memory_MiB": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    68494
+  ],
+  "gpu_latest_instant_util_percent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "gpu_interval_peak": "not continuously sampled; preflight usage is not training usage",
+  "foreign_gpu7_untouched": true
+}
