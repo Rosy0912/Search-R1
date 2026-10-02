@@ -855,6 +855,7 @@ class RayPPOTrainer(object):
                     if self.val_reward_fn is not None:
                         val_metrics = self._validate()
                         pprint(f'Final validation metrics: {val_metrics}')
+                        print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)
                         logger.log(data=val_metrics, step=self.global_steps)
                     return
     

@@ -1,5 +1,4 @@
 """Gate success on final weights and complete seven-dataset outcome metrics."""
-import ast
 import json
 import os
 from pathlib import Path
@@ -18,8 +17,8 @@ text=(BASE/'logs/paper-grpo-qwen2.5-3b.log').read_text(errors='replace')
 text=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]','',text)
 metrics=None
 for line in text.splitlines():
-    if 'Final validation metrics:' in line:
-        metrics=ast.literal_eval(line.split('Final validation metrics:',1)[1].strip())
+    if 'SEARCH_R1_FINAL_METRICS_JSON=' in line:
+        metrics=json.loads(line.split('SEARCH_R1_FINAL_METRICS_JSON=',1)[1].strip())
 assert isinstance(metrics,dict), 'Missing final validation'
 expected=json.loads((BASE/'data/paper-grpo/dataset-audit.json').read_text())['eval_counts']
 for source,count in expected.items():
