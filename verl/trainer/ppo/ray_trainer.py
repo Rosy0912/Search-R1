@@ -410,7 +410,7 @@ class RayPPOTrainer(object):
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
                                          batch_size=self.config.data.val_batch_size,
                                          shuffle=False,
-                                         drop_last=True,
+                                         drop_last=False,
                                          collate_fn=collate_fn)
 
         print(f'Size of train dataloader: {len(self.train_dataloader)}')
@@ -452,6 +452,7 @@ class RayPPOTrainer(object):
             no_think_rl=self.config.algorithm.no_think_rl,
             search_url = self.config.retriever.url,
             topk = self.config.retriever.topk,
+            force_final_answer=self.config.get('force_final_answer', True),
         )
 
         # Agent config preparation
@@ -543,6 +544,7 @@ class RayPPOTrainer(object):
         metric_dict = {}
         for data_source, rewards in data_source_reward.items():
             metric_dict[f'val/test_score/{data_source}'] = np.mean(rewards)
+            metric_dict[f'val/evaluated_count/{data_source}'] = len(rewards)
 
         return metric_dict
 
@@ -683,6 +685,7 @@ class RayPPOTrainer(object):
             no_think_rl=self.config.algorithm.no_think_rl,
             search_url = self.config.retriever.url,
             topk = self.config.retriever.topk,
+            force_final_answer=self.config.get('force_final_answer', True),
         )
 
         generation_manager = LLMGenerationManager(
@@ -829,7 +832,11 @@ class RayPPOTrainer(object):
                         metrics.update(val_metrics)
 
                     if self.config.trainer.save_freq > 0 and \
-                            self.global_steps % self.config.trainer.save_freq == 0:
+                            (self.global_steps % self.config.trainer.save_freq == 0 or
+                             self.global_steps + 1 >= self.total_training_steps):
+                        # Save the final updated policy before the counter advances.
+                        # Final validation below must have a matching saved model,
+                        # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
 

@@ -110,6 +110,23 @@ def compute_score_em(solution_str, ground_truth, method='strict', format_score=0
             return format_score
 
 
+def compute_score_generated_em(model_spans, ground_truth, format_score=0., score=1.):
+    """Score the last complete answer wholly contained in model-authored text.
+
+    Spans must remain separate across observations: joining them could create
+    an answer tag that the model never generated as one continuous action.
+    This API intentionally does not change the legacy full-prompt scorer.
+    """
+    answer = None
+    for span in model_spans:
+        matches = list(re.finditer(r'<answer>(.*?)</answer>', span, re.DOTALL))
+        if matches:
+            answer = matches[-1].group(1).strip()
+    if answer is None:
+        return 0.
+    return score if em_check(answer, ground_truth['target']) else format_score
+
+
 def compute_score_subem(solution_str, ground_truth, method='strict', format_score=0., score=1.):
     """The scoring function for substring exact match (EM).
 

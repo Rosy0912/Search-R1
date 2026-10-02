@@ -24,9 +24,24 @@ import numpy as np
 
 def _select_rm_score_fn(data_source):
     if data_source in ['nq', 'triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
-        return qa_em.compute_score_em
+        return qa_em.compute_score_generated_em
     else:
         raise NotImplementedError
+
+
+def decode_model_response_spans(tokenizer, response_ids, model_mask):
+    """Decode contiguous model tokens without crossing an observation boundary."""
+    spans = []
+    start = None
+    for index, is_model in enumerate(model_mask.tolist()):
+        if is_model and start is None:
+            start = index
+        elif not is_model and start is not None:
+            spans.append(tokenizer.decode(response_ids[start:index]))
+            start = None
+    if start is not None:
+        spans.append(tokenizer.decode(response_ids[start:]))
+    return spans
 
 
 class RewardManager():
@@ -58,16 +73,19 @@ class RewardManager():
 
             prompt_length = prompt_ids.shape[-1]
 
-            valid_prompt_length = data_item.batch['attention_mask'][:prompt_length].sum()
-            valid_prompt_ids = prompt_ids[-valid_prompt_length:]
-
             response_ids = data_item.batch['responses']
-            valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
+            valid_response_length = int(data_item.batch['attention_mask'][prompt_length:].sum().item())
+            if valid_response_length == 0:
+                continue
             valid_response_ids = response_ids[:valid_response_length]
 
-            # decode
-            sequences = torch.cat((valid_prompt_ids, valid_response_ids))
-            sequences_str = self.tokenizer.decode(sequences)
+            # The prompt example and external observations are not model actions.
+            # Keep generated spans separate, so tags cannot straddle observations.
+            if 'info_mask' in data_item.batch:
+                model_mask = data_item.batch['info_mask'][prompt_length:prompt_length + valid_response_length]
+            else:
+                model_mask = torch.ones_like(valid_response_ids, dtype=torch.bool)
+            model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
 
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
 
@@ -75,7 +93,7 @@ class RewardManager():
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
 
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
+            score = compute_score_fn(model_spans=model_spans, ground_truth=ground_truth, format_score=self.format_score)
 
             reward_tensor[i, valid_response_length - 1] = score
             # all_scores.append(score)
@@ -85,7 +103,7 @@ class RewardManager():
 
             if already_print_data_sources[data_source] < self.num_examine:
                 already_print_data_sources[data_source] += 1
-                print(sequences_str)
+                print(model_spans)
         
         # print(f"[DEBUG] all_scores: {all_scores}")
         # print(f"[DEBUG] all_scores shape: {np.array(all_scores).shape}")
