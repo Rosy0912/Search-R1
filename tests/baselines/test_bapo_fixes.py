@@ -10,6 +10,21 @@ from search_r1.baselines.controller import Controller
 
 
 class BapoFixes(unittest.TestCase):
+    def test_empty_actor_update_cannot_consume_bapo_budget(self):
+        c = Controller.__new__(Controller)
+        c.method = 'bapo'; c.ranker = None
+        for steps in (0, -1):
+            with self.assertRaisesRegex(RuntimeError, 'no optimizer update'):
+                c.after_actor(None, {'actor/optimizer_steps': steps})
+        with self.assertRaisesRegex(RuntimeError, 'no optimizer update'):
+            c.after_actor(None, {})
+        self.assertFalse(hasattr(c, 'actual_outer_updates'))
+        metrics = {'actor/optimizer_steps': 10}
+        c.after_actor(None, metrics)
+        self.assertEqual(metrics['bapo/actual_outer_updates'], 1)
+        c.after_actor(None, metrics)
+        self.assertEqual(metrics['bapo/actual_outer_updates'], 2)
+
     def test_author_reward_boundary_counterexamples(self):
         for prediction, target in [('yes indeed', 'yes'), ('no answer', 'no'), ('the', 'a')]:
             self.assertEqual(answer_f1(prediction, [target]), 0)

@@ -258,6 +258,13 @@ class Controller:
         return data
 
     def after_actor(self, data, metrics):
+        if self.method == 'bapo':
+            # The driver advances its iteration counter even for an empty update.
+            # Fail rather than reporting a shorter run as the approved update budget.
+            if metrics.get('actor/optimizer_steps', 0) <= 0:
+                raise RuntimeError('BAPO actor made no optimizer update; actual outer-update budget cannot advance')
+            self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+            metrics['bapo/actual_outer_updates'] = self.actual_outer_updates
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
             outcomes = {}
@@ -295,6 +302,7 @@ class Controller:
                      base_commit=self.config.base_commit,
                      algorithm_source_commit=self.config.algorithm_source_commit,
                      teacher_path=self.config.distillation.teacher_path,
+                     actual_outer_updates=getattr(self, 'actual_outer_updates', None),
                      resume_supported=False)
         temporary = os.path.join(directory, 'state.json.tmp')
         with open(temporary, 'w') as handle:
