@@ -5,6 +5,7 @@ The distributed GPU kernels remain a separate acceptance gate.
 """
 import copy
 import os
+import random
 from pathlib import Path
 import sys
 import tempfile
@@ -180,6 +181,7 @@ class Driver(unittest.TestCase):
                 t.kl_ctrl = SimpleNamespace(value=0.)
                 controller = Controller.__new__(Controller)
                 controller.trainer, controller.config, controller.method = t, c.baselines, method
+                controller.tree_rng = random.Random(c.baselines.seed) if method == 'tree_grpo' else None
                 controller.stage = BoundaryStage()
                 controller.ranker = controller.teacher = None
                 if method == 'bapo':
