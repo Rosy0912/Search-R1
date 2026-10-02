@@ -102,3 +102,29 @@ focused pytest：新增成本指标的真实 tiny 教师更新测试和 fake-tea
 负责人随后将 CPU lm_head projection 与 `.to(device)` 分离：后者在 `teacher.measure()` 区间外执行。独立重新读取最终代码、measure docstring及设计文档，均明确CPU区间包含全部worker CPU线程的process_time，非exclusive attribution；worker RSS仍明确为完整actor进程。**I1关闭，无剩余已证实的观测实现缺陷。**
 
 针对最终修正版再次执行 `instrumentation_equivalence_probe.py`：loss和15个学生梯度张量仍bitwise相同，teacher无梯度、受控时钟累加与两平台RSS单位检查仍通过。最终证据为 `instrumentation_final_equivalence_probe.json/.stderr`，工作树SHA见 `instrumentation_final_review_manifest.json`。这项结论只覆盖本次观测差异；原报告的真实3B/FSDP吞吐/资源、共享evaluator和正式效果验收要求继续有效。
+
+## 8. 最终组合增量复核：公共提交与 OPSD
+
+公共 source commit：`297e1c140677dc621302f1d49fefdb31023fd2b7`。OPSD cherry-pick 后组合 commit：`f60897e6212bed0c9c54f61bc17e67746948a094`。本节覆盖实际合并后的代码，不把公共报告的139 passed/1 skipped当作本审查者实跑或GPU证明。
+
+**组合结论：未发现此次合并引入的已证实算法/teacher答案泄漏/分配guard阻断缺陷。CPU层面主要公共缺口已经补齐；生产Linux依赖、实际3B/FSDP/检索及效果验收仍未完成，仍不得放行“效果已验证”的结论。**
+
+| 组合检查 | 独立结果/证据 |
+|---|---|
+| OPSD纯蒸馏/teacher-only | 公共提交未修改OPSD loss/teacher输入或actor接入；teacher答案仍仅在actor训练的teacher_inputs内；validation生成只传学生 prompt/input_ids。`_validate`不会调用teacher或privileged scoring；评估读取ground truth只用于计算准确度，不能混称为生成输入泄漏 |
+| 双15% occupancy与进程处理 | `preflight.check_selected_gpus` 两阈值都≤15%即可；不再因存在进程拒绝，记录进程并保留UUID锁/最早main复核。新增finite/非负/总显存>0检查拒绝未知/无效占用。独立边界15%有进程通过，15.01%、NaN、总显存0均拒绝 |
+| split内容身份 | `holdout.content_identity` 排序输入content SHA，记录fraction/seed/version、train/holdout问题与完整行摘要；绝对路径仅留provenance，split算法不变。路径改变身份不变、行改变身份变化测试通过；manifest缺该身份会明确拒绝旧目录。实际六机parquet/content身份仍须核对资产后证明 |
+| 共享evaluator抗泄漏 | `batch_answer_metrics`只切responses，attention×info_mask将观察隔开，不访问prompt生成答案。独立5组真实DataProto/字符tokenizer反例：只有prompt答案、只有观察答案、tag跨观察、内容跨观察均F1/EM0；合法generated alias答案F1/EM1。评估格式拆成answer_format与完整action format_rate，定义不同，报告须分别列名 |
+| smoke≤5、正式全评估 | main实际guard total_training_steps≤6对应最多5个outer updates；独立AST执行guard：6接受/7拒绝。真实fit尾部CPU替身在smoke第5步更新并保存且不终评；formal第500步保留周期评估、保存，再准备final_data并终评。默认smoke_only=false、total501、final_val_files为完整test.parquet，公共改动没有删正式最终评估 |
+
+### 公共成本字段口径提醒（P2，已通知负责人）
+
+共享 `val/generated_tokens` 实际由最后保留responses上的model mask统计，严格定义为**保留且后处理的学生token数**；原 `generation.py:_postprocess_responses` 截到首个闭合tag并再编码，`_update_right_side`又裁到max_prompt_length，因此不含被丢弃的原始采样tokens，不能当完整推理计算成本。
+
+共享 `val/search_calls` 由保留model spans的search tag正则计数，公共REPORT已称search tags；它不是实际HTTP请求数/执行检索次数的独立测量。正式成本报告应标清其口径，或公共补充真实采样/执行counter。训练 SearchRollout 已记录真实 raw `rollout/generated_tokens` 与执行 `retrieval_calls`，可用于训练成本；不能用验证保留token/tag计数替代训练真实counter。这项限制不改变F1/EM计算或训练数学，也不影响两步smoke的算法接入放行，但影响实际总计算成本验收是否完整。
+
+### 独立实跑与状态更新
+
+`evidence/combined_common_probe.py/.json/.stderr` 保存上述5组evaluator反例、GPU边界/非法占用和真实main guard/fit终轮控制流探针。另独立复跑 `test_common_setup.py`、`test_infra_opsd_review.py`、`test_reward_and_validation.py`、`test_final_checkpoint.py`：**20 passed，2 warnings，1.76s**，见 `combined_common_focused_pytest.txt`。CPU替身fit事件验证控制流，不是实际Ray/GPU训练。执行负责人正在复跑组合全集，其结果不在本节冒称完成。
+
+原W1部署规则现已关闭；原W3独立F1/EM/格式率代码缺口已关闭，实际效果/成本仍需真数据；原W4路径无关身份代码缺口已关闭，实际跨机身份及teacher/base完整hash仍需交付。§7成本观测及计时边界修复保留；W2生产资源/吞吐验收、完整500步和七集51,713题对照仍未完成。用户已批准的冻结base/answer-only/保留窗口差异继续作为适配说明，不能再列算法待修复项。

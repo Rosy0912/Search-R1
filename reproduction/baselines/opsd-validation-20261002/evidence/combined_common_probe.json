@@ -1,0 +1,107 @@
+SEARCH_R1_FINAL_METRICS_JSON={"em": 1}
+{
+  "adversarial_evaluator_cases": [
+    {
+      "case": "prompt_only",
+      "metrics": {
+        "source": "nq",
+        "f1": 0.0,
+        "em": 0.0,
+        "answer_format": 0.0,
+        "format_rate": 0.0,
+        "generated_tokens": 23,
+        "search_calls": 1
+      }
+    },
+    {
+      "case": "observation_answer",
+      "metrics": {
+        "source": "nq",
+        "f1": 0.0,
+        "em": 0.0,
+        "answer_format": 0.0,
+        "format_rate": 0.0,
+        "generated_tokens": 44,
+        "search_calls": 2
+      }
+    },
+    {
+      "case": "stitched_tag",
+      "metrics": {
+        "source": "nq",
+        "f1": 0.0,
+        "em": 0.0,
+        "answer_format": 0.0,
+        "format_rate": 0.0,
+        "generated_tokens": 22,
+        "search_calls": 0
+      }
+    },
+    {
+      "case": "stitched_content",
+      "metrics": {
+        "source": "nq",
+        "f1": 0.0,
+        "em": 0.0,
+        "answer_format": 0.0,
+        "format_rate": 0.0,
+        "generated_tokens": 22,
+        "search_calls": 0
+      }
+    },
+    {
+      "case": "legit_answer",
+      "metrics": {
+        "source": "nq",
+        "f1": 1.0,
+        "em": 1.0,
+        "answer_format": 1.0,
+        "format_rate": 1.0,
+        "generated_tokens": 50,
+        "search_calls": 1
+      }
+    }
+  ],
+  "low_process_boundary_and_invalid_occupancy": true,
+  "actual_main_smoke_guard_6_allowed_7_rejected": true,
+  "smoke_update5_terminal_events": [
+    [
+      "update",
+      5,
+      1
+    ],
+    [
+      "save",
+      5,
+      1
+    ]
+  ],
+  "formal_update500_terminal_events": [
+    [
+      "update",
+      500,
+      1
+    ],
+    [
+      "validate",
+      500,
+      1
+    ],
+    [
+      "save",
+      500,
+      1
+    ],
+    [
+      "final_data",
+      501,
+      1
+    ],
+    [
+      "validate",
+      501,
+      1
+    ]
+  ],
+  "scope": "CPU evaluator/guards/trainer-tail only; no GPU or production3B validation"
+}

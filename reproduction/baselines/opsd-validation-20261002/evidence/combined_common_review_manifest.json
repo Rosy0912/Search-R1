@@ -1,0 +1,24 @@
+{
+  "common_source_commit": "297e1c140677dc621302f1d49fefdb31023fd2b7",
+  "opsd_combined_commit": "f60897e6212bed0c9c54f61bc17e67746948a094",
+  "files": {
+    "search_r1/baselines/actor.py": "a3932a79be5a2b006442862f1d42746c5e842019c2dc9a85fd9c0676f683df49",
+    "search_r1/baselines/distillation.py": "bfa408ec4f2c9222d87f115c0ce9c91c123bd97c1e0bfdf1a8430f7b763e7b1b",
+    "search_r1/baselines/main.py": "733da18b90741854ae627b204a3ced9bae0caefdc4b757a54aec3ff96faf809c",
+    "search_r1/baselines/preflight.py": "d595796ec1a8b97b0e4a0a9dc2aafc5f126e8607a0aa40ae67131a1f9277c839",
+    "search_r1/baselines/holdout.py": "33fd089db355f770f3491b2ee6b0f0b8ec86d6051f404d250c30079ce9a44116",
+    "search_r1/baselines/evaluation.py": "b7fd01f2993b22d475dd220b80ab9dcf225971bca98ecbe9016c271edcca145f",
+    "verl/trainer/ppo/ray_trainer.py": "b4449f546f71fc76291f7d1479eacc0aa0930c68bfee35785ac3a7742a95968e",
+    "verl/trainer/config/ppo_baselines.yaml": "a540abd4f7807b488a5b9179c908cf26ec1d69a7d1146ef6eac1ba72cc46513c",
+    "reproduction/baselines/opsd-validation-20261002/INDEPENDENT_REVIEW.md": "d0337e21486a4799616a1fd7d370b55195e7bfdb57971d3a52a1ce7a0753fae0",
+    "reproduction/baselines/opsd-validation-20261002/evidence/combined_common_focused_pytest.txt": "a18b2ad858dc619e65a03fa74936e635bc46fb2eea6e0283ed3609cbb191709b",
+    "reproduction/baselines/opsd-validation-20261002/evidence/combined_common_probe.json": "e7d1323d8bad42b37dfb37b5ffe42f08576901c036044c3b3e8f0e3bc9c0f8a3",
+    "reproduction/baselines/opsd-validation-20261002/evidence/combined_common_probe.py": "2d48e61b60c1d9dfa4c9746dcd26549ecf1d2138b8e069d51289005a467581c3",
+    "reproduction/baselines/opsd-validation-20261002/evidence/combined_common_probe.stderr": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721"
+  },
+  "focused_pytest_passed": 20,
+  "adversarial_evaluator_cases": 5,
+  "blocking_code_findings": [],
+  "nonblocking_cost_scope": "Validation counts retained model tokens/search tags, not all raw samples/HTTP costs",
+  "production_linux_3b_gpu_search_training_validated": false
+}
