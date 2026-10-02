@@ -1,0 +1,92 @@
+{
+  "checked_at": "2026-10-02T21:37:02.228071+00:00",
+  "stage": "PREPARING_NOT_TRAINING",
+  "target_host": "baai-a800",
+  "new_updates": 0,
+  "new_reward": null,
+  "new_reward_mean_range": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "console_precision_decimals": 3,
+  "last_source_eval_step": 100,
+  "last_source_eval_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "resume_checkpoint_step": 100,
+  "weight_continuation_approval": "pending",
+  "assets_status": {
+    "complete": true,
+    "failed": [],
+    "count": 30,
+    "observed_status_timestamp": 1790974639.9651718
+  },
+  "flash_wheel": {
+    "target_hash_verified": true,
+    "sha256": "a8719a86d0cd12a105739151f9e45ac8c2ecb840a83ed7a080a88d1645a98440",
+    "local_relay_cleaned_after_verification": true
+  },
+  "environment": {
+    "first_failure": "Inherited PYTHONPATH /share/project/chx/runtime/py-overlay imported incompatible Python3.12 pydantic_core",
+    "fix": "unset PYTHONPATH and PYTHONHOME only in project bootstrap wrapper",
+    "fresh_import_dependency_acceptance": true,
+    "unexpected_dependency_failures": [],
+    "permitted_exception": "Torch2.4 cuBLAS12.4.5.8",
+    "gpu_integration_tested": false
+  },
+  "asset_materialization": "started independent project-locked tmux for index concat and corpus decompression, sizes and hashes before rename",
+  "paper_data_preparation": "completed CPU-only; target actual audits read",
+  "retriever_overlay": "official wheel SHA verified; isolated FAISS1.8.0.2 install and import pass; real GPU index and HTTP not yet tested",
+  "checkpoint_local_partial_bytes": 9765040128,
+  "checkpoint_download_session": 43921,
+  "checkpoint_download": "active; no final hash acceptance or upload yet",
+  "gpu_instant_util_percent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "gpu_instant_memory_MiB": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    68494
+  ],
+  "gpu_instant_total_MiB_each": 81920,
+  "gpu_interval_peak": "not sampled; no target training",
+  "foreign_gpu7_untouched": true
+}
