@@ -341,4 +341,7 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if paper_objective:
+            from search_r1.baselines.objectives import reduce_paper_metrics
+            reduce_paper_metrics(metrics, batch.device)
         return metrics
