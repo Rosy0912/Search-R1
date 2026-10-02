@@ -1,0 +1,112 @@
+defaults:
+  - ppo_trainer
+  - _self_
+
+# Inputs are shared read-only. Outputs MUST be in a separate run directory.
+data:
+  train_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/train.parquet
+  val_files: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/data/paper-grpo/test.parquet
+  train_batch_size: 512
+  val_batch_size: 256
+  max_prompt_length: 4096
+  max_response_length: 500
+  max_start_length: 2048
+  max_obs_length: 500
+
+actor_rollout_ref:
+  model:
+    path: ${oc.env:SEARCH_R1_ASSETS,/data/search-r1}/assets/qwen2.5-3b
+    enable_gradient_checkpointing: true
+    use_remove_padding: true
+  actor:
+    baseline_method: ${baselines.method}
+    distillation: ${baselines.distillation}
+    state_masking: true
+    optim:
+      lr: 1.0e-6
+      lr_warmup_steps_ratio: 0.285
+    use_kl_loss: true
+    kl_loss_coef: 0.001
+    kl_loss_type: low_var_kl
+    ppo_mini_batch_size: 256
+    ppo_micro_batch_size: 64
+    fsdp_config:
+      param_offload: true
+      grad_offload: true
+      optimizer_offload: true
+  rollout:
+    n_agent: 5
+    n: 1
+    temperature: 1.0
+    top_p: 1.0
+    tensor_model_parallel_size: 1
+    gpu_memory_utilization: 0.6
+  ref:
+    fsdp_config:
+      param_offload: true
+
+algorithm:
+  adv_estimator: grpo
+max_turns: 4
+force_final_answer: false
+retriever:
+  topk: 3
+
+trainer:
+  total_epochs: 15
+  total_training_steps: 501
+  save_freq: 100
+  test_freq: 50
+  project_name: Search-R1-RL-Baselines
+  experiment_name: ${baselines.method}-qwen2.5-3b
+  logger: [console]
+  default_hdfs_dir: null
+  default_local_dir: ${oc.env:SEARCH_R1_BASELINE_OUTPUT,/data/search-r1-rl-baselines}/checkpoints/${trainer.experiment_name}
+
+baselines:
+  method: gigpo
+  seed: 42
+  context_alignment: report
+  gigpo:
+    anchor_mode: observation
+    gamma: 0.95
+    omega: 1.0
+    normalize: false
+  tree:
+    roots: 2
+    rounds: 1
+    expansions: 2
+    leaves: 3
+  bapo:
+    stage_validation_files: null
+    patience: 5
+    alpha: 0.05
+    bonus: 0.5
+    resample_attempts: 2
+  distillation:
+    teacher_path: null
+    # OPSD launcher explicitly enables privileged answers; TOP-D uses same context.
+    privileged_answers: false
+    beta: 0.0
+    temperature: 1.0
+    component_clip: 0.05
+    chunk_size: 16
+    max_student_logits_gib: 4.0
+  topd:
+    alpha: 0.1
+  ranker:
+    model_path: null
+    device: cpu
+    candidates: 50
+    keep: 3
+    max_new_tokens: 256
+    temperature: 1.0
+    lr: 1.0e-6
+    clip_ratio: 0.2
+    grad_clip: 1.0
+    epochs: 1
+    batch_size: 8
+    similarity: 0.8
+    min_group_size: 3
+    threshold: 0.5
+    split_availability: false

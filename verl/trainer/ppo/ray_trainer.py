@@ -18,6 +18,7 @@ This trainer supports model-agonistic model initialization with huggingface
 
 import os
 import uuid
+import functools
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
@@ -43,6 +44,21 @@ import re
 from search_r1.llm_agent.generation import LLMGenerationManager, GenerationConfig
 
 WorkerType = Type[Worker]
+
+
+def _baseline_validation(function):
+    @functools.wraps(function)
+    def wrapped(self, *args, **kwargs):
+        controller = getattr(self, 'baseline_controller', None)
+        if controller is None or controller.ranker is None:
+            return function(self, *args, **kwargs)
+        old = controller.ranker.validation
+        controller.ranker.validation = True
+        try:
+            return function(self, *args, **kwargs)
+        finally:
+            controller.ranker.validation = old
+    return wrapped
 
 
 class Role(Enum):
@@ -361,6 +377,11 @@ class RayPPOTrainer(object):
 
         self._create_dataloader()
         self._init_logger()
+        self.baseline_controller = None
+        if self.config.get('baselines') is not None:
+            from search_r1.baselines.controller import Controller, validate_config
+            validate_config(self.config)
+            self.baseline_controller = Controller(self)
     
     def _init_logger(self):
         from verl.utils.tracking import Tracking
@@ -452,6 +473,7 @@ class RayPPOTrainer(object):
             shuffle=False, drop_last=False, collate_fn=collate_fn)
         print(f'Final validation dataset size: {len(self.val_dataset)}',flush=True)
 
+    @_baseline_validation
     def _validate(self):
         """
         The training loop of PPO with global metric computation.
@@ -481,6 +503,10 @@ class RayPPOTrainer(object):
             config=gen_config,
             is_validation = True,
         )
+        controller = getattr(self, 'baseline_controller', None)
+        if controller is not None and controller.ranker is not None:
+            from search_r1.baselines.controller import ranked_validation_manager
+            generation_manager = ranked_validation_manager(generation_manager, controller)
 
         if not self.config.do_search:
             for test_data in self.val_dataloader:
@@ -654,6 +680,8 @@ class RayPPOTrainer(object):
             critic_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
                 self.config.trainer.default_hdfs_dir, 'critic')
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
+        if getattr(self, 'baseline_controller', None) is not None:
+            self.baseline_controller.save(self.global_steps)
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -748,10 +776,16 @@ class RayPPOTrainer(object):
 
                         with _timer('gen', timing_raw):
                             generation_manager.timing_raw = timing_raw
-                            final_gen_batch_output = generation_manager.run_llm_loop(
-                                gen_batch=gen_batch,
-                                initial_input_ids=first_input_ids,
-                            )
+                            if self.baseline_controller is None:
+                                final_gen_batch_output = generation_manager.run_llm_loop(
+                                    gen_batch=gen_batch,
+                                    initial_input_ids=first_input_ids,
+                                )
+                            else:
+                                final_gen_batch_output, sources = self.baseline_controller.generate(
+                                    generation_manager, gen_batch, batch, metrics)
+                                from search_r1.baselines.rollout import select_rows
+                                batch = select_rows(batch, sources)
 
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         for key in final_gen_batch_output.batch.keys():
@@ -811,7 +845,9 @@ class RayPPOTrainer(object):
                         batch.batch['token_level_scores'] = reward_tensor
 
                         # compute rewards. apply_kl_penalty if available
-                        if not self.config.actor_rollout_ref.actor.use_kl_loss:
+                        if self.baseline_controller is not None and self.baseline_controller.method in ('topd', 'opsd'):
+                            batch.batch['token_level_rewards'] = batch.batch['token_level_scores']
+                        elif not self.config.actor_rollout_ref.actor.use_kl_loss:
                             batch, kl_metrics = apply_kl_penalty(batch,
                                                                  kl_ctrl=self.kl_ctrl,
                                                                  kl_penalty=self.config.algorithm.kl_penalty)
@@ -820,11 +856,14 @@ class RayPPOTrainer(object):
                             batch.batch['token_level_rewards'] = batch.batch['token_level_scores']
 
                         # compute advantages, executed on the driver process
-                        batch = compute_advantage(batch,
-                                                  adv_estimator=self.config.algorithm.adv_estimator,
-                                                  gamma=self.config.algorithm.gamma,
-                                                  lam=self.config.algorithm.lam,
-                                                  num_repeat=self.config.actor_rollout_ref.rollout.n)
+                        if self.baseline_controller is None:
+                            batch = compute_advantage(batch,
+                                                      adv_estimator=self.config.algorithm.adv_estimator,
+                                                      gamma=self.config.algorithm.gamma,
+                                                      lam=self.config.algorithm.lam,
+                                                      num_repeat=self.config.actor_rollout_ref.rollout.n)
+                        else:
+                            batch = self.baseline_controller.compute_advantages(batch, metrics)
 
                     # update critic
                     if self.use_critic:
@@ -842,6 +881,8 @@ class RayPPOTrainer(object):
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
+                        if getattr(self, 'baseline_controller', None) is not None:
+                            self.baseline_controller.after_actor(batch, metrics)
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
@@ -849,6 +890,8 @@ class RayPPOTrainer(object):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
+                        if getattr(self, 'baseline_controller', None) is not None:
+                            metrics.update(self.baseline_controller.stage_validation())
 
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or

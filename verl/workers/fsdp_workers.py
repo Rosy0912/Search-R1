@@ -327,6 +327,10 @@ class ActorRolloutRefWorker(Worker):
             self.actor = DataParallelPPOActor(config=self.config.actor,
                                               actor_module=self.actor_module_fsdp,
                                               actor_optimizer=self.actor_optimizer)
+            if self.config.actor.get('baseline_method') == 'opsd':
+                from search_r1.baselines.actor import DistillationActor
+                self.actor = DistillationActor(self.config.actor, self.actor_module_fsdp,
+                                               self.actor_optimizer, self.tokenizer)
 
         if self._is_rollout:
             self.rollout, self.rollout_sharding_manager = self._build_rollout()

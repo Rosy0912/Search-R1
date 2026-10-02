@@ -181,6 +181,10 @@ def main_task(config):
         Role.Critic: global_pool_id,
         Role.RefPolicy: global_pool_id,
     }
+    if config.get('baselines') is not None and config.baselines.method in ('topd', 'opsd'):
+        # A distillation teacher is separate; these pure losses need no reference model.
+        role_worker_mapping.pop(Role.RefPolicy)
+        mapping.pop(Role.RefPolicy)
 
     # we should adopt a multi-source reward function here
     # - for rule-based rm, we directly call a reward score

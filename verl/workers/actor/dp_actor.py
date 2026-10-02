@@ -220,9 +220,17 @@ class DataParallelPPOActor(BasePPOActor):
         dataloader = batch.split(self.config.ppo_mini_batch_size)
 
         metrics = {}
-        for batch_idx, data in enumerate(dataloader):
+        # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
+        # Default E=1 preserves the reviewed reproduction's update schedule.
+        for batch_idx, data in enumerate(itertools.chain.from_iterable(
+                dataloader for _ in range(self.config.ppo_epochs))):
             # split batch into micro_batches
             mini_batch = data
+            topd_token_mean = self.config.get('baseline_method') == 'topd'
+            if topd_token_mean:
+                from search_r1.baselines.distillation import global_token_denominator
+                from search_r1.baselines.advantages import token_mean_ppo
+                denominator = global_token_denominator(mini_batch['loss_mask'])
             if self.config.use_dynamic_bsz:
                 max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
                 micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
@@ -249,13 +257,19 @@ class DataParallelPPOActor(BasePPOActor):
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
 
-                pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
-                                                                              log_prob=log_prob,
-                                                                              advantages=advantages,
-                                                                              eos_mask=response_mask,
-                                                                              cliprange=clip_ratio)
+                if topd_token_mean:
+                    pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
+                        old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
+                else:
+                    pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
+                                                                                  log_prob=log_prob,
+                                                                                  advantages=advantages,
+                                                                                  eos_mask=response_mask,
+                                                                                  cliprange=clip_ratio)
                 # compute entropy loss from entropy
                 entropy_loss = verl_F.masked_mean(entropy, response_mask)
+                if topd_token_mean:
+                    entropy_loss = (entropy * response_mask).sum() / response_mask.sum().clamp_min(1)
 
                 # compute policy loss
                 policy_loss = pg_loss - entropy_loss * entropy_coeff
@@ -272,7 +286,7 @@ class DataParallelPPOActor(BasePPOActor):
                     metrics['actor/kl_loss'] = kl_loss.detach().item()
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
-                loss = policy_loss / self.gradient_accumulation
+                loss = policy_loss if topd_token_mean else policy_loss / self.gradient_accumulation
                 loss.backward()
 
                 data = {
@@ -287,4 +301,5 @@ class DataParallelPPOActor(BasePPOActor):
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
+        metrics['actor/optimizer_steps'] = len(dataloader) * self.config.ppo_epochs
         return metrics
