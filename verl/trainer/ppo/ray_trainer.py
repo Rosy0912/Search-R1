@@ -483,6 +483,13 @@ class RayPPOTrainer(object):
         import torch
         reward_tensor_lst = []
         data_source_lst = []
+        qa_rows = []
+
+        def collect_qa(batch):
+            if not self.config.get('baselines'):
+                return
+            from search_r1.baselines.evaluation import batch_answer_metrics
+            qa_rows.extend(batch_answer_metrics(batch, self.tokenizer))
 
         gen_config = GenerationConfig(
             max_turns=self.config.max_turns,
@@ -539,6 +546,7 @@ class RayPPOTrainer(object):
                 # for certain reward function (e.g. sandbox), the generation can overlap with reward
                 reward_tensor = self.val_reward_fn(test_batch)
 
+                collect_qa(test_batch)
                 reward_tensor_lst.append(reward_tensor)
                 data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
         else:
@@ -573,6 +581,7 @@ class RayPPOTrainer(object):
                     # for certain reward function (e.g. sandbox), the generation can overlap with reward
                     reward_tensor = self.val_reward_fn(test_batch)
 
+                    collect_qa(test_batch)
                     reward_tensor_lst.append(reward_tensor)
                     data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
 
@@ -592,6 +601,11 @@ class RayPPOTrainer(object):
             metric_dict[f'val/test_score/{data_source}'] = np.mean(rewards)
             metric_dict[f'val/evaluated_count/{data_source}'] = len(rewards)
 
+        if qa_rows:
+            from search_r1.baselines.evaluation import aggregate_answer_metrics
+            metric_dict.update(aggregate_answer_metrics(qa_rows))
+        if self.config.get('baselines'):
+            print('BASELINE_EVALUATION_METRICS_JSON=' + json.dumps(metric_dict, sort_keys=True), flush=True)
         return metric_dict
 
 
@@ -717,7 +731,7 @@ class RayPPOTrainer(object):
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
             if self.config.trainer.get('val_only', False):
-                return
+                return val_metrics
 
         # we start from step 1
         self.global_steps += 1
@@ -918,7 +932,7 @@ class RayPPOTrainer(object):
                 if self.global_steps >= self.total_training_steps:
 
                     # perform validation after training
-                    if self.val_reward_fn is not None:
+                    if self.val_reward_fn is not None and not getattr(self.config.trainer, 'smoke_only', False):
                         self._prepare_final_validation()
                         val_metrics = self._validate()
                         pprint(f'Final validation metrics: {val_metrics}')
