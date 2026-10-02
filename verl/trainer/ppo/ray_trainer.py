@@ -498,7 +498,12 @@ class RayPPOTrainer(object):
         )
 
         # Agent config preparation
-        generation_manager = LLMGenerationManager(
+        validation_manager_class = LLMGenerationManager
+        validation_controller = getattr(self, 'baseline_controller', None)
+        if validation_controller is not None and validation_controller.method == 'bapo':
+            from search_r1.baselines.bapo_validation import BapoValidationManager
+            validation_manager_class = BapoValidationManager
+        generation_manager = validation_manager_class(
             tokenizer=self.tokenizer,
             actor_rollout_wg=self.actor_rollout_wg,
             config=gen_config,
@@ -591,6 +596,9 @@ class RayPPOTrainer(object):
         for data_source, rewards in data_source_reward.items():
             metric_dict[f'val/test_score/{data_source}'] = np.mean(rewards)
             metric_dict[f'val/evaluated_count/{data_source}'] = len(rewards)
+
+        if validation_manager_class is not LLMGenerationManager:
+            metric_dict.update({'val/cost/' + key: value for key, value in generation_manager.cost.items()})
 
         return metric_dict
 

@@ -138,6 +138,10 @@ def legal_action_records(records):
             return False
         if not action.group(2).strip():
             return False
+        # A regex outer match can swallow an unmatched/nested action opener.
+        # Reserved protocol tags cannot occur inside an action payload.
+        if re.search(r'</?(?:think|search|answer)\s*>', action.group(2)):
+            return False
         if text[action.end():].strip():
             return False
     return actions[0].group(1) == 'answer'

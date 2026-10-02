@@ -73,7 +73,11 @@ def test_real_fit_stage_only_observes_updated_actor(warmup, actor_steps):
     t.baseline_controller = ctrl
     with patch('search_r1.llm_agent.generation.LLMGenerationManager.batch_search',
                lambda self, queries: ['Paris'] * len(queries)):
-        t.fit()
+        if warmup == 0 and actor_steps == 0:
+            with pytest.raises(RuntimeError, match='no optimizer update'):
+                t.fit()
+        else:
+            t.fit()
     expected_update = warmup <= 1
     expected_observation = expected_update and actor_steps > 0
     assert len(updates) == int(expected_update)

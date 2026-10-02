@@ -4,12 +4,18 @@ import unittest
 from types import SimpleNamespace
 import pandas as pd
 from omegaconf import OmegaConf
-from search_r1.baselines.bapo import answer_f1, ordinary_answer_f1, boundary_scores, resample_rows, BoundaryStage
+from search_r1.baselines.bapo import answer_f1, ordinary_answer_f1, boundary_scores, resample_rows, BoundaryStage, legal_action_records
 from search_r1.baselines.holdout import split_frames, prepare_common_holdout, question_key
 from search_r1.baselines.controller import Controller
 
 
 class BapoFixes(unittest.TestCase):
+    def test_nested_protocol_tags_are_format_failure(self):
+        for text in ('<answer> Paris <answer> </answer>',
+                     '<answer>Paris </search></answer>',
+                     '<search>x <think>y</think></search>'):
+            self.assertFalse(legal_action_records([{'text': text}]))
+        self.assertTrue(legal_action_records([{'text': '<think>reason</think><answer>Paris</answer>'}]))
     def test_empty_actor_update_cannot_consume_bapo_budget(self):
         c = Controller.__new__(Controller)
         c.method = 'bapo'; c.ranker = None
@@ -85,6 +91,10 @@ class BapoFixes(unittest.TestCase):
         c.actor_rollout_ref.actor.ppo_micro_batch_size = 16
         with self.assertRaisesRegex(ValueError, 'equal to DP'):
             validate_config(c)
+        c = config('bapo')
+        c.trainer.critic_warmup = 1
+        with self.assertRaisesRegex(ValueError, 'critic_warmup=0'):
+            validate_config(c)
 
     def test_independent_phase_frequency_and_restore_on_error(self):
         c = Controller.__new__(Controller)
@@ -95,9 +105,13 @@ class BapoFixes(unittest.TestCase):
         def validate():
             self.assertEqual(t.val_dataloader, 'holdout')
             self.assertIsNotNone(t.val_reward_fn)
-            return {'val/test_score/nq': .5, 'val/evaluated_count/nq': 2}
+            return {'val/test_score/nq': .5, 'val/evaluated_count/nq': 2,
+                    'val/cost/generated_tokens': 123, 'val/cost/retrieval_calls': 7}
         t._validate = validate
-        for step in range(1, 7): c.stage_validation(step)
+        for step in range(1, 7): metrics = c.stage_validation(step)
+        self.assertEqual(metrics['bapo/stage_cost/generated_tokens'], 123)
+        self.assertEqual(metrics['bapo/stage_cost/retrieval_calls'], 7)
+        self.assertGreaterEqual(metrics['bapo/stage_wall_seconds'], 0)
         self.assertFalse(c.stage.early); self.assertEqual(c.stage.stalled, 5)
         self.assertIsNone(t.val_reward_fn); self.assertEqual(t.val_dataloader, 'final')
         t._validate = lambda: (_ for _ in ()).throw(RuntimeError('test'))

@@ -1,6 +1,7 @@
 """Opt-in hooks for the reviewed Ray trainer; no changes to baseline inputs."""
 import json
 import os
+import time
 from collections import Counter
 from pathlib import Path
 import torch
@@ -83,6 +84,8 @@ def validate_config(config):
         if tree.leaves > 1 + tree.expansions * tree.rounds:
             raise ValueError('Insufficient expansions for selected leaves')
     if method == 'bapo':
+        if config.trainer.critic_warmup != 0:
+            raise ValueError('BAPO actual outer-update budget requires critic_warmup=0')
         holdout = config.baselines.bapo.stage_validation_files
         if config.baselines.bapo.stage_validation_freq < 1:
             raise ValueError('BAPO stage validation frequency must be positive')
@@ -283,15 +286,23 @@ class Controller:
         from verl.trainer.main_ppo import RewardManager
         t.val_reward_fn = RewardManager(t.tokenizer, 0)
         old_loader, old_dataset = t.val_dataloader, t.val_dataset
+        start_wall, start_cpu = time.perf_counter(), time.process_time()
         try:
             t.val_dataloader, t.val_dataset = self.stage_loader, self.stage_dataset
-            score = weighted_validation(t._validate())
+            validation_metrics = t._validate()
+            score = weighted_validation(validation_metrics)
         finally:
             t.val_dataloader, t.val_dataset = old_loader, old_dataset
             t.val_reward_fn = old_reward
         self.stage.observe(score)
-        return {'bapo/stage_validation': score, 'bapo/early_stage': int(self.stage.early),
-                'bapo/stalled': self.stage.stalled}
+        metrics = {'bapo/stage_validation': score, 'bapo/early_stage': int(self.stage.early),
+                   'bapo/stalled': self.stage.stalled,
+                   'bapo/stage_wall_seconds': time.perf_counter() - start_wall,
+                   'bapo/stage_driver_cpu_seconds': time.process_time() - start_cpu}
+        # Keep stage costs separate from periodic/final validation costs.
+        metrics.update({'bapo/stage_' + key.removeprefix('val/'): value
+                        for key, value in validation_metrics.items() if key.startswith('val/cost/')})
+        return metrics
 
     def save(self, step):
         directory = os.path.join(self.trainer.config.trainer.default_local_dir, 'algorithm', f'global_step_{step}')
