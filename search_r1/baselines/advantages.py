@@ -89,12 +89,8 @@ def topd(teacher_logp, old_logp, mask, uids, alpha=.1):
 
 def token_mean_ppo(old_logp, logp, advantage, mask, cliprange, denominator):
     """Local numerator / (global token count / DP size); safe for empty microbatches."""
-    delta = logp - old_logp
-    ratio = delta.exp()
-    loss1 = -advantage * ratio
-    loss2 = -advantage * ratio.clamp(1 - cliprange, 1 + cliprange)
-    loss = (torch.maximum(loss1, loss2) * mask).sum() / denominator
-    local_count = mask.sum().clamp_min(1)
-    clipfrac = ((loss2 > loss1).float() * mask).sum() / local_count
-    kl = (-delta * mask).sum() / local_count
-    return loss, clipfrac, kl
+    from verl.trainer.ppo.core_algos import compute_policy_loss
+    # Shared numerical guards, with the caller's global normalization.
+    loss, clipfrac, kl = compute_policy_loss(old_logp, logp, advantage, mask, cliprange)
+    local_count = mask.sum()
+    return loss * local_count / denominator, clipfrac, kl

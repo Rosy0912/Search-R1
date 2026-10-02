@@ -6,10 +6,10 @@ from pathlib import Path
 import torch
 from . import advantages
 from .rollout import SearchRollout, select_rows
-from .bapo import BoundaryStage, BoundaryReward, decode_answers, answer_f1, resample_rows
+from .bapo import BoundaryStage, BoundaryReward, decode_answers, ordinary_answer_f1, resample_rows
 
 
-METHODS = ('gigpo', 'tree_grpo', 'bapo', 'opsd', 'topd', 'cosearch')
+METHODS = ('grpo', 'gigpo', 'tree_grpo', 'bapo', 'opsd', 'topd', 'cosearch')
 
 
 def canonical_paths(paths):
@@ -17,7 +17,7 @@ def canonical_paths(paths):
     return {str(Path(path).expanduser().resolve()) for path in paths}
 
 
-def question_keys(dataset):
+def question_keys(dataset, prompt_key='prompt'):
     def plain(value):
         if hasattr(value, 'tolist'):
             return plain(value.tolist())
@@ -26,7 +26,7 @@ def question_keys(dataset):
         if isinstance(value, (list, tuple)):
             return [plain(v) for v in value]
         return value
-    return {json.dumps(plain(prompt), sort_keys=True) for prompt in dataset.dataframe['prompt']}
+    return {json.dumps(plain(prompt), sort_keys=True) for prompt in dataset.dataframe[prompt_key]}
 
 
 def validate_config(config):
@@ -39,6 +39,24 @@ def validate_config(config):
         raise ValueError('Use rollout.n=1 and action state masking')
     if config.actor_rollout_ref.actor.ppo_epochs < 1:
         raise ValueError('Inner epochs must be positive')
+    actor = config.actor_rollout_ref.actor
+    world = config.trainer.n_gpus_per_node * config.trainer.nnodes
+    sp = actor.ulysses_sequence_parallel_size
+    if min(world, sp, actor.ppo_micro_batch_size, actor.ppo_mini_batch_size) < 1 or world % sp:
+        raise ValueError('Positive GPU/SP/batch counts and world divisible by SP required')
+    dp = world // sp
+    if actor.ppo_micro_batch_size % dp or actor.ppo_mini_batch_size % dp:
+        raise ValueError('Global actor mini/micro batches must be divisible by DP ranks')
+    if actor.ppo_mini_batch_size % actor.ppo_micro_batch_size:
+        raise ValueError('Actor minibatch must be divisible by microbatch')
+    if config.data.train_batch_size % world:
+        raise ValueError('Training question batch must be divisible by GPU world size')
+    if method == 'gigpo':
+        retained_budget = config.max_turns * (config.data.max_response_length + config.data.max_obs_length)
+        if config.force_final_answer:
+            retained_budget += config.data.max_response_length + config.data.max_obs_length
+        if retained_budget > config.data.max_prompt_length:
+            raise ValueError('GiGPO response cap can truncate the action timeline; reduce turn/response/observation budget')
     if method in ('opsd', 'topd'):
         actor = config.actor_rollout_ref.actor
         if actor.use_kl_loss or actor.entropy_coeff or config.algorithm.kl_ctrl.kl_coef:
@@ -52,8 +70,8 @@ def validate_config(config):
             raise ValueError('OPSD requires teacher-only training-answer context')
         if method == 'opsd' and (actor.ulysses_sequence_parallel_size != 1 or actor.use_dynamic_bsz):
             raise ValueError('OPSD currently requires SP=1 and fixed microbatches')
-        if method == 'opsd' and actor.ppo_micro_batch_size > config.trainer.n_gpus_per_node * config.trainer.nnodes:
-            raise ValueError('OPSD starts at microbatch 1 per rank; use global microbatch <= total GPU count')
+        if method == 'opsd' and actor.ppo_micro_batch_size != dp:
+            raise ValueError('OPSD starts at microbatch 1 per rank; use global microbatch equal to DP rank count')
         if config.baselines.distillation.chunk_size < 1:
             raise ValueError('Distillation chunk_size must be positive')
     if method == 'tree_grpo':
@@ -66,6 +84,8 @@ def validate_config(config):
             raise ValueError('Insufficient expansions for selected leaves')
     if method == 'bapo':
         holdout = config.baselines.bapo.stage_validation_files
+        if config.baselines.bapo.stage_validation_freq < 1:
+            raise ValueError('BAPO stage validation frequency must be positive')
         if not holdout or canonical_paths(holdout) & canonical_paths(config.data.val_files):
             raise ValueError('BAPO requires independent stage_validation_files; never use final test sets')
     if method == 'cosearch':
@@ -74,7 +94,10 @@ def validate_config(config):
             raise ValueError('CoSearch requires an auxiliary ranker checkpoint')
         if ranker.keep != config.retriever.topk:
             raise ValueError('Controlled comparison must preserve actor observation topk')
-        if ranker.candidates < ranker.keep or ranker.min_group_size < 2 or ranker.temperature <= 0:
+        if (ranker.candidates < ranker.keep or ranker.min_group_size < 2 or ranker.temperature <= 0
+                or min(ranker.batch_size, ranker.epochs, ranker.max_new_tokens) < 1
+                or not 0 < ranker.clip_ratio < 1 or ranker.grad_clip <= 0
+                or not 0 <= ranker.similarity <= 1):
             raise ValueError('Invalid ranker candidate/group/temperature settings')
     if config.algorithm.adv_estimator != 'grpo':
         raise ValueError('Select grpo as the critic-free outer driver; baseline hook supplies advantages')
@@ -110,8 +133,9 @@ class Controller:
                                  prompt_key=trainer.config.data.prompt_key,
                                  max_prompt_length=trainer.config.data.max_prompt_length,
                                  filter_prompts=True, return_raw_chat=False, truncation='error')
-            keys = question_keys(dataset)
-            if keys & (question_keys(trainer.val_dataset) | question_keys(trainer.train_dataset)):
+            prompt_key = trainer.config.data.prompt_key
+            keys = question_keys(dataset, prompt_key)
+            if keys & (question_keys(trainer.val_dataset, prompt_key) | question_keys(trainer.train_dataset, prompt_key)):
                 raise ValueError('BAPO stage holdout overlaps training or final-test questions')
             self.stage_dataset = dataset
             self.stage_loader = DataLoader(dataset, batch_size=trainer.config.data.val_batch_size,
@@ -159,7 +183,7 @@ class Controller:
         mask = data.batch['info_mask'][:, -width:] * data.batch['attention_mask'][:, -width:]
         for i, answer in enumerate(answers):
             targets = data.non_tensor_batch['reward_model'][i]['ground_truth']['target']
-            score = -.2 if answer is None else max(0., answer_f1(answer, targets))
+            score = -.2 if answer is None else max(0., ordinary_answer_f1(answer, targets))
             positions = torch.where(mask[i].bool())[0]
             if len(positions):
                 result[i, positions[-1]] = score
@@ -218,6 +242,9 @@ class Controller:
                 metrics['bapo/answered_coverage'] = sum(a is not None and not is_idk(a) for a in answers) / max(1, len(answers))
                 metrics['bapo/early_stage'] = int(self.stage.early)
         data.batch['advantages'], data.batch['returns'] = adv, returns
+        if self.method in ('gigpo', 'tree_grpo', 'topd', 'cosearch'):
+            from .objectives import attach_policy_weights
+            attach_policy_weights(data, self.method)
         return data
 
     def after_actor(self, data, metrics):
@@ -229,16 +256,22 @@ class Controller:
                 outcomes[uid] = (float(data.batch['token_level_scores'][i].sum()), targets, answers[i] is not None)
             metrics.update(self.ranker.update(outcomes))
 
-    def stage_validation(self):
+    def stage_validation(self, step=None):
         if self.method != 'bapo':
             return {}
+        if step is not None and step % self.config.bapo.stage_validation_freq:
+            return {}
         t = self.trainer
+        old_reward = t.val_reward_fn
+        from verl.trainer.main_ppo import RewardManager
+        t.val_reward_fn = RewardManager(t.tokenizer, 0)
         old_loader, old_dataset = t.val_dataloader, t.val_dataset
         try:
             t.val_dataloader, t.val_dataset = self.stage_loader, self.stage_dataset
             score = weighted_validation(t._validate())
         finally:
             t.val_dataloader, t.val_dataset = old_loader, old_dataset
+            t.val_reward_fn = old_reward
         self.stage.observe(score)
         return {'bapo/stage_validation': score, 'bapo/early_stage': int(self.stage.early),
                 'bapo/stalled': self.stage.stalled}

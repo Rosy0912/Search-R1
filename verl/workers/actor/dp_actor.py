@@ -31,7 +31,6 @@ from verl.utils.ulysses import ulysses_pad_and_slice_inputs, gather_outpus_and_u
 from verl.utils.seqlen_balancing import rearrange_micro_batches, get_reverse_idx
 import verl.utils.torch_functional as verl_F
 
-from flash_attn.bert_padding import pad_input, unpad_input, rearrange, index_first_axis
 
 __all__ = ['DataParallelPPOActor']
 
@@ -69,6 +68,7 @@ class DataParallelPPOActor(BasePPOActor):
             position_ids = micro_batch['position_ids']
 
             if self.use_remove_padding:
+                from flash_attn.bert_padding import pad_input, unpad_input, rearrange, index_first_axis
                 input_ids_rmpad, indices, *_ = unpad_input(input_ids.unsqueeze(-1),
                                                            attention_mask)  # input_ids_rmpad (total_nnz, ...)
                 input_ids_rmpad = input_ids_rmpad.transpose(0, 1)  # (1, total_nnz)
@@ -147,6 +147,8 @@ class DataParallelPPOActor(BasePPOActor):
             grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
         else:
             grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+        if not torch.isfinite(grad_norm):
+            raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         self.actor_optimizer.step()
         return grad_norm
 
@@ -213,6 +215,11 @@ class DataParallelPPOActor(BasePPOActor):
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:
             select_keys.append('ref_log_prob')
+        paper_objective = 'policy_weights' in data.batch.keys()
+        if paper_objective:
+            select_keys.append('policy_weights')
+            if self.config.get('baseline_method') == 'gigpo':
+                select_keys.append('step_ids')
         batch = data.select(batch_keys=select_keys).batch
 
         # Split to make minibatch iterator for updating the actor
@@ -220,17 +227,28 @@ class DataParallelPPOActor(BasePPOActor):
         dataloader = batch.split(self.config.ppo_mini_batch_size)
 
         metrics = {}
+        updates = skipped = 0
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
                 dataloader for _ in range(self.config.ppo_epochs))):
             # split batch into micro_batches
             mini_batch = data
+            from search_r1.baselines.distillation import global_token_count
+            count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
+            total, world = global_token_count(count_mask)
+            if total.item() == 0:
+                skipped += 1
+                continue
+            if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
+                raise ValueError('Paper actor objective requires driver-computed policy_weights')
             topd_token_mean = self.config.get('baseline_method') == 'topd'
-            if topd_token_mean:
-                from search_r1.baselines.distillation import global_token_denominator
+            if paper_objective:
+                from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
+                denominator = row_denominator(len(mini_batch), mini_batch.device)
+            elif topd_token_mean:
                 from search_r1.baselines.advantages import token_mean_ppo
-                denominator = global_token_denominator(mini_batch['loss_mask'])
+                denominator = total / world
             if self.config.use_dynamic_bsz:
                 max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
                 micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
@@ -257,7 +275,11 @@ class DataParallelPPOActor(BasePPOActor):
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
 
-                if topd_token_mean:
+                if paper_objective:
+                    pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
+                        old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
+                        clip_ratio, denominator, data.get('step_ids'))
+                elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
                 else:
@@ -267,9 +289,8 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                   eos_mask=response_mask,
                                                                                   cliprange=clip_ratio)
                 # compute entropy loss from entropy
-                entropy_loss = verl_F.masked_mean(entropy, response_mask)
-                if topd_token_mean:
-                    entropy_loss = (entropy * response_mask).sum() / response_mask.sum().clamp_min(1)
+                entropy_loss = (verl_F.masked_sum(entropy, data['policy_weights']) / denominator
+                                if paper_objective else verl_F.masked_mean(entropy, response_mask))
 
                 # compute policy loss
                 policy_loss = pg_loss - entropy_loss * entropy_coeff
@@ -277,16 +298,17 @@ class DataParallelPPOActor(BasePPOActor):
                 if self.config.use_kl_loss:
                     ref_log_prob = data['ref_log_prob']
                     # compute kl loss
-                    kld = core_algos.kl_penalty(logprob=log_prob,
-                                                ref_logprob=ref_log_prob,
+                    kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
+                                                ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
                                                 kl_penalty=self.config.kl_loss_type)
-                    kl_loss = masked_mean(kld, response_mask)
+                    kl_loss = (verl_F.masked_sum(kld, data['policy_weights']) / denominator
+                               if paper_objective else masked_mean(kld, response_mask))
 
                     policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
                     metrics['actor/kl_loss'] = kl_loss.detach().item()
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
-                loss = policy_loss if topd_token_mean else policy_loss / self.gradient_accumulation
+                loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
                 loss.backward()
 
                 data = {
@@ -298,8 +320,10 @@ class DataParallelPPOActor(BasePPOActor):
                 append_to_dict(metrics, data)
 
             grad_norm = self._optimizer_step()
+            updates += 1
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
-        metrics['actor/optimizer_steps'] = len(dataloader) * self.config.ppo_epochs
+        metrics['actor/optimizer_steps'] = updates
+        metrics['actor/skipped_empty_minibatches'] = skipped
         return metrics

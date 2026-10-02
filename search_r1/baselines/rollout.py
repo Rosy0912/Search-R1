@@ -204,22 +204,34 @@ class SearchRollout:
         self.tree_candidate_counts = []
         snapshots = self.complete(states, gen_batch.meta_info)
         if tree is not None:
+            leaves_by_root = [[root] for root in states]
+            counts_by_root = [[] for _ in states]
+            # Select from each root's existing candidates before this round's
+            # continuations run, then generate all roots together. A child keeps
+            # its source/tree/prefix/remaining turn budget; only batching changes.
+            for _ in range(tree.rounds):
+                children, owners = [], []
+                for root_index, nodes in enumerate(snapshots):
+                    if nodes:
+                        children.extend(self.rng.choice(nodes).branch() for _ in range(tree.expansions))
+                        owners.extend([root_index] * tree.expansions)
+                if not children:
+                    break
+                new_nodes = self.complete(children, gen_batch.meta_info)
+                known_by_root = [{s.node for s in nodes} for nodes in snapshots]
+                for child, root_index, path in zip(children, owners, new_nodes):
+                    leaves_by_root[root_index].append(child)
+                    nodes, known = snapshots[root_index], known_by_root[root_index]
+                    for s in path:
+                        if s.node not in known:
+                            nodes.append(s)
+                            known.add(s.node)
+                for root_index in set(owners):
+                    counts_by_root[root_index].append(len(snapshots[root_index]))
+            # Keep diagnostic order root-major as in the original engine.
+            self.tree_candidate_counts = [count for counts in counts_by_root for count in counts]
             selected = []
-            for root, nodes in zip(states, snapshots):
-                leaves = [root]
-                for _ in range(tree.rounds):
-                    if not nodes:
-                        break
-                    children = [self.rng.choice(nodes).branch() for _ in range(tree.expansions)]
-                    new_nodes = self.complete(children, gen_batch.meta_info)
-                    leaves.extend(children)
-                    known = {s.node for s in nodes}
-                    for path in new_nodes:
-                        for s in path:
-                            if s.node not in known:
-                                nodes.append(s)
-                                known.add(s.node)
-                    self.tree_candidate_counts.append(len(nodes))
+            for leaves in leaves_by_root:
                 if len(leaves) < tree.leaves:
                     raise ValueError('Tree-GRPO has fewer sampled leaves than K; increase expansion budget')
                 selected.extend(self.rng.sample(leaves, tree.leaves))

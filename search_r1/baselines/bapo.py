@@ -14,7 +14,7 @@ def normalize(text):
 def token_f1(prediction, target):
     a, b = normalize(prediction).split(), normalize(target).split()
     if not a or not b:
-        return float(a == b)
+        return 0.
     shared = sum((Counter(a) & Counter(b)).values())
     return 2 * shared / (len(a) + len(b))
 
@@ -32,7 +32,7 @@ def is_idk(answer):
     return answer is not None and normalize(answer) in ('i dont know', 'i do not know')
 
 
-def answer_f1(answer, targets):
+def ordinary_answer_f1(answer, targets):
     if answer is None:
         return -1.
     if is_idk(answer):
@@ -40,6 +40,24 @@ def answer_f1(answer, targets):
     if isinstance(targets, str):
         targets = [targets]
     return max((token_f1(answer, target) for target in targets), default=0.)
+
+
+def answer_f1(answer, targets):
+    """Fixed BAPO author scorer: categorical answers require exact match."""
+    if answer is None:
+        return -1.
+    if is_idk(answer):
+        return 0.
+    targets = [targets] if isinstance(targets, str) else targets
+    prediction = normalize(answer)
+    scores = []
+    for target in targets:
+        expected = normalize(target)
+        if (prediction in ('yes', 'no', 'noanswer') or expected in ('yes', 'no', 'noanswer')) and prediction != expected:
+            scores.append(0.)
+        else:
+            scores.append(token_f1(answer, target))
+    return max(scores, default=0.)
 
 
 @dataclass

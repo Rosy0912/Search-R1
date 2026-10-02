@@ -78,26 +78,37 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
         logits = student_model(input_ids=tensors['input_ids'], attention_mask=tensors['attention_mask'],
                                position_ids=tensors['position_ids'], use_cache=False).logits
         student = logits[:, -width - 1:-1]
-    total = student.sum() * 0
+    total = torch.where(torch.isfinite(student), student, torch.zeros_like(student)).sum() * 0
     for start in range(0, width, settings.chunk_size):
         stop = min(start + settings.chunk_size, width)
         pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(teacher.device)
         features = hidden.gather(1, pos[..., None].expand(-1, -1, hidden.shape[-1]))
         with torch.no_grad():
             target_logits = teacher.model.get_output_embeddings()(features).to(device)
-        divergence = generalized_jsd(student[:, start:stop], target_logits,
+        valid = tensors['loss_mask'][:, start:stop].bool()
+        source_logits = torch.where(valid[..., None], student[:, start:stop], 0.)
+        target_logits = torch.where(valid[..., None], target_logits, 0.)
+        if not torch.isfinite(source_logits).all() or not torch.isfinite(target_logits).all():
+            raise ValueError('Nonfinite OPSD logits on supervised tokens')
+        divergence = generalized_jsd(source_logits, target_logits,
                                      settings.beta, settings.temperature, settings.component_clip)
         total = total + (divergence * tensors['loss_mask'][:, start:stop]).sum()
     return total / denominator
 
 
-def global_token_denominator(mask):
-    """Account for DDP/FSDP averaged gradients: global token count / DP ranks."""
+def global_token_count(mask):
+    """Raw collective count; every rank makes the same empty-minibatch decision."""
     total = mask.sum().float()
     world = 1
     if torch.distributed.is_initialized():
         torch.distributed.all_reduce(total, op=torch.distributed.ReduceOp.SUM)
         world = torch.distributed.get_world_size()
+    return total, world
+
+
+def global_token_denominator(mask):
+    """Account for averaged gradients; an empty count is handled by the actor."""
+    total, world = global_token_count(mask)
     return total.clamp_min(1) / world
 
 

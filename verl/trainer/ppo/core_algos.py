@@ -182,8 +182,18 @@ def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange)
             a float number indicating the fraction of policy gradient loss being clipped
 
     """
-    negative_approx_kl = log_prob - old_log_prob
+    valid = eos_mask != 0
+    for name, value in [('old_log_prob', old_log_prob), ('log_prob', log_prob), ('advantages', advantages)]:
+        if not torch.isfinite(value[valid]).all():
+            raise ValueError(f'Nonfinite PPO {name} on a supervised token')
+    # Mask BEFORE exponentiation: masking an infinite ratio afterwards leaves NaN gradients.
+    safe_log_prob = torch.where(valid, log_prob, torch.zeros_like(log_prob))
+    safe_old = torch.where(valid, old_log_prob, torch.zeros_like(old_log_prob))
+    advantages = torch.where(valid, advantages, torch.zeros_like(advantages))
+    negative_approx_kl = safe_log_prob - safe_old
     ratio = torch.exp(negative_approx_kl)
+    if not torch.isfinite(ratio[valid]).all():
+        raise ValueError('PPO ratio overflow on a supervised token')
     ppo_kl = verl_F.masked_mean(-negative_approx_kl, eos_mask)
 
     pg_losses = -advantages * ratio

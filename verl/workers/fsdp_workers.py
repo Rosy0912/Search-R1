@@ -382,7 +382,8 @@ class ActorRolloutRefWorker(Worker):
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
             metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
-            self.actor_lr_scheduler.step()
+            if metrics.get('actor/optimizer_steps', 0) > 0:
+                self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
 
