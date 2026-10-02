@@ -1,0 +1,100 @@
+{
+  "heartbeat_trigger_utc": "2026-10-02T23:48:36.491Z",
+  "checked_at": "2026-10-02T23:52:33.385994+00:00",
+  "target_host": "baai-a800",
+  "stage": "PREPARING_NOT_TRAINING",
+  "new_updates": 0,
+  "new_reward": null,
+  "new_reward_hour_mean_range": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "reward_console_precision_decimals": 3,
+  "last_source_eval_step": 100,
+  "last_source_eval_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "weight_continuation_approval": "pending",
+  "resume_checkpoint_step": 100,
+  "checkpoint_upload": {
+    "session": 63173,
+    "active": true,
+    "latest_target_bytes": 438206464,
+    "archive_total_bytes": 12497675939,
+    "progress_percent": 3.506303621079993,
+    "target_verified": false,
+    "local_verified_archive_retained": true,
+    "duplicate_protection": "flock+expected-offset"
+  },
+  "cuda_preflight": {
+    "physical_devices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "success_marker": "FOUR_GPU_NCCL_BF16_OK 2.4.0+cu121",
+    "actual_NCCL_all_reduce_sum": 6,
+    "BF16_matmul_finite": true,
+    "launch": "torchrun --standalone --nnodes1 --nproc_per_node4",
+    "NVLS_ENABLE": 0,
+    "timeout_seconds": 180,
+    "scope": "small CUDA communication/math check; not model generation/training acceptance",
+    "own_process_exited_resources_released": true
+  },
+  "gpu_instant_memory_MiB": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    68494
+  ],
+  "gpu_instant_util_percent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "gpu_instant_total_MiB_each": 81920,
+  "gpu_interval_peak": "not sampled; cannot claim peak equals instant",
+  "gpu7_foreign_service_untouched": true,
+  "remaining_checks": [
+    "target checkpoint transfer/content integrity",
+    "real model generation and HTTP retrieval",
+    "accepted weight-continuation implementation/reference/schedule/count regressions",
+    "101..105 actual updates and fresh105 weight-change gate"
+  ]
+}
