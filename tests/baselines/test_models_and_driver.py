@@ -97,6 +97,11 @@ class TinyModels(unittest.TestCase):
         self.assertEqual(costs['teacher/model_bytes_per_rank'],
                          sum(p.numel() * p.element_size() for p in teacher.model.parameters())
                          + sum(p.numel() * p.element_size() for p in teacher.model.buffers()))
+        self.assertTrue(all(value == 0 for value in teacher.audit_metrics(optimizer).values()))
+        teacher_param = next(teacher.model.parameters())
+        optimizer.add_param_group({'params': [teacher_param]})
+        with self.assertRaisesRegex(RuntimeError, 'student optimizer'):
+            teacher.audit_metrics(optimizer)
     def test_real_ranker_parameters_update_and_invalid_main_filter(self):
         c = config('cosearch').baselines.ranker
         c.model_path = self.tmp.name

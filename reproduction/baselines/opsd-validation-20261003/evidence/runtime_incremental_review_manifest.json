@@ -1,0 +1,15 @@
+{
+  "head": "008d3a7148769572d864e395b706bc252c1a95d7",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/actor.py": "d737997d88e440d9b1144ae2d8f8522e234bde03e5b59d096c13bafb11eaf588",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/distillation.py": "f06f5b4364d2c140162dddce92e3d995713624a5397550e033547a9a0c9f7918",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/verl/workers/fsdp_workers.py": "bf50d9f5f3da3eedd42830fdd04dc40def4073b14fa5259557be359c212bb9b1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/resource_sample.py": "39b76c9770588b927e97efdd00b2c3e606b9da059803592828b897de74a57c9a",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/reproduction/baselines/opsd-validation-20261003/RUNTIME_DELTA_REVIEW.md": "791dddafefdbb9e0cf49c63d960675ddcabd7fba316fef9b2a6f7313339581c0"
+  },
+  "R1": "Resolved with real CPU Gloo 2-rank gather probe",
+  "R2": "Disappearing PID exception-handler reread remains; owner notified",
+  "GPU_validated": false,
+  "real_five_iterations_received": false
+}

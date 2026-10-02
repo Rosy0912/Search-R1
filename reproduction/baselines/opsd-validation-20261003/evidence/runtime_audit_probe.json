@@ -1,0 +1,17 @@
+{
+  "normal_frozen_teacher_audit": {
+    "teacher/trainable_parameters_per_rank": 0,
+    "teacher/gradient_tensors_per_rank": 0,
+    "teacher/student_optimizer_membership_per_rank": 0
+  },
+  "illegal_teacher_states_refused": [
+    "trainable",
+    "gradient",
+    "membership"
+  ],
+  "current_dataproto_concat_keeps_only_first_rank_metrics": {
+    "actor/cuda_peak_allocated_bytes/rank_0": 100,
+    "teacher/cpu_seconds_cumulative_per_rank": 1.0
+  },
+  "gpu_runtime_tested": false
+}

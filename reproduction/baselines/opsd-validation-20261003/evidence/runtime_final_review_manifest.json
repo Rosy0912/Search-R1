@@ -1,0 +1,22 @@
+{
+  "head": "008d3a7148769572d864e395b706bc252c1a95d7",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/actor.py": "b202c0b7a3b5f6862a97da2f4f65b6dfa80ff04765efb5b6e96b68e296e72196",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/distillation.py": "f06f5b4364d2c140162dddce92e3d995713624a5397550e033547a9a0c9f7918",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/verl/workers/fsdp_workers.py": "bf50d9f5f3da3eedd42830fdd04dc40def4073b14fa5259557be359c212bb9b1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/reproduction/baselines/opsd-validation-20261003/RUNTIME_DELTA_REVIEW.md": "7beb825a9df1ef23abc0e0fd48fcbe7f49791919266509aeae3338dff1bd228b",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/prepare_assets.py": "ef367d9c4bae2abe130700eddf9d7d6746f5bfb06ab221e2d13884ae8ea055e5",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/http_retrieval_check.py": "2be985f305754944e95cfbb5dc20450d8ecc3612765cbdaf685b7cbc9587a769",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/model_preflight.py": "4205e53d6a4c2dc03f18fe424b117cf5bfc795ad04221052aa817be914adf986",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/job.sh": "af72675508d731d2320307d2235124d61a0e0a2ad3d64bffc3adfc4882a675ae"
+  },
+  "finding_status": {
+    "R1_multirank_collection": "Resolved; CPU Gloo 2-rank actual actor observation test passed",
+    "R2_disappearing_process": "Resolved; same AST fixture passed"
+  },
+  "static_launch_review": "PASS in reviewed scope",
+  "real_GPU_5iter_and_HF_reload": "PENDING",
+  "scope": "Only independent CPU probes and read-only script review; no remote/GPU launch"
+}

@@ -170,6 +170,18 @@ class FrozenTeacher:
                 'teacher/model_bytes_per_rank': self.model_bytes,
                 'teacher_worker/peak_rss_bytes_per_rank': peak if sys.platform == 'darwin' else peak * 1024}
 
+    def audit_metrics(self, student_optimizer):
+        parameters = list(self.model.parameters())
+        teacher_ids = {id(p) for p in parameters}
+        trainable = sum(p.numel() for p in parameters if p.requires_grad)
+        gradients = sum(p.grad is not None for p in parameters)
+        overlap = sum(id(p) in teacher_ids for group in student_optimizer.param_groups for p in group['params'])
+        if trainable or gradients or overlap:
+            raise RuntimeError('Frozen teacher acquired gradients or entered the student optimizer')
+        return {'teacher/trainable_parameters_per_rank': trainable,
+                'teacher/gradient_tensors_per_rank': gradients,
+                'teacher/student_optimizer_membership_per_rank': overlap}
+
     @torch.no_grad()
     def log_probs(self, prompts, responses, attention, temperature=1., targets=None, chunk=16):
         ids, mask, positions = teacher_inputs(self.tokenizer, prompts, responses, attention,

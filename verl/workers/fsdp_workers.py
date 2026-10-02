@@ -538,6 +538,13 @@ class ActorRolloutRefWorker(Worker):
         torch.distributed.barrier()
         if self._is_offload_param:
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+        if self.config.actor.get('baseline_method') == 'opsd':
+            import json
+            print('OPSD_CHECKPOINT_RANK_AUDIT=' + json.dumps(dict(
+                rank=self.rank, checkpoint=local_path,
+                cuda_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+                cuda_peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+                teacher=self.actor.teacher.audit_metrics(self.actor.actor_optimizer))), flush=True)
 
 
 class CriticWorker(Worker):

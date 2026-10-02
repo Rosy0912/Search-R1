@@ -1,0 +1,8 @@
+{
+  "real_cpu_gloo_world": 2,
+  "complete_rank_keys_survive_first_metadata_concat": true,
+  "rank0_legacy_cost": 1.0,
+  "rank1_observation": 2.0,
+  "loss_parameters_unchanged_empty_minis": true,
+  "gpu_tested": false
+}

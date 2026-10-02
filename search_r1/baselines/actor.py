@@ -1,4 +1,5 @@
 """OPSD actor uses full-vocabulary loss with a separate frozen, privileged teacher."""
+import math
 import torch
 from verl.workers.actor.dp_actor import DataParallelPPOActor
 from verl.utils.py_functional import append_to_dict
@@ -58,4 +59,27 @@ class DistillationActor(DataParallelPPOActor):
         metrics['teacher/parameters_per_rank'] = self.teacher.parameter_count
         metrics['teacher/scored_tokens_cumulative_per_rank'] = self.teacher.scored_tokens
         metrics.update(self.teacher.cost_metrics())
+        metrics.update(self.teacher.audit_metrics(self.actor_optimizer))
+        observations = {key: value for key, value in metrics.items()
+                        if key.startswith(("teacher/", "teacher_worker/"))}
+        observations['actor/optimizer_steps'] = updates
+        observations['actor/skipped_empty_minibatches'] = skipped
+        for key in ('actor/opsd_loss', 'actor/grad_norm'):
+            values = metrics.get(key, [])
+            if values:
+                observations[key + '_mean'] = sum(values) / len(values)
+                observations[key + '_finite'] = int(all(math.isfinite(v) for v in values))
+        if torch.cuda.is_available():
+            observations['actor/cuda_peak_allocated_bytes'] = torch.cuda.max_memory_allocated()
+            observations['actor/cuda_peak_reserved_bytes'] = torch.cuda.max_memory_reserved()
+        # DataProto.concat retains only rank 0 meta_info. Replicate complete rank
+        # observations on every worker, without changing loss/gradient reduction.
+        if torch.distributed.is_initialized():
+            gathered = [None] * torch.distributed.get_world_size()
+            torch.distributed.all_gather_object(gathered, observations)
+        else:
+            gathered = [observations]
+        for worker_rank, values in enumerate(gathered):
+            metrics.update({f'{key}/rank_{worker_rank}': value
+                            for key, value in values.items()})
         return metrics

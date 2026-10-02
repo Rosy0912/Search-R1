@@ -1,0 +1,19 @@
+{
+  "head": "008d3a7148769572d864e395b706bc252c1a95d7",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/actor.py": "5a1aa14e4ff9f6bfcc1d127fecfc690c111427a2ff4fd82e29498d1f0df4a41e",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/distillation.py": "f06f5b4364d2c140162dddce92e3d995713624a5397550e033547a9a0c9f7918",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/verl/protocol.py": "ceccbe7c9ad3bfe430355f35705054881f32dc254b0862a1f0bf6800e387405d",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/runtime-20261003/resource_sample.py": "d0e9bd578ba8b38ca09ce623520895475b8d9787bfc5d1fc94ca29c664b99125",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/reproduction/baselines/opsd-validation-20261003/RUNTIME_DELTA_REVIEW.md": "b87df475957bb74aa292eb4643af74e913a0f8c202815a43cd20017a34d94948"
+  },
+  "CPU_only": true,
+  "real_five_iterations_received": false,
+  "finding_R1": "DataProto.concat first meta_info drops rank_1+ observations; awaiting owner fix",
+  "mathematical_equivalence": {
+    "loss_bitwise_equal": true,
+    "gradient_tensors_bitwise_equal": 15
+  },
+  "focused_tests_passed": 2
+}
