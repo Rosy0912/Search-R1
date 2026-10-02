@@ -3,8 +3,11 @@ import argparse
 import json
 from pathlib import Path
 import resource
+import sys
 import time
 from types import SimpleNamespace
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import pandas as pd
 import requests
@@ -22,6 +25,8 @@ parser.add_argument('--threads', type=int, default=8)
 parser.add_argument('--questions', type=int, default=3)
 parser.add_argument('--repeats', type=int, default=3)
 args = parser.parse_args()
+if min(args.threads, args.questions, args.repeats) < 1:
+    parser.error('threads, questions and repeats must be positive')
 torch.set_num_threads(args.threads)
 torch.manual_seed(42)
 out = Path(args.output)
@@ -31,7 +36,8 @@ report = dict(scope='standalone rank generation only; no actor training, no fabr
               candidates=50, keep=3, max_new_tokens=256, queries=[], generations=[])
 
 def save():
-    report['process_peak_rss_mib'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    divisor = 1024 ** 2 if sys.platform == 'darwin' else 1024
+    report['process_peak_rss_mib'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / divisor
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n')
 
 tokenizer = AutoTokenizer.from_pretrained(args.model, local_files_only=True)
@@ -41,7 +47,13 @@ data = pd.read_parquet(args.train).head(args.questions)
 inputs = []
 for _, row in data.iterrows():
     chat = row['prompt'].tolist() if hasattr(row['prompt'], 'tolist') else row['prompt']
-    initial = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+    initial = (tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+               if tokenizer.chat_template else chat[0]['content'])
+    initial_ids = tokenizer(initial, add_special_tokens=False)['input_ids']
+    if len(initial_ids) > 4096:
+        raise ValueError('Training prompt exceeds the fixed 4096-token dataset budget')
+    # The production ranker decodes SearchRollout's unpadded max_start_length prompt.
+    initial = tokenizer.decode(initial_ids[-2048:], skip_special_tokens=True)
     extra = row.get('extra_info', {})
     question = extra.get('question') if isinstance(extra, dict) else None
     if not question:
