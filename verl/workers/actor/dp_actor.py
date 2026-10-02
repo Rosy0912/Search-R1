@@ -222,6 +222,12 @@ class DataParallelPPOActor(BasePPOActor):
                 select_keys.append('step_ids')
         batch = data.select(batch_keys=select_keys).batch
 
+        audit = None
+        if self.config.get('baseline_method') == 'topd':
+            from search_r1.baselines.topd_runtime_audit import enabled, ActorAudit
+            if enabled():
+                audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
         dataloader = batch.split(self.config.ppo_mini_batch_size)
@@ -232,6 +238,8 @@ class DataParallelPPOActor(BasePPOActor):
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
                 dataloader for _ in range(self.config.ppo_epochs))):
+            if audit is not None and batch_idx % len(dataloader) == 0:
+                audit.epoch()
             # split batch into micro_batches
             mini_batch = data
             from search_r1.baselines.distillation import global_token_count
@@ -315,6 +323,8 @@ class DataParallelPPOActor(BasePPOActor):
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
                 loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+                if audit is not None:
+                    audit.micro(log_prob, old_log_prob, response_mask, loss)
                 loss.backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
@@ -335,12 +345,16 @@ class DataParallelPPOActor(BasePPOActor):
             if paper_objective:
                 append_to_dict(metrics, mini_metrics)
             grad_norm = self._optimizer_step()
+            if audit is not None:
+                audit.gradient(grad_norm)
             updates += 1
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if audit is not None:
+            audit.finish(updates, skipped)
         if paper_objective:
             from search_r1.baselines.objectives import reduce_paper_metrics
             reduce_paper_metrics(metrics, batch.device)

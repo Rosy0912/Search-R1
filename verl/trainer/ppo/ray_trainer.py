@@ -878,6 +878,8 @@ class RayPPOTrainer(object):
                                                       lam=self.config.algorithm.lam,
                                                       num_repeat=self.config.actor_rollout_ref.rollout.n)
                         else:
+                            if self.baseline_controller.method == 'topd':
+                                batch.meta_info['topd_outer_step'] = self.global_steps
                             batch = self.baseline_controller.compute_advantages(batch, metrics)
 
                     # update critic
@@ -898,6 +900,10 @@ class RayPPOTrainer(object):
                         metrics.update(actor_output_metrics)
                         if getattr(self, 'baseline_controller', None) is not None:
                             self.baseline_controller.after_actor(batch, metrics)
+
+                    if getattr(self, 'baseline_controller', None) is not None and self.baseline_controller.method == 'topd':
+                        from search_r1.baselines.topd_runtime_audit import require_actual_update
+                        require_actual_update(metrics)
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \

@@ -240,6 +240,10 @@ class RayWorkerGroup(WorkerGroup):
                     'RAY_LOCAL_WORLD_SIZE': str(local_world_size),
                     'RAY_LOCAL_RANK': str(local_rank),
                 }
+                import os
+                if os.environ.get('SEARCH_R1_TOPD_AUDIT_DIR'):
+                    from search_r1.baselines.topd_runtime_audit import runtime_env_vars
+                    env_vars.update(runtime_env_vars())
                 if rank != 0:
                     env_vars['MASTER_ADDR'] = self._master_addr
                     env_vars['MASTER_PORT'] = self._master_port

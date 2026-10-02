@@ -38,7 +38,10 @@ def main(config):
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
-    result = ray.get(main_task.remote(config))
+    from .topd_runtime_audit import runtime_env_vars
+    audit_env = runtime_env_vars()
+    task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
+    result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:
         import json
         import re

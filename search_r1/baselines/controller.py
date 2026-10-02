@@ -157,6 +157,9 @@ class Controller:
         elif self.method == 'topd':
             from .distillation import FrozenTeacher
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
+            from .topd_runtime_audit import enabled, teacher_boundary
+            if enabled():
+                teacher_boundary(self.teacher, 0, 'loaded')
 
     def generate(self, manager, gen_batch, qa_batch, metrics):
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
@@ -226,6 +229,10 @@ class Controller:
             adv = advantages.tree_grpo(rewards, mask, uids, data.non_tensor_batch['tree_uid'])
             returns = adv.clone()
         elif self.method == 'topd':
+            from .topd_runtime_audit import enabled, usage
+            audit_enabled = enabled()
+            before = usage() if audit_enabled else None
+            tokens_before = self.teacher.scored_tokens
             setting = self.config.distillation
             scored = []
             for i in range(len(data)):
@@ -233,6 +240,7 @@ class Controller:
                 scored.append(self.teacher.log_probs(data.batch['prompts'][i:i+1], data.batch['responses'][i:i+1],
                               data.batch['attention_mask'][i:i+1, -width:],
                               self.trainer.config.actor_rollout_ref.rollout.temperature, targets, setting.chunk_size))
+            after = usage() if audit_enabled else None
             teacher_logp = torch.cat(scored).to(rewards.device)
             adv, returns, dense = advantages.topd(teacher_logp, data.batch['old_log_probs'], mask, uids, self.config.topd.alpha)
             data.batch['token_level_rewards'] = dense
@@ -255,9 +263,18 @@ class Controller:
         if self.method in ('gigpo', 'tree_grpo', 'topd', 'cosearch'):
             from .objectives import attach_policy_weights
             attach_policy_weights(data, self.method)
+        if self.method == 'topd' and audit_enabled:
+            from .topd_runtime_audit import driver_evidence
+            driver_evidence(data, teacher_logp, before, after,
+                            self.teacher.scored_tokens - tokens_before, setting.privileged_answers)
         return data
 
     def after_actor(self, data, metrics):
+        if self.method == 'topd':
+            from .topd_runtime_audit import enabled, teacher_boundary, require_actual_update
+            require_actual_update(metrics)
+            if enabled() and data.meta_info['topd_outer_step'] == 5:
+                teacher_boundary(self.teacher, 5, 'after_actor')
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
             outcomes = {}
