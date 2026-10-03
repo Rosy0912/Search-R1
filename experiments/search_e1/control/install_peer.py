@@ -25,6 +25,7 @@ subprocess.run([str(py),'-m','pip','install','--no-index','--find-links',str(bas
 flash=list((base/'wheels').glob('flash_attn*.whl'));assert len(flash)==1
 subprocess.run([str(py),'-m','pip','install','--no-deps',str(flash[0])],check=True)
 subprocess.run([str(py),'-m','pip','check'],check=True)
+subprocess.run([str(py),'-c',"import torch, transformers, vllm, flash_attn, tensordict, ray, faiss; from pyairports.airports import AIRPORT_LIST; print('IMPORT_VALIDATED',torch.__version__,vllm.__version__,len(AIRPORT_LIST))"],check=True)
 (base/'receipts').mkdir(exist_ok=True)
 (base/'receipts/environment-freeze.txt').write_bytes(subprocess.check_output([str(py),'-m','pip','freeze']))
 (base/'receipts/env.ready').touch()
