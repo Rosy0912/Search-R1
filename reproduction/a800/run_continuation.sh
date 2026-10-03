@@ -3,6 +3,8 @@ set -euo pipefail
 BASE=/data/search-r1
 unset PYTHONPATH PYTHONHOME RAY_ADDRESS
 export PATH="$BASE/env/bin:$PATH" PYTHONPATH="$BASE/repo"
+export C_INCLUDE_PATH="$BASE/bootstrap-tools/python-dev/usr/include/python3.10:$BASE/bootstrap-tools/python-dev/usr/include"
+export TRITON_CACHE_DIR="$BASE/cache/triton-a800" TORCHINDUCTOR_CACHE_DIR="$BASE/cache/inductor-a800"
 export TMPDIR="$BASE/tmp" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 OMP_NUM_THREADS=8
 mkdir -p "$BASE/ray-a800" "$BASE/tmp" "$BASE/cache"
@@ -23,6 +25,7 @@ python reproduction/a800/gpu_idle.py 0 1 2 3 5 6
 test -f "$BASE/logs/environment.ready"
 grep -q FOUR_GPU_NCCL_BF16_OK "$BASE/logs/a800-cuda-preflight.log"
 grep -q A800_CURRENT_PREFLIGHT_COMPLETE "$BASE/logs/a800-current-preflight.log"
+grep -q ACTUAL_TORCH_TRITON_CUDA_JIT_OK "$BASE/logs/a800-jit-preflight.log"
 python - <<'PY'
 import json
 from pathlib import Path

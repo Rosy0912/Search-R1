@@ -42,6 +42,16 @@ and real3B vLLM generation passed separately; none counts as training acceptance
 The retrieved14-query top3 overlap is41/42, maximum score delta2.18e-5.
 The512-query timing uses repeated vectors and excludes encoding/document loading.
 
+The first attempt reached initial64-question validation but failed before any
+update because the host lacks Python3.10 development headers. Ubuntu's
+`libpython3.10-dev=3.10.12-1~22.04.18` was downloaded and extracted only into
+`bootstrap-tools/python-dev`; SHA256 is
+`c058675011ec4b64f5ad803d74b5fe7de0c720c3700683040da68d1fb5b44ed9`.
+Project-local C_INCLUDE_PATH and independent Triton/Inductor cache paths
+are exported by the wrappers. Actual compiled CUDA arithmetic now passes
+`ACTUAL_TORCH_TRITON_CUDA_JIT_OK`; eager generation alone missed this path.
+The failed zero-update segment is retained separately and is not training progress.
+
 Disk source hashes recorded before launch are not proof of loaded module identity.
 Credentials, private checkpoint data and complete raw training logs are excluded
 from Git publication. Live state must be read from the target supervisor, segment

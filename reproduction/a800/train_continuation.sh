@@ -10,6 +10,8 @@ unset PYTHONPATH PYTHONHOME RAY_ADDRESS
 export PYTHONPATH="$BASE/repo"
 export NCCL_NVLS_ENABLE=0
 export PATH="$BASE/env/bin:$PATH"
+export C_INCLUDE_PATH="$BASE/bootstrap-tools/python-dev/usr/include/python3.10:$BASE/bootstrap-tools/python-dev/usr/include"
+export TRITON_CACHE_DIR="$BASE/cache/triton-a800" TORCHINDUCTOR_CACHE_DIR="$BASE/cache/inductor-a800"
 export TMPDIR="$BASE/tmp" RAY_TMPDIR="$BASE/ray-a800" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 WANDB_MODE=offline
 export CUDA_VISIBLE_DEVICES=0,1,2,3 OMP_NUM_THREADS=8

@@ -1,5 +1,20 @@
 # A800 migration: independent read-only review
 
+## Follow-up after implementation (2026-10-03)
+
+The original findings below describe the pre-change code. The user has now
+explicitly accepted weight-only continuation. Independent read-only follow-up
+review found no concrete launch blocker after actor/reference separation,
+schedule/count restoration, private Ray cleanup, exclusive segment identity,
+source/reference hash binding, scoped GPU admission, processed-data checks,
+deployed localhost18000 wrapper checks and read-only five-step watcher were added.
+The final gate now checks ordered101–500 updates, matching five-step run identity,
+fresh complete finite500 weights and exact seven-source counts. Parent-executed
+pinned target CPU regression passed75 tests. The reviewer did not run GPU tasks.
+Minor monitor-timeout and ANSI robustness comments were addressed by the parent.
+Actual resumed updates and five-step runtime acceptance remain separate requirements;
+static review and preflights must not be reported as training completion.
+
 Date: 2026-10-03. Scope: current local Search-R1 source and launch/acceptance scripts. No remote process, GPU job, Git state, or implementation was changed for this review. Existing GPU evidence is supplied by the parent agent; this report does not constitute A800 runtime validation.
 
 ## Verdict
