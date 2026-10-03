@@ -53,7 +53,8 @@ def contains_answer(document, answers):
 def answers_are_trivial(answers):
     if isinstance(answers, str):
         answers = [answers]
-    return bool(answers) and all(a.lower().strip() in _TRIVIAL_ANSWERS for a in answers)
+    # Parquet aliases arrive as numpy arrays; their truth value is ambiguous.
+    return len(answers) > 0 and all(a.lower().strip() in _TRIVIAL_ANSWERS for a in answers)
 
 
 def answer_available(candidates, answers):

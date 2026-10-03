@@ -12,7 +12,7 @@ mem_match=re.search(r'MinMemoryNode=(\d+)([KMGTP]?)',allocation)
 assert mem_match, 'Cannot verify actual Slurm node memory allocation'
 memory_mib=int(mem_match.group(1))*{'':1,'K':1/1024,'M':1,'G':1024,'T':1024**2,'P':1024**3}[mem_match.group(2)]
 assert memory_mib >= 192000
-run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-l')
+run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-m')
 assert re.fullmatch(r'cosearch-local-gpu-five-[0-9]{8}-[a-z][a-z0-9-]*',run_id)
 run=root/'runs'/run_id
 run.mkdir(parents=True,exist_ok=False)

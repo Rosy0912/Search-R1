@@ -161,6 +161,19 @@ started=time.perf_counter();r.rank_batch(queries,queries,docs,states)
 record.update(wall_seconds=time.perf_counter()-started,events=len(r.events),cost=r.cost.copy())
 assert len(r.events)==8 and all(e['question_uid']==i for i,e in enumerate(r.events))
 assert all(p.dtype==torch.float32 and p.device.type=='cpu' for p in r.model.parameters())
+# Exercise the actual parquet alias type through reward preparation before any
+# production rollout. All unique question UIDs prevent synthetic RL selection.
+import pandas as pd, numpy as np
+frame=pd.read_parquet(root/'assets-root/data/paper-grpo/train.parquet',columns=['reward_model'])
+aliases=[item['ground_truth']['target'] for item in frame['reward_model']
+         if len(item['ground_truth']['target'])>1][:8]
+assert len(aliases)==8 and all(isinstance(a,np.ndarray) for a in aliases)
+saved_events=list(r.events);r.events=[dict(e) for e in saved_events]
+contract=r._update({e['trajectory_uid']:(.8,a,True) for e,a in zip(r.events,aliases)})
+assert contract['ranker/training_events']==0 and r.cost['optimizer_steps']==0
+r.events=saved_events
+record['real_parquet_alias_contract']=dict(rows=8,alias_counts=[len(a) for a in aliases],
+                                         types=[type(a).__name__ for a in aliases],metrics=contract)
 with r.execution_phase(training=True):
     # Observe actual generation devices; input sorting and token-budget chunks
     # make fixed original row offsets insufficient to prove replica coverage.
@@ -186,7 +199,7 @@ with r.execution_phase(training=True):
             e['old_logp']=r.response_logp(e['input_ids'][None].to(r.device),256)[0].cpu()
     packed=_pack(events)
     ids,mask,lengths,old,width=[x.to(r.device) if torch.is_tensor(x) else x for x in packed]
-    advantages=torch.tensor([1.,-1.]*4,device=r.device)
+    advantages=torch.tensor([1.,-.7,.3,-1.1,.8,-.2,.5,-.4],device=r.device)
     checkpoint_calls={};lock=threading.Lock()
     original=r.model.model._gradient_checkpointing_func
     def counted_checkpoint(*args,**kwargs):

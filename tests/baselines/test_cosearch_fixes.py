@@ -116,3 +116,15 @@ def test_retriever_cannot_silently_reduce_fifty_candidate_protocol():
                 pass
             else:
                 raise AssertionError('Reduced candidates or malformed documents must fail before ranking')
+
+
+def test_parquet_numpy_answer_aliases_keep_list_reward_semantics():
+    import numpy as np
+    from search_r1.baselines.cosearch import answers_are_trivial
+    documents = ['Paris in France', 'Yes, no and true false', 'Elsewhere']
+    for answers in ([], ['Paris'], ['Paris', 'France'], ['yes', 'no'], ['yes', 'Paris'], ['']):
+        aliases = np.asarray(answers, dtype=object)
+        assert answers_are_trivial(aliases) == answers_are_trivial(answers)
+        assert answer_available(documents, aliases) == answer_available(documents, answers)
+        for ranking in ([1, 2, 3], None):
+            assert ranker_reward(documents, ranking, aliases, .8) == ranker_reward(documents, ranking, answers, .8)
