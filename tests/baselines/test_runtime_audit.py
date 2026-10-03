@@ -37,3 +37,23 @@ def test_audit_sampling_does_not_consume_rng():
     audit=ActorAudit(model,batch,{'baseline_outer_step':1},1)
     audit.epoch(); audit.micro(torch.zeros(1,1),torch.zeros(1,1),torch.ones(1,1),torch.ones(1))
     torch.testing.assert_close(before,torch.get_rng_state(),atol=0,rtol=0)
+
+def test_actual_config_boundary_rejects_declared_hash_and_split_drift(tmp_path):
+    import hashlib
+    import pytest
+    from omegaconf import OmegaConf
+    from search_r1.baselines.runtime_audit import config_boundary
+    config=OmegaConf.create({'trainer':{'total_training_steps':6},'data':{'path':'local'}})
+    text=OmegaConf.to_yaml(config);identity={'content_identity':{'sha256':'split'}}
+    with patch.dict(os.environ,{'SEARCH_R1_BASELINE_AUDIT_DIR':str(tmp_path),
+            'SEARCH_R1_BASELINE_CONFIG_SHA256':hashlib.sha256(text.encode()).hexdigest(),
+            'SEARCH_R1_BASELINE_DATA_IDENTITY':'split'}):
+        config.trainer.total_training_steps=501
+        with pytest.raises(ValueError):config_boundary(config,identity)
+        assert not list(tmp_path.iterdir())
+        config.trainer.total_training_steps=6
+        with pytest.raises(ValueError):config_boundary(config,{'content_identity':{'sha256':'other'}})
+        config_boundary(config,identity)
+    assert (tmp_path/'entry-config.yaml').read_text()==text
+    record=json.loads((tmp_path/'entry.jsonl').read_text())
+    assert record['actual_data_identity']=='split' and record['entry_total_training_steps']==6

@@ -35,6 +35,8 @@ def main(config):
         config.data.val_files = config.baselines.bapo.stage_validation_files
         config.data.final_val_files = None
     validate_config(config)
+    from .runtime_audit import config_boundary
+    config_boundary(config, split_manifest)
     from .preflight import validate_assets_and_retriever
     validate_assets_and_retriever(config)
     from verl.trainer.main_ppo import main_task
