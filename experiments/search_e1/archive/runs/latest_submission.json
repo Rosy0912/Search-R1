@@ -1,0 +1,76 @@
+{
+  "created_at_utc": "2026-10-01T17:04:07.593635+00:00",
+  "experiment_dir": "/home/jmzhang/Workspace/Search-E1-20261001/runs/staged-3b-20261001-170407",
+  "gpus": 4,
+  "qos": "normal",
+  "partition": "L40S",
+  "jobs": [
+    {
+      "phase": "grpo1",
+      "job_id": 133235,
+      "afterok": null,
+      "requested_gpus": 4
+    },
+    {
+      "phase": "opsd1",
+      "job_id": 133236,
+      "afterok": 133235,
+      "requested_gpus": 8
+    },
+    {
+      "phase": "grpo2",
+      "job_id": 133237,
+      "afterok": 133236,
+      "requested_gpus": 8
+    },
+    {
+      "phase": "opsd2",
+      "job_id": 133238,
+      "afterok": 133237,
+      "requested_gpus": 8
+    },
+    {
+      "phase": "eval",
+      "job_id": 133239,
+      "afterok": 133238,
+      "requested_gpus": 8
+    }
+  ],
+  "configuration": {
+    "cycles": 2,
+    "updates_per_cycle": 200,
+    "train_batch": 512,
+    "ppo_minibatch": 128,
+    "actor_micro_per_gpu": 2,
+    "score_micro_per_gpu": 4,
+    "trajectory_mean_batching": true
+  },
+  "gpu_allocation_by_phase": {
+    "grpo1": 4,
+    "opsd1": 8,
+    "grpo2": 8,
+    "opsd2": 8,
+    "eval": 8
+  },
+  "scaling": {
+    "updated_at_utc": "2026-10-02T08:29:23.433367+00:00",
+    "reason": "Step 50 same-path 512-question validation macro EM approximately 0.416 vs initial 0.24609375; both sources improve. User-authorized scaling.",
+    "method": "scontrol update Gres=gpu:8 for four pending jobs; dependencies and IDs retained",
+    "pending_actual_allocation": true,
+    "opsd_global_batch": 32,
+    "opsd_accumulation_per_gpu": 4,
+    "first_grpo_untouched": true
+  },
+  "quality_gate": {
+    "held_at_unix": 1791021422.1531267,
+    "phase": "opsd1",
+    "job_id": 133236,
+    "reason": "Repeated severe finite pre-clipping gradient spikes122-127 and degraded training action/finish metrics; pending automatic handoff has no model quality gate. Preserve ongoing first GRPO optimizer; await same-path step150 independent validation before deciding release or evidence-supported repair. This hold is not a claim of independently verified EM decline.",
+    "release_condition": "Explicitly assess upcoming independent validation and stability evidence, then release retained job with scontrol release133236 when safe to advance. Do not forget held job.",
+    "scope_unchanged": true,
+    "grpo1_untouched": true,
+    "requested_gpus": 8,
+    "afterok": 133235,
+    "scontrol_verification": "JobId=133236 JobName=search-e1-opsd1 UserId=jmzhang(1066) GroupId=lumia(2001) MCS_label=N/A Priority=0 Nice=0 Account=lumia QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=afterok:133235(unfulfilled) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-02T01:04:07 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-02T01:04:07 Scheduler=Main Partition=L40S AllocNode:Sid=storage-hdd:3534228 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=32 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=32,mem=512G,node=1,billing=32,gres/gpu=8 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/home/jmzhang/Workspace/Search-E1-20261001/scripts/lumia_phase.sbatch WorkDir=/home/jmzhang/Workspace/Search-E1-20261001 StdErr=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.err StdIn=/dev/null StdOut=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.out KillOInInvalidDependent=Yes TresPerNode=gres/gpu:8 TresPerTask=cpu=32 \n"
+  }
+}

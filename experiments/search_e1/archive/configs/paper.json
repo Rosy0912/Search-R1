@@ -1,0 +1,55 @@
+{
+  "paper": "https://arxiv.org/pdf/2605.22511",
+  "upstream_commit": "598e61bd1d36895726d28a8d06b3a15bed19f5d3",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "cycles": 2,
+  "grpo": {
+    "updates": 200,
+    "lr": 1e-06,
+    "kl_coefficient": 0.001,
+    "clip_ratio": 0.2,
+    "group_size": 5,
+    "temperature": 1.0,
+    "search_budget": 4
+  },
+  "retriever": {
+    "model": "intfloat/e5-base-v2",
+    "corpus": "Wikipedia December 2018",
+    "topk": 3
+  },
+  "opsd": {
+    "forward_kl_pointwise_clip": 10,
+    "teacher": "frozen GRPO base with adapter disabled",
+    "student": "LoRA-active base",
+    "mask_information": true
+  },
+  "unreported_assumptions": {
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "opsd_lr": 1e-05,
+    "opsd_epochs": 1,
+    "opsd_accumulation": "8 trajectories per GPU; global batch = 8 * allocated GPUs",
+    "pair_pool_K": 5,
+    "character_distance": "normalized Levenshtein character distance (RapidFuzz 3.13.0)",
+    "validation": "512 held out from NQ/Hotpot training",
+    "grpo_batch": 512,
+    "grpo_warmup_ratio": 0.285,
+    "max_context": 8192,
+    "generation_segment_tokens": 500,
+    "observation_tokens": 500
+  },
+  "hardware_difference": "Current staged launch uses 4x Lumia L40S 48GB instead of paper 8x H800; FSDP CPU offload, actor microbatch=2 per GPU",
+  "execution": {
+    "actor_micro_per_gpu": 2,
+    "score_micro_per_gpu": 4,
+    "actor_loss_reduction": "mean of per-trajectory masked token means, equivalent to original microbatch=1 accumulation",
+    "stage_allocations": [
+      "grpo1",
+      "opsd1",
+      "grpo2",
+      "opsd2",
+      "eval"
+    ],
+    "reason": "L40S partition max wall time is 7 days per job"
+  }
+}

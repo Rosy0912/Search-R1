@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+data/
+models/
+runs/*
+!runs/.gitkeep
+upstream/Search-R1/
+wheels/
+outputs/

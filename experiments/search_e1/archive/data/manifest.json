@@ -1,0 +1,36 @@
+{
+  "train": 169103,
+  "validation": 512,
+  "test": {
+    "nq": {
+      "split": "test",
+      "count": 3610
+    },
+    "triviaqa": {
+      "split": "test",
+      "count": 11313
+    },
+    "popqa": {
+      "split": "test",
+      "count": 14267
+    },
+    "hotpotqa": {
+      "split": "dev",
+      "count": 7405
+    },
+    "2wikimultihopqa": {
+      "split": "dev",
+      "count": 12576
+    },
+    "musique": {
+      "split": "dev",
+      "count": 2417
+    },
+    "bamboogle": {
+      "split": "test",
+      "count": 125
+    }
+  },
+  "seed": 42,
+  "validation_policy": "Held out from NQ/Hotpot training; never select on benchmark test/dev."
+}
