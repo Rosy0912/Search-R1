@@ -6,6 +6,11 @@ from search_r1.baselines.preflight import validate_inherited_gpu_leases
 from search_r1.baselines.holdout import prepare_common_holdout
 from search_r1.baselines.controller import validate_config
 root=Path(os.environ['SEARCH_R1_BASE']); out=Path(os.environ['OPSD_EVIDENCE'])
+actor_allocator=os.environ.get('OPSD_ACTOR_ALLOCATOR_CONF','')
+assert actor_allocator in ('', 'backend:native,max_split_size_mb:128')
+actor_environment=dict(os.environ)
+if actor_allocator: actor_environment['PYTORCH_CUDA_ALLOC_CONF']=actor_allocator
+(out/'actor-runtime-environment.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],source_commit=os.environ['OPSD_EXPECTED_COMMIT'],PYTORCH_CUDA_ALLOC_CONF=actor_environment.get('PYTORCH_CUDA_ALLOC_CONF','')),indent=2))
 lease_fds=tuple(int(r['fd']) for r in json.loads(os.environ['SEARCH_R1_GPU_LEASES']))
 # Wait for the completed health check to become idle, preserving the double15% guard.
 for attempt in range(30):
@@ -58,5 +63,5 @@ for attempt in range(30):
         if attempt==29: raise
         time.sleep(2)
 with (out.parent/'training.log').open('w') as log:
- result=subprocess.run(base+args,stdout=log,stderr=subprocess.STDOUT,pass_fds=lease_fds)
+ result=subprocess.run(base+args,stdout=log,stderr=subprocess.STDOUT,pass_fds=lease_fds,env=dict(os.environ,PYTORCH_CUDA_ALLOC_CONF=actor_allocator))
 raise SystemExit(result.returncode)

@@ -96,8 +96,23 @@ def main():
             raise AssertionError('FSDP student master parameters must be FP32')
         result['student_master_parameter_dtypes'] = student_dtypes
         result['student_mixed_precision_parameter_dtype'] = str(model.mixed_precision.param_dtype)
+        result['allocator_configuration'] = os.environ.get('PYTORCH_CUDA_ALLOC_CONF', '')
+        result['allocator_backend'] = torch.cuda.get_allocator_backend()
+        phase_records = []
+        def memory_phase(label):
+            torch.cuda.synchronize()
+            stats = torch.cuda.memory_stats()
+            free, total = torch.cuda.mem_get_info()
+            phase_records.append(dict(label=label,allocated=torch.cuda.memory_allocated(),reserved=torch.cuda.memory_reserved(),max_allocated=torch.cuda.max_memory_allocated(),max_reserved=torch.cuda.max_memory_reserved(),device_free=free,device_total=total,inactive_split_current=stats.get('inactive_split_bytes.all.current'),inactive_split_peak=stats.get('inactive_split_bytes.all.peak'),active_current=stats.get('active_bytes.all.current'),num_alloc_retries=stats.get('num_alloc_retries'),num_ooms=stats.get('num_ooms')))
+        result['memory_phases'] = phase_records
         optimizer = torch.optim.AdamW(model.parameters(), lr=1e-6, weight_decay=0.)
         teacher = FrozenTeacher(args.model, tok, f'cuda:{local_rank}')
+        handles = [
+            teacher.model.base_model.register_forward_pre_hook(lambda *_: memory_phase('teacher_base_before')),
+            teacher.model.base_model.register_forward_hook(lambda *_: memory_phase('teacher_base_after')),
+            model.register_forward_pre_hook(lambda *_: memory_phase('student_forward_before')),
+            model.register_forward_hook(lambda *_: memory_phase('student_forward_after')),
+        ]
         prompt_width = args.input_width - args.response_width
         if prompt_width < 1:
             raise ValueError('Response must leave a prompt position')
@@ -125,16 +140,21 @@ def main():
         if result['pre_cleanup_allocated_bytes'] != result['post_cleanup_allocated_bytes']:
             raise AssertionError('Clean-start cache release unexpectedly changed live allocation')
         torch.cuda.reset_peak_memory_stats()
+        memory_phase("clean_update_start")
         update_started = time.perf_counter()
         with teacher.on_device():
+            memory_phase('teacher_cuda_ready')
             result['teacher_active_runtime'] = teacher_runtime_audit(teacher, device)
             # Second update keeps Adam states resident during the next full graph.
             optimizer_step_records = []
             for optimizer_step in range(2):
                 step_started = time.perf_counter()
                 optimizer.zero_grad(set_to_none=True)
+                memory_phase(f"step{optimizer_step+1}_zero_grad")
                 loss = opsd_loss(model, teacher, tensors, tok, [['Paris']] * args.micro, settings, mask.sum())
+                memory_phase(f"step{optimizer_step+1}_loss_ready")
                 loss.backward()
+                memory_phase(f"step{optimizer_step+1}_backward_done")
                 grad = model.clip_grad_norm_(1.)
                 if not torch.isfinite(loss) or not torch.isfinite(grad) or grad <= 0:
                     raise AssertionError('Nonfinite or zero loss/gradient')
@@ -142,7 +162,9 @@ def main():
                 tracked = next(v for v in model.parameters() if v.grad is not None and v.grad.abs().max() > 0)
                 tracked_index = int(tracked.grad.detach().abs().flatten().argmax())
                 before = tracked.detach().flatten()[tracked_index].clone()
+                memory_phase(f"step{optimizer_step+1}_clip_done")
                 optimizer.step()
+                memory_phase(f"step{optimizer_step+1}_adam_done")
                 delta = float((tracked.detach().flatten()[tracked_index]-before).abs())
                 if delta <= 0:
                     raise AssertionError('No student shard parameter update')
@@ -154,6 +176,8 @@ def main():
                 peak_allocated_bytes=torch.cuda.max_memory_allocated(), peak_reserved_bytes=torch.cuda.max_memory_reserved(),
                 teacher_audit=teacher.audit_metrics(optimizer),
                 scope='Eight-rank actual 3B FP32-master FSDP/BF16 Flash/checkpointed full-vocab OPSD update with FP32/eager CUDA teacher; two consecutive optimizer updates with resident Adam states; synthetic worst-width trajectories. vLLM residency not tested here; must pass production outer separately')
+        memory_phase('teacher_cpu_returned')
+        for handle in handles: handle.remove()
         result['teacher_returned_runtime'] = teacher_runtime_audit(teacher, 'cpu')
         result['teacher_cost'] = teacher.cost_metrics()
         result['estimated_peak_device_used_bytes'] = external_baseline + result['peak_reserved_bytes'] + 1024**3

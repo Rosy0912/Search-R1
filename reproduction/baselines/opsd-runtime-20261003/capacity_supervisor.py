@@ -17,6 +17,10 @@ ROOT = Path(os.environ['SEARCH_R1_BASE'])
 OUT = Path(os.environ['OPSD_EVIDENCE'])
 JOB = os.environ['SLURM_JOB_ID']
 COMMIT = os.environ['OPSD_EXPECTED_COMMIT']
+ACTOR_ALLOCATOR = os.environ.get('OPSD_ACTOR_ALLOCATOR_CONF', '')
+assert ACTOR_ALLOCATOR in ('', 'backend:native,max_split_size_mb:128')
+ACTOR_ENV = dict(os.environ)
+if ACTOR_ALLOCATOR: ACTOR_ENV['PYTORCH_CUDA_ALLOC_CONF'] = ACTOR_ALLOCATOR
 assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == COMMIT
 assert socket.gethostname().split('.')[0] == os.environ['SLURM_JOB_NODELIST'] == 'h100-10'
 assert re.search(r'(?:^|/)job_' + re.escape(JOB) + r'(?:/|$)', Path('/proc/self/cgroup').read_text(), re.M)
@@ -58,7 +62,7 @@ def wait_for_idle():
             time.sleep(2)
 
 
-summary = dict(job_id=JOB, source_commit=COMMIT, passed=False, max_safe_local_micro=None,
+summary = dict(actor_allocator_configuration=ACTOR_ALLOCATOR, job_id=JOB, source_commit=COMMIT, passed=False, max_safe_local_micro=None,
                actual_training_iterations=0, numeric_probe_launched=False, ray_launched=False,
                vllm_coexistence_tested=False, candidates=[],
                scope='Synthetic worst-width 6144 input / 4096 response eight-rank full backward and optimizer with live same-node GPU E5/FAISS. Not production outer training, numerical equivalence, or vLLM coexistence acceptance.')
@@ -71,7 +75,7 @@ try:
                    '--model', os.environ['OPSD_TEACHER'], '--output-dir', str(OUT)]
         start = time.perf_counter()
         with (OUT / f'micro-{micro}.log').open('w') as log:
-            result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, pass_fds=LEASE_FDS)
+            result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, pass_fds=LEASE_FDS, env=ACTOR_ENV)
         record_path = OUT / f'micro-{micro}.json'
         record = json.loads(record_path.read_text()) if record_path.exists() else None
         passed = result.returncode == 0 and record is not None and record.get('passed') is True
