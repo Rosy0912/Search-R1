@@ -82,6 +82,8 @@ def validate_config(config):
         # the explicit full-logits budget before allocating the student logits.
         if config.baselines.distillation.chunk_size < 1:
             raise ValueError('Distillation chunk_size must be positive')
+        if type(config.baselines.distillation.get('loss_checkpointing', False)) is not bool:
+            raise ValueError('Distillation loss_checkpointing must be a boolean')
     if method == 'tree_grpo':
         tree = config.baselines.tree
         if config.actor_rollout_ref.rollout.n_agent != tree.roots:

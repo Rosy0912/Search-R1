@@ -6,6 +6,7 @@ import time
 from contextlib import contextmanager, nullcontext
 import torch
 import torch.nn.functional as F
+from torch.utils.checkpoint import checkpoint
 
 
 def generalized_jsd(student_logits, teacher_logits, beta=0., temperature=1., component_clip=.05):
@@ -98,8 +99,15 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
         target_logits = torch.where(valid[..., None], target_logits, 0.)
         if not torch.isfinite(source_logits).all() or not torch.isfinite(target_logits).all():
             raise ValueError('Nonfinite OPSD logits on supervised tokens')
-        divergence = generalized_jsd(source_logits, target_logits,
-                                     settings.beta, settings.temperature, settings.component_clip)
+        divergence_fn = checkpoint if getattr(settings, 'loss_checkpointing', False) else None
+        args = (source_logits, target_logits, settings.beta, settings.temperature, settings.component_clip)
+        if divergence_fn is not None:
+            # Explicit immutable arguments avoid capturing another loop chunk.
+            # Only softmax/KL/clipping recompute; teacher/student projection and
+            # context construction remain outside this non-reentrant checkpoint.
+            divergence = divergence_fn(generalized_jsd, *args, use_reentrant=False)
+        else:
+            divergence = generalized_jsd(*args)
         total = total + (divergence * tensors['loss_mask'][:, start:stop]).sum()
     return total / denominator
 

@@ -110,6 +110,8 @@ baselines:
     temperature: 1.0
     component_clip: 0.05
     chunk_size: 16
+    # Recompute only full-vocabulary divergence intermediates during backward.
+    loss_checkpointing: false
     max_student_logits_gib: 4.0
   topd:
     alpha: 0.1
