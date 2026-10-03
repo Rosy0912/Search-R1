@@ -1,0 +1,92 @@
+{
+  "heartbeat_trigger_utc": "2026-10-03T01:49:31.957Z",
+  "checked_at": "2026-10-03T01:50:31.056326+00:00",
+  "target_host": "baai-a800",
+  "stage": "PREPARING_NOT_TRAINING",
+  "new_updates": 0,
+  "new_reward": null,
+  "new_reward_hour_mean_range": null,
+  "new_EM": null,
+  "last_source_reward": 0.4,
+  "console_precision_decimals": 3,
+  "last_source_eval_step": 100,
+  "last_source_eval_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "weight_continuation_approval": "pending",
+  "checkpoint_upload": {
+    "session": 34212,
+    "active": true,
+    "latest_target_bytes": 4999839744,
+    "archive_total_bytes": 12497675939,
+    "progress_percent": 40.00615609177062,
+    "previous_observed_bytes": 968556544,
+    "added_since_previous_check_bytes": 4031283200,
+    "target_hash_verified": false,
+    "local_verified_archive_retained": true,
+    "duplicate_write_guard": "flock+expected-offset",
+    "action": "existing healthy transfer retained; no restart/parallel writer"
+  },
+  "gpu_instant_memory_MiB": [
+    4,
+    4,
+    4,
+    4,
+    62601,
+    4,
+    4,
+    68494
+  ],
+  "gpu_instant_util_percent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "gpu_interval_peak": "not sampled; instant only",
+  "resource_change": {
+    "gpu4": {
+      "new_other_project_pid": 774407,
+      "process_start_local": "2026-10-03 08:39:37",
+      "process_comm": "pt_main_thread",
+      "process_memory_MiB": 62592,
+      "is_this_project_task": false,
+      "action": "read-only identification; do not stop or use GPU4",
+      "status": "same PID774407 still resident; no action"
+    },
+    "gpu7": "existing SGLang retained",
+    "original_retrieval_allocation": "GPU4,5,6 currently conflicts with new other project; recheck/requalify available devices before any new launch"
+  },
+  "existing_preflights": "fresh four-GPU NCCL/BF16 and three-GPU index preflights passed earlier; no repeat while resource conflict"
+}
