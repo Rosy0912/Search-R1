@@ -1,0 +1,74 @@
+{
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "accepted": true,
+  "version": "e1856e705ace460bb3a836e2cd9fde93:0:9f593934e59641a8904faeaf43225f6a",
+  "live_manifest_sha256": "b993ab5ea24226bfd3a228dff595ab283a2e621d52fd2116248877eb7dd816e6",
+  "grouped_calibration_cv": {
+    "commit_cv_auc": 0.9257993966817497,
+    "boundary_cv_auc": 0.8870192307692308,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 482,
+    "boundary_class_counts": [
+      260,
+      40
+    ],
+    "commit_class_counts": [
+      141,
+      341
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true
+  },
+  "label_proof_scalars": {
+    "generation_allocated_before_release": 19514617344,
+    "generation_allocated_after_release": 16908288,
+    "model": "/data/search-g1/assets/qwen2.5-3b-instruct",
+    "question_count": 300,
+    "searched_valid_trajectory_count": 482,
+    "closed_book_label": "exact_match_no_retrieval",
+    "reliance_label": "normalized_answer_change_after_evidence_deletion",
+    "commit_position": "Xa",
+    "model_authored_answer_spans": true,
+    "group_size": 5,
+    "counterfactual_invalid_count": 3,
+    "counterfactual_strict_invalid_count": 5,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "malformed_calibration_action_policy": "terminate_without_retrieval_or_correction_turn",
+    "boundary_all_reserved_questions": true,
+    "observation_token_cap": 500,
+    "hidden_truncation_side": "left"
+  },
+  "http_smoke_semantics": "finite identity-aligned readout plumbing, not accuracy",
+  "evaluator_release_admission": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "released": {
+      "version": "e1856e705ace460bb3a836e2cd9fde93:0:9f593934e59641a8904faeaf43225f6a",
+      "suspended": true,
+      "allocated_bytes_after_release": 0
+    },
+    "resumed": {
+      "version": "e1856e705ace460bb3a836e2cd9fde93:0:9f593934e59641a8904faeaf43225f6a",
+      "resumed": true
+    }
+  },
+  "initial_resource_admission": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "sampled_peak_mib": {
+      "0": 1185,
+      "1": 1281,
+      "2": 1281,
+      "3": 1185,
+      "5": 17879,
+      "6": 37577
+    },
+    "sample_interval_seconds": 2,
+    "scope": "initial calibration and probe/retrieval sampled occupancy; not proof of all instantaneous peaks. Periodic refit requires confirmed old-encoder release.",
+    "accepted": true
+  },
+  "observed_stage": "GRPO_1_TO_300",
+  "source_commit": "5707268",
+  "source_count": 248,
+  "checked_unix": 1791052024.315331
+}
