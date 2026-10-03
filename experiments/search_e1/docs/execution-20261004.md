@@ -35,3 +35,5 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
 
 
 归档vendored vLLM0.6.3的KV容量计算实际为free_gpu_memory × utilization（不是整卡总显存比例）。容量候选扩展至0.8/0.9，仍需每档完整两更新、下一档保守按整卡显存增量预测并留下6GiB；实测不满足条件即停止增加。不会仅因0.7是预设上限而放弃实际剩余容量。
+
+03:10三个上游完整文件SHA256全部通过（两个索引分卷与压缩语料）。最终索引直接生成成功。检索精度对照改为独立短生命周期GPU encoder子进程；CPU服务主进程只编码CPU/执行CPU Faiss，避免删模型后CUDA context仍占所选GPU而阻止GPU admission。子进程输出同16题FP16 embeddings，退出释放CUDA后由同CPU索引比较top3，比较数学不变。

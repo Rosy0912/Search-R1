@@ -9,15 +9,15 @@ server.config=server.Config(retrieval_method='e5',retrieval_topk=3,index_path=st
 server.retriever=server.get_retriever(server.config)
 # Compare CPU FP32 versus historical GPU FP16 encoder on the same exact index.
 # This sample is diagnostic, not proof of equivalence for all future queries.
-import subprocess,json
+import subprocess,json,numpy as np
 subprocess.run([str(base/'env/bin/python'),str(base/'source/experiments/search_e1/control/gpu_admission.py')],check=True)
 queries=[json.loads(line)['question'] for line in (base/'data/validation.jsonl').open()][:16]
 cpu=server.retriever.encoder.encode(queries)
-os.environ['E1_ENCODER_DEVICE']='cuda'
-gpu_encoder=server.Encoder('e5',str(base/'assets/encoder'),server.config.retrieval_pooling_method,server.config.retrieval_query_max_length,True)
-gpu=gpu_encoder.encode(queries)
+(base/'receipts/retriever-probe-queries.json').write_text(json.dumps(queries))
+subprocess.run([str(base/'env/bin/python'),str(base/'source/experiments/search_e1/control/retriever_fp16_probe.py')],check=True)
+gpu=np.load(base/'receipts/retriever-gpu-fp16-embeddings.npy')
 cs,ci=server.retriever.index.search(cpu,3);gs,gi=server.retriever.index.search(gpu,3)
 (base/'receipts/retriever-encoder-comparison.json').write_text(json.dumps(dict(queries=queries,cpu_top3=ci.tolist(),gpu_fp16_top3=gi.tolist(),same_order=sum((ci==gi).all(axis=1).tolist()),total=len(queries),scope='16 fixed holdout questions; both training arms always use CPU FP32'),indent=2))
-del gpu_encoder;torch.cuda.empty_cache();os.environ['E1_ENCODER_DEVICE']='cpu'
+# The GPU comparator exited; this service process has never created CUDA context.
 print('EXACT_FP32_CPU_INDEX_READY' ,server.retriever.index.ntotal,flush=True)
 uvicorn.run(server.app,host='10.123.4.11',port=18000)
