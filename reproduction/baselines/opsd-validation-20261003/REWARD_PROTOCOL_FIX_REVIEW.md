@@ -46,4 +46,3 @@ python3 -m pytest -q tests/reproduction/test_terminal_answer_protocol.py tests/r
 另外独立动态提取 controller.compute_advantages：分别注入全0、全1、全-123 reward，OPSD advantages/returns 均逐元素全0；直接执行8e/修复 EM 三反例与 F1 两反例均符合上述旧1→新0；五个训练/执行源码文件逐字节相同。未进行额外 GPU 实验。
 
 最终结论：保留当前纯 OPSD 训练，单独补足修复后的评分验证；拒绝把旧协议聚合分数包装成修复后效果。
-
