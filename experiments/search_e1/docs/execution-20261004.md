@@ -17,3 +17,5 @@ GRPO容量调优每档0.4/0.5/0.6/0.7分别fresh开始、完整512×5轨迹真�
 截至本记录写入：已推送原始代码；两台安装/资产准备正在执行，尚无真实GPU更新与训练评估结果。管线等待或安装完成不等于复现完成。
 
 管线已于01:23:49 +08:00在两台tmux e1-profile-a-20261004/e1-profile-b-20261004启动，当前处于WAITING_FOR_ENVIRONMENT_AND_ASSETS，不是GPU训练已开始。安装发现当前PyPI pyairports0.0.1只有sample模块，与旧outlines所需pyairports.airports接口不符，因此改从原项目NICTA/pyairports提交9699eae8c6b03c97239018dea92e01daa8594936构建2.1.1 wheel，固定来源并保存源码SHA256。参见https://github.com/NICTA/pyairports 与 https://github.com/dottxt-ai/outlines/issues/1093 。此为兼容依赖恢复，不改变RL数学逻辑。
+
+数据集Arrow、HF及编译缓存和临时文件均定位任务工作盘，避免hkust4根盘剩余约67GB被Wiki语料转换耗尽。训练管线只读下载好的本地资产，HF与datasets切换offline。

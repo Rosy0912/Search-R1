@@ -2,7 +2,9 @@
 set -euo pipefail
 BASE=${E1_BASE:?};PROFILE=${E1_PROFILE:?};CONTROL="$BASE/source/experiments/search_e1/control"
 PYTHON="$BASE/env/bin/python"
-mkdir -p "$BASE/receipts" "$BASE/logs" "$BASE/runs"
+mkdir -p "$BASE/receipts" "$BASE/logs" "$BASE/runs" "$BASE/tmp" "$BASE/hf-datasets" "$BASE/cache"
+export HF_HOME="$BASE/hf-cache" HF_DATASETS_CACHE="$BASE/hf-datasets" XDG_CACHE_HOME="$BASE/cache" TMPDIR="$BASE/tmp"
+export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1
 exec 9>"$BASE/experiment.lock"
 flock -n 9 || { echo 'This task pipeline already has a supervisor'; exit 2; }
 phase() { printf '%s %s\n' "$(date -Is)" "$1" > "$BASE/receipts/pipeline-stage.txt"; }
