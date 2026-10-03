@@ -14,6 +14,7 @@ def patch_actor(source):
     end = source.index('\n            grad_norm = self._optimizer_step()', start)
     block = source[start:end]
     block = block[block.index('\n')+1:]
+    block = block.replace("                old_log_prob = data['old_log_probs']", "                # Zero-weight chunks still execute FSDP collectives on every rank.\n                if physical and token_fraction == 0.:\n                    response_mask = torch.ones_like(response_mask)\n                old_log_prob = data['old_log_probs']")
     block = block.replace('                loss = policy_loss / self.gradient_accumulation', '                loss = policy_loss * token_fraction / self.gradient_accumulation')
     block = block.replace("                    metrics['actor/kl_loss'] = kl_loss.detach().item()", "                    logical_kl += token_fraction * kl_loss.detach().item()")
     block = block.replace('                append_to_dict(metrics, data)', "                for key, value in data.items():\n                    logical_metrics[key] = logical_metrics.get(key, 0.) + token_fraction * value")
@@ -31,8 +32,6 @@ def patch_actor(source):
                     piece_mask = data['loss_mask'] if self.config.state_masking else data['attention_mask'][:, -response_length:]
                     piece_tokens = piece_mask.sum().item()
                     token_fraction = piece_tokens / logical_tokens if physical else 1.
-                    if physical and piece_tokens == 0:
-                        continue
 ''' + block + '''
                 append_to_dict(metrics, logical_metrics)
                 if self.config.use_kl_loss:

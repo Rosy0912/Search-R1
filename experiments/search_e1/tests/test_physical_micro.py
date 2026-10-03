@@ -41,17 +41,20 @@ class PhysicalMicroTests(unittest.TestCase):
             with torch.no_grad():model.weight.fill_(.17);model.bias.fill_(-.2)
             opt=torch.optim.AdamW(model.parameters(),lr=1e-3)
             gradients=[]
+            calls=[]
             def forward(micro_batch,temperature):
+                calls.append(len(micro_batch))
                 lp=model(micro_batch['input_ids'].unsqueeze(-1)).squeeze(-1)
                 return torch.sigmoid(lp),lp
             def step():
                 gradients.append(torch.cat([p.grad.flatten() for p in model.parameters()]).clone())
                 norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
                 opt.step();return norm
-            return SimpleNamespace(config=SimpleNamespace(ppo_mini_batch_size=16,ppo_micro_batch_size=8,use_dynamic_bsz=False,state_masking=True,use_kl_loss=True,clip_ratio=.2,entropy_coeff=.001,kl_loss_type='low_var_kl',kl_loss_coef=.001),actor_module=model,actor_optimizer=opt,_forward_micro_batch=forward,_optimizer_step=step,gradients=gradients)
+            return SimpleNamespace(config=SimpleNamespace(ppo_mini_batch_size=16,ppo_micro_batch_size=8,use_dynamic_bsz=False,state_masking=True,use_kl_loss=True,clip_ratio=.2,entropy_coeff=.001,kl_loss_type='low_var_kl',kl_loss_coef=.001),actor_module=model,actor_optimizer=opt,_forward_micro_batch=forward,_optimizer_step=step,gradients=gradients,calls=calls)
         a,b=actor(),actor()
         with patch.object(TensorDict,'cuda',lambda self:self),patch.dict(os.environ,{'E1_PHYSICAL_MICRO':'4','SEARCH_E1_TRAJECTORY_BATCHING':'0'}):
             ma=original(a,Data());mb=adapted(b,Data())
+        self.assertEqual(len(a.calls),4);self.assertEqual(len(b.calls),8)
         self.assertEqual(len(a.gradients),2);self.assertEqual(len(b.gradients),2)
         for x,y in zip(a.gradients,b.gradients):torch.testing.assert_close(x,y,atol=1e-12,rtol=1e-12)
         for x,y in zip(a.actor_module.parameters(),b.actor_module.parameters()):torch.testing.assert_close(x,y,atol=1e-12,rtol=1e-12)
