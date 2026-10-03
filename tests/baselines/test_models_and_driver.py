@@ -126,7 +126,8 @@ class Driver(unittest.TestCase):
     def test_configs_preserve_actor_data_and_reject_test_holdout_alias(self):
         for method in ('gigpo', 'tree_grpo', 'bapo', 'opsd', 'topd', 'cosearch'):
             c = config(method)
-            self.assertEqual(c.actor_rollout_ref.model.path, '/data/search-r1/assets/qwen2.5-3b')
+            self.assertEqual(c.actor_rollout_ref.model.path,
+                             str(Path(os.environ.get('SEARCH_R1_ASSETS', '/data/search-r1')) / 'assets/qwen2.5-3b'))
             self.assertEqual(c.max_turns, 4)
             self.assertEqual(c.retriever.topk, 3)
         c = config('bapo')
