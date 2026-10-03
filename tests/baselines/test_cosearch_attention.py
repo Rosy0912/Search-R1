@@ -37,3 +37,30 @@ def test_sdpa_matches_eager_ranker_policy_and_gradient():
         assert all(p.dtype == torch.float32 for p in sdpa.model.parameters())
     finally:
         TinyModels.tearDownClass()
+
+
+def test_response_projection_preserves_entire_policy_gradient():
+    TinyModels.setUpClass()
+    try:
+        c = config('cosearch').baselines.ranker
+        c.model_path = TinyModels.tmp.name
+        c.attn_implementation = 'sdpa'
+        c.cpu_threads = 1
+        ranker = GenerativeRanker(c)
+        ids = ranker.tokenizer('Question Paris Rome <ranking>[1,2,3]</ranking>', return_tensors='pt')['input_ids']
+        ranker.model.eval()
+        for length in (1, 4):
+            records=[]
+            for enabled in (False, True):
+                ranker.config.response_only_logits=enabled
+                ranker.optimizer.zero_grad()
+                logp=ranker.response_logp(ids,length)
+                loss=sequence_ppo_loss(logp[0],logp[0].detach()+.03,torch.tensor(.7),.2)
+                loss.backward()
+                records.append((logp.detach(),{n:p.grad.detach().clone() for n,p in ranker.model.named_parameters() if p.grad is not None}))
+            torch.testing.assert_close(records[0][0],records[1][0],atol=2e-6,rtol=2e-6)
+            assert records[0][1].keys()==records[1][1].keys()
+            for name in records[0][1]:
+                torch.testing.assert_close(records[0][1][name],records[1][1][name],atol=2e-6,rtol=2e-5)
+    finally:
+        TinyModels.tearDownClass()

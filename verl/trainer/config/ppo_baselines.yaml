@@ -112,6 +112,8 @@ baselines:
     model_path: null
     device: cpu
     attn_implementation: eager
+    cpu_threads: null
+    response_only_logits: false
     weight_decay: 0.01
     candidates: 50
     keep: 3

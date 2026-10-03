@@ -123,6 +123,11 @@ class GenerativeRanker:
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.device = torch.device(config.device)
+        if self.device.type == 'cpu' and config.get('cpu_threads') is not None:
+            threads = config.cpu_threads
+            if not isinstance(threads, int) or threads < 1:
+                raise ValueError('Ranker CPU threads must be a positive integer')
+            torch.set_num_threads(threads)
         attention = config.get('attn_implementation', 'eager')
         if attention not in ('eager', 'sdpa'):
             raise ValueError('Ranker attention must be eager or sdpa')
@@ -137,6 +142,16 @@ class GenerativeRanker:
                          model_load_cpu_seconds=time.process_time() - cpu_started)
         self.question_uids = []
         self.validation = False
+
+    def response_logp(self, ids, length):
+        # Project only the response positions when supported by the frozen HF
+        # model. The full decoder still sees every candidate and prompt token.
+        if self.config.get('response_only_logits', False):
+            logits = self.model(ids, use_cache=False, num_logits_to_keep=length + 1).logits[:, :-1]
+        else:
+            logits = self.model(ids, use_cache=False).logits[:, -length - 1:-1]
+        return F.log_softmax(logits.float() / self.config.temperature, -1).gather(
+            -1, ids[:, -length:, None]).squeeze(-1)
 
     def cost_metrics(self):
         # Driver RSS includes dependencies and trainer state, not only this ranker.
@@ -175,8 +190,7 @@ class GenerativeRanker:
             generated = self.model.generate(**inputs, generation_config=sampling)
             response = generated[:, inputs.input_ids.shape[1]:]
             # Same eval-mode distribution and temperature as optimization.
-            logits = self.model(generated, use_cache=False).logits[:, inputs.input_ids.shape[1] - 1:-1]
-            logp = F.log_softmax(logits.float() / self.config.temperature, -1).gather(-1, response[..., None]).squeeze(-1)
+            logp = self.response_logp(generated, response.shape[1])
         ranking = parse_ranking(self.tokenizer.decode(response[0], skip_special_tokens=True), len(docs), keep)
         for name, value in [('rank_calls', 1), ('legal_rankings', int(ranking is not None)),
                             ('fallback_rankings', int(ranking is None)),
@@ -286,8 +300,7 @@ class GenerativeRanker:
                     ids = e['input_ids'].to(self.device)[None, :]
                     self.cost['training_forward_tokens'] += ids.numel()
                     length = e['response_length']
-                    logits = self.model(ids, use_cache=False).logits[:, -length - 1:-1].float() / self.config.temperature
-                    logp = F.log_softmax(logits, -1).gather(-1, ids[:, -length:, None]).squeeze(-1)
+                    logp = self.response_logp(ids, length)
                     loss = sequence_ppo_loss(logp, e['old_logp'].to(self.device), advantage[i].to(self.device),
                                              self.config.clip_ratio) / len(rows)
                     loss.backward()
