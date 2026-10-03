@@ -31,5 +31,6 @@ options=(actor_rollout_ref.actor.entropy_coeff="$entropy" actor_rollout_ref.roll
 if [[ "$STAGE" == smoke* ]]; then
  options+=(+trainer.stop_after=2 trainer.save_freq=1 ++trainer.val_before_train=false)
 fi
+if [[ "${E1_CONFIG_ONLY:-0}" == 1 ]]; then options+=(--cfg job); fi
 cd "$RUNTIME"
 bash scripts/grpo.sh "${options[@]}" > "$OUTPUT/train.log" 2>&1

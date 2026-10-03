@@ -14,7 +14,7 @@ def transfer(remote,dest,sha):
  temp.replace(dest);print('COPIED',remote,flush=True)
 for i in range(4320):
  try:
-  raw=fetch('wheels.sha256').decode();break
+  fetch('env.ready');raw=fetch('wheels.sha256').decode();break
  except Exception:time.sleep(10)
 else:raise SystemExit('Wheel source not ready after twelve hours; see source log')
 for line in raw.splitlines():

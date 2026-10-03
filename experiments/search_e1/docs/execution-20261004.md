@@ -19,3 +19,10 @@ GRPO容量调优每档0.4/0.5/0.6/0.7分别fresh开始、完整512×5轨迹真�
 管线已于01:23:49 +08:00在两台tmux e1-profile-a-20261004/e1-profile-b-20261004启动，当前处于WAITING_FOR_ENVIRONMENT_AND_ASSETS，不是GPU训练已开始。安装发现当前PyPI pyairports0.0.1只有sample模块，与旧outlines所需pyairports.airports接口不符，因此改从原项目NICTA/pyairports提交9699eae8c6b03c97239018dea92e01daa8594936构建2.1.1 wheel，固定来源并保存源码SHA256。参见https://github.com/NICTA/pyairports 与 https://github.com/dottxt-ai/outlines/issues/1093 。此为兼容依赖恢复，不改变RL数学逻辑。
 
 数据集Arrow、HF及编译缓存和临时文件均定位任务工作盘，避免hkust4根盘剩余约67GB被Wiki语料转换耗尽。训练管线只读下载好的本地资产，HF与datasets切换offline。
+
+
+02:45更新：HKUST5所选GPU0–3的实际CUDA kernel探针在torch2.4.0环境中30秒强制超时（打印CUDA_COUNT 4但未完成分配/同步）；未进入训练。保留receipts/cuda-kernel-probe2.log及moved-to-hkust1.txt，停止仅本任务B管线，不重置驱动、不干预外部进程。B迁到HKUST1 (xielab1) GPU0/1/2/3，24GB4090，任务目录/data/shaoshitong/search-e1-config-study-20261004。现有只读torch环境的CUDA kernel测试正常退出；新的精确torch2.4环境仍需独立验收。使用ella Python3.10.19创建新venv，通过HKUST4私有公开资产HTTP复制同一wheels和模型/数据，逐项hash核验。
+
+B仍为原Search-R1的四个rank、全局actor micro64及score128。24GB执行层设置E1_PHYSICAL_MICRO=4、E1_PHYSICAL_SCORE=8：逻辑micro16内每个物理子块的损失乘有效token数/逻辑micro有效token数，再除原gradient_accumulation；PG、entropy及reference KL共享mask，因此保留原token归约和optimizer边界。完整零mask逻辑micro明确报错；零mask物理子块跳过。tests/test_physical_micro.py直接提取归档与适配后的真实update_policy/compute_policy_loss/kl_penalty，使用不同mask长度、零mask子块、entropy及KL比较两次optimizer边界的梯度、权重和指标，CPU float64容差1e-12通过。真实CUDA显存及两更新尚待验收，不能用该测试代替GPU训练。
+
+下载测速：HKUST1镜像128MiB索引range约11.4MB/s，HKUST1至HKUST4内网约117MB/s。剩余索引/语料range由HKUST1独立公开源下载，复用HKUST4已有32GB前缀及有效range；不跨集群，不重复下载完整资产。HKUST1目录/data/shaoshitong/search-e1-download-assist-20261004，仅公开range目录通过10.120.17.101:18282供HKUST4读取，逐块SHA256后组装，最后必须核验发布的整个LFS文件SHA256才允许assets.ready。个别慢range超时将保留partial后重试，不以分块大小宣称资产完整。

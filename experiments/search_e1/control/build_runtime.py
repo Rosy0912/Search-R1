@@ -1,6 +1,7 @@
 """Create a versioned experiment overlay without changing the verified archive."""
 from pathlib import Path
 import argparse,shutil,json,hashlib,difflib
+from physical_micro import patch_actor
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--profile',choices=['archive','r1'],required=True);a=p.parse_args()
 base=Path(a.base);repo=base/'source';archive=repo/'experiments/search_e1/archive';runtime=base/'runtime'/a.profile
 if runtime.exists():raise SystemExit('Runtime already exists; refusing to overwrite frozen source')
@@ -46,6 +47,8 @@ p=up/'verl/workers/actor/dp_actor.py';s=p.read_text();s=s.replace('        self.
         self.actor_optimizer.step()''',1).replace('                loss.backward()', '''                if not torch.isfinite(loss).all():
                     raise FloatingPointError('Nonfinite actor loss; update refused')
                 loss.backward()''',1);p.write_text(s)
+if a.profile == 'r1':
+ p=up/'verl/workers/actor/dp_actor.py';p.write_text(patch_actor(p.read_text()))
 p=runtime/'search_e1/core.py';s=p.read_text();start=s.index('def reward(');end=s.index('\ndef ',start+5);s=s[:start]+'''def reward(trajectory, answers, policy_spans=None):
     from search_r1.qa_protocol import extract_final_answer
     if policy_spans is None:
@@ -77,7 +80,7 @@ p=up/'search_r1/search/retrieval_server.py';s=p.read_text();s='import os\n'+s
 s=s.replace('model.cuda()', "model.to(os.environ.get('E1_ENCODER_DEVICE', 'cuda'))")
 s=s.replace('v.cuda()', 'v.to(next(self.model.parameters()).device)');p.write_text(s)
 # Always start a task-private Ray cluster, independent of any ambient RAY_ADDRESS.
-p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "kwargs.setdefault('_temp_dir', os.environ['E1_BASE'] + '/ray/' + job)",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
+p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "    for key in ['E1_PHYSICAL_MICRO', 'E1_PHYSICAL_SCORE']:\n        if key in os.environ:\n            kwargs['runtime_env']['env_vars'][key] = os.environ[key]\n    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))",1);s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "kwargs.setdefault('_temp_dir', os.environ['E1_BASE'] + '/ray/' + job)",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
 # Match driver shuffle and policy sampler seeds in both diagnostic arms.
 p=up/'verl/trainer/main_ppo.py';s=p.read_text();s=s.replace('def main_task(config):', 'def main_task(config):\n    import random\n    random.seed(42); np.random.seed(42); torch.manual_seed(42)',1);p.write_text(s)
 p=up/'verl/workers/rollout/vllm_rollout/vllm_rollout.py';s=p.read_text();s=s.replace('                                    dtype=config.dtype,', '                                    dtype=config.dtype,\n                                    seed=42,',1);p.write_text(s)

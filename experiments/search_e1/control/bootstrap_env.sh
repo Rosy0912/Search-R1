@@ -27,5 +27,6 @@ mv "$BASE/wheels/$FLASH.part" "$BASE/wheels/$FLASH"
 "$PYTHON" -m pip check
 "$PYTHON" -c "import torch, transformers, vllm, flash_attn, tensordict, ray, faiss; from pyairports.airports import AIRPORT_LIST; print('IMPORT_VALIDATED', torch.__version__, vllm.__version__, len(AIRPORT_LIST))"
 "$PYTHON" -m pip freeze > "$BASE/receipts/environment-freeze.txt"
-sha256sum "$BASE"/wheels/* > "$BASE/receipts/wheels.sha256"
+sha256sum "$BASE"/wheels/* > "$BASE/receipts/wheels.sha256.part"
+mv "$BASE/receipts/wheels.sha256.part" "$BASE/receipts/wheels.sha256"
 touch "$BASE/receipts/env.ready"
