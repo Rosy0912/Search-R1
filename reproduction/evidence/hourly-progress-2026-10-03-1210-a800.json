@@ -1,0 +1,131 @@
+{
+  "checked_at": "2026-10-03T04:10:49.128569+00:00",
+  "process_checked_at": "2026-10-03T04:13:52.783434+00:00",
+  "run_id": "cc437e7315c94fccba5750433ff850b1",
+  "stage": "2026-10-03T03:45:05Z CONTINUATION_101_TO_500",
+  "latest_completed_update": 107,
+  "logical_target": 500,
+  "actual_a800_updates": 7,
+  "new_since_last_confirmed_106": 1,
+  "new_since_five_acceptance_105": 2,
+  "same_process": true,
+  "pid": 939751,
+  "start_ticks": 507870420,
+  "reward_window_steps": [
+    101,
+    107
+  ],
+  "rewards_console_3_decimal": [
+    0.402,
+    0.371,
+    0.378,
+    0.361,
+    0.4,
+    0.425,
+    0.384
+  ],
+  "reward_mean": 0.38871428571428573,
+  "reward_range": [
+    0.361,
+    0.425
+  ],
+  "latest_reward": 0.384,
+  "latest_minus_previous": -0.04099999999999998,
+  "latest_em_step": 100,
+  "latest_em_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "new_evaluation": false,
+  "gpu_instant": [
+    {
+      "index": 0,
+      "used_mib": 35473,
+      "total_mib": 81920,
+      "util_percent": 99
+    },
+    {
+      "index": 1,
+      "used_mib": 76051,
+      "total_mib": 81920,
+      "util_percent": 99
+    },
+    {
+      "index": 2,
+      "used_mib": 62721,
+      "total_mib": 81920,
+      "util_percent": 98
+    },
+    {
+      "index": 3,
+      "used_mib": 50829,
+      "total_mib": 81920,
+      "util_percent": 99
+    },
+    {
+      "index": 4,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 5,
+      "used_mib": 17887,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 17413,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 7,
+      "used_mib": 68494,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "sample_peak_mib": {
+    "0": 76627,
+    "1": 76079,
+    "2": 77111,
+    "3": 76013,
+    "5": 18911,
+    "6": 18437
+  },
+  "sample_start": "2026-10-03T03:43:34.691650+00:00",
+  "sample_end": "2026-10-03T04:10:46.922468+00:00",
+  "error_evidence": [],
+  "five_update_acceptance_passed": true,
+  "full_500_acceptance_passed": false,
+  "continuation_semantics": "checkpoint100 model weights only; new Adam; no RNG/sampler recovery; original KL reference and LR progress retained",
+  "snapshot_note": "Disk source hashes are not proof of code loaded at startup."
+}
