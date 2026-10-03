@@ -1,1 +1,1 @@
-"""Local regression tests; take precedence over unrelated installed tests packages."""
+"""Repository tests; avoid collision with third-party test packages."""

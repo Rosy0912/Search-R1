@@ -1,1 +1,1 @@
-"""Baseline regression test helpers."""
+"""Baseline regression tests and shared test fixtures."""
