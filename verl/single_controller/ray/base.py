@@ -240,6 +240,11 @@ class RayWorkerGroup(WorkerGroup):
                     'RAY_LOCAL_WORLD_SIZE': str(local_world_size),
                     'RAY_LOCAL_RANK': str(local_rank),
                 }
+                if os.environ.get('COSEARCH_RANKER_GPU_UUID'):
+                    # Child GPU actors inherit driver runtime_env. Empty NOSET
+                    # restores Ray GPU masking ('0' is truthy in Ray 2.40).
+                    env_vars.update(RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES='',
+                                    CUDA_VISIBLE_DEVICES=','.join(__import__('json').loads(os.environ['COSEARCH_RANKER_LEASE_UUIDS'])))
                 if rank != 0:
                     env_vars['MASTER_ADDR'] = self._master_addr
                     env_vars['MASTER_PORT'] = self._master_port

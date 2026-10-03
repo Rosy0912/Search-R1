@@ -49,6 +49,9 @@ def main(config):
     import os
     audit_env.update({name: os.environ[name] for name in ('COSEARCH_RANKER_GPU_UUID', 'COSEARCH_RANKER_LEASE_UUIDS',
                      'SLURM_JOB_ID', 'SLURM_JOB_NODELIST') if name in os.environ})
+    if config.baselines.method == 'cosearch' and config.baselines.ranker.phase_gpu:
+        audit_env.update(CUDA_VISIBLE_DEVICES=os.environ['COSEARCH_RANKER_GPU_UUID'],
+                         RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES='1')
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
     result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:

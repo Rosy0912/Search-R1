@@ -1,5 +1,8 @@
 """Owned native 3B GPU throughput/math/memory probe; NEVER acceptance updates."""
-import json, os, time
+import os
+# Bind before HF/Torch can call cuda.is_available and initialize the CUDA runtime.
+os.environ['CUDA_VISIBLE_DEVICES']=os.environ['COSEARCH_RANKER_GPU_UUID']
+import json, time
 from pathlib import Path
 from types import SimpleNamespace
 import requests, torch

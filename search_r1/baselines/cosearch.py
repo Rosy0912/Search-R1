@@ -237,6 +237,12 @@ class GenerativeRanker:
                             state[key] = value.to(self.device)
             if parameter_ids != [id(p) for p in self.model.parameters()]:
                 raise RuntimeError('Model migration changed optimizer parameter identities')
+            applications = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
+                                                   '--format=csv,noheader,nounits'], text=True)
+            actual = {line.split(',')[0].strip() for line in applications.splitlines()
+                      if ',' in line and line.split(',')[1].strip() == str(os.getpid())}
+            if actual != {uid}:
+                raise RuntimeError(f'Ranker physical GPU mismatch: expected {uid}, actual {sorted(actual)}')
             torch.cuda.synchronize()
             self.cost['gpu_to_wall_seconds'] = self.cost.get('gpu_to_wall_seconds', 0.) + time.perf_counter() - started
             torch.cuda.reset_peak_memory_stats()
@@ -405,6 +411,9 @@ class GenerativeRanker:
             for i, event in zip(group, events):
                 rows[i] = event
             del output, inputs, events
+            if offset == len(group) or offset % 100 < len(group) or offset == len(order):
+                print('COSEARCH_BATCH_PROGRESS_JSON=' + json.dumps(dict(validation=self.validation,
+                      completed=offset, total=len(order), wall_seconds=time.perf_counter()-started)), flush=True)
         result = []
         prefix = 'validation_' if self.validation else ''
         # Restore retrieval/trajectory order before recording events or grouping.
