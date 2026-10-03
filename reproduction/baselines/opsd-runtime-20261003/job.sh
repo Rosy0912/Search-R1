@@ -112,7 +112,13 @@ from pathlib import Path
 pid=int((Path(os.environ['OPSD_EVIDENCE'])/'retriever.pid').read_text())
 rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True).splitlines()
 assert len(rows)==8 and all(int(r.split(',')[1])==pid for r in rows),rows
-assert len({r.split(',')[0].strip() for r in rows})==8,rows
+actual={r.split(',')[0].strip() for r in rows}
+from search_r1.baselines.preflight import gpu_snapshot,parse_gpu_inventory
+raw=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True)
+inv=parse_gpu_inventory(raw)
+selected=os.environ['CUDA_VISIBLE_DEVICES'].split(',')
+expected={v['uuid'] for i,v in inv.items() if i in selected or v['uuid'] in selected}
+assert len(actual)==8 and actual==expected,(actual,expected)
 print('OWN_RETRIEVER_RESIDENT_ON_ALL_EIGHT_GPUS',flush=True)
 PYGPU
 python -u "$root/tools/runtime/train_supervisor.py"
