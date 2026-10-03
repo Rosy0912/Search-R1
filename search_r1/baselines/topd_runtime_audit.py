@@ -197,7 +197,7 @@ def usage():
                 driver_peak_rss_kib=value.ru_maxrss, driver_rss_bytes=rss)
 
 
-def teacher_boundary(teacher, step, phase):
+def frozen_teacher_snapshot(teacher):
     digest = hashlib.sha256()
     requires = grads = count = parameter_bytes = 0
     devices, dtypes = set(), set()
@@ -210,12 +210,18 @@ def teacher_boundary(teacher, step, phase):
         parameter_bytes += param.numel() * param.element_size()
         devices.add(str(param.device))
         dtypes.add(str(param.dtype))
-    record = dict(outer_step=step, phase=phase, parameter_sha256=digest.hexdigest(),
+    record = dict(parameter_sha256=digest.hexdigest(),
                   parameters=count, parameter_bytes=parameter_bytes,
                   training_modules_count=sum(module.training for module in teacher.model.modules()),
                   requires_grad_parameters=requires, grad_parameters=grads,
                   training=teacher.model.training, devices=sorted(devices), dtypes=sorted(dtypes))
-    emit('teacher_boundary', record)
+    return record
+
+
+def teacher_boundary(teacher, step, phase):
+    record=frozen_teacher_snapshot(teacher)
+    record.update(outer_step=step,phase=phase)
+    emit('teacher_boundary',record)
     return record
 
 

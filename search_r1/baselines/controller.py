@@ -38,6 +38,14 @@ def phase_validation_frame(frame, count, seed):
 
 def validate_config(config):
     method = config.baselines.method
+    if method=='topd':
+        backend=config.baselines.get('topd',{}).get('teacher_backend','cpu')
+        if backend not in ('cpu','local_gpu_fp32_parallel'):
+            raise ValueError('Unknown TOP-D teacher backend')
+        if backend=='local_gpu_fp32_parallel' and (not config.baselines.get('local_runtime_only',False)
+                or config.trainer.nnodes!=1 or config.trainer.n_gpus_per_node!=8
+                or not config.baselines.topd.get('socket_manifest') or config.baselines.distillation.privileged_answers):
+            raise ValueError('Parallel GPU teacher requires audited own single-node8GPU/no-gold socket manifest')
     if method not in METHODS:
         raise ValueError(f'Unknown baseline method {method}')
     if config.actor_rollout_ref.actor.strategy != 'fsdp' or not config.do_search:
@@ -168,13 +176,23 @@ class Controller:
             self.ranker = GenerativeRanker(self.config.ranker)
             trainer.reward_fn = self.main_f1_reward
         elif self.method == 'topd':
-            from .distillation import FrozenTeacher
-            from .topd_runtime_audit import configure_teacher_cpu_threads
-            configure_teacher_cpu_threads()
-            self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
-            from .topd_runtime_audit import enabled, teacher_boundary
-            if enabled():
-                teacher_boundary(self.teacher, 0, 'loaded')
+            backend=self.config.get('topd',{}).get('teacher_backend','cpu')
+            if backend=='cpu':
+                from .distillation import FrozenTeacher
+                from .topd_runtime_audit import configure_teacher_cpu_threads
+                configure_teacher_cpu_threads()
+                self.teacher=FrozenTeacher(self.config.distillation.teacher_path,trainer.tokenizer,'cpu')
+                from .topd_runtime_audit import enabled,teacher_boundary
+                if enabled():teacher_boundary(self.teacher,0,'loaded')
+            elif backend=='local_gpu_fp32_parallel':
+                from .topd_runtime_audit import configure_teacher_cpu_threads
+                configure_teacher_cpu_threads()
+                from .topd_local_gpu import LocalTeacherClient
+                if self.config.distillation.privileged_answers:
+                    raise ValueError('Local GPU TOP-D never accepts private targets')
+                self.teacher=LocalTeacherClient(self.config.topd.socket_manifest,self.config.distillation.teacher_path,student_tokenizer=trainer.tokenizer)
+            else:
+                raise ValueError('Unknown TOP-D teacher backend')
 
     def generate(self, manager, gen_batch, qa_batch, metrics):
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
@@ -249,14 +267,20 @@ class Controller:
             before = usage() if audit_enabled else None
             tokens_before = self.teacher.scored_tokens
             setting = self.config.distillation
-            scored = []
-            for i in range(len(data)):
-                targets = [data.non_tensor_batch['reward_model'][i]['ground_truth']['target']] if setting.privileged_answers else None
-                scored.append(self.teacher.log_probs(data.batch['prompts'][i:i+1], data.batch['responses'][i:i+1],
-                              data.batch['attention_mask'][i:i+1, -width:],
-                              self.trainer.config.actor_rollout_ref.rollout.temperature, targets, setting.chunk_size))
-            after = usage() if audit_enabled else None
-            teacher_logp = torch.cat(scored).to(rewards.device)
+            if self.config.get('topd',{}).get('teacher_backend','cpu')=='local_gpu_fp32_parallel':
+                teacher_logp=self.teacher.score(data.batch['prompts'],data.batch['responses'],
+                              data.batch['attention_mask'][:,-width:],self.trainer.config.actor_rollout_ref.rollout.temperature,
+                              setting.chunk_size,int(data.meta_info['topd_outer_step'])).to(rewards.device)
+                after=usage() if audit_enabled else None
+            else:
+                scored=[]
+                for i in range(len(data)):
+                    targets=[data.non_tensor_batch['reward_model'][i]['ground_truth']['target']] if setting.privileged_answers else None
+                    scored.append(self.teacher.log_probs(data.batch['prompts'][i:i+1],data.batch['responses'][i:i+1],
+                                  data.batch['attention_mask'][i:i+1,-width:],
+                                  self.trainer.config.actor_rollout_ref.rollout.temperature,targets,setting.chunk_size))
+                after=usage() if audit_enabled else None
+                teacher_logp=torch.cat(scored).to(rewards.device)
             adv, returns, dense = advantages.topd(teacher_logp, data.batch['old_log_probs'], mask, uids, self.config.topd.alpha)
             data.batch['token_level_rewards'] = dense
             metrics.update({'teacher/scored_tokens_cumulative': self.teacher.scored_tokens,
@@ -282,13 +306,18 @@ class Controller:
             from .topd_runtime_audit import driver_evidence
             driver_evidence(data, teacher_logp, before, after,
                             self.teacher.scored_tokens - tokens_before, setting.privileged_answers)
+        if self.method=='topd' and self.config.get('topd',{}).get('teacher_backend','cpu')=='local_gpu_fp32_parallel' and audit_enabled:
+            from .topd_runtime_audit import emit
+            emit('teacher_ipc_reconcile',dict(outer_step=int(data.meta_info['topd_outer_step']),
+                 scorer_receipts=self.teacher.last_receipts,scored_tokens_delta=self.teacher.scored_tokens-tokens_before,
+                 scope='driver IPC/control wall/RSS; scorer GPU/process costs separate'))
         return data
 
     def after_actor(self, data, metrics):
         if self.method == 'topd':
             from .topd_runtime_audit import enabled, teacher_boundary, require_actual_update
             require_actual_update(metrics)
-            if enabled() and data.meta_info['topd_outer_step'] == 5:
+            if enabled() and data.meta_info['topd_outer_step'] == 5 and self.config.get('topd',{}).get('teacher_backend','cpu')=='cpu':
                 teacher_boundary(self.teacher, 5, 'after_actor')
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)

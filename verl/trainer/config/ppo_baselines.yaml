@@ -111,6 +111,8 @@ baselines:
     max_student_logits_gib: 4.0
   topd:
     alpha: 0.1
+    teacher_backend: cpu
+    socket_manifest: null
   ranker:
     model_path: null
     device: cpu
