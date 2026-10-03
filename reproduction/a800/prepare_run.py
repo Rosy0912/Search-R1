@@ -15,7 +15,7 @@ def prepare(source_commit):
     target=base/'logs/run-manifest.json'
     if target.exists():
         raise RuntimeError('Run manifest already exists; inspect existing run instead of duplicating it')
-    status=json.loads((base/'logs/model-download-status.json').read_text())
+    status=json.loads((base/'logs/assets-status.json').read_text())
     assert status['complete'] is True and not status.get('failed'), 'Official model hashes not verified'
     audit=json.loads((base/'data/audit.json').read_text())
     assert audit['question_disjoint'] and audit['calibration_count']==300 and audit['validation_count']==64
@@ -26,6 +26,17 @@ def prepare(source_commit):
     index=json.loads((model/'model.safetensors.index.json').read_text())
     names=set(index['weight_map'].values())|{'model.safetensors.index.json','config.json','tokenizer.json','tokenizer_config.json','vocab.json','merges.txt','generation_config.json'}
     model_hashes={name:digest(model/name) for name in sorted(names)}
+    official=json.loads((base/'assets.json').read_text())
+    assert len(official)==len(names)==9
+    for item in official:
+        name=Path(item['path']).name
+        assert name in model_hashes and (model/name).stat().st_size==item['size']
+        if item.get('sha256'):
+            assert model_hashes[name]==item['sha256'], 'Official model LFS SHA mismatch'
+        else:
+            content=(model/name).read_bytes()
+            assert hashlib.sha1(b'blob '+str(len(content)).encode()+b'\0'+content).hexdigest()==item['git_blob_sha1'], 'Official Git blob mismatch'
+
     files=['train.parquet','calibration-300.parquet','validation-64.parquet','audit.json']
     data_hashes={name:digest(base/'data'/name) for name in files}
     source_hashes={str(p.relative_to(base/'repo')):digest(p) for p in sorted((base/'repo').rglob('*')) if p.is_file() and p.suffix in ('.py','.sh','.yaml','.yml') and '__pycache__' not in p.parts and '.git' not in p.parts}
