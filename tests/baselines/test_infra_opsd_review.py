@@ -97,6 +97,23 @@ def test_final_allocation_and_real_advisory_lease_are_required(monkeypatch):
         monkeypatch.setenv('SEARCH_R1_GPU_PREFLIGHT', '1')
         monkeypatch.setenv('SEARCH_R1_GPU_LEASES', json.dumps([dict(uuid=uid, fd=fd)]))
         preflight.validate_gpu_lease(config)
+        lookalike = os.open(str(path), os.O_RDWR)
+        try:
+            monkeypatch.setenv('SEARCH_R1_GPU_LEASES', json.dumps([dict(uuid=uid, fd=lookalike)]))
+            with pytest.raises(ValueError, match='does not own'):
+                preflight.validate_inherited_gpu_leases(1)
+        finally:
+            os.close(lookalike)
+        monkeypatch.setenv('SEARCH_R1_GPU_LEASES', json.dumps([dict(uuid=uid, fd=fd)]))
+        # The service-owning parent already holds this flock; child launch must
+        # validate/reuse it rather than trying another exclusive acquisition.
+        import sys
+        executed = []
+        monkeypatch.setattr(sys, 'argv', ['preflight', '--reuse-inherited', '--', 'python', 'entry'])
+        monkeypatch.setattr(os, 'execvp', lambda name, argv: executed.append((name, argv)))
+        preflight.main()
+        assert executed == [('python', ['python', 'entry'])]
+        assert os.get_inheritable(fd)
         fcntl.flock(fd, fcntl.LOCK_UN)
         with pytest.raises(ValueError, match='not held'):
             preflight.validate_gpu_lease(config)
