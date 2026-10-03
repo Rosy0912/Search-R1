@@ -24,17 +24,20 @@ import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from search_g1.signals import contexts
+from search_g1.resource import evaluator_gpu_lock
 
 DTYPE = torch.bfloat16
 app = FastAPI()
 LOCK = threading.Lock()
 STATE = {"round": -1, "encoder": None, "model": None, "tok": None,
-         "commit": None, "boundary": None}
+         "commit": None, "boundary": None, "version": None}
 MANIFEST = None
 
 
 def _load(encoder, commit_pkl, boundary_pkl):
     tok = AutoTokenizer.from_pretrained(encoder, padding_side="left")
+    tok.truncation_side = 'left'
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     model = AutoModelForCausalLM.from_pretrained(
@@ -45,7 +48,7 @@ def _load(encoder, commit_pkl, boundary_pkl):
     return tok, model, commit, boundary
 
 
-def _apply(manifest_path, force=False):
+def _apply_unlocked(manifest_path, force=False):
     if not os.path.exists(manifest_path):
         return
     with open(manifest_path) as f:
@@ -62,15 +65,25 @@ def _apply(manifest_path, force=False):
     else:
         commit = joblib.load(m["commit"]); boundary = joblib.load(m["boundary"])
     old = STATE["model"] if reload_model else None
-    with LOCK:
-        STATE.update({"round": m.get("round", STATE["round"] + 1), "encoder": enc,
-                      "tok": tok, "model": model, "commit": commit, "boundary": boundary})
+    version = m["version"]
+    assert isinstance(version, str) and version
+    for readout in (commit, boundary):
+        assert list(readout["clf"].classes_) == [0, 1]
+        assert np.isfinite(readout["auc"])
+    STATE.update({"round": m["round"], "encoder": enc, "version": version,
+                  "tok": tok, "model": model, "commit": commit, "boundary": boundary})
     if old is not None and old is not model:
         del old
         torch.cuda.empty_cache()
     print(f"[probe] now serving round={STATE['round']} "
           f"commit(L{commit['layer']}/{commit.get('model')}) boundary(L{boundary['layer']})",
           flush=True)
+
+
+def _apply(manifest_path, force=False):
+    # Hooked inference and replacement loading must never overlap.
+    with LOCK, evaluator_gpu_lock():
+        _apply_unlocked(manifest_path, force)
 
 
 def _watcher():
@@ -83,6 +96,8 @@ def _watcher():
 
 
 class Item(BaseModel):
+    id: str
+    model_ranges: List[List[int]]
     prompt: str
     response: str = ""
 
@@ -92,7 +107,7 @@ class ProbeRequest(BaseModel):
 
 
 @torch.no_grad()
-def _last_hidden(texts, layer, model, tok, micro=16, max_len=4096):
+def _last_hidden(texts, layer, model, tok, micro=4, max_len=4096):
     base = model.model
     cap = {}
     h = base.layers[layer - 1].register_forward_hook(
@@ -110,41 +125,42 @@ def _last_hidden(texts, layer, model, tok, micro=16, max_len=4096):
     return np.concatenate(out) if out else np.zeros((0, 1))
 
 
-def _commit_ctx(prompt, response, position):
-    """Build the prefix corresponding to the representation used for calibration."""
-    if position == "Xc":
-        start = response.find("<answer>")
-        if start >= 0:
-            return prompt + response[:start + len("<answer>")]
-        return prompt + response
-    if position == "Xa":
-        end = response.rfind("</answer>")
-        return prompt + (response[:end] if end >= 0 else response)
-    raise ValueError(f"unsupported commit position: {position!r}")
+def _commit_ctx(prompt, response, model_ranges, position):
+    ctx = contexts(prompt, response, model_ranges)
+    if ctx is None:
+        return prompt + response  # invalid outputs get fixed floor, not reliance credit
+    if position == 'Xc':
+        return ctx['commit']
+    if position == 'Xa':
+        return ctx['answer_state']
+    raise ValueError('unsupported commit position')
 
 
 @app.post("/judge_probe")
 def judge_probe(req: ProbeRequest):
-    if not req.items:
-        return {"results": []}
-    with LOCK:
-        model, tok = STATE["model"], STATE["tok"]
-        commit, boundary = STATE["commit"], STATE["boundary"]
-    position = commit.get("position", "Xa")
-    cc = [_commit_ctx(it.prompt, it.response, position) for it in req.items]
-    bc = [it.prompt for it in req.items]
-    Hc = _last_hidden(cc, commit["layer"], model, tok)
-    Hb = _last_hidden(bc, boundary["layer"], model, tok)
-    flip = commit["clf"].predict_proba(Hc)[:, 1]
-    bnd = boundary["clf"].predict_proba(Hb)[:, 1]
-    return {"results": [{"flip": float(flip[i]), "boundary": float(bnd[i])}
-                        for i in range(len(req.items))]}
+    with LOCK, evaluator_gpu_lock():
+        model, tok = STATE['model'], STATE['tok']
+        commit, boundary, version = STATE['commit'], STATE['boundary'], STATE['version']
+        if model is None or version is None:
+            raise RuntimeError('No complete calibrated evaluator loaded')
+        if not req.items:
+            return {'results': [], 'version': version}
+        cc = [_commit_ctx(it.prompt, it.response, it.model_ranges, commit['position']) for it in req.items]
+        bc = [it.prompt for it in req.items]
+        Hc = _last_hidden(cc, commit['layer'], model, tok)
+        Hb = _last_hidden(bc, boundary['layer'], model, tok)
+        flip = commit['clf'].predict_proba(Hc)[:, 1]
+        bnd = boundary['clf'].predict_proba(Hb)[:, 1]
+        assert np.isfinite(flip).all() and np.isfinite(bnd).all()
+        assert ((0 <= flip) & (flip <= 1)).all() and ((0 <= bnd) & (bnd <= 1)).all()
+        return {'version': version, 'results': [dict(id=it.id, version=version,
+                flip=float(flip[i]), boundary=float(bnd[i])) for i, it in enumerate(req.items)]}
 
 
 @app.get("/health")
 def health():
     return {"ok": STATE["model"] is not None, "round": STATE["round"],
-            "encoder": STATE["encoder"]}
+            "encoder": STATE["encoder"], "version": STATE["version"]}
 
 
 if __name__ == "__main__":
@@ -161,4 +177,4 @@ if __name__ == "__main__":
     _apply(MANIFEST, force=True)
     threading.Thread(target=_watcher, daemon=True).start()
     print(f"[probe] serving on 0.0.0.0:{args.port}", flush=True)
-    uvicorn.run(app, host="0.0.0.0", port=args.port)
+    uvicorn.run(app, host="127.0.0.1", port=args.port)

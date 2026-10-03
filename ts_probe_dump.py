@@ -17,7 +17,8 @@ Usage:
         --tag nq --cap 100 --G 5 --layers 21,24,27 --out dumps/base250
 """
 from __future__ import annotations
-import argparse, json, os, re, time
+import argparse, json, os, re, time, hashlib, gc
+from search_g1.signals import contexts, model_search_count
 from pathlib import Path
 
 import numpy as np
@@ -66,24 +67,24 @@ def retrieve_batch(queries, topk=3):
                     elif isinstance(d, dict):
                         joined.append(d.get("contents", d.get("text", "")))
                 out.append("\n".join(joined))
+            if len(out) != len(queries) or any(not text for text in out):
+                raise RuntimeError("Missing calibration retrieval evidence")
             return out
+        resp.raise_for_status()
     except Exception as e:
-        print(f"  [retrieve warn] {e}", flush=True)
-    return ["" for _ in queries]
+        raise RuntimeError("Calibration retrieval failed; refuse synthetic empty evidence") from e
+    raise RuntimeError("Invalid retrieval response")
+
+
+from verl.utils.reward_score.qa_em import normalize_answer, em_check
 
 
 def normalize(s: str) -> str:
-    s = s.lower().strip()
-    s = re.sub(r"\b(a|an|the)\b", " ", s)
-    s = re.sub(r"[^a-z0-9 ]", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
+    return normalize_answer(s)
 
 
 def em_score(pred, golds) -> int:
-    p = normalize(pred)
-    if not p:
-        return 0
-    return int(any(normalize(g) == p for g in golds))
+    return int(bool(normalize(pred)) and em_check(pred, golds))
 
 
 def contains_gold(pred, golds) -> int:
@@ -110,10 +111,11 @@ def gen_batch(llm, prompts, max_tokens, sample, stop):
     return [o.outputs[0].text for o in outs]
 
 
-def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256):
+def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ranges=False, tokenizer=None):
     """Multi-turn search generation over a flat list of prompts. Returns generated texts."""
     N = len(prompts0)
     gen = [""] * N
+    model_ranges = [[] for _ in range(N)]
     done = [False] * N
     for turn in range(max_turns + 1):
         idx = [i for i in range(N) if not done[i]]
@@ -126,17 +128,22 @@ def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256):
             t = texts[k]
             if "</search>" in t and turn < max_turns:
                 before = t[:t.index("</search>") + len("</search>")]
-                gen[i] += before
+                begin=len(gen[i]);gen[i] += before
+                model_ranges[i].append([begin,len(gen[i])])
                 sm = SEARCH_RE.search(before)
                 pending.append((i, sm.group(1).strip() if sm else ""))
             else:
-                gen[i] += t
+                begin=len(gen[i]);gen[i] += t
+                model_ranges[i].append([begin,len(gen[i])])
                 done[i] = True
         if pending:
             docs = retrieve_batch([q for _, q in pending])
             for (i, _), d in zip(pending, docs):
-                gen[i] += f"\n<information>{d}</information>\n"
-    return gen
+                observation=f"\n<information>{d}</information>\n"
+                if tokenizer is not None:
+                    observation=tokenizer.decode(tokenizer.encode(observation,add_special_tokens=False)[:500])
+                gen[i] += observation
+    return (gen, model_ranges) if return_ranges else gen
 
 
 @torch.no_grad()
@@ -176,7 +183,7 @@ def hidden_batch(model, tok, texts, layers, device, micro=8, max_len=4096):
     return {L: np.concatenate(res[L]) if res[L] else np.zeros((0, 1)) for L in layers}
 
 
-def parse_row(row):
+def parse_row(row, tokenizer):
     pd_ = row["prompt"]
     if isinstance(pd_, np.ndarray):
         pd_ = pd_.tolist()
@@ -194,7 +201,10 @@ def parse_row(row):
         golds = golds.tolist()
     if isinstance(golds, str):
         golds = [golds]
-    return ptext, golds
+    chat = pd_ if isinstance(pd_, (list, tuple)) else [{"role": "user", "content": ptext}]
+    model_prompt = (tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
+                    if tokenizer.chat_template else ptext)
+    return model_prompt, golds, ptext
 
 
 def main():
@@ -220,14 +230,18 @@ def main():
         df = df.iloc[args.offset:]
     if args.cap > 0:
         df = df.head(args.cap)
-    rows = [parse_row(r) for _, r in df.iterrows()]
-    prompts = [p for p, _ in rows]
-    golds_all = [g for _, g in rows]
+    tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
+    tok.truncation_side = 'left'
+    if tok.pad_token is None:
+        tok.pad_token = tok.eos_token
+    rows = [parse_row(r, tok) for _, r in df.iterrows()]
+    prompts = [p for p, _, _ in rows]
+    golds_all = [g for _, g, _ in rows]
     # clean closed-book question prompts (no search instructions) for the boundary label
     questions = []
-    for p in prompts:
-        m = QUESTION_RE.search(p)
-        questions.append(m.group(1).strip() if m else p)
+    for _, _, p in rows:
+        starts = list(re.finditer(r"Question:\s*", p))
+        questions.append(p[starts[-1].end():].strip() if starts else p)
     nq = len(rows)
     print(f"[dump] model={args.model} tag={args.tag} n_q={nq} G={args.G} layers={layers}",
           flush=True)
@@ -237,45 +251,47 @@ def main():
               max_model_len=4096, enforce_eager=True, disable_log_stats=True)
     # HF model for hidden extraction
     tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
+    tok.truncation_side = 'left'
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    hf = AutoModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=DTYPE, device_map="cuda",
-        low_cpu_mem_usage=True, attn_implementation="sdpa").eval()
-    print("[dump] vLLM + HF loaded", flush=True)
+    print('[dump] vLLM loaded; HF extraction will follow generation', flush=True)
     t0 = time.time()
 
     # ---- per-question closed-book (boundary): answer directly, NO retrieval ----
     cb_prompt = [f"Answer the question directly with only the answer, no explanation.\n"
                  f"Question: {q}\nAnswer:" for q in questions]
     cb_ans = gen_batch(llm, cb_prompt, 24, False, ["\n"])
-    q_cb = [contains_gold(cb_ans[i], golds_all[i]) for i in range(nq)]
+    q_cb = [em_score(cb_ans[i], golds_all[i]) for i in range(nq)]
+    question_ids = [hashlib.sha256(re.sub(r"\s+", " ", q).strip().casefold().encode()).hexdigest() for q in questions]
     print(f"[dump] closed-book done ({time.time()-t0:.0f}s) cb_rate={np.mean(q_cb):.3f}", flush=True)
 
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens = rollouts_batched(llm, flat_prompts, sample=(args.G > 1),
-                            max_turns=args.max_turns)
+    gens, generated_ranges = rollouts_batched(llm, flat_prompts, sample=(args.G > 1),
+                            max_turns=args.max_turns, return_ranges=True, tokenizer=tok)
     print(f"[dump] rollouts done ({time.time()-t0:.0f}s)", flush=True)
 
     # build commit/answer-last contexts + 2 flippability contexts (valid rollouts only)
     valid, commit_ctx, ans_ctx, flip_ctx, flip2_ctx, answers, ems = [], [], [], [], [], [], []
     for j, g in enumerate(gens):
-        mi = g.find("<answer>")
-        if mi < 0:
+        ctx = contexts(prompts[flat_qi[j]], g, generated_ranges[j])
+        if ctx is None or model_search_count(g, generated_ranges[j]) == 0:
             continue
         qi = flat_qi[j]
-        ans = extract_answer(g)
-        ae = g.find("</answer>", mi)
-        if ae < 0:
-            ae = len(g)
-        commit_ctx.append(prompts[qi] + g[:mi + len("<answer>")])   # at "<answer>" tag
-        ans_ctx.append(prompts[qi] + g[:ae])                        # at answer-span last token
-        src = g[:mi + len("<answer>")]
-        info_empty = INFO_RE.sub("<information></information>", src)
-        flip_ctx.append(prompts[qi] + info_empty)                   # empty info (may leak via think)
-        flip2_ctx.append(prompts[qi] + THINK_RE.sub("", info_empty))  # +strip think (low-leak)
+        ans = ctx['answer']
+        commit_ctx.append(ctx['commit'])
+        ans_ctx.append(ctx['answer_state'])
+        src = ctx['prefix']
+        # Remove only external observation spans, retaining all model reasoning.
+        pieces=[]; previous=0
+        for start,end in generated_ranges[j]:
+            if start >= len(src):break
+            if start > previous:pieces.append('\n<information></information>\n')
+            pieces.append(src[start:min(end,len(src))]);previous=min(end,len(src))
+        info_empty=''.join(pieces)
+        flip_ctx.append(prompts[qi] + info_empty)
+        flip2_ctx.append(prompts[qi] + THINK_RE.sub('', info_empty))
         answers.append(ans)
         ems.append(em_score(ans, golds_all[qi]))
         valid.append(j)
@@ -292,6 +308,15 @@ def main():
     print(f"[dump] flippability done ({time.time()-t0:.0f}s) flip={np.mean(flips):.3f} "
           f"flip_strict={np.mean(flips2):.3f}", flush=True)
 
+    # Dispose of generation engine before HF extraction: never overlap both caches.
+    try:
+        llm.llm_engine.model_executor.shutdown()
+    except AttributeError:
+        pass
+    del llm
+    gc.collect(); torch.cuda.empty_cache()
+    hf = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=DTYPE, device_map="cuda",
+             low_cpu_mem_usage=True, attn_implementation="sdpa").eval()
     # ---- hidden states (HF single forward, batched) ----
     Hc = hidden_batch(hf, tok, commit_ctx, layers, device)          # at "<answer>" tag token
     Ha = hidden_batch(hf, tok, ans_ctx, layers, device)             # at answer-span last token
@@ -316,15 +341,27 @@ def main():
     save = {"y_em": np.array(y_em, np.int8), "y_flip": np.array(y_flip, np.int8),
             "y_flip2": np.array(y_flip2, np.int8),
             "q_cb": np.array(q_cb_r, np.int8), "gid": np.array(gids, np.int32),
+            "question_id": np.array([question_ids[flat_qi[j]] for j in valid]),
+            "boundary_question_id": np.array(question_ids),
+            "boundary_q_cb": np.array(q_cb, np.int8),
             "ds": np.array(dss)}
     for L in layers:
         save[f"Xc_{L}"] = np.stack(Xc[L]).astype(np.float16) if Xc[L] else np.zeros((0, 1))
         save[f"Xa_{L}"] = np.stack(Xa[L]).astype(np.float16) if Xa[L] else np.zeros((0, 1))
+        save[f"Xp_question_{L}"] = Hp_q[L].astype(np.float16)
         save[f"Xp_{L}"] = np.stack(Xp[L]).astype(np.float16) if Xp[L] else np.zeros((0, 1))
     np.savez_compressed(out_npz, **save)
     with open(os.path.join(args.out, f"{args.tag}_{args.offset}.jsonl"), "w") as f:
         for r in recs:
             f.write(json.dumps(r) + "\n")
+    proof={"model":args.model,"question_count":nq,"searched_valid_trajectory_count":len(valid),
+           "closed_book_label":"exact_match_no_retrieval","reliance_label":"normalized_answer_change_after_evidence_deletion",
+           "commit_position":"Xa","model_authored_answer_spans":True,"group_size":args.G,
+           "question_ids":question_ids,"boundary_class_counts":np.bincount(q_cb,minlength=2).tolist(),
+           "reliance_class_counts":np.bincount(y_flip,minlength=2).tolist(),
+           "calibration_protocol":{"top_p":1.0,"rollout_max_new":256,"counterfactual_max_new":32,"closed_book_max_new":24},
+           "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
+    with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "
           f"flip={np.mean(y_flip):.3f} cb={np.mean(q_cb_r):.3f} "
           f"total={time.time()-t0:.0f}s", flush=True)

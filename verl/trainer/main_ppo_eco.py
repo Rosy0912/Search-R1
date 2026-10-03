@@ -31,6 +31,7 @@ import re
 import numpy as np
 import requests
 from verl.utils.reward_score import qa_em
+from search_g1.signals import decode_segments, contexts, model_search_count, validate_probe_reply
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 
 _SEARCH_RE = re.compile(r"<search>")
@@ -229,7 +230,10 @@ class EcoRewardManager():
             try:
                 resp = self._cf_session.post(url, json=payload, timeout=600)
                 resp.raise_for_status()
-                return resp.json()["results"]
+                results = resp.json()["results"]
+                if len(results) != len(items):
+                    raise ValueError("Counterfactual response count mismatch")
+                return results
             except Exception as e:
                 print(f"[cf_judge] {path} request failed (attempt {attempt+1}/10): {e}", flush=True)
                 _t.sleep(min(30, 5 * (attempt + 1)))
@@ -255,7 +259,10 @@ class EcoRewardManager():
                 if attempt > 1:
                     print(f"[probe] recovered after {attempt-1} retries (~{waited:.0f}s waited); "
                           f"resuming with valid trust reward", flush=True)
-                return resp.json()["results"]
+                results, version = validate_probe_reply(resp.json(), items)
+                self.last_probe_version = version
+                print("SEARCH_G1_PROBE_VERSION=" + version, flush=True)
+                return results
             except Exception as e:
                 backoff = min(self.probe_backoff_cap, 4 * attempt)
                 print(f"[probe] UNAVAILABLE (attempt {attempt}, waited ~{waited:.0f}s): {e} "
@@ -281,8 +288,10 @@ class EcoRewardManager():
         # Slacker pit guard: no valid answer extracted == worst outcome.
         if row['answer'] is None:
             return -self.PENALTY, 0.0, None
-        flip = float(pr['flip']) if pr else 0.0
-        boundary = float(pr['boundary']) if pr else 0.0
+        if pr is None:
+            raise RuntimeError('Missing required Search-G1 probe result')
+        flip = float(pr['flip'])
+        boundary = float(pr['boundary'])
         gate = (1.0 - boundary) if self.probe_gate else 1.0
         norm_cost = min(1.0, max(0.0, (n_search - 1)) / max(1.0, self.MAX_SEARCH - 1))
         cls = 'true' if flip >= 0.5 else 'hall'
@@ -375,14 +384,17 @@ class EcoRewardManager():
             gt = di.non_tensor_batch['reward_model']['ground_truth']
             src = di.non_tensor_batch['data_source']
 
-            answer = qa_em.extract_solution(seq_str)
+            model_mask = di.batch['info_mask'][plen:plen + int(valid_rlen)]
+            resp_str, model_ranges = decode_segments(self.tokenizer, valid_resp, model_mask)
+            ctx = contexts(prompt_str, resp_str, model_ranges)
+            answer = ctx['answer'] if ctx is not None else None
             # Count actions emitted by the policy only.  The instruction prompt contains
             # literal markup examples that must not contribute to Search/Q or search cost.
-            n_search = len(_SEARCH_RE.findall(resp_str))
+            n_search = model_search_count(resp_str, model_ranges)
             correct = (answer is not None) and bool(qa_em.em_check(answer, gt['target']))
             row = {'i': int(i), 'valid_rlen': int(valid_rlen), 'seq': seq_str, 'gt': gt,
                    'src': src, 'answer': answer, 'n_search': n_search, 'correct': correct,
-                   'prompt': prompt_str, 'resp': resp_str}
+                   'prompt': prompt_str, 'resp': resp_str, 'model_ranges': model_ranges}
             rows.append(row)
 
             # Correct & searched rollouts ALWAYS get a cf judge call for MONITORING
@@ -417,8 +429,9 @@ class EcoRewardManager():
         # ---- Phase 2b: Search-G1 readouts (all rollouts, including wrong ones) ----
         probe_map = {}
         if self.reward_mode == 'eco' and self.trust_signal == 'probe':
-            pres = self._probe_call([{"prompt": r['prompt'], "response": r['resp']}
-                                     for r in rows])
+            pres = self._probe_call([{"id": str(idx), "prompt": r['prompt'], "response": r['resp'],
+                                      "model_ranges": r['model_ranges']}
+                                     for idx, r in enumerate(rows)])
             if pres is not None:
                 probe_map = {idx: pres[idx] for idx in range(len(pres))}
 
@@ -437,7 +450,7 @@ class EcoRewardManager():
                     score, _reward_trust, _reward_cls = self._score_row(row, cf_map.get(ridx))
             else:
                 # Validation/evaluation returns plain EM for comparability.
-                score = qa_em.compute_score_em(row['seq'], row['gt'], format_score=self.format_score)
+                score = float(row['correct'])
 
             # --- monitoring trust (ALWAYS from cf judge, unified across methods) ---
             cls = None
@@ -634,9 +647,14 @@ import hydra
 
 @hydra.main(config_path='config', config_name='ppo_trainer', version_base=None)
 def main(config):
-    if not ray.is_initialized():
-        ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
-    ray.get(main_task.remote(config))
+    import os
+    assert not ray.is_initialized(), 'Search-G1 requires its private fresh local Ray'
+    ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=os.environ['RAY_TMPDIR'],
+             runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+    try:
+        ray.get(main_task.remote(config))
+    finally:
+        ray.shutdown()
 
 
 @ray.remote

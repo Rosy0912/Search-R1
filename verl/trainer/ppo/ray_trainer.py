@@ -410,7 +410,7 @@ class RayPPOTrainer(object):
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
                                          batch_size=self.config.data.val_batch_size,
                                          shuffle=False,
-                                         drop_last=True,
+                                         drop_last=False,
                                          collate_fn=collate_fn)
 
         print(f'Size of train dataloader: {len(self.train_dataloader)}')
@@ -545,6 +545,7 @@ class RayPPOTrainer(object):
         metric_dict = {}
         for data_source, rewards in data_source_reward.items():
             metric_dict[f'val/test_score/{data_source}'] = np.mean(rewards)
+            metric_dict[f'val/evaluated_count/{data_source}'] = len(rewards)
 
         if hasattr(self.val_reward_fn, 'get_metrics'):
             extra_metrics = self.val_reward_fn.get_metrics()
@@ -670,6 +671,7 @@ class RayPPOTrainer(object):
 
         logger = self.logger
         self.global_steps = 0
+        five_update_records = []
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -796,6 +798,8 @@ class RayPPOTrainer(object):
 
                         # we combine with rule-based rm
                         reward_tensor = self.reward_fn(batch)
+                        for key,value in (self.reward_fn.get_metrics() or {}).items():
+                            metrics['train/'+key] = value
                         batch.batch['token_level_scores'] = reward_tensor
 
                         # compute rewards. apply_kl_penalty if available
@@ -833,15 +837,21 @@ class RayPPOTrainer(object):
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
-                        self.global_steps % self.config.trainer.test_freq == 0:
+                        (self.global_steps % self.config.trainer.test_freq == 0 or
+                        self.global_steps == self.config.trainer.get('acceptance_step',0)):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
 
                     if self.config.trainer.save_freq > 0 and \
-                            self.global_steps % self.config.trainer.save_freq == 0:
+                            (self.global_steps % self.config.trainer.save_freq == 0 or
+                            self.global_steps == self.config.trainer.get('acceptance_step',0) or
+                            self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
+                            from reproduction.a800.runtime import checkpoint_complete
+                            checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
+                            checkpoint_complete(self.global_steps, checkpoint)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
@@ -849,6 +859,15 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
+                if self.global_steps <= 5:
+                    five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
+                        probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
+                if self.global_steps == self.config.trainer.get('acceptance_step', 0):
+                    from reproduction.a800.runtime import accept_five_updates
+                    accept_five_updates(checkpoint, five_update_records)
+                if self.global_steps in (50,100,150,200,250):
+                    from reproduction.a800.runtime import refresh_after_checkpoint
+                    refresh_after_checkpoint(self.global_steps, checkpoint)
 
                 self.global_steps += 1
 
@@ -858,7 +877,8 @@ class RayPPOTrainer(object):
                     if self.val_reward_fn is not None:
                         val_metrics = self._validate()
                         pprint(f'Final validation metrics: {val_metrics}')
-                        logger.log(data=val_metrics, step=self.global_steps)
+                        print('SEARCH_G1_FINAL_METRICS_JSON=' + __import__('json').dumps(val_metrics,sort_keys=True),flush=True)
+                        logger.log(data=val_metrics, step=self.global_steps - 1)
                     return
 
     def _create_loss_mask(self, batch, metrics):

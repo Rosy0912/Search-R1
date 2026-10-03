@@ -28,12 +28,15 @@ RULER = ["popqa", "musique", "bamboogle", "2wikimultihopqa", "hotpotqa", "nq", "
 def load_dumps(dirs, layers):
     pos = {p: {L: [] for L in layers} for p in ("Xc", "Xa", "Xp")}
     em, flip, flip2, cb, gid, ds = [], [], [], [], [], []
-    gid_off = 0
+    boundary_x = {L: [] for L in layers}
+    boundary_y=[]; boundary_ids=[]
     files = []
     for d in dirs:
         files += sorted(glob.glob(os.path.join(d, "*.npz")))
     for fp in files:
         z = np.load(fp, allow_pickle=True)
+        boundary_y.append(z["boundary_q_cb"]); boundary_ids.append(z["boundary_question_id"])
+        for L in layers:boundary_x[L].append(z[f"Xp_question_{L}"].astype(np.float32))
         n = len(z["y_em"])
         if n == 0:
             continue
@@ -44,12 +47,14 @@ def load_dumps(dirs, layers):
                 pos[p][L].append(z[f"{p}_{L}"].astype(np.float32))
         em.append(z["y_em"]); flip.append(z["y_flip"])
         flip2.append(z["y_flip2"] if "y_flip2" in z else z["y_flip"])
-        cb.append(z["q_cb"]); gid.append(z["gid"].astype(np.int64) + gid_off); ds.append(z["ds"])
-        gid_off = int(gid[-1].max()) + 1
+        cb.append(z["q_cb"]); gid.append(z["question_id"]); ds.append(z["ds"])
+    if not em:
+        raise ValueError("No valid searched calibration trajectories")
     for p in pos:
         pos[p] = {L: np.concatenate(pos[p][L]) for L in layers}
     return (pos, np.concatenate(em), np.concatenate(flip), np.concatenate(flip2),
-            np.concatenate(cb), np.concatenate(gid), np.concatenate(ds))
+            np.concatenate(cb), np.concatenate(gid), np.concatenate(ds),
+            ({L: np.concatenate(boundary_x[L]) for L in layers}, np.concatenate(boundary_y), np.concatenate(boundary_ids)))
 
 
 def make_clf(model):
@@ -96,7 +101,13 @@ def main():
     args = ap.parse_args()
     layers = [int(x) for x in args.layers.split(",")]
 
-    pos, em, flip, flip2, cb, gid, ds = load_dumps(args.dumps, layers)
+    pos, em, flip, flip2, cb, gid, ds, boundary_data = load_dumps(args.dumps, layers)
+    bx, by_boundary, bgroups = boundary_data
+    # One equally-weighted row per reserved question, even without a valid search.
+    _, first = np.unique(bgroups, return_index=True)
+    bx={L:X[first] for L,X in bx.items()};by_boundary=by_boundary[first];bgroups=bgroups[first]
+    if len(np.unique(by_boundary)) != 2:
+        raise ValueError("Degenerate closed-book target; collect more genuine questions")
     n = len(em)
     print(f"\n=== loaded {n} rollouts | datasets={sorted(set(ds.tolist()))} ===")
     print(f"EM={em.mean():.3f} flip={flip.mean():.3f} flip_strict={flip2.mean():.3f} "
@@ -118,6 +129,8 @@ def main():
                     print(f"  {tag:24s} AUC={auc:.3f}")
                     if auc == auc and auc > best[0]:
                         best = (auc, (posk, labk, model, L))
+    if best[1] is None:
+        raise ValueError("No finite question-grouped commit CV AUC; collect real calibration data")
     bposk, blabk, bmodel, bL = best[1]
     print(f"  -> BEST commit probe: {bposk}/{blabk}/{bmodel}/L{bL}  AUC={best[0]:.3f}")
     by = labels[blabk]
@@ -139,11 +152,13 @@ def main():
     bb = (-1, layers[0], "lr")
     for model in ("lr", "mlp64", "mlp128"):
         for L in layers:
-            auc, _ = cv_auc(pos["Xp"][L], cb, gid, model)
+            auc, _ = cv_auc(bx[L], by_boundary, bgroups, model)
             print(f"  boundary Xp/{model}/L{L}: AUC={auc:.3f}")
             if auc == auc and auc > bb[0]:
                 bb = (auc, L, model)
-    clf_b = make_clf(bb[2]).fit(pos["Xp"][bb[1]], cb)
+    if bb[0] < 0:
+        raise ValueError("No finite question-grouped boundary CV AUC")
+    clf_b = make_clf(bb[2]).fit(bx[bb[1]], by_boundary)
     reads = clf_b.predict_proba(pos["Xp"][bb[1]])[:, 1]
     for d in [x for x in RULER if x in set(ds.tolist())]:
         m = ds == d
@@ -164,13 +179,19 @@ def main():
         import joblib
         os.makedirs(args.save, exist_ok=True)
         cm = make_clf(bmodel).fit(pos[bposk][bL], by)
-        bm = make_clf(bb[2]).fit(pos["Xp"][bb[1]], cb)
+        bm = make_clf(bb[2]).fit(bx[bb[1]], by_boundary)
         joblib.dump({"clf": cm, "position": bposk, "layer": bL, "label": blabk,
                      "model": bmodel, "auc": best[0]},
                     os.path.join(args.save, "commit_probe.pkl"))
         joblib.dump({"clf": bm, "position": "Xp", "layer": bb[1], "label": "closedbook",
                      "model": bb[2], "auc": bb[0]},
                     os.path.join(args.save, "boundary_probe.pkl"))
+        report={"commit_cv_auc":best[0],"boundary_cv_auc":bb[0],"commit_position":bposk,"commit_label":blabk,
+                "unique_question_count":int(len(bgroups)),"commit_trajectory_count":int(len(by)),
+                "boundary_class_counts":np.bincount(by_boundary,minlength=2).tolist(),
+                "commit_class_counts":np.bincount(by,minlength=2).tolist(),"question_grouped_cv":True,
+                "boundary_unique_question_weighting":True}
+        with open(os.path.join(args.save,"calibration-report.json"),"w") as f:json.dump(report,f,indent=2)
         print(f"\n[save] commit({bposk}/L{bL}/{blabk}/{bmodel} AUC={best[0]:.3f}) + "
               f"boundary(Xp/L{bb[1]}/{bb[2]} AUC={bb[0]:.3f}) -> {args.save}")
 
