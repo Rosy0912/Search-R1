@@ -29,6 +29,13 @@ def question_keys(dataset, prompt_key='prompt'):
     return {json.dumps(plain(prompt), sort_keys=True) for prompt in dataset.dataframe[prompt_key]}
 
 
+def phase_validation_frame(frame, count, seed):
+    """Fixed within-holdout phase subset, leaving complete teacher data intact."""
+    if count < 1:
+        raise ValueError('Phase validation question count must be positive')
+    return frame.sample(n=min(int(count), len(frame)), random_state=int(seed)).reset_index(drop=True)
+
+
 def validate_config(config):
     method = config.baselines.method
     if method not in METHODS:
@@ -86,6 +93,8 @@ def validate_config(config):
         holdout = config.baselines.bapo.stage_validation_files
         if config.baselines.bapo.stage_validation_freq < 1:
             raise ValueError('BAPO stage validation frequency must be positive')
+        if config.baselines.bapo.stage_validation_num < 1:
+            raise ValueError('BAPO stage validation question count must be positive')
         evaluation_paths = canonical_paths(config.data.val_files)
         if config.data.get('final_val_files'):
             evaluation_paths |= canonical_paths(config.data.final_val_files)
@@ -147,6 +156,10 @@ class Controller:
                     filter_prompts=True, return_raw_chat=False, truncation='error')
                 if keys & question_keys(final_dataset, prompt_key):
                     raise ValueError('BAPO stage holdout overlaps full final-test questions')
+            # User-directed 64-question phase checks. Keep the complete holdout
+            # file and teacher selection unchanged; select one fixed subset per run.
+            dataset.dataframe = phase_validation_frame(dataset.dataframe,
+                self.config.bapo.stage_validation_num, self.config.seed)
             self.stage_dataset = dataset
             self.stage_loader = DataLoader(dataset, batch_size=trainer.config.data.val_batch_size,
                                            shuffle=False, drop_last=False, collate_fn=collate_fn)
