@@ -223,8 +223,11 @@ class DataParallelPPOActor(BasePPOActor):
         batch = data.select(batch_keys=select_keys).batch
 
         audit = None
-        if self.config.get('baseline_method') == 'topd':
-            from search_r1.baselines.topd_runtime_audit import enabled, ActorAudit
+        if self.config.get('baseline_method') in ('topd', 'grpo', 'gigpo'):
+            if self.config.get('baseline_method') == 'topd':
+                from search_r1.baselines.topd_runtime_audit import enabled, ActorAudit
+            else:
+                from search_r1.baselines.runtime_audit import enabled, ActorAudit
             if enabled():
                 audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
 
@@ -324,7 +327,10 @@ class DataParallelPPOActor(BasePPOActor):
 
                 loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
                 if audit is not None:
-                    audit.micro(log_prob, old_log_prob, response_mask, loss)
+                    if self.config.get('baseline_method') == 'topd':
+                        audit.micro(log_prob, old_log_prob, response_mask, loss)
+                    else:
+                        audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None))
                 loss.backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
@@ -351,6 +357,8 @@ class DataParallelPPOActor(BasePPOActor):
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
+        if audit is not None:
+            audit.finish(updates, skipped)
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
         if audit is not None:

@@ -8,6 +8,8 @@ from .controller import validate_config
 def main(config):
     from .preflight import validate_gpu_lease
     validate_gpu_lease(config)
+    from .local_runtime import check_local_runtime
+    check_local_runtime(config)
     from .holdout import prepare_common_holdout
     split_manifest = prepare_common_holdout(config)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
@@ -41,8 +43,11 @@ def main(config):
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
-    from .topd_runtime_audit import runtime_env_vars
-    audit_env = runtime_env_vars()
+    if config.baselines.local_runtime_only:
+        check_local_runtime(config, ray.nodes())
+    from .runtime_audit import runtime_env_vars as baseline_runtime_env_vars
+    from .topd_runtime_audit import runtime_env_vars as topd_runtime_env_vars
+    audit_env = {**baseline_runtime_env_vars(), **topd_runtime_env_vars()}
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
     result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:
