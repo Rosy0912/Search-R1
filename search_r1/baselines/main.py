@@ -35,6 +35,9 @@ def main(config):
     validate_config(config)
     from .preflight import validate_assets_and_retriever
     validate_assets_and_retriever(config)
+    if config.baselines.get('method') == 'topd':
+        from .topd_runtime_audit import config_boundary
+        config_boundary(config, split_manifest)
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})

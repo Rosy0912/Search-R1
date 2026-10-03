@@ -316,3 +316,57 @@ def test_teacher_resource_env_propagated_with_audit_without_changing_torch(monke
     with patch.object(torch, 'set_num_threads') as setter:
         assert runtime_env_vars() == dict(variables, SEARCH_R1_TOPD_TEACHER_CPU_THREADS='16')
         setter.assert_not_called()
+
+
+@pytest.mark.parametrize('bad_config,bad_data', [(False, False), (True, False), (False, True)])
+def test_actual_entry_config_capture_rejects_drift_before_dispatch(tmp_path, monkeypatch, bad_config, bad_data):
+    import hashlib
+    from search_r1.baselines.topd_runtime_audit import config_boundary
+    config = OmegaConf.create(dict(trainer=dict(total_training_steps=6), data=dict(train_files=['local/train.parquet'])))
+    text = OmegaConf.to_yaml(OmegaConf.create(OmegaConf.to_container(config, resolve=True))).encode()
+    expected = hashlib.sha256(text).hexdigest()
+    monkeypatch.setenv('SEARCH_R1_TOPD_AUDIT_DIR', str(tmp_path))
+    monkeypatch.setenv('SEARCH_R1_TOPD_CONFIG_SHA256', 'wrong' if bad_config else expected)
+    monkeypatch.setenv('SEARCH_R1_TOPD_DATA_IDENTITY', 'wrong' if bad_data else 'actual-split')
+    split = dict(content_identity=dict(sha256='actual-split'))
+    if bad_config or bad_data:
+        with pytest.raises(RuntimeError):
+            config_boundary(config, split)
+        assert not (tmp_path/'entry-config.yaml').exists()
+    else:
+        config_boundary(config, split)
+        assert (tmp_path/'entry-config.yaml').read_bytes() == text
+        row = json.loads((tmp_path/'entry.jsonl').read_text())
+        assert row['actual_config_sha256'] == expected and row['actual_data_identity'] == 'actual-split'
+        assert row['entry_total_training_steps'] == 6
+        with pytest.raises(FileExistsError):
+            config_boundary(config, split)
+
+
+def test_entry_config_capture_default_off_has_no_side_effects(tmp_path, monkeypatch):
+    from search_r1.baselines.topd_runtime_audit import config_boundary
+    monkeypatch.delenv('SEARCH_R1_TOPD_AUDIT_DIR', raising=False)
+    config_boundary(None, None)
+    assert not list(tmp_path.iterdir())
+
+
+def test_real_main_refuses_config_drift_before_ray_training_dispatch(tmp_path, monkeypatch):
+    import sys
+    from unittest.mock import MagicMock
+    from search_r1.baselines import main as entry, preflight, holdout
+    task = MagicMock()
+    monkeypatch.setitem(sys.modules, 'verl.trainer.main_ppo', SimpleNamespace(main_task=task))
+    monkeypatch.setattr(preflight, 'validate_gpu_lease', lambda config: None)
+    monkeypatch.setattr(preflight, 'validate_assets_and_retriever', lambda config: None)
+    monkeypatch.setattr(holdout, 'prepare_common_holdout', lambda config: dict(content_identity=dict(sha256='actual-split')))
+    monkeypatch.setattr(entry, 'validate_config', lambda config: None)
+    monkeypatch.setenv('SEARCH_R1_TOPD_AUDIT_DIR', str(tmp_path))
+    monkeypatch.setenv('SEARCH_R1_TOPD_CONFIG_SHA256', 'changed-config')
+    monkeypatch.setenv('SEARCH_R1_TOPD_DATA_IDENTITY', 'actual-split')
+    config = OmegaConf.create(dict(trainer=dict(smoke_only=True, total_training_steps=6),
+                                  baselines=dict(method='topd', holdout_eval_only=False)))
+    with pytest.raises(RuntimeError, match='differs from frozen launch config'):
+        entry.main.__wrapped__(config)
+    task.options.assert_not_called()
+    task.remote.assert_not_called()
+    assert not list(tmp_path.iterdir())

@@ -44,6 +44,28 @@ def configure_teacher_cpu_threads():
     return torch.get_num_threads()
 
 
+def config_boundary(config, split_manifest):
+    """Bind the actual post-holdout entry config, before trainer budget injection."""
+    if not enabled():
+        return
+    from omegaconf import OmegaConf
+    resolved = OmegaConf.create(OmegaConf.to_container(config, resolve=True))
+    encoded = OmegaConf.to_yaml(resolved).encode('utf-8')
+    actual = hashlib.sha256(encoded).hexdigest()
+    identity = split_manifest['content_identity']['sha256']
+    if actual != os.environ.get('SEARCH_R1_TOPD_CONFIG_SHA256'):
+        raise RuntimeError('Actual TOP-D entry configuration differs from frozen launch config')
+    if identity != os.environ.get('SEARCH_R1_TOPD_DATA_IDENTITY'):
+        raise RuntimeError('Actual TOP-D holdout identity differs from frozen launch data')
+    root = Path(os.environ['SEARCH_R1_TOPD_AUDIT_DIR'])
+    root.mkdir(parents=True, exist_ok=True)
+    with (root / 'entry-config.yaml').open('xb') as stream:
+        stream.write(encoded)
+    emit('config_boundary', dict(actual_config_sha256=actual, actual_data_identity=identity,
+         config_scope='resolved Hydra + common holdout before trainer optim.total_training_steps injection',
+         entry_total_training_steps=int(config.trainer.total_training_steps)), rank='entry')
+
+
 def emit(kind, record, rank='driver'):
     directory = os.environ.get('SEARCH_R1_TOPD_AUDIT_DIR')
     if not directory:
