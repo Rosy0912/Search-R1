@@ -6,6 +6,7 @@ control=base/'source/experiments/search_e1/control';receipt=base/'receipts'/f'{p
 ids=os.environ['CUDA_VISIBLE_DEVICES'];env=dict(os.environ,E1_RUN_ID=uuid.uuid4().hex)
 admission=subprocess.check_output([str(base/'env/bin/python'),str(control/'gpu_admission.py')],env=env,text=True)
 record=dict(profile=profile,stage=stage,run_id=env['E1_RUN_ID'],admission=json.loads(admission),started_unix=time.time(),status='STARTING',utilization=float(env.get('E1_VLLM_UTIL','.4')),peaks_mib={},sample_count=0)
+record['execution_caps']={key:env.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE']}
 p=subprocess.Popen(['bash',str(control/'train_profile.sh')],env=env,start_new_session=True)
 record.update(pid=p.pid,status='RUNNING')
 last=0
