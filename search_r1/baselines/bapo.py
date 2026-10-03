@@ -4,6 +4,7 @@ from dataclasses import dataclass, asdict
 import re
 import string
 import torch
+from search_r1.qa_protocol import extract_final_answer, parse_model_action
 
 
 def normalize(text):
@@ -20,12 +21,7 @@ def token_f1(prediction, target):
 
 
 def answer_from_spans(spans):
-    answer = None
-    for span in spans:
-        matches = list(re.finditer(r'<answer>(.*?)</answer>', span, re.DOTALL))
-        if matches:
-            answer = matches[-1].group(1).strip()
-    return answer
+    return extract_final_answer(spans)
 
 
 def is_idk(answer):
@@ -124,27 +120,15 @@ def resample_rows(answers, targets, uids, stage):
 def legal_action_records(records):
     if not records:
         return False
+    final_kind = None
     for i, record in enumerate(records):
-        text = record['text']
-        actions = list(re.finditer(r'<(search|answer)>(.*?)</\1>', text, re.DOTALL))
-        if len(actions) != 1:
+        action = parse_model_action(record['text'], strict_prefix=True)
+        if action is None:
             return False
-        action = actions[0]
-        prefix = text[:action.start()].strip()
-        if prefix and (not re.fullmatch(r'<think>.*?</think>', prefix, re.DOTALL)
-                       or prefix.count('<think>') != 1 or prefix.count('</think>') != 1):
+        final_kind = action[0]
+        if final_kind == 'answer' and i != len(records) - 1:
             return False
-        if action.group(1) == 'answer' and i != len(records) - 1:
-            return False
-        if not action.group(2).strip():
-            return False
-        # A regex outer match can swallow an unmatched/nested action opener.
-        # Reserved protocol tags cannot occur inside an action payload.
-        if re.search(r'</?(?:think|search|answer)\s*>', action.group(2)):
-            return False
-        if text[action.end():].strip():
-            return False
-    return actions[0].group(1) == 'answer'
+    return final_kind == 'answer'
 
 
 def decode_answers(data, tokenizer, require_legal=False):
