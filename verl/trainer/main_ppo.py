@@ -17,6 +17,8 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 
 from verl import DataProto
 import torch
+from search_g1.signals import decode_segments
+from search_r1.qa_protocol import extract_final_answer
 from verl.utils.reward_score import qa_em
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 import re
@@ -26,7 +28,7 @@ from verl.trainer.main_ppo_eco import _SEARCH_RE, _extract_question, _extract_in
 
 def _select_rm_score_fn(data_source):
     if data_source in ['nq', 'triviaqa', 'popqa', 'hotpotqa', '2wikimultihopqa', 'musique', 'bamboogle']:
-        return qa_em.compute_score_em
+        return qa_em.compute_score_generated_em
     else:
         raise NotImplementedError
 
@@ -84,6 +86,8 @@ class RewardManager():
 
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
+            if int(valid_response_length) == 0:
+                continue
             valid_response_ids = response_ids[:valid_response_length]
 
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
@@ -92,8 +96,12 @@ class RewardManager():
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, format_score=self.format_score)
-            answer = qa_em.extract_solution(sequences_str)
+            model_mask = (data_item.batch['info_mask'][prompt_length:prompt_length + int(valid_response_length)]
+                          if 'info_mask' in data_item.batch else torch.ones_like(valid_response_ids))
+            response_str, model_ranges = decode_segments(self.tokenizer, valid_response_ids, model_mask)
+            model_spans = [response_str[start:end] for start, end in model_ranges]
+            score = compute_score_fn(model_spans=model_spans, ground_truth=ground_truth, format_score=self.format_score)
+            answer = extract_final_answer(model_spans)
             correct = (answer is not None) and bool(qa_em.em_check(answer, ground_truth['target']))
             n_search = len(_SEARCH_RE.findall(response_str))
             row = {

@@ -35,6 +35,20 @@ class TerminalAnswerTests(unittest.TestCase):
             self.assertEqual(QA['compute_score_generated_em'](spans, {'target':['Paris']}), 1)
         self.assertEqual(QA['compute_score_generated_em'](['<answer>London</answer>'], {'target':['Paris']}, format_score=.1), .1)
 
+    def test_g1_contexts_reject_nonterminal_answers(self):
+        path = ROOT / 'search_g1/signals.py'
+        if not path.exists():
+            self.skipTest('No G1 context extractor on this branch')
+        contexts = runpy.run_path(str(path))['contexts']
+        for text in ['<search><answer>Paris</answer></search>', '<answer><answer>Paris</answer>',
+                     '<answer>Paris</answer><search>next</search>']:
+            self.assertIsNone(contexts('prompt', text, [[0,len(text)]]))
+        text = '<search>capital</search>OBS<answer>Paris</answer>'
+        start = text.index('<answer>')
+        result = contexts('prompt', text, [[0,23],[start,len(text)]])
+        self.assertEqual(result['answer'], 'Paris')
+        self.assertEqual(result['commit'], 'prompt' + text[:start+len('<answer>')])
+
     def test_legacy_api_and_nested_actions(self):
         prompt = '<answer>example</answer> '
         self.assertIsNone(extract_legacy_final_answer('<answer>Paris</answer>'))

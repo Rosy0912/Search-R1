@@ -286,4 +286,3 @@ def compute_score_generated_em(model_spans, ground_truth, format_score=0., score
     if answer is None:
         return 0.
     return score if em_check(answer, ground_truth['target']) else format_score
-

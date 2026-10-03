@@ -1,22 +1,28 @@
 """Shared calibration/inference provenance and strict probe wire contract."""
 import math
 import re
+from search_r1.qa_protocol import extract_final_answer
 
 ANSWER = re.compile(r'<answer>(.*?)</answer>', re.DOTALL)
 SEARCH = re.compile(r'<search>(.*?)</search>', re.DOTALL)
 
 
 def authored_match(response, model_ranges):
-    last = None
     previous = 0
     for start, end in model_ranges:
         if not (isinstance(start,int) and isinstance(end,int) and previous <= start <= end <= len(response)):
             raise ValueError('Invalid authored span bounds')
         previous = end
-        for match in ANSWER.finditer(response[start:end]):
-            last = (start + match.start(), start + match.end(),
-                    start + match.start(1), start + match.end(1), match.group(1).strip())
-    return last
+    if not model_ranges:
+        return None
+    start, end = model_ranges[-1]
+    span = response[start:end]
+    answer = extract_final_answer([span])
+    if answer is None:
+        return None
+    match = list(ANSWER.finditer(span))[-1]
+    return (start + match.start(), start + match.end(),
+            start + match.start(1), start + match.end(1), answer)
 
 
 def contexts(prompt, response, model_ranges):
