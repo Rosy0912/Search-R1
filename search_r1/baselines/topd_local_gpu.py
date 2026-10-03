@@ -94,6 +94,15 @@ def cuda_process_snapshot(uuid):
     return matches[0]
 
 
+def initialize_cuda_context(device):
+    """Create an own visible context without scoring/model precision changes."""
+    token=torch.empty((),device=device,dtype=torch.float32)
+    torch.cuda.synchronize()
+    del token
+    torch.cuda.empty_cache()
+    torch.cuda.reset_peak_memory_stats()
+
+
 def release_cuda(teacher):
     """Private own-process clearing is fail-closed pending native proof."""
     teacher.model.to('cpu');teacher.device=torch.device('cpu')
@@ -136,11 +145,13 @@ class ScorerSession:
         self.ownership()
         wall=time.perf_counter();cpu_before=time.process_time();tokens_before=self.teacher.scored_tokens
         before_memory=None;gpu_pid_before=gpu_pid_peak=gpu_pid_released=None
-        if self.device.type=='cuda':
-            torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.set_float32_matmul_precision('highest')
-            require(not torch.is_autocast_enabled(),'Scorer must never enable CUDA autocast')
-            torch.cuda.reset_peak_memory_stats();gpu_pid_before=cuda_process_snapshot(self.uuid);before_memory=dict(allocated_bytes=torch.cuda.memory_allocated(),reserved_bytes=torch.cuda.memory_reserved())
         try:
+            if self.device.type=='cuda':
+                torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.set_float32_matmul_precision('highest')
+                require(not torch.is_autocast_enabled(),'Scorer must never enable CUDA autocast')
+                initialize_cuda_context(self.device)
+                gpu_pid_before=cuda_process_snapshot(self.uuid)
+                before_memory=dict(allocated_bytes=torch.cuda.memory_allocated(),reserved_bytes=torch.cuda.memory_reserved())
             move_start=time.perf_counter()
             self.teacher.model.to(self.device);self.teacher.device=self.device
             if self.device.type=='cuda':torch.cuda.synchronize()
