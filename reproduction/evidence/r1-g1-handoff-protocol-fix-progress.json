@@ -1,0 +1,61 @@
+{
+  "checked_at": "2026-10-04T00:53:19.039128",
+  "recent_updates": [
+    {
+      "step": 289,
+      "reward": "0.000",
+      "seconds": 452.592
+    },
+    {
+      "step": 290,
+      "reward": "0.000",
+      "seconds": 454.161
+    },
+    {
+      "step": 291,
+      "reward": "0.000",
+      "seconds": 453.002
+    },
+    {
+      "step": 292,
+      "reward": "0.000",
+      "seconds": 451.773
+    },
+    {
+      "step": 293,
+      "reward": "0.000",
+      "seconds": 453.214
+    }
+  ],
+  "processes": [
+    {
+      "pid": 939751,
+      "start_ticks": 507870420,
+      "state": "S",
+      "matched": true
+    },
+    {
+      "pid": 1360378,
+      "start_ticks": 511195985,
+      "state": "S",
+      "matched": true
+    },
+    {
+      "pid": 1476488,
+      "start_ticks": 512002058,
+      "state": "S",
+      "matched": true
+    },
+    {
+      "pid": 1563156,
+      "start_ticks": 512594741,
+      "state": "S",
+      "matched": true
+    }
+  ],
+  "r1_stage": "WAITING_FOR_SAVED_BOUNDARY",
+  "g1_stage": "WAITING_R1_SAVED_AND_STOPPED_UPDATE300",
+  "g1_source_commit": "080753eba78454f13dc0cb75a5c189e5f2b524f0",
+  "deployed_source_files": 247,
+  "g1_actual_updates": 0
+}
