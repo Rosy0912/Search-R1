@@ -324,7 +324,8 @@ class QueryRequest(BaseModel):
 app = FastAPI()
 
 @app.post("/retrieve")
-def retrieve_endpoint(request: QueryRequest):
+async def retrieve_endpoint(request: QueryRequest):
+    # Keep GPU encoder/FAISS work on its initialization thread, as verified in R1.
     """
     Endpoint that accepts queries and performs retrieval.
     Input format:

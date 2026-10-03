@@ -28,7 +28,7 @@ def prepare(source_commit):
     model_hashes={name:digest(model/name) for name in sorted(names)}
     files=['train.parquet','calibration-300.parquet','validation-64.parquet','audit.json']
     data_hashes={name:digest(base/'data'/name) for name in files}
-    source_hashes={str(p.relative_to(base/'repo')):digest(p) for p in sorted((base/'repo').rglob('*')) if p.is_file() and p.suffix in ('.py','.sh') and '__pycache__' not in p.parts and '.git' not in p.parts}
+    source_hashes={str(p.relative_to(base/'repo')):digest(p) for p in sorted((base/'repo').rglob('*')) if p.is_file() and p.suffix in ('.py','.sh','.yaml','.yml') and '__pycache__' not in p.parts and '.git' not in p.parts}
     result=dict(run_id=uuid.uuid4().hex,started_unix=time.time(),initial_model=str(model),initial_model_sha256=model_hashes,
         source_commit=source_commit,source_sha256=source_hashes,source_snapshot_semantics='disk fingerprint before launch; not proof of code already loaded',
         input_sha256=data_hashes,validation_question_ids=audit['validation_question_ids'],validation_source_counts=audit['validation_source_counts'],

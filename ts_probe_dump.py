@@ -264,6 +264,9 @@ def main():
     # ---- per-question closed-book (boundary): answer directly, NO retrieval ----
     cb_prompt = [f"Answer the question directly with only the answer, no explanation.\n"
                  f"Question: {q}\nAnswer:" for q in questions]
+    if tok.chat_template:
+        cb_prompt = [tok.apply_chat_template([{"role":"user","content":p}],
+                     add_generation_prompt=True,tokenize=False) for p in cb_prompt]
     cb_ans = gen_batch(llm, cb_prompt, 24, False, ["\n"])
     q_cb = [em_score(cb_ans[i], golds_all[i]) for i in range(nq)]
     question_ids = [hashlib.sha256(re.sub(r"\s+", " ", q).strip().casefold().encode()).hexdigest() for q in questions]

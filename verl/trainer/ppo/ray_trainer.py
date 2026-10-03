@@ -272,6 +272,10 @@ def compute_data_metrics(batch, use_critic=True):
     if 'valid_action_stats' in batch.meta_info:
         metrics['env/number_of_valid_action'] = float(np.array(batch.meta_info['valid_action_stats'], dtype=np.int16).mean())
         metrics['env/ratio_of_valid_action'] = float((np.array(batch.meta_info['valid_action_stats'], dtype=np.int16) / np.array(batch.meta_info['turns_stats'], dtype=np.int16)).mean())
+    if 'actual_retrieval_stats' in batch.meta_info:
+        calls = np.array(batch.meta_info['actual_retrieval_stats'], dtype=np.int32)
+        metrics['env/actual_retrieval_calls/mean'] = float(calls.mean())
+        metrics['env/actual_retrieval_calls/total'] = int(calls.sum())
     if 'valid_search_stats' in batch.meta_info:
         metrics['env/number_of_valid_search'] = float(np.array(batch.meta_info['valid_search_stats'], dtype=np.int16).mean())
 
