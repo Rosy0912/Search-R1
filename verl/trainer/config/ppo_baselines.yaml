@@ -116,6 +116,11 @@ baselines:
     attn_implementation: eager
     cpu_threads: null
     response_only_logits: false
+    phase_gpu: false
+    reuse_generation_logits: false
+    inference_batch_size: 1
+    inference_token_budget: 32768
+    gradient_checkpointing: false
     weight_decay: 0.01
     candidates: 50
     keep: 3

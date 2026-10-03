@@ -46,6 +46,9 @@ def main(config):
         check_local_runtime(config, ray.nodes())
     from .runtime_audit import runtime_env_vars
     audit_env = runtime_env_vars()
+    import os
+    audit_env.update({name: os.environ[name] for name in ('COSEARCH_RANKER_GPU_UUID', 'COSEARCH_RANKER_LEASE_UUIDS',
+                     'SLURM_JOB_ID', 'SLURM_JOB_NODELIST') if name in os.environ})
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
     result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:

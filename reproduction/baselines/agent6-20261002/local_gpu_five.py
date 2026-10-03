@@ -12,7 +12,9 @@ mem_match=re.search(r'MinMemoryNode=(\d+)([KMGTP]?)',allocation)
 assert mem_match, 'Cannot verify actual Slurm node memory allocation'
 memory_mib=int(mem_match.group(1))*{'':1,'K':1/1024,'M':1,'G':1024,'T':1024**2,'P':1024**3}[mem_match.group(2)]
 assert memory_mib >= 192000
-run=root/'runs/cosearch-local-gpu-five-20261003-d'
+run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-e')
+assert re.fullmatch(r'cosearch-local-gpu-five-[0-9]{8}-[a-z][a-z0-9-]*',run_id)
+run=root/'runs'/run_id
 run.mkdir(parents=True,exist_ok=False)
 (run/'slurm-allocation.txt').write_text(allocation)
 assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==8
@@ -30,12 +32,20 @@ env.update(PATH=f'{root}/env/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/
 python=str(root/'env/bin/python')
 for port in (18086,16386):
     with socket.socket() as sock: sock.bind(('127.0.0.1',port))
+# Parent preflight holds all eight leases before retrieval initializes CUDA.
+leases=json.loads(env['SEARCH_R1_GPU_LEASES'])
+lease_fds=tuple(int(record['fd']) for record in leases)
+uuids=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader'],text=True)
+allocated={line.split(',')[0].strip():line.split(',')[1].strip() for line in uuids.splitlines()}
+selected=[allocated.get(v.strip(),v.strip()) for v in env['CUDA_VISIBLE_DEVICES'].split(',')]
+assert set(selected)=={record['uuid'] for record in leases}
+env.update(COSEARCH_RANKER_GPU_UUID=selected[-1],COSEARCH_RANKER_LEASE_UUIDS=json.dumps(selected))
 # Do not use Ray's host-wide stop command. Slurm owns all child processes.
 children=[]
 logs=[]
 def launch(command,filename,child_env):
     log=(run/filename).open('w');logs.append(log)
-    p=subprocess.Popen(command,env=child_env,cwd=root/'repo',stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+    p=subprocess.Popen(command,env=child_env,cwd=root/'repo',stdout=log,stderr=subprocess.STDOUT,start_new_session=True,pass_fds=lease_fds)
     children.append((p,os.pidfd_open(p.pid)))
     return p
 retrieval_env=env.copy();retrieval_env.update(PYTHONPATH=f'{root}/retriever-gpu-lib:{root}/repo',OMP_NUM_THREADS='8',MKL_NUM_THREADS='8',OPENBLAS_NUM_THREADS='8')
@@ -55,6 +65,14 @@ try:
         except OSError: pass
         if time.monotonic()-started>1200: raise TimeoutError('Local retriever startup timeout')
         time.sleep(5)
+    probe=launch([python,str(root/'tools/native_gpu_ranker_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
+    while probe.poll() is None:
+        if service.poll() is not None: raise RuntimeError('Retriever failed during GPU ranker probe')
+        time.sleep(5)
+    if probe.returncode != 0: raise RuntimeError('Native GPU ranker numerical/resource probe failed')
+    if os.environ.get('COSEARCH_PROBE_ONLY') == '1':
+        print('COSEARCH_PROBE_ONLY_COMPLETE',flush=True)
+        raise SystemExit(0)
     head=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/ray_cli.py'),'start','--head','--block','--node-ip-address=127.0.0.1',
         '--port=16386','--min-worker-port=21000','--max-worker-port=21999','--num-gpus=8','--num-cpus=24','--object-store-memory=8589934592',
         '--include-dashboard=false','--temp-dir='+str(root)], 'ray-head.log',env)
@@ -76,18 +94,27 @@ try:
         'actor_rollout_ref.ref.log_prob_micro_batch_size=128',
         'retriever.url=http://127.0.0.1:18086/retrieve',
         'baselines.ranker.attn_implementation=sdpa','baselines.ranker.cpu_threads=32',
-        'baselines.ranker.response_only_logits=true','trainer.total_training_steps=6',
+        'baselines.ranker.response_only_logits=true','baselines.ranker.phase_gpu=true',
+        'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=4',
+        'baselines.ranker.inference_token_budget=32768','baselines.ranker.gradient_checkpointing=true',
+        'baselines.local_runtime_only=true','baselines.local_runtime_host=h100-16','trainer.total_training_steps=6',
         'data.val_data_num=64','data.val_batch_size=64','trainer.val_before_train=false','trainer.smoke_only=true','trainer.test_freq=5',
         'trainer.save_freq=100','trainer.acceptance_step=5',
-        'trainer.experiment_name=cosearch-local-gpu-five-20261003-d']
+        'trainer.experiment_name='+run.name]
     (run/'launch.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],
         gpu_devices=os.environ['CUDA_VISIBLE_DEVICES'],command=command,local_node_only=True,
-        endpoints=['127.0.0.1:18086','127.0.0.1:16386'],ranker='CPU FP32 same base',retrieval='same-node CUDA FP16 E5 + eight-GPU sharded FP16 FAISS',reference_commit='0328f941547fa8b41f4fe5a7f84499c7c67a7bee',
+        endpoints=['127.0.0.1:18086','127.0.0.1:16386'],ranker='same base FP32 phase-shared local GPU, CPU resident between phases',retrieval='same-node CUDA FP16 E5 + eight-GPU sharded FP16 FAISS',reference_commit='0328f941547fa8b41f4fe5a7f84499c7c67a7bee',
         cpu_allocation=os.environ.get('SLURM_CPUS_PER_TASK'),memory_mb=memory_mib,
         commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=root/'repo').strip()),indent=2)+'\n')
     # Inspect and preserve the exact effective Hydra configuration before models load.
     with (run/'resolved.yaml').open('w') as output:
         subprocess.run(command+['--cfg','job','--resolve'],env=env,cwd=root/'repo',stdout=output,check=True)
+    audit_code = "from omegaconf import OmegaConf; from search_r1.baselines.holdout import prepare_common_holdout; import hashlib,json,sys; c=OmegaConf.load(sys.argv[1]); m=prepare_common_holdout(c); t=OmegaConf.to_yaml(OmegaConf.create(OmegaConf.to_container(c,resolve=True))); print('AUDIT_IDENTITY='+json.dumps(dict(config=hashlib.sha256(t.encode()).hexdigest(),data=m['content_identity']['sha256'])))"
+    audit_output=subprocess.check_output([python,'-c',audit_code,str(run/'resolved.yaml')],env=env,cwd=root/'repo',text=True)
+    audit=json.loads([line.split('=',1)[1] for line in audit_output.splitlines() if line.startswith('AUDIT_IDENTITY=')][0])
+    env.update(SEARCH_R1_BASELINE_AUDIT_DIR=str(run/'audit'),SEARCH_R1_BASELINE_RUN_ID=run.name,
+        SEARCH_R1_BASELINE_COMMIT=subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=root/'repo').strip(),
+        SEARCH_R1_BASELINE_CONFIG_SHA256=audit['config'],SEARCH_R1_BASELINE_DATA_IDENTITY=audit['data'])
     driver=launch(command,'training.log',env)
     print('LOCAL_FIVE_DRIVER_STARTED',json.dumps(dict(job=os.environ['SLURM_JOB_ID'],pid=driver.pid,run=str(run))),flush=True)
     peaks={};last_progress=0
