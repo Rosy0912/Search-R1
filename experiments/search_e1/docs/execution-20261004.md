@@ -79,3 +79,15 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
 - Running acceptance still requires both smoke gates to produce changed finite
   step2 checkpoints, followed by full staged training. Initialization alone does
   not satisfy that requirement.
+
+### HKUST1 physical cap refinement after real backward profiling
+
+B's cap4 / score8 run reached actual backward passes but sampled peak24,183 MiB
+on a24,564-MiB card. It was stopped and preserved as
+smoke-040-cap4-score8-low-headroom before formal training. This was a proactive
+headroom fix, not an OOM recovery and not a change to logical64/128 batching.
+B now uses physical2 / score4, preserving exact logical token fractions and
+optimizer boundaries. CPU actual-source gradient/weight checks passed2; all4
+CUDA FSDP ranks matched original weights/metrics within1e-6 with16 physical
+calls instead of4 original calls. A's ongoing run was untouched. Fresh B gates
+use the same source/runtime/seed/initial weights/common oracle with new cap receipts.

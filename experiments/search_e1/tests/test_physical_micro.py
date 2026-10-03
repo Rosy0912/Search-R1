@@ -51,10 +51,11 @@ class PhysicalMicroTests(unittest.TestCase):
                 norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
                 opt.step();return norm
             return SimpleNamespace(config=SimpleNamespace(ppo_mini_batch_size=16,ppo_micro_batch_size=8,use_dynamic_bsz=False,state_masking=True,use_kl_loss=True,clip_ratio=.2,entropy_coeff=.001,kl_loss_type='low_var_kl',kl_loss_coef=.001),actor_module=model,actor_optimizer=opt,_forward_micro_batch=forward,_optimizer_step=step,gradients=gradients,calls=calls)
+        cap=int(os.environ.get("E1_CHECK_PHYSICAL", "4"));assert cap in [1,2,4,8]
         a,b=actor(),actor()
-        with patch.object(TensorDict,'cuda',lambda self:self),patch.dict(os.environ,{'E1_PHYSICAL_MICRO':'4','SEARCH_E1_TRAJECTORY_BATCHING':'0'}):
+        with patch.object(TensorDict,'cuda',lambda self:self),patch.dict(os.environ,{'E1_PHYSICAL_MICRO':str(cap),'SEARCH_E1_TRAJECTORY_BATCHING':'0'}):
             ma=original(a,Data());mb=adapted(b,Data())
-        self.assertEqual(len(a.calls),4);self.assertEqual(len(b.calls),8)
+        self.assertEqual(len(a.calls),4);self.assertEqual(len(b.calls),32//cap)
         self.assertEqual(len(a.gradients),2);self.assertEqual(len(b.gradients),2)
         for x,y in zip(a.gradients,b.gradients):torch.testing.assert_close(x,y,atol=1e-12,rtol=1e-12)
         for x,y in zip(a.actor_module.parameters(),b.actor_module.parameters()):torch.testing.assert_close(x,y,atol=1e-12,rtol=1e-12)
