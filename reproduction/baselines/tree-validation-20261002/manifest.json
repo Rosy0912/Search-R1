@@ -1,6 +1,6 @@
 {
   "method": "tree_grpo",
-  "status": "five_update_checkpoint_gate_running",
+  "status": "cross_cluster_architecture_rejected_by_user_all_own_jobs_and_forwards_stopped",
   "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
   "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
   "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
@@ -9,7 +9,7 @@
   "remote_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
   "node": "h100-9",
   "slurm_allocation_probe": 2844,
-  "allocation_held": true,
+  "allocation_held": false,
   "formal_outer_updates": 0,
   "smoke_outer_updates": 2,
   "independent_review": "INDEPENDENT_REVIEW.md",
@@ -53,7 +53,7 @@
     "six leaves versus five GRPO trajectories",
     "paper equal-leaf token average differs from author token-mean implementation"
   ],
-  "notes": "Independent actual two-stage accepted; five stage2883 running with versioned receipt, formal/effect pending.",
+  "notes": "User forbids all cross-cluster data/retrieval/storage/weight communication. Own2883 stopped; own774407 stopped with complete cost; all own forwarding removed. Two-update functional evidence historical; performance/effect validation incomplete.",
   "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
   "integrated_code_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
   "remote_deployed_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
@@ -69,7 +69,7 @@
     "flash_bf16_math_probe": true
   },
   "network_progress": "SSH usable; all immutable and derived assets fully SHA verified",
-  "updated_at": "2026-10-03T10:24:02.298240+08:00",
+  "updated_at": "2026-10-03T11:03:15.096140+08:00",
   "latest_cpu_gate_evidence": "evidence/cpu-all-step-ids-fix.txt",
   "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
   "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
@@ -249,7 +249,7 @@
     "top50_exact_14": 11,
     "top50_exact_512": 402,
     "repeat_equal": true,
-    "accepted_for_training": "five_update_gate_only_with_independent_two_acceptance"
+    "accepted_for_training": false
   },
   "aux_hybrid_http_gate": {
     "job_id": 2876,
@@ -262,14 +262,14 @@
     "top50_exact_14": 11,
     "top50_content_exact_14": 14,
     "repeat_equal": true,
-    "accepted_for_training": "two_update_smoke_only",
+    "accepted_for_training": false,
     "cpu_encoder_vectors_equal_2854": true,
     "timings_512_seconds": [
       24.274448661133647,
       22.916255505755544
     ]
   },
-  "current_job": 2883,
+  "current_job": null,
   "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2879",
   "aux_hybrid_acceptance_sha256": "012b588b2e36233636b395f98ff7a09fffab91f37baa8e344fc109133f77001f",
   "latest_failed_training_job": {
@@ -306,5 +306,7 @@
   "current_retrieval_acceptance_sha256": "049fbefeb89747c28030111386e00221ad0d664bbaf9ca24cf5e9d58d314d466",
   "latest_two_stage_summary": "evidence/tree-two-2879-completed-summary.json",
   "two_stage_acceptance": "evidence/two-stage-acceptance-2879.json",
-  "five_stage_actual_outer_updates": 0
+  "five_stage_actual_outer_updates": null,
+  "cross_cluster_communication_prohibited": true,
+  "formal_candidate_retired": true
 }
