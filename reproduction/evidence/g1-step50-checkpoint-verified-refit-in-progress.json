@@ -1,0 +1,116 @@
+{
+  "runtime": {
+    "checked_unix": 1791071702.4204204,
+    "checkpoint_proof": {
+      "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+      "step": 50,
+      "validated_tensor_count": 435,
+      "finite_all_saved_tensors": true,
+      "checkpoint": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_50",
+      "files_sha256": {
+        "model-00003-of-00003.safetensors": "663cfda26f8e02a0f9e6fd8cc6ae3d41e0c7eff7b63bd6f0d8026f3b79ffa960",
+        "model-00002-of-00003.safetensors": "ff11a068e418dec5855fe9b97b8f607679e97fb0bf49ff23d81dec24724504ab",
+        "model-00001-of-00003.safetensors": "aa0d161f915ff7640bbaf70aef353664789c13f66608cfc13578fcd75187f5c6",
+        "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+        "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b"
+      }
+    },
+    "validation_metrics": {
+      "val/test_score/nq": 0.5,
+      "val/evaluated_count/nq": 10.0,
+      "val/test_score/triviaqa": 0.556,
+      "val/evaluated_count/triviaqa": 9.0,
+      "val/test_score/popqa": 0.222,
+      "val/evaluated_count/popqa": 9.0,
+      "val/test_score/hotpotqa": 0.111,
+      "val/evaluated_count/hotpotqa": 9.0,
+      "val/test_score/2wikimultihopqa": 0.111,
+      "val/evaluated_count/2wikimultihopqa": 9.0,
+      "val/test_score/musique": 0.0,
+      "val/evaluated_count/musique": 9.0,
+      "val/test_score/bamboogle": 0.0,
+      "val/evaluated_count/bamboogle": 9.0,
+      "val/perf/em": 0.219
+    },
+    "refit_events": [
+      "\u001b[36m(main_task pid=1672776)\u001b[0m SEARCH_G1_REFIT_PAUSE=50",
+      "\u001b[36m(main_task pid=1672776)\u001b[0m SEARCH_G1_EVALUATOR_UNLOADED=e1856e705ace460bb3a836e2cd9fde93:0:9f593934e59641a8904faeaf43225f6a"
+    ],
+    "live_probe_round": 0,
+    "round_dirs": [
+      "/data/search-g1/artifacts/round_50-attempt-48c83399dd0048cea14ae0b8fed859f6"
+    ]
+  },
+  "independent_weight_verification": {
+    "checked_unix": 1791071758.7705777,
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "step": 50,
+    "independent_tensor_count": 435,
+    "all_saved_tensors_finite": true,
+    "file_sha_matches": {
+      "model-00003-of-00003.safetensors": true,
+      "model-00002-of-00003.safetensors": true,
+      "model-00001-of-00003.safetensors": true,
+      "model.safetensors.index.json": true,
+      "config.json": true
+    },
+    "proof": {
+      "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+      "step": 50,
+      "validated_tensor_count": 435,
+      "finite_all_saved_tensors": true,
+      "checkpoint": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_50",
+      "files_sha256": {
+        "model-00003-of-00003.safetensors": "663cfda26f8e02a0f9e6fd8cc6ae3d41e0c7eff7b63bd6f0d8026f3b79ffa960",
+        "model-00002-of-00003.safetensors": "ff11a068e418dec5855fe9b97b8f607679e97fb0bf49ff23d81dec24724504ab",
+        "model-00001-of-00003.safetensors": "aa0d161f915ff7640bbaf70aef353664789c13f66608cfc13578fcd75187f5c6",
+        "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+        "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b"
+      }
+    }
+  },
+  "refit_live": {
+    "checked_unix": 1791071799.9587333,
+    "calibration_handles": [
+      {
+        "pid": 1976872,
+        "state": "S",
+        "start_ticks": 515122390,
+        "session": 1667170,
+        "script": [
+          "/data/search-g1/repo/reproduction/a800/refit.py"
+        ]
+      },
+      {
+        "pid": 1977217,
+        "state": "R",
+        "start_ticks": 515123713,
+        "session": 1667170,
+        "script": [
+          "/data/search-g1/repo/ts_probe_dump.py"
+        ]
+      }
+    ],
+    "round_dirs": [
+      {
+        "name": "round_50-attempt-48c83399dd0048cea14ae0b8fed859f6",
+        "log_bytes": 4137
+      }
+    ]
+  },
+  "validation_correct_counts_reconstructed_from_console": {
+    "nq": 5,
+    "triviaqa": 5,
+    "popqa": 2,
+    "hotpotqa": 1,
+    "2wikimultihopqa": 1,
+    "musique": 0,
+    "bamboogle": 0
+  },
+  "validation_correct_total": 14,
+  "validation_total": 64,
+  "validation_em": 0.21875,
+  "refit_adopted": false,
+  "update51_verified": false,
+  "full300_accepted": false
+}
