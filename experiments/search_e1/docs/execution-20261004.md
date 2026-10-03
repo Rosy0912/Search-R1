@@ -32,3 +32,6 @@ HKUST1精确torch2.4环境的GPU0–3与HKUST4 GPU4–7均完成CUDA/FlashAttent
 B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER且未训练；已停止仅本任务进程组并将旧runtime及hash/patch保留为r1-unused-zero-mask-v1，重新冻结正确runtime。未热修改已训练模型或checkpoint。
 
 公开range全部补齐并逐块SHA256就绪。HKUST4工作盘实际ST16000NM000J机械盘；合并改为直接流式生成e5_Flat.index，每个源分卷在写入过程中独立核验发布的完整SHA256，再原子发布索引。不另写64GB分卷副本，保留原下载前缀/分块供审计。manifest明确分别记录上游分卷SHA256和本地合并文件SHA256，不将后者冒充上游值。小文件真实字节拼接及源损坏禁止发布测试通过。算法/检索索引内容不变。
+
+
+归档vendored vLLM0.6.3的KV容量计算实际为free_gpu_memory × utilization（不是整卡总显存比例）。容量候选扩展至0.8/0.9，仍需每档完整两更新、下一档保守按整卡显存增量预测并留下6GiB；实测不满足条件即停止增加。不会仅因0.7是预设上限而放弃实际剩余容量。

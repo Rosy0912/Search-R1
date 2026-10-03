@@ -5,7 +5,7 @@ base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];control=base/'
 receipts=base/'receipts';history=[];selected=None
 # Keep at least 6 GiB beyond observed peaks for longer trajectories and temporary tensors.
 reserve_mib=6144
-for candidate in [.4,.5,.6,.7]:
+for candidate in [.4,.5,.6,.7,.8,.9]:
  if history:
   last=history[-1]
   if any(last['peaks_mib'].get(row[0],int(row[3])) + (candidate-last['utilization'])*int(row[2]) > int(row[2])-reserve_mib for row in last['admission']['devices']):
