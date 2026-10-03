@@ -896,6 +896,8 @@ class RayPPOTrainer(object):
                             from search_r1.baselines.runtime_audit import enabled as audit_enabled
                             if audit_enabled():
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
+                                from search_r1.baselines.runtime_audit import driver_outer
+                                driver_outer(batch, self.global_steps, self.config.baselines.method)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)

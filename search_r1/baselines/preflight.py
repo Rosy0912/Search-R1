@@ -52,8 +52,15 @@ def validate_gpu_lease(config):
     """Validate final Hydra resource counts and inherited launcher leases."""
     if config.trainer.nnodes != 1:
         raise ValueError('This launcher supports one node; multi-node requires per-node scheduler/lease gates')
+    validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
+
+
+def validate_inherited_gpu_leases(expected_count=None):
+    """Reuse a parent-held lease without reacquiring and deadlocking its own flock."""
     selected = [v.strip() for v in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if v.strip()]
-    if len(selected) != config.trainer.n_gpus_per_node:
+    if not selected:
+        raise ValueError('Inherited GPU leases require selected allocated GPUs')
+    if expected_count is not None and len(selected) != expected_count:
         raise ValueError('Final n_gpus_per_node does not match CUDA_VISIBLE_DEVICES')
     records = json.loads(os.environ.get('SEARCH_R1_GPU_LEASES', '[]'))
     if os.environ.get('SEARCH_R1_GPU_PREFLIGHT') != '1' or len(records) != len(selected):
@@ -76,6 +83,13 @@ def validate_gpu_lease(config):
                 pass
             else:
                 raise ValueError('GPU lease is not held by the launcher')
+            # A blocked independent probe alone could be a foreign holder.
+            # This is idempotent for the inherited locked open description;
+            # an unlocked lookalike FD cannot acquire a foreign-held lease.
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as error:
+                raise ValueError('Inherited descriptor does not own the GPU lease') from error
         finally:
             os.close(probe)
 
@@ -138,11 +152,19 @@ def gpu_snapshot():
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--reuse-inherited', action='store_true')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
     if not command:
         parser.error('Specify a command after --')
+    if args.reuse_inherited:
+        validate_inherited_gpu_leases()
+        for record in json.loads(os.environ['SEARCH_R1_GPU_LEASES']):
+            os.set_inheritable(int(record['fd']), True)
+        print('BASELINE_INHERITED_GPU_LEASES_OK', flush=True)
+        os.execvp(command[0], command)
+        return
     selected = [v.strip() for v in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if v.strip()]
     inventory, processes = gpu_snapshot()
     records = check_selected_gpus(selected, inventory, processes)
