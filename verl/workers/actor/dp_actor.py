@@ -143,10 +143,8 @@ class DataParallelPPOActor(BasePPOActor):
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
 
-        if isinstance(self.actor_module, FSDP):
-            grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
-        else:
-            grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+        from search_r1.baselines.gradient_norm import clip_grad_norm64
+        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         self.actor_optimizer.step()
