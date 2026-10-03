@@ -1,346 +1,327 @@
 {
   "method": "tree_grpo",
-  "status": "integrating_verified_user_same_node_gpu_micro64_protocol",
-  "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
-  "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
-  "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
-  "common_setup_commit": "297e1c140677dc621302f1d49fefdb31023fd2b7",
+  "status": "formal500_2971_running",
   "branch": "reproduce/tree-grpo",
   "remote_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
   "node": "h100-9",
-  "slurm_allocation_probe": 2844,
-  "allocation_held": false,
-  "formal_outer_updates": 0,
-  "smoke_outer_updates": 2,
-  "independent_review": "INDEPENDENT_REVIEW.md",
-  "cpu_gate": {
-    "baselines_passed": 45,
-    "reproduction_tests": 61,
-    "reproduction_skipped": 1,
-    "independent_related_passed": 32,
-    "complete_pytest_passed": 163,
-    "complete_pytest_skipped": 1
-  },
-  "asset_and_split_identity": {
-    "version": 1,
-    "split_version": 1,
-    "train_sources": [
-      "640411949a2c64ad492581f3ac2242a81a0f871e4a1c86c54140a4d6baad765f"
-    ],
-    "excluded_sources": [
-      "1174a4d5b29c28ad7e82f58a42f1c25aafb2a5ac15fb64a7d980579432c41f5a",
-      "af397b98b1601b517c01663171ffe543573005b9d31d24cace482480751a6756"
-    ],
-    "fraction": 0.02,
-    "seed": 42,
-    "prompt_key": "prompt",
-    "train": {
-      "questions_sha256": "d851357d6a9f5f48098f03b104f0354ff5feb0a79554a558268f0d346ecc3eff",
-      "rows_sha256": "4b3033960e1cad9aa13f81cebf0c4d27c0948a82b79dbdf96cace4d3f7bf88a3"
-    },
-    "holdout": {
-      "questions_sha256": "ae529173ea25cbd58534f460a6d83d4f211670ee90ec411f2ff1357da766c1f5",
-      "rows_sha256": "16d5f6446474685d0f05f2f0087519ee26f896c711cab060431f235ca32190bb"
-    },
-    "sha256": "fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524"
-  },
+  "allocation_held": true,
+  "formal_outer_updates": 234,
   "environment_ready": true,
-  "gpu_hardware_integration_passed": true,
-  "model_and_reward_protocol_changed": false,
   "known_protocol_deviations": [
     "Search-R1 generation/scoring context window mismatch retained and counted",
     "four turns, no forced final action",
     "six leaves versus five GRPO trajectories",
     "paper equal-leaf token average differs from author token-mean implementation"
   ],
-  "notes": "User forbids all cross-cluster data/retrieval/storage/weight communication. Own2883 stopped; own774407 stopped with complete cost; all own forwarding removed. Two-update functional evidence historical; performance/effect validation incomplete.",
-  "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
-  "integrated_code_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
-  "remote_deployed_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
-  "network_blocker": null,
-  "gpu_and_assets_acceptance": {
-    "nccl_bf16": true,
-    "flash_vllm": true,
-    "cpu_retrieval_equivalence": "limited_14_query_top3_only",
-    "production_tree_smoke": true,
-    "five_step_checkpoint": false,
-    "formal_500_updates": false,
-    "final_51713_questions": false,
-    "flash_bf16_math_probe": true
-  },
-  "network_progress": "SSH usable; all immutable and derived assets fully SHA verified",
-  "updated_at": "2026-10-03T11:03:15.096140+08:00",
-  "latest_cpu_gate_evidence": "evidence/cpu-all-step-ids-fix.txt",
-  "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
-  "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
-  "hardware_job": 2849,
   "holdout_rows": 3393,
   "train_rows": 166222,
   "final_eval_question_count_planned": 51713,
-  "model_job": 2850,
-  "model_inference_passed": true,
-  "production_training_started": true,
-  "retrieval_measurements_dispatch": "independently_reviewed_dispatched_asset_waiter",
-  "training_gpu_hours": null,
-  "hardware_model_total_gpu_hours": null,
-  "hardware_model_cost_limitation": "Slurm accounting disabled and precise allocation start/end not recorded; do not report GPU gates as zero cost.",
-  "runtime_sessions": [
-    "head:tree-two-hybrid-async",
-    "auxiliary index:PID774407"
-  ],
-  "retrieval_gate_result": "limited_14_query_top3_sanity_accepted_after_difference_review",
   "cross_method_split_identity_verified": false,
-  "download_supervision": "stopped own external download processes after peer source SHA verified; retained all own partials",
-  "peer_assets_source": "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/wiki on h100-11",
-  "peer_source_sha256_verified": true,
-  "retrieval_job": 2854,
-  "immutable_assets_verified": true,
-  "derived_assets_verified": true,
-  "derived_assets": {
-    "source_manifest_sha256": "a033b9d6e5b4453374c25d8d9a33d70254c1a79ea0d71677f21afb083d94b3fd",
-    "outputs": {
-      "e5_Flat.index": {
-        "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
-        "size": 64559075373,
-        "source_sha256": [
-          "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
-          "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11"
-        ]
-      },
-      "wiki-18.jsonl": {
-        "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
-        "size": 14393579520,
-        "source_sha256": [
-          "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db"
-        ]
-      }
-    }
-  },
-  "training_job": 2879,
-  "failed_training_initialization_jobs": [
-    {
-      "job_id": 2866,
-      "exit_code": 1,
-      "actual_outer_updates": 0,
-      "stage_body_gpu_hours": 0.17333333333333334,
-      "reason": "Ray CLI Click8.5 Sentinel deepcopy incompatibility"
-    },
-    {
-      "job_id": 2867,
-      "exit_code": 1,
-      "actual_outer_updates": 0,
-      "reason": "Ray AF_UNIX path exceeds107 bytes",
-      "cost_evidence": "evidence/two-2867-socket-failure.log"
-    },
-    {
-      "job_id": 2869,
-      "exit_code": 1,
-      "actual_outer_updates": 0,
-      "reason": "Ray default worker port range overlaps fixed GCS16382",
-      "cost_evidence": "evidence/two-2869-workerports-failure.log"
-    },
-    {
-      "job_id": 2870,
-      "exit_code": 1,
-      "actual_outer_updates": 0,
-      "stage_body_gpu_hours": 0.29333333333333333,
-      "reason": "Torch compile missingPython.h after8GPU model initialization"
-    },
-    {
-      "job_id": 2873,
-      "exit_code": 1,
-      "actual_outer_updates": 0,
-      "stage_body_gpu_hours": 7.097777777777778,
-      "reason": "Tree actor optional step_ids TensorDict missing key after real rollout",
-      "fix_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65"
-    }
-  ],
-  "cli_compatibility_pin": {
-    "package": "click",
-    "prior": "8.5.0",
-    "current": "8.2.1",
-    "wheel_sha256": "61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b",
-    "core_versions_unchanged": true
-  },
-  "runtime_socket_short_alias": "unique /tmp/sst-tree-SLURM_JOB_ID -> persistent own run/runtime",
-  "ray_worker_ports": [
-    22082,
-    23081
-  ],
-  "python_dev_headers": {
-    "runtime_version": "3.10.12-1~22.04.18",
-    "package_sha256": "c058675011ec4b64f5ad803d74b5fe7de0c720c3700683040da68d1fb5b44ed9",
-    "scope": "ownroot extraction + child C_INCLUDE_PATH only",
-    "cpu_header_compile_passed": true,
-    "gpu_entropy_compile_passed": true
-  },
-  "failed_stage_body_costs": {
-    "2866": {
-      "job_id": 2866,
-      "stage": "two",
-      "start_epoch": 1790976224,
-      "end_epoch": 1790976302,
-      "allocated_gpus": 8,
-      "exit_code": 1,
-      "scope": "stage body, excludes scheduler prolog/epilog",
-      "gpu_hours": 0.17333333333333334
-    },
-    "2867": {
-      "job_id": 2867,
-      "stage": "two",
-      "start_epoch": 1790976434,
-      "end_epoch": 1790976482,
-      "allocated_gpus": 8,
-      "exit_code": 1,
-      "scope": "stage body, excludes scheduler prolog/epilog",
-      "gpu_hours": 0.10666666666666667
-    },
-    "2869": {
-      "job_id": 2869,
-      "stage": "two",
-      "start_epoch": 1790976628,
-      "end_epoch": 1790976676,
-      "allocated_gpus": 8,
-      "exit_code": 1,
-      "scope": "stage body, excludes scheduler prolog/epilog",
-      "gpu_hours": 0.10666666666666667
-    },
-    "2870": {
-      "job_id": 2870,
-      "stage": "two",
-      "start_epoch": 1790976785,
-      "end_epoch": 1790976917,
-      "allocated_gpus": 8,
-      "exit_code": 1,
-      "scope": "stage body, excludes scheduler prolog/epilog",
-      "gpu_hours": 0.29333333333333333
-    },
-    "2873": {
-      "job_id": 2873,
-      "stage": "two",
-      "start_epoch": 1790977171,
-      "end_epoch": 1790980365,
-      "allocated_gpus": 8,
-      "exit_code": 1,
-      "scope": "stage body, excludes scheduler prolog/epilog",
-      "gpu_hours": 7.097777777777778
-    }
-  },
-  "failed_stage_body_gpu_hours_known_sum": 7.777777777777778,
-  "training_gpu_hours_limitation": "Total accounting excludes unmeasured scheduler prolog/epilog; failed own stage body exact totals separately recorded, no completed formal training update.",
-  "tree_audit_commit": "dc92f237e4007404b9855fdc57f5547cd11fd49a",
-  "tree_audit_required_next_smoke": true,
-  "tree_audit_enabled_in_2873": false,
-  "auxiliary_retrieval_candidate": {
-    "node": "baai-a800 existing platform allocation",
-    "gpu_uuid": "GPU-c63282c6-1d05-224e-234b-2a8c794b1f04",
-    "index_precision": "FP32",
-    "encoder_device": "cpu",
-    "index_only_gate": "14 true-k3 and repeated512 true-k3 exact; top50 sets same but3/14 tied reorders",
-    "gpu_index_peak_bytes": 67521019904,
-    "index_probe_body_gpu_hours": 0.012432923449410332,
-    "production_accepted": false,
-    "real_cpu_encoder_http_gate": "pending"
-  },
-  "aux_hybrid_binary_gate": {
-    "report": "evidence/hybrid-binary-index-difference.json",
-    "true_top3_exact_14": 14,
-    "true_top3_exact_512": 512,
-    "top50_exact_14": 11,
-    "top50_exact_512": 402,
-    "repeat_equal": true,
-    "accepted_for_training": false
-  },
-  "aux_hybrid_http_gate": {
-    "job_id": 2876,
-    "exit_code": 0,
-    "report": "evidence/hybrid-http-difference-2876.json",
-    "true_top3_exact_14": 14,
-    "true_top3_exact_512": 512,
-    "true_top3_content_exact_14": 14,
-    "true_top3_content_exact_512": 512,
-    "top50_exact_14": 11,
-    "top50_content_exact_14": 14,
-    "repeat_equal": true,
-    "accepted_for_training": false,
-    "cpu_encoder_vectors_equal_2854": true,
-    "timings_512_seconds": [
-      24.274448661133647,
-      22.916255505755544
-    ]
-  },
-  "current_job": null,
-  "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2879",
-  "aux_hybrid_acceptance_sha256": "012b588b2e36233636b395f98ff7a09fffab91f37baa8e344fc109133f77001f",
-  "latest_failed_training_job": {
-    "job_id": 2877,
-    "status": "FAILED_BEFORE_FIRST_ACTUAL_UPDATE",
-    "actual_outer_updates": 0,
-    "slurm_start": "2026-10-03T09:01:52+08:00",
-    "slurm_end": "2026-10-03T09:06:24+08:00",
-    "allocated_training_gpus": 8,
-    "slurm_runtime_seconds": 272,
-    "slurm_allocation_gpu_hours": 0.6044444444444445,
-    "exit_code": 143,
-    "stop_marker": "REQUIRED_SERVICE_DIED_STOP_OWN_JOB",
-    "stage_cost_missing": true,
-    "cause": "health checker failure; CPU event-loop blockage/60s timeout mechanism consistent with long busy request and reproduced ASGI fixture, but old checker stderr suppressed, exact exception not recovered",
-    "cpu_retriever_peak_rss_bytes": 67352993792,
-    "effects_verified": false,
-    "allocated_cpus": 192,
-    "requested_cpus_per_task": 32,
-    "slurm_allocation_cpu_hours": 14.506666666666666
-  },
-  "latest_cpu_retrieval_gate_job": 2878,
-  "latest_cpu_retrieval_gate_exit_code": 0,
-  "busy_health_gate": {
-    "synthetic_inputs": 512,
-    "unique_source_questions": 14,
-    "total_http_seconds": 198.42710115760565,
-    "encoding_seconds": 184.10662352107465,
-    "encoding_cpu_seconds": 1440.476615382,
-    "health_samples": 198,
-    "max_health_seconds": 0.0043877288699150085,
-    "not_effect_or_parity_proof": true
-  },
-  "current_retrieval_acceptance_sha256": "049fbefeb89747c28030111386e00221ad0d664bbaf9ca24cf5e9d58d314d466",
-  "latest_two_stage_summary": "evidence/tree-two-2879-completed-summary.json",
-  "two_stage_acceptance": "evidence/two-stage-acceptance-2879.json",
-  "five_stage_actual_outer_updates": null,
   "cross_cluster_communication_prohibited": true,
-  "formal_candidate_retired": true,
-  "retrieval_allocation_held": false,
-  "active_retrieval_job": null,
-  "active_training_job": null,
-  "native_retrieval": {
-    "cluster": "wuhan-h100",
-    "node": "h100-11",
-    "own_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo-retrieval-h100",
-    "gpu_count": 1,
-    "max_hours": 4,
-    "training_node": "h100-9",
-    "training_gpus": 8,
-    "gate_status": "limited_top3_two_smoke_accepted",
-    "cross_cluster_communication": false,
-    "data_plane": "direct H100 internal interface 10.32.0.13 -> 10.32.0.11",
-    "copied_assets": "node9 -> H100 head -> node11, entirely same cluster; no Mac asset relay",
-    "receipt_sha256": "eeea067dbacb99b4a804e351b99401f0b930183c83856f48d0af01c948f0c7d4"
+  "production_code_commit": "4d133efeb1f675139d2558640f1e21d50780f133",
+  "current_common_setup_commit": "4bda3078b255b5a4d9cf90bf9a443ba3102c1e35",
+  "new_protocol_accepted_outer_updates": 5,
+  "same_node_protocol": {
+    "node": "h100-9",
+    "retrieval_url": "http://127.0.0.1:18082/retrieve",
+    "gpu_e5": true,
+    "faiss_gpu": "complete eight-GPU sharded FP16",
+    "global_microbatch": 64,
+    "periodic_validation_questions": 64,
+    "final_validation_questions": 51713,
+    "cross_cluster": "forbidden",
+    "previous_candidates": "superseded; historical updates do not count toward new acceptance"
   },
-  "native_training_actual_updates_accepted": 0,
-  "superseded_native_diagnostic": {
-    "training_job": 2905,
-    "retrieval_job": 2896,
-    "actual_outer_updates_observed_in_console": 1,
-    "accepted_stage": false,
-    "first_update_seconds": 359.37820649147034,
-    "actor_update_seconds": 144.38000870123506,
-    "reason": "Verified latest human instructions in common-owner thread require same training node GPU retrieval and micro64; this candidate used separate H100 node and micro8"
+  "current_job": 2971,
+  "current_job_id": 2971,
+  "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-formal-2971",
+  "same_node_retrieval_gate": {
+    "job_id": 2919,
+    "scheduler_state": "COMPLETED",
+    "exit_code": "0:0",
+    "scheduler_wall_seconds": 140,
+    "allocated_gpus": 8,
+    "allocated_cpus": 192,
+    "requested_cpus": 32,
+    "baseline_top3_exact_rank_queries": 14,
+    "baseline_top50_exact_rank_queries": 14,
+    "max_top3_score_delta": 0.0,
+    "repeated512_top3_http_wall_seconds": [
+      0.197,
+      0.192
+    ],
+    "retriever_idle_gpu_mib": [
+      7765,
+      7133,
+      7133,
+      7133,
+      7133,
+      7133,
+      7133,
+      7133
+    ],
+    "training_accepted": false,
+    "independent_status": "PASS_for_two_only"
   },
-  "next_protocol": {
-    "retrieval": "same h100-9 GPU E5 plus 8-GPU sharded FP16 FAISS",
-    "ppo_micro_batch_size": 64,
-    "periodic_validation": 64,
-    "final_evaluation_rows": 51713,
-    "common_freeze": "4bda3078b255b5a4d9cf90bf9a443ba3102c1e35"
+  "failed_new_two": {
+    "job_id": 2923,
+    "actual_outer_updates": 0,
+    "phase": "before real trainer",
+    "cause": "Ray resolves loopback to local NIC absent from hostname DNS; strict local boundary correctly refused",
+    "cleanup": "own descendants removed; original8GPU PIDs preserved"
+  },
+  "ray_loopback_proof": {
+    "job_id": 2930,
+    "gpus": 0,
+    "node_manager_ip": "127.0.0.1",
+    "remote_worker_ip": "127.0.0.1",
+    "strict_local_boundary": "PASS",
+    "actual_gpu_training": false
+  },
+  "rank_audit_cpu": {
+    "independent_tests_passed": 11,
+    "actual_gloo_ranks": 2,
+    "tensor_param_metric_rng_on_off_identical": true,
+    "not_gpu_acceptance": true
+  },
+  "new_protocol_two": {
+    "job_id": 2934,
+    "actual_outer_updates": 2,
+    "independent_accepted": true,
+    "parent_scheduler_state": "FAILED",
+    "parent_exit_code": "1:0",
+    "post_body_cleanup_failed": true,
+    "scheduler_wall_seconds": 792,
+    "hf_reload_job_id": 2945,
+    "hf_reload_status": "HF_RELOAD_PARAMETER_DELTA_ACCEPTED",
+    "changed_parameters": 3085195414,
+    "step_wall_seconds": [
+      289.8087334111333,
+      296.9048719406128
+    ],
+    "original_gpu_pids_preserved": true,
+    "acceptance_scope": "science accepted + separate operational repair2953; original2934FAILED retained",
+    "promotion_receipt_sha256": "b34557770089ba1e5c1959d8ceb26602b2a84df672b56b85379f616c56669d14"
+  },
+  "new_protocol_five": {
+    "training_job": 2956,
+    "slurm_state": "COMPLETED",
+    "slurm_exit_code": "0:0",
+    "actual_outer_updates": 5,
+    "rank_records": 40,
+    "slurm_seconds": 1529,
+    "allocated_gpus": 8,
+    "allocated_cpus": 192,
+    "requested_cpus": 32,
+    "training_body_exit_code": 0,
+    "entry_config_verified": true,
+    "cleanup_residual": {},
+    "checkpoint_step": 5,
+    "cpu_reload_job": 2957,
+    "cpu_slurm_exit_code": "0:0",
+    "hf_changed_parameters": 3085628392,
+    "hf_total_parameters": 3085938688,
+    "hf_changed_tensors": 434,
+    "hf_finite_forward": true,
+    "independent_accepted": true,
+    "acceptance_sha256": "46174c92932f35f30c836a2fd7b28043b706569bc1ef7d54d7a7b0489fcbe598"
+  },
+  "current_protocol_sources": {
+    "supervisor": "21a50c834a61ced93ae3616f9f87d5d40ad7078c9e6b5a387550b3eeb28fd73a",
+    "owned_runtime": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+    "wrapper": "2e5cc727b6136b6e58a02e88a21a25d220acef079f352511a4ea4fbb3304bf7b",
+    "guard": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+    "checkpoint_cpu_collector": "97a1e5d322746ca449a1cbd90889b722c52e82e502b9280750b98a9082a211d3"
+  },
+  "formal_cpu_afterok_job": 2972,
+  "formal_initial_validation": {
+    "questions": 64,
+    "f1": 0.1737801535087719,
+    "em": 0.125,
+    "wall_seconds": 45.79286667890847,
+    "phase": "pretrain",
+    "global_step": 0
+  },
+  "formal_first_outer": {
+    "wall_seconds": 282.93030426837504,
+    "direct_rank_records": 8,
+    "optimizer_calls_per_rank": 12,
+    "generated_tokens": 2502430,
+    "retrieval_calls": 2173
+  },
+  "last_checked_at": "2026-10-03T23:57:14.346801+08:00",
+  "effect_validation_complete": false,
+  "formal_nonzero_rank_parameter_updates_confirmed_at_outer": 2,
+  "formal_rank_parameter_sample_nonzero_counts_outer2": [
+    7738,
+    7666,
+    7627,
+    7567,
+    7563,
+    7580,
+    7572,
+    7523
+  ],
+  "formal_dependent_evidence_jobs": {
+    "training": 2971,
+    "hf_cpu": 2972,
+    "parent_terminal_capture_job": 2975,
+    "summary_cpu_job": 2976,
+    "cpu_terminal_capture_job": 2977,
+    "scope": "Zero-GPU same-node dependent evidence collectors only; no changes to running training, source or protocol."
+  },
+  "formal_initial_review": "work/shared-formal-2971-initial-review/INITIAL_PREFIX_REVIEW.md",
+  "formal_first_two_outers_independently_verified": true,
+  "formal_two_prefix_review": "work/shared-formal-2971-two-prefix-review/TWO_PREFIX_REVIEW.md",
+  "schema_version": 2,
+  "active_training_job": 2971,
+  "active_retrieval_job": 2971,
+  "retrieval_topology": "h100-9 GPU E5 + same-node eight-GPU FP16 FAISS, loopback HTTP only",
+  "historical_status_file": "STATUS-historical-before-formal-progress.json",
+  "pending": [
+    "formal500 actual completion",
+    "periodic64 and final51713",
+    "fullHF500 CPU reload and terminal cleanup",
+    "fair newGRPO final effect comparison"
+  ],
+  "fair_control_precheck": "FAIR_CONTROL_PRECHECK.md",
+  "fair_control_complete": false,
+  "fair_control_last_verified_evidence": {
+    "commit": "907a73661041980fa89c6a06fae3449aa77609ed",
+    "status": "owner report: GRPO2985 human-requested stop after24 updates; original FAILED1:0 retained, cleanup empty; full500 comparison unavailable",
+    "report_source": "GiGPO owner outputs/GiGPO-REPORT.md, entry 2026-10-03 16:29:49",
+    "shared_numeric_fields_equal": 31,
+    "update_budget_per_question": {
+      "grpo_paths": 5,
+      "tree_leaves": 6
+    }
+  },
+  "formal_rank_records_observed": 1792,
+  "formal_checkpoint5_saved": true,
+  "formal_current_step": 235,
+  "formal_latest_step_wall_mean_seconds": 153.86179941209653,
+  "formal_checkpoint_steps": [
+    5,
+    100,
+    200
+  ],
+  "formal_latest_hourly_evidence": "outputs/evidence/tree-formal-2971-heartbeat-20261003-2356.json",
+  "formal_runtime_health": {
+    "slurm_state": "RUNNING",
+    "rank_calls_finite_nonzero": true,
+    "all_console_metrics_finite": true,
+    "guard_samples": 7102,
+    "guard_events": [],
+    "sampled_gpu_peak_gib": 79.5684814453125,
+    "peak_scope": "5-second sampled lower bound on true instantaneous peak",
+    "foreign_memory_fraction_peak": 0.013756912174009,
+    "foreign_sm_peak": 0,
+    "traceback_present": false
+  },
+  "formal_latest_rank_nonzero_counts": {
+    "0": 8001,
+    "1": 7941,
+    "2": 7915,
+    "3": 7913,
+    "4": 7887,
+    "5": 7802,
+    "6": 7777,
+    "7": 7686
+  },
+  "formal_last_three_training_rewards": [
+    {
+      "step": 222,
+      "reward": 0.4407552182674408
+    },
+    {
+      "step": 223,
+      "reward": 0.4723307192325592
+    },
+    {
+      "step": 224,
+      "reward": 0.4205729067325592
+    }
+  ],
+  "formal_latest_evaluation": {
+    "phase": "periodic",
+    "step": 200,
+    "questions": 64,
+    "f1": 0.3692708333333333,
+    "em": 0.296875,
+    "answer_format": 1.0,
+    "format_rate": 0.75,
+    "updated_this_check": false,
+    "next_periodic_step": 250,
+    "protocol": "legacy_before_terminal_answer_fix",
+    "eligible_as_fixed_protocol_result": false
+  },
+  "formal_periodic_evaluations": [
+    {
+      "step": 50,
+      "questions": 64,
+      "f1": 0.32719780219780226,
+      "em": 0.234375
+    },
+    {
+      "step": 100,
+      "questions": 64,
+      "f1": 0.38757440476190486,
+      "em": 0.265625
+    },
+    {
+      "step": 150,
+      "questions": 64,
+      "f1": 0.35892857142857143,
+      "em": 0.28125
+    },
+    {
+      "step": 200,
+      "questions": 64,
+      "f1": 0.3692708333333333,
+      "em": 0.296875
+    }
+  ],
+  "formal_periodic_prefix_evidence": "outputs/evidence/tree-formal-2971-periodic50-100-prefix.json",
+  "formal_periodic_independent_review_status": "PASS_for_periodic50_100_prefix_only",
+  "formal_periodic_independent_review": "FORMAL_PERIODIC_50_100_REVIEW.md",
+  "formal_latest_periodic_prefix": "outputs/evidence/tree-formal-2971-periodic200-prefix.json",
+  "formal_last_three_sampling": [
+    {
+      "step": 222,
+      "generated_tokens": 2460900.0,
+      "generation_seconds": 103.46086567267776,
+      "actor_seconds": 28.644101152196527
+    },
+    {
+      "step": 223,
+      "generated_tokens": 2559561.0,
+      "generation_seconds": 104.90465024486184,
+      "actor_seconds": 29.01570071466267
+    },
+    {
+      "step": 224,
+      "generated_tokens": 2583069.0,
+      "generation_seconds": 127.38045247271657,
+      "actor_seconds": 30.86336331628263
+    }
+  ],
+  "formal_periodic200_independent_review_status": "PASS_for_periodic200_prefix_only",
+  "formal_periodic200_independent_review": "FORMAL_PERIODIC200_REVIEW.md",
+  "reward_protocol_fix": {
+    "fixed_local_source_commit": "1796f54",
+    "cherry_picks": [
+      "11d20ff",
+      "2645308",
+      "8b536a5"
+    ],
+    "remote_history_integrated": "4f23105467c39f3fa0cb5ea02ca722c1c73ddd80",
+    "targeted_tests_passed": 38,
+    "full_cpu_tests_passed": 192,
+    "full_cpu_tests_skipped": 1,
+    "independent_review": "REWARD_FIX_REVIEW.md",
+    "running_job_source_unchanged": "4d133efeb1f675139d2558640f1e21d50780f133",
+    "running_job_protocol": "legacy terminal-answer reward before 2026-10-04 fix",
+    "running_metrics_eligible_as_fixed_protocol_validation": false,
+    "future_fixed_run_requires_new_immutable_checkout": true
   }
 }
