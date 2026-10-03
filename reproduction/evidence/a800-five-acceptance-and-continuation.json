@@ -1,0 +1,88 @@
+{
+  "checked_at": "2026-10-03T12:08:00.290491+08:00",
+  "host": "baai-a800",
+  "tmux": "searchr1-a800-train",
+  "run_id": "cc437e7315c94fccba5750433ff850b1",
+  "accepted_actual_updates": [
+    101,
+    102,
+    103,
+    104,
+    105
+  ],
+  "actual_new_updates": 5,
+  "latest_started_update": 106,
+  "same_process_continues": {
+    "main_task_pid": 939751,
+    "start_ticks": "507870420",
+    "uid": 0,
+    "alive": true
+  },
+  "checkpoint": "/data/search-r1/checkpoints/paper-grpo-qwen2.5-3b-a800-continuation/actor/global_step_105",
+  "canonical_saved_tensor_count": 435,
+  "all_saved_tensors_finite": true,
+  "changed_q_projection_elements": 4193450,
+  "max_abs_q_projection_delta": 2.2280961275100708e-05,
+  "reward": {
+    "values": [
+      0.402,
+      0.371,
+      0.378,
+      0.361,
+      0.4
+    ],
+    "mean": 0.3824,
+    "min": 0.361,
+    "max": 0.402,
+    "last_minus_first": -0.0020000000000000018,
+    "precision": "three-decimal console"
+  },
+  "gpu_instant_csv": "0, 35291, 81920, 96\n1, 34845, 81920, 96\n2, 35373, 81920, 97\n3, 36663, 81920, 96\n4, 4, 81920, 0\n5, 17887, 81920, 0\n6, 17413, 81920, 0\n7, 68494, 81920, 0\n",
+  "gpu_sample_peak_mib": {
+    "0": 76627,
+    "1": 75163,
+    "2": 75839,
+    "3": 75783,
+    "5": 18911,
+    "6": 18437
+  },
+  "sample_start": "2026-10-03T03:43:34.691650+00:00",
+  "sample_end": "2026-10-03T04:04:37.473802+00:00",
+  "error_evidence_current_segment": [],
+  "latest_fixed64_validation_step": 100,
+  "latest_fixed64_correct_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      1,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "full500_training_complete": false,
+  "optimizer_restored": false,
+  "rng_sampler_restored": false,
+  "remaining_logical_updates": 395,
+  "startup_failure": "First zero-update segment failed due absent Python.h; retained. Project-private headers and actual CUDA JIT preflight fixed compilation."
+}
