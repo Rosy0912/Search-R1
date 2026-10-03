@@ -236,7 +236,7 @@ def test_actual_main_task_call_explicitly_propagates_opt_in_env(monkeypatch, ena
     monkeypatch.setattr(entry, 'validate_config', lambda config: None)
     monkeypatch.setattr(entry.ray, 'is_initialized', lambda: True)
     monkeypatch.setattr(entry.ray, 'get', lambda ref: ref)
-    config = OmegaConf.create(dict(trainer=dict(smoke_only=False), baselines=dict(holdout_eval_only=False)))
+    config = OmegaConf.create(dict(trainer=dict(smoke_only=False), baselines=dict(holdout_eval_only=False, local_runtime_only=False)))
     entry.main.__wrapped__(config)
     remote_task.remote.assert_called_once_with(config)
     if enabled:
