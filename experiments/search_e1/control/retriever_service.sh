@@ -6,4 +6,8 @@ export HF_HOME="$BASE/hf-cache" HF_DATASETS_CACHE="$BASE/hf-datasets" XDG_CACHE_
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
 export OMP_NUM_THREADS=32 MKL_NUM_THREADS=16
 printf '%s\n' "$$" > "$BASE/receipts/retriever.pid"
-exec "$BASE/env/bin/python" "$CONTROL/retriever_cpu.py"
+case "${E1_RETRIEVER_BACKEND:-gpu_proxy}" in
+ gpu_proxy) exec "$BASE/env/bin/python" "$CONTROL/retriever_proxy.py" ;;
+ cpu) exec "$BASE/env/bin/python" "$CONTROL/retriever_cpu.py" ;;
+ *) echo "Unknown private retriever backend" >&2; exit 2 ;;
+esac

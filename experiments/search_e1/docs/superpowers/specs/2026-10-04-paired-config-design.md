@@ -15,3 +15,31 @@ A archive配置：每轮200更新、512×5轨迹、mini128、逐轨迹mean、ent
 结束时报告每阶段实际完成状态、旧/严格reward分歧、相同题集EM、运行身份和Git提交。环境安装、数据下载、烟测通过都不等于复现效果成功。资产不齐或GPU验收失败时保留完整日志并说明限制，仍推进其他可完成部分。
 
 实际执行适配：两组共享CPU FP32 E5编码与CPU FP32完整FAISS索引，避免编码器侵占训练显存。服务启动时用固定16个留出问题比较历史GPU FP16编码器在同一索引上的top3并保存差异；该样本不能证明全体query等价，因此新结果不宣称与历史GPU检索曲线逐点可比。GRPO KV比例从0.4逐级0.5/0.6/0.7，每级先做两次真实更新，根据各卡实测峰值加下一档缓存成本、至少保留6GiB再决定是否继续。任何档位失败停止并保留证据，不自动重试OOM。独立推理无FSDP共存，KV比例0.85，保留15%显存；未经过实测前不宣称打满。
+
+## Shared retrieval execution amendment (2026-10-04)
+
+The initial CPU FP32 full-Flat service needs ~277 seconds per 128-query batch,
+while the unchanged CPU FP32 E5 encoder needs 0.218 seconds for short queries
+and 6.64 seconds for long 128-query batches. Both waiting smoke runs must be
+preserved and restarted fresh before changing the common retrieval service.
+
+Keep the exact CPU FP32 E5 encoder, its 128-query batching, and the pinned full
+21,015,324 × 768 FP32 Wiki index. Store contiguous full-precision vector shards
+on HKUST1's otherwise idle GPUs 4–7. Query matrices are capped at 64 rows,
+TF32 is disabled, and shard top-k candidates are merged with original IDs.
+A common locked service serializes both arms, using the existing HKUST4 URL
+through an HKUST-only relay. No approximate search, quantization, corpus subset,
+or changed encoder is introduced.
+
+Before exposing HTTP: compare CPU Faiss/GPU top-4 IDs and scores on 16 fixed
+holdout queries, allowing only numerical ties within absolute 1e-5; otherwise
+fail. Exercise two concurrent complete 512-query requests and require ≥2 GiB
+per-card reserved-memory headroom. Save source manifest identity, all comparisons,
+shard coverage, peak allocations and request wait/service durations. This is a
+sampled numerical gate, not a proof of bitwise equivalence for every future query.
+Service contention and different training cards prohibit interpreting wall-clock
+throughput as a hyperparameter benefit. Both arms still need fresh real optimizer
+updates and changed finite checkpoints before running acceptance is complete.
+
+Implementation review: internal review_e1_spec approved the concrete service,
+core, wrapper and relay; actual hardware acceptance remains pending.

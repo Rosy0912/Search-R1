@@ -41,3 +41,18 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
 03:20 A实际启动前admission拒绝GPU4约500MiB残留上下文；未生成RL更新。检索进程随原管线退出消失，B无法连接18000。修正为CPU服务CUDA_VISIBLE_DEVICES为空、只给短生命周期GPU对照子进程恢复所选卡；服务独立tmux e1-retriever-20261004，不随训练管线结束。A显式E1_REUSE_RUNTIME=1重启，仅在全部冻结runtime hash一致后复用，保持原runtime字节。原失败日志保留pipeline.log，新日志pipeline-retry1.log。真实阶段输出目录已存在时拒绝覆盖，需要先明确保留旧结果，防止重跑混入checkpoint。检索启动探测timeout提高至120秒以覆盖完整Flat索引冷查询。
 
 03:32两组进入真实训练启动后，Ray的AF_UNIX socket路径因任务BASE+32位run_id+session路径超过107字节而失败，尚无更新。修复为/tmp/e1-<uid>-<run_id前8位>短链接指向任务盘BASE/ray/<完整run_id>，保留独立任务目录及碰撞检查。真实生成的allocated_init与实际Unix socket bind测试通过（路径<104字节）。仅执行路径变更，旧冻结runtime和smoke-040失败日志/receipt保留unused-ray-path-v1及smoke-040-ray-path-v1，再从已验证原archive生成新runtime；未原地覆盖旧runtime。新管线日志A pipeline-retry2.log、B pipeline-retry-ray-path.log，独立检索服务继续运行。
+
+### Full-index retrieval bottleneck and common GPU execution
+
+- Both fresh smoke-040 runs reached real search calls but waited at step 1;
+  no optimizer update had occurred. CPU full-Flat batches took ~277 seconds.
+- CPU FP32 encoder-only measurement: short128 queries 0.218s; long128 queries
+  (256-token truncation) 6.64s. Keep that encoder unchanged.
+- HKUST1 GPUs 4–7 were free (4 MiB, 0%); training B stays exclusively on 0–3.
+- Reuse verified range shards on HKUST1, transfer only 34,015,805,440 bytes of
+  original HKUST4 prefixes via LAN, validate each prefix SHA256, and assemble
+  the full index with the published source-part hashes. No Mac asset transfer.
+- Added full FP32 Torch Flat-IP sharding, hard query microbatch64, TF32 disabled,
+  serialized shared HTTP service, top4 score/ID gate and concurrent512 peak gate.
+  CPU tests on the exact remote environment passed2. Internal concrete-code
+  review approved. Actual acceptance receipt is required before replacing CPU.
