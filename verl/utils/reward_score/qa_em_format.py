@@ -141,7 +141,7 @@ def is_retrieval_correct(text: str, golden_answers: list[str]) -> list[str]:
     return False
 
 
-def compute_score_em(solution_str, ground_truth, method='strict', structure_format_score=0, final_format_score=0, retrieval_score=0, format_score=0, score=1.):
+def compute_score_em(solution_str, ground_truth, method='strict', structure_format_score=0, final_format_score=0, retrieval_score=0, format_score=0, score=1., model_spans=None):
     """The scoring function for exact match (EM).
 
     Args:
@@ -155,7 +155,8 @@ def compute_score_em(solution_str, ground_truth, method='strict', structure_form
     retrieval_correct = False
     if is_valid_format:
         retrieval_correct = is_retrieval_correct(solution_str, ground_truth['target'])
-    answer = extract_solution(solution_str=solution_str)
+    answer = (extract_final_answer(model_spans) if model_spans is not None
+              else extract_solution(solution_str=solution_str))
     do_print = random.randint(1, 64) == 1
     
     if do_print:

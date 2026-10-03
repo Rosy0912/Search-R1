@@ -59,3 +59,21 @@ def extract_legacy_final_answer(text):
     if stack:
         return None
     return extract_final_answer([text[candidate.start():]])
+
+
+def decode_model_spans(tokenizer, ids, mask):
+    """Decode contiguous policy tokens separately from environment observations."""
+    ids = ids.tolist() if hasattr(ids, 'tolist') else list(ids)
+    mask = mask.tolist() if hasattr(mask, 'tolist') else list(mask)
+    if len(ids) != len(mask):
+        raise ValueError('Response/mask length mismatch')
+    spans = []
+    start = 0
+    while start < len(ids):
+        end = start + 1
+        while end < len(ids) and bool(mask[end]) == bool(mask[start]):
+            end += 1
+        if mask[start]:
+            spans.append(tokenizer.decode(ids[start:end]))
+        start = end
+    return spans
