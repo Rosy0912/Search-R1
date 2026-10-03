@@ -17,6 +17,7 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 
 from verl import DataProto
 import torch
+from search_r1.qa_protocol import decode_model_spans
 from verl.utils.reward_score import qa_em, qa_em_format
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 import re
@@ -66,7 +67,12 @@ class RewardManager():
 
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
+            if int(valid_response_length) == 0:
+                continue
             valid_response_ids = response_ids[:valid_response_length]
+            model_mask = (data_item.batch['info_mask'][prompt_length:prompt_length + int(valid_response_length)]
+                          if 'info_mask' in data_item.batch else torch.ones_like(valid_response_ids))
+            model_spans = decode_model_spans(self.tokenizer, valid_response_ids, model_mask)
 
             # decode
             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
@@ -78,7 +84,7 @@ class RewardManager():
             data_source = data_item.non_tensor_batch['data_source']
             compute_score_fn = _select_rm_score_fn(data_source)
 
-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, 
+            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, model_spans=model_spans,
                                      structure_format_score=self.structure_format_score, 
                                      final_format_score=self.final_format_score, 
                                      retrieval_score=self.retrieval_score,
