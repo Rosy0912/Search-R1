@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import stat
 import time
 
 
@@ -22,7 +23,7 @@ def parse_gpu_inventory(text):
     return result
 
 
-def check_selected_gpus(selected, inventory, processes):
+def check_selected_gpus(selected, inventory, processes, require_idle=True):
     if not selected or len(set(selected)) != len(selected):
         raise ValueError('CUDA_VISIBLE_DEVICES must select distinct GPUs')
     records = []
@@ -35,7 +36,7 @@ def check_selected_gpus(selected, inventory, processes):
                 or record['memory_total'] <= 0 or record['memory_used'] < 0
                 or not 0 <= record['utilization'] <= 100):
             raise RuntimeError(f'Allocated GPU {device} has unknown/invalid occupancy')
-        if record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15:
+        if require_idle and (record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15):
             raise RuntimeError(f'Allocated GPU {device} exceeds the 15% idle thresholds')
         # Existing processes are recorded, never stopped; eligibility uses both thresholds.
         records.append(record)
@@ -48,36 +49,115 @@ def paths(value):
     return [value] if isinstance(value, str) else list(value)
 
 
+def _process_identity(pid):
+    """Linux identity, including ppid so reparenting cannot fake an ancestor."""
+    fields = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    if fields[0] in ('Z', 'X'):
+        raise ValueError('Resource guard ancestor is not alive')
+    return int(fields[19]), int(fields[1])
+
+
+def validate_resource_guard():
+    """Verify a real live same-run resource_watch ancestor, not an env assertion.
+
+    Watcher exports SEARCH_R1_GPU_RESOURCE_GUARD={pid,start_ticks,run} only to
+    supervised children. BAPO_RUN_ID must already be in its startup environment.
+    """
+    try:
+        guard = json.loads(os.environ['SEARCH_R1_GPU_RESOURCE_GUARD'])
+        pid, ticks = int(guard['pid']), int(guard['start_ticks'])
+        run = Path(os.environ['BAPO_RUN_ID'])
+        if (not run.is_absolute() or run.parent.name != 'runs' or
+                str(run.resolve()) != str(run) or guard['run'] != str(run) or
+                pid <= 1 or ticks <= 0 or pid == os.getpid()):
+            raise ValueError('Invalid resource guard run/identity')
+        expected_script = run.parent.parent / 'tools' / 'resource_watch.py'
+        chain, current = [], os.getpid()
+        for _ in range(256):
+            before = _process_identity(current)
+            after = _process_identity(current)
+            if before != after:
+                raise ValueError('Resource guard ancestor identity changed')
+            chain.append((current, before))
+            if current == pid:
+                if before[0] != ticks:
+                    raise ValueError('Resource guard PID has been reused')
+                proc = Path('/proc') / str(pid)
+                argv = [v.decode() for v in (proc / 'cmdline').read_bytes().split(b'\0') if v]
+                env = (proc / 'environ').read_bytes().split(b'\0')
+                if (len(argv) < 2 or argv[1] != str(expected_script) or
+                        not expected_script.is_file() or
+                        not (proc / 'exe').resolve().name.startswith('python')):
+                    raise ValueError('Ancestor is not the exact own resource_watch script')
+                run_arguments = [argv[i + 1] for i, v in enumerate(argv[:-1]) if v == '--run']
+                run_arguments += [v.split('=', 1)[1] for v in argv if v.startswith('--run=')]
+                if run_arguments != [str(run)] or ('BAPO_RUN_ID=' + str(run)).encode() not in env:
+                    raise ValueError('Resource guard is supervising another run')
+                # Recheck the complete parent chain after cmdline/environment reads.
+                if any(_process_identity(p) != identity for p, identity in chain):
+                    raise ValueError('Resource guard ancestry changed during validation')
+                return guard
+            current = before[1]
+            if current <= 1 or current in {p for p, _ in chain}:
+                break
+        raise ValueError('Resource guard is not an actual ancestor')
+    except (KeyError, TypeError, OSError, json.JSONDecodeError) as exc:
+        raise ValueError('Cannot verify live resource guard') from exc
+
+
+def validate_inherited_gpu_leases(selected, require_guard=False):
+    """Busy own cards require a verified supervisor; all paths verify real locks."""
+    records = json.loads(os.environ.get('SEARCH_R1_GPU_LEASES', '[]'))
+    if os.environ.get('SEARCH_R1_GPU_PREFLIGHT') != '1' or not isinstance(records, list) or len(records) != len(selected):
+        raise ValueError('Start training through reproduction/baselines/run.sh for GPU leases')
+    supervised = 'SEARCH_R1_GPU_RESOURCE_GUARD' in os.environ
+    if require_guard and not supervised:
+        raise ValueError('GPU lease reuse requires a live resource_watch guard')
+    if supervised:
+        validate_resource_guard()
+    inventory, processes = gpu_snapshot()
+    allocated = check_selected_gpus(selected, inventory, processes, require_idle=not supervised)
+    if {r['uuid'] for r in records} != {r['uuid'] for r in allocated}:
+        raise ValueError('Inherited GPU leases differ from selected hardware')
+    if len({int(r['fd']) for r in records}) != len(records):
+        raise ValueError('Duplicate GPU lease descriptors')
+    for record in records:
+        fd = int(record['fd'])
+        path = Path('/tmp') / f'search-r1-gpu-leases-{os.getuid()}' / (record['uuid'] + '.lock')
+        descriptor, named = os.fstat(fd), path.lstat()
+        if (not stat.S_ISREG(descriptor.st_mode) or not stat.S_ISREG(named.st_mode) or
+                descriptor.st_uid != os.getuid() or
+                (descriptor.st_dev, descriptor.st_ino) != (named.st_dev, named.st_ino)):
+            raise ValueError('GPU lease descriptor does not identify the lease file')
+        probe = os.open(str(path), os.O_RDWR)
+        try:
+            # A shared probe must be blocked by the existing EXCLUSIVE lease.
+            try:
+                fcntl.flock(probe, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            except BlockingIOError:
+                pass
+            else:
+                raise ValueError('GPU lease is not held exclusively by the launcher')
+            # Same open-file-description succeeds; an unrelated fd for a lock
+            # held elsewhere fails. Do not accept merely "somebody holds it".
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as exc:
+                raise ValueError('Inherited descriptor does not hold the GPU lease') from exc
+        finally:
+            os.close(probe)
+        os.set_inheritable(fd, True)
+    return allocated
+
+
 def validate_gpu_lease(config):
-    """Validate final Hydra resource counts and inherited launcher leases."""
+    """Validate final Hydra counts plus idle or verified supervised leases."""
     if config.trainer.nnodes != 1:
         raise ValueError('This launcher supports one node; multi-node requires per-node scheduler/lease gates')
     selected = [v.strip() for v in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if v.strip()]
     if len(selected) != config.trainer.n_gpus_per_node:
         raise ValueError('Final n_gpus_per_node does not match CUDA_VISIBLE_DEVICES')
-    records = json.loads(os.environ.get('SEARCH_R1_GPU_LEASES', '[]'))
-    if os.environ.get('SEARCH_R1_GPU_PREFLIGHT') != '1' or len(records) != len(selected):
-        raise ValueError('Start training through reproduction/baselines/run.sh for GPU leases')
-    inventory, processes = gpu_snapshot()
-    allocated = check_selected_gpus(selected, inventory, processes)
-    if {r['uuid'] for r in records} != {r['uuid'] for r in allocated}:
-        raise ValueError('Inherited GPU leases differ from selected hardware')
-    for record in records:
-        fd = int(record['fd'])
-        path = Path('/tmp') / f'search-r1-gpu-leases-{os.getuid()}' / (record['uuid'] + '.lock')
-        if os.fstat(fd).st_ino != path.stat().st_ino:
-            raise ValueError('GPU lease descriptor does not identify the lease file')
-        # A new open file description must fail to acquire the already-held lease.
-        probe = os.open(str(path), os.O_RDWR)
-        try:
-            try:
-                fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                pass
-            else:
-                raise ValueError('GPU lease is not held by the launcher')
-        finally:
-            os.close(probe)
+    validate_inherited_gpu_leases(selected)
 
 
 def validate_assets_and_retriever(config):
@@ -144,6 +224,11 @@ def main():
     if not command:
         parser.error('Specify a command after --')
     selected = [v.strip() for v in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if v.strip()]
+    if os.environ.get('SEARCH_R1_GPU_PREFLIGHT') or os.environ.get('SEARCH_R1_GPU_LEASES') or os.environ.get('SEARCH_R1_GPU_RESOURCE_GUARD'):
+        records = validate_inherited_gpu_leases(selected, require_guard=True)
+        print('BASELINE_GPU_LEASE_REUSED', json.dumps([r['uuid'] for r in records]), flush=True)
+        os.execvp(command[0], command)
+        return
     inventory, processes = gpu_snapshot()
     records = check_selected_gpus(selected, inventory, processes)
     locks = []

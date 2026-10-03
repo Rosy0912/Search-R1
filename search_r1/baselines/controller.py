@@ -141,6 +141,9 @@ class Controller:
                                  filter_prompts=True, return_raw_chat=False, truncation='error')
             prompt_key = trainer.config.data.prompt_key
             keys = question_keys(dataset, prompt_key)
+            size = self.config.bapo.get('stage_validation_size')
+            if size is not None and (len(dataset) != size or len(keys) != size):
+                raise ValueError('BAPO stage validation must retain exactly the configured distinct questions after filtering')
             if keys & (question_keys(trainer.val_dataset, prompt_key) | question_keys(trainer.train_dataset, prompt_key)):
                 raise ValueError('BAPO stage holdout overlaps training or final-test questions')
             final_files = trainer.config.data.get('final_val_files')
@@ -290,6 +293,12 @@ class Controller:
         try:
             t.val_dataloader, t.val_dataset = self.stage_loader, self.stage_dataset
             validation_metrics = t._validate()
+            size = getattr(self.config.bapo, 'stage_validation_size', None)
+            if size is not None:
+                evaluated = sum(value for key, value in validation_metrics.items()
+                                if key.startswith('val/evaluated_count/'))
+                if evaluated != size or validation_metrics.get('val/qa_count/all') != size:
+                    raise ValueError('BAPO stage validation did not evaluate the complete configured subset')
             score = weighted_validation(validation_metrics)
         finally:
             t.val_dataloader, t.val_dataset = old_loader, old_dataset
@@ -297,6 +306,8 @@ class Controller:
         self.stage.observe(score)
         metrics = {'bapo/stage_validation': score, 'bapo/early_stage': int(self.stage.early),
                    'bapo/stalled': self.stage.stalled,
+                   'bapo/stage_evaluated_count': sum(value for key, value in validation_metrics.items()
+                       if key.startswith('val/evaluated_count/')),
                    'bapo/stage_wall_seconds': time.perf_counter() - start_wall,
                    'bapo/stage_driver_cpu_seconds': time.process_time() - start_cpu}
         # Keep stage costs separate from periodic/final validation costs.

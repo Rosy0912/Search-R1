@@ -35,6 +35,8 @@ def config(method='gigpo'):
     with initialize_config_dir(config_dir=str(ROOT / 'verl/trainer/config'), version_base=None):
         c = compose(config_name='ppo_baselines', overrides=['baselines.method=' + method])
     OmegaConf.resolve(c)
+    # Tiny control-flow fixtures use one question; production count is tested separately.
+    c.baselines.bapo.stage_validation_size = None
     return c
 
 
