@@ -111,32 +111,49 @@ def main():
         tensors = dict(prompts=ids[:, :prompt_width], responses=ids[:, prompt_width:], input_ids=ids,
                        attention_mask=attention, position_ids=attention.cumsum(-1)-1, loss_mask=mask)
         settings = SimpleNamespace(chunk_size=16, beta=0., temperature=1., component_clip=.05,
-                                   max_student_logits_gib=64.)
+                                   max_student_logits_gib=64., loss_checkpointing=True)
         dist.barrier()
         torch.cuda.synchronize()
+        result['pre_cleanup_allocated_bytes'] = torch.cuda.memory_allocated()
+        result['pre_cleanup_reserved_bytes'] = torch.cuda.memory_reserved()
+        result['pre_cleanup_device_free_bytes'] = torch.cuda.mem_get_info()[0]
+        # Match production init/rollout-transition empty_cache; live tensors stay.
+        torch.cuda.empty_cache()
+        result['post_cleanup_allocated_bytes'] = torch.cuda.memory_allocated()
+        result['post_cleanup_reserved_bytes'] = torch.cuda.memory_reserved()
+        result['post_cleanup_device_free_bytes'] = torch.cuda.mem_get_info()[0]
+        if result['pre_cleanup_allocated_bytes'] != result['post_cleanup_allocated_bytes']:
+            raise AssertionError('Clean-start cache release unexpectedly changed live allocation')
         torch.cuda.reset_peak_memory_stats()
         update_started = time.perf_counter()
         with teacher.on_device():
             result['teacher_active_runtime'] = teacher_runtime_audit(teacher, device)
-            loss = opsd_loss(model, teacher, tensors, tok, [['Paris']] * args.micro, settings, mask.sum())
-            loss.backward()
-            grad = model.clip_grad_norm_(1.)
-            if not torch.isfinite(loss) or not torch.isfinite(grad) or grad <= 0:
-                raise AssertionError('Nonfinite or zero loss/gradient')
-            # A nonzero real shard gradient proves the optimizer changes this shard.
-            tracked = next(v for v in model.parameters() if v.grad is not None and v.grad.abs().max() > 0)
-            tracked_index = int(tracked.grad.detach().abs().flatten().argmax())
-            before = tracked.detach().flatten()[tracked_index].clone()
-            optimizer.step()
-            delta = float((tracked.detach().flatten()[tracked_index]-before).abs())
-            if delta <= 0:
-                raise AssertionError('No student shard parameter update')
+            # Second update keeps Adam states resident during the next full graph.
+            optimizer_step_records = []
+            for optimizer_step in range(2):
+                step_started = time.perf_counter()
+                optimizer.zero_grad(set_to_none=True)
+                loss = opsd_loss(model, teacher, tensors, tok, [['Paris']] * args.micro, settings, mask.sum())
+                loss.backward()
+                grad = model.clip_grad_norm_(1.)
+                if not torch.isfinite(loss) or not torch.isfinite(grad) or grad <= 0:
+                    raise AssertionError('Nonfinite or zero loss/gradient')
+                # A nonzero real shard gradient proves the optimizer changes this shard.
+                tracked = next(v for v in model.parameters() if v.grad is not None and v.grad.abs().max() > 0)
+                tracked_index = int(tracked.grad.detach().abs().flatten().argmax())
+                before = tracked.detach().flatten()[tracked_index].clone()
+                optimizer.step()
+                delta = float((tracked.detach().flatten()[tracked_index]-before).abs())
+                if delta <= 0:
+                    raise AssertionError('No student shard parameter update')
+                torch.cuda.synchronize()
+                optimizer_step_records.append(dict(step=optimizer_step+1,seconds=time.perf_counter()-step_started,loss=float(loss.detach()),grad_norm=float(grad),tracked_parameter_delta=delta))
             torch.cuda.synchronize()
             result.update(passed=True, loss=float(loss.detach()), grad_norm=float(grad),
-                tracked_max_gradient_component_delta_abs=delta, optimizer_steps=1, update_seconds=time.perf_counter()-update_started,
+                tracked_max_gradient_component_delta_abs=delta, optimizer_steps=2, optimizer_step_records=optimizer_step_records, update_seconds=time.perf_counter()-update_started,
                 peak_allocated_bytes=torch.cuda.max_memory_allocated(), peak_reserved_bytes=torch.cuda.max_memory_reserved(),
                 teacher_audit=teacher.audit_metrics(optimizer),
-                scope='Eight-rank actual 3B FP32-master FSDP/BF16 Flash/checkpointed full-vocab OPSD update with FP32/eager CUDA teacher; synthetic worst-width trajectories. vLLM residency not tested here; must pass production outer separately')
+                scope='Eight-rank actual 3B FP32-master FSDP/BF16 Flash/checkpointed full-vocab OPSD update with FP32/eager CUDA teacher; two consecutive optimizer updates with resident Adam states; synthetic worst-width trajectories. vLLM residency not tested here; must pass production outer separately')
         result['teacher_returned_runtime'] = teacher_runtime_audit(teacher, 'cpu')
         result['teacher_cost'] = teacher.cost_metrics()
         result['estimated_peak_device_used_bytes'] = external_baseline + result['peak_reserved_bytes'] + 1024**3

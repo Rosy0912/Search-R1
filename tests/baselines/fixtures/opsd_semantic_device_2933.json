@@ -1,0 +1,1077 @@
+{
+  "allocation": {
+    "job_id": "2933",
+    "hostname": "h100-10",
+    "node_short": "h100-10",
+    "slurm_job_nodelist": "h100-10",
+    "own_job_cgroup": "1:freezer:/slurm_h100-10/uid_0/job_2933/step_batch\n0::/system.slice/slurmd.service\n"
+  },
+  "job_id": "2933",
+  "hostname": "h100-10",
+  "model": "/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b",
+  "teacher_cpu_runtime": {
+    "parameter_dtypes": [
+      "torch.float32"
+    ],
+    "parameter_devices": [
+      "cpu"
+    ],
+    "attention": "eager",
+    "active_device": "cpu",
+    "matmul_tf32": false,
+    "cudnn_tf32": false
+  },
+  "teacher_gpu_runtime": {
+    "parameter_dtypes": [
+      "torch.float32"
+    ],
+    "parameter_devices": [
+      "cuda:0"
+    ],
+    "attention": "eager",
+    "active_device": "cuda:0",
+    "matmul_tf32": false,
+    "cudnn_tf32": false
+  },
+  "teacher_after_return_runtime": {
+    "parameter_dtypes": [
+      "torch.float32"
+    ],
+    "parameter_devices": [
+      "cpu"
+    ],
+    "attention": "eager",
+    "active_device": "cpu",
+    "matmul_tf32": false,
+    "cudnn_tf32": false
+  },
+  "student_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "teacher_dtype": "float32",
+  "teacher_attention": "eager",
+  "tf32": false,
+  "flash_attention_deterministic_env": "1",
+  "flash_deterministic_requested_diagnostic_only": true,
+  "teacher_cpu_gpu_logits_max_abs": 0.00011777877807617188,
+  "teacher_probability_max_abs": 6.377696990966797e-06,
+  "teacher_kl_max": 2.0542779566312674e-07,
+  "cpu_teacher_loss": 0.3797135055065155,
+  "gpu_teacher_loss": 0.3797115385532379,
+  "loss_absolute_difference": 1.9669532775878906e-06,
+  "all_student_gradient_parameters_compared": 3085938688,
+  "student_gradient_relative_l2": 0.016193433579394487,
+  "student_gradient_max_abs": 0.02734375,
+  "tolerances": {
+    "probability_max_abs": 1e-05,
+    "loss_absolute": 1e-05,
+    "gradient_relative_l2": 0.01,
+    "gradient_max_abs": 0.0005
+  },
+  "bf16_student_migration_gradient_details": {
+    "relative_l2": 0.016193433579394487,
+    "difference_l2": 0.3207142021834806,
+    "reference_l2": 19.805200707500163,
+    "max_absolute_difference": 0.02734375,
+    "reference_max_abs": 1.9453125,
+    "parameter_elements_compared": 3085938688,
+    "largest_difference_parameters": [
+      {
+        "name": "model.layers.2.mlp.down_proj.weight",
+        "difference_l2": 0.22753790826463802,
+        "reference_l2": 12.66078718826608,
+        "max_absolute_difference": 0.02734375,
+        "reference_max_abs": 1.9453125
+      },
+      {
+        "name": "model.layers.0.self_attn.v_proj.weight",
+        "difference_l2": 0.04668823925994401,
+        "reference_l2": 2.5063645410405586,
+        "max_absolute_difference": 0.001708984375,
+        "reference_max_abs": 0.0859375
+      },
+      {
+        "name": "model.embed_tokens.weight",
+        "difference_l2": 0.04410079629754516,
+        "reference_l2": 3.899540135585601,
+        "max_absolute_difference": 0.0078125,
+        "reference_max_abs": 0.59375
+      },
+      {
+        "name": "model.layers.1.mlp.gate_proj.weight",
+        "difference_l2": 0.04396897579570968,
+        "reference_l2": 2.2548455936999816,
+        "max_absolute_difference": 0.01171875,
+        "reference_max_abs": 0.66796875
+      },
+      {
+        "name": "model.layers.1.mlp.up_proj.weight",
+        "difference_l2": 0.034206679449203255,
+        "reference_l2": 1.7957731102613153,
+        "max_absolute_difference": 0.01318359375,
+        "reference_max_abs": 0.9453125
+      },
+      {
+        "name": "model.layers.0.self_attn.o_proj.weight",
+        "difference_l2": 0.033598410413416525,
+        "reference_l2": 1.6734786854011447,
+        "max_absolute_difference": 0.00048828125,
+        "reference_max_abs": 0.0220947265625
+      },
+      {
+        "name": "model.layers.10.mlp.up_proj.weight",
+        "difference_l2": 0.03299190678331412,
+        "reference_l2": 1.8462623031712493,
+        "max_absolute_difference": 0.0068359375,
+        "reference_max_abs": 0.2275390625
+      },
+      {
+        "name": "model.layers.6.mlp.up_proj.weight",
+        "difference_l2": 0.030307339328520363,
+        "reference_l2": 1.5073823463494382,
+        "max_absolute_difference": 0.007080078125,
+        "reference_max_abs": 0.236328125
+      },
+      {
+        "name": "model.layers.5.mlp.up_proj.weight",
+        "difference_l2": 0.030110391194472723,
+        "reference_l2": 1.5504714310421148,
+        "max_absolute_difference": 0.009765625,
+        "reference_max_abs": 0.4140625
+      },
+      {
+        "name": "model.layers.9.mlp.up_proj.weight",
+        "difference_l2": 0.028240213905589298,
+        "reference_l2": 1.7282849863782954,
+        "max_absolute_difference": 0.0029296875,
+        "reference_max_abs": 0.1513671875
+      }
+    ]
+  },
+  "identical_cpu_teacher_bf16_backward_repeat_controls": [
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.805200707500163,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.899540135585601,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22795632377522704,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013322911436342526,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0016632080078125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33223105757787924,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.017578125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.0051485738254140575,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.5063645410405586,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0859375
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17693807567407116,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0284423828125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6734786854011447,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5599994711362521,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6612782170525546,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.018310546875
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    },
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.805200707500163,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.899540135585601,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22795632377522704,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013322911436342526,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0016632080078125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33223105757787924,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.017578125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.0051485738254140575,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.5063645410405586,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0859375
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17693807567407116,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0284423828125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6734786854011447,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5599994711362521,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6612782170525546,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.018310546875
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    },
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.805200707500163,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.899540135585601,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22795632377522704,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013322911436342526,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0016632080078125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33223105757787924,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.017578125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.0051485738254140575,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.5063645410405586,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0859375
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17693807567407116,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0284423828125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6734786854011447,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5599994711362521,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6612782170525546,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.018310546875
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    }
+  ],
+  "identical_gpu_teacher_bf16_backward_repeat_controls": [
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.81308258928817,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.8999141732577725,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22852863372552895,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013325721492526837,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.00164794921875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33198883683326785,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0174560546875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.00515643174947719,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.509761065170955,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.08642578125
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17716153021799813,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0283203125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6767845440501672,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5610409463263287,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6624726055887274,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0181884765625
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    },
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.81308258928817,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.8999141732577725,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22852863372552895,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013325721492526837,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.00164794921875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33198883683326785,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0174560546875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.00515643174947719,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.509761065170955,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.08642578125
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17716153021799813,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0283203125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6767845440501672,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5610409463263287,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6624726055887274,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0181884765625
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    },
+    {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.81308258928817,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.8999141732577725,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22852863372552895,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013325721492526837,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.00164794921875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33198883683326785,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0174560546875
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.00515643174947719,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.509761065170955,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.08642578125
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17716153021799813,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0283203125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6767845440501672,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5610409463263287,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6624726055887274,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0181884765625
+        }
+      ],
+      "loss_absolute_difference": 0.0
+    }
+  ],
+  "cached_student_logit_fkl_gradient_comparison": {
+    "loss_absolute_difference": 1.9669532775878906e-06,
+    "gradient_relative_l2": 1.4806966646574438e-05,
+    "gradient_max_absolute_difference": 1.9383151084184647e-07,
+    "explicit_derivative_max_errors": [
+      2.9802322387695312e-08,
+      3.306195139884949e-08
+    ],
+    "clipping_boundary_crossings": 0,
+    "clipped_components_cpu": 39,
+    "clipped_components_gpu": 39,
+    "source_dtype": "torch.float32",
+    "vocab_size": 151936,
+    "tolerances": {
+      "gradient_relative_l2": 0.001,
+      "gradient_max_abs": 1e-06,
+      "explicit_derivative_max_abs": 1e-07
+    },
+    "scope": "Identical cached actual student logits; FP32 full-vocab FKL leaf-logit derivatives isolate teacher target change from transformer BF16 backward",
+    "passed": true
+  },
+  "scope": "Actual 3B short-context full-vocabulary clipped forward KL and every student parameter gradient; repeat controls and fixed-logit derivatives diagnose numerical sensitivity, no optimizer step",
+  "teacher_audit": {
+    "teacher/trainable_parameters_per_rank": 0,
+    "teacher/gradient_tensors_per_rank": 0,
+    "teacher/student_optimizer_membership_per_rank": 0
+  },
+  "bf16_backward_factorization": {
+    "passed": true,
+    "stage": "completed_forced_gradient_control",
+    "cached_leaf_gradient_bf16_rounding": {
+      "relative_l2": 0.00025585616822354496,
+      "max_absolute_difference": 7.62939453125e-06,
+      "changed_elements": 31994,
+      "total_elements": 3798400,
+      "reference_l2": 0.033699411898851395,
+      "same_nonzero_sign_changed_elements": 31985,
+      "same_nonzero_sign_max_ulp_distance": 537,
+      "cpu_rounding_error": {
+        "relative_l2": 0.0014314923901110888,
+        "max_absolute_difference": 2.9624439775943756e-05,
+        "changed_elements": 2582866,
+        "total_elements": 3798400,
+        "reference_l2": 0.033709023147821426
+      },
+      "gpu_rounding_error": {
+        "relative_l2": 0.0014311065897345543,
+        "max_absolute_difference": 2.9694288969039917e-05,
+        "changed_elements": 2582866,
+        "total_elements": 3798400,
+        "reference_l2": 0.03370897099375725
+      },
+      "scope": "Cached FP32 leaf-logit gradients rounded to BF16, before deep transformer backward"
+    },
+    "actual_projection_gradient_difference": {
+      "relative_l2": 0.0002558561391197145,
+      "max_absolute_difference": 7.62939453125e-06,
+      "changed_elements": 31886,
+      "total_elements": 5469696,
+      "reference_l2": 0.033699411898851395
+    },
+    "actual_projection_cast_checks": [
+      {
+        "exact": true,
+        "projection_gradient_dtype": "torch.bfloat16",
+        "hf_logits_gradient_dtype": "torch.bfloat16"
+      },
+      {
+        "exact": true,
+        "projection_gradient_dtype": "torch.bfloat16",
+        "hf_logits_gradient_dtype": "torch.bfloat16"
+      }
+    ],
+    "actual_hf_logits_gradient_vs_cached_analytic": [
+      {
+        "relative_l2": 0.0,
+        "max_absolute_difference": 0.0,
+        "changed_elements": 0,
+        "total_elements": 3798400,
+        "reference_l2": 0.033699411898851395,
+        "actual_hf_logits_gradient_dtype": "torch.bfloat16",
+        "expected_analytic_gradient_dtype_after_cast": "torch.bfloat16",
+        "fp32_leaf_gradient_before_cast_dtype": "torch.float32",
+        "actual_opsd_loss_chain_capture": {
+          "chunk_lengths": [
+            16,
+            9
+          ],
+          "expected_chunk_lengths": [
+            16,
+            9
+          ],
+          "captured_tensor_count": 2,
+          "total_response_positions": 25,
+          "teacher_projection_dtypes": [
+            "torch.float32",
+            "torch.float32"
+          ],
+          "teacher_projection_devices": [
+            "cpu",
+            "cpu"
+          ],
+          "chunk_shapes": [
+            [
+              1,
+              16,
+              151936
+            ],
+            [
+              1,
+              9,
+              151936
+            ]
+          ],
+          "ordered_response_coverage_verified": true,
+          "actual_hf_output_dtype": "torch.bfloat16",
+          "analytic_replay_dtype": "torch.float32",
+          "analytic_replay_device": "cuda:0",
+          "scope": "Exact actual opsd_loss teacher projection chunks and student HF logits; same chunk widths and accumulation order, no whole-response GEMM target substitution"
+        },
+        "exact_after_matching_actual_output_dtype": true,
+        "comparison_absolute_tolerance": 1e-07,
+        "passed_absolute_1e_minus_7": true
+      },
+      {
+        "relative_l2": 0.0,
+        "max_absolute_difference": 0.0,
+        "changed_elements": 0,
+        "total_elements": 3798400,
+        "reference_l2": 0.033699166029691696,
+        "actual_hf_logits_gradient_dtype": "torch.bfloat16",
+        "expected_analytic_gradient_dtype_after_cast": "torch.bfloat16",
+        "fp32_leaf_gradient_before_cast_dtype": "torch.float32",
+        "actual_opsd_loss_chain_capture": {
+          "chunk_lengths": [
+            16,
+            9
+          ],
+          "expected_chunk_lengths": [
+            16,
+            9
+          ],
+          "captured_tensor_count": 2,
+          "total_response_positions": 25,
+          "teacher_projection_dtypes": [
+            "torch.float32",
+            "torch.float32"
+          ],
+          "teacher_projection_devices": [
+            "cuda:0",
+            "cuda:0"
+          ],
+          "chunk_shapes": [
+            [
+              1,
+              16,
+              151936
+            ],
+            [
+              1,
+              9,
+              151936
+            ]
+          ],
+          "ordered_response_coverage_verified": true,
+          "actual_hf_output_dtype": "torch.bfloat16",
+          "analytic_replay_dtype": "torch.float32",
+          "analytic_replay_device": "cuda:0",
+          "scope": "Exact actual opsd_loss teacher projection chunks and student HF logits; same chunk widths and accumulation order, no whole-response GEMM target substitution"
+        },
+        "exact_after_matching_actual_output_dtype": true,
+        "comparison_absolute_tolerance": 1e-07,
+        "passed_absolute_1e_minus_7": true
+      }
+    ],
+    "student_projection_forward_identical": true,
+    "forced_identical_projection_gradient_all_parameter_comparison": {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 19.805200707500163,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 1.9453125,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.899540135585601,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.59375
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.22795632377522704,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0050048828125
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013322911436342526,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0016632080078125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.33223105757787924,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.017578125
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.0051485738254140575,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002166748046875
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.5063645410405586,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0859375
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.17693807567407116,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0284423828125
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.6734786854011447,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0220947265625
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5599994711362521,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0179443359375
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6612782170525546,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.018310546875
+        }
+      ]
+    },
+    "forced_control_gradient_source": "CPU teacher actual BF16 projection-output gradient, reused byte-identically for both teacher placements",
+    "production_gradient_or_loss_modified": false,
+    "scope": "Diagnostic tensor hook replaces projection-output gradient only during two isolated test backwards. This isolates downstream student backward dependence on its input; no optimizer/training mutation or BF16 parity assertion"
+  },
+  "fp32_student_reference": {
+    "relative_l2": 1.6728618147968704e-05,
+    "difference_l2": 0.0003473181461495445,
+    "reference_l2": 20.76191488606117,
+    "max_absolute_difference": 3.361701965332031e-05,
+    "reference_max_abs": 2.118708372116089,
+    "parameter_elements_compared": 3085938688,
+    "largest_difference_parameters": [
+      {
+        "name": "model.layers.2.mlp.down_proj.weight",
+        "difference_l2": 0.00021516756661699355,
+        "reference_l2": 13.533997289847576,
+        "max_absolute_difference": 2.014636993408203e-05,
+        "reference_max_abs": 2.118708372116089
+      },
+      {
+        "name": "model.embed_tokens.weight",
+        "difference_l2": 6.273163040473173e-05,
+        "reference_l2": 3.9369267848742693,
+        "max_absolute_difference": 8.299946784973145e-06,
+        "reference_max_abs": 0.6362584233283997
+      },
+      {
+        "name": "model.layers.30.mlp.down_proj.weight",
+        "difference_l2": 6.193921420062607e-05,
+        "reference_l2": 2.9717965004357954,
+        "max_absolute_difference": 8.404254913330078e-06,
+        "reference_max_abs": 0.48865076899528503
+      },
+      {
+        "name": "model.layers.0.self_attn.v_proj.weight",
+        "difference_l2": 5.332493534748974e-05,
+        "reference_l2": 2.5837273963710925,
+        "max_absolute_difference": 1.6205012798309326e-06,
+        "reference_max_abs": 0.09382563829421997
+      },
+      {
+        "name": "model.layers.1.mlp.gate_proj.weight",
+        "difference_l2": 5.1551023185226e-05,
+        "reference_l2": 2.3070573422267304,
+        "max_absolute_difference": 1.519918441772461e-05,
+        "reference_max_abs": 0.7253648638725281
+      },
+      {
+        "name": "model.layers.5.mlp.gate_proj.weight",
+        "difference_l2": 4.8397264867438255e-05,
+        "reference_l2": 1.6496675069630435,
+        "max_absolute_difference": 3.361701965332031e-05,
+        "reference_max_abs": 0.9649971127510071
+      },
+      {
+        "name": "model.layers.1.mlp.up_proj.weight",
+        "difference_l2": 4.047390055761089e-05,
+        "reference_l2": 1.83081756277097,
+        "max_absolute_difference": 1.753866672515869e-05,
+        "reference_max_abs": 0.9563799500465393
+      },
+      {
+        "name": "model.layers.0.self_attn.o_proj.weight",
+        "difference_l2": 3.784973554846126e-05,
+        "reference_l2": 1.7164343753918632,
+        "max_absolute_difference": 5.555339157581329e-07,
+        "reference_max_abs": 0.022973477840423584
+      },
+      {
+        "name": "model.layers.9.mlp.up_proj.weight",
+        "difference_l2": 3.5379255931238646e-05,
+        "reference_l2": 1.7888735209108324,
+        "max_absolute_difference": 6.9141387939453125e-06,
+        "reference_max_abs": 0.15889401733875275
+      },
+      {
+        "name": "model.layers.10.mlp.up_proj.weight",
+        "difference_l2": 3.512209225212454e-05,
+        "reference_l2": 1.9003487844065967,
+        "max_absolute_difference": 2.9802322387695312e-06,
+        "reference_max_abs": 0.2514910101890564
+      }
+    ],
+    "loss_absolute_difference": 1.9371509552001953e-06,
+    "parameter_dtypes": [
+      "torch.float32"
+    ],
+    "attention": "eager",
+    "repeated_identical_target_control": {
+      "relative_l2": 0.0,
+      "difference_l2": 0.0,
+      "reference_l2": 20.76191488606117,
+      "max_absolute_difference": 0.0,
+      "reference_max_abs": 2.118708372116089,
+      "parameter_elements_compared": 3085938688,
+      "largest_difference_parameters": [
+        {
+          "name": "model.embed_tokens.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 3.9369267848742693,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.6362584233283997
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.23285879212540525,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.005148733034729958
+        },
+        {
+          "name": "model.layers.0.self_attn.q_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.013675284811966747,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.0016219530953094363
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.32482590184576476,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.017898472025990486
+        },
+        {
+          "name": "model.layers.0.self_attn.k_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.005096847587478349,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.002283217618241906
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 2.5837273963710925,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.09382563829421997
+        },
+        {
+          "name": "model.layers.0.self_attn.v_proj.bias",
+          "difference_l2": 0.0,
+          "reference_l2": 0.18164909507117605,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.029371993616223335
+        },
+        {
+          "name": "model.layers.0.self_attn.o_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 1.7164343753918632,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.022973477840423584
+        },
+        {
+          "name": "model.layers.0.mlp.gate_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.5716785635511937,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.016168180853128433
+        },
+        {
+          "name": "model.layers.0.mlp.up_proj.weight",
+          "difference_l2": 0.0,
+          "reference_l2": 0.6767788177797404,
+          "max_absolute_difference": 0.0,
+          "reference_max_abs": 0.01643439568579197
+        }
+      ]
+    },
+    "tolerances": {
+      "relative_l2": 0.001,
+      "gradient_max_abs": 0.0001,
+      "loss_absolute": 1e-05
+    },
+    "scope": "Actual full FP32/eager student with cached CPU/GPU FP32 teacher targets, autocast and TF32 disabled; all student parameter gradients",
+    "passed": true
+  },
+  "elapsed_seconds": 221.90626404061913,
+  "peak_allocated_bytes": 27440649728,
+  "passed": false,
+  "diagnostic_controls_do_not_relax_original_gate": true
+}

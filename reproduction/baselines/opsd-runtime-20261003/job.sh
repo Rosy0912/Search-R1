@@ -121,5 +121,6 @@ expected={v['uuid'] for i,v in inv.items() if i in selected or v['uuid'] in sele
 assert len(actual)==8 and actual==expected,(actual,expected)
 print('OWN_RETRIEVER_RESIDENT_ON_ALL_EIGHT_GPUS',flush=True)
 PYGPU
+python -u "$root/tools/runtime/gpu_retrieval_bulk.py"
 python -u "$root/tools/runtime/train_supervisor.py"
 printf '%s\n' TRAINING_FIVE_ITERATIONS_EXITED > "$run/training-finished.txt"
