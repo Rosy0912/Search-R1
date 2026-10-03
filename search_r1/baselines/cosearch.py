@@ -619,6 +619,8 @@ class GenerativeRanker:
 
     def _update(self, rewards_by_trajectory):
         started, cpu_started = time.perf_counter(), time.process_time()
+        evidence_root = os.environ.get('COSEARCH_UPDATE_EVIDENCE_ROOT')
+        original_events = list(self.events) if evidence_root else None
         events = []
         for e in self.events:
             main, targets, legal = rewards_by_trajectory[e['trajectory_uid']]
@@ -654,6 +656,11 @@ class GenerativeRanker:
                  for i, key in enumerate(keys) if key == group}) > 1 for group in informative)
         metrics['ranker/gradient_norm_max'] = 0.
         metrics['ranker/parameter_probe_delta_l1'] = 0.
+        if evidence_root:
+            from .cosearch_diagnostics import save_update_evidence
+            save_update_evidence(evidence_root, original_events, rewards_by_trajectory,
+                                 getattr(self, 'diagnostic_trajectories', {}), events, keys, chosen, metrics,
+                                 getattr(self, 'diagnostic_provenance', {}))
         # Keep dropout disabled while taking gradients, matching rollout old logprobs.
         if not getattr(self.config, "gradient_checkpointing", False):
             self.model.eval()

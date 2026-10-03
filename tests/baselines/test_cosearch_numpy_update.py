@@ -39,7 +39,8 @@ def _ranker():
 
 @pytest.mark.parametrize('aliases', [[], ['Paris'], ['Paris', 'City of Paris'], ['yes', 'NO']])
 @pytest.mark.parametrize('distinct_main_rewards', [False, True])
-def test_actual_update_numpy_aliases_match_list_rewards_groups_gradients_and_adam(aliases, distinct_main_rewards):
+def test_actual_update_numpy_aliases_match_list_rewards_groups_gradients_and_adam(aliases, distinct_main_rewards, monkeypatch, tmp_path):
+    monkeypatch.delenv('COSEARCH_UPDATE_EVIDENCE_ROOT', raising=False)
     expected = _ranker()
     actual = _ranker()
     baseline = {n: p.detach().clone() for n, p in actual.model.named_parameters()}
@@ -48,7 +49,14 @@ def test_actual_update_numpy_aliases_match_list_rewards_groups_gradients_and_ada
     actual_outcomes = {f't-{i}': (mains[i], np.array(aliases, dtype=object), True) for i in range(2)}
     # Invoke production reward preparation, grouping, forward, clip and optimizer.
     expected_metrics = expected._update(expected_outcomes)
+    monkeypatch.setenv('COSEARCH_UPDATE_EVIDENCE_ROOT', str(tmp_path))
     actual_metrics = actual._update(actual_outcomes)
+    import json
+    evidence = json.loads(next((tmp_path / 'ranker-update-evidence').glob('*.json')).read_text())
+    assert evidence['selection_unchanged'] is True
+    assert len(evidence['events']) == 2
+    assert evidence['events'][0]['targets'] == aliases
+    assert evidence['events'][0]['ranking_response_ids'] == [5, 6]
     for key in ('ranker/training_events', 'ranker/same_reward_groups_skipped',
                 'ranker/trivial_answer_events', 'ranker/informative_groups',
                 'ranker/effective_nonzero_advantage_events', 'ranker/gradient_norm_max',

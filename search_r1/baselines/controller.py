@@ -267,9 +267,32 @@ class Controller:
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
             outcomes = {}
+            evidence = {} if os.environ.get('COSEARCH_UPDATE_EVIDENCE_ROOT') else None
+            if evidence is not None:
+                from .bapo import legal_action_records
+                raw_answers = decode_answers(data, self.trainer.tokenizer, require_legal=False)
             for i, uid in enumerate(data.non_tensor_batch['trajectory_uid']):
                 targets = data.non_tensor_batch['reward_model'][i]['ground_truth']['target']
                 outcomes[uid] = (float(data.batch['token_level_scores'][i].sum()), targets, answers[i] is not None)
+                if evidence is not None:
+                    width = data.batch['responses'].shape[1]
+                    mask = data.batch['info_mask'][i, -width:] * data.batch['attention_mask'][i, -width:]
+                    evidence[uid] = dict(action_records=data.non_tensor_batch['action_records'][i],
+                                         answer=answers[i], raw_answer=raw_answers[i],
+                                         records_legal=legal_action_records(data.non_tensor_batch['action_records'][i]),
+                                         question_uid=data.non_tensor_batch['index'][i], row=i,
+                                         response_ids=data.batch['responses'][i].cpu().tolist(),
+                                         response_mask=mask.cpu().tolist())
+            if evidence is not None:
+                self.ranker.diagnostic_trajectories = evidence
+                import hashlib
+                tokenizer = Path(self.trainer.tokenizer.name_or_path)
+                hashes = {name: hashlib.sha256((tokenizer / name).read_bytes()).hexdigest()
+                          for name in ('tokenizer.json', 'tokenizer_config.json', 'vocab.json', 'merges.txt')
+                          if (tokenizer / name).is_file()}
+                self.ranker.diagnostic_provenance = dict(outer_step=self.trainer.global_steps,
+                    output=os.environ.get('SEARCH_R1_BASELINE_OUTPUT'), tokenizer_path=str(tokenizer),
+                    tokenizer_sha256=hashes)
             metrics.update(self.ranker.update(outcomes))
 
     def stage_validation(self, step=None):
