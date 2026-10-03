@@ -41,4 +41,7 @@ for arg in "$@"; do
         exec python -m search_r1.baselines.main "${overrides[@]}" "$@"
     fi
 done
+if [[ "${SEARCH_R1_GPU_PREFLIGHT:-0}" == 1 ]]; then
+    exec python -m search_r1.baselines.preflight --reuse-inherited -- python -m search_r1.baselines.main "${overrides[@]}" "$@"
+fi
 exec python -m search_r1.baselines.preflight -- python -m search_r1.baselines.main "${overrides[@]}" "$@"

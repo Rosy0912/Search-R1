@@ -222,6 +222,12 @@ class DataParallelPPOActor(BasePPOActor):
                 select_keys.append('step_ids')
         batch = data.select(batch_keys=select_keys).batch
 
+        audit = None
+        if self.config.get('baseline_method') in ('grpo', 'gigpo'):
+            from search_r1.baselines.runtime_audit import enabled, ActorAudit
+            if enabled():
+                audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
         dataloader = batch.split(self.config.ppo_mini_batch_size)
@@ -232,6 +238,8 @@ class DataParallelPPOActor(BasePPOActor):
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
                 dataloader for _ in range(self.config.ppo_epochs))):
+            if audit is not None and batch_idx % len(dataloader) == 0:
+                audit.epoch()
             # split batch into micro_batches
             mini_batch = data
             from search_r1.baselines.distillation import global_token_count
@@ -246,6 +254,8 @@ class DataParallelPPOActor(BasePPOActor):
             if paper_objective:
                 from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
                 denominator = row_denominator(len(mini_batch), mini_batch.device)
+                weight_mass, mass_world = global_token_count(mini_batch['policy_weights'])
+                metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
             elif topd_token_mean:
                 from search_r1.baselines.advantages import token_mean_ppo
                 denominator = total / world
@@ -257,6 +267,7 @@ class DataParallelPPOActor(BasePPOActor):
                 micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
 
             self.actor_optimizer.zero_grad()
+            mini_metrics = {}
 
             for data in micro_batches:
                 data = data.cuda()  # actor device is cpu when using offload
@@ -278,7 +289,7 @@ class DataParallelPPOActor(BasePPOActor):
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
-                        clip_ratio, denominator, data.get('step_ids'))
+                        clip_ratio, denominator, data.get('step_ids', None))
                 elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
@@ -305,25 +316,46 @@ class DataParallelPPOActor(BasePPOActor):
                                if paper_objective else masked_mean(kld, response_mask))
 
                     policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
-                    metrics['actor/kl_loss'] = kl_loss.detach().item()
+                    if paper_objective:
+                        mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
+                    else:
+                        metrics['actor/kl_loss'] = kl_loss.detach().item()
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
                 loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+                if audit is not None:
+                    audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None))
                 loss.backward()
 
+                micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
                 data = {
                     'actor/entropy_loss': entropy_loss.detach().item(),
                     'actor/pg_loss': pg_loss.detach().item(),
                     'actor/pg_clipfrac': pg_clipfrac.detach().item(),
                     'actor/ppo_kl': ppo_kl.detach().item(),
                 }
-                append_to_dict(metrics, data)
+                if paper_objective:
+                    for key, value in data.items():
+                        if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
+                            value *= micro_mass / metric_mass.item()
+                        mini_metrics[key] = mini_metrics.get(key, 0.) + value
+                else:
+                    append_to_dict(metrics, data)
 
+            if paper_objective:
+                append_to_dict(metrics, mini_metrics)
             grad_norm = self._optimizer_step()
+            if audit is not None:
+                audit.gradient(grad_norm)
             updates += 1
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
+        if audit is not None:
+            audit.finish(updates, skipped)
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if paper_objective:
+            from search_r1.baselines.objectives import reduce_paper_metrics
+            reduce_paper_metrics(metrics, batch.device)
         return metrics

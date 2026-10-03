@@ -8,6 +8,8 @@ from .controller import validate_config
 def main(config):
     from .preflight import validate_gpu_lease
     validate_gpu_lease(config)
+    from .local_runtime import check_local_runtime
+    check_local_runtime(config)
     from .holdout import prepare_common_holdout
     split_manifest = prepare_common_holdout(config)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
@@ -24,7 +26,7 @@ def main(config):
         from .select_teacher import model_manifest, CANDIDATES
         target = config.baselines.holdout_record_path
         model = Path(config.actor_rollout_ref.model.path).resolve()
-        match = re.search(r'/global_step_(\d+)/actor$', str(model))
+        match = re.search(r'/actor/global_step_(\d+)$', str(model))
         if not target or Path(target).exists():
             raise ValueError('Specify a new holdout_record_path before evaluation')
         if not match or int(match.group(1)) not in CANDIDATES:
@@ -33,19 +35,26 @@ def main(config):
         config.data.val_files = config.baselines.bapo.stage_validation_files
         config.data.final_val_files = None
     validate_config(config)
+    from .runtime_audit import config_boundary
+    config_boundary(config, split_manifest)
     from .preflight import validate_assets_and_retriever
     validate_assets_and_retriever(config)
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
-    result = ray.get(main_task.remote(config))
+    if config.baselines.local_runtime_only:
+        check_local_runtime(config, ray.nodes())
+    from .runtime_audit import runtime_env_vars
+    audit_env = runtime_env_vars()
+    task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
+    result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:
         import json
         import re
         from pathlib import Path
         from .select_teacher import model_manifest, CANDIDATES
         model = Path(config.actor_rollout_ref.model.path).resolve()
-        match = re.search(r'/global_step_(\d+)/actor$', str(model))
+        match = re.search(r'/actor/global_step_(\d+)$', str(model))
         if not match or int(match.group(1)) not in CANDIDATES:
             raise ValueError('Holdout candidate must be a specified saved actor update')
         if model_manifest(model) != checkpoint_hash:
