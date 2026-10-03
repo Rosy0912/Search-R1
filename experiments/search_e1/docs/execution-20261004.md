@@ -39,3 +39,5 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
 03:10三个上游完整文件SHA256全部通过（两个索引分卷与压缩语料）。最终索引直接生成成功。检索精度对照改为独立短生命周期GPU encoder子进程；CPU服务主进程只编码CPU/执行CPU Faiss，避免删模型后CUDA context仍占所选GPU而阻止GPU admission。子进程输出同16题FP16 embeddings，退出释放CUDA后由同CPU索引比较top3，比较数学不变。
 
 03:20 A实际启动前admission拒绝GPU4约500MiB残留上下文；未生成RL更新。检索进程随原管线退出消失，B无法连接18000。修正为CPU服务CUDA_VISIBLE_DEVICES为空、只给短生命周期GPU对照子进程恢复所选卡；服务独立tmux e1-retriever-20261004，不随训练管线结束。A显式E1_REUSE_RUNTIME=1重启，仅在全部冻结runtime hash一致后复用，保持原runtime字节。原失败日志保留pipeline.log，新日志pipeline-retry1.log。真实阶段输出目录已存在时拒绝覆盖，需要先明确保留旧结果，防止重跑混入checkpoint。检索启动探测timeout提高至120秒以覆盖完整Flat索引冷查询。
+
+03:32两组进入真实训练启动后，Ray的AF_UNIX socket路径因任务BASE+32位run_id+session路径超过107字节而失败，尚无更新。修复为/tmp/e1-<uid>-<run_id前8位>短链接指向任务盘BASE/ray/<完整run_id>，保留独立任务目录及碰撞检查。真实生成的allocated_init与实际Unix socket bind测试通过（路径<104字节）。仅执行路径变更，旧冻结runtime和smoke-040失败日志/receipt保留unused-ray-path-v1及smoke-040-ray-path-v1，再从已验证原archive生成新runtime；未原地覆盖旧runtime。新管线日志A pipeline-retry2.log、B pipeline-retry-ray-path.log，独立检索服务继续运行。
