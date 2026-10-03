@@ -1,5 +1,6 @@
 """OPSD actor uses full-vocabulary loss with a separate frozen, privileged teacher."""
 import math
+import os
 import torch
 from verl.workers.actor.dp_actor import DataParallelPPOActor
 from verl.utils.py_functional import append_to_dict
@@ -94,6 +95,8 @@ class DistillationActor(DataParallelPPOActor):
                 observations[key + '_mean'] = sum(values) / len(values)
                 observations[key + '_finite'] = int(all(math.isfinite(v) for v in values))
         if torch.cuda.is_available():
+            observations['actor/allocator_is_native'] = int(torch.cuda.get_allocator_backend() == 'native')
+            observations['actor/allocator_configuration_is_default'] = int(os.environ.get('PYTORCH_CUDA_ALLOC_CONF', '') in ('', 'backend:native'))
             observations['actor/cuda_peak_allocated_bytes'] = torch.cuda.max_memory_allocated()
             observations['actor/cuda_peak_reserved_bytes'] = torch.cuda.max_memory_reserved()
         # DataProto.concat retains only rank 0 meta_info. Replicate complete rank
