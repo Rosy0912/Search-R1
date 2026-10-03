@@ -19,7 +19,11 @@ done
 test -f "$BASE/receipts/env.ready"
 if [[ "$PROFILE" == archive ]]; then test -f "$BASE/receipts/assets.ready"; else test -f "$BASE/receipts/local-assets.ready"; fi
 phase BUILDING_FROZEN_RUNTIME
-"$PYTHON" "$CONTROL/build_runtime.py" --base "$BASE" --profile "$PROFILE"
+if [[ "${E1_REUSE_RUNTIME:-0}" == 1 ]]; then
+ "$PYTHON" "$CONTROL/verify_runtime.py"
+else
+ "$PYTHON" "$CONTROL/build_runtime.py" --base "$BASE" --profile "$PROFILE"
+fi
 RUNTIME="$BASE/runtime/$PROFILE"
 export PYTHONPATH="$RUNTIME/upstream/Search-R1:$RUNTIME" WANDB_MODE=offline PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
 export NCCL_P2P_DISABLE=1 NCCL_IB_DISABLE=1
@@ -29,10 +33,11 @@ export E1_DATASET_ROOT="$BASE/assets/datasets"
 E1_TEST_RUNTIME="$RUNTIME" E1_TEST_ARCHIVE="$BASE/source/experiments/search_e1/archive" "$PYTHON" -m unittest discover -s "$BASE/source/experiments/search_e1/tests" -p test_overlay.py -v > "$BASE/receipts/overlay-tests.txt" 2>&1
 if [[ "$PROFILE" == archive ]]; then
  phase STARTING_LOCAL_RETRIEVER
- "$PYTHON" "$CONTROL/retriever_cpu.py" > "$BASE/logs/retriever.log" 2>&1 &
- retriever_pid=$!
- printf '%s\n' "$retriever_pid" > "$BASE/receipts/retriever.pid"
- # Keep the task retrieval service alive for B even after A finishes; do not trap-kill it.
+ # An independent tmux session survives supervisor exit and serves B.
+ if ! tmux has-session -t e1-retriever-20261004 2>/dev/null; then
+  printf -v retriever_command 'E1_BASE=%q CUDA_VISIBLE_DEVICES=%q bash %q > %q 2>&1' "$BASE" "$CUDA_VISIBLE_DEVICES" "$CONTROL/retriever_service.sh" "$BASE/logs/retriever.log"
+  tmux new-session -d -s e1-retriever-20261004 "$retriever_command"
+ fi
 fi
 phase WAITING_FOR_RETRIEVER
 "$PYTHON" - <<'PY'
@@ -41,7 +46,7 @@ from pathlib import Path
 base=Path(os.environ['E1_BASE']);url='http://10.123.4.11:18000/retrieve'
 for _ in range(1800):
  try:
-  r=requests.post(url,json={'queries':['capital of France'],'topk':3,'return_scores':True},timeout=30);r.raise_for_status();x=r.json();assert len(x['result'][0])==3
+  r=requests.post(url,json={'queries':['capital of France'],'topk':3,'return_scores':True},timeout=120);r.raise_for_status();x=r.json();assert len(x['result'][0])==3
   (base/'receipts/retriever-query.json').write_text(json.dumps(x,indent=2));break
  except (requests.RequestException,AssertionError):time.sleep(2)
 else:raise SystemExit('Retriever not ready; no training started')

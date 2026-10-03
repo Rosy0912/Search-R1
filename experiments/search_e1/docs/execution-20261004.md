@@ -37,3 +37,5 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
 归档vendored vLLM0.6.3的KV容量计算实际为free_gpu_memory × utilization（不是整卡总显存比例）。容量候选扩展至0.8/0.9，仍需每档完整两更新、下一档保守按整卡显存增量预测并留下6GiB；实测不满足条件即停止增加。不会仅因0.7是预设上限而放弃实际剩余容量。
 
 03:10三个上游完整文件SHA256全部通过（两个索引分卷与压缩语料）。最终索引直接生成成功。检索精度对照改为独立短生命周期GPU encoder子进程；CPU服务主进程只编码CPU/执行CPU Faiss，避免删模型后CUDA context仍占所选GPU而阻止GPU admission。子进程输出同16题FP16 embeddings，退出释放CUDA后由同CPU索引比较top3，比较数学不变。
+
+03:20 A实际启动前admission拒绝GPU4约500MiB残留上下文；未生成RL更新。检索进程随原管线退出消失，B无法连接18000。修正为CPU服务CUDA_VISIBLE_DEVICES为空、只给短生命周期GPU对照子进程恢复所选卡；服务独立tmux e1-retriever-20261004，不随训练管线结束。A显式E1_REUSE_RUNTIME=1重启，仅在全部冻结runtime hash一致后复用，保持原runtime字节。原失败日志保留pipeline.log，新日志pipeline-retry1.log。真实阶段输出目录已存在时拒绝覆盖，需要先明确保留旧结果，防止重跑混入checkpoint。检索启动探测timeout提高至120秒以覆盖完整Flat索引冷查询。

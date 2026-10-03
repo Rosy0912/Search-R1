@@ -3,6 +3,7 @@ import os,sys,subprocess,json,time,signal,uuid
 from pathlib import Path
 base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];stage=os.environ['E1_STAGE']
 control=base/'source/experiments/search_e1/control';receipt=base/'receipts'/f'{profile}-{stage}.json'
+if (base/'runs'/profile/stage).exists():raise SystemExit('Stage output already exists; preserve it before starting a fresh run')
 ids=os.environ['CUDA_VISIBLE_DEVICES'];env=dict(os.environ,E1_RUN_ID=uuid.uuid4().hex)
 admission=subprocess.check_output([str(base/'env/bin/python'),str(control/'gpu_admission.py')],env=env,text=True)
 record=dict(profile=profile,stage=stage,run_id=env['E1_RUN_ID'],admission=json.loads(admission),started_unix=time.time(),status='STARTING',utilization=float(env.get('E1_VLLM_UTIL','.4')),peaks_mib={},sample_count=0)
