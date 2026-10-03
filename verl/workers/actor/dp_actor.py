@@ -281,7 +281,7 @@ class DataParallelPPOActor(BasePPOActor):
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
-                        clip_ratio, denominator, data.get('step_ids'))
+                        clip_ratio, denominator, data.get('step_ids', None))
                 elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
@@ -341,4 +341,7 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if paper_objective:
+            from search_r1.baselines.objectives import reduce_paper_metrics
+            reduce_paper_metrics(metrics, batch.device)
         return metrics
