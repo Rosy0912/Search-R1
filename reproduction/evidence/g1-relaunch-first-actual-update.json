@@ -1,0 +1,151 @@
+{
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "checked_unix": 1791052605.7591658,
+  "same_main_verified_live": {
+    "pid": 1672776,
+    "start_ticks": 513152831,
+    "sid": 1667170
+  },
+  "actual_updates": [
+    {
+      "step": 1,
+      "metrics": {
+        "global_seqlen/min": 140782.0,
+        "global_seqlen/max": 160739.0,
+        "global_seqlen/minmax_diff": 19957.0,
+        "global_seqlen/balanced_min": 152847.0,
+        "global_seqlen/balanced_max": 152847.0,
+        "global_seqlen/mean": 152847.0,
+        "train/perf/em": 0.147,
+        "train/trust/trust_at_correct": 0.735,
+        "train/trust/trust_at_searched_correct": 0.7,
+        "train/trust/trust_all_mean": 0.108,
+        "train/trust/cf_true": 0.0,
+        "train/trust/cf_hall": 0.0,
+        "train/trust/cf_amb": 0.0,
+        "train/trust/hall_rate": 0.0,
+        "train/cost/search_per_query": 1.123,
+        "train/cost/nosearch_rate": 0.144,
+        "train/cost/oversearch_rate": 0.194,
+        "state_tokens/total": 168189.0,
+        "state_tokens/coverage": 0.332,
+        "actor/kl_loss": 0.001,
+        "actor/kl_coef": 0.001,
+        "actor/entropy_loss": 0.972,
+        "actor/pg_loss": 0.155,
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": 0.0,
+        "actor/grad_norm": 3.209,
+        "mfu/actor": 0.053,
+        "actor/lr": 0.0,
+        "critic/score/mean": 0.16,
+        "critic/score/max": 1.599,
+        "critic/score/min": -0.1,
+        "critic/rewards/mean": 0.16,
+        "critic/rewards/max": 1.599,
+        "critic/rewards/min": -0.1,
+        "critic/advantages/mean": -0.034,
+        "critic/advantages/max": 1.789,
+        "critic/advantages/min": -1.789,
+        "critic/returns/mean": -0.034,
+        "critic/returns/max": 1.789,
+        "critic/returns/min": -1.789,
+        "response_length/mean": 790.895,
+        "response_length/max": 2922.0,
+        "response_length/min": 54.0,
+        "response_length/clip_ratio": 0.002,
+        "prompt_length/mean": 164.398,
+        "prompt_length/max": 247.0,
+        "prompt_length/min": 153.0,
+        "prompt_length/clip_ratio": 0.0,
+        "env/number_of_actions/mean": 2.17,
+        "env/number_of_actions/max": 5.0,
+        "env/number_of_actions/min": 1.0,
+        "env/finish_ratio": 0.969,
+        "env/number_of_valid_action": 2.083,
+        "env/ratio_of_valid_action": 0.98,
+        "env/actual_retrieval_calls/mean": 1.091,
+        "env/actual_retrieval_calls/total": 698.0,
+        "env/number_of_valid_search": 1.114,
+        "timing_s/gen": 105.487,
+        "timing_s/ref": 47.457,
+        "timing_s/adv": 46.57,
+        "timing_s/update_actor": 203.59,
+        "timing_s/step": 450.418,
+        "timing_per_token_ms/ref": 0.078,
+        "timing_per_token_ms/gen": 0.208,
+        "timing_per_token_ms/adv": 0.076,
+        "timing_per_token_ms/update_actor": 0.333
+      },
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:0:9f593934e59641a8904faeaf43225f6a"
+    }
+  ],
+  "latest_fixed64": {
+    "step": 0,
+    "correct": 4,
+    "total": 64,
+    "em": 0.0625,
+    "per_source_correct": {
+      "nq": 1,
+      "triviaqa": 2,
+      "hotpotqa": 1,
+      "popqa": 0,
+      "2wikimultihopqa": 0,
+      "musique": 0,
+      "bamboogle": 0
+    }
+  },
+  "sampled_gpu_peak_mib": {
+    "0": 46309,
+    "1": 46405,
+    "2": 46851,
+    "3": 46309,
+    "5": 17879,
+    "6": 37577
+  },
+  "latest_gpu_sample": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791052604.0658708,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 37031,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 37127,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "used_mib": 37127,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "used_mib": 36993,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 26837,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "five_updates_accepted": false,
+  "training_console_precision": "three decimals; printed lr0.000 does not establish zero actual LR",
+  "source_commit": "5707268"
+}
