@@ -26,6 +26,40 @@ def runtime_env_vars():
     return result
 
 
+def config_boundary(config, split_manifest):
+    """Verify the actual post-holdout entry against the reviewed resolved config."""
+    if not enabled():
+        return
+    from omegaconf import OmegaConf
+    text = OmegaConf.to_yaml(OmegaConf.create(OmegaConf.to_container(config, resolve=True)))
+    actual = hashlib.sha256(text.encode()).hexdigest()
+    identity = split_manifest['content_identity']['sha256']
+    if (actual != os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256')
+            or identity != os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY')):
+        raise ValueError('Actual baseline entry config or split differs from reviewed audit identity')
+    root = Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR'])
+    root.mkdir(parents=True, exist_ok=True)
+    with (root / 'entry-config.yaml').open('x') as stream:
+        stream.write(text)
+    emit('config_boundary', dict(actual_config_sha256=actual, actual_data_identity=identity,
+        entry_total_training_steps=int(config.trainer.total_training_steps),
+        config_scope='resolved Hydra + common holdout before trainer optim.total_training_steps injection'), 'entry')
+
+
+def driver_outer(batch, outer_step, method):
+    if not enabled() or method not in ('grpo', 'gigpo'):
+        return
+    width = batch.batch['responses'].shape[1]
+    mask = batch.batch['loss_mask'][:, -width:]
+    tensors = {key: stats(batch.batch[key], mask) for key in
+        ('old_log_probs', 'advantages', 'policy_weights', 'token_level_rewards', 'returns')
+        if key in batch.batch.keys()}
+    emit('driver_outer', dict(outer_step=outer_step, method=method, rows=len(batch),
+        questions=len(set(batch.non_tensor_batch['uid'])), tensors=tensors,
+        action_tokens=int(mask.sum()), observation_tokens=int((
+            batch.batch['attention_mask'][:, -width:] * (1 - batch.batch['info_mask'][:, -width:])).sum())))
+
+
 def teacher_cpu_threads():
     """Optional driver-only thread budget; actor and retrieval budgets are separate."""
     value = os.environ.get('SEARCH_R1_BASELINE_TEACHER_CPU_THREADS')
@@ -171,4 +205,3 @@ class ActorAudit:
              mask=stats(mask) if mask is not None else None,
              mask_binary=bool(((mask == 0) | (mask == 1)).all()) if mask is not None else None,
              tensors={key: stats(self.batch[key], mask) for key in self.before}), self.rank)
-
