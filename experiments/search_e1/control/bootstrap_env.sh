@@ -2,7 +2,7 @@
 set -euo pipefail
 BASE=${1:?task root}
 SOURCE_PYTHON=/home/shaoshitong/miniconda3/envs/EditVerse/bin/python
-mkdir -p "$BASE/logs" "$BASE/wheels" "$BASE/receipts" "$BASE/tmp"
+mkdir -p "$BASE/logs" "$BASE/wheels" "$BASE/receipts" "$BASE/tmp" "$BASE/sources"
 export TMPDIR="$BASE/tmp"
 if [[ ! -x "$BASE/env/bin/python" ]]; then
  "$SOURCE_PYTHON" -m venv "$BASE/env"
@@ -10,7 +10,12 @@ fi
 export PIP_CACHE_DIR="$BASE/pip-cache"
 PYTHON="$BASE/env/bin/python"
 "$PYTHON" -m pip install --upgrade pip wheel setuptools
-"$PYTHON" -m pip download --only-binary=:all: --no-binary=antlr4-python3-runtime,pyairports -r "$BASE/source/experiments/search_e1/control/requirements-hkust.txt" -d "$BASE/wheels"
+# The current PyPI namesake lacks pyairports.airports; use original pinned project.
+AIRPORT_COMMIT=9699eae8c6b03c97239018dea92e01daa8594936
+curl -fL --connect-timeout 15 --retry 2 --max-time 180 "https://codeload.github.com/NICTA/pyairports/tar.gz/$AIRPORT_COMMIT" -o "$BASE/sources/pyairports-$AIRPORT_COMMIT.tar.gz"
+sha256sum "$BASE/sources/pyairports-$AIRPORT_COMMIT.tar.gz" > "$BASE/receipts/pyairports-source.sha256"
+"$PYTHON" -m pip wheel --no-build-isolation --no-deps --wheel-dir "$BASE/wheels" "$BASE/sources/pyairports-$AIRPORT_COMMIT.tar.gz"
+"$PYTHON" -m pip download --only-binary=:all: --no-binary=antlr4-python3-runtime --find-links "$BASE/wheels" -r "$BASE/source/experiments/search_e1/control/requirements-hkust.txt" -d "$BASE/wheels"
 for source in "$BASE"/wheels/*.tar.gz; do
  "$PYTHON" -m pip wheel --no-build-isolation --no-deps --wheel-dir "$BASE/wheels" "$source"
 done
