@@ -18,6 +18,7 @@ for ((n=0;n<4320;n++)); do
 done
 test -f "$BASE/receipts/env.ready"
 if [[ "$PROFILE" == archive ]]; then test -f "$BASE/receipts/assets.ready"; else test -f "$BASE/receipts/local-assets.ready"; fi
+"$PYTHON" -c 'from ray.dashboard.modules.reporter.reporter_agent import ReporterAgent; from ray.dashboard import optional_deps; print("RAY_REPORTER_READY")'
 phase BUILDING_FROZEN_RUNTIME
 if [[ "${E1_REUSE_RUNTIME:-0}" == 1 ]]; then
  "$PYTHON" "$CONTROL/verify_runtime.py"

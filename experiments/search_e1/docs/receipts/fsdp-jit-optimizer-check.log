@@ -1,0 +1,8 @@
+WARNING:__main__:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+{"rank": 0, "result": "FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK", "updates": 4}
+{"rank": 1, "result": "FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK", "updates": 4}
+{"rank": 3, "result": "FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK", "updates": 4}
+{"rank": 2, "result": "FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK", "updates": 4}

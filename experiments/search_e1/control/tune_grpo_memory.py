@@ -13,7 +13,7 @@ if os.environ.get('E1_RESUME_GATES') == '1':
  history=previous['gates'];selected=previous['selected']
  if not history or selected!=history[-1]['utilization']:raise RuntimeError('Invalid previous accepted gates')
  for old in history:
-  if old['status']!='COMPLETED' or old.get('execution_caps')!={key:os.environ.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE']}:raise RuntimeError('Accepted gate execution differs')
+  if old['status']!='COMPLETED' or any(old.get('execution_caps',{}).get(key)!=os.environ.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER']):raise RuntimeError('Accepted gate execution differs')
   checkpoint=base/'runs'/profile/old['stage']/'actor/global_step_2'
   subprocess.run([python,str(control/'verify_checkpoint.py'),'--initial',str(base/'assets/model'),'--checkpoint',str(checkpoint),'--report',str(receipts/f"{profile}-{old['stage']}-resumed-checkpoint.json")],check=True)
 for candidate in candidates:
