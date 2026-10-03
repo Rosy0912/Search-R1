@@ -5,6 +5,7 @@ import re
 import string
 import torch
 from search_r1.qa_protocol import extract_final_answer, parse_model_action
+from search_r1.qa_protocol import extract_final_answer, parse_model_action
 
 
 def normalize(text):
@@ -120,15 +121,14 @@ def resample_rows(answers, targets, uids, stage):
 def legal_action_records(records):
     if not records:
         return False
-    final_kind = None
     for i, record in enumerate(records):
         action = parse_model_action(record['text'], strict_prefix=True)
         if action is None:
             return False
-        final_kind = action[0]
-        if final_kind == 'answer' and i != len(records) - 1:
+        expected = 'answer' if i == len(records) - 1 else 'search'
+        if action[0] != expected:
             return False
-    return final_kind == 'answer'
+    return True
 
 
 def decode_answers(data, tokenizer, require_legal=False):
