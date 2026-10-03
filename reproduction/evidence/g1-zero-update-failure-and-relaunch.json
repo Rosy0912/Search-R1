@@ -1,0 +1,31 @@
+{
+  "prior_run_id": "732f8740b5bb4564baff04d33dd54f7b",
+  "actual_completed_grpo_updates": 0,
+  "initial_validation_em": {
+    "correct": 4,
+    "count": 64
+  },
+  "failure": "NameError: os not defined in actual _probe_call, mistakenly retried as transport error",
+  "initial_probes_genuinely_fitted": true,
+  "cleanup_recovery": "OWNED_CLEANUP_FINISHED; all registered jobs STOPPED; no non-zombie member in private sessions",
+  "archive": "/data/search-g1/history/attempt-732f8740b5bb4564baff04d33dd54f7b",
+  "fix_commit": "5707268",
+  "target_tests": {
+    "actual_probe_method": 11,
+    "actual_reward_protocol": 2,
+    "all_passed": true
+  },
+  "independent_review": "Final diff has no remaining concrete blocker; read-only review, distinct from test execution",
+  "new_run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "new_supervisor": {
+    "pid": 1661704,
+    "start_ticks": 513118313,
+    "sid": 1661702,
+    "verified_live": true
+  },
+  "new_source_file_count": 248,
+  "last_observed_stage": "FOUR_GPU_ADMISSION",
+  "new_run_five_updates_accepted": false,
+  "new_run_repeats_genuine_initial_calibration": true,
+  "source_identity_semantics": "Disk source SHA before launch; does not claim proof of modules already loaded"
+}
