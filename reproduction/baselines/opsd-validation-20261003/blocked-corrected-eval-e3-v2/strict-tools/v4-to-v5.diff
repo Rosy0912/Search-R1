@@ -1,0 +1,301 @@
+--- v4/base_asset_ancestry.py
++++ v5/base_asset_ancestry.py
+@@ -0,0 +1,39 @@
++"""Verify base against immutable source8e assets, not a newly self-labelled receipt.
++The original manifest is exact git-show source8e:reproduction/h20/assets.json.
++"""
++import hashlib,json,re
++from pathlib import Path
++TRAINING_ASSETS_SHA='a033b9d6e5b4453374c25d8d9a33d70254c1a79ea0d71677f21afb083d94b3fd'
++MODEL_REVISION='3aab1f1954e9cc14eb9509a215f9e5ca08227a9b'
++MODEL_FILES={'config.json','generation_config.json','merges.txt','model-00001-of-00002.safetensors','model-00002-of-00002.safetensors','model.safetensors.index.json','tokenizer.json','tokenizer_config.json','vocab.json'}
++
++def original_base_records():
++ path=Path(__file__).parent/'training-assets-8e.json';raw=path.read_bytes()
++ if hashlib.sha256(raw).hexdigest()!=TRAINING_ASSETS_SHA:raise ValueError('Original source8e asset manifest bytes changed')
++ records=[r for r in json.loads(raw) if r['repo']=='Qwen/Qwen2.5-3B']
++ if len(records)!=9 or {r['file'] for r in records}!=MODEL_FILES:raise ValueError('Original base asset set differs')
++ for r in records:
++  if r['kind']!='model' or r['revision']!=MODEL_REVISION or r['path']!='qwen2.5-3b/'+r['file']:raise ValueError('Original base asset source differs')
++ return records
++
++def verify_original_record(path,record):
++ """Stream full SHA256 and original Git blob content identity, as original valid()."""
++ if path.stat().st_size!=record['size']:raise ValueError('Base asset differs from original size')
++ sha=hashlib.sha256();blob=hashlib.sha1(('blob '+str(record['size'])+'\0').encode())
++ with path.open('rb') as handle:
++  for data in iter(lambda:handle.read(8*1024*1024),b''):sha.update(data);blob.update(data)
++ actual=sha.hexdigest()
++ if record['sha256'] is not None:
++  if not re.fullmatch('[0-9a-f]{64}',record['sha256']) or actual!=record['sha256']:raise ValueError('Base asset differs from original full SHA')
++ elif not re.fullmatch('[0-9a-f]{40}',record['git_blob_sha1']) or blob.hexdigest()!=record['git_blob_sha1']:raise ValueError('Base asset differs from original Git blob')
++ return actual
++
++def verify_base_ancestry(role):
++ directory=Path(role['directory']);records=original_base_records()
++ if set(role['files'])!=MODEL_FILES:raise ValueError('Base role must have exact original nine assets')
++ for record in records:
++  path=directory/record['file']
++  if not path.resolve().is_relative_to(directory.resolve()):raise ValueError('Base original asset escapes role directory')
++  actual=verify_original_record(path,record)
++  if role['files'][record['file']]!=actual:raise ValueError('Base receipt differs from original content')
++ return {'training_assets_sha256':TRAINING_ASSETS_SHA,'model_revision':MODEL_REVISION,'original_files':9}
+--- v4/hf_launcher.py
++++ v5/hf_launcher.py
+@@ -5,6 +5,44 @@
+ from pathlib import Path
+ from training_evidence import digest
+ from hf_activation_capture import capture_hf_activation,capture_lease,emit_activation
++
++def stop_own_child(child,timeout=5):
++ """Bounded cleanup of only the Popen child; never signal another process."""
++ if child.poll() is not None:return child.returncode
++ child.terminate()
++ try:return child.wait(timeout=timeout)
++ except subprocess.TimeoutExpired:
++  child.kill()
++  return child.wait(timeout=timeout)
++
++def stream_child(child,log,output,failed,errors):
++ try:
++  with log.open('xb') as handle:
++   while True:
++    part=child.stdout.read(8192)
++    if not part:break
++    handle.write(part);handle.flush();output.write(part);output.flush()
++ except Exception as error:
++  errors.append(error);failed.set()
++  # Wake the main thread and stop own checker immediately, even if its pipe is full.
++  try:
++   if child.poll() is None:child.terminate()
++  except ProcessLookupError:pass
++
++def wait_child(child,failed,errors):
++ while True:
++  if failed.is_set():raise errors[0]
++  code=child.poll()
++  if code is not None:
++   if failed.is_set():raise errors[0]
++   return code
++  failed.wait(.05)
++
++def finish_child(child,reader,timeout=5):
++ stop_own_child(child,timeout)
++ reader.join(timeout)
++ if reader.is_alive():raise RuntimeError('Own checker reader did not exit within cleanup timeout')
++ child.stdout.close()
+ 
+ def run(checker,evidence,root,expected_checker_sha):
+  job=os.environ.get('SLURM_JOB_ID','')
+@@ -29,30 +67,38 @@
+  if log.exists():raise ValueError('New immutable reload.log required')
+  launch=[sys.executable,'-u',str(checker)]
+  child=subprocess.Popen(launch,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,pass_fds=tuple({9,fd}),env=dict(os.environ))
+- errors=[]
+- def stream():
+-  try:
+-   with log.open('xb') as handle:
+-    while True:
+-     part=child.stdout.read(8192)
+-     if not part:break
+-     handle.write(part);handle.flush();sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
+-  except Exception as error:errors.append(error)
+- reader=threading.Thread(target=stream);reader.start();audit=None;deadline=time.monotonic()+30
++ errors=[];failed=threading.Event()
++ reader=threading.Thread(target=stream_child,args=(child,log,sys.stdout.buffer,failed,errors),daemon=True)
++ reader.start();audit=None;deadline=time.monotonic()+30;cleanup_attempted=False
+  try:
+   while child.poll() is None and time.monotonic()<deadline:
++   if failed.is_set():raise errors[0]
+    try:audit=capture_hf_activation(os.getpid(),checker,job,gpu[0]['uuid'],root/'gpu-job.lock');break
+    except (FileNotFoundError,ValueError):time.sleep(.05)
+   if audit is None:raise ValueError('Actual immutable checker process capture unavailable')
+   gpu_records=[dict(record,index=next(index for index,value in inventory.items() if value['uuid']==record['uuid'])) for record in gpu]
+   audit.update(launch_argv=launch,selected_gpu_preflight=gpu_records,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
+   emit_activation(audit,evidence)
+-  code=child.wait();reader.join()
++  code=wait_child(child,failed,errors);reader.join(5)
++  if reader.is_alive():raise RuntimeError('Own checker reader did not exit within timeout')
+   if errors:raise errors[0]
+   if code:raise RuntimeError('Immutable HF checker exited nonzero: '+str(code))
+   return audit
++ except Exception as error:
++  # Keep original stream/capture/checker error separate from bounded cleanup failures.
++  failure={'error_type':type(error).__name__,'error':str(error),'stream_errors':[{'type':type(e).__name__,'error':str(e)} for e in errors]}
++  cleanup_attempted=True
++  try:
++   finish_child(child,reader)
++  except Exception as cleanup:
++   failure['cleanup_error']={'type':type(cleanup).__name__,'error':str(cleanup)}
++  try:
++   with (evidence/'launcher-failure.json').open('x') as handle:json.dump(failure,handle,sort_keys=True)
++  except Exception:pass
++  raise
+  finally:
+-  if child.poll() is None:child.terminate();child.wait();reader.join()
++  if not cleanup_attempted and child.poll() is None:finish_child(child,reader)
++
+ 
+ def main():
+  import argparse
+--- v4/pre_stage_runtime.py
++++ v5/pre_stage_runtime.py
+@@ -7,11 +7,11 @@
+ HF_TEMPLATE_SHA='ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850'
+ 
+ def verify_hf_activation(manifest_path,script_path,checker_path,external_sha):
+- """NEW reviewed final bundle derived only from exact v4 template activation."""
++ """NEW reviewed final bundle derived only from exact v5 template activation."""
+  folder=Path(manifest_path).parent;directory=Path(__file__).parent
+  if digest(manifest_path)!=external_sha:raise ValueError('Actual HF final manifest external pin mismatch')
+  actual=loads(Path(manifest_path).read_text());template=loads((directory/'source-manifest.json').read_text())
+- if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA or actual.get('activation_template_manifest_sha256')!=digest(directory/'source-manifest.json'):raise ValueError('Actual HF manifest lacks exact v4/upstream ancestry')
++ if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA or actual.get('activation_template_manifest_sha256')!=digest(directory/'source-manifest.json'):raise ValueError('Actual HF manifest lacks exact v5/upstream ancestry')
+  if actual.get('preview_blocked') is not False or actual.get('source_commit')!=COMMIT or actual.get('formal_job')!='3007':raise ValueError('HF final source/job/activation mismatch')
+  if actual.get('directory_name')!=folder.name or not re.fullmatch('[a-z0-9-]+',folder.name):raise ValueError('HF actual final directory mismatch')
+  for name in ('production_math_sources','stage','formal_manifest_sha256','original_hf_manifest_sha256'):
+@@ -28,7 +28,7 @@
+    guard=" print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)\n return 78\n"
+    if source.count(guard)!=1:raise ValueError('Unknown HF launcher template guard')
+    source=source.replace(guard,'')
+-  if (folder/name).read_text()!=source:raise ValueError('Actual HF helper/script differs from exact v4 reviewed activation')
++  if (folder/name).read_text()!=source:raise ValueError('Actual HF helper/script differs from exact v5 reviewed activation')
+  if Path(checker_path).resolve()!=(folder/'checkpoint_reload.py').resolve() or digest(checker_path)!=template['file_sources']['checkpoint_reload.py']:raise ValueError('HF checker is not immutable5586 source')
+  if Path(script_path).resolve()!=(folder/'reload_job.sh').resolve():raise ValueError('HF activated script role outside bundle')
+  return actual
+--- v4/reload_job.sh
++++ v5/reload_job.sh
+@@ -15,11 +15,11 @@
+ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
+ source "$root/env/bin/activate"
+ cd "$root/repo"
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/source_bundle_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/source_bundle_check.py"
+ exec 9>"$root/gpu-job.lock"
+ flock -n 9
+ [[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/formal_completion_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/formal_completion_check.py"
+ [[ -d "$OPSD_CHECKPOINT" ]]
+ sha256sum "$0" > "$run/reload-job-script.sha256"
+ python - <<'PY'
+@@ -56,5 +56,5 @@
+ assert len(records)==1,records
+ print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
+ PY
+-python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/resource_sample.py" "$run/resources.ndjson" $$ &
+-python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb
++python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb
+--- v4/strict_stage_prerequisites.py
++++ v5/strict_stage_prerequisites.py
+@@ -9,7 +9,7 @@
+ import formal_completion_check as formal
+ from pilot_reload_prerequisites import verify_reload
+ 
+-EXPECTED_DEPENDENCY_BUNDLE_SHA='54457d326b42fba199ea60c7251f81451849e52d41d17b9859dc1447b894a2b3'
++EXPECTED_DEPENDENCY_BUNDLE_SHA='54ab3aeb63f672a9db9ee2b791f8d574020d1f8e57fa008fad2b8c5bdcb82172'
+ def verify_dependency_bundle():
+  import sys
+  directory=Path(__file__).resolve().parent;manifest=directory/'verifier-dependencies.json'
+@@ -47,6 +47,8 @@
+  for name,record in r['model_roles'].items():
+   if set(record)!={'directory','files'} or Path(record['directory'])!=base/MODEL_ROLES[name].relative_to(OWN):raise ValueError('Model role directory mismatch')
+   verify_model_files(record)
++ from base_asset_ancestry import verify_base_ancestry
++ verify_base_ancestry(r['model_roles']['base'])
+  return r,p
+ 
+ def verify_model_files(record):
+--- v4/test_base_asset_ancestry.py
++++ v5/test_base_asset_ancestry.py
+@@ -0,0 +1,34 @@
++"""Original manifest actual bytes; tiny synthetic content-hash mechanics only."""
++import hashlib,sys
++from pathlib import Path
++import pytest
++sys.path.insert(0,str(Path(__file__).parent))
++import base_asset_ancestry as base
++
++def test_original_source8e_manifest_exact_and_9files():
++ records=base.original_base_records()
++ assert len(records)==9
++ assert {r['revision'] for r in records}=={base.MODEL_REVISION}
++ assert [r['sha256'] for r in records if r['sha256']]==['f9558df91d3b89b4826e4db37439edb52f1d62a4fd602685013e7ca6b9f60f8f','51410930d5cf19a998fdb17ef0c46e4d9ace72c97a975a3331395a8a500f5edb']
++
++@pytest.mark.parametrize('algorithm',['sha','blob'])
++def test_rehashing_replacement_receipt_cannot_replace_original(tmp_path,algorithm):
++ raw=b'original';p=tmp_path/'model';p.write_bytes(raw)
++ record={'size':len(raw),'sha256':hashlib.sha256(raw).hexdigest() if algorithm=='sha' else None,'git_blob_sha1':hashlib.sha1(b'blob 8\0'+raw).hexdigest()}
++ assert base.verify_original_record(p,record)==hashlib.sha256(raw).hexdigest()
++ p.write_bytes(b'replaced')
++ # A new receipt SHA is valid for current bytes; immutable origin still rejects.
++ assert hashlib.sha256(p.read_bytes()).hexdigest()!=record['sha256']
++ with pytest.raises(ValueError,match='original'):base.verify_original_record(p,record)
++
++def test_wrong_size_and_missing_original_file(tmp_path):
++ p=tmp_path/'a';p.write_bytes(b'a')
++ with pytest.raises(ValueError,match='size'):base.verify_original_record(p,{'size':2})
++ with pytest.raises(FileNotFoundError):base.verify_original_record(tmp_path/'missing',{'size':1})
++
++def test_extra_role_files_cannot_be_labelled_base(tmp_path):
++ with pytest.raises(ValueError,match='nine'):base.verify_base_ancestry({'directory':str(tmp_path),'files':{'fake':'0'*64}})
++
++def test_original_manifest_tamper_rejects(monkeypatch):
++ monkeypatch.setattr(base,'TRAINING_ASSETS_SHA','0'*64)
++ with pytest.raises(ValueError,match='manifest bytes'):base.original_base_records()
+--- v4/test_launcher_cleanup.py
++++ v5/test_launcher_cleanup.py
+@@ -0,0 +1,52 @@
++"""CPU real subprocesses only. No CUDA, Slurm, or cluster leases are used."""
++import io, subprocess, sys, threading, time
++from pathlib import Path
++import pytest
++sys.path.insert(0,str(Path(__file__).parent))
++import hf_launcher as launcher
++
++def spawn(body):
++ return subprocess.Popen([sys.executable,'-u','-c',body],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
++
++class BrokenOutput:
++ def write(self,data):raise OSError('CPU fixture stdout write failed')
++ def flush(self):pass
++
++@pytest.mark.parametrize('failure',['stdout','log'])
++def test_stream_failure_stops_own_full_pipe_child_bounded(tmp_path,failure):
++ child=spawn("import os,signal;signal.signal(signal.SIGTERM,signal.SIG_IGN);os.write(1,b'READY\\n');\nwhile True:os.write(1,b'x'*65536)")
++ assert child.stdout.readline()==b'READY\n'
++ errors=[];failed=threading.Event()
++ log=tmp_path/'reload.log'
++ if failure=='log':log.write_bytes(b'EXISTING ORIGINAL EVIDENCE')
++ output=BrokenOutput() if failure=='stdout' else io.BytesIO()
++ reader=threading.Thread(target=launcher.stream_child,args=(child,log,output,failed,errors),daemon=True)
++ reader.start();started=time.monotonic()
++ try:
++  assert failed.wait(3)
++  with pytest.raises((OSError,FileExistsError)):
++   launcher.wait_child(child,failed,errors)
++ finally:launcher.finish_child(child,reader,timeout=.2)
++ assert time.monotonic()-started<3
++ assert child.poll() is not None and not reader.is_alive()
++ assert len(errors)==1
++ if failure=='log':assert log.read_bytes()==b'EXISTING ORIGINAL EVIDENCE'
++ else:assert 'stdout write failed' in str(errors[0]) and log.stat().st_size>0
++
++def test_terminate_escalates_only_own_child():
++ child=spawn("import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);print('READY',flush=True);time.sleep(60)")
++ assert child.stdout.readline()==b'READY\n'
++ try:
++  started=time.monotonic();code=launcher.stop_own_child(child,timeout=.2)
++  assert code<0 and time.monotonic()-started<2
++ finally:
++  if child.poll() is None:child.kill();child.wait(timeout=2)
++  child.stdout.close()
++
++def test_success_preserves_every_raw_byte(tmp_path):
++ child=spawn("import os;os.write(1,b'RAW\\x00\\xff\\n'*20000)")
++ output=io.BytesIO();errors=[];failed=threading.Event();log=tmp_path/'reload.log'
++ reader=threading.Thread(target=launcher.stream_child,args=(child,log,output,failed,errors),daemon=True);reader.start()
++ try:assert launcher.wait_child(child,failed,errors)==0
++ finally:launcher.finish_child(child,reader,timeout=2)
++ assert not errors and log.read_bytes()==output.getvalue()==b'RAW\x00\xff\n'*20000

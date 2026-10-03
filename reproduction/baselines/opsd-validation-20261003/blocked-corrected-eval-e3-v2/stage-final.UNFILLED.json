@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "phase": "reviewed-pre-generation",
+  "training_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "eval_commit": "e3f78f13b58898f7ab2f5a99cac2b76055d47a5a",
+  "source_files": "UNFILLED",
+  "input_manifest_sha256": "UNFILLED",
+  "model_role": "UNFILLED",
+  "model_directory": "UNFILLED",
+  "model_files": "UNFILLED",
+  "generation_budget": "UNFILLED",
+  "generation_budget_sha256": "UNFILLED",
+  "training_hf_receipt_path": "UNFILLED",
+  "training_hf_receipt_sha256": "UNFILLED",
+  "strict_training_hf_verifier": "UNFILLED"
+}
