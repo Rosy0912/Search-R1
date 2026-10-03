@@ -1,0 +1,20 @@
+[
+  {
+    "original": "eaa74b8b445e4991f6b9864a5f64408145cf494f",
+    "adopted": "a59dbe4c62559416e95c1b54d1f87771e9810aeb",
+    "patch_id": "201ed05091e804014dca720c4476bc0ae4a519e2",
+    "equal": true
+  },
+  {
+    "original": "3137d1fe989697725db2cfb97fe0e582a1e879d9",
+    "adopted": "63abd74e768370eafd60aca51b175173bee16d6b",
+    "patch_id": "30a32701cd1d19617fa8faff68c6b296c87b83f8",
+    "equal": true
+  },
+  {
+    "original": "0fca4cfa3de9fe967c8d0ae7d23e9fa4c1ea1b4e",
+    "adopted": "5f516208a0b0daed88c27c4800c7bcfcf908f043",
+    "patch_id": "2f219ecb574169db5fa88e7b413fb5989f6b2047",
+    "equal": true
+  }
+]

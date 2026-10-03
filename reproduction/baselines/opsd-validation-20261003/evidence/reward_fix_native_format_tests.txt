@@ -1,0 +1,8 @@
+{"real_dataproto": "verl.protocol", "format_reward_manager": "verl.trainer.main_ppo_format", "tokenizer_fixture": "HF-compatible list-or-tensor decode", "tests_run": 5, "passed": true}
+/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/transformers/utils/hub.py:128: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.006s
+
+OK
