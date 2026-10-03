@@ -42,7 +42,9 @@ uuids=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=c
 allocated={line.split(',')[0].strip():line.split(',')[1].strip() for line in uuids.splitlines()}
 selected=[allocated.get(v.strip(),v.strip()) for v in env['CUDA_VISIBLE_DEVICES'].split(',')]
 assert set(selected)=={record['uuid'] for record in leases}
-env.update(COSEARCH_RANKER_GPU_UUID=selected[-1],COSEARCH_RANKER_LEASE_UUIDS=json.dumps(selected))
+assert all(v.strip().isdigit() for v in env['CUDA_VISIBLE_DEVICES'].split(',')), 'Pinned vLLM actor mask requires allocated numeric device IDs'
+env.update(COSEARCH_RANKER_GPU_UUID=selected[-1],COSEARCH_RANKER_LEASE_UUIDS=json.dumps(selected),
+           COSEARCH_ACTOR_CUDA_VISIBLE_DEVICES=env['CUDA_VISIBLE_DEVICES'])
 # Do not use Ray's host-wide stop command. Slurm owns all child processes.
 children=[]
 logs=[]

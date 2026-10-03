@@ -47,7 +47,7 @@ def main(config):
     from .runtime_audit import runtime_env_vars
     audit_env = runtime_env_vars()
     import os
-    audit_env.update({name: os.environ[name] for name in ('COSEARCH_RANKER_GPU_UUID', 'COSEARCH_RANKER_LEASE_UUIDS',
+    audit_env.update({name: os.environ[name] for name in ('COSEARCH_RANKER_GPU_UUID', 'COSEARCH_RANKER_LEASE_UUIDS', 'COSEARCH_ACTOR_CUDA_VISIBLE_DEVICES',
                      'SLURM_JOB_ID', 'SLURM_JOB_NODELIST') if name in os.environ})
     if config.baselines.method == 'cosearch' and config.baselines.ranker.phase_gpu:
         audit_env.update(CUDA_VISIBLE_DEVICES=os.environ['COSEARCH_RANKER_GPU_UUID'],

@@ -243,8 +243,10 @@ class RayWorkerGroup(WorkerGroup):
                 if os.environ.get('COSEARCH_RANKER_GPU_UUID'):
                     # Child GPU actors inherit driver runtime_env. Empty NOSET
                     # restores Ray GPU masking ('0' is truthy in Ray 2.40).
+                    # vLLM 0.6.3 requires numeric NVML IDs; reuse the exact
+                    # original allocated mask, not the CPU driver's UUID mask.
                     env_vars.update(RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES='',
-                                    CUDA_VISIBLE_DEVICES=','.join(__import__('json').loads(os.environ['COSEARCH_RANKER_LEASE_UUIDS'])))
+                                    CUDA_VISIBLE_DEVICES=os.environ['COSEARCH_ACTOR_CUDA_VISIBLE_DEVICES'])
                 if rank != 0:
                     env_vars['MASTER_ADDR'] = self._master_addr
                     env_vars['MASTER_PORT'] = self._master_port
