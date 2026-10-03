@@ -1,6 +1,6 @@
 {
   "method": "tree_grpo",
-  "status": "audited_hybrid_two_update_smoke_running",
+  "status": "five_update_checkpoint_gate_running",
   "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
   "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
   "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
@@ -11,7 +11,7 @@
   "slurm_allocation_probe": 2844,
   "allocation_held": true,
   "formal_outer_updates": 0,
-  "smoke_outer_updates": 0,
+  "smoke_outer_updates": 2,
   "independent_review": "INDEPENDENT_REVIEW.md",
   "cpu_gate": {
     "baselines_passed": 45,
@@ -53,7 +53,7 @@
     "six leaves versus five GRPO trajectories",
     "paper equal-leaf token average differs from author token-mean implementation"
   ],
-  "notes": "Real Tree rollout2873 failed before first actor update; f4 fix deployed. Old A800 CPU encoder HTTP512 candidate timed out300s, rejected and own PID stopped. H100 CPU encoder plus GPU4 FP32 index binary gate complete; full HTTP gate pending.",
+  "notes": "Independent actual two-stage accepted; five stage2883 running with versioned receipt, formal/effect pending.",
   "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
   "integrated_code_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
   "remote_deployed_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
@@ -62,14 +62,14 @@
     "nccl_bf16": true,
     "flash_vllm": true,
     "cpu_retrieval_equivalence": "limited_14_query_top3_only",
-    "production_tree_smoke": false,
+    "production_tree_smoke": true,
     "five_step_checkpoint": false,
     "formal_500_updates": false,
     "final_51713_questions": false,
     "flash_bf16_math_probe": true
   },
   "network_progress": "SSH usable; all immutable and derived assets fully SHA verified",
-  "updated_at": "2026-10-03T09:03:25.030943+08:00",
+  "updated_at": "2026-10-03T10:24:02.298240+08:00",
   "latest_cpu_gate_evidence": "evidence/cpu-all-step-ids-fix.txt",
   "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
   "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
@@ -85,7 +85,7 @@
   "hardware_model_total_gpu_hours": null,
   "hardware_model_cost_limitation": "Slurm accounting disabled and precise allocation start/end not recorded; do not report GPU gates as zero cost.",
   "runtime_sessions": [
-    "head:tree-two-hybrid",
+    "head:tree-two-hybrid-async",
     "auxiliary index:PID774407"
   ],
   "retrieval_gate_result": "limited_14_query_top3_sanity_accepted_after_difference_review",
@@ -116,7 +116,7 @@
       }
     }
   },
-  "training_job": 2873,
+  "training_job": 2879,
   "failed_training_initialization_jobs": [
     {
       "job_id": 2866,
@@ -249,7 +249,7 @@
     "top50_exact_14": 11,
     "top50_exact_512": 402,
     "repeat_equal": true,
-    "accepted_for_training": false
+    "accepted_for_training": "five_update_gate_only_with_independent_two_acceptance"
   },
   "aux_hybrid_http_gate": {
     "job_id": 2876,
@@ -269,7 +269,42 @@
       22.916255505755544
     ]
   },
-  "current_job": 2877,
-  "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2877",
-  "aux_hybrid_acceptance_sha256": "ec62a3a1b1d40f43f7d9e2c10e1f789311aefe31b784ca34a5a344ab64d7e9ca"
+  "current_job": 2883,
+  "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2879",
+  "aux_hybrid_acceptance_sha256": "012b588b2e36233636b395f98ff7a09fffab91f37baa8e344fc109133f77001f",
+  "latest_failed_training_job": {
+    "job_id": 2877,
+    "status": "FAILED_BEFORE_FIRST_ACTUAL_UPDATE",
+    "actual_outer_updates": 0,
+    "slurm_start": "2026-10-03T09:01:52+08:00",
+    "slurm_end": "2026-10-03T09:06:24+08:00",
+    "allocated_training_gpus": 8,
+    "slurm_runtime_seconds": 272,
+    "slurm_allocation_gpu_hours": 0.6044444444444445,
+    "exit_code": 143,
+    "stop_marker": "REQUIRED_SERVICE_DIED_STOP_OWN_JOB",
+    "stage_cost_missing": true,
+    "cause": "health checker failure; CPU event-loop blockage/60s timeout mechanism consistent with long busy request and reproduced ASGI fixture, but old checker stderr suppressed, exact exception not recovered",
+    "cpu_retriever_peak_rss_bytes": 67352993792,
+    "effects_verified": false,
+    "allocated_cpus": 192,
+    "requested_cpus_per_task": 32,
+    "slurm_allocation_cpu_hours": 14.506666666666666
+  },
+  "latest_cpu_retrieval_gate_job": 2878,
+  "latest_cpu_retrieval_gate_exit_code": 0,
+  "busy_health_gate": {
+    "synthetic_inputs": 512,
+    "unique_source_questions": 14,
+    "total_http_seconds": 198.42710115760565,
+    "encoding_seconds": 184.10662352107465,
+    "encoding_cpu_seconds": 1440.476615382,
+    "health_samples": 198,
+    "max_health_seconds": 0.0043877288699150085,
+    "not_effect_or_parity_proof": true
+  },
+  "current_retrieval_acceptance_sha256": "049fbefeb89747c28030111386e00221ad0d664bbaf9ca24cf5e9d58d314d466",
+  "latest_two_stage_summary": "evidence/tree-two-2879-completed-summary.json",
+  "two_stage_acceptance": "evidence/two-stage-acceptance-2879.json",
+  "five_stage_actual_outer_updates": 0
 }

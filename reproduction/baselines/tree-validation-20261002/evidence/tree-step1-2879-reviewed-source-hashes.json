@@ -1,0 +1,10 @@
+{
+  "scope": "local source bytes match stage frozen productionf4; actual run stage resolved/source manifest still required for final acceptance",
+  "production_freeze": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
+  "source_sha256": {
+    "search_r1/baselines/tree_audit.py": "9ac551b9b0d084d4e3d2480124e99d31f514d45426a98fdf7c0e26ed0ad7227a",
+    "search_r1/baselines/controller.py": "5de3f6869d571f496280af96a1e96ed78e92cf4bc45fc1f84665e36b57d86018",
+    "search_r1/baselines/rollout.py": "a581addd9a6354871976a966b7c866201468a961ee206593ef0e3ca21814ac84",
+    "verl/trainer/ppo/ray_trainer.py": "183fd62db250f9836cca83f1250f680dea5ee00f4579d91ab99a48a0747539d6"
+  }
+}

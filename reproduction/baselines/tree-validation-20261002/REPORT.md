@@ -1,6 +1,6 @@
 # Tree-GRPO Search-R1 验证执行记录
 
-截至 2026-10-03。本任务仍在执行；已完成真实3B Tree rollout，但尚无成功的实际actor outer update或效果指标，不能宣称复现成功或优于 GRPO。
+截至 2026-10-03 10:12。两次真实3B Tree actor outer update完成，Slurm2879正常exit0，最终HF检查点CPU重载及非零参数变化通过；独立完整two stage验收已接受。正式500步和最终效果指标尚未完成，不能宣称优于GRPO。
 
 ## 已完成
 
@@ -80,3 +80,21 @@ Tree生产审计dc92f23已部署，下一次独立run显式启用：分支继承
 完整HTTP CPU预约2876实测exit0，top3 rank/content14/14与512/512一致且两次稳定；k50文档ID排序11/14一致、内容排序14/14一致，重复Wiki内容使部分ID换位不改变内容。512 HTTP耗时24.274/22.916秒，H100 CPU编码4.605秒（首轮），原始向量SHA与2854保存向量完全一致。CPU门禁已释放；训练接受与实际参数更新仍待独立复核及运行。
 
 独立真实复核与严格服务绑定验收完成后，Slurm2877已启动带Tree审计的两次更新smoke，生产冻结代码f4。预约h100-9全部8H100、32CPU/256G/4h上限，原八个小显存进程保留；辅助GPU4索引为固定独立实例。检索接受receipt SHA `ec62a3a1b1d40f43f7d9e2c10e1f789311aefe31b784ca34a5a344ab64d7e9ca`。截至提交，成功outer更新仍为0；不是已完成训练验收。
+
+Slurm2877在首次实际更新前以143结束，09:01:52–09:06:24，共272秒、8GPU预约成本0.604444GPU小时。观察到own健康检查失败停止标记；CPU长检索同步阻塞HTTP事件循环的60秒超时机制与观察一致，并由独立ASGI忙请求fixture复现，但旧checker stderr被抑制，未恢复当次准确异常。GPU守卫末样本无超阈值或停止事件。最终body cost因TERM清理先等待子进程、随后Slurm结束而未落盘，故只使用已观察到的Slurm预约区间，不能填0。新候选将CPU请求放到单串行worker，保留原endpoint/schema；主循环健康响应，异常/1800秒响应等待上界触发永久失败，已运行CPU线程仍由ownPID停止保护回收。重新实际HTTP及长请求健康门禁待完成。
+
+新异步CPU候选门禁2878全部完成exit0（CPU8/GPU0，09:20:39–09:26:51，共372秒）。完整HTTP两次top3 ID/内容均14/14与512/512一致，top50 ID11/14、内容14/14，原始向量仍与2854 exact。额外512合成长输入用于压力测试，未进入训练数据：原256-token编码上限，编码184.1066秒/进程CPU1440.4766秒，端到端198.4271秒；198次并发健康探测最大4.39毫秒，始终精确匹配服务身份。不是512独立问题效果/全查询数值等价证明。新结果正在独立复核，新receipt接受后重启两次更新；尚无成功实际更新。
+
+完整异步检索/忙请求门禁独立复核后，两次更新smoke已在Slurm2879重新启动，8张H100生产代码仍f4，检索receipt SHA `049fbefeb89747c28030111386e00221ad0d664bbaf9ca24cf5e9d58d314d466`，新helpers使用明确_async版本名，旧source/receipt保持历史可审计。仅允许本轮two smoke；当前actual outer0，仍等待实际Tree审计、训练finite/nonzero和完整HF reload验收。
+
+## 两次真实更新完成（2879）
+
+Slurm2879于09:36:28–10:09:36正常完成，两次actual_outer_update各含12个实际optimizer step，梯度范数1.2333/1.1346，全部输出指标有限。8H100预约共1988秒、4.41778 GPU小时；实际Slurm分配192CPU，106.02667 CPU小时，所请求32CPU不能当作分配成本。Stage body1972秒为4.38222 GPU小时，二者范围不同。辅助GPU4索引服务仍在运行，其完整生命周期成本尚未结算。
+
+两轮共6144叶轨迹，生成5,031,982 token、prefill12,596,754 token events、检索4585次、生成padding43行；重复前缀成本包含在prefill事件总量，不能解释成独立token或测得的硬件加速。首轮结构独立复核512题/1024根/3072叶，每根严格2次扩展，继承与policy绑定通过；第二轮及完整stage正在独立复核。原始审计只保存hash/count，逐元素mask/weight/logprob检查依据已审代码运行时断言。
+
+CPU8/GPU0验证作业2881重载最终global_step_2 HF成功，无missing/unexpected/mismatched keys；约3,085,143,087个参数相对固定base改变，434张量改变，最大绝对变化1.23084e-5，所有参数和CPU前向logits有限、tokenizer/BOS/EOS相同。非零变化不是效果提升证明。独立two验收已接受，正在推进five；正式500及51,713题最终测试仍待执行。上述早期进度段落是历史记录，以本段及manifest最新状态为准。
+
+完整two独立审查见 `TWO_REAL_STAGE_2879_REVIEW.md`，已核全部原始指标与4份审计SHA、HF参数差异及GPU/CPU原始采样。393个GPU守卫样本foreign显存最高1.37569%、SM0，原8个小进程继续存活；检索CPU实测峰值67.353GB。CPU重载作业2881占用8CPU/0GPU21秒，另计0.04667CPU小时。新five receipt绑定本次two接受、独立审查及所有新helper源文件SHA，并在分配前后检查辅助服务剩余时限；旧two-only receipt保持冻结。
+
+五步检查点验收已在Slurm2883启动，独占h100-9全部8H100、实际192CPU/256G、2小时上限；新receipt SHA `012b588b2e36233636b395f98ff7a09fffab91f37baa8e344fc109133f77001f`，明确仅允许five并绑定two接受及独立审查。辅助GPU4实例774407仍不变，启动前复核保守剩余寿命≥7500秒，实际分配后复核≥7200秒。Five从相同base重新开始，不是两步检查点精确续跑；当前five actual0，尚无five接受。正式500计划另建更长有界索引实例并重新数值/HTTP/身份门禁，既有4小时实例不能承载正式任务。
