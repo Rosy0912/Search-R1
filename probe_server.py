@@ -15,7 +15,7 @@ for _k in list(os.environ.keys()):
     if "proxy" in _k.lower():
         del os.environ[_k]
 
-import argparse, json, re, threading, time
+import argparse, gc, json, re, threading, time
 from pathlib import Path
 from reproduction.a800.prepare_run import digest
 from typing import List
@@ -62,7 +62,7 @@ def _apply_unlocked(manifest_path, force=False):
         assert digest(Path(enc)/name)==expected, 'Frozen encoder hash mismatch'
     for name,path in [('commit_probe.pkl',m['commit']),('boundary_probe.pkl',m['boundary'])]:
         assert digest(Path(path))==m['head_sha256'][name], 'Readout hash mismatch'
-    reload_model = force or (enc != STATE["encoder"])
+    reload_model = force or STATE["model"] is None or (enc != STATE["encoder"])
     print(f"[probe] reloading round={m.get('round')} encoder={enc} "
           f"(model_reload={reload_model})", flush=True)
     tok = STATE["tok"]; model = STATE["model"]
@@ -106,6 +106,33 @@ class Item(BaseModel):
     model_ranges: List[List[int]]
     prompt: str
     response: str = ""
+
+
+class EvaluatorControl(BaseModel):
+    version: str
+
+
+@app.post('/suspend')
+def suspend(req: EvaluatorControl):
+    with LOCK, evaluator_gpu_lock():
+        assert req.version == STATE['version'], 'Cannot suspend another evaluator version'
+        STATE['model'] = None
+        STATE['tok'] = None
+        gc.collect(); torch.cuda.synchronize(); torch.cuda.empty_cache()
+        allocated = torch.cuda.memory_allocated()
+        assert allocated < 256 * 1024 * 1024, 'Frozen evaluator memory retained; refuse calibration'
+        return {'version': STATE['version'], 'suspended': True, 'allocated_bytes_after_release': allocated}
+
+
+@app.post('/resume')
+def resume(req: EvaluatorControl):
+    with LOCK, evaluator_gpu_lock():
+        manifest = json.loads(Path(MANIFEST).read_text())
+        assert req.version == manifest['version'], 'Cannot resume an unbound evaluator version'
+        if STATE['model'] is None:
+            _apply_unlocked(MANIFEST, force=True)
+        assert STATE['model'] is not None and STATE['version'] == req.version
+        return {'version': STATE['version'], 'resumed': True}
 
 
 class ProbeRequest(BaseModel):

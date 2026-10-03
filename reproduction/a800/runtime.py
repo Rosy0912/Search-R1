@@ -29,11 +29,17 @@ def refresh_after_checkpoint(step,checkpoint):
     if step not in (50,100,150,200,250):return
     base=Path(os.environ['SEARCH_G1_BASE'])
     print('SEARCH_G1_REFIT_PAUSE='+str(step),flush=True)
+    import requests
+    session=requests.Session();session.trust_env=False
+    previous=json.loads((base/'artifacts/live/manifest.json').read_text())
+    response=session.post('http://127.0.0.1:18012/suspend',json={'version':previous['version']},timeout=120)
+    response.raise_for_status();released=response.json()
+    assert released['suspended'] is True and released['version']==previous['version']
+    assert released['allocated_bytes_after_release']<256*1024*1024
+    print('SEARCH_G1_EVALUATOR_UNLOADED='+previous['version'],flush=True)
     env=dict(os.environ,CUDA_VISIBLE_DEVICES='6')
     subprocess.run([str(base/'env/bin/python'),str(base/'repo/reproduction/a800/refit.py'),
                     '--step',str(step),'--model',str(checkpoint)],env=env,check=True)
-    import requests
-    session=requests.Session();session.trust_env=False
     expected=json.loads((base/'artifacts/live/manifest.json').read_text())
     for _ in range(120):
         status=session.get('http://127.0.0.1:18012/health',timeout=10).json()
