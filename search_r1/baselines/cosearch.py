@@ -192,6 +192,28 @@ class RankerSequenceLoss(torch.nn.Module):
         return -(objective * mask).sum(-1) / response_lengths
 
 
+def check_candidate_context(encoded, max_new_tokens, model_limit, questions, queries, documents):
+    """Fail without truncation, preserving the actual oversized inputs for review."""
+    bad=[i for i,ids in enumerate(encoded) if len(ids)+max_new_tokens>model_limit]
+    if not bad:return
+    record=dict(model_context_limit=model_limit,max_new_tokens=max_new_tokens,
+                candidate_counts=[len(documents[i]) for i in bad],
+                prompt_tokens=[len(encoded[i]) for i in bad],rows=bad,
+                cases=[dict(row=i,question=questions[i],query=queries[i],
+                            documents=documents[i],input_ids=encoded[i]) for i in bad])
+    destination=None
+    if os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
+        from pathlib import Path
+        directory=Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'ranker-context-failures'
+        directory.mkdir(parents=True,exist_ok=True)
+        destination=directory/f'{time.time_ns()}-{os.getpid()}.json'
+        with destination.open('x') as stream:json.dump(record,stream,ensure_ascii=False)
+    summary={k:v for k,v in record.items() if k!='cases'}
+    summary['evidence_path']=str(destination) if destination else None
+    print('COSEARCH_CONTEXT_EXCEEDED_JSON='+json.dumps(summary),flush=True)
+    raise ValueError(f'Ranker candidate context exceeds model limit: {summary}')
+
+
 class GenerativeRanker:
     def __init__(self, config):
         from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -349,8 +371,8 @@ class GenerativeRanker:
         prefix = 'validation_' if self.validation else ''
         self.cost[prefix + 'prompt_tokens_max'] = max(self.cost.get(prefix + 'prompt_tokens_max', 0),
                                                      inputs.input_ids.numel())
-        if inputs.input_ids.shape[1] + self.config.max_new_tokens > self.model.config.max_position_embeddings:
-            raise ValueError('Ranker candidate context exceeds model limit')
+        check_candidate_context([inputs.input_ids[0].tolist()], self.config.max_new_tokens,
+                                self.model.config.max_position_embeddings, [initial_question], [query], [docs])
         self.model.eval()
         # Checkpoints may ship repetition_penalty=1.05 or forced tokens. A fresh
         # config keeps rollout exactly the temperature policy scored below.
@@ -416,8 +438,8 @@ class GenerativeRanker:
                            f'Select exactly {keep} distinct document IDs ordered by relevance. '
                            'Think briefly, then output <ranking>[1, 2, ...]</ranking>.\n')
         encoded = self.tokenizer(prompts, return_token_type_ids=False)['input_ids']
-        if any(len(ids) + self.config.max_new_tokens > self.model.config.max_position_embeddings for ids in encoded):
-            raise ValueError('Ranker candidate context exceeds model limit')
+        check_candidate_context(encoded, self.config.max_new_tokens, self.model.config.max_position_embeddings,
+                                initial_questions, queries, documents)
         order = sorted(range(len(encoded)), key=lambda i: (len(encoded[i]), i))
         rows = [None] * len(order)
         batch_size = int(self.config.inference_batch_size)
