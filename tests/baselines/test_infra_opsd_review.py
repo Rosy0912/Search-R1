@@ -1,5 +1,6 @@
 """Independent regression review: deployment refusal and empty OPSD momentum."""
 from pathlib import Path
+from contextlib import nullcontext
 import sys
 from types import SimpleNamespace
 import numpy as np
@@ -48,7 +49,7 @@ def test_opsd_global_empty_minibatch_preserves_adam_momentum_and_weights():
     steps = [state['step'].clone() for state in actor.actor_optimizer.state.values()]
     actor.config = SimpleNamespace(distillation=SimpleNamespace(), ppo_epochs=2,
                                    ppo_mini_batch_size=2, ppo_micro_batch_size=1)
-    actor.teacher = SimpleNamespace(parameter_count=5, scored_tokens=0, cost_metrics=lambda: {},
+    actor.teacher = SimpleNamespace(on_device=nullcontext, parameter_count=5, scored_tokens=0, cost_metrics=lambda: {},
                                     audit_metrics=lambda optimizer: {})
     def forbidden():
         raise AssertionError('globally empty batch must not call optimizer step')

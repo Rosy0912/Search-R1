@@ -77,8 +77,9 @@ def validate_config(config):
             raise ValueError('OPSD requires teacher-only training-answer context')
         if method == 'opsd' and (actor.ulysses_sequence_parallel_size != 1 or actor.use_dynamic_bsz):
             raise ValueError('OPSD currently requires SP=1 and fixed microbatches')
-        if method == 'opsd' and actor.ppo_micro_batch_size != dp:
-            raise ValueError('OPSD starts at microbatch 1 per rank; use global microbatch equal to DP rank count')
+        # Fixed microbatches preserve the global token denominator. Select their
+        # size using an actual memory-coexistence probe; opsd_loss also enforces
+        # the explicit full-logits budget before allocating the student logits.
         if config.baselines.distillation.chunk_size < 1:
             raise ValueError('Distillation chunk_size must be positive')
     if method == 'tree_grpo':

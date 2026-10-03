@@ -68,7 +68,9 @@ class BapoFixes(unittest.TestCase):
         c.actor_rollout_ref.actor.ppo_micro_batch_size = 8
         validate_config(c)
         c.actor_rollout_ref.actor.ppo_micro_batch_size = 16
-        with self.assertRaisesRegex(ValueError, 'equal to DP'):
+        validate_config(c)
+        c.actor_rollout_ref.actor.ppo_micro_batch_size = 24
+        with self.assertRaisesRegex(ValueError, 'divisible by microbatch'):
             validate_config(c)
 
     def test_independent_phase_frequency_and_restore_on_error(self):

@@ -14,10 +14,16 @@ class DistillationActor(DataParallelPPOActor):
             raise ValueError('OPSD padded alignment currently requires sequence parallel size 1')
         if config.use_kl_loss or config.entropy_coeff:
             raise ValueError('Pure OPSD must disable reference KL and entropy bonus')
-        self.teacher = FrozenTeacher(config.distillation.teacher_path, tokenizer, 'cpu')
+        self.teacher = FrozenTeacher(config.distillation.teacher_path, tokenizer,
+                                     config.distillation.get('teacher_device', 'cpu'))
         self.tokenizer = tokenizer
 
     def update_policy(self, data):
+        with self.teacher.on_device():
+            metrics = self._update_policy(data)
+        return self._collect_observations(metrics, data)
+
+    def _update_policy(self, data):
         self.actor_module.train()
         # Disable dropout for deterministic distillation distributions. Gradients remain on.
         for module in self.actor_module.modules():
@@ -56,6 +62,9 @@ class DistillationActor(DataParallelPPOActor):
         self.actor_optimizer.zero_grad()
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        return metrics
+
+    def _collect_observations(self, metrics, data):
         metrics['teacher/parameters_per_rank'] = self.teacher.parameter_count
         metrics['teacher/scored_tokens_cumulative_per_rank'] = self.teacher.scored_tokens
         metrics.update(self.teacher.cost_metrics())
@@ -77,8 +86,8 @@ class DistillationActor(DataParallelPPOActor):
             valid &= torch.all(mask <= attention[:, -width:])
             valid &= torch.equal(mask, info[:, -width:])
             observations['actor/loss_mask_valid'] = int(valid.item())
-        observations['actor/optimizer_steps'] = updates
-        observations['actor/skipped_empty_minibatches'] = skipped
+        observations['actor/optimizer_steps'] = metrics['actor/optimizer_steps']
+        observations['actor/skipped_empty_minibatches'] = metrics['actor/skipped_empty_minibatches']
         for key in ('actor/opsd_loss', 'actor/grad_norm'):
             values = metrics.get(key, [])
             if values:

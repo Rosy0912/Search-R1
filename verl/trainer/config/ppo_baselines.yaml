@@ -102,6 +102,8 @@ baselines:
     resample_attempts: 2
   distillation:
     teacher_path: null
+    # Explicit placement; CUDA retains the same frozen FP32/eager teacher.
+    teacher_device: cpu
     # OPSD launcher explicitly enables privileged answers; TOP-D uses same context.
     privileged_answers: false
     beta: 0.0

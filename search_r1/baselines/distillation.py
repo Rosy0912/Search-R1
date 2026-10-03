@@ -118,11 +118,10 @@ def global_token_denominator(mask):
 
 
 class FrozenTeacher:
-    """Unsharded auxiliary teacher, CPU by default; never part of actor optimizer.
+    """Unsharded frozen FP32/eager teacher on an explicitly selected device.
 
-    The CPU choice permits offline clusters and protects the original GPU layout.
-    It costs one frozen model per actor rank for OPSD; production users should
-    explicitly size RAM/microbatches before launching.
+    CUDA placement costs one complete teacher per actor rank; production must
+    verify memory coexistence with actor, rollout and local GPU retrieval.
     """
     def __init__(self, path, student_tokenizer, device='cpu'):
         from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -135,7 +134,19 @@ class FrozenTeacher:
             if getattr(self.tokenizer, attr) != getattr(student_tokenizer, attr):
                 raise ValueError('Teacher/student special tokens differ')
         self.tokenizer.pad_token_id = student_tokenizer.pad_token_id
-        self.device = torch.device(device)
+        self.execution_device = torch.device(device)
+        if self.execution_device.type not in ('cpu', 'cuda'):
+            raise ValueError('Frozen teacher device must be cpu or cuda')
+        # Keep the complete frozen teacher off GPU during vLLM rollouts.
+        self.device = torch.device('cpu')
+        self.transfer_wall_seconds = 0.
+        self.cuda_seconds = 0.
+        self._cuda_events = []
+        if self.execution_device.type == 'cuda':
+            # Preserve FP32 teacher arithmetic even in a BF16 student worker.
+            # These process settings also prevent accidental later TF32 use.
+            torch.backends.cuda.matmul.allow_tf32 = False
+            torch.backends.cudnn.allow_tf32 = False
         self.model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.float32,
                                                         attn_implementation='eager').to(self.device)
         self.model.eval().requires_grad_(False)
@@ -147,24 +158,79 @@ class FrozenTeacher:
         self.load_cpu_seconds = time.process_time() - cpu_start
 
     @contextmanager
+    def on_device(self):
+        """Move once per update and restore CPU storage even after an exception."""
+        if self.execution_device.type == 'cpu':
+            yield
+            return
+        if self.device.type != 'cpu':
+            raise RuntimeError('Frozen teacher update device context cannot be nested')
+        wall_start = time.perf_counter()
+        try:
+            self.model.to(self.execution_device)
+            torch.cuda.synchronize(self.execution_device)
+            self.device = self.execution_device
+            self.transfer_wall_seconds += time.perf_counter() - wall_start
+            yield
+        finally:
+            try:
+                self._flush_cuda_events()
+            finally:
+                # Timing failures must not bypass an attempt to release teacher
+                # GPU parameters. Preserve the original error when cleanup works.
+                wall_start = time.perf_counter()
+                try:
+                    self.model.to('cpu')
+                    self.device = torch.device('cpu')
+                    torch.cuda.synchronize(self.execution_device)
+                finally:
+                    self.transfer_wall_seconds += time.perf_counter() - wall_start
+
+    @contextmanager
     def measure(self):
         """Measure teacher intervals; process CPU time includes every worker CPU thread.
 
         These are interval costs, not a profiler's exclusive CPU attribution.
-        CPU teacher timing excludes the subsequent transfer to student CUDA.
+        Host wall time measures enqueue time for CUDA, not GPU execution.
+        CUDA events measure elapsed stream intervals and exclude later transfers;
+        they are not exclusive kernel attribution when streams overlap.
         """
         wall_start, cpu_start = time.perf_counter(), time.process_time()
+        events = None
+        if self.device.type == 'cuda':
+            with torch.cuda.device(self.device):
+                events = (torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True))
+                events[0].record(torch.cuda.current_stream(self.device))
         try:
-            yield
+            # Teacher base model and projection stay FP32 inside caller autocast.
+            with torch.autocast(device_type=self.device.type, enabled=False):
+                yield
         finally:
+            if events is not None:
+                events[1].record(torch.cuda.current_stream(self.device))
+                self._cuda_events.append(events)
             self.wall_seconds += time.perf_counter() - wall_start
             self.cpu_seconds += time.process_time() - cpu_start
+            if len(self._cuda_events) >= 1024:
+                self._flush_cuda_events()
+
+    def _flush_cuda_events(self):
+        # Bounded event storage; synchronize only recorded teacher intervals.
+        for start, end in self._cuda_events:
+            end.synchronize()
+            self.cuda_seconds += start.elapsed_time(end) / 1000.
+        self._cuda_events.clear()
 
     def cost_metrics(self):
+        self._flush_cuda_events()
         # ru_maxrss includes student/optimizer/worker overhead, not isolated teacher RAM.
         peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         return {'teacher/cpu_seconds_cumulative_per_rank': self.cpu_seconds,
                 'teacher/wall_seconds_cumulative_per_rank': self.wall_seconds,
+                'teacher/host_wall_seconds_cumulative_per_rank': self.wall_seconds,
+                'teacher/cuda_stream_seconds_cumulative_per_rank': self.cuda_seconds,
+                'teacher/update_device_is_cuda_per_rank': int(self.execution_device.type == 'cuda'),
+                'teacher/transfer_wall_seconds_cumulative_per_rank': self.transfer_wall_seconds,
                 'teacher/load_cpu_seconds_per_rank': self.load_cpu_seconds,
                 'teacher/load_wall_seconds_per_rank': self.load_wall_seconds,
                 'teacher/model_bytes_per_rank': self.model_bytes,
