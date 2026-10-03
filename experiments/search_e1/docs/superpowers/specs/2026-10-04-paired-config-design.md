@@ -43,3 +43,16 @@ updates and changed finite checkpoints before running acceptance is complete.
 
 Implementation review: internal review_e1_spec approved the concrete service,
 core, wrapper and relay; actual hardware acceptance remains pending.
+
+## Real backward headroom correction
+
+The completed A update revealed48,126 MiB on a49,140-MiB card; B cap2/score4
+already reached23,017 MiB on24,564 MiB. Initial model-load and retrieval peaks
+were insufficient to select cache size. Preserve these runs, including A's
+finite step1 checkpoint (strict reward0.195, grad norm2.316, 981.758s), and
+reprobe from0.25 upward. Each accepted gate must itself leave6GiB, as well as
+bounding the next cache increase by that margin. B now uses physical1/score2;
+actual-source CPU and four-rank CUDA FSDP equivalence checks passed. Logical
+64/128 microbatches, token fractions, optimizer boundaries and schedule501 are
+unchanged. A retains the original physical2 and schedule201. This execution
+refinement does not modify the verified archive.

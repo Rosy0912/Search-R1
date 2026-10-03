@@ -91,3 +91,16 @@ optimizer boundaries. CPU actual-source gradient/weight checks passed2; all4
 CUDA FSDP ranks matched original weights/metrics within1e-6 with16 physical
 calls instead of4 original calls. A's ongoing run was untouched. Fresh B gates
 use the same source/runtime/seed/initial weights/common oracle with new cap receipts.
+
+### Full backward peaks supersede model-load estimates
+
+A completed a real update/checkpoint1: strict EM0.195, finite grad norm2.316,
+actor update481.792s, total step981.758s. LR0 is expected at the warmup start;
+step2 actual parameter changes are still required. Its real peak reached48,126
+MiB (49,140 total), so the run including checkpoint1 was preserved as
+smoke-040-low-headroom-step1-saved, rather than promoted to a formal job.
+B physical2/score4 reached23,017 MiB (24,564 total), preserved separately.
+Both fresh probes now start0.25 and enforce6GiB headroom on accepted gates,
+not just on prospective utilization increases. B uses physical1/score2, whose
+four-rank FSDP proof matched the original actual update within1e-6 with32
+physical calls versus4 originals. No foreign processes were stopped.

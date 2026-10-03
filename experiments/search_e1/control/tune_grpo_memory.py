@@ -5,7 +5,9 @@ base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];control=base/'
 receipts=base/'receipts';history=[];selected=None
 # Keep at least 6 GiB beyond observed peaks for longer trajectories and temporary tensors.
 reserve_mib=6144
-for candidate in [.4,.5,.6,.7,.8,.9]:
+candidates=[float(x) for x in os.environ.get("E1_UTIL_CANDIDATES", ".25,.3,.35,.4,.5,.6,.7,.8,.9").split(",")]
+if not candidates or sorted(set(candidates))!=candidates or not all(0<x<1 for x in candidates):raise ValueError("Invalid ordered utilization candidates")
+for candidate in candidates:
  if history:
   last=history[-1]
   if any(last['peaks_mib'].get(row[0],int(row[3])) + (candidate-last['utilization'])*int(row[2]) > int(row[2])-reserve_mib for row in last['admission']['devices']):
@@ -19,7 +21,10 @@ for candidate in [.4,.5,.6,.7,.8,.9]:
  for n in [1,2]:
   if not (out/'actor'/f'global_step_{n}'/'config.json').exists():raise RuntimeError('Missing real checkpoint')
  subprocess.run([python,str(control/'verify_checkpoint.py'),'--initial',str(base/'assets/model'),'--checkpoint',str(out/'actor/global_step_2'),'--report',str(receipts/f'{profile}-{stage}-checkpoint.json')],check=True)
- record=json.loads((receipts/f'{profile}-{stage}.json').read_text());history.append(record);selected=candidate
+ record=json.loads((receipts/f'{profile}-{stage}.json').read_text())
+ if any(record['peaks_mib'].get(row[0],int(row[3]))>int(row[2])-reserve_mib for row in record['admission']['devices']):
+  raise RuntimeError('Successful updates but insufficient 6GiB headroom; preserve gate and reconfigure execution before formal training')
+ history.append(record);selected=candidate
  (receipts/f'{profile}-memory-tuning.json').write_text(json.dumps(dict(gates=history,reserve_mib=reserve_mib,selected=selected,measurement='nvidia-smi sampled every 2 seconds; not an instantaneous allocator maximum'),indent=2))
 if selected is None:raise RuntimeError('No real-update gate accepted')
 (receipts/f'{profile}-selected-util.txt').write_text(str(selected)+'\n')
