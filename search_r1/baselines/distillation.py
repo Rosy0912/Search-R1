@@ -86,7 +86,20 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
     # response-logits allocation. All supervised columns are validated below.
     seed = student[..., :1]
     total = torch.where(torch.isfinite(seed), seed, torch.zeros_like(seed)).sum() * 0
+    # One compact host read per micro; never change any nonempty chunk shape.
+    if width:
+        chunk_count = (width + settings.chunk_size - 1) // settings.chunk_size
+        chunk_has_loss = F.pad(tensors['loss_mask'].bool(),
+                              (0, chunk_count * settings.chunk_size - width))
+        chunk_has_loss = chunk_has_loss.reshape(tensors['responses'].shape[0], chunk_count,
+                                               settings.chunk_size).any(dim=2).any(dim=0).cpu().tolist()
+    else:
+        chunk_has_loss = []
     for start in range(0, width, settings.chunk_size):
+        if not chunk_has_loss[start // settings.chunk_size]:
+            # Student/teacher contexts and connected zero already exist. Only
+            # a strictly zero loss branch is omitted; FSDP backward still runs.
+            continue
         stop = min(start + settings.chunk_size, width)
         pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(teacher.device)
         features = hidden.gather(1, pos[..., None].expand(-1, -1, hidden.shape[-1]))
