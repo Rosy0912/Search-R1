@@ -106,7 +106,8 @@ def masked_sum(values, mask, axis=None):
 
 def masked_mean(values, mask, axis=None):
     """Compute mean of tensor with a masked values."""
-    return (values * mask).sum(axis=axis) / mask.sum(axis=axis)
+    selected = torch.where(mask.bool(), values, torch.zeros_like(values))
+    return (selected * mask).sum(axis=axis) / mask.sum(axis=axis)
 
 
 def masked_var(values, mask, unbiased=True):

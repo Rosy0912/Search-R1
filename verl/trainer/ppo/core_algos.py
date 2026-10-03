@@ -182,6 +182,12 @@ def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange)
             a float number indicating the fraction of policy gradient loss being clipped
 
     """
+    # External observations/padding are not policy targets. Sanitize them before exp,
+    # rather than evaluating an invalid ratio and multiplying it by zero afterwards.
+    authored = eos_mask.bool()
+    old_log_prob = torch.where(authored, old_log_prob, torch.zeros_like(old_log_prob))
+    log_prob = torch.where(authored, log_prob, torch.zeros_like(log_prob))
+    advantages = torch.where(authored, advantages, torch.zeros_like(advantages))
     negative_approx_kl = log_prob - old_log_prob
     ratio = torch.exp(negative_approx_kl)
     ppo_kl = verl_F.masked_mean(-negative_approx_kl, eos_mask)
@@ -263,6 +269,10 @@ def kl_penalty(logprob: torch.FloatTensor, ref_logprob: torch.FloatTensor, kl_pe
     # # URL http://joschu.net/blog/kl-approx.html.
     if kl_penalty == 'low_var_kl':
         kl = ref_logprob - logprob
+        # Existing output clipping saturates for kl outside[-20,20]. Clipping its
+        # input there preserves that objective/gradient while avoiding 0*exp(inf)
+        # during backward through the output clamp. Invalid live values fail guards.
+        kl = torch.clamp(kl, min=-20, max=20)
         ratio = torch.exp(kl)
         kld = (ratio - kl - 1).contiguous()
         return torch.clamp(kld, min=-10, max=10)

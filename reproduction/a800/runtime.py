@@ -57,7 +57,8 @@ def accept_five_updates(checkpoint, records):
     assert proof['run_id']==run['run_id'] and proof['step']==5
     assert [r['step'] for r in records]==[1,2,3,4,5], 'Missing actual GRPO update'
     for r in records:
-        assert math.isfinite(r['metrics']['critic/rewards/mean'])
+        for field in ('critic/rewards/mean','actor/pg_loss','actor/entropy_loss','actor/kl_loss','actor/ppo_kl','actor/grad_norm'):
+            assert math.isfinite(r['metrics'][field]), 'Nonfinite five-update metric: '+field
         assert r['probe_version']==run['initial_probe_version'], 'Wrong evaluator identity'
     counts={k.split('/')[-1]:int(v) for k,v in records[-1]['metrics'].items() if k.startswith('val/evaluated_count/')}
     expected=json.loads((base/'data/audit.json').read_text())['validation_source_counts']

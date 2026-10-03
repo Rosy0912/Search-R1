@@ -19,6 +19,7 @@ import itertools
 from typing import Iterable, Tuple
 
 import torch
+from search_g1.numerics import require_finite
 from torch import nn
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 
@@ -143,10 +144,14 @@ class DataParallelPPOActor(BasePPOActor):
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
 
+        group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
+        gradients = {f'gradient_{i}':p.grad for i,p in enumerate(self.actor_module.parameters()) if p.grad is not None}
+        require_finite(gradients,stage='before_gradient_clipping',process_group=group)
         if isinstance(self.actor_module, FSDP):
             grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
         else:
             grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+        require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group)
         self.actor_optimizer.step()
         return grad_norm
 
@@ -201,6 +206,8 @@ class DataParallelPPOActor(BasePPOActor):
         return log_probs
 
     def update_policy(self, data: DataProto):
+        # Collective finite checks require matching microbatch counts on all ranks.
+        assert not self.config.use_dynamic_bsz, 'Search-G1 finite-update protocol requires fixed microbatch scheduling'
         # make sure we are in training mode
         self.actor_module.train()
 
@@ -263,8 +270,10 @@ class DataParallelPPOActor(BasePPOActor):
                 if self.config.use_kl_loss:
                     ref_log_prob = data['ref_log_prob']
                     # compute kl loss
-                    kld = core_algos.kl_penalty(logprob=log_prob,
-                                                ref_logprob=ref_log_prob,
+                    masked_log_prob = torch.where(response_mask.bool(),log_prob,torch.zeros_like(log_prob))
+                    masked_ref_log_prob = torch.where(response_mask.bool(),ref_log_prob,torch.zeros_like(ref_log_prob))
+                    kld = core_algos.kl_penalty(logprob=masked_log_prob,
+                                                ref_logprob=masked_ref_log_prob,
                                                 kl_penalty=self.config.kl_loss_type)
                     kl_loss = masked_mean(kld, response_mask)
 
@@ -273,6 +282,16 @@ class DataParallelPPOActor(BasePPOActor):
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
                 loss = policy_loss / self.gradient_accumulation
+                numerical_fields = dict(loss=loss,pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
+                                        response_tokens=response_mask.sum())
+                numerical_fields.update(authored_log_prob=torch.where(response_mask.bool(),log_prob,torch.zeros_like(log_prob)),
+                    authored_old_log_prob=torch.where(response_mask.bool(),old_log_prob,torch.zeros_like(old_log_prob)),
+                    authored_advantages=torch.where(response_mask.bool(),advantages,torch.zeros_like(advantages)))
+                if self.config.use_kl_loss:
+                    numerical_fields['kl_loss'] = kl_loss
+                    numerical_fields['authored_ref_log_prob'] = masked_ref_log_prob
+                group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
+                require_finite(numerical_fields,stage='before_backward',process_group=group,positive=('response_tokens',))
                 loss.backward()
 
                 data = {
