@@ -25,13 +25,23 @@ algos=SimpleNamespace(compute_policy_loss=ns['compute_policy_loss'],kl_penalty=n
 def append(metrics,data):
     for k,v in data.items():metrics.setdefault(k,[]).append(v)
 def method(source,name):
-    return extracted(source,name,dict(torch=torch,os=os,core_algos=algos,verl_F=SimpleNamespace(**functional),masked_mean=functional['masked_mean'],append_to_dict=append))
+    result = extracted(source,name,dict(torch=torch,os=os,core_algos=algos,verl_F=SimpleNamespace(**functional),masked_mean=functional['masked_mean'],append_to_dict=append))
+    if os.environ.get('E1_CHECK_TRAJECTORY') == '1':
+        from types import FunctionType
+        def trajectory_mean(values, mask, axis=None):
+            if axis is not None:return functional['masked_mean'](values,mask,axis=axis)
+            return functional['masked_mean'](values,mask,axis=-1).mean()
+        vf=SimpleNamespace(masked_mean=trajectory_mean)
+        policy=FunctionType(algos.compute_policy_loss.__code__,dict(algos.compute_policy_loss.__globals__,verl_F=vf))
+        result=FunctionType(result.__code__,dict(result.__globals__,core_algos=SimpleNamespace(compute_policy_loss=policy,kl_penalty=algos.kl_penalty),verl_F=vf,masked_mean=trajectory_mean))
+    return result
 class PhysicalMicroTests(unittest.TestCase):
     def test_actual_update_gradients_weights_and_metrics(self):
         torch.manual_seed(42)
         source=(UP/'workers/actor/dp_actor.py').read_text()
         original=method(source,'update_policy');adapted=method(patch_actor(source),'update_policy')
         mask=(torch.rand(32,7)>.45).double();mask[:4]=0
+        if os.environ.get('E1_CHECK_TRAJECTORY') == '1':mask[:,0]=1
         batch=TensorDict(dict(responses=torch.zeros(32,7,dtype=torch.long),input_ids=torch.randn(32,7,dtype=torch.double),attention_mask=mask,position_ids=torch.zeros(32,7,dtype=torch.long),loss_mask=mask,old_log_probs=torch.randn(32,7,dtype=torch.double)*.4,ref_log_prob=torch.randn(32,7,dtype=torch.double)*.4,advantages=torch.randn(32,7,dtype=torch.double)),batch_size=[32])
         class Data:
             meta_info={'temperature':1.}
@@ -53,7 +63,7 @@ class PhysicalMicroTests(unittest.TestCase):
             return SimpleNamespace(config=SimpleNamespace(ppo_mini_batch_size=16,ppo_micro_batch_size=8,use_dynamic_bsz=False,state_masking=True,use_kl_loss=True,clip_ratio=.2,entropy_coeff=.001,kl_loss_type='low_var_kl',kl_loss_coef=.001),actor_module=model,actor_optimizer=opt,_forward_micro_batch=forward,_optimizer_step=step,gradients=gradients,calls=calls)
         cap=int(os.environ.get("E1_CHECK_PHYSICAL", "4"));assert cap in [1,2,4,8]
         a,b=actor(),actor()
-        with patch.object(TensorDict,'cuda',lambda self:self),patch.dict(os.environ,{'E1_PHYSICAL_MICRO':str(cap),'SEARCH_E1_TRAJECTORY_BATCHING':'0'}):
+        with patch.object(TensorDict,'cuda',lambda self:self),patch.dict(os.environ,{'E1_PHYSICAL_MICRO':str(cap),'SEARCH_E1_TRAJECTORY_BATCHING':os.environ.get('E1_CHECK_TRAJECTORY','0')}):
             ma=original(a,Data());mb=adapted(b,Data())
         self.assertEqual(len(a.calls),4);self.assertEqual(len(b.calls),32//cap)
         self.assertEqual(len(a.gradients),2);self.assertEqual(len(b.gradients),2)

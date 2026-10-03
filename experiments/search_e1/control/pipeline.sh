@@ -55,9 +55,25 @@ for _ in range(1800):
 else:raise SystemExit('Retriever not ready; no training started')
 PY
 phase GPU_REAL_UPDATE_GATE_AND_MEMORY_TUNING
-"$PYTHON" "$CONTROL/tune_grpo_memory.py"
+E1_RESUME_GATES="${E1_RESUME_GATES:-0}" "$PYTHON" "$CONTROL/tune_grpo_memory.py"
 export E1_VLLM_UTIL=$(cat "$BASE/receipts/$PROFILE-selected-util.txt")
 export E1_INFERENCE_UTIL=0.85
+phase BUILDING_FROZEN_OPSD_RUNTIME
+OPSD_RUNTIME="$BASE/opsd-runtime/$PROFILE"
+if [[ -d "$OPSD_RUNTIME" ]]; then
+ E1_RUNTIME_PURPOSE=opsd "$PYTHON" "$CONTROL/verify_runtime.py"
+else
+ "$PYTHON" "$CONTROL/build_runtime.py" --base "$BASE" --profile "$PROFILE" --purpose opsd
+fi
+phase OPSD_REAL_MEMORY_UPDATE_GATE
+"$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd-memory-gate-admission.json"
+PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 "$CONTROL/gpu_opsd_gate.py" > "$BASE/logs/opsd-memory-gate.log" 2>&1
+# The heldout selection may choose the initial model; validate the final trained
+# checkpoint separately so weight-change evidence is not confused with selection.
+select_grpo() {
+ local round=$1 initial=$2 stage="$BASE/runs/$PROFILE/round-$1-grpo"
+ "$PYTHON" "$CONTROL/select_grpo_checkpoint.py" --log "$stage/train.log" --validation "$BASE/data/validation.jsonl" --initial "$initial" --stage "$stage" --steps "$steps" --report "$BASE/receipts/$PROFILE-round$round-selection.json"
+}
 phase FRESH_GRPO_ROUND_1
 export E1_STAGE=round-1-grpo
 "$PYTHON" "$CONTROL/run_checked.py"
@@ -65,6 +81,7 @@ if [[ "$PROFILE" == archive ]]; then steps=200; else steps=500; fi
 checkpoint="$BASE/runs/$PROFILE/round-1-grpo/actor/global_step_$steps"
 test -f "$checkpoint/config.json"
 "$PYTHON" "$CONTROL/verify_checkpoint.py" --initial "$BASE/assets/model" --checkpoint "$checkpoint" --report "$BASE/receipts/$PROFILE-round1-checkpoint.json"
+checkpoint=$(select_grpo 1 "$BASE/assets/model")
 phase INDEPENDENT_ROUND_1_EVALUATION
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/independent_round_1_evaluation-admission.json"
 eval_steps=(200)
@@ -79,7 +96,7 @@ phase OPSD_ROUND_1_TRAJECTORIES
 "$PYTHON" -m search_e1.mine --rollouts "$BASE/runs/$PROFILE/round1-rollouts.jsonl" --output "$BASE/runs/$PROFILE/round1-pairs.jsonl"
 phase OPSD_ROUND_1
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_1-admission.json"
-"$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round1-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round1-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round1-opsd.log" 2>&1
+PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round1-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round1-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round1-opsd.log" 2>&1
 export E1_MODEL="$BASE/runs/$PROFILE/round1-opsd/merged"
 test -f "$E1_MODEL/config.json"
 phase FRESH_GRPO_ROUND_2
@@ -88,13 +105,14 @@ export E1_STAGE=round-2-grpo
 checkpoint="$BASE/runs/$PROFILE/round-2-grpo/actor/global_step_$steps"
 test -f "$checkpoint/config.json"
 "$PYTHON" "$CONTROL/verify_checkpoint.py" --initial "$E1_MODEL" --checkpoint "$checkpoint" --report "$BASE/receipts/$PROFILE-round2-checkpoint.json"
+checkpoint=$(select_grpo 2 "$E1_MODEL")
 phase OPSD_ROUND_2_TRAJECTORIES
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_2_trajectories-admission.json"
 "$PYTHON" -m search_e1.rollout --model "$checkpoint" --data "$BASE/data/train.jsonl" --output "$BASE/runs/$PROFILE/round2-rollouts.jsonl" --k 5 --backend vllm --workers 4 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round2-rollouts.log" 2>&1
 "$PYTHON" -m search_e1.mine --rollouts "$BASE/runs/$PROFILE/round2-rollouts.jsonl" --output "$BASE/runs/$PROFILE/round2-pairs.jsonl"
 phase OPSD_ROUND_2
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_2-admission.json"
-"$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round2-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round2-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round2-opsd.log" 2>&1
+PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round2-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round2-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round2-opsd.log" 2>&1
 phase FINAL_SEVEN_BENCHMARK_EVALUATION
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/final_seven_benchmark_evaluation-admission.json"
 "$PYTHON" -m search_e1.rollout --model "$BASE/runs/$PROFILE/round2-opsd/merged" --data "$BASE/data/test.jsonl" --output "$BASE/runs/$PROFILE/final-test.jsonl" --k 1 --backend vllm --workers 4 --temperature 0 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/final-test.log" 2>&1

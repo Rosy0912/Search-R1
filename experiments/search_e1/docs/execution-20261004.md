@@ -104,3 +104,9 @@ Both fresh probes now start0.25 and enforce6GiB headroom on accepted gates,
 not just on prospective utilization increases. B uses physical1/score2, whose
 four-rank FSDP proof matched the original actual update within1e-6 with32
 physical calls versus4 originals. No foreign processes were stopped.
+
+05:31 更新：下载和 SHA 校验已完成，A/B 共用已验收的精确 GPU Flat 检索后端。A utilization .25 的反向传播峰值仍为48126MiB，与.4相同；vLLM生成退出后释放cache，因此单降utilization不能解决actor峰值。保留失败运行与原669项冻结runtime/manifest后，两组改用physical actor1、score2，逻辑micro A2/B16及原归约不变。A trajectory-mean 四rank FSDP梯度/权重/指标等价测试通过，原4次forward变32次，容差1e-6；B token-mean cap1同样已通过。A/B实际训练于05:31进入epoch0 step1，尚未完成两更新验收。
+
+B原smoke025在Ray worker初始化时SIGSEGV，GPU峰值仅4MiB，远端可用RAM934GiB，不属于GPU OOM。native栈为getenv→Abseil时区→gRPC StatusToString→Ray MetricsAgentClientImpl重试线程；原因仍不能断言是env竞争。任务私有Ray `_system_config.enable_metrics_collection=False`、启动前RAY_enable_metrics_collection=0/TZ=UTC；私有Ray+remote42小探针成功，真实四GPU worker已正常进入step1。不改变训练console指标、奖励或依赖版本，不操作其他Ray集群。
+
+新增执行控制：两组按512条NQ/Hotpot训练留出集选择GRPO→OPSD权重，比较baseline与保存且已评估的50步checkpoint，EM并列选择更早权重；最终201/501日志映射到已保存200/500，测试64/51713绝不参与选择。四项计数/坍塌/最终步骤测试通过。OPSD另建冻结runtime，保持pair_loss逐字相同，分rank并行留出集评估并SUM整数correct/count；损失/梯度无穷统一all-rank拒绝，避免单rank提前退出造成其他rank挂起。七项分布式归约/不等尾batch/非有限值/原pair_loss测试通过。新增独立真实8192上下文OPSD更新与原生生成内存gate，synthetic输入仅检验显存和真实AdamW权重更新，不能作为科学EM结果；目前尚未运行通过。完整实验和因果结论仍未验收。

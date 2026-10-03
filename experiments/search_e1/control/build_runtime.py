@@ -2,8 +2,10 @@
 from pathlib import Path
 import argparse,shutil,json,hashlib,difflib
 from physical_micro import patch_actor
-p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--profile',choices=['archive','r1'],required=True);a=p.parse_args()
-base=Path(a.base);repo=base/'source';archive=repo/'experiments/search_e1/archive';runtime=base/'runtime'/a.profile
+from opsd_execution import patch_opsd
+p=argparse.ArgumentParser();p.add_argument('--purpose',choices=['grpo','opsd'],default='grpo');p.add_argument('--base',required=True);p.add_argument('--profile',choices=['archive','r1'],required=True);a=p.parse_args()
+base=Path(a.base);repo=base/'source';archive=repo/'experiments/search_e1/archive';runtime=base/('runtime' if a.purpose=='grpo' else 'opsd-runtime')/a.profile
+receipt_profile=a.profile if a.purpose=='grpo' else a.profile+'-opsd'
 if runtime.exists():raise SystemExit('Runtime already exists; refusing to overwrite frozen source')
 shutil.copytree(archive,runtime,ignore=shutil.ignore_patterns('__pycache__','*.pyc','.cache'))
 up=runtime/'upstream/Search-R1';shutil.copyfile(repo/'search_r1/qa_protocol.py',up/'search_r1/qa_protocol.py')
@@ -47,8 +49,7 @@ p=up/'verl/workers/actor/dp_actor.py';s=p.read_text();s=s.replace('        self.
         self.actor_optimizer.step()''',1).replace('                loss.backward()', '''                if not torch.isfinite(loss).all():
                     raise FloatingPointError('Nonfinite actor loss; update refused')
                 loss.backward()''',1);p.write_text(s)
-if a.profile == 'r1':
- p=up/'verl/workers/actor/dp_actor.py';p.write_text(patch_actor(p.read_text()))
+p=up/'verl/workers/actor/dp_actor.py';p.write_text(patch_actor(p.read_text()))
 p=runtime/'search_e1/core.py';s=p.read_text();start=s.index('def reward(');end=s.index('\ndef ',start+5);s=s[:start]+'''def reward(trajectory, answers, policy_spans=None):
     from search_r1.qa_protocol import extract_final_answer
     if policy_spans is None:
@@ -80,13 +81,13 @@ p=up/'search_r1/search/retrieval_server.py';s=p.read_text();s='import os\n'+s
 s=s.replace('model.cuda()', "model.to(os.environ.get('E1_ENCODER_DEVICE', 'cuda'))")
 s=s.replace('v.cuda()', 'v.to(next(self.model.parameters()).device)');p.write_text(s)
 # Always start a task-private Ray cluster, independent of any ambient RAY_ADDRESS.
-p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "    for key in ['E1_PHYSICAL_MICRO', 'E1_PHYSICAL_SCORE']:\n        if key in os.environ:\n            kwargs['runtime_env']['env_vars'][key] = os.environ[key]\n    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))",1);s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "real_temp = Path(os.environ['E1_BASE']) / 'ray' / job\n    real_temp.mkdir(parents=True, exist_ok=True)\n    short_temp = Path('/tmp') / ('e1-' + str(os.getuid()) + '-' + job[:8])\n    if short_temp.exists() or short_temp.is_symlink():\n        if short_temp.resolve() != real_temp.resolve():\n            raise RuntimeError('Ray temporary link collision')\n    else:\n        short_temp.symlink_to(real_temp, target_is_directory=True)\n    kwargs.setdefault('_temp_dir', str(short_temp))",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
+p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "    for key in ['E1_PHYSICAL_MICRO', 'E1_PHYSICAL_SCORE']:\n        if key in os.environ:\n            kwargs['runtime_env']['env_vars'][key] = os.environ[key]\n    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))",1);s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs['_system_config'] = dict(kwargs.get('_system_config', {}), enable_metrics_collection=False)\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "real_temp = Path(os.environ['E1_BASE']) / 'ray' / job\n    real_temp.mkdir(parents=True, exist_ok=True)\n    short_temp = Path('/tmp') / ('e1-' + str(os.getuid()) + '-' + job[:8])\n    if short_temp.exists() or short_temp.is_symlink():\n        if short_temp.resolve() != real_temp.resolve():\n            raise RuntimeError('Ray temporary link collision')\n    else:\n        short_temp.symlink_to(real_temp, target_is_directory=True)\n    kwargs.setdefault('_temp_dir', str(short_temp))",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
 # Match driver shuffle and policy sampler seeds in both diagnostic arms.
 p=up/'verl/trainer/main_ppo.py';s=p.read_text();s=s.replace('def main_task(config):', 'def main_task(config):\n    import random\n    random.seed(42); np.random.seed(42); torch.manual_seed(42)',1);p.write_text(s)
 p=up/'verl/workers/rollout/vllm_rollout/vllm_rollout.py';s=p.read_text();s=s.replace('                                    dtype=config.dtype,', '                                    dtype=config.dtype,\n                                    seed=42,',1);p.write_text(s)
-# Long-run safeguards also apply to distillation, before any optimizer write.
-p=runtime/'search_e1/opsd.py';s=p.read_text();s=s.replace('                (loss / len(batch)).backward()', "                if not torch.isfinite(loss).all():\n                    raise FloatingPointError('Nonfinite OPSD loss')\n                (loss / len(batch)).backward()",1)
-s=s.replace("            torch.nn.utils.clip_grad_norm_(trainable, 1.)", "            grad_norm = torch.nn.utils.clip_grad_norm_(trainable, 1.)\n            if not torch.isfinite(grad_norm).all():\n                raise FloatingPointError('Nonfinite OPSD gradient; optimizer update refused')",1);p.write_text(s)
+# Separate OPSD runtime adds collective rejection and distributed heldout EM.
+if a.purpose == 'opsd':
+ p=runtime/'search_e1/opsd.py';p.write_text(patch_opsd(p.read_text()))
 # Use fixed local dataset revision, not a fresh online load during each arm.
 p=runtime/'search_e1/prepare.py';s=p.read_text();s=s.replace('from datasets import load_dataset, Dataset','from datasets import load_dataset, Dataset\nimport os');s=s.replace("ds = load_dataset('RUC-NLPIR/FlashRAG_datasets', source)","files = {p.stem: str(p) for p in (Path(os.environ['E1_DATASET_ROOT']) / source).glob('*.jsonl')}\n        if not files:\n            raise ValueError('No pinned dataset files for ' + source)\n        ds = load_dataset('json', data_files=files)");p.write_text(s)
 patch=[];manifest={}
@@ -98,6 +99,6 @@ for path in runtime.rglob('*'):
    patch.extend(difflib.unified_diff(old.read_text().splitlines(True) if old.exists() else [],path.read_text().splitlines(True),fromfile='archive/'+str(rel),tofile='runtime/'+str(rel)))
  manifest[str(rel)]=hashlib.sha256(path.read_bytes()).hexdigest()
 (base/'receipts').mkdir(exist_ok=True)
-(base/'receipts'/f'{a.profile}-runtime.sha256.json').write_text(json.dumps(manifest,indent=2))
-(base/'receipts'/f'{a.profile}-overlay.patch').write_text(''.join(patch))
+(base/'receipts'/f'{receipt_profile}-runtime.sha256.json').write_text(json.dumps(manifest,indent=2))
+(base/'receipts'/f'{receipt_profile}-overlay.patch').write_text(''.join(patch))
 print(runtime)

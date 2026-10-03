@@ -7,7 +7,17 @@ receipts=base/'receipts';history=[];selected=None
 reserve_mib=6144
 candidates=[float(x) for x in os.environ.get("E1_UTIL_CANDIDATES", ".25,.3,.35,.4,.5,.6,.7,.8,.9").split(",")]
 if not candidates or sorted(set(candidates))!=candidates or not all(0<x<1 for x in candidates):raise ValueError("Invalid ordered utilization candidates")
+if os.environ.get('E1_RESUME_GATES') == '1':
+ subprocess.run([python,str(control/'verify_runtime.py')],check=True)
+ previous=json.loads((receipts/f'{profile}-memory-tuning.json').read_text())
+ history=previous['gates'];selected=previous['selected']
+ if not history or selected!=history[-1]['utilization']:raise RuntimeError('Invalid previous accepted gates')
+ for old in history:
+  if old['status']!='COMPLETED' or old.get('execution_caps')!={key:os.environ.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE']}:raise RuntimeError('Accepted gate execution differs')
+  checkpoint=base/'runs'/profile/old['stage']/'actor/global_step_2'
+  subprocess.run([python,str(control/'verify_checkpoint.py'),'--initial',str(base/'assets/model'),'--checkpoint',str(checkpoint),'--report',str(receipts/f"{profile}-{old['stage']}-resumed-checkpoint.json")],check=True)
 for candidate in candidates:
+ if selected is not None and candidate<=selected:continue
  if history:
   last=history[-1]
   if any(last['peaks_mib'].get(row[0],int(row[3])) + (candidate-last['utilization'])*int(row[2]) > int(row[2])-reserve_mib for row in last['admission']['devices']):
