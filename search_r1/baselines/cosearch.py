@@ -201,6 +201,14 @@ class GenerativeRanker:
         self.cost[prefix + 'generated_tokens'] += response.numel()
         self.cost.setdefault(prefix + 'score_forward_tokens', 0)
         self.cost[prefix + 'score_forward_tokens'] += generated.numel()
+        calls = self.cost[prefix + 'rank_calls']
+        if calls == 1 or calls % 10 == 0:
+            print('COSEARCH_RANK_PROGRESS_JSON=' + json.dumps(dict(
+                validation=self.validation, calls=calls,
+                legal=self.cost[prefix + 'legal_rankings'],
+                fallback=self.cost[prefix + 'fallback_rankings'],
+                cumulative_wall_seconds=self.cost[prefix + 'rank_wall_seconds'],
+                last_prompt_tokens=inputs.input_ids.numel())), flush=True)
         if not self.validation:
             self.events.append(dict(question_uid=self.question_uids[state.source], trajectory_uid=state.trajectory,
                                     query=query, candidates=[d['document']['contents'] for d in docs], ranking=ranking,
