@@ -123,8 +123,11 @@ class GenerativeRanker:
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.device = torch.device(config.device)
+        attention = config.get('attn_implementation', 'eager')
+        if attention not in ('eager', 'sdpa'):
+            raise ValueError('Ranker attention must be eager or sdpa')
         self.model = AutoModelForCausalLM.from_pretrained(config.model_path, torch_dtype=torch.float32,
-                                                        attn_implementation='eager').to(self.device)
+                                                        attn_implementation=attention).to(self.device)
         self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.lr,
                                            weight_decay=config.get('weight_decay', .01))
         self.events = []

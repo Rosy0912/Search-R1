@@ -111,6 +111,7 @@ baselines:
   ranker:
     model_path: null
     device: cpu
+    attn_implementation: eager
     weight_decay: 0.01
     candidates: 50
     keep: 3
