@@ -35,6 +35,14 @@ class TerminalAnswerTests(unittest.TestCase):
             self.assertEqual(QA['compute_score_generated_em'](spans, {'target':['Paris']}), 1)
         self.assertEqual(QA['compute_score_generated_em'](['<answer>London</answer>'], {'target':['Paris']}, format_score=.1), .1)
 
+    def test_format_scorer_uses_model_spans(self):
+        scorer = runpy.run_path(str(ROOT / 'verl/utils/reward_score/qa_em_format.py'))['compute_score_em']
+        prompt = '<answer>example</answer><|im_start|>assistant\n'
+        for spans in [['<search><answer>Paris</answer></search>'], ['<search>q</search>']]:
+            transcript = prompt + '<information><answer>Paris</answer></information>'
+            self.assertEqual(scorer(transcript, {'target':['Paris']}, model_spans=spans), 0)
+        self.assertEqual(scorer(prompt + '<answer>Paris</answer>', {'target':['Paris']}, model_spans=['<answer>Paris</answer>']), 1)
+
     def test_g1_contexts_reject_nonterminal_answers(self):
         path = ROOT / 'search_g1/signals.py'
         if not path.exists():
