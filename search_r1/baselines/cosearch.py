@@ -126,6 +126,8 @@ def unpack_generation(output, input_ids, attention_mask, eos_token_id, temperatu
         raise ValueError('Generation raw logits do not cover the response')
     eos_ids = ([] if eos_token_id is None else list(eos_token_id)
                if isinstance(eos_token_id, (list, tuple)) else [eos_token_id])
+    scores = torch.stack([F.log_softmax(logits.float() / temperature, -1).gather(
+        -1, response[:, t, None]).squeeze(-1) for t, logits in enumerate(output.logits)], dim=1)
     events = []
     for row in range(input_ids.shape[0]):
         length = response.shape[1]
@@ -133,8 +135,7 @@ def unpack_generation(output, input_ids, attention_mask, eos_token_id, temperatu
         if ends:
             length = ends[0] + 1
         tokens = response[row, :length]
-        logp = torch.stack([F.log_softmax(output.logits[t][row].float() / temperature, -1)[tokens[t]]
-                            for t in range(length)])
+        logp = scores[row, :length]
         if not torch.isfinite(logp).all():
             raise ValueError('Nonfinite generation old log probabilities')
         prompt = input_ids[row][attention_mask[row].bool()]
@@ -162,6 +163,33 @@ def eval_decoder_checkpoint(model, enabled):
         yield
     finally:
         decoder.training = False
+
+
+class RankerSequenceLoss(torch.nn.Module):
+    """One scalar per sampled sequence; never gather vocabulary logits."""
+    def __init__(self, model, temperature, clip_ratio):
+        super().__init__()
+        self.model = model
+        self.temperature = temperature
+        self.clip_ratio = clip_ratio
+
+    def forward(self, input_ids, attention_mask, response_lengths, old_logp, advantages, max_response_length):
+        positions = attention_mask.cumsum(-1) - 1
+        positions.masked_fill_(attention_mask == 0, 1)
+        logits = self.model(input_ids, attention_mask=attention_mask, position_ids=positions,
+                            use_cache=False, num_logits_to_keep=max_response_length + 1).logits[:, :-1]
+        logp = F.log_softmax(logits.float() / self.temperature, -1).gather(
+            -1, input_ids[:, -max_response_length:, None]).squeeze(-1)
+        if not torch.isfinite(logp).all() or not torch.isfinite(old_logp).all():
+            raise ValueError('Nonfinite parallel ranker scores')
+        ratio = (logp - old_logp).exp()
+        if not torch.isfinite(ratio).all():
+            raise ValueError('Nonfinite parallel ranker ratios')
+        mask = torch.arange(max_response_length, device=logp.device)[None] >= (
+            max_response_length - response_lengths[:, None])
+        objective = torch.minimum(ratio * advantages[:, None],
+            ratio.clamp(1-self.clip_ratio, 1+self.clip_ratio) * advantages[:, None])
+        return -(objective * mask).sum(-1) / response_lengths
 
 
 class GenerativeRanker:
@@ -205,29 +233,41 @@ class GenerativeRanker:
         if (os.environ.get('SLURM_JOB_NODELIST') != 'h100-16' or not os.environ.get('SLURM_JOB_ID')
                 or uid not in leased or len(set(leased)) != 8 or not uid.startswith('GPU-')):
             raise RuntimeError('Ranker phase requires the owned h100-16 eight-GPU allocation')
-        path = f'/tmp/search-r1-gpu-leases-{os.getuid()}/{uid}.lock'
-        fd = os.open(path, os.O_RDWR)
-        try:
+        count = int(getattr(self.config, 'phase_gpu_devices', 1))
+        if count not in (1,8):
+            raise ValueError('Ranker phase count must be one or all eight owned GPUs')
+        for lease_uid in leased if count==8 else [uid]:
+            path = f'/tmp/search-r1-gpu-leases-{os.getuid()}/{lease_uid}.lock'
+            fd = os.open(path, os.O_RDWR)
             try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                pass
-            else:
-                raise RuntimeError('Ranker GPU parent lease is not held')
-        finally:
-            os.close(fd)
-        if not torch.cuda.is_initialized():
-            # Only this CPU Ray driver is remapped. Eight actor workers keep
-            # their Ray-provided masks and GPU reservations.
-            os.environ['CUDA_VISIBLE_DEVICES'] = uid
-        if os.environ.get('CUDA_VISIBLE_DEVICES') != uid or torch.cuda.device_count() != 1:
-            raise RuntimeError('Ranker CUDA context is not the selected physical GPU')
+                try:
+                    fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                except BlockingIOError:
+                    pass
+                else:
+                    raise RuntimeError('Ranker GPU parent lease is not held')
+            finally:
+                os.close(fd)
+        expected_mask=','.join(leased) if count==8 else uid
+        # torch.is_initialized(False) does not rule out an earlier cuInit.
+        # The dedicated process must be bound before importing HF/Torch.
+        if os.environ.get('CUDA_VISIBLE_DEVICES')!=expected_mask or torch.cuda.device_count()!=count:
+            raise RuntimeError('Ranker CUDA context is not the startup physical GPU mask')
         torch.backends.cuda.matmul.allow_tf32 = False
         started = time.perf_counter()
         parameter_ids = [id(p) for p in self.model.parameters()]
         # Gradients were consumed; next update clears them before accumulation.
         self.optimizer.zero_grad(set_to_none=True)
-        self.device = torch.device('cuda:0')
+        master = leased.index(uid) if count == 8 else 0
+        self.phase_devices = [master] + [i for i in range(count) if i != master]
+        self.device = torch.device('cuda', master)
+        torch.cuda.set_device(master)
+        if count==8 and not getattr(self,'parallel_rng_seeded',False):
+            # Independent device streams; never reseed inside concurrent threads.
+            for i in range(count):
+                with torch.cuda.device(i):
+                    torch.cuda.manual_seed(int(self.config.phase_seed)+i+1)
+            self.parallel_rng_seeded=True
         try:
             self.model.to(self.device)
             if training:
@@ -241,16 +281,23 @@ class GenerativeRanker:
                                                    '--format=csv,noheader,nounits'], text=True)
             actual = {line.split(',')[0].strip() for line in applications.splitlines()
                       if ',' in line and line.split(',')[1].strip() == str(os.getpid())}
-            if actual != {uid}:
+            if uid not in actual or not actual.issubset(set(leased)):
                 raise RuntimeError(f'Ranker physical GPU mismatch: expected {uid}, actual {sorted(actual)}')
             torch.cuda.synchronize()
             self.cost['gpu_to_wall_seconds'] = self.cost.get('gpu_to_wall_seconds', 0.) + time.perf_counter() - started
-            torch.cuda.reset_peak_memory_stats()
+            for i in self.phase_devices:
+                torch.cuda.reset_peak_memory_stats(i)
             with eval_decoder_checkpoint(self.model, training and getattr(self.config, 'gradient_checkpointing', False)):
                 yield
         finally:
             try:
-                torch.cuda.synchronize()
+                for i in self.phase_devices:
+                    torch.cuda.synchronize(i)
+                for i in self.phase_devices:
+                    for kind in ('allocated','reserved'):
+                        key=f'gpu_peak_{kind}_bytes_device_{i}'
+                        value=getattr(torch.cuda,f'max_memory_{kind}')(i)
+                        self.cost[key]=max(self.cost.get(key,0),value)
                 self.cost['gpu_peak_allocated_bytes'] = max(self.cost.get('gpu_peak_allocated_bytes', 0),
                                                             torch.cuda.max_memory_allocated())
             finally:
@@ -264,7 +311,9 @@ class GenerativeRanker:
                         if torch.is_tensor(value):
                             state[key] = value.cpu()
                 self.device = torch.device('cpu')
-                torch.cuda.empty_cache()
+                for i in self.phase_devices:
+                    with torch.cuda.device(i):
+                        torch.cuda.empty_cache()
                 self.cost['gpu_from_wall_seconds'] = self.cost.get('gpu_from_wall_seconds', 0.) + time.perf_counter() - started
                 print('COSEARCH_GPU_PHASE_JSON=' + json.dumps(dict(training=training, uuid=uid,
                       cost=self.cost, job=os.environ['SLURM_JOB_ID'])), flush=True)
@@ -375,45 +424,67 @@ class GenerativeRanker:
         budget = int(self.config.inference_token_budget)
         self.model.eval()
         self.tokenizer.padding_side = 'left'
-        offset = 0
+        groups=[]
+        offset=0
         while offset < len(order):
-            group = []
-            for i in order[offset:offset + batch_size]:
-                if group and (len(group) + 1) * (len(encoded[i]) + self.config.max_new_tokens) > budget:
+            group=[]
+            for i in order[offset:offset+batch_size]:
+                if group and (len(group)+1)*(len(encoded[i])+self.config.max_new_tokens)>budget:
                     break
                 group.append(i)
-            offset += len(group)
-            inputs = self.tokenizer.pad({'input_ids': [encoded[i] for i in group]},
-                                        padding=True, return_tensors='pt').to(self.device)
-            sampling = GenerationConfig(max_new_tokens=self.config.max_new_tokens, do_sample=not self.validation,
-                temperature=self.config.temperature, top_p=1., top_k=0, num_beams=1,
-                pad_token_id=self.tokenizer.pad_token_id, eos_token_id=self.model.generation_config.eos_token_id,
-                bos_token_id=self.model.generation_config.bos_token_id, return_dict_in_generate=True,
-                output_logits=not self.validation)
-            generated_at = time.perf_counter()
-            with torch.no_grad():
-                output = self.model.generate(**inputs, generation_config=sampling)
-                if self.validation:
-                    # Validation consumes only the ranking, never a PPO action.
-                    response = output.sequences[:, inputs.input_ids.shape[1]:]
-                    eos = sampling.eos_token_id
-                    eos_ids = eos if isinstance(eos, (list, tuple)) else [eos]
-                    events = []
-                    for row, i in enumerate(group):
-                        ends = [t for t, token in enumerate(response[row].tolist()) if token in eos_ids]
-                        length = ends[0] + 1 if ends else response.shape[1]
-                        events.append(dict(input_ids=torch.cat((torch.tensor(encoded[i]), response[row, :length].cpu())),
-                                           response_length=length))
-                else:
-                    events = unpack_generation(output, inputs.input_ids, inputs.attention_mask,
-                                               sampling.eos_token_id, self.config.temperature)
-            self.cost['generation_wall_seconds'] = self.cost.get('generation_wall_seconds', 0.) + time.perf_counter() - generated_at
-            for i, event in zip(group, events):
-                rows[i] = event
-            del output, inputs, events
-            if offset == len(group) or offset % 100 < len(group) or offset == len(order):
-                print('COSEARCH_BATCH_PROGRESS_JSON=' + json.dumps(dict(validation=self.validation,
-                      completed=offset, total=len(order), wall_seconds=time.perf_counter()-started)), flush=True)
+            groups.append(group);offset+=len(group)
+        devices = getattr(self, 'phase_devices', [self.device.index or 0]) if getattr(self.config, 'inference_parallel', False) else [self.device]
+        replicas = None
+        gpu_models = [self.model]
+        generation_started=time.perf_counter()
+        try:
+            if len(devices)>1:
+                if self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling:
+                    raise ValueError('Parallel ranker inference requires pinned static-RoPE Qwen2')
+                replica_at=time.perf_counter()
+                replicas=torch.nn.parallel.replicate(self.model, devices, detach=True)
+                gpu_models=replicas
+                for i,model in zip(devices,gpu_models):
+                    if any(p.device.index != i for module in model.modules()
+                           for p in module._former_parameters.values()):
+                        raise RuntimeError('Ranker replica is on the wrong GPU')
+                import subprocess
+                applications=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid',
+                                                      '--format=csv,noheader,nounits'],text=True)
+                actual={line.split(',')[0].strip() for line in applications.splitlines()
+                        if ',' in line and line.split(',')[1].strip()==str(os.getpid())}
+                expected=set(json.loads(os.environ['COSEARCH_RANKER_LEASE_UUIDS']))
+                if actual!=expected:
+                    raise RuntimeError(f'Parallel replica physical GPUs differ: {sorted(actual)}')
+                print('COSEARCH_GPU_IDENTITY_JSON='+json.dumps(dict(job=os.environ['SLURM_JOB_ID'],
+                      pid=os.getpid(),replica_uuids=sorted(actual))),flush=True)
+                self.cost['replication_wall_seconds']=self.cost.get('replication_wall_seconds',0.)+time.perf_counter()-replica_at
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=len(devices)) as executor:
+                completed=0
+                for wave in range(0,len(groups),len(devices)):
+                    futures=[]
+                    for j,group in enumerate(groups[wave:wave+len(devices)]):
+                        inputs=self.tokenizer.pad({'input_ids':[encoded[i] for i in group]},padding=True,return_tensors='pt')
+                        sampling=GenerationConfig(max_new_tokens=self.config.max_new_tokens,do_sample=not self.validation,
+                            temperature=self.config.temperature,top_p=1.,top_k=0,num_beams=1,
+                            pad_token_id=self.tokenizer.pad_token_id,eos_token_id=self.model.generation_config.eos_token_id,
+                            bos_token_id=self.model.generation_config.bos_token_id,return_dict_in_generate=True,
+                            output_logits=not self.validation)
+                        futures.append((group,executor.submit(self._generate_batch, gpu_models[j], devices[j], inputs, sampling)))
+                    for group,future in futures:
+                        events,wall=future.result()
+                        self.cost['generation_gpu_worker_seconds']=self.cost.get('generation_gpu_worker_seconds',0.)+wall
+                        for i,event in zip(group,events):rows[i]=event
+                        completed+=len(group)
+                    if wave==0 or completed%100<sum(len(g) for g,_ in futures) or completed==len(order):
+                        print('COSEARCH_BATCH_PROGRESS_JSON='+json.dumps(dict(validation=self.validation,
+                              completed=completed,total=len(order),wall_seconds=time.perf_counter()-started)),flush=True)
+                    futures.clear()
+        finally:
+            gpu_models.clear()
+            replicas=None
+            self.cost['generation_wall_seconds']=self.cost.get('generation_wall_seconds',0.)+time.perf_counter()-generation_started
         result = []
         prefix = 'validation_' if self.validation else ''
         # Restore retrieval/trajectory order before recording events or grouping.
@@ -437,6 +508,31 @@ class GenerativeRanker:
             calls=self.cost[prefix + 'rank_calls'], legal=self.cost[prefix + 'legal_rankings'],
             fallback=self.cost[prefix + 'fallback_rankings'], cumulative_wall_seconds=self.cost[prefix + 'rank_wall_seconds'])), flush=True)
         return result
+
+    def _generate_batch(self, model, device, inputs, sampling):
+        started=time.perf_counter()
+        device=torch.device('cuda',device) if isinstance(device,int) else device
+        from contextlib import nullcontext
+        # grad mode and active CUDA device are thread-local.
+        with torch.cuda.device(device) if device.type=='cuda' else nullcontext():
+            inputs=inputs.to(device)
+            with torch.no_grad():
+                output=model.generate(**inputs,generation_config=sampling)
+                if not self.validation:
+                    events=unpack_generation(output,inputs.input_ids,inputs.attention_mask,
+                                             sampling.eos_token_id,self.config.temperature)
+                else:
+                    response=output.sequences[:,inputs.input_ids.shape[1]:]
+                    eos=sampling.eos_token_id
+                    eos_ids=eos if isinstance(eos,(list,tuple)) else [eos]
+                    events=[]
+                    for row in range(response.shape[0]):
+                        ends=[t for t,token in enumerate(response[row].tolist()) if token in eos_ids]
+                        length=ends[0]+1 if ends else response.shape[1]
+                        prompt=inputs.input_ids[row][inputs.attention_mask[row].bool()]
+                        events.append(dict(input_ids=torch.cat((prompt,response[row,:length])).cpu(),response_length=length))
+            del output,inputs
+        return events,time.perf_counter()-started
 
     def execute(self, manager, predictions, states, do_search):
         actions, contents = manager.postprocess_predictions(predictions)
@@ -533,15 +629,33 @@ class GenerativeRanker:
                 rows = chosen[start:start + self.config.batch_size]
                 # Preserve zero-advantage members of informative groups; they count in the sequence expectation.
                 self.optimizer.zero_grad()
-                for i in rows:
-                    e = events[i]
-                    ids = e['input_ids'].to(self.device)[None, :]
-                    self.cost['training_forward_tokens'] += ids.numel()
-                    length = e['response_length']
-                    logp = self.response_logp(ids, length)
-                    loss = sequence_ppo_loss(logp, e['old_logp'].to(self.device), advantage[i].to(self.device),
-                                             self.config.clip_ratio) / len(rows)
-                    loss.backward()
+                if getattr(self.config, 'training_parallel', False):
+                    width=max(events[i]['input_ids'].numel() for i in rows)
+                    response_width=max(events[i]['response_length'] for i in rows)
+                    ids=torch.stack([F.pad(events[i]['input_ids'],(width-events[i]['input_ids'].numel(),0),
+                                           value=self.tokenizer.pad_token_id) for i in rows]).to(self.device)
+                    mask=torch.stack([F.pad(torch.ones_like(events[i]['input_ids']),
+                                            (width-events[i]['input_ids'].numel(),0)) for i in rows]).to(self.device)
+                    old=torch.stack([F.pad(events[i]['old_logp'],(response_width-events[i]['response_length'],0)) for i in rows]).to(self.device)
+                    lengths=torch.tensor([events[i]['response_length'] for i in rows],device=self.device)
+                    row_advantages=advantage[rows].to(self.device)
+                    sequence_loss=RankerSequenceLoss(self.model,self.config.temperature,self.config.clip_ratio)
+                    parallel=torch.nn.DataParallel(sequence_loss,device_ids=self.phase_devices[:len(rows)],output_device=self.device.index)
+                    losses=parallel(ids,mask,lengths,old,row_advantages,max_response_length=response_width)
+                    (losses.sum()/len(rows)).backward()
+                    del losses,parallel,sequence_loss,ids,mask,old,lengths,row_advantages
+                    self.cost['training_forward_tokens']+=sum(events[i]['input_ids'].numel() for i in rows)
+                    self.cost['training_padding_tokens']=self.cost.get('training_padding_tokens',0)+width*len(rows)-sum(events[i]['input_ids'].numel() for i in rows)
+                else:
+                    for i in rows:
+                        e = events[i]
+                        ids = e['input_ids'].to(self.device)[None, :]
+                        self.cost['training_forward_tokens'] += ids.numel()
+                        length = e['response_length']
+                        logp = self.response_logp(ids, length)
+                        loss = sequence_ppo_loss(logp, e['old_logp'].to(self.device), advantage[i].to(self.device),
+                                                 self.config.clip_ratio) / len(rows)
+                        loss.backward()
                 norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.grad_clip)
                 if not torch.isfinite(norm):
                     raise ValueError('Nonfinite ranker gradients; optimizer step refused')

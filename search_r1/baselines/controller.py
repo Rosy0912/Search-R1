@@ -98,6 +98,9 @@ def validate_config(config):
         if (ranker.get('inference_batch_size', 1) < 1 or ranker.get('inference_token_budget', 32768) < 1
                 or ranker.get('phase_gpu', False) and (ranker.device != 'cpu' or not ranker.get('reuse_generation_logits', False))):
             raise ValueError('Invalid phase GPU/batch ranker settings')
+        if (ranker.phase_gpu_devices not in (1,8)
+                or (ranker.inference_parallel or ranker.training_parallel) and (not ranker.phase_gpu or ranker.phase_gpu_devices!=8)):
+            raise ValueError('Parallel ranker requires all eight owned phase GPUs')
         if ranker.keep != config.retriever.topk:
             raise ValueError('Controlled comparison must preserve actor observation topk')
         if (ranker.candidates < ranker.keep or ranker.min_group_size < 2 or ranker.temperature <= 0

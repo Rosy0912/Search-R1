@@ -117,6 +117,10 @@ baselines:
     cpu_threads: null
     response_only_logits: false
     phase_gpu: false
+    phase_gpu_devices: 1
+    phase_seed: ${baselines.seed}
+    inference_parallel: false
+    training_parallel: false
     reuse_generation_logits: false
     inference_batch_size: 1
     inference_token_budget: 32768

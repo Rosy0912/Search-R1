@@ -12,7 +12,7 @@ mem_match=re.search(r'MinMemoryNode=(\d+)([KMGTP]?)',allocation)
 assert mem_match, 'Cannot verify actual Slurm node memory allocation'
 memory_mib=int(mem_match.group(1))*{'':1,'K':1/1024,'M':1,'G':1024,'T':1024**2,'P':1024**3}[mem_match.group(2)]
 assert memory_mib >= 192000
-run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-e')
+run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-j')
 assert re.fullmatch(r'cosearch-local-gpu-five-[0-9]{8}-[a-z][a-z0-9-]*',run_id)
 run=root/'runs'/run_id
 run.mkdir(parents=True,exist_ok=False)
@@ -70,7 +70,7 @@ try:
         except OSError: pass
         if time.monotonic()-started>1200: raise TimeoutError('Local retriever startup timeout')
         time.sleep(5)
-    probe=launch([python,str(root/'tools/native_gpu_ranker_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
+    probe=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/native_parallel_ranker_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
     while probe.poll() is None:
         if service.poll() is not None: raise RuntimeError('Retriever failed during GPU ranker probe')
         time.sleep(5)
@@ -104,15 +104,16 @@ try:
         'retriever.url=http://127.0.0.1:18086/retrieve',
         'baselines.ranker.attn_implementation=sdpa','baselines.ranker.cpu_threads=32',
         'baselines.ranker.response_only_logits=true','baselines.ranker.phase_gpu=true',
-        'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=4',
-        'baselines.ranker.inference_token_budget=32768','baselines.ranker.gradient_checkpointing=true',
+        'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=16',
+        'baselines.ranker.phase_gpu_devices=8','baselines.ranker.inference_parallel=true','baselines.ranker.training_parallel=true',
+        'baselines.ranker.inference_token_budget=131072','baselines.ranker.gradient_checkpointing=true',
         'baselines.local_runtime_only=true','baselines.local_runtime_host=h100-16','trainer.total_training_steps=6',
         'data.val_data_num=64','data.val_batch_size=64','trainer.val_before_train=false','trainer.smoke_only=true','trainer.test_freq=5',
         'trainer.save_freq=100','trainer.acceptance_step=5',
         'trainer.experiment_name='+run.name]
     (run/'launch.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],
         gpu_devices=os.environ['CUDA_VISIBLE_DEVICES'],command=command,local_node_only=True,
-        endpoints=['127.0.0.1:18086','127.0.0.1:16386'],ranker='same base FP32 phase-shared local GPU, CPU resident between phases',retrieval='same-node CUDA FP16 E5 + eight-GPU sharded FP16 FAISS',reference_commit='0328f941547fa8b41f4fe5a7f84499c7c67a7bee',
+        endpoints=['127.0.0.1:18086','127.0.0.1:16386'],ranker='same base FP32 phase-shared eight local GPUs, CPU resident between phases; original optimizer minibatch8',retrieval='same-node CUDA FP16 E5 + eight-GPU sharded FP16 FAISS',reference_commit='0328f941547fa8b41f4fe5a7f84499c7c67a7bee',
         cpu_allocation=os.environ.get('SLURM_CPUS_PER_TASK'),memory_mb=memory_mib,
         commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=root/'repo').strip()),indent=2)+'\n')
     # Inspect and preserve the exact effective Hydra configuration before models load.
