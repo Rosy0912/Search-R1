@@ -40,6 +40,30 @@ def attach_policy_weights(data, method):
     return data
 
 
+def reduce_paper_metrics(metrics, device):
+    """Make detached objective logs identical before DataProto keeps rank zero.
+
+    Each rank's contributions already use the global row/mass denominator
+    divided by world size, so averaging them recovers the full minibatch value.
+    This collective only touches logs and does not rescale loss or gradients.
+    """
+    if not torch.distributed.is_initialized():
+        return
+    keys = [key for key in ('actor/pg_loss', 'actor/entropy_loss', 'actor/kl_loss',
+                            'actor/pg_clipfrac', 'actor/ppo_kl') if key in metrics]
+    if not keys:
+        return
+    sizes = [len(metrics[key]) for key in keys]
+    values = torch.tensor([value for key in keys for value in metrics[key]],
+                          dtype=torch.float64, device=device)
+    torch.distributed.all_reduce(values, op=torch.distributed.ReduceOp.SUM)
+    values /= torch.distributed.get_world_size()
+    offset = 0
+    for key, size in zip(keys, sizes):
+        metrics[key] = values[offset:offset + size].tolist()
+        offset += size
+
+
 def row_denominator(rows, device):
     count = torch.tensor(float(rows), device=device)
     world = 1

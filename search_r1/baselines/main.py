@@ -24,7 +24,7 @@ def main(config):
         from .select_teacher import model_manifest, CANDIDATES
         target = config.baselines.holdout_record_path
         model = Path(config.actor_rollout_ref.model.path).resolve()
-        match = re.search(r'/global_step_(\d+)/actor$', str(model))
+        match = re.search(r'/actor/global_step_(\d+)$', str(model))
         if not target or Path(target).exists():
             raise ValueError('Specify a new holdout_record_path before evaluation')
         if not match or int(match.group(1)) not in CANDIDATES:
@@ -45,7 +45,7 @@ def main(config):
         from pathlib import Path
         from .select_teacher import model_manifest, CANDIDATES
         model = Path(config.actor_rollout_ref.model.path).resolve()
-        match = re.search(r'/global_step_(\d+)/actor$', str(model))
+        match = re.search(r'/actor/global_step_(\d+)$', str(model))
         if not match or int(match.group(1)) not in CANDIDATES:
             raise ValueError('Holdout candidate must be a specified saved actor update')
         if model_manifest(model) != checkpoint_hash:
