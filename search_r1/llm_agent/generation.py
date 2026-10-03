@@ -50,7 +50,7 @@ class LLMGenerationManager:
             add_special_tokens=False, 
             return_tensors='pt', 
             padding="longest"
-        )['input_ids']
+        )['input_ids'].long()
 
     def _postprocess_responses(self, responses: torch.Tensor) -> torch.Tensor:
         """Process responses to stop at search operation or answer operation."""
@@ -83,7 +83,7 @@ class LLMGenerationManager:
             padding='longest',
             return_tensors='pt',
             add_special_tokens=False,  # Prevents adding special tokens
-        )['input_ids']
+        )['input_ids'].long()
 
         if next_obs_ids.shape[1] > self.config.max_obs_length:
             print(f"[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, {next_obs_ids.shape[1]} & {self.config.max_obs_length}")            
