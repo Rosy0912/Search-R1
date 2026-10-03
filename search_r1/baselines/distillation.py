@@ -62,7 +62,7 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
     """Identical CPU/GPU loss path; full logits retain gradients only for student."""
     width = tensors['responses'].shape[1]
     tid, tmask, positions = teacher_inputs(tokenizer, tensors['prompts'], tensors['responses'],
-                                           tensors['attention_mask'][:, -width:], targets,
+                                           tensors['attention_mask'][:, tensors['attention_mask'].shape[1] - width:], targets,
                                            teacher.model.config.max_position_embeddings)
     with teacher.measure(), torch.no_grad():
         hidden = teacher.model.base_model(input_ids=tid.to(teacher.device),
@@ -81,7 +81,10 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
         logits = student_model(input_ids=tensors['input_ids'], attention_mask=tensors['attention_mask'],
                                position_ids=tensors['position_ids'], use_cache=False).logits
         student = logits[:, -width - 1:-1]
-    total = torch.where(torch.isfinite(student), student, torch.zeros_like(student)).sum() * 0
+    # A connected scalar zero needs one vocabulary column, not a second full
+    # response-logits allocation. All supervised columns are validated below.
+    seed = student[..., :1]
+    total = torch.where(torch.isfinite(seed), seed, torch.zeros_like(seed)).sum() * 0
     for start in range(0, width, settings.chunk_size):
         stop = min(start + settings.chunk_size, width)
         pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(teacher.device)
