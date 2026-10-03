@@ -27,6 +27,7 @@ representation-reward training path.
 
 from verl import DataProto
 import torch
+import os
 import re
 import numpy as np
 import requests
@@ -242,48 +243,57 @@ class EcoRewardManager():
         return None
 
     def _probe_call(self, items):
-        """POST rollouts to the Search-G1 probe server. Blocks and retries until
-        the probe server responds (Strategy B), so a transient outage/restart PAUSES
-        training rather than corrupting it. Returns the results list. Only gives up
-        (RuntimeError) if ECO_PROBE_MAX_WAIT>0 is exceeded."""
+        """Retry transport failures; reject invalid rewards and programming errors."""
         if not items:
             return []
         import time as _t
         attempt = 0
-        waited = 0.0
+        started = _t.monotonic()
+        deadline = started + self.probe_max_wait if self.probe_max_wait > 0 else None
         while True:
+            remaining = deadline - _t.monotonic() if deadline is not None else None
+            if remaining is not None and remaining <= 0:
+                raise RuntimeError('[probe] total wait exceeded ECO_PROBE_MAX_WAIT; refusing invalid reward')
+            timeout = min(self.probe_timeout, remaining) if remaining is not None else self.probe_timeout
             attempt += 1
             try:
                 resp = self._probe_session.post(self.probe_url, json={"items": items},
-                                                timeout=self.probe_timeout)
-                resp.raise_for_status()
-                if attempt > 1:
-                    print(f"[probe] recovered after {attempt-1} retries (~{waited:.0f}s waited); "
-                          f"resuming with valid trust reward", flush=True)
-                results, version = validate_probe_reply(resp.json(), items)
-                expected = getattr(self, 'expected_probe_version', None)
-                if os.environ.get('SEARCH_G1_BASE'):
-                    if expected is None:
-                        from pathlib import Path
-                        run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
-                        expected = run['initial_probe_version']
-                        self.expected_probe_version = expected
-                    if not expected or version != expected:
-                        raise ValueError('Evaluator version mismatch before reward/update')
-                self.last_probe_version = version
-                print("SEARCH_G1_PROBE_VERSION=" + version, flush=True)
-                return results
-            except Exception as e:
+                                                timeout=timeout)
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+                elapsed = _t.monotonic() - started
+                remaining = deadline - _t.monotonic() if deadline is not None else None
+                if remaining is not None and remaining <= 0:
+                    raise RuntimeError('[probe] total wait exceeded ECO_PROBE_MAX_WAIT; refusing invalid reward') from e
                 backoff = min(self.probe_backoff_cap, 4 * attempt)
-                print(f"[probe] UNAVAILABLE (attempt {attempt}, waited ~{waited:.0f}s): {e} "
+                if remaining is not None:
+                    backoff = min(backoff, remaining)
+                print(f"[probe] UNAVAILABLE (attempt {attempt}, elapsed ~{elapsed:.0f}s): {e} "
                       f"-> PAUSING this batch, retry in {backoff:.0f}s "
                       f"(probe is required; NOT training on trust=0)", flush=True)
                 _t.sleep(backoff)
-                waited += backoff
-                if self.probe_max_wait > 0 and waited >= self.probe_max_wait:
-                    raise RuntimeError(
-                        f"[probe] still UNAVAILABLE after {waited:.0f}s (> ECO_PROBE_MAX_WAIT="
-                        f"{self.probe_max_wait}s). Aborting to avoid corrupting the run.")
+                continue
+            # A deterministic HTTP response failure is not a transport outage.
+            resp.raise_for_status()
+            # A successful transport is not a valid evaluator until all checks pass.
+            # Keep schema/version/programming failures outside the retry handler.
+            results, version = validate_probe_reply(resp.json(), items)
+            expected = getattr(self, 'expected_probe_version', None)
+            if os.environ.get('SEARCH_G1_BASE'):
+                if expected is None:
+                    from pathlib import Path
+                    run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+                    expected = run['initial_probe_version']
+                    self.expected_probe_version = expected
+                if not expected or version != expected:
+                    raise ValueError('Evaluator version mismatch before reward/update')
+            if deadline is not None and _t.monotonic() >= deadline:
+                raise RuntimeError('[probe] total wait exceeded ECO_PROBE_MAX_WAIT; refusing late reward')
+            self.last_probe_version = version
+            if attempt > 1:
+                print(f"[probe] recovered after {attempt-1} retries (~{_t.monotonic()-started:.0f}s elapsed); "
+                      f"resuming with valid trust reward", flush=True)
+            print("SEARCH_G1_PROBE_VERSION=" + version, flush=True)
+            return results
 
     def _score_probe(self, row, pr):
         """Search-G1 reward (applies to all rollouts, including wrong ones, so
