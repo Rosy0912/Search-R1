@@ -26,3 +26,7 @@ GRPO容量调优每档0.4/0.5/0.6/0.7分别fresh开始、完整512×5轨迹真�
 B仍为原Search-R1的四个rank、全局actor micro64及score128。24GB执行层设置E1_PHYSICAL_MICRO=4、E1_PHYSICAL_SCORE=8：逻辑micro16内每个物理子块的损失乘有效token数/逻辑micro有效token数，再除原gradient_accumulation；PG、entropy及reference KL共享mask，因此保留原token归约和optimizer边界。完整零mask逻辑micro明确报错；零mask物理子块仍执行forward/backward，临时使用非零归约mask后乘零权重，以保持所有FSDP rank的collective次数一致。tests/test_physical_micro.py直接提取归档与适配后的真实update_policy/compute_policy_loss/kl_penalty，使用不同mask长度、零mask子块、entropy及KL比较两次optimizer边界的梯度、权重和指标，CPU float64容差1e-12通过。真实CUDA显存及两更新尚待验收，不能用该测试代替GPU训练。
 
 下载测速：HKUST1镜像128MiB索引range约11.4MB/s，HKUST1至HKUST4内网约117MB/s。剩余索引/语料range由HKUST1独立公开源下载，复用HKUST4已有32GB前缀及有效range；不跨集群，不重复下载完整资产。HKUST1目录/data/shaoshitong/search-e1-download-assist-20261004，仅公开range目录通过10.120.17.101:18282供HKUST4读取，逐块SHA256后组装，最后必须核验发布的整个LFS文件SHA256才允许assets.ready。个别慢range超时将保留partial后重试，不以分块大小宣称资产完整。
+
+HKUST1精确torch2.4环境的GPU0–3与HKUST4 GPU4–7均完成CUDA/FlashAttention实际kernel测试；B环境及模型/数据完整就绪。四rank FSDP微型实际GPU检验通过（receipts/fsdp-physical-equivalence2.log）：直接调用原始与适配后的PPO update及原始FSDP optimizer step，各rank mask不同且各含零mask物理块，权重/指标float32容差1e-6一致，原始4次与物理8次forward均完成collective。此仍是执行适配验证，尚不是完整512×5 RL更新。首个测试使用torchrun默认TensorDict.cuda()映射到0导致rank设备不匹配；测试改为映射LOCAL_RANK以模拟Ray单GPU可见性后正常通过，训练代码未为此改动。
+
+B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER且未训练；已停止仅本任务进程组并将旧runtime及hash/patch保留为r1-unused-zero-mask-v1，重新冻结正确runtime。未热修改已训练模型或checkpoint。
