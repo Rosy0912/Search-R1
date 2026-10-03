@@ -30,3 +30,5 @@ B仍为原Search-R1的四个rank、全局actor micro64及score128。24GB执行�
 HKUST1精确torch2.4环境的GPU0–3与HKUST4 GPU4–7均完成CUDA/FlashAttention实际kernel测试；B环境及模型/数据完整就绪。四rank FSDP微型实际GPU检验通过（receipts/fsdp-physical-equivalence2.log）：直接调用原始与适配后的PPO update及原始FSDP optimizer step，各rank mask不同且各含零mask物理块，权重/指标float32容差1e-6一致，原始4次与物理8次forward均完成collective。此仍是执行适配验证，尚不是完整512×5 RL更新。首个测试使用torchrun默认TensorDict.cuda()映射到0导致rank设备不匹配；测试改为映射LOCAL_RANK以模拟Ray单GPU可见性后正常通过，训练代码未为此改动。
 
 B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER且未训练；已停止仅本任务进程组并将旧runtime及hash/patch保留为r1-unused-zero-mask-v1，重新冻结正确runtime。未热修改已训练模型或checkpoint。
+
+公开range全部补齐并逐块SHA256就绪。HKUST4工作盘实际ST16000NM000J机械盘；合并改为直接流式生成e5_Flat.index，每个源分卷在写入过程中独立核验发布的完整SHA256，再原子发布索引。不另写64GB分卷副本，保留原下载前缀/分块供审计。manifest明确分别记录上游分卷SHA256和本地合并文件SHA256，不将后者冒充上游值。小文件真实字节拼接及源损坏禁止发布测试通过。算法/检索索引内容不变。

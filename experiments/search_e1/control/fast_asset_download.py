@@ -79,29 +79,23 @@ if only_ranges:
    path=Path(filename);shards.append(dict(path=str(path.relative_to(assets)),bytes=hi-lo+1,sha256=digest(path)))
  (base/'receipts/range-shards.json').write_text(json.dumps(shards,indent=2))
  (base/'receipts/ranges.ready').touch();print('RANGES_ONLY_COMPLETE',flush=True);raise SystemExit(0)
-for spec in specs:
- dest=assets/spec['kind']/spec['name']
- if spec['prefix_bytes']!=spec['size']:
-  temp=dest.with_suffix(dest.suffix+'.assembling')
-  with temp.open('wb') as out:
-   if spec['prefix']:
-    with Path(spec['prefix']).open('rb') as src:shutil.copyfileobj(src,out,8*1024**2)
-   for _,_,filename in spec['ranges']:
-    with Path(filename).open('rb') as src:shutil.copyfileobj(src,out,8*1024**2)
-  if temp.stat().st_size!=spec['size'] or digest(temp)!=spec['sha']:raise RuntimeError('Full asset SHA256 mismatch: '+spec['name'])
-  temp.replace(dest)
- print('FULL_ASSET_HASH_VERIFIED',spec['name'],spec['sha'],flush=True)
+from assemble_assets import assemble
 manifest=json.loads((assets/'manifest.json').read_text())
-for kind in ['index','corpus']:
- subset=[s for s in specs if s['kind']==kind]
- manifest[kind]=dict(repository='PeterJinGo/'+subset[0]['repo'],revision=subset[0]['revision'],endpoint='https://hf-mirror.com',files=[dict(path=s['name'],bytes=s['size'],sha256=s['sha'],upstream_sha256=s['sha']) for s in subset])
-(assets/'manifest.json').write_text(json.dumps(manifest,indent=2))
+index_specs=[s for s in specs if s['kind']=='index']
 index=assets/'index/e5_Flat.index'
-if not index.exists():
- with index.with_suffix('.assembling').open('wb') as out:
-  for name in ['part_aa','part_ab']:
-   with (assets/'index'/name).open('rb') as f:shutil.copyfileobj(f,out,8*1024**2)
- index.with_suffix('.assembling').replace(index)
+existing=manifest.get('index',{}).get('files',[])
+valid_index=next((f for f in existing if f['path']=='e5_Flat.index'),None)
+if valid_index and index.exists() and index.stat().st_size==valid_index['bytes'] and digest(index)==valid_index['sha256']:
+ index_file=valid_index
+else:
+ index_file=assemble(index_specs,index)
+corpus_spec=next(s for s in specs if s['kind']=='corpus')
+corpus_gz=assets/'corpus/wiki-18.jsonl.gz'
+if not (corpus_gz.exists() and corpus_gz.stat().st_size==corpus_spec['size'] and digest(corpus_gz)==corpus_spec['sha']):
+ assemble([corpus_spec],corpus_gz)
+manifest['index']=dict(repository='PeterJinGo/wiki-18-e5-index',revision=index_specs[0]['revision'],endpoint='https://hf-mirror.com',files=[index_file],source_parts=[dict(path=s['name'],bytes=s['size'],upstream_sha256=s['sha'],materialized_separately=False) for s in index_specs],note='Merged file streamed from verified source parts; merged SHA256 is locally computed, not an upstream published hash')
+manifest['corpus']=dict(repository='PeterJinGo/wiki-18-corpus',revision=corpus_spec['revision'],endpoint='https://hf-mirror.com',files=[dict(path=corpus_spec['name'],bytes=corpus_spec['size'],sha256=corpus_spec['sha'],upstream_sha256=corpus_spec['sha'])])
+(assets/'manifest.json').write_text(json.dumps(manifest,indent=2))
 import gzip
 corpus=assets/'corpus/wiki-18.jsonl'
 if not corpus.exists():
