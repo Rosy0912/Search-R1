@@ -69,6 +69,8 @@ trainer:
 
 baselines:
   method: gigpo
+  local_runtime_only: false
+  local_runtime_host: null
   base_commit: 9ab694499ad3913b67499f7a4ea13da6b544d459
   algorithm_source_commit: 68184965c532fe30fef0d89c3ea19f976ac3bd63
   seed: 42
