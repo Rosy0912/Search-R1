@@ -1,0 +1,20 @@
+{
+  "schema": "corrected-evaluation-layered-prerequisites-v1",
+  "training_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "formal_job": "3007",
+  "eval_commit": "UNFILLED",
+  "formal_completion_receipt": "UNFILLED",
+  "hf500_reload_job": "UNFILLED",
+  "hf500_evidence": "UNFILLED",
+  "model_roles": {
+    "base": {
+      "directory": "/mnt/data/shaoshitong/search-r1-rl/opsd/assets-root/assets/qwen2.5-3b",
+      "files": "UNFILLED"
+    },
+    "hf500": {
+      "directory": "/mnt/data/shaoshitong/search-r1-rl/opsd/runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_500",
+      "files": "UNFILLED"
+    }
+  },
+  "runtime_supplement": "UNFILLED"
+}

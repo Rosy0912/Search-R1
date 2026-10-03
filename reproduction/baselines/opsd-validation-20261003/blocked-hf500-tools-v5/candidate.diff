@@ -1,0 +1,1232 @@
+--- v3/activation_verification.py
++++ v5/activation_verification.py
+@@ -0,0 +1,51 @@
++"""Strict retained activation/source/lease/process/resources verification; CPU only."""
++import hashlib,re,subprocess
++from pathlib import Path
++from training_evidence import loads,digest,COMMIT
++from hf_activation_capture import validate_activation_audit,lock_records,validate_process_raw
++from pre_stage_runtime import verify_resource_rows
++
++def verify_lease(record,path,fd):
++ p=Path(path).resolve();stat=p.stat()
++ if set(record)!={'lock_path','fd','device','inode','raw_locks_before','raw_locks_after','matched_locks','reasserted_same_descriptor'}:raise ValueError('Exact lease raw schema required')
++ if record['lock_path']!=str(p) or record['fd']!=fd or record['device']!=stat.st_dev or record['inode']!=stat.st_ino or record['reasserted_same_descriptor'] is not True:raise ValueError('Lease descriptor/inode mismatch')
++ lock_records(record['raw_locks_before'],stat)
++ if lock_records(record['raw_locks_after'],stat)!=record['matched_locks']:raise ValueError('Lease raw kernel lock record mismatch')
++
++def verify_activation_evidence(paths,job,base):
++ folder=paths['checker_manifest'].parent;manifest=loads(paths['checker_manifest'].read_text());audit=loads(paths['activation_result'].read_text())
++ raw=paths['activation_raw'].read_text();marker='ACTUAL_HF500_ACTIVATION_AUDIT_JSON='
++ lines=raw.splitlines()
++ if len(lines)!=1 or not lines[0].startswith(marker) or loads(lines[0][len(marker):])!=audit:raise ValueError('Exact activation raw marker/file equality missing')
++ uid_tokens=re.findall(r'\bUserId=[^\s(]+\(([0-9]+)\)',paths['slurm_terminal'].read_text())
++ if uid_tokens!=[str(audit['uid'])]:raise ValueError('Activation UID does not match external Slurm user')
++ capture=folder/'hf_activation_capture.py';launcher=folder/'hf_launcher.py';checker=paths['checker'];lock=base/'gpu-job.lock'
++ validate_activation_audit(audit,job,checker,lock,manifest['file_sources']['hf_activation_capture.py'])
++ if audit['launcher_source_sha256']!=manifest['file_sources']['hf_launcher.py']:raise ValueError('Actual launcher source differs from completed HF bundle')
++ argv=audit['launch_argv']
++ if len(argv)!=3 or argv[1:]!=['-u',str(checker.resolve())] or audit['checker']['cmdline']!=argv:raise ValueError('Immutable checker actual argv mismatch')
++ if str(launcher.resolve()) not in audit['launcher']['cmdline']:raise ValueError('Actual launcher process is not pinned helper')
++ ancestry=audit['checker'].get('ancestry',[])
++ if not ancestry:raise ValueError('Checker actual ancestry capture missing')
++ parent=audit['checker']['ppid'];visited=set()
++ for record in ancestry:
++  validate_process_raw(record,job,audit['uid'])
++  if record['pid']!=parent or record['pid'] in visited:raise ValueError('Checker ancestry raw parent chain mismatch')
++  visited.add(record['pid']);parent=record['ppid']
++ if ancestry[-1]['pid']!=audit['launcher']['pid'] or ancestry[-1]['process_start_ticks']!=audit['launcher']['process_start_ticks']:raise ValueError('Actual checker is not descendant of pinned launcher')
++ verify_lease(audit['global_lease_before_launch'],lock,9)
++ selected=audit['selected_gpu_preflight'];devices=audit['selected_cuda_devices']
++ if len(selected)!=1 or len(devices)!=1 or selected[0]['uuid']!=audit['gpu_uuid'] or devices[0] not in {str(selected[0]['index']),selected[0]['uuid']}:raise ValueError('Selected native preflight inventory identity mismatch')
++ from math import isfinite
++ for field in ('utilization','memory_used','memory_total'):
++  if not isinstance(selected[0][field],(int,float)) or not isfinite(selected[0][field]):raise ValueError('Nonfinite native preflight occupancy')
++ gpu=selected[0]
++ if gpu['memory_total']<=0 or gpu['memory_used']<0 or not 0<=gpu['utilization']<=15 or 100*gpu['memory_used']/gpu['memory_total']>15:raise ValueError('Native preflight threshold exceeded')
++ lease=audit['selected_gpu_lease'];pergpu=Path('/tmp')/f"search-r1-gpu-leases-{audit['uid']}"/(audit['gpu_uuid']+'.lock')
++ if type(lease['fd']) is not int or lease['fd']<3 or lease['fd']==9:raise ValueError('Invalid single GPU inherited lease fd')
++ verify_lease(lease,pergpu,lease['fd'])
++ repo=base/'repo';preflight=repo/'search_r1/baselines/preflight.py';source=audit['preflight_source']
++ if Path(source['path']).resolve()!=preflight.resolve() or digest(preflight)!=source['sha256']:raise ValueError('Actual preflight imported source path/SHA mismatch')
++ original=subprocess.check_output(['git','-C',str(repo),'show',COMMIT+':search_r1/baselines/preflight.py'])
++ if hashlib.sha256(original).hexdigest()!=source['sha256']:raise ValueError('Preflight differs from frozen training8e source')
++ return verify_resource_rows([loads(line) for line in paths['resources'].read_text().splitlines()],job,audit['gpu_uuid'],str(audit['uid']),audit['checker_pid'],audit['checker_start_ticks'])
+--- v3/base_asset_ancestry.py
++++ v5/base_asset_ancestry.py
+@@ -0,0 +1,39 @@
++"""Verify base against immutable source8e assets, not a newly self-labelled receipt.
++The original manifest is exact git-show source8e:reproduction/h20/assets.json.
++"""
++import hashlib,json,re
++from pathlib import Path
++TRAINING_ASSETS_SHA='a033b9d6e5b4453374c25d8d9a33d70254c1a79ea0d71677f21afb083d94b3fd'
++MODEL_REVISION='3aab1f1954e9cc14eb9509a215f9e5ca08227a9b'
++MODEL_FILES={'config.json','generation_config.json','merges.txt','model-00001-of-00002.safetensors','model-00002-of-00002.safetensors','model.safetensors.index.json','tokenizer.json','tokenizer_config.json','vocab.json'}
++
++def original_base_records():
++ path=Path(__file__).parent/'training-assets-8e.json';raw=path.read_bytes()
++ if hashlib.sha256(raw).hexdigest()!=TRAINING_ASSETS_SHA:raise ValueError('Original source8e asset manifest bytes changed')
++ records=[r for r in json.loads(raw) if r['repo']=='Qwen/Qwen2.5-3B']
++ if len(records)!=9 or {r['file'] for r in records}!=MODEL_FILES:raise ValueError('Original base asset set differs')
++ for r in records:
++  if r['kind']!='model' or r['revision']!=MODEL_REVISION or r['path']!='qwen2.5-3b/'+r['file']:raise ValueError('Original base asset source differs')
++ return records
++
++def verify_original_record(path,record):
++ """Stream full SHA256 and original Git blob content identity, as original valid()."""
++ if path.stat().st_size!=record['size']:raise ValueError('Base asset differs from original size')
++ sha=hashlib.sha256();blob=hashlib.sha1(('blob '+str(record['size'])+'\0').encode())
++ with path.open('rb') as handle:
++  for data in iter(lambda:handle.read(8*1024*1024),b''):sha.update(data);blob.update(data)
++ actual=sha.hexdigest()
++ if record['sha256'] is not None:
++  if not re.fullmatch('[0-9a-f]{64}',record['sha256']) or actual!=record['sha256']:raise ValueError('Base asset differs from original full SHA')
++ elif not re.fullmatch('[0-9a-f]{40}',record['git_blob_sha1']) or blob.hexdigest()!=record['git_blob_sha1']:raise ValueError('Base asset differs from original Git blob')
++ return actual
++
++def verify_base_ancestry(role):
++ directory=Path(role['directory']);records=original_base_records()
++ if set(role['files'])!=MODEL_FILES:raise ValueError('Base role must have exact original nine assets')
++ for record in records:
++  path=directory/record['file']
++  if not path.resolve().is_relative_to(directory.resolve()):raise ValueError('Base original asset escapes role directory')
++  actual=verify_original_record(path,record)
++  if role['files'][record['file']]!=actual:raise ValueError('Base receipt differs from original content')
++ return {'training_assets_sha256':TRAINING_ASSETS_SHA,'model_revision':MODEL_REVISION,'original_files':9}
+--- v3/hf_launcher.py
++++ v5/hf_launcher.py
+@@ -5,6 +5,44 @@
+ from pathlib import Path
+ from training_evidence import digest
+ from hf_activation_capture import capture_hf_activation,capture_lease,emit_activation
++
++def stop_own_child(child,timeout=5):
++ """Bounded cleanup of only the Popen child; never signal another process."""
++ if child.poll() is not None:return child.returncode
++ child.terminate()
++ try:return child.wait(timeout=timeout)
++ except subprocess.TimeoutExpired:
++  child.kill()
++  return child.wait(timeout=timeout)
++
++def stream_child(child,log,output,failed,errors):
++ try:
++  with log.open('xb') as handle:
++   while True:
++    part=child.stdout.read(8192)
++    if not part:break
++    handle.write(part);handle.flush();output.write(part);output.flush()
++ except Exception as error:
++  errors.append(error);failed.set()
++  # Wake the main thread and stop own checker immediately, even if its pipe is full.
++  try:
++   if child.poll() is None:child.terminate()
++  except ProcessLookupError:pass
++
++def wait_child(child,failed,errors):
++ while True:
++  if failed.is_set():raise errors[0]
++  code=child.poll()
++  if code is not None:
++   if failed.is_set():raise errors[0]
++   return code
++  failed.wait(.05)
++
++def finish_child(child,reader,timeout=5):
++ stop_own_child(child,timeout)
++ reader.join(timeout)
++ if reader.is_alive():raise RuntimeError('Own checker reader did not exit within cleanup timeout')
++ child.stdout.close()
+ 
+ def run(checker,evidence,root,expected_checker_sha):
+  job=os.environ.get('SLURM_JOB_ID','')
+@@ -29,30 +67,46 @@
+  if log.exists():raise ValueError('New immutable reload.log required')
+  launch=[sys.executable,'-u',str(checker)]
+  child=subprocess.Popen(launch,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,pass_fds=tuple({9,fd}),env=dict(os.environ))
+- errors=[]
+- def stream():
+-  try:
+-   with log.open('xb') as handle:
+-    while True:
+-     part=child.stdout.read(8192)
+-     if not part:break
+-     handle.write(part);handle.flush();sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
+-  except Exception as error:errors.append(error)
+- reader=threading.Thread(target=stream);reader.start();audit=None;deadline=time.monotonic()+30
++ errors=[];failed=threading.Event()
++ reader=threading.Thread(target=stream_child,args=(child,log,sys.stdout.buffer,failed,errors),daemon=True)
++ reader.start();audit=None;deadline=time.monotonic()+30;cleanup_attempted=False
+  try:
+   while child.poll() is None and time.monotonic()<deadline:
++   if failed.is_set():raise errors[0]
+    try:audit=capture_hf_activation(os.getpid(),checker,job,gpu[0]['uuid'],root/'gpu-job.lock');break
+    except (FileNotFoundError,ValueError):time.sleep(.05)
+   if audit is None:raise ValueError('Actual immutable checker process capture unavailable')
+-  audit.update(launch_argv=launch,selected_gpu_preflight=gpu,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
++  gpu_records=[dict(record,index=next(index for index,value in inventory.items() if value['uuid']==record['uuid'])) for record in gpu]
++  audit.update(launch_argv=launch,selected_gpu_preflight=gpu_records,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
+   emit_activation(audit,evidence)
+-  code=child.wait();reader.join()
++  code=wait_child(child,failed,errors);reader.join(5)
++  if reader.is_alive():raise RuntimeError('Own checker reader did not exit within timeout')
+   if errors:raise errors[0]
+   if code:raise RuntimeError('Immutable HF checker exited nonzero: '+str(code))
+   return audit
++ except Exception as error:
++  # Keep original stream/capture/checker error separate from bounded cleanup failures.
++  failure={'error_type':type(error).__name__,'error':str(error),'stream_errors':[{'type':type(e).__name__,'error':str(e)} for e in errors]}
++  cleanup_attempted=True
++  try:
++   finish_child(child,reader)
++  except Exception as cleanup:
++   failure['cleanup_error']={'type':type(cleanup).__name__,'error':str(cleanup)}
++  try:
++   with (evidence/'launcher-failure.json').open('x') as handle:json.dump(failure,handle,sort_keys=True)
++  except Exception:pass
++  raise
+  finally:
+-  if child.poll() is None:child.terminate();child.wait();reader.join()
++  if not cleanup_attempted and child.poll() is None:finish_child(child,reader)
+ 
+-if __name__=='__main__':
++
++def main():
++ import argparse
++ parser=argparse.ArgumentParser(description=__doc__)
++ parser.add_argument('--checker',required=True);parser.add_argument('--evidence',required=True);parser.add_argument('--root',required=True);parser.add_argument('--checker-sha256',required=True)
++ args=parser.parse_args()
+  print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)
+- raise SystemExit(78)
++ return 78
++ run(args.checker,args.evidence,args.root,args.checker_sha256)
++ return 0
++if __name__=='__main__':raise SystemExit(main())
+--- v3/pre_stage_runtime.py
++++ v5/pre_stage_runtime.py
+@@ -7,23 +7,30 @@
+ HF_TEMPLATE_SHA='ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850'
+ 
+ def verify_hf_activation(manifest_path,script_path,checker_path,external_sha):
+- """Verify reviewed actual-final bundle ancestry, not equality with blocked preview."""
+- folder=Path(manifest_path).parent
++ """NEW reviewed final bundle derived only from exact v5 template activation."""
++ folder=Path(manifest_path).parent;directory=Path(__file__).parent
+  if digest(manifest_path)!=external_sha:raise ValueError('Actual HF final manifest external pin mismatch')
+- actual=loads(Path(manifest_path).read_text());original=loads((Path(__file__).parent/'source-manifest.json').read_text())
+- if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA:raise ValueError('Actual HF manifest lacks exact template ancestry')
++ actual=loads(Path(manifest_path).read_text());template=loads((directory/'source-manifest.json').read_text())
++ if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA or actual.get('activation_template_manifest_sha256')!=digest(directory/'source-manifest.json'):raise ValueError('Actual HF manifest lacks exact v5/upstream ancestry')
+  if actual.get('preview_blocked') is not False or actual.get('source_commit')!=COMMIT or actual.get('formal_job')!='3007':raise ValueError('HF final source/job/activation mismatch')
+  if actual.get('directory_name')!=folder.name or not re.fullmatch('[a-z0-9-]+',folder.name):raise ValueError('HF actual final directory mismatch')
+- if set(actual['file_sources'])!=set(original['file_sources']):raise ValueError('Actual HF final helper set differs')
++ for name in ('production_math_sources','stage','formal_manifest_sha256','original_hf_manifest_sha256'):
++  if actual.get(name)!=template[name]:raise ValueError('HF final immutable protocol identity mismatch')
++ if set(actual['file_sources'])!=set(template['file_sources']):raise ValueError('Actual HF final sidecar/helper set differs')
+  for name,sha in actual['file_sources'].items():
+-  if digest(folder/name)!=sha:raise ValueError('Actual HF final helper bytes unbound')
+-  if name!='reload_job.sh' and sha!=original['file_sources'][name]:raise ValueError('HF helper changed from fixed upstream checker/source gate')
+- if Path(checker_path).resolve()!=(folder/'checkpoint_reload.py').resolve() or digest(checker_path)!=original['file_sources']['checkpoint_reload.py']:raise ValueError('HF actual checker is not immutable5586 source')
+- if Path(script_path).resolve()!=(folder/'reload_job.sh').resolve():raise ValueError('HF activated script role is outside exact bundle')
+- script=(Path(__file__).parent/'reload_job.sh').read_text();guard='echo "STAGED PREVIEW: independent review required" >&2\nexit 78\n'
+- if script.count(guard)!=1:raise ValueError('Unknown original preview guard')
+- expected=script.replace(guard,'').replace(original['directory_name'],folder.name)
+- if Path(script_path).read_text()!=expected:raise ValueError('HF activated script not exact guard removal and directory substitution')
++  if Path(name).name!=name or digest(folder/name)!=sha:raise ValueError('Actual HF final helper bytes unbound')
++  source=(directory/name).read_text()
++  if name=='reload_job.sh':
++   guard='echo "STAGED PREVIEW: independent review required" >&2\nexit 78\n'
++   if source.count(guard)!=1:raise ValueError('Unknown HF template script guard')
++   source=source.replace(guard,'').replace(template['directory_name'],folder.name)
++  elif name=='hf_launcher.py':
++   guard=" print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)\n return 78\n"
++   if source.count(guard)!=1:raise ValueError('Unknown HF launcher template guard')
++   source=source.replace(guard,'')
++  if (folder/name).read_text()!=source:raise ValueError('Actual HF helper/script differs from exact v5 reviewed activation')
++ if Path(checker_path).resolve()!=(folder/'checkpoint_reload.py').resolve() or digest(checker_path)!=template['file_sources']['checkpoint_reload.py']:raise ValueError('HF checker is not immutable5586 source')
++ if Path(script_path).resolve()!=(folder/'reload_job.sh').resolve():raise ValueError('HF activated script role outside bundle')
+  return actual
+ 
+ def utc(value):
+@@ -80,7 +87,7 @@
+  code="from search_r1.baselines import corrected_evaluation as ce; import json,sys,pathlib; assert pathlib.Path(ce.__file__).resolve()==pathlib.Path(sys.argv[2])/'search_r1/baselines/corrected_evaluation.py'; ce.verify_runtime_sources(json.load(open(sys.argv[1])))"
+  subprocess.run([sys.executable,'-c',code,str(stage_path),str(repo)],cwd=repo,env=dict(os.environ,PYTHONPATH=str(repo)),check=True,capture_output=True,text=True)
+ 
+-def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_stage_sha=None):
++def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_stage_sha=None,model_role=None,receipt_path=None,receipt_sha=None):
+  from strict_stage_prerequisites import bound_file
+  required={'version','phase','eval_repo','eval_commit','model_role','stage_prescription','resolved_config','input_manifest','source_files','hf_activation_audit'}
+  if set(supplement)!=required or supplement['version']!=1 or supplement['phase']!='pre-generation':raise ValueError('Exact pre-generation supplement schema required')
+@@ -95,7 +102,9 @@
+  if not actual_stage_path or not actual_stage_sha:raise ValueError('BLOCKED: actual final stage path/SHA integration not supplied')
+  final_path=bound_file(dict(path=str(actual_stage_path),sha256=actual_stage_sha),base);final=loads(final_path.read_text())
+  verify_prescription(stage,final)
++ if not receipt_path or final.get('training_hf_receipt_path')!=str(Path(receipt_path).resolve()) or final.get('training_hf_receipt_sha256')!=receipt_sha:raise ValueError('Actual final stage is not bound to this exact layered receipt')
+  role=supplement['model_role']
++ if role!=model_role:raise ValueError('Requested model role differs from prescribed/actual stage')
+  if role not in receipt['model_roles'] or stage['model_role']!=role or stage['model_directory']!=receipt['model_roles'][role]['directory'] or stage['model_files']!=receipt['model_roles'][role]['files']:raise ValueError('Pre-stage actual model role/content mismatch')
+  if stage['eval_commit']!=commit or stage['training_commit']!=COMMIT or stage['source_files']!=supplement['source_files']:raise ValueError('Pre-stage source identity mismatch')
+  inputs=bound_file(supplement['input_manifest'],base)
+@@ -105,9 +114,7 @@
+  code="from search_r1.baselines import corrected_evaluation as ce; from omegaconf import OmegaConf; import json,sys,pathlib; stage=json.load(open(sys.argv[4])); assert pathlib.Path(ce.__file__).resolve()==pathlib.Path(sys.argv[5])/'search_r1/baselines/corrected_evaluation.py'; ce.verify_runtime_sources(stage); ce.load_inputs(sys.argv[1],sys.argv[2]); ce.verify_budget(OmegaConf.load(sys.argv[3]),stage)"
+  import os,sys
+  subprocess.run([sys.executable,'-c',code,str(inputs),digest(inputs),str(config),str(stage_path),str(repo)],cwd=repo,env=dict(os.environ,PYTHONPATH=str(repo)),check=True,capture_output=True,text=True)
+- # Only HF historical audit is allowed here. Future corrected-job runtime is a separate layer.
+- audit_path=bound_file(supplement['hf_activation_audit'],base);audit=loads(audit_path.read_text())
+- if audit['schema']!='actual-hf500-activation-v1' or audit['job_id']!=receipt['hf500_reload_job'] or audit['node']!='h100-10':raise ValueError('HF activation audit identity mismatch')
+- if not re.search(r'(?:^|/)job_'+re.escape(audit['job_id'])+r'(?:/|$)',audit['own_cgroup']):raise ValueError('HF own cgroup missing')
+- resources=bound_file(receipt['hf500_evidence']['resources'],base)
+- return verify_resource_rows([loads(line) for line in resources.read_text().splitlines()],audit['job_id'],audit['gpu_uuid'],audit['uid'],audit['checker_pid'],audit['checker_start_ticks'])
++ # HF historical proof was fully cross-checked before this pre-stage layer.
++ audit_path=bound_file(supplement['hf_activation_audit'],base)
++ if digest(audit_path)!=receipt['hf500_evidence']['activation_result']['sha256']:raise ValueError('Pre-stage HF audit does not match completed HF receipt')
++ return {'pre_generation_prescription_verified':True}
+--- v3/reload_job.sh
++++ v5/reload_job.sh
+@@ -15,11 +15,11 @@
+ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
+ source "$root/env/bin/activate"
+ cd "$root/repo"
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/source_bundle_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/source_bundle_check.py"
+ exec 9>"$root/gpu-job.lock"
+ flock -n 9
+ [[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/formal_completion_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/formal_completion_check.py"
+ [[ -d "$OPSD_CHECKPOINT" ]]
+ sha256sum "$0" > "$run/reload-job-script.sha256"
+ python - <<'PY'
+@@ -56,5 +56,5 @@
+ assert len(records)==1,records
+ print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
+ PY
+-python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/resource_sample.py" "$run/resources.ndjson" $$ &
+-python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/checkpoint_reload.py" 2>&1 | tee "$run/reload.log"
++python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb
+--- v3/source_bundle_check.py
++++ v5/source_bundle_check.py
+@@ -18,7 +18,7 @@
+   assert set(manifest['file_sources'])==set(manifest['runtime_sources'])|{'pilot_audit.py','prior_cleanup.py','source_bundle_check.py'}
+  else:
+   assert manifest['stage']=='hf500_only_actual_formal_no_future_reload'
+-  assert set(manifest['file_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py','formal_completion_check.py','training_evidence.py','periodic_validation.py','strict_metric_parser.py'}
++  assert set(manifest['file_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py','formal_completion_check.py','training_evidence.py','periodic_validation.py','strict_metric_parser.py','hf_launcher.py','hf_activation_capture.py','runtime_capture.py'}
+  assert directory.name==manifest['directory_name']
+  assert subprocess.check_output(['git','-C',str(root/'repo'),'rev-parse','HEAD'],text=True).strip()==manifest['source_commit']
+  subprocess.run(['git','-C',str(root/'repo'),'diff','--quiet','HEAD'],check=True)
+--- v3/strict_stage_prerequisites.py
++++ v5/strict_stage_prerequisites.py
+@@ -8,6 +8,20 @@
+ from training_evidence import loads,digest,own_file,verify_slurm,COMMIT,OWN
+ import formal_completion_check as formal
+ from pilot_reload_prerequisites import verify_reload
++
++EXPECTED_DEPENDENCY_BUNDLE_SHA='54ab3aeb63f672a9db9ee2b791f8d574020d1f8e57fa008fad2b8c5bdcb82172'
++def verify_dependency_bundle():
++ import sys
++ directory=Path(__file__).resolve().parent;manifest=directory/'verifier-dependencies.json'
++ if digest(manifest)!=EXPECTED_DEPENDENCY_BUNDLE_SHA:raise ValueError('Strict verifier dependency manifest differs from pinned source')
++ records=loads(manifest.read_text())
++ for name,sha in records.items():
++  path=(directory/name).resolve()
++  if not path.is_relative_to(directory) or digest(path)!=sha:raise ValueError('Strict verifier helper dependency bytes changed')
++  if name.endswith('.py') and '/' not in name:
++   module=sys.modules.get(name[:-3])
++   if module is not None and Path(module.__file__).resolve()!=path:raise ValueError('Strict verifier actual imported helper outside reviewed bundle')
++ return records
+ 
+ PREVIEW_BLOCKED=True
+ MODEL_ROLES={'base':OWN/'assets-root/assets/qwen2.5-3b','hf500':OWN/'runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_500'}
+@@ -33,6 +47,8 @@
+  for name,record in r['model_roles'].items():
+   if set(record)!={'directory','files'} or Path(record['directory'])!=base/MODEL_ROLES[name].relative_to(OWN):raise ValueError('Model role directory mismatch')
+   verify_model_files(record)
++ from base_asset_ancestry import verify_base_ancestry
++ verify_base_ancestry(r['model_roles']['base'])
+  return r,p
+ 
+ def verify_model_files(record):
+@@ -45,7 +61,7 @@
+   bound_file(dict(path=str(directory/name),sha256=sha),directory)
+ 
+ def verify_upstream_sources():
+- directory=Path(__file__).parent;manifest=loads((directory/'source-manifest.json').read_text())
++ directory=Path(__file__).parent/'upstream';manifest=loads((directory/'source-manifest.json').read_text())
+  for name,sha in manifest['file_sources'].items():
+   if digest(directory/name)!=sha:raise ValueError('Frozen upstream helper bytes changed')
+ 
+@@ -81,7 +97,7 @@
+  job=r['hf500_reload_job']
+  if not isinstance(job,str) or not re.fullmatch('[0-9]+',job) or job in {'2994','2996','2999','3007'}:raise ValueError('Real new HF500 reload job missing or old job substituted')
+  run=base/('runs/opsd-formal-hf-reload-'+job);checkpoint=base/MODEL_ROLES['hf500'].relative_to(OWN)
+- roles={'raw_log','result','source_commit','slurm_terminal','exit','cleanup','checker','checker_manifest','job_script','resources','independent_review'}
++ roles={'raw_log','result','source_commit','slurm_terminal','exit','cleanup','checker','checker_manifest','job_script','resources','activation_result','activation_raw','independent_review'}
+  if not isinstance(r['hf500_evidence'],dict) or set(r['hf500_evidence'])!=roles:raise ValueError('Missing complete HF500 evidence roles')
+  paths={name:bound_file(record,base if name in {'checker','checker_manifest','job_script','independent_review'} else run) for name,record in r['hf500_evidence'].items()}
+  if paths['source_commit'].read_text().strip()!=COMMIT or paths['exit'].read_text().strip()!='0':raise ValueError('HF source/exit mismatch')
+@@ -93,6 +109,8 @@
+  template_manifest=loads((Path(__file__).parent/'source-manifest.json').read_text())
+  from pre_stage_runtime import verify_hf_activation
+  verify_hf_activation(paths['checker_manifest'],paths['job_script'],paths['checker'],r['hf500_evidence']['checker_manifest']['sha256'])
++ from activation_verification import verify_activation_evidence
++ verify_activation_evidence(paths,job,base)
+  # Job script activation removes guard, so future script must be reviewed separately.
+  # Do not pretend the blocked original script was executed unchanged.
+  result=loads(paths['result'].read_text());verify_reload(result,checkpoint,job)
+@@ -108,24 +126,27 @@
+  if review.get('source_commit')!=COMMIT or review.get('formal_job')!='3007' or review.get('reload_job')!=job or review.get('bound_evidence_sha256')!=expected or review.get('accepted') is not True or not review.get('reviewer') or not review.get('report'):raise ValueError('Independent HF500 review not bound to all actual evidence')
+  return result
+ 
+-def verify_runtime_supplement(r,base=OWN,actual_stage_path=None,actual_stage_sha=None):
++def verify_runtime_supplement(r,base=OWN,actual_stage_path=None,actual_stage_sha=None,model_role=None,receipt_path=None,receipt_sha=None):
+  from pre_stage_runtime import verify_pre_stage
+  supplement=bound_file(r['runtime_supplement'],base)
+- verify_pre_stage(loads(supplement.read_text()),r,base,actual_stage_path,actual_stage_sha)
+- raise ValueError('BLOCKED: actual stage argument integration and HF lease/raw-source capture verifier unfinished')
++ verify_pre_stage(loads(supplement.read_text()),r,base,actual_stage_path,actual_stage_sha,model_role,receipt_path,receipt_sha)
++ return True
+ 
+ def verify(path,expected,role,model,base=OWN,actual_stage_path=None,actual_stage_sha=None):
+- verify_upstream_sources()
++ verify_dependency_bundle();verify_upstream_sources()
+  r,p=read_receipt(path,expected,role,model,base)
+- verify_training(r,base);verify_hf500(r,base);verify_runtime_supplement(r,base,actual_stage_path,actual_stage_sha)
+- # Deliberately unreachable until reviewed full runtime supplement implementation.
++ verify_training(r,base);verify_hf500(r,base);verify_runtime_supplement(r,base,actual_stage_path,actual_stage_sha,role,p,expected)
++ # Called only after every actual strict gate; no caller-provided passing flags.
+  return dict(kind='strict_actual_training3007_hf500_prerequisites',training_commit=COMMIT,formal_job='3007',actual_outer_updates=500,final_questions=51713,receipt_sha256=digest(p),model_role=role,model_directory=str(model))
+ 
+ def main():
+  parser=argparse.ArgumentParser(description=__doc__)
+  parser.add_argument('--receipt',required=True);parser.add_argument('--receipt-sha256',required=True);parser.add_argument('--model-role',choices=('base','hf500'),required=True);parser.add_argument('--model-directory',required=True)
+  parser.add_argument('--stage',default='UNFILLED');parser.add_argument('--stage-sha256',default='UNFILLED')
+- parser.parse_args()
++ args=parser.parse_args()
+  print('BLOCKED PREVIEW: actual500/HF500/runtime supplements UNFILLED; not deployable',file=sys.stderr)
+  return 78
++ proof=verify(args.receipt,args.receipt_sha256,args.model_role,args.model_directory,actual_stage_path=args.stage,actual_stage_sha=args.stage_sha256)
++ print(json.dumps(proof,sort_keys=True,allow_nan=False))
++ return 0
+ if __name__=='__main__':raise SystemExit(main())
+--- v3/test_activation_verification.py
++++ v5/test_activation_verification.py
+@@ -0,0 +1,65 @@
++"""Synthetic CPU activation-schema fixtures only; no Slurm completion/GPU run."""
++import copy,json,os,shutil
++from pathlib import Path
++import pytest
++from test_pre_stage_runtime import activation
++from activation_verification import verify_activation_evidence
++from training_evidence import digest
++from hf_activation_capture import emit_activation
++HERE=Path(__file__).parent
++JOB='CPU_SCHEMA_FIXTURE'
++
++def process(pid,ppid,command):
++ uid=os.getuid();fields=['S',str(ppid)]+['0']*18;fields[19]='123';cg=f'0::/slurm/job_{JOB}/step_batch\n';cmd=b'\0'.join(part.encode() for part in command)+b'\0'
++ return dict(pid=pid,ppid=ppid,process_start_ticks='123',uid=uid,uids=[uid]*4,cgroup=cg,cmdline=command,raw_stat=f'{pid} (python) '+' '.join(fields),raw_status='Uid: '+' '.join([str(uid)]*4)+'\n',raw_cgroup=cg,raw_cmdline_hex=cmd.hex())
++
++def lease(path,fd):
++ p=Path(path);p.parent.mkdir(parents=True,exist_ok=True);p.touch();s=p.stat();line=f'1: FLOCK ADVISORY WRITE 100 {os.major(s.st_dev):02x}:{os.minor(s.st_dev):02x}:{s.st_ino} 0 EOF'
++ return dict(lock_path=str(p.resolve()),fd=fd,device=s.st_dev,inode=s.st_ino,raw_locks_before=line+'\n',raw_locks_after=line+'\n',matched_locks=[line],reasserted_same_descriptor=True)
++
++@pytest.fixture
++def evidence(tmp_path):
++ repo=HERE.parent/'integration-candidate-9fb-v3/repo';base=tmp_path/'own';base.mkdir();(base/'repo').symlink_to(repo.resolve(),target_is_directory=True)
++ folder,manifest,_=activation(tmp_path);checker=folder/'checkpoint_reload.py';launcher=folder/'hf_launcher.py';uid=os.getuid();uuid='GPU-CPU-schema-'+tmp_path.name;gpu_lock=Path('/tmp')/f'search-r1-gpu-leases-{uid}'/(uuid+'.lock')
++ parent=process(100,1,['python',str(launcher.resolve())]);child=process(101,100,['python','-u',str(checker.resolve())]);child['ancestry']=[copy.deepcopy(parent)];global_lease=lease(base/'gpu-job.lock',9);per_gpu=lease(gpu_lock,3)
++ audit=dict(schema='actual-hf500-activation-v1',job_id=JOB,node='h100-10',uid=uid,gpu_uuid=uuid,checker_pid=101,checker_start_ticks='123',own_cgroup=parent['cgroup'],capture_process=copy.deepcopy(parent),launcher=parent,checker=child,checker_sha256=digest(checker),lease=copy.deepcopy(global_lease),capture_source_sha256=digest(folder/'hf_activation_capture.py'),launcher_source_sha256=digest(launcher),launch_argv=child['cmdline'],selected_gpu_preflight=[dict(index='0',uuid=uuid,utilization=0,memory_used=0,memory_total=100)],selected_gpu_processes='',selected_cuda_devices=['0'],selected_gpu_lease=per_gpu,global_lease_before_launch=global_lease,preflight_source=dict(path=str((base/'repo/search_r1/baselines/preflight.py').resolve()),sha256=digest(base/'repo/search_r1/baselines/preflight.py')))
++ run=base/'cpu-schema-records';run.mkdir();emit_activation(audit,run)
++ terminal=run/'uid-only.txt';terminal.write_text(f'UserId=CPU_SCHEMA_FIXTURE({uid})\n') # Not a fabricated COMPLETED terminal.
++ proc=dict(pid=101,uid=str(uid),process_start_ticks='123',in_slurm_job=True)
++ row=dict(time='2026-10-04T00:00:00+00:00',job_id=JOB,nominal_sleep_seconds=2,gpus=[dict(index='0',uuid=uuid,util=1,used_mib=20,total_mib=100)],gpu_processes=[dict(proc,uuid=uuid,gpu_used_mib='20')],job_processes=[proc],cgroup={f'/sys/fs/cgroup/slurm/job_{JOB}/memory.current':'123'})
++ resources=run/'resources.jsonl';resources.write_text(json.dumps(row)+'\n')
++ paths=dict(checker_manifest=manifest,checker=checker,job_script=folder/'reload_job.sh',activation_result=run/'hf-activation.json',activation_raw=run/'hf-activation.raw.log',slurm_terminal=terminal,resources=resources)
++ yield base,paths,audit
++ gpu_lock.unlink(missing_ok=True)
++
++def rewrite(paths,audit):
++ raw=json.dumps(audit,sort_keys=True);paths['activation_result'].write_text(raw+'\n');paths['activation_raw'].write_text('ACTUAL_HF500_ACTIVATION_AUDIT_JSON='+raw+'\n')
++
++def test_complete_leaf_schema_only_no_gpu_or_scheduler_proof(evidence):
++ base,paths,audit=evidence;assert verify_activation_evidence(paths,JOB,base)['samples']==1
++
++@pytest.mark.parametrize('mutation',['raw','uid','launcher_source','capture_source','argv','parent','ancestry','lease_fd','lease_inode','lease_raw','per_gpu_fd','uuid','inventory_index','threshold','nan','preflight_source','resource_pid','resource_uid'])
++def test_activation_raw_source_inventory_lease_ownership_tampering(evidence,mutation):
++ base,paths,audit=evidence
++ if mutation=='raw':paths['activation_raw'].write_text('wrong marker\n')
++ if mutation=='uid':audit['uid']+=1
++ if mutation=='launcher_source':audit['launcher_source_sha256']='0'*64
++ if mutation=='capture_source':audit['capture_source_sha256']='0'*64
++ if mutation=='argv':audit['launch_argv']=['python','fake.py']
++ if mutation=='parent':audit['checker']['ppid']=999
++ if mutation=='ancestry':audit['checker']['ancestry']=[]
++ if mutation=='lease_fd':audit['lease']['fd']=8
++ if mutation=='lease_inode':audit['lease']['inode']+=1
++ if mutation=='lease_raw':audit['lease']['raw_locks_after']=''
++ if mutation=='per_gpu_fd':audit['selected_gpu_lease']['fd']=9
++ if mutation=='uuid':audit['selected_gpu_preflight'][0]['uuid']='other'
++ if mutation=='inventory_index':audit['selected_cuda_devices']=['wrong']
++ if mutation=='threshold':audit['selected_gpu_preflight'][0]['memory_used']=16
++ if mutation=='nan':audit['selected_gpu_preflight'][0]['memory_used']=float('nan')
++ if mutation=='preflight_source':audit['preflight_source']['sha256']='0'*64
++ if mutation.startswith('resource_'):
++  row=json.loads(paths['resources'].read_text());row['gpu_processes'][0]['pid']=999 if mutation=='resource_pid' else 101
++  if mutation=='resource_uid':row['gpu_processes'][0]['uid']='foreign'
++  paths['resources'].write_text(json.dumps(row)+'\n')
++ if mutation not in {'raw','resource_pid','resource_uid'}:rewrite(paths,audit)
++ with pytest.raises((ValueError,AssertionError)):verify_activation_evidence(paths,JOB,base)
+--- v3/test_base_asset_ancestry.py
++++ v5/test_base_asset_ancestry.py
+@@ -0,0 +1,34 @@
++"""Original manifest actual bytes; tiny synthetic content-hash mechanics only."""
++import hashlib,sys
++from pathlib import Path
++import pytest
++sys.path.insert(0,str(Path(__file__).parent))
++import base_asset_ancestry as base
++
++def test_original_source8e_manifest_exact_and_9files():
++ records=base.original_base_records()
++ assert len(records)==9
++ assert {r['revision'] for r in records}=={base.MODEL_REVISION}
++ assert [r['sha256'] for r in records if r['sha256']]==['f9558df91d3b89b4826e4db37439edb52f1d62a4fd602685013e7ca6b9f60f8f','51410930d5cf19a998fdb17ef0c46e4d9ace72c97a975a3331395a8a500f5edb']
++
++@pytest.mark.parametrize('algorithm',['sha','blob'])
++def test_rehashing_replacement_receipt_cannot_replace_original(tmp_path,algorithm):
++ raw=b'original';p=tmp_path/'model';p.write_bytes(raw)
++ record={'size':len(raw),'sha256':hashlib.sha256(raw).hexdigest() if algorithm=='sha' else None,'git_blob_sha1':hashlib.sha1(b'blob 8\0'+raw).hexdigest()}
++ assert base.verify_original_record(p,record)==hashlib.sha256(raw).hexdigest()
++ p.write_bytes(b'replaced')
++ # A new receipt SHA is valid for current bytes; immutable origin still rejects.
++ assert hashlib.sha256(p.read_bytes()).hexdigest()!=record['sha256']
++ with pytest.raises(ValueError,match='original'):base.verify_original_record(p,record)
++
++def test_wrong_size_and_missing_original_file(tmp_path):
++ p=tmp_path/'a';p.write_bytes(b'a')
++ with pytest.raises(ValueError,match='size'):base.verify_original_record(p,{'size':2})
++ with pytest.raises(FileNotFoundError):base.verify_original_record(tmp_path/'missing',{'size':1})
++
++def test_extra_role_files_cannot_be_labelled_base(tmp_path):
++ with pytest.raises(ValueError,match='nine'):base.verify_base_ancestry({'directory':str(tmp_path),'files':{'fake':'0'*64}})
++
++def test_original_manifest_tamper_rejects(monkeypatch):
++ monkeypatch.setattr(base,'TRAINING_ASSETS_SHA','0'*64)
++ with pytest.raises(ValueError,match='manifest bytes'):base.original_base_records()
+--- v3/test_hf_capture.py
++++ v5/test_hf_capture.py
+@@ -54,5 +54,12 @@
+ @pytest.mark.parametrize('name',['hf_launcher.py','hf_activation_capture.py'])
+ def test_new_launcher_capture_entries_remain_blocked(name):
+  import sys
+- result=subprocess.run([sys.executable,str(Path(__file__).parent/name)],capture_output=True,text=True)
++ command=[sys.executable,str(Path(__file__).parent/name)]
++ if name=='hf_launcher.py':command+=['--checker','UNFILLED','--evidence','UNFILLED','--root','UNFILLED','--checker-sha256','UNFILLED']
++ result=subprocess.run(command,capture_output=True,text=True)
+  assert result.returncode==78 and not result.stdout and 'BLOCKED' in result.stderr
++
++def test_prescription_never_accepts_different_requested_role():
++ from pre_stage_runtime import verify_prescription
++ stage={key:'CPU_SCHEMA_FIXTURE' for key in PRESCRIPTION_FIELDS};stage['version']=1;stage['phase']='prescribed-pre-generation';stage['model_role']='base';final=copy.deepcopy(stage);final['model_role']='hf500'
++ with pytest.raises(ValueError):verify_prescription(stage,final)
+--- v3/test_launcher_cleanup.py
++++ v5/test_launcher_cleanup.py
+@@ -0,0 +1,52 @@
++"""CPU real subprocesses only. No CUDA, Slurm, or cluster leases are used."""
++import io, subprocess, sys, threading, time
++from pathlib import Path
++import pytest
++sys.path.insert(0,str(Path(__file__).parent))
++import hf_launcher as launcher
++
++def spawn(body):
++ return subprocess.Popen([sys.executable,'-u','-c',body],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
++
++class BrokenOutput:
++ def write(self,data):raise OSError('CPU fixture stdout write failed')
++ def flush(self):pass
++
++@pytest.mark.parametrize('failure',['stdout','log'])
++def test_stream_failure_stops_own_full_pipe_child_bounded(tmp_path,failure):
++ child=spawn("import os,signal;signal.signal(signal.SIGTERM,signal.SIG_IGN);os.write(1,b'READY\\n');\nwhile True:os.write(1,b'x'*65536)")
++ assert child.stdout.readline()==b'READY\n'
++ errors=[];failed=threading.Event()
++ log=tmp_path/'reload.log'
++ if failure=='log':log.write_bytes(b'EXISTING ORIGINAL EVIDENCE')
++ output=BrokenOutput() if failure=='stdout' else io.BytesIO()
++ reader=threading.Thread(target=launcher.stream_child,args=(child,log,output,failed,errors),daemon=True)
++ reader.start();started=time.monotonic()
++ try:
++  assert failed.wait(3)
++  with pytest.raises((OSError,FileExistsError)):
++   launcher.wait_child(child,failed,errors)
++ finally:launcher.finish_child(child,reader,timeout=.2)
++ assert time.monotonic()-started<3
++ assert child.poll() is not None and not reader.is_alive()
++ assert len(errors)==1
++ if failure=='log':assert log.read_bytes()==b'EXISTING ORIGINAL EVIDENCE'
++ else:assert 'stdout write failed' in str(errors[0]) and log.stat().st_size>0
++
++def test_terminate_escalates_only_own_child():
++ child=spawn("import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);print('READY',flush=True);time.sleep(60)")
++ assert child.stdout.readline()==b'READY\n'
++ try:
++  started=time.monotonic();code=launcher.stop_own_child(child,timeout=.2)
++  assert code<0 and time.monotonic()-started<2
++ finally:
++  if child.poll() is None:child.kill();child.wait(timeout=2)
++  child.stdout.close()
++
++def test_success_preserves_every_raw_byte(tmp_path):
++ child=spawn("import os;os.write(1,b'RAW\\x00\\xff\\n'*20000)")
++ output=io.BytesIO();errors=[];failed=threading.Event();log=tmp_path/'reload.log'
++ reader=threading.Thread(target=launcher.stream_child,args=(child,log,output,failed,errors),daemon=True);reader.start()
++ try:assert launcher.wait_child(child,failed,errors)==0
++ finally:launcher.finish_child(child,reader,timeout=2)
++ assert not errors and log.read_bytes()==output.getvalue()==b'RAW\x00\xff\n'*20000
+--- v3/test_pre_stage_runtime.py
++++ v5/test_pre_stage_runtime.py
+@@ -11,8 +11,9 @@
+  original=json.loads((HERE/'source-manifest.json').read_text())
+  for name in original['file_sources']:shutil.copyfile(HERE/name,folder/name)
+  p=folder/'reload_job.sh';guard='echo "STAGED PREVIEW: independent review required" >&2\nexit 78\n';p.write_text(p.read_text().replace(guard,'').replace(original['directory_name'],folder.name))
+- actual=copy.deepcopy(original);actual['preview_blocked']=False;actual['directory_name']=folder.name;actual['prior_hf_preview_manifest_sha256']=HF_TEMPLATE_SHA
+- actual['file_sources']['reload_job.sh']=digest(p)
++ launcher=folder/'hf_launcher.py';guard=" print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)\n return 78\n";launcher.write_text(launcher.read_text().replace(guard,''))
++ actual=copy.deepcopy(original);actual['preview_blocked']=False;actual['directory_name']=folder.name;actual['prior_hf_preview_manifest_sha256']=HF_TEMPLATE_SHA;actual['activation_template_manifest_sha256']=digest(HERE/'source-manifest.json')
++ actual['file_sources']['reload_job.sh']=digest(p);actual['file_sources']['hf_launcher.py']=digest(launcher)
+  m=folder/'source-manifest.json';m.write_text(json.dumps(actual));return folder,m,actual
+ 
+ def test_actual_final_manifest_can_differ_from_blocked_preview(tmp_path):
+--- v3/test_strict_stage_prerequisites.py
++++ v5/test_strict_stage_prerequisites.py
+@@ -69,3 +69,15 @@
+ def test_shards_without435_index_rejects(tmp_path):
+  (tmp_path/'model.safetensors.index.json').write_text(json.dumps({'weight_map':{'fake':'one.safetensors'}}))
+  with pytest.raises(ValueError,match='435'):gate.shard_keys(tmp_path)
++
++def test_dependency_closure_all_helpers_byte_pinned():gate.verify_dependency_bundle()
++
++def test_helper_dependency_mutation_rejected_even_top_entry_unchanged(monkeypatch):
++ original=gate.digest
++ monkeypatch.setattr(gate,'digest',lambda p:'0'*64 if Path(p).name=='activation_verification.py' else original(p))
++ with pytest.raises(ValueError,match='dependency bytes'):gate.verify_dependency_bundle()
++
++def test_dependency_manifest_cotampering_rejected(monkeypatch):
++ original=gate.digest
++ monkeypatch.setattr(gate,'digest',lambda p:'0'*64 if Path(p).name=='verifier-dependencies.json' else original(p))
++ with pytest.raises(ValueError,match='dependency manifest'):gate.verify_dependency_bundle()
+--- v3/upstream/checkpoint_reload.py
++++ v5/upstream/checkpoint_reload.py
+@@ -0,0 +1,88 @@
++"""Read-only acceptance of complete real HF export, tokenizer identity and student change."""
++import hashlib,json,os,time
++from pathlib import Path
++import torch
++from transformers import AutoConfig,AutoModelForCausalLM,AutoTokenizer
++from safetensors import safe_open
++out=Path(os.environ['OPSD_EVIDENCE']);checkpoint=Path(os.environ['OPSD_CHECKPOINT']);base=Path(os.environ['OPSD_TEACHER'])
++start=time.monotonic()
++def digest(path):
++    h=hashlib.sha256()
++    with path.open('rb') as f:
++        for b in iter(lambda:f.read(8*1024*1024),b''):h.update(b)
++    return h.hexdigest()
++shapes_by_directory={}
++def mapping(directory):
++    index=directory/'model.safetensors.index.json'
++    if index.exists(): declared=json.loads(index.read_text())['weight_map']
++    else:
++        files=list(directory.glob('*.safetensors'));assert len(files)==1
++        with safe_open(str(files[0]),framework='pt',device='cpu') as f:declared={key:files[0].name for key in f.keys()}
++    actual={}; shapes={}
++    for filename in set(declared.values()):
++        assert Path(filename).name==filename
++        with safe_open(str(directory/filename),framework='pt',device='cpu') as f:
++            for key in f.keys():
++                assert key not in actual, 'Duplicate tensor in shards'
++                actual[key]=filename
++                shapes[key]=f.get_slice(key).get_shape()
++    assert declared==actual, 'Shard actual tensors differ from index'
++    shapes_by_directory[str(directory)]=shapes
++    return declared
++base_config=AutoConfig.from_pretrained(str(base),local_files_only=True)
++saved_config=AutoConfig.from_pretrained(str(checkpoint),local_files_only=True)
++# Serialization provenance and explicit attention precision are runtime choices.
++# The existing trainer deliberately overrides model BOS/EOS/PAD from its tokenizer.
++config_runtime_fields={'_name_or_path','_commit_hash','transformers_version','torch_dtype',
++    '_attn_implementation_internal','_attn_implementation_autoset',
++    'bos_token_id','eos_token_id','pad_token_id'}
++base_semantics={k:v for k,v in base_config.to_dict().items() if k not in config_runtime_fields}
++saved_semantics={k:v for k,v in saved_config.to_dict().items() if k not in config_runtime_fields}
++assert base_semantics==saved_semantics, 'Model computation configuration changed'
++tied=bool(base_config.tie_word_embeddings)
++base_map=mapping(base);saved_map=mapping(checkpoint)
++def canonical(keys): return set(keys)-({'lm_head.weight'} if tied else set())
++assert canonical(base_map)==canonical(saved_map), 'Export lacks model tensors'
++for key in canonical(base_map):
++    assert shapes_by_directory[str(base)][key]==shapes_by_directory[str(checkpoint)][key], ('Tensor shape changed',key)
++if tied:
++    for directory,weights_map in ((base,base_map),(checkpoint,saved_map)):
++        assert 'model.embed_tokens.weight' in weights_map
++        if 'lm_head.weight' in weights_map:
++            with safe_open(str(directory/weights_map['lm_head.weight']),framework='pt',device='cpu') as f:x=f.get_tensor('lm_head.weight')
++            with safe_open(str(directory/weights_map['model.embed_tokens.weight']),framework='pt',device='cpu') as f:y=f.get_tensor('model.embed_tokens.weight')
++            assert torch.equal(x,y), 'Declared tied aliases have different values'
++a=AutoTokenizer.from_pretrained(str(base),local_files_only=True);b=AutoTokenizer.from_pretrained(str(checkpoint),local_files_only=True)
++assert a.get_vocab()==b.get_vocab() and (a.bos_token_id,a.eos_token_id,a.pad_token_id)==(b.bos_token_id,b.eos_token_id,b.pad_token_id)
++for field in ('bos_token_id','eos_token_id','pad_token_id'):
++    assert getattr(saved_config,field)==getattr(b,field), ('Saved model/tokenizer ID mismatch',field)
++assert a.special_tokens_map==b.special_tokens_map and a.chat_template==b.chat_template
++assert a.padding_side==b.padding_side and a.truncation_side==b.truncation_side
++backend_a=json.loads(a.backend_tokenizer.to_str());backend_b=json.loads(b.backend_tokenizer.to_str())
++# Last-call padding/truncation state is runtime state; structural token processing must match.
++transient_backend={key:dict(base=backend_a.pop(key,None),checkpoint=backend_b.pop(key,None)) for key in ('padding','truncation')}
++assert backend_a==backend_b, 'Tokenizer structural rules changed'
++tokenizer_semantic_sha256=hashlib.sha256(json.dumps(backend_a,sort_keys=True).encode()).hexdigest()
++changes={}
++for key in ('model.layers.0.self_attn.q_proj.weight','model.layers.0.self_attn.v_proj.weight','model.layers.0.mlp.down_proj.weight','model.embed_tokens.weight' if tied else 'lm_head.weight'):
++    with safe_open(str(base/base_map[key]),framework='pt',device='cpu') as f:x=f.get_tensor(key).float()
++    with safe_open(str(checkpoint/saved_map[key]),framework='pt',device='cpu') as f:y=f.get_tensor(key).float()
++    assert x.shape==y.shape and torch.isfinite(y).all()
++    delta=(x-y).abs();changes[key]=dict(changed_elements=int((delta!=0).sum()),max_abs_delta=float(delta.max()),mean_abs_delta=float(delta.mean()))
++assert sum(v['changed_elements'] for v in changes.values())>0, 'No student parameter change after warmup'
++weights={p.name:dict(bytes=p.stat().st_size,sha256=digest(p)) for p in checkpoint.glob('*.safetensors')}
++model,loading=AutoModelForCausalLM.from_pretrained(str(checkpoint),local_files_only=True,torch_dtype=torch.bfloat16,attn_implementation='flash_attention_2',output_loading_info=True)
++assert all(not loading.get(key) for key in ('missing_keys','unexpected_keys','mismatched_keys','error_msgs')), loading
++assert canonical(model.state_dict())==canonical(saved_map), 'Loaded architecture does not contain all exported tensors'
++if tied: assert model.get_input_embeddings().weight.data_ptr()==model.get_output_embeddings().weight.data_ptr()
++model=model.to('cuda')
++assert model.config._attn_implementation=='flash_attention_2' and next(model.parameters()).dtype==torch.bfloat16
++assert all(torch.isfinite(p).all().item() for p in model.parameters()), 'Reloaded tensor contains nonfinite values'
++model.eval();inputs=b('The capital of France is',return_tensors='pt').to('cuda')
++with torch.no_grad():
++    logits=model(**inputs,use_cache=False).logits;assert torch.isfinite(logits).all()
++    output=model.generate(**inputs,max_new_tokens=16,do_sample=False,pad_token_id=b.pad_token_id)
++assert output.shape[1]>inputs.input_ids.shape[1]
++result=dict(checkpoint=str(checkpoint),tensor_count=len(saved_map),config_computation_equal=True,config_runtime_fields=sorted(config_runtime_fields),cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),tokenizer_equal=True,tokenizer_semantic_sha256=tokenizer_semantic_sha256,transient_backend=transient_backend,loading_info=loading,all_loaded_parameters_finite=True,tied_embeddings=tied,node=__import__('socket').gethostname(),gpu_name=torch.cuda.get_device_name(),student_change=changes,weights=weights,
++    generation=b.decode(output[0]),seconds=time.monotonic()-start,cuda_peak_allocated_bytes=torch.cuda.max_memory_allocated(),cuda_peak_reserved_bytes=torch.cuda.max_memory_reserved(),slurm_job_id=os.environ['SLURM_JOB_ID'])
++(out/'checkpoint-reload.json').write_text(json.dumps(result,indent=2));print('REAL_3B_HF_CHECKPOINT_RELOAD_AND_STUDENT_CHANGE_OK',json.dumps(result),flush=True)
+--- v3/upstream/formal_completion_check.py
++++ v5/upstream/formal_completion_check.py
+@@ -0,0 +1,54 @@
++"""Read-only actual formal500 prerequisites; no future job ID or self-approval."""
++import os,re
++from pathlib import Path
++from training_evidence import loads,own_file,digest,verify_slurm,verify_outers,COMMIT
++from periodic_validation import verify_periodic_validations
++OWN=Path('/mnt/data/shaoshitong/search-r1-rl/opsd')
++FORMAL_JOB='3007'
++FORMAL=OWN/('runs/opsd-formal-'+FORMAL_JOB)
++def verify(receipt,base=OWN):
++ assert re.fullmatch('[0-9]+',FORMAL_JOB),'Actual newly submitted formal job ID is not filled'
++ run=base/('runs/opsd-formal-'+FORMAL_JOB);r=loads(own_file(str(receipt),base).read_text())
++ assert set(r)=={'source_commit','formal_job','evidence'}
++ assert r['source_commit']==COMMIT and r['formal_job']==FORMAL_JOB
++ roles={'raw_log','source_commit','slurm_terminal','exit','finished','completeness','expected_final_counts','independent_review'}
++ assert set(r['evidence'])==roles
++ paths={}
++ for key,item in r['evidence'].items():
++  assert set(item)=={'path','sha256'} and re.fullmatch('[0-9a-f]{64}',item['sha256'])
++  p=own_file(item['path'],base if key=='independent_review' else run)
++  assert digest(p)==item['sha256'];paths[key]=p
++ assert paths['source_commit'].read_text().strip()==COMMIT
++ verify_slurm(paths['slurm_terminal'].read_text(),FORMAL_JOB)
++ terminal=paths['slurm_terminal'].read_text()
++ for key,value in (('NodeList','h100-10'),('NumNodes','1'),('NumCPUs','192'),('TresPerNode','gres:gpu:h100:8')):
++  assert re.findall(r'\b'+key+r'=([^\s]+)',terminal)==[value]
++ assert paths['exit'].read_text().strip()=='0'
++ assert paths['finished'].read_text().strip()=='FORMAL_500_OUTERS_AND_FINAL_EVALUATION_EXITED'
++ raw=paths['raw_log'].read_text();verify_outers(raw,500);verify_periodic_validations(raw)
++ expected=loads(paths['expected_final_counts'].read_text())
++ assert len(expected)==7 and all(type(n) is int and n>0 for n in expected.values()) and sum(expected.values())==51713
++ marker='SEARCH_R1_FINAL_METRICS_JSON='
++ finals=[loads(line.split(marker,1)[1]) for line in raw.splitlines() if marker in line]
++ assert len(finals)==1
++ final=finals[0];assert final['val/qa_count/all']==51713
++ assert {k[len('val/qa_count/'):] for k in final if k.startswith('val/qa_count/')}==set(expected)|{'all'}
++ assert {k[len('val/evaluated_count/'):] for k in final if k.startswith('val/evaluated_count/')}==set(expected)
++ for source,count in expected.items():assert final['val/qa_count/'+source]==count and final['val/evaluated_count/'+source]==count
++ for source in set(expected)|{'all'}:
++  for kind in ('f1','em','answer_format','format_rate'):assert 0<=final[f'val/{kind}/{source}']<=1
++ c=loads(paths['completeness'].read_text())
++ assert c['passed'] is True and c['actual_outer_updates']==500 and c['final_questions']==51713 and c['source_commit']==COMMIT
++ assert c['final_per_source_counts']==expected and c['checkpoint_steps']==[5,100,200,300,400,500] and c['fresh_hf_reload_pending'] is True
++ review=loads(paths['independent_review'].read_text())
++ assert review['source_commit']==COMMIT and review['formal_job']==FORMAL_JOB and review['accepted'] is True
++ assert review['reviewer'] and review['report']
++ assert review['bound_evidence_sha256']=={k:v['sha256'] for k,v in r['evidence'].items() if k!='independent_review'}
++ checkpoint=run/'output/checkpoints/opsd-gpu-formal500/actor/global_step_500'
++ assert checkpoint.is_dir() and len(list(checkpoint.glob('*.safetensors')))==3
++ for name in ('config.json','tokenizer.json','model.safetensors.index.json'):own_file(str(checkpoint/name),run)
++ assert len(loads((checkpoint/'model.safetensors.index.json').read_text())['weight_map'])==435
++ return {'source_commit':COMMIT,'formal_job':FORMAL_JOB,'actual_outer_updates':500,'final_questions':51713,'receipt_sha256':digest(Path(receipt)),'checkpoint':str(checkpoint)}
++if __name__=='__main__':
++ result=verify(os.environ['OPSD_FORMAL_COMPLETION_RECEIPT'])
++ print('ACTUAL_FORMAL500_FINAL51713_AND_TERMINAL_RECEIPT_VERIFIED',result,flush=True)
+--- v3/upstream/periodic_validation.py
++++ v5/upstream/periodic_validation.py
+@@ -0,0 +1,48 @@
++"""Pure verification of actual JSON/three-decimal logger pairs; no inference of results."""
++import re,math
++from training_evidence import loads,verify_validation_metrics
++from strict_metric_parser import parse_metric_summary
++
++def verify_periodic_validations(text,expected_steps=(0,50,100,150,200,250,300,350,400,450,500),require_final=True):
++ text=re.sub(r'\x1b\[[0-9;]*m','',text)
++ pending=None;seen=[];final_seen=False;final_summary=False
++ for line in text.splitlines():
++  marker='BASELINE_EVALUATION_METRICS_JSON='
++  if marker in line:
++   assert pending is None,'Evaluation JSON lacks paired completed summary'
++   assert not final_summary,'Unexpected evaluation after final summary'
++   pending=loads(line.split(marker,1)[1])
++   count=pending.get('val/qa_count/all')
++   if count==64:assert len(verify_validation_metrics(pending))==7
++   else:
++    assert require_final and count==51713 and seen==list(expected_steps),'Unexpected evaluation size/order'
++   continue
++  marker='SEARCH_R1_FINAL_METRICS_JSON='
++  if marker in line:
++   assert require_final and pending is not None and pending['val/qa_count/all']==51713
++   assert not final_seen and loads(line.split(marker,1)[1])==pending,'Duplicate/mismatched final JSON'
++   final_seen=True;continue
++  m=re.search(r'(?:^|\s)step:(\d+) - ',line)
++  if not m:continue
++  step,metrics,events=parse_metric_summary(line)
++  summary={key:value for key,value in metrics.items() if key.startswith('val/')}
++  if not summary:
++   assert pending is None,'Evaluation JSON followed by unpaired outer summary'
++   continue
++  assert pending is not None,'Validation summary lacks original evaluation JSON'
++  assert set(summary)==set(pending),'JSON/summary key mismatch'
++  for key,value in pending.items():
++   assert type(value) in (int,float) and math.isfinite(value)
++   # aggregate_logger uses f'{v:.3f}', while retained JSON is unrounded.
++   assert summary[key]==float(f'{value:.3f}'),('JSON/summary value mismatch',step,key)
++  if pending['val/qa_count/all']==64:
++   assert step in expected_steps and step not in seen,'Unexpected/duplicate periodic validation step'
++   assert step==expected_steps[len(seen)],'Missing/out-of-order periodic validation step'
++   verify_validation_metrics(summary);seen.append(step)
++  else:
++   assert require_final and step==501 and final_seen and not final_summary,'Missing/duplicate final summary'
++   final_summary=True
++  pending=None
++ assert pending is None and seen==list(expected_steps),'Incomplete periodic64 validation sequence'
++ assert (not require_final) or (final_seen and final_summary),'Incomplete terminal final validation'
++ return {'periodic_steps':seen,'questions_per_periodic':64,'terminal_final_questions':51713 if require_final else None}
+--- v3/upstream/reload_job.sh
++++ v5/upstream/reload_job.sh
+@@ -0,0 +1,60 @@
++#!/usr/bin/env bash
++set -euo pipefail
++echo "STAGED PREVIEW: independent review required" >&2
++exit 78
++: "${SLURM_JOB_ID:?Must run in own allocation}"
++: "${OPSD_FORMAL_COMPLETION_RECEIPT:?Actual successful new formal job completion receipt required}"
++root=/mnt/data/shaoshitong/search-r1-rl/opsd
++run="$root/runs/opsd-formal-hf-reload-$SLURM_JOB_ID"
++[[ ! -e "$run" && ! -L "$run" ]]
++mkdir "$run"
++trap 'rc=$?; printf "%s\n" "$rc" > "$run/exit.txt"' EXIT
++export OPSD_EVIDENCE="$run" OPSD_TEACHER="$root/assets-root/assets/qwen2.5-3b"
++export OPSD_CHECKPOINT="$root/runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_500"
++export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=8
++unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
++source "$root/env/bin/activate"
++cd "$root/repo"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/source_bundle_check.py"
++exec 9>"$root/gpu-job.lock"
++flock -n 9
++[[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/formal_completion_check.py"
++[[ -d "$OPSD_CHECKPOINT" ]]
++sha256sum "$0" > "$run/reload-job-script.sha256"
++python - <<'PY'
++import datetime,json,os,re,subprocess
++from pathlib import Path
++job=os.environ['SLURM_JOB_ID']
++node=os.environ.get('SLURMD_NODENAME',os.environ['SLURM_JOB_NODELIST'])
++assert node=='h100-10',('Cleanup must run on previous training node',node)
++assert re.search(r'(?:^|/)job_'+re.escape(job)+r'(?:/|$)',Path('/proc/self/cgroup').read_text(),re.M)
++remaining=[]
++for path in Path('/proc').iterdir():
++    if not path.name.isdigit(): continue
++    try: cgroup=(path/'cgroup').read_text()
++    except OSError: continue
++    if re.search(r'(?:^|/)job_3007(?:/|$)',cgroup,re.M): remaining.append(int(path.name))
++assert not remaining,('Previous training job still has processes',remaining)
++listeners=subprocess.check_output(['ss','-H','-ltnp'],text=True)
++blocked=[line for line in listeners.splitlines() if len(line.split())>=4 and line.split()[3].rsplit(':',1)[-1] in ('16384','18084')]
++assert not blocked,'Previous Ray/retrieval ports still listening'
++result=dict(job_id=job,node_scope=node,previous_training_job='3007',previous_job_processes=remaining,previous_ports_listening=False,
++            sample_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
++Path(os.environ['OPSD_EVIDENCE'],'previous-job-cleanup.json').write_text(json.dumps(result,indent=2)+'\n')
++print('PREVIOUS_TRAINING_JOB_CLEANUP_VERIFIED',result,flush=True)
++PY
++scontrol show job "$SLURM_JOB_ID" > "$run/slurm-job.txt"
++git rev-parse HEAD > "$run/commit.txt"
++nvidia-smi --query-gpu=index,uuid,utilization.gpu,memory.used,memory.total --format=csv > "$run/pre-gpus.csv"
++nvidia-smi --query-compute-apps=gpu_uuid,pid,used_gpu_memory --format=csv > "$run/pre-processes.csv"
++python - <<'PY'
++import os
++from search_r1.baselines.preflight import gpu_snapshot,check_selected_gpus
++inv,proc=gpu_snapshot()
++records=check_selected_gpus(os.environ['CUDA_VISIBLE_DEVICES'].split(','),inv,proc)
++assert len(records)==1,records
++print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
++PY
++python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/checkpoint_reload.py" 2>&1 | tee "$run/reload.log"
+--- v3/upstream/resource_sample.py
++++ v5/upstream/resource_sample.py
+@@ -0,0 +1,61 @@
++import csv, datetime, json, os, re, subprocess, sys, time
++from pathlib import Path
++out, parent = Path(sys.argv[1]), int(sys.argv[2])
++job = os.environ.get('SLURM_JOB_ID', '')
++parent_start = Path(f'/proc/{parent}/stat').read_text().rsplit(')',1)[1].split()[19]
++def owned_cgroup(text):
++    return bool(job and re.search(r'(?:^|/)job_' + re.escape(job) + r'(?:/|$)', text, re.M))
++
++cgroup_paths = []
++for line in Path(f'/proc/{parent}/cgroup').read_text().splitlines():
++    _, controllers, path = line.split(':', 2)
++    if not controllers:
++        cgroup_paths.append(Path('/sys/fs/cgroup')/path.lstrip('/'))
++    if 'memory' in controllers.split(','):
++        cgroup_paths.append(Path('/sys/fs/cgroup/memory')/path.lstrip('/'))
++
++def usage(pid):
++    try:
++        text = Path(f'/proc/{pid}/status').read_text()
++        fields = dict(line.split(':',1) for line in text.splitlines() if ':' in line)
++        cgroup = Path(f'/proc/{pid}/cgroup').read_text()
++        stat = Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()
++        return dict(cpu_user_ticks=int(stat[11]), cpu_system_ticks=int(stat[12]),
++            clock_ticks_per_second=os.sysconf('SC_CLK_TCK'), pid=pid, uid=fields['Uid'].split()[0],
++            rss_kib=int(fields.get('VmRSS','0 kB').split()[0]),
++            peak_rss_kib=int(fields.get('VmHWM','0 kB').split()[0]),
++            name=fields.get('Name','').strip(),
++            process_start_ticks=stat[19],
++            in_slurm_job=owned_cgroup(cgroup))
++    except (OSError, KeyError, ValueError, IndexError):
++        return dict(pid=pid, unavailable=True)
++
++def safe_cgroup(path):
++    try: return (path/'cgroup').read_text()
++    except OSError: return ''
++
++with out.open('a', buffering=1) as handle:
++    while True:
++        try:
++            os.kill(parent,0)
++            if Path(f'/proc/{parent}/stat').read_text().rsplit(')',1)[1].split()[19] != parent_start:
++                break
++        except (ProcessLookupError, FileNotFoundError):
++            break
++        row=dict(time=datetime.datetime.now(datetime.timezone.utc).isoformat(), job_id=job, nominal_sleep_seconds=2)
++        try:
++            gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,utilization.gpu,memory.used,memory.total','--format=csv,noheader,nounits'],text=True,timeout=8)
++            apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_gpu_memory','--format=csv,noheader,nounits'],text=True,timeout=8)
++            row['gpus']=[dict(index=r[0].strip(),uuid=r[1].strip(),util=float(r[2]),used_mib=float(r[3]),total_mib=float(r[4])) for r in csv.reader(gpu.splitlines())]
++            row['gpu_processes']=[dict(uuid=r[0].strip(),gpu_used_mib=r[2].strip(),**usage(int(r[1]))) for r in csv.reader(apps.splitlines()) if len(r)==3]
++        except (subprocess.SubprocessError,ValueError,OSError) as e:
++            row['query_error']=type(e).__name__
++        row['job_processes'] = [usage(int(p.name)) for p in Path('/proc').iterdir()
++            if p.name.isdigit() and owned_cgroup(safe_cgroup(p))]
++        row['cgroup']={}
++        for path in cgroup_paths:
++            for name in ('memory.current','memory.peak','memory.events','memory.max','memory.usage_in_bytes','memory.max_usage_in_bytes','memory.limit_in_bytes','memory.failcnt'):
++                try: row['cgroup'][str(path/name)]=(path/name).read_text().strip()
++                except OSError: pass
++        handle.write(json.dumps(row,sort_keys=True)+'\n')
++        time.sleep(2)
+--- v3/upstream/source_bundle_check.py
++++ v5/upstream/source_bundle_check.py
+@@ -0,0 +1,36 @@
++import hashlib,json,subprocess,os,re
++from pathlib import Path
++def unique(items):
++ d={}
++ for k,v in items:
++  assert k not in d;d[k]=v
++ return d
++def check_manifest_pin(directory,environment):
++ expected=environment.get('OPSD_STAGE_MANIFEST_SHA256','')
++ assert re.fullmatch('[0-9a-f]{64}',expected), 'Reviewed external manifest SHA256 required'
++ raw=(directory/'source-manifest.json').read_bytes()
++ assert hashlib.sha256(raw).hexdigest()==expected, 'Stage manifest changed from reviewed external pin'
++ return json.loads(raw,object_pairs_hook=unique)
++def check_sources(root,directory,manifest):
++ assert set(manifest['production_math_sources'])=={'search_r1/baselines/actor.py','search_r1/baselines/distillation.py'}
++ if manifest['stage']=='pilot_only_no_future_ids_or_picked':
++  assert set(manifest['runtime_sources'])==set(['capacity_supervisor.py', 'checkpoint_reload.py', 'gpu_job_entry.sh', 'gpu_loss_checkpoint_equivalence.py', 'gpu_retrieval_bulk.py', 'gpu_teacher_probe-factor-dtype.py', 'http_retrieval_check.py', 'job.sh', 'microbatch_probe.py', 'model_preflight.py', 'resource_sample.py', 'retrieval_compare.py', 'semantic_device_gate.py', 'train_supervisor.py'])
++  assert set(manifest['file_sources'])==set(manifest['runtime_sources'])|{'pilot_audit.py','prior_cleanup.py','source_bundle_check.py'}
++ else:
++  assert manifest['stage']=='hf500_only_actual_formal_no_future_reload'
++  assert set(manifest['file_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py','formal_completion_check.py','training_evidence.py','periodic_validation.py','strict_metric_parser.py'}
++ assert directory.name==manifest['directory_name']
++ assert subprocess.check_output(['git','-C',str(root/'repo'),'rev-parse','HEAD'],text=True).strip()==manifest['source_commit']
++ subprocess.run(['git','-C',str(root/'repo'),'diff','--quiet','HEAD'],check=True)
++ for name,expected in manifest['production_math_sources'].items():
++  assert name in {'search_r1/baselines/actor.py','search_r1/baselines/distillation.py'}
++  assert hashlib.sha256((root/'repo'/name).read_bytes()).hexdigest()==expected
++ for name,expected in manifest['file_sources'].items():
++  assert Path(name).name==name
++  p=directory/name;assert p.is_file() and p.resolve().is_relative_to(directory)
++  assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
++ print('CURRENT SOURCE IMMUTABLE STAGE BUNDLE VERIFIED',flush=True)
++if __name__=='__main__':
++ directory=Path(__file__).resolve().parent
++ manifest=check_manifest_pin(directory,os.environ)
++ check_sources(Path('/mnt/data/shaoshitong/search-r1-rl/opsd'),directory,manifest)
+--- v3/upstream/strict_metric_parser.py
++++ v5/upstream/strict_metric_parser.py
+@@ -0,0 +1,34 @@
++"""Strict numeric logger parsing with two observed complete Ray trailing warning frames."""
++import hashlib,math,re
++NUMBER=r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
++WARNING_BODY='FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .'
++WARNING_PATH='/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: '
++FRAME=re.compile(r'\(WorkerDict pid=([1-9][0-9]*)\) '+re.escape(WARNING_PATH+WARNING_BODY)+r'\Z')
++CPU_AMP_BODY="`torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead."
++CPU_AMP_PATH='/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/torch/utils/checkpoint.py:1399: FutureWarning: '
++CPU_AMP_FRAME=re.compile(r'\(WorkerDict pid=([1-9][0-9]*)\) '+re.escape(CPU_AMP_PATH+CPU_AMP_BODY)+r'\Z')
++OBSERVED_FRAMES=(('observed_complete_trailing_ray_fsdp_futurewarning',FRAME),('observed_complete_trailing_ray_cpuamp_futurewarning',CPU_AMP_FRAME))
++def parse_metric_summary(line):
++ original=line
++ line=re.sub(r'\x1b\[[0-9;]*m','',line)
++ m=re.search(r'(?:^|\s)step:(\d+) - ',line)
++ assert m,'Missing numeric logger step header'
++ payload=line[m.end():];events=[]
++ matches=[(kind,match) for kind,pattern in OBSERVED_FRAMES for match in [pattern.search(payload)] if match]
++ assert len(matches)<=1,'Ambiguous trailing warning frame'
++ if matches:
++  kind,frame=matches[0]
++  prefix=payload[:frame.start()]
++  assert re.search(r'(?:^| - )timing_per_token_ms/gen:'+NUMBER+r'\Z',prefix),'Ray warning attached to incomplete/unexpected metric position'
++  suffix=payload[frame.start():]
++  events.append({'kind':kind,'step':int(m[1]),'worker_pid':int(frame[1]),'frame_sha256_ansi_removed':hashlib.sha256(suffix.encode()).hexdigest(),'original_physical_line_sha256':hashlib.sha256(original.encode()).hexdigest()})
++  payload=prefix
++ metrics={}
++ for item in payload.split(' - '):
++  pair=re.fullmatch(r'([A-Za-z_][A-Za-z0-9_./-]*):('+NUMBER+r')',item)
++  assert pair,('Malformed numeric logger metric',item)
++  key=pair[1];assert key not in metrics,('Duplicate numeric logger metric',key)
++  value=float(pair[2]);assert math.isfinite(value),('Nonfinite numeric logger metric',key)
++  metrics[key]=value
++ assert metrics,'Empty numeric logger summary'
++ return int(m[1]),metrics,events
+--- v3/upstream/training_evidence.py
++++ v5/upstream/training_evidence.py
+@@ -0,0 +1,206 @@
++"""Fail closed on role-bound retained actual evidence. No GPU work or mutations."""
++import hashlib,json,math,os,re,socket,subprocess
++from pathlib import Path
++COMMIT='8e60976d364ab7d7ae51714415813c1359dafe9a'
++OWN=Path('/mnt/data/shaoshitong/search-r1-rl/opsd')
++RUNTIME_NAMES=set('job.sh gpu_job_entry.sh train_supervisor.py semantic_device_gate.py gpu_teacher_probe-factor-dtype.py gpu_loss_checkpoint_equivalence.py capacity_supervisor.py microbatch_probe.py gpu_retrieval_bulk.py http_retrieval_check.py retrieval_compare.py resource_sample.py model_preflight.py checkpoint_reload.py'.split())
++FORMAL_NAMES=set('formal_entry.sh formal_job.sh formal_supervisor.py verify_formal_prerequisites.py micro_evidence.py collect_receipt.py controller_exit_evidence.py submit_formal.sh strict_metric_parser.py'.split())
++def pairs(items):
++ d={}
++ for k,v in items:
++  assert k not in d, ('Duplicate JSON key',k)
++  d[k]=v
++ return d
++def loads(text):
++ value=json.loads(text,object_pairs_hook=pairs,parse_constant=lambda s:(_ for _ in ()).throw(AssertionError('Nonfinite JSON '+s)))
++ def finite(v):
++  if isinstance(v,float):assert math.isfinite(v), 'Nonfinite JSON float'
++  elif isinstance(v,dict):
++   for item in v.values():finite(item)
++  elif isinstance(v,list):
++   for item in v:finite(item)
++ finite(value);return value
++def digest(path):
++ h=hashlib.sha256()
++ with path.open('rb') as f:
++  for chunk in iter(lambda:f.read(8*1024*1024),b''):h.update(chunk)
++ return h.hexdigest()
++def own_file(value,base):
++ p=Path(value)
++ assert p.is_absolute() and p.is_file(), ('Missing absolute evidence',value)
++ assert p.resolve().is_relative_to(base.resolve()), ('Evidence escapes own root',value)
++ return p
++ONE=('actor/old_log_probs_present','actor/old_log_probs_finite','actor/loss_mask_valid','actor/opsd_loss_finite','actor/grad_norm_finite','actor/allocator_is_native','actor/allocator_configuration_is_default','teacher/update_device_is_cuda_per_rank','teacher/storage_is_cpu_per_rank','teacher/all_parameter_dtype_is_fp32_per_rank','teacher/attention_is_eager_per_rank')
++ZERO=('actor/skipped_empty_minibatches','teacher/trainable_parameters_per_rank','teacher/gradient_tensors_per_rank','teacher/student_optimizer_membership_per_rank')
++def verify_outers(text,count):
++ steps=[];normalization_events=[]
++ for line in text.splitlines():
++  m=re.search(r'(?:^|\s)step:(\d+) - ',line)
++  if not m or 'actor/optimizer_steps:' not in line:continue
++  from strict_metric_parser import parse_metric_summary
++  step,metrics,events=parse_metric_summary(line);steps.append(step)
++  normalization_events.extend(events)
++  for rank in range(8):
++   def val(k):return metrics[f'{k}/rank_{rank}']
++   for k in ONE:assert val(k)==1,(step,rank,k)
++   for k in ZERO:assert val(k)==0,(step,rank,k)
++   assert val('actor/samples')==320
++   assert val('actor/optimizer_steps')==10
++   assert val('teacher/cuda_update_entries_cumulative_per_rank')==step
++   assert val('actor/supervised_tokens')>0 and val('actor/grad_norm_mean')>0
++   assert math.isfinite(val('actor/opsd_loss_mean'))
++ assert steps==list(range(1,count+1)), ('Actual outer sequence differs',steps)
++ return {'completed_actual_outer_updates':count,'ranks':8,'samples_per_rank':320,'numeric_metrics_validated':True,'recognized_trailing_ray_warning_frames':normalization_events}
++def verify_slurm(text,job):
++ assert re.search(r'\bJobId='+re.escape(job)+r'\b',text)
++ for key,value in (('JobState','COMPLETED'),('ExitCode','0:0')):
++  found=re.findall(r'\b'+key+r'=([^\s]+)',text)
++  assert found==[value], ('Slurm job is not successfully completed',job,key,found)
++def verify_validation_metrics(metrics):
++ assert metrics['val/qa_count/all']==64
++ sources={k[len('val/qa_count/'):] for k in metrics if k.startswith('val/qa_count/') and k!='val/qa_count/all'}
++ assert sources and sum(metrics['val/qa_count/'+name] for name in sources)==64
++ for name in sources:
++  count=metrics['val/qa_count/'+name]
++  assert type(count) in (int,float) and count>0 and float(count).is_integer()
++  assert metrics['val/evaluated_count/'+name]==count
++ for name in sources|{'all'}:
++  for kind in ('f1','em','answer_format','format_rate'):
++   value=metrics[f'val/{kind}/{name}']
++   assert type(value) in (int,float) and math.isfinite(value) and 0<=value<=1
++ # Do not permit missing or extraneous source-specific summaries.
++ for kind in ('f1','em','answer_format','format_rate'):
++  assert {k.split('/')[-1] for k in metrics if k.startswith('val/'+kind+'/')}==sources|{'all'}
++ assert {k.split('/')[-1] for k in metrics if k.startswith('val/evaluated_count/')}==sources
++ return sources
++def verify_pilot_validations(text):
++ text=re.sub(r'\x1b\[[0-9;]*m','',text)
++ marker='BASELINE_EVALUATION_METRICS_JSON='
++ records=[];summaries={};pending=None
++ for line in text.splitlines():
++  if marker in line:
++   assert pending is None, 'Evaluation JSON lacks corresponding completed step summary'
++   pending=loads(line.split(marker,1)[1]);verify_validation_metrics(pending);records.append(pending)
++  m=re.search(r'(?:^|\s)step:(\d+) - ',line)
++  if not m:continue
++  step=int(m[1]);metrics={}
++  for item in line[m.end():].split(' - '):
++   key,sep,value=item.rpartition(':')
++   if sep and key.startswith('val/'):
++    assert key not in metrics;metrics[key]=float(value)
++  if step in (0,5):
++   assert step not in summaries and pending is not None, ('Missing/duplicate pilot validation',step)
++   assert verify_validation_metrics(metrics)==verify_validation_metrics(pending)
++   # Console rounds decimal scores; exact unrounded values are in the JSON.
++   for key in metrics:
++    if key.startswith(('val/qa_count/','val/evaluated_count/')):assert metrics[key]==pending[key]
++   summaries[step]=metrics;pending=None
++  else:assert not metrics, ('Unexpected intermediate pilot evaluation',step)
++ assert set(summaries)=={0,5} and len(records)==2 and pending is None
++ return True
++def verify_reload(data,checkpoint,job='2996'):
++ assert data['slurm_job_id']==job and data['node'].split('.')[0]=='h100-10'
++ assert Path(data['checkpoint'])==checkpoint
++ for key in ('config_computation_equal','tokenizer_equal','all_loaded_parameters_finite'):assert data[key] is True
++ assert type(data['tensor_count']) is int and data['tensor_count']>0
++ assert re.fullmatch('[0-9a-f]{64}',data['tokenizer_semantic_sha256'])
++ for key in ('missing_keys','unexpected_keys','mismatched_keys','error_msgs'):assert data['loading_info'][key]==[]
++ assert 'H100' in data['gpu_name'] and len(data['cuda_visible_devices'].split(','))==1
++ assert data['generation'] and data['seconds']>0
++ assert data['cuda_peak_reserved_bytes']>=data['cuda_peak_allocated_bytes']>0
++ expected={'model.layers.0.self_attn.q_proj.weight','model.layers.0.self_attn.v_proj.weight','model.layers.0.mlp.down_proj.weight','model.embed_tokens.weight' if data['tied_embeddings'] else 'lm_head.weight'}
++ assert set(data['student_change'])==expected
++ assert sum(v['changed_elements'] for v in data['student_change'].values())>0
++ for v in data['student_change'].values():
++  assert type(v['changed_elements']) is int and v['changed_elements']>=0
++  assert all(math.isfinite(v[k]) and v[k]>=0 for k in ('max_abs_delta','mean_abs_delta'))
++ assert set(data['weights'])=={p.name for p in checkpoint.glob('*.safetensors')} and data['weights']
++ for name,v in data['weights'].items():
++  assert Path(name).name==name
++  p=own_file(str(checkpoint/name),checkpoint)
++  assert p.stat().st_size==v['bytes'] and digest(p)==v['sha256']
++ for name in ('config.json','tokenizer.json'):own_file(str(checkpoint/name),checkpoint)
++ index=checkpoint/'model.safetensors.index.json'
++ if index.exists():
++  mapping=loads(index.read_text())['weight_map']
++  assert len(mapping)==data['tensor_count'] and set(mapping.values())==set(data['weights'])
++ else:assert len(data['weights'])==1
++ return True
++def verify_receipt(receipt,base=OWN):
++ r=loads(own_file(str(receipt),base).read_text())
++ assert r['source_commit']==COMMIT and r['pilot_job']=='2994' and r['reload_job']=='2996'
++ pilot=base/'runs/opsd-new-acceptance-2994';reload=base/'runs/opsd-new-hf-reload-2996'
++ roles={'pilot_raw_log':pilot,'pilot_commit':pilot,'pilot_slurm':pilot,'pilot_exit':pilot,'pilot_finished':pilot,'reload_result':reload,'reload_commit':reload,'reload_slurm':reload,'reload_exit':reload,'reload_cleanup':reload,'independent_review':base}
++ assert set(r['evidence'])==set(roles)
++ paths={}
++ for role,scope in roles.items():
++  item=r['evidence'][role];p=own_file(item['path'],scope)
++  assert digest(p)==item['sha256'];paths[role]=p
++ for stage,job in (('pilot','2994'),('reload','2996')):
++  assert paths[stage+'_commit'].read_text().strip()==COMMIT
++  slurm_text=paths[stage+'_slurm'].read_text()
++  if stage=='pilot' and slurm_text.lstrip().startswith('{'):
++   from controller_exit_evidence import verify_controller_exit
++   verify_controller_exit(loads(slurm_text),job,COMMIT,pilot,own_file,digest,loads)
++  else:verify_slurm(slurm_text,job)
++  assert paths[stage+'_exit'].read_text().strip()=='0'
++ assert paths['pilot_finished'].read_text().strip()=='TRAINING_FIVE_ITERATIONS_EXITED'
++ raw=paths['pilot_raw_log'].read_text()
++ verify_outers(raw,5);verify_pilot_validations(raw)
++ verify_reload(loads(paths['reload_result'].read_text()),pilot/'output/checkpoints/opsd-new-gpu-acceptance-5/actor/global_step_5')
++ c=loads(paths['reload_cleanup'].read_text())
++ assert c['job_id']=='2996' and c['node_scope']=='h100-10' and c['previous_training_job']=='2994'
++ assert c['previous_job_processes']==[] and c['previous_ports_listening'] is False
++ review=loads(paths['independent_review'].read_text())
++ assert review['source_commit']==COMMIT and review['pilot_job']=='2994' and review['reload_job']=='2996' and review['accepted'] is True
++ assert review['reviewer'] and review['report']
++ assert review['bound_evidence_sha256']=={k:r['evidence'][k]['sha256'] for k in roles if k!='independent_review'}
++ assert r['picked_local_micro']==2 and r['picked_global_micro']==16
++ from micro_evidence import verify_micro_evidence
++ verify_micro_evidence(review,pilot,r['pilot_job'],COMMIT,2)
++ return r
++def load_reviewed_formal_manifest(base):
++ expected=os.environ.get('OPSD_STAGE_MANIFEST_SHA256','')
++ assert re.fullmatch('[0-9a-f]{64}',expected), 'Externally reviewed final formal manifest SHA256 required'
++ path=own_file(str(base/'tools/formal-8e60976d364a-pilot-2994-hf-2996-reviewed-c85d38bd29f6/source-manifest.json'),base)
++ assert digest(path)==expected, 'Formal manifest changed from externally reviewed final pin'
++ return loads(path.read_text())
++def verify_deployed(base=OWN):
++ manifest=load_reviewed_formal_manifest(base)
++ assert manifest['source_commit']==COMMIT
++ for field,names,directory in (('runtime_sources',RUNTIME_NAMES,'pilot-runtime-8e60976d364a-reviewed-4246006a5605'),('formal_sources',FORMAL_NAMES,'formal-8e60976d364a-pilot-2994-hf-2996-reviewed-c85d38bd29f6')):
++  assert set(manifest[field])==names
++  for name,sha in manifest[field].items():
++   p=own_file(str(base/'tools'/directory/name),base)
++   assert digest(p)==sha, ('Deployed source mismatch',directory,name)
++ assert set(manifest['pilot_additional_sources'])=={'pilot_audit.py','prior_cleanup.py','source_bundle_check.py'}
++ for name,expected in manifest['pilot_additional_sources'].items():assert digest(own_file(str(base/'tools'/manifest['pilot_runtime_directory_name']/name),base))==expected
++ assert set(manifest['hf_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py'}
++ for name,expected in manifest['hf_sources'].items():assert digest(own_file(str(base/'tools'/manifest['hf_runtime_directory_name']/name),base))==expected
++ for field,folder in (('pilot_manifest_sha256','pilot_runtime_directory_name'),('hf_manifest_sha256','hf_runtime_directory_name')):assert digest(own_file(str(base/'tools'/manifest[folder]/'source-manifest.json'),base))==manifest[field]
++ assert subprocess.check_output(['git','-C',str(base/'repo'),'rev-parse','HEAD'],text=True).strip()==COMMIT
++ subprocess.run(['git','-C',str(base/'repo'),'diff','--quiet','HEAD'],check=True)
++ assert set(manifest['production_math_sources'])=={'search_r1/baselines/actor.py','search_r1/baselines/distillation.py'}
++ for name,expected in manifest['production_math_sources'].items():assert digest(own_file(str(base/'repo'/name),base))==expected
++ return digest(base/'tools/formal-8e60976d364a-pilot-2994-hf-2996-reviewed-c85d38bd29f6/source-manifest.json')
++def verify_previous_cleanup():
++ job=os.environ['SLURM_JOB_ID'];node=socket.gethostname().split('.')[0]
++ assert node=='h100-10' and os.environ.get('SLURM_JOB_NODELIST')=='h100-10'
++ assert re.search(r'job_'+re.escape(job)+r'(?:/|$)',Path('/proc/self/cgroup').read_text())
++ found=[]
++ for p in Path('/proc').glob('[0-9]*/cgroup'):
++  try:cg=p.read_text()
++  except FileNotFoundError:continue
++  if re.search(r'job_(?:2994|2996)(?:/|$)',cg):found.append({'pid':int(p.parent.name),'cgroup':cg})
++ listeners=subprocess.check_output(['ss','-H','-ltnp'],text=True)
++ ports=[line for line in listeners.splitlines() if re.search(r':(?:18084|16384)\s',line)]
++ result={'job_id':job,'node_scope':node,'previous_jobs':['2994','2996'],'previous_job_processes':found,'previous_ports_listening':ports,'read_only_no_kill':True}
++ assert not found and not ports, ('Previous jobs not cleaned up',result)
++ return result
++if __name__=='__main__':
++ import argparse
++ p=argparse.ArgumentParser();p.add_argument('--cleanup',action='store_true');a=p.parse_args()
++ if a.cleanup:
++  result=verify_previous_cleanup();Path(os.environ['OPSD_EVIDENCE'],'previous-pilot-reload-cleanup.json').write_text(json.dumps(result,indent=2))
++ else:
++  sha=verify_deployed();verify_receipt(os.environ['OPSD_ACCEPTANCE_RECEIPT']);print('ROLE_BOUND_ACTUAL_PILOT_RELOAD_AND_DEPLOYED_SOURCE_VERIFIED',sha,flush=True)

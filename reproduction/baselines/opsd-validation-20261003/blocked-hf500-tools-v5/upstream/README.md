@@ -1,0 +1,6 @@
+Blocked local preview for actual formal job3007. Entry remains exit78; source8e/externalformalmanifest eb13b32b6dbcd608c237805bc950023a627ea4bdd4e98596a1afd5c9417d7051 bound. Only actualformal job/path and reviewed formal-directory parameter strings changed from approved UNFILLED two-warning template. Source/math/acceptedpilotHF/runtime/500counter501/micro2/validation64/final51713/fullHF435tensor3shardchecks unchanged.
+
+No future500 completion receipt, final-quality claim or futureHF Slurm job ID was invented. Current3007 RUNNING, missing completion evidence, previous2999 receipt/terminal and COMPLETEDselflabelwithout500 actualraw all rejected. Currentglobal_step500 target is runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_500. Newreload ID will only come from its own future SLURM_JOB_ID. Ownsameh10010GPUlease and previous3007process/ports cleanup remain.
+
+Manifest SHA ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850
+87CPUchecks passed (previous79 retained plus8 actual3007binding/failclosedchecks). Pythoncompile/bashsyntaxPASS. No upload/submit/cancel or deployed source edits. Old UNFILLED template bytes preserved. Independent preview review, actualformal500/terminal/final evidence and freshfinalreview required before activation.
