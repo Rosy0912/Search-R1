@@ -12,6 +12,8 @@ def main(config):
     check_local_runtime(config)
     from .holdout import prepare_common_holdout
     split_manifest = prepare_common_holdout(config)
+    from .corrected_evaluation import configure
+    configure(config, split_manifest)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
         raise ValueError('Smoke-only runs allow at most five outer updates')
     if config.baselines.holdout_eval_only:
@@ -46,6 +48,10 @@ def main(config):
         check_local_runtime(config, ray.nodes())
     from .runtime_audit import runtime_env_vars
     audit_env = runtime_env_vars()
+    from .corrected_evaluation import enabled
+    if enabled(config):
+        import os
+        audit_env['OPSD_CORRECTED_EVAL_STAGE_SHA256'] = os.environ['OPSD_CORRECTED_EVAL_STAGE_SHA256']
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
     result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:

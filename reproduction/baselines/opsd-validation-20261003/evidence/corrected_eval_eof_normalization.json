@@ -1,0 +1,7 @@
+{
+  "original_module_sha256": "8d7b7fcfb5ee984878a712d112e69a813c7af1a2907f5703656ea4116a36643e",
+  "normalized_module_sha256": "dced486435251b6e47c039c6f1a7edadbdab4f55e142b8d1f96e967a74b829d3",
+  "change": "remove surplus EOF blank line only",
+  "ast_exact_equal": true,
+  "original_test_manifest_preserved": true
+}

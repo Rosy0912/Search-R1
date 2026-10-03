@@ -484,12 +484,20 @@ class RayPPOTrainer(object):
         reward_tensor_lst = []
         data_source_lst = []
         qa_rows = []
+        corrected_writer = corrected_guard = None
+        if self.config.get('baselines'):
+            from search_r1.baselines.corrected_evaluation import enabled, start_capture
+            if enabled(self.config):
+                corrected_writer, corrected_guard = start_capture(self)
 
-        def collect_qa(batch):
+        def collect_qa(batch, reward_tensor):
             if not self.config.get('baselines'):
                 return
             from search_r1.baselines.evaluation import batch_answer_metrics
-            qa_rows.extend(batch_answer_metrics(batch, self.tokenizer))
+            rows = batch_answer_metrics(batch, self.tokenizer)
+            if corrected_writer is not None:
+                corrected_writer.append(batch, rows, reward_tensor)
+            qa_rows.extend(rows)
 
         gen_config = GenerationConfig(
             max_turns=self.config.max_turns,
@@ -546,7 +554,7 @@ class RayPPOTrainer(object):
                 # for certain reward function (e.g. sandbox), the generation can overlap with reward
                 reward_tensor = self.val_reward_fn(test_batch)
 
-                collect_qa(test_batch)
+                collect_qa(test_batch, reward_tensor)
                 reward_tensor_lst.append(reward_tensor)
                 data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
         else:
@@ -581,7 +589,7 @@ class RayPPOTrainer(object):
                     # for certain reward function (e.g. sandbox), the generation can overlap with reward
                     reward_tensor = self.val_reward_fn(test_batch)
 
-                    collect_qa(test_batch)
+                    collect_qa(test_batch, reward_tensor)
                     reward_tensor_lst.append(reward_tensor)
                     data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
 
@@ -604,6 +612,9 @@ class RayPPOTrainer(object):
         if qa_rows:
             from search_r1.baselines.evaluation import aggregate_answer_metrics
             metric_dict.update(aggregate_answer_metrics(qa_rows))
+        if self.config.get('baselines') and corrected_writer is not None:
+            transcript_sha = corrected_writer.finish(corrected_guard, metric_dict)
+            print('CORRECTED_SCORING_VIEW_MANIFEST_SHA256=' + transcript_sha, flush=True)
         if self.config.get('baselines'):
             print('BASELINE_EVALUATION_METRICS_JSON=' + json.dumps(metric_dict, sort_keys=True), flush=True)
         return metric_dict
@@ -733,6 +744,10 @@ class RayPPOTrainer(object):
             if self.config.trainer.get('val_only', False):
                 return val_metrics
 
+        if self.config.get('baselines'):
+            from search_r1.baselines.corrected_evaluation import enabled
+            if enabled(self.config):
+                raise RuntimeError('Corrected evaluation cannot enter the training loop')
         # we start from step 1
         self.global_steps += 1
 
