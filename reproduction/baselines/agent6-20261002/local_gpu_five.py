@@ -76,7 +76,11 @@ try:
     if os.environ.get('COSEARCH_PROBE_ONLY') == '1':
         print('COSEARCH_PROBE_ONLY_COMPLETE',flush=True)
         raise SystemExit(0)
-    head=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/ray_cli.py'),'start','--head','--block','--node-ip-address=127.0.0.1',
+    import psutil
+    ray_node_ip='10.33.0.16'
+    local_ips={address.address for addresses in psutil.net_if_addrs().values() for address in addresses}
+    assert ray_node_ip in local_ips, 'Ray advertised address must be an actual h100-16 interface'
+    head=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/ray_cli.py'),'start','--head','--block','--node-ip-address='+ray_node_ip,
         '--port=16386','--min-worker-port=21000','--max-worker-port=21999','--num-gpus=8','--num-cpus=24','--object-store-memory=8589934592',
         '--include-dashboard=false','--temp-dir='+str(root)], 'ray-head.log',env)
     started=time.monotonic()

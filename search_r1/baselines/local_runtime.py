@@ -33,6 +33,9 @@ def check_local_runtime(config, ray_nodes=None):
     if ray_nodes is not None:
         local = {'127.0.0.1', '::1'}
         local.update(record[4][0] for record in socket.getaddrinfo(socket.gethostname(), None))
+        import psutil
+        local.update(address.address.split('%')[0] for addresses in psutil.net_if_addrs().values()
+                     for address in addresses if address.family in (socket.AF_INET, socket.AF_INET6))
         alive = [node for node in ray_nodes if node.get('Alive')]
         if len(alive) != 1 or alive[0].get('NodeManagerAddress') not in local:
             raise ValueError('Ray contains a remote or unexpected alive node')
