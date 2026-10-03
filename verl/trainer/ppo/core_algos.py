@@ -273,6 +273,12 @@ def kl_penalty(logprob: torch.FloatTensor, ref_logprob: torch.FloatTensor, kl_pe
     # # URL http://joschu.net/blog/kl-approx.html.
     if kl_penalty == 'low_var_kl':
         kl = ref_logprob - logprob
+        if not torch.isfinite(kl).all():
+            raise ValueError('Nonfinite low_var_kl log probability difference')
+        # Outside [-11,4], exp(x)-x-1 is already above the existing
+        # upper clamp10, with zero derivative. Bound the input before exp
+        # to preserve that function without the 0*inf backward NaN.
+        kl = torch.clamp(kl, min=-11., max=4.)
         ratio = torch.exp(kl)
         kld = (ratio - kl - 1).contiguous()
         return torch.clamp(kld, min=-10, max=10)

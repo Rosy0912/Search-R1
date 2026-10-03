@@ -168,18 +168,38 @@ class ActorAudit:
     def epoch(self):
         self.epoch_hashes.append(fixed_hashes(self.batch))
 
-    def micro(self, logp, old, mask, loss, step_ids=None):
+    def micro(self, logp, old, mask, loss, step_ids=None, advantages=None, loss_parts=None, ref_logp=None):
         valid = mask.bool()
         self.micro_stats.append(dict(current_log_probs=stats(logp, valid),
                                      ratios=stats(torch.exp(logp.detach()[valid] - old.detach()[valid])),
                                      policy_loss=stats(loss)))
         if step_ids is not None:
             ratios=[]
+            deltas=[]
             for row in range(len(logp)):
                 for action in torch.unique(step_ids[row][valid[row]]):
                     chosen=valid[row] & (step_ids[row] == action)
-                    ratios.append((logp.detach()[row][chosen]-old.detach()[row][chosen]).sum().exp())
+                    delta=(logp.detach()[row][chosen]-old.detach()[row][chosen]).sum()
+                    deltas.append(delta)
+                    ratios.append(delta.exp())
             self.micro_stats[-1]['joint_action_ratios']=stats(torch.stack(ratios) if ratios else logp.new_empty(0))
+        if not enabled():
+            return
+        record=dict(outer_step=self.step, micro_index=len(self.micro_stats),
+                    optimizer_steps_completed=len(self.grads), statistics=self.micro_stats[-1])
+        if step_ids is not None:
+            record['joint_action_logratios']=stats(torch.stack(deltas) if deltas else logp.new_empty(0))
+        if advantages is not None:
+            record['advantages']=stats(advantages,valid)
+            record['advantage_sign_counts']={name:int((test & valid).sum()) for name,test in
+                [('positive',advantages>0),('negative',advantages<0),('zero',advantages==0)]}
+        if ref_logp is not None:
+            record['reference_minus_current']=stats(ref_logp.detach()-logp.detach(),valid)
+        record['loss_parts']={name:stats(value.detach()) for name,value in (loss_parts or {}).items()}
+        directory=Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR'])/'numeric'
+        directory.mkdir(parents=True,exist_ok=True)
+        with (directory/f'micro-{self.rank}.jsonl').open('a') as stream:
+            stream.write(json.dumps(record)+'\n')
 
     def gradient(self, norm):
         value = float(norm.detach())
