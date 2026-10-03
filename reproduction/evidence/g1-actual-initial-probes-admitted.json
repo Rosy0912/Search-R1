@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-10-04T02:02:53.664623",
+  "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+  "source_commit": "080753eba78454f13dc0cb75a5c189e5f2b524f0",
+  "initial_probe_version": "732f8740b5bb4564baff04d33dd54f7b:0:b9fdbf3c84a94fd4be86988e946629b5",
+  "admitted_version": "732f8740b5bb4564baff04d33dd54f7b:0:b9fdbf3c84a94fd4be86988e946629b5",
+  "accepted": true,
+  "calibration_report": {
+    "commit_cv_auc": 0.9257993966817497,
+    "boundary_cv_auc": 0.8870192307692308,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 482,
+    "boundary_class_counts": [
+      260,
+      40
+    ],
+    "commit_class_counts": [
+      141,
+      341
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true
+  },
+  "label_counts": {
+    "question_count": 300,
+    "searched_valid_trajectory_count": 482,
+    "boundary_class_counts": [
+      260,
+      40
+    ],
+    "reliance_class_counts": [
+      141,
+      341
+    ],
+    "counterfactual_invalid_count": 3,
+    "counterfactual_strict_invalid_count": 5,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "malformed_calibration_action_policy": "terminate_without_retrieval_or_correction_turn"
+  },
+  "generation_allocated_before_release": 19514617344,
+  "generation_allocated_after_release": 16908288,
+  "http_smoke_semantics": "finite identity-aligned readout plumbing, not accuracy"
+}
