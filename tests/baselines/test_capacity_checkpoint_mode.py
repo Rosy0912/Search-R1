@@ -5,7 +5,7 @@ import torch
 from transformers import Qwen2Config, Qwen2ForCausalLM
 
 ROOT = Path(__file__).resolve().parents[2]
-spec = importlib.util.spec_from_file_location('capacity_probe_runtime', ROOT / 'reproduction/baselines/opsd-validation-20261003/runtime/microbatch_probe.py')
+spec = importlib.util.spec_from_file_location('capacity_probe_runtime', ROOT / 'reproduction/baselines/opsd-runtime-20261003/microbatch_probe.py')
 probe = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(probe)
 

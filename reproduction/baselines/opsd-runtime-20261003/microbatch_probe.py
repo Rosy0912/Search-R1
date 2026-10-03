@@ -46,6 +46,36 @@ def teacher_runtime_audit(teacher, expected_device):
                 active_device=str(teacher.device), matmul_tf32=False, cudnn_tf32=False)
 
 
+
+def audited_checkpoint_training(base, model):
+    """Match the production actor train/dropout modes and count real recomputation."""
+    import torch
+    from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer
+    model.train()
+    for module in model.modules():
+        if isinstance(module, torch.nn.Dropout):
+            module.eval()
+    decoder_layers = [module for module in base.modules() if isinstance(module, Qwen2DecoderLayer)]
+    flags = dict(student_wrapper_training=model.training, student_base_training=base.training,
+                 student_decoder_container_training=base.model.training,
+                 student_gradient_checkpointing=base.model.gradient_checkpointing,
+                 decoder_count=len(decoder_layers), all_decoder_training=all(layer.training for layer in decoder_layers),
+                 checkpoint_use_reentrant=base.model._gradient_checkpointing_func.keywords.get('use_reentrant'))
+    if (not all(flags[key] for key in ('student_wrapper_training', 'student_base_training',
+            'student_decoder_container_training', 'student_gradient_checkpointing', 'all_decoder_training'))
+            or flags['decoder_count'] != base.config.num_hidden_layers or flags['decoder_count'] < 1
+            or flags['checkpoint_use_reentrant'] is not False):
+        raise AssertionError('Actual training/non-reentrant decoder checkpoint mode is inactive')
+    counts = {str(index): 0 for index in range(len(decoder_layers))}
+    handles = []
+    for index, layer in enumerate(decoder_layers):
+        key = str(index)
+        def count_call(_module, _args, key=key):
+            counts[key] += 1
+        handles.append(layer.register_forward_pre_hook(count_call))
+    return flags, counts, handles
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--model', default=os.environ.get('OPSD_TEACHER'))
@@ -91,6 +121,9 @@ def main():
                      mixed_precision=MixedPrecision(param_dtype=torch.bfloat16, reduce_dtype=torch.float32,
                                                     buffer_dtype=torch.float32), sync_module_states=True,
                      forward_prefetch=False)
+        training_flags, decoder_calls, checkpoint_handles = audited_checkpoint_training(base, model)
+        result['student_checkpoint_training_runtime'] = training_flags
+        result['decoder_forward_pre_hook_counts'] = decoder_calls
         student_dtypes = sorted({str(p.dtype) for p in model.parameters()})
         if student_dtypes != ['torch.float32']:
             raise AssertionError('FSDP student master parameters must be FP32')
@@ -153,8 +186,14 @@ def main():
                 memory_phase(f"step{optimizer_step+1}_zero_grad")
                 loss = opsd_loss(model, teacher, tensors, tok, [['Paris']] * args.micro, settings, mask.sum())
                 memory_phase(f"step{optimizer_step+1}_loss_ready")
+                expected_forward_calls = 2 * optimizer_step + 1
+                if any(count != expected_forward_calls for count in decoder_calls.values()):
+                    raise AssertionError('Decoder forward checkpoint-call count differs from one forward per step')
                 loss.backward()
                 memory_phase(f"step{optimizer_step+1}_backward_done")
+                expected_recomputed_calls = 2 * (optimizer_step + 1)
+                if any(count != expected_recomputed_calls for count in decoder_calls.values()):
+                    raise AssertionError('Actual backward decoder checkpoint recomputation missing or repeated')
                 grad = model.clip_grad_norm_(1.)
                 if not torch.isfinite(loss) or not torch.isfinite(grad) or grad <= 0:
                     raise AssertionError('Nonfinite or zero loss/gradient')
@@ -177,7 +216,7 @@ def main():
                 teacher_audit=teacher.audit_metrics(optimizer),
                 scope='Eight-rank actual 3B FP32-master FSDP/BF16 Flash/checkpointed full-vocab OPSD update with FP32/eager CUDA teacher; two consecutive optimizer updates with resident Adam states; synthetic worst-width trajectories. vLLM residency not tested here; must pass production outer separately')
         memory_phase('teacher_cpu_returned')
-        for handle in handles: handle.remove()
+        for handle in handles + checkpoint_handles: handle.remove()
         result['teacher_returned_runtime'] = teacher_runtime_audit(teacher, 'cpu')
         result['teacher_cost'] = teacher.cost_metrics()
         result['estimated_peak_device_used_bytes'] = external_baseline + result['peak_reserved_bytes'] + 1024**3
