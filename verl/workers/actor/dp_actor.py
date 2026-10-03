@@ -142,11 +142,8 @@ class DataParallelPPOActor(BasePPOActor):
 
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
-
-        if isinstance(self.actor_module, FSDP):
-            grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
-        else:
-            grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+        from search_r1.baselines.gradient_norm import clip_grad_norm64
+        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         self.actor_optimizer.step()
@@ -324,7 +321,12 @@ class DataParallelPPOActor(BasePPOActor):
 
                 loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
                 if audit is not None:
-                    audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None))
+                    parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
+                    if self.config.use_kl_loss:
+                        parts['kl'] = kl_loss
+                    audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
+                        advantages=advantages, loss_parts=parts,
+                        ref_logp=ref_log_prob if self.config.use_kl_loss else None)
                 loss.backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
