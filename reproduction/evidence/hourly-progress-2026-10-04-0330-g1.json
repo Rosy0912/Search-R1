@@ -1,0 +1,168 @@
+{
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "source_commit": "5707268",
+  "checked_unix": 1791055836.3701112,
+  "window_start_unix": 1791051919.1959784,
+  "window_duration_seconds": 3917.174132823944,
+  "window_semantics": "Since entering GRPO stage, includes trainer initialization and current incomplete iteration; not a claim of exactly one-hour measurement.",
+  "bound_handles": [
+    {
+      "pid": 1661704,
+      "start_ticks": 513118313,
+      "sid": 1661702,
+      "verified_live": true
+    },
+    {
+      "pid": 1672776,
+      "start_ticks": 513152831,
+      "sid": 1667170,
+      "verified_live": true
+    }
+  ],
+  "actual_completed_updates": 8,
+  "actual_update_rows": [
+    {
+      "step": 1,
+      "reward": 0.16,
+      "actor_pg_loss": 0.155,
+      "grad_norm": 3.209,
+      "step_seconds": 450.418
+    },
+    {
+      "step": 2,
+      "reward": 0.193,
+      "actor_pg_loss": -0.104,
+      "grad_norm": 3.137,
+      "step_seconds": 407.828
+    },
+    {
+      "step": 3,
+      "reward": 0.134,
+      "actor_pg_loss": 0.111,
+      "grad_norm": 2.842,
+      "step_seconds": 393.727
+    },
+    {
+      "step": 4,
+      "reward": 0.191,
+      "actor_pg_loss": 0.081,
+      "grad_norm": 3.534,
+      "step_seconds": 422.84
+    },
+    {
+      "step": 5,
+      "reward": 0.222,
+      "actor_pg_loss": 0.082,
+      "grad_norm": 3.485,
+      "step_seconds": 514.297
+    },
+    {
+      "step": 6,
+      "reward": 0.144,
+      "actor_pg_loss": -0.031,
+      "grad_norm": 3.265,
+      "step_seconds": 398.809
+    },
+    {
+      "step": 7,
+      "reward": 0.2,
+      "actor_pg_loss": -0.025,
+      "grad_norm": 3.062,
+      "step_seconds": 407.67
+    },
+    {
+      "step": 8,
+      "reward": 0.224,
+      "actor_pg_loss": 0.047,
+      "grad_norm": 3.405,
+      "step_seconds": 430.932
+    }
+  ],
+  "reward_mean_from_rounded_console": 0.1835,
+  "reward_range_from_rounded_console": [
+    0.134,
+    0.224
+  ],
+  "reward_last": 0.224,
+  "training_metric_precision": "Console three decimals; derived means approximate. Five-update original proof retains full precision.",
+  "latest_fixed64": {
+    "step": 5,
+    "counts": {
+      "nq": 10,
+      "triviaqa": 9,
+      "popqa": 9,
+      "hotpotqa": 9,
+      "2wikimultihopqa": 9,
+      "musique": 9,
+      "bamboogle": 9
+    },
+    "correct": {
+      "nq": 1,
+      "triviaqa": 2,
+      "popqa": 0,
+      "hotpotqa": 1,
+      "2wikimultihopqa": 0,
+      "musique": 0,
+      "bamboogle": 1
+    },
+    "em": 0.078125,
+    "initial_em": 0.0625,
+    "change_percentage_points": 1.5625
+  },
+  "new_validation_since_five": false,
+  "five_accepted": true,
+  "sampled_peak_mib": {
+    "0": 49781,
+    "1": 49877,
+    "2": 49877,
+    "3": 49187,
+    "5": 18903,
+    "6": 37577
+  },
+  "latest_gpu_sample": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791055835.4224393,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 46821,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 46917,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "used_mib": 47363,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "used_mib": 47267,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 27625,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "errors": [],
+  "next_save_and_validation_step": 50,
+  "full300_proof_exists": false,
+  "source_semantics": "Disk fingerprint before launch, not loaded module proof."
+}
