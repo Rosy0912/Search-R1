@@ -9,10 +9,10 @@
   "unsaved_updates_lost": 49,
   "upload": {
     "session": 34212,
-    "bytes": 11000512512,
+    "bytes": 11231035392,
     "total": 12497675939,
-    "sample_time": "2026-10-03T11:11:47+08:00",
-    "fraction": 0.8802046529044667,
+    "sample_time": "2026-10-03T11:14:16+08:00",
+    "fraction": 0.8986499127371876,
     "sha256_verified_on_target": false,
     "local_relay_preserved": true
   },
@@ -29,19 +29,23 @@
       5,
       6
     ],
-    "stage": "2-GPU retrieval running; single-GPU0 vLLM generation follows",
-    "completed": false,
-    "gpu4_7_untouched": true
+    "stage": "2-GPU real FAISS and single-GPU0 real3B vLLM passed and exited",
+    "completed": true,
+    "gpu4_7_untouched": true,
+    "top3_overlap": 0.9761904761904762,
+    "max_score_delta": 2.181529998779297e-05,
+    "gpu_index_seconds_512_repeated_vectors": 0.5056806830689311,
+    "not_end_to_end_timing": true
   },
   "gpu_snapshot": {
-    "time": "2026-10-03T11:11:47+08:00",
+    "time": "2026-10-03T11:14:16+08:00",
     "memory_used_mib": [
       4,
       4,
       4,
       4,
       4,
-      983,
+      4,
       4,
       68494
     ],
@@ -106,8 +110,10 @@
   "remaining": [
     "target archive SHA/extraction",
     "supervisor unique manifest/log/device gate",
-    "fresh model/HTTP preflight",
+    "HTTP integration",
+    "worker/Ray/control-flow integration tests",
     "actual101..105 update acceptance"
   ],
-  "review": "Core path/scheduler/count diff no algorithm defect found; full launcher and worker/control-flow integration regression still pending. Added strict provenance and actual tiny safetensor gate tests."
+  "review": "Core path/scheduler/count diff no algorithm defect found; full launcher and worker/control-flow integration regression still pending. Added strict provenance and actual tiny safetensor gate tests.",
+  "last_followup": "2026-10-03T11:14:16+08:00"
 }
