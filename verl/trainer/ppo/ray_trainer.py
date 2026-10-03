@@ -938,6 +938,13 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
+                if getattr(getattr(self.config, 'baselines', None), 'method', None) == 'cosearch':
+                    import numbers
+                    exact = {key: float(value) for key, value in metrics.items()
+                             if isinstance(value, numbers.Real)}
+                    print('COSEARCH_OUTER_METRICS_JSON=' + json.dumps(
+                        dict(step=self.global_steps, metrics=exact), allow_nan=False,
+                        sort_keys=True), flush=True)
 
                 self.global_steps += 1
 
