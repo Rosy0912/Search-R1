@@ -227,6 +227,10 @@ class DataParallelPPOActor(BasePPOActor):
             from search_r1.baselines.runtime_audit import enabled, ActorAudit
             if enabled():
                 audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+        elif self.config.get('baseline_method') == 'tree_grpo':
+            from search_r1.baselines.tree_rank_audit import enabled, TreeRankAudit
+            if enabled():
+                audit = TreeRankAudit(self.actor_module, batch, data.meta_info, self.config, __file__)
 
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
