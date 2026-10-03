@@ -1,0 +1,61 @@
+{
+  "checked_at": "2026-10-04T01:56:18.504149",
+  "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+  "source_commit": "080753eba78454f13dc0cb75a5c189e5f2b524f0",
+  "source_file_count": 247,
+  "preflight_ranks": [
+    {
+      "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+      "rank": 0,
+      "world_size": 4,
+      "physical_devices": "0,1,2,3",
+      "nccl_bf16": true,
+      "real_cuda_jit": true,
+      "nonfinite_rank_collectively_rejected_before_write": true,
+      "empty_rank_collectively_rejected": true,
+      "finite_adam_write": true,
+      "torch_version": "2.4.0+cu121"
+    },
+    {
+      "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+      "rank": 1,
+      "world_size": 4,
+      "physical_devices": "0,1,2,3",
+      "nccl_bf16": true,
+      "real_cuda_jit": true,
+      "nonfinite_rank_collectively_rejected_before_write": true,
+      "empty_rank_collectively_rejected": true,
+      "finite_adam_write": true,
+      "torch_version": "2.4.0+cu121"
+    },
+    {
+      "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+      "rank": 2,
+      "world_size": 4,
+      "physical_devices": "0,1,2,3",
+      "nccl_bf16": true,
+      "real_cuda_jit": true,
+      "nonfinite_rank_collectively_rejected_before_write": true,
+      "empty_rank_collectively_rejected": true,
+      "finite_adam_write": true,
+      "torch_version": "2.4.0+cu121"
+    },
+    {
+      "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+      "rank": 3,
+      "world_size": 4,
+      "physical_devices": "0,1,2,3",
+      "nccl_bf16": true,
+      "real_cuda_jit": true,
+      "nonfinite_rank_collectively_rejected_before_write": true,
+      "empty_rank_collectively_rejected": true,
+      "finite_adam_write": true,
+      "torch_version": "2.4.0+cu121"
+    }
+  ],
+  "stage": {
+    "run_id": "732f8740b5bb4564baff04d33dd54f7b",
+    "stage": "TRAINING_BOTH_INITIAL_PROBES",
+    "unix": 1791049998.6913288
+  }
+}
