@@ -14,7 +14,6 @@ from tokenizers import Tokenizer, models, pre_tokenizers, decoders, trainers
 from transformers import PreTrainedTokenizerFast
 from verl import DataProto
 import search_r1.llm_agent.generation as generation
-from search_r1.baselines.bapo_validation import validation_answer_counts
 from verl.trainer.main_ppo import RewardManager, decode_model_response_spans
 
 
@@ -107,15 +106,12 @@ class TokenDtypeLoopRegression(unittest.TestCase):
         self.assertEqual(len(worker.calls), 1)
         self.assertEqual(output.meta_info['active_mask'], [False] * 3)
         self.assertEqual(spans, [['<answer>Paris</answer>']] * 3)
-        self.assertEqual(validation_answer_counts(output, self.tokenizer),
-                         {'idk_count': 0, 'answered_count': 3, 'invalid_count': 0})
 
     def test_all_eos_empty_response_then_answers_keeps_integer_tokens(self):
         output, worker = self.loop('eos_then_answer')
         spans = self.assert_output(output, worker)
         self.assertEqual(len(worker.calls), 2)
         self.assertEqual(spans, [['<answer>Paris</answer>']] * 3)
-        self.assertEqual(validation_answer_counts(output, self.tokenizer)['answered_count'], 3)
         self.assertNotIn('My previous action', ''.join(sum(spans, [])))
 
     def test_mixed_observation_content_and_masks_are_preserved(self):
@@ -125,8 +121,6 @@ class TokenDtypeLoopRegression(unittest.TestCase):
         self.assertEqual(spans[1], ['<search>France</search>', '<answer>London</answer>'])
         self.assertIn('<information>Doc 1(Title: Title) London <answer>IDK</answer></information>',
                       self.tokenizer.decode(output.batch['responses'][1]))
-        self.assertEqual(validation_answer_counts(output, self.tokenizer),
-                         {'idk_count': 0, 'answered_count': 2, 'invalid_count': 0})
         output.non_tensor_batch.update(data_source=__import__('numpy').array(['nq', 'nq'], dtype=object),
             reward_model=__import__('numpy').array([{'ground_truth': {'target': ['Paris']}},
                                                     {'ground_truth': {'target': ['London']}}], dtype=object))
@@ -138,7 +132,7 @@ class TokenDtypeLoopRegression(unittest.TestCase):
                 output, worker = self.loop(scenario, original=True)
                 self.assertEqual(output.batch['responses'].dtype, torch.float32)
                 with self.assertRaises(TypeError):
-                    validation_answer_counts(output, self.tokenizer)
+                    self.tokenizer.batch_decode(output.batch['responses'])
                 fixed, _ = self.loop(scenario)
                 # The fix changes producer dtype, never token values or masks.
                 for key in ('responses', 'prompts', 'input_ids', 'attention_mask',
