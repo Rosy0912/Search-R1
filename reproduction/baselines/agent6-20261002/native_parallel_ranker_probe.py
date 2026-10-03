@@ -8,7 +8,57 @@ from types import SimpleNamespace
 import requests, torch
 from omegaconf import OmegaConf
 from search_r1.baselines.cosearch import GenerativeRanker, RankerSequenceLoss, eval_decoder_checkpoint, sequence_ppo_loss
-from tests.baselines.test_cosearch_parallel_loss import _model, _examples, _pack, _single_logp
+from transformers import Qwen2Config, Qwen2ForCausalLM
+import torch.nn.functional as F
+
+def _model(kernel):
+    torch.manual_seed(902)
+    torch.set_num_threads(1)
+    return Qwen2ForCausalLM(Qwen2Config(vocab_size=43, hidden_size=16,
+        intermediate_size=32, num_hidden_layers=2, num_attention_heads=2,
+        num_key_value_heads=2, max_position_embeddings=256,
+        eos_token_id=0, pad_token_id=0, attention_dropout=0.,
+        attn_implementation=kernel)).eval()
+
+
+def _single_logp(model, ids, response_length, temperature):
+    logits = model(ids[None], use_cache=False).logits[:, -response_length-1:-1]
+    return logits[0].float().div(temperature).log_softmax(-1).gather(
+        -1, ids[-response_length:, None]).squeeze(-1)
+
+
+def _examples(model, rows, temperature):
+    events = []
+    for i in range(rows):
+        prompt = torch.tensor([2 + (i*3+j) % 39 for j in range(1 + (i*7) % 8)])
+        response_length = 1 + (i*3) % 6
+        # PAD=EOS appears as the actual final response action and stays scored.
+        response = torch.tensor([3 + (i+j*5) % 37 for j in range(response_length-1)] + [0])
+        ids = torch.cat((prompt, response))
+        with torch.no_grad():
+            logp = _single_logp(model, ids, response_length, temperature)
+        # Exercise both clipped and unclipped ratios, not only ratio=1.
+        offset = (0.0, .5, -.4, .03)[i % 4]
+        events.append(dict(input_ids=ids, response_length=response_length,
+                           old_logp=logp + offset))
+    advantages = torch.tensor([(.8, -.7, 0., 1.1, -.2, .4, -.6, .3)[i % 8]
+                               for i in range(rows)])
+    return events, advantages
+
+
+def _pack(events):
+    width = max(e['input_ids'].numel() for e in events)
+    response_width = max(e['response_length'] for e in events)
+    ids = torch.stack([F.pad(e['input_ids'], (width-e['input_ids'].numel(), 0), value=0)
+                       for e in events])
+    masks = torch.stack([F.pad(torch.ones_like(e['input_ids']),
+                         (width-e['input_ids'].numel(), 0)) for e in events])
+    old = torch.stack([F.pad(e['old_logp'], (response_width-e['response_length'], 0))
+                       for e in events])
+    lengths = torch.tensor([e['response_length'] for e in events])
+    return ids, masks, lengths, old, response_width
+
+
 
 torch.backends.cuda.matmul.allow_tf32=False
 assert torch.cuda.device_count()==8
