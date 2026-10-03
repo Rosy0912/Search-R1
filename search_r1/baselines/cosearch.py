@@ -470,8 +470,8 @@ class GenerativeRanker:
         generation_started=time.perf_counter()
         try:
             if len(devices)>1:
-                if self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling
-                    or self.model.model.rotary_emb.rope_type != 'default':
+                if (self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling
+                        or self.model.model.rotary_emb.rope_type != 'default'):
                     raise ValueError('Parallel ranker inference requires pinned static-RoPE Qwen2')
                 replica_at=time.perf_counter()
                 replicas=torch.nn.parallel.replicate(self.model, devices, detach=True)
