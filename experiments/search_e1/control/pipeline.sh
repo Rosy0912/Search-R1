@@ -46,6 +46,9 @@ from pathlib import Path
 base=Path(os.environ['E1_BASE']);url='http://10.123.4.11:18000/retrieve'
 for _ in range(1800):
  try:
+  h=requests.get('http://10.123.4.11:18000/health',timeout=10);h.raise_for_status();backend=h.json()
+  assert backend['ready'] and backend['ntotal']==21015324 and backend['tf32'] is False and backend['serialized']
+  (base/'receipts/retriever-backend.json').write_text(json.dumps(backend,indent=2))
   r=requests.post(url,json={'queries':['capital of France'],'topk':3,'return_scores':True},timeout=120);r.raise_for_status();x=r.json();assert len(x['result'][0])==3
   (base/'receipts/retriever-query.json').write_text(json.dumps(x,indent=2));break
  except (requests.RequestException,AssertionError):time.sleep(2)

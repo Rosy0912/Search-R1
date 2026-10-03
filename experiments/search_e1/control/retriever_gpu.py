@@ -36,7 +36,7 @@ retriever.index=gpu
 # document assembly; the second client waits rather than multiplying VRAM use.
 lock=threading.Lock();app=FastAPI();timings=base/'receipts/retriever-requests.jsonl'
 @app.get('/health')
-def health():return dict(ready=True,ntotal=gpu.ntotal,d=gpu.d,encoder='CPU FP32 E5',index='full FP32 sharded FlatIP',query_micro=64,serialized=True)
+def health():return dict(ready=True,ntotal=gpu.ntotal,d=gpu.d,encoder='CPU FP32 E5',index='full FP32 sharded FlatIP',query_micro=64,serialized=True,tf32=False,source_manifest_sha256=receipt['source_manifest_sha256'],acceptance_sha256=hashlib.sha256((base/'receipts/gpu-oracle-acceptance.json').read_bytes()).hexdigest())
 @app.post('/retrieve')
 def retrieve(request:server.QueryRequest):
  if request.topk is not None and not 1<=request.topk<=4:raise HTTPException(400,'topk must be 1..4')
