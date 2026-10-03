@@ -35,6 +35,7 @@ PYCODE
 trap 'rc=$?; printf "%s\n" "$rc" > "$run/exit.txt"' EXIT
 scontrol show job "$SLURM_JOB_ID" > "$OPSD_EVIDENCE/slurm-job.txt"
 git rev-parse HEAD > "$OPSD_EVIDENCE/commit.txt"
+sha256sum "$0" "$root/tools/runtime/gpu_job_entry.sh" "$root/tools/runtime/train_supervisor.py" "$root/tools/runtime/semantic_device_gate.py" "$root/tools/runtime/gpu_teacher_probe-factor-dtype.py" "$root/tools/runtime/gpu_loss_checkpoint_equivalence.py" "$root/tools/runtime/capacity_supervisor.py" "$root/tools/runtime/microbatch_probe.py" "$root/tools/runtime/gpu_retrieval_bulk.py" "$root/tools/runtime/http_retrieval_check.py" "$root/tools/runtime/retrieval_compare.py" "$root/tools/runtime/resource_sample.py" > "$OPSD_EVIDENCE/scripts.sha256"
 nvidia-smi --query-gpu=index,uuid,utilization.gpu,memory.used,memory.total --format=csv > "$OPSD_EVIDENCE/pre-gpus.csv"
 nvidia-smi --query-compute-apps=gpu_uuid,pid,used_gpu_memory --format=csv > "$OPSD_EVIDENCE/pre-processes.csv"
 python -u "$root/tools/runtime/resource_sample.py" "$OPSD_EVIDENCE/resources.ndjson" $$ &
