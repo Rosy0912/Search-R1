@@ -24,6 +24,7 @@ parser.add_argument('--output', required=True)
 parser.add_argument('--threads', type=int, default=8)
 parser.add_argument('--questions', type=int, default=3)
 parser.add_argument('--repeats', type=int, default=3)
+parser.add_argument('--attention', choices=['eager', 'sdpa'], default='eager')
 args = parser.parse_args()
 if min(args.threads, args.questions, args.repeats) < 1:
     parser.error('threads, questions and repeats must be positive')
@@ -32,7 +33,7 @@ torch.manual_seed(42)
 out = Path(args.output)
 out.parent.mkdir(parents=True, exist_ok=True)
 report = dict(scope='standalone rank generation only; no actor training, no fabricated reward',
-              model=args.model, train=args.train, seed=42, threads=args.threads,
+              model=args.model, train=args.train, seed=42, threads=args.threads, attention=args.attention,
               candidates=50, keep=3, max_new_tokens=256, queries=[], generations=[])
 
 def save():
@@ -94,7 +95,7 @@ if not all(q['context_fits'] for q in report['queries']):
     save()
     raise SystemExit(2)
 
-config = OmegaConf.create(dict(model_path=args.model, device='cpu', candidates=50, keep=3,
+config = OmegaConf.create(dict(model_path=args.model, device='cpu', attn_implementation=args.attention, candidates=50, keep=3,
                               max_new_tokens=256, temperature=1., lr=1e-6,
                               weight_decay=.01, clip_ratio=.2, grad_clip=1., epochs=1,
                               batch_size=8, similarity=.8, min_group_size=3,
