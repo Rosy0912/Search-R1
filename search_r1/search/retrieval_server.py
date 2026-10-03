@@ -1,6 +1,7 @@
 import json
 import os
 import warnings
+import time
 from typing import List, Dict, Optional
 import argparse
 
@@ -249,10 +250,16 @@ class DenseRetriever(BaseRetriever):
         
         results = []
         scores = []
+        elapsed = dict(encode_seconds=0., index_seconds=0., documents_seconds=0.)
         for start_idx in tqdm(range(0, len(query_list), self.batch_size), desc='Retrieval process: '):
             query_batch = query_list[start_idx:start_idx + self.batch_size]
+            started = time.perf_counter()
             batch_emb = self.encoder.encode(query_batch)
+            elapsed['encode_seconds'] += time.perf_counter() - started
+            started = time.perf_counter()
             batch_scores, batch_idxs = self.index.search(batch_emb, k=num)
+            elapsed['index_seconds'] += time.perf_counter() - started
+            started = time.perf_counter()
             batch_scores = batch_scores.tolist()
             batch_idxs = batch_idxs.tolist()
 
@@ -264,11 +271,14 @@ class DenseRetriever(BaseRetriever):
             
             results.extend(batch_results)
             scores.extend(batch_scores)
+            elapsed['documents_seconds'] += time.perf_counter() - started
             
             del batch_emb, batch_scores, batch_idxs, query_batch, flat_idxs, batch_results
             if self.config.encoder_device != "cpu":
                 torch.cuda.empty_cache()
             
+        print('RETRIEVAL_TIMING_JSON ' + json.dumps(dict(queries=len(query_list), topk=num,
+              encoder_device=self.config.encoder_device, faiss_gpu=self.config.faiss_gpu, **elapsed)), flush=True)
         if return_score:
             return results, scores
         else:
