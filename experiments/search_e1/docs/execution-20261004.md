@@ -56,3 +56,26 @@ B首次冻结的runtime早于零mask同步补丁，尚在WAITING_FOR_RETRIEVER�
   serialized shared HTTP service, top4 score/ID gate and concurrent512 peak gate.
   CPU tests on the exact remote environment passed2. Internal concrete-code
   review approved. Actual acceptance receipt is required before replacing CPU.
+
+### Shared GPU oracle hardware acceptance (04:29–04:31 CST)
+
+- All three complete assets passed their published hashes on HKUST1; the full
+  corpus has exactly 21,015,324 rows, matching the index and original vector IDs.
+- CPU Faiss vs GPU exact Flat on the unchanged CPU FP32 embeddings: all16 top4
+  ID sequences identical; maximum absolute score difference 2.980232238769531e-7.
+  CPU search43.3058495s; GPU search0.2361444s (same16-query input).
+- Two concurrent512-query complete requests returned identical documents/scores.
+  Torch peak reserved17,523,802,112 /17,548,967,936 /17,523,802,112 /
+  17,532,190,720 bytes, against25,386,352,640 bytes/card. GPU4–7 only.
+- Acceptance SHA256 b987f2d82e8499c0f562d0dc2eda9c941dcc80c2feb2e8f749cd27db900f24d6;
+  asset-manifest SHA256 b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508.
+- Both training arms recorded this exact common backend identity and began new
+  smoke-040 real-update gates from the initial checkpoint. Old waiting runs have
+  no actor/global_step checkpoints and were archived as cpu-retrieval-v1; their
+  process groups were stopped only after verifying PID/session environment.
+- The old read-only CPU service was replaced only after the GPU gate passed.
+  Training B CUDA0–3 and retrieval CUDA4–7 are disjoint on HKUST1. Training A
+  CUDA4–7 remains on HKUST4, whose CUDA0–3 foreign processes were untouched.
+- Running acceptance still requires both smoke gates to produce changed finite
+  step2 checkpoints, followed by full staged training. Initialization alone does
+  not satisfy that requirement.
