@@ -1,0 +1,84 @@
+#!/bin/bash
+set -euo pipefail
+ulimit -c 0
+BASE=/data/search-r1
+if [[ "${SEARCH_R1_LOCK_HELD:-0}" != 1 ]] || [[ "$(readlink /proc/$$/fd/9 2>/dev/null)" != "$BASE/gpu-job.lock" ]]; then
+    echo 'Start through run_pipeline.sh to hold the GPU job lock and validate inputs.' >&2
+    exit 2
+fi
+unset PYTHONPATH PYTHONHOME RAY_ADDRESS
+export PYTHONPATH="$BASE/repo"
+export NCCL_NVLS_ENABLE=0
+export PATH="$BASE/env/bin:$PATH"
+export TMPDIR="$BASE/tmp" RAY_TMPDIR="$BASE/ray-a800" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
+export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 WANDB_MODE=offline
+export CUDA_VISIBLE_DEVICES=0,1,2,3 OMP_NUM_THREADS=8
+export VLLM_ATTENTION_BACKEND=XFORMERS
+export BASE_MODEL="$BASE/assets/qwen2.5-3b"
+export TRAIN_DATA_DIR="$BASE/data/paper-grpo" TEST_DATA_DIR="$BASE/data/paper-grpo"
+WAND_PROJECT=Search-R1
+EXPERIMENT_NAME=paper-grpo-qwen2.5-3b-a800-continuation
+test -n "${SEARCH_R1_SEGMENT_LOG:-}"
+test -f "$BASE/logs/a800-continuation-manifest.json"
+cd "$BASE/repo"
+PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
+    data.train_files=$TRAIN_DATA_DIR/train.parquet \
+    data.val_files=$TEST_DATA_DIR/validation-64.parquet \
+    +data.final_val_files=$TEST_DATA_DIR/test.parquet \
+    data.train_data_num=null \
+    data.val_data_num=null \
+    data.train_batch_size=512 \
+    data.val_batch_size=64 \
+    data.max_prompt_length=4096 \
+    data.max_response_length=500 \
+    data.max_start_length=2048 \
+    data.max_obs_length=500 \
+    data.shuffle_train_dataloader=True \
+    algorithm.adv_estimator=grpo \
+    actor_rollout_ref.model.path=$BASE_MODEL \
+    +actor_rollout_ref.model.actor_checkpoint_path=$BASE/checkpoints/migration-source/global_step_100 \
+    actor_rollout_ref.model.enable_gradient_checkpointing=true \
+    actor_rollout_ref.model.use_remove_padding=True \
+    actor_rollout_ref.actor.optim.lr=1e-6 \
+    actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.285 \
+    actor_rollout_ref.actor.use_kl_loss=true \
+    actor_rollout_ref.actor.ppo_mini_batch_size=256 \
+    actor_rollout_ref.actor.ppo_micro_batch_size=64 \
+    actor_rollout_ref.actor.fsdp_config.param_offload=true \
+    actor_rollout_ref.actor.fsdp_config.grad_offload=true \
+    actor_rollout_ref.actor.fsdp_config.optimizer_offload=true \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size=128 \
+    actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
+    actor_rollout_ref.rollout.name=vllm \
+    actor_rollout_ref.rollout.gpu_memory_utilization=0.4 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size=128 \
+    actor_rollout_ref.ref.fsdp_config.param_offload=True \
+    actor_rollout_ref.actor.kl_loss_coef=0.001 \
+    actor_rollout_ref.actor.kl_loss_type=low_var_kl \
+    algorithm.no_think_rl=false \
+    actor_rollout_ref.rollout.n_agent=5 \
+    actor_rollout_ref.rollout.temperature=1 \
+    actor_rollout_ref.rollout.top_p=1 \
+    +force_final_answer=false \
+    actor_rollout_ref.actor.state_masking=true \
+    "trainer.logger=[console]" \
+    +trainer.val_only=false \
+    +trainer.val_before_train=true \
+    trainer.default_hdfs_dir=null \
+    trainer.n_gpus_per_node=4 \
+    trainer.nnodes=1 \
+    trainer.save_freq=100 \
+    +trainer.acceptance_step=105 \
+    +trainer.weight_continuation_step=100 \
+    +trainer.private_local_ray=true \
+    trainer.test_freq=50 \
+    trainer.project_name=$WAND_PROJECT \
+    trainer.experiment_name=$EXPERIMENT_NAME \
+    trainer.total_epochs=15 \
+    trainer.total_training_steps=501 \
+    trainer.default_hdfs_dir=null \
+    trainer.default_local_dir=$BASE/checkpoints/$EXPERIMENT_NAME \
+    max_turns=4 \
+    retriever.url="http://127.0.0.1:18000/retrieve" \
+    retriever.topk=3 \
+    2>&1 | tee -a "$SEARCH_R1_SEGMENT_LOG"

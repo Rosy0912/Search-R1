@@ -426,11 +426,14 @@ class RayPPOTrainer(object):
             total_training_steps = self.config.trainer.total_training_steps
 
         self.total_training_steps = total_training_steps
+        from verl.utils.weight_continuation import completed_updates
+        continuation_k = completed_updates(self.config, total_training_steps)
         print(f'Total training steps: {self.total_training_steps}')
 
         OmegaConf.set_struct(self.config, True)
         with open_dict(self.config):
             self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps
+            self.config.actor_rollout_ref.actor.optim.completed_updates = continuation_k
             self.config.critic.optim.total_training_steps = total_training_steps
 
     def _prepare_final_validation(self):
@@ -680,7 +683,8 @@ class RayPPOTrainer(object):
         """
 
         logger = self.logger
-        self.global_steps = 0
+        from verl.utils.weight_continuation import completed_updates
+        self.global_steps = completed_updates(self.config, self.total_training_steps)
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):

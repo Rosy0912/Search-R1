@@ -121,11 +121,24 @@ import hydra
 
 @hydra.main(config_path='config', config_name='ppo_trainer', version_base=None)
 def main(config):
+    private_local = config.trainer.get('private_local_ray', False)
+    if private_local and ray.is_initialized():
+        raise RuntimeError('Private continuation requires a fresh local Ray runtime')
     if not ray.is_initialized():
         # this is for local ray cluster
-        ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+        options = {}
+        if private_local:
+            import os
+            options = dict(address='local', num_gpus=config.trainer.n_gpus_per_node,
+                           _temp_dir=os.environ['RAY_TMPDIR'])
+        ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}},
+                 **options)
 
-    ray.get(main_task.remote(config))
+    try:
+        ray.get(main_task.remote(config))
+    finally:
+        if private_local:
+            ray.shutdown()
 
 
 @ray.remote

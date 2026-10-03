@@ -237,8 +237,9 @@ class ActorRolloutRefWorker(Worker):
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
-            actor_lr_scheduler = get_constant_schedule_with_warmup(optimizer=actor_optimizer,
-                                                                   num_warmup_steps=num_warmup_steps)
+            from verl.utils.weight_continuation import scheduler_from_completed
+            actor_lr_scheduler = scheduler_from_completed(
+                actor_optimizer, num_warmup_steps, optim_config.get('completed_updates', 0))
         else:
             actor_optimizer = None
             actor_lr_scheduler = None
@@ -293,6 +294,7 @@ class ActorRolloutRefWorker(Worker):
         use_remove_padding = self.config.model.get('use_remove_padding', False)
 
         if self._is_actor or self._is_rollout:
+            from verl.utils.weight_continuation import model_initialization_path
             # we need the model for actor and rollout
             if self._is_actor:
                 optim_config = self.config.actor.optim
@@ -301,7 +303,7 @@ class ActorRolloutRefWorker(Worker):
                 optim_config = None
                 fsdp_config = OmegaConf.create()
             self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler, self.actor_model_config = self._build_model_optimizer(
-                model_path=self.config.model.path,
+                model_path=model_initialization_path(self.config.model, actor=True),
                 fsdp_config=fsdp_config,
                 optim_config=optim_config,
                 override_model_config=override_model_config,
@@ -332,7 +334,8 @@ class ActorRolloutRefWorker(Worker):
             self.rollout, self.rollout_sharding_manager = self._build_rollout()
 
         if self._is_ref:
-            self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.model.path,
+            from verl.utils.weight_continuation import model_initialization_path
+            self.ref_module_fsdp = self._build_model_optimizer(model_path=model_initialization_path(self.config.model, actor=False),
                                                                fsdp_config=self.config.ref.fsdp_config,
                                                                optim_config=None,
                                                                override_model_config=override_model_config,
