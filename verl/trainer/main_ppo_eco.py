@@ -31,6 +31,7 @@ import re
 import numpy as np
 import requests
 from verl.utils.reward_score import qa_em
+import json
 from search_g1.signals import decode_segments, contexts, model_search_count, validate_probe_reply
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 
@@ -260,6 +261,15 @@ class EcoRewardManager():
                     print(f"[probe] recovered after {attempt-1} retries (~{waited:.0f}s waited); "
                           f"resuming with valid trust reward", flush=True)
                 results, version = validate_probe_reply(resp.json(), items)
+                expected = getattr(self, 'expected_probe_version', None)
+                if os.environ.get('SEARCH_G1_BASE'):
+                    if expected is None:
+                        from pathlib import Path
+                        run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+                        expected = run['initial_probe_version']
+                        self.expected_probe_version = expected
+                    if not expected or version != expected:
+                        raise ValueError('Evaluator version mismatch before reward/update')
                 self.last_probe_version = version
                 print("SEARCH_G1_PROBE_VERSION=" + version, flush=True)
                 return results

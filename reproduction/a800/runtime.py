@@ -38,7 +38,7 @@ def refresh_after_checkpoint(step,checkpoint):
     for _ in range(120):
         status=session.get('http://127.0.0.1:18012/health',timeout=10).json()
         if status.get('version')==expected['version'] and status.get('round')==step:
-            print('SEARCH_G1_REFIT_ADOPTED='+expected['version'],flush=True);return
+            print('SEARCH_G1_REFIT_ADOPTED='+expected['version'],flush=True);return expected['version']
         time.sleep(2)
     raise RuntimeError('Calibrated evaluator not adopted; refuse next GRPO update')
 

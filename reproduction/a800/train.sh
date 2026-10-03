@@ -15,7 +15,7 @@ export ECO_BAL_GROUND=0.6 ECO_BAL_NOSEARCH_BONUS=0.5 ECO_W_COST=0.02
 export ECO_WRONG_GROUND_SCALE=0 ECO_PROBE_BASE=0 ECO_PROBE_ALPHA_COST=0 ECO_USE_CF=0
 export ECO_NO_SELF=1 ECO_PROBE_MAX_WAIT=300
 cd "$BASE/repo"
-test -f "$BASE/logs/initial-probes-accepted.json"
+python -m reproduction.a800.probe_admission --verify
 python -m verl.trainer.main_ppo_eco \
  data.train_files="$BASE/data/train.parquet" data.val_files="$BASE/data/validation-64.parquet" \
  data.train_data_num=null data.val_data_num=null data.train_batch_size=128 data.val_batch_size=64 \

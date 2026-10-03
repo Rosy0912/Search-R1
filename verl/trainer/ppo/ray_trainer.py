@@ -871,7 +871,7 @@ class RayPPOTrainer(object):
                     accept_five_updates(checkpoint, five_update_records)
                 if self.global_steps in (50,100,150,200,250):
                     from reproduction.a800.runtime import refresh_after_checkpoint
-                    refresh_after_checkpoint(self.global_steps, checkpoint)
+                    self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
 
                 self.global_steps += 1
 
