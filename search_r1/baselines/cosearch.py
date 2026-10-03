@@ -243,21 +243,25 @@ class GenerativeRanker:
             with eval_decoder_checkpoint(self.model, training and getattr(self.config, 'gradient_checkpointing', False)):
                 yield
         finally:
-            torch.cuda.synchronize()
-            self.cost['gpu_peak_allocated_bytes'] = max(self.cost.get('gpu_peak_allocated_bytes', 0),
-                                                        torch.cuda.max_memory_allocated())
-            started = time.perf_counter()
-            self.optimizer.zero_grad(set_to_none=True)
-            self.model.to('cpu')
-            for state in self.optimizer.state.values():
-                for key, value in state.items():
-                    if torch.is_tensor(value):
-                        state[key] = value.cpu()
-            self.device = torch.device('cpu')
-            torch.cuda.empty_cache()
-            self.cost['gpu_from_wall_seconds'] = self.cost.get('gpu_from_wall_seconds', 0.) + time.perf_counter() - started
-            print('COSEARCH_GPU_PHASE_JSON=' + json.dumps(dict(training=training, uuid=uid,
-                  cost=self.cost, job=os.environ['SLURM_JOB_ID'])), flush=True)
+            try:
+                torch.cuda.synchronize()
+                self.cost['gpu_peak_allocated_bytes'] = max(self.cost.get('gpu_peak_allocated_bytes', 0),
+                                                            torch.cuda.max_memory_allocated())
+            finally:
+                # CUDA failures may be unrecoverable. Attempt cleanup, then let
+                # the exception fail the owned Slurm job rather than run actor.
+                started = time.perf_counter()
+                self.optimizer.zero_grad(set_to_none=True)
+                self.model.to('cpu')
+                for state in self.optimizer.state.values():
+                    for key, value in state.items():
+                        if torch.is_tensor(value):
+                            state[key] = value.cpu()
+                self.device = torch.device('cpu')
+                torch.cuda.empty_cache()
+                self.cost['gpu_from_wall_seconds'] = self.cost.get('gpu_from_wall_seconds', 0.) + time.perf_counter() - started
+                print('COSEARCH_GPU_PHASE_JSON=' + json.dumps(dict(training=training, uuid=uid,
+                      cost=self.cost, job=os.environ['SLURM_JOB_ID'])), flush=True)
 
     def response_logp(self, ids, length):
         # Project only the response positions when supported by the frozen HF

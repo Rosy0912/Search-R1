@@ -53,7 +53,7 @@ with r.execution_phase(training=True):
                   stress_optimizer_step=True,checkpointing_actual_required=True)
 record['cost_after_stress']=r.cost
 assert all(p.device.type=='cpu' and p.dtype==torch.float32 for p in r.model.parameters())
-# Greedy 64-question validation will not retain old logprobs or training events.
+# Two-query validation probe; production acceptance separately requires 64 questions.
 r.events.clear();r.validation=True
 started=time.perf_counter();r.rank_batch(queries[:2],queries[:2],docs[:2],states[:2])
 assert not r.events and r.cost.get('validation_score_forward_tokens',0)==0
