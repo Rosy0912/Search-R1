@@ -327,6 +327,12 @@ class ActorRolloutRefWorker(Worker):
             self.actor = DataParallelPPOActor(config=self.config.actor,
                                               actor_module=self.actor_module_fsdp,
                                               actor_optimizer=self.actor_optimizer)
+            if self.config.actor.get('baseline_method') == 'cosearch':
+                import json
+                print('COSEARCH_ACTOR_INITIALIZATION_JSON=' + json.dumps(dict(
+                    rank=torch.distributed.get_rank(), pid=os.getpid(), job=os.environ.get('SLURM_JOB_ID'),
+                    model_path=str(self.config.model.path), optimizer_states=len(self.actor_optimizer.state),
+                    rl_optimizer_steps=0)), flush=True)
             if self.config.actor.get('baseline_method') == 'opsd':
                 from search_r1.baselines.actor import DistillationActor
                 self.actor = DistillationActor(self.config.actor, self.actor_module_fsdp,

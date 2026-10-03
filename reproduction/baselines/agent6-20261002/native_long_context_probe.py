@@ -109,7 +109,9 @@ for count in (2,8):
                 with torch.cuda.device(i):torch.cuda.empty_cache()
 print('COSEARCH_NATIVE_PARALLEL_MATH_JSON='+json.dumps(record),flush=True)
 c=OmegaConf.load(root/'repo/verl/trainer/config/ppo_baselines.yaml').baselines.ranker
-c.model_path=str(root/'assets-root/assets/qwen2.5-3b')
+if (run/'pre-warm-resolved.yaml').exists():
+    c.keep=OmegaConf.load(run/'pre-warm-resolved.yaml').baselines.ranker.keep
+c.model_path=os.environ.get('COSEARCH_RANKER', str(root/'assets-root/assets/qwen2.5-3b'))
 c.device='cpu';c.attn_implementation='sdpa';c.cpu_threads=32;c.response_only_logits=True
 c.phase_gpu=True;c.phase_gpu_devices=8;c.phase_seed=42;c.inference_parallel=True;c.training_parallel=True
 c.full_context_extrapolation=True
@@ -135,7 +137,7 @@ for i,(question,base) in enumerate(zip(queries,base_docs)):
         for d in row:d['document']['contents']=('\n'.join([d['document']['contents']]*repeat))
         passages='\n'.join(f'Doc {j+1}: {d["document"]["contents"]}' for j,d in enumerate(row))
         prompt=(f'Question context:\n{question}\nSearch query: {question}\nCandidates:\n{passages}\n'
-                'Select exactly 3 distinct document IDs ordered by relevance. '
+                f'Select exactly {c.keep} distinct document IDs ordered by relevance. '
                 'Think briefly, then output <ranking>[1, 2, ...]</ranking>.\n')
         ids=r.tokenizer(prompt,return_token_type_ids=False)['input_ids']
         if len(ids)>=33792:break

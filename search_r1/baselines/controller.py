@@ -92,6 +92,12 @@ def validate_config(config):
         if not holdout or canonical_paths(holdout) & evaluation_paths:
             raise ValueError('BAPO requires independent stage_validation_files; never use final test sets')
     if method == 'cosearch':
+        if config.baselines.get('require_informative_first_batch', False):
+            budget = config.data.max_start_length + config.max_turns * (config.data.max_response_length + config.data.max_obs_length)
+            if config.force_final_answer:
+                budget += config.data.max_response_length + config.data.max_obs_length
+            if budget > config.data.max_prompt_length:
+                raise ValueError('CoSearch complete search/answer timeline exceeds configured prompt cap')
         ranker = config.baselines.ranker
         if not ranker.model_path:
             raise ValueError('CoSearch requires an auxiliary ranker checkpoint')
@@ -263,7 +269,7 @@ class Controller:
             attach_policy_weights(data, self.method)
         return data
 
-    def after_actor(self, data, metrics):
+    def prepare_ranker_outcomes(self, data):
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
             outcomes = {}
@@ -293,7 +299,33 @@ class Controller:
                 self.ranker.diagnostic_provenance = dict(outer_step=self.trainer.global_steps,
                     output=os.environ.get('SEARCH_R1_BASELINE_OUTPUT'), tokenizer_path=str(tokenizer),
                     tokenizer_sha256=hashes)
-            metrics.update(self.ranker.update(outcomes))
+            return outcomes
+
+    def before_actor(self, data, metrics):
+        if not self.ranker or not self.config.get('require_informative_first_batch', False):
+            return
+        if getattr(self, '_first_ranker_batch_checked', False):
+            return
+        outcomes = self.prepare_ranker_outcomes(data)
+        events, keys, chosen, advantage, preview = self.ranker.select_update_events(outcomes, copy_events=True)
+        import json
+        print('COSEARCH_FIRST_BATCH_JSON ' + json.dumps(preview), flush=True)
+        if os.environ.get('COSEARCH_UPDATE_EVIDENCE_ROOT'):
+            from .cosearch_diagnostics import save_update_evidence
+            # Match copied retained events to copied originals; do not mutate production events.
+            retained = {id(original): selected for original, selected in
+                        zip([e for e in self.ranker.events if outcomes[e['trajectory_uid']][2]], events)}
+            all_events = [retained.get(id(e), dict(e)) for e in self.ranker.events]
+            save_update_evidence(os.environ['COSEARCH_UPDATE_EVIDENCE_ROOT'], all_events, outcomes,
+                self.ranker.diagnostic_trajectories, events, keys, chosen, preview,
+                dict(self.ranker.diagnostic_provenance, phase='before_first_actor_update'))
+        if preview['ranker/effective_nonzero_advantage_events'] == 0:
+            raise RuntimeError('First complete CoSearch sampling batch has no informative ranker learning signal; evidence preserved before actor update')
+        self._first_ranker_batch_checked = True
+
+    def after_actor(self, data, metrics):
+        if self.ranker:
+            metrics.update(self.ranker.update(self.prepare_ranker_outcomes(data)))
 
     def stage_validation(self, step=None):
         if self.method != 'bapo':

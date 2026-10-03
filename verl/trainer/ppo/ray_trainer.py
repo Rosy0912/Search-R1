@@ -885,6 +885,9 @@ class RayPPOTrainer(object):
                         else:
                             batch = self.baseline_controller.compute_advantages(batch, metrics)
 
+                    if self.baseline_controller is not None:
+                        self.baseline_controller.before_actor(batch, metrics)
+
                     # update critic
                     if self.use_critic:
                         with _timer('update_critic', timing_raw):

@@ -252,6 +252,9 @@ class GenerativeRanker:
                          model_load_cpu_seconds=time.process_time() - cpu_started)
         self.question_uids = []
         self.validation = False
+        print('COSEARCH_RANKER_INITIALIZATION_JSON=' + json.dumps(dict(
+            model_path=str(config.model_path), optimizer_states=len(self.optimizer.state),
+            rl_optimizer_steps=0, parameters_dtype=str(next(self.model.parameters()).dtype))), flush=True)
 
     @contextmanager
     def execution_phase(self, training=False):
@@ -617,12 +620,10 @@ class GenerativeRanker:
         with self.execution_phase(training=True):
             return self._update(rewards_by_trajectory)
 
-    def _update(self, rewards_by_trajectory):
-        started, cpu_started = time.perf_counter(), time.process_time()
-        evidence_root = os.environ.get('COSEARCH_UPDATE_EVIDENCE_ROOT')
-        original_events = list(self.events) if evidence_root else None
+    def select_update_events(self, rewards_by_trajectory, copy_events=False):
         events = []
-        for e in self.events:
+        for original in self.events:
+            e = dict(original) if copy_events else original
             main, targets, legal = rewards_by_trajectory[e['trajectory_uid']]
             if not legal:
                 continue
@@ -630,7 +631,6 @@ class GenerativeRanker:
             e['answer_available'] = answer_available(e['candidates'], targets)
             e['answers_are_trivial'] = answers_are_trivial(targets)
             events.append(e)
-        self.events.clear()
         keys = semantic_groups(events, self.config.similarity, self.config.split_availability)
         counts = defaultdict(int)
         for key in keys:
@@ -654,6 +654,14 @@ class GenerativeRanker:
         metrics['ranker/informative_groups_with_distinct_rankings'] = sum(
             len({tuple(events[i]['ranking']) if events[i]['ranking'] is not None else None
                  for i, key in enumerate(keys) if key == group}) > 1 for group in informative)
+        return events, keys, chosen, advantage, metrics
+
+    def _update(self, rewards_by_trajectory):
+        started, cpu_started = time.perf_counter(), time.process_time()
+        evidence_root = os.environ.get('COSEARCH_UPDATE_EVIDENCE_ROOT')
+        original_events = list(self.events) if evidence_root else None
+        events, keys, chosen, advantage, metrics = self.select_update_events(rewards_by_trajectory)
+        self.events.clear()
         metrics['ranker/gradient_norm_max'] = 0.
         metrics['ranker/parameter_probe_delta_l1'] = 0.
         if evidence_root:

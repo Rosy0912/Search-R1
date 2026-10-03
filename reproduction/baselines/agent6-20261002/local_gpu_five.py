@@ -12,7 +12,7 @@ mem_match=re.search(r'MinMemoryNode=(\d+)([KMGTP]?)',allocation)
 assert mem_match, 'Cannot verify actual Slurm node memory allocation'
 memory_mib=int(mem_match.group(1))*{'':1,'K':1/1024,'M':1,'G':1024,'T':1024**2,'P':1024**3}[mem_match.group(2)]
 assert memory_mib >= 192000
-run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-m')
+run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-n')
 assert re.fullmatch(r'cosearch-local-gpu-five-[0-9]{8}-[a-z][a-z0-9-]*',run_id)
 run=root/'runs'/run_id
 run.mkdir(parents=True,exist_ok=False)
@@ -70,6 +70,35 @@ try:
         except OSError: pass
         if time.monotonic()-started>1200: raise TimeoutError('Local retriever startup timeout')
         time.sleep(5)
+    env.update(COSEARCH_RANKER=str(run/'warm-start/ranker'),COSEARCH_ACTOR=str(run/'warm-start/actor'))
+    command=['bash','reproduction/baselines/run.sh','cosearch',
+        'actor_rollout_ref.model.path='+env['COSEARCH_ACTOR'],
+        'actor_rollout_ref.rollout.n_agent=8','max_turns=6','force_final_answer=true',
+        'data.max_prompt_length=9216','baselines.ranker.keep=5','retriever.topk=5',
+        '+baselines.require_informative_first_batch=true',
+        'actor_rollout_ref.actor.ppo_micro_batch_size=64',
+        'actor_rollout_ref.rollout.log_prob_micro_batch_size=128',
+        'actor_rollout_ref.ref.log_prob_micro_batch_size=128',
+        'retriever.url=http://127.0.0.1:18086/retrieve',
+        'baselines.ranker.attn_implementation=sdpa','baselines.ranker.cpu_threads=32',
+        'baselines.ranker.response_only_logits=true','baselines.ranker.phase_gpu=true',
+        'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=16',
+        'baselines.ranker.full_context_extrapolation=true','baselines.ranker.phase_gpu_devices=8','baselines.ranker.inference_parallel=true','baselines.ranker.training_parallel=true',
+        'baselines.ranker.inference_token_budget=131072','baselines.ranker.gradient_checkpointing=true',
+        'baselines.local_runtime_only=true','baselines.local_runtime_host=h100-16','trainer.total_training_steps=6',
+        'data.val_data_num=64','data.val_batch_size=64','trainer.val_before_train=false','trainer.smoke_only=true','trainer.test_freq=5',
+        'trainer.save_freq=100','trainer.acceptance_step=5',
+        'trainer.experiment_name='+run.name]
+    with (run/'pre-warm-resolved.yaml').open('w') as output:
+        subprocess.run(command+['--cfg','job','--resolve'],env=env,cwd=root/'repo',stdout=output,check=True)
+    warm=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/same_3b_warm_start.py')],'warm-start.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
+    while warm.poll() is None:
+        if service.poll() is not None: raise RuntimeError('Retriever failed during authorized warm-start')
+        time.sleep(5)
+    if warm.returncode != 0: raise RuntimeError('Authorized supervised warm-start failed; no RL launched')
+    manifest=json.loads((run/'warm-start/manifest.json').read_text())
+    assert manifest['completed'] and manifest['acceptance_updates']==0
+    env.update(COSEARCH_RANKER=str(run/'warm-start/ranker'),COSEARCH_ACTOR=str(run/'warm-start/actor'))
     probe=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/native_long_context_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
     while probe.poll() is None:
         if service.poll() is not None: raise RuntimeError('Retriever failed during GPU ranker probe')
@@ -78,6 +107,7 @@ try:
     if os.environ.get('COSEARCH_PROBE_ONLY') == '1':
         print('COSEARCH_PROBE_ONLY_COMPLETE',flush=True)
         raise SystemExit(0)
+    env['COSEARCH_UPDATE_EVIDENCE_ROOT']=str(run/'output')
     import psutil
     ray_node_ip='10.33.0.16'
     local_ips={address.address for addresses in psutil.net_if_addrs().values() for address in addresses}
@@ -97,22 +127,10 @@ try:
         if result.returncode==0: break
         if time.monotonic()-started>180: raise TimeoutError('Ray startup timeout')
         time.sleep(5)
-    command=['bash','reproduction/baselines/run.sh','cosearch',
-        'actor_rollout_ref.actor.ppo_micro_batch_size=64',
-        'actor_rollout_ref.rollout.log_prob_micro_batch_size=128',
-        'actor_rollout_ref.ref.log_prob_micro_batch_size=128',
-        'retriever.url=http://127.0.0.1:18086/retrieve',
-        'baselines.ranker.attn_implementation=sdpa','baselines.ranker.cpu_threads=32',
-        'baselines.ranker.response_only_logits=true','baselines.ranker.phase_gpu=true',
-        'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=16',
-        'baselines.ranker.full_context_extrapolation=true','baselines.ranker.phase_gpu_devices=8','baselines.ranker.inference_parallel=true','baselines.ranker.training_parallel=true',
-        'baselines.ranker.inference_token_budget=131072','baselines.ranker.gradient_checkpointing=true',
-        'baselines.local_runtime_only=true','baselines.local_runtime_host=h100-16','trainer.total_training_steps=6',
-        'data.val_data_num=64','data.val_batch_size=64','trainer.val_before_train=false','trainer.smoke_only=true','trainer.test_freq=5',
-        'trainer.save_freq=100','trainer.acceptance_step=5',
-        'trainer.experiment_name='+run.name]
     (run/'launch.json').write_text(json.dumps(dict(job_id=os.environ['SLURM_JOB_ID'],
         gpu_devices=os.environ['CUDA_VISIBLE_DEVICES'],command=command,local_node_only=True,
+        warm_start_manifest=str(run/'warm-start/manifest.json'),warm_actor_initialization=env['COSEARCH_ACTOR'],warm_ranker_initialization=env['COSEARCH_RANKER'],
+        supervised_steps_excluded_from_rl=True,
         endpoints=['127.0.0.1:18086','127.0.0.1:16386'],ranker='same base FP32 phase-shared eight local GPUs, CPU resident between phases; original optimizer minibatch8',retrieval='same-node CUDA FP16 E5 + eight-GPU sharded FP16 FAISS',reference_commit='0328f941547fa8b41f4fe5a7f84499c7c67a7bee',
         cpu_allocation=os.environ.get('SLURM_CPUS_PER_TASK'),memory_mb=memory_mib,
         commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=root/'repo').strip()),indent=2)+'\n')
@@ -122,6 +140,7 @@ try:
     audit_code = "from omegaconf import OmegaConf; from search_r1.baselines.holdout import prepare_common_holdout; import hashlib,json,sys; c=OmegaConf.load(sys.argv[1]); m=prepare_common_holdout(c); t=OmegaConf.to_yaml(OmegaConf.create(OmegaConf.to_container(c,resolve=True))); print('AUDIT_IDENTITY='+json.dumps(dict(config=hashlib.sha256(t.encode()).hexdigest(),data=m['content_identity']['sha256'])))"
     audit_output=subprocess.check_output([python,'-c',audit_code,str(run/'resolved.yaml')],env=env,cwd=root/'repo',text=True)
     audit=json.loads([line.split('=',1)[1] for line in audit_output.splitlines() if line.startswith('AUDIT_IDENTITY=')][0])
+    assert audit['data']==manifest['split_content_identity'], 'Warm-start and RL common split differ'
     env.update(SEARCH_R1_BASELINE_AUDIT_DIR=str(run/'audit'),SEARCH_R1_BASELINE_RUN_ID=run.name,
         SEARCH_R1_BASELINE_COMMIT=subprocess.check_output(['git','rev-parse','HEAD'],text=True,cwd=root/'repo').strip(),
         SEARCH_R1_BASELINE_CONFIG_SHA256=audit['config'],SEARCH_R1_BASELINE_DATA_IDENTITY=audit['data'])
