@@ -1,15 +1,15 @@
 # Tree-GRPO Search-R1 验证执行记录
 
-截至 2026-10-03。本任务仍在执行；目前没有真实 3B 训练或效果指标，不能宣称复现成功或优于 GRPO。
+截至 2026-10-03。本任务仍在执行；已完成真实3B Tree rollout，但尚无成功的实际actor outer update或效果指标，不能宣称复现成功或优于 GRPO。
 
 ## 已完成
 
-分支 `reproduce/tree-grpo`，生产代码冻结版本 `aed28e176da946dc6cff73cfb23fac5cf2a879a8`（仅增加17位有效数字日志，指标数学不变）。冻结起点 `0723dca0c1458482ac3e78f8ed43af04893955d2`，公共部署来源 `297e1c140677dc621302f1d49fefdb31023fd2b7`，本分支公共 cherry-pick 为 `b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334`。
+分支 `reproduce/tree-grpo`，生产代码冻结版本 `f4f457df55fbfe99691d466d5c6f1d3fd7175c65`；Slurm2873运行的是此前 `aed28e176da946dc6cff73cfb23fac5cf2a879a8`，失败后才部署新版本。冻结起点 `0723dca0c1458482ac3e78f8ed43af04893955d2`，公共部署来源 `297e1c140677dc621302f1d49fefdb31023fd2b7`，本分支公共 cherry-pick 为 `b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334`。
 
 1. 修复外层迭代重复初始化 Tree 随机数：Controller 持有持续推进的 seed42 RNG，避免每次 outer update 重放同一 parent/leaf 选择序列。
 2. 继承公共部署与微批日志修复，增加实际 actor outer update 计数。零 optimizer update 或 critic warmup 跳过不能消耗预算；一次 outer 中的多个 optimizer step 只计一次。真实 driver 尾部独立控制流探针验证 500 次更新对应 global_steps501，保存实际第5/100/200/300/400/500次更新。
 3. 修复分布式日志只保留首 rank 的问题：五项 detached paper objective 日志先跨 rank 平均，再交旧版 DataProto 收集器。真实两 rank CPU Gloo/DDP 测试覆盖不等长叶、空叶与空 rank，日志与完整 batch 计算一致；开关日志归约时每 rank 梯度/参数完全相同。未改变梯度目标。
-4. 最新完整 CPU gate：**151 passed / 1 skipped / 4 warnings**，见 `cpu-all-dp-metrics-20261003.txt`。独立审查与原始来源对照见 `INDEPENDENT_REVIEW.md`；不得将各次 gate 数字相加。
+4. 最新完整 CPU gate：**163 passed / 1 skipped / 4 warnings**，见 `evidence/cpu-all-step-ids-fix.txt`。独立审查与原始来源对照见 `INDEPENDENT_REVIEW.md`；不得将各次 gate 数字相加。
 5. h100-9 独立 checkout、固定Python3.10 venv、项目内 uv0.8.22、完整 Git 历史和固定 FlashAttention wheel 已部署/哈希验证。Slurm 短预约探针2844已完成并释放；不是当前 GPU 预约，也不是 GPU 验收。
 
 ## 实验协议
@@ -40,27 +40,43 @@ Slurm2854现已实际取得并运行检索测量，固定8UUID/占用preflight�
 
 检索沿生产DenseRetriever，固定14条真实query，top3/top50、重复2次、E5 FP16；分别运行生产CPU FAISS/CPU encoder、独立overlay的GPU encoder/CPU index、8GPU FP16 shard，以及用保存CPU embedding运行GPU index。逐query记录ID/排序/score/内容SHA、实际FAISS导入路径、完整index/corpus SHA和资源。不同backend/build、encoder与索引量化或tie ordering都可能影响结果，ablation只区分路径，不先断言差异原因。**只输出差异报告，需审查真实结果后才放行训练。** 历史H20 FP32 top3 overlap .976不能替代本次FP16验收。
 
+## 真实训练结果与修复
+
+Slurm2873取得h100-9全部8张预定H100，实际完成FSDP/vLLM初始化和首轮Tree搜索rollout，随后actor更新在 `TensorDict.get('step_ids')` 缺字段时报错，退出1。Tree actor只选择自己的policy字段，不包含GiGPO专用step_ids；TensorDict0.5的无default get会抛异常。修复为显式default None，不改变GiGPO必须选择step_ids的路径或Tree目标数学。最新提交f4f457d已推送且部署；真实node9 Torch2.4.0/TensorDict0.5 CPU actor测试以及独立两rank测试通过。实际完成outer updates仍为0，不能计作两步smoke成功。
+
+此前初始化失败已全部保留：2866 Click8.5/Ray CLI deepcopy；2867 UNIX socket路径超107bytes；2869默认worker端口与GCS重叠；2870 Torch.compile缺Python.h。修复只在ownenv/ownrun作用：Click8.2.1、唯一短symlink指向持久runtime、worker22082–23081、精确匹配3.10.12开发包解到ownroot。Slurm2873真实GPU entropy编译能力通过，未禁用compile或改算法。
+
+Tree生产审计dc92f23已部署，下一次独立run显式启用：分支继承、共享前缀/观测mask、每题2root/每root3leaf共6叶、问题映射、action/observation step锚点及最终有效policy mask/叶等权均输出hash/count证据；验收器强制两份审计JSON每步完整，绑定rollout SHA。2873未启用此诊断，不能以它证明完整生产树结构。审计不记录原始文本，不额外抽样或改梯度；hash仍是实验数据，不能视为隐私保证。
+
+## 检索瓶颈与辅助GPU候选
+
+2873的实际CPU检索请求包含503.67、222.68、226.92、244.21、313.22、177.92秒等耗时，CPU检索严重限制8卡训练吞吐。FAISS CPU轮子的实际SGEMM绑定到其内置单线程OpenBLAS，OMP8不等于BLAS8。独立own OpenBLAS pthread preload小型synthetic测试在128/512行约快4倍、有限top3逐值一致，但512行CPU时间增加；尚未跑生产64GB index的完整parity，因此未部署。见 `TREE_CPU_BLAS_CANDIDATE_REVIEW.md`，该微测试不能外推真实512吞吐。
+
+按PLAN允许的未分配辅助检索GPU，准备A800 GPU4（UUID GPU-c63282c6-1d05-224e-234b-2a8c794b1f04），在已有平台container allocation中通过公共UUID lease和occupancy复核，仅使用4号；0–3训练候补及高占用7号保持不动。ownenv复制后重建路径并移除owncopy的peer editable .pth，sys.prefix/imports验证独立；peer资产只读复用，index/corpus全SHA独立重算与h100-9完全一致。
+
+实际单GPU FP32全index差异gate退出0：固定14 CPU embeddings，真实k3查询14/14文档/顺序一致，约0.195秒；同14条重复成512行的k3 512/512一致，约0.971秒。k50集合一致，但14条中3条同分排序变化，含tallest-building在k50 rank1/2互换；真实独立k3仍同序，不能取k50前3替代。最大score差约1.19e-6。64.56GB FP32索引、512MiB scratch，实测GPU峰值67.52GB，foreign监测无新进程。此gate仅隔离index，尚须实际A800 CPU编码+HTTP内容差异审查；未切换训练检索。见 `evidence/a800-fp32-index-difference.json` 和 `TREE_A800_INDEX_REVIEW.md`。
+
 ## 效果与成本状态
 
-真实Tree-GRPO outer updates、训练samples和训练GPU小时目前仍为0；2更新smoke、5更新checkpoint导出/加载、500正式更新和51,713题最终评测均未完成，F1/EM/格式率等为未测，不能写成0分、负结果或优于GRPO。
+两更新smoke、五更新完整HF/tokenizer保存重载、500正式actual outer updates和51,713题最终七集合评测均未通过。F1/EM/格式率及相对新GRPO收益为未测；不能写为0分、负结果或优于GRPO。跨方法split产物内容身份实际对照尚未完成。真实生成samples/token/丢弃扩展/重复前缀成本在2873报错前未完整发布，因此未测，不能写为0。
 
-基础硬件/模型作业已经消耗GPU资源，Slurm accounting关闭且未保存其完整分配起止，故总GPU小时目前未知，不能报0。模型推理的8.4415秒不是整项Slurm预约时长。后续检索wrapper记录gate body起止、8卡数量和退出码，明确不包含scheduler prolog/epilog；Torch allocator峰值不包含GPU FAISS分配，还需联合显存快照判断。
+2873 stage body3194秒，8卡为7.09778 GPU小时，包含初始化、CPU检索等待、rollout与失败更新尝试；不包含scheduler prolog/epilog，不代表500正式训练成本。CPU检索自有进程最后累计CPU时间11639.92秒；采样从加载后才开始，末次RSS在退出时为0不能当峰值，早期峰值约69.52GB。各失败作业body成本单列于 `evidence/training-failed-stage-costs.json`。基础硬件/model gate的完整预约起止未保存且Slurm accounting关闭，总GPU小时仍未知；不得报0。
 
-## 后续必须完成
+辅助GPU index probe body44.7585秒约0.01243单卡GPU小时，来源env准备/平台已有闲置allocation不在此数。HTTP候选的加载、gate、服务闲置与请求都将累计到完整服务生命周期成本。微测延迟改善与总CPU/GPU成本必须分别报告。
 
-1. 完整固定Wiki资产、派生哈希和真实检索差异审查/吞吐/RAM；差异影响实际观察内容时按PLAN处理，不能用平均overlap静默放行。
-2. 新独立Slurm运行目录完成两次实际更新smoke，核对finite loss/logprob/grad、nonzero真实参数delta、mask/shared prefix/每题6叶和实际split。
-3. 五次实际更新保存及完整HF/tokenizer重载、验证前向/参数；每个GPU阶段独立作业/cgroup保留原小显存进程，不用global ray stop；资源变化只停止自身作业。
-4. 正式500实际outer更新，保存5/100/200/300/400/500和完整七集51,713题评测，对比Agent1同协议的新GRPO。报告F1/EM/格式、搜索/token/sample、GPU/CPU/墙钟/RAM/峰值及Tree多叶/丢弃扩展/重复前缀成本。
+## 仍须完成
 
-完整actor/optimizer/RNG/dataloader精确续跑尚不支持；断连重新连接同一进程，不能另启动并声称等价恢复。未核对真实训练和checkpoint之前，不宣布效果验证完成。
+1. 审查实际CPU编码+辅助GPU HTTP固定真实query的top3/top50、内容和分数差异，选择并冻结可用检索路径。
+2. 新Slurm目录、冻结f4f457d、启用Tree审计，完成两次实际更新；验收finite loss/logprob/grad、非零真实HF参数delta和树/mask/叶等权证据。
+3. 五次实际更新及完整HF/tokenizer CPU重载、有限前向验收，再放行正式500更新。阶段验证器只产生READY_FOR_INDEPENDENT_REVIEW，不能替代独立接受记录。
+4. 正式500实际outer updates、完整最终七集51,713题评测，对比同协议的新GRPO；完整报告额外Tree样本与检索/训练/辅助成本。
 
-CPU checkpoint验收器已独立复核：完整HF加载信息缺失/不兼容拒绝、非零base参数delta、tokenizer兼容和finite CPU前向；tiny正例/未更新/缺权重/tied共4场景正确，不替代真实五步checkpoint。训练launcher/资源守卫已准备与复核；Slurm2866于2026-10-03 05:23启动两更新smoke，目前尚无完成更新记录；守卫NVML外国显存/SM峰值、完整cgroup job segment及父shell双服务存活检查，未知/超15%只停止自身作业，保守峰值和过期owner可能造成提前停止。
+完整actor+optimizer+RNG+dataloader精确恢复尚不支持。每阶段持久会话、唯一marker/run-id，失败保留且重新开始独立预算，不声称等价resume。所有未知/foreign越限只终止自身任务，从未停止原有小显存进程；未核对真实训练和评测之前，不宣布效果验证完成。
 
-检索复核详情见 `TREE_RETRIEVAL_REVIEW_2854.md` 与真实measurement JSON。两更新作业采用新目录 `/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2866`，冻结代码aed28e1；接受记录将真实检索证据SHA绑定。后续五步/正式训练仍须真实产物验收，未自动放行。
+## 继续执行：H100 编码与辅助 GPU 索引候选
 
-Slurm2866检索服务就绪后，在Ray CLI导入alias的deepcopy阶段因Click8.5 Sentinel报错；退出1，78秒stage body对应8卡0.17333 GPU小时，不含scheduler prolog/epilog。没有训练更新。只在Tree ownenv将未固定的CLI传递依赖Click固定8.2.1（PyPI SHA61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b），真实ray --version2.40.0通过，依赖检查仍仅有原允许cuBLAS覆盖。Ray官方issue56747实报8.3，对8.5同栈的归因由本次实测支持。新独立目录Slurm2867已启动，保留旧失败marker/日志，不计失败作业为训练成功。
+此前 A800 CPU 编码加 GPU 索引的完整 HTTP 候选在512查询测试中超时300秒，未接受、未用于训练，已仅停止本任务服务。当前候选保留 H100 原CPU E5 FP16编码、Wiki文档读取和HTTP接口，仅将原始FP32查询向量通过本任务回环隧道交给辅助GPU4 FP32 IndexFlatIP。真实二进制门禁两次重复均稳定，true-k3在14/14与512/512行文档顺序完全相同；k50分别11/14与402/512行顺序相同，其他为已记录近分数排序差异。14查询端到端约2.59–3.50秒，重复512约14.64–18.46秒；512仅有14个独立问题，不能视为独立512问题效果证据。全HTTP候选门禁及生产阶段仍待完成。
 
-Slurm2867在Ray创建AF_UNIX plasma socket时报路径超107字节，退出1且实际更新0。独立复核后用唯一 `/tmp/sst-tree-SLURM_JOB_ID` symlink指向原持久RUN/runtime，使socket拼写缩至86字节；-e/-L检查与GNU ln-sT拒绝覆盖，算法和产物路径不变。失败保留，不宣称任何smoke通过。
+完整HTTP CPU预约2876实测exit0，top3 rank/content14/14与512/512一致且两次稳定；k50文档ID排序11/14一致、内容排序14/14一致，重复Wiki内容使部分ID换位不改变内容。512 HTTP耗时24.274/22.916秒，H100 CPU编码4.605秒（首轮），原始向量SHA与2854保存向量完全一致。CPU门禁已释放；训练接受与实际参数更新仍待独立复核及运行。
 
-Slurm2869在RayParams发现默认worker10002..19999与计划GCS16382重叠时报错，退出1且实际更新0。仅将worker范围设22082..23081，保留计划GCS/检索端口；Ray2.40官方tag CLI与范围已独立核验，实际bind仍需新作业验证。
+独立真实复核与严格服务绑定验收完成后，Slurm2877已启动带Tree审计的两次更新smoke，生产冻结代码f4。预约h100-9全部8H100、32CPU/256G/4h上限，原八个小显存进程保留；辅助GPU4索引为固定独立实例。检索接受receipt SHA `ec62a3a1b1d40f43f7d9e2c10e1f789311aefe31b784ca34a5a344ab64d7e9ca`。截至提交，成功outer更新仍为0；不是已完成训练验收。

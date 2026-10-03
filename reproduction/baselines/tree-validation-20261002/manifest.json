@@ -1,6 +1,6 @@
 {
   "method": "tree_grpo",
-  "status": "two_actual_update_smoke_started",
+  "status": "audited_hybrid_two_update_smoke_running",
   "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
   "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
   "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
@@ -18,7 +18,7 @@
     "reproduction_tests": 61,
     "reproduction_skipped": 1,
     "independent_related_passed": 32,
-    "complete_pytest_passed": 151,
+    "complete_pytest_passed": 163,
     "complete_pytest_skipped": 1
   },
   "asset_and_split_identity": {
@@ -45,7 +45,7 @@
     "sha256": "fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524"
   },
   "environment_ready": true,
-  "gpu_hardware_integration_passed": false,
+  "gpu_hardware_integration_passed": true,
   "model_and_reward_protocol_changed": false,
   "known_protocol_deviations": [
     "Search-R1 generation/scoring context window mismatch retained and counted",
@@ -53,10 +53,10 @@
     "six leaves versus five GRPO trajectories",
     "paper equal-leaf token average differs from author token-mean implementation"
   ],
-  "notes": "Hardware/model/retrieval gates completed. Two-update production smoke dispatched; no completed actual update observed yet.",
+  "notes": "Real Tree rollout2873 failed before first actor update; f4 fix deployed. Old A800 CPU encoder HTTP512 candidate timed out300s, rejected and own PID stopped. H100 CPU encoder plus GPU4 FP32 index binary gate complete; full HTTP gate pending.",
   "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
-  "integrated_code_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
-  "remote_deployed_commit": "aed28e176da946dc6cff73cfb23fac5cf2a879a8",
+  "integrated_code_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
+  "remote_deployed_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65",
   "network_blocker": null,
   "gpu_and_assets_acceptance": {
     "nccl_bf16": true,
@@ -69,8 +69,8 @@
     "flash_bf16_math_probe": true
   },
   "network_progress": "SSH usable; all immutable and derived assets fully SHA verified",
-  "updated_at": "2026-10-03T05:25:01.638629+08:00",
-  "latest_cpu_gate_evidence": "cpu-all-dp-metrics-20261003.txt",
+  "updated_at": "2026-10-03T09:03:25.030943+08:00",
+  "latest_cpu_gate_evidence": "evidence/cpu-all-step-ids-fix.txt",
   "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
   "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
   "hardware_job": 2849,
@@ -81,11 +81,12 @@
   "model_inference_passed": true,
   "production_training_started": true,
   "retrieval_measurements_dispatch": "independently_reviewed_dispatched_asset_waiter",
-  "training_gpu_hours": 0,
+  "training_gpu_hours": null,
   "hardware_model_total_gpu_hours": null,
   "hardware_model_cost_limitation": "Slurm accounting disabled and precise allocation start/end not recorded; do not report GPU gates as zero cost.",
   "runtime_sessions": [
-    "head:tree-two-workerports-20261003 (Slurm2870)"
+    "head:tree-two-hybrid",
+    "auxiliary index:PID774407"
   ],
   "retrieval_gate_result": "limited_14_query_top3_sanity_accepted_after_difference_review",
   "cross_method_split_identity_verified": false,
@@ -115,7 +116,7 @@
       }
     }
   },
-  "training_job": 2870,
+  "training_job": 2873,
   "failed_training_initialization_jobs": [
     {
       "job_id": 2866,
@@ -137,6 +138,21 @@
       "actual_outer_updates": 0,
       "reason": "Ray default worker port range overlaps fixed GCS16382",
       "cost_evidence": "evidence/two-2869-workerports-failure.log"
+    },
+    {
+      "job_id": 2870,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "stage_body_gpu_hours": 0.29333333333333333,
+      "reason": "Torch compile missingPython.h after8GPU model initialization"
+    },
+    {
+      "job_id": 2873,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "stage_body_gpu_hours": 7.097777777777778,
+      "reason": "Tree actor optional step_ids TensorDict missing key after real rollout",
+      "fix_commit": "f4f457df55fbfe99691d466d5c6f1d3fd7175c65"
     }
   ],
   "cli_compatibility_pin": {
@@ -150,5 +166,110 @@
   "ray_worker_ports": [
     22082,
     23081
-  ]
+  ],
+  "python_dev_headers": {
+    "runtime_version": "3.10.12-1~22.04.18",
+    "package_sha256": "c058675011ec4b64f5ad803d74b5fe7de0c720c3700683040da68d1fb5b44ed9",
+    "scope": "ownroot extraction + child C_INCLUDE_PATH only",
+    "cpu_header_compile_passed": true,
+    "gpu_entropy_compile_passed": true
+  },
+  "failed_stage_body_costs": {
+    "2866": {
+      "job_id": 2866,
+      "stage": "two",
+      "start_epoch": 1790976224,
+      "end_epoch": 1790976302,
+      "allocated_gpus": 8,
+      "exit_code": 1,
+      "scope": "stage body, excludes scheduler prolog/epilog",
+      "gpu_hours": 0.17333333333333334
+    },
+    "2867": {
+      "job_id": 2867,
+      "stage": "two",
+      "start_epoch": 1790976434,
+      "end_epoch": 1790976482,
+      "allocated_gpus": 8,
+      "exit_code": 1,
+      "scope": "stage body, excludes scheduler prolog/epilog",
+      "gpu_hours": 0.10666666666666667
+    },
+    "2869": {
+      "job_id": 2869,
+      "stage": "two",
+      "start_epoch": 1790976628,
+      "end_epoch": 1790976676,
+      "allocated_gpus": 8,
+      "exit_code": 1,
+      "scope": "stage body, excludes scheduler prolog/epilog",
+      "gpu_hours": 0.10666666666666667
+    },
+    "2870": {
+      "job_id": 2870,
+      "stage": "two",
+      "start_epoch": 1790976785,
+      "end_epoch": 1790976917,
+      "allocated_gpus": 8,
+      "exit_code": 1,
+      "scope": "stage body, excludes scheduler prolog/epilog",
+      "gpu_hours": 0.29333333333333333
+    },
+    "2873": {
+      "job_id": 2873,
+      "stage": "two",
+      "start_epoch": 1790977171,
+      "end_epoch": 1790980365,
+      "allocated_gpus": 8,
+      "exit_code": 1,
+      "scope": "stage body, excludes scheduler prolog/epilog",
+      "gpu_hours": 7.097777777777778
+    }
+  },
+  "failed_stage_body_gpu_hours_known_sum": 7.777777777777778,
+  "training_gpu_hours_limitation": "Total accounting excludes unmeasured scheduler prolog/epilog; failed own stage body exact totals separately recorded, no completed formal training update.",
+  "tree_audit_commit": "dc92f237e4007404b9855fdc57f5547cd11fd49a",
+  "tree_audit_required_next_smoke": true,
+  "tree_audit_enabled_in_2873": false,
+  "auxiliary_retrieval_candidate": {
+    "node": "baai-a800 existing platform allocation",
+    "gpu_uuid": "GPU-c63282c6-1d05-224e-234b-2a8c794b1f04",
+    "index_precision": "FP32",
+    "encoder_device": "cpu",
+    "index_only_gate": "14 true-k3 and repeated512 true-k3 exact; top50 sets same but3/14 tied reorders",
+    "gpu_index_peak_bytes": 67521019904,
+    "index_probe_body_gpu_hours": 0.012432923449410332,
+    "production_accepted": false,
+    "real_cpu_encoder_http_gate": "pending"
+  },
+  "aux_hybrid_binary_gate": {
+    "report": "evidence/hybrid-binary-index-difference.json",
+    "true_top3_exact_14": 14,
+    "true_top3_exact_512": 512,
+    "top50_exact_14": 11,
+    "top50_exact_512": 402,
+    "repeat_equal": true,
+    "accepted_for_training": false
+  },
+  "aux_hybrid_http_gate": {
+    "job_id": 2876,
+    "exit_code": 0,
+    "report": "evidence/hybrid-http-difference-2876.json",
+    "true_top3_exact_14": 14,
+    "true_top3_exact_512": 512,
+    "true_top3_content_exact_14": 14,
+    "true_top3_content_exact_512": 512,
+    "top50_exact_14": 11,
+    "top50_content_exact_14": 14,
+    "repeat_equal": true,
+    "accepted_for_training": "two_update_smoke_only",
+    "cpu_encoder_vectors_equal_2854": true,
+    "timings_512_seconds": [
+      24.274448661133647,
+      22.916255505755544
+    ]
+  },
+  "current_job": 2877,
+  "current_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2877",
+  "aux_hybrid_acceptance_sha256": "ec62a3a1b1d40f43f7d9e2c10e1f789311aefe31b784ca34a5a344ab64d7e9ca"
 }

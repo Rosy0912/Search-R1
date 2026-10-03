@@ -231,3 +231,58 @@ CPU对两GPU路径top3共14/14 ID、顺序、内容hash完全相同，最大matc
 真实2867日志AF_UNIX socket path超107bytes，训练前失败。只读复核新launcher：新RUN/runtime为持久目标，/tmp/sst-tree-JOBID经不存在/非悬空symlink双检查再ln-s，不复用现有路径，head temp为SHORT/ray，run.sh直接拼RAY_TMPDIR不realpath，故保持短socket拼写及持久数据。shell语法通过；不改production数学/配置冻结aed。建议GNU ln-sT进一步避免检查后目录竞争时默认往目录内建link的边界，常规唯一job路径未发现静态阻碍；尚需实际新job启动证据，不能将路径检查当smoke完成。
 
 已提供只读设计chat outputs/TREE_DIAGNOSTIC_DESIGN.md：env opt-in、branch即时hash/source/tree/trajectory继承、每问题2roots*3leaf分组、retained observation mask/steps零与-1、compose/padding/后续lossmask长度及来源、context差异单独report、无文本和无RNG副作用、有意义mutation/开关等值测试。尚未实现或修改运行source，无此真实训练诊断产物，故当前stage验收仍缺六叶/sharedprefix/mask原始证据。
+
+## 2026-10-03 独立副本Tree诊断实现与训练前infra范围补充
+
+按主agent新增授权只在work/tree-diagnostic-development复制代码中实现，原production search_r1/verl相对aed28e1仍diff空。outputs/tree-diagnostic.patch（四文件）git apply --check通过，未应用；副本REVIEW.md/CPU_TESTS.txt及evidence/tree-diagnostic-implementation.json保存范围/hash。30 CPU tests通过（8新诊断+3原batching+19算法），实际小CPU DataParallelPPOActor控制路径证明开关梯度/参数bitwise相等、前向stubbed；不等于GPU真实模型。diagnostic目录own-output containment、step/index绑定、branch即时状态hash、2roots*3leaf按问题分组、retained record mask/steps/padding/compose UID/reorder、context差异记录、零RNG/默认零IO和污染/覆盖反例已测。未加入trainer最终loss_mask hook，无真实运行诊断文件，不能验收stage；unexpected异常/IO失败可能无FAILED JSON或遗留pending，缺少completion必须拒绝。仅hash/count/metadata，不含原文本/token ID，hash不保证抗字典攻击隐私。
+
+2869真实日志Ray默认worker10002..19999撞固定GCS16382，训练前失败。独立浏览Ray2.40.0官方tag scripts.py/parameter.py，min/max-worker CLI有效且inclusive；launcher22082..23081共1000端口不覆盖GCS16382/retriever18082/失败log其它已知组件端口，保留计划GCS，bash语法通过，ln-sT修复确认。尚不能证明随机组件或foreign端口永不冲突，实际Ray bind仍需通过，未计smoke成功。来源https://raw.githubusercontent.com/ray-project/ray/ray-2.40.0/python/ray/scripts/scripts.py 与 https://raw.githubusercontent.com/ray-project/ray/ray-2.40.0/python/ray/_private/parameter.py。
+
+2870主agent报告actor entropy torch.compile缺Python.h，actual0。本轮核outputs/evidence/python-headers-cpu-compile.txt真实CPU gcc成功与包SHAverified，runtime/deb版本均3.10.12-1~22.04.18；仅ownroot dpkg-deb-x提取/C_INCLUDE_PATH子进程，未系统安装，范围合理。check_actor_compile.py使用真实entropy函数、GPU0 FP32/BF16值对照+finite/nonzero反传，是小shape compile能力gate，不是8rank/真实policy更新或smoke通过；当前未取得GPUprobe产物。
+
+### 独立副本actor前批次证据扩展
+
+完整patch扩至五文件（新增ray_trainer hook），原production未改。Controller.audit_actor_batch只Tree/env开启，真实_create_loss_mask后/update_actor前执行；step*_policy_batch.json独立发布并引用原rollout JSON SHA。核原始loss_mask==inforesponse，不误要求attention product；有效mask=attention*lossmask。trajectory set与每行response/info/attention/steps/tree/question hashes随balance/reorder一致；权重finite且effective/rowcount、空叶0/其它sum1，有效位置oldlogprob/advantages finite。数据/metrics只读。成本记录branch/finish检查本身wall/processCPU，排除生成等待/publication；policy包含原rollout hash读取，排除actor/publication，不称独占CPU profiler。
+
+最终33CPU tests通过，含10种policy污染拒绝、真实rowreorder、原始mask1但attention0空叶权重0（无效位置非finite值不误拒绝）、hook位置及真实小CPU actor梯度/参数开关bitwise相等。先前“未加入最终lossmask hook”局限由此实现解决，但没有真实GPU诊断产物/效果验收，仍不接受stage。副本REVIEW.md/CPU_TESTS.txt/MANIFEST.json与evidence/tree-diagnostic-implementation.json已更新，root待独立review/完整gate后决定冻结。
+
+### 最终trainer hook兼容修复与完整CPU gate
+
+root本地应用patch后完整gate发现14原fixture失败（trainer无baseline_controller属性/AST片段无os）；初次字符串replace未命中原缩进、旧失败log保留，独立review实际复读指出未落盘，root已精确修复。最终hook为audit_controller=getattr(self,'baseline_controller',None); hasattr(...,'audit_actor_batch')后调用，Controller内部method Tree/envguard保持。检查仍_create_loss_mask后/update_actor前，无metrics/math改动，旧trainer/AST fixtures兼容。
+
+只在独立副本同步新hook，44相关fixture+diagnostic tests真实通过，log work/tree-diagnostic-development/HOOK_COMPATIBILITY_TESTS.txt。独立读取root完整cpu-all-tree-audit-final.txt为162passed/1skipped/4warnings/26.25sec，与旧fixed log14failed明确区分。五patch文件副本与root本地逐字节相同；root改原source、reviewer未改，远端仍aed据root报告。完整outputs/tree-diagnostic.patch重新以git aed28e1为baseline生成，MANIFEST与evidence/tree-diagnostic-implementation.json含最新patch/fullgate/log hashes。此证据解决兼容性测试阻碍；无真实Tree GPU rollout/policy诊断产物或stage接受，不能宣称smoke成功。
+
+### dc92f23最终commit复核与stage强制诊断支持
+
+独立读取已提交dc92f237e4007404b9855fdc57f5547cd11fd49a：仅五已审文件，trainer hook新增getattr/hasattr三行，其余Tree目标/optimizer/metrics不改；代码与已测副本五文件字节完全相同。最终CPU gate162passed1skipped、独立兼容子集44passed证据保持。
+
+chat work/validate_tree_stage.py新增--require-tree-audit（可指定--tree-audit-dir，默认ownrun/output/tree-audit）。开启时在CPU HF重载前要求每实际step严格一对rollout与policy完成文件，目录在ownrun内且无pending/多余/重复；核step/sequence、algorithm来源、policy引用rollout文件SHA、trajectory/tree/question逐行绑定、三叶每source与两树/六叶每问题、branch同字段hash继承、有效token范围/空叶/权重质量及计数。返回artifact SHA列表；缺失、FAILED、数量错、绑定污染均拒绝，无最终report。legacy无flag仍可生成不包含audit的review-ready报告，不能用作今后完整stage接受；主agent必须调用--require-tree-audit，不得把legacy报告误作stage通过。
+
+14项CPU验收器fixture通过（evidence/stage-audit-validator-probe.py/json/txt）：真实fake-manager CPU Tree Controller两步生成+policy/reorder文件检查正例；缺失/FAILED/额外/rolloutSHA/trajectory/mass/group/branch/step/algorithm/pending/five-from-two/missing-directory反例拒绝。无真实checkpoint或GPU训练产物，此测试仅验收器逻辑。HF reload仍由真实checker强制；stage接受还需真实checkpoints、GPU资源和log等证据，工具永不自动写acceptance。
+
+## 2026-10-03 CPU BLAS隔离小benchmark与辅助GPU4候选复核
+
+按授权通过既有work/remote.py在h1009独立CUDA不可见子进程，仅50k*768 synthetic index，threads8/nice19/timeout120，不碰检索服务/训练env/global变量。默认FAISS嵌入BLAS实际SGEMM绑定自身so、thread API1；ownroot pthread OpenBLAS preload实际SGEMM relocation由LD_DEBUG确认切换ownlibrary，global线程API8、OpenBLAS0.3.20/CorePrescott，FAISS direct-handle API仍1（只是符号查找，不代表真实调用）。默认14/128/512墙钟.016035/.326806/1.247163s，preload.016180/.080615/.297909s，约1/4.05/4.19x；全部合成top3 IDs/scores逐值相同。512CPU时间2.789582→3.896805s增加，非成本全面改善。单次顺序共享host小index，仅候选证据。
+
+第一次preload在LD_DEBUG巨大输出时SSH broken pipe255，没有成功结果；保留失败log并确认ownPID退出后，仅preload用远端过滤重试0成功。work/cpu-blas-review/含原始测量、loader binding/thread identity、SUMMARY/README/MANIFEST与future full-index-parity.py；完整64GB未执行，工具显式--allow-large-index、固定CPUemb/indexSHA、14及重复512、独立k3/k50两repeat和DIFFERENCE_REPORT_ONLY，重复512不是512真实unique吞吐。建议值得下一独立CPU/RAM受控full-index parity gate，不能直接切生产后端。
+
+辅助A800 GPU4 FP32 index-only候选首次审查指出watchdog初始化不在try导致静默死、仅k50前3冒充实际k3、embeddings未bytesSHA绑定三阻断。最终probe已修ready/fresh/liveness/init failclosed+graphics合并、真实k3/k50分别query、CPUbyteshash与index/corpus基准SHA及前后stat、searchCUDA同步；无encoder/量化/自动接受，单次gate未见剩余数学阻碍。ownenv import/prefix/.pth和sharedUUIDlease/platform cgroup授权须实际artifact证明；单纯cri-containerd字符串不足独立证明GPU4分配。极快thread.start-before-try可能缺失败cost但failclosed，不会继续GPU；transfer建议前后CUDA同步，foreign同PID记录覆盖只影响记录不影响任意foreign自停。未启动此GPU gate或服务。
+
+## 2026-10-03 2873真实actor TensorDict缺step_ids修复独立复核
+
+真实outputs/evidence/two-2873-step-ids-failure.log为TensorDict.get无默认在Tree actor选中keys无step_ids时报KeyError，actor未有效更新，actual0，不计smoke成功。仅data.get('step_ids')→data.get('step_ids',None)合理：Tree选择keys不传GiGPO steps，weighted_policy_loss None走token ratio；GiGPO实际step字段仍进入joint action分支，不改数学。新增真实DataParallelPPOActor/TensorDict Tree删step字段SGD非零/finite/microbatch等值回归，独立执行4tests（paper_metric_logging/distributed_paper_metrics/paper_ddp）通过15.31秒，含CPU2rankGloo不等于NCCL。另独立读root完整gate163passed1skipped/25.70sec。evidence/optional-step-ids-independent-review.json保存source/fullgateSHA。修复静态/CPU无阻碍，新真实stage仍待新的训练产物。
+
+## 2026-10-03 A800 GPU4真实FP32 full-index结果与候选HTTPgate审查
+
+独立重算outputs/evidence/a800-fp32-index-difference.json四组共1052行，assetSHA同2854，实际k3 14/14及重复512/512全同；k50集合全同，14排序11/14同、重复512402/512同。matched score max分别5.96e-7/5.96e-7/8.94e-7/1.192e-6，不是逐值exact。q4 Everest7/8、q8Apollo42/43、q12最高建筑1/2为同分swap，512每原query重复只有一种顺序。关键q12 GPUk50前3与真实GPUk3不同，Tree必须实际search(k3)不能切片k50；不满足CoSearch top50排序等价。
+
+原始cost与44条samples独立核：GPU4 UUID一致、无foreign、peak67521019904bytes（约62.884GiB），80GiB容量在观测峰尚余17.116GiB，间隔最大2.208623秒，不是连续瞬时allocator峰。probe44.758524秒/选定单GPU.0124329GPUhours；只含probe body，不含原8GPU平台分配/准备/空闲账单。CPU自身RSS65.376GB、load32.6695秒/transfer6.7404秒；index-only不含CPUencoder/corpus raw内容加载，该内容相同仅按同corpusSHA+ID推断。完整outputs/TREE_A800_INDEX_REVIEW.md与work/cpu-blas-review/a800-independent-differences.json，evidence/a800-index-independent-review.json存报告/sourceSHA。
+
+判断支持下一独立CPUencoder+HTTP候选gate，不production接受。首次service脚本复核仍缺verified assetSHA明确对baseline、原CPU npz bytes/querySHA绑定、platform/cgroup实际条件验证，已反馈root；只有修复/实际取得条件后可启动候选。原rs endpoint async在eventloop同步batch_search串行，当前singleworker资源线程安全；不应换threadpool/multiworker。CPU E5原recipe/k3+k50内容hash/noAUTOpass/loopback+4h寿命/foreign仅自停合理。该gate还须隧道实发HTTP、encoder parity/latency/RAM/驻留GPU/guard成本检查，不能从固定CPUemb indexgate推出A800 CPUencoder parity或512unique吞吐。reviewer未启动HTTP或训练。
+
+
+## A800 auxiliary server final static review (2026-10-03)
+
+The three initial identity/ownership blockers are resolved in `work/aux_retrieval_server.py` (SHA256 `0a3642348444b5df6bd8b65f1cd83ffd849c8ef046b3970c96ce4c22c27d2be8`). The service asserts the full platform cgroup equals the real successful index-probe dispatch allocation, validates fixed GPU4 UUID and inherited common lease, binds verified index/corpus SHA and original query/vector SHA to 2854, and checks asset stat and full E5 file hashes again after loading and the gate. Clone and direct gate search use explicit CUDA synchronization. The original async `/retrieve` endpoint remains synchronous on the initialization event-loop thread and uvicorn has one worker; the wrapper adds costs without changing results. A ready/live/fresh independent NVML thread rejects any foreign compute/graphics process and cancels only this server PID; its bounded lifetime includes loading and idle.
+
+No remaining static blocker to entering a **candidate real CPU encoder + tunnel HTTP gate** was found. This is not production acceptance or training permission. Its direct local 14-query result remains DIFFERENCE_REPORT_ONLY and still needs independent review plus actual HTTP POST protocol/content/score checks. The loopback provenance route can wait behind CPU encoding; a proposed 180s stage check must be independently reviewed with finite request bounds and cancel only the own training allocation. No checker or new launcher was accepted here. The reporter records sampled GPU peak and process RSS, not whole-platform billed allocation or simultaneous dataset-worker RSS. Evidence: `evidence/aux-retrieval-server-static-review.json`.
