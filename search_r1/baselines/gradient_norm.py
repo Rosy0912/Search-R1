@@ -26,6 +26,14 @@ def _norm64(params, device, chunk_size=262144, uniform=True):
 
 
 def _failure(grads, norm):
+    # Diagnostic disk errors must not replace the optimizer refusal.
+    try:
+        _failure_report(grads, norm)
+    except Exception:
+        pass
+
+
+def _failure_report(grads, norm):
     root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
     if not root:
         return

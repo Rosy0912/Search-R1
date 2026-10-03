@@ -27,6 +27,7 @@ class TreeRankAudit:
         self.epochs = int(config.ppo_epochs)
         self.source = hashlib.sha256(Path(actor_source).read_bytes()).hexdigest()
         self.grads = []
+        self.pending_microbatches = []
         from .runtime_audit import shard_sample
         self.layout, self.values = shard_sample(model)
         self.hook_seconds = time.perf_counter() - start
@@ -34,8 +35,76 @@ class TreeRankAudit:
     def epoch(self):
         pass
 
-    def micro(self, *args, **kwargs):
-        pass
+    def micro(self, log_prob, old_log_prob, response_mask, loss, step_ids=None,
+              advantages=None, loss_parts=None, ref_logp=None, diagnostic_data=None):
+        # Detached references only: no CPU transfer, RNG, collective or graph
+        # retention on the successful path. Keep every contributing microbatch
+        # until clipping succeeds; a failing norm may come from an earlier one.
+        values = dict(log_prob=log_prob, old_log_prob=old_log_prob,
+                      response_mask=response_mask, loss=loss, step_ids=step_ids,
+                      advantages=advantages, ref_log_prob=ref_logp)
+        values.update(diagnostic_data or {})
+        self.pending_microbatches.append(dict(
+            tensors={k: v.detach() for k, v in values.items() if isinstance(v, torch.Tensor)},
+            loss_parts={k: v.detach() for k, v in (loss_parts or {}).items()
+                        if isinstance(v, torch.Tensor)}))
+
+    def failure(self, error):
+        """Publish original local loss inputs without hiding the primary error."""
+        import warnings
+        try:
+            root = Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR']) / 'failures'
+            root.mkdir(parents=True, exist_ok=True)
+            target = root / (f'step-{self.step:06d}-rank-{self.rank:02d}-'
+                             f'optimizer-{len(self.grads):03d}-pid-{os.getpid()}.pt')
+            microbatches = [dict(tensors={k: v.cpu() for k, v in m['tensors'].items()},
+                                loss_parts={k: v.cpu() for k, v in m['loss_parts'].items()})
+                            for m in self.pending_microbatches]
+            gradient_evidence = []
+            for name, parameter in self.model.named_parameters():
+                if parameter.grad is None:
+                    continue
+                flat = parameter.grad.detach().reshape(-1)
+                finite_count, max_abs, bad_indices, bad_values = 0, None, [], []
+                offset = 0
+                for chunk in flat.split(262144):
+                    finite = torch.isfinite(chunk)
+                    finite_count += int(finite.sum())
+                    valid = chunk[finite]
+                    if valid.numel():
+                        maximum = float(valid.abs().max())
+                        max_abs = maximum if max_abs is None else max(max_abs, maximum)
+                    take = max(0, 16 - len(bad_indices))
+                    if take:
+                        indices = (~finite).nonzero().flatten()[:take]
+                        bad_indices.extend((indices + offset).cpu().tolist())
+                        bad_values.extend(chunk[indices].cpu().tolist())
+                    offset += chunk.numel()
+                gradient_evidence.append(dict(name=name, count=flat.numel(),
+                    finite_count=finite_count, max_finite_abs=max_abs,
+                    nonfinite_sample_indices=bad_indices, nonfinite_sample_values=bad_values))
+            record = dict(outer_step=self.step, rank=self.rank, world_size=self.world,
+                successful_optimizer_calls=len(self.grads), exception=str(error),
+                source_sha256=self.source,
+                code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+                run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                microbatches=microbatches, local_gradient_evidence=gradient_evidence,
+                scope='Local unmodified detached inputs for failed optimizer accumulation; not exact resume')
+            # Exclusive publication preserves earlier failures; failed I/O is
+            # secondary and must not replace the optimization exception.
+            pending = target.with_suffix('.pending')
+            with pending.open('xb') as stream:
+                torch.save(record, stream)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.link(pending, target)
+            pending.unlink()
+        except Exception as diagnostic_error:
+            try:
+                warnings.warn(f'Tree failure evidence could not be saved: {diagnostic_error}')
+            except Exception:
+                pass
 
     def gradient(self, norm):
         start = time.perf_counter()
@@ -43,6 +112,7 @@ class TreeRankAudit:
         if not math.isfinite(value):
             raise ValueError('Nonfinite existing Tree optimizer norm')
         self.grads.append(value)
+        self.pending_microbatches.clear()
         self.hook_seconds += time.perf_counter() - start
 
     def finish(self, updates, skips):

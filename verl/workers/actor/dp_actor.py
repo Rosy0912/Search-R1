@@ -202,6 +202,7 @@ class DataParallelPPOActor(BasePPOActor):
     def update_policy(self, data: DataProto):
         # make sure we are in training mode
         self.actor_module.train()
+        method = self.config.get('baseline_method')
 
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
@@ -328,10 +329,20 @@ class DataParallelPPOActor(BasePPOActor):
                     parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
                     if self.config.use_kl_loss:
                         parts['kl'] = kl_loss
+                    diagnostic = {}
+                    if method == 'tree_grpo':
+                        diagnostic['diagnostic_data'] = {
+                            key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
+                            if key in data}
                     audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
                         advantages=advantages, loss_parts=parts,
-                        ref_logp=ref_log_prob if self.config.use_kl_loss else None)
-                loss.backward()
+                        ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
+                try:
+                    loss.backward()
+                except Exception as error:
+                    if method == 'tree_grpo' and audit is not None:
+                        audit.failure(error)
+                    raise
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
                 data = {
@@ -350,7 +361,12 @@ class DataParallelPPOActor(BasePPOActor):
 
             if paper_objective:
                 append_to_dict(metrics, mini_metrics)
-            grad_norm = self._optimizer_step()
+            try:
+                grad_norm = self._optimizer_step()
+            except Exception as error:
+                if method == 'tree_grpo' and audit is not None:
+                    audit.failure(error)
+                raise
             if audit is not None:
                 audit.gradient(grad_norm)
             updates += 1
