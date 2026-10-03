@@ -18,8 +18,30 @@ def runtime_env_vars():
     if not enabled():
         return {}
     names = ('AUDIT_DIR', 'RUN_ID', 'COMMIT', 'CONFIG_SHA256', 'DATA_IDENTITY')
-    return {f'SEARCH_R1_TOPD_{name}': os.environ[f'SEARCH_R1_TOPD_{name}']
-            for name in names if f'SEARCH_R1_TOPD_{name}' in os.environ}
+    result = {f'SEARCH_R1_TOPD_{name}': os.environ[f'SEARCH_R1_TOPD_{name}']
+              for name in names if f'SEARCH_R1_TOPD_{name}' in os.environ}
+    resource = 'SEARCH_R1_TOPD_TEACHER_CPU_THREADS'
+    if resource in os.environ:
+        result[resource] = str(teacher_cpu_threads())
+    return result
+
+
+def teacher_cpu_threads():
+    """Optional driver-only thread budget; actor and retrieval budgets are separate."""
+    value = os.environ.get('SEARCH_R1_TOPD_TEACHER_CPU_THREADS')
+    if value is None:
+        return None
+    if not value.isascii() or not value.isdecimal() or not 1 <= int(value) <= 16:
+        raise ValueError('TOP-D teacher CPU threads must be an integer in 1..16')
+    return int(value)
+
+
+def configure_teacher_cpu_threads():
+    count = teacher_cpu_threads()
+    if count is not None:
+        # Called only in the TOP-D driver, before loading its frozen CPU teacher.
+        torch.set_num_threads(count)
+    return torch.get_num_threads()
 
 
 def emit(kind, record, rank='driver'):

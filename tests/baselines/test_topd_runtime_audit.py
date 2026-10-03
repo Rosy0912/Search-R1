@@ -271,3 +271,48 @@ def test_actual_worker_creation_propagates_all_eight_rank_envs(monkeypatch, enab
         assert env['RANK'] == str(rank) and env['WORLD_SIZE'] == '8'
         propagated = {key: value for key, value in env.items() if key.startswith('SEARCH_R1_TOPD_')}
         assert propagated == (variables if enabled else {})
+
+
+@pytest.mark.parametrize('value', ['0', '17', '-1', '1.0', '', 'true', '１６'])
+def test_teacher_thread_budget_rejects_invalid_before_mutation(monkeypatch, value):
+    from search_r1.baselines.topd_runtime_audit import configure_teacher_cpu_threads
+    monkeypatch.setenv('SEARCH_R1_TOPD_TEACHER_CPU_THREADS', value)
+    with patch.object(torch, 'set_num_threads') as setter:
+        with pytest.raises(ValueError, match='1..16'):
+            configure_teacher_cpu_threads()
+        setter.assert_not_called()
+
+
+def test_teacher_thread_budget_default_is_unchanged(monkeypatch):
+    from search_r1.baselines.topd_runtime_audit import configure_teacher_cpu_threads
+    monkeypatch.delenv('SEARCH_R1_TOPD_TEACHER_CPU_THREADS', raising=False)
+    with patch.object(torch, 'set_num_threads') as setter:
+        assert configure_teacher_cpu_threads() == torch.get_num_threads()
+        setter.assert_not_called()
+
+
+def test_real_controller_sets_only_driver_budget_before_teacher_load(monkeypatch):
+    from search_r1.baselines.controller import Controller
+    from search_r1.baselines import distillation
+    monkeypatch.setenv('SEARCH_R1_TOPD_TEACHER_CPU_THREADS', '16')
+    monkeypatch.delenv('SEARCH_R1_TOPD_AUDIT_DIR', raising=False)
+    events = []
+    monkeypatch.setattr(torch, 'set_num_threads', lambda count: events.append(('driver_threads', count)))
+    def teacher(path, tokenizer, device):
+        assert events == [('driver_threads', 16)]
+        events.append(('teacher', device))
+        return object()
+    monkeypatch.setattr(distillation, 'FrozenTeacher', teacher)
+    trainer = SimpleNamespace(tokenizer=object(), config=OmegaConf.create(dict(baselines=dict(
+        seed=42, method='topd', bapo=dict(patience=5), distillation=dict(teacher_path='fixture')))))
+    Controller(trainer)
+    assert events == [('driver_threads', 16), ('teacher', 'cpu')]
+
+
+def test_teacher_resource_env_propagated_with_audit_without_changing_torch(monkeypatch):
+    from search_r1.baselines.topd_runtime_audit import runtime_env_vars
+    variables = audit_environment(monkeypatch, True)
+    monkeypatch.setenv('SEARCH_R1_TOPD_TEACHER_CPU_THREADS', '16')
+    with patch.object(torch, 'set_num_threads') as setter:
+        assert runtime_env_vars() == dict(variables, SEARCH_R1_TOPD_TEACHER_CPU_THREADS='16')
+        setter.assert_not_called()

@@ -156,6 +156,8 @@ class Controller:
             trainer.reward_fn = self.main_f1_reward
         elif self.method == 'topd':
             from .distillation import FrozenTeacher
+            from .topd_runtime_audit import configure_teacher_cpu_threads
+            configure_teacher_cpu_threads()
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
             from .topd_runtime_audit import enabled, teacher_boundary
             if enabled():
