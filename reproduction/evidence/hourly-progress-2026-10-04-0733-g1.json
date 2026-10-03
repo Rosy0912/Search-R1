@@ -1,0 +1,422 @@
+{
+  "checked_unix": 1791070519.4110997,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "rows": [
+    {
+      "step": 1.0,
+      "critic/rewards/mean": 0.16,
+      "actor/pg_loss": 0.155,
+      "actor/grad_norm": 3.209,
+      "timing_s/step": 450.418
+    },
+    {
+      "step": 2.0,
+      "critic/rewards/mean": 0.193,
+      "actor/pg_loss": -0.104,
+      "actor/grad_norm": 3.137,
+      "timing_s/step": 407.828
+    },
+    {
+      "step": 3.0,
+      "critic/rewards/mean": 0.134,
+      "actor/pg_loss": 0.111,
+      "actor/grad_norm": 2.842,
+      "timing_s/step": 393.727
+    },
+    {
+      "step": 4.0,
+      "critic/rewards/mean": 0.191,
+      "actor/pg_loss": 0.081,
+      "actor/grad_norm": 3.534,
+      "timing_s/step": 422.84
+    },
+    {
+      "step": 5.0,
+      "critic/rewards/mean": 0.222,
+      "actor/pg_loss": 0.082,
+      "actor/grad_norm": 3.485,
+      "timing_s/step": 514.297
+    },
+    {
+      "step": 6.0,
+      "critic/rewards/mean": 0.144,
+      "actor/pg_loss": -0.031,
+      "actor/grad_norm": 3.265,
+      "timing_s/step": 398.809
+    },
+    {
+      "step": 7.0,
+      "critic/rewards/mean": 0.2,
+      "actor/pg_loss": -0.025,
+      "actor/grad_norm": 3.062,
+      "timing_s/step": 407.67
+    },
+    {
+      "step": 8.0,
+      "critic/rewards/mean": 0.224,
+      "actor/pg_loss": 0.047,
+      "actor/grad_norm": 3.405,
+      "timing_s/step": 430.932
+    },
+    {
+      "step": 9.0,
+      "critic/rewards/mean": 0.263,
+      "actor/pg_loss": 0.063,
+      "actor/grad_norm": 3.555,
+      "timing_s/step": 418.254
+    },
+    {
+      "step": 10.0,
+      "critic/rewards/mean": 0.175,
+      "actor/pg_loss": 0.06,
+      "actor/grad_norm": 3.467,
+      "timing_s/step": 409.277
+    },
+    {
+      "step": 11.0,
+      "critic/rewards/mean": 0.23,
+      "actor/pg_loss": 0.024,
+      "actor/grad_norm": 3.004,
+      "timing_s/step": 419.052
+    },
+    {
+      "step": 12.0,
+      "critic/rewards/mean": 0.278,
+      "actor/pg_loss": 0.129,
+      "actor/grad_norm": 3.23,
+      "timing_s/step": 394.127
+    },
+    {
+      "step": 13.0,
+      "critic/rewards/mean": 0.225,
+      "actor/pg_loss": -0.044,
+      "actor/grad_norm": 3.517,
+      "timing_s/step": 428.67
+    },
+    {
+      "step": 14.0,
+      "critic/rewards/mean": 0.265,
+      "actor/pg_loss": 0.153,
+      "actor/grad_norm": 3.15,
+      "timing_s/step": 420.699
+    },
+    {
+      "step": 15.0,
+      "critic/rewards/mean": 0.267,
+      "actor/pg_loss": 0.131,
+      "actor/grad_norm": 3.21,
+      "timing_s/step": 429.316
+    },
+    {
+      "step": 16.0,
+      "critic/rewards/mean": 0.221,
+      "actor/pg_loss": 0.037,
+      "actor/grad_norm": 2.957,
+      "timing_s/step": 391.521
+    },
+    {
+      "step": 17.0,
+      "critic/rewards/mean": 0.274,
+      "actor/pg_loss": 0.011,
+      "actor/grad_norm": 3.405,
+      "timing_s/step": 429.837
+    },
+    {
+      "step": 18.0,
+      "critic/rewards/mean": 0.242,
+      "actor/pg_loss": 0.065,
+      "actor/grad_norm": 3.013,
+      "timing_s/step": 417.821
+    },
+    {
+      "step": 19.0,
+      "critic/rewards/mean": 0.226,
+      "actor/pg_loss": -0.054,
+      "actor/grad_norm": 2.953,
+      "timing_s/step": 401.792
+    },
+    {
+      "step": 20.0,
+      "critic/rewards/mean": 0.314,
+      "actor/pg_loss": 0.024,
+      "actor/grad_norm": 3.64,
+      "timing_s/step": 422.521
+    },
+    {
+      "step": 21.0,
+      "critic/rewards/mean": 0.229,
+      "actor/pg_loss": 0.014,
+      "actor/grad_norm": 3.325,
+      "timing_s/step": 382.63
+    },
+    {
+      "step": 22.0,
+      "critic/rewards/mean": 0.35,
+      "actor/pg_loss": 0.015,
+      "actor/grad_norm": 3.629,
+      "timing_s/step": 399.106
+    },
+    {
+      "step": 23.0,
+      "critic/rewards/mean": 0.333,
+      "actor/pg_loss": 0.039,
+      "actor/grad_norm": 3.744,
+      "timing_s/step": 380.992
+    },
+    {
+      "step": 24.0,
+      "critic/rewards/mean": 0.255,
+      "actor/pg_loss": 0.001,
+      "actor/grad_norm": 3.521,
+      "timing_s/step": 395.373
+    },
+    {
+      "step": 25.0,
+      "critic/rewards/mean": 0.262,
+      "actor/pg_loss": 0.04,
+      "actor/grad_norm": 3.4,
+      "timing_s/step": 413.126
+    },
+    {
+      "step": 26.0,
+      "critic/rewards/mean": 0.303,
+      "actor/pg_loss": 0.044,
+      "actor/grad_norm": 3.583,
+      "timing_s/step": 411.026
+    },
+    {
+      "step": 27.0,
+      "critic/rewards/mean": 0.263,
+      "actor/pg_loss": 0.08,
+      "actor/grad_norm": 3.727,
+      "timing_s/step": 381.119
+    },
+    {
+      "step": 28.0,
+      "critic/rewards/mean": 0.319,
+      "actor/pg_loss": 0.063,
+      "actor/grad_norm": 3.63,
+      "timing_s/step": 374.594
+    },
+    {
+      "step": 29.0,
+      "critic/rewards/mean": 0.3,
+      "actor/pg_loss": 0.088,
+      "actor/grad_norm": 3.666,
+      "timing_s/step": 431.542
+    },
+    {
+      "step": 30.0,
+      "critic/rewards/mean": 0.324,
+      "actor/pg_loss": -0.025,
+      "actor/grad_norm": 3.38,
+      "timing_s/step": 369.306
+    },
+    {
+      "step": 31.0,
+      "critic/rewards/mean": 0.29,
+      "actor/pg_loss": 0.041,
+      "actor/grad_norm": 4.089,
+      "timing_s/step": 362.848
+    },
+    {
+      "step": 32.0,
+      "critic/rewards/mean": 0.34,
+      "actor/pg_loss": 0.058,
+      "actor/grad_norm": 3.892,
+      "timing_s/step": 367.531
+    },
+    {
+      "step": 33.0,
+      "critic/rewards/mean": 0.324,
+      "actor/pg_loss": 0.061,
+      "actor/grad_norm": 3.806,
+      "timing_s/step": 389.601
+    },
+    {
+      "step": 34.0,
+      "critic/rewards/mean": 0.305,
+      "actor/pg_loss": 0.095,
+      "actor/grad_norm": 3.624,
+      "timing_s/step": 315.781
+    },
+    {
+      "step": 35.0,
+      "critic/rewards/mean": 0.357,
+      "actor/pg_loss": 0.066,
+      "actor/grad_norm": 4.029,
+      "timing_s/step": 359.796
+    },
+    {
+      "step": 36.0,
+      "critic/rewards/mean": 0.291,
+      "actor/pg_loss": 0.017,
+      "actor/grad_norm": 3.037,
+      "timing_s/step": 370.813
+    },
+    {
+      "step": 37.0,
+      "critic/rewards/mean": 0.272,
+      "actor/pg_loss": 0.043,
+      "actor/grad_norm": 3.488,
+      "timing_s/step": 356.424
+    },
+    {
+      "step": 38.0,
+      "critic/rewards/mean": 0.306,
+      "actor/pg_loss": -0.019,
+      "actor/grad_norm": 3.482,
+      "timing_s/step": 327.647
+    },
+    {
+      "step": 39.0,
+      "critic/rewards/mean": 0.272,
+      "actor/pg_loss": 0.027,
+      "actor/grad_norm": 3.147,
+      "timing_s/step": 355.703
+    },
+    {
+      "step": 40.0,
+      "critic/rewards/mean": 0.339,
+      "actor/pg_loss": 0.021,
+      "actor/grad_norm": 3.105,
+      "timing_s/step": 317.952
+    },
+    {
+      "step": 41.0,
+      "critic/rewards/mean": 0.33,
+      "actor/pg_loss": 0.014,
+      "actor/grad_norm": 3.028,
+      "timing_s/step": 350.09
+    },
+    {
+      "step": 42.0,
+      "critic/rewards/mean": 0.32,
+      "actor/pg_loss": 0.031,
+      "actor/grad_norm": 3.515,
+      "timing_s/step": 350.174
+    },
+    {
+      "step": 43.0,
+      "critic/rewards/mean": 0.314,
+      "actor/pg_loss": 0.048,
+      "actor/grad_norm": 3.585,
+      "timing_s/step": 333.648
+    },
+    {
+      "step": 44.0,
+      "critic/rewards/mean": 0.344,
+      "actor/pg_loss": -0.005,
+      "actor/grad_norm": 3.249,
+      "timing_s/step": 392.735
+    },
+    {
+      "step": 45.0,
+      "critic/rewards/mean": 0.317,
+      "actor/pg_loss": 0.086,
+      "actor/grad_norm": 4.532,
+      "timing_s/step": 355.671
+    },
+    {
+      "step": 46.0,
+      "critic/rewards/mean": 0.355,
+      "actor/pg_loss": 0.026,
+      "actor/grad_norm": 3.273,
+      "timing_s/step": 342.317
+    },
+    {
+      "step": 47.0,
+      "critic/rewards/mean": 0.376,
+      "actor/pg_loss": 0.009,
+      "actor/grad_norm": 4.179,
+      "timing_s/step": 355.407
+    }
+  ],
+  "handles": [
+    {
+      "pid": 1661704,
+      "live": true
+    },
+    {
+      "pid": 1672776,
+      "live": true
+    }
+  ],
+  "gpu_cumulative_peaks": {
+    "0": 50965,
+    "1": 51507,
+    "2": 51507,
+    "3": 50817,
+    "5": 21119,
+    "6": 37577
+  },
+  "gpu_hour_peaks": {
+    "0": 47895,
+    "1": 47545,
+    "2": 47991,
+    "3": 47301,
+    "5": 18577,
+    "6": 28459
+  },
+  "gpu_last": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791070519.2363374,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 38123,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 38219,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "used_mib": 38219,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "used_mib": 38085,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 28459,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "validation_console": [
+    "\u001b[36m(main_task pid=1672776)\u001b[0m step:5 - global_seqlen/min:139102.000 - global_seqlen/max:146737.000 - global_seqlen/minmax_diff:7635.000 - global_seqlen/balanced_min:142692.000 - global_seqlen/balanced_max:142693.000 - global_seqlen/mean:142692.250 - train/perf/em:0.180 - train/trust/trust_at_correct:0.752 - train/trust/trust_at_searched_correct:0.700 - train/trust/trust_all_mean:0.135 - train/trust/cf_true:0.000 - train/trust/cf_hall:0.000 - train/trust/cf_amb:0.000 - train/trust/hall_rate:0.000 - train/cost/search_per_query:1.044 - train/cost/nosearch_rate:0.172 - train/cost/oversearch_rate:0.159 - state_tokens/total:153290.000 - state_tokens/coverage:0.328 - actor/kl_loss:0.001 - actor/kl_coef:0.001 - actor/entropy_loss:0.979 - actor/pg_loss:0.082 - actor/pg_clipfrac:0.003 - actor/ppo_kl:-0.000 - actor/grad_norm:3.485 - mfu/actor:0.051 - actor/lr:0.000 - val/test_score/nq:0.100 - val/evaluated_count/nq:10.000 - val/test_score/triviaqa:0.222 - val/evaluated_count/triviaqa:9.000 - val/test_score/popqa:0.000 - val/evaluated_count/popqa:9.000 - val/test_score/hotpotqa:0.111 - val/evaluated_count/hotpotqa:9.000 - val/test_score/2wikimultihopqa:0.000 - val/evaluated_count/2wikimultihopqa:9.000 - val/test_score/musique:0.000 - val/evaluated_count/musique:9.000 - val/test_score/bamboogle:0.111 - val/evaluated_count/bamboogle:9.000 - val/perf/em:0.078 - val/trust/trust_at_correct:0.700 - val/trust/trust_at_searched_correct:0.700 - val/trust/trust_all_mean:0.055 - val/trust/cf_true:0.000 - val/trust/cf_hall:0.000 - val/trust/cf_amb:0.000 - val/trust/hall_rate:0.000 - val/cost/search_per_query:1.234 - val/cost/nosearch_rate:0.094 - val/cost/oversearch_rate:0.203 - critic/score/mean:0.222 - critic/score/max:1.599 - critic/score/min:-0.100 - critic/rewards/mean:0.222 - critic/rewards/max:1.599 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.073 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.073 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:729.881 - response_length/max:2705.000 - response_length/min:39.000 - response_length/clip_ratio:0.002 - prompt_length/mean:161.945 - prompt_length/max:238.000 - prompt_length/min:153.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.089 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.984 - env/number_of_valid_action:2.022 - env/ratio_of_valid_action:0.985 - env/actual_retrieval_calls/mean:1.030 - env/actual_retrieval_calls/total:659.000 - env/number_of_valid_search:1.038 - timing_s/gen:97.304 - timing_s/ref:44.902 - timing_s/adv:43.186 - timing_s/update_actor:192.776 - timing_s/testing:57.981 - timing_s/save_checkpoint:33.014 - timing_s/step:514.297 - timing_per_token_ms/ref:0.079 - timing_per_token_ms/gen:0.208 - timing_per_token_ms/adv:0.076 - timing_per_token_ms/update_actor:0.338"
+  ],
+  "errors": [],
+  "hourly": {
+    "from_step": 36,
+    "new_updates": 11,
+    "mean_reward": 0.32227272727272727,
+    "reward_range": [
+      0.272,
+      0.376
+    ],
+    "mean_change": 0.010972727272727245,
+    "console_precision_decimals": 3,
+    "validation_step": 5,
+    "fixed64_em": 0.078125,
+    "validation_unchanged": true
+  },
+  "all_key_metrics_finite": true
+}
