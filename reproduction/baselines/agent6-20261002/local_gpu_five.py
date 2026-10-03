@@ -21,6 +21,9 @@ assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==8
 for folder in ('runtime/tmp','runtime/ray','output','cache'):
     (run/folder).mkdir(parents=True,exist_ok=True)
 env=os.environ.copy()
+for proxy_key in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):
+    env.pop(proxy_key,None)
+env.update(NO_PROXY='127.0.0.1,localhost',no_proxy='127.0.0.1,localhost')
 env.update(PATH=f'{root}/env/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
     SEARCH_R1_REPO=str(root/'repo'),SEARCH_R1_ASSETS=str(root/'assets-root'),
     SEARCH_R1_BASELINE_OUTPUT=str(run/'output'),SEARCH_R1_BASELINE_RUN_ROOT=str(run/'runtime'),
