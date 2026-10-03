@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-025/actor/global_step_2",
+  "tensor_count": 435,
+  "initial_tensor_count": 434,
+  "verified_aliases": {
+    "lm_head.weight": "model.embed_tokens.weight"
+  },
+  "nonfinite": [],
+  "changed": [
+    {
+      "key": "model.layers.29.self_attn.q_proj.weight",
+      "max_abs_delta": 3.241002559661865e-07
+    },
+    {
+      "key": "model.layers.30.self_attn.q_proj.weight",
+      "max_abs_delta": 3.371387720108032e-07
+    },
+    {
+      "key": "model.layers.31.self_attn.q_proj.weight",
+      "max_abs_delta": 3.46451997756958e-07
+    },
+    {
+      "key": "model.layers.32.self_attn.q_proj.weight",
+      "max_abs_delta": 3.3248215913772583e-07
+    }
+  ],
+  "accepted": true
+}
