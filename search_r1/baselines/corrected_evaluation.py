@@ -118,7 +118,7 @@ def load_stage(s):
 
 class ZeroUpdateGuard:
  def __init__(self,trainer):
-  self.attempted_dispatches=0;self.guarded=[];self.groups=[];self.original_dispatches=[]
+  self.attempted_dispatches=0;self.guarded=[];self.groups=[];self.original_dispatches=[];self.runtime_guard=None
   for name,method in (('actor_rollout_wg','update_actor'),('critic_wg','update_critic')):
    group=getattr(trainer,name,None)
    if group is not None and callable(getattr(group,method,None)):
@@ -132,7 +132,9 @@ class ZeroUpdateGuard:
  def record(self):
   if self.attempted_dispatches:raise RuntimeError('An optimizer update was attempted')
   if any(getattr(group,method)!=self.reject for group,method in self.groups):raise RuntimeError('Actual update guard was replaced')
-  return dict(attempted_update_dispatches=0,guarded_dispatches=self.guarded,original_dispatches=self.original_dispatches,guard_source_sha256=digest(__file__))
+  result=dict(attempted_update_dispatches=0,guarded_dispatches=self.guarded,original_dispatches=self.original_dispatches,guard_source_sha256=digest(__file__))
+  if self.runtime_guard is not None:result['corrected_runtime']=self.runtime_guard.record()
+  return result
 
 def validate_arrays(arrays):
  required={'responses','prompts','attention_mask','info_mask'}
@@ -231,6 +233,9 @@ def replay(directory,expected_sha,input_manifest_path,input_manifest_sha256,toke
    all_rewards.append(reward)
   all_rows.extend(scores);cursor+=entry['count']
  audit=m['zero_update_guard']
+ if full_final:
+  from .corrected_runtime_capture import validate_completed_runtime
+  validate_completed_runtime(audit['corrected_runtime'],m['provenance'])
  if audit.get('guard_source_sha256')!=digest(__file__) or 'actor_rollout_wg.update_actor' not in audit.get('guarded_dispatches',[]) or not audit.get('original_dispatches'):raise ValueError('Actual dispatch guard/source audit missing')
  if cursor!=m['count'] or cursor!=len(input_manifest['records']) or m['zero_update_guard']['attempted_update_dispatches']!=0:raise ValueError('Incomplete/updated evaluation')
  result=aggregate_with_rewards(all_rows,all_rewards)
@@ -259,7 +264,9 @@ def start_capture(trainer):
  model=Path(trainer.config.actor_rollout_ref.model.path).resolve()
  if str(model)!=provenance['model_directory']:raise ValueError('Student model role/path mismatch')
  verify_model(provenance)
- guard=ZeroUpdateGuard(trainer)
+ from .corrected_runtime_capture import capture_workers,GenerationCallGuard
+ worker_audit=capture_workers(trainer,provenance)
+ guard=ZeroUpdateGuard(trainer);guard.runtime_guard=GenerationCallGuard(trainer.actor_rollout_wg,worker_audit)
  return ScoringViewWriter(settings.output_dir,manifest,trainer.tokenizer,provenance),guard
 
 
@@ -310,7 +317,7 @@ def verify_stage_prerequisites(provenance):
  if not prerequisite or not Path(prerequisite['path']).is_file() or digest(prerequisite['path'])!=prerequisite['sha256']:raise ValueError('Blocked: strict actual training3007/HF500 verifier is not supplied')
  subprocess.run(['git','-C',str(Path(__file__).resolve().parents[2]),'diff','--quiet','HEAD'],check=True)
  # The externally pinned tool must run existing complete actual500+HF checks, not accept a self-reported flag.
- result=subprocess.run([sys.executable,prerequisite['path'],'--receipt',provenance['training_hf_receipt_path'],'--receipt-sha256',provenance['training_hf_receipt_sha256'],'--model-role',provenance['model_role'],'--model-directory',provenance['model_directory']],check=True,capture_output=True,text=True)
+ result=subprocess.run([sys.executable,prerequisite['path'],'--receipt',provenance['training_hf_receipt_path'],'--receipt-sha256',provenance['training_hf_receipt_sha256'],'--model-role',provenance['model_role'],'--model-directory',provenance['model_directory'],'--stage',str(stage),'--stage-sha256',provenance['reviewed_stage_sha256']],check=True,capture_output=True,text=True)
  proof=loads(result.stdout)
  expected=dict(kind='strict_actual_training3007_hf500_prerequisites',training_commit='8e60976d364ab7d7ae51714415813c1359dafe9a',formal_job='3007',actual_outer_updates=500,final_questions=51713,receipt_sha256=provenance['training_hf_receipt_sha256'],model_role=provenance['model_role'],model_directory=provenance['model_directory'])
  if proof!=expected:raise ValueError('Strict external training/HF verifier did not return exact bound proof')
@@ -318,7 +325,7 @@ def verify_stage_prerequisites(provenance):
 
 def verify_generation_sources(provenance):
  # Worker-only GPU modules are byte-pinned, never imported into CPU driver/replay.
- needed={'search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py'}
+ needed={'search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py','search_r1/baselines/corrected_runtime_capture.py','verl/workers/fsdp_workers.py','verl/single_controller/base/worker.py','verl/single_controller/base/decorator.py','verl/single_controller/ray/base.py'}
  if not needed<=set(provenance['source_files']):raise ValueError('Incomplete native generation/dataset/runtime source pins')
 
 if __name__=='__main__':

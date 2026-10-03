@@ -52,6 +52,7 @@ def main(config):
     if enabled(config):
         import os
         audit_env['OPSD_CORRECTED_EVAL_STAGE_SHA256'] = os.environ['OPSD_CORRECTED_EVAL_STAGE_SHA256']
+        audit_env['SLURM_JOB_ID'] = os.environ['SLURM_JOB_ID']
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
     result = ray.get(task.remote(config))
     if config.baselines.holdout_eval_only:

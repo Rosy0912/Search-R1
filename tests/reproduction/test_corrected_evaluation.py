@@ -15,7 +15,7 @@ from search_r1.baselines.evaluation import batch_answer_metrics
 from search_r1.baselines import corrected_evaluation as ce
 
 STRICT_STAGE_CHECK=ce.verify_stage_prerequisites
-SOURCE_FILES=('search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py')
+SOURCE_FILES=('search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py','search_r1/baselines/corrected_runtime_capture.py','verl/workers/fsdp_workers.py','verl/single_controller/base/worker.py','verl/single_controller/base/decorator.py','verl/single_controller/ray/base.py')
 
 @pytest.fixture(autouse=True)
 def cpu_raw_view_scope(monkeypatch):
