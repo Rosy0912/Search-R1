@@ -12,8 +12,8 @@ class Signals(unittest.TestCase):
         r='<answer>Paris</answer>'
         self.assertIsNone(contexts('',r,[[0,8],[10,len(r)]]))
     def test_commit_state_is_last_answer_token_not_closing_tag(self):
-        r='<answer>Paris</answer> extra'
-        c=contexts('P',r,[[0,len(r)]]);self.assertEqual(c['answer_state'],'P<answer>Paris');self.assertEqual(c['commit'],'P<answer>')
+        r='<answer>Paris</answer>'
+        c=contexts('P',r,[[0,len(r)]]);self.assertEqual(c['answer_state'],'P<answer>Paris');self.assertEqual(c['commit'],'P<answer>');self.assertIsNone(contexts('P',r+' extra',[[0,len(r+' extra')]]))
     def test_wrong_missing_or_nonfinite_probe_reply_is_rejected(self):
         items=[{'id':'0'}]
         for reply in [{'version':'v','results':[]},{'version':'v','results':[{'id':'1','version':'v','flip':.2,'boundary':.3}]},{'version':'v','results':[{'id':'0','version':'v','flip':float('nan'),'boundary':.3}]}]:

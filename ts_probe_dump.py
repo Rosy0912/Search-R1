@@ -77,6 +77,7 @@ def retrieve_batch(queries, topk=3):
 
 
 from verl.utils.reward_score.qa_em import normalize_answer, em_check
+from search_r1.qa_protocol import parse_model_action
 
 
 def normalize(s: str) -> str:
@@ -98,9 +99,30 @@ def contains_gold(pred, golds) -> int:
 QUESTION_RE = re.compile(r"Question:\s*(.*?)\s*$", re.DOTALL)
 
 
-def extract_answer(text: str) -> str:
-    m = ANSWER_RE.search(text)
-    return m.group(1).strip() if m else ""
+def counterfactual_answer(text: str) -> str:
+    """The deletion prompt already prefills <answer>; only its payload is generated.
+
+    Preserve the source's forced-close convention for budget-truncated output,
+    while rejecting nested/search actions instead of extracting an inner answer.
+    """
+    action=parse_model_action('<answer>'+text)
+    if action is None and '</answer>' not in text:
+        action=parse_model_action('<answer>'+text+'</answer>')
+    return action[1] if action is not None and action[0]=='answer' else ''
+
+
+def counterfactual_labels(outputs, original_answers):
+    """Source operational flip: losing a usable answer also counts as change.
+
+    Keep invalid interventions visible; this is a proxy, not proof of causal
+    evidence use or a label restricted to two valid changed answers.
+    """
+    if len(outputs) != len(original_answers):
+        raise ValueError('Counterfactual answer alignment mismatch')
+    parsed = [counterfactual_answer(text) for text in outputs]
+    valid = [bool(answer) for answer in parsed]
+    return [int(normalize(answer) != normalize(original))
+            for answer, original in zip(parsed, original_answers)], valid
 
 
 def gen_batch(llm, prompts, max_tokens, sample, stop):
@@ -127,15 +149,15 @@ def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ran
         pending = []  # (seq_index, query)
         for k, i in enumerate(idx):
             t = texts[k]
-            if "</search>" in t and turn < max_turns:
-                before = t[:t.index("</search>") + len("</search>")]
-                begin=len(gen[i]);gen[i] += before
-                model_ranges[i].append([begin,len(gen[i])])
-                sm = SEARCH_RE.search(before)
-                pending.append((i, sm.group(1).strip() if sm else ""))
+            action = parse_model_action(t)
+            begin = len(gen[i]); gen[i] += t
+            model_ranges[i].append([begin, len(gen[i])])
+            if action is not None and action[0] == 'search' and turn < max_turns:
+                pending.append((i, action[1]))
             else:
-                begin=len(gen[i]);gen[i] += t
-                model_ranges[i].append([begin,len(gen[i])])
+                # Calibration terminates malformed actions; unlike the trainer,
+                # it does not supply a correction observation for another turn.
+                # never retrieve an empty query from a stray closing tag.
                 done[i] = True
         if pending:
             docs = retrieve_batch([q for _, q in pending])
@@ -307,11 +329,10 @@ def main():
     # ---- flippability re-decode (batched, greedy), two variants ----
     def flip_label(ctx_list):
         fa = gen_batch(llm, ctx_list, 32, False, ["</answer>"])
-        return fa, [int(normalize(extract_answer(fa[k] + "</answer>") or
-                                  fa[k].split("</answer>")[0]) != normalize(answers[k]))
-                    for k in range(len(valid))]
-    flip_ans, flips = flip_label(flip_ctx)
-    _, flips2 = flip_label(flip2_ctx)
+        labels, legal = counterfactual_labels(fa, answers)
+        return fa, labels, legal
+    flip_ans, flips, cf_valid = flip_label(flip_ctx)
+    _, flips2, cf_valid2 = flip_label(flip2_ctx)
     print(f"[dump] flippability done ({time.time()-t0:.0f}s) flip={np.mean(flips):.3f} "
           f"flip_strict={np.mean(flips2):.3f}", flush=True)
 
@@ -348,11 +369,13 @@ def main():
         y_em.append(ems[k]); y_flip.append(flips[k]); y_flip2.append(flips2[k])
         q_cb_r.append(q_cb[qi]); gids.append(qi); dss.append(args.tag)
         recs.append({"qi": qi, "em": ems[k], "flip": flips[k], "flip2": flips2[k],
-                     "cb": q_cb[qi], "answer": answers[k], "flip_answer": flip_ans[k][:60]})
+                     "cb": q_cb[qi], "answer": answers[k], "flip_answer": flip_ans[k][:60], "counterfactual_valid": cf_valid[k], "counterfactual_strict_valid": cf_valid2[k]})
 
     out_npz = os.path.join(args.out, f"{args.tag}_{args.offset}.npz")
     save = {"y_em": np.array(y_em, np.int8), "y_flip": np.array(y_flip, np.int8),
             "y_flip2": np.array(y_flip2, np.int8),
+            "counterfactual_valid": np.array(cf_valid, np.bool_),
+            "counterfactual_strict_valid": np.array(cf_valid2, np.bool_),
             "q_cb": np.array(q_cb_r, np.int8), "gid": np.array(gids, np.int32),
             "question_id": np.array([question_ids[flat_qi[j]] for j in valid]),
             "boundary_question_id": np.array(question_ids),
@@ -372,7 +395,11 @@ def main():
            "commit_position":"Xa","model_authored_answer_spans":True,"group_size":args.G,
            "question_ids":question_ids,"boundary_class_counts":np.bincount(q_cb,minlength=2).tolist(),
            "reliance_class_counts":np.bincount(y_flip,minlength=2).tolist(),
+           "counterfactual_invalid_count":sum(not v for v in cf_valid),
+           "counterfactual_strict_invalid_count":sum(not v for v in cf_valid2),
+           "invalid_counterfactual_policy":"no_usable_answer_counts_as_flip_source_operational_proxy",
            "calibration_protocol":{"top_p":1.0,"rollout_max_new":256,"counterfactual_max_new":32,"closed_book_max_new":24},
+           "malformed_calibration_action_policy":"terminate_without_retrieval_or_correction_turn",
            "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
     with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "

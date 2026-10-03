@@ -1,0 +1,24 @@
+{
+  "target": "baai-a800",
+  "kind": "CPU protocol regression; not GPU/probe/GRPO acceptance",
+  "upstream_integrated_head": "9510002fe7f59b215acb295cc64b4874ee512de0",
+  "r1_branch_head": "27d43e2",
+  "isolated_stage": "/data/search-g1/tmp/protocol-review-f98bc5d39a9a42a294798ea40d152c0c",
+  "suites": {
+    "terminal_answer_protocol": {
+      "run": 6,
+      "skipped": 1,
+      "reason": "BAPO module absent on this branch"
+    },
+    "g1_signals": 5,
+    "g1_reward_formula": 2,
+    "calibration_contract": 3,
+    "counterfactual_protocol_final": 5,
+    "actual_g1_reward_manager": 2
+  },
+  "actual_r1_DataProto_reward_checks": 7,
+  "cpu_result": "passed",
+  "independent_review": "g1_spec_review: no remaining concrete startup blocker after exposing invalid-CF labels and terminating malformed calibration searches",
+  "label_policy": "source operational proxy; no usable counterfactual answer counts as flip, validity and invalid counts retained",
+  "runtime_note": "No R1 live source changed. Old G1 CPU-only waiter stopped before edits; no round artifacts or process-ledger existed. G1 training not yet started."
+}

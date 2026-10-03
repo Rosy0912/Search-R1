@@ -31,3 +31,24 @@ The public model downloader writes logs/assets-status.json. Input admission cons
 `run_pipeline.py --source-commit COMMIT --wait-for-r1` verifies live bound R1 handles while waiting; it takes no GPU resources until R1 actual101–300, saved hashes and owned-runtime terminal state are verified and authorized GPUs are idle. Source rebinding records prior prelaunch fingerprints before any G1 GPU work. It then runs real four-card admission, FAISS5–6, genuine dual-head calibration0, frozen probe HTTP/release/resume admission and GRPO1–300 with final proof. Before each scheduled refit, the old probe encoder is explicitly unloaded and its remaining CUDA allocation must be below256MiB; the unchanged-round watcher does not silently reload it. The new calibrated version loads after publication. The initial resource marker is a two-second sampled occupancy check, not proof of every instantaneous peak.
 
 Each component has a durable PID/start-ticks/session/UID ledger. Ray process-title changes are audited, SIGTERM/SIGINT requests are deferred until spawn registration is complete, and completed sessions are not scanned again using stale IDs. `--cleanup-owned` recovers the same-run ledger solely to clean up; it cannot start duplicate jobs. Final status requires cleanup and GPU release checks; unfamiliar occupants are reported without being stopped. Five actual Linux process/signal tests, three evaluator-release control tests and two R1 handoff tests passed. Actual GPU admission/probes/five GRPO updates remain pending until the deployed pipeline executes them.
+
+## Terminal-answer and intervention protocol audit
+
+The shared terminal-action parser rejects nested answer tags in searches, trailing
+text after an answer and reuse of an earlier answer after another model action.
+Calibration now uses the same parser before submitting a search: malformed actions
+terminate without an empty-query retrieval or a later rescued answer. These changes
+apply to the new G1 run; historical live R1 metrics were not recomputed.
+
+Evidence deletion preserves the source's operational normalized-answer-change
+label: failure to produce a usable counterfactual answer also counts as a flip.
+The prefilled answer prompt and the source's budget forced-close convention remain.
+NPZ and per-trajectory records include counterfactual validity; the calibration proof
+reports invalid counts for both deletion variants and this policy explicitly. These
+are proxy labels, not evidence that two valid answers differ or that reasoning
+causally depended on evidence. No malformed nested answer is extracted as a usable
+counterfactual answer. Closed-book labels remain no-retrieval raw-answer exact match.
+
+Target CPU tests exercise actual DataProto reward managers for both branches and
+G1 shaped rewards, plus the actual calibration label and rollout helper bodies.
+They do not establish probe accuracy, GPU admission or GRPO acceptance.
