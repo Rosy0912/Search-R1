@@ -50,6 +50,9 @@ def accept_five_updates(checkpoint, records):
     from safetensors import safe_open
     base=Path(os.environ['SEARCH_G1_BASE'])
     run=json.loads((base/'logs/run-manifest.json').read_text())
+    from reproduction.a800.prepare_run import digest
+    for name in ('validation-64.parquet','audit.json'):
+        assert digest(base/'data'/name)==run['input_sha256'][name], 'Validation inputs changed since admission'
     proof=json.loads((Path(checkpoint)/'complete.json').read_text())
     assert proof['run_id']==run['run_id'] and proof['step']==5
     assert [r['step'] for r in records]==[1,2,3,4,5], 'Missing actual GRPO update'
@@ -72,6 +75,6 @@ def accept_five_updates(checkpoint, records):
     result=dict(run_id=run['run_id'],accepted=True,actual_updates=records,validation_counts=counts,
                 changed_parameters=changed,checkpoint=proof,checked_unix=time.time())
     target=base/'logs/five-updates-acceptance.json';tmp=target.with_suffix('.json.tmp')
-    tmp.write_text(json.dumps(result,indent=2));os.replace(tmp,target)
+    tmp.write_text(json.dumps(result,indent=2,default=lambda x:x.item()));os.replace(tmp,target)
     print('SEARCH_G1_FIVE_UPDATES_ACCEPTED='+run['run_id'],flush=True)
     return result

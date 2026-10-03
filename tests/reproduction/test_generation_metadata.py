@@ -80,7 +80,11 @@ class MetadataRegression(unittest.TestCase):
         # Deterministic search keeps all trajectories active into final rollout.
         manager._postprocess_responses = lambda responses: (
             responses, ['<search>France</search>'] * responses.shape[0])
-        manager.batch_search = lambda queries: ['Paris'] * len(queries)
+        manager.actual_retrieval_batches = []
+        def search(queries):
+            manager.actual_retrieval_batches.append(list(queries))
+            return ['Paris'] * len(queries)
+        manager.batch_search = search
         return manager, worker
 
     def batch(self, size, meta):
@@ -117,29 +121,27 @@ class MetadataRegression(unittest.TestCase):
                 if size == 3:
                     self.assertNotIn('worker_bookkeeping', batch.meta_info)
 
-    def test_paper_action_budget_has_no_extra_fifth_generation(self):
+    def test_g1_source_budget_retains_four_search_rounds_and_final_answer(self):
         manager, worker = self.manager(2)
         manager.config.max_turns = 4
-        manager.config.force_final_answer = False
-        batch = self.batch(3, {'do_sample': True})
-        output = manager.run_llm_loop(batch, batch.batch['input_ids'])
-        self.assertEqual(len(worker.calls), 4)
-        self.assertEqual(output.meta_info['active_mask'], [True, True, True])
-        self.assertEqual(output.meta_info['valid_search_stats'], [4, 4, 4])
-        self.assertEqual(output.meta_info['turns_stats'], [4, 4, 4])
-
-    def test_legacy_default_retains_extra_final_generation(self):
-        manager, worker = self.manager(2)
-        manager.config.max_turns = 4
-        self.assertTrue(manager.config.force_final_answer)
         batch = self.batch(3, {'do_sample': True})
         output = manager.run_llm_loop(batch, batch.batch['input_ids'])
         self.assertEqual(len(worker.calls), 5)
         self.assertEqual(output.meta_info['turns_stats'], [5, 5, 5])
+        self.assertEqual(len(manager.actual_retrieval_batches), 4)
+
+    def test_final_search_tag_does_not_execute_an_extra_retrieval(self):
+        manager, worker = self.manager(2)
+        batch = self.batch(3, {'do_sample': True})
+        output = manager.run_llm_loop(batch, batch.batch['input_ids'])
+        self.assertEqual(len(worker.calls), 2)
+        self.assertEqual(len(manager.actual_retrieval_batches), 1)
+        # Existing source counter includes emitted final-turn search tags.
+        self.assertEqual(output.meta_info['valid_search_stats'], [2, 2, 2])
+        self.assertEqual(output.meta_info['actual_retrieval_stats'], [1, 1, 1])
 
     def test_nine_validation_samples_keep_greedy_flags_in_eight_plus_one_tail(self):
         manager, worker = self.manager(8)
-        manager.config.force_final_answer = False
         batch = self.batch(9, {'do_sample': False, 'validate': True,
                                'recompute_log_prob': False})
         sizes = []
@@ -149,7 +151,7 @@ class MetadataRegression(unittest.TestCase):
             output = manager.run_llm_loop(part, part.batch['input_ids'])
             sizes.append(output.batch['responses'].shape[0])
         self.assertEqual(sizes, [8, 1])
-        self.assertEqual([size for size, meta in worker.calls], [8, 8])
+        self.assertEqual([size for size, meta in worker.calls], [8, 8, 8, 8])
         for size, meta in worker.calls:
             self.assertFalse(meta['do_sample'])
             self.assertTrue(meta['validate'])

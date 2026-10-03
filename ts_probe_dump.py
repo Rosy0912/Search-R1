@@ -111,11 +111,12 @@ def gen_batch(llm, prompts, max_tokens, sample, stop):
     return [o.outputs[0].text for o in outs]
 
 
-def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ranges=False, tokenizer=None):
+def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ranges=False, tokenizer=None, return_counts=False):
     """Multi-turn search generation over a flat list of prompts. Returns generated texts."""
     N = len(prompts0)
     gen = [""] * N
     model_ranges = [[] for _ in range(N)]
+    actual_calls = [0] * N
     done = [False] * N
     for turn in range(max_turns + 1):
         idx = [i for i in range(N) if not done[i]]
@@ -143,6 +144,9 @@ def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ran
                 if tokenizer is not None:
                     observation=tokenizer.decode(tokenizer.encode(observation,add_special_tokens=False)[:500])
                 gen[i] += observation
+                actual_calls[i] += 1
+    if return_counts:
+        return gen, model_ranges, actual_calls
     return (gen, model_ranges) if return_ranges else gen
 
 
@@ -268,15 +272,15 @@ def main():
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens, generated_ranges = rollouts_batched(llm, flat_prompts, sample=(args.G > 1),
-                            max_turns=args.max_turns, return_ranges=True, tokenizer=tok)
+    gens, generated_ranges, actual_calls = rollouts_batched(llm, flat_prompts, sample=(args.G > 1),
+                            max_turns=args.max_turns, return_ranges=True, tokenizer=tok, return_counts=True)
     print(f"[dump] rollouts done ({time.time()-t0:.0f}s)", flush=True)
 
     # build commit/answer-last contexts + 2 flippability contexts (valid rollouts only)
     valid, commit_ctx, ans_ctx, flip_ctx, flip2_ctx, answers, ems = [], [], [], [], [], [], []
     for j, g in enumerate(gens):
         ctx = contexts(prompts[flat_qi[j]], g, generated_ranges[j])
-        if ctx is None or model_search_count(g, generated_ranges[j]) == 0:
+        if ctx is None or actual_calls[j] == 0:
             continue
         qi = flat_qi[j]
         ans = ctx['answer']
@@ -308,13 +312,19 @@ def main():
     print(f"[dump] flippability done ({time.time()-t0:.0f}s) flip={np.mean(flips):.3f} "
           f"flip_strict={np.mean(flips2):.3f}", flush=True)
 
+    # Measure own allocator release; shared-service peaks require separate GPU samples.
+    generation_allocated_before_release = torch.cuda.memory_allocated()
     # Dispose of generation engine before HF extraction: never overlap both caches.
     try:
         llm.llm_engine.model_executor.shutdown()
     except AttributeError:
         pass
     del llm
-    gc.collect(); torch.cuda.empty_cache()
+    gc.collect(); torch.cuda.empty_cache(); torch.cuda.synchronize()
+    generation_allocated_after_release = torch.cuda.memory_allocated()
+    assert generation_allocated_after_release < 256*1024*1024, 'Generation allocations remain before HF extraction'
+    print('GENERATION_ALLOCATION_RELEASE=' + json.dumps(dict(before=generation_allocated_before_release,
+          after=generation_allocated_after_release)), flush=True)
     hf = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=DTYPE, device_map="cuda",
              low_cpu_mem_usage=True, attn_implementation="sdpa").eval()
     # ---- hidden states (HF single forward, batched) ----
@@ -354,7 +364,7 @@ def main():
     with open(os.path.join(args.out, f"{args.tag}_{args.offset}.jsonl"), "w") as f:
         for r in recs:
             f.write(json.dumps(r) + "\n")
-    proof={"model":args.model,"question_count":nq,"searched_valid_trajectory_count":len(valid),
+    proof={"actual_retrieval_counts":actual_calls,"authored_search_tag_counts":[model_search_count(g,spans) for g,spans in zip(gens,generated_ranges)],"generation_allocated_before_release":generation_allocated_before_release,"generation_allocated_after_release":generation_allocated_after_release,"model":args.model,"question_count":nq,"searched_valid_trajectory_count":len(valid),
            "closed_book_label":"exact_match_no_retrieval","reliance_label":"normalized_answer_change_after_evidence_deletion",
            "commit_position":"Xa","model_authored_answer_spans":True,"group_size":args.G,
            "question_ids":question_ids,"boundary_class_counts":np.bincount(q_cb,minlength=2).tolist(),

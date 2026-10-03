@@ -16,6 +16,8 @@ for _k in list(os.environ.keys()):
         del os.environ[_k]
 
 import argparse, json, re, threading, time
+from pathlib import Path
+from reproduction.a800.prepare_run import digest
 from typing import List
 import numpy as np
 import torch
@@ -56,6 +58,10 @@ def _apply_unlocked(manifest_path, force=False):
     if (not force) and m.get("round", -1) == STATE["round"]:
         return
     enc = m["encoder"]
+    for name,expected in m['encoder_sha256'].items():
+        assert digest(Path(enc)/name)==expected, 'Frozen encoder hash mismatch'
+    for name,path in [('commit_probe.pkl',m['commit']),('boundary_probe.pkl',m['boundary'])]:
+        assert digest(Path(path))==m['head_sha256'][name], 'Readout hash mismatch'
     reload_model = force or (enc != STATE["encoder"])
     print(f"[probe] reloading round={m.get('round')} encoder={enc} "
           f"(model_reload={reload_model})", flush=True)
