@@ -56,3 +56,7 @@ Disk source hashes recorded before launch are not proof of loaded module identit
 Credentials, private checkpoint data and complete raw training logs are excluded
 from Git publication. Live state must be read from the target supervisor, segment
 log and acceptance files; do not restart the H20 job or duplicate the A800 trainer.
+
+### Rejected checkpoint300 cleanup
+
+`stop_failed_boundary.py` waits for the original boundary monitor to suspend the bound coordinator and reject an actually nonfinite saved checkpoint. It preserves complete fresh serialized keys/shapes, file hashes and nonfinite tensor names with `accepted=false` before identity-bound cleanup of this private session. Pending/failed cleanup can resume from the preserved ledger; PID/start ticks/SID/UID/command changes cause safe rejection. Both terminal states are idempotent. File and directory fsync protect the failed snapshot evidence. It never treats NaN metrics alone as authority to stop early, never restarts the trainer, and never declares rejected weights usable for resume. Five target CPU regressions and a real SafeTensor nonfinite/finite distinction check passed before deployment.
