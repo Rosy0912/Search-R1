@@ -58,6 +58,8 @@ def test_cuda_context_offloads_on_exception_and_events_are_bounded():
     teacher.device, teacher.execution_device = torch.device('cpu'), torch.device('cuda:0')
     moves = []
     teacher.model = SimpleNamespace(to=lambda device: moves.append(str(device)))
+    teacher._validate_execution = lambda device: None
+    teacher.cuda_update_entries = 0
     teacher.transfer_wall_seconds = teacher.cuda_seconds = teacher.wall_seconds = teacher.cpu_seconds = 0.
     teacher._cuda_events = []
     class Event:
@@ -127,6 +129,8 @@ def test_cuda_timing_failure_still_attempts_offload_without_swallowing_error():
     teacher.device, teacher.execution_device = torch.device('cpu'), torch.device('cuda:0')
     moves = []
     teacher.model = SimpleNamespace(to=lambda device: moves.append(str(device)))
+    teacher._validate_execution = lambda device: None
+    teacher.cuda_update_entries = 0
     teacher.transfer_wall_seconds = 0.
     with patch('torch.cuda.synchronize'), \
          patch.object(teacher, '_flush_cuda_events', side_effect=RuntimeError('event timing failed')):
@@ -140,3 +144,71 @@ def test_cuda_timing_failure_still_attempts_offload_without_swallowing_error():
     assert moves == ['cuda:0', 'cpu']
     assert teacher.device.type == 'cpu'
     assert teacher.transfer_wall_seconds > 0
+
+
+def test_actual_teacher_precision_and_attention_audit_rejects_drift():
+    fixtures.TinyModels.setUpClass()
+    try:
+        teacher = FrozenTeacher(fixtures.TinyModels.tmp.name, fixtures.TinyModels.tokenizer)
+        student = torch.nn.Linear(2, 2)
+        optimizer = torch.optim.AdamW(student.parameters())
+        metrics = teacher.cost_metrics()
+        assert metrics['teacher/storage_is_cpu_per_rank'] == 1
+        assert metrics['teacher/all_parameter_dtype_is_fp32_per_rank'] == 1
+        assert metrics['teacher/attention_is_eager_per_rank'] == 1
+        assert metrics['teacher/cuda_update_entries_cumulative_per_rank'] == 0
+        teacher.model.to(torch.bfloat16)
+        assert teacher.cost_metrics()['teacher/all_parameter_dtype_is_fp32_per_rank'] == 0
+        try:
+            teacher.audit_metrics(optimizer)
+        except RuntimeError as error:
+            assert 'FP32' in str(error)
+        else:
+            raise AssertionError('BF16 teacher was accepted')
+        teacher.model.float()
+        teacher.model.config._attn_implementation = 'sdpa'
+        assert teacher.cost_metrics()['teacher/attention_is_eager_per_rank'] == 0
+        try:
+            teacher.audit_metrics(optimizer)
+        except RuntimeError as error:
+            assert 'eager' in str(error)
+        else:
+            raise AssertionError('SDPA teacher was accepted')
+    finally:
+        fixtures.TinyModels.tearDownClass()
+
+
+def test_actual_teacher_device_audit_rejects_false_cpu_storage():
+    fixtures.TinyModels.setUpClass()
+    try:
+        teacher = FrozenTeacher(fixtures.TinyModels.tmp.name, fixtures.TinyModels.tokenizer)
+        teacher.model.to('meta')  # Real parameter device mismatch without CUDA.
+        assert teacher.cost_metrics()['teacher/storage_is_cpu_per_rank'] == 0
+        try:
+            with teacher.on_device():
+                raise AssertionError('CPU storage claim was accepted')
+        except RuntimeError as error:
+            assert 'actual device' in str(error)
+    finally:
+        fixtures.TinyModels.tearDownClass()
+
+
+def test_cuda_context_rejects_unsuccessful_move_before_counting_entry():
+    fixtures.TinyModels.setUpClass()
+    try:
+        teacher = FrozenTeacher(fixtures.TinyModels.tmp.name, fixtures.TinyModels.tokenizer)
+        teacher.execution_device = torch.device('cuda:0')
+        # Simulate a no-op transfer while leaving real FP32 parameters on CPU.
+        with patch.object(teacher.model, 'to', return_value=teacher.model) as move, \
+             patch('torch.cuda.synchronize'):
+            try:
+                with teacher.on_device():
+                    raise AssertionError('No-op CUDA transfer was accepted')
+            except RuntimeError as error:
+                assert 'actual device' in str(error)
+            assert move.call_count == 2
+        assert teacher.cuda_update_entries == 0
+        assert teacher.device.type == 'cpu'
+        assert teacher.cost_metrics()['teacher/storage_is_cpu_per_rank'] == 1
+    finally:
+        fixtures.TinyModels.tearDownClass()

@@ -140,6 +140,7 @@ class FrozenTeacher:
         # Keep the complete frozen teacher off GPU during vLLM rollouts.
         self.device = torch.device('cpu')
         self.transfer_wall_seconds = 0.
+        self.cuda_update_entries = 0
         self.cuda_seconds = 0.
         self._cuda_events = []
         if self.execution_device.type == 'cuda':
@@ -157,10 +158,26 @@ class FrozenTeacher:
         self.load_wall_seconds = time.perf_counter() - wall_start
         self.load_cpu_seconds = time.process_time() - cpu_start
 
+    def _validate_execution(self, device):
+        """Inspect actual parameters/configuration, rather than placement intent."""
+        expected = torch.device(device)
+        if expected.type == 'cuda' and expected.index is None:
+            expected = torch.device('cuda', torch.cuda.current_device())
+        parameters = list(self.model.parameters())
+        if not parameters or any(p.dtype != torch.float32 for p in parameters):
+            raise RuntimeError('Frozen teacher parameters must remain FP32')
+        if getattr(self.model.config, '_attn_implementation', None) != 'eager':
+            raise RuntimeError('Frozen teacher attention must remain eager')
+        if any(p.device != expected for p in parameters) or any(b.device != expected for b in self.model.buffers()):
+            raise RuntimeError('Frozen teacher actual device differs from execution/storage device')
+        if expected.type == 'cuda' and (torch.backends.cuda.matmul.allow_tf32 or torch.backends.cudnn.allow_tf32):
+            raise RuntimeError('Frozen FP32 CUDA teacher requires TF32 disabled')
+
     @contextmanager
     def on_device(self):
         """Move once per update and restore CPU storage even after an exception."""
         if self.execution_device.type == 'cpu':
+            self._validate_execution('cpu')
             yield
             return
         if self.device.type != 'cpu':
@@ -170,6 +187,8 @@ class FrozenTeacher:
             self.model.to(self.execution_device)
             torch.cuda.synchronize(self.execution_device)
             self.device = self.execution_device
+            self._validate_execution(self.device)
+            self.cuda_update_entries += 1
             self.transfer_wall_seconds += time.perf_counter() - wall_start
             yield
         finally:
@@ -183,6 +202,7 @@ class FrozenTeacher:
                     self.model.to('cpu')
                     self.device = torch.device('cpu')
                     torch.cuda.synchronize(self.execution_device)
+                    self._validate_execution('cpu')
                 finally:
                     self.transfer_wall_seconds += time.perf_counter() - wall_start
 
@@ -225,11 +245,17 @@ class FrozenTeacher:
         self._flush_cuda_events()
         # ru_maxrss includes student/optimizer/worker overhead, not isolated teacher RAM.
         peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        parameters = list(self.model.parameters())
         return {'teacher/cpu_seconds_cumulative_per_rank': self.cpu_seconds,
                 'teacher/wall_seconds_cumulative_per_rank': self.wall_seconds,
                 'teacher/host_wall_seconds_cumulative_per_rank': self.wall_seconds,
                 'teacher/cuda_stream_seconds_cumulative_per_rank': self.cuda_seconds,
                 'teacher/update_device_is_cuda_per_rank': int(self.execution_device.type == 'cuda'),
+                'teacher/storage_is_cpu_per_rank': int(bool(parameters) and all(p.device.type == 'cpu' for p in parameters)
+                                                       and all(b.device.type == 'cpu' for b in self.model.buffers())),
+                'teacher/all_parameter_dtype_is_fp32_per_rank': int(bool(parameters) and all(p.dtype == torch.float32 for p in parameters)),
+                'teacher/attention_is_eager_per_rank': int(getattr(self.model.config, '_attn_implementation', None) == 'eager'),
+                'teacher/cuda_update_entries_cumulative_per_rank': self.cuda_update_entries,
                 'teacher/transfer_wall_seconds_cumulative_per_rank': self.transfer_wall_seconds,
                 'teacher/load_cpu_seconds_per_rank': self.load_cpu_seconds,
                 'teacher/load_wall_seconds_per_rank': self.load_wall_seconds,
@@ -237,6 +263,7 @@ class FrozenTeacher:
                 'teacher_worker/peak_rss_bytes_per_rank': peak if sys.platform == 'darwin' else peak * 1024}
 
     def audit_metrics(self, student_optimizer):
+        self._validate_execution(self.device)
         parameters = list(self.model.parameters())
         teacher_ids = {id(p) for p in parameters}
         trainable = sum(p.numel() for p in parameters if p.requires_grad)
