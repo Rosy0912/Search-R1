@@ -12,7 +12,7 @@ mem_match=re.search(r'MinMemoryNode=(\d+)([KMGTP]?)',allocation)
 assert mem_match, 'Cannot verify actual Slurm node memory allocation'
 memory_mib=int(mem_match.group(1))*{'':1,'K':1/1024,'M':1,'G':1024,'T':1024**2,'P':1024**3}[mem_match.group(2)]
 assert memory_mib >= 192000
-run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-k')
+run_id=os.environ.get('COSEARCH_RUN_ID','cosearch-local-gpu-five-20261003-l')
 assert re.fullmatch(r'cosearch-local-gpu-five-[0-9]{8}-[a-z][a-z0-9-]*',run_id)
 run=root/'runs'/run_id
 run.mkdir(parents=True,exist_ok=False)
@@ -70,7 +70,7 @@ try:
         except OSError: pass
         if time.monotonic()-started>1200: raise TimeoutError('Local retriever startup timeout')
         time.sleep(5)
-    probe=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/native_parallel_ranker_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
+    probe=launch([python,str(root/'repo/reproduction/baselines/agent6-20261002/native_long_context_probe.py')],'native-ranker-probe.log',dict(env,COSEARCH_PROBE_RUN=str(run)))
     while probe.poll() is None:
         if service.poll() is not None: raise RuntimeError('Retriever failed during GPU ranker probe')
         time.sleep(5)
@@ -105,7 +105,7 @@ try:
         'baselines.ranker.attn_implementation=sdpa','baselines.ranker.cpu_threads=32',
         'baselines.ranker.response_only_logits=true','baselines.ranker.phase_gpu=true',
         'baselines.ranker.reuse_generation_logits=true','baselines.ranker.inference_batch_size=16',
-        'baselines.ranker.phase_gpu_devices=8','baselines.ranker.inference_parallel=true','baselines.ranker.training_parallel=true',
+        'baselines.ranker.full_context_extrapolation=true','baselines.ranker.phase_gpu_devices=8','baselines.ranker.inference_parallel=true','baselines.ranker.training_parallel=true',
         'baselines.ranker.inference_token_budget=131072','baselines.ranker.gradient_checkpointing=true',
         'baselines.local_runtime_only=true','baselines.local_runtime_host=h100-16','trainer.total_training_steps=6',
         'data.val_data_num=64','data.val_batch_size=64','trainer.val_before_train=false','trainer.smoke_only=true','trainer.test_freq=5',

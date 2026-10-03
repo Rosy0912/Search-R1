@@ -23,3 +23,15 @@ def test_exact_context_boundary_does_not_change_inputs_or_create_failure(tmp_pat
     encoded=[list(range(28))];docs=[[dict(document=dict(contents='full'))]*50]
     check_candidate_context(encoded,4,32,['q'],['query'],docs)
     assert encoded==[list(range(28))] and not (tmp_path/'ranker-context-failures').exists()
+
+
+def test_explicit_full_context_retains_all_inputs(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setenv('SEARCH_R1_BASELINE_OUTPUT', str(tmp_path))
+    ids = list(range(40))
+    docs = [{'document': {'contents': 'complete passage '+str(i)}} for i in range(50)]
+    check_candidate_context([ids], 8, 32, ['question'], ['query'], [docs], True)
+    record = json.loads(next((tmp_path/'ranker-context-failures').glob('*.json')).read_text())
+    assert record['cases'][0]['input_ids'] == ids
+    assert record['cases'][0]['documents'] == docs
+    assert len(ids) == 40 and len(docs) == 50

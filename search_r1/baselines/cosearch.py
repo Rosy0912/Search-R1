@@ -192,11 +192,12 @@ class RankerSequenceLoss(torch.nn.Module):
         return -(objective * mask).sum(-1) / response_lengths
 
 
-def check_candidate_context(encoded, max_new_tokens, model_limit, questions, queries, documents):
-    """Fail without truncation, preserving the actual oversized inputs for review."""
+def check_candidate_context(encoded, max_new_tokens, model_limit, questions, queries, documents, full_context_extrapolation=False):
+    """Preserve oversized inputs; default strict, approved static-RoPE extrapolation optional."""
     bad=[i for i,ids in enumerate(encoded) if len(ids)+max_new_tokens>model_limit]
     if not bad:return
-    record=dict(model_context_limit=model_limit,max_new_tokens=max_new_tokens,
+    record=dict(full_context_extrapolation=bool(full_context_extrapolation),
+                model_context_limit=model_limit,max_new_tokens=max_new_tokens,
                 candidate_counts=[len(documents[i]) for i in bad],
                 prompt_tokens=[len(encoded[i]) for i in bad],rows=bad,
                 cases=[dict(row=i,question=questions[i],query=queries[i],
@@ -211,7 +212,9 @@ def check_candidate_context(encoded, max_new_tokens, model_limit, questions, que
     summary={k:v for k,v in record.items() if k!='cases'}
     summary['evidence_path']=str(destination) if destination else None
     print('COSEARCH_CONTEXT_EXCEEDED_JSON='+json.dumps(summary),flush=True)
-    raise ValueError(f'Ranker candidate context exceeds model limit: {summary}')
+    if not full_context_extrapolation:
+        raise ValueError(f'Ranker candidate context exceeds model limit: {summary}')
+    print('COSEARCH_FULL_CONTEXT_EXTRAPOLATION_JSON='+json.dumps(summary),flush=True)
 
 
 class GenerativeRanker:
@@ -233,6 +236,12 @@ class GenerativeRanker:
             raise ValueError('Ranker attention must be eager or sdpa')
         self.model = AutoModelForCausalLM.from_pretrained(config.model_path, torch_dtype=torch.float32,
                                                         attn_implementation=attention).to(self.device)
+        self.full_context_extrapolation = bool(config.get('full_context_extrapolation', False))
+        if self.full_context_extrapolation:
+            if (self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling
+                    or self.model.model.rotary_emb.rope_type != 'default'
+                    or self.model.config.max_position_embeddings != 32768):
+                raise ValueError('Approved full context requires original static Qwen2 RoPE and unchanged32768 config')
         self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.lr,
                                            weight_decay=config.get('weight_decay', .01))
         self.events = []
@@ -372,7 +381,7 @@ class GenerativeRanker:
         self.cost[prefix + 'prompt_tokens_max'] = max(self.cost.get(prefix + 'prompt_tokens_max', 0),
                                                      inputs.input_ids.numel())
         check_candidate_context([inputs.input_ids[0].tolist()], self.config.max_new_tokens,
-                                self.model.config.max_position_embeddings, [initial_question], [query], [docs])
+                                self.model.config.max_position_embeddings, [initial_question], [query], [docs], self.full_context_extrapolation)
         self.model.eval()
         # Checkpoints may ship repetition_penalty=1.05 or forced tokens. A fresh
         # config keeps rollout exactly the temperature policy scored below.
@@ -439,7 +448,7 @@ class GenerativeRanker:
                            'Think briefly, then output <ranking>[1, 2, ...]</ranking>.\n')
         encoded = self.tokenizer(prompts, return_token_type_ids=False)['input_ids']
         check_candidate_context(encoded, self.config.max_new_tokens, self.model.config.max_position_embeddings,
-                                initial_questions, queries, documents)
+                                initial_questions, queries, documents, self.full_context_extrapolation)
         order = sorted(range(len(encoded)), key=lambda i: (len(encoded[i]), i))
         rows = [None] * len(order)
         batch_size = int(self.config.inference_batch_size)
@@ -461,7 +470,8 @@ class GenerativeRanker:
         generation_started=time.perf_counter()
         try:
             if len(devices)>1:
-                if self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling:
+                if self.model.config.model_type != 'qwen2' or self.model.config.rope_scaling
+                    or self.model.model.rotary_emb.rope_type != 'default':
                     raise ValueError('Parallel ranker inference requires pinned static-RoPE Qwen2')
                 replica_at=time.perf_counter()
                 replicas=torch.nn.parallel.replicate(self.model, devices, detach=True)

@@ -117,6 +117,7 @@ baselines:
     cpu_threads: null
     response_only_logits: false
     phase_gpu: false
+    full_context_extrapolation: false
     phase_gpu_devices: 1
     phase_seed: ${baselines.seed}
     inference_parallel: false
