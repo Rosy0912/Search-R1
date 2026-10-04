@@ -24,5 +24,13 @@
   "latest_observed_completed_update": 207,
   "next_save": 250,
   "target": 300,
-  "scope": "Independent readonly full finite/key/shape/freshness scan; runtime acceptance reports delta and hashes; does not claim independent delta or hash recheck."
+  "scope": "Independent readonly full finite/key/shape/freshness scan, all recorded source200/checkpoint205 SHA hashes and full435 parameter delta comparison; same bound main and supervisor live.",
+  "independent_hash_delta_checked_unix": 1791133258.123148,
+  "checkpoint205_sha_verified": true,
+  "source200_sha_verified": true,
+  "all_serialized_parameters_compared": 435,
+  "changed_parameter_count": 435,
+  "runtime_delta_matches_independent": true,
+  "main_live": true,
+  "supervisor_live": true
 }
