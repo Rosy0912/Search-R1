@@ -1,0 +1,137 @@
+{
+  "scope": "64 ordered train INITIAL states and HF5 conditional distribution diagnostic only",
+  "manifest_sha256": "3618cc9e2ccefe5be052b2b2ee13adaac25734f1895d0879011518c64ba11002",
+  "aggregate": [
+    {
+      "count": 64,
+      "mean_clipped_loss": 0.38025634305085987,
+      "mean_unclipped_kl": 1.9844588804990053,
+      "rows_with_clipped_step_kl_increase": 0,
+      "rows_with_component_clipping": 64,
+      "rows_with_opposed_logit_gradient": 0,
+      "student": "student_base",
+      "teacher": "teacher_legacy"
+    },
+    {
+      "count": 64,
+      "mean_clipped_loss": 0.16699068032903597,
+      "mean_unclipped_kl": 0.5273964060470462,
+      "rows_with_clipped_step_kl_increase": 30,
+      "rows_with_component_clipping": 61,
+      "rows_with_opposed_logit_gradient": 30,
+      "student": "student_base",
+      "teacher": "teacher_user_context"
+    },
+    {
+      "count": 64,
+      "mean_clipped_loss": 0.37469181776396,
+      "mean_unclipped_kl": 1.9704897832125425,
+      "rows_with_clipped_step_kl_increase": 0,
+      "rows_with_component_clipping": 64,
+      "rows_with_opposed_logit_gradient": 0,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy"
+    },
+    {
+      "count": 64,
+      "mean_clipped_loss": 0.16790786624187604,
+      "mean_unclipped_kl": 0.5288492206018418,
+      "rows_with_clipped_step_kl_increase": 34,
+      "rows_with_component_clipping": 62,
+      "rows_with_opposed_logit_gradient": 34,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context"
+    }
+  ],
+  "candidate_probability_pairs": [
+    {
+      "from": "teacher_legacy",
+      "to": "teacher_user_context",
+      "candidate": "<think>",
+      "count": 64,
+      "improved": 21,
+      "mean_logp_delta": -0.3229356184601784,
+      "mean_p_from": 0.0003521655986550791,
+      "mean_p_to": 0.00023978169962653084
+    },
+    {
+      "from": "teacher_legacy",
+      "to": "teacher_user_context",
+      "candidate": "<search>",
+      "count": 64,
+      "improved": 42,
+      "mean_logp_delta": 0.23152576014399529,
+      "mean_p_from": 0.005699358605927492,
+      "mean_p_to": 0.007092147574599233
+    },
+    {
+      "from": "teacher_legacy",
+      "to": "teacher_user_context",
+      "candidate": "<answer>",
+      "count": 64,
+      "improved": 63,
+      "mean_logp_delta": 1.2324387170374393,
+      "mean_p_from": 0.004926749860884534,
+      "mean_p_to": 0.017141031360587262
+    },
+    {
+      "from": "teacher_legacy",
+      "to": "teacher_user_context",
+      "candidate": "accepted_answer",
+      "count": 64,
+      "improved": 9,
+      "mean_logp_delta": -0.9628769755363464,
+      "mean_p_from": 0.00018494692460649636,
+      "mean_p_to": 6.918744324417995e-05
+    },
+    {
+      "from": "student_base",
+      "to": "student_hf5",
+      "candidate": "<think>",
+      "count": 64,
+      "improved": 63,
+      "mean_logp_delta": 0.23416518419981003,
+      "mean_p_from": 0.00022829062177640437,
+      "mean_p_to": 0.00027818809454445436
+    },
+    {
+      "from": "student_base",
+      "to": "student_hf5",
+      "candidate": "<search>",
+      "count": 64,
+      "improved": 46,
+      "mean_logp_delta": 0.04748689755797386,
+      "mean_p_from": 0.01407574843086805,
+      "mean_p_to": 0.01473037835829878
+    },
+    {
+      "from": "student_base",
+      "to": "student_hf5",
+      "candidate": "<answer>",
+      "count": 64,
+      "improved": 32,
+      "mean_logp_delta": 0.014169830828905106,
+      "mean_p_from": 0.026675063295535945,
+      "mean_p_to": 0.02688127208456373
+    },
+    {
+      "from": "student_base",
+      "to": "student_hf5",
+      "candidate": "accepted_answer",
+      "count": 64,
+      "improved": 31,
+      "mean_logp_delta": -0.01475013792514801,
+      "mean_p_from": 1.9540305695608823e-05,
+      "mean_p_to": 1.8016806691820932e-05
+    }
+  ],
+  "allocation_seconds": 225,
+  "gpu_allocation_hours": 0.0625,
+  "not_measured": [
+    "rollout completion",
+    "EM/F1",
+    "optimizer update",
+    "HF80 behavior",
+    "late histories"
+  ]
+}

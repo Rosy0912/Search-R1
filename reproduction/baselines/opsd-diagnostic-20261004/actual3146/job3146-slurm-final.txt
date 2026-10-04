@@ -1,0 +1,29 @@
+JobId=3146 JobName=opsd-distribution64
+   UserId=root(0) GroupId=root(0) MCS_label=N/A
+   Priority=4294898920 Nice=0 Account=(null) QOS=(null)
+   JobState=COMPLETED Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:03:45 TimeLimit=01:00:00 TimeMin=N/A
+   SubmitTime=2026-10-04T14:01:25 EligibleTime=2026-10-04T14:01:25
+   AccrueTime=2026-10-04T14:01:25
+   StartTime=2026-10-04T14:01:26 EndTime=2026-10-04T14:05:11 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-04T14:01:26 Scheduler=Main
+   Partition=gpu AllocNode:Sid=h100-16:2203135
+   ReqNodeList=h100-10 ExcNodeList=(null)
+   NodeList=h100-10
+   BatchHost=h100-10
+   NumNodes=1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=16,mem=128G,node=1,billing=16
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+   Command=(null)
+   WorkDir=/root
+   StdErr=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/opsd-distribution-3146.out
+   StdIn=/dev/null
+   StdOut=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/opsd-distribution-3146.out
+   Power=
+   TresPerNode=gres:gpu:h100:1
+   
+
