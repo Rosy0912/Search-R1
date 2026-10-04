@@ -1,0 +1,28 @@
+{
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "checked_local_unix": 1791133163.6631901,
+  "independent_finite_canonical_count": 435,
+  "five_accepted": true,
+  "actual_updates": [
+    201,
+    202,
+    203,
+    204,
+    205
+  ],
+  "reward": [
+    0.622726321220398,
+    0.6642782688140869,
+    0.6034826636314392,
+    0.5601232647895813,
+    0.6045041680335999
+  ],
+  "validation_step": 205,
+  "validation_correct": 20,
+  "validation_count": 64,
+  "validation_em": 0.3125,
+  "latest_observed_completed_update": 207,
+  "next_save": 250,
+  "target": 300,
+  "scope": "Independent readonly full finite/key/shape/freshness scan; runtime acceptance reports delta and hashes; does not claim independent delta or hash recheck."
+}
