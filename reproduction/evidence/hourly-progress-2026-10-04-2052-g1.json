@@ -1,0 +1,355 @@
+{
+  "checked_unix": 1791118376.0753555,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "latest": {
+    "step": 177.0,
+    "critic/rewards/mean": 0.618,
+    "actor/pg_loss": -0.067,
+    "actor/entropy_loss": 0.786,
+    "actor/kl_loss": 0.29,
+    "actor/ppo_kl": 0.005,
+    "actor/grad_norm": 1.151,
+    "timing_s/step": 307.849,
+    "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+  },
+  "new_rows": [
+    {
+      "step": 167.0,
+      "critic/rewards/mean": 0.597,
+      "actor/pg_loss": 0.046,
+      "actor/entropy_loss": 0.949,
+      "actor/kl_loss": 0.305,
+      "actor/ppo_kl": 0.005,
+      "actor/grad_norm": 1.228,
+      "timing_s/step": 299.858,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 168.0,
+      "critic/rewards/mean": 0.52,
+      "actor/pg_loss": 0.034,
+      "actor/entropy_loss": 0.875,
+      "actor/kl_loss": 0.324,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.136,
+      "timing_s/step": 343.084,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 169.0,
+      "critic/rewards/mean": 0.58,
+      "actor/pg_loss": 0.002,
+      "actor/entropy_loss": 1.057,
+      "actor/kl_loss": 0.319,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.637,
+      "timing_s/step": 318.901,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 170.0,
+      "critic/rewards/mean": 0.612,
+      "actor/pg_loss": 0.045,
+      "actor/entropy_loss": 0.811,
+      "actor/kl_loss": 0.284,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.179,
+      "timing_s/step": 315.497,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 171.0,
+      "critic/rewards/mean": 0.564,
+      "actor/pg_loss": 0.131,
+      "actor/entropy_loss": 0.858,
+      "actor/kl_loss": 0.362,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.16,
+      "timing_s/step": 311.424,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 172.0,
+      "critic/rewards/mean": 0.652,
+      "actor/pg_loss": -0.004,
+      "actor/entropy_loss": 0.947,
+      "actor/kl_loss": 0.29,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.273,
+      "timing_s/step": 338.176,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 173.0,
+      "critic/rewards/mean": 0.622,
+      "actor/pg_loss": -0.031,
+      "actor/entropy_loss": 0.73,
+      "actor/kl_loss": 0.481,
+      "actor/ppo_kl": 0.001,
+      "actor/grad_norm": 1.153,
+      "timing_s/step": 302.785,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 174.0,
+      "critic/rewards/mean": 0.61,
+      "actor/pg_loss": 0.004,
+      "actor/entropy_loss": 0.754,
+      "actor/kl_loss": 0.332,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.133,
+      "timing_s/step": 310.831,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 175.0,
+      "critic/rewards/mean": 0.687,
+      "actor/pg_loss": -0.039,
+      "actor/entropy_loss": 0.685,
+      "actor/kl_loss": 0.322,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.202,
+      "timing_s/step": 312.582,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 176.0,
+      "critic/rewards/mean": 0.687,
+      "actor/pg_loss": 0.113,
+      "actor/entropy_loss": 0.737,
+      "actor/kl_loss": 0.487,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.156,
+      "timing_s/step": 306.946,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    },
+    {
+      "step": 177.0,
+      "critic/rewards/mean": 0.618,
+      "actor/pg_loss": -0.067,
+      "actor/entropy_loss": 0.786,
+      "actor/kl_loss": 0.29,
+      "actor/ppo_kl": 0.005,
+      "actor/grad_norm": 1.151,
+      "timing_s/step": 307.849,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+    }
+  ],
+  "new_updates": 11,
+  "reward_mean": 0.6135454545454545,
+  "reward_range": [
+    0.52,
+    0.687
+  ],
+  "handles": [
+    {
+      "pid": 1661704,
+      "start_ticks": 513118313,
+      "live": true
+    },
+    {
+      "pid": 1672776,
+      "start_ticks": 513152831,
+      "live": true
+    }
+  ],
+  "all_new_metrics_finite": true,
+  "validation": {
+    "step": 150.0,
+    "global_seqlen/min": 177540.0,
+    "global_seqlen/max": 182646.0,
+    "global_seqlen/minmax_diff": 5106.0,
+    "global_seqlen/balanced_min": 180170.0,
+    "global_seqlen/balanced_max": 180225.0,
+    "global_seqlen/mean": 180184.0,
+    "train/perf/em": 0.403,
+    "train/trust/trust_at_correct": 0.738,
+    "train/trust/trust_at_searched_correct": 0.7,
+    "train/trust/trust_all_mean": 0.298,
+    "train/trust/cf_true": 0.0,
+    "train/trust/cf_hall": 0.0,
+    "train/trust/cf_amb": 0.0,
+    "train/trust/hall_rate": 0.0,
+    "train/cost/search_per_query": 0.938,
+    "train/cost/nosearch_rate": 0.073,
+    "train/cost/oversearch_rate": 0.009,
+    "state_tokens/total": 307468.0,
+    "state_tokens/coverage": 0.497,
+    "actor/kl_loss": 0.284,
+    "actor/kl_coef": 0.001,
+    "actor/entropy_loss": 1.666,
+    "actor/pg_loss": -0.051,
+    "actor/pg_clipfrac": 0.004,
+    "actor/ppo_kl": 0.001,
+    "actor/grad_norm": 1.266,
+    "mfu/actor": 0.071,
+    "actor/lr": 0.0,
+    "val/test_score/nq": 0.5,
+    "val/evaluated_count/nq": 10.0,
+    "val/test_score/triviaqa": 0.667,
+    "val/evaluated_count/triviaqa": 9.0,
+    "val/test_score/popqa": 0.222,
+    "val/evaluated_count/popqa": 9.0,
+    "val/test_score/hotpotqa": 0.333,
+    "val/evaluated_count/hotpotqa": 9.0,
+    "val/test_score/2wikimultihopqa": 0.0,
+    "val/evaluated_count/2wikimultihopqa": 9.0,
+    "val/test_score/musique": 0.0,
+    "val/evaluated_count/musique": 9.0,
+    "val/test_score/bamboogle": 0.111,
+    "val/evaluated_count/bamboogle": 9.0,
+    "val/perf/em": 0.266,
+    "val/trust/trust_at_correct": 0.735,
+    "val/trust/trust_at_searched_correct": 0.7,
+    "val/trust/trust_all_mean": 0.195,
+    "val/trust/cf_true": 0.0,
+    "val/trust/cf_hall": 0.0,
+    "val/trust/cf_amb": 0.0,
+    "val/trust/hall_rate": 0.0,
+    "val/cost/search_per_query": 1.016,
+    "val/cost/nosearch_rate": 0.062,
+    "val/cost/oversearch_rate": 0.078,
+    "critic/score/mean": 0.597,
+    "critic/score/max": 1.6,
+    "critic/score/min": -0.1,
+    "critic/rewards/mean": 0.597,
+    "critic/rewards/max": 1.6,
+    "critic/rewards/min": -0.1,
+    "critic/advantages/mean": -0.01,
+    "critic/advantages/max": 1.789,
+    "critic/advantages/min": -1.789,
+    "critic/returns/mean": -0.01,
+    "critic/returns/max": 1.789,
+    "critic/returns/min": -1.789,
+    "response_length/mean": 966.158,
+    "response_length/max": 2378.0,
+    "response_length/min": 181.0,
+    "response_length/clip_ratio": 0.002,
+    "prompt_length/mean": 159.992,
+    "prompt_length/max": 192.0,
+    "prompt_length/min": 151.0,
+    "prompt_length/clip_ratio": 0.0,
+    "env/number_of_actions/mean": 2.737,
+    "env/number_of_actions/max": 5.0,
+    "env/number_of_actions/min": 1.0,
+    "env/finish_ratio": 0.994,
+    "env/number_of_valid_action": 1.931,
+    "env/ratio_of_valid_action": 0.736,
+    "env/actual_retrieval_calls/mean": 0.936,
+    "env/actual_retrieval_calls/total": 599.0,
+    "env/number_of_valid_search": 0.938,
+    "timing_s/gen": 107.225,
+    "timing_s/ref": 40.822,
+    "timing_s/adv": 42.743,
+    "timing_s/update_actor": 175.0,
+    "timing_s/testing": 57.733,
+    "timing_s/save_checkpoint": 34.185,
+    "timing_s/step": 498.824,
+    "timing_per_token_ms/ref": 0.057,
+    "timing_per_token_ms/gen": 0.173,
+    "timing_per_token_ms/adv": 0.059,
+    "timing_per_token_ms/update_actor": 0.243
+  },
+  "validation_step": 150,
+  "errors": [],
+  "gpu_peak_mib": {
+    "0": 50965,
+    "1": 51507,
+    "2": 51507,
+    "3": 50817,
+    "5": 21119,
+    "6": 38112
+  },
+  "gpu_hour_peak_mib": {
+    "0": 40527,
+    "1": 40595,
+    "2": 40623,
+    "3": 41115,
+    "5": 18903,
+    "6": 27517
+  },
+  "gpu_latest": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791118375.4584973,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 36939,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 37481,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "used_mib": 37035,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "used_mib": 37385,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 26493,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sample_age_s": 0.8997411727905273,
+  "validation_correct_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      6,
+      9
+    ],
+    "popqa": [
+      2,
+      9
+    ],
+    "hotpotqa": [
+      3,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      0,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "validation_em": 0.265625,
+  "validation_count_semantics": "Reconstructed from console 3 decimal scores and fixed source counts; does not independently establish IDs.",
+  "sampling_period_seconds": 2,
+  "sampling_limitation": "Sampling may miss short transients.",
+  "reward_mean_change": 0.031727272727272715,
+  "console_precision": "3 decimal places",
+  "full300_accepted": false,
+  "validation_change_percentage_points": 0.0,
+  "next_save_step": 200,
+  "reward_comparison_semantics": "Both hourly windows use the same round150 evaluator; shaped reward is not validation EM.",
+  "gradient_spikes": []
+}
