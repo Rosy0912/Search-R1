@@ -12,6 +12,8 @@ for _ in range(1440):
  assert record['status']=='RUNNING',record
  time.sleep(5)
 else:raise RuntimeError('Old run did not reach boundary')
+# Recheck the four newly freed cards before stopping a still-useful run.
+subprocess.run([str(new/'env/bin/python'),str(new/'source/experiments/search_e1/control/gpu_admission.py')],env=dict(os.environ,E1_BASE=str(new),CUDA_VISIBLE_DEVICES='4,5,6,7'),check=True)
 # Verify every member of the private stage group before terminating it.
 owned=[]
 for proc in Path('/proc').iterdir():
