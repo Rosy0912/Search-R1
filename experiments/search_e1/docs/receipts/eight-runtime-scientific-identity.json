@@ -1,0 +1,10 @@
+{
+  "equal_source_files": 301,
+  "changed_or_added": [
+    "search_e1/virtual_dp.py",
+    "search_e1/grpo_main.py",
+    "upstream/Search-R1/verl/workers/actor/dp_actor.py",
+    "upstream/Search-R1/verl/trainer/ppo/ray_trainer.py"
+  ],
+  "scope": "Only four intentional eight-GPU execution source differences; all remaining original scientific runtime source identical"
+}
