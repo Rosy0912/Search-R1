@@ -1,0 +1,25 @@
+{
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "started": 1791152901.890629,
+  "continuous_observer_started": 1791156535.2196116,
+  "initial_source": "archive-post-jit-memory.json",
+  "initial_source_samples": 1726,
+  "peaks_mib": {
+    "4": 25056,
+    "5": 25214,
+    "6": 25302,
+    "7": 25943
+  },
+  "samples": 16,
+  "minimum_reserve_mib": {
+    "4": 24084,
+    "5": 23926,
+    "6": 23838,
+    "7": 23197
+  },
+  "shared_gpu_margin_met": true,
+  "updated": 1791156566.6591077,
+  "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+  "source_run_status": "RUNNING",
+  "source_run_matches": true
+}
