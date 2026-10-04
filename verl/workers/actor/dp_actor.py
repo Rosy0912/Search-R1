@@ -172,6 +172,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         micro_batch_size = data.meta_info['micro_batch_size']
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
+        outer_identity = dict(data.meta_info)
         use_dynamic_bsz = data.meta_info['use_dynamic_bsz']
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids']
@@ -388,7 +389,22 @@ class DataParallelPPOActor(BasePPOActor):
 
             if paper_objective:
                 append_to_dict(metrics, mini_metrics)
-            grad_norm = self._optimizer_step(loss_scale)
+            try:
+                grad_norm = self._optimizer_step(loss_scale)
+            except BaseException:
+                if scaled_joint:
+                    import os
+                    from pathlib import Path
+                    from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
+                    root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+                    if root:
+                        rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+                        atomic_torch_save(dict(outer_identity=outer_identity, mini_index=batch_idx,
+                            loss_scale=float(loss_scale), active_logratio_bound=float(bound),
+                            mini_batch={key: cpu_snapshot(value) for key, value in mini_batch.items()},
+                            real_log_probs=probe_logps, failed_before_adam=True),
+                            Path(root) / 'numeric' / f'failed-mini-rank-{rank}.pt')
+                raise
             if audit is not None:
                 audit.gradient(grad_norm)
             updates += 1
