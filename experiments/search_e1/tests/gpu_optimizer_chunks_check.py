@@ -25,22 +25,24 @@ def actor(step):
  torch.manual_seed(42)
  model=FSDP(torch.nn.Sequential(*[torch.nn.Linear(1024,1024,device='cuda') for _ in range(8)]),device_id=rank,auto_wrap_policy=partial(size_based_auto_wrap_policy,min_num_params=128))
  obj=SimpleNamespace(actor_module=model,actor_optimizer=torch.optim.AdamW(model.parameters(),lr=1e-3),config=SimpleNamespace(grad_clip=1.,fsdp_config={'optimizer_offload':True}))
- obj._optimizer_step=MethodType(step,obj);return obj
+ obj._optimizer_step=MethodType(step,obj);obj.scheduler=torch.optim.lr_scheduler.LambdaLR(obj.actor_optimizer,lambda n:1/(n+1));return obj
 a,b=[actor(step) for step in steps]
 for iteration in range(4):
  torch.manual_seed(42+rank+iteration);inputs=torch.randn(32,1024,device='cuda')
  for obj,flag in [(a,'0'),(b,'1')]:
-  os.environ['E1_JIT_OPTIMIZER']=flag;os.environ['E1_OPTIMIZER_CHUNK']=flag
+  os.environ['E1_JIT_OPTIMIZER']=flag;os.environ['E1_OPTIMIZER_CHUNK']=flag;os.environ['E1_STAGE_CHUNK_STATES']=flag
   groups=obj.actor_optimizer.param_groups;ids=[id(g) for g in groups]
   obj.actor_optimizer.zero_grad(set_to_none=True)
-  obj.actor_module(inputs).square().mean().backward();obj._optimizer_step()
+  obj.actor_module(inputs).square().mean().backward();obj._optimizer_step();obj.scheduler.step()
   assert obj.actor_optimizer.param_groups is groups and [id(g) for g in groups]==ids
+ assert a.scheduler.state_dict()==b.scheduler.state_dict()
  sa=a.actor_module.state_dict();sb=b.actor_module.state_dict()
  for key in sa:torch.testing.assert_close(sa[key],sb[key],atol=0,rtol=0)
  states_a=list(a.actor_optimizer.state.values());states_b=list(b.actor_optimizer.state.values())
  for x,y in zip(states_a,states_b):
   for key in x:
    if isinstance(x[key],torch.Tensor):torch.testing.assert_close(x[key].cpu(),y[key].cpu(),atol=0,rtol=0);assert y[key].device.type=='cpu'
+os.environ['E1_STAGE_CHUNK_STATES']='0'
 # Both optimizers have identical resident states for the memory comparison.
 ns['load_fsdp_optimizer'](b.actor_optimizer,rank)
 for obj in [a,b]:
@@ -55,5 +57,5 @@ for obj,flag in [(a,'0'),(b,'1')]:
 assert peaks[1]<peaks[0]*.5,peaks
 sa=a.actor_module.state_dict();sb=b.actor_module.state_dict()
 for key in sa:torch.testing.assert_close(sa[key],sb[key],atol=0,rtol=0)
-print(json.dumps(dict(rank=rank,result='FSDP_CHUNKED_ADAMW_BITWISE_EQUIVALENCE_OK',updates=4,parameter_tensors=len(list(a.actor_module.parameters())),additional_step_peak_bytes=peaks)),flush=True)
+print(json.dumps(dict(rank=rank,result='FSDP_STAGED_CHUNK_ADAMW_AND_SCHEDULER_BITWISE_EQUIVALENCE_OK',updates=4,parameter_tensors=len(list(a.actor_module.parameters())),additional_step_peak_bytes=peaks)),flush=True)
 dist.barrier();dist.destroy_process_group()
