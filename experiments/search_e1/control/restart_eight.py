@@ -22,7 +22,17 @@ for proc in Path('/proc').iterdir():
   pid=int(proc.name)
   if os.getpgid(pid)!=2986860:continue
   assert proc.stat().st_uid==os.getuid()
-  assert ('E1_RUN_ID='+run).encode() in proc.joinpath('environ').read_bytes().split(b'\0'),pid
+  marker=('E1_RUN_ID='+run).encode()
+  if marker not in proc.joinpath('environ').read_bytes().split(b'\0'):
+   # Ray multiprocessing dashboard strips environment variables. Admit only
+   # its exact child with a freshly verified private-dashboard parent.
+   command=proc.joinpath('cmdline').read_bytes()
+   assert b'ray-dashboard-' in command and b'--multiprocessing-fork' in command and str(old/'env/bin/python').encode() in command,pid
+   status=proc.joinpath('status').read_text();parent=int(re.search(r'^PPid:\s+(\d+)',status,re.M).group(1));pp=Path('/proc')/str(parent)
+   assert marker in pp.joinpath('environ').read_bytes().split(b'\0')
+   assert b'/ray/dashboard/dashboard.py' in pp.joinpath('cmdline').read_bytes()
+   assert os.getsid(pid)==2986860 and os.getpgid(parent)==2986860 and pp.stat().st_uid==os.getuid()
+
   owned.append(pid)
  except (FileNotFoundError,ProcessLookupError):continue
 assert 2986860 in owned and 2989937 in owned
