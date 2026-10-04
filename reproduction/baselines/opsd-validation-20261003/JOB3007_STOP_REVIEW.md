@@ -1,0 +1,15 @@
+# Independent stop review — actual Job 3007
+
+Actual owned Job 3007 is **CANCELLED / ExitCode 0:15**, not completed 500. This reviewer directly retrieved the scheduler terminal text: eight H100 on h100-10, 192 CPU, source 8e60976d364ab7d7ae51714415813c1359dafe9a. The latest user instruction to stop supersedes the previous instruction to continue 500. No source modification, restart, GPU submission or operation on other jobs was performed by this reviewer.
+
+StartTime 2026-10-03 22:39:38; EndTime 2026-10-04 11:46:25; RunTime 13:06:47 = 47207 seconds. Eight allocated GPUs imply **104.904444444 allocated GPU hours**. This is allocation time, not measured compute utilization or monetary cost. Original terminal text: job3007-stop-independent-scontrol.txt; SHA256 109975e89b8569d1a9107c35ca1e39d028f7eb01fecc4f6035b9284189c9f202.
+
+At 2026-10-04 03:48:35 UTC, the directly read original final training log contained 1483837 bytes, SHA256 **0a385f057232303a41ce537d316c33f8618bae40eeb9ae48b60be98a875f394a**. The deployed immutable eb13 strict parser independently accepted complete actual updates **1–80 × all eight ranks**: 320 samples / 10 optimizer steps per rank per outer, finite old log-prob / masks / losses / gradients, nonempty supervision, frozen FP32/eager teacher with CUDA entry counters matching actual outers and CPU storage after updates, native/default allocator. Only the two previously observed complete literal trailing warning frames were recognized (step 4 FSDP and step 5 CPU AMP); raw bytes were preserved, with no generic malformed-metric suppression.
+
+Original full JSON and console summaries at stages 0 and 50 paired strictly on all fields, with 64 evaluated questions each (nq 10; six other sources 9 each). These use the historical frozen-8e scoring protocol with the reported scoring defect. Step 50 EM 0.09375 / F1 0.11891447368421053 cannot establish corrected efficacy or a corrected decline.
+
+The saved checkpoint list contains **only global_step_5**: index 435 keys, three safetensors shards, index SHA256 3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d. The stop snapshot records its actual file names and sizes; complete shard byte hashes and CPU structure were independently checked at fresh-five acceptance. No global_step_80 / 100 / 500 exists in this saved checkpoint directory. The in-memory update 80 is not a saved model.
+
+Post-stop own job_3007 cgroup process list is empty. The run exit.txt contains 0, but there is no formal training-finished marker or SEARCH_R1_FINAL_METRICS_JSON marker. An exit.txt zero cannot override the actual CANCELLED terminal. **500 updates, final 51713 evaluation, HF500 and corrected paired efficacy are incomplete; no accepted final receipt may be produced.**
+
+Evidence: job3007-stop-independent-raw.json (original retrieval); job3007-stop-independent-analysis.json (strict numeric result, checkpoint list, terminal and cost); job3007-stop-independent-scontrol.txt (direct scheduler original). All are in this report's directory.

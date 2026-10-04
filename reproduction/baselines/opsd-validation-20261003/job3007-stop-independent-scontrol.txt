@@ -1,0 +1,29 @@
+JobId=3007 JobName=opsd-formal500
+   UserId=root(0) GroupId=root(0) MCS_label=N/A
+   Priority=4294899059 Nice=0 Account=(null) QOS=(null)
+   JobState=CANCELLED Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:15
+   RunTime=13:06:47 TimeLimit=7-00:00:00 TimeMin=N/A
+   SubmitTime=2026-10-03T22:39:37 EligibleTime=2026-10-03T22:39:37
+   AccrueTime=2026-10-03T22:39:37
+   StartTime=2026-10-03T22:39:38 EndTime=2026-10-04T11:46:25 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-03T22:39:38 Scheduler=Main
+   Partition=gpu AllocNode:Sid=h100-10:3784933
+   ReqNodeList=h100-10 ExcNodeList=(null)
+   NodeList=h100-10
+   BatchHost=h100-10
+   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=192 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=192,mem=1T,node=1,billing=192
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=192 MinMemoryNode=1T MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)
+   Command=(null)
+   WorkDir=/root
+   StdErr=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-3007-formal.out
+   StdIn=/dev/null
+   StdOut=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-3007-formal.out
+   Power=
+   TresPerNode=gres:gpu:h100:8
+   
+

@@ -1,0 +1,107 @@
+{
+  "sample_utc": "2026-10-04T03:48:35.123582+00:00",
+  "job_id": "3007",
+  "source_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "original_log_bytes": 1483837,
+  "original_log_sha256": "0a385f057232303a41ce537d316c33f8618bae40eeb9ae48b60be98a875f394a",
+  "native_numeric_result": {
+    "completed_actual_outer_updates": 80,
+    "ranks": 8,
+    "samples_per_rank": 320,
+    "numeric_metrics_validated": true,
+    "recognized_trailing_ray_warning_frames": [
+      {
+        "kind": "observed_complete_trailing_ray_fsdp_futurewarning",
+        "step": 4,
+        "worker_pid": 3803091,
+        "frame_sha256_ansi_removed": "1410dfe4b41360774ad91ec23ec880f5ea431ec7869caee85cc021c7313b286b",
+        "original_physical_line_sha256": "717f932eedd2ae879bf9b93b9b72b0c6d47f10ab0324318cb2dc79fef1eba5f5"
+      },
+      {
+        "kind": "observed_complete_trailing_ray_cpuamp_futurewarning",
+        "step": 5,
+        "worker_pid": 3802754,
+        "frame_sha256_ansi_removed": "0f260bf1544fb3cef5a44d4d18d97be0f0f86fecaa764ca31faec1b4d69193fc",
+        "original_physical_line_sha256": "d375d911e748c342ba395960160118c0d06660a6799d6d5a084a24afcf45ec3e"
+      }
+    ]
+  },
+  "checkpoints": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd/runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_5",
+      "files": [
+        {
+          "name": "added_tokens.json",
+          "bytes": 605
+        },
+        {
+          "name": "config.json",
+          "bytes": 797
+        },
+        {
+          "name": "generation_config.json",
+          "bytes": 117
+        },
+        {
+          "name": "merges.txt",
+          "bytes": 1671853
+        },
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4982131536
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4932949336
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3673383040
+        },
+        {
+          "name": "model.safetensors.index.json",
+          "bytes": 35640
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 616
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 11421896
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 7229
+        },
+        {
+          "name": "vocab.json",
+          "bytes": 2776833
+        }
+      ],
+      "index_sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+      "index_keys": 435
+    }
+  ],
+  "run_text_markers": {
+    "retrieval-review-pending.txt": "/mnt/data/shaoshitong/search-r1-rl/opsd/runs/opsd-formal-3007/evidence/retrieval-comparison.json\n",
+    "exit.txt": "0\n"
+  },
+  "finished_marker_present": false,
+  "final51713_marker_present": false,
+  "current_job_cgroup_processes": [],
+  "actual_terminal_scontrol": "JobId=3007 JobName=opsd-formal500\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\n   Priority=4294899059 Nice=0 Account=(null) QOS=(null)\n   JobState=CANCELLED Reason=None Dependency=(null)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:15\n   RunTime=13:06:47 TimeLimit=7-00:00:00 TimeMin=N/A\n   SubmitTime=2026-10-03T22:39:37 EligibleTime=2026-10-03T22:39:37\n   AccrueTime=2026-10-03T22:39:37\n   StartTime=2026-10-03T22:39:38 EndTime=2026-10-04T11:46:25 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-03T22:39:38 Scheduler=Main\n   Partition=gpu AllocNode:Sid=h100-10:3784933\n   ReqNodeList=h100-10 ExcNodeList=(null)\n   NodeList=h100-10\n   BatchHost=h100-10\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=192 ReqB:S:C:T=0:0:*:*\n   TRES=cpu=192,mem=1T,node=1,billing=192\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=192 MinMemoryNode=1T MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\n   Command=(null)\n   WorkDir=/root\n   StdErr=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-3007-formal.out\n   StdIn=/dev/null\n   StdOut=/mnt/data/shaoshitong/search-r1-rl/opsd/logs/slurm-3007-formal.out\n   Power=\n   TresPerNode=gres:gpu:h100:8\n   \n\n",
+  "actual_terminal_sha256": "109975e89b8569d1a9107c35ca1e39d028f7eb01fecc4f6035b9284189c9f202",
+  "runtime_seconds": 47207,
+  "allocated_gpu_hours": 104.90444444444445,
+  "historical_periodic_pair_result": {
+    "periodic_steps": [
+      0,
+      50
+    ],
+    "questions_per_periodic": 64,
+    "terminal_final_questions": null
+  },
+  "formal_500_completed": false,
+  "corrected_efficacy_completed": false
+}
