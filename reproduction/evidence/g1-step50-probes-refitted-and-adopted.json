@@ -1,0 +1,81 @@
+{
+  "checked_unix": 1791071986.848976,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "round": 50,
+  "version": "e1856e705ace460bb3a836e2cd9fde93:50:8b76af46f6d34dc6848fbff3058a30f4",
+  "encoder_matches_verified_checkpoint50": {
+    "model-00003-of-00003.safetensors": true,
+    "model-00002-of-00003.safetensors": true,
+    "model-00001-of-00003.safetensors": true,
+    "model.safetensors.index.json": true,
+    "config.json": true
+  },
+  "head_sha_matches": {
+    "commit_probe.pkl": true,
+    "boundary_probe.pkl": true
+  },
+  "calibration_report": {
+    "commit_cv_auc": 0.8220393903189602,
+    "boundary_cv_auc": 0.8582062454611474,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 714,
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "commit_class_counts": [
+      149,
+      565
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true
+  },
+  "health": {
+    "ok": true,
+    "round": 50,
+    "encoder": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_50",
+    "version": "e1856e705ace460bb3a836e2cd9fde93:50:8b76af46f6d34dc6848fbff3058a30f4"
+  },
+  "label_proof_summary": {
+    "generation_allocated_before_release": 19514617344,
+    "generation_allocated_after_release": 16908288,
+    "model": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_50",
+    "question_count": 300,
+    "searched_valid_trajectory_count": 714,
+    "closed_book_label": "exact_match_no_retrieval",
+    "reliance_label": "normalized_answer_change_after_evidence_deletion",
+    "commit_position": "Xa",
+    "model_authored_answer_spans": true,
+    "group_size": 5,
+    "counterfactual_invalid_count": 0,
+    "counterfactual_strict_invalid_count": 2,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 256,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24
+    },
+    "malformed_calibration_action_policy": "terminate_without_retrieval_or_correction_turn",
+    "boundary_all_reserved_questions": true,
+    "observation_token_cap": 500,
+    "hidden_truncation_side": "left"
+  },
+  "label_class_counts": {
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "reliance_class_counts": [
+      149,
+      565
+    ]
+  },
+  "same_trainer_adoption_events": [
+    "\u001b[36m(main_task pid=1672776)\u001b[0m SEARCH_G1_REFIT_PAUSE=50",
+    "\u001b[36m(main_task pid=1672776)\u001b[0m SEARCH_G1_REFIT_ADOPTED=e1856e705ace460bb3a836e2cd9fde93:50:8b76af46f6d34dc6848fbff3058a30f4"
+  ],
+  "update51_verified": false
+}
