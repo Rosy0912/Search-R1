@@ -18,6 +18,7 @@ The function implemented in this file should be used by trainer with different d
 implement PPO
 """
 
+import math
 import numpy as np
 import torch
 from collections import defaultdict
@@ -160,7 +161,7 @@ def compute_rewards(token_level_scores, old_log_prob, ref_log_prob, kl_ratio):
     return token_level_scores - kl * kl_ratio
 
 
-def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange):
+def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange, log_ratio_clip=None):
     """Adapted from https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py#L1122
 
     Args:
@@ -191,6 +192,10 @@ def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange)
     safe_old = torch.where(valid, old_log_prob, torch.zeros_like(old_log_prob))
     advantages = torch.where(valid, advantages, torch.zeros_like(advantages))
     negative_approx_kl = safe_log_prob - safe_old
+    if log_ratio_clip is not None:
+        if log_ratio_clip <= 0 or not math.isfinite(log_ratio_clip):
+            raise ValueError("log_ratio_clip must be finite and positive")
+        negative_approx_kl = negative_approx_kl.clamp(-log_ratio_clip, log_ratio_clip)
     ratio = torch.exp(negative_approx_kl)
     if not torch.isfinite(ratio[valid]).all():
         raise ValueError('PPO ratio overflow on a supervised token')

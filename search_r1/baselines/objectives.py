@@ -46,7 +46,7 @@ def row_denominator(rows, device):
     return count.clamp_min(1) / world
 
 
-def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None):
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, log_ratio_clip=None):
     """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
     valid = mask.bool()
     for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
@@ -71,6 +71,11 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
                 row = row + selected * delta[i][selected].sum()
             action_deltas.append(row)
         delta = torch.stack(action_deltas)
+    if log_ratio_clip is not None:
+        if log_ratio_clip <= 0 or not __import__("math").isfinite(log_ratio_clip):
+            raise ValueError("log_ratio_clip must be finite and positive")
+        # Author BAPO token-PPO stability guard, before exponentiation.
+        delta = delta.clamp(-log_ratio_clip, log_ratio_clip)
     ratio = delta.exp()
     if not torch.isfinite(ratio[valid]).all():
         raise ValueError('Policy ratio overflow on a supervised action/token')

@@ -458,12 +458,12 @@ class RayPPOTrainer(object):
         if getattr(self.config.trainer, 'e1_gate_enabled', False):
             if (total_training_steps != 301 or self.config.trainer.save_freq != 25
                     or self.config.trainer.get('acceptance_step') != 5
-                    or self.config.actor_rollout_ref.actor.optim.get('num_warmup_steps') != 57
+                    or self.config.actor_rollout_ref.actor.optim.get('num_warmup_steps') != 114
                     or self.config.trainer.n_gpus_per_node != 8 or self.config.trainer.nnodes != 1
                     or self.config.algorithm.adv_estimator != 'grpo'
                     or self.config.baselines.method != 'bapo'
                     or self.config.trainer.get('smoke_only', False)):
-                raise ValueError('E1 requires actual300 (steps301), warmup57, save25/5, BAPO formal run')
+                raise ValueError('E1 requires actual300 (steps301), warmup114, save25/5, BAPO formal run')
             if not self.config.trainer.get('e1_gate_receipt'):
                 raise ValueError('E1 requires an independent fifth-outer release receipt path')
         self.total_training_steps = total_training_steps

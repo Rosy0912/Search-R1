@@ -374,6 +374,13 @@ class ActorRolloutRefWorker(Worker):
 
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
+            # Validate reporting topology before any optimizer update.
+            aggregate_bapo_metrics = (self.config.actor.get('baseline_method') == 'bapo'
+                                      and self.config.actor.get('loss_reduction') == 'sequence_mean')
+            if aggregate_bapo_metrics:
+                from search_r1.baselines.actor_metrics import validate_actor_metric_topology
+                validate_actor_metric_topology(self.ulysses_sequence_parallel_size,
+                                               self.config.rollout.tensor_model_parallel_size)
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
                 lr_before = self.actor_lr_scheduler.get_last_lr()[0]
@@ -393,7 +400,14 @@ class ActorRolloutRefWorker(Worker):
 
             log_gpu_memory_usage('After update policy', logger=logger)
 
-            # TODO: here, we should return all metrics
+            # Preserve ACTOR_RANK_UPDATE_JSON above as the original local
+            # record. Every returned DataProto now carries the same global
+            # reporting metrics, so concat retaining first metadata is safe.
+            if aggregate_bapo_metrics:
+                from search_r1.baselines.actor_metrics import aggregate_sequence_mean_actor_metrics
+                metrics = aggregate_sequence_mean_actor_metrics(
+                    metrics, self.ulysses_sequence_parallel_size,
+                    self.config.rollout.tensor_model_parallel_size)
             output = DataProto(meta_info={'metrics': metrics})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)

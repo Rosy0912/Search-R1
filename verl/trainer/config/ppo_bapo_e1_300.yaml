@@ -34,7 +34,7 @@ actor_rollout_ref:
     use_dynamic_bsz: false
     optim:
       lr: 1.0e-6
-      num_warmup_steps: 57
+      num_warmup_steps: 114
       lr_warmup_steps_ratio: 0.0
       warmup_style: constant
     fsdp_config:

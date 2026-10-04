@@ -15,7 +15,27 @@ def digest(path):
     return h.hexdigest()
 
 
+def validate_gate_config(config):
+    """Bind the release counters to the actual resolved scheduler config."""
+    try:
+        trainer = config['trainer']
+        optim = config['actor_rollout_ref']['actor']['optim']
+    except (KeyError, TypeError):
+        raise ValueError('Missing actual 300/114 gate configuration')
+    if (type(trainer.get('total_training_steps')) is not int
+            or trainer['total_training_steps'] != 301
+            or type(optim.get('num_warmup_steps')) is not int
+            or optim['num_warmup_steps'] != 114
+            or trainer.get('e1_gate_enabled') is not True
+            or type(trainer.get('acceptance_step')) is not int
+            or trainer['acceptance_step'] != 5):
+        raise ValueError('Actual resolved config must use steps301/warmup114/step5 gate')
+    from .full_state import resolve_warmup_steps
+    return trainer['total_training_steps'] - 1, resolve_warmup_steps(optim)
+
+
 def write_manifest(paths, directory, config, source, run, step, reports):
+    horizon, warmup_steps = validate_gate_config(config)
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
     run=Path(run).resolve()
     if run not in directory.resolve().parents:raise ValueError('Checkpoint directory outside exact run')
@@ -26,7 +46,7 @@ def write_manifest(paths, directory, config, source, run, step, reports):
         if run not in p.parents or not p.is_file() or not p.stat().st_size:raise ValueError('Missing/outside/empty checkpoint member '+str(p))
         files.append(dict(path=str(p),sha256=digest(p),bytes=p.stat().st_size))
     value=dict(version=1,run_root=str(Path(run).resolve()),source_commit=source,global_step=step,
-               actual_outer_updates=step,horizon=300,warmup_steps=57,config_sha256=digest(config_path),
+               actual_outer_updates=step,horizon=horizon,warmup_steps=warmup_steps,config_sha256=digest(config_path),
                pause_nonce=secrets.token_hex(32),rank_roundtrips=reports,files=files)
     target=directory/'manifest.json';tmp=target.with_suffix('.tmp');tmp.write_text(json.dumps(value,indent=2,allow_nan=False));os.replace(tmp,target)
     return target
@@ -39,8 +59,8 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
         if r.get(key)!=m.get(key):raise ValueError('Release identity mismatch '+key)
     if any(type(m.get(k)) is not int or type(r.get(k)) is not int for k in ('global_step','actual_outer_updates','horizon','warmup_steps')):
         raise ValueError('Gate counters must be integers')
-    if m['global_step']!=5 or m['actual_outer_updates']!=5 or m['horizon']!=300 or m['warmup_steps']!=57:
-        raise ValueError('Not a fifth-outer 300/57 gate')
+    if m['global_step']!=5 or m['actual_outer_updates']!=5 or m['horizon']!=300 or m['warmup_steps']!=114:
+        raise ValueError('Not a fifth-outer 300/114 gate')
     if r.get('checkpoint_manifest_sha256')!=digest(manifest_path):raise ValueError('Checkpoint manifest changed')
     source=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
     dirty=subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],text=True)
@@ -61,6 +81,10 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
     if (len(configs)!=1 or configs[0]['sha256']!=m['config_sha256']
             or digest(configs[0]['path'])!=m['config_sha256']):
         raise ValueError('Config identity differs from actual resolved config')
+    resolved_config = json.loads(Path(configs[0]['path']).read_text())
+    horizon, warmup_steps = validate_gate_config(resolved_config)
+    if m['horizon'] != horizon or m['warmup_steps'] != warmup_steps:
+        raise ValueError('Manifest counters differ from actual scheduler config')
     native_paths=set()
     for report in reports:
         state_path=Path(report.get('path',''))

@@ -20,7 +20,7 @@ def test_cpu_adam_scheduler_rng_exact_reload_continuation(tmp_path):
     """Actual CPU objects, five counted in same300 horizon, no optimizer rebuild."""
     torch.manual_seed(42);random.seed(42);np.random.seed(42)
     model=torch.nn.Linear(3,2);optim=torch.optim.AdamW(model.parameters(),lr=1e-6)
-    scheduler=torch.optim.lr_scheduler.LambdaLR(optim,lambda step:min(step/57,1))
+    scheduler=torch.optim.lr_scheduler.LambdaLR(optim,lambda step:min(step/114,1))
     for _ in range(5):
         optim.zero_grad();model(torch.randn(4,3)).square().mean().backward();optim.step();scheduler.step()
     payload=dict(model=copy.deepcopy(model.state_dict()),optim=copy.deepcopy(optim.state_dict()),
@@ -34,7 +34,7 @@ def test_cpu_adam_scheduler_rng_exact_reload_continuation(tmp_path):
     expected=sixth();model.load_state_dict(loaded['model']);optim.load_state_dict(loaded['optim'])
     scheduler.load_state_dict(loaded['scheduler']);restore_rng(loaded['rng'])
     assert sixth()==expected and scheduler.last_epoch==6
-    assert optim.state and scheduler.get_last_lr()[0]==pytest.approx(1e-6*6/57)
+    assert optim.state and scheduler.get_last_lr()[0]==pytest.approx(1e-6*6/114)
 
 
 def test_sampler_active_iterator_preserves_next_batch_and_epoch():
@@ -71,7 +71,7 @@ def fixture(root):
     (run/'train.log').write_text(''.join('BAPO_TRAIN_METRICS_JSON='+json.dumps(dict(step=i,metrics={'bapo/actual_outer_updates':i}))+'\n'for i in range(1,6)))
     snapshot=root/'step5-prefix.log';snapshot.write_bytes((run/'train.log').read_bytes())
     (run/'source-commit.txt').write_text(source)
-    manifest=write_manifest(rankfiles+[driver,driver_state,run/'source-commit.txt'],directory,dict(horizon=300,warmup57=True),source,run,5,reports)
+    manifest=write_manifest(rankfiles+[driver,driver_state,run/'source-commit.txt'],directory,dict(trainer=dict(total_training_steps=301,e1_gate_enabled=True,acceptance_step=5),actor_rollout_ref=dict(actor=dict(optim=dict(num_warmup_steps=114,total_training_steps=301)))),source,run,5,reports)
     m=json.loads(manifest.read_text());review=root/'review.md';review.write_text('Independent fixture review')
     receipt=root/'release.json';value={k:m[k]for k in ('run_root','source_commit','global_step','actual_outer_updates','horizon','warmup_steps','config_sha256','pause_nonce')}
     value.update(status='PASS_INDEPENDENT_E1_STEP5_REVIEW',checkpoint_manifest_sha256=digest(manifest),
@@ -144,7 +144,7 @@ def test_actual_worker_save_method_cpu_roundtrip_preserves_objects(tmp_path,monk
     monkeypatch.setattr(torch.cuda,'get_rng_state',lambda device:torch.get_rng_state())
     monkeypatch.setattr(torch.cuda,'set_rng_state',lambda state,device:torch.set_rng_state(state))
     model=torch.nn.Linear(2,1);optimizer=torch.optim.AdamW(model.parameters(),lr=1e-6)
-    scheduler=torch.optim.lr_scheduler.LambdaLR(optimizer,lambda step:min(step/57,1))
+    scheduler=torch.optim.lr_scheduler.LambdaLR(optimizer,lambda step:min(step/114,1))
     for _ in range(5):
         optimizer.zero_grad();model(torch.ones(2,2)).sum().backward();optimizer.step();scheduler.step()
     worker=types.SimpleNamespace(_is_actor=True,_is_offload_param=False,_is_offload_optimizer=False,

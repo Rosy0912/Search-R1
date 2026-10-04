@@ -296,7 +296,8 @@ class DataParallelPPOActor(BasePPOActor):
                 if sequence_mean or paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, policy_weights,
-                        clip_ratio, denominator, None if sequence_mean else data.get('step_ids', None))
+                        clip_ratio, denominator, None if sequence_mean else data.get('step_ids', None),
+                        log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None)
                     if sequence_mean:
                         pg_clipfrac = pg_clipfrac * policy_weights.sum() / denominator
                         ppo_kl = ppo_kl * policy_weights.sum() / denominator
@@ -308,7 +309,8 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                   log_prob=log_prob,
                                                                                   advantages=advantages,
                                                                                   eos_mask=response_mask,
-                                                                                  cliprange=clip_ratio)
+                                                                                  cliprange=clip_ratio,
+                                                                                  log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None)
                 # compute entropy loss from entropy
                 entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
                                 if sequence_mean or paper_objective else verl_F.masked_mean(entropy, response_mask))
