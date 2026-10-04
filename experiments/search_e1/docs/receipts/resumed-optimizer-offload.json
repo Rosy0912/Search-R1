@@ -1,0 +1,101 @@
+{
+  "ranks": [
+    {
+      "rank": 2,
+      "pid": 3549814,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 0,
+      "pid": 3549569,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 4,
+      "pid": 3549816,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 5,
+      "pid": 3549817,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 6,
+      "pid": 3549818,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 7,
+      "pid": 3549819,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 1,
+      "pid": 3549813,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    },
+    {
+      "rank": 3,
+      "pid": 3549815,
+      "before": [
+        "cpu",
+        "cuda:0"
+      ],
+      "after": [
+        "cpu"
+      ],
+      "scheduler": 2
+    }
+  ],
+  "time": 1791119352.3519707
+}

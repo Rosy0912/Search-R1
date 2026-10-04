@@ -35,6 +35,12 @@ def restore_worker(w, directory):
                 assert torch.isfinite(value).all() and torch.equal(value.cpu(),saved.cpu())
             else:assert value==saved
     assert w.actor_lr_scheduler.get_last_lr()==[g['lr'] for g in w.actor_optimizer.param_groups]
+    # load_state_dict follows parameter device. Restore original CPU staging
+    # before rollout so all Adam moments do not remain on the training GPU.
+    if getattr(w, '_is_offload_optimizer', False):
+        from verl.utils.fsdp_utils import offload_fsdp_optimizer
+        offload_fsdp_optimizer(w.actor_optimizer)
+        torch.cuda.synchronize()
     torch.set_rng_state(state['torch_rng']);torch.cuda.set_rng_state(state['cuda_rng'])
     np.random.set_state(state['numpy_rng']);random.setstate(state['python_rng'])
     report=dict(rank=w.rank,pid=os.getpid(),completed_steps=2,optimizer_steps=sorted(set(float(v['step']) for v in actual['state'].values())),scheduler=w.actor_lr_scheduler.state_dict(),weights_exact=True,optimizer_exact=True)

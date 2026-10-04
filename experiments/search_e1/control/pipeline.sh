@@ -78,7 +78,11 @@ select_grpo() {
  local round=$1 initial=$2 stage="$BASE/runs/$PROFILE/round-$1-grpo"
  "$PYTHON" "$CONTROL/select_grpo_checkpoint.py" --log "$stage/train.log" --validation "$BASE/data/validation.jsonl" --initial "$initial" --stage "$stage" --steps "$steps" --report "$BASE/receipts/$PROFILE-round$round-selection.json"
 }
-phase FRESH_GRPO_ROUND_1
+if [[ "$PROFILE" == r1 && -f "$BASE/receipts/continue-current-eight.json" ]]; then
+ phase CONTINUING_GRPO_ROUND_1_FROM_STEP_3
+else
+ phase FRESH_GRPO_ROUND_1
+fi
 export E1_STAGE=round-1-grpo
 "$PYTHON" "$CONTROL/run_checked.py"
 if [[ "$PROFILE" == archive ]]; then steps=200; else steps=500; fi
