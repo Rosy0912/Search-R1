@@ -14,6 +14,8 @@ def configs(monkeypatch):
     with initialize_config_dir(config_dir=str(directory), version_base=None):
         old = compose(config_name='ppo_gigpo_instruct300')
         new = compose(config_name='ppo_gigpo_instruct300_resume75')
+    # Reproduce the immutable prebuilt runtime override in the saved driver.
+    old.baselines.holdout.output_dir = new.baselines.holdout.output_dir
     return old, new
 
 
@@ -62,3 +64,25 @@ def test_resume_refuses_other_checkpoint_or_fresh_initialization(monkeypatch):
     cfg.trainer.val_before_train = True
     with pytest.raises(ValueError, match='boundaries'):
         start_step(cfg)
+
+
+def test_new_iterator_is_constructed_before_restoring_saved_driver_rng():
+    import torch
+    from torch.utils.data import DataLoader
+    from search_r1.baselines.recovery import RecoverableSampler
+    sampler = RecoverableSampler(169028, seed=42)
+    iterator = iter(sampler)
+    for _ in range(38400):
+        next(iterator)
+    state = sampler.state_dict()
+    saved_rng = torch.get_rng_state().clone()
+    loader = DataLoader(list(range(169028)), sampler=sampler, batch_size=512, num_workers=0)
+    resumed_iterator = iter(loader)
+    assert not torch.equal(saved_rng, torch.get_rng_state())
+    sampler.load_state_dict(state)
+    torch.set_rng_state(saved_rng)
+    assert sampler.cursor == 38400
+    expected = torch.tensor(state['order'][38400:38912])
+    torch.testing.assert_close(next(resumed_iterator), expected)
+    assert sampler.cursor == 38912
+    assert torch.equal(saved_rng, torch.get_rng_state())

@@ -786,10 +786,15 @@ class RayPPOTrainer(object):
         resume = self.config.trainer.get('resume', {})
         self.global_steps = int(resume.start_step) if resume.get('enabled', False) else 0
         instruct_origin = 0
+        first_training_iterator = None
         if fresh_instruct:
             from search_r1.baselines.instruct_resume import start_step, restore
             instruct_origin = start_step(self.config)
             if instruct_origin:
+                # Even num_workers=0 draws a global Torch base_seed at iterator
+                # creation. Create the new iterator before restoring driver RNG;
+                # its sampler generator does not fetch a row until next().
+                first_training_iterator = iter(self.train_dataloader)
                 restore(self)
                 self.global_steps = instruct_origin
         # perform validation before training
@@ -826,7 +831,9 @@ class RayPPOTrainer(object):
 
         # start training loop
         for epoch in range(self.config.trainer.total_epochs):
-            for batch_dict in self.train_dataloader:
+            epoch_batches = (first_training_iterator if epoch == 0 and first_training_iterator is not None
+                             else self.train_dataloader)
+            for batch_dict in epoch_batches:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}

@@ -109,6 +109,9 @@ def restore(trainer):
             or any(v['logical_step'] != 75 for v in loaded)):
         raise RuntimeError('Incomplete actual eight-rank full restore')
     now = trainer.actor_rollout_wg.checkpoint_pause_identity()
+    if (len(now) != 8 or {v['rank'] for v in now} != set(range(8))
+            or len({v['pid'] for v in now}) != 8):
+        raise RuntimeError('Actual restored worker identity coverage is incomplete')
     expected = {v['pause_identity']['rank']: v['pause_identity'] for v in rank_records}
     for value in now:
         # The new process has an explicitly different PID/start time. All saved

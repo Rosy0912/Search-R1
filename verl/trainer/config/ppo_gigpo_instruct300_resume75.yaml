@@ -5,6 +5,11 @@ defaults:
 actor_rollout_ref:
   actor:
     joint_loss_scaling: true
+baselines:
+  holdout:
+    # Immutable prebuilt mode does not write this historical cache directory.
+    # Preserve the original resolved value rather than weakening migration.
+    output_dir: /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/common-data
 trainer:
   acceptance_step: 80
   val_before_train: false
