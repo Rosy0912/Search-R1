@@ -20,6 +20,10 @@ def runtime_env_vars():
     names = ('AUDIT_DIR', 'RUN_ID', 'COMMIT', 'CONFIG_SHA256', 'DATA_IDENTITY')
     result = {f'SEARCH_R1_BASELINE_{name}': os.environ[f'SEARCH_R1_BASELINE_{name}']
               for name in names if f'SEARCH_R1_BASELINE_{name}' in os.environ}
+    for name in ('SLURM_JOB_ID', 'SEARCH_R1_MODEL_IDENTITY', 'SEARCH_R1_BASELINE_OUTPUT',
+                 'TREE_COMMON_DATA', 'TREE_INSTRUCT_MODEL'):
+        if name in os.environ:
+            result[name] = os.environ[name]
     resource = 'SEARCH_R1_BASELINE_TEACHER_CPU_THREADS'
     if resource in os.environ:
         result[resource] = str(teacher_cpu_threads())

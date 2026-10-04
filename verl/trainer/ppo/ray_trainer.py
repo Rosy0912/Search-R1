@@ -409,7 +409,15 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
-        self.train_dataloader = DataLoader(dataset=self.train_dataset,
+        if self.config.trainer.get('training_state_enabled', False):
+            from search_r1.baselines.training_state import CheckpointBatchSampler
+            self.checkpoint_sampler = CheckpointBatchSampler(
+                len(self.train_dataset), self.config.data.train_batch_size, self.config.baselines.seed,
+                os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'], self.config.data.shuffle_train_dataloader)
+            self.train_dataloader = DataLoader(dataset=self.train_dataset, batch_sampler=self.checkpoint_sampler,
+                                               num_workers=0, collate_fn=collate_fn)
+        else:
+            self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
                                            shuffle=self.config.data.shuffle_train_dataloader,
                                            drop_last=True,
@@ -428,6 +436,18 @@ class RayPPOTrainer(object):
             else:
                 self.val_dataset.dataframe = self.val_dataset.dataframe.sample(self.config.data.val_data_num, random_state=42)
         print(f"filtered validation dataset size: {len(self.val_dataset.dataframe)}")
+
+        if self.config.get('baselines') is not None and self.config.baselines.holdout.get('input_mode') == 'prebuilt_manifest':
+            from search_r1.baselines.holdout import _validate_prebuilt, frame_identity, ordered_question_ids_hash
+            split = _validate_prebuilt(self.config)
+            if split['content_identity']['sha256'] != os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'):
+                raise ValueError('Worker prebuilt data identity differs from entry')
+            for name, dataset in [('train', self.train_dataset), ('validation', self.val_dataset)]:
+                record = split['manifest']['splits'][name]
+                identity = frame_identity(dataset.dataframe, self.config.data.prompt_key)
+                if (len(dataset) != record['rows'] or identity != record['content_identity']
+                        or ordered_question_ids_hash(dataset.dataframe) != record['question_ids_sha256']):
+                    raise ValueError('Worker dataset was filtered, reordered or changed: ' + name)
 
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
                                          batch_size=self.config.data.val_batch_size,
@@ -452,7 +472,10 @@ class RayPPOTrainer(object):
 
         OmegaConf.set_struct(self.config, True)
         with open_dict(self.config):
-            self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps
+            actual_limit = self.config.trainer.get('actual_update_limit', None)
+            if actual_limit is not None and int(actual_limit)+1 != total_training_steps:
+                raise ValueError('Actual update limit differs from legacy terminal counter')
+            self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps if actual_limit is None else int(actual_limit)
             self.config.critic.optim.total_training_steps = total_training_steps
 
     def _prepare_final_validation(self):
@@ -697,6 +720,48 @@ class RayPPOTrainer(object):
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
+        if self.config.trainer.get('training_state_enabled', False):
+            self._save_complete_training_state()
+
+    def _save_complete_training_state(self):
+        from search_r1.baselines.training_state import atomic_save, driver_snapshot, restore_driver, digest
+        identity = dict(job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                        config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
+                        data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
+                        model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'], completed_step=self.global_steps,
+                        actual_update_limit=self.config.trainer.actual_update_limit)
+        if self.actual_outer_updates != self.global_steps:
+            raise ValueError('Saved actual update counter differs from completed step')
+        directory = os.path.join(self.config.trainer.default_local_dir, 'training_state', f'global_step_{self.global_steps}')
+        verify = self.global_steps == self.config.trainer.acceptance_step
+        workers = self.actor_rollout_wg.save_training_state(directory, identity, verify=verify)
+        if len(workers) != self.actor_rollout_wg.world_size or {r['identity']['rank'] for r in workers} != set(range(len(workers))):
+            raise ValueError('Incomplete worker snapshot coverage')
+        if verify and not all(r['exact_same_world_reload_verified'] for r in workers):
+            raise ValueError('Worker reload verification missing')
+        saved = driver_snapshot(self, identity); logical = digest(saved)
+        driver_path = os.path.join(directory, 'driver.pt'); driver_sha = atomic_save(saved, driver_path)
+        if verify:
+            import torch
+            loaded = torch.load(driver_path, map_location='cpu', weights_only=False)
+            if digest(loaded) != logical: raise ValueError('Driver serialized state differs')
+            restore_driver(self, loaded, identity)
+            if digest(driver_snapshot(self, identity)) != logical: raise ValueError('Driver reloaded state differs')
+        from search_r1.baselines.select_teacher import model_manifest
+        hf_path = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
+        hf_identity = model_manifest(hf_path)
+        manifest = dict(status='COMPLETE_SAME_WORLD_STATE_SAVED', identity=identity, worker_states=workers,
+                        driver=dict(path=driver_path, sha256=driver_sha, logical_state_sha256=logical,
+                                    next_step=self.global_steps+1, exact_reload_verified=verify),
+                        hf_checkpoint=hf_path, hf_identity=hf_identity,
+                        limits='Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence')
+        manifest_path = os.path.join(directory, 'manifest.json')
+        manifest_sha = atomic_save(manifest, manifest_path, json_format=True)
+        if verify:
+            self.acceptance_ready = dict(identity, completed_outer_updates=self.global_steps,
+                                         next_outer_update=self.global_steps+1, full_state_manifest=manifest_path,
+                                         full_state_manifest_sha256=manifest_sha, full_state_reload_verified=True,
+                                         hf_checkpoint=hf_path, hf_identity=hf_identity)
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -758,7 +823,21 @@ class RayPPOTrainer(object):
 
         # start training loop
         for epoch in range(self.config.trainer.total_epochs):
-            for batch_dict in self.train_dataloader:
+            batch_iterator = iter(self.train_dataloader)
+            while True:
+                # Wait BEFORE fetching the sixth question batch. Keep every
+                # actor, Adam, scheduler, Tree RNG and sampler live in place.
+                if (self.config.trainer.get('acceptance_gate_enabled', False)
+                        and self.global_steps == self.config.trainer.acceptance_step+1
+                        and not getattr(self, 'acceptance_released', False)):
+                    from search_r1.baselines.training_state import wait_for_acceptance
+                    wait_for_acceptance(os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'acceptance-step5'),
+                                        self.acceptance_ready, self.config.trainer.acceptance_gate_timeout_seconds)
+                    self.acceptance_released = True
+                try:
+                    batch_dict = next(batch_iterator)
+                except StopIteration:
+                    break
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}

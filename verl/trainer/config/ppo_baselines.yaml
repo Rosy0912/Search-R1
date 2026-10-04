@@ -21,11 +21,13 @@ actor_rollout_ref:
     use_remove_padding: true
   actor:
     baseline_method: ${baselines.method}
+    training_state_enabled: false
     distillation: ${baselines.distillation}
     state_masking: true
     optim:
       lr: 1.0e-6
       lr_warmup_steps_ratio: 0.285
+      lr_warmup_steps: null
     use_kl_loss: true
     kl_loss_coef: 0.001
     kl_loss_type: low_var_kl
@@ -56,9 +58,13 @@ retriever:
 trainer:
   total_epochs: 15
   total_training_steps: 501
+  actual_update_limit: null
   save_freq: 100
   test_freq: 50
   acceptance_step: 5
+  training_state_enabled: false
+  acceptance_gate_enabled: false
+  acceptance_gate_timeout_seconds: 43200
   smoke_only: false
   val_before_train: true
   project_name: Search-R1-RL-Baselines

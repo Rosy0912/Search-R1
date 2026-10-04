@@ -10,7 +10,7 @@ def main(config):
     validate_gpu_lease(config)
     from .local_runtime import check_local_runtime
     check_local_runtime(config)
-    from .holdout import prepare_common_holdout
+    from .holdout import prepare_common_holdout, assert_prebuilt_unchanged
     split_manifest = prepare_common_holdout(config)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
         raise ValueError('Smoke-only runs allow at most five outer updates')
@@ -47,7 +47,10 @@ def main(config):
     from .runtime_audit import runtime_env_vars
     audit_env = runtime_env_vars()
     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
-    result = ray.get(task.remote(config))
+    try:
+        result = ray.get(task.remote(config))
+    finally:
+        assert_prebuilt_unchanged(config, split_manifest)
     if config.baselines.holdout_eval_only:
         import json
         import re

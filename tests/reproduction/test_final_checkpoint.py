@@ -21,7 +21,7 @@ def real_iteration_tail():
                    and n.name == "RayPPOTrainer")
     fit = next(n for n in trainer.body if isinstance(n, ast.FunctionDef) and n.name == "fit")
     epoch = next(n for n in fit.body if isinstance(n, ast.For))
-    batches = next(n for n in epoch.body if isinstance(n, ast.For))
+    batches = next(n for n in epoch.body if isinstance(n, (ast.For, ast.While)))
     step = next(n for n in batches.body if isinstance(n, ast.With))
     update = next(i for i, n in enumerate(step.body) if isinstance(n, ast.If)
                   and "critic_warmup" in ast.unparse(n.test))

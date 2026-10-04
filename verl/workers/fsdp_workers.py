@@ -233,7 +233,11 @@ class ActorRolloutRefWorker(Worker):
 
             total_steps = optim_config.get('total_training_steps', 0)
             num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            num_warmup_steps = optim_config.get('lr_warmup_steps', None)
+            if num_warmup_steps is not None and (isinstance(num_warmup_steps, bool) or int(num_warmup_steps) != num_warmup_steps):
+                raise ValueError('Explicit warmup steps must be an integer')
+            num_warmup_steps = int(num_warmup_steps_ratio * total_steps) if num_warmup_steps is None else int(num_warmup_steps)
+            if num_warmup_steps < 0: raise ValueError('Warmup steps must be nonnegative')
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
@@ -376,6 +380,8 @@ class ActorRolloutRefWorker(Worker):
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
+                lr_before_outer = self.actor_lr_scheduler.get_last_lr()[0]
+                scheduler_before_outer = self.actor_lr_scheduler.last_epoch
                 metrics = self.actor.update_policy(data=data)
             delta_time = timer.last
             global_num_tokens = data.meta_info['global_token_num']
@@ -386,6 +392,9 @@ class ActorRolloutRefWorker(Worker):
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
+            metrics['actor/lr_before_outer'] = lr_before_outer
+            metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
+            metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
 
             log_gpu_memory_usage('After update policy', logger=logger)
 
@@ -538,6 +547,21 @@ class ActorRolloutRefWorker(Worker):
         torch.distributed.barrier()
         if self._is_offload_param:
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def save_training_state(self, local_path, identity, verify=False):
+        if not self._is_actor or not self.config.actor.get('training_state_enabled', False):
+            raise ValueError('Complete actor training state is not enabled')
+        from search_r1.baselines.training_state import snapshot_worker_to_file
+        identity = dict(identity, rank=self.rank, world_size=self.world_size,
+                        cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))
+        path = os.path.join(local_path, f'rank-{self.rank:02d}.pt')
+        # At this boundary actor params/optimizer already occupy their configured
+        # offload devices. Restore into that same layout without reinitializing.
+        return snapshot_worker_to_file(self.actor_module_fsdp, self.actor_optimizer,
+                                       self.actor_lr_scheduler, path, identity,
+                                       verify=verify, cuda=True)
 
 
 class CriticWorker(Worker):
