@@ -5,7 +5,19 @@ base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];stage=os.envir
 control=base/'source/experiments/search_e1/control';receipt=base/'receipts'/f'{profile}-{stage}.json'
 if (base/'runs'/profile/stage).exists():raise SystemExit('Stage output already exists; preserve it before starting a fresh run')
 ids=os.environ['CUDA_VISIBLE_DEVICES'];env=dict(os.environ,E1_RUN_ID=uuid.uuid4().hex,RAY_enable_metrics_collection='0',TZ='UTC')
-admission=subprocess.check_output([str(base/'env/bin/python'),str(control/'gpu_admission.py')],env=env,text=True)
+# Ray teardown may outlive the completed driver. Wait briefly without stopping
+# any process; every retry still applies the complete UUID/process admission.
+for attempt in range(37):
+ admission_result=subprocess.run([str(base/'env/bin/python'),str(control/'gpu_admission.py')],env=env,text=True,capture_output=True)
+ if admission_result.returncode==0:
+  admission=admission_result.stdout
+  break
+ if not any(message in admission_result.stderr for message in ['Selected GPU busy/unknown:', 'Selected GPU has compute processes:']) or attempt==36:
+  sys.stderr.write(admission_result.stderr)
+  raise SystemExit(admission_result.returncode)
+ if attempt==0:print('WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION',flush=True)
+ time.sleep(5)
+
 record=dict(profile=profile,stage=stage,run_id=env['E1_RUN_ID'],admission=json.loads(admission),started_unix=time.time(),status='STARTING',utilization=float(env.get('E1_VLLM_UTIL','.4')),peaks_mib={},sample_count=0)
 record['execution_caps']={key:env.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK']}
 p=subprocess.Popen(['bash',str(control/'train_profile.sh')],env=env,start_new_session=True)
