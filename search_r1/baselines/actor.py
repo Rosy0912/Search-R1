@@ -2,6 +2,7 @@
 import math
 import os
 import torch
+import verl.utils.torch_functional as verl_F
 from verl.workers.actor.dp_actor import DataParallelPPOActor
 from verl.utils.py_functional import append_to_dict
 from .distillation import FrozenTeacher, opsd_loss, global_token_count
@@ -11,6 +12,9 @@ from .rollout import select_rows
 class DistillationActor(DataParallelPPOActor):
     def __init__(self, config, actor_module, actor_optimizer, tokenizer):
         super().__init__(config, actor_module, actor_optimizer)
+        # Pure OPSD uses entropy only as a diagnostic during old-log-prob scoring.
+        # Keep its original eager formula; avoid Dynamo-generated global code.
+        self.compute_entropy_from_logits = verl_F.entropy_from_logits
         if self.ulysses_sequence_parallel_size != 1:
             raise ValueError('OPSD padded alignment currently requires sequence parallel size 1')
         if config.use_kl_loss or config.entropy_coeff:
