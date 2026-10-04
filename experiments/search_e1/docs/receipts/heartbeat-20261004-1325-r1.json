@@ -1,0 +1,114 @@
+{
+  "time": 1791120276.815176,
+  "host": "hkust1",
+  "base": "/data/shaoshitong/search-e1-config-study-8gpu-20261004",
+  "receipt": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [],
+      "owned_shared_oracle": null
+    },
+    "started_unix": 1791118516.1053102,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "sample_count": 841,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1",
+      "E1_GPUS": "8",
+      "E1_VIRTUAL_DP_WORLD": "4"
+    },
+    "pid": 3546009,
+    "updated_unix": 1791120273.4878953
+  },
+  "completed_metrics": [
+    "(main_task pid=3451483) step:1 - global_seqlen/min:538296.000 - global_seqlen/max:546558.000 - global_seqlen/minmax_diff:8262.000 - global_seqlen/balanced_min:543250.000 - global_seqlen/balanced_max:543251.000 - global_seqlen/mean:543250.250 - audit/legacy_em:0.279 - audit/strict_em:0.192 - audit/score_disagreement:0.087 - state_tokens/total:462820.000 - state_tokens/coverage:0.254 - actor/kl_coef:0.001 - actor/entropy_loss:0.918 - actor/pg_loss:0.006 - actor/pg_clipfrac:0.000 - actor/ppo_kl:0.000 - actor/kl_loss:0.003 - actor/grad_norm:1.007 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.192 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.192 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.003 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.003 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:711.123 - response_length/max:2689.000 - response_length/min:56.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.705 - prompt_length/max:245.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.152 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.987 - env/number_of_valid_action:2.111 - env/ratio_of_valid_action:0.991 - env/number_of_valid_search:1.124 - timing_s/gen:934.359 - timing_s/ref:173.434 - timing_s/adv:4.276 - timing_s/update_actor:836.839 - timing_s/save_checkpoint:26.723 - timing_s/step:2151.520 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.385 - timing_per_token_ms/gen:0.513 - timing_per_token_ms/ref:0.080",
+    "(main_task pid=3451483) step:2 - global_seqlen/min:546916.000 - global_seqlen/max:569442.000 - global_seqlen/minmax_diff:22526.000 - global_seqlen/balanced_min:558590.000 - global_seqlen/balanced_max:558590.000 - global_seqlen/mean:558590.000 - audit/legacy_em:0.271 - audit/strict_em:0.177 - audit/score_disagreement:0.093 - state_tokens/total:485355.000 - state_tokens/coverage:0.258 - actor/kl_coef:0.001 - actor/entropy_loss:1.039 - actor/pg_loss:-0.016 - actor/pg_clipfrac:0.002 - actor/ppo_kl:-0.000 - actor/kl_loss:0.003 - actor/grad_norm:1.014 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.177 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.177 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.007 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.007 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:734.605 - response_length/max:2877.000 - response_length/min:69.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.191 - prompt_length/max:241.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.181 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.984 - env/number_of_valid_action:2.137 - env/ratio_of_valid_action:0.990 - env/number_of_valid_search:1.153 - timing_s/gen:615.217 - timing_s/ref:173.502 - timing_s/adv:4.549 - timing_s/update_actor:847.026 - timing_s/save_checkpoint:36.011 - timing_s/step:1852.771 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.379 - timing_per_token_ms/gen:0.327 - timing_per_token_ms/ref:0.078",
+    "(main_task pid=2989937) step:0 - val/test_score/nq:0.176 - val/test_score/hotpotqa:0.203"
+  ],
+  "last_lines": [
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3842533888, 'reserved': 4175429632} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3842546176, 'reserved': 4294967296, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3842533888, 'reserved': 4175429632} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3842546176, 'reserved': 4294967296, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3842533888, 'reserved': 4177526784} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3842546176, 'reserved': 4294967296, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3842533888, 'reserved': 4175429632} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549816) E1_OPTIMIZER_MEMORY_END {'rank': 4, 'allocated': 3842533888, 'reserved': 4332716032, 'peak_allocated': 16344317440, 'peak_reserved': 16699621376} [repeated 8x across cluster]"
+  ],
+  "tmux": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-continuation-readonly-acceptance-20261004: 1 windows (created Sun Oct  4 13:24:12 2026)\ne1-eight-continuation-20261004: 1 windows (created Sun Oct  4 12:53:42 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)\n"
+}

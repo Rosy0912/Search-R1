@@ -1,0 +1,112 @@
+{
+  "time": 1791120280.8147082,
+  "host": "hkust4",
+  "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+  "receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 41862,
+      "5": 43170,
+      "6": 41932,
+      "7": 39574
+    },
+    "sample_count": 18106,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791120270.2749627
+  },
+  "completed_metrics": [
+    "(main_task pid=1437474) step:20 - global_seqlen/min:553831.000 - global_seqlen/max:598931.000 - global_seqlen/minmax_diff:45100.000 - global_seqlen/balanced_min:578616.000 - global_seqlen/balanced_max:578617.000 - global_seqlen/mean:578616.500 - audit/legacy_em:0.286 - audit/strict_em:0.195 - audit/score_disagreement:0.091 - state_tokens/total:448676.000 - state_tokens/coverage:0.229 - actor/kl_coef:0.001 - actor/entropy_loss:0.830 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.001 - actor/kl_loss:0.024 - actor/grad_norm:2.096 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.195 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.195 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.006 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.006 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:766.377 - response_length/max:2873.000 - response_length/min:48.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.711 - prompt_length/max:235.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.255 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.989 - env/number_of_valid_action:2.240 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.251 - timing_s/gen:899.569 - timing_s/ref:114.364 - timing_s/adv:4.551 - timing_s/update_actor:952.771 - timing_s/step:2089.349 - timing_per_token_ms/update_actor:0.412 - timing_per_token_ms/ref:0.049 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.459",
+    "(main_task pid=1437474) step:21 - global_seqlen/min:561406.000 - global_seqlen/max:581481.000 - global_seqlen/minmax_diff:20075.000 - global_seqlen/balanced_min:571905.000 - global_seqlen/balanced_max:571906.000 - global_seqlen/mean:571905.500 - audit/legacy_em:0.327 - audit/strict_em:0.229 - audit/score_disagreement:0.098 - state_tokens/total:431100.000 - state_tokens/coverage:0.223 - actor/kl_coef:0.001 - actor/entropy_loss:0.782 - actor/pg_loss:0.010 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.003 - actor/kl_loss:0.029 - actor/grad_norm:2.560 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.229 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.229 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.014 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.014 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:755.968 - response_length/max:3382.000 - response_length/min:62.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.635 - prompt_length/max:198.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.247 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.985 - env/number_of_valid_action:2.231 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.246 - timing_s/gen:809.977 - timing_s/ref:114.898 - timing_s/adv:4.612 - timing_s/update_actor:929.945 - timing_s/step:1981.477 - timing_per_token_ms/update_actor:0.407 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.419",
+    "(main_task pid=1437474) step:22 - global_seqlen/min:546529.000 - global_seqlen/max:590400.000 - global_seqlen/minmax_diff:43871.000 - global_seqlen/balanced_min:568929.000 - global_seqlen/balanced_max:568929.000 - global_seqlen/mean:568929.000 - audit/legacy_em:0.321 - audit/strict_em:0.213 - audit/score_disagreement:0.109 - state_tokens/total:429389.000 - state_tokens/coverage:0.223 - actor/kl_coef:0.001 - actor/entropy_loss:0.791 - actor/pg_loss:-0.013 - actor/pg_clipfrac:0.005 - actor/ppo_kl:-0.001 - actor/kl_loss:0.016 - actor/grad_norm:2.580 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.213 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.213 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.018 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.018 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:751.278 - response_length/max:3298.000 - response_length/min:45.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.674 - prompt_length/max:249.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.233 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.986 - env/number_of_valid_action:2.222 - env/ratio_of_valid_action:0.997 - env/number_of_valid_search:1.236 - timing_s/gen:491.306 - timing_s/ref:114.701 - timing_s/adv:4.578 - timing_s/update_actor:923.921 - timing_s/step:1651.508 - timing_per_token_ms/update_actor:0.406 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.255"
+  ],
+  "last_lines": [
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <information>Doc 1(Title: \"Bally's Las Vegas\") property with its purchase of Caesars in June 2005. In May 2018 Caesars Entertainment Corporation completed a $125 million redesign of 2,052 guest rooms and suites in the newly renamed Resort (formerly Indigo/North) Tower. This recent renovation followed the completion of the Jubilee (formerly South) Tower rooms and suites in early 2014. Bally's Las Vegas Bally's Las Vegas (formerly MGM Grand Hotel and Casino) is a hotel and casino on the Las Vegas Strip in Paradise, Nevada. It is owned and operated by Caesars Entertainment Corporation. The hotel features 2,814 extra-sized guestrooms that are or larger and over of banquet",
+    "(main_task pid=1437474) Doc 2(Title: \"Bally's Las Vegas\") Bally's Las Vegas Bally's Las Vegas (formerly MGM Grand Hotel and Casino) is a hotel and casino on the Las Vegas Strip in Paradise, Nevada. It is owned and operated by Caesars Entertainment Corporation. The hotel features 2,814 extra-sized guestrooms that are or larger and over of banquet and meeting space. The casino occupies . About 75% of the rooms are in the Resort Tower which had renovations completed in 2018. The remaining rooms are located in the Jubilee Tower, constructed in 1981. The resort has a large shopping area a floor below its gaming level, including several restaurants, and",
+    "(main_task pid=1437474) Doc 3(Title: \"Las Vegas Monorail\") on the MGM side. The two trains each ran back and forth on each beam, and were stored at a maintenance building near the Bally's station (this building still stands today, but it has been severed from the beam). In 2002, the original system closed to begin its conversion to the current Las Vegas Monorail system. The beam was extended from Bally's station (now the Bally's & Paris station) north to the Sahara Hotel and Casino (now the SLS Las Vegas). The track was extended south beyond the MGM station to provide for track switching for the trains, as well</information>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <answer>",
+    "(main_task pid=1437474) The Paris hotel and casino that, along with Bally's, is located at the Bally's & Paris station on the Las Vegas Monorail, and owned by Caesar's Entertainment Corporation, is the Paris Hotel, which is part of the MGM complex after the ownership change.",
+    "(main_task pid=1437474) </answer>"
+  ],
+  "tmux": "e1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)\ne1-stream-memory-20261004: 1 windows (created Sun Oct  4 19:00:28 2026)\n",
+  "shared_memory": {
+    "peak_mib": 39245,
+    "service_peak_mib": 630,
+    "current_mib": 27387,
+    "total_mib": 49140,
+    "reserve_mib": 9895,
+    "samples": 2285,
+    "time": 1791120279.4461884,
+    "service_pid": 1749337
+  }
+}
