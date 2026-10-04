@@ -1,0 +1,67 @@
+{
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "checked_unix": 1791134334.8148458,
+  "previous_hourly_unix": 1791130655.7633235,
+  "previous_update": 200,
+  "latest_update": 211,
+  "new_updates": 11,
+  "reward_console_precision": 3,
+  "reward_mean": 0.6296363636363637,
+  "reward_range": [
+    0.56,
+    0.704
+  ],
+  "latest_reward": 0.643,
+  "previous_hourly_mean": null,
+  "mean_delta": null,
+  "validation_step": 205,
+  "validation_correct": 20,
+  "validation_count": 64,
+  "validation_em": 0.3125,
+  "previous_validation_em": 0.25,
+  "validation_delta_pp": 6.25,
+  "source_correct": {
+    "nq": 5,
+    "triviaqa": 5,
+    "popqa": 1,
+    "hotpotqa": 5,
+    "2wikimultihopqa": 1,
+    "musique": 1,
+    "bamboogle": 2
+  },
+  "source_counts": {
+    "nq": 10,
+    "triviaqa": 9,
+    "popqa": 9,
+    "hotpotqa": 9,
+    "2wikimultihopqa": 9,
+    "musique": 9,
+    "bamboogle": 9
+  },
+  "hour_training_gpu_peak_mib": 40731,
+  "cumulative_training_gpu_peak_mib": 40731,
+  "total_mib": 81920,
+  "sample_count": 1818,
+  "sample_end": 1791134333.2277381,
+  "instant_training_gpu_used_mib": [
+    11751,
+    12941,
+    12961,
+    12951
+  ],
+  "instant_util_percent": [
+    53,
+    52,
+    51,
+    52
+  ],
+  "main_live": true,
+  "supervisor_live": true,
+  "errors": [],
+  "disk_source_files_hash_verified": 262,
+  "input_files_hash_verified": 4,
+  "recovery_intervention_exact_set_hash_verified": true,
+  "source_semantics": "Disk snapshot not loaded module proof",
+  "target": 300,
+  "next_save": 250
+}
