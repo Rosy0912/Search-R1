@@ -1,0 +1,17 @@
+{
+  "before_phase": "ray::WorkerDict.actor_rollout_update_actor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ",
+  "after_phase": "ray::WorkerDict.actor_rollout_update_actor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ",
+  "queries": 512,
+  "seconds": 72.4844163376838,
+  "time": 1791116438.3124826,
+  "memory": {
+    "peak_mib": 29275,
+    "service_peak_mib": 630,
+    "current_mib": 29255,
+    "total_mib": 49140,
+    "reserve_mib": 19865,
+    "samples": 520,
+    "time": 1791116437.9171627,
+    "service_pid": 1749337
+  }
+}
