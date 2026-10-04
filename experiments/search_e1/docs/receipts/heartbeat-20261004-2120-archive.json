@@ -1,0 +1,282 @@
+{
+  "time": 1791148819.863457,
+  "host": "hkust4",
+  "phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+  "receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 47824,
+      "5": 44662,
+      "6": 41932,
+      "7": 41637
+    },
+    "sample_count": 31726,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791148811.45377
+  },
+  "metrics": [
+    "(main_task pid=1437474) step:38 - global_seqlen/min:591138.000 - global_seqlen/max:640101.000 - global_seqlen/minmax_diff:48963.000 - global_seqlen/balanced_min:619788.000 - global_seqlen/balanced_max:619789.000 - global_seqlen/mean:619788.750 - audit/legacy_em:0.324 - audit/strict_em:0.244 - audit/score_disagreement:0.080 - state_tokens/total:484314.000 - state_tokens/coverage:0.228 - actor/kl_coef:0.001 - actor/entropy_loss:0.703 - actor/pg_loss:0.008 - actor/pg_clipfrac:0.006 - actor/ppo_kl:0.004 - actor/kl_loss:0.079 - actor/grad_norm:2.203 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.244 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.244 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.008 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.008 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:831.322 - response_length/max:3252.000 - response_length/min:78.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.098 - prompt_length/max:205.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.377 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.980 - env/number_of_valid_action:2.344 - env/ratio_of_valid_action:0.993 - env/number_of_valid_search:1.364 - timing_s/gen:752.671 - timing_s/ref:207.090 - timing_s/adv:4.843 - timing_s/update_actor:923.024 - timing_s/step:2098.889 - timing_per_token_ms/update_actor:0.372 - timing_per_token_ms/ref:0.084 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.354",
+    "(main_task pid=1437474) step:39 - global_seqlen/min:629265.000 - global_seqlen/max:642642.000 - global_seqlen/minmax_diff:13377.000 - global_seqlen/balanced_min:635069.000 - global_seqlen/balanced_max:635070.000 - global_seqlen/mean:635069.250 - audit/legacy_em:0.344 - audit/strict_em:0.256 - audit/score_disagreement:0.088 - state_tokens/total:514784.000 - state_tokens/coverage:0.235 - actor/kl_coef:0.001 - actor/entropy_loss:0.741 - actor/pg_loss:0.059 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.005 - actor/kl_loss:0.104 - actor/grad_norm:2.614 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.256 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.256 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.012 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.012 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:854.764 - response_length/max:3755.000 - response_length/min:82.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.531 - prompt_length/max:239.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.408 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.975 - env/number_of_valid_action:2.362 - env/ratio_of_valid_action:0.990 - env/number_of_valid_search:1.387 - timing_s/gen:739.187 - timing_s/ref:208.195 - timing_s/adv:5.239 - timing_s/update_actor:926.438 - timing_s/step:2091.569 - timing_per_token_ms/update_actor:0.365 - timing_per_token_ms/ref:0.082 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.338"
+  ],
+  "current_step": [
+    "40"
+  ],
+  "tail": [
+    "(main_task pid=1437474) From the information found:",
+    "(main_task pid=1437474) - Victoria University of Wellington was established in 1897",
+    "(main_task pid=1437474) - University of West Florida was established in 1962",
+    "(main_task pid=1437474) <answer>Victoria University of Wellington</answer>"
+  ],
+  "nonfinite": false,
+  "sessions": "e1-archive-post-score-memory-20261005: 1 windows (created Mon Oct  5 04:21:51 2026)\ne1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)\n",
+  "gpu": "0, 33266 MiB, 49140 MiB, 0 %\n1, 5666 MiB, 49140 MiB, 0 %\n2, 29088 MiB, 49140 MiB, 0 %\n3, 5928 MiB, 49140 MiB, 0 %\n4, 24114 MiB, 49140 MiB, 100 %\n5, 27378 MiB, 49140 MiB, 100 %\n6, 26582 MiB, 49140 MiB, 94 %\n7, 30067 MiB, 49140 MiB, 100 %\n",
+  "processes": "1164838, GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 33248 MiB\n840849, GPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 5648 MiB\n3065521, GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 29070 MiB\n3295494, GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 5910 MiB\n1437900, GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 24038 MiB\n1438381, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 27302 MiB\n1438382, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 26506 MiB\n1438383, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 29378 MiB\n1749337, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 610 MiB\n",
+  "frozen_runtime": {
+    "archive": {
+      "files": 669,
+      "changed_or_missing": []
+    }
+  },
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "shared_memory": {
+    "peak_mib": 41637,
+    "service_peak_mib": 630,
+    "current_mib": 30067,
+    "total_mib": 49140,
+    "reserve_mib": 7503,
+    "samples": 15380,
+    "time": 1791148810.3234942,
+    "service_pid": 1749337
+  },
+  "oracle_registration": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "live_physical_score_override": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "time": 1791141927.2525265,
+    "ranks": [
+      {
+        "rank": 0,
+        "pid": 1437900,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.2510319
+      },
+      {
+        "rank": 2,
+        "pid": 1438382,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.102955
+      },
+      {
+        "rank": 3,
+        "pid": 1438383,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.1382437
+      },
+      {
+        "rank": 1,
+        "pid": 1438381,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.1284204
+      }
+    ],
+    "purpose": "Reduce physical read-only scoring pieces from2 to1; logical config unchanged",
+    "training_restarted": false,
+    "frozen_runtime_modified": false
+  },
+  "post_score_memory": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791145311.6439264,
+    "physical_score": 1,
+    "peaks_mib": {
+      "4": 36384,
+      "5": 37648,
+      "6": 36892,
+      "7": 40085
+    },
+    "samples": 1666,
+    "full_iterations_to_observe": [
+      39,
+      40
+    ],
+    "status": "OBSERVING",
+    "minimum_reserve_mib": {
+      "4": 12756,
+      "5": 11492,
+      "6": 12248,
+      "7": 9055
+    },
+    "last_completed_step": 39,
+    "updated": 1791148803.8300397
+  }
+}
