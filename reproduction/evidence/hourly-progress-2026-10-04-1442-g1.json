@@ -1,0 +1,298 @@
+{
+  "checked_unix": 1791096170.8583024,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "latest": {
+    "step": 114.0,
+    "critic/rewards/mean": 0.477,
+    "actor/pg_loss": 0.005,
+    "actor/entropy_loss": 2.723,
+    "actor/kl_loss": 0.424,
+    "actor/ppo_kl": 0.004,
+    "actor/grad_norm": 1.464,
+    "timing_s/step": 421.508,
+    "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+  },
+  "new_updates": 12,
+  "new_rows": [
+    {
+      "step": 103.0,
+      "critic/rewards/mean": 0.571,
+      "actor/pg_loss": 0.041,
+      "actor/entropy_loss": 1.005,
+      "actor/kl_loss": 0.357,
+      "actor/ppo_kl": 0.004,
+      "actor/grad_norm": 2.175,
+      "timing_s/step": 266.254,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 104.0,
+      "critic/rewards/mean": 0.519,
+      "actor/pg_loss": -0.033,
+      "actor/entropy_loss": 1.089,
+      "actor/kl_loss": 0.421,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 2.136,
+      "timing_s/step": 279.936,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 105.0,
+      "critic/rewards/mean": 0.456,
+      "actor/pg_loss": -0.077,
+      "actor/entropy_loss": 1.072,
+      "actor/kl_loss": 0.215,
+      "actor/ppo_kl": 0.005,
+      "actor/grad_norm": 1.883,
+      "timing_s/step": 268.429,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 106.0,
+      "critic/rewards/mean": 0.543,
+      "actor/pg_loss": 0.017,
+      "actor/entropy_loss": 1.009,
+      "actor/kl_loss": 0.303,
+      "actor/ppo_kl": 0.004,
+      "actor/grad_norm": 1.927,
+      "timing_s/step": 278.242,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 107.0,
+      "critic/rewards/mean": 0.509,
+      "actor/pg_loss": -0.036,
+      "actor/entropy_loss": 1.027,
+      "actor/kl_loss": 0.287,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.814,
+      "timing_s/step": 274.856,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 108.0,
+      "critic/rewards/mean": 0.503,
+      "actor/pg_loss": -0.041,
+      "actor/entropy_loss": 1.323,
+      "actor/kl_loss": 0.38,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.779,
+      "timing_s/step": 283.964,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 109.0,
+      "critic/rewards/mean": 0.488,
+      "actor/pg_loss": 0.068,
+      "actor/entropy_loss": 1.261,
+      "actor/kl_loss": 0.279,
+      "actor/ppo_kl": 0.006,
+      "actor/grad_norm": 1.753,
+      "timing_s/step": 280.789,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 110.0,
+      "critic/rewards/mean": 0.544,
+      "actor/pg_loss": -0.007,
+      "actor/entropy_loss": 1.513,
+      "actor/kl_loss": 0.652,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.786,
+      "timing_s/step": 284.932,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 111.0,
+      "critic/rewards/mean": 0.523,
+      "actor/pg_loss": -0.078,
+      "actor/entropy_loss": 2.06,
+      "actor/kl_loss": 0.263,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.799,
+      "timing_s/step": 322.623,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 112.0,
+      "critic/rewards/mean": 0.537,
+      "actor/pg_loss": 0.013,
+      "actor/entropy_loss": 2.459,
+      "actor/kl_loss": 0.489,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.717,
+      "timing_s/step": 307.131,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 113.0,
+      "critic/rewards/mean": 0.506,
+      "actor/pg_loss": -0.058,
+      "actor/entropy_loss": 2.564,
+      "actor/kl_loss": 0.289,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.642,
+      "timing_s/step": 337.457,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 114.0,
+      "critic/rewards/mean": 0.477,
+      "actor/pg_loss": 0.005,
+      "actor/entropy_loss": 2.723,
+      "actor/kl_loss": 0.424,
+      "actor/ppo_kl": 0.004,
+      "actor/grad_norm": 1.464,
+      "timing_s/step": 421.508,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    }
+  ],
+  "reward_mean": 0.5146666666666667,
+  "reward_range": [
+    0.456,
+    0.571
+  ],
+  "handles": [
+    {
+      "pid": 1661704,
+      "start_ticks": 513118313,
+      "live": true
+    },
+    {
+      "pid": 1672776,
+      "start_ticks": 513152831,
+      "live": true
+    }
+  ],
+  "all_new_metrics_finite": true,
+  "errors": [],
+  "validation": {
+    "val/test_score/nq": 0.4,
+    "val/evaluated_count/nq": 10.0,
+    "val/test_score/triviaqa": 0.667,
+    "val/evaluated_count/triviaqa": 9.0,
+    "val/test_score/popqa": 0.222,
+    "val/evaluated_count/popqa": 9.0,
+    "val/test_score/hotpotqa": 0.333,
+    "val/evaluated_count/hotpotqa": 9.0,
+    "val/test_score/2wikimultihopqa": 0.111,
+    "val/evaluated_count/2wikimultihopqa": 9.0,
+    "val/test_score/musique": 0.0,
+    "val/evaluated_count/musique": 9.0,
+    "val/test_score/bamboogle": 0.333,
+    "val/evaluated_count/bamboogle": 9.0,
+    "val/perf/em": 0.297,
+    "val/trust/trust_at_correct": 0.747,
+    "val/trust/trust_at_searched_correct": 0.7,
+    "val/trust/trust_all_mean": 0.222,
+    "val/trust/cf_true": 0.0,
+    "val/trust/cf_hall": 0.0,
+    "val/trust/cf_amb": 0.0,
+    "val/trust/hall_rate": 0.0,
+    "val/cost/search_per_query": 0.906,
+    "val/cost/nosearch_rate": 0.094,
+    "val/cost/oversearch_rate": 0.0
+  },
+  "validation_step": 100,
+  "gpu_peak_mib": {
+    "0": 50965,
+    "1": 51507,
+    "2": 51507,
+    "3": 50817,
+    "5": 21119,
+    "6": 38112
+  },
+  "gpu_hour_peak_mib": {
+    "0": 47991,
+    "1": 47641,
+    "2": 48087,
+    "3": 47991,
+    "5": 18903,
+    "6": 25983
+  },
+  "gpu_latest": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791096170.0889544,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 38321,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 38417,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "used_mib": 38417,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "used_mib": 38767,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 25673,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sample_age_s": 0.9634408950805664,
+  "reward_mean_change": -0.016787878787878796,
+  "console_precision": "3 decimal places",
+  "full300_accepted": false,
+  "validation_correct_counts": {
+    "nq": [
+      4,
+      10
+    ],
+    "triviaqa": [
+      6,
+      9
+    ],
+    "popqa": [
+      2,
+      9
+    ],
+    "hotpotqa": [
+      3,
+      9
+    ],
+    "2wikimultihopqa": [
+      1,
+      9
+    ],
+    "musique": [
+      0,
+      9
+    ],
+    "bamboogle": [
+      3,
+      9
+    ]
+  },
+  "validation_em": 0.296875,
+  "validation_change_percentage_points": 0,
+  "validation_count_semantics": "Reconstructed from console 3 decimal scores and fixed source counts; does not independently establish IDs.",
+  "reward_comparison_semantics": "Current hour uses round100 evaluator only; previous hour mixes round50 and round100. Cross-hour mean change is descriptive, not solely policy improvement.",
+  "same_evaluator_prior_101_102_mean": 0.541,
+  "same_evaluator_mean_change": -0.02633333333333332,
+  "sampling_period_seconds": 2,
+  "sampling_limitation": "Sampling may miss short transients.",
+  "next_save_step": 150
+}
