@@ -1,0 +1,85 @@
+{
+  "state": "RECOVERY_PIPELINE_LIVE_NO_NEW_GRPO_UPDATES",
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "parent_run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "source_commit": "8148f456a1e285dba28fc715adf4156aff5794db",
+  "checked_unix": 1791130655.7633235,
+  "previous_hourly_unix": 1791126546.2436118,
+  "actual_window_minutes": 68.49199519554774,
+  "completed_logical_update": 200,
+  "new_actual_updates": 0,
+  "new_reward_window_mean": null,
+  "new_reward_range": null,
+  "last_historical_reward": 0.612,
+  "last_historical_reward_evaluator": "parent round150",
+  "validation_step": 200,
+  "validation_correct": 16,
+  "validation_count": 64,
+  "validation_em": 0.25,
+  "new_validation": false,
+  "pipeline_stage": "STARTING_FROZEN_PROBE_ENDPOINT",
+  "bound_supervisor_and_retriever": [
+    {
+      "pid": 3232258,
+      "start_ticks": 520999956,
+      "live": true
+    },
+    {
+      "pid": 3233555,
+      "start_ticks": 521006478,
+      "live": true
+    }
+  ],
+  "new_segment_gpu_sample_scope": "only startup since first_unix; gap after parent sampler stopped is unknown",
+  "new_segment_sample_first_unix": 1791130462.2235136,
+  "new_segment_sample_last_unix": 1791130653.6281419,
+  "new_segment_gpu_sample_peak_mib": {
+    "0": 1183,
+    "1": 1279,
+    "2": 1279,
+    "3": 1183,
+    "5": 18001,
+    "6": 24565
+  },
+  "gpu_current": [
+    {
+      "index": 0,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 1,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 2,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 3,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 5,
+      "used_mib": 17879,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 24565,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "previous_parent_train_peak_mib": 51507,
+  "previous_parent_train_peak_is_historical": true,
+  "semantics": "CPU/four-GPU engineering admission and head refit are not actual201..205 acceptance; original failed run kept immutable; hourly follow-up remains active"
+}
