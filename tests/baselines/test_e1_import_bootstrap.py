@@ -167,3 +167,27 @@ def test_imported_dataclass_checked_in_defining_module(packages,monkeypatch):
     sys.modules['e1fixture.a'].C.__init__=namespace['__init__']
     with pytest.raises(ValueError,match='outside pinned closure'):
         bootstrap.verify_imports(root,result,('e1fixture.b',))
+
+
+def test_fresh_isolated_interpreter_explicit_importlib_util():
+    # pytest/test module already import util, which previously hid a native
+    # Python3.10 startup failure. -I -S avoids site/user startup imports.
+    import subprocess
+    code = """import sys, importlib
+assert 'importlib.util' not in sys.modules
+assert not hasattr(importlib, 'util')
+path = sys.argv[1]
+namespace = {'__name__': 'isolated_checker', '__file__': path}
+with open(path, 'rb') as f:
+    exec(compile(f.read(), path, 'exec'), namespace)
+assert 'importlib.util' in sys.modules
+assert hasattr(importlib, 'util')
+actual = namespace['source_path'](None, 'contextlib')
+assert actual.is_file()
+assert actual.name == 'contextlib.py'
+print('ISOLATED_EXPLICIT_UTIL_AND_FIND_SPEC_PASS')
+"""
+    result = subprocess.run([sys.executable, '-I', '-S', '-c', code, str(PATH)],
+                            capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert 'ISOLATED_EXPLICIT_UTIL_AND_FIND_SPEC_PASS' in result.stdout
