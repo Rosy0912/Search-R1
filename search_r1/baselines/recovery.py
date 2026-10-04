@@ -246,7 +246,9 @@ def load_worker_training_state(state, module, optimizer, scheduler, rank, world_
         buffers = dict(module.named_buffers())
         for key, targets in [('local_shards', local_shards), ('buffers', buffers)]:
             if targets.keys() != state[key].keys():
-                raise ValueError('Incomplete internal FSDP/buffer coverage')
+                raise ValueError('Incomplete internal FSDP/buffer coverage: '
+                                 + key + '; missing=' + repr(sorted(state[key].keys() - targets.keys()))
+                                 + '; extra=' + repr(sorted(targets.keys() - state[key].keys())))
             for name, target in targets.items():
                 source = state[key][name]
                 if source.shape != target.shape or source.dtype != target.dtype or not torch.isfinite(source).all():

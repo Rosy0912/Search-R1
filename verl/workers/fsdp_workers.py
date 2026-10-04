@@ -546,12 +546,16 @@ class ActorRolloutRefWorker(Worker):
                 raise RuntimeError('Saved actual Adam update count differs from restore source')
         if self.config.actor.get('complete_internal_state', False) and not state.get('complete_internal', False):
             raise RuntimeError('Fresh Instruct requires complete internal FSDP state')
+        initialization = None
+        if state.get('complete_internal', False):
+            from verl.utils.fsdp_utils import initialize_fsdp_before_full_restore
+            initialization = initialize_fsdp_before_full_restore(self.actor_module_fsdp)
         step = load_worker_training_state(
             state, self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
             self.rank, self.world_size, self.rollout_sharding_manager)
         del state
         torch.distributed.barrier()
-        return dict(rank=self.rank, logical_step=step)
+        return dict(rank=self.rank, logical_step=step, fsdp_initialization=initialization)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):

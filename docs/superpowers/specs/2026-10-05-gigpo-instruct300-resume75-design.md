@@ -38,3 +38,9 @@ scheduler直接加载75/LR1e-6/_step_count76，不能重建Adam/重走57warmup�
 恢复双计数：retained logical从75继续76..300，resume新增计数1..225；实际Adam各rank为75时1500、80时1600、300时6000；scheduler为75/80/300，数据cursor分别38400/40960/153600，driver samplerepoch0且完整169028排列一致。旧fresh actual==300或门禁逻辑first5==5不能不改直接用于resume；新收据明确original_retained75/resume_new_N/retained_total75+N，旧失败分支76..83另记算力，不算恢复保留轨迹。
 
 跨job实物保存集合严格14点：原5/25/50/75，新80/100/125/150/175/200/225/250/275/300（80是额外门禁）。严格验证事件身份：原job3185初始0与50，新resume job100/150/200/250/300共七个512；原5与新80共两个64stage；新300最终51713一次。每条来源raw bytes/SHA、job/source/step/evaluation role、实际data manifest必须匹配，不能数值相同去重、任意count放行或补伪receipt。resume不再初始化默认val_before_train，不重用旧9receipt watcher；新的独立结尾验收直接按确定来源的原始driver事件。原checkpoint75虽source旧commit，新恢复必须严格迁移代码身份并保留旧原manifest，不修改其SHA。
+
+## 3221 首次恢复边界修复
+
+3221未完成新增outer，constructor-only FSDP与保存75的post-forward内部状态严格coverage不同。目标Torch2.4实物源码 `_lazy_init(root,root)` 会初始化所有nested handle并建立_local_shard；此初始化不需要训练forward。采用窄startup-only原生lazy初始化，拒绝手填shard或放宽完整覆盖；已初始化root的80/300重载无操作，child拒绝。当前正式构造参数保持CUDA，因此仅支持fresh constructor CUDA路径，未声明支持fresh手动CPU或原生CPUOffload对象。初始化前后要求所有参数/缓冲区值及dtype、Python/NumPy/CPU/CUDA RNG、模块training模式完全一致；buffer可能按Torch规则迁移设备，不要求其device不变。optimizer和scheduler不在初始化操作输入中，完整恢复仍独立核对每个slot与scheduler。失败诊断分local_shards/buffers输出missing/extra。
+
+静态设计独审可行，补充条件记录在独审文件；原3217只证明已初始化对象重载，不是本边界证明。下一隔离native需真实官方3B、8rank fresh instance、完整75实物SHA与model/internal/buffer/Adam1500/scheduler75/RNG逐项恢复；两个独立进程组从相同75执行同一确定短序列global128 mini、rank2 micro的一个真实Adam更新，检查20-step外层中的单个mini路径及全tensor身份/RNG一致。该fixture不取训练数据、不做outer、不计300轮；实际76–80仍完整512×5、20Adam/160micro及阶段64、完整HF+状态重载接受。同旧vLLM训练引擎位级采样连续性未保证，fixture不冒充实际rollout/reference/检索。

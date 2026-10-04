@@ -112,6 +112,51 @@ def offload_fsdp_grad(module):
     torch.cuda.empty_cache()
 
 
+def initialize_fsdp_before_full_restore(module):
+    """Initialize fresh Torch 2.4 FSDP internals without a training forward.
+
+    A saved post-forward `_local_shard` cannot be loaded into a constructor-only
+    FSDP object. Use PyTorch's root initialization, never manufacture shards.
+    Already initialized objects (including same-process checkpoint roundtrips)
+    are deliberately untouched.
+    """
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+    from search_r1.baselines.recovery import cpu_snapshot, rng_state
+    from search_r1.baselines.instruct300 import equal_state
+
+    if not isinstance(module, FSDP):
+        raise TypeError('Full FSDP restore requires an actual FSDP root')
+    if module._is_root is not None:
+        if module._is_root is not True:
+            raise ValueError('Full FSDP restore requires the root, not a child')
+        return dict(initialized=False, reason='already_initialized')
+    if torch.__version__.split('+')[0].split('.')[:2] != ['2', '4']:
+        raise RuntimeError('Fresh FSDP restore initialization is verified only for Torch 2.4')
+    parameters = dict(module.named_parameters())
+    if not parameters or any(p.device != torch.device('cuda', torch.cuda.current_device())
+                             for p in parameters.values()):
+        raise RuntimeError('Fresh FSDP root must remain on its constructor CUDA device')
+    before_parameters = cpu_snapshot(parameters)
+    before_parameter_ids = {name: id(p) for name, p in parameters.items()}
+    before_buffers = cpu_snapshot(dict(module.named_buffers()))
+    before_rng = cpu_snapshot(rng_state())
+    before_modes = [(child, child.training) for child in module.modules()]
+    before_keys = sorted(name for name, p in parameters.items() if hasattr(p, '_local_shard'))
+    from torch.distributed.fsdp._runtime_utils import _lazy_init
+    _lazy_init(module, module)
+    if (before_parameter_ids != {name: id(p) for name, p in module.named_parameters()}
+            or not equal_state(before_parameters, cpu_snapshot(dict(module.named_parameters())))
+            or not equal_state(before_buffers, cpu_snapshot(dict(module.named_buffers())))
+            or not equal_state(before_rng, rng_state())
+            or any(child.training != mode for child, mode in before_modes)):
+        raise RuntimeError('Fresh FSDP initialization changed tensor values, dtype, RNG or modes')
+    after_keys = sorted(name for name, p in module.named_parameters() if hasattr(p, '_local_shard'))
+    if module._is_root is not True or after_keys != sorted(parameters):
+        raise RuntimeError('PyTorch did not initialize complete FSDP local shards')
+    return dict(initialized=True, local_shard_keys_before=before_keys,
+                local_shard_keys_after=after_keys, tensor_values_rng_modes_unchanged=True)
+
+
 def load_fsdp_grad(module, device_id):
     for _, param in module.named_parameters():
         if param.grad is not None:
