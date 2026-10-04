@@ -1,0 +1,23 @@
+{
+  "retired_pid": 1705547,
+  "active_old_requests": [],
+  "new_pid": 1749337,
+  "health": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "time": 1791115805.5624652,
+  "conservative_training_peak_mib": 39574,
+  "observed_new_service_peak_mib": 630,
+  "conservative_component_peak_sum_mib": 40204,
+  "reserve_mib": 8936,
+  "scope": "separate component maxima; V1 actor-update overlap remains preserved; new observer continuously monitors actual shared total"
+}

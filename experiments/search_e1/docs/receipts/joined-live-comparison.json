@@ -1,0 +1,31 @@
+{
+  "129": {
+    "old_seconds": 353.78348382469267,
+    "joined_seconds": 12.334837469272316,
+    "documents_identical": true,
+    "score_atol": 1e-05,
+    "old_queue_seconds": 320.8582307761535,
+    "old_service_seconds": 32.89485878683627,
+    "joined_service_seconds": 12.291171601042151
+  },
+  "2440": {
+    "joined_seconds": 32.56486939638853,
+    "queries": 2440,
+    "synthetic_repeated_probe": true
+  },
+  "health": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "time": 1791115689.551879,
+  "gpu_apps": "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 1164838, 33248\nGPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 840849, 5648\nGPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 3065521, 29070\nGPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 3295494, 5910\nGPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 1437900, 6630\nGPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 1438381, 6704\nGPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 1438382, 6704\nGPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1438383, 6704\nGPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1705547, 512\nGPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1749337, 630\n",
+  "scope": "129 old wall includes queue behind actual archive2528-query request;2440 is repeated synthetic probe; no matched training-throughput comparison"
+}
