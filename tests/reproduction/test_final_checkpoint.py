@@ -25,13 +25,13 @@ def real_iteration_tail():
     step = next(n for n in batches.body if isinstance(n, ast.With))
     update = next(i for i, n in enumerate(step.body) if isinstance(n, ast.If)
                   and "critic_warmup" in ast.unparse(n.test))
-    body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger; resume = getattr(self.config.trainer, 'resume', {})").body
+    body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger; resume = getattr(self.config.trainer, 'resume', {}); fresh_instruct = getattr(self, 'fresh_instruct', False)").body
     body += step.body[update:] + batches.body[batches.body.index(step) + 1:]
     function = ast.FunctionDef(
         name="iteration_tail",
         args=ast.arguments(posonlyargs=[], args=[ast.arg(arg="self")],
                            kwonlyargs=[], kw_defaults=[], defaults=[]),
-        body=body, decorator_list=[])
+        body=[ast.For(target=ast.Name(id='_once',ctx=ast.Store()),iter=ast.List(elts=[ast.Constant(value=0)],ctx=ast.Load()),body=body,orelse=[])], decorator_list=[])
     compiled = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
     namespace = {
         "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,

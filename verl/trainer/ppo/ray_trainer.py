@@ -428,6 +428,10 @@ class RayPPOTrainer(object):
             self.recovery_sampler = RecoverableSampler(
                 len(self.train_dataset), self.config.data.shuffle_train_dataloader, resume.seed)
 
+        from search_r1.baselines.instruct300 import enabled as instruct_enabled, prepare_sampler
+        if instruct_enabled(self.config):
+            self.recovery_sampler = prepare_sampler(self.config, len(self.train_dataset))
+
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
                                            shuffle=(self.config.data.shuffle_train_dataloader
@@ -478,6 +482,8 @@ class RayPPOTrainer(object):
         with open_dict(self.config):
             self.config.actor_rollout_ref.actor.optim.total_training_steps = (
                 resume.scheduler_horizon if resume.get('enabled', False) else total_training_steps)
+            if instruct_enabled(self.config):
+                self.config.actor_rollout_ref.actor.optim.save_training_state = True
             if resume.get('enabled', False):
                 self.config.actor_rollout_ref.actor.optim.initial_logical_step = resume.start_step
                 self.config.actor_rollout_ref.actor.optim.save_training_state = True
@@ -509,6 +515,9 @@ class RayPPOTrainer(object):
         Accumulates metrics across all batches before computing final statistics.
         """
         import torch
+        from search_r1.baselines.instruct300 import enabled, recheck_inputs
+        if enabled(self.config):
+            recheck_inputs(self)
         reward_tensor_lst = []
         data_source_lst = []
         qa_rows = []
@@ -728,7 +737,10 @@ class RayPPOTrainer(object):
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
 
-        if getattr(self, 'recovery_sampler', None) is not None:
+        from search_r1.baselines.instruct300 import enabled as instruct_enabled, save_complete
+        if instruct_enabled(self.config):
+            save_complete(self, actor_local_path, checkpoint_receipts)
+        elif getattr(self, 'recovery_sampler', None) is not None:
             from search_r1.baselines.recovery import atomic_torch_save, rng_state, publish_checkpoint_manifest
             driver_receipt = atomic_torch_save(dict(
                 schema=1, logical_step=self.global_steps, actual_new_updates=self.actual_outer_updates,
@@ -766,6 +778,11 @@ class RayPPOTrainer(object):
         """
 
         logger = self.logger
+        from search_r1.baselines.instruct300 import enabled as instruct_enabled, roundtrip_and_wait
+        fresh_instruct = instruct_enabled(self.config)
+        if fresh_instruct:
+            from search_r1.baselines.holdout import _validate_prebuilt
+            self.instruct_data_identity = _validate_prebuilt(self.config)
         resume = self.config.trainer.get('resume', {})
         self.global_steps = int(resume.start_step) if resume.get('enabled', False) else 0
         # perform validation before training
@@ -952,12 +969,18 @@ class RayPPOTrainer(object):
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo'):
                         if metrics.get('actor/optimizer_steps', 0) <= 0:
                             raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
+                        if fresh_instruct and metrics.get('actor/optimizer_steps') != 20:
+                            raise RuntimeError('Instruct300 requires exactly20 optimizer steps per outer')
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
                     # validate
                     recovery_eval = (resume.get('enabled', False) and
                                      self.global_steps in (resume.acceptance_step, resume.stop_step))
+                    if fresh_instruct and self.global_steps == 5:
+                        from search_r1.baselines.instruct300 import validate_stage64
+                        with _timer('stage_testing', timing_raw):
+                            metrics.update(validate_stage64(self))
                     if self.val_reward_fn is not None and (recovery_eval or
                             (self.config.trainer.test_freq > 0 and
                              self.global_steps % self.config.trainer.test_freq == 0)):
@@ -974,7 +997,8 @@ class RayPPOTrainer(object):
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
                              (resume.get('enabled', False) and
                               self.global_steps in (resume.acceptance_step, resume.stop_step)) or
-                             self.global_steps + 1 >= self.total_training_steps):
+                             (not fresh_instruct and self.global_steps + 1 >= self.total_training_steps) or
+                             (fresh_instruct and self.global_steps == 300)):
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
@@ -988,6 +1012,22 @@ class RayPPOTrainer(object):
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
 
+                if fresh_instruct:
+                    if self.global_steps == 5:
+                        roundtrip_and_wait(self)
+                    if self.global_steps == 300:
+                        if self.actual_outer_updates != 300:
+                            raise RuntimeError('Instruct300 actual updates differ from stop counter')
+                        self._prepare_final_validation()
+                        final_metrics = self._validate()
+                        if final_metrics.get('val/qa_count/all') != 51713:
+                            raise RuntimeError('Instruct300 final evaluation count differs')
+                        print('SEARCH_R1_INSTRUCT300_COMPLETE_JSON=' + json.dumps(dict(
+                            logical_step=300, actual_new_updates=300, final_metrics=final_metrics), sort_keys=True), flush=True)
+                        logger.log(data=final_metrics, step=300)
+                        return
+                    self.global_steps += 1
+                    continue
                 if resume.get('enabled', False):
                     if self.global_steps == resume.acceptance_step:
                         from search_r1.baselines.recovery import wait_for_independent_approval

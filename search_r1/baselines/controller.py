@@ -267,7 +267,7 @@ class Controller:
         data.batch['advantages'], data.batch['returns'] = adv, returns
         if self.method in ('gigpo', 'tree_grpo', 'topd', 'cosearch'):
             from .objectives import attach_policy_weights
-            attach_policy_weights(data, self.method)
+            attach_policy_weights(data, self.method, self.config.get("loss_reduction", "paper"))
         return data
 
     def after_actor(self, data, metrics):
@@ -309,6 +309,12 @@ class Controller:
                      algorithm_source_commit=self.config.algorithm_source_commit,
                      teacher_path=self.config.distillation.teacher_path,
                      resume_supported=False)
+        if self.method == 'gigpo' and self.trainer.config.trainer.get('instruct300', {}).get('enabled', False):
+            from omegaconf import OmegaConf
+            state['gigpo_parameters'] = OmegaConf.to_container(self.config.gigpo, resolve=True)
+            state['loss_reduction'] = self.config.loss_reduction
+            state['groups'] = 'stateless_per_rollout_with_step_ids_and_advantage_broadcast'
+            state['resume_supported'] = True
         temporary = os.path.join(directory, 'state.json.tmp')
         with open(temporary, 'w') as handle:
             json.dump(state, handle, indent=2, allow_nan=False)

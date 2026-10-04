@@ -9,7 +9,9 @@ from verl.utils import torch_functional as F
 
 
 @torch.no_grad()
-def attach_policy_weights(data, method):
+def attach_policy_weights(data, method, reduction="paper"):
+    if reduction not in ('paper', 'sequence_mean'):
+        raise ValueError('Unknown policy loss reduction: ' + str(reduction))
     width = data.batch['responses'].shape[1]
     mask = (data.batch['attention_mask'][:, -width:] * data.batch['info_mask'][:, -width:]).float()
     weights = torch.zeros_like(mask)
@@ -23,7 +25,13 @@ def attach_policy_weights(data, method):
             count = mask[rows].sum()
             if count > 0:
                 weights[rows] = mask[rows] * scale / count
-    elif method == 'gigpo':
+    elif method == 'gigpo' and reduction == 'sequence_mean':
+        # Common protocol: trajectory token mean; GiGPO group/action metadata
+        # and strict joint-action ratio are deliberately unchanged.
+        if (data.batch['step_ids'][mask.bool()] < 0).any():
+            raise ValueError('A supervised GiGPO token has no action ID')
+        weights = mask / mask.sum(-1, keepdim=True).clamp_min(1)
+    elif method == 'gigpo' and reduction == 'paper':
         for i in range(len(data)):
             steps = data.batch['step_ids'][i]
             actions = torch.unique(steps[mask[i].bool()])

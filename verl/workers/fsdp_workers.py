@@ -233,7 +233,11 @@ class ActorRolloutRefWorker(Worker):
 
             total_steps = optim_config.get('total_training_steps', 0)
             num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            num_warmup_steps = optim_config.get("lr_warmup_steps", None)
+            if num_warmup_steps is None:
+                num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            if type(num_warmup_steps) is not int or not 0 <= num_warmup_steps <= total_steps:
+                raise ValueError("Warmup must be a nonnegative integer outer-update count")
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
@@ -521,7 +525,8 @@ class ActorRolloutRefWorker(Worker):
         from search_r1.baselines.recovery import checkpoint_pause_identity
         return checkpoint_pause_identity(self.actor_module_fsdp, self.actor_optimizer,
                                          self.actor_lr_scheduler, self.rank,
-                                         self.rollout_sharding_manager)
+                                         self.rollout_sharding_manager,
+                                         self.config.actor.get("complete_internal_state", False))
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_training_state(self, local_path, expected_rank_shas):
@@ -531,6 +536,8 @@ class ActorRolloutRefWorker(Worker):
         if file_sha256(path) != expected_rank_shas[str(self.rank)]:
             raise RuntimeError('Training-state SHA differs from frozen checkpoint manifest')
         state = torch.load(path, map_location='cpu', weights_only=False)
+        if self.config.actor.get('complete_internal_state', False) and not state.get('complete_internal', False):
+            raise RuntimeError('Fresh Instruct requires complete internal FSDP state')
         step = load_worker_training_state(
             state, self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
             self.rank, self.world_size, self.rollout_sharding_manager)
@@ -570,7 +577,8 @@ class ActorRolloutRefWorker(Worker):
             logical_step = int(os.path.basename(local_path).removeprefix('global_step_'))
             state = worker_training_state(
                 self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
-                self.rank, self.world_size, logical_step, self.rollout_sharding_manager)
+                self.rank, self.world_size, logical_step, self.rollout_sharding_manager,
+                self.config.actor.get("complete_internal_state", False))
             receipt = atomic_torch_save(state, os.path.join(local_path, 'training_state',
                                                            f'rank_{self.rank}.pt'))
             receipt['pause_identity'] = state['pause_identity']

@@ -11,6 +11,8 @@ def main(config):
     from .local_runtime import check_local_runtime
     check_local_runtime(config)
     from .holdout import prepare_common_holdout
+    if config.baselines.holdout.get('input_mode') == 'prebuilt_manifest' and config.baselines.holdout_eval_only:
+        raise ValueError('Legacy teacher selection cannot use the Search-E1 prebuilt64 stage split')
     split_manifest = prepare_common_holdout(config)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
         raise ValueError('Smoke-only runs allow at most five outer updates')
@@ -34,6 +36,11 @@ def main(config):
         checkpoint_hash = model_manifest(config.actor_rollout_ref.model.path)
         config.data.val_files = config.baselines.bapo.stage_validation_files
         config.data.final_val_files = None
+    if config.baselines.holdout.get('input_mode') == 'prebuilt_manifest' and not config.baselines.holdout_eval_only:
+        config.data.train_files = split_manifest['effective_paths']['train']
+        config.data.val_files = split_manifest['effective_paths']['validation']
+        config.data.final_val_files = split_manifest['effective_paths']['final']
+        config.baselines.bapo.stage_validation_files = split_manifest['effective_paths']['stage']
     validate_config(config)
     from .runtime_audit import config_boundary
     config_boundary(config, split_manifest)

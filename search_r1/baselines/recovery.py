@@ -180,7 +180,7 @@ def tensor_digest(tensors):
     return digest.hexdigest()
 
 
-def checkpoint_pause_identity(module, optimizer, scheduler, rank, sharding_manager=None):
+def checkpoint_pause_identity(module, optimizer, scheduler, rank, sharding_manager=None, complete_internal=False):
     start_ticks = Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19] if Path('/proc/self/stat').exists() else None
     moments = [(str(index) + '/' + key, value)
                for index, parameter in enumerate(module.parameters())
@@ -192,18 +192,24 @@ def checkpoint_pause_identity(module, optimizer, scheduler, rank, sharding_manag
     if sharding_manager is not None:
         generator_states.extend((key, value) for key in ('gen_random_states', 'torch_random_states')
                                 if (value := getattr(sharding_manager, key, None)) is not None)
-    return dict(rank=rank, pid=os.getpid(), start_ticks=start_ticks,
+    identity = dict(rank=rank, pid=os.getpid(), start_ticks=start_ticks,
                 scheduler_step=scheduler.last_epoch, learning_rates=scheduler.get_last_lr(),
                 model_shards_sha256=tensor_digest(module.named_parameters()),
                 optimizer_tensors_sha256=tensor_digest(moments),
                 rng_tensors_sha256=tensor_digest(generator_states))
+    if complete_internal:
+        identity['local_shards_sha256'] = tensor_digest(
+            (name, parameter._local_shard) for name, parameter in module.named_parameters()
+            if hasattr(parameter, '_local_shard'))
+        identity['buffers_sha256'] = tensor_digest(module.named_buffers())
+    return identity
 
 
 def worker_training_state(module, optimizer, scheduler, rank, world_size, logical_step,
-                          sharding_manager=None):
-    return dict(schema=1, logical_step=logical_step,
+                          sharding_manager=None, complete_internal=False):
+    state = dict(schema=1, logical_step=logical_step,
                 layout=parameter_layout(module, optimizer, rank, world_size),
-                pause_identity=checkpoint_pause_identity(module, optimizer, scheduler, rank, sharding_manager),
+                pause_identity=checkpoint_pause_identity(module, optimizer, scheduler, rank, sharding_manager, complete_internal),
                 model_shards={name: cpu_snapshot(parameter)
                               for name, parameter in module.named_parameters()},
                 optimizer=cpu_snapshot(optimizer.state_dict()),
@@ -211,6 +217,13 @@ def worker_training_state(module, optimizer, scheduler, rank, world_size, logica
                 sharding_rng={key: cpu_snapshot(getattr(sharding_manager, key, None))
                               for key in ('gen_random_states', 'torch_random_states')},
                 engine_restart_exact=False)
+    if complete_internal:
+        state['complete_internal'] = True
+        state['local_shards'] = {name: cpu_snapshot(parameter._local_shard)
+                                 for name, parameter in module.named_parameters()
+                                 if hasattr(parameter, '_local_shard')}
+        state['buffers'] = {name: cpu_snapshot(buffer) for name, buffer in module.named_buffers()}
+    return state
 
 
 def load_worker_training_state(state, module, optimizer, scheduler, rank, world_size,
@@ -226,6 +239,18 @@ def load_worker_training_state(state, module, optimizer, scheduler, rank, world_
         tensor = saved[name]
         if tensor.shape != parameter.shape or tensor.dtype != parameter.dtype or not torch.isfinite(tensor).all():
             raise ValueError('Invalid model shard: ' + name)
+    local_shards = buffers = {}
+    if state.get('complete_internal', False):
+        local_shards = {name: parameter._local_shard for name, parameter in live.items()
+                        if hasattr(parameter, '_local_shard')}
+        buffers = dict(module.named_buffers())
+        for key, targets in [('local_shards', local_shards), ('buffers', buffers)]:
+            if targets.keys() != state[key].keys():
+                raise ValueError('Incomplete internal FSDP/buffer coverage')
+            for name, target in targets.items():
+                source = state[key][name]
+                if source.shape != target.shape or source.dtype != target.dtype or not torch.isfinite(source).all():
+                    raise ValueError('Invalid FSDP local shard or buffer: ' + name)
     saved_groups = state['optimizer']['param_groups']
     if len(saved_groups) != len(optimizer.param_groups):
         raise ValueError('Optimizer group count changed')
@@ -288,6 +313,10 @@ def load_worker_training_state(state, module, optimizer, scheduler, rank, world_
     with torch.no_grad():
         for name, parameter in live.items():
             parameter.copy_(saved[name].to(parameter.device))
+        for name, target in local_shards.items():
+            target.copy_(state['local_shards'][name].to(target.device))
+        for name, target in buffers.items():
+            target.copy_(state['buffers'][name].to(target.device))
     optimizer.load_state_dict(state['optimizer'])
     scheduler.load_state_dict(state['scheduler'])
     for group, rate in zip(optimizer.param_groups, scheduler.get_last_lr()):
@@ -319,14 +348,15 @@ def atomic_json_save(value, path):
     return dict(path=str(path), sha256=file_sha256(path))
 
 
-def publish_checkpoint_manifest(checkpoint, worker_receipts, driver_receipt, source, step, actual):
+def publish_checkpoint_manifest(checkpoint, worker_receipts, driver_receipt, source, step, actual,
+                                recovery_mode='weights_only_original200', extra_receipts=()):
     checkpoint = Path(checkpoint)
     if not isinstance(worker_receipts, list) or len(worker_receipts) != 8:
         raise ValueError('Expected all eight worker training-state receipts')
     expected = {str(checkpoint / 'training_state' / f'rank_{rank}.pt') for rank in range(8)}
     if {receipt['path'] for receipt in worker_receipts} != expected:
         raise ValueError('Checkpoint rank receipts missing or duplicated')
-    files = list(worker_receipts) + [driver_receipt]
+    files = list(worker_receipts) + [driver_receipt] + list(extra_receipts)
     for path in sorted(checkpoint.iterdir()):
         if path.is_file():
             files.append(dict(path=str(path), bytes=path.stat().st_size, sha256=file_sha256(path)))
@@ -337,7 +367,7 @@ def publish_checkpoint_manifest(checkpoint, worker_receipts, driver_receipt, sou
             raise ValueError('Checkpoint file missing or wrong size')
     state = dict(schema=1, job_id=os.environ.get('SLURM_JOB_ID'),
                  source=source, logical_step=step, actual_new_updates=actual,
-                 recovery_mode='weights_only_original200', engine_restart_exact=False,
+                 recovery_mode=recovery_mode, engine_restart_exact=False,
                  code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
                  config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
                  data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'),

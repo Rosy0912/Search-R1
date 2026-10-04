@@ -243,6 +243,8 @@ class DataParallelPPOActor(BasePPOActor):
             count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
             total, world = global_token_count(count_mask)
             if total.item() == 0:
+                if self.config.get('complete_internal_state', False):
+                    raise RuntimeError('Fresh Instruct update has an empty global minibatch; cannot skip optimizer budget')
                 skipped += 1
                 continue
             if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
