@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_2",
+  "tensor_count": 435,
+  "initial_tensor_count": 434,
+  "verified_aliases": {
+    "lm_head.weight": "model.embed_tokens.weight"
+  },
+  "nonfinite": [],
+  "changed": [
+    {
+      "key": "model.layers.0.self_attn.q_proj.weight",
+      "max_abs_delta": 7.450580596923828e-08
+    },
+    {
+      "key": "model.layers.1.self_attn.q_proj.weight",
+      "max_abs_delta": 7.450580596923828e-08
+    },
+    {
+      "key": "model.layers.10.self_attn.q_proj.weight",
+      "max_abs_delta": 7.450580596923828e-08
+    },
+    {
+      "key": "model.layers.11.self_attn.q_proj.weight",
+      "max_abs_delta": 7.450580596923828e-08
+    }
+  ],
+  "accepted": true
+}

@@ -1,0 +1,216 @@
+{
+  "global_step": 2,
+  "run_id": "8d708a8556084021ae3069b93335109d",
+  "world_size": 8,
+  "ranks": [
+    {
+      "rank": 7,
+      "pid": 3452782,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-7.pt",
+      "bytes": 4628970258,
+      "time": 1791117976.9908564
+    },
+    {
+      "rank": 1,
+      "pid": 3452776,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-1.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.8668618
+    },
+    {
+      "rank": 4,
+      "pid": 3452779,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-4.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.9848218
+    },
+    {
+      "rank": 2,
+      "pid": 3452777,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-2.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.269997
+    },
+    {
+      "rank": 0,
+      "pid": 3452460,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-0.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.873455
+    },
+    {
+      "rank": 3,
+      "pid": 3452778,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-3.pt",
+      "bytes": 4628970258,
+      "time": 1791117978.0235622
+    },
+    {
+      "rank": 5,
+      "pid": 3452780,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-5.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.8845084
+    },
+    {
+      "rank": 6,
+      "pid": 3452781,
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        20.0
+      ],
+      "state_entries": 37,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/resume-state/8d708a8556084021ae3069b93335109d/full-rank-6.pt",
+      "bytes": 4628970258,
+      "time": 1791117977.7702293
+    }
+  ],
+  "time": 1791117978.0941281
+}

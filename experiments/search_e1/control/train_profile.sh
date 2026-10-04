@@ -2,6 +2,23 @@
 set -euo pipefail
 BASE=${E1_BASE:?};PROFILE=${E1_PROFILE:?archive or r1};STAGE=${E1_STAGE:-smoke}
 RUNTIME="$BASE/runtime/$PROFILE"
+continuing=0
+if [[ "$PROFILE" == r1 && "$STAGE" == round-1-grpo && -f "$BASE/receipts/continue-current-eight.json" ]]; then
+ [[ "${E1_GPUS:-4}" == 8 ]] || exit 2
+ RUNTIME="$BASE/runtime/r1-full-resume-20261004"
+ export E1_FULL_RESUME_STATE="$BASE/resume-state/8d708a8556084021ae3069b93335109d"
+ test -f "$E1_FULL_RESUME_STATE/full-complete.json"
+ "$BASE/env/bin/python" - "$BASE" "$RUNTIME" <<'VERIFY'
+import sys,json,hashlib
+from pathlib import Path
+base,runtime=map(Path,sys.argv[1:])
+manifest=json.loads((base/'receipts/r1-full-resume-runtime.sha256.json').read_text())
+for name,digest in manifest.items():
+ assert hashlib.sha256((runtime/name).read_bytes()).hexdigest()==digest,name
+VERIFY
+ continuing=1
+fi
+
 export PYTHON="$BASE/env/bin/python"
 export PYTHONPATH="$RUNTIME/upstream/Search-R1:$RUNTIME"
 export WANDB_MODE=offline TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
@@ -36,6 +53,21 @@ options=(actor_rollout_ref.actor.entropy_coeff="$entropy" actor_rollout_ref.roll
 if [[ "$STAGE" == smoke* ]]; then
  options+=(+trainer.stop_after=2 trainer.save_freq=1 ++trainer.val_before_train=false)
 fi
+if [[ "$continuing" == 1 ]]; then
+ options+=(++trainer.val_before_train=false)
+fi
 if [[ "${E1_CONFIG_ONLY:-0}" == 1 ]]; then options+=(--cfg job); fi
 cd "$RUNTIME"
-bash scripts/grpo.sh "${options[@]}" > "$OUTPUT/train.log" 2>&1
+if [[ "$continuing" == 1 ]]; then
+ "$PYTHON" - "$BASE" "$OUTPUT/train.log" <<'LOG'
+from pathlib import Path
+import sys,re
+base=Path(sys.argv[1]);source=base/'runs/r1/smoke-025/train.log'
+rows=[s for s in source.read_text().splitlines() if re.search(r'\bstep:[12] - ',s) and 'actor/' in s]
+assert len(rows)==2
+Path(sys.argv[2]).write_text('CONTINUATION_SOURCE_PRESERVED_NATIVE_METRICS='+str(source)+'\n'+'\n'.join(rows)+'\n')
+LOG
+ bash scripts/grpo.sh "${options[@]}" >> "$OUTPUT/train.log" 2>&1
+else
+ bash scripts/grpo.sh "${options[@]}" > "$OUTPUT/train.log" 2>&1
+fi

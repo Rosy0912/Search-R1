@@ -1,0 +1,8 @@
+{
+  "source_log": "/data/shaoshitong/search-e1-config-study-20261004/runs/r1/round-1-grpo/train.log",
+  "native_metric": "\u001b[36m(main_task pid=2989937)\u001b[0m step:0 - val/test_score/nq:0.176 - val/test_score/hotpotqa:0.203",
+  "validation_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+  "initial_model_resolved_path": "/data/shaoshitong/search-e1-config-study-20261004/assets/model",
+  "scope": "original common initial model R1 heldout baseline;old4GPU execution;preserved as baseline without evaluating step2 actor as step0",
+  "time": 1791118842.1070428
+}

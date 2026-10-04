@@ -1,0 +1,213 @@
+{
+  "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+  "source_run": "8d708a8556084021ae3069b93335109d",
+  "completed_steps_before_resume": 2,
+  "next_step": 3,
+  "full_target": 500,
+  "reference_model": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/assets/model",
+  "restored_ranks": [
+    {
+      "rank": 3,
+      "pid": 3549815,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 6,
+      "pid": 3549818,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 5,
+      "pid": 3549817,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 4,
+      "pid": 3549816,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 0,
+      "pid": 3549569,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 1,
+      "pid": 3549813,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 2,
+      "pid": 3549814,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    },
+    {
+      "rank": 7,
+      "pid": 3549819,
+      "completed_steps": 2,
+      "optimizer_steps": [
+        20.0
+      ],
+      "scheduler": {
+        "base_lrs": [
+          1e-06
+        ],
+        "last_epoch": 2,
+        "verbose": false,
+        "_step_count": 3,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          1.408450704225352e-08
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "weights_exact": true,
+      "optimizer_exact": true
+    }
+  ],
+  "data_replay": "original seed42/no initial validation;first2batches skipped",
+  "source_metrics": "first2native metric lines explicitly preserved from source log",
+  "time": 1791118746.254522
+}
