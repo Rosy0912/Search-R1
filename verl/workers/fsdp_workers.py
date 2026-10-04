@@ -531,13 +531,19 @@ class ActorRolloutRefWorker(Worker):
                                          self.config.actor.get("complete_internal_state", False))
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
-    def load_training_state(self, local_path, expected_rank_shas):
+    def load_training_state(self, local_path, expected_rank_shas, expected_logical_step=None, expected_optimizer_steps=None):
         assert self._is_actor
         from search_r1.baselines.recovery import file_sha256, load_worker_training_state
         path = os.path.join(local_path, 'training_state', f'rank_{self.rank}.pt')
         if file_sha256(path) != expected_rank_shas[str(self.rank)]:
             raise RuntimeError('Training-state SHA differs from frozen checkpoint manifest')
         state = torch.load(path, map_location='cpu', weights_only=False)
+        if expected_logical_step is not None and state['logical_step'] != expected_logical_step:
+            raise RuntimeError('Saved worker logical step differs from explicit restore source')
+        if expected_optimizer_steps is not None:
+            slots = state['optimizer']['state']
+            if not slots or any(float(value['step']) != expected_optimizer_steps for value in slots.values()):
+                raise RuntimeError('Saved actual Adam update count differs from restore source')
         if self.config.actor.get('complete_internal_state', False) and not state.get('complete_internal', False):
             raise RuntimeError('Fresh Instruct requires complete internal FSDP state')
         step = load_worker_training_state(

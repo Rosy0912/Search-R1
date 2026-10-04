@@ -785,6 +785,13 @@ class RayPPOTrainer(object):
             self.instruct_data_identity = _validate_prebuilt(self.config)
         resume = self.config.trainer.get('resume', {})
         self.global_steps = int(resume.start_step) if resume.get('enabled', False) else 0
+        instruct_origin = 0
+        if fresh_instruct:
+            from search_r1.baselines.instruct_resume import start_step, restore
+            instruct_origin = start_step(self.config)
+            if instruct_origin:
+                restore(self)
+                self.global_steps = instruct_origin
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -977,7 +984,7 @@ class RayPPOTrainer(object):
                     # validate
                     recovery_eval = (resume.get('enabled', False) and
                                      self.global_steps in (resume.acceptance_step, resume.stop_step))
-                    if fresh_instruct and self.global_steps == 5:
+                    if fresh_instruct and self.global_steps == instruct_origin + 5:
                         from search_r1.baselines.instruct300 import validate_stage64
                         with _timer('stage_testing', timing_raw):
                             metrics.update(validate_stage64(self))
@@ -1013,17 +1020,19 @@ class RayPPOTrainer(object):
                 logger.log(data=metrics, step=self.global_steps)
 
                 if fresh_instruct:
-                    if self.global_steps == 5:
+                    if self.global_steps == instruct_origin + 5:
                         roundtrip_and_wait(self)
                     if self.global_steps == 300:
-                        if self.actual_outer_updates != 300:
+                        if self.actual_outer_updates != 300 - instruct_origin:
                             raise RuntimeError('Instruct300 actual updates differ from stop counter')
                         self._prepare_final_validation()
                         final_metrics = self._validate()
                         if final_metrics.get('val/qa_count/all') != 51713:
                             raise RuntimeError('Instruct300 final evaluation count differs')
                         print('SEARCH_R1_INSTRUCT300_COMPLETE_JSON=' + json.dumps(dict(
-                            logical_step=300, actual_new_updates=300, final_metrics=final_metrics), sort_keys=True), flush=True)
+                            logical_step=300, actual_new_updates=self.actual_outer_updates,
+                            retained_original_updates=instruct_origin, retained_total_updates=300,
+                            final_metrics=final_metrics), sort_keys=True), flush=True)
                         logger.log(data=final_metrics, step=300)
                         return
                     self.global_steps += 1

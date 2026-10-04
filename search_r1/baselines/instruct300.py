@@ -19,6 +19,9 @@ def enabled(config):
 def prepare_sampler(config, size):
     a = config.actor_rollout_ref.actor
     r = config.actor_rollout_ref.rollout
+    from .instruct_resume import enabled as restore_enabled, start_step
+    restored = restore_enabled(config)
+    origin = start_step(config)
     if (config.trainer.resume.enabled or config.baselines.method != 'gigpo'
             or config.baselines.loss_reduction != 'sequence_mean'
             or config.baselines.holdout.input_mode != 'prebuilt_manifest'
@@ -33,8 +36,8 @@ def prepare_sampler(config, size):
             or r.n_agent != 5 or r.n != 1 or r.tensor_model_parallel_size != 1
             or r.temperature != 1 or r.top_p != 1 or r.top_k != -1
             or config.max_turns != 4 or config.trainer.total_training_steps != 300
-            or config.trainer.save_freq != 25 or config.trainer.acceptance_step != 5
-            or config.trainer.test_freq != 50 or not config.trainer.val_before_train
+            or config.trainer.save_freq != 25 or config.trainer.acceptance_step != origin + 5
+            or config.trainer.test_freq != 50 or config.trainer.val_before_train != (not restored)
             or config.data.val_data_num is not None or config.data.train_data_num is not None
             or config.actor_rollout_ref.ref.model_path != config.actor_rollout_ref.model.path):
         raise ValueError('Fresh Instruct300 configuration differs from approved protocol')
@@ -115,13 +118,16 @@ def save_complete(trainer, checkpoint, worker_receipts):
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     trainer.instruct_manifest = publish_checkpoint_manifest(
         checkpoint, worker_receipts, receipt, driver['source'], step, trainer.actual_outer_updates,
-        recovery_mode='fresh_official_instruct', extra_receipts=[extra])
+        recovery_mode=('full_state_instruct75' if trainer.config.trainer.instruct300.get('restore_checkpoint')
+                       else 'fresh_official_instruct'), extra_receipts=[extra])
 
 
 def roundtrip_and_wait(trainer):
     """Reload the actual saved rank states into the same workers before the gate."""
     manifest = trainer.instruct_manifest
-    if trainer.global_steps != 5 or trainer.actual_outer_updates != 5:
+    from .instruct_resume import start_step
+    gate = start_step(trainer.config) + 5
+    if trainer.global_steps != gate or trainer.actual_outer_updates != 5:
         raise RuntimeError('Live acceptance must occur at exactly five real updates')
     recheck_inputs(trainer)
     check_manifest(manifest)
@@ -131,8 +137,8 @@ def roundtrip_and_wait(trainer):
     if trainer.actor_rollout_wg.checkpoint_pause_identity() != expected:
         raise RuntimeError('Worker state changed before live state roundtrip')
     checkpoint = str(Path(manifest['path']).parent.parent)
-    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas)
-    if len(loaded) != 8 or {v['rank'] for v in loaded} != set(range(8)) or any(v['logical_step'] != 5 for v in loaded):
+    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas, gate, gate * 20)
+    if len(loaded) != 8 or {v['rank'] for v in loaded} != set(range(8)) or any(v['logical_step'] != gate for v in loaded):
         raise RuntimeError('Incomplete eight-rank checkpoint roundtrip')
     if trainer.actor_rollout_wg.checkpoint_pause_identity() != expected:
         raise RuntimeError('Model/Adam/scheduler/RNG/PID changed after actual roundtrip')
@@ -143,7 +149,7 @@ def roundtrip_and_wait(trainer):
     if file_sha256(driver_receipt['path']) != driver_receipt['sha256']:
         raise RuntimeError('Driver state SHA changed')
     state = torch.load(driver_receipt['path'], map_location='cpu', weights_only=False)
-    if (state['schema'] != 1 or state['logical_step'] != 5 or state['actual_new_updates'] != 5
+    if (state['schema'] != 1 or state['logical_step'] != gate or state['actual_new_updates'] != 5
             or state['source_revision'] != REVISION
             or state['source'] != trainer.config.actor_rollout_ref.model.path
             or state['config'] != OmegaConf.to_container(trainer.config, resolve=True)):
@@ -157,7 +163,7 @@ def roundtrip_and_wait(trainer):
     trainer.recovery_sampler.load_state_dict(state['sampler'])
     after = trainer.recovery_sampler.state_dict()
     if (before['order'] != after['order'] or before['cursor'] != after['cursor']
-            or before['cursor'] != 2560 or not torch.equal(before['generator'], after['generator'])):
+            or before['cursor'] != gate * 512 or not torch.equal(before['generator'], after['generator'])):
         raise RuntimeError('Live data order/cursor changed in checkpoint roundtrip')
     if dict(vars(trainer.kl_ctrl)) != state['kl_controller']:
         raise RuntimeError('KL controller state changed')
@@ -168,10 +174,12 @@ def roundtrip_and_wait(trainer):
     approval_path = Path(trainer.config.trainer.instruct300.approval_path)
     atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
                           checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
-                     approval_path.with_name('instruct5-ready.json'))
+                     approval_path.with_name('resume80-ready.json' if gate == 80 else 'instruct5-ready.json'))
     deadline = time.monotonic() + trainer.config.trainer.instruct300.wait_seconds
     expected_binding = dict(job_id=os.environ['SLURM_JOB_ID'], source=manifest['identity']['source'],
-                            logical_step=5, actual_new_updates=5, manifest_sha256=manifest['sha256'])
+                            logical_step=gate, actual_new_updates=5, manifest_sha256=manifest['sha256'])
+    if gate == 80:
+        expected_binding['restore_manifest_sha256'] = trainer.instruct_restore_manifest['sha256']
     while time.monotonic() < deadline:
         if approval_path.exists():
             approval = json.loads(approval_path.read_text())
