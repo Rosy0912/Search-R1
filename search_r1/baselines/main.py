@@ -8,7 +8,7 @@ from .controller import validate_config
 def main(config):
     from .preflight import validate_gpu_lease
     validate_gpu_lease(config)
-    from .holdout import prepare_common_holdout
+    from .holdout import prepare_common_holdout, assert_prebuilt_unchanged
     split_manifest = prepare_common_holdout(config)
     if config.trainer.smoke_only and config.trainer.total_training_steps > 6:
         raise ValueError('Smoke-only runs allow at most five outer updates')
@@ -38,7 +38,10 @@ def main(config):
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
-    result = ray.get(main_task.remote(config))
+    try:
+        result = ray.get(main_task.remote(config))
+    finally:
+        assert_prebuilt_unchanged(config, split_manifest)
     if config.baselines.holdout_eval_only:
         import json
         import re
