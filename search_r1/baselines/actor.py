@@ -49,6 +49,7 @@ class DistillationActor(DataParallelPPOActor):
                     continue
                 denominator = total / world
                 self.actor_optimizer.zero_grad()
+                mini_loss = 0.
                 for micro_offset in range(0, len(mini), micro_size):
                     micro = select_rows(mini, slice(micro_offset, micro_offset + micro_size))
                     tensors = micro.batch
@@ -56,7 +57,10 @@ class DistillationActor(DataParallelPPOActor):
                     loss = opsd_loss(self.actor_module, self.teacher, tensors, self.tokenizer,
                                      targets, settings, denominator)
                     loss.backward()
-                    append_to_dict(metrics, {'actor/opsd_loss': float(loss.detach())})
+                    # Each micro already uses the complete mini denominator.
+                    # Sum its contribution before averaging across mini batches.
+                    mini_loss += float(loss.detach())
+                append_to_dict(metrics, {'actor/opsd_loss': mini_loss})
                 grad_norm = self._optimizer_step()
                 updates += 1
                 append_to_dict(metrics, {'actor/grad_norm': float(grad_norm.detach())})
