@@ -1,0 +1,7 @@
+{
+  "state": "CONFLICT_CONFIRMED",
+  "type": "ValueError",
+  "message": "Pure distillation requires reference KL and entropy coefficients zero",
+  "config_sha256": "2c4bfc4e233dd335f6b7a3df2742fbe9088c38a3568a703f0d0ae13149a3263f",
+  "gpu_started": false
+}
