@@ -66,7 +66,7 @@ def fixture(root):
     rankfiles=[];reports=[]
     for rank in range(8):
         f=directory/f'rank_{rank}.pt';atomic_save(dict(rank=rank,adam=rank),f);rankfiles.append(f)
-        report=dict(status='EXACT_FULL_STATE_RELOAD_OK',rank=rank,world_size=8,step=5,scheduler_last_epoch=5,optimizer_state_entries=1,path=str(f),sha256=digest(f),pid=100+rank,state_digest='a'*64)
+        report=dict(status='EXACT_FULL_STATE_RELOAD_OK',rank=rank,world_size=8,step=5,scheduler_last_epoch=5,optimizer_state_entries=1,model_state_dict_type='SHARDED_STATE_DICT',model_dtensor_entries=1,path=str(f),sha256=digest(f),pid=100+rank,state_digest='a'*64)
         reports.append(report);rf=f.with_suffix('.json');rf.write_text(json.dumps(report));rankfiles.append(rf)
     (run/'train.log').write_text(''.join('BAPO_TRAIN_METRICS_JSON='+json.dumps(dict(step=i,metrics={'bapo/actual_outer_updates':i}))+'\n'for i in range(1,6)))
     snapshot=root/'step5-prefix.log';snapshot.write_bytes((run/'train.log').read_bytes())
@@ -135,7 +135,10 @@ def test_actual_worker_save_method_cpu_roundtrip_preserves_objects(tmp_path,monk
     method.decorator_list=[];module=ast.Module(body=[method],type_ignores=[]);ast.fix_missing_locations(module)
     namespace=dict(torch=torch,os=__import__('os'))
     exec(compile(module,str(source),'exec'),namespace)
-    monkeypatch.setattr(FSDP,'state_dict_type',lambda *a,**kw:contextlib.nullcontext())
+    requested_state_types=[]
+    def fake_context(*a,**kw):
+        requested_state_types.append(a[1]);return contextlib.nullcontext()
+    monkeypatch.setattr(FSDP,'state_dict_type',fake_context)
     monkeypatch.setattr(torch.distributed,'barrier',lambda:None)
     monkeypatch.setattr(torch.cuda,'current_device',lambda:0)
     monkeypatch.setattr(torch.cuda,'get_rng_state',lambda device:torch.get_rng_state())
@@ -149,6 +152,10 @@ def test_actual_worker_save_method_cpu_roundtrip_preserves_objects(tmp_path,monk
     original=(id(model),id(optimizer),id(scheduler));expected=state_digest(dict(model=model.state_dict(),optimizer=optimizer.state_dict(),scheduler=scheduler.state_dict(),rng=rng_state()))
     report=namespace['save_training_state'](worker,str(tmp_path),5,True)
     assert report['status']=='EXACT_FULL_STATE_RELOAD_OK' and report['optimizer_state_entries']==2 and report['scheduler_last_epoch']==5
+    from torch.distributed.fsdp import StateDictType
+    assert requested_state_types==[StateDictType.SHARDED_STATE_DICT]
+    assert report['model_state_dict_type']=='SHARDED_STATE_DICT'
+    assert report['model_dtensor_entries']==0  # This CPU model shim is not native FSDP.
     assert (id(model),id(optimizer),id(scheduler))==original
     assert expected==state_digest(dict(model=model.state_dict(),optimizer=optimizer.state_dict(),scheduler=scheduler.state_dict(),rng=rng_state()))
 
@@ -243,3 +250,17 @@ def test_release_rejects_coherent_foreign_driver_pid(tmp_path):
     with pytest.raises(ValueError):
         validate_release(receipt,manifest,repo,expected_driver_pid=os.getpid())
     with pytest.raises(ValueError):wait_for_release(receipt,manifest,repo,interval=.01)
+
+
+@pytest.mark.parametrize('kind',['old-local-format','no-dtensor'])
+def test_release_requires_new_sharded_dtensor_proof(tmp_path,kind):
+    repo,manifest,receipt,value=fixture(tmp_path);m=json.loads(manifest.read_text())
+    report=m['rank_roundtrips'][0]
+    if kind=='old-local-format':report['model_state_dict_type']='LOCAL_STATE_DICT'
+    else:report['model_dtensor_entries']=0
+    Path(report['path']).with_suffix('.json').write_text(json.dumps(report))
+    for item in m['files']:item['sha256']=digest(item['path'])
+    manifest.write_text(json.dumps(m));value['checkpoint_manifest_sha256']=digest(manifest)
+    for item in value['evidence']:item['sha256']=digest(item['path'])
+    receipt.write_text(json.dumps(value))
+    with pytest.raises(ValueError):validate_release(receipt,manifest,repo)

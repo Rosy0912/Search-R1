@@ -545,19 +545,19 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_training_state(self, local_path, step, roundtrip=False):
-        """Per-rank same-topology native model/Adam/scheduler/RNG snapshot."""
+        """Per-rank same-topology SHARDED/DTensor model plus native Adam/RNG."""
         import json
         from pathlib import Path
-        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, LocalStateDictConfig
+        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, ShardedStateDictConfig
         from search_r1.baselines.full_state import rng_state, restore_rng, state_digest, atomic_save
         assert self._is_actor
         if self._is_offload_param:
             load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(), load_grad=self._is_offload_grad)
         directory=Path(local_path);directory.mkdir(parents=True,exist_ok=True)
         try:
-            with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.LOCAL_STATE_DICT,
-                                     LocalStateDictConfig(offload_to_cpu=True)):
-                payload=dict(version=1,rank=self.rank,world_size=self.world_size,step=step,
+            with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.SHARDED_STATE_DICT,
+                                     ShardedStateDictConfig(offload_to_cpu=True)):
+                payload=dict(version=2,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
                     model=self.actor_module_fsdp.state_dict(), optimizer=self.actor_optimizer.state_dict(),
                     scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()))
                 before=state_digest(payload)
@@ -569,13 +569,15 @@ class ActorRolloutRefWorker(Worker):
                     self.actor_optimizer.load_state_dict(loaded['optimizer'])
                     self.actor_lr_scheduler.load_state_dict(loaded['scheduler'])
                     restore_rng(loaded['rng'])
-                    after=dict(version=1,rank=self.rank,world_size=self.world_size,step=step,
+                    after=dict(version=2,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
                         model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
                         scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()))
                     if state_digest(after)!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
             from search_r1.baselines.checkpoint_gate import digest
             report=dict(status='EXACT_FULL_STATE_RELOAD_OK' if roundtrip else 'FULL_STATE_SERIALIZED_OK',
                 rank=self.rank,world_size=self.world_size,step=step,path=str(path),sha256=digest(path),
+                model_state_dict_type='SHARDED_STATE_DICT',
+                model_dtensor_entries=sum(hasattr(t,'device_mesh') and hasattr(t,'to_local') for t in loaded['model'].values()),
                 state_digest=before,scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
                 optimizer_state_entries=len(self.actor_optimizer.state),pid=os.getpid())
             (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))

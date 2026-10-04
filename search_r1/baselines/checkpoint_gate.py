@@ -51,6 +51,8 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
     if (len(reports)!=8 or {x.get('rank')for x in reports}!=set(range(8))
             or any(x.get('status')!='EXACT_FULL_STATE_RELOAD_OK' or x.get('step')!=5
                    or x.get('world_size')!=8 or x.get('scheduler_last_epoch')!=5
+                   or x.get('model_state_dict_type')!='SHARDED_STATE_DICT'
+                   or type(x.get('model_dtensor_entries')) is not int or x['model_dtensor_entries']<=0
                    or x.get('optimizer_state_entries',0)<=0 for x in reports)):
         raise ValueError('Eight full-state reload reports incomplete')
     members={x['path']:x['sha256']for x in m['files']}

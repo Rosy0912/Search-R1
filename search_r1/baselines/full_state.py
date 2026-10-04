@@ -25,7 +25,11 @@ def restore_rng(state):
 
 
 def state_digest(value):
-    """Exact dtype/shape/content witness including optimizer and local shards."""
+    """Exact shard/content witness with DTensor global layout and mesh identity.
+
+    Metadata and local bytes only: no redistribute/full_tensor/all-gather, RNG
+    calls, or private mesh mutation. CPU-offloaded DTensors retain their mesh.
+    """
     h = hashlib.sha256()
     def add(x):
         if hasattr(x, 'local_shards'):
@@ -33,7 +37,13 @@ def state_digest(value):
             for shard in x.local_shards():
                 h.update(str(shard.metadata).encode()); add(shard.tensor)
         elif hasattr(x, 'to_local') and hasattr(x, 'placements'):
-            h.update(str((tuple(x.shape),x.placements)).encode());add(x.to_local())
+            mesh=x.device_mesh
+            h.update(b'DTENSOR_LAYOUT_V2')
+            add(dict(global_shape=tuple(x.shape),global_stride=tuple(x.stride()),
+                     global_dtype=str(x.dtype),placements=tuple(str(p) for p in x.placements),
+                     mesh_device_type=mesh.device_type,mesh_ranks=mesh.mesh,
+                     mesh_dim_names=mesh.mesh_dim_names,mesh_coordinate=mesh.get_coordinate()))
+            add(x.to_local())
         elif torch.is_tensor(x):
             t = x.detach().cpu().contiguous()
             h.update(str((str(t.dtype), tuple(t.shape))).encode())
