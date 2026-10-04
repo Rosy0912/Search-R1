@@ -370,7 +370,7 @@ class DataParallelPPOActor(BasePPOActor):
                         ref_logp=ref_log_prob if self.config.use_kl_loss else None)
                 if scaled_joint:
                     coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device, group)
-                (loss * loss_scale).backward()
+                (loss * loss_scale if scaled_joint else loss).backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
                 data = {
@@ -390,7 +390,7 @@ class DataParallelPPOActor(BasePPOActor):
             if paper_objective:
                 append_to_dict(metrics, mini_metrics)
             try:
-                grad_norm = self._optimizer_step(loss_scale)
+                grad_norm = self._optimizer_step(loss_scale) if scaled_joint else self._optimizer_step()
             except BaseException:
                 if scaled_joint:
                     import os
