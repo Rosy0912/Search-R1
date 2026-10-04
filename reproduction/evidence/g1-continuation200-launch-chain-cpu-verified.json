@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-04T16:04:03.972015+00:00",
+  "state": "RECOVERY_LAUNCH_CHAIN_CPU_VERIFIED_NOT_STARTED",
+  "target_cpu_tests": 24,
+  "target_cpu_passed": true,
+  "parent_exact_1_200_and_probe_boundaries_verified": true,
+  "parent_saved200_435_finite_canonical_hashes_verified": true,
+  "actual_fixed64_RLHFDataset_collation_DataProto_metadata_rows": 64,
+  "independent_review": "no remaining must-fix after immutable dump set/hash enforcement before/after fitting and final verification",
+  "new_segment": "201..300 weights-only new Adam; original KL base/LR position; fresh205 acceptance; no optimizer/RNG/sampler restoration",
+  "final_requirements": "two distinct run segments/probe maps/five proofs; old saves5/50/100/150/200 and new205/250/300; final435finitecanonical; actualsame64 questionIDs/binaryEM/sourcecounts; ownedcleanup",
+  "source_sha256": {
+    "reproduction/a800/run_continuation.py": "b6d4d511272059f494505c39953e95b11b7ea9cd8fd1fdb0fc8af20b46e3f6db",
+    "reproduction/a800/run_pipeline.py": "385c13070e55d51cd28182b7aa3b8787343b08de4ed7a372c8c7aed9a308c233",
+    "reproduction/a800/verify_continuation.py": "460783ac7a62c3b1a43a06b52880c3059be7681720deaab39b45c06f0d535e09",
+    "reproduction/a800/validation_identity.py": "da291dfc85bde27334c00a4ed2b69e04df9837c07f4b8876ea8f33fd54d69966",
+    "reproduction/a800/recovery_binding.py": "d57c229607707c6406c0f924c4656016e996760ddb73541f92055dc983b7b5dc",
+    "reproduction/a800/recover_probes.py": "9aa13ef6b262e0fb0737cdec1de2f6a5e2bab130d0e321889179dcae0c0b6b4c",
+    "reproduction/a800/probe_admission.py": "82e647256005912186ca7bca4d10f46aa1cdb95273c1d2c74bfa29f814274e10",
+    "reproduction/a800/prepare_continuation.py": "d31a40a1fb28fe9867200f292fffb2052c157f3c1310014e19547670d2796baf",
+    "reproduction/a800/verify_full.py": "f60c44c8428b066a26571eb3b7200f1c0c66978f015c61f82983f0674f41348c",
+    "verl/trainer/ppo/ray_trainer.py": "5eae8b94b8477525c5995f6a34e70fe5bb6b0d438f27159725a827b651180f23"
+  },
+  "scope": "target CPU engineering evidence; not real GRPO201..205 acceptance or successful final300"
+}

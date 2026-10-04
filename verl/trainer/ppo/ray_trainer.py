@@ -410,6 +410,11 @@ class RayPPOTrainer(object):
             else:
                 self.val_dataset.dataframe = self.val_dataset.dataframe.sample(self.config.data.val_data_num, random_state=42)
         print(f"filtered validation dataset size: {len(self.val_dataset.dataframe)}")
+        if os.environ.get('SEARCH_G1_BASE'):
+            from pathlib import Path
+            from reproduction.a800.validation_identity import bind_validation_dataframe
+            self.val_dataset.dataframe = bind_validation_dataframe(
+                self.val_dataset.dataframe, Path(os.environ['SEARCH_G1_BASE']))
 
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
                                          batch_size=self.config.data.val_batch_size,
@@ -440,7 +445,7 @@ class RayPPOTrainer(object):
             self.config.actor_rollout_ref.actor.optim.completed_updates = continuation_k
             self.config.critic.optim.total_training_steps = total_training_steps
 
-    def _validate(self):
+    def _validate(self, final=False):
         """
         The training loop of PPO with global metric computation.
         Accumulates metrics across all batches before computing final statistics.
@@ -448,6 +453,7 @@ class RayPPOTrainer(object):
         import torch
         reward_tensor_lst = []
         data_source_lst = []
+        question_id_lst = []
         if hasattr(self.val_reward_fn, 'reset_metrics'):
             self.val_reward_fn.reset_metrics()
 
@@ -474,6 +480,8 @@ class RayPPOTrainer(object):
         if not self.config.do_search:
             for test_data in self.val_dataloader:
                 test_batch = DataProto.from_single_dict(test_data)
+                if os.environ.get('SEARCH_G1_BASE'):
+                    question_id_lst.extend(test_batch.non_tensor_batch['__g1_question_id'].tolist())
 
                 # we only do validation on rule-based rm
                 if self.config.reward_model.enable and test_batch[0].non_tensor_batch['reward_model']['style'] == 'model':
@@ -507,6 +515,8 @@ class RayPPOTrainer(object):
             for batch_dict in self.val_dataloader:
                 timing_raw = {}
                 test_batch: DataProto = DataProto.from_single_dict(batch_dict)
+                if os.environ.get('SEARCH_G1_BASE'):
+                    question_id_lst.extend(test_batch.non_tensor_batch['__g1_question_id'].tolist())
                 # test_batch = test_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
 
                 test_gen_batch = test_batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
@@ -562,6 +572,12 @@ class RayPPOTrainer(object):
             for key, value in extra_metrics.items():
                 metric_dict[f'val/{key}'] = value
 
+        if os.environ.get('SEARCH_G1_BASE'):
+            from pathlib import Path
+            from reproduction.a800.validation_identity import record_validation
+            record_validation(Path(os.environ['SEARCH_G1_BASE']),
+                self.global_steps - 1 if final else self.global_steps,
+                question_id_lst, data_sources.tolist(), reward_tensor.tolist(), final=final)
         return metric_dict
 
 
@@ -884,7 +900,7 @@ class RayPPOTrainer(object):
 
                     # perform validation after training
                     if self.val_reward_fn is not None:
-                        val_metrics = self._validate()
+                        val_metrics = self._validate(final=True)
                         pprint(f'Final validation metrics: {val_metrics}')
                         print('SEARCH_G1_FINAL_METRICS_JSON=' + __import__('json').dumps(val_metrics,sort_keys=True),flush=True)
                         logger.log(data=val_metrics, step=self.global_steps - 1)

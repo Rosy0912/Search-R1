@@ -9,7 +9,8 @@ from reproduction.a800.prepare_run import digest
 from verl.utils.checkpoint_integrity import validate_saved_checkpoint
 
 
-def actual_updates(text):
+def actual_updates(text, first=1, last=300):
+    assert type(first) is int and type(last) is int and 1<=first<=last<=300
     text=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]','',text)
     rows=[];version=None
     for line in text.splitlines():
@@ -19,7 +20,7 @@ def actual_updates(text):
         if match and 'critic/rewards/mean:' in match[2]:
             values={k:float(v) for k,v in re.findall(r'([\w/]+):(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|nan|-?inf)',match[2])}
             rows.append(dict(step=int(match[1]),metrics=values,probe_version=version))
-    assert [r['step'] for r in rows]==list(range(1,301)), 'Missing/duplicate/extra actual update'
+    assert [r['step'] for r in rows]==list(range(first,last+1)), 'Missing/duplicate/extra actual update'
     for row in rows:
         for key in ('critic/rewards/mean','actor/pg_loss','actor/entropy_loss','actor/kl_loss','actor/ppo_kl','actor/grad_norm'):
             assert key in row['metrics'] and math.isfinite(row['metrics'][key]), 'Invalid metric at '+str(row['step'])+':'+key

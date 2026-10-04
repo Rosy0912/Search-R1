@@ -15,6 +15,7 @@ import numpy as np
 from reproduction.a800.prepare_run import digest
 from reproduction.a800.owned_processes import publish
 from reproduction.a800.probe_admission import calibrated_version
+from reproduction.a800.recovery_binding import verify_interventions
 
 
 def recover(base, dump):
@@ -33,7 +34,7 @@ def recover(base, dump):
     assert set(proof['question_ids'])==set(json.loads((base/'data/audit.json').read_text())['calibration_question_ids'])
     files=sorted(dump.glob('*.npz'))+[dump/'calibration-label-proof.json']
     assert len(files)>1, 'No genuine hidden/label arrays'
-    hashes={str(p):digest(p) for p in files}
+    hashes=verify_interventions(dump,run['recovery_dump_sha256'])
     for p in files:
         if p.suffix=='.npz':
             with np.load(p,allow_pickle=False) as z:
@@ -45,7 +46,7 @@ def recover(base, dump):
         subprocess.run([str(base/'env/bin/python'),str(base/'repo/ts_probe_train.py'),
             '--dumps',str(dump),'--layers','21,24,27','--commit-position','Xa','--commit-label','flip','--save',str(heads)],
             stdout=log,stderr=subprocess.STDOUT,check=True)
-    for name,value in hashes.items():assert digest(Path(name))==value, 'Preserved labels changed during fitting'
+    verify_interventions(dump,run['recovery_dump_sha256'])
     report=json.loads((heads/'calibration-report.json').read_text())
     for name in ('commit_probe.pkl','boundary_probe.pkl'):
         obj=joblib.load(heads/name);assert list(obj['clf'].classes_)==[0,1] and np.isfinite(obj['auc'])
@@ -56,7 +57,9 @@ def recover(base, dump):
         calibration_report=report,label_proof=proof,published_unix=time.time(),
         recovery=dict(parent_run_id=run['parent']['parent_run_id'],dump_sha256=hashes,
             semantics='preserved actual checkpoint200 closed-book/evidence-deletion interventions; heads refitted with reviewed small-sample guard; new segment identity'))
+    payload['archived_manifest']=str(round_dir/'manifest.json')
     calibrated_version(run,payload)
+    publish(round_dir/'manifest.json',payload)
     live=base/'artifacts/live';live.mkdir(exist_ok=False);publish(live/'manifest.json',payload)
     print('SEARCH_G1_RECOVERED_PROBES_FITTED='+payload['version'],flush=True)
 

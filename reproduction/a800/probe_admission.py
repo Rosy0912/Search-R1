@@ -100,6 +100,8 @@ def admit(base):
     evidence=dict(run_id=run['run_id'],accepted=True,version=version,live_manifest_sha256=digest(live_path),
                   grouped_calibration_cv=live['calibration_report'],label_proof=live['label_proof'],
                   actual_http_readouts=rows,http_smoke_semantics='finite identity-aligned readout plumbing, not accuracy',checked_unix=time.time())
+    if run.get('completed_updates',0):
+        evidence['evaluator_manifest']=live['archived_manifest']
     run['initial_probe_version']=version;atomic(run_path,run);atomic(target,evidence)
     verify_training_gate(base)
     print('SEARCH_G1_INITIAL_PROBES_ACCEPTED='+version,flush=True)

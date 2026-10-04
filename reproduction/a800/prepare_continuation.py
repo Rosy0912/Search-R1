@@ -31,6 +31,12 @@ def verified_parent(parent, completed):
     for name,value in run['source_sha256'].items():
         assert digest(parent/'repo'/name)==value, 'Parent immutable source changed'
     for name,value in run['input_sha256'].items():assert digest(parent/'data'/name)==value
+    from reproduction.a800.verify_continuation import segment_rows,bind_segment_versions,verify_five
+    import re
+    text=Path(run['train_log']).read_text(errors='replace')
+    rows=segment_rows(text,run,1,completed)
+    adopted=re.findall(r'SEARCH_G1_REFIT_ADOPTED=([^\s]+)',text)
+    bind_segment_versions(rows,run,0,adopted,[50,100,150]);verify_five(parent,run,1)
     checkpoint=Path(run['checkpoint_dir'])/'actor'/f'global_step_{completed}'
     marker_path=checkpoint/'complete.json';marker=json.loads(marker_path.read_text())
     assert marker['run_id']==run['run_id'] and marker['step']==completed
