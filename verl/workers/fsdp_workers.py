@@ -343,6 +343,8 @@ class ActorRolloutRefWorker(Worker):
 
         if self._is_rollout:
             self.rollout, self.rollout_sharding_manager = self._build_rollout()
+            if self._is_actor:
+                self.actor.rollout_sharding_manager = self.rollout_sharding_manager
 
         if self._is_ref:
             self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.ref.get('model_path', self.config.model.path),

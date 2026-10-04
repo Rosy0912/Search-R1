@@ -140,10 +140,10 @@ class DataParallelPPOActor(BasePPOActor):
 
             return entropy, log_probs
 
-    def _optimizer_step(self):
+    def _optimizer_step(self, loss_scale=1.):
         assert self.config.grad_clip is not None
         from search_r1.baselines.gradient_norm import clip_grad_norm64
-        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
+        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip, loss_scale)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         self.actor_optimizer.step()
@@ -268,7 +268,36 @@ class DataParallelPPOActor(BasePPOActor):
             self.actor_optimizer.zero_grad()
             mini_metrics = {}
 
-            for data in micro_batches:
+            loss_scale = 1.
+            probe_logps = []
+            scaled_joint = self.config.get('joint_loss_scaling', False)
+            if scaled_joint:
+                if not paper_objective or self.config.get('baseline_method') != 'gigpo':
+                    raise ValueError('Joint loss scaling is only defined for the GiGPO paper objective')
+                from search_r1.baselines.loss_scaling import (TransparentProbe, active_joint_bound,
+                                                            coordinated_scale, coordinated_badflag)
+                group = getattr(self.actor_module, 'process_group', None)
+                bound = torch.full((), -float('inf'), dtype=torch.float64, device='cuda')
+                bad = torch.zeros((), dtype=torch.int32, device='cuda')
+                with TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None)):
+                    with torch.no_grad():
+                        for probe_data in micro_batches:
+                            probe_data = probe_data.cuda()
+                            _, probe_logp = self._forward_micro_batch(probe_data, temperature)
+                            width = probe_data['responses'].shape[1]
+                            probe_mask = (probe_data['loss_mask'] if self.config.state_masking else
+                                          probe_data['attention_mask'][:, -width:])
+                            value, invalid = active_joint_bound(probe_data['old_log_probs'], probe_logp,
+                                probe_data['advantages'], probe_mask, probe_data['policy_weights'],
+                                probe_data['step_ids'], self.config.clip_ratio)
+                            bound = torch.maximum(bound, value)
+                            bad = torch.maximum(bad, invalid)
+                            probe_logps.append(probe_logp.detach().cpu())
+                loss_scale = coordinated_scale(bound, bad, group)
+                mini_metrics['actor/joint_loss_scale'] = float(loss_scale)
+                mini_metrics['actor/probe_micro_batches'] = len(probe_logps)
+
+            for micro_index, data in enumerate(micro_batches):
                 data = data.cuda()  # actor device is cpu when using offload
                 responses = data['responses']
                 response_length = responses.size(1)
@@ -284,6 +313,15 @@ class DataParallelPPOActor(BasePPOActor):
 
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
+
+                if scaled_joint:
+                    # Synchronize before the loss helpers can raise locally.
+                    value, invalid = active_joint_bound(old_log_prob, log_prob, advantages,
+                        response_mask, data['policy_weights'], data['step_ids'], clip_ratio)
+                    mismatch = not torch.equal(log_prob.detach().cpu(), probe_logps[micro_index])
+                    if self.config.use_kl_loss:
+                        invalid = invalid | (~torch.isfinite(data['ref_log_prob'][response_mask.bool()]).all()).to(torch.int32)
+                    coordinated_badflag(bool(invalid) or mismatch, log_prob.device, group)
 
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
@@ -329,7 +367,9 @@ class DataParallelPPOActor(BasePPOActor):
                     audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
                         advantages=advantages, loss_parts=parts,
                         ref_logp=ref_log_prob if self.config.use_kl_loss else None)
-                loss.backward()
+                if scaled_joint:
+                    coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device, group)
+                (loss * loss_scale).backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
                 data = {
@@ -348,7 +388,7 @@ class DataParallelPPOActor(BasePPOActor):
 
             if paper_objective:
                 append_to_dict(metrics, mini_metrics)
-            grad_norm = self._optimizer_step()
+            grad_norm = self._optimizer_step(loss_scale)
             if audit is not None:
                 audit.gradient(grad_norm)
             updates += 1

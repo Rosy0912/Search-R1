@@ -48,10 +48,14 @@ def _failure(grads, norm):
 
 
 @torch.no_grad()
-def clip_grad_norm64(module, max_norm):
+def clip_grad_norm64(module, max_norm, loss_scale=1.):
     """L2 max_norm/(global_norm+1e-6), cast coefficient as native FSDP does."""
     if max_norm < 0:
         raise ValueError('Negative max_norm')
+    # The scale is identical for the entire DP minibatch, never per microbatch.
+    scale = torch.as_tensor(loss_scale, dtype=torch.float64).detach()
+    if scale.numel() != 1 or not torch.isfinite(scale) or not 0 < scale <= 1:
+        raise ValueError('Expected finite positive loss scale at most one')
     if isinstance(module, FSDP):
         from torch.distributed.fsdp._runtime_utils import _lazy_init
         from torch.distributed.fsdp._common_utils import TrainingState
@@ -108,7 +112,26 @@ def clip_grad_norm64(module, max_norm):
     if not torch.isfinite(norm):
         _failure(grads, norm)
         raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
-    coefficient = (float(max_norm) / (norm + 1e-6)).clamp(max=1.)
+    scale = scale.to(norm.device)
+    original_norm = norm / scale
+    if not torch.isfinite(original_norm):
+        _failure(grads, original_norm)
+        raise ValueError('Nonfinite unscaled actor gradient norm; optimizer step refused')
+    coefficient = torch.minimum(1. / scale, float(max_norm) / (norm + scale * 1e-6))
     for grad in grads:
-        grad.mul_(coefficient.to(grad.device, grad.dtype))
-    return norm
+        if float(scale) == 1.:
+            # Preserve the existing native coefficient cast on old paths.
+            grad.mul_(coefficient.to(grad.device, grad.dtype))
+        else:
+            # A finite coefficient may exceed FP32 even when its product is
+            # representable. Never cast the coefficient first (0*inf is NaN).
+            for chunk in grad.reshape(-1).split(262144):
+                chunk.copy_((chunk.double() * coefficient.to(chunk.device)).to(chunk.dtype))
+    clipped_bad = torch.tensor(int(not all(torch.isfinite(g).all() for g in grads)),
+                               device=device, dtype=torch.int32)
+    if isinstance(module, FSDP):
+        dist.all_reduce(clipped_bad, op=dist.ReduceOp.MAX, group=module.process_group)
+    if bool(clipped_bad):
+        _failure(grads, original_norm)
+        raise ValueError('Nonfinite clipped actor gradients; optimizer step refused')
+    return original_norm
