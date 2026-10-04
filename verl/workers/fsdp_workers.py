@@ -232,8 +232,8 @@ class ActorRolloutRefWorker(Worker):
                                           weight_decay=optim_config.get('weight_decay', 1e-2))
 
             total_steps = optim_config.get('total_training_steps', 0)
-            num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            from search_r1.baselines.full_state import resolve_warmup_steps
+            num_warmup_steps = resolve_warmup_steps(optim_config)
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
@@ -376,6 +376,7 @@ class ActorRolloutRefWorker(Worker):
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
+                lr_before = self.actor_lr_scheduler.get_last_lr()[0]
                 metrics = self.actor.update_policy(data=data)
             delta_time = timer.last
             global_num_tokens = data.meta_info['global_token_num']
@@ -386,6 +387,9 @@ class ActorRolloutRefWorker(Worker):
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
+            metrics['actor/lr_before_outer'] = lr_before
+            metrics['actor/scheduler_outer_steps'] = self.actor_lr_scheduler.last_epoch
+            print('ACTOR_RANK_UPDATE_JSON=' + __import__('json').dumps(dict(rank=self.rank, lr_before=lr_before, lr_after=lr, scheduler_last_epoch=self.actor_lr_scheduler.last_epoch, optimizer_steps=metrics.get('actor/optimizer_steps'), metrics=metrics), default=lambda x:x.item(), allow_nan=False), flush=True)
 
             log_gpu_memory_usage('After update policy', logger=logger)
 
@@ -538,6 +542,52 @@ class ActorRolloutRefWorker(Worker):
         torch.distributed.barrier()
         if self._is_offload_param:
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def save_training_state(self, local_path, step, roundtrip=False):
+        """Per-rank same-topology native model/Adam/scheduler/RNG snapshot."""
+        import json
+        from pathlib import Path
+        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, LocalStateDictConfig
+        from search_r1.baselines.full_state import rng_state, restore_rng, state_digest, atomic_save
+        assert self._is_actor
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(), load_grad=self._is_offload_grad)
+        directory=Path(local_path);directory.mkdir(parents=True,exist_ok=True)
+        try:
+            with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.LOCAL_STATE_DICT,
+                                     LocalStateDictConfig(offload_to_cpu=True)):
+                payload=dict(version=1,rank=self.rank,world_size=self.world_size,step=step,
+                    model=self.actor_module_fsdp.state_dict(), optimizer=self.actor_optimizer.state_dict(),
+                    scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()))
+                before=state_digest(payload)
+                path=directory/('rank_%d.pt'%self.rank);atomic_save(payload,path)
+                loaded=torch.load(path,map_location='cpu',weights_only=False)
+                if state_digest(loaded)!=before:raise ValueError('Serialized full state changed')
+                if roundtrip:
+                    self.actor_module_fsdp.load_state_dict(loaded['model'],strict=True)
+                    self.actor_optimizer.load_state_dict(loaded['optimizer'])
+                    self.actor_lr_scheduler.load_state_dict(loaded['scheduler'])
+                    restore_rng(loaded['rng'])
+                    after=dict(version=1,rank=self.rank,world_size=self.world_size,step=step,
+                        model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
+                        scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()))
+                    if state_digest(after)!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
+            from search_r1.baselines.checkpoint_gate import digest
+            report=dict(status='EXACT_FULL_STATE_RELOAD_OK' if roundtrip else 'FULL_STATE_SERIALIZED_OK',
+                rank=self.rank,world_size=self.world_size,step=step,path=str(path),sha256=digest(path),
+                state_digest=before,scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                optimizer_state_entries=len(self.actor_optimizer.state),pid=os.getpid())
+            (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))
+            print('FULL_STATE_RANK_JSON='+json.dumps(report,sort_keys=True,allow_nan=False),flush=True)
+            torch.distributed.barrier()
+            return report
+        finally:
+            if self._is_offload_param:
+                offload_fsdp_param_and_grad(self.actor_module_fsdp,offload_grad=self._is_offload_grad)
+            if self._is_offload_optimizer:
+                offload_fsdp_optimizer(self.actor_optimizer)
+
 
 
 class CriticWorker(Worker):

@@ -409,9 +409,17 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
+        e1 = getattr(self.config.trainer, 'e1_gate_enabled', False)
+        self.e1_sampler = None
+        if e1:
+            from search_r1.baselines.full_state import StatefulSampler
+            self.e1_sampler = StatefulSampler(self.train_dataset, None,
+                                               self.config.data.shuffle_train_dataloader)
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
-                                           shuffle=self.config.data.shuffle_train_dataloader,
+                                           shuffle=self.config.data.shuffle_train_dataloader if not e1 else False,
+                                           sampler=self.e1_sampler,
+                                           num_workers=0,
                                            drop_last=True,
                                            collate_fn=collate_fn)
 
@@ -447,6 +455,17 @@ class RayPPOTrainer(object):
         if self.config.trainer.total_training_steps is not None:
             total_training_steps = self.config.trainer.total_training_steps
 
+        if getattr(self.config.trainer, 'e1_gate_enabled', False):
+            if (total_training_steps != 301 or self.config.trainer.save_freq != 25
+                    or self.config.trainer.get('acceptance_step') != 5
+                    or self.config.actor_rollout_ref.actor.optim.get('num_warmup_steps') != 57
+                    or self.config.trainer.n_gpus_per_node != 8 or self.config.trainer.nnodes != 1
+                    or self.config.algorithm.adv_estimator != 'grpo'
+                    or self.config.baselines.method != 'bapo'
+                    or self.config.trainer.get('smoke_only', False)):
+                raise ValueError('E1 requires actual300 (steps301), warmup57, save25/5, BAPO formal run')
+            if not self.config.trainer.get('e1_gate_receipt'):
+                raise ValueError('E1 requires an independent fifth-outer release receipt path')
         self.total_training_steps = total_training_steps
         print(f'Total training steps: {self.total_training_steps}')
 
@@ -705,6 +724,61 @@ class RayPPOTrainer(object):
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
+        if getattr(self.config.trainer, 'e1_gate_enabled', False):
+            self._save_e1_full_state(actor_local_path)
+
+    def _save_e1_full_state(self, actor_local_path):
+        from pathlib import Path
+        from search_r1.baselines.full_state import rng_state, restore_rng, state_digest, atomic_save
+        step=self.global_steps
+        reports=self.actor_rollout_wg.save_training_state(os.path.join(actor_local_path,'training_state'),
+                                                          step, roundtrip=(step==5))
+        world=self.config.trainer.n_gpus_per_node*self.config.trainer.nnodes
+        if len(reports)!=world or {r['rank'] for r in reports}!=set(range(world)):
+            raise ValueError('Missing/duplicate full-state rank reports')
+        directory=Path(self.config.trainer.default_local_dir)/'full_state'/f'global_step_{step}'
+        controller=self.baseline_controller
+        payload=dict(version=1,driver_pid=os.getpid(),global_step=step,next_global_step=step+1,epoch=self.e1_epoch,
+            sampler=self.e1_sampler.state_dict(),rng=rng_state(),bapo=controller.stage.state_dict(),
+            actual_outer_updates=controller.actual_outer_updates)
+        before=state_digest(payload);path=directory/'driver.pt';atomic_save(payload,path)
+        loaded=torch.load(path,map_location='cpu',weights_only=False)
+        if state_digest(loaded)!=before:raise ValueError('Driver state serialization mismatch')
+        if step==5:
+            self.e1_sampler.load_state_dict(loaded['sampler']);restore_rng(loaded['rng'])
+            controller.stage.load_state_dict(loaded['bapo'])
+            controller.actual_outer_updates=loaded['actual_outer_updates']
+            after=dict(version=1,driver_pid=os.getpid(),global_step=self.global_steps,next_global_step=self.global_steps+1,
+                epoch=self.e1_epoch,sampler=self.e1_sampler.state_dict(),rng=rng_state(),
+                bapo=controller.stage.state_dict(),actual_outer_updates=controller.actual_outer_updates)
+            if state_digest(after)!=before:raise ValueError('Driver sampler/RNG/BAPO reload mismatch')
+        self.e1_rank_reports=reports;self.e1_state_directory=directory
+        (directory/'driver-reload.json').write_text(json.dumps(dict(
+            status='EXACT_DRIVER_RELOAD_OK' if step==5 else 'DRIVER_SERIALIZED_OK',step=step,
+            state_digest=before,pid=os.getpid(),path=str(path.resolve()),
+            sha256=__import__('search_r1.baselines.checkpoint_gate',fromlist=['digest']).digest(path),
+            sampler_cursor=self.e1_sampler.cursor),indent=2))
+
+    def _e1_pause_after_five(self):
+        from pathlib import Path
+        import subprocess
+        from search_r1.baselines.checkpoint_gate import write_manifest, wait_for_release
+        source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+        if source!=self.config.baselines.algorithm_source_commit:
+            raise ValueError('E1 source-start configuration differs from current source')
+        run=Path(os.environ['BAPO_RUN_ID']).resolve()
+        source_record=run/'source-commit.txt'
+        if source_record.read_text().strip()!=source or source_record.resolve().parent!=run:
+            raise ValueError('Run-start E1 source differs from current source')
+        receipt=Path(self.config.trainer.e1_gate_receipt).resolve()
+        if run.parent.parent not in receipt.parents:raise ValueError('E1 release outside owned ROOT')
+        base=Path(self.config.trainer.default_local_dir)
+        paths=[source_record]
+        for directory in (base/'actor'/'global_step_5',base/'algorithm'/'global_step_5',self.e1_state_directory):
+            paths.extend(p for p in directory.rglob('*') if p.is_file())
+        config=OmegaConf.to_container(self.config,resolve=True)
+        manifest=write_manifest(paths,self.e1_state_directory,config,source,run,5,self.e1_rank_reports)
+        wait_for_release(receipt,manifest,Path.cwd())
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -766,6 +840,7 @@ class RayPPOTrainer(object):
 
         # start training loop
         for epoch in range(self.config.trainer.total_epochs):
+            self.e1_epoch = epoch
             for batch_dict in self.train_dataloader:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
@@ -940,10 +1015,16 @@ class RayPPOTrainer(object):
                         dict(step=self.global_steps, metrics=metrics), sort_keys=True,
                         default=lambda value: value.item(), allow_nan=False), flush=True)
 
+                if getattr(self.config.trainer, 'e1_gate_enabled', False) and self.global_steps == 5:
+                    self._e1_pause_after_five()
+                completed_step = self.global_steps
                 self.global_steps += 1
 
                 if self.global_steps >= self.total_training_steps:
-
+                    if getattr(self.config.trainer, 'e1_gate_enabled', False):
+                        if completed_step != 300 or self.baseline_controller.actual_outer_updates != 300:
+                            raise ValueError('E1 must end at exactly actual outer300')
+                        self.global_steps = completed_step
                     # perform validation after training
                     if self.val_reward_fn is not None and not getattr(self.config.trainer, 'smoke_only', False):
                         self._prepare_final_validation()

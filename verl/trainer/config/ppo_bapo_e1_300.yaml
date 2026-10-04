@@ -1,0 +1,98 @@
+defaults:
+  - ppo_baselines
+  - _self_
+
+data:
+  train_files: ${oc.env:BAPO_E1_DATA}/train.parquet
+  val_files: ${oc.env:BAPO_E1_DATA}/validation.parquet
+  final_val_files: ${oc.env:BAPO_E1_DATA}/final.parquet
+  train_data_num: null
+  val_data_num: null
+  train_batch_size: 512
+  val_batch_size: 32
+  max_prompt_length: 4096
+  max_start_length: 2048
+  max_response_length: 500
+  max_obs_length: 500
+
+actor_rollout_ref:
+  model:
+    path: ${oc.env:BAPO_E1_MODEL}
+    enable_gradient_checkpointing: true
+    use_remove_padding: true
+  actor:
+    loss_reduction: sequence_mean
+    entropy_coeff: 0.0
+    use_kl_loss: true
+    kl_loss_coef: 0.001
+    kl_loss_type: low_var_kl
+    clip_ratio: 0.2
+    grad_clip: 1.0
+    ppo_mini_batch_size: 128
+    ppo_micro_batch_size: 16
+    ppo_epochs: 1
+    use_dynamic_bsz: false
+    optim:
+      lr: 1.0e-6
+      num_warmup_steps: 57
+      lr_warmup_steps_ratio: 0.0
+      warmup_style: constant
+    fsdp_config:
+      param_offload: true
+      grad_offload: true
+      optimizer_offload: true
+  rollout:
+    n: 1
+    n_agent: 5
+    temperature: 1.0
+    top_p: 1.0
+    top_k: -1
+    tensor_model_parallel_size: 1
+    gpu_memory_utilization: 0.4
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+  ref:
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+    fsdp_config:
+      param_offload: true
+
+max_turns: 4
+retriever:
+  url: ${oc.env:BAPO_E1_RETRIEVER_URL}
+  topk: 3
+
+trainer:
+  total_training_steps: 301
+  total_epochs: 15
+  save_freq: 25
+  acceptance_step: 5
+  test_freq: 50
+  val_before_train: true
+  smoke_only: false
+  e1_gate_enabled: true
+  e1_gate_receipt: ${oc.env:BAPO_E1_RUN}/logs/step5-independent-release.json
+  experiment_name: bapo-qwen2.5-3b-instruct-e1-300
+  default_local_dir: ${oc.env:BAPO_E1_RUN}/checkpoints
+  n_gpus_per_node: 8
+  nnodes: 1
+  logger: [console]
+
+baselines:
+  method: bapo
+  seed: 42
+  holdout:
+    enabled: true
+    input_mode: prebuilt_manifest
+    manifest_path: ${oc.env:BAPO_E1_DATA}/manifest.json
+    manifest_sha256: ${oc.env:BAPO_E1_DATA_MANIFEST_SHA256}
+    data_root: ${oc.env:BAPO_E1_DATA}
+    seed: 42
+  bapo:
+    stage_validation_files: ${oc.env:BAPO_E1_DATA}/stage.parquet
+    stage_validation_size: 64
+    stage_validation_freq: 1
+    patience: 5
+    alpha: 0.05
+    bonus: 0.5
+    resample_attempts: 2

@@ -204,6 +204,9 @@ class DataParallelPPOActor(BasePPOActor):
         # make sure we are in training mode
         self.actor_module.train()
 
+        sequence_mean = self.config.get('loss_reduction', 'token_mean') == 'sequence_mean'
+        if sequence_mean and self.config.use_dynamic_bsz and torch.distributed.is_initialized():
+            raise ValueError('Distributed sequence_mean requires fixed micro batches')
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
@@ -236,13 +239,13 @@ class DataParallelPPOActor(BasePPOActor):
             from search_r1.baselines.distillation import global_token_count
             count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
             total, world = global_token_count(count_mask)
-            if total.item() == 0:
+            if total.item() == 0 and not sequence_mean:
                 skipped += 1
                 continue
             if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
                 raise ValueError('Paper actor objective requires driver-computed policy_weights')
             topd_token_mean = self.config.get('baseline_method') == 'topd'
-            if paper_objective:
+            if sequence_mean or paper_objective:
                 from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
                 denominator = row_denominator(len(mini_batch), mini_batch.device)
             elif topd_token_mean:
@@ -256,6 +259,7 @@ class DataParallelPPOActor(BasePPOActor):
                 micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
 
             self.actor_optimizer.zero_grad()
+            mini_metrics = {}
 
             for data in micro_batches:
                 data = data.cuda()  # actor device is cpu when using offload
@@ -265,6 +269,12 @@ class DataParallelPPOActor(BasePPOActor):
                 response_mask = attention_mask[:, -response_length:]
                 if self.config.state_masking:
                     response_mask = data['loss_mask']
+                if sequence_mean:
+                    # Empty trajectories contribute zero but remain in the full
+                    # global mini row denominator; FSDP averages across ranks.
+                    policy_weights = response_mask / response_mask.sum(-1, keepdim=True).clamp_min(1)
+                elif paper_objective:
+                    policy_weights = data['policy_weights']
                 old_log_prob = data['old_log_probs']
                 advantages = data['advantages']
 
@@ -280,10 +290,13 @@ class DataParallelPPOActor(BasePPOActor):
                         (~torch.isfinite(old_log_prob) & valid).sum(),
                         (~torch.isfinite(log_prob) & valid).sum(), valid.sum())).detach())
 
-                if paper_objective:
+                if sequence_mean or paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
-                        old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
-                        clip_ratio, denominator, data.get('step_ids', None))
+                        old_log_prob, log_prob, advantages, response_mask, policy_weights,
+                        clip_ratio, denominator, None if sequence_mean else data.get('step_ids', None))
+                    if sequence_mean:
+                        pg_clipfrac = pg_clipfrac * policy_weights.sum() / denominator
+                        ppo_kl = ppo_kl * policy_weights.sum() / denominator
                 elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
@@ -294,8 +307,8 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                   eos_mask=response_mask,
                                                                                   cliprange=clip_ratio)
                 # compute entropy loss from entropy
-                entropy_loss = (verl_F.masked_sum(entropy, data['policy_weights']) / denominator
-                                if paper_objective else verl_F.masked_mean(entropy, response_mask))
+                entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
+                                if sequence_mean or paper_objective else verl_F.masked_mean(entropy, response_mask))
 
                 # compute policy loss
                 policy_loss = pg_loss - entropy_loss * entropy_coeff
@@ -306,14 +319,17 @@ class DataParallelPPOActor(BasePPOActor):
                     kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
                                                 ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
                                                 kl_penalty=self.config.kl_loss_type)
-                    kl_loss = (verl_F.masked_sum(kld, data['policy_weights']) / denominator
-                               if paper_objective else masked_mean(kld, response_mask))
+                    kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
+                               if sequence_mean or paper_objective else masked_mean(kld, response_mask))
 
                     policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
-                    metrics['actor/kl_loss'] = kl_loss.detach().item()
+                    if sequence_mean:
+                        mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
+                    else:
+                        metrics['actor/kl_loss'] = kl_loss.detach().item()
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
-                loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+                loss = policy_loss if sequence_mean or paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
                 loss.backward()
 
                 data = {
@@ -322,8 +338,14 @@ class DataParallelPPOActor(BasePPOActor):
                     'actor/pg_clipfrac': pg_clipfrac.detach().item(),
                     'actor/ppo_kl': ppo_kl.detach().item(),
                 }
-                append_to_dict(metrics, data)
+                if sequence_mean:
+                    for key, value in data.items():
+                        mini_metrics[key] = mini_metrics.get(key, 0.) + value
+                else:
+                    append_to_dict(metrics, data)
 
+            if sequence_mean:
+                append_to_dict(metrics, mini_metrics)
             grad_norm = self._optimizer_step()
             updates += 1
             data = {'actor/grad_norm': grad_norm.detach().item()}
