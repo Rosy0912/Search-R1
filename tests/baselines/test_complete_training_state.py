@@ -101,6 +101,9 @@ def test_corrupt_adam_is_refused_before_parameter_mutation():
     with pytest.raises(ValueError,match='Adam moment'):
         restore_worker(model,optimizer,scheduler,saved,{'source':'fixed'})
     assert digest(worker_snapshot(model,optimizer,scheduler,{'source':'fixed'}))==before
+    missing=worker_snapshot(model,optimizer,scheduler,{'source':'fixed'});missing['optimizer']['state']={}
+    with pytest.raises(ValueError,match='coverage'):restore_worker(model,optimizer,scheduler,missing,{'source':'fixed'})
+    assert digest(worker_snapshot(model,optimizer,scheduler,{'source':'fixed'}))==before
 
 
 def test_incoherent_sampler_and_string_receipt_are_refused(tmp_path):

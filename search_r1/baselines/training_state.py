@@ -153,6 +153,8 @@ def restore_worker(module, optimizer, scheduler, saved, identity):
     current_groups = optimizer.param_groups
     saved_groups = saved['optimizer']['param_groups']
     if len(current_groups) != len(saved_groups): raise ValueError('Optimizer group layout changed')
+    if saved['optimizer']['state'].keys() != optimizer.state_dict()['state'].keys():
+        raise ValueError('Initialized Adam state coverage changed during same-world restore')
     parameter_by_id = {}
     for current, group in zip(current_groups, saved_groups):
         if len(current['params']) != len(group['params']): raise ValueError('Optimizer parameter layout changed')
@@ -252,7 +254,9 @@ def wait_for_acceptance(directory, ready, timeout_seconds=43200):
     while True:
         receipt = directory / 'approved.json'
         if receipt.exists():
-            approval = json.loads(receipt.read_text())
+            receipt_bytes = receipt.read_bytes()
+            receipt_sha = hashlib.sha256(receipt_bytes).hexdigest()
+            approval = json.loads(receipt_bytes)
             if approval.get('status') != 'PASS' or approval.get('ready_sha256') != ready_sha:
                 raise ValueError('Independent acceptance receipt does not match ready state')
             for key in ('job_id', 'code_commit', 'config_sha256', 'data_identity', 'model_identity'):
@@ -262,10 +266,11 @@ def wait_for_acceptance(directory, ready, timeout_seconds=43200):
                 raise ValueError('Independent complete-state/HF/Tree acceptance missing')
             if 'full_state_manifest' in ready:
                 manifest_path = ready['full_state_manifest']
+                manifest_bytes = Path(manifest_path).read_bytes()
                 if (approval.get('full_state_manifest_sha256') != ready['full_state_manifest_sha256']
-                        or file_sha(manifest_path) != ready['full_state_manifest_sha256']):
+                        or hashlib.sha256(manifest_bytes).hexdigest() != ready['full_state_manifest_sha256']):
                     raise ValueError('Complete-state manifest identity changed')
-                manifest = json.loads(Path(manifest_path).read_text())
+                manifest = json.loads(manifest_bytes)
                 for record in manifest['worker_states'] + [manifest['driver']]:
                     if file_sha(record['path']) != record['sha256']:
                         raise ValueError('Complete-state shard changed after acceptance')
@@ -273,8 +278,10 @@ def wait_for_acceptance(directory, ready, timeout_seconds=43200):
                 if (approval.get('hf_identity_sha256') != ready['hf_identity']['sha256']
                         or model_manifest(ready['hf_checkpoint']) != ready['hf_identity']):
                     raise ValueError('HF checkpoint identity changed after acceptance')
+            if receipt.read_bytes() != receipt_bytes:
+                raise ValueError('Acceptance receipt changed during verification')
             atomic_save(dict(status='RELEASED_FOR_SAME_JOB_6_TO_300', ready_sha256=ready_sha,
-                             approval_sha256=file_sha(receipt), pause_seconds=time.monotonic()-start),
+                             approval_sha256=receipt_sha, pause_seconds=time.monotonic()-start),
                         directory / 'released.json', json_format=True)
             return approval
         if time.monotonic() - start > timeout_seconds:
