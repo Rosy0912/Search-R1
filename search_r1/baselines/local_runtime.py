@@ -13,6 +13,15 @@ def loopback(value):
 
 
 def check_local_runtime(config, ray_nodes=None):
+    opsd_host = os.environ.get('SEARCH_R1_OPSD_LOCAL_HOST')
+    if opsd_host:
+        # The task launcher sets this before Hydra applies user overrides.
+        # A CPU teacher or disabled boundary must fail before loading assets.
+        if (opsd_host != 'h100-10' or config.baselines.get('method') != 'opsd'
+                or not config.baselines.get('local_runtime_only', False)
+                or config.baselines.get('local_runtime_host') != opsd_host
+                or config.baselines.distillation.get('teacher_device') != 'cuda'):
+            raise ValueError('OPSD task runtime requires CUDA teacher and its enforced local host')
     if not config.baselines.get('local_runtime_only', False):
         return
     expected = config.baselines.local_runtime_host

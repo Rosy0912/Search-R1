@@ -39,3 +39,31 @@ def test_proxy_or_wrong_allocation_is_rejected(local,monkeypatch):
     monkeypatch.delenv('HTTPS_PROXY')
     monkeypatch.setenv('SLURM_JOB_NODELIST','h100-16')
     with pytest.raises(ValueError,match='Slurm'):check_local_runtime(local)
+
+
+@pytest.fixture
+def opsd_local(local, monkeypatch):
+    local.baselines.method = 'opsd'
+    local.baselines.distillation = {'teacher_device': 'cuda'}
+    local.baselines.local_runtime_host = 'h100-10'
+    monkeypatch.setenv('SEARCH_R1_OPSD_LOCAL_HOST', 'h100-10')
+    monkeypatch.setenv('SLURM_JOB_NODELIST', 'h100-10')
+    monkeypatch.setattr('socket.gethostname', lambda: 'h100-10')
+    monkeypatch.setattr('socket.getaddrinfo', lambda *a: [(2,1,6,'',('10.33.0.10',0))])
+    return local
+
+
+def test_opsd_task_policy_accepts_local_cuda(opsd_local):
+    check_local_runtime(opsd_local, [{'Alive': True, 'NodeManagerAddress': '10.33.0.10'}])
+
+
+@pytest.mark.parametrize('field,value', [
+    ('method', 'grpo'), ('local_runtime_only', False),
+    ('local_runtime_host', 'h100-16'), ('teacher_device', 'cpu')])
+def test_opsd_task_policy_cannot_be_disabled_by_overrides(opsd_local, field, value):
+    if field == 'teacher_device':
+        opsd_local.baselines.distillation.teacher_device = value
+    else:
+        opsd_local.baselines[field] = value
+    with pytest.raises(ValueError, match='OPSD task runtime'):
+        check_local_runtime(opsd_local)

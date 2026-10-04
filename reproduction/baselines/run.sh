@@ -23,7 +23,13 @@ case "$METHOD" in
     tree_grpo) overrides+=(actor_rollout_ref.rollout.n_agent=2) ;;
     bapo) ;;
     opsd)
+        # Agent4's reviewed OPSD runtime is restricted to this allocated host.
+        export SEARCH_R1_OPSD_LOCAL_HOST=h100-10
         overrides+=("baselines.distillation.teacher_path=${OPSD_TEACHER:?Set frozen OPSD_TEACHER path}"
+            baselines.distillation.teacher_device=cuda
+            baselines.distillation.teacher_prompt_mode=user_context
+            baselines.distillation.component_clip=null
+            baselines.local_runtime_only=true baselines.local_runtime_host=h100-10
             baselines.distillation.privileged_answers=true
             actor_rollout_ref.actor.use_kl_loss=false actor_rollout_ref.actor.entropy_coeff=0
             algorithm.kl_ctrl.kl_coef=0 "actor_rollout_ref.actor.ppo_micro_batch_size=${OPSD_GLOBAL_MICROBATCH:-$gpu_count}") ;;

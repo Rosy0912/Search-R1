@@ -1,0 +1,12 @@
+{
+  "source": "fae5e3295c18a0c6b80e314b2fdce61ad571fec6",
+  "scope": "synthetic multi-search/observation history with real tiny Qwen CPU, not actual3146 trajectories or 3B effect",
+  "rows": 2,
+  "role_hint_before_user_closure": true,
+  "history_ids_and_target_positions_exact": true,
+  "observation_loss_logit_gradients_zero": true,
+  "supervised_logit_gradients_nonzero": true,
+  "teacher_gradients_none": true,
+  "future_history_causal_independence_exact": true,
+  "loss": 0.500424325466156
+}

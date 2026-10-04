@@ -1,0 +1,32 @@
+{
+  "scope": "CPU tiny float64 semantic reference tolerance1e-12; NOT HF BF16 exact/FSDP/GPU speed or completed performance fix",
+  "source_sha256": "a457ca7b1237bb3accffec89f8cc21327bd43feb8e488d96f40f1c5c3b775747",
+  "shape": {
+    "original_prompt_width": 7,
+    "original_response_width": 48,
+    "prompt_left_removed": 3,
+    "response_tail_removed": 16,
+    "new_prompt_width": 4,
+    "new_response_width": 32
+  },
+  "teacher_context_and_target_positions_exact": true,
+  "teacher_prompt_modes": [
+    "legacy",
+    "user_context"
+  ],
+  "observations_and_internal_holes_preserved": true,
+  "two_step_comparisons": [
+    {
+      "step": 1,
+      "loss_max_abs": 0.0,
+      "gradient_max_abs": 0.0,
+      "parameter_max_abs": 0.0
+    },
+    {
+      "step": 2,
+      "loss_max_abs": 0.0,
+      "gradient_max_abs": 0.0,
+      "parameter_max_abs": 0.0
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "actual launcher Hydra CPU inspection plus actual policy function, no GPU/assets loaded",
+  "rows": [
+    {
+      "actual_cli_override": "baselines.distillation.teacher_device=cpu",
+      "rejected": true,
+      "error": "OPSD task runtime requires CUDA teacher and its enforced local host"
+    },
+    {
+      "actual_cli_override": "baselines.local_runtime_only=false",
+      "rejected": true,
+      "error": "OPSD task runtime requires CUDA teacher and its enforced local host"
+    },
+    {
+      "actual_cli_override": "baselines.local_runtime_host=h100-16",
+      "rejected": true,
+      "error": "OPSD task runtime requires CUDA teacher and its enforced local host"
+    },
+    {
+      "actual_cli_override": "baselines.method=grpo",
+      "rejected": true,
+      "error": "OPSD task runtime requires CUDA teacher and its enforced local host"
+    }
+  ],
+  "other_grpo_default_unchanged": true
+}
