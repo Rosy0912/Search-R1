@@ -1,0 +1,167 @@
+{
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "checked_unix": 1791131211.7747984,
+  "state": "FIRST_REAL_WEIGHT_CONTINUATION_UPDATE201",
+  "actual_update": {
+    "step": 201,
+    "probe_version": "06fe8f4ef2d44848a683850e28076c20:200:990d6454def74cc78b1fa3e72ffa3795",
+    "metrics": {
+      "global_seqlen/min": 178946.0,
+      "global_seqlen/max": 190937.0,
+      "global_seqlen/minmax_diff": 11991.0,
+      "global_seqlen/balanced_min": 183584.0,
+      "global_seqlen/balanced_max": 183585.0,
+      "global_seqlen/mean": 183584.75,
+      "train/perf/em": 0.398,
+      "train/trust/trust_at_correct": 0.738,
+      "train/trust/trust_at_searched_correct": 0.7,
+      "train/trust/trust_all_mean": 0.294,
+      "train/trust/cf_true": 0.0,
+      "train/trust/cf_hall": 0.0,
+      "train/trust/cf_amb": 0.0,
+      "train/trust/hall_rate": 0.0,
+      "train/cost/search_per_query": 0.934,
+      "train/cost/nosearch_rate": 0.066,
+      "train/cost/oversearch_rate": 0.0,
+      "state_tokens/total": 314105.0,
+      "state_tokens/coverage": 0.497,
+      "actor/kl_loss": 0.313,
+      "actor/kl_coef": 0.001,
+      "actor/entropy_loss": 0.836,
+      "actor/pg_loss": -0.054,
+      "actor/pg_clipfrac": 0.009,
+      "actor/ppo_kl": 0.005,
+      "actor/grad_norm": 1.105,
+      "mfu/actor": 0.106,
+      "actor/lr": 0.0,
+      "critic/score/mean": 0.623,
+      "critic/score/max": 1.599,
+      "critic/score/min": 0.05,
+      "critic/rewards/mean": 0.623,
+      "critic/rewards/max": 1.599,
+      "critic/rewards/min": 0.05,
+      "critic/advantages/mean": -0.001,
+      "critic/advantages/max": 1.789,
+      "critic/advantages/min": -1.789,
+      "critic/returns/mean": -0.001,
+      "critic/returns/max": 1.789,
+      "critic/returns/min": -1.789,
+      "response_length/mean": 986.639,
+      "response_length/max": 1262.0,
+      "response_length/min": 138.0,
+      "response_length/clip_ratio": 0.002,
+      "prompt_length/mean": 160.766,
+      "prompt_length/max": 207.0,
+      "prompt_length/min": 153.0,
+      "prompt_length/clip_ratio": 0.0,
+      "env/number_of_actions/mean": 2.88,
+      "env/number_of_actions/max": 5.0,
+      "env/number_of_actions/min": 1.0,
+      "env/finish_ratio": 1.0,
+      "env/number_of_valid_action": 1.934,
+      "env/ratio_of_valid_action": 0.688,
+      "env/actual_retrieval_calls/mean": 0.934,
+      "env/actual_retrieval_calls/total": 598.0,
+      "env/number_of_valid_search": 0.934,
+      "timing_s/gen": 93.627,
+      "timing_s/ref": 28.095,
+      "timing_s/adv": 41.651,
+      "timing_s/update_actor": 123.172,
+      "timing_s/step": 314.533,
+      "timing_per_token_ms/ref": 0.038,
+      "timing_per_token_ms/gen": 0.148,
+      "timing_per_token_ms/update_actor": 0.168,
+      "timing_per_token_ms/adv": 0.057
+    }
+  },
+  "main_task_handle": {
+    "pid": 3244319,
+    "start_ticks": 521030399,
+    "sid": 3238519,
+    "live": true
+  },
+  "supervisor_live": true,
+  "component_handles": [
+    {
+      "name": "retriever",
+      "pid": 3233555,
+      "start_ticks": 521006478,
+      "live": true,
+      "state": "STARTED"
+    },
+    {
+      "name": "probe-server",
+      "pid": 3237220,
+      "start_ticks": 521020298,
+      "live": true,
+      "state": "STARTED"
+    },
+    {
+      "name": "trainer",
+      "pid": 3238519,
+      "start_ticks": 521027906,
+      "live": true,
+      "state": "STARTED"
+    }
+  ],
+  "actual_initial_evaluator_version": "06fe8f4ef2d44848a683850e28076c20:200:990d6454def74cc78b1fa3e72ffa3795",
+  "gpu_sample_last_unix": 1791131211.2300391,
+  "new_segment_sample_peak_mib": {
+    "0": 40299,
+    "1": 40397,
+    "2": 40395,
+    "3": 40397,
+    "5": 18001,
+    "6": 25685
+  },
+  "gpu_latest": [
+    {
+      "index": 0,
+      "used_mib": 23991,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 1,
+      "used_mib": 24087,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 2,
+      "used_mib": 24049,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 3,
+      "used_mib": 23953,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 5,
+      "used_mib": 17879,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 24663,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "latest_actual_fixed64": {
+    "step": 200,
+    "correct": 16,
+    "count": 64,
+    "em": 0.25
+  },
+  "new_validation": false,
+  "errors": [],
+  "console_precision": "three decimals; reported LR0.000 is rounded, not proof of zero learning rate",
+  "interpretation": "G1 shaped reward .623 is not train EM .398 or validation EM .25; changed evaluator/new Adam/new sampler precludes attributing delta vs old200 solely to improvement",
+  "next_acceptance_update": 205,
+  "goal_remaining": "actual201..205/fresh205 finite canonical hashes/source200 delta, same new process continue to300, finalfixed64/full finite checkpoint/ownedcleanup"
+}
