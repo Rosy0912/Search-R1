@@ -1,0 +1,285 @@
+{
+  "checked_unix": 1791103477.9460628,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "latest": {
+    "step": 135.0,
+    "critic/rewards/mean": 0.535,
+    "actor/pg_loss": -0.039,
+    "actor/entropy_loss": 2.814,
+    "actor/kl_loss": 0.392,
+    "actor/ppo_kl": 0.003,
+    "actor/grad_norm": 1.152,
+    "timing_s/step": 326.402,
+    "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+  },
+  "new_updates": 11,
+  "new_rows": [
+    {
+      "step": 125.0,
+      "critic/rewards/mean": 0.624,
+      "actor/pg_loss": 0.016,
+      "actor/entropy_loss": 3.133,
+      "actor/kl_loss": 0.255,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.428,
+      "timing_s/step": 307.766,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 126.0,
+      "critic/rewards/mean": 0.474,
+      "actor/pg_loss": 0.035,
+      "actor/entropy_loss": 3.189,
+      "actor/kl_loss": 0.497,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.349,
+      "timing_s/step": 338.609,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 127.0,
+      "critic/rewards/mean": 0.539,
+      "actor/pg_loss": 0.023,
+      "actor/entropy_loss": 3.367,
+      "actor/kl_loss": 0.258,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.372,
+      "timing_s/step": 319.512,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 128.0,
+      "critic/rewards/mean": 0.642,
+      "actor/pg_loss": -0.047,
+      "actor/entropy_loss": 2.989,
+      "actor/kl_loss": 0.323,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.493,
+      "timing_s/step": 301.731,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 129.0,
+      "critic/rewards/mean": 0.567,
+      "actor/pg_loss": -0.062,
+      "actor/entropy_loss": 3.11,
+      "actor/kl_loss": 0.495,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.339,
+      "timing_s/step": 328.154,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 130.0,
+      "critic/rewards/mean": 0.574,
+      "actor/pg_loss": 0.016,
+      "actor/entropy_loss": 3.237,
+      "actor/kl_loss": 0.452,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.348,
+      "timing_s/step": 328.992,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 131.0,
+      "critic/rewards/mean": 0.589,
+      "actor/pg_loss": 0.064,
+      "actor/entropy_loss": 3.142,
+      "actor/kl_loss": 0.474,
+      "actor/ppo_kl": 0.0,
+      "actor/grad_norm": 1.364,
+      "timing_s/step": 405.681,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 132.0,
+      "critic/rewards/mean": 0.492,
+      "actor/pg_loss": 0.001,
+      "actor/entropy_loss": 3.155,
+      "actor/kl_loss": 0.361,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.159,
+      "timing_s/step": 340.457,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 133.0,
+      "critic/rewards/mean": 0.572,
+      "actor/pg_loss": 0.046,
+      "actor/entropy_loss": 3.19,
+      "actor/kl_loss": 0.463,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.349,
+      "timing_s/step": 364.86,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 134.0,
+      "critic/rewards/mean": 0.564,
+      "actor/pg_loss": -0.006,
+      "actor/entropy_loss": 2.795,
+      "actor/kl_loss": 0.522,
+      "actor/ppo_kl": 0.001,
+      "actor/grad_norm": 1.242,
+      "timing_s/step": 328.22,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    },
+    {
+      "step": 135.0,
+      "critic/rewards/mean": 0.535,
+      "actor/pg_loss": -0.039,
+      "actor/entropy_loss": 2.814,
+      "actor/kl_loss": 0.392,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.152,
+      "timing_s/step": 326.402,
+      "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+    }
+  ],
+  "reward_mean": 0.5610909090909091,
+  "reward_range": [
+    0.474,
+    0.642
+  ],
+  "handles": [
+    {
+      "pid": 1661704,
+      "start_ticks": 513118313,
+      "live": true
+    },
+    {
+      "pid": 1672776,
+      "start_ticks": 513152831,
+      "live": true
+    }
+  ],
+  "all_new_metrics_finite": true,
+  "errors": [],
+  "validation": {
+    "val/test_score/nq": 0.4,
+    "val/evaluated_count/nq": 10.0,
+    "val/test_score/triviaqa": 0.667,
+    "val/evaluated_count/triviaqa": 9.0,
+    "val/test_score/popqa": 0.222,
+    "val/evaluated_count/popqa": 9.0,
+    "val/test_score/hotpotqa": 0.333,
+    "val/evaluated_count/hotpotqa": 9.0,
+    "val/test_score/2wikimultihopqa": 0.111,
+    "val/evaluated_count/2wikimultihopqa": 9.0,
+    "val/test_score/musique": 0.0,
+    "val/evaluated_count/musique": 9.0,
+    "val/test_score/bamboogle": 0.333,
+    "val/evaluated_count/bamboogle": 9.0,
+    "val/perf/em": 0.297,
+    "val/trust/trust_at_correct": 0.747,
+    "val/trust/trust_at_searched_correct": 0.7,
+    "val/trust/trust_all_mean": 0.222,
+    "val/trust/cf_true": 0.0,
+    "val/trust/cf_hall": 0.0,
+    "val/trust/cf_amb": 0.0,
+    "val/trust/hall_rate": 0.0,
+    "val/cost/search_per_query": 0.906,
+    "val/cost/nosearch_rate": 0.094,
+    "val/cost/oversearch_rate": 0.0
+  },
+  "validation_step": 100,
+  "gpu_peak_mib": {
+    "0": 50965,
+    "1": 51507,
+    "2": 51507,
+    "3": 50817,
+    "5": 21119,
+    "6": 38112
+  },
+  "gpu_hour_peak_mib": {
+    "0": 45485,
+    "1": 45135,
+    "2": 45135,
+    "3": 45485,
+    "5": 18653,
+    "6": 26711
+  },
+  "gpu_latest": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791103476.3926368,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 37833,
+        "total_mib": 81920,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "used_mib": 37929,
+        "total_mib": 81920,
+        "util_percent": 96
+      },
+      {
+        "index": 2,
+        "used_mib": 37929,
+        "total_mib": 81920,
+        "util_percent": 96
+      },
+      {
+        "index": 3,
+        "used_mib": 38279,
+        "total_mib": 81920,
+        "util_percent": 96
+      },
+      {
+        "index": 5,
+        "used_mib": 17879,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "used_mib": 25937,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sample_age_s": 1.7760026454925537,
+  "reward_mean_change": 0.006090909090909036,
+  "console_precision": "3 decimal places",
+  "full300_accepted": false,
+  "validation_correct_counts": {
+    "nq": [
+      4,
+      10
+    ],
+    "triviaqa": [
+      6,
+      9
+    ],
+    "popqa": [
+      2,
+      9
+    ],
+    "hotpotqa": [
+      3,
+      9
+    ],
+    "2wikimultihopqa": [
+      1,
+      9
+    ],
+    "musique": [
+      0,
+      9
+    ],
+    "bamboogle": [
+      3,
+      9
+    ]
+  },
+  "validation_em": 0.296875,
+  "validation_change_percentage_points": 0,
+  "validation_count_semantics": "Reconstructed from console 3 decimal scores and fixed source counts; does not independently establish IDs.",
+  "reward_comparison_semantics": "Both hourly windows use the same verified round100 evaluator. Shaped reward is not validation accuracy.",
+  "sampling_period_seconds": 2,
+  "sampling_limitation": "Sampling may miss short transients.",
+  "next_save_step": 150
+}
