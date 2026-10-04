@@ -1,0 +1,120 @@
+{
+  "time": 1791123388.0476985,
+  "host": "hkust4",
+  "pipeline-stage.txt": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+  "archive-round-1-grpo.json": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 41862,
+      "5": 43170,
+      "6": 41932,
+      "7": 39574
+    },
+    "sample_count": 19591,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791123380.6777794
+  },
+  "metrics": [
+    "(main_task pid=1437474) step:20 - global_seqlen/min:553831.000 - global_seqlen/max:598931.000 - global_seqlen/minmax_diff:45100.000 - global_seqlen/balanced_min:578616.000 - global_seqlen/balanced_max:578617.000 - global_seqlen/mean:578616.500 - audit/legacy_em:0.286 - audit/strict_em:0.195 - audit/score_disagreement:0.091 - state_tokens/total:448676.000 - state_tokens/coverage:0.229 - actor/kl_coef:0.001 - actor/entropy_loss:0.830 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.001 - actor/kl_loss:0.024 - actor/grad_norm:2.096 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.195 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.195 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.006 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.006 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:766.377 - response_length/max:2873.000 - response_length/min:48.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.711 - prompt_length/max:235.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.255 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.989 - env/number_of_valid_action:2.240 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.251 - timing_s/gen:899.569 - timing_s/ref:114.364 - timing_s/adv:4.551 - timing_s/update_actor:952.771 - timing_s/step:2089.349 - timing_per_token_ms/update_actor:0.412 - timing_per_token_ms/ref:0.049 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.459",
+    "(main_task pid=1437474) step:21 - global_seqlen/min:561406.000 - global_seqlen/max:581481.000 - global_seqlen/minmax_diff:20075.000 - global_seqlen/balanced_min:571905.000 - global_seqlen/balanced_max:571906.000 - global_seqlen/mean:571905.500 - audit/legacy_em:0.327 - audit/strict_em:0.229 - audit/score_disagreement:0.098 - state_tokens/total:431100.000 - state_tokens/coverage:0.223 - actor/kl_coef:0.001 - actor/entropy_loss:0.782 - actor/pg_loss:0.010 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.003 - actor/kl_loss:0.029 - actor/grad_norm:2.560 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.229 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.229 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.014 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.014 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:755.968 - response_length/max:3382.000 - response_length/min:62.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.635 - prompt_length/max:198.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.247 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.985 - env/number_of_valid_action:2.231 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.246 - timing_s/gen:809.977 - timing_s/ref:114.898 - timing_s/adv:4.612 - timing_s/update_actor:929.945 - timing_s/step:1981.477 - timing_per_token_ms/update_actor:0.407 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.419",
+    "(main_task pid=1437474) step:22 - global_seqlen/min:546529.000 - global_seqlen/max:590400.000 - global_seqlen/minmax_diff:43871.000 - global_seqlen/balanced_min:568929.000 - global_seqlen/balanced_max:568929.000 - global_seqlen/mean:568929.000 - audit/legacy_em:0.321 - audit/strict_em:0.213 - audit/score_disagreement:0.109 - state_tokens/total:429389.000 - state_tokens/coverage:0.223 - actor/kl_coef:0.001 - actor/entropy_loss:0.791 - actor/pg_loss:-0.013 - actor/pg_clipfrac:0.005 - actor/ppo_kl:-0.001 - actor/kl_loss:0.016 - actor/grad_norm:2.580 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.213 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.213 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.018 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.018 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:751.278 - response_length/max:3298.000 - response_length/min:45.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.674 - prompt_length/max:249.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.233 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.986 - env/number_of_valid_action:2.222 - env/ratio_of_valid_action:0.997 - env/number_of_valid_search:1.236 - timing_s/gen:491.306 - timing_s/ref:114.701 - timing_s/adv:4.578 - timing_s/update_actor:923.921 - timing_s/step:1651.508 - timing_per_token_ms/update_actor:0.406 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.255",
+    "(main_task pid=1437474) step:23 - global_seqlen/min:561626.000 - global_seqlen/max:581343.000 - global_seqlen/minmax_diff:19717.000 - global_seqlen/balanced_min:568663.000 - global_seqlen/balanced_max:568663.000 - global_seqlen/mean:568663.000 - audit/legacy_em:0.324 - audit/strict_em:0.223 - audit/score_disagreement:0.100 - state_tokens/total:433587.000 - state_tokens/coverage:0.226 - actor/kl_coef:0.001 - actor/entropy_loss:0.765 - actor/pg_loss:-0.001 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.001 - actor/kl_loss:0.016 - actor/grad_norm:2.377 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.223 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.223 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.010 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.010 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:750.616 - response_length/max:3206.000 - response_length/min:76.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.920 - prompt_length/max:216.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.232 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.987 - env/number_of_valid_action:2.216 - env/ratio_of_valid_action:0.997 - env/number_of_valid_search:1.229 - timing_s/gen:492.592 - timing_s/ref:114.444 - timing_s/adv:4.543 - timing_s/update_actor:909.837 - timing_s/step:1638.516 - timing_per_token_ms/update_actor:0.400 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.256",
+    "(main_task pid=1437474) step:24 - global_seqlen/min:545669.000 - global_seqlen/max:572582.000 - global_seqlen/minmax_diff:26913.000 - global_seqlen/balanced_min:560547.000 - global_seqlen/balanced_max:560548.000 - global_seqlen/mean:560547.500 - audit/legacy_em:0.354 - audit/strict_em:0.248 - audit/score_disagreement:0.106 - state_tokens/total:412123.000 - state_tokens/coverage:0.218 - actor/kl_coef:0.001 - actor/entropy_loss:0.746 - actor/pg_loss:-0.016 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.002 - actor/kl_loss:0.063 - actor/grad_norm:2.313 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.248 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.248 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.009 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.009 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:738.064 - response_length/max:3483.000 - response_length/min:64.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.791 - prompt_length/max:205.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.227 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.988 - env/number_of_valid_action:2.208 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.220 - timing_s/gen:491.777 - timing_s/ref:113.915 - timing_s/adv:4.330 - timing_s/update_actor:909.310 - timing_s/step:1638.630 - timing_per_token_ms/update_actor:0.406 - timing_per_token_ms/ref:0.051 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.260"
+  ],
+  "log_tail": [
+    "(main_task pid=1437474) Doc 2(Title: \"Anthony Kimmins\") Anthony Kimmins Anthony Martin Kimmins (born 10 November 1901 – 19 May 1964) was an English director, playwright, screenwriter, producer and actor. Kimmins was born in Harrow, London on 10 November 1901, the son of the social activists Charles William Kimmins and Grace Kimmins. He served in the Royal Navy, and upon leaving the navy he became an actor. In 1932 he wrote the comedy play \"\"While Parents Sleep\"\" which had a long run in the West End. In 1935 another of his plays \"\"Chase the Ace\"\" was staged. His first directorial assignment was \"\"Keep Fit\"\". Kimmins wrote and directed",
+    "(main_task pid=1437474) Doc 3(Title: \"Paul Anthony\") Paul Anthony Paul Anthony (born 1955) is a senior executive who has played prominent roles in several major energy corporations in the United Kingdom, New Zealand and Australia. Anthony has operated in chief executive officer, executive chair and non-executive positions within the energy sector internationally. Anthony's career began in the UK electricity industry. His roles have included Executive Vice President of British Gas Group, and a series of executive positions with PowerGen, which Anthony helped lead through the United Kingdom privatisation process in the 1990s. He worked with UK investment house Doughty Hanson and ran its wholly owned investment in</information>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <search>",
+    "(main_task pid=1437474) Who is Cesar Montano and what is his industry?",
+    "(main_task pid=1437474) </search>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <information>Doc 1(Title: \"Cesar Montano\") status by the Department of Foreign Affairs. He then again attempted to be involved in politics on October 13, 2009 when he filed his candidacy for Governor in his home province Bohol. He lost the 2010 local election for the Governor position. Montano is fluent in both Tagalog and Cebuano, and speaks his ancestral Boholano dialect. He is the fifth of seven children born to a lawyer father and mother that belonged to the Seventh-day Adventist Church. Montano describes his father as a strict disciplinarian, and his mother imposing her religion's prohibitions against pork and movies. Montano attended Sta. Ana",
+    "(main_task pid=1437474) Doc 2(Title: \"Cesar Montano\") Rommel Montano, Dr. Warfe Engracia, Ramon Villanueva, Chelo Espina, Flora Gasser, Disi Alba and Rebecca Lusterio. The film is set during World War II, and the story takes place mostly along the Loboc River in Bohol. The film was Montano's directorial debut. It was filmed mostly in the Visayan language with an almost exclusively Visayan cast. t was given an \"\"A\"\" rating by the Cinema Evaluation Board or CEB of the Film Development Council of the Philippines and was CM Films' entry to the 2004 Metro Manila Film Festival. The CEB described the film as \"\"a poetic, sometimes even magical,",
+    "(main_task pid=1437474) Doc 3(Title: \"Cesar Montano\") elections, but subsequently lost. In the same year, he was appointed by Tourism Secretary Wanda Corazon Teo as the Chief Operation Officer of the Tourism Promotions Board. Montano, known by his nickname Buboy, was born and raised in Sta. Ana, Manila, Philippines. His paternal side traces its roots to the Manhilots of Baclayon, a town in Bohol. Montano acted in stage productions at the University of the Philippines. He worked as a stuntman early in his career. Montano's first action movie, directed by Toto Natividad, is \"\"Leonardo Delos Reyes: Alyas Waway (1993)\"\". The two latter collaborated on such movies as</information>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <answer>no</answer>"
+  ],
+  "sessions": "e1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)\ne1-stream-memory-20261004: 1 windows (created Sun Oct  4 19:00:28 2026)\n",
+  "gpus": "0, 33266 MiB, 49140 MiB, 0 %\n1, 5666 MiB, 49140 MiB, 0 %\n2, 29088 MiB, 49140 MiB, 0 %\n3, 5928 MiB, 49140 MiB, 0 %\n4, 36448 MiB, 49140 MiB, 100 %\n5, 32800 MiB, 49140 MiB, 100 %\n6, 27834 MiB, 49140 MiB, 100 %\n7, 30563 MiB, 49140 MiB, 100 %\n",
+  "processes": "1164838, GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 33248 MiB\n840849, GPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 5648 MiB\n3065521, GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 29070 MiB\n3295494, GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 5910 MiB\n1437900, GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 36372 MiB\n1438381, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 32724 MiB\n1438382, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 27758 MiB\n1438383, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 29874 MiB\n1749337, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 610 MiB\n",
+  "shared-memory": {
+    "peak_mib": 39245,
+    "service_peak_mib": 630,
+    "current_mib": 30563,
+    "total_mib": 49140,
+    "reserve_mib": 9895,
+    "samples": 3710,
+    "time": 1791123381.592924,
+    "service_pid": 1749337
+  }
+}

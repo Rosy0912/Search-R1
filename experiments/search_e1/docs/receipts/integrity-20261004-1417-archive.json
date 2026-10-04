@@ -1,0 +1,26 @@
+{
+  "time": 1791123447.4803777,
+  "runtime_count": 669,
+  "changed_or_missing": [],
+  "registered_oracle": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "relay_health": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  }
+}

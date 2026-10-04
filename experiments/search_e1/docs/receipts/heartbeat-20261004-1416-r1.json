@@ -1,0 +1,405 @@
+{
+  "time": 1791123392.9979548,
+  "host": "hkust1",
+  "pipeline-stage.txt": "2026-10-04T13:11:36.251229+00:00 CONTINUING_GRPO_ROUND_1_FROM_STEP_3\n",
+  "r1-round-1-grpo.json": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [],
+      "owned_shared_oracle": null
+    },
+    "started_unix": 1791118516.1053102,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "sample_count": 2326,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1",
+      "E1_GPUS": "8",
+      "E1_VIRTUAL_DP_WORLD": "4"
+    },
+    "pid": 3546009,
+    "updated_unix": 1791123381.6266665
+  },
+  "continued-step3-weights.json": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "time": 1791120442.2448268,
+    "initial": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        }
+      ],
+      "accepted": true
+    },
+    "previous_step2": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 435,
+      "verified_aliases": {},
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        }
+      ],
+      "accepted": true
+    },
+    "accepted": true
+  },
+  "eight-continuation.accepted.json": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "source_run": "8d708a8556084021ae3069b93335109d",
+    "completed_steps_before_resume": 2,
+    "next_step": 3,
+    "full_target": 500,
+    "reference_model": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/assets/model",
+    "restored_ranks": [
+      {
+        "rank": 3,
+        "pid": 3549815,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 6,
+        "pid": 3549818,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 5,
+        "pid": 3549817,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 4,
+        "pid": 3549816,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 0,
+        "pid": 3549569,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 1,
+        "pid": 3549813,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 2,
+        "pid": 3549814,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      },
+      {
+        "rank": 7,
+        "pid": 3549819,
+        "completed_steps": 2,
+        "optimizer_steps": [
+          20
+        ],
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 2,
+          "verbose": false,
+          "_step_count": 3,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            1.408450704225352e-8
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "weights_exact": true,
+        "optimizer_exact": true
+      }
+    ],
+    "data_replay": "original seed42/no initial validation;first2batches skipped",
+    "source_metrics": "first2native metric lines explicitly preserved from source log",
+    "time": 1791118746.254522
+  },
+  "metrics": [
+    "(main_task pid=3451483) step:1 - global_seqlen/min:538296.000 - global_seqlen/max:546558.000 - global_seqlen/minmax_diff:8262.000 - global_seqlen/balanced_min:543250.000 - global_seqlen/balanced_max:543251.000 - global_seqlen/mean:543250.250 - audit/legacy_em:0.279 - audit/strict_em:0.192 - audit/score_disagreement:0.087 - state_tokens/total:462820.000 - state_tokens/coverage:0.254 - actor/kl_coef:0.001 - actor/entropy_loss:0.918 - actor/pg_loss:0.006 - actor/pg_clipfrac:0.000 - actor/ppo_kl:0.000 - actor/kl_loss:0.003 - actor/grad_norm:1.007 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.192 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.192 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.003 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.003 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:711.123 - response_length/max:2689.000 - response_length/min:56.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.705 - prompt_length/max:245.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.152 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.987 - env/number_of_valid_action:2.111 - env/ratio_of_valid_action:0.991 - env/number_of_valid_search:1.124 - timing_s/gen:934.359 - timing_s/ref:173.434 - timing_s/adv:4.276 - timing_s/update_actor:836.839 - timing_s/save_checkpoint:26.723 - timing_s/step:2151.520 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.385 - timing_per_token_ms/gen:0.513 - timing_per_token_ms/ref:0.080",
+    "(main_task pid=3451483) step:2 - global_seqlen/min:546916.000 - global_seqlen/max:569442.000 - global_seqlen/minmax_diff:22526.000 - global_seqlen/balanced_min:558590.000 - global_seqlen/balanced_max:558590.000 - global_seqlen/mean:558590.000 - audit/legacy_em:0.271 - audit/strict_em:0.177 - audit/score_disagreement:0.093 - state_tokens/total:485355.000 - state_tokens/coverage:0.258 - actor/kl_coef:0.001 - actor/entropy_loss:1.039 - actor/pg_loss:-0.016 - actor/pg_clipfrac:0.002 - actor/ppo_kl:-0.000 - actor/kl_loss:0.003 - actor/grad_norm:1.014 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.177 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.177 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.007 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.007 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:734.605 - response_length/max:2877.000 - response_length/min:69.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.191 - prompt_length/max:241.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.181 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.984 - env/number_of_valid_action:2.137 - env/ratio_of_valid_action:0.990 - env/number_of_valid_search:1.153 - timing_s/gen:615.217 - timing_s/ref:173.502 - timing_s/adv:4.549 - timing_s/update_actor:847.026 - timing_s/save_checkpoint:36.011 - timing_s/step:1852.771 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.379 - timing_per_token_ms/gen:0.327 - timing_per_token_ms/ref:0.078",
+    "(main_task pid=2989937) step:0 - val/test_score/nq:0.176 - val/test_score/hotpotqa:0.203",
+    "(main_task pid=3548832) step:3 - global_seqlen/min:539306.000 - global_seqlen/max:571298.000 - global_seqlen/minmax_diff:31992.000 - global_seqlen/balanced_min:555465.000 - global_seqlen/balanced_max:555466.000 - global_seqlen/mean:555465.250 - audit/legacy_em:0.270 - audit/strict_em:0.193 - audit/score_disagreement:0.077 - state_tokens/total:473478.000 - state_tokens/coverage:0.253 - actor/kl_coef:0.001 - actor/entropy_loss:1.016 - actor/pg_loss:0.054 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/kl_loss:0.002 - actor/grad_norm:1.069 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.193 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.193 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.001 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.001 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:729.889 - response_length/max:3194.000 - response_length/min:47.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.025 - prompt_length/max:217.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.190 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.982 - env/number_of_valid_action:2.141 - env/ratio_of_valid_action:0.989 - env/number_of_valid_search:1.159 - timing_s/gen:594.418 - timing_s/ref:175.165 - timing_s/adv:4.402 - timing_s/update_actor:849.724 - timing_s/save_checkpoint:21.618 - timing_s/step:1823.278 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.382 - timing_per_token_ms/ref:0.079 - timing_per_token_ms/gen:0.318",
+    "(main_task pid=3548832) step:4 - global_seqlen/min:534990.000 - global_seqlen/max:560553.000 - global_seqlen/minmax_diff:25563.000 - global_seqlen/balanced_min:549547.000 - global_seqlen/balanced_max:549547.000 - global_seqlen/mean:549547.000 - audit/legacy_em:0.277 - audit/strict_em:0.179 - audit/score_disagreement:0.098 - state_tokens/total:469223.000 - state_tokens/coverage:0.254 - actor/kl_coef:0.001 - actor/entropy_loss:1.046 - actor/pg_loss:0.017 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/kl_loss:0.002 - actor/grad_norm:1.016 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.179 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.179 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.005 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.005 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:720.849 - response_length/max:3022.000 - response_length/min:80.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.818 - prompt_length/max:200.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.160 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.988 - env/number_of_valid_action:2.125 - env/ratio_of_valid_action:0.992 - env/number_of_valid_search:1.137 - timing_s/gen:575.833 - timing_s/ref:173.965 - timing_s/adv:4.178 - timing_s/update_actor:838.555 - timing_s/step:1769.579 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.381 - timing_per_token_ms/ref:0.079 - timing_per_token_ms/gen:0.312"
+  ],
+  "log_tail": [
+    "(main_task pid=3548832) Doc 2(Title: \"Surely You're Joking, Mr. Feynman!\") critique of the science education system in Brazil. The section \"\"Monster Minds\"\" describes his slightly nervous presentation of his graduate work on the Wheeler–Feynman absorber theory in front of Albert Einstein, Wolfgang Pauli, Henry Norris Russell, John von Neumann, and other major figures of the time. The anecdotes were edited from taped conversations that Feynman had with his close friend and drumming partner Ralph Leighton. Its surprise success led to a sequel entitled \"\"What Do You Care What Other People Think?\"\", also taken from Leighton's taped conversations. \"\"Surely You're Joking, Mr. Feynman!\"\" sold more than 500,000 copies. The closing chapter,",
+    "(main_task pid=3548832) Doc 3(Title: \"Ralph Leighton\") Ralph Leighton Ralph Leighton (; born 1949) is an American biographer, film producer, and friend of the late physicist Richard Feynman. He recorded Feynman relating stories of his life. Leighton has released some of the recordings as \"\"The Feynman Tapes\"\". These interviews became the basis for the books \"\"Surely You're Joking, Mr. Feynman!\"\" and \"\"What Do You Care What Other People Think?\"\", which were later combined into the hardcover anniversary edition \"\"Classic Feynman: All the Adventures of a Curious Character\"\". Leighton is an amateur drummer and founder of the group Friends of Tuva. In 1990 he cofounded the Tangled Web Theatre Company. Leighton is married with three sons, Jason, David, and Paul. He resides in Boston, Massachusetts.",
+    "(main_task pid=3548832) Doc 4(Title: \"Feynman Tapes\") The Feynman Tapes by Ralph Leighton The Feynman Tapes depicts a figurative Look into the inner depth of Richard Feynman. From his hikes in the Alps with the Eagle Regiment and phone calls with his rock hound friend Sylvester to his sophisticated views of complicated topics such as: the explanation of a macroscopic universe in terms of quantum optics. The book contains recorded conversations of Feynman. On the tapes, other readers reveal aspects of Feynman's life. </information>",
+    "(main_task pid=3548832) <answer>",
+    "(main_task pid=3548832) Ralph Leighton",
+    "(main_task pid=3548832) </answer>",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3840478720, 'reserved': 4135583744}",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_END {'rank': 0, 'allocated': 3840478720, 'reserved': 4292870144, 'peak_allocated': 16344317440, 'peak_reserved': 16699621376}",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3840479232, 'reserved': 4135583744} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3839080960, 'reserved': 4292870144, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 7x across cluster]",
+    "(WorkerDict pid=3549818) E1_OPTIMIZER_MEMORY_START {'rank': 6, 'chunk': 1, 'staged': '1', 'allocated': 3839069184, 'reserved': 4137680896} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549816) E1_OPTIMIZER_MEMORY_END {'rank': 4, 'allocated': 3839069184, 'reserved': 4292870144, 'peak_allocated': 16344317440, 'peak_reserved': 16699621376} [repeated 8x across cluster]"
+  ],
+  "sessions": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-continuation-readonly-acceptance-20261004: 1 windows (created Sun Oct  4 13:24:12 2026)\ne1-eight-continuation-20261004: 1 windows (created Sun Oct  4 12:53:42 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)\n",
+  "gpus": "0, 10859 MiB, 24564 MiB, 100 %\n1, 10995 MiB, 24564 MiB, 100 %\n2, 11005 MiB, 24564 MiB, 100 %\n3, 11249 MiB, 24564 MiB, 100 %\n4, 10869 MiB, 24564 MiB, 100 %\n5, 11013 MiB, 24564 MiB, 100 %\n6, 11221 MiB, 24564 MiB, 100 %\n7, 10827 MiB, 24564 MiB, 100 %\n",
+  "processes": "3549569, GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 10818 MiB\n3549813, GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 10954 MiB\n3549814, GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 10964 MiB\n3549815, GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 11208 MiB\n3549816, GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 10828 MiB\n3549817, GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 10972 MiB\n3549818, GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 11180 MiB\n3549819, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 10786 MiB\n",
+  "logs/continued-acceptance.log": [
+    "CONTINUED_STEP3_WEIGHTS {\"run_id\": \"5dfc903d248842b4bfc4e1ebcf5d94e8\", \"time\": 1791120442.2448268, \"initial\": {\"checkpoint\": \"/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3\", \"tensor_count\": 435, \"initial_tensor_count\": 434, \"verified_aliases\": {\"lm_head.weight\": \"model.embed_tokens.weight\"}, \"nonfinite\": [], \"changed\": [{\"key\": \"model.layers.0.self_attn.q_proj.weight\", \"max_abs_delta\": 2.2351741790771484e-07}, {\"key\": \"model.layers.1.self_attn.q_proj.weight\", \"max_abs_delta\": 2.2351741790771484e-07}, {\"key\": \"model.layers.10.self_attn.q_proj.weight\", \"max_abs_delta\": 2.2351741790771484e-07}, {\"key\": \"model.layers.11.self_attn.q_proj.weight\", \"max_abs_delta\": 2.2351741790771484e-07}], \"accepted\": true}, \"previous_step2\": {\"checkpoint\": \"/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3\", \"tensor_count\": 435, \"initial_tensor_count\": 435, \"verified_aliases\": {}, \"nonfinite\": [], \"changed\": [{\"key\": \"model.layers.0.self_attn.q_proj.weight\", \"max_abs_delta\": 1.4901161193847656e-07}, {\"key\": \"model.layers.1.self_attn.q_proj.weight\", \"max_abs_delta\": 1.4901161193847656e-07}, {\"key\": \"model.layers.10.self_attn.q_proj.weight\", \"max_abs_delta\": 1.4901161193847656e-07}, {\"key\": \"model.layers.11.self_attn.q_proj.weight\", \"max_abs_delta\": 1.4901161193847656e-07}], \"accepted\": true}, \"accepted\": true}"
+  ],
+  "logs/continuation-pipeline.log": [
+    "RAY_REPORTER_READY",
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "{\"checkpoint\": \"/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_2\", \"tensor_count\": 435, \"initial_tensor_count\": 434, \"verified_aliases\": {\"lm_head.weight\": \"model.embed_tokens.weight\"}, \"nonfinite\": [], \"changed\": [{\"key\": \"model.layers.0.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.1.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.10.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.11.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}], \"accepted\": true}",
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION"
+  ]
+}
