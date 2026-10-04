@@ -1,0 +1,196 @@
+{
+  "checked_unix": 1791154735.6425693,
+  "last_anchor_unix": 1791150903.253152,
+  "new_updates": 0,
+  "latest_completed": 250,
+  "new_reward_mean": null,
+  "new_reward_range": null,
+  "latest_historical_reward": 0.215,
+  "validation_step": 250,
+  "validation_correct": 7,
+  "validation_count": 64,
+  "validation_em": 0.109375,
+  "source_correct": {
+    "triviaqa": 3,
+    "2wikimultihopqa": 0,
+    "nq": 2,
+    "bamboogle": 0,
+    "hotpotqa": 1,
+    "popqa": 0,
+    "musique": 1
+  },
+  "source_counts": {
+    "triviaqa": 9,
+    "2wikimultihopqa": 9,
+    "nq": 10,
+    "bamboogle": 9,
+    "hotpotqa": 9,
+    "popqa": 9,
+    "musique": 9
+  },
+  "remaining_owned_live": [],
+  "diagnostic_complete": true,
+  "diagnostic_cleanup": {
+    "remaining_owned": [],
+    "finished_unix": 1791154505.7298176
+  },
+  "diagnostic_summary": [
+    {
+      "top_p": 1,
+      "question_count": 32,
+      "actual_retrieval_calls": 32,
+      "trajectories_with_retrieval": 32,
+      "strict_final_answers": 32,
+      "searched_strict_answers": 32,
+      "correct": 4,
+      "em": 0.125,
+      "context_truncations": 0,
+      "by_turn": [
+        {
+          "turn": 0,
+          "permissive_counts": {
+            "invalid": 32
+          },
+          "strict_counts": {
+            "invalid": 32
+          }
+        },
+        {
+          "turn": 1,
+          "permissive_counts": {
+            "search": 32
+          },
+          "strict_counts": {
+            "search": 32
+          }
+        },
+        {
+          "turn": 2,
+          "permissive_counts": {
+            "answer": 32
+          },
+          "strict_counts": {
+            "answer": 32
+          }
+        },
+        {
+          "turn": 3,
+          "permissive_counts": {},
+          "strict_counts": {}
+        },
+        {
+          "turn": 4,
+          "permissive_counts": {},
+          "strict_counts": {}
+        }
+      ]
+    },
+    {
+      "top_p": 0.95,
+      "question_count": 32,
+      "actual_retrieval_calls": 32,
+      "trajectories_with_retrieval": 32,
+      "strict_final_answers": 32,
+      "searched_strict_answers": 32,
+      "correct": 3,
+      "em": 0.09375,
+      "context_truncations": 0,
+      "by_turn": [
+        {
+          "turn": 0,
+          "permissive_counts": {
+            "invalid": 31,
+            "search": 1
+          },
+          "strict_counts": {
+            "invalid": 31,
+            "search": 1
+          }
+        },
+        {
+          "turn": 1,
+          "permissive_counts": {
+            "search": 31,
+            "answer": 1
+          },
+          "strict_counts": {
+            "search": 31,
+            "answer": 1
+          }
+        },
+        {
+          "turn": 2,
+          "permissive_counts": {
+            "answer": 30,
+            "invalid": 1
+          },
+          "strict_counts": {
+            "answer": 30,
+            "invalid": 1
+          }
+        },
+        {
+          "turn": 3,
+          "permissive_counts": {
+            "answer": 1
+          },
+          "strict_counts": {
+            "answer": 1
+          }
+        },
+        {
+          "turn": 4,
+          "permissive_counts": {},
+          "strict_counts": {}
+        }
+      ]
+    }
+  ],
+  "current_gpus": [
+    {
+      "index": 0,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 1,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 2,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 3,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 5,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "training_sampler_stopped": true,
+  "last_training_sample_unix": 1791147060.7653642,
+  "historical_cumulative_training_peak_mib": 40879,
+  "diagnostic_semantics": "Diagnostic trainer-style correction with genuine local retrieval, max500, 4action rounds+final; strict validity tracked separately; no parameter updates. Not final fixed64 EM.",
+  "elapsed_minutes": 63.873156956831615,
+  "repair_component": "typed calibration evidence deletion helper",
+  "repair_cpu_tests_passed": 4,
+  "repair_deployed": false,
+  "trainer_restarted": false
+}
