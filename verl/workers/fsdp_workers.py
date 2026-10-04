@@ -309,6 +309,11 @@ class ActorRolloutRefWorker(Worker):
                 enable_gradient_checkpointing=self.config.model.get('enable_gradient_checkpointing', False),
                 trust_remote_code=self.config.model.get('trust_remote_code', False))
 
+            initial_step = self.config.actor.optim.get('initial_logical_step', 0) if self._is_actor else 0
+            if initial_step:
+                from search_r1.baselines.recovery import rebuild_scheduler_at_logical_step
+                rebuild_scheduler_at_logical_step(self.actor_lr_scheduler, int(initial_step))
+
             # get the original unwrapped module
             self.actor_module = self.actor_module_fsdp._fsdp_wrapped_module
 
@@ -336,7 +341,7 @@ class ActorRolloutRefWorker(Worker):
             self.rollout, self.rollout_sharding_manager = self._build_rollout()
 
         if self._is_ref:
-            self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.model.path,
+            self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.ref.get('model_path', self.config.model.path),
                                                                fsdp_config=self.config.ref.fsdp_config,
                                                                optim_config=None,
                                                                override_model_config=override_model_config,
@@ -511,6 +516,29 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def checkpoint_pause_identity(self):
+        assert self._is_actor
+        from search_r1.baselines.recovery import checkpoint_pause_identity
+        return checkpoint_pause_identity(self.actor_module_fsdp, self.actor_optimizer,
+                                         self.actor_lr_scheduler, self.rank,
+                                         self.rollout_sharding_manager)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_training_state(self, local_path, expected_rank_shas):
+        assert self._is_actor
+        from search_r1.baselines.recovery import file_sha256, load_worker_training_state
+        path = os.path.join(local_path, 'training_state', f'rank_{self.rank}.pt')
+        if file_sha256(path) != expected_rank_shas[str(self.rank)]:
+            raise RuntimeError('Training-state SHA differs from frozen checkpoint manifest')
+        state = torch.load(path, map_location='cpu', weights_only=False)
+        step = load_worker_training_state(
+            state, self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
+            self.rank, self.world_size, self.rollout_sharding_manager)
+        del state
+        torch.distributed.barrier()
+        return dict(rank=self.rank, logical_step=step)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
         assert self._is_actor
         import torch
@@ -536,8 +564,21 @@ class ActorRolloutRefWorker(Worker):
                 hdfs_io.copy(src=local_path, dst=hdfs_path)
 
         torch.distributed.barrier()
+        receipt = None
+        if self.config.actor.optim.get('save_training_state', False):
+            from search_r1.baselines.recovery import atomic_torch_save, worker_training_state
+            logical_step = int(os.path.basename(local_path).removeprefix('global_step_'))
+            state = worker_training_state(
+                self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
+                self.rank, self.world_size, logical_step, self.rollout_sharding_manager)
+            receipt = atomic_torch_save(state, os.path.join(local_path, 'training_state',
+                                                           f'rank_{self.rank}.pt'))
+            receipt['pause_identity'] = state['pause_identity']
+            del state
+        torch.distributed.barrier()
         if self._is_offload_param:
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+        return receipt
 
 
 class CriticWorker(Worker):

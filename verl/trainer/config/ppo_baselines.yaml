@@ -54,6 +54,16 @@ retriever:
   topk: 3
 
 trainer:
+  resume:
+    enabled: false
+    source: null
+    start_step: 200
+    stop_step: 300
+    acceptance_step: 205
+    scheduler_horizon: 501
+    seed: 42
+    wait_seconds: 7200
+    approval_path: null
   total_epochs: 15
   total_training_steps: 501
   save_freq: 100

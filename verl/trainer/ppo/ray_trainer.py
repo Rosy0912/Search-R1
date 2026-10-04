@@ -409,9 +409,31 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
+        resume = self.config.trainer.get('resume', {})
+        self.recovery_sampler = None
+        if resume.get('enabled', False):
+            if (self.config.actor_rollout_ref.model.path != resume.source
+                    or self.config.actor_rollout_ref.ref.get('model_path') in (None, resume.source)
+                    or resume.start_step != 200 or resume.stop_step != 300
+                    or resume.acceptance_step != 205 or resume.scheduler_horizon != 501
+                    or self.config.trainer.save_freq != 25
+                    or self.config.data.val_batch_size != 64
+                    or self.config.actor_rollout_ref.actor.ppo_micro_batch_size != 64
+                    or self.config.data.train_batch_size != 512
+                    or self.config.actor_rollout_ref.actor.ppo_mini_batch_size != 256
+                    or self.config.actor_rollout_ref.rollout.n_agent != 5
+                    or self.config.max_turns != 4):
+                raise ValueError('Original200-to300 recovery source/reference/boundaries mismatch')
+            from search_r1.baselines.recovery import RecoverableSampler
+            self.recovery_sampler = RecoverableSampler(
+                len(self.train_dataset), self.config.data.shuffle_train_dataloader, resume.seed)
+
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
-                                           shuffle=self.config.data.shuffle_train_dataloader,
+                                           shuffle=(self.config.data.shuffle_train_dataloader
+                                                    if self.recovery_sampler is None else False),
+                                           sampler=self.recovery_sampler,
+                                           num_workers=0,
                                            drop_last=True,
                                            collate_fn=collate_fn)
 
@@ -427,6 +449,8 @@ class RayPPOTrainer(object):
                 print(f"[WARNING] validation dataset size is smaller than desired size. Using the dataset as the original size {len(self.val_dataset.dataframe)}")
             else:
                 self.val_dataset.dataframe = self.val_dataset.dataframe.sample(self.config.data.val_data_num, random_state=42)
+        if resume.get('enabled', False) and len(self.val_dataset) != 64:
+            raise ValueError('Recovery requires exactly64 actual validation questions')
         print(f"filtered validation dataset size: {len(self.val_dataset.dataframe)}")
 
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
@@ -452,7 +476,11 @@ class RayPPOTrainer(object):
 
         OmegaConf.set_struct(self.config, True)
         with open_dict(self.config):
-            self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps
+            self.config.actor_rollout_ref.actor.optim.total_training_steps = (
+                resume.scheduler_horizon if resume.get('enabled', False) else total_training_steps)
+            if resume.get('enabled', False):
+                self.config.actor_rollout_ref.actor.optim.initial_logical_step = resume.start_step
+                self.config.actor_rollout_ref.actor.optim.save_training_state = True
             self.config.critic.optim.total_training_steps = total_training_steps
 
     def _prepare_final_validation(self):
@@ -585,6 +613,8 @@ class RayPPOTrainer(object):
                     reward_tensor_lst.append(reward_tensor)
                     data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
 
+        if self.config.trainer.get('resume', {}).get('enabled', False) and len(qa_rows) != 64:
+            raise RuntimeError('Recovery validation did not evaluate exactly64 questions')
         reward_tensor = torch.cat([rw.sum(-1) for rw in reward_tensor_lst], dim=0).cpu()  # (batch_size,)
         # reward_tensor = torch.cat(reward_tensor_lst, dim=0).sum(-1).cpu()  # (batch_size,)
         data_sources = np.concatenate(data_source_lst, axis=0)
@@ -687,7 +717,7 @@ class RayPPOTrainer(object):
                                         f'global_step_{self.global_steps}')
         actor_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
             self.config.trainer.default_hdfs_dir, 'actor')
-        self.actor_rollout_wg.save_checkpoint(actor_local_path, actor_remote_path)
+        checkpoint_receipts = self.actor_rollout_wg.save_checkpoint(actor_local_path, actor_remote_path)
 
         if self.use_critic:
             critic_local_path = os.path.join(self.config.trainer.default_local_dir, 'critic',
@@ -697,6 +727,19 @@ class RayPPOTrainer(object):
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
+
+        if getattr(self, 'recovery_sampler', None) is not None:
+            from search_r1.baselines.recovery import atomic_torch_save, rng_state, publish_checkpoint_manifest
+            driver_receipt = atomic_torch_save(dict(
+                schema=1, logical_step=self.global_steps, actual_new_updates=self.actual_outer_updates,
+                source=self.config.trainer.resume.source,
+                sampler=self.recovery_sampler.state_dict(), rng=rng_state(),
+                kl_controller=dict(vars(self.kl_ctrl)),
+                config=OmegaConf.to_container(self.config, resolve=True)),
+                os.path.join(actor_local_path, 'training_state', 'driver.pt'))
+            self.recovery_manifest = publish_checkpoint_manifest(
+                actor_local_path, checkpoint_receipts, driver_receipt,
+                self.config.trainer.resume.source, self.global_steps, self.actual_outer_updates)
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -723,7 +766,8 @@ class RayPPOTrainer(object):
         """
 
         logger = self.logger
-        self.global_steps = 0
+        resume = self.config.trainer.get('resume', {})
+        self.global_steps = int(resume.start_step) if resume.get('enabled', False) else 0
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -912,8 +956,11 @@ class RayPPOTrainer(object):
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
                     # validate
-                    if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
-                        self.global_steps % self.config.trainer.test_freq == 0:
+                    recovery_eval = (resume.get('enabled', False) and
+                                     self.global_steps in (resume.acceptance_step, resume.stop_step))
+                    if self.val_reward_fn is not None and (recovery_eval or
+                            (self.config.trainer.test_freq > 0 and
+                             self.global_steps % self.config.trainer.test_freq == 0)):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
@@ -925,6 +972,8 @@ class RayPPOTrainer(object):
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
+                             (resume.get('enabled', False) and
+                              self.global_steps in (resume.acceptance_step, resume.stop_step)) or
                              self.global_steps + 1 >= self.total_training_steps):
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
@@ -939,6 +988,25 @@ class RayPPOTrainer(object):
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
 
+                if resume.get('enabled', False):
+                    if self.global_steps == resume.acceptance_step:
+                        from search_r1.baselines.recovery import wait_for_independent_approval
+                        expected_workers = [item['pause_identity'] for item in
+                                            self.recovery_manifest['identity']['files']
+                                            if 'pause_identity' in item]
+                        if self.actor_rollout_wg.checkpoint_pause_identity() != expected_workers:
+                            raise RuntimeError('Worker identities/states changed before205 pause')
+                        wait_for_independent_approval(
+                            self.recovery_manifest, resume.approval_path, resume.wait_seconds)
+                        if self.actor_rollout_wg.checkpoint_pause_identity() != expected_workers:
+                            raise RuntimeError('Worker identities/states changed during205 pause')
+                    if self.global_steps == resume.stop_step:
+                        if self.actual_outer_updates != resume.stop_step - resume.start_step:
+                            raise RuntimeError('Recovery actual update count differs from stop boundary')
+                        print('SEARCH_R1_RECOVERY_COMPLETE_JSON=' + json.dumps(dict(
+                            logical_step=self.global_steps, actual_new_updates=self.actual_outer_updates,
+                            final_metrics=val_metrics), sort_keys=True), flush=True)
+                        return
                 self.global_steps += 1
 
                 if self.global_steps >= self.total_training_steps:

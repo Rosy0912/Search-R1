@@ -25,7 +25,7 @@ def real_iteration_tail():
     step = next(n for n in batches.body if isinstance(n, ast.With))
     update = next(i for i, n in enumerate(step.body) if isinstance(n, ast.If)
                   and "critic_warmup" in ast.unparse(n.test))
-    body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger").body
+    body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger; resume = getattr(self.config.trainer, 'resume', {})").body
     body += step.body[update:] + batches.body[batches.body.index(step) + 1:]
     function = ast.FunctionDef(
         name="iteration_tail",
