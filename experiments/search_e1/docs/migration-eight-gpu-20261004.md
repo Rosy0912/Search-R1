@@ -69,3 +69,7 @@ Stopped only owned original retriever PID2440107 after source/environment verifi
 ## 19:38 CST transition recovery
 
 Old four-GPU B completed step7 normally. Initial transition guard rejected nine Ray dashboard spawn children whose environment was intentionally scrubbed by Ray; no training process was stopped on that failed attempt. Inspected UID1005, same private session/group2986860, exact old environment Python source, and direct parent2987152 with the verified old run UUID and private dashboard source. Added narrowly scoped parent/session/source verification for these children, preserved the rejected controller/log, and restarted the controller. No foreign processes qualify for this exception.
+
+## 19:41 CST eight-GPU gate active
+
+Private process group2986860 (185 verified owned processes) exited completely. Original B steps1–7 and full old base remain preserved; partial next rollout was discarded, no optimizer resume claimed. New eight-GPU gate UUID8d708a8556084021ae3069b93335109d, supervisor3448662, main_task3451483, actor workers3452460/3452777/3452778/3452779/3452780/3452781/3452782/3452783. Execution receipt records E1_GPUS8 and E1_VIRTUAL_DP_WORLD4, all original logical parameters, physical1/score1/JIT1/logit128/CPU chunk states1, vLLM0.25. All eight cards passed idle/UUID admission. Initial load sampled peak13521MiB, first full512-question/five-rollout stage executing; no completed new update is claimed yet.
