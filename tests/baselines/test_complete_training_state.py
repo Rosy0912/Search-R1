@@ -117,3 +117,36 @@ def test_incoherent_sampler_and_string_receipt_are_refused(tmp_path):
     (tmp_path/'approved.json').write_text(json.dumps(approval))
     with pytest.raises(ValueError,match='acceptance missing'):wait_for_acceptance(tmp_path,ready,1)
     assert not (tmp_path/'released.json').exists()
+
+
+def test_fsdp_independent_local_storage_restored_with_real_adam(tmp_path):
+    model=torch.nn.Linear(4,2);optimizer=torch.optim.AdamW(model.parameters(),lr=1e-3)
+    scheduler=get_constant_schedule_with_warmup(optimizer,57)
+    model(torch.randn(2,4)).square().sum().backward();optimizer.step();scheduler.step()
+    for parameter in model.parameters():parameter._local_shard=parameter.detach().clone()
+    identity={'rank':0,'world_size':1}
+    saved=worker_snapshot(model,optimizer,scheduler,identity)
+    pointers={name:(parameter.data_ptr(),parameter._local_shard.data_ptr()) for name,parameter in model.named_parameters()}
+    with torch.no_grad():
+        for parameter in model.parameters():parameter.add_(13);parameter._local_shard.add_(29)
+    restore_worker(model,optimizer,scheduler,saved,identity)
+    for name,parameter in model.named_parameters():
+        assert torch.equal(parameter,saved['parameters'][name])
+        assert torch.equal(parameter._local_shard,saved['local_shards'][name])
+        assert (parameter.data_ptr(),parameter._local_shard.data_ptr())==pointers[name]
+    assert digest(worker_snapshot(model,optimizer,scheduler,identity))==digest(saved)
+    snapshot_worker_to_file(model,optimizer,scheduler,tmp_path/'fsdp-shard.pt',identity,verify=True)
+
+
+@pytest.mark.parametrize('damage',['coverage','shape'])
+def test_bad_fsdp_local_shard_rejected_before_mutating(damage):
+    model=torch.nn.Linear(4,2);optimizer=torch.optim.AdamW(model.parameters(),lr=1e-3)
+    scheduler=get_constant_schedule_with_warmup(optimizer,57)
+    model(torch.randn(2,4)).square().sum().backward();optimizer.step();scheduler.step()
+    for parameter in model.parameters():parameter._local_shard=parameter.detach().clone()
+    saved=worker_snapshot(model,optimizer,scheduler,{})
+    before=digest(worker_snapshot(model,optimizer,scheduler,{}))
+    if damage=='coverage':saved['local_shards']={}
+    else:saved['local_shards']['weight']=torch.zeros(1)
+    with pytest.raises(ValueError,match='FSDP local shard'):restore_worker(model,optimizer,scheduler,saved,{})
+    assert digest(worker_snapshot(model,optimizer,scheduler,{}))==before

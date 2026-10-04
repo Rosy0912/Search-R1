@@ -136,7 +136,9 @@ class CheckpointBatchSampler:
 
 
 def worker_snapshot(module, optimizer, scheduler, identity, cuda=False):
-    value = dict(version=1, identity=copy.deepcopy(identity),
+    if cuda: torch.cuda.synchronize(torch.cuda.current_device())
+    value = dict(version=2, identity=copy.deepcopy(identity),
+                 local_shards={n: cpu_copy(p._local_shard) for n, p in module.named_parameters() if hasattr(p, "_local_shard")},
                  parameters={n: cpu_copy(p) for n, p in module.named_parameters()},
                  gradients={n: None if p.grad is None else cpu_copy(p.grad) for n, p in module.named_parameters()},
                  buffers={n: cpu_copy(p) for n, p in module.named_buffers()},
@@ -147,9 +149,15 @@ def worker_snapshot(module, optimizer, scheduler, identity, cuda=False):
 
 
 def restore_worker(module, optimizer, scheduler, saved, identity):
-    if saved['version'] != 1 or saved['identity'] != identity: raise ValueError('Worker snapshot identity changed')
+    if saved['version'] != 2 or saved['identity'] != identity: raise ValueError('Worker snapshot identity changed')
     finite(saved)
     parameters = dict(module.named_parameters()); buffers = dict(module.named_buffers())
+    local_shards = {n: p._local_shard for n, p in parameters.items() if hasattr(p, '_local_shard')}
+    if local_shards.keys() != saved['local_shards'].keys(): raise ValueError('FSDP local shard coverage changed')
+    for name, target in local_shards.items():
+        source = saved['local_shards'][name]
+        if source.shape != target.shape or source.dtype != target.dtype:
+            raise ValueError('FSDP local shard shape/dtype changed')
     current_groups = optimizer.param_groups
     saved_groups = saved['optimizer']['param_groups']
     if len(current_groups) != len(saved_groups): raise ValueError('Optimizer group layout changed')
@@ -185,6 +193,8 @@ def restore_worker(module, optimizer, scheduler, saved, identity):
     with torch.no_grad():
         for key, current in [('parameters', parameters), ('buffers', buffers)]:
             for name, target in current.items(): target.copy_(saved[key][name].to(target.device))
+        for name, target in local_shards.items():
+            target.copy_(saved['local_shards'][name].to(target.device))
         for name, parameter in parameters.items():
             gradient = saved['gradients'][name]
             parameter.grad = None if gradient is None else gradient.to(parameter.device).clone()
