@@ -3,6 +3,19 @@ set -euo pipefail
 BASE=${E1_BASE:?};PROFILE=${E1_PROFILE:?archive or r1};STAGE=${E1_STAGE:-smoke}
 RUNTIME="$BASE/runtime/$PROFILE"
 continuing=0
+if [[ "$PROFILE" == archive && -f "$BASE/receipts/archive-live-jit-optimizer.json" ]]; then
+ [[ "${E1_GPUS:-4}" == 4 ]] || exit 2
+ RUNTIME="$BASE/runtime/archive-jit-20261005-env-v2"
+ export E1_JIT_OPTIMIZER=1 E1_PHYSICAL_SCORE=1
+ "$BASE/env/bin/python" - "$BASE" "$RUNTIME" <<'VERIFY_ARCHIVE_JIT'
+import sys,json,hashlib
+from pathlib import Path
+base,runtime=map(Path,sys.argv[1:])
+manifest=json.loads((base/'receipts/archive-jit-env-v2-runtime.sha256.json').read_text())
+for name,digest in manifest.items():
+ assert hashlib.sha256((runtime/name).read_bytes()).hexdigest()==digest,name
+VERIFY_ARCHIVE_JIT
+fi
 if [[ "$PROFILE" == r1 && "$STAGE" == round-1-grpo && -f "$BASE/receipts/continue-current-eight.json" ]]; then
  [[ "${E1_GPUS:-4}" == 8 ]] || exit 2
  RUNTIME="$BASE/runtime/r1-full-resume-20261004"

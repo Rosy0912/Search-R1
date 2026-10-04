@@ -1,0 +1,11 @@
+{
+  "time": 1791153130.5322921,
+  "pid": 1434645,
+  "loaded_fd_position": 1495,
+  "loaded_inode": 45092280,
+  "future_inode": 45092363,
+  "future_source_sha256": "34ccd72335aabd1f80870880688baf169be4de784f77668bf3a42e38410dd078",
+  "loaded_descriptor_at_eof": true,
+  "training_child_untouched": true,
+  "preserved_full_external_source": "/weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/train_profile.pre-atomic-jit-20261005.sh"
+}

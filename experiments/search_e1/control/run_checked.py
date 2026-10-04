@@ -10,6 +10,11 @@ if profile=='archive' and 'grpo' in stage and score_override.exists():
  proof=json.loads(score_override.read_text())
  assert sorted(r['rank'] for r in proof['ranks'])==list(range(4)) and all(r['physical_score']==1 for r in proof['ranks'])
  env['E1_PHYSICAL_SCORE']='1'
+jit_override=base/'receipts/archive-live-jit-optimizer.json'
+if profile=='archive' and 'grpo' in stage and jit_override.exists():
+ proof=json.loads(jit_override.read_text())
+ assert sorted(r['rank'] for r in proof['ranks'])==list(range(4)) and all(r['jit_enabled'] and r['logical_optimizer_offload'] for r in proof['ranks'])
+ env['E1_JIT_OPTIMIZER']='1'
 # Ray teardown may outlive the completed driver. Wait briefly without stopping
 # any process; every retry still applies the complete UUID/process admission.
 for attempt in range(37):

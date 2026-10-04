@@ -1,0 +1,12 @@
+{
+  "original": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+  "destination": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+  "changed_files": [
+    "upstream/Search-R1/verl/workers/actor/dp_actor.py",
+    "upstream/Search-R1/verl/workers/fsdp_workers.py",
+    "search_e1/grpo_main.py"
+  ],
+  "original_files_unchanged": true,
+  "logical_config_unchanged": true,
+  "equivalence_proof": "four-rank FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK"
+}

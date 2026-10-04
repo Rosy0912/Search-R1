@@ -1,0 +1,126 @@
+{
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "time": 1791152900.4969888,
+  "ranks": [
+    {
+      "rank": 0,
+      "pid": 1437900,
+      "time": 1791152900.259214,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 41,
+        "verbose": false,
+        "_step_count": 42,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          7.192982456140351e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        820
+      ],
+      "state_devices": [
+        "cpu"
+      ],
+      "jit_enabled": true,
+      "logical_optimizer_offload": true,
+      "worker_pre_forward_load": false
+    },
+    {
+      "rank": 2,
+      "pid": 1438382,
+      "time": 1791152900.2617974,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 41,
+        "verbose": false,
+        "_step_count": 42,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          7.192982456140351e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        820
+      ],
+      "state_devices": [
+        "cpu"
+      ],
+      "jit_enabled": true,
+      "logical_optimizer_offload": true,
+      "worker_pre_forward_load": false
+    },
+    {
+      "rank": 3,
+      "pid": 1438383,
+      "time": 1791152900.4955578,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 41,
+        "verbose": false,
+        "_step_count": 42,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          7.192982456140351e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        820
+      ],
+      "state_devices": [
+        "cpu"
+      ],
+      "jit_enabled": true,
+      "logical_optimizer_offload": true,
+      "worker_pre_forward_load": false
+    },
+    {
+      "rank": 1,
+      "pid": 1438381,
+      "time": 1791152900.2729511,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 41,
+        "verbose": false,
+        "_step_count": 42,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          7.192982456140351e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        820
+      ],
+      "state_devices": [
+        "cpu"
+      ],
+      "jit_enabled": true,
+      "logical_optimizer_offload": true,
+      "worker_pre_forward_load": false
+    }
+  ],
+  "training_restarted": false,
+  "frozen_files_modified": false,
+  "loaded_execution_overlay": "per-step Adam CPU/GPU state staging",
+  "equivalence_proof": "fsdp-jit-optimizer-check.log: four-rank bitwise equivalence"
+}

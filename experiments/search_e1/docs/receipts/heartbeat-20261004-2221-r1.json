@@ -1,0 +1,237 @@
+{
+  "time": 1791152461.2521677,
+  "host": "hkust1",
+  "phase": "2026-10-04T13:11:36.251229+00:00 CONTINUING_GRPO_ROUND_1_FROM_STEP_3\n",
+  "receipt": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [],
+      "owned_shared_oracle": null
+    },
+    "started_unix": 1791118516.1053102,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "sample_count": 16208,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1",
+      "E1_GPUS": "8",
+      "E1_VIRTUAL_DP_WORLD": "4"
+    },
+    "pid": 3546009,
+    "updated_unix": 1791152434.2543879
+  },
+  "metrics": [
+    "(main_task pid=3548832) step:20 - global_seqlen/min:534422.000 - global_seqlen/max:570935.000 - global_seqlen/minmax_diff:36513.000 - global_seqlen/balanced_min:556257.000 - global_seqlen/balanced_max:556258.000 - global_seqlen/mean:556257.750 - audit/legacy_em:0.295 - audit/strict_em:0.192 - audit/score_disagreement:0.102 - state_tokens/total:458154.000 - state_tokens/coverage:0.245 - actor/kl_coef:0.001 - actor/entropy_loss:1.037 - actor/pg_loss:0.031 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.002 - actor/kl_loss:0.024 - actor/grad_norm:1.054 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.192 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.192 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.001 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.001 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:730.180 - response_length/max:3041.000 - response_length/min:68.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.973 - prompt_length/max:231.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.179 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.988 - env/number_of_valid_action:2.156 - env/ratio_of_valid_action:0.995 - env/number_of_valid_search:1.169 - timing_s/gen:556.491 - timing_s/ref:173.244 - timing_s/adv:3.967 - timing_s/update_actor:844.876 - timing_s/step:1753.305 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.380 - timing_per_token_ms/ref:0.078 - timing_per_token_ms/gen:0.298",
+    "(main_task pid=3548832) step:21 - global_seqlen/min:555109.000 - global_seqlen/max:566113.000 - global_seqlen/minmax_diff:11004.000 - global_seqlen/balanced_min:559562.000 - global_seqlen/balanced_max:559563.000 - global_seqlen/mean:559562.500 - audit/legacy_em:0.311 - audit/strict_em:0.210 - audit/score_disagreement:0.101 - state_tokens/total:455278.000 - state_tokens/coverage:0.241 - actor/kl_coef:0.001 - actor/entropy_loss:1.120 - actor/pg_loss:0.037 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.001 - actor/kl_loss:0.071 - actor/grad_norm:1.262 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.210 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.210 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.006 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.006 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:737.756 - response_length/max:3337.000 - response_length/min:45.000 - response_length/clip_ratio:0.000 - prompt_length/mean:136.561 - prompt_length/max:206.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.189 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.992 - env/number_of_valid_action:2.175 - env/ratio_of_valid_action:0.996 - env/number_of_valid_search:1.183 - timing_s/gen:566.106 - timing_s/ref:173.338 - timing_s/adv:3.919 - timing_s/update_actor:840.768 - timing_s/step:1759.742 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.376 - timing_per_token_ms/ref:0.077 - timing_per_token_ms/gen:0.300"
+  ],
+  "current_step": [
+    "22"
+  ],
+  "tail": [
+    "(main_task pid=3548832) epoch 0, step 22",
+    "(main_task pid=3548832) [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 778 & 500",
+    "(WorkerDict pid=3549817) E1_OPTIMIZER_MEMORY_START {'rank': 5, 'chunk': 1, 'staged': '1', 'allocated': 3846631936, 'reserved': 4135583744} [repeated 7x across cluster]",
+    "(WorkerDict pid=3549817) E1_OPTIMIZER_MEMORY_END {'rank': 5, 'allocated': 3846631936, 'reserved': 4292870144, 'peak_allocated': 16344317440, 'peak_reserved': 17112760320} [repeated 8x across cluster]"
+  ],
+  "nonfinite": false,
+  "sessions": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-eight-continuation-20261004: 1 windows (created Sun Oct  4 12:53:42 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)\n",
+  "gpu": "0, 6357 MiB, 24564 MiB, 99 %\n1, 6357 MiB, 24564 MiB, 98 %\n2, 6319 MiB, 24564 MiB, 99 %\n3, 6319 MiB, 24564 MiB, 98 %\n4, 6319 MiB, 24564 MiB, 98 %\n5, 6321 MiB, 24564 MiB, 98 %\n6, 6357 MiB, 24564 MiB, 98 %\n7, 6357 MiB, 24564 MiB, 98 %\n",
+  "processes": "3549569, GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 6316 MiB\n3549813, GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 6316 MiB\n3549814, GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 6278 MiB\n3549815, GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 6278 MiB\n3549816, GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 6278 MiB\n3549817, GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 6280 MiB\n3549818, GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 6316 MiB\n3549819, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 6316 MiB\n",
+  "frozen_runtime": {
+    "r1": {
+      "files": 305,
+      "changed_or_missing": []
+    },
+    "r1-full-resume-20261004": {
+      "files": 311,
+      "changed_or_missing": []
+    }
+  },
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "five_acceptance": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "time": 1791123956.0242605,
+    "completed_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "source_steps": [
+      1,
+      2
+    ],
+    "continued_steps": [
+      3,
+      4,
+      5
+    ],
+    "checkpoint_proof": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/receipts/continued-step3-weights.json",
+    "status": "RUNNING",
+    "heartbeat_age": 9.3719162940979,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "full_reproduction_complete": false
+  },
+  "checkpoint3": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "time": 1791120442.2448268,
+    "initial": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        }
+      ],
+      "accepted": true
+    },
+    "previous_step2": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 435,
+      "verified_aliases": {},
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        }
+      ],
+      "accepted": true
+    },
+    "accepted": true
+  },
+  "pipeline_tail": [
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "{\"checkpoint\": \"/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_2\", \"tensor_count\": 435, \"initial_tensor_count\": 434, \"verified_aliases\": {\"lm_head.weight\": \"model.embed_tokens.weight\"}, \"nonfinite\": [], \"changed\": [{\"key\": \"model.layers.0.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.1.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.10.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.11.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}], \"accepted\": true}",
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION"
+  ]
+}

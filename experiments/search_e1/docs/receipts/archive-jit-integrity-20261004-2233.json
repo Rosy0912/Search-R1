@@ -1,0 +1,319 @@
+{
+  "time": 1791153170.9693844,
+  "archive-live-jit-optimizer.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "time": 1791152900.4969888,
+    "ranks": [
+      {
+        "rank": 0,
+        "pid": 1437900,
+        "time": 1791152900.259214,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 2,
+        "pid": 1438382,
+        "time": 1791152900.2617974,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 3,
+        "pid": 1438383,
+        "time": 1791152900.4955578,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 1,
+        "pid": 1438381,
+        "time": 1791152900.2729511,
+        "scheduler": {
+          "base_lrs": [
+            0.000001
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-7
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      }
+    ],
+    "training_restarted": false,
+    "frozen_files_modified": false,
+    "loaded_execution_overlay": "per-step Adam CPU/GPU state staging",
+    "equivalence_proof": "fsdp-jit-optimizer-check.log: four-rank bitwise equivalence"
+  },
+  "archive-post-jit-memory.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "physical_score": 1,
+    "jit": true,
+    "peaks_mib": {
+      "4": 18430,
+      "5": 22758,
+      "6": 21482,
+      "7": 21087
+    },
+    "samples": 121,
+    "full_iterations_to_observe": [
+      43,
+      44
+    ],
+    "status": "OBSERVING",
+    "minimum_reserve_mib": {
+      "4": 30710,
+      "5": 26382,
+      "6": 27658,
+      "7": 28053
+    },
+    "last_completed_step": 41,
+    "updated": 1791153154.3430922
+  },
+  "archive-post-score1-memory.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791145311.6439264,
+    "physical_score": 1,
+    "peaks_mib": {
+      "4": 40200,
+      "5": 37648,
+      "6": 42836,
+      "7": 43643
+    },
+    "samples": 2101,
+    "full_iterations_to_observe": [
+      39,
+      40
+    ],
+    "status": "OBSERVATION_COMPLETE",
+    "minimum_reserve_mib": {
+      "4": 8940,
+      "5": 11492,
+      "6": 6304,
+      "7": 5497
+    },
+    "last_completed_step": 40,
+    "updated": 1791149716.8894932,
+    "finished": 1791149716.889855
+  },
+  "archive-control-atomic-transition.json": {
+    "time": 1791153130.5322921,
+    "pid": 1434645,
+    "loaded_fd_position": 1495,
+    "loaded_inode": 45092280,
+    "future_inode": 45092363,
+    "future_source_sha256": "34ccd72335aabd1f80870880688baf169be4de784f77668bf3a42e38410dd078",
+    "loaded_descriptor_at_eof": true,
+    "training_child_untouched": true,
+    "preserved_full_external_source": "/weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/train_profile.pre-atomic-jit-20261005.sh"
+  },
+  "archive-jit-env-v2-runtime-overlay.json": {
+    "original": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+    "destination": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+    "changed_files": [
+      "upstream/Search-R1/verl/workers/actor/dp_actor.py",
+      "upstream/Search-R1/verl/workers/fsdp_workers.py",
+      "search_e1/grpo_main.py"
+    ],
+    "original_files_unchanged": true,
+    "logical_config_unchanged": true,
+    "equivalence_proof": "four-rank FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK"
+  },
+  "file_integrity": {
+    "archive": {
+      "files": 669,
+      "changed": []
+    },
+    "archive-jit-20261005-env-v2": {
+      "files": 669,
+      "changed": []
+    }
+  },
+  "receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 47824,
+      "5": 44662,
+      "6": 42836,
+      "7": 43643
+    },
+    "sample_count": 33796,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791153149.9562626
+  },
+  "tail": [
+    "(main_task pid=1437474) Doc 2(Title: \"The Matchmaker (1997 film)\") say the film is helped by the central performance of Janeane Garofalo. In a 2003 interview, when asked what films from her career she was happiest with, Garofalo included \"\"The Matchmaker\"\" among the few films she mentioned. Marcy's expectations clash with a host of colourful rural Irish characters in the tradition of such other works as \"\"The Irish R.M.\"\" Filming took place on location in the town of Roundstone, County Galway. Besides the personalities of the villagers, the film establishes a sense of place through a generous use of village scenes, the local surrounding farms and a trip to the",
+    "(main_task pid=1437474) Doc 3(Title: \"The Matchmaker (1997 film)\") Aran Islands, with cavorting near Dún Aengus. Worked into the story is a parody of Senator John Kerry's family background. His paternal grandfather was from Eastern Europe, picking a new name once arriving in America and blending into the Irish Catholic community in Boston. Irish music is heard frequently throughout, both as background music and in scenes where it is performed live as when an Irishman (Vincent Walsh) competes for a kiss from Marcy with his sean nós rendition of \"\"Raglan Road\"\". The soundtrack features \"\"Haunted\"\" by Shane MacGowan and Sinéad O'Connor. \"\"Irish Heartbeat\"\" by Van Morrison and The Chieftains</information>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) <answer>Roundstone, County Galway</answer>"
+  ],
+  "last_complete": [
+    "41"
+  ],
+  "current": [
+    "42"
+  ],
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  }
+}
