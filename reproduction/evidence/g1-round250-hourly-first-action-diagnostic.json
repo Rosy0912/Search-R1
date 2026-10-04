@@ -1,0 +1,82 @@
+{
+  "checked_unix": 1791150903.253152,
+  "last_anchor_unix": 1791147284.3765168,
+  "latest_completed": 250,
+  "new_updates": 0,
+  "new_reward_mean": null,
+  "latest_historical_reward": 0.215,
+  "validation_step": 250,
+  "validation_correct": 7,
+  "validation_em": 0.109375,
+  "remaining_owned_live": [],
+  "diagnostic_live": false,
+  "current_gpus": [
+    {
+      "index": 0,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 1,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 2,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 3,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 5,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 4,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "last_training_sample_unix": 1791147060.7653642,
+  "training_sampler_stopped": true,
+  "cumulative_training_peak_mib": 40879,
+  "diagnostic_summaries": [
+    {
+      "budget": 256,
+      "count": 32,
+      "action_counts": {
+        "invalid": 32
+      },
+      "finish_reason_counts": {
+        "length": 29,
+        "stop": 3
+      },
+      "mean_tokens": 250.125
+    },
+    {
+      "budget": 500,
+      "count": 32,
+      "action_counts": {
+        "invalid": 32
+      },
+      "finish_reason_counts": {
+        "stop": 17,
+        "length": 15
+      },
+      "mean_tokens": 418.65625
+    }
+  ],
+  "diagnostic_zero_protocol_tags": true,
+  "diagnostic_semantics": "32 fixed reserved questions first action only; no retrieval or EM, no weight updates. No support for budget-only remedy."
+}
