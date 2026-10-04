@@ -32,5 +32,26 @@
   "changed_parameter_count": 435,
   "runtime_delta_matches_independent": true,
   "main_live": true,
-  "supervisor_live": true
+  "supervisor_live": true,
+  "validation_identity_checked_unix": 1791133847.2618597,
+  "same_ordered_unique64": true,
+  "validation_counts": {
+    "nq": 10,
+    "triviaqa": 9,
+    "popqa": 9,
+    "hotpotqa": 9,
+    "2wikimultihopqa": 9,
+    "musique": 9,
+    "bamboogle": 9
+  },
+  "per_source_correct": {
+    "nq": 5,
+    "triviaqa": 5,
+    "popqa": 1,
+    "hotpotqa": 5,
+    "2wikimultihopqa": 1,
+    "musique": 1,
+    "bamboogle": 2
+  },
+  "actual_binary_scores_consistent_with_logged_validation": true
 }
