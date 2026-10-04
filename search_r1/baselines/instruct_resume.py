@@ -9,6 +9,23 @@ CHECKPOINT75 = ('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-2026100
                 'gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_75')
 MANIFEST75 = '65f5eef374d0eb5378aa50d56b9c883755e961b154526a26c05eefcd127968a9'
 SOURCE75 = 'bb1adde13c7fd489aef4feb68a36aeb0d29d5da3'
+CHECKPOINT80 = ('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/'
+                'gigpo-e1-instruct300-resume75-job3225-1791150281881004640/checkpoints/actor/global_step_80')
+MANIFEST80 = '7e108f4d1de488e8484a25deb3d50d9f9a200f2b30e0c90ffc3f9bc68751ad03'
+SOURCE80 = 'e5b30d7cf35c30a83d07375733501392d6fa42f1'
+
+
+def provenance(config):
+    path = config.trainer.instruct300.restore_checkpoint
+    if path == CHECKPOINT75:
+        return dict(step=75, checkpoint=CHECKPOINT75, manifest=MANIFEST75,
+                    source=SOURCE75, job='3185', actual=75,
+                    recovery='fresh_official_instruct', discarded=8)
+    if path == CHECKPOINT80:
+        return dict(step=80, checkpoint=CHECKPOINT80, manifest=MANIFEST80,
+                    source=SOURCE80, job='3225', actual=5,
+                    recovery='full_state_instruct75', discarded=6)
+    raise ValueError('Instruct resume checkpoint identity changed')
 
 
 def enabled(config):
@@ -19,12 +36,13 @@ def start_step(config):
     if not enabled(config):
         return 0
     control = config.trainer.instruct300
-    if (control.restore_checkpoint != CHECKPOINT75 or control.restore_manifest_sha256 != MANIFEST75
-            or config.trainer.acceptance_step != 80 or config.trainer.val_before_train
+    origin = provenance(config)
+    if (control.restore_manifest_sha256 != origin['manifest']
+            or config.trainer.acceptance_step != origin['step'] + 5 or config.trainer.val_before_train
             or config.trainer.resume.enabled or config.trainer.total_training_steps != 300
             or not config.actor_rollout_ref.actor.get('joint_loss_scaling', False)):
         raise ValueError('Instruct resume75 identity or continuation boundaries changed')
-    return 75
+    return origin['step']
 
 
 def _leaves(value, prefix=''):
@@ -49,6 +67,12 @@ def migration_diff(saved, current):
         'trainer.instruct300.restore_checkpoint': (absent, CHECKPOINT75),
         'trainer.instruct300.restore_manifest_sha256': (absent, MANIFEST75),
     }
+    if new.get('trainer.instruct300.restore_checkpoint') == CHECKPOINT80:
+        exact = {
+            'trainer.acceptance_step': (80, 85),
+            'trainer.instruct300.restore_checkpoint': (CHECKPOINT75, CHECKPOINT80),
+            'trainer.instruct300.restore_manifest_sha256': (MANIFEST75, MANIFEST80),
+        }
     paths = {'trainer.default_local_dir', 'trainer.instruct300.approval_path', 'trainer.experiment_name'}
     for key, values in changes.items():
         if key in paths:
@@ -66,25 +90,27 @@ def restore(trainer):
     """Load driver and all eight rank states before any resumed fetch."""
     import torch
     from .instruct300 import check_manifest, equal_state, REVISION
-    if start_step(trainer.config) != 75:
-        raise RuntimeError('Restore called outside the explicit resume75 experiment')
-    path = Path(CHECKPOINT75) / 'training_state/manifest.json'
-    if file_sha256(path) != MANIFEST75:
+    step = start_step(trainer.config)
+    origin = provenance(trainer.config)
+    if step not in (75, 80):
+        raise RuntimeError('Restore called outside the explicit continuation')
+    path = Path(origin['checkpoint']) / 'training_state/manifest.json'
+    if file_sha256(path) != origin['manifest']:
         raise RuntimeError('Original step75 manifest changed')
     identity = json.loads(path.read_text())
-    if (identity['job_id'] != '3185' or identity['code_commit'] != SOURCE75
-            or identity['logical_step'] != 75 or identity['actual_new_updates'] != 75
-            or identity['recovery_mode'] != 'fresh_official_instruct'):
+    if (identity['job_id'] != origin['job'] or identity['code_commit'] != origin['source']
+            or identity['logical_step'] != step or identity['actual_new_updates'] != origin['actual']
+            or identity['recovery_mode'] != origin['recovery']):
         raise RuntimeError('Original full checkpoint75 provenance changed')
-    manifest = dict(path=str(path), sha256=MANIFEST75, identity=identity)
+    manifest = dict(path=str(path), sha256=origin['manifest'], identity=identity)
     check_manifest(manifest)
     files = identity['files']
     driver_record = next(v for v in files if v['path'].endswith('/driver.pt'))
     driver = torch.load(driver_record['path'], map_location='cpu', weights_only=False)
-    if (driver['schema'] != 1 or driver['logical_step'] != 75 or driver['actual_new_updates'] != 75
+    if (driver['schema'] != 1 or driver['logical_step'] != step or driver['actual_new_updates'] != origin['actual']
             or driver['source_revision'] != REVISION
             or driver['source'] != trainer.config.actor_rollout_ref.model.path
-            or driver['sampler']['cursor'] != 38400 or driver['sampler']['epoch'] != 0
+            or driver['sampler']['cursor'] != step * 512 or driver['sampler']['epoch'] != 0
             or driver['sampler']['size'] != 169028):
         raise RuntimeError('Saved driver source, progress, or data cursor changed')
     differences = migration_diff(driver['config'], OmegaConf.to_container(trainer.config, resolve=True))
@@ -94,7 +120,7 @@ def restore(trainer):
         raise RuntimeError('Saved GiGPO receipt differs from driver')
     controller = trainer.baseline_controller
     expected_parameters = OmegaConf.to_container(trainer.config.baselines.gigpo, resolve=True)
-    if (algorithm['method'] != 'gigpo' or algorithm['global_step'] != 75
+    if (algorithm['method'] != 'gigpo' or algorithm['global_step'] != step
             or not algorithm['resume_supported'] or algorithm['gigpo_parameters'] != expected_parameters
             or algorithm['loss_reduction'] != 'sequence_mean'
             or algorithm['groups'] != 'stateless_per_rollout_with_step_ids_and_advantage_broadcast'
@@ -104,9 +130,9 @@ def restore(trainer):
         raise RuntimeError('GiGPO algorithm identity or grouping semantics changed')
     rank_records = [v for v in files if 'pause_identity' in v]
     shas = {str(v['pause_identity']['rank']): v['sha256'] for v in rank_records}
-    loaded = trainer.actor_rollout_wg.load_training_state(CHECKPOINT75, shas, 75, 1500)
+    loaded = trainer.actor_rollout_wg.load_training_state(origin['checkpoint'], shas, step, step * 20)
     if (len(loaded) != 8 or {v['rank'] for v in loaded} != set(range(8))
-            or any(v['logical_step'] != 75 for v in loaded)):
+            or any(v['logical_step'] != step for v in loaded)):
         raise RuntimeError('Incomplete actual eight-rank full restore')
     now = trainer.actor_rollout_wg.checkpoint_pause_identity()
     if (len(now) != 8 or {v['rank'] for v in now} != set(range(8))
@@ -134,7 +160,7 @@ def restore(trainer):
         raise RuntimeError('Actual driver RNG restoration differs')
     trainer.actual_outer_updates = 0
     trainer.instruct_restore_manifest = manifest
-    atomic_json_save(dict(status='RESTORED_FULL_STATE75', source_manifest=manifest,
-        retained_logical_step=75, resumed_actual_updates=0, discarded_failed_branch_updates=8,
-        migration=differences, workers=now, driver_cursor=38400, engine_restart_exact=False),
-        Path(trainer.config.trainer.instruct300.approval_path).with_name('resume75-restored.json'))
+    atomic_json_save(dict(status=f'RESTORED_FULL_STATE{step}', source_manifest=manifest,
+        retained_logical_step=step, resumed_actual_updates=0, discarded_failed_branch_updates=origin['discarded'],
+        migration=differences, workers=now, driver_cursor=step * 512, engine_restart_exact=False),
+        Path(trainer.config.trainer.instruct300.approval_path).with_name(f'resume{step}-restored.json'))

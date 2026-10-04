@@ -105,6 +105,7 @@ def check_manifest(manifest):
         raise RuntimeError('Missing complete driver/algorithm receipts')
 
 def save_complete(trainer, checkpoint, worker_receipts):
+    from .instruct_resume import start_step
     step = trainer.global_steps
     algorithm = Path(trainer.config.trainer.default_local_dir) / 'algorithm' / f'global_step_{step}' / 'state.json'
     algorithm_bytes = algorithm.read_bytes()
@@ -118,7 +119,7 @@ def save_complete(trainer, checkpoint, worker_receipts):
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     trainer.instruct_manifest = publish_checkpoint_manifest(
         checkpoint, worker_receipts, receipt, driver['source'], step, trainer.actual_outer_updates,
-        recovery_mode=('full_state_instruct75' if trainer.config.trainer.instruct300.get('restore_checkpoint')
+        recovery_mode=(f'full_state_instruct{start_step(trainer.config)}' if trainer.config.trainer.instruct300.get('restore_checkpoint')
                        else 'fresh_official_instruct'), extra_receipts=[extra])
 
 
@@ -182,11 +183,11 @@ def roundtrip_and_wait(trainer, final=False):
         return
     atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
                           checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
-                     approval_path.with_name('resume80-ready.json' if gate == 80 else 'instruct5-ready.json'))
+                     approval_path.with_name(f'resume{gate}-ready.json' if origin else 'instruct5-ready.json'))
     deadline = time.monotonic() + trainer.config.trainer.instruct300.wait_seconds
     expected_binding = dict(job_id=os.environ['SLURM_JOB_ID'], source=manifest['identity']['source'],
                             logical_step=gate, actual_new_updates=5, manifest_sha256=manifest['sha256'])
-    if gate == 80:
+    if origin:
         expected_binding['restore_manifest_sha256'] = trainer.instruct_restore_manifest['sha256']
     while time.monotonic() < deadline:
         if approval_path.exists():

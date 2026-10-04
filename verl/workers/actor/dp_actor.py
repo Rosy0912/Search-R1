@@ -276,14 +276,23 @@ class DataParallelPPOActor(BasePPOActor):
                 if not paper_objective or self.config.get('baseline_method') != 'gigpo':
                     raise ValueError('Joint loss scaling is only defined for the GiGPO paper objective')
                 from search_r1.baselines.loss_scaling import (TransparentProbe, active_joint_bound,
-                                                            coordinated_scale, coordinated_badflag)
+                                                            coordinated_scale, coordinated_badflag,
+                                                            describe_invalid_joint_probe, write_probe_diagnostic)
                 group = getattr(self.actor_module, 'process_group', None)
                 bound = torch.full((), -float('inf'), dtype=torch.float64, device='cuda')
                 bad = torch.zeros((), dtype=torch.int32, device='cuda')
+                probe_details = []
+                probe_identity = dict(outer_step=outer_identity.get('baseline_outer_step'),
+                                      mini_index=batch_idx, optimizer_steps_completed=batch_idx)
                 with TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None)) as probe:
-                    coordinated_badflag(probe.invalid, bound.device, group)
+                    try:
+                        coordinated_badflag(probe.invalid, bound.device, group)
+                    except ValueError:
+                        write_probe_diagnostic(dict(probe_identity, phase='boundary_enter_rejected',
+                                                    local_invalid=bool(probe.invalid)))
+                        raise
                     with torch.no_grad():
-                        for probe_data in micro_batches:
+                        for probe_index, probe_data in enumerate(micro_batches):
                             probe_data = probe_data.cuda()
                             _, probe_logp = self._forward_micro_batch(probe_data, temperature)
                             width = probe_data['responses'].shape[1]
@@ -292,11 +301,30 @@ class DataParallelPPOActor(BasePPOActor):
                             value, invalid = active_joint_bound(probe_data['old_log_probs'], probe_logp,
                                 probe_data['advantages'], probe_mask, probe_data['policy_weights'],
                                 probe_data['step_ids'], self.config.clip_ratio)
+                            if bool(invalid):
+                                try:
+                                    detail = describe_invalid_joint_probe(probe_data['old_log_probs'], probe_logp,
+                                        probe_data['advantages'], probe_mask, probe_data['policy_weights'],
+                                        probe_data['step_ids'], self.config.clip_ratio)
+                                except Exception as exc:
+                                    detail = dict(diagnostic_error=repr(exc))
+                                probe_details.append(dict(micro_index=probe_index, details=detail))
                             bound = torch.maximum(bound, value)
                             bad = torch.maximum(bad, invalid)
                             probe_logps.append(probe_logp.detach().cpu())
                 bad = torch.maximum(bad, torch.tensor(int(probe.invalid), dtype=torch.int32, device=bad.device))
-                loss_scale = coordinated_scale(bound, bad, group)
+                # Existing global badflag/MAX collectives decide validity unchanged.
+                # Write separate metadata only after every rank reaches that decision.
+                try:
+                    loss_scale = coordinated_scale(bound, bad, group)
+                except ValueError as exc:
+                    write_probe_diagnostic(dict(probe_identity, phase='rejected',
+                        local_bad=bool(bad), boundary_exit_invalid=bool(probe.invalid),
+                        local_bound=str(float(bound)), details=probe_details, error=str(exc)))
+                    raise
+                write_probe_diagnostic(dict(probe_identity, phase='accepted',
+                    local_bad=bool(bad), boundary_exit_invalid=bool(probe.invalid),
+                    local_bound=str(float(bound)), global_loss_scale=float(loss_scale)))
                 mini_metrics['actor/joint_loss_scale'] = float(loss_scale)
                 mini_metrics['actor/probe_micro_batches'] = len(probe_logps)
 

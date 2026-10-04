@@ -151,3 +151,62 @@ def test_probe_flags_and_restores_changed_buffer_device():
         model.counter = model.counter.to('meta')
     assert probe.invalid
     assert model.counter.device.type == 'cpu'
+
+
+@pytest.mark.parametrize('case,reason', [
+    ('overflow', 'nonfinite_raw_joint_ratio'),
+    ('advantage', 'inconsistent_action_advantage'),
+    ('negative_id', 'negative_action_id'),
+    ('negative_weight', 'negative_weight'),
+    ('nonfinite_old', 'nonfinite_old'),
+    ('dtype', 'step_ids_dtype_or_shape'),
+])
+def test_invalid_probe_reason_does_not_change_decision_inputs_or_rng(case, reason):
+    from search_r1.baselines.loss_scaling import describe_invalid_joint_probe
+    old = torch.zeros(1, 2)
+    current = torch.zeros_like(old)
+    advantages = torch.ones_like(old)
+    mask = torch.ones_like(old)
+    weights = mask / 2
+    ids = torch.zeros_like(old, dtype=torch.long)
+    if case == 'overflow': current.fill_(400.)
+    if case == 'advantage': advantages[0, 1] = -1.
+    if case == 'negative_id': ids.fill_(-1)
+    if case == 'negative_weight': weights.fill_(-1)
+    if case == 'nonfinite_old': old.fill_(float('nan'))
+    if case == 'dtype': ids = ids.float()
+    args = (old, current, advantages, mask, weights, ids, .2)
+    bound, bad = active_joint_bound(*args)
+    rng = torch.get_rng_state().clone()
+    originals = [t.clone() for t in args[:-1]]
+    detail = describe_invalid_joint_probe(*args)
+    assert reason in detail['reasons'] and bad == 1
+    repeated, flag = active_joint_bound(*args)
+    torch.testing.assert_close(bound, repeated, equal_nan=True)
+    assert flag == bad and torch.equal(rng, torch.get_rng_state())
+    for actual, original in zip(args[:-1], originals):
+        torch.testing.assert_close(actual, original, equal_nan=True)
+
+
+def test_probe_metadata_io_failure_cannot_interrupt_collectives(monkeypatch, tmp_path, capsys):
+    from search_r1.baselines.loss_scaling import write_probe_diagnostic
+    import pathlib
+    monkeypatch.setenv('SEARCH_R1_BASELINE_AUDIT_DIR', str(tmp_path))
+    def fail(*args, **kwargs): raise OSError('deliberate I/O failure')
+    monkeypatch.setattr(pathlib.Path, 'mkdir', fail)
+    write_probe_diagnostic(dict(phase='rejected'))
+    assert 'diagnostic write failed' in capsys.readouterr().err
+
+
+
+def test_probe_metadata_closed_stderr_cannot_interrupt_collectives(monkeypatch, tmp_path):
+    from search_r1.baselines.loss_scaling import write_probe_diagnostic
+    import pathlib, sys
+    monkeypatch.setenv('SEARCH_R1_BASELINE_AUDIT_DIR', str(tmp_path))
+    def fail(*args, **kwargs): raise OSError('deliberate I/O failure')
+    class ClosedStream:
+        def write(self, *args): raise BrokenPipeError('closed stderr')
+        def flush(self): raise BrokenPipeError('closed stderr')
+    monkeypatch.setattr(pathlib.Path, 'mkdir', fail)
+    monkeypatch.setattr(sys, 'stderr', ClosedStream())
+    write_probe_diagnostic(dict(phase='rejected'))

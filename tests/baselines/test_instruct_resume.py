@@ -110,3 +110,38 @@ def test_evaluation_receipt_preserves_phase_step_and_actual_data(monkeypatch, tm
     assert record['dataset_files'] == [dict(path=str(data), sha256=hashlib.sha256(b'actual-data').hexdigest())]
     with pytest.raises(RuntimeError, match='question count'):
         record_evaluation(trainer, {'val/qa_count/all':64}, 'final51713', [str(data)])
+
+
+def test_resume80_exact_saved80_migration_and_boundaries(monkeypatch):
+    old, prior = configs(monkeypatch)
+    directory = Path(__file__).resolve().parents[2] / 'verl/trainer/config'
+    with initialize_config_dir(config_dir=str(directory), version_base=None):
+        current = compose(config_name='ppo_gigpo_instruct300_resume80')
+    saved = OmegaConf.to_container(prior, resolve=True)
+    target = OmegaConf.to_container(current, resolve=True)
+    assert start_step(current) == 80
+    changes = migration_diff(saved, target)
+    assert set(changes) == {
+        'trainer.acceptance_step', 'trainer.instruct300.restore_checkpoint',
+        'trainer.instruct300.restore_manifest_sha256', 'trainer.experiment_name',
+        'trainer.instruct300.approval_path'}
+    assert changes['trainer.acceptance_step'] == dict(old=80, new=85)
+    from search_r1.baselines.instruct_resume import provenance
+    identity = provenance(current)
+    assert identity['job'] == '3225' and identity['actual'] == 5
+    assert identity['recovery'] == 'full_state_instruct75'
+    assert identity['step'] * 20 == 1600
+    assert (identity['step'] + 5) * 20 == 1700
+    assert (identity['step'] + 5) * 512 == 43520
+    assert 300 - start_step(current) == 220
+    for field, value in [('restore_manifest_sha256', 'f' * 64),
+                         ('restore_checkpoint', '/wrong/global_step_80')]:
+        invalid = copy.deepcopy(current)
+        setattr(invalid.trainer.instruct300, field, value)
+        with pytest.raises(ValueError):
+            start_step(invalid)
+    with pytest.raises(ValueError):
+        migration_diff(OmegaConf.to_container(old, resolve=True), target)
+    target['actor_rollout_ref']['actor']['joint_loss_scaling'] = False
+    with pytest.raises(ValueError, match='Unapproved'):
+        migration_diff(saved, target)

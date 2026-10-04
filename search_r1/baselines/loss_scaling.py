@@ -9,6 +9,98 @@ import torch.distributed as dist
 
 
 @torch.no_grad()
+def describe_invalid_joint_probe(old, current, advantages, mask, weights, step_ids,
+                                 cliprange, limit=32):
+    """Bounded detached diagnostics; never used to decide validity or scale.
+
+    The original probe remains authoritative. Preserve action/advantage
+    correspondence so an inactive overflowing ratio is distinguishable from
+    an active derivative. Nonfinite values use strings in diagnostic JSON.
+    """
+    def number(value):
+        value = float(value)
+        return value if math.isfinite(value) else str(value)
+
+    result = dict(reasons={}, actions=[], omitted_actions=0)
+
+    def reason(name):
+        result['reasons'][name] = result['reasons'].get(name, 0) + 1
+
+    valid = mask.bool()
+    if (step_ids.dtype not in (torch.int8, torch.int16, torch.int32, torch.int64)
+            or step_ids.shape != mask.shape):
+        reason('step_ids_dtype_or_shape')
+        return result
+    for name, tensor in [('old', old), ('current', current),
+                         ('advantages', advantages), ('weights', weights)]:
+        if not bool(torch.isfinite(tensor[valid]).all()):
+            reason('nonfinite_' + name)
+    if bool((weights[valid] < 0).any()):
+        reason('negative_weight')
+    delta = torch.where(valid, current, 0.) - torch.where(valid, old, 0.)
+    for row in range(len(delta)):
+        for action in torch.unique(step_ids[row][valid[row]]):
+            selected = valid[row] & (step_ids[row] == action)
+            adv = advantages[row][selected]
+            value = delta[row][selected].sum().double()
+            causes = []
+            if bool(action < 0):
+                causes.append('negative_action_id')
+            if not torch.allclose(adv, adv[:1].expand_as(adv)):
+                causes.append('inconsistent_action_advantage')
+            if not bool(torch.isfinite(value)):
+                causes.append('nonfinite_joint_logratio')
+            if not bool(torch.isfinite(value.exp())):
+                causes.append('nonfinite_raw_joint_ratio')
+            for cause in causes:
+                reason(cause)
+            if causes:
+                if len(result['actions']) < limit:
+                    a = adv[0]
+                    active = bool((a < 0 and value >= math.log(1 - cliprange))
+                                  or (a > 0 and value <= math.log(1 + cliprange)))
+                    result['actions'].append(dict(row=row, action=int(action),
+                        tokens=int(selected.sum()), logratio=number(value),
+                        advantage_first=number(a), advantage_min=number(adv.min()),
+                        advantage_max=number(adv.max()), derivative_active=active,
+                        positive_weight=bool((weights[row][selected] > 0).any()),
+                        reasons=causes))
+                else:
+                    result['omitted_actions'] += 1
+    return result
+
+
+def write_probe_diagnostic(record):
+    """Separate metadata stream; no tensors, collectives or model operations."""
+    import json
+    import os
+    from pathlib import Path
+    root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+    if not root:
+        return
+    try:
+        rank = dist.get_rank() if dist.is_initialized() else 0
+        directory = Path(root) / 'numeric'
+        directory.mkdir(parents=True, exist_ok=True)
+        record = dict(record, rank=rank, pid=os.getpid(),
+            run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+            commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+            config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+            data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
+        with (directory / f'range-probe-{rank}.jsonl').open('a') as stream:
+            stream.write(json.dumps(record, allow_nan=False, sort_keys=True) + '\n')
+            stream.flush()
+    except Exception as exc:
+        # Metadata must never interrupt the existing collective sequence.
+        # Missing receipts or this explicit error prevent independent acceptance.
+        import sys
+        try:
+            print('GiGPO probe diagnostic write failed: ' + repr(exc), file=sys.stderr, flush=True)
+        except Exception:
+            pass  # A closed stderr cannot interrupt collective/backward order.
+
+
+@torch.no_grad()
 def active_joint_bound(old, current, advantages, mask, weights, step_ids, cliprange):
     """Return (local bound, invalid flag); callers synchronize before raising.
 
