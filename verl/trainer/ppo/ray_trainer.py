@@ -409,9 +409,18 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
+        from search_r1.baselines.checkpoint_gate import enabled as e1_enabled
+        if e1_enabled(self.config):
+            from search_r1.baselines.full_state import StatefulSampler
+            if len(self.train_dataset) != 169028:
+                raise ValueError('E1 requires the immutable 169028 training questions')
+            self.e1_sampler = StatefulSampler(self.train_dataset,
+                shuffle=self.config.data.shuffle_train_dataloader)
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
-                                           shuffle=self.config.data.shuffle_train_dataloader,
+                                           shuffle=False if e1_enabled(self.config) else self.config.data.shuffle_train_dataloader,
+                                           sampler=self.e1_sampler if e1_enabled(self.config) else None,
+                                           num_workers=0,
                                            drop_last=True,
                                            collate_fn=collate_fn)
 
@@ -428,6 +437,8 @@ class RayPPOTrainer(object):
             else:
                 self.val_dataset.dataframe = self.val_dataset.dataframe.sample(self.config.data.val_data_num, random_state=42)
         print(f"filtered validation dataset size: {len(self.val_dataset.dataframe)}")
+        if e1_enabled(self.config) and len(self.val_dataset) != 512:
+            raise ValueError('E1 dev evaluation must retain the fixed 512 questions')
 
         self.val_dataloader = DataLoader(dataset=self.val_dataset,
                                          batch_size=self.config.data.val_batch_size,
@@ -622,6 +633,11 @@ class RayPPOTrainer(object):
 
     def init_workers(self):
         """Init resource pool and worker group"""
+        from search_r1.baselines.checkpoint_gate import enabled as e1_enabled, worker_import_checker_config
+        if e1_enabled(self.config):
+            from omegaconf import OmegaConf
+            OmegaConf.update(self.config, 'actor_rollout_ref.actor.e1_import_checker',
+                             worker_import_checker_config(self.config), force_add=True)
         self.resource_pool_manager.create_resource_pool()
 
         self.resource_pool_to_cls = {pool: {} for pool in self.resource_pool_manager.resource_pool_dict.values()}
@@ -693,7 +709,7 @@ class RayPPOTrainer(object):
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
 
-    def _save_checkpoint(self):
+    def _save_checkpoint(self, e1_metrics=None):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
                                         f'global_step_{self.global_steps}')
         actor_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
@@ -708,6 +724,17 @@ class RayPPOTrainer(object):
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
+        from search_r1.baselines.checkpoint_gate import enabled as e1_enabled
+        if e1_enabled(self.config):
+            if e1_metrics is None:
+                raise ValueError('E1 checkpoint requires the actual completed outer audit')
+            roundtrip = self.global_steps == 5
+            self.actor_rollout_wg.save_training_state(
+                os.path.join(actor_local_path, 'training_state'), self.global_steps, roundtrip)
+            directory = self.e1_gate.save_driver(self.global_steps, self.e1_epoch, roundtrip)
+            if roundtrip:
+                self.e1_pause_manifest = self.e1_gate.manifest(
+                    self.global_steps, directory, actor_local_path, e1_metrics)
 
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
@@ -735,10 +762,18 @@ class RayPPOTrainer(object):
 
         logger = self.logger
         self.global_steps = 0
+        from search_r1.baselines.checkpoint_gate import (
+            enabled as e1_enabled, CheckpointGate, validate_evaluation, validate_outer, should_save)
+        e1 = e1_enabled(self.config)
+        if e1:
+            self.actual_outer_updates = 0
+            self.e1_gate = CheckpointGate(self)
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
             val_metrics = self._validate()
+            if e1:
+                validate_evaluation(val_metrics, 512)
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
             if self.config.trainer.get('val_only', False):
@@ -774,11 +809,14 @@ class RayPPOTrainer(object):
         # start training loop
         for epoch in range(self.config.trainer.total_epochs):
             for batch_dict in self.train_dataloader:
+                if e1:
+                    self.e1_epoch = epoch
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                e1_questions = len(batch) if e1 else None
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
 
                 # pop those keys for generation
@@ -920,10 +958,18 @@ class RayPPOTrainer(object):
                             self.baseline_controller.after_actor(batch, metrics)
 
                     baseline_settings = getattr(self.config, 'baselines', None)
+                    e1 = getattr(self, 'e1_gate', None) is not None
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo'):
                         if metrics.get('actor/optimizer_steps', 0) <= 0:
                             raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+                        metrics['training/actual_outer_updates'] = self.actual_outer_updates
+                    if e1:
+                        validate_outer(metrics)
+                        self.actual_outer_updates += 1
+                        if self.actual_outer_updates != self.global_steps or e1_questions != 512:
+                            raise RuntimeError('E1 actual outer/question counters differ')
+                        self.e1_sampler.commit_consumed(e1_questions)
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
                     # validate
@@ -931,21 +977,24 @@ class RayPPOTrainer(object):
                         self.global_steps % self.config.trainer.test_freq == 0:
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
+                        if e1:
+                            validate_evaluation(val_metrics, 512)
                         metrics.update(val_metrics)
                     if (getattr(self, 'baseline_controller', None) is not None
                             and metrics.get('actor/optimizer_steps', 0) > 0):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
-                    if self.config.trainer.save_freq > 0 and \
+                    if ((e1 and should_save(self.global_steps)) or
+                        (not e1 and self.config.trainer.save_freq > 0 and
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
-                             self.global_steps + 1 >= self.total_training_steps):
+                             self.global_steps + 1 >= self.total_training_steps))):
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
-                            self._save_checkpoint()
+                            self._save_checkpoint(metrics) if e1 else self._save_checkpoint()
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
@@ -954,9 +1003,29 @@ class RayPPOTrainer(object):
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
 
+                if e1:
+                    print('OPSD_E1_OUTER_JSON=' + json.dumps({'actual_outer_updates': self.actual_outer_updates,
+                          'global_step': self.global_steps, 'driver_pid': os.getpid(),
+                          'job_id': self.e1_gate.job, 'source_commit': self.e1_gate.source,
+                          'config_sha256': self.e1_gate.config_sha,
+                          'metrics': metrics}, sort_keys=True, allow_nan=False), flush=True)
+                    if self.global_steps == 5:
+                        # The iterator's sixth next() has not happened: this is inside
+                        # the fifth body, with no DataLoader prefetch workers.
+                        self.e1_gate.wait(*self.e1_pause_manifest)
+                    if self.actual_outer_updates == 300:
+                        if self.val_reward_fn is None:
+                            raise RuntimeError('E1 requires full final evaluation')
+                        self._prepare_final_validation()
+                        val_metrics = self._validate()
+                        validate_evaluation(val_metrics, 51713)
+                        print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)
+                        logger.log(data=val_metrics, step=300)
+                        return
+
                 self.global_steps += 1
 
-                if self.global_steps >= self.total_training_steps:
+                if not e1 and self.global_steps >= self.total_training_steps:
 
                     # perform validation after training
                     if self.val_reward_fn is not None and not getattr(self.config.trainer, 'smoke_only', False):
@@ -966,6 +1035,8 @@ class RayPPOTrainer(object):
                         print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)
                         logger.log(data=val_metrics, step=self.global_steps)
                     return
+        if e1:
+            raise RuntimeError('E1 dataloader/epoch budget exhausted before actual outer 300')
     
     def _create_loss_mask(self, batch, metrics):
         """Create loss mask for state tokens."""

@@ -169,6 +169,13 @@ def global_token_count(mask):
     total = mask.sum().float()
     world = 1
     if torch.distributed.is_initialized():
+        # DataProto may be CPU-resident; NCCL requires a rank-local CUDA scalar.
+        # Keep the count and token-mean objective unchanged across backends.
+        backend = str(torch.distributed.get_backend()).lower()
+        if backend == 'nccl':
+            total = total.to(torch.device('cuda', torch.cuda.current_device()))
+        elif backend == 'gloo':
+            total = total.cpu()
         torch.distributed.all_reduce(total, op=torch.distributed.ReduceOp.SUM)
         world = torch.distributed.get_world_size()
     return total, world

@@ -1,0 +1,19 @@
+{
+  "scope": "CPU-only state/recovery/rank live-source software; not native GPU or complete restart acceptance",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/full_state.py": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/verl/workers/fsdp_workers.py": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/tests/baselines/test_opsd_e1_full_state.py": "38a64eec02bee83c1ae67aca2a81616f64049032c8fdb9d5adc27fd4be552b95",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/reproduction/baselines/e1-300/native_opsd_state_fixture.py": "c41a8e19b39151a09fa4c79f650c6b67bfec61df8c52cf52215a17d7c0d55da6"
+  },
+  "dependency": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/reproduction/baselines/e1_import_bootstrap.py": "04304d563a71b3123e0da6c5350398bf0b8510e0b477ce47742798214bd5b3f0"
+  },
+  "profile_manifest_sha256": "67598a2c0036e168cf1364d49f2357b221d887185966c60412672ff28daf49f0",
+  "cpu_tests": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/state-rank-live-source-integrated-cpu-tests.txt",
+    "sha256": "139822301b1ab71a9e9cbabc95128292b23ea87a45f6c63a90ecfb46ba749910",
+    "passed": 121
+  },
+  "report_sha256": "f7d5a558009dcb609e63c28e7c71f01f3d53326cc2f82839374be14eec498a30"
+}

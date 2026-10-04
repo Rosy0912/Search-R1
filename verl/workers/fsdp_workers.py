@@ -232,8 +232,8 @@ class ActorRolloutRefWorker(Worker):
                                           weight_decay=optim_config.get('weight_decay', 1e-2))
 
             total_steps = optim_config.get('total_training_steps', 0)
-            num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            from search_r1.baselines.full_state import resolve_warmup_steps
+            num_warmup_steps = resolve_warmup_steps(optim_config)
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
@@ -358,7 +358,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
-        data = data.to('cuda')
+        data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         assert self._is_actor
         if self._is_offload_param:
@@ -368,7 +368,7 @@ class ActorRolloutRefWorker(Worker):
         if self._is_offload_optimizer:
             load_fsdp_optimizer(optimizer=self.actor_optimizer, device_id=torch.cuda.current_device())
 
-        data.batch = data.batch.cuda()
+        data.batch = data.batch.to(torch.device('cuda', torch.cuda.current_device()))
 
         log_gpu_memory_usage('Before update policy', logger=logger)
 
@@ -405,7 +405,7 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""
-        data = data.to('cuda')
+        data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         assert self._is_rollout
         if self._is_offload_param:
@@ -413,7 +413,7 @@ class ActorRolloutRefWorker(Worker):
                                      device_id=torch.cuda.current_device(),
                                      load_grad=self._is_offload_grad)
 
-        data.batch = data.batch.cuda()
+        data.batch = data.batch.to(torch.device('cuda', torch.cuda.current_device()))
         meta_info = {'eos_token_id': self.tokenizer.eos_token_id, 'pad_token_id': self.tokenizer.pad_token_id}
         data.meta_info.update(meta_info)
 
@@ -435,7 +435,7 @@ class ActorRolloutRefWorker(Worker):
         
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def generate_sequences(self, prompts: DataProto):
-        prompts = prompts.to('cuda')
+        prompts = prompts.to(torch.device('cuda', torch.cuda.current_device()))
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)
 
@@ -445,7 +445,7 @@ class ActorRolloutRefWorker(Worker):
                                      device_id=torch.cuda.current_device(),
                                      load_grad=self._is_offload_grad)
 
-        prompts.batch = prompts.batch.cuda()
+        prompts.batch = prompts.batch.to(torch.device('cuda', torch.cuda.current_device()))
         meta_info = {'eos_token_id': self.tokenizer.eos_token_id, 'pad_token_id': self.tokenizer.pad_token_id}
         prompts.meta_info.update(meta_info)
         with self.rollout_sharding_manager:
@@ -485,7 +485,7 @@ class ActorRolloutRefWorker(Worker):
     def compute_ref_log_prob(self, data: DataProto):
         assert self._is_ref
 
-        data = data.to('cuda')
+        data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         if self._is_offload_param:
             load_fsdp_param_and_grad(module=self.ref_module_fsdp,
@@ -545,6 +545,147 @@ class ActorRolloutRefWorker(Worker):
                 cuda_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
                 cuda_peak_reserved_bytes=torch.cuda.max_memory_reserved(),
                 teacher=self.actor.teacher.audit_metrics(self.actor.actor_optimizer))), flush=True)
+
+
+    def _training_state_payload(self, step):
+        from search_r1.baselines.full_state import rng_state, teacher_state, file_digest, configuration_digest, recovery_source_closure
+        from pathlib import Path
+        if not self._is_actor or self.config.actor.get('baseline_method') != 'opsd':
+            raise ValueError('OPSD full state requires its actual actor')
+        if type(step) is not int or step < 1:
+            raise ValueError('Invalid actual outer counter')
+        return dict(version=3, algorithm='pure_opsd', model_state_dict_type='SHARDED_STATE_DICT',
+                    rank=self.rank, world_size=self.world_size, step=step, pid=os.getpid(),
+                    recovery_identity=dict(worker_source_sha256=file_digest(Path(__file__)),
+                        actor_config_digest=configuration_digest(self.config.actor),
+                        source_closure=recovery_source_closure(__file__, self._training_state_payload,
+                            checker_record=self.config.actor.get('e1_import_checker'), rank=self.rank)),
+                    object_ids=dict(model=id(self.actor_module_fsdp), optimizer=id(self.actor_optimizer),
+                                    scheduler=id(self.actor_lr_scheduler), teacher=id(self.actor.teacher)),
+                    model=self.actor_module_fsdp.state_dict(), optimizer=self.actor_optimizer.state_dict(),
+                    scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()),
+                    teacher=teacher_state(self.actor.teacher, self.config.actor.distillation.teacher_path, self.actor_optimizer))
+
+    def _load_training_state_payload(self, loaded, step, expected_digest, recovery_binding=None):
+        from search_r1.baselines.full_state import state_digest, restore_rng, restore_teacher_state, recovery_core
+        actual=self._training_state_payload(step)
+        identities=dict(model=id(self.actor_module_fsdp), optimizer=id(self.actor_optimizer),
+                        scheduler=id(self.actor_lr_scheduler), teacher=id(self.actor.teacher))
+        if (loaded['version'] != 3 or loaded['algorithm'] != 'pure_opsd'
+                or loaded['model_state_dict_type'] != 'SHARDED_STATE_DICT'
+                or (loaded['rank'], loaded['world_size'], loaded['step']) != (self.rank, self.world_size, step)
+                or state_digest(loaded) != expected_digest
+                or loaded['recovery_identity'] != actual['recovery_identity']):
+            raise ValueError('State source/config/topology/content identity changed')
+        if recovery_binding is None:
+            if loaded['pid'] != os.getpid() or loaded['object_ids'] != identities:
+                raise ValueError('Same-process state object/PID identity changed')
+        else:
+            expected=dict(version=1, authorization='EXPLICIT_NEW_PROCESS_RECOVERY',
+                rank=self.rank, world_size=self.world_size, step=step, source_state_digest=expected_digest,
+                source_pid=loaded['pid'], source_object_ids=loaded['object_ids'],
+                destination_pid=os.getpid(), destination_object_ids=identities,
+                recovery_identity=actual['recovery_identity'], teacher_asset_files=loaded['teacher']['asset_files'])
+            if recovery_binding != expected or actual['recovery_identity'] != loaded['recovery_identity']:
+                raise ValueError('External recovery authorization/source/config identity differs')
+            if actual['teacher']['asset_files'] != loaded['teacher']['asset_files']:
+                raise ValueError('Recovery teacher asset identity differs')
+        self.actor_module_fsdp.load_state_dict(loaded['model'], strict=True)
+        self.actor_optimizer.load_state_dict(loaded['optimizer'])
+        self.actor_lr_scheduler.load_state_dict(loaded['scheduler'])
+        restore_teacher_state(self.actor.teacher, self.config.actor.distillation.teacher_path, loaded['teacher'], self.actor_optimizer)
+        restore_rng(loaded['rng'])
+        restored=self._training_state_payload(step)
+        if recovery_binding is None:
+            exact=state_digest(restored)==expected_digest
+        else:
+            exact=state_digest(recovery_core(restored))==state_digest(recovery_core(loaded))
+        if not exact:
+            raise ValueError('Model/Adam/scheduler/RNG/teacher/core/layout reload differs')
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def save_training_state(self, local_path, step, roundtrip=False):
+        """Save native SHARDED state; optional real reload on the same objects."""
+        import json
+        from pathlib import Path
+        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, ShardedStateDictConfig
+        from search_r1.baselines.full_state import state_digest, atomic_save, file_digest
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(), load_grad=self._is_offload_grad)
+        directory=Path(local_path); directory.mkdir(parents=True, exist_ok=True)
+        try:
+            with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.SHARDED_STATE_DICT,
+                                     ShardedStateDictConfig(offload_to_cpu=True)):
+                payload=self._training_state_payload(step)
+                before=state_digest(payload); path=directory/f'rank_{self.rank}.pt'
+                atomic_save(payload, path)
+                loaded=torch.load(path, map_location='cpu', weights_only=False)
+                if state_digest(loaded) != before: raise ValueError('Serialized full state changed')
+                if roundtrip: self._load_training_state_payload(loaded, step, before)
+            report=dict(version=3, algorithm='pure_opsd',
+                status='EXACT_FULL_STATE_RELOAD_OK' if roundtrip else 'FULL_STATE_SERIALIZED_OK',
+                rank=self.rank, world_size=self.world_size, step=step, path=str(path.resolve()),
+                sha256=file_digest(path), state_sha256=file_digest(path), state_digest=before,
+                model_state_dict_type='SHARDED_STATE_DICT',
+                model_dtensor_entries=sum(hasattr(t,'device_mesh') and hasattr(t,'to_local') for t in loaded['model'].values()),
+                scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                optimizer_state_entries=len(self.actor_optimizer.state), pid=os.getpid(),
+                object_ids=payload['object_ids'], teacher={key:value for key,value in payload['teacher'].items() if key != 'buffers'})
+            target=directory/f'rank_{self.rank}.json'
+            with target.open('x') as handle: json.dump(report, handle, indent=2, allow_nan=False)
+            print('FULL_STATE_RANK_JSON='+json.dumps(report, sort_keys=True, allow_nan=False), flush=True)
+            torch.distributed.barrier()
+            return report
+        finally:
+            if self._is_offload_param:
+                offload_fsdp_param_and_grad(self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+            if self._is_offload_optimizer: offload_fsdp_optimizer(self.actor_optimizer)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_training_state(self, local_path, step, recovery_mode=None, recovery_binding_path=None, recovery_binding_sha256=None):
+        """Strict same-process/same-topology restore, never a weights-only restart."""
+        import json
+        from pathlib import Path
+        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, ShardedStateDictConfig
+        from search_r1.baselines.full_state import file_digest
+        if recovery_mode not in (None, "authorized_new_process"):
+            raise ValueError("Unsupported recovery mode")
+        if recovery_mode is None and (recovery_binding_path is not None or recovery_binding_sha256 is not None):
+            raise ValueError("Recovery binding cannot change the default same-process gate")
+        directory=Path(local_path); path=directory/f'rank_{self.rank}.pt'
+        report=json.loads((directory/f'rank_{self.rank}.json').read_text())
+        if (report['path'] != str(path.resolve()) or report['sha256'] != file_digest(path)
+                or (report['rank'],report['world_size'],report['step']) !=
+                   (self.rank,self.world_size,step)
+                or (recovery_mode is None and report['pid'] != os.getpid())):
+            raise ValueError('Rank state report/file identity changed')
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(), load_grad=self._is_offload_grad)
+        try:
+            with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.SHARDED_STATE_DICT,
+                                     ShardedStateDictConfig(offload_to_cpu=True)):
+                loaded=torch.load(path, map_location='cpu', weights_only=False)
+                binding=None
+                if recovery_mode is not None:
+                    if not recovery_binding_path or not recovery_binding_sha256:
+                        raise ValueError('Externally pinned recovery authorization is required')
+                    binding_file=Path(recovery_binding_path)
+                    if file_digest(binding_file) != recovery_binding_sha256:
+                        raise ValueError('Recovery authorization file SHA differs')
+                    from search_r1.baselines.sharedholdout import unique_json
+                    envelope=unique_json(binding_file.read_bytes())
+                    if set(envelope) != {'version','checkpoint_sha256','rank_binding'} or envelope['version'] != 1 or envelope['checkpoint_sha256'] != report['sha256']:
+                        raise ValueError('Recovery checkpoint authorization differs')
+                    binding=envelope['rank_binding']
+                self._load_training_state_payload(loaded, step, report['state_digest'], binding)
+            torch.distributed.barrier()
+            return dict(report, status='EXACT_NEW_PROCESS_FULL_STATE_RELOAD_OK' if recovery_mode else 'EXACT_FULL_STATE_RELOAD_OK',
+                        destination_pid=os.getpid(), recovery_mode=recovery_mode)
+        finally:
+            if self._is_offload_param:
+                offload_fsdp_param_and_grad(self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+            if self._is_offload_optimizer: offload_fsdp_optimizer(self.actor_optimizer)
+
 
 
 class CriticWorker(Worker):

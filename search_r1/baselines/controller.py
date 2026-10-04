@@ -141,6 +141,18 @@ class Controller:
         self.method = self.config.method
         self.stage = BoundaryStage(patience=self.config.bapo.patience)
         self.ranker = self.teacher = None
+        if self.method == 'opsd' and self.config.get('opsd_e1', {}).get('enabled', False):
+            from torch.utils.data import DataLoader
+            from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
+            dataset = RLHFDataset(self.config.opsd_e1.stage_files, trainer.tokenizer,
+                prompt_key=trainer.config.data.prompt_key,
+                max_prompt_length=trainer.config.data.max_prompt_length,
+                filter_prompts=True, return_raw_chat=False, truncation='error')
+            if len(dataset) != 64:
+                raise ValueError('E1 stage data must retain all 64 fixed questions')
+            self.opsd_stage_dataset = dataset
+            self.opsd_stage_loader = DataLoader(dataset, batch_size=64, shuffle=False,
+                                               drop_last=False, num_workers=0, collate_fn=collate_fn)
         if self.method == 'bapo':
             trainer.reward_fn = BoundaryReward(trainer.tokenizer, self.stage, self.config.bapo.alpha,
                                                self.config.bapo.bonus)
@@ -285,6 +297,20 @@ class Controller:
             metrics.update(self.ranker.update(outcomes))
 
     def stage_validation(self, step=None):
+        if self.method == 'opsd' and self.config.get('opsd_e1', {}).get('enabled', False):
+            if step != 5 and (step is None or step % self.config.opsd_e1.stage_freq):
+                return {}
+            t = self.trainer
+            old_loader, old_dataset = t.val_dataloader, t.val_dataset
+            try:
+                t.val_dataloader, t.val_dataset = self.opsd_stage_loader, self.opsd_stage_dataset
+                result = t._validate()
+                from .checkpoint_gate import validate_evaluation
+                validate_evaluation(result, 64)
+            finally:
+                t.val_dataloader, t.val_dataset = old_loader, old_dataset
+            # Stage metrics only; never update a BAPO stage or any OPSD objective.
+            return {'opsd_stage/' + key: value for key, value in result.items()}
         if self.method != 'bapo':
             return {}
         if step is not None and step % self.config.bapo.stage_validation_freq:
@@ -309,7 +335,10 @@ class Controller:
         os.makedirs(directory, exist_ok=True)
         if self.ranker:
             self.ranker.save(os.path.join(directory, 'ranker'))
-        state = dict(method=self.method, global_step=step, bapo=self.stage.state_dict(),
+        if self.method == 'opsd' and self.config.get('opsd_e1', {}).get('enabled', False):
+            state = self.opsd_state_dict(step)
+        else:
+            state = dict(method=self.method, global_step=step, bapo=self.stage.state_dict(),
                      base_commit=self.config.base_commit,
                      algorithm_source_commit=self.config.algorithm_source_commit,
                      teacher_path=self.config.distillation.teacher_path,
@@ -318,6 +347,19 @@ class Controller:
         with open(temporary, 'w') as handle:
             json.dump(state, handle, indent=2, allow_nan=False)
         os.replace(temporary, os.path.join(directory, 'state.json'))
+
+    def opsd_state_dict(self, step):
+        from omegaconf import OmegaConf
+        if self.method != 'opsd' or not self.config.get('opsd_e1', {}).get('enabled', False):
+            raise ValueError('OPSD E1 state requested outside its opt-in path')
+        return {'version': 1, 'method': 'pure_opsd', 'global_step': int(step),
+                'distillation': OmegaConf.to_container(self.config.distillation, resolve=True),
+                'resume_scope': 'same_live_objects_same_topology',
+                'outcome_rewards_train_policy': False}
+
+    def load_opsd_state_dict(self, state, step):
+        if state != self.opsd_state_dict(step):
+            raise ValueError('Saved pure OPSD algorithm/configuration differs')
 
 
 def ranked_validation_manager(manager, controller):

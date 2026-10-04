@@ -1,0 +1,22 @@
+{
+  "scope": "local CPU software only; 57 CPU tests; actual CPU import collect; no GPU acceptance",
+  "upstream_prebuilt_consumer_sha256": "4535f4f6da49fb497a4a52f1b89b7da1adf340d4226b0adae87280986a49f44b",
+  "files": {
+    "search_r1/baselines/sharedholdout.py": "4c255433939e4f6b09804d48fb99e3ae31c8747f8d56d7418d06d21474cef002",
+    "search_r1/baselines/holdout.py": "234d50db7f3e569088fad1cce60f8fcc2d6f16071a330afe7895aee61bc584cc",
+    "search_r1/baselines/e1_profile.py": "ce3771fe999a11140b3b46835f80ec680074d44a11946d9c9d8aee69bb704951",
+    "verl/trainer/config/ppo_opsd_e1_300.yaml": "88f3e19691539fd634e5ccc7370853f564f1acc1e1f3b4b5fc68110f09990072",
+    "reproduction/baselines/run_opsd_e1_300.sh": "4213bc6563e994a720efc24e6f80c4680be9e46f46cc8d1b455c8a8e7b350b9e",
+    "tests/baselines/test_e1_prebuilt_holdout.py": "60665fc4501dd9bd84214c2dbc71eddd95d517200385dd3e4ab819a4ebf573c7",
+    "tests/baselines/test_e1_profile.py": "d247b68eae570974a8e1bbdc5bf42ecc625517893b9c9089d3256b1b0f361110",
+    "reproduction/baselines/e1_import_bootstrap.py": "04304d563a71b3123e0da6c5350398bf0b8510e0b477ce47742798214bd5b3f0",
+    "tests/baselines/test_e1_import_bootstrap.py": "f638adf5f6686962cdf42aaa7f3f530e678668890f6f7b951e610b3d6a79426f"
+  },
+  "records": {
+    "common-profile-final-cpu-tests.txt": "ababd39f9044f82e9bd5a9e1bc9ec771b0df8f186d8470ee3616f2acdc75450e",
+    "import-closure-cpu-only.json": "5939f8de7f913000d2e7f08eb3c547357c392526fb114d755e69b5048586df54",
+    "import-closure-cpu-collect.stderr": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721",
+    "common-profile-resolved-CPU-PLANNED.json": "f9f327aa76e5b84e0aaf4b81b23ff1d9031a9f753dd4baa5db2985a638fa352a",
+    "COMMON_PROFILE_IMPLEMENTATION.md": "a1a49b78cb38c4edfb94bbca459642c77d7127b678deef2b5a46447975a7b3bd"
+  }
+}

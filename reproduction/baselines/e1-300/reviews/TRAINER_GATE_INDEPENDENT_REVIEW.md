@@ -1,0 +1,11 @@
+# OPSD E1 trainer/gate 独立审查
+
+2026-10-04。gpu_probe非writer，只读审查checkpoint_gate.py/ray_trainer.py/controller.py与tests；清单trainer-gate-delta-files.json SHA d0bddf6e5d4cf5270b57e4a95985788837d48fd030727042f1e3e73fb7eb5b60，四源当前SHA匹配。独立state+gate测试63PASS/16.04秒，raw state-trainer-independent-current-cpu-tests.txt，收尾源SHA仍匹配。
+
+限定CPU/source审查未发现新的可复现阻断。E1实际outer由成功actorupdate后validate_outer确认8rank20Adam/320samples/0skip、finite/frozen/native后递增；sampler真实consumed512，与global_steps一致。scheduler每成功outer一次，warmup绝对57不依赖ratio/301。第5完成stage64、HF+全部rank native state与driver/算法状态原位roundtrip，随后写outer日志，再签名wait，发生于for-body内、第6次next之前（loader workers0）。300actual明确终止，不沿旧301sentinel，并执行final51713计数校验。dev初始512/每50、独立stage5/每50。
+
+签名仅公钥RSA-SHA256严格PKCS1v1.5核验，训练无私钥/签名producer。receipt绑定currentjob/PID/nonce/source/config/全部checkpointfiles与原始日志prefix，外部证据/review全部物理owned路径与SHA；日志含精确1..5rank审计行。driver与rank均执行外部固定checker实际bytes，另保留7关键模块对象code核验，不以parent source inventory替代worker实际import。
+
+此审查不替代独立reviewer对resources/retrieval/HFreload/rankaudit各实际内容的科学判断；签名consumer核身份、SHA与部分outer raw内容，不能把任意已签evidence自报flags当实证。LPpresence、teacher CUDA entry逐轮增量、lr before/after及参数delta须由实际独审核原日志，不能宣称当前validate_outer自动核全项。官方3B native8rank/实际首5/HF新进程尚无本审GPU证据。
+
+恢复范围：signed restore_driver是显式原语，不自动调用fit；worker另需自身外部binding。完整RL跨新进程restart尚未编排/验收，不能将CPU第6oracle扩大为全训练重启支持。

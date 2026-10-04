@@ -90,6 +90,12 @@ def content_identity(specification, train, holdout):
 
 def prepare_common_holdout(config):
     settings = config.baselines.holdout
+    mode = settings.get('input_mode', 'legacy_split')
+    if mode == 'prebuilt_manifest':
+        from .sharedholdout import prepare_prebuilt_holdout
+        return prepare_prebuilt_holdout(config)
+    if mode != 'legacy_split':
+        raise ValueError('Unknown holdout input mode')
     if not settings.enabled:
         raise ValueError('All new baseline/GRPO comparisons require the common holdout split')
     inputs = [str(Path(p).expanduser().resolve()) for p in paths(config.data.train_files)]
