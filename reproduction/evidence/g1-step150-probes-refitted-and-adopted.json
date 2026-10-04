@@ -1,0 +1,65 @@
+{
+  "checked_unix": 1791109422.4120498,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692",
+  "round": 150,
+  "head_sha256": {
+    "commit_probe.pkl": "870ea71f80d4e9af4583d6e3d483dd4c5cfd8f59ebfd49ad2c4a5b2385b9a043",
+    "boundary_probe.pkl": "14075d27bac038178a4a1aed9b06f9a763ae1483a79b9397c126db55fb2fdf28"
+  },
+  "encoder_sha256": {
+    "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b",
+    "model-00001-of-00003.safetensors": "eda6f89c9421dfea3ed4038a7cc3e84b1f475a7cee60531aa8f6df7b30f19a3e",
+    "model-00002-of-00003.safetensors": "630ce335a5f1f7cb24cb5a9a28dc2520e0c94dfd0cccda9f4b98ad1d2c612f21",
+    "model-00003-of-00003.safetensors": "f938c558a390be2d6ff7773eace7d36eb201a1ef31b15193228459c96d2cb5ac",
+    "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+    "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+    "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+  },
+  "calibration_report": {
+    "commit_cv_auc": 0.8181818181818181,
+    "boundary_cv_auc": 0.8837631214101802,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 59,
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "commit_class_counts": [
+      11,
+      48
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true
+  },
+  "latest_update": 150,
+  "adoption_line_present": true,
+  "handles": [
+    {
+      "pid": 1661704,
+      "live": true
+    },
+    {
+      "pid": 1672776,
+      "live": true
+    }
+  ],
+  "update151": {
+    "step": 151.0,
+    "critic/rewards/mean": 0.521,
+    "actor/pg_loss": 0.073,
+    "actor/entropy_loss": 1.444,
+    "actor/kl_loss": 0.433,
+    "actor/ppo_kl": 0.003,
+    "actor/grad_norm": 1.167,
+    "timing_s/step": 395.312,
+    "probe_version": "e1856e705ace460bb3a836e2cd9fde93:150:5670b015972c41a0898874c4586fd692"
+  },
+  "actual151_adoption_verified": true,
+  "http_health_verified": true,
+  "full300_accepted": false,
+  "console_precision": "3 decimal places",
+  "reward_comparison_semantics": "Round150 evaluator replaces round100 at151; across-boundary shaped reward shifts cannot be attributed solely to policy improvement."
+}
