@@ -96,14 +96,29 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
     return total / denominator
 
 
-def global_token_count(mask):
-    """Raw collective count; every rank makes the same empty-minibatch decision."""
-    total = mask.sum().float()
+def global_sum_count(count):
+    """SUM a scalar on a device supported by the actual default backend.
+
+    Incoming DataProto may reside on CPU before actor micro-batches move to
+    CUDA. NCCL needs this scalar on the current rank CUDA device; Gloo uses
+    CPU. For multi-backend/undefined groups preserve input-device routing.
+    Only the scalar moves, never the incoming rollout or mask.
+    """
     world = 1
     if torch.distributed.is_initialized():
-        torch.distributed.all_reduce(total, op=torch.distributed.ReduceOp.SUM)
+        backend = str(torch.distributed.get_backend()).lower()
+        if backend == 'nccl':
+            count = count.to(torch.device('cuda', torch.cuda.current_device()))
+        elif backend == 'gloo':
+            count = count.cpu()
+        torch.distributed.all_reduce(count, op=torch.distributed.ReduceOp.SUM)
         world = torch.distributed.get_world_size()
-    return total, world
+    return count, world
+
+
+def global_token_count(mask):
+    """Raw collective count; every rank makes the same empty-minibatch decision."""
+    return global_sum_count(mask.sum().float())
 
 
 def global_token_denominator(mask):

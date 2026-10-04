@@ -41,11 +41,8 @@ def attach_policy_weights(data, method):
 
 
 def row_denominator(rows, device):
-    count = torch.tensor(float(rows), device=device)
-    world = 1
-    if torch.distributed.is_initialized():
-        torch.distributed.all_reduce(count, op=torch.distributed.ReduceOp.SUM)
-        world = torch.distributed.get_world_size()
+    from .distillation import global_sum_count
+    count, world = global_sum_count(torch.tensor(float(rows), device=device))
     return count.clamp_min(1) / world
 
 
