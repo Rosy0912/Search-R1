@@ -1,0 +1,33 @@
+{
+  "accepted": true,
+  "actual_overlap_peak_mib": 30847,
+  "service_peak_mib": 610,
+  "historical_training_gpu7_peak_mib": 39574,
+  "conservative_component_peak_sum_mib": 40184,
+  "conservative_reserve_mib": 8956,
+  "minimum_reserve_mib": 6144,
+  "actual_phase": "ray::WorkerDict.actor_rollout_update_actor",
+  "concurrent_requests": 7,
+  "live_comparison": {
+    "accepted": true,
+    "old_seconds": 0.14911084156483412,
+    "new_seconds": 11.587073927745223,
+    "new_health": {
+      "ready": true,
+      "ntotal": 21015324,
+      "d": 768,
+      "encoder": "CPU FP32 E5",
+      "index": "full FP32 streaming FlatIP",
+      "query_micro": 64,
+      "serialized": true,
+      "tf32": false,
+      "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+      "acceptance_sha256": "75c4a3b2e60bdfb0d1c450e01f9cd99bec2d5245d753d28704755b1d08fdb30d"
+    },
+    "document_identity": true,
+    "score_atol": 1e-05,
+    "time": 1791111917.1842494
+  },
+  "time": 1791112557.2975893,
+  "scope": "Actual actor-update overlap plus conservative sum of separately measured component maxima; no claim historical 39574MiB peak overlapped in this calibration"
+}
