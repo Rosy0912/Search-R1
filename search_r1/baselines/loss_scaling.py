@@ -16,6 +16,10 @@ def active_joint_bound(old, current, advantages, mask, weights, step_ids, clipra
     advantage branches cannot drive the exponent's backward derivative.
     """
     valid = mask.bool()
+    if (step_ids.dtype not in (torch.int8, torch.int16, torch.int32, torch.int64)
+            or step_ids.shape != mask.shape):
+        return (torch.full((), -float('inf'), dtype=torch.float64, device=current.device),
+                torch.ones((), dtype=torch.int32, device=current.device))
     bad = any(not bool(torch.isfinite(v[valid]).all())
               for v in (old, current, advantages, weights))
     bad = bad or bool((weights[valid] < 0).any())
@@ -77,8 +81,14 @@ class TransparentProbe:
     def __enter__(self):
         from .recovery import rng_state, cpu_snapshot
         self.rng = rng_state()
-        self.boundary = self._boundary()
+        self.invalid = False
+        try:
+            self.boundary = self._boundary()
+        except Exception:
+            self.boundary = None
+            self.invalid = True
         self.buffers = {name: cpu_snapshot(buffer) for name, buffer in self.module.named_buffers()}
+        self.buffer_devices = {name: buffer.device for name, buffer in self.module.named_buffers()}
         self.modes = {name: submodule.training for name, submodule in self.module.named_modules()}
         self.manager_rng = {key: cpu_snapshot(getattr(self.manager, key, None))
                             for key in ('gen_random_states', 'torch_random_states')}
@@ -86,15 +96,23 @@ class TransparentProbe:
 
     def __exit__(self, exc_type, exc_value, traceback):
         from .recovery import restore_rng
-        changed = self._boundary() != self.boundary
+        try:
+            changed = self._boundary() != self.boundary
+        except Exception:
+            changed = True
         buffers = dict(self.module.named_buffers())
         changed = changed or buffers.keys() != self.buffers.keys()
         with torch.no_grad():
             for name, value in self.buffers.items():
-                if name in buffers and buffers[name].shape == value.shape:
+                if (name in buffers and buffers[name].shape == value.shape
+                        and buffers[name].dtype == value.dtype):
                     buffers[name].copy_(value.to(buffers[name].device))
                 else:
                     changed = True
+                    parent_name, _, attribute = name.rpartition('.')
+                    parent = dict(self.module.named_modules()).get(parent_name)
+                    if parent is not None:
+                        parent._buffers[attribute] = value.to(self.buffer_devices[name]).clone()
         for name, submodule in self.module.named_modules():
             if name in self.modes:
                 submodule.training = self.modes[name]
@@ -104,8 +122,7 @@ class TransparentProbe:
             for key, value in self.manager_rng.items():
                 setattr(self.manager, key, value)
         restore_rng(self.rng)
-        if changed:
-            raise RuntimeError('GiGPO probe changed FSDP/offload/module boundary')
+        self.invalid = self.invalid or changed
         return False
 
 

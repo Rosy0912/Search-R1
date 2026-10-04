@@ -100,3 +100,44 @@ def test_probe_restores_rng_buffers_modes_and_manager_rng_even_on_error():
     assert torch.equal(manager.gen_random_states, original_manager)
     assert model.training and model[0].training
     assert model.counter.item() == 0
+
+
+def test_strided_gradient_is_updated_in_place():
+    model = torch.nn.Linear(4, 4, bias=False)
+    model.weight.grad = torch.full((4, 4), .001).t()
+    assert not model.weight.grad.is_contiguous()
+    clip_grad_norm64(model, 1., .01)
+    torch.testing.assert_close(model.weight.grad, torch.full((4, 4), .1))
+
+
+def test_bad_action_dtype_collects_flag_before_coordinated_refusal():
+    x = torch.zeros(1, 1)
+    bound, bad = active_joint_bound(x, x, torch.ones_like(x), torch.ones_like(x),
+                                   torch.ones_like(x), torch.full_like(x, float('nan')), .2)
+    assert bad == 1
+    with pytest.raises(ValueError, match='all ranks'):
+        coordinated_scale(bound, bad)
+
+
+def test_probe_boundary_failure_restores_rng_and_collects_flag(monkeypatch):
+    from search_r1.baselines.loss_scaling import TransparentProbe
+    model = torch.nn.Linear(1, 1)
+    probe = TransparentProbe(model)
+    rng = torch.get_rng_state().clone()
+    with probe:
+        torch.rand(10)
+        def fail():
+            raise RuntimeError('boundary failure')
+        monkeypatch.setattr(probe, '_boundary', fail)
+    assert probe.invalid
+    assert torch.equal(rng, torch.get_rng_state())
+
+
+def test_probe_flags_changed_buffer_dtype():
+    from search_r1.baselines.loss_scaling import TransparentProbe
+    model = torch.nn.Linear(1, 1)
+    model.register_buffer('counter', torch.zeros(1))
+    with TransparentProbe(model) as probe:
+        model.counter = model.counter.double()
+    assert probe.invalid
+    assert model.counter.dtype == torch.float32

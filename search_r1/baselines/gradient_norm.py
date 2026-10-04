@@ -47,6 +47,19 @@ def _failure(grads, norm):
         global_norm64=float(norm), norm_scope='FSDP global sharded plus once-counted nonsharded'), allow_nan=True))
 
 
+def _multiply64_in_place(tensor, coefficient):
+    if tensor.numel() <= 262144:
+        tensor.copy_((tensor.double() * coefficient.to(tensor.device)).to(tensor.dtype))
+    elif tensor.is_contiguous():
+        for chunk in tensor.view(-1).split(262144):
+            _multiply64_in_place(chunk, coefficient)
+    else:
+        # reshape may allocate a copy for strided gradients. Recurse over actual
+        # views so every write reaches the original tensor without a huge copy.
+        for view in tensor.unbind(0):
+            _multiply64_in_place(view, coefficient)
+
+
 @torch.no_grad()
 def clip_grad_norm64(module, max_norm, loss_scale=1.):
     """L2 max_norm/(global_norm+1e-6), cast coefficient as native FSDP does."""
@@ -114,7 +127,10 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
         raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
     scale = scale.to(norm.device)
     original_norm = norm / scale
-    if not torch.isfinite(original_norm):
+    original_bad = (~torch.isfinite(original_norm)).to(device=device, dtype=torch.int32)
+    if isinstance(module, FSDP) and float(scale) != 1.:
+        dist.all_reduce(original_bad, op=dist.ReduceOp.MAX, group=module.process_group)
+    if bool(original_bad):
         _failure(grads, original_norm)
         raise ValueError('Nonfinite unscaled actor gradient norm; optimizer step refused')
     coefficient = torch.minimum(1. / scale, float(max_norm) / (norm + scale * 1e-6))
@@ -125,11 +141,10 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
         else:
             # A finite coefficient may exceed FP32 even when its product is
             # representable. Never cast the coefficient first (0*inf is NaN).
-            for chunk in grad.reshape(-1).split(262144):
-                chunk.copy_((chunk.double() * coefficient.to(chunk.device)).to(chunk.dtype))
+            _multiply64_in_place(grad, coefficient)
     clipped_bad = torch.tensor(int(not all(torch.isfinite(g).all() for g in grads)),
                                device=device, dtype=torch.int32)
-    if isinstance(module, FSDP):
+    if isinstance(module, FSDP) and float(scale) != 1.:
         dist.all_reduce(clipped_bad, op=dist.ReduceOp.MAX, group=module.process_group)
     if bool(clipped_bad):
         _failure(grads, original_norm)

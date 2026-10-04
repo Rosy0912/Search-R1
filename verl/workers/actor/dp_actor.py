@@ -280,7 +280,8 @@ class DataParallelPPOActor(BasePPOActor):
                 group = getattr(self.actor_module, 'process_group', None)
                 bound = torch.full((), -float('inf'), dtype=torch.float64, device='cuda')
                 bad = torch.zeros((), dtype=torch.int32, device='cuda')
-                with TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None)):
+                with TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None)) as probe:
+                    coordinated_badflag(probe.invalid, bound.device, group)
                     with torch.no_grad():
                         for probe_data in micro_batches:
                             probe_data = probe_data.cuda()
@@ -294,6 +295,7 @@ class DataParallelPPOActor(BasePPOActor):
                             bound = torch.maximum(bound, value)
                             bad = torch.maximum(bad, invalid)
                             probe_logps.append(probe_logp.detach().cpu())
+                bad = torch.maximum(bad, torch.tensor(int(probe.invalid), dtype=torch.int32, device=bad.device))
                 loss_scale = coordinated_scale(bound, bad, group)
                 mini_metrics['actor/joint_loss_scale'] = float(loss_scale)
                 mini_metrics['actor/probe_micro_batches'] = len(probe_logps)
