@@ -1,0 +1,33 @@
+[
+  {
+    "args": [
+      "bash",
+      "reproduction/baselines/run.sh",
+      "opsd",
+      "--cfg",
+      "job"
+    ],
+    "clip": null,
+    "beta": 0.0,
+    "temperature": 1.0,
+    "method": "opsd",
+    "grad_clip": 1.0,
+    "clip_ratio": 0.2
+  },
+  {
+    "args": [
+      "bash",
+      "reproduction/baselines/run.sh",
+      "opsd",
+      "baselines.distillation.component_clip=0.05",
+      "--cfg",
+      "job"
+    ],
+    "clip": 0.05,
+    "beta": 0.0,
+    "temperature": 1.0,
+    "method": "opsd",
+    "grad_clip": 1.0,
+    "clip_ratio": 0.2
+  }
+]

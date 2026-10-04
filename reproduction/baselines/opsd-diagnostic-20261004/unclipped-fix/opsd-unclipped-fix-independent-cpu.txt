@@ -1,0 +1,78 @@
+...F.........................................................            [100%]
+=================================== FAILURES ===================================
+___ test_candidate_config_disables_component_cap_preserves_other_protections ___
+
+    def test_candidate_config_disables_component_cap_preserves_other_protections():
+        root = Path(__file__).resolve().parents[2]
+        config = OmegaConf.load(root / 'verl/trainer/config/ppo_baselines.yaml')
+        assert config.baselines.distillation.component_clip is None
+        assert config.baselines.distillation.beta == 0
+        assert config.baselines.distillation.teacher_prompt_mode == 'user_context'
+>       assert config.actor_rollout_ref.actor.grad_clip == 1.0
+
+tests/baselines/test_opsd_unclipped.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/dictconfig.py:355: in __getattr__
+    self._format_and_raise(
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/base.py:231: in _format_and_raise
+    format_and_raise(
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/_utils.py:899: in format_and_raise
+    _raise(ex, cause)
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/_utils.py:797: in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/dictconfig.py:351: in __getattr__
+    return self._get_impl(
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/dictconfig.py:442: in _get_impl
+    node = self._get_child(
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/basecontainer.py:73: in _get_child
+    child = self._get_node(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = {'baseline_method': '${baselines.method}', 'distillation': '${baselines.distillation}', 'state_masking': True, 'optim'...6, 'ppo_micro_batch_size': 64, 'fsdp_config': {'param_offload': True, 'grad_offload': True, 'optimizer_offload': True}}
+key = 'grad_clip', validate_access = True, validate_key = False
+throw_on_missing_value = False, throw_on_missing_key = True
+
+    def _get_node(
+        self,
+        key: DictKeyType,
+        validate_access: bool = True,
+        validate_key: bool = True,
+        throw_on_missing_value: bool = False,
+        throw_on_missing_key: bool = False,
+    ) -> Optional[Node]:
+        try:
+            key = self._validate_and_normalize_key(key)
+        except KeyValidationError:
+            if validate_access and validate_key:
+                raise
+            else:
+                if throw_on_missing_key:
+                    raise ConfigAttributeError
+                else:
+                    return None
+    
+        if validate_access:
+            self._validate_get(key)
+    
+        value: Optional[Node] = self.__dict__["_content"].get(key)
+        if value is None:
+            if throw_on_missing_key:
+>               raise ConfigKeyError(f"Missing key {key!s}")
+E               omegaconf.errors.ConfigAttributeError: Missing key grad_clip
+E                   full_key: actor_rollout_ref.actor.grad_clip
+E                   object_type=dict
+
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/omegaconf/dictconfig.py:480: ConfigAttributeError
+=============================== warnings summary ===============================
+../../../../../../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
+  /Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/ray/util/state/util.py:54
+  /Users/shaoshitong/Documents/Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/ray/util/state/util.py:54: DeprecationWarning: Ray state API is no longer experimental. Please import from `ray.util.state`. instead. Importing from `ray.experimental` will be deprecated in future releases. 
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/baselines/test_opsd_unclipped.py::test_candidate_config_disables_component_cap_preserves_other_protections
+1 failed, 60 passed, 2 warnings in 3.70s

@@ -9,7 +9,12 @@ import torch.nn.functional as F
 from torch.utils.checkpoint import checkpoint
 
 
-def generalized_jsd(student_logits, teacher_logits, beta=0., temperature=1., component_clip=.05):
+def generalized_jsd(student_logits, teacher_logits, beta=0., temperature=1., component_clip=None):
+    """Use the full divergence by default; component clipping is explicit opt-in.
+
+    Capping positive vocabulary terms while retaining negative terms can reverse
+    the student gradient. Keep that historical objective available for controls.
+    """
     if not 0 <= beta <= 1 or temperature <= 0:
         raise ValueError('Invalid JSD beta/temperature')
     s = F.log_softmax(student_logits.float() / temperature, -1)

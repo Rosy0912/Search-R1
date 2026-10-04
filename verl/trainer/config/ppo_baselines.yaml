@@ -110,7 +110,9 @@ baselines:
     teacher_prompt_mode: user_context
     beta: 0.0
     temperature: 1.0
-    component_clip: 0.05
+    # Unclipped OPSD candidate: explicit 0.05 remains a historical control.
+    # This controls vocabulary terms, not actor.grad_clip or PPO clip_ratio.
+    component_clip: null
     chunk_size: 16
     # Recompute only full-vocabulary divergence intermediates during backward.
     loss_checkpointing: false

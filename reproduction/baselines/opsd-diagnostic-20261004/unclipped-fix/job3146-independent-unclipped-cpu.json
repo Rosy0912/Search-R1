@@ -1,0 +1,2093 @@
+{
+  "method": "independent analytic KL derivative q.sum()*p-q; saved FP32 logits, native CPU only; 0.01 normalized logit step",
+  "manifest_sha256": "3618cc9e2ccefe5be052b2b2ee13adaac25734f1895d0879011518c64ba11002",
+  "torch": "2.4.0+cu121",
+  "aggregates": {
+    "student_base|teacher_legacy": {
+      "count": 64,
+      "decrease": 64,
+      "zero": 0,
+      "increase": 0,
+      "mean_delta": -0.004471549764275551,
+      "min_delta": -0.007819175720214844,
+      "max_delta": -0.0024042129516601562
+    },
+    "student_base|teacher_user_context": {
+      "count": 64,
+      "decrease": 64,
+      "zero": 0,
+      "increase": 0,
+      "mean_delta": -0.0015920406440272927,
+      "min_delta": -0.004988193511962891,
+      "max_delta": -0.0005803480744361877
+    },
+    "student_hf5|teacher_legacy": {
+      "count": 64,
+      "decrease": 64,
+      "zero": 0,
+      "increase": 0,
+      "mean_delta": -0.00446285679936409,
+      "min_delta": -0.007488727569580078,
+      "max_delta": -0.002413511276245117
+    },
+    "student_hf5|teacher_user_context": {
+      "count": 64,
+      "decrease": 64,
+      "zero": 0,
+      "increase": 0,
+      "mean_delta": -0.0015899903373792768,
+      "min_delta": -0.004993915557861328,
+      "max_delta": -0.0005954951047897339
+    }
+  },
+  "rows": [
+    {
+      "ordinal": 0,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005531907081604004,
+      "clipped_step_kl_delta": -0.0006116628646850586,
+      "unclipped_gradient_norm": 0.5533828735351562
+    },
+    {
+      "ordinal": 0,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014503896236419678,
+      "clipped_step_kl_delta": 0.0006066560745239258,
+      "unclipped_gradient_norm": 0.14550377428531647
+    },
+    {
+      "ordinal": 0,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005524992942810059,
+      "clipped_step_kl_delta": -0.0005409717559814453,
+      "unclipped_gradient_norm": 0.5526922941207886
+    },
+    {
+      "ordinal": 0,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013958513736724854,
+      "clipped_step_kl_delta": 0.0005018115043640137,
+      "unclipped_gradient_norm": 0.13994383811950684
+    },
+    {
+      "ordinal": 1,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004415631294250488,
+      "clipped_step_kl_delta": -0.0012661218643188477,
+      "unclipped_gradient_norm": 0.44187596440315247
+    },
+    {
+      "ordinal": 1,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001150280237197876,
+      "clipped_step_kl_delta": -0.00023894011974334717,
+      "unclipped_gradient_norm": 0.1158306747674942
+    },
+    {
+      "ordinal": 1,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004378557205200195,
+      "clipped_step_kl_delta": -0.0011287927627563477,
+      "unclipped_gradient_norm": 0.4381110370159149
+    },
+    {
+      "ordinal": 1,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0011057853698730469,
+      "clipped_step_kl_delta": -0.00012736022472381592,
+      "unclipped_gradient_norm": 0.11116192489862442
+    },
+    {
+      "ordinal": 2,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004402518272399902,
+      "clipped_step_kl_delta": -0.0012067556381225586,
+      "unclipped_gradient_norm": 0.4403972029685974
+    },
+    {
+      "ordinal": 2,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006150752305984497,
+      "clipped_step_kl_delta": -0.0004596710205078125,
+      "unclipped_gradient_norm": 0.061803121119737625
+    },
+    {
+      "ordinal": 2,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0044057369232177734,
+      "clipped_step_kl_delta": -0.001225590705871582,
+      "unclipped_gradient_norm": 0.44084495306015015
+    },
+    {
+      "ordinal": 2,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0005954951047897339,
+      "clipped_step_kl_delta": -0.00043182075023651123,
+      "unclipped_gradient_norm": 0.05979779362678528
+    },
+    {
+      "ordinal": 3,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0049751996994018555,
+      "clipped_step_kl_delta": -0.0012947320938110352,
+      "unclipped_gradient_norm": 0.49790313839912415
+    },
+    {
+      "ordinal": 3,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012166500091552734,
+      "clipped_step_kl_delta": 0.0006185472011566162,
+      "unclipped_gradient_norm": 0.12272226810455322
+    },
+    {
+      "ordinal": 3,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0050106048583984375,
+      "clipped_step_kl_delta": -0.0014259815216064453,
+      "unclipped_gradient_norm": 0.5015313625335693
+    },
+    {
+      "ordinal": 3,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012815594673156738,
+      "clipped_step_kl_delta": 0.0006262362003326416,
+      "unclipped_gradient_norm": 0.12929074466228485
+    },
+    {
+      "ordinal": 4,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004029393196105957,
+      "clipped_step_kl_delta": -0.0018765926361083984,
+      "unclipped_gradient_norm": 0.4030057489871979
+    },
+    {
+      "ordinal": 4,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0020961761474609375,
+      "clipped_step_kl_delta": -0.00016415119171142578,
+      "unclipped_gradient_norm": 0.21001803874969482
+    },
+    {
+      "ordinal": 4,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003979206085205078,
+      "clipped_step_kl_delta": -0.002123594284057617,
+      "unclipped_gradient_norm": 0.3981320261955261
+    },
+    {
+      "ordinal": 4,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002015352249145508,
+      "clipped_step_kl_delta": -7.617473602294922e-05,
+      "unclipped_gradient_norm": 0.20223982632160187
+    },
+    {
+      "ordinal": 5,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004649639129638672,
+      "clipped_step_kl_delta": -0.0009746551513671875,
+      "unclipped_gradient_norm": 0.4649103283882141
+    },
+    {
+      "ordinal": 5,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0011681318283081055,
+      "clipped_step_kl_delta": -0.0010972321033477783,
+      "unclipped_gradient_norm": 0.11697561293840408
+    },
+    {
+      "ordinal": 5,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004628896713256836,
+      "clipped_step_kl_delta": -0.0008807182312011719,
+      "unclipped_gradient_norm": 0.4629157781600952
+    },
+    {
+      "ordinal": 5,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0011974573135375977,
+      "clipped_step_kl_delta": -0.0006217062473297119,
+      "unclipped_gradient_norm": 0.12028674781322479
+    },
+    {
+      "ordinal": 6,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005326032638549805,
+      "clipped_step_kl_delta": -0.0014011859893798828,
+      "unclipped_gradient_norm": 0.5326086282730103
+    },
+    {
+      "ordinal": 6,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013602972030639648,
+      "clipped_step_kl_delta": 0.001080542802810669,
+      "unclipped_gradient_norm": 0.13695506751537323
+    },
+    {
+      "ordinal": 6,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005299806594848633,
+      "clipped_step_kl_delta": -0.0013120174407958984,
+      "unclipped_gradient_norm": 0.530525267124176
+    },
+    {
+      "ordinal": 6,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001233428716659546,
+      "clipped_step_kl_delta": 0.001070261001586914,
+      "unclipped_gradient_norm": 0.12424050271511078
+    },
+    {
+      "ordinal": 7,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00500798225402832,
+      "clipped_step_kl_delta": -0.0026355981826782227,
+      "unclipped_gradient_norm": 0.5008683204650879
+    },
+    {
+      "ordinal": 7,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0015997588634490967,
+      "clipped_step_kl_delta": -0.0002097487449645996,
+      "unclipped_gradient_norm": 0.16094543039798737
+    },
+    {
+      "ordinal": 7,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004926323890686035,
+      "clipped_step_kl_delta": -0.0024802684783935547,
+      "unclipped_gradient_norm": 0.49288150668144226
+    },
+    {
+      "ordinal": 7,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013987720012664795,
+      "clipped_step_kl_delta": -0.0012595057487487793,
+      "unclipped_gradient_norm": 0.14065846800804138
+    },
+    {
+      "ordinal": 8,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004480242729187012,
+      "clipped_step_kl_delta": -0.0010951757431030273,
+      "unclipped_gradient_norm": 0.4481075406074524
+    },
+    {
+      "ordinal": 8,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006786584854125977,
+      "clipped_step_kl_delta": -0.0006786584854125977,
+      "unclipped_gradient_norm": 0.0681234821677208
+    },
+    {
+      "ordinal": 8,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004472613334655762,
+      "clipped_step_kl_delta": -0.0010603666305541992,
+      "unclipped_gradient_norm": 0.447284460067749
+    },
+    {
+      "ordinal": 8,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006511062383651733,
+      "clipped_step_kl_delta": -0.0006511062383651733,
+      "unclipped_gradient_norm": 0.06524231284856796
+    },
+    {
+      "ordinal": 9,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004098773002624512,
+      "clipped_step_kl_delta": -0.0013606548309326172,
+      "unclipped_gradient_norm": 0.410079687833786
+    },
+    {
+      "ordinal": 9,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009626001119613647,
+      "clipped_step_kl_delta": 0.00032445788383483887,
+      "unclipped_gradient_norm": 0.09686421602964401
+    },
+    {
+      "ordinal": 9,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004102349281311035,
+      "clipped_step_kl_delta": -0.0013693571090698242,
+      "unclipped_gradient_norm": 0.4102754294872284
+    },
+    {
+      "ordinal": 9,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009303390979766846,
+      "clipped_step_kl_delta": -0.00022989511489868164,
+      "unclipped_gradient_norm": 0.09343362599611282
+    },
+    {
+      "ordinal": 10,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0035676956176757812,
+      "clipped_step_kl_delta": -0.0020824670791625977,
+      "unclipped_gradient_norm": 0.35693371295928955
+    },
+    {
+      "ordinal": 10,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012126266956329346,
+      "clipped_step_kl_delta": 0.0002238750457763672,
+      "unclipped_gradient_norm": 0.1218717098236084
+    },
+    {
+      "ordinal": 10,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003625154495239258,
+      "clipped_step_kl_delta": -0.002179741859436035,
+      "unclipped_gradient_norm": 0.3628145456314087
+    },
+    {
+      "ordinal": 10,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0011988282203674316,
+      "clipped_step_kl_delta": 0.0003630220890045166,
+      "unclipped_gradient_norm": 0.12027635425329208
+    },
+    {
+      "ordinal": 11,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006586790084838867,
+      "clipped_step_kl_delta": -0.005244731903076172,
+      "unclipped_gradient_norm": 0.6593881249427795
+    },
+    {
+      "ordinal": 11,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002426832914352417,
+      "clipped_step_kl_delta": -0.0011968016624450684,
+      "unclipped_gradient_norm": 0.2438051402568817
+    },
+    {
+      "ordinal": 11,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006352901458740234,
+      "clipped_step_kl_delta": -0.004957437515258789,
+      "unclipped_gradient_norm": 0.6361629366874695
+    },
+    {
+      "ordinal": 11,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002169370651245117,
+      "clipped_step_kl_delta": -0.0006791055202484131,
+      "unclipped_gradient_norm": 0.2180684208869934
+    },
+    {
+      "ordinal": 12,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004575848579406738,
+      "clipped_step_kl_delta": -0.0023118257522583008,
+      "unclipped_gradient_norm": 0.4576835036277771
+    },
+    {
+      "ordinal": 12,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.003400862216949463,
+      "clipped_step_kl_delta": -0.0002715587615966797,
+      "unclipped_gradient_norm": 0.34077686071395874
+    },
+    {
+      "ordinal": 12,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004620671272277832,
+      "clipped_step_kl_delta": -0.0024014711380004883,
+      "unclipped_gradient_norm": 0.4625546634197235
+    },
+    {
+      "ordinal": 12,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0034947991371154785,
+      "clipped_step_kl_delta": -0.0005273818969726562,
+      "unclipped_gradient_norm": 0.35067206621170044
+    },
+    {
+      "ordinal": 13,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0036368370056152344,
+      "clipped_step_kl_delta": -0.0007581710815429688,
+      "unclipped_gradient_norm": 0.36376023292541504
+    },
+    {
+      "ordinal": 13,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012286603450775146,
+      "clipped_step_kl_delta": -0.0005238354206085205,
+      "unclipped_gradient_norm": 0.12347644567489624
+    },
+    {
+      "ordinal": 13,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003638029098510742,
+      "clipped_step_kl_delta": -0.0007526874542236328,
+      "unclipped_gradient_norm": 0.3638441860675812
+    },
+    {
+      "ordinal": 13,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012140274047851562,
+      "clipped_step_kl_delta": -0.0005019605159759521,
+      "unclipped_gradient_norm": 0.12212579697370529
+    },
+    {
+      "ordinal": 14,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005804777145385742,
+      "clipped_step_kl_delta": -0.002422809600830078,
+      "unclipped_gradient_norm": 0.5803141593933105
+    },
+    {
+      "ordinal": 14,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001318812370300293,
+      "clipped_step_kl_delta": -0.0002786219120025635,
+      "unclipped_gradient_norm": 0.13274553418159485
+    },
+    {
+      "ordinal": 14,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005755186080932617,
+      "clipped_step_kl_delta": -0.0023071765899658203,
+      "unclipped_gradient_norm": 0.5755541920661926
+    },
+    {
+      "ordinal": 14,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013057887554168701,
+      "clipped_step_kl_delta": 6.3478946685791016e-06,
+      "unclipped_gradient_norm": 0.13089466094970703
+    },
+    {
+      "ordinal": 15,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005004167556762695,
+      "clipped_step_kl_delta": -0.0014007091522216797,
+      "unclipped_gradient_norm": 0.5003343224525452
+    },
+    {
+      "ordinal": 15,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0007177591323852539,
+      "clipped_step_kl_delta": -0.0004713386297225952,
+      "unclipped_gradient_norm": 0.0719527080655098
+    },
+    {
+      "ordinal": 15,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004983663558959961,
+      "clipped_step_kl_delta": -0.001341104507446289,
+      "unclipped_gradient_norm": 0.4985141456127167
+    },
+    {
+      "ordinal": 15,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0007482022047042847,
+      "clipped_step_kl_delta": -0.0005152672529220581,
+      "unclipped_gradient_norm": 0.07497557252645493
+    },
+    {
+      "ordinal": 16,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0032062530517578125,
+      "clipped_step_kl_delta": -0.001538991928100586,
+      "unclipped_gradient_norm": 0.32089075446128845
+    },
+    {
+      "ordinal": 16,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002957284450531006,
+      "clipped_step_kl_delta": 0.0015006661415100098,
+      "unclipped_gradient_norm": 0.29627829790115356
+    },
+    {
+      "ordinal": 16,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0032644271850585938,
+      "clipped_step_kl_delta": -0.0016484260559082031,
+      "unclipped_gradient_norm": 0.32674115896224976
+    },
+    {
+      "ordinal": 16,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0029840469360351562,
+      "clipped_step_kl_delta": 0.0015627741813659668,
+      "unclipped_gradient_norm": 0.2987760901451111
+    },
+    {
+      "ordinal": 17,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0038548707962036133,
+      "clipped_step_kl_delta": -0.00045680999755859375,
+      "unclipped_gradient_norm": 0.3857402801513672
+    },
+    {
+      "ordinal": 17,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0022316277027130127,
+      "clipped_step_kl_delta": 0.001946866512298584,
+      "unclipped_gradient_norm": 0.22450359165668488
+    },
+    {
+      "ordinal": 17,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0038574934005737305,
+      "clipped_step_kl_delta": -0.00047910213470458984,
+      "unclipped_gradient_norm": 0.38586631417274475
+    },
+    {
+      "ordinal": 17,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002294301986694336,
+      "clipped_step_kl_delta": 0.0019709765911102295,
+      "unclipped_gradient_norm": 0.23063699901103973
+    },
+    {
+      "ordinal": 18,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006036996841430664,
+      "clipped_step_kl_delta": -0.0023491382598876953,
+      "unclipped_gradient_norm": 0.6036657691001892
+    },
+    {
+      "ordinal": 18,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0008767843246459961,
+      "clipped_step_kl_delta": -7.192790508270264e-05,
+      "unclipped_gradient_norm": 0.08796355873346329
+    },
+    {
+      "ordinal": 18,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005953311920166016,
+      "clipped_step_kl_delta": -0.002300262451171875,
+      "unclipped_gradient_norm": 0.5951911807060242
+    },
+    {
+      "ordinal": 18,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009166449308395386,
+      "clipped_step_kl_delta": -0.0002127140760421753,
+      "unclipped_gradient_norm": 0.09225929528474808
+    },
+    {
+      "ordinal": 19,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004485011100769043,
+      "clipped_step_kl_delta": -0.0011750459671020508,
+      "unclipped_gradient_norm": 0.44835856556892395
+    },
+    {
+      "ordinal": 19,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0010677576065063477,
+      "clipped_step_kl_delta": -0.0010281503200531006,
+      "unclipped_gradient_norm": 0.10778673738241196
+    },
+    {
+      "ordinal": 19,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0044765472412109375,
+      "clipped_step_kl_delta": -0.0011334419250488281,
+      "unclipped_gradient_norm": 0.4478001892566681
+    },
+    {
+      "ordinal": 19,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009738802909851074,
+      "clipped_step_kl_delta": -0.0009306669235229492,
+      "unclipped_gradient_norm": 0.09807250648736954
+    },
+    {
+      "ordinal": 20,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0036122798919677734,
+      "clipped_step_kl_delta": -0.0005657672882080078,
+      "unclipped_gradient_norm": 0.3612895905971527
+    },
+    {
+      "ordinal": 20,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002347707748413086,
+      "clipped_step_kl_delta": -0.00030159950256347656,
+      "unclipped_gradient_norm": 0.23469960689544678
+    },
+    {
+      "ordinal": 20,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003643512725830078,
+      "clipped_step_kl_delta": -0.0006070137023925781,
+      "unclipped_gradient_norm": 0.3645106852054596
+    },
+    {
+      "ordinal": 20,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002336263656616211,
+      "clipped_step_kl_delta": -0.00011539459228515625,
+      "unclipped_gradient_norm": 0.23374424874782562
+    },
+    {
+      "ordinal": 21,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003720402717590332,
+      "clipped_step_kl_delta": -0.0010538101196289062,
+      "unclipped_gradient_norm": 0.3721299469470978
+    },
+    {
+      "ordinal": 21,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001328587532043457,
+      "clipped_step_kl_delta": 0.0007550716400146484,
+      "unclipped_gradient_norm": 0.13332810997962952
+    },
+    {
+      "ordinal": 21,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003737926483154297,
+      "clipped_step_kl_delta": -0.0007107257843017578,
+      "unclipped_gradient_norm": 0.3735470175743103
+    },
+    {
+      "ordinal": 21,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0012830495834350586,
+      "clipped_step_kl_delta": 0.0007291436195373535,
+      "unclipped_gradient_norm": 0.1285228133201599
+    },
+    {
+      "ordinal": 22,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003968000411987305,
+      "clipped_step_kl_delta": -0.0022325515747070312,
+      "unclipped_gradient_norm": 0.3969878852367401
+    },
+    {
+      "ordinal": 22,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0018409192562103271,
+      "clipped_step_kl_delta": -0.00041598081588745117,
+      "unclipped_gradient_norm": 0.18474029004573822
+    },
+    {
+      "ordinal": 22,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003966808319091797,
+      "clipped_step_kl_delta": -0.002231597900390625,
+      "unclipped_gradient_norm": 0.3968407213687897
+    },
+    {
+      "ordinal": 22,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0019038021564483643,
+      "clipped_step_kl_delta": -0.0005539059638977051,
+      "unclipped_gradient_norm": 0.19089078903198242
+    },
+    {
+      "ordinal": 23,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004838466644287109,
+      "clipped_step_kl_delta": -0.0003541707992553711,
+      "unclipped_gradient_norm": 0.4839593470096588
+    },
+    {
+      "ordinal": 23,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0015029758214950562,
+      "clipped_step_kl_delta": 0.0009434521198272705,
+      "unclipped_gradient_norm": 0.15061312913894653
+    },
+    {
+      "ordinal": 23,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0048220157623291016,
+      "clipped_step_kl_delta": -0.00031816959381103516,
+      "unclipped_gradient_norm": 0.4822143018245697
+    },
+    {
+      "ordinal": 23,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016077309846878052,
+      "clipped_step_kl_delta": 0.0010231584310531616,
+      "unclipped_gradient_norm": 0.16123253107070923
+    },
+    {
+      "ordinal": 24,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0038837194442749023,
+      "clipped_step_kl_delta": -0.0007113218307495117,
+      "unclipped_gradient_norm": 0.38830482959747314
+    },
+    {
+      "ordinal": 24,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009360909461975098,
+      "clipped_step_kl_delta": -0.0007611215114593506,
+      "unclipped_gradient_norm": 0.09398817270994186
+    },
+    {
+      "ordinal": 24,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00387418270111084,
+      "clipped_step_kl_delta": -0.0007222890853881836,
+      "unclipped_gradient_norm": 0.38740289211273193
+    },
+    {
+      "ordinal": 24,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0008799135684967041,
+      "clipped_step_kl_delta": -0.0006889700889587402,
+      "unclipped_gradient_norm": 0.08824596554040909
+    },
+    {
+      "ordinal": 25,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004395842552185059,
+      "clipped_step_kl_delta": -0.0006412267684936523,
+      "unclipped_gradient_norm": 0.43966904282569885
+    },
+    {
+      "ordinal": 25,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009014904499053955,
+      "clipped_step_kl_delta": 5.0902366638183594e-05,
+      "unclipped_gradient_norm": 0.0903109610080719
+    },
+    {
+      "ordinal": 25,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0044051408767700195,
+      "clipped_step_kl_delta": -0.0007423162460327148,
+      "unclipped_gradient_norm": 0.4406445622444153
+    },
+    {
+      "ordinal": 25,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009861886501312256,
+      "clipped_step_kl_delta": -0.0001690685749053955,
+      "unclipped_gradient_norm": 0.09878014773130417
+    },
+    {
+      "ordinal": 26,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0024509429931640625,
+      "clipped_step_kl_delta": -0.002063274383544922,
+      "unclipped_gradient_norm": 0.24541226029396057
+    },
+    {
+      "ordinal": 26,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0020453333854675293,
+      "clipped_step_kl_delta": 0.0005878210067749023,
+      "unclipped_gradient_norm": 0.20510166883468628
+    },
+    {
+      "ordinal": 26,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.002505064010620117,
+      "clipped_step_kl_delta": -0.0021262168884277344,
+      "unclipped_gradient_norm": 0.25075602531433105
+    },
+    {
+      "ordinal": 26,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0021248459815979004,
+      "clipped_step_kl_delta": 0.0002929568290710449,
+      "unclipped_gradient_norm": 0.21336603164672852
+    },
+    {
+      "ordinal": 27,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0046842098236083984,
+      "clipped_step_kl_delta": -0.0015285015106201172,
+      "unclipped_gradient_norm": 0.46855485439300537
+    },
+    {
+      "ordinal": 27,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013515949249267578,
+      "clipped_step_kl_delta": -0.001122891902923584,
+      "unclipped_gradient_norm": 0.135555699467659
+    },
+    {
+      "ordinal": 27,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0046596527099609375,
+      "clipped_step_kl_delta": -0.001451730728149414,
+      "unclipped_gradient_norm": 0.46586939692497253
+    },
+    {
+      "ordinal": 27,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013341903686523438,
+      "clipped_step_kl_delta": -0.0011034011840820312,
+      "unclipped_gradient_norm": 0.13368824124336243
+    },
+    {
+      "ordinal": 28,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.007819175720214844,
+      "clipped_step_kl_delta": -0.006798267364501953,
+      "unclipped_gradient_norm": 0.7828529477119446
+    },
+    {
+      "ordinal": 28,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002225533127784729,
+      "clipped_step_kl_delta": -0.0005190074443817139,
+      "unclipped_gradient_norm": 0.22355791926383972
+    },
+    {
+      "ordinal": 28,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.007488727569580078,
+      "clipped_step_kl_delta": -0.006415128707885742,
+      "unclipped_gradient_norm": 0.7497130632400513
+    },
+    {
+      "ordinal": 28,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001837223768234253,
+      "clipped_step_kl_delta": 0.0005353540182113647,
+      "unclipped_gradient_norm": 0.18477465212345123
+    },
+    {
+      "ordinal": 29,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004591703414916992,
+      "clipped_step_kl_delta": -0.0021550655364990234,
+      "unclipped_gradient_norm": 0.4592116177082062
+    },
+    {
+      "ordinal": 29,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0011675357818603516,
+      "clipped_step_kl_delta": 0.0005666017532348633,
+      "unclipped_gradient_norm": 0.11730410158634186
+    },
+    {
+      "ordinal": 29,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004656076431274414,
+      "clipped_step_kl_delta": -0.0022895336151123047,
+      "unclipped_gradient_norm": 0.46580246090888977
+    },
+    {
+      "ordinal": 29,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001191854476928711,
+      "clipped_step_kl_delta": 0.0007399916648864746,
+      "unclipped_gradient_norm": 0.11989229172468185
+    },
+    {
+      "ordinal": 30,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006173610687255859,
+      "clipped_step_kl_delta": -0.0058746337890625,
+      "unclipped_gradient_norm": 0.6186435222625732
+    },
+    {
+      "ordinal": 30,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0040024518966674805,
+      "clipped_step_kl_delta": -0.0030684471130371094,
+      "unclipped_gradient_norm": 0.40165165066719055
+    },
+    {
+      "ordinal": 30,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0064504146575927734,
+      "clipped_step_kl_delta": -0.006161212921142578,
+      "unclipped_gradient_norm": 0.6460908055305481
+    },
+    {
+      "ordinal": 30,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.004308044910430908,
+      "clipped_step_kl_delta": -0.003480672836303711,
+      "unclipped_gradient_norm": 0.43198585510253906
+    },
+    {
+      "ordinal": 31,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0038640499114990234,
+      "clipped_step_kl_delta": -0.0021611452102661133,
+      "unclipped_gradient_norm": 0.3867098391056061
+    },
+    {
+      "ordinal": 31,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0022719502449035645,
+      "clipped_step_kl_delta": 0.0007682442665100098,
+      "unclipped_gradient_norm": 0.22790129482746124
+    },
+    {
+      "ordinal": 31,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004015564918518066,
+      "clipped_step_kl_delta": -0.0024129152297973633,
+      "unclipped_gradient_norm": 0.4019434452056885
+    },
+    {
+      "ordinal": 31,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0025136172771453857,
+      "clipped_step_kl_delta": 0.0003807246685028076,
+      "unclipped_gradient_norm": 0.25241801142692566
+    },
+    {
+      "ordinal": 32,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004012703895568848,
+      "clipped_step_kl_delta": -0.001553654670715332,
+      "unclipped_gradient_norm": 0.4015001058578491
+    },
+    {
+      "ordinal": 32,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017406642436981201,
+      "clipped_step_kl_delta": 0.0007874071598052979,
+      "unclipped_gradient_norm": 0.1749233603477478
+    },
+    {
+      "ordinal": 32,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003979206085205078,
+      "clipped_step_kl_delta": -0.001462101936340332,
+      "unclipped_gradient_norm": 0.3981969952583313
+    },
+    {
+      "ordinal": 32,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016883313655853271,
+      "clipped_step_kl_delta": 0.0007561743259429932,
+      "unclipped_gradient_norm": 0.16985079646110535
+    },
+    {
+      "ordinal": 33,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004069209098815918,
+      "clipped_step_kl_delta": -0.0017657279968261719,
+      "unclipped_gradient_norm": 0.40689048171043396
+    },
+    {
+      "ordinal": 33,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0023624300956726074,
+      "clipped_step_kl_delta": -0.0005714893341064453,
+      "unclipped_gradient_norm": 0.2370690554380417
+    },
+    {
+      "ordinal": 33,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0040236711502075195,
+      "clipped_step_kl_delta": -0.0016641616821289062,
+      "unclipped_gradient_norm": 0.40258607268333435
+    },
+    {
+      "ordinal": 33,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002278566360473633,
+      "clipped_step_kl_delta": 0.00018924474716186523,
+      "unclipped_gradient_norm": 0.2286919355392456
+    },
+    {
+      "ordinal": 34,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005747079849243164,
+      "clipped_step_kl_delta": -0.0017347335815429688,
+      "unclipped_gradient_norm": 0.5748107433319092
+    },
+    {
+      "ordinal": 34,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014459788799285889,
+      "clipped_step_kl_delta": -0.0006524026393890381,
+      "unclipped_gradient_norm": 0.1449386328458786
+    },
+    {
+      "ordinal": 34,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0057506561279296875,
+      "clipped_step_kl_delta": -0.001748800277709961,
+      "unclipped_gradient_norm": 0.5752773880958557
+    },
+    {
+      "ordinal": 34,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014685094356536865,
+      "clipped_step_kl_delta": -0.0007094144821166992,
+      "unclipped_gradient_norm": 0.1472647488117218
+    },
+    {
+      "ordinal": 35,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0035437345504760742,
+      "clipped_step_kl_delta": -0.0011359453201293945,
+      "unclipped_gradient_norm": 0.3546001613140106
+    },
+    {
+      "ordinal": 35,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001017242670059204,
+      "clipped_step_kl_delta": 0.0003515183925628662,
+      "unclipped_gradient_norm": 0.10201163589954376
+    },
+    {
+      "ordinal": 35,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003535747528076172,
+      "clipped_step_kl_delta": -0.0011066198348999023,
+      "unclipped_gradient_norm": 0.35377979278564453
+    },
+    {
+      "ordinal": 35,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0010117888450622559,
+      "clipped_step_kl_delta": 0.00034999847412109375,
+      "unclipped_gradient_norm": 0.10139450430870056
+    },
+    {
+      "ordinal": 36,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0045430660247802734,
+      "clipped_step_kl_delta": -0.0014786720275878906,
+      "unclipped_gradient_norm": 0.45441392064094543
+    },
+    {
+      "ordinal": 36,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.004988193511962891,
+      "clipped_step_kl_delta": -0.0008606910705566406,
+      "unclipped_gradient_norm": 0.49874675273895264
+    },
+    {
+      "ordinal": 36,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0045549869537353516,
+      "clipped_step_kl_delta": -0.0015287399291992188,
+      "unclipped_gradient_norm": 0.45554447174072266
+    },
+    {
+      "ordinal": 36,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.004993915557861328,
+      "clipped_step_kl_delta": -0.0009021759033203125,
+      "unclipped_gradient_norm": 0.49943268299102783
+    },
+    {
+      "ordinal": 37,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003013134002685547,
+      "clipped_step_kl_delta": -0.0016074180603027344,
+      "unclipped_gradient_norm": 0.30145832896232605
+    },
+    {
+      "ordinal": 37,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0020290017127990723,
+      "clipped_step_kl_delta": 0.001405179500579834,
+      "unclipped_gradient_norm": 0.203929141163826
+    },
+    {
+      "ordinal": 37,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0029572248458862305,
+      "clipped_step_kl_delta": -0.0015038251876831055,
+      "unclipped_gradient_norm": 0.2960071563720703
+    },
+    {
+      "ordinal": 37,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0020490288734436035,
+      "clipped_step_kl_delta": 0.0015700161457061768,
+      "unclipped_gradient_norm": 0.2061794251203537
+    },
+    {
+      "ordinal": 38,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003560781478881836,
+      "clipped_step_kl_delta": -0.0014535188674926758,
+      "unclipped_gradient_norm": 0.35622358322143555
+    },
+    {
+      "ordinal": 38,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0005803480744361877,
+      "clipped_step_kl_delta": -0.0005803480744361877,
+      "unclipped_gradient_norm": 0.05846549943089485
+    },
+    {
+      "ordinal": 38,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0035028457641601562,
+      "clipped_step_kl_delta": -0.0013262033462524414,
+      "unclipped_gradient_norm": 0.3503621518611908
+    },
+    {
+      "ordinal": 38,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0007213577628135681,
+      "clipped_step_kl_delta": 0.0005197301506996155,
+      "unclipped_gradient_norm": 0.07296563684940338
+    },
+    {
+      "ordinal": 39,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004352569580078125,
+      "clipped_step_kl_delta": -0.0011502504348754883,
+      "unclipped_gradient_norm": 0.43524521589279175
+    },
+    {
+      "ordinal": 39,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002050161361694336,
+      "clipped_step_kl_delta": 0.0013462305068969727,
+      "unclipped_gradient_norm": 0.20544061064720154
+    },
+    {
+      "ordinal": 39,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004355907440185547,
+      "clipped_step_kl_delta": -0.0011603832244873047,
+      "unclipped_gradient_norm": 0.43560200929641724
+    },
+    {
+      "ordinal": 39,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002085268497467041,
+      "clipped_step_kl_delta": 0.0013957619667053223,
+      "unclipped_gradient_norm": 0.20925386250019073
+    },
+    {
+      "ordinal": 40,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005321979522705078,
+      "clipped_step_kl_delta": -0.0018162727355957031,
+      "unclipped_gradient_norm": 0.5324200987815857
+    },
+    {
+      "ordinal": 40,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013548582792282104,
+      "clipped_step_kl_delta": 0.0005578696727752686,
+      "unclipped_gradient_norm": 0.13605996966362
+    },
+    {
+      "ordinal": 40,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.005296468734741211,
+      "clipped_step_kl_delta": -0.0017325878143310547,
+      "unclipped_gradient_norm": 0.5297490358352661
+    },
+    {
+      "ordinal": 40,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001212090253829956,
+      "clipped_step_kl_delta": 0.00037658214569091797,
+      "unclipped_gradient_norm": 0.12183249741792679
+    },
+    {
+      "ordinal": 41,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0024042129516601562,
+      "clipped_step_kl_delta": -0.0020635128021240234,
+      "unclipped_gradient_norm": 0.24072791635990143
+    },
+    {
+      "ordinal": 41,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0018888413906097412,
+      "clipped_step_kl_delta": 0.00015908479690551758,
+      "unclipped_gradient_norm": 0.18918192386627197
+    },
+    {
+      "ordinal": 41,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.002413511276245117,
+      "clipped_step_kl_delta": -0.0020766258239746094,
+      "unclipped_gradient_norm": 0.24181057512760162
+    },
+    {
+      "ordinal": 41,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0018892884254455566,
+      "clipped_step_kl_delta": 0.00023004412651062012,
+      "unclipped_gradient_norm": 0.18921034038066864
+    },
+    {
+      "ordinal": 42,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006007671356201172,
+      "clipped_step_kl_delta": -0.0019741058349609375,
+      "unclipped_gradient_norm": 0.6010442972183228
+    },
+    {
+      "ordinal": 42,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017415881156921387,
+      "clipped_step_kl_delta": -0.00018259882926940918,
+      "unclipped_gradient_norm": 0.17460817098617554
+    },
+    {
+      "ordinal": 42,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.006002187728881836,
+      "clipped_step_kl_delta": -0.001962423324584961,
+      "unclipped_gradient_norm": 0.600588858127594
+    },
+    {
+      "ordinal": 42,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001735776662826538,
+      "clipped_step_kl_delta": -0.00017270445823669434,
+      "unclipped_gradient_norm": 0.17411048710346222
+    },
+    {
+      "ordinal": 43,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0045708417892456055,
+      "clipped_step_kl_delta": -0.0007326602935791016,
+      "unclipped_gradient_norm": 0.45726099610328674
+    },
+    {
+      "ordinal": 43,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009157061576843262,
+      "clipped_step_kl_delta": -0.0007171034812927246,
+      "unclipped_gradient_norm": 0.0920906662940979
+    },
+    {
+      "ordinal": 43,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004543900489807129,
+      "clipped_step_kl_delta": -0.0006376504898071289,
+      "unclipped_gradient_norm": 0.4545811712741852
+    },
+    {
+      "ordinal": 43,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0008485466241836548,
+      "clipped_step_kl_delta": -0.0006315112113952637,
+      "unclipped_gradient_norm": 0.08521547168493271
+    },
+    {
+      "ordinal": 44,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004469156265258789,
+      "clipped_step_kl_delta": -0.0004603862762451172,
+      "unclipped_gradient_norm": 0.44699332118034363
+    },
+    {
+      "ordinal": 44,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0008932054042816162,
+      "clipped_step_kl_delta": -5.587935447692871e-05,
+      "unclipped_gradient_norm": 0.08983998000621796
+    },
+    {
+      "ordinal": 44,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004466652870178223,
+      "clipped_step_kl_delta": -0.0005112886428833008,
+      "unclipped_gradient_norm": 0.4466860592365265
+    },
+    {
+      "ordinal": 44,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009344220161437988,
+      "clipped_step_kl_delta": 0.00019431114196777344,
+      "unclipped_gradient_norm": 0.09388615936040878
+    },
+    {
+      "ordinal": 45,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004372000694274902,
+      "clipped_step_kl_delta": -0.0017760992050170898,
+      "unclipped_gradient_norm": 0.4373117983341217
+    },
+    {
+      "ordinal": 45,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0021240413188934326,
+      "clipped_step_kl_delta": 0.0012668073177337646,
+      "unclipped_gradient_norm": 0.2134581357240677
+    },
+    {
+      "ordinal": 45,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004347085952758789,
+      "clipped_step_kl_delta": -0.0017347335815429688,
+      "unclipped_gradient_norm": 0.4348432123661041
+    },
+    {
+      "ordinal": 45,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0023018717765808105,
+      "clipped_step_kl_delta": 0.0014358758926391602,
+      "unclipped_gradient_norm": 0.23129697144031525
+    },
+    {
+      "ordinal": 46,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00463104248046875,
+      "clipped_step_kl_delta": -0.0011360645294189453,
+      "unclipped_gradient_norm": 0.4631842374801636
+    },
+    {
+      "ordinal": 46,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001476198434829712,
+      "clipped_step_kl_delta": 0.0009453892707824707,
+      "unclipped_gradient_norm": 0.14863325655460358
+    },
+    {
+      "ordinal": 46,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00458979606628418,
+      "clipped_step_kl_delta": -0.0010213851928710938,
+      "unclipped_gradient_norm": 0.4592386484146118
+    },
+    {
+      "ordinal": 46,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001559615135192871,
+      "clipped_step_kl_delta": 0.0011175572872161865,
+      "unclipped_gradient_norm": 0.1569051891565323
+    },
+    {
+      "ordinal": 47,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0048940181732177734,
+      "clipped_step_kl_delta": -0.0010156631469726562,
+      "unclipped_gradient_norm": 0.4895423948764801
+    },
+    {
+      "ordinal": 47,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0015834569931030273,
+      "clipped_step_kl_delta": 0.0009717941284179688,
+      "unclipped_gradient_norm": 0.1591455638408661
+    },
+    {
+      "ordinal": 47,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004891157150268555,
+      "clipped_step_kl_delta": -0.0009737014770507812,
+      "unclipped_gradient_norm": 0.48920854926109314
+    },
+    {
+      "ordinal": 47,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0015000700950622559,
+      "clipped_step_kl_delta": 0.0008871257305145264,
+      "unclipped_gradient_norm": 0.15015089511871338
+    },
+    {
+      "ordinal": 48,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004085540771484375,
+      "clipped_step_kl_delta": -0.0011359453201293945,
+      "unclipped_gradient_norm": 0.4089260697364807
+    },
+    {
+      "ordinal": 48,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017216503620147705,
+      "clipped_step_kl_delta": 0.0013302415609359741,
+      "unclipped_gradient_norm": 0.17355000972747803
+    },
+    {
+      "ordinal": 48,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004159212112426758,
+      "clipped_step_kl_delta": -0.0014176368713378906,
+      "unclipped_gradient_norm": 0.4160003066062927
+    },
+    {
+      "ordinal": 48,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0015698373317718506,
+      "clipped_step_kl_delta": 0.0011692047119140625,
+      "unclipped_gradient_norm": 0.15840193629264832
+    },
+    {
+      "ordinal": 49,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004633665084838867,
+      "clipped_step_kl_delta": -0.0013880729675292969,
+      "unclipped_gradient_norm": 0.46331751346588135
+    },
+    {
+      "ordinal": 49,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0007075518369674683,
+      "clipped_step_kl_delta": -0.0006057024002075195,
+      "unclipped_gradient_norm": 0.07112112641334534
+    },
+    {
+      "ordinal": 49,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004599332809448242,
+      "clipped_step_kl_delta": -0.0012793540954589844,
+      "unclipped_gradient_norm": 0.45987799763679504
+    },
+    {
+      "ordinal": 49,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006562769412994385,
+      "clipped_step_kl_delta": -0.000548630952835083,
+      "unclipped_gradient_norm": 0.06547760218381882
+    },
+    {
+      "ordinal": 50,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00594639778137207,
+      "clipped_step_kl_delta": -0.0021719932556152344,
+      "unclipped_gradient_norm": 0.5946198105812073
+    },
+    {
+      "ordinal": 50,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001774132251739502,
+      "clipped_step_kl_delta": -0.000350266695022583,
+      "unclipped_gradient_norm": 0.17800527811050415
+    },
+    {
+      "ordinal": 50,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0059926509857177734,
+      "clipped_step_kl_delta": -0.002292633056640625,
+      "unclipped_gradient_norm": 0.5991564989089966
+    },
+    {
+      "ordinal": 50,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0019058287143707275,
+      "clipped_step_kl_delta": -0.0003756284713745117,
+      "unclipped_gradient_norm": 0.19168201088905334
+    },
+    {
+      "ordinal": 51,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0037816762924194336,
+      "clipped_step_kl_delta": -0.0010592937469482422,
+      "unclipped_gradient_norm": 0.3783828020095825
+    },
+    {
+      "ordinal": 51,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016112923622131348,
+      "clipped_step_kl_delta": 0.0005988478660583496,
+      "unclipped_gradient_norm": 0.16150271892547607
+    },
+    {
+      "ordinal": 51,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0037506818771362305,
+      "clipped_step_kl_delta": -0.0009552240371704102,
+      "unclipped_gradient_norm": 0.3750866651535034
+    },
+    {
+      "ordinal": 51,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014687180519104004,
+      "clipped_step_kl_delta": 0.0006176233291625977,
+      "unclipped_gradient_norm": 0.14724135398864746
+    },
+    {
+      "ordinal": 52,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004442691802978516,
+      "clipped_step_kl_delta": -0.0014127492904663086,
+      "unclipped_gradient_norm": 0.4444516599178314
+    },
+    {
+      "ordinal": 52,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014334917068481445,
+      "clipped_step_kl_delta": -0.00013524293899536133,
+      "unclipped_gradient_norm": 0.14388492703437805
+    },
+    {
+      "ordinal": 52,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004395604133605957,
+      "clipped_step_kl_delta": -0.0012595653533935547,
+      "unclipped_gradient_norm": 0.43952468037605286
+    },
+    {
+      "ordinal": 52,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0013185739517211914,
+      "clipped_step_kl_delta": 6.663799285888672e-05,
+      "unclipped_gradient_norm": 0.13227874040603638
+    },
+    {
+      "ordinal": 53,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004433870315551758,
+      "clipped_step_kl_delta": -0.0013447999954223633,
+      "unclipped_gradient_norm": 0.4434533417224884
+    },
+    {
+      "ordinal": 53,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006677806377410889,
+      "clipped_step_kl_delta": -0.0005785077810287476,
+      "unclipped_gradient_norm": 0.06717067211866379
+    },
+    {
+      "ordinal": 53,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004443168640136719,
+      "clipped_step_kl_delta": -0.0013796091079711914,
+      "unclipped_gradient_norm": 0.44439947605133057
+    },
+    {
+      "ordinal": 53,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.000767827033996582,
+      "clipped_step_kl_delta": -0.0006722509860992432,
+      "unclipped_gradient_norm": 0.0771435871720314
+    },
+    {
+      "ordinal": 54,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0048847198486328125,
+      "clipped_step_kl_delta": -0.001634836196899414,
+      "unclipped_gradient_norm": 0.48841845989227295
+    },
+    {
+      "ordinal": 54,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.002402067184448242,
+      "clipped_step_kl_delta": -0.0009191036224365234,
+      "unclipped_gradient_norm": 0.2401529848575592
+    },
+    {
+      "ordinal": 54,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00484466552734375,
+      "clipped_step_kl_delta": -0.0014941692352294922,
+      "unclipped_gradient_norm": 0.48427507281303406
+    },
+    {
+      "ordinal": 54,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0023403167724609375,
+      "clipped_step_kl_delta": -0.0007543563842773438,
+      "unclipped_gradient_norm": 0.2338378131389618
+    },
+    {
+      "ordinal": 55,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.00424349308013916,
+      "clipped_step_kl_delta": -0.0011376142501831055,
+      "unclipped_gradient_norm": 0.4242134392261505
+    },
+    {
+      "ordinal": 55,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016958117485046387,
+      "clipped_step_kl_delta": 0.001344233751296997,
+      "unclipped_gradient_norm": 0.17013166844844818
+    },
+    {
+      "ordinal": 55,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004226565361022949,
+      "clipped_step_kl_delta": -0.0010800361633300781,
+      "unclipped_gradient_norm": 0.4225783050060272
+    },
+    {
+      "ordinal": 55,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017352402210235596,
+      "clipped_step_kl_delta": 0.0013425052165985107,
+      "unclipped_gradient_norm": 0.1742282211780548
+    },
+    {
+      "ordinal": 56,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004950761795043945,
+      "clipped_step_kl_delta": -0.0011668205261230469,
+      "unclipped_gradient_norm": 0.4950258731842041
+    },
+    {
+      "ordinal": 56,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016432404518127441,
+      "clipped_step_kl_delta": 0.0008611083030700684,
+      "unclipped_gradient_norm": 0.16463841497898102
+    },
+    {
+      "ordinal": 56,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004930019378662109,
+      "clipped_step_kl_delta": -0.0010819435119628906,
+      "unclipped_gradient_norm": 0.49292850494384766
+    },
+    {
+      "ordinal": 56,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0016999542713165283,
+      "clipped_step_kl_delta": 0.000568777322769165,
+      "unclipped_gradient_norm": 0.17027465999126434
+    },
+    {
+      "ordinal": 57,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004392147064208984,
+      "clipped_step_kl_delta": -0.001226663589477539,
+      "unclipped_gradient_norm": 0.4389526844024658
+    },
+    {
+      "ordinal": 57,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014166831970214844,
+      "clipped_step_kl_delta": -0.0006731152534484863,
+      "unclipped_gradient_norm": 0.1419024020433426
+    },
+    {
+      "ordinal": 57,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004381060600280762,
+      "clipped_step_kl_delta": -0.0011935234069824219,
+      "unclipped_gradient_norm": 0.437925785779953
+    },
+    {
+      "ordinal": 57,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014107227325439453,
+      "clipped_step_kl_delta": -0.0006645917892456055,
+      "unclipped_gradient_norm": 0.14142118394374847
+    },
+    {
+      "ordinal": 58,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.003371000289916992,
+      "clipped_step_kl_delta": -0.0010519027709960938,
+      "unclipped_gradient_norm": 0.3371419906616211
+    },
+    {
+      "ordinal": 58,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017229914665222168,
+      "clipped_step_kl_delta": 0.000554502010345459,
+      "unclipped_gradient_norm": 0.1728222370147705
+    },
+    {
+      "ordinal": 58,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0034394264221191406,
+      "clipped_step_kl_delta": -0.0012767314910888672,
+      "unclipped_gradient_norm": 0.3439358174800873
+    },
+    {
+      "ordinal": 58,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001775205135345459,
+      "clipped_step_kl_delta": 0.0003534555435180664,
+      "unclipped_gradient_norm": 0.1780647486448288
+    },
+    {
+      "ordinal": 59,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0041245222091674805,
+      "clipped_step_kl_delta": -0.001293778419494629,
+      "unclipped_gradient_norm": 0.41238629817962646
+    },
+    {
+      "ordinal": 59,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0008786618709564209,
+      "clipped_step_kl_delta": 0.0006839632987976074,
+      "unclipped_gradient_norm": 0.08892950415611267
+    },
+    {
+      "ordinal": 59,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0040972232818603516,
+      "clipped_step_kl_delta": -0.0011829137802124023,
+      "unclipped_gradient_norm": 0.40996402502059937
+    },
+    {
+      "ordinal": 59,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0009049177169799805,
+      "clipped_step_kl_delta": 0.0007722228765487671,
+      "unclipped_gradient_norm": 0.09198202192783356
+    },
+    {
+      "ordinal": 60,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004604697227478027,
+      "clipped_step_kl_delta": -0.0013165473937988281,
+      "unclipped_gradient_norm": 0.4608837962150574
+    },
+    {
+      "ordinal": 60,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006549060344696045,
+      "clipped_step_kl_delta": -0.00034686923027038574,
+      "unclipped_gradient_norm": 0.06585367023944855
+    },
+    {
+      "ordinal": 60,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004540562629699707,
+      "clipped_step_kl_delta": -0.0009931325912475586,
+      "unclipped_gradient_norm": 0.45422592759132385
+    },
+    {
+      "ordinal": 60,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006497502326965332,
+      "clipped_step_kl_delta": -0.00035330653190612793,
+      "unclipped_gradient_norm": 0.0650578960776329
+    },
+    {
+      "ordinal": 61,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004420876502990723,
+      "clipped_step_kl_delta": -0.0010962486267089844,
+      "unclipped_gradient_norm": 0.44227179884910583
+    },
+    {
+      "ordinal": 61,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0014134645462036133,
+      "clipped_step_kl_delta": 0.000834047794342041,
+      "unclipped_gradient_norm": 0.14188635349273682
+    },
+    {
+      "ordinal": 61,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.004437804222106934,
+      "clipped_step_kl_delta": -0.001153707504272461,
+      "unclipped_gradient_norm": 0.44381818175315857
+    },
+    {
+      "ordinal": 61,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.001455843448638916,
+      "clipped_step_kl_delta": 0.0008104443550109863,
+      "unclipped_gradient_norm": 0.14585840702056885
+    },
+    {
+      "ordinal": 62,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0037652254104614258,
+      "clipped_step_kl_delta": -0.0010622739791870117,
+      "unclipped_gradient_norm": 0.3767441213130951
+    },
+    {
+      "ordinal": 62,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.000594407320022583,
+      "clipped_step_kl_delta": -0.000594407320022583,
+      "unclipped_gradient_norm": 0.05960990488529205
+    },
+    {
+      "ordinal": 62,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.0037517547607421875,
+      "clipped_step_kl_delta": -0.001027822494506836,
+      "unclipped_gradient_norm": 0.3751128017902374
+    },
+    {
+      "ordinal": 62,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0006487816572189331,
+      "clipped_step_kl_delta": -0.0006487816572189331,
+      "unclipped_gradient_norm": 0.06511326879262924
+    },
+    {
+      "ordinal": 63,
+      "student": "student_base",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.002905726432800293,
+      "clipped_step_kl_delta": -0.0023230314254760742,
+      "unclipped_gradient_norm": 0.29066017270088196
+    },
+    {
+      "ordinal": 63,
+      "student": "student_base",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.00170135498046875,
+      "clipped_step_kl_delta": 0.0006082057952880859,
+      "unclipped_gradient_norm": 0.17016799747943878
+    },
+    {
+      "ordinal": 63,
+      "student": "student_hf5",
+      "teacher": "teacher_legacy",
+      "unclipped_kl_delta": -0.002940535545349121,
+      "clipped_step_kl_delta": -0.002366781234741211,
+      "unclipped_gradient_norm": 0.29444894194602966
+    },
+    {
+      "ordinal": 63,
+      "student": "student_hf5",
+      "teacher": "teacher_user_context",
+      "unclipped_kl_delta": -0.0017613768577575684,
+      "clipped_step_kl_delta": 0.0003504157066345215,
+      "unclipped_gradient_norm": 0.1763361543416977
+    }
+  ]
+}
