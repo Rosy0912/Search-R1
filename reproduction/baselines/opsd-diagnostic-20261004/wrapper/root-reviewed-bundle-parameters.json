@@ -1,0 +1,11 @@
+{
+  "OPSD_DISTRIBUTION_BUNDLE": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/initial-distribution-7ac-be4130324322",
+  "OPSD_DISTRIBUTION_PROBE": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/initial-distribution-7ac-be4130324322/probe.py",
+  "OPSD_DISTRIBUTION_PROBE_SHA256": "be41303243221b8616d485bcfed5e7797ec6fecc775e91d682a97cb545533737",
+  "OPSD_DISTRIBUTION_SOURCE_SHA256": "4ebe6886d2de09186676f0388e9692c488424fddf9ce003828cc04a65931e5c0",
+  "OPSD_DISTRIBUTION_BINDING": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/initial-distribution-7ac-be4130324322/binding.json",
+  "OPSD_DISTRIBUTION_BINDING_SHA256": "ae51e1648e990afb9da3dd24d7889e61ef3da40a145f6d27a1687aa0ece07815",
+  "OPSD_DISTRIBUTION_LAUNCHER": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/distribution-launch-wrapper-20261004-v1/launcher.py",
+  "OPSD_DISTRIBUTION_WRAPPER_MANIFEST": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/distribution-launch-wrapper-20261004-v1/wrapper-manifest.json",
+  "OPSD_DISTRIBUTION_WRAPPER_MANIFEST_SHA256": "6dbe7a621a6609cd0cf3f0d42a1e949eeff528dc433da6d43727af228cd3e2c0"
+}

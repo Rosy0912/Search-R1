@@ -1,0 +1,21 @@
+{
+  "scope": "local CPU/static diagnostic candidate only; NOT submitted/actual GPU proof",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd_prompt_distribution_probe.py",
+      "sha256": "be41303243221b8616d485bcfed5e7797ec6fecc775e91d682a97cb545533737"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/test_opsd_prompt_distribution_probe.py",
+      "sha256": "8335b89af398adfacb2627e162793c9e5534d596cadccd9621be94005f63ccd8"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd_prompt_distribution_probe_CPU_TESTS.txt",
+      "sha256": "dadbb178c069be924dcd30c7160c4368a85057a0242ed0c1087d1673241c2839"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/OPSD_PROMPT_DISTRIBUTION_PROBE_DESIGN.md",
+      "sha256": "0e62d0cba5b02a0d3b05594c7915c66cad1a1e00199c8a974f03588bc2667edf"
+    }
+  ]
+}

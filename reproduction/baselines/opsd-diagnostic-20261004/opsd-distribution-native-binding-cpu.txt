@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+  File "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/initial-distribution-7ac-96cfe2326cfe/probe.py", line 109, in verify_binding
+    if len(index) != 435 or set(index.values()) != set(origin): raise ValueError('Actual435-key model shard index mismatch')
+ValueError: Actual435-key model shard index mismatch

@@ -1,0 +1,13 @@
+{
+  "scope": "single-owned-H100 read-only distribution launch wrapper; no training authorization",
+  "files": {
+    "bootstrap.sh": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/distribution-launch-wrapper-20261004-v1/bootstrap.sh",
+      "sha256": "2597437e85d0ae3e9ef8786f220795e7519a4f6bf4f6688f5bee6f940be0c96a"
+    },
+    "launcher.py": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd/tools/distribution-launch-wrapper-20261004-v1/launcher.py",
+      "sha256": "8bfd05dabc2f59b2664fadfb521b36802c8644916490698855dd5a5f855eca9b"
+    }
+  }
+}
