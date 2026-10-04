@@ -39,7 +39,7 @@ class RewardVersionTests(unittest.TestCase):
         response=types.SimpleNamespace(raise_for_status=lambda:None,json=lambda:reply)
         client=types.SimpleNamespace(expected_probe_version='correct',probe_url='unused',probe_timeout=1,probe_backoff_cap=4,probe_max_wait=4,_probe_session=types.SimpleNamespace(post=lambda *a,**kw:response))
         with patch.dict(os.environ,{'SEARCH_G1_BASE':'/unused'}),patch('time.sleep'):
-            with self.assertRaises(RuntimeError):ns['_probe_call'](client,items)
+            with self.assertRaisesRegex(ValueError,'Evaluator version mismatch'):ns['_probe_call'](client,items)
             self.assertFalse(hasattr(client,'last_probe_version'))
             reply['version']='correct';reply['results'][0]['version']='correct'
             self.assertEqual(ns['_probe_call'](client,items),reply['results'])

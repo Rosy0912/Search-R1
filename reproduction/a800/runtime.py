@@ -50,7 +50,7 @@ def refresh_after_checkpoint(step,checkpoint):
 
 
 def accept_five_updates(checkpoint, records):
-    """Block update6 until real metrics, fixed64 and changed full weights pass."""
+    """Block the sixth segment update until metrics, fixed64 and changed weights pass."""
     import math
     import torch
     from safetensors import safe_open
@@ -60,8 +60,13 @@ def accept_five_updates(checkpoint, records):
     for name in ('validation-64.parquet','audit.json'):
         assert digest(base/'data'/name)==run['input_sha256'][name], 'Validation inputs changed since admission'
     proof=json.loads((Path(checkpoint)/'complete.json').read_text())
-    assert proof['run_id']==run['run_id'] and proof['step']==5
-    assert [r['step'] for r in records]==[1,2,3,4,5], 'Missing actual GRPO update'
+    completed = run.get('completed_updates', 0)
+    assert type(completed) is int and completed >= 0
+    assert run['acceptance_update']==completed+5
+    assert proof['finite_all_saved_tensors'] is True
+    for name,value in proof['files_sha256'].items():assert digest(Path(checkpoint)/name)==value, 'Accepted checkpoint changed'
+    assert proof['run_id']==run['run_id'] and proof['step']==completed + 5
+    assert [r['step'] for r in records]==list(range(completed + 1, completed + 6)), 'Missing actual GRPO update'
     for r in records:
         for field in ('critic/rewards/mean','actor/pg_loss','actor/entropy_loss','actor/kl_loss','actor/ppo_kl','actor/grad_norm'):
             assert math.isfinite(r['metrics'][field]), 'Nonfinite five-update metric: '+field
@@ -69,7 +74,10 @@ def accept_five_updates(checkpoint, records):
     counts={k.split('/')[-1]:int(v) for k,v in records[-1]['metrics'].items() if k.startswith('val/evaluated_count/')}
     expected=json.loads((base/'data/audit.json').read_text())['validation_source_counts']
     assert counts==expected and sum(counts.values())==64, 'Fixed validation coverage mismatch'
-    initial=Path(run['initial_model']);saved=Path(checkpoint)
+    initial=Path(run['actor_checkpoint'] if completed else run['initial_model']);saved=Path(checkpoint)
+    if completed:
+        for name,value in run['actor_checkpoint_sha256'].items():
+            assert digest(initial/name)==value, 'Source checkpoint changed after admission'
     old=json.loads((initial/'model.safetensors.index.json').read_text())['weight_map']
     new=json.loads((saved/'model.safetensors.index.json').read_text())['weight_map']
     changed=[]
@@ -78,7 +86,7 @@ def accept_five_updates(checkpoint, records):
         with safe_open(str(saved/new[key]),framework='pt',device='cpu') as f: z=f.get_tensor(key)
         if not torch.equal(a,z):changed.append(key)
         del a,z
-    assert changed, 'Checkpoint5 has no parameter update'
+    assert changed, 'Five-update checkpoint has no parameter update'
     result=dict(run_id=run['run_id'],accepted=True,actual_updates=records,validation_counts=counts,
                 changed_parameters=changed,checkpoint=proof,checked_unix=time.time())
     target=base/'logs/five-updates-acceptance.json';tmp=target.with_suffix('.json.tmp')

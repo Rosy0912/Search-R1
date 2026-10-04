@@ -20,10 +20,20 @@ def atomic(path, payload):
     os.replace(tmp,path)
 
 
+def initial_evaluator(run):
+    completed=run.get('completed_updates',0)
+    assert type(completed) is int and completed in (0,200)
+    if completed:
+        assert run['acceptance_update']==completed+5
+        return completed, run['actor_checkpoint'], run['actor_checkpoint_sha256']
+    return 0, run['initial_model'], run['initial_model_sha256']
+
+
 def calibrated_version(run, live):
-    assert live['run_id']==run['run_id'] and live['round']==0
-    assert live['encoder']==run['initial_model']
-    assert live['version'].startswith(run['run_id']+':0:')
+    round_id,encoder,encoder_hashes=initial_evaluator(run)
+    assert live['run_id']==run['run_id'] and live['round']==round_id
+    assert live['encoder']==encoder
+    assert live['version'].startswith(run['run_id']+':'+str(round_id)+':')
     report=live['calibration_report'];proof=live['label_proof']
     assert report['unique_question_count']==proof['question_count']==300
     assert report['question_grouped_cv'] is True and proof['group_size']==5
@@ -37,8 +47,10 @@ def calibrated_version(run, live):
         assert math.isfinite(report[key+'_cv_auc']) and 0<=report[key+'_cv_auc']<=1
     for name,value in run['initial_model_sha256'].items():
         assert digest(Path(run['initial_model'])/name)==value
+    required=set(encoder_hashes)-{'vocab.json','merges.txt','generation_config.json'}
+    assert set(live['encoder_sha256'])==required, 'Incomplete encoder fingerprint'
     for name,value in live['encoder_sha256'].items():
-        assert value==run['initial_model_sha256'][name]
+        assert value==encoder_hashes[name]
         assert digest(Path(live['encoder'])/name)==value
     for name,key in [('commit_probe.pkl','commit'),('boundary_probe.pkl','boundary')]:
         assert digest(Path(live[key]))==live['head_sha256'][name]
@@ -58,7 +70,8 @@ def verify_training_gate(base):
     import requests
     session=requests.Session();session.trust_env=False
     response=session.get('http://127.0.0.1:18012/health',timeout=60);response.raise_for_status();health=response.json()
-    assert health.get('ok') is True and health.get('round')==0 and health.get('version')==version and health.get('encoder')==run['initial_model']
+    round_id,encoder,_=initial_evaluator(run)
+    assert health.get('ok') is True and health.get('round')==round_id and health.get('version')==version and health.get('encoder')==encoder
     return run
 
 
@@ -77,7 +90,8 @@ def admit(base):
     for name,expected in run['source_sha256'].items():assert digest(base/'repo'/name)==expected
     session=requests.Session();session.trust_env=False
     health=session.get('http://127.0.0.1:18012/health',timeout=60);health.raise_for_status();health=health.json()
-    assert health['ok'] is True and health['round']==0 and health['encoder']==live['encoder'] and health['version']==version
+    round_id,_,_=initial_evaluator(run)
+    assert health['ok'] is True and health['round']==round_id and health['encoder']==live['encoder'] and health['version']==version
     response='<answer>Paris</answer>'
     items=[dict(id='admission-direct',prompt='Question: What is the capital of France?\n',response=response,model_ranges=[[0,len(response)]]),
            dict(id='admission-invalid',prompt='Question: What is the capital of France?\n',response='',model_ranges=[])]

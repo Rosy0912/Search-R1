@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-10-04T15:47:41.887490+00:00",
+  "state": "CONTINUATION_CORE_VERIFIED_NOT_LAUNCHED",
+  "parent_run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "completed_updates": 200,
+  "target_updates": 300,
+  "first_new_update": 201,
+  "acceptance_update": 205,
+  "continuation_semantics": "weights-only new Adam; no RNG/sampler restore; original KL base and original LR counter; not complete-state resume",
+  "target_cpu_tests_passed": 20,
+  "latest_tokenizer_tests_rerun": 2,
+  "parent_actual_verification": {
+    "owned_pid_births_absent": true,
+    "immutable_source_inputs_verified": true,
+    "checkpoint200_all435_tensors_finite_canonical": true,
+    "checkpoint_and_tokenizer_file_hashes_bound": true,
+    "normalized_tokenizer_backend_config_equal": true,
+    "actual_AutoTokenizer_backend_special_tokens_chat_settings_equal": true
+  },
+  "independent_review": "no intended-path must-fix; transactional publication/source checkpoint rehashing and actual loader checks added",
+  "source_sha256": {
+    "verl/utils/weight_continuation.py": "59d432353d49a777e8df6556bcc56ae13a48f1b711dd0ebf00b8ca1642bfb0ad",
+    "verl/workers/fsdp_workers.py": "bae27165dca4614bd63c6ef5c6aab3338769f0d6843a60fa69ae629696d28890",
+    "verl/trainer/ppo/ray_trainer.py": "ca0a2ac66f899315e7ffa64f79dd2a2f8635eb18c0504f9d8bbe6e0428018f41",
+    "reproduction/a800/runtime.py": "6bef02a85e7cbcdf62f87f9dd2fa23369552240abfa7a9eb6d4019b0c234dfb5",
+    "reproduction/a800/prepare_run.py": "abc38f06bebd79e97bc3fd70959e902e7c2118bcea95d5eebe57545d212f2842",
+    "reproduction/a800/prepare_continuation.py": "d32f61bb992c5c91bb2dd9a02a198f2d27949b9b709dcfedd96b776f2a1b27c5",
+    "reproduction/a800/probe_admission.py": "ab3ff0c767e902da4c5737ddda2f164e8949e387092197222b0df38a20527b70",
+    "reproduction/a800/recover_probes.py": "216aedbc77cd563f63f18e2052bab7610cc788b87265399ad1f0cc935313f96e",
+    "reproduction/a800/tokenizer_identity.py": "d5fe9e5ecd54c849a26688737b3b37c56507c2d971ed7d9fe45bd4277eabd12f",
+    "reproduction/a800/train.sh": "df25f037c1d3e46285c87695d419ef4545bed73dce6c151ba5f45330ddb56365"
+  },
+  "scope": "isolated target CPU staging only; original runtime source unchanged; no new manifest/GRPO/pipeline acceptance",
+  "remaining": [
+    "new segment deployment and recovery supervisor",
+    "refit/admit genuine round200 probes under new run",
+    "real GPU201..205 and fresh205 finite/canonical/delta",
+    "continue to300 and cross-segment final verification",
+    "hourly progress and owned cleanup"
+  ]
+}

@@ -10,7 +10,7 @@ def digest(path):
     return h.hexdigest()
 
 
-def prepare(source_commit):
+def prepare(source_commit, publish_manifest=True):
     base=Path(os.environ.get('SEARCH_G1_BASE','/data/search-g1'))
     target=base/'logs/run-manifest.json'
     if target.exists():
@@ -48,8 +48,9 @@ def prepare(source_commit):
         checkpoint_dir=str(base/'checkpoints/search-g1-a800'),train_log=str(base/'logs/search-g1-training.log'),
         calibration_protocol='real closed-book EM plus evidence-deletion answer-change; both heads before GRPO')
     # Publish only a complete descriptor; exclusive creation prevents duplicate run IDs.
-    with target.open('x') as f:json.dump(result,f,indent=2)
-    print('SEARCH_G1_INPUTS_BOUND='+result['run_id'],flush=True)
+    if publish_manifest:
+        with target.open('x') as f:json.dump(result,f,indent=2)
+        print('SEARCH_G1_INPUTS_BOUND='+result['run_id'],flush=True)
     return result
 
 if __name__=='__main__':

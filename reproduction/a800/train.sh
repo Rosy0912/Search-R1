@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-BASE=/data/search-g1
+BASE="${SEARCH_G1_BASE:-/data/search-g1}"
 export SEARCH_G1_BASE="$BASE"
 export PATH="$BASE/env/bin:$PATH" PYTHONPATH="$BASE/repo"
 unset PYTHONHOME RAY_ADDRESS
@@ -16,7 +16,25 @@ export ECO_WRONG_GROUND_SCALE=0 ECO_PROBE_BASE=0 ECO_PROBE_ALPHA_COST=0 ECO_USE_
 export ECO_NO_SELF=1 ECO_PROBE_MAX_WAIT=300
 cd "$BASE/repo"
 python -m reproduction.a800.probe_admission --verify
-python -m verl.trainer.main_ppo_eco \
+# The admitted manifest, rather than an unbound environment variable, selects
+# weights-only recovery. Original model.path remains the immutable KL base.
+ACTOR_CHECKPOINT="$(python - <<'PYCODE'
+import json,os
+from pathlib import Path
+run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+k=run.get('completed_updates',0)
+assert type(k) is int and k in (0,200)
+assert run['target_updates']==300 and run['acceptance_update']==k+5
+if k:print(run['actor_checkpoint'])
+PYCODE
+)"
+CONTINUATION_ARGS=()
+ACCEPTANCE=5
+if [[ -n "$ACTOR_CHECKPOINT" ]]; then
+  ACCEPTANCE=205
+  CONTINUATION_ARGS=(+trainer.weight_continuation_step=200 "+actor_rollout_ref.model.actor_checkpoint_path=$ACTOR_CHECKPOINT")
+fi
+python -m verl.trainer.main_ppo_eco "${CONTINUATION_ARGS[@]}" \
  data.train_files="$BASE/data/train.parquet" data.val_files="$BASE/data/validation-64.parquet" \
  data.train_data_num=null data.val_data_num=null data.train_batch_size=128 data.val_batch_size=64 \
  data.max_prompt_length=4096 data.max_response_length=500 data.max_start_length=2048 data.max_obs_length=500 \
@@ -34,7 +52,7 @@ python -m verl.trainer.main_ppo_eco \
  actor_rollout_ref.actor.state_masking=true algorithm.no_think_rl=false \
  "trainer.logger=['console']" +trainer.val_only=false +trainer.val_before_train=true \
  trainer.default_hdfs_dir=null trainer.n_gpus_per_node=4 trainer.nnodes=1 \
- trainer.save_freq=50 +trainer.acceptance_step=5 trainer.test_freq=50 \
+ trainer.save_freq=50 +trainer.acceptance_step="$ACCEPTANCE" trainer.test_freq=50 \
  trainer.project_name=Search-G1 trainer.experiment_name=search-g1-a800 \
  trainer.total_epochs=15 trainer.total_training_steps=301 trainer.default_local_dir="$BASE/checkpoints/search-g1-a800" \
  max_turns=4 retriever.url=http://127.0.0.1:18010/retrieve retriever.topk=3 \

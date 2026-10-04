@@ -430,11 +430,14 @@ class RayPPOTrainer(object):
             total_training_steps = self.config.trainer.total_training_steps
 
         self.total_training_steps = total_training_steps
+        from verl.utils.weight_continuation import completed_updates
+        continuation_k = completed_updates(self.config, total_training_steps)
         print(f'Total training steps: {self.total_training_steps}')
 
         OmegaConf.set_struct(self.config, True)
         with open_dict(self.config):
             self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps
+            self.config.actor_rollout_ref.actor.optim.completed_updates = continuation_k
             self.config.critic.optim.total_training_steps = total_training_steps
 
     def _validate(self):
@@ -674,7 +677,9 @@ class RayPPOTrainer(object):
         """
 
         logger = self.logger
-        self.global_steps = 0
+        from verl.utils.weight_continuation import completed_updates
+        continuation_k = completed_updates(self.config, self.total_training_steps)
+        self.global_steps = continuation_k
         five_update_records = []
         # perform validation before training
         # currently, we only support validation using the reward_function.
@@ -863,7 +868,7 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
-                if self.global_steps <= 5:
+                if continuation_k < self.global_steps <= continuation_k + 5:
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
                 if self.global_steps == self.config.trainer.get('acceptance_step', 0):
