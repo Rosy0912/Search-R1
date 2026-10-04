@@ -86,3 +86,27 @@ def test_new_iterator_is_constructed_before_restoring_saved_driver_rng():
     torch.testing.assert_close(next(resumed_iterator), expected)
     assert sampler.cursor == 38912
     assert torch.equal(saved_rng, torch.get_rng_state())
+
+
+def test_evaluation_receipt_preserves_phase_step_and_actual_data(monkeypatch, tmp_path):
+    import json
+    from types import SimpleNamespace
+    from search_r1.baselines.instruct300 import record_evaluation
+    data = tmp_path / 'immutable.parquet'; data.write_bytes(b'actual-data')
+    for key, value in dict(SEARCH_R1_BASELINE_AUDIT_DIR=str(tmp_path), SLURM_JOB_ID='new-job',
+                          SEARCH_R1_BASELINE_COMMIT='frozen-source',
+                          SEARCH_R1_BASELINE_CONFIG_SHA256='config').items():
+        monkeypatch.setenv(key, value)
+    trainer = SimpleNamespace(global_steps=300, actual_outer_updates=225)
+    record_evaluation(trainer, {'val/qa_count/all':51713}, 'final51713', [str(data)])
+    record = json.loads((tmp_path / 'evaluations.jsonl').read_text())
+    assert record['logical_step'] == 300 and record['actual_new_updates'] == 225
+    assert record['job_id'] == 'new-job' and record['phase'] == 'final51713'
+    initial = SimpleNamespace(global_steps=0)
+    record_evaluation(initial, {'val/qa_count/all':512}, 'initial512', [str(data)])
+    first = json.loads((tmp_path / 'evaluations.jsonl').read_text().splitlines()[-1])
+    assert first['actual_new_updates'] == 0 and first['logical_step'] == 0
+    import hashlib
+    assert record['dataset_files'] == [dict(path=str(data), sha256=hashlib.sha256(b'actual-data').hexdigest())]
+    with pytest.raises(RuntimeError, match='question count'):
+        record_evaluation(trainer, {'val/qa_count/all':64}, 'final51713', [str(data)])

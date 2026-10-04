@@ -122,12 +122,14 @@ def save_complete(trainer, checkpoint, worker_receipts):
                        else 'fresh_official_instruct'), extra_receipts=[extra])
 
 
-def roundtrip_and_wait(trainer):
+def roundtrip_and_wait(trainer, final=False):
     """Reload the actual saved rank states into the same workers before the gate."""
     manifest = trainer.instruct_manifest
     from .instruct_resume import start_step
-    gate = start_step(trainer.config) + 5
-    if trainer.global_steps != gate or trainer.actual_outer_updates != 5:
+    origin = start_step(trainer.config)
+    gate = 300 if final else origin + 5
+    expected_actual = 300 - origin if final else 5
+    if trainer.global_steps != gate or trainer.actual_outer_updates != expected_actual:
         raise RuntimeError('Live acceptance must occur at exactly five real updates')
     recheck_inputs(trainer)
     check_manifest(manifest)
@@ -149,7 +151,7 @@ def roundtrip_and_wait(trainer):
     if file_sha256(driver_receipt['path']) != driver_receipt['sha256']:
         raise RuntimeError('Driver state SHA changed')
     state = torch.load(driver_receipt['path'], map_location='cpu', weights_only=False)
-    if (state['schema'] != 1 or state['logical_step'] != gate or state['actual_new_updates'] != 5
+    if (state['schema'] != 1 or state['logical_step'] != gate or state['actual_new_updates'] != expected_actual
             or state['source_revision'] != REVISION
             or state['source'] != trainer.config.actor_rollout_ref.model.path
             or state['config'] != OmegaConf.to_container(trainer.config, resolve=True)):
@@ -172,6 +174,12 @@ def roundtrip_and_wait(trainer):
         raise RuntimeError('Driver RNG roundtrip failed')
     expected_driver_rng = rng_state()
     approval_path = Path(trainer.config.trainer.instruct300.approval_path)
+    if final:
+        atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
+            checkpoint_pause_identity=expected, driver_cursor=after['cursor'],
+            logical_step=300, actual_new_updates=expected_actual, retained_original_updates=origin),
+            approval_path.with_name('final300-state-roundtrip.json'))
+        return
     atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
                           checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
                      approval_path.with_name('resume80-ready.json' if gate == 80 else 'instruct5-ready.json'))
@@ -218,6 +226,28 @@ def validate_stage64(trainer):
         metrics = trainer._validate()
         if metrics.get('val/qa_count/all') != 64:
             raise RuntimeError('Actual step5 stage evaluation count differs')
+        record_evaluation(trainer, metrics, 'stage64', trainer.config.baselines.bapo.stage_validation_files)
         return metrics
     finally:
         trainer.val_dataset, trainer.val_dataloader = previous_dataset, previous_loader
+
+
+def record_evaluation(trainer, metrics, phase, files):
+    """Persist exact phase/data/job identities without depending on Ray forwarding."""
+    root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+    if not root:
+        raise RuntimeError('Instruct evaluation requires the actual audit directory')
+    paths = [files] if isinstance(files, str) else list(files)
+    expected_count = {'initial512': 512, 'periodic512': 512,
+                      'stage64': 64, 'final51713': 51713}[phase]
+    if metrics.get('val/qa_count/all') != expected_count:
+        raise RuntimeError('Evaluation question count differs from its phase')
+    record = dict(phase=phase, logical_step=trainer.global_steps,
+        actual_new_updates=getattr(trainer, 'actual_outer_updates', 0), pid=os.getpid(),
+        job_id=os.environ['SLURM_JOB_ID'], commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+        config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'], data_identity=DATA_SHA,
+        dataset_files=[dict(path=str(p), sha256=file_sha256(p)) for p in paths], metrics=metrics)
+    with (Path(root) / 'evaluations.jsonl').open('a') as stream:
+        stream.write(json.dumps(record, sort_keys=True) + '\n')
+        stream.flush()
+        os.fsync(stream.fileno())

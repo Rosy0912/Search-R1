@@ -801,6 +801,9 @@ class RayPPOTrainer(object):
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
             val_metrics = self._validate()
+            if fresh_instruct:
+                from search_r1.baselines.instruct300 import record_evaluation
+                record_evaluation(self, val_metrics, 'initial512', self.config.data.val_files)
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
             if self.config.trainer.get('val_only', False):
@@ -1000,6 +1003,9 @@ class RayPPOTrainer(object):
                              self.global_steps % self.config.trainer.test_freq == 0)):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
+                        if fresh_instruct:
+                            from search_r1.baselines.instruct300 import record_evaluation
+                            record_evaluation(self, val_metrics, 'periodic512', self.config.data.val_files)
                         metrics.update(val_metrics)
                     if (getattr(self, 'baseline_controller', None) is not None
                             and metrics.get('actor/optimizer_steps', 0) > 0):
@@ -1032,8 +1038,11 @@ class RayPPOTrainer(object):
                     if self.global_steps == 300:
                         if self.actual_outer_updates != 300 - instruct_origin:
                             raise RuntimeError('Instruct300 actual updates differ from stop counter')
+                        roundtrip_and_wait(self, final=True)
                         self._prepare_final_validation()
                         final_metrics = self._validate()
+                        from search_r1.baselines.instruct300 import record_evaluation
+                        record_evaluation(self, final_metrics, 'final51713', self.config.data.final_val_files)
                         if final_metrics.get('val/qa_count/all') != 51713:
                             raise RuntimeError('Instruct300 final evaluation count differs')
                         print('SEARCH_R1_INSTRUCT300_COMPLETE_JSON=' + json.dumps(dict(
