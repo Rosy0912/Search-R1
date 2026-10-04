@@ -44,10 +44,10 @@ phase WAITING_FOR_RETRIEVER
 "$PYTHON" - <<'PY'
 import requests,time,os,json
 from pathlib import Path
-base=Path(os.environ['E1_BASE']);url='http://10.123.4.11:18000/retrieve'
+base=Path(os.environ['E1_BASE']);url='http://10.120.17.101:18001/retrieve'
 for _ in range(1800):
  try:
-  h=requests.get('http://10.123.4.11:18000/health',timeout=10);h.raise_for_status();backend=h.json()
+  h=requests.get('http://10.120.17.101:18001/health',timeout=10);h.raise_for_status();backend=h.json()
   assert backend['ready'] and backend['ntotal']==21015324 and backend['tf32'] is False and backend['serialized']
   (base/'receipts/retriever-backend.json').write_text(json.dumps(backend,indent=2))
   r=requests.post(url,json={'queries':['capital of France'],'topk':3,'return_scores':True},timeout=120);r.raise_for_status();x=r.json();assert len(x['result'][0])==3
@@ -89,15 +89,15 @@ eval_steps=(200)
 if [[ "$PROFILE" == r1 ]]; then eval_steps+=(500); fi
 for eval_step in "${eval_steps[@]}"; do
  "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/eval-$eval_step-admission.json"
- "$PYTHON" -m search_e1.rollout --model "$BASE/runs/$PROFILE/round-1-grpo/actor/global_step_$eval_step" --data "$BASE/data/test-common-64.jsonl" --output "$BASE/runs/$PROFILE/round1-step-$eval_step-test64.jsonl" --k 1 --backend vllm --workers 4 --temperature 0 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round1-step-$eval_step-test64.log" 2>&1
+ "$PYTHON" -m search_e1.rollout --model "$BASE/runs/$PROFILE/round-1-grpo/actor/global_step_$eval_step" --data "$BASE/data/test-common-64.jsonl" --output "$BASE/runs/$PROFILE/round1-step-$eval_step-test64.jsonl" --k 1 --backend vllm --workers 4 --temperature 0 --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/round1-step-$eval_step-test64.log" 2>&1
 done
 phase OPSD_ROUND_1_TRAJECTORIES
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_1_trajectories-admission.json"
-"$PYTHON" -m search_e1.rollout --model "$checkpoint" --data "$BASE/data/train.jsonl" --output "$BASE/runs/$PROFILE/round1-rollouts.jsonl" --k 5 --backend vllm --workers 4 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round1-rollouts.log" 2>&1
+"$PYTHON" -m search_e1.rollout --model "$checkpoint" --data "$BASE/data/train.jsonl" --output "$BASE/runs/$PROFILE/round1-rollouts.jsonl" --k 5 --backend vllm --workers 4 --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/round1-rollouts.log" 2>&1
 "$PYTHON" -m search_e1.mine --rollouts "$BASE/runs/$PROFILE/round1-rollouts.jsonl" --output "$BASE/runs/$PROFILE/round1-pairs.jsonl"
 phase OPSD_ROUND_1
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_1-admission.json"
-PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round1-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round1-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round1-opsd.log" 2>&1
+PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round1-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round1-opsd" --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/round1-opsd.log" 2>&1
 export E1_MODEL="$BASE/runs/$PROFILE/round1-opsd/merged"
 test -f "$E1_MODEL/config.json"
 phase FRESH_GRPO_ROUND_2
@@ -109,12 +109,12 @@ test -f "$checkpoint/config.json"
 checkpoint=$(select_grpo 2 "$E1_MODEL")
 phase OPSD_ROUND_2_TRAJECTORIES
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_2_trajectories-admission.json"
-"$PYTHON" -m search_e1.rollout --model "$checkpoint" --data "$BASE/data/train.jsonl" --output "$BASE/runs/$PROFILE/round2-rollouts.jsonl" --k 5 --backend vllm --workers 4 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round2-rollouts.log" 2>&1
+"$PYTHON" -m search_e1.rollout --model "$checkpoint" --data "$BASE/data/train.jsonl" --output "$BASE/runs/$PROFILE/round2-rollouts.jsonl" --k 5 --backend vllm --workers 4 --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/round2-rollouts.log" 2>&1
 "$PYTHON" -m search_e1.mine --rollouts "$BASE/runs/$PROFILE/round2-rollouts.jsonl" --output "$BASE/runs/$PROFILE/round2-pairs.jsonl"
 phase OPSD_ROUND_2
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/opsd_round_2-admission.json"
-PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round2-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round2-opsd" --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/round2-opsd.log" 2>&1
+PYTHONPATH="$OPSD_RUNTIME/upstream/Search-R1:$OPSD_RUNTIME" "$PYTHON" -m torch.distributed.run --standalone --nproc_per_node=4 -m search_e1.opsd --model "$checkpoint" --pairs "$BASE/runs/$PROFILE/round2-pairs.jsonl" --validation "$BASE/data/validation.jsonl" --accumulation 8 --output "$BASE/runs/$PROFILE/round2-opsd" --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/round2-opsd.log" 2>&1
 phase FINAL_SEVEN_BENCHMARK_EVALUATION
 "$PYTHON" "$CONTROL/gpu_admission.py" > "$BASE/receipts/final_seven_benchmark_evaluation-admission.json"
-"$PYTHON" -m search_e1.rollout --model "$BASE/runs/$PROFILE/round2-opsd/merged" --data "$BASE/data/test.jsonl" --output "$BASE/runs/$PROFILE/final-test.jsonl" --k 1 --backend vllm --workers 4 --temperature 0 --retriever-url http://10.123.4.11:18000/retrieve > "$BASE/logs/final-test.log" 2>&1
+"$PYTHON" -m search_e1.rollout --model "$BASE/runs/$PROFILE/round2-opsd/merged" --data "$BASE/data/test.jsonl" --output "$BASE/runs/$PROFILE/final-test.jsonl" --k 1 --backend vllm --workers 4 --temperature 0 --retriever-url http://10.120.17.101:18001/retrieve > "$BASE/logs/final-test.log" 2>&1
 phase COMPLETED_ALL_STAGES

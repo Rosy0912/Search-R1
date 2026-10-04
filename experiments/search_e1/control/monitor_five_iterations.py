@@ -30,7 +30,8 @@ print(json.dumps(dict(profile=PROFILE,phase=phase,formal=formal.exists(),iterati
     report=json.loads(completed.stdout);break
    except (subprocess.TimeoutExpired, RuntimeError, json.JSONDecodeError) as error:
     print('READ_ONLY_MONITOR_CONNECTION_RETRY',host,attempt+1,str(error)[-160:],flush=True)
-    if attempt==5:raise
+    if attempt==5:
+     report=dict(profile=profile,formal=False,iteration=0,status='CONNECTION_UNKNOWN',heartbeat_age=999999,priority_error=False,nonfinite=False,peak_mib=0,connection_error=str(error)[-500:]);break
     time.sleep(5)
   reports.append(report)
  print(json.dumps(dict(check=poll,reports=reports),ensure_ascii=False),flush=True)

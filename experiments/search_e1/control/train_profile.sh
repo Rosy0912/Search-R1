@@ -10,7 +10,7 @@ export GPUS=4
 export MODEL=${E1_MODEL:-$BASE/assets/model}
 export OUTPUT="$BASE/runs/$PROFILE/$STAGE"
 export DATA_DIR="$BASE/data"
-export RETRIEVER_URL=${E1_RETRIEVER_URL:-http://10.123.4.11:18000/retrieve}
+export RETRIEVER_URL=${E1_RETRIEVER_URL:-http://10.120.17.101:18001/retrieve}
 export GRPO_SCORE_PER_GPU=4
 if [[ "$PROFILE" == archive ]]; then
  export STEPS=200 MINIBATCH=128 GRPO_MICRO_PER_GPU=2
