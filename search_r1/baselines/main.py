@@ -1,10 +1,11 @@
 """python -m search_r1.baselines.main baselines.method=gigpo [Hydra overrides]."""
 import hydra
 import ray
+from pathlib import Path
 from .controller import validate_config
 
 
-@hydra.main(config_path='../../verl/trainer/config', config_name='ppo_baselines', version_base=None)
+@hydra.main(config_path=str(Path(__file__).resolve().parents[2] / 'verl/trainer/config'), config_name='ppo_baselines', version_base=None)
 def main(config):
     from .preflight import validate_gpu_lease
     validate_gpu_lease(config)
