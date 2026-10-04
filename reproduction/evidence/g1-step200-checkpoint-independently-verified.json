@@ -1,0 +1,59 @@
+{
+  "checked_unix": 1791125689.669275,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "step": 200,
+  "independently_validated_tensor_count": 435,
+  "finite_all_saved_tensors": true,
+  "canonical_serialized_keys_shapes_complete": true,
+  "files_sha256": {
+    "model-00003-of-00003.safetensors": "433ba2f43b9da54cee419e30976d1dcec285603bec250595aee70b5a09ee7409",
+    "model-00002-of-00003.safetensors": "1f083ad80ff6dcdd04205e74cee53337c117e1191183694f2300560d718691ed",
+    "model-00001-of-00003.safetensors": "cf370d27eab7d87f02593995f187c369b795388b9fcab44e728d0ede30bff7d3",
+    "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+    "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b"
+  },
+  "checkpoint_marker": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "step": 200,
+    "validated_tensor_count": 435,
+    "finite_all_saved_tensors": true,
+    "checkpoint": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_200",
+    "files_sha256": {
+      "model-00003-of-00003.safetensors": "433ba2f43b9da54cee419e30976d1dcec285603bec250595aee70b5a09ee7409",
+      "model-00002-of-00003.safetensors": "1f083ad80ff6dcdd04205e74cee53337c117e1191183694f2300560d718691ed",
+      "model-00001-of-00003.safetensors": "cf370d27eab7d87f02593995f187c369b795388b9fcab44e728d0ede30bff7d3",
+      "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+      "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b"
+    }
+  },
+  "verification_device": "CPU; no GPU used",
+  "source_commit": "5707268",
+  "validation_step": 200,
+  "validation": {
+    "val/test_score/nq": 0.4,
+    "val/evaluated_count/nq": 10.0,
+    "val/test_score/triviaqa": 0.556,
+    "val/evaluated_count/triviaqa": 9.0,
+    "val/test_score/popqa": 0.111,
+    "val/evaluated_count/popqa": 9.0,
+    "val/test_score/hotpotqa": 0.444,
+    "val/evaluated_count/hotpotqa": 9.0,
+    "val/test_score/2wikimultihopqa": 0.0,
+    "val/evaluated_count/2wikimultihopqa": 9.0,
+    "val/test_score/musique": 0.0,
+    "val/evaluated_count/musique": 9.0,
+    "val/test_score/bamboogle": 0.222,
+    "val/evaluated_count/bamboogle": 9.0,
+    "val/perf/em": 0.25,
+    "val/trust/trust_at_correct": 0.719,
+    "val/trust/trust_at_searched_correct": 0.7,
+    "val/trust/trust_all_mean": 0.18,
+    "val/trust/cf_true": 0.0,
+    "val/trust/cf_hall": 0.0,
+    "val/trust/cf_amb": 0.0,
+    "val/trust/hall_rate": 0.0,
+    "val/cost/search_per_query": 0.938,
+    "val/cost/nosearch_rate": 0.062,
+    "val/cost/oversearch_rate": 0.0
+  }
+}
