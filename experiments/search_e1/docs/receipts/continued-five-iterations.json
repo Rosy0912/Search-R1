@@ -1,0 +1,35 @@
+{
+  "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+  "time": 1791123956.0242605,
+  "completed_steps": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "source_steps": [
+    1,
+    2
+  ],
+  "continued_steps": [
+    3,
+    4,
+    5
+  ],
+  "checkpoint_proof": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/receipts/continued-step3-weights.json",
+  "status": "RUNNING",
+  "heartbeat_age": 9.3719162940979,
+  "peaks_mib": {
+    "0": 16359,
+    "1": 16961,
+    "2": 17047,
+    "3": 16697,
+    "4": 16539,
+    "5": 17001,
+    "6": 16703,
+    "7": 16631
+  },
+  "full_reproduction_complete": false
+}
