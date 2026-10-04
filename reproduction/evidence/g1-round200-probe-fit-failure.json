@@ -1,0 +1,285 @@
+{
+  "checked_unix": 1791126546.2436118,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "new_rows": [
+    {
+      "step": 190.0,
+      "critic/rewards/mean": 0.578,
+      "actor/pg_loss": -0.024,
+      "actor/entropy_loss": 0.77,
+      "actor/kl_loss": 0.311,
+      "actor/ppo_kl": 0.004,
+      "actor/grad_norm": 1.1,
+      "timing_s/step": 319.462
+    },
+    {
+      "step": 191.0,
+      "critic/rewards/mean": 0.595,
+      "actor/pg_loss": 0.055,
+      "actor/entropy_loss": 0.732,
+      "actor/kl_loss": 0.353,
+      "actor/ppo_kl": 0.001,
+      "actor/grad_norm": 1.133,
+      "timing_s/step": 332.737
+    },
+    {
+      "step": 192.0,
+      "critic/rewards/mean": 0.651,
+      "actor/pg_loss": 0.06,
+      "actor/entropy_loss": 0.808,
+      "actor/kl_loss": 0.273,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.146,
+      "timing_s/step": 318.027
+    },
+    {
+      "step": 193.0,
+      "critic/rewards/mean": 0.687,
+      "actor/pg_loss": -0.075,
+      "actor/entropy_loss": 0.775,
+      "actor/kl_loss": 0.353,
+      "actor/ppo_kl": 0.005,
+      "actor/grad_norm": 1.158,
+      "timing_s/step": 314.63
+    },
+    {
+      "step": 194.0,
+      "critic/rewards/mean": 0.629,
+      "actor/pg_loss": -0.027,
+      "actor/entropy_loss": 0.786,
+      "actor/kl_loss": 0.285,
+      "actor/ppo_kl": 0.001,
+      "actor/grad_norm": 1.095,
+      "timing_s/step": 408.93
+    },
+    {
+      "step": 195.0,
+      "critic/rewards/mean": 0.655,
+      "actor/pg_loss": -0.027,
+      "actor/entropy_loss": 0.769,
+      "actor/kl_loss": 0.364,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.216,
+      "timing_s/step": 306.059
+    },
+    {
+      "step": 196.0,
+      "critic/rewards/mean": 0.612,
+      "actor/pg_loss": 0.032,
+      "actor/entropy_loss": 0.818,
+      "actor/kl_loss": 0.318,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.053,
+      "timing_s/step": 342.721
+    },
+    {
+      "step": 197.0,
+      "critic/rewards/mean": 0.643,
+      "actor/pg_loss": -0.088,
+      "actor/entropy_loss": 0.805,
+      "actor/kl_loss": 0.341,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.157,
+      "timing_s/step": 309.618
+    },
+    {
+      "step": 198.0,
+      "critic/rewards/mean": 0.59,
+      "actor/pg_loss": -0.011,
+      "actor/entropy_loss": 0.757,
+      "actor/kl_loss": 0.43,
+      "actor/ppo_kl": 0.006,
+      "actor/grad_norm": 1.077,
+      "timing_s/step": 310.566
+    },
+    {
+      "step": 199.0,
+      "critic/rewards/mean": 0.557,
+      "actor/pg_loss": -0.045,
+      "actor/entropy_loss": 0.777,
+      "actor/kl_loss": 0.362,
+      "actor/ppo_kl": 0.003,
+      "actor/grad_norm": 1.044,
+      "timing_s/step": 309.121
+    },
+    {
+      "step": 200.0,
+      "critic/rewards/mean": 0.612,
+      "actor/pg_loss": 0.01,
+      "actor/entropy_loss": 0.757,
+      "actor/kl_loss": 0.288,
+      "actor/ppo_kl": 0.002,
+      "actor/grad_norm": 1.137,
+      "timing_s/step": 370.231
+    }
+  ],
+  "pipeline_status": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "stage": "FAILED",
+    "unix": 1791125644.3804529,
+    "error": "AssertionError('trainer failed; see project log')"
+  },
+  "owned_handles": [
+    {
+      "name": "gpu-preflight",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1661891,
+        "start_ticks": 513120238,
+        "sid": 1661891
+      }
+    },
+    {
+      "name": "retriever",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1662661,
+        "start_ticks": 513121379,
+        "sid": 1662661
+      }
+    },
+    {
+      "name": "initial-calibration",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1663490,
+        "start_ticks": 513126931,
+        "sid": 1663490
+      }
+    },
+    {
+      "name": "probe-server",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1666472,
+        "start_ticks": 513146413,
+        "sid": 1666472
+      }
+    },
+    {
+      "name": "probe-admission",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1666699,
+        "start_ticks": 513148521,
+        "sid": 1666699
+      }
+    },
+    {
+      "name": "trainer",
+      "state": "STOPPED",
+      "leader": {
+        "pid": 1667170,
+        "start_ticks": 513151051,
+        "sid": 1667170
+      }
+    }
+  ],
+  "gpu_peak_mib": {
+    "0": 50965,
+    "1": 51507,
+    "2": 51507,
+    "3": 50817,
+    "5": 21119,
+    "6": 38112
+  },
+  "gpu_hour_peak_mib": {
+    "0": 45323,
+    "1": 45865,
+    "2": 45865,
+    "3": 45175,
+    "5": 19435,
+    "6": 38112
+  },
+  "gpu_last_sample": {
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "unix": 1791125652.99601,
+    "gpus": [
+      {
+        "index": 0,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "used_mib": 899,
+        "total_mib": 81920,
+        "util_percent": 48
+      },
+      {
+        "index": 6,
+        "used_mib": 427,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ]
+  },
+  "completed_updates": 200,
+  "training_terminal": true,
+  "failure_phase": "scheduled round200 probe fitting",
+  "failure_reason": "13 genuine searched calibration trajectories; MLP early-stopping stratified split failed because one training-fold class had one sample.",
+  "checkpoint200_independently_verified": true,
+  "validation_step": 200,
+  "validation_correct_counts": {
+    "nq": [
+      4,
+      10
+    ],
+    "triviaqa": [
+      5,
+      9
+    ],
+    "popqa": [
+      1,
+      9
+    ],
+    "hotpotqa": [
+      4,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      0,
+      9
+    ],
+    "bamboogle": [
+      2,
+      9
+    ]
+  },
+  "validation_em": 0.25,
+  "validation_change_percentage_points": -1.5625,
+  "validation_count_semantics": "Reconstructed from three-decimal console metrics and fixed source counts; not an independent ID audit.",
+  "console_precision": "3 decimal places",
+  "full300_accepted": false,
+  "reward_mean": 0.619,
+  "reward_mean_change": 0.026083333333333347,
+  "reward_range": [
+    0.557,
+    0.687
+  ],
+  "recovery_status": "Not yet restarted; preserve checkpoint200 and genuine dumps. No changed recipe or fabricated probes.",
+  "gpu_sample_semantics": "Sampler ended after terminal cleanup; last sample is historical, not current GPU state."
+}
