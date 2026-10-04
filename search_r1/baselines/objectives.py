@@ -98,9 +98,19 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
                 row = row + selected * delta[i][selected].sum()
             action_deltas.append(row)
         delta = torch.stack(action_deltas)
-    ratio = delta.exp()
+    # Keep the strict joint ratio and PPO surrogate, but evaluate their range in
+    # FP64. Weighted reduction happens before autograd casts back to model dtype.
+    # In particular, finite clipped/zero-advantage terms must not become 0*inf.
+    ratio = delta.double().exp()
     if not torch.isfinite(ratio[valid]).all():
-        raise ValueError('Policy ratio overflow on a supervised action/token')
+        bad = valid & ~torch.isfinite(ratio)
+        diagnostic = dict(count=int(bad.sum()), delta_min=float(delta.detach()[bad].min()),
+                          delta_max=float(delta.detach()[bad].max()),
+                          positive_advantage=int((bad & (advantages > 0)).sum()),
+                          negative_advantage=int((bad & (advantages < 0)).sum()),
+                          zero_advantage=int((bad & (advantages == 0)).sum()),
+                          delta_dtype=str(delta.dtype), ratio_dtype=str(ratio.dtype))
+        raise ValueError(f'Policy ratio overflow on a supervised action/token: {diagnostic}')
     loss1 = -advantages * ratio
     loss2 = -advantages * ratio.clamp(1 - cliprange, 1 + cliprange)
     loss = F.masked_sum(torch.maximum(loss1, loss2), weights) / denominator

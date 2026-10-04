@@ -171,7 +171,7 @@ class ActorAudit:
     def micro(self, logp, old, mask, loss, step_ids=None, advantages=None, loss_parts=None, ref_logp=None):
         valid = mask.bool()
         self.micro_stats.append(dict(current_log_probs=stats(logp, valid),
-                                     ratios=stats(torch.exp(logp.detach()[valid] - old.detach()[valid])),
+                                     ratios=stats(torch.exp((logp.detach()[valid] - old.detach()[valid]).double())),
                                      policy_loss=stats(loss)))
         if step_ids is not None:
             ratios=[]
@@ -181,7 +181,7 @@ class ActorAudit:
                     chosen=valid[row] & (step_ids[row] == action)
                     delta=(logp.detach()[row][chosen]-old.detach()[row][chosen]).sum()
                     deltas.append(delta)
-                    ratios.append(delta.exp())
+                    ratios.append(delta.double().exp())
             self.micro_stats[-1]['joint_action_ratios']=stats(torch.stack(ratios) if ratios else logp.new_empty(0))
         if not enabled():
             return

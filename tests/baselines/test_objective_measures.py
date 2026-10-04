@@ -51,7 +51,7 @@ class PaperMeasures(unittest.TestCase):
         current = theta.expand(1, 2)
         loss, clip, _ = weighted_policy_loss(torch.zeros_like(current), current, torch.ones_like(current),
             data.batch['info_mask'], data.batch['policy_weights'], .2, 1., data.batch['step_ids'])
-        torch.testing.assert_close(loss, torch.tensor(-1.2))
+        torch.testing.assert_close(loss, torch.tensor(-1.2, dtype=loss.dtype))
         self.assertEqual(clip.item(), 1.)
         loss.backward()
         self.assertEqual(theta.grad.item(), 0.)
