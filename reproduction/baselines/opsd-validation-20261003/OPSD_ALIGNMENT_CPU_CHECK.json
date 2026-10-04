@@ -1,0 +1,143 @@
+{
+  "source": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "cpu_only": true,
+  "teacher_prediction_position_checks": [
+    [
+      0,
+      0,
+      63,
+      31
+    ],
+    [
+      0,
+      1,
+      64,
+      41
+    ],
+    [
+      0,
+      3,
+      65,
+      32
+    ],
+    [
+      1,
+      0,
+      63,
+      51
+    ],
+    [
+      1,
+      1,
+      64,
+      61
+    ],
+    [
+      1,
+      2,
+      65,
+      62
+    ],
+    [
+      1,
+      3,
+      66,
+      52
+    ],
+    [
+      1,
+      4,
+      67,
+      53
+    ]
+  ],
+  "permuted_targets_follow_response_rows": true,
+  "observation_tokens_context_not_loss": true,
+  "native_action_parser_cases": [
+    {
+      "text": "<answer>Paris</answer>",
+      "parsed": [
+        [
+          "answer"
+        ],
+        [
+          "Paris"
+        ]
+      ],
+      "done": 1,
+      "valid": 1,
+      "search": 0
+    },
+    {
+      "text": "Paris",
+      "parsed": [
+        [
+          null
+        ],
+        [
+          ""
+        ]
+      ],
+      "done": 0,
+      "valid": 0,
+      "search": 0
+    },
+    {
+      "text": "<answer>Paris",
+      "parsed": [
+        [
+          null
+        ],
+        [
+          ""
+        ]
+      ],
+      "done": 0,
+      "valid": 0,
+      "search": 0
+    },
+    {
+      "text": "<search>capital France</search>",
+      "parsed": [
+        [
+          "search"
+        ],
+        [
+          "capital France"
+        ]
+      ],
+      "done": 0,
+      "valid": 1,
+      "search": 1
+    },
+    {
+      "text": "<think><answer>Paris</answer></think>",
+      "parsed": [
+        [
+          "answer"
+        ],
+        [
+          "Paris"
+        ]
+      ],
+      "done": 1,
+      "valid": 1,
+      "search": 0
+    },
+    {
+      "text": "<answer></answer>",
+      "parsed": [
+        [
+          "answer"
+        ],
+        [
+          ""
+        ]
+      ],
+      "done": 1,
+      "valid": 1,
+      "search": 0
+    }
+  ],
+  "limitation": "toy tokenizer/tensors, no actual teacher forward or stored train trajectory replay"
+}

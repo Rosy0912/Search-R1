@@ -1,0 +1,85 @@
+{
+  "commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "fixed_loss_source_sha256": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf",
+  "teacher": [
+    0.9,
+    0.1
+  ],
+  "toy_gradient_descent_lr": 0.1,
+  "toy_results": [
+    {
+      "component_clip": 0.05,
+      "loss": -0.16972245275974274,
+      "logit_gradient": [
+        0.009999998845160007,
+        -0.01000000536441803
+      ],
+      "student_before": [
+        0.09999999403953552,
+        0.8999999761581421
+      ],
+      "student_after": [
+        0.09982015192508698,
+        0.9001798629760742
+      ],
+      "true_KL_before": 1.757779598236084,
+      "true_KL_after": 1.7593797445297241
+    },
+    {
+      "component_clip": null,
+      "loss": 1.757779598236084,
+      "logit_gradient": [
+        -0.7999999523162842,
+        0.7999999523162842
+      ],
+      "student_before": [
+        0.09999999403953552,
+        0.8999999761581421
+      ],
+      "student_after": [
+        0.11534963548183441,
+        0.8846504092216492
+      ],
+      "true_KL_before": 1.757779598236084,
+      "true_KL_after": 1.6309819221496582
+    }
+  ],
+  "actual_clip_active_fraction": "NOT_LOGGED; causal attribution UNPROVEN",
+  "actual_snapshot_utc": "2026-10-04T03:22:58.410307+00:00",
+  "actual_recent_rounded_metrics": [
+    {
+      "step": 75.0,
+      "rollout/context_mismatches": 0.0,
+      "actor/opsd_loss": -0.001,
+      "actor/grad_norm": 0.076,
+      "critic/rewards/mean": 0.0,
+      "critic/rewards/max": 1.0,
+      "env/number_of_actions/mean": 3.866,
+      "env/finish_ratio": 0.059,
+      "env/ratio_of_valid_action": 0.056
+    },
+    {
+      "step": 76.0,
+      "rollout/context_mismatches": 0.0,
+      "actor/opsd_loss": -0.001,
+      "actor/grad_norm": 0.074,
+      "critic/rewards/mean": 0.001,
+      "critic/rewards/max": 1.0,
+      "env/number_of_actions/mean": 3.851,
+      "env/finish_ratio": 0.062,
+      "env/ratio_of_valid_action": 0.063
+    },
+    {
+      "step": 77.0,
+      "rollout/context_mismatches": 0.0,
+      "actor/opsd_loss": -0.001,
+      "actor/grad_norm": 0.071,
+      "critic/rewards/mean": 0.0,
+      "critic/rewards/max": 0.0,
+      "env/number_of_actions/mean": 3.882,
+      "env/finish_ratio": 0.05,
+      "env/ratio_of_valid_action": 0.05
+    }
+  ],
+  "scope": "Readonly git show and minimal CPU autograd; no GPU/server/job/source mutation"
+}
