@@ -1,0 +1,32 @@
+{
+  "original_run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "failed_round": 200,
+  "fix": "Precheck binary MLP early-stopping stratified split feasibility on every question-grouped training fold; infeasible entire candidate gets NaN, LR remains eligible; unexpected fit exceptions still propagate.",
+  "cpu_regression_tests_passed": 6,
+  "regression_device": "target CPU /data/search-g1/env/bin/python",
+  "actual_dump_fit_returncode": 0,
+  "actual_dump_directory": "/data/search-g1/artifacts/round_200-attempt-45789ea4c3e6446eb2b8e5c3a765187e/dumps",
+  "fitted_heads_directory": "/data/search-g1/tmp/round200-fit-regression/real-heads",
+  "commit_trajectory_count": 13,
+  "unique_question_count": 300,
+  "commit_class_counts": [
+    3,
+    10
+  ],
+  "boundary_class_counts": [
+    265,
+    35
+  ],
+  "commit_cv_auc": 0.75,
+  "boundary_cv_auc": 0.878361013986014,
+  "commit_position": "Xa",
+  "commit_label": "flip",
+  "readouts": {
+    "commit": "LR L21",
+    "boundary": "MLP128 L27"
+  },
+  "live_manifest_published": false,
+  "training_restarted": false,
+  "review": "Independent reviewer found no remaining must-fix after corrected test indentation; suggested whole-candidate two-fold regression added and passed.",
+  "limitations": "Sparse13 searched trajectories; proxy-label AUC is not QA EM. No proof of 201\u2013300 continuation yet."
+}

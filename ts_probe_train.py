@@ -12,6 +12,7 @@ Usage:
 """
 from __future__ import annotations
 import argparse, glob, json, os
+import math
 from collections import defaultdict
 
 import numpy as np
@@ -76,7 +77,18 @@ def cv_auc(X, y, groups, model="lr", n=2, max_n=15000):
         X, y, groups = X[idx], y[idx], groups[idx]
     aucs = []
     gss = GroupShuffleSplit(n_splits=n, test_size=0.2, random_state=0)
-    for tr, te in gss.split(X, y, groups):
+    splits = list(gss.split(X, y, groups))
+    # MLP early stopping adds a stratified split *inside* each training fold.
+    # Reject an infeasible candidate as a whole, so candidates are never ranked
+    # on different subsets of the same question-grouped held-out folds.
+    if model in ("mlp64", "mlp128", "mlp256"):
+        for tr, te in splits:
+            counts = np.unique(y[tr], return_counts=True)[1]
+            validation_size = math.ceil(0.1 * len(tr))
+            if (len(counts) != 2 or counts.min() < 2 or validation_size < 2
+                    or len(tr) - validation_size < 2):
+                return float("nan"), []
+    for tr, te in splits:
         if len(np.unique(y[tr])) < 2 or len(np.unique(y[te])) < 2:
             continue
         clf = make_clf(model).fit(X[tr], y[tr])
