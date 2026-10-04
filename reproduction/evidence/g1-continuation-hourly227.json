@@ -1,0 +1,162 @@
+{
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "checked_unix": 1791139616.7140448,
+  "anchor_unix": 1791134334.8148458,
+  "anchor_update": 211,
+  "main_live": true,
+  "supervisor_live": true,
+  "completed_updates": [
+    {
+      "step": 212,
+      "reward": 0.609
+    },
+    {
+      "step": 213,
+      "reward": 0.577
+    },
+    {
+      "step": 214,
+      "reward": 0.667
+    },
+    {
+      "step": 215,
+      "reward": 0.556
+    },
+    {
+      "step": 216,
+      "reward": 0.731
+    },
+    {
+      "step": 217,
+      "reward": 0.648
+    },
+    {
+      "step": 218,
+      "reward": 0.686
+    },
+    {
+      "step": 219,
+      "reward": 0.564
+    },
+    {
+      "step": 220,
+      "reward": 0.69
+    },
+    {
+      "step": 221,
+      "reward": 0.69
+    },
+    {
+      "step": 222,
+      "reward": 0.731
+    },
+    {
+      "step": 223,
+      "reward": 0.605
+    },
+    {
+      "step": 224,
+      "reward": 0.512
+    },
+    {
+      "step": 225,
+      "reward": 0.703
+    },
+    {
+      "step": 226,
+      "reward": 0.687
+    },
+    {
+      "step": 227,
+      "reward": 0.714
+    }
+  ],
+  "new_updates": 16,
+  "latest_step": 227,
+  "latest_reward": 0.714,
+  "console_precision": 3,
+  "reward_mean": 0.648125,
+  "reward_range": [
+    0.512,
+    0.731
+  ],
+  "sample_count": 4296,
+  "sample_end": 1791139615.4495358,
+  "hour_training_gpu_peak_mib": 40867,
+  "cumulative_training_gpu_peak_mib": 40867,
+  "latest_gpus": [
+    {
+      "index": 0,
+      "used_mib": 34743,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 1,
+      "used_mib": 34393,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 2,
+      "used_mib": 34839,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 3,
+      "used_mib": 34297,
+      "total_mib": 81920,
+      "util_percent": 100
+    },
+    {
+      "index": 5,
+      "used_mib": 17879,
+      "total_mib": 81920,
+      "util_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 24805,
+      "total_mib": 81920,
+      "util_percent": 0
+    }
+  ],
+  "total_mib": 81920,
+  "validation_step": 205,
+  "validation_correct": 20,
+  "validation_count": 64,
+  "validation_em": 0.3125,
+  "source_counts": {
+    "triviaqa": 9,
+    "2wikimultihopqa": 9,
+    "nq": 10,
+    "bamboogle": 9,
+    "hotpotqa": 9,
+    "popqa": 9,
+    "musique": 9
+  },
+  "source_correct": {
+    "triviaqa": 5,
+    "2wikimultihopqa": 1,
+    "nq": 5,
+    "bamboogle": 2,
+    "hotpotqa": 5,
+    "popqa": 1,
+    "musique": 1
+  },
+  "errors": [],
+  "window_samples": 2493,
+  "first_unix": 1791134335.3738253,
+  "last_unix": 1791139647.5359123,
+  "maximum_gap_seconds": 2.2953007221221924,
+  "stage_files": [
+    "assets-status.json",
+    "pipeline-status.json"
+  ],
+  "elapsed_minutes": 88.03165331681569,
+  "previous_reward_mean": 0.6296363636363637,
+  "reward_mean_delta": 0.01848863636363629,
+  "validation_em_delta": 0,
+  "stage": "GRPO_201_TO_300"
+}
