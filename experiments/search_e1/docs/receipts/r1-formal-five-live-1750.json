@@ -1,0 +1,217 @@
+{
+  "profile": "r1",
+  "acceptance": "At least five normal FORMAL iterations; full reproduction pending",
+  "checked_unix": 1791107459.1637623,
+  "completed_formal_iterations": 5,
+  "numeric_metrics_checked": 285,
+  "all_completed_numeric_metrics_finite": true,
+  "first_five": {
+    "1": {
+      "audit/strict_em": 0.176,
+      "audit/legacy_em": 0.27,
+      "actor/pg_loss": 0.026,
+      "actor/grad_norm": 0.969,
+      "actor/kl_loss": 0.002,
+      "timing_s/gen": 880.394,
+      "timing_s/ref": 331.758,
+      "timing_s/update_actor": 1571.9,
+      "timing_s/step": 3124.322
+    },
+    "2": {
+      "audit/strict_em": 0.153,
+      "audit/legacy_em": 0.254,
+      "actor/pg_loss": 0.023,
+      "actor/grad_norm": 0.986,
+      "actor/kl_loss": 0.002,
+      "timing_s/gen": 929.922,
+      "timing_s/ref": 332.254,
+      "timing_s/update_actor": 1606.554,
+      "timing_s/step": 3210.658
+    },
+    "3": {
+      "audit/strict_em": 0.157,
+      "audit/legacy_em": 0.256,
+      "actor/pg_loss": 0.031,
+      "actor/grad_norm": 0.925,
+      "actor/kl_loss": 0.002,
+      "timing_s/gen": 907.241,
+      "timing_s/ref": 330.56,
+      "timing_s/update_actor": 1599.11,
+      "timing_s/step": 3177.39
+    },
+    "4": {
+      "audit/strict_em": 0.142,
+      "audit/legacy_em": 0.228,
+      "actor/pg_loss": 0.031,
+      "actor/grad_norm": 0.916,
+      "actor/kl_loss": 0.002,
+      "timing_s/gen": 905.921,
+      "timing_s/ref": 330.624,
+      "timing_s/update_actor": 1603.691,
+      "timing_s/step": 3180.197
+    },
+    "5": {
+      "audit/strict_em": 0.167,
+      "audit/legacy_em": 0.26,
+      "actor/pg_loss": 0.011,
+      "actor/grad_norm": 1.043,
+      "actor/kl_loss": 0.002,
+      "timing_s/gen": 880.581,
+      "timing_s/ref": 329.819,
+      "timing_s/update_actor": 1590.253,
+      "timing_s/step": 3139.63
+    }
+  },
+  "latest": {
+    "audit/strict_em": 0.167,
+    "audit/legacy_em": 0.26,
+    "actor/pg_loss": 0.011,
+    "actor/grad_norm": 1.043,
+    "actor/kl_loss": 0.002,
+    "timing_s/gen": 880.581,
+    "timing_s/ref": 329.819,
+    "timing_s/update_actor": 1590.253,
+    "timing_s/step": 3139.63
+  },
+  "live_receipt": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "e2e33c84f289410384586e04b45e7497",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "2440107",
+          "/data/shaoshitong/search-e1-retriever-gpu-20261004/env/bin/python",
+          "15914"
+        ],
+        [
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "2440107",
+          "/data/shaoshitong/search-e1-retriever-gpu-20261004/env/bin/python",
+          "15918"
+        ],
+        [
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "2440107",
+          "/data/shaoshitong/search-e1-retriever-gpu-20261004/env/bin/python",
+          "15914"
+        ],
+        [
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "2440107",
+          "/data/shaoshitong/search-e1-retriever-gpu-20261004/env/bin/python",
+          "15914"
+        ]
+      ]
+    },
+    "started_unix": 1791090482.73229,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 15925,
+      "1": 15729,
+      "2": 15965,
+      "3": 15897
+    },
+    "sample_count": 8204,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1"
+    },
+    "pid": 2986860,
+    "updated_unix": 1791107447.8250055
+  },
+  "heartbeat_age": 11.338764667510986,
+  "supervisor_pid_alive": true,
+  "main_task_pid": 2989937,
+  "main_task_pid_alive": true,
+  "tmux_session": "e1-direct-oracle-pipeline-r1-20261004",
+  "tmux_alive": true,
+  "frozen_runtime_verified_files": 669,
+  "gpu_snapshot": [
+    "0, 6415, 24564, 96",
+    "1, 6341, 24564, 97",
+    "2, 6255, 24564, 95",
+    "3, 6917, 24564, 96"
+  ],
+  "config_evidence": [
+    "(main_task pid=2989937)                                  'entropy_coeff': 0.001,",
+    "(main_task pid=2989937)                                            'lr_warmup_steps_ratio': 0.285,",
+    "(main_task pid=2989937)                                            'total_training_steps': -1,",
+    "(main_task pid=2989937)                                  'ppo_mini_batch_size': 256,",
+    "(main_task pid=2989937)                                    'gpu_memory_utilization': 0.25,",
+    "(main_task pid=2989937)                       'lr_warmup_steps_ratio': 0.0,",
+    "(main_task pid=2989937)                       'total_training_steps': -1,",
+    "(main_task pid=2989937)             'ppo_mini_batch_size': 256,",
+    "(main_task pid=2989937)  'retriever': {'topk': 3, 'url': 'http://10.120.17.101:18001/retrieve'},",
+    "(main_task pid=2989937)              'save_freq': 50,",
+    "(main_task pid=2989937)              'test_freq': 50,",
+    "(main_task pid=2989937)              'total_training_steps': 501,",
+    "(WorkerDict pid=2990525) Total steps: 501, num_warmup_steps: 142",
+    "(WorkerDict pid=2990843) Total steps: 501, num_warmup_steps: 142 [repeated 3x across cluster]"
+  ],
+  "weight_change_evidence_scope": "Preserved two-update gate; formal save_freq50 has not yet produced a formal checkpoint",
+  "preserved_gate_checkpoint": {
+    "checkpoint": "/data/shaoshitong/search-e1-config-study-20261004/runs/r1/smoke-025/actor/global_step_2",
+    "tensor_count": 435,
+    "initial_tensor_count": 434,
+    "verified_aliases": {
+      "lm_head.weight": "model.embed_tokens.weight"
+    },
+    "nonfinite": [],
+    "changed": [
+      {
+        "key": "model.layers.0.self_attn.q_proj.weight",
+        "max_abs_delta": 7.450580596923828e-08
+      },
+      {
+        "key": "model.layers.1.self_attn.q_proj.weight",
+        "max_abs_delta": 7.450580596923828e-08
+      },
+      {
+        "key": "model.layers.10.self_attn.q_proj.weight",
+        "max_abs_delta": 7.450580596923828e-08
+      },
+      {
+        "key": "model.layers.11.self_attn.q_proj.weight",
+        "max_abs_delta": 7.450580596923828e-08
+      }
+    ],
+    "accepted": true
+  }
+}

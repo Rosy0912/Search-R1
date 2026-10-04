@@ -1,0 +1,30 @@
+[
+  {
+    "profile": "archive",
+    "phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1",
+    "formal": true,
+    "iteration": 15,
+    "status": "RUNNING",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "peak_mib": 40130,
+    "heartbeat_age": 4,
+    "priority_error": false,
+    "nonfinite": false,
+    "last_line": "(main_task pid=1437474) <answer>8</answer>",
+    "priority_tail": "WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION"
+  },
+  {
+    "profile": "r1",
+    "phase": "2026-10-04T05:07:57+00:00 FRESH_GRPO_ROUND_1",
+    "formal": true,
+    "iteration": 5,
+    "status": "RUNNING",
+    "run_id": "e2e33c84f289410384586e04b45e7497",
+    "peak_mib": 15965,
+    "heartbeat_age": 30,
+    "priority_error": false,
+    "nonfinite": false,
+    "last_line": "(main_task pid=2989937) epoch 0, step 6",
+    "priority_tail": "WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION"
+  }
+]
