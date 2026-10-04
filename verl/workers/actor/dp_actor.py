@@ -172,7 +172,6 @@ class DataParallelPPOActor(BasePPOActor):
 
         micro_batch_size = data.meta_info['micro_batch_size']
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
-        outer_identity = dict(data.meta_info)
         use_dynamic_bsz = data.meta_info['use_dynamic_bsz']
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids']
@@ -203,6 +202,7 @@ class DataParallelPPOActor(BasePPOActor):
     def update_policy(self, data: DataProto):
         # make sure we are in training mode
         self.actor_module.train()
+        outer_identity = dict(data.meta_info)
 
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size

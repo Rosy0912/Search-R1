@@ -141,3 +141,13 @@ def test_probe_flags_changed_buffer_dtype():
         model.counter = model.counter.double()
     assert probe.invalid
     assert model.counter.dtype == torch.float32
+
+
+def test_probe_flags_and_restores_changed_buffer_device():
+    from search_r1.baselines.loss_scaling import TransparentProbe
+    model = torch.nn.Linear(1, 1)
+    model.register_buffer('counter', torch.zeros(1))
+    with TransparentProbe(model) as probe:
+        model.counter = model.counter.to('meta')
+    assert probe.invalid
+    assert model.counter.device.type == 'cpu'

@@ -105,7 +105,8 @@ class TransparentProbe:
         with torch.no_grad():
             for name, value in self.buffers.items():
                 if (name in buffers and buffers[name].shape == value.shape
-                        and buffers[name].dtype == value.dtype):
+                        and buffers[name].dtype == value.dtype
+                        and buffers[name].device == self.buffer_devices[name]):
                     buffers[name].copy_(value.to(buffers[name].device))
                 else:
                     changed = True
