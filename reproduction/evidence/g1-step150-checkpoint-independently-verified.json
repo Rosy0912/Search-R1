@@ -1,0 +1,80 @@
+{
+  "checked_unix": 1791109016.5850418,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "step": 150,
+  "independently_validated_tensor_count": 435,
+  "finite_all_saved_tensors": true,
+  "canonical_serialized_keys_shapes_complete": true,
+  "files_sha256": {
+    "model-00003-of-00003.safetensors": "f938c558a390be2d6ff7773eace7d36eb201a1ef31b15193228459c96d2cb5ac",
+    "model-00002-of-00003.safetensors": "630ce335a5f1f7cb24cb5a9a28dc2520e0c94dfd0cccda9f4b98ad1d2c612f21",
+    "model-00001-of-00003.safetensors": "eda6f89c9421dfea3ed4038a7cc3e84b1f475a7cee60531aa8f6df7b30f19a3e",
+    "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+    "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b"
+  },
+  "verification_device": "CPU; no GPU used",
+  "source_commit": "5707268",
+  "validation_step": 150,
+  "validation": {
+    "val/test_score/nq": 0.5,
+    "val/evaluated_count/nq": 10.0,
+    "val/test_score/triviaqa": 0.667,
+    "val/evaluated_count/triviaqa": 9.0,
+    "val/test_score/popqa": 0.222,
+    "val/evaluated_count/popqa": 9.0,
+    "val/test_score/hotpotqa": 0.333,
+    "val/evaluated_count/hotpotqa": 9.0,
+    "val/test_score/2wikimultihopqa": 0.0,
+    "val/evaluated_count/2wikimultihopqa": 9.0,
+    "val/test_score/musique": 0.0,
+    "val/evaluated_count/musique": 9.0,
+    "val/test_score/bamboogle": 0.111,
+    "val/evaluated_count/bamboogle": 9.0,
+    "val/perf/em": 0.266,
+    "val/trust/trust_at_correct": 0.735,
+    "val/trust/trust_at_searched_correct": 0.7,
+    "val/trust/trust_all_mean": 0.195,
+    "val/trust/cf_true": 0.0,
+    "val/trust/cf_hall": 0.0,
+    "val/trust/cf_amb": 0.0,
+    "val/trust/hall_rate": 0.0,
+    "val/cost/search_per_query": 1.016,
+    "val/cost/nosearch_rate": 0.062,
+    "val/cost/oversearch_rate": 0.078
+  },
+  "validation_correct_counts": {
+    "nq": [
+      5,
+      10
+    ],
+    "triviaqa": [
+      6,
+      9
+    ],
+    "popqa": [
+      2,
+      9
+    ],
+    "hotpotqa": [
+      3,
+      9
+    ],
+    "2wikimultihopqa": [
+      0,
+      9
+    ],
+    "musique": [
+      0,
+      9
+    ],
+    "bamboogle": [
+      1,
+      9
+    ]
+  },
+  "validation_em": 0.265625,
+  "validation_change_percentage_points": -3.125,
+  "validation_count_semantics": "Integer correct counts reconstructed uniquely from three-decimal console and source counts; does not independently prove per-question IDs.",
+  "full300_accepted": false,
+  "refit150_adoption_verified": false
+}
