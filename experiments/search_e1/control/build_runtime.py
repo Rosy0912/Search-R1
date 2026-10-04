@@ -11,6 +11,7 @@ base=Path(a.base);repo=base/'source';archive=repo/'experiments/search_e1/archive
 receipt_profile=a.profile if a.purpose=='grpo' else a.profile+'-opsd'
 if runtime.exists():raise SystemExit('Runtime already exists; refusing to overwrite frozen source')
 shutil.copytree(archive,runtime,ignore=shutil.ignore_patterns('__pycache__','*.pyc','.cache'))
+shutil.copyfile(Path(__file__).with_name('virtual_dp.py'), runtime/'search_e1/virtual_dp.py')
 up=runtime/'upstream/Search-R1';shutil.copyfile(repo/'search_r1/qa_protocol.py',up/'search_r1/qa_protocol.py')
 legacy=up/'verl/utils/reward_score/qa_em.py';shutil.copyfile(legacy,runtime/'search_e1/historical_qa_em.py')
 s=legacy.read_text();s+='''\nfrom search_r1.qa_protocol import extract_final_answer
@@ -47,6 +48,23 @@ s=s.replace(needle,'''                stop_after = self.config.trainer.get('stop
                     print('SMOKE_STOP_AFTER_REAL_UPDATES', self.global_steps - 1, flush=True)
                     return
 ''' + needle,1);p.write_text(s)
+# Preserve the original four-way token reduction when B uses eight GPUs.
+p=up/'verl/trainer/ppo/ray_trainer.py';s=p.read_text()
+needle='        world_size = self.actor_rollout_wg.world_size'
+assert s.count(needle)==1
+s=s.replace(needle, '''        physical_world = self.actor_rollout_wg.world_size
+        virtual_world = int(os.environ.get('E1_VIRTUAL_DP_WORLD', '0'))
+        if virtual_world and (virtual_world != 4 or physical_world != 8):
+            raise ValueError('Virtual DP requires four logical/eight physical workers')
+        world_size = virtual_world or physical_world''',1)
+needle='        global_idx = torch.tensor([j for partition in global_partition_lst for j in partition])'
+assert s.count(needle)==1
+s=s.replace(needle, '''        if virtual_world:
+            from search_e1.virtual_dp import stripe_partitions
+            indices = stripe_partitions(global_partition_lst, logical_micro=16)
+        else:
+            indices = [j for partition in global_partition_lst for j in partition]
+        global_idx = torch.tensor(indices)''',1);p.write_text(s)
 p=up/'verl/workers/actor/dp_actor.py';s=p.read_text();s=s.replace('        self.actor_optimizer.step()', '''        if not torch.isfinite(grad_norm).all():
             raise FloatingPointError('Nonfinite actor gradient; optimizer update refused')
         self.actor_optimizer.step()''',1).replace('                loss.backward()', '''                if not torch.isfinite(loss).all():
@@ -85,7 +103,7 @@ p=up/'search_r1/search/retrieval_server.py';s=p.read_text();s='import os\n'+s
 s=s.replace('model.cuda()', "model.to(os.environ.get('E1_ENCODER_DEVICE', 'cuda'))")
 s=s.replace('v.cuda()', 'v.to(next(self.model.parameters()).device)');p.write_text(s)
 # Always start a task-private Ray cluster, independent of any ambient RAY_ADDRESS.
-p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "    for key in ['E1_PHYSICAL_MICRO', 'E1_PHYSICAL_SCORE', 'E1_JIT_OPTIMIZER', 'E1_LOGIT_CHUNK', 'E1_OPTIMIZER_CHUNK','E1_STAGE_CHUNK_STATES']:\n        if key in os.environ:\n            kwargs['runtime_env']['env_vars'][key] = os.environ[key]\n    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))",1);s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs['_system_config'] = dict(kwargs.get('_system_config', {}), enable_metrics_collection=False)\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "real_temp = Path(os.environ['E1_BASE']) / 'ray' / job\n    real_temp.mkdir(parents=True, exist_ok=True)\n    short_temp = Path('/tmp') / ('e1-' + str(os.getuid()) + '-' + job[:8])\n    if short_temp.exists() or short_temp.is_symlink():\n        if short_temp.resolve() != real_temp.resolve():\n            raise RuntimeError('Ray temporary link collision')\n    else:\n        short_temp.symlink_to(real_temp, target_is_directory=True)\n    kwargs.setdefault('_temp_dir', str(short_temp))",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
+p=runtime/'search_e1/grpo_main.py';s=p.read_text();s=s.replace("    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "    for key in ['E1_PHYSICAL_MICRO', 'E1_PHYSICAL_SCORE', 'E1_JIT_OPTIMIZER', 'E1_LOGIT_CHUNK', 'E1_OPTIMIZER_CHUNK','E1_STAGE_CHUNK_STATES', 'E1_VIRTUAL_DP_WORLD']:\n        if key in os.environ:\n            kwargs['runtime_env']['env_vars'][key] = os.environ[key]\n    job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))",1);s=s.replace("kwargs.setdefault('num_cpus'", "kwargs['address'] = 'local'\n    kwargs['_system_config'] = dict(kwargs.get('_system_config', {}), enable_metrics_collection=False)\n    kwargs.setdefault('num_cpus'",1).replace("job = os.environ.get('SLURM_JOB_ID', str(os.getpid()))", "job = os.environ.get('E1_RUN_ID', str(os.getpid()))",1).replace("kwargs.setdefault('_temp_dir', '/tmp/search-e1-ray-' + job)", "real_temp = Path(os.environ['E1_BASE']) / 'ray' / job\n    real_temp.mkdir(parents=True, exist_ok=True)\n    short_temp = Path('/tmp') / ('e1-' + str(os.getuid()) + '-' + job[:8])\n    if short_temp.exists() or short_temp.is_symlink():\n        if short_temp.resolve() != real_temp.resolve():\n            raise RuntimeError('Ray temporary link collision')\n    else:\n        short_temp.symlink_to(real_temp, target_is_directory=True)\n    kwargs.setdefault('_temp_dir', str(short_temp))",1).replace("    return main_ppo.main.__wrapped__(config)", "    try:\n        return main_ppo.main.__wrapped__(config)\n    finally:\n        ray.shutdown()",1);p.write_text(s)
 # Match driver shuffle and policy sampler seeds in both diagnostic arms.
 p=up/'verl/trainer/main_ppo.py';s=p.read_text();s=s.replace('def main_task(config):', 'def main_task(config):\n    import random\n    random.seed(42); np.random.seed(42); torch.manual_seed(42)',1);p.write_text(s)
 p=up/'verl/workers/rollout/vllm_rollout/vllm_rollout.py';s=p.read_text();s=s.replace('                                    dtype=config.dtype,', '                                    dtype=config.dtype,\n                                    seed=42,',1);p.write_text(s)

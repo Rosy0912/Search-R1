@@ -1,0 +1,20 @@
+{
+  "accepted": true,
+  "old_seconds": 0.14911084156483412,
+  "new_seconds": 11.587073927745223,
+  "new_health": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "75c4a3b2e60bdfb0d1c450e01f9cd99bec2d5245d753d28704755b1d08fdb30d"
+  },
+  "document_identity": true,
+  "score_atol": 1e-05,
+  "time": 1791111917.1842494
+}

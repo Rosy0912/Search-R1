@@ -26,12 +26,22 @@ def patch_actor(source):
                 response_length = logical_data['responses'].size(1)
                 logical_mask = logical_data['loss_mask'] if self.config.state_masking else logical_data['attention_mask'][:, -response_length:]
                 logical_tokens = logical_mask.sum().item()
+                virtual = int(os.environ.get('E1_VIRTUAL_DP_WORLD', '0'))
+                if virtual:
+                    if virtual != 4 or trajectory_reduction or not physical:
+                        raise ValueError('Virtual DP supports only physical token-mean R1 execution')
+                    from search_e1.virtual_dp import make_pair_group, pair_tokens
+                    if not hasattr(self, '_e1_pair_group'):
+                        self._e1_pair_group = make_pair_group()
+                    logical_tokens = pair_tokens(logical_tokens, self._e1_pair_group)
                 if physical and logical_tokens <= 0:
                     raise FloatingPointError('Logical microbatch has no masked tokens')
                 for data in pieces:
                     piece_mask = data['loss_mask'] if self.config.state_masking else data['attention_mask'][:, -response_length:]
                     piece_tokens = piece_mask.sum().item()
                     token_fraction = (len(data) / len(logical_data) if trajectory_reduction else piece_tokens / logical_tokens) if physical else 1.
+                    if virtual:
+                        token_fraction *= 2.
 ''' + block + '''
                 append_to_dict(metrics, logical_metrics)
                 if self.config.use_kl_loss:

@@ -9,7 +9,7 @@ from peft import LoraConfig,get_peft_model
 from search_e1.opsd import pair_loss,_opsd_collective_reject
 base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE']
 rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);local=int(os.environ['LOCAL_RANK'])
-assert world==4
+assert world in (4,8)
 random.seed(42);torch.manual_seed(42);torch.cuda.set_device(local)
 dist.init_process_group('nccl',timeout=timedelta(hours=3))
 model_path=str(base/'assets/model')
@@ -27,7 +27,7 @@ encoded=([ids(4096),ids(4096)],ids(4096),[1]*4096)
 tracked=next(p for name,p in model.named_parameters() if 'lora_B' in name);initial=tracked.detach().cpu().clone()
 torch.cuda.reset_peak_memory_stats();optimizer.zero_grad(set_to_none=True)
 losses=[];invalid=False
-for i in range(8):
+for i in range(32//world):
  loss=pair_loss(model,encoded,10.,32)
  invalid=invalid or not torch.isfinite(loss).all().item()
  if torch.isfinite(loss).all().item():(loss/32).backward()
@@ -47,7 +47,7 @@ with torch.no_grad():output=model.generate(input_ids=prefix,attention_mask=atten
 torch.cuda.synchronize();assert output.shape[1]==8192
 peak=torch.cuda.max_memory_reserved();total=torch.cuda.get_device_properties(local).total_memory
 _opsd_collective_reject(total-peak<6*1024**3,world,'OPSD gate insufficient6GiB allocator headroom')
-report=dict(rank=rank,world_size=world,global_pairs=32,local_pairs=8,losses=losses,grad_norm=float(grad_norm),changed=changed,update_peak_reserved_bytes=update_peak,generation_peak_reserved_bytes=peak,total_memory_bytes=total,synthetic_gate=True,context=8192,response=4096,generation_new_tokens=500,clip=10.,chunk=32,lr=1e-5)
+report=dict(rank=rank,world_size=world,global_pairs=32,local_pairs=32//world,losses=losses,grad_norm=float(grad_norm),changed=changed,update_peak_reserved_bytes=update_peak,generation_peak_reserved_bytes=peak,total_memory_bytes=total,synthetic_gate=True,context=8192,response=4096,generation_new_tokens=500,clip=10.,chunk=32,lr=1e-5)
 rows=[None]*world;dist.all_gather_object(rows,report)
 if rank==0:
  (base/'receipts'/f'{profile}-opsd-memory-update-gate.json').write_text(json.dumps(dict(status='ACCEPTED',ranks=rows,scope='Memory and actual pair_loss/AdamW update, no reward or EM inference'),indent=2))

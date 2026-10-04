@@ -2,7 +2,7 @@
 import json,urllib.request,urllib.error,os,time
 from fastapi import FastAPI,Request,HTTPException
 import uvicorn
-app=FastAPI();target='http://10.120.17.101:18001'
+app=FastAPI();target=os.environ.get('E1_RETRIEVER_TARGET','http://10.120.17.101:18001')
 opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 @app.get('/health')
 def health():
@@ -26,4 +26,4 @@ async def retrieve(request:Request):
     print('RETRIEVER_TRANSPORT_RETRY',type(error).__name__,str(error),flush=True)
     time.sleep(min(5,remaining))
  return await asyncio.to_thread(send)
-uvicorn.run(app,host='10.123.4.11',port=18000)
+uvicorn.run(app,host=os.environ.get('E1_RETRIEVER_BIND','10.123.4.11'),port=int(os.environ.get('E1_RETRIEVER_PORT','18000')))

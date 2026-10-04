@@ -1,0 +1,12 @@
+test_immutable_archive (test_overlay.OverlayTests) ... ok
+test_later_invalid_span_cannot_reuse_answer (test_overlay.OverlayTests) ... ok
+test_normal_final_answer (test_overlay.OverlayTests) ... ok
+test_observation_answer_excluded (test_overlay.OverlayTests) ... ok
+test_rollout_core_uses_provenance (test_overlay.OverlayTests) ... ok
+test_search_nested_rejected_and_diagnostic_preserved (test_overlay.OverlayTests) ... ok
+test_zero_response (test_overlay.OverlayTests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.024s
+
+OK

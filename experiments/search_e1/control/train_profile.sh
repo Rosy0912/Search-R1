@@ -6,7 +6,9 @@ export PYTHON="$BASE/env/bin/python"
 export PYTHONPATH="$RUNTIME/upstream/Search-R1:$RUNTIME"
 export WANDB_MODE=offline TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
 export NCCL_P2P_DISABLE=1 NCCL_IB_DISABLE=1
-export GPUS=4
+export GPUS=${E1_GPUS:-4}
+if [[ "$GPUS" != 4 && "$GPUS" != 8 ]]; then exit 2; fi
+if [[ "$GPUS" == 8 && "$PROFILE" != r1 ]]; then exit 2; fi
 export MODEL=${E1_MODEL:-$BASE/assets/model}
 export OUTPUT="$BASE/runs/$PROFILE/$STAGE"
 export DATA_DIR="$BASE/data"
@@ -17,6 +19,9 @@ if [[ "$PROFILE" == archive ]]; then
  entropy=0.0
 elif [[ "$PROFILE" == r1 ]]; then
  export STEPS=500 MINIBATCH=256 GRPO_MICRO_PER_GPU=16 GRPO_SCORE_PER_GPU=32
+ if [[ "$GPUS" == 8 ]]; then
+  export GRPO_MICRO_PER_GPU=8 GRPO_SCORE_PER_GPU=16 E1_VIRTUAL_DP_WORLD=4
+ fi
  entropy=0.001
 else
  exit 2

@@ -19,7 +19,7 @@ for attempt in range(37):
  time.sleep(5)
 
 record=dict(profile=profile,stage=stage,run_id=env['E1_RUN_ID'],admission=json.loads(admission),started_unix=time.time(),status='STARTING',utilization=float(env.get('E1_VLLM_UTIL','.4')),peaks_mib={},sample_count=0)
-record['execution_caps']={key:env.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK','E1_OPTIMIZER_CHUNK','E1_STAGE_CHUNK_STATES']}
+record['execution_caps']={key:env.get(key) for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK','E1_OPTIMIZER_CHUNK','E1_STAGE_CHUNK_STATES','E1_GPUS','E1_VIRTUAL_DP_WORLD']}
 p=subprocess.Popen(['bash',str(control/'train_profile.sh')],env=env,start_new_session=True)
 record.update(pid=p.pid,status='RUNNING')
 last=0
