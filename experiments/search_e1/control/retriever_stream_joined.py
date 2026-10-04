@@ -60,4 +60,12 @@ if any(p['reserved']>512*1024**2 for p in peaks):raise RuntimeError('Streaming r
 receipt=dict(cpu_seconds=cpu_sec,gpu_seconds=gpu_sec,queries=queries,cpu_ids=ci.tolist(),gpu_ids=gi.tolist(),cpu_scores=cs.tolist(),gpu_scores=gs.tolist(),checks=checks,score_atol=tol,tf32=False,encoder='unchanged CPU FP32 E5',shard_bounds=gpu.bounds,ntotal=gpu.ntotal,d=gpu.d,concurrent_512_requests=2,peaks=peaks,source_manifest_sha256=hashlib.sha256((base/'assets/manifest.json').read_bytes()).hexdigest())
 (base/'receipts/gpu-oracle-acceptance.json').write_text(json.dumps(receipt,indent=2))
 print('FULL_FP32_GPU_ORACLE_ACCEPTED',json.dumps(peaks),flush=True)
+# Register the newly accepted process after each owned restart; old records remain.
+archive=Path('/weka_3/shaoshitong/search-e1-config-study-20261004')
+registration=archive/'receipts/shared-gpu-oracle.json'
+if registration.exists():
+ (base/'receipts'/('shared-registration-before-'+str(os.getpid())+'.json')).write_bytes(registration.read_bytes())
+registered=dict(accepted=True,pid=os.getpid(),base=str(base),uuid='GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3',max_process_mib=1024,health_url='http://10.123.4.11:18003/health',acceptance_sha256=hashlib.sha256((base/'receipts/gpu-oracle-acceptance.json').read_bytes()).hexdigest())
+temporary=registration.with_suffix('.tmp');temporary.write_text(json.dumps(registered,indent=2));temporary.replace(registration)
+
 uvicorn.run(app,host='10.123.4.11',port=18003)
