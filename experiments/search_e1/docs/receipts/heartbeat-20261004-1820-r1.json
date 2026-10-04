@@ -1,0 +1,237 @@
+{
+  "time": 1791138028.0777507,
+  "host": "hkust1",
+  "phase": "2026-10-04T13:11:36.251229+00:00 CONTINUING_GRPO_ROUND_1_FROM_STEP_3\n",
+  "receipt": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [],
+      "owned_shared_oracle": null
+    },
+    "started_unix": 1791118516.1053102,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "sample_count": 9320,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1",
+      "E1_GPUS": "8",
+      "E1_VIRTUAL_DP_WORLD": "4"
+    },
+    "pid": 3546009,
+    "updated_unix": 1791138015.6422153
+  },
+  "metrics": [
+    "(main_task pid=3548832) step:11 - global_seqlen/min:538625.000 - global_seqlen/max:568176.000 - global_seqlen/minmax_diff:29551.000 - global_seqlen/balanced_min:555555.000 - global_seqlen/balanced_max:555555.000 - global_seqlen/mean:555555.000 - audit/legacy_em:0.259 - audit/strict_em:0.170 - audit/score_disagreement:0.089 - state_tokens/total:488176.000 - state_tokens/coverage:0.261 - actor/kl_coef:0.001 - actor/entropy_loss:0.972 - actor/pg_loss:0.036 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.000 - actor/kl_loss:0.003 - actor/grad_norm:1.338 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.170 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.170 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.000 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:0.000 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:729.729 - response_length/max:2917.000 - response_length/min:55.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.326 - prompt_length/max:228.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.173 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.983 - env/number_of_valid_action:2.128 - env/ratio_of_valid_action:0.990 - env/number_of_valid_search:1.145 - timing_s/gen:562.956 - timing_s/ref:172.811 - timing_s/adv:4.222 - timing_s/update_actor:839.140 - timing_s/step:1754.811 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.378 - timing_per_token_ms/ref:0.078 - timing_per_token_ms/gen:0.301",
+    "(main_task pid=3548832) step:12 - global_seqlen/min:526559.000 - global_seqlen/max:560205.000 - global_seqlen/minmax_diff:33646.000 - global_seqlen/balanced_min:549862.000 - global_seqlen/balanced_max:549863.000 - global_seqlen/mean:549862.500 - audit/legacy_em:0.244 - audit/strict_em:0.148 - audit/score_disagreement:0.096 - state_tokens/total:473417.000 - state_tokens/coverage:0.256 - actor/kl_coef:0.001 - actor/entropy_loss:0.942 - actor/pg_loss:-0.015 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.001 - actor/kl_loss:0.003 - actor/grad_norm:0.869 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.148 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.148 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.003 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.003 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:721.559 - response_length/max:3093.000 - response_length/min:76.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.602 - prompt_length/max:199.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.154 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.987 - env/number_of_valid_action:2.123 - env/ratio_of_valid_action:0.993 - env/number_of_valid_search:1.136 - timing_s/gen:564.665 - timing_s/ref:173.050 - timing_s/adv:4.102 - timing_s/update_actor:839.177 - timing_s/step:1756.292 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.382 - timing_per_token_ms/ref:0.079 - timing_per_token_ms/gen:0.306"
+  ],
+  "current_step": [
+    "13"
+  ],
+  "tail": [
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3839819776, 'reserved': 4135583744} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3838147072, 'reserved': 4294967296, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549569) E1_OPTIMIZER_MEMORY_START {'rank': 0, 'chunk': 1, 'staged': '1', 'allocated': 3839819776, 'reserved': 4135583744} [repeated 8x across cluster]",
+    "(WorkerDict pid=3549815) E1_OPTIMIZER_MEMORY_END {'rank': 3, 'allocated': 3838147072, 'reserved': 4294967296, 'peak_allocated': 16344317440, 'peak_reserved': 16793993216} [repeated 8x across cluster]"
+  ],
+  "nonfinite": false,
+  "sessions": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-eight-continuation-20261004: 1 windows (created Sun Oct  4 12:53:42 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)\n",
+  "gpu": "0, 8035 MiB, 24564 MiB, 100 %\n1, 8139 MiB, 24564 MiB, 100 %\n2, 8319 MiB, 24564 MiB, 100 %\n3, 8249 MiB, 24564 MiB, 100 %\n4, 8033 MiB, 24564 MiB, 100 %\n5, 7977 MiB, 24564 MiB, 100 %\n6, 8223 MiB, 24564 MiB, 100 %\n7, 7989 MiB, 24564 MiB, 100 %\n",
+  "processes": "3549569, GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 7994 MiB\n3549813, GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 8098 MiB\n3549814, GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 8278 MiB\n3549815, GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 8208 MiB\n3549816, GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 7992 MiB\n3549817, GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 7936 MiB\n3549818, GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 8182 MiB\n3549819, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 7948 MiB\n",
+  "frozen_runtime": {
+    "r1": {
+      "files": 305,
+      "changed_or_missing": []
+    },
+    "r1-full-resume-20261004": {
+      "files": 311,
+      "changed_or_missing": []
+    }
+  },
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "five_acceptance": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "time": 1791123956.0242605,
+    "completed_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "source_steps": [
+      1,
+      2
+    ],
+    "continued_steps": [
+      3,
+      4,
+      5
+    ],
+    "checkpoint_proof": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/receipts/continued-step3-weights.json",
+    "status": "RUNNING",
+    "heartbeat_age": 9.3719162940979,
+    "peaks_mib": {
+      "0": 16359,
+      "1": 16961,
+      "2": 17047,
+      "3": 16697,
+      "4": 16539,
+      "5": 17001,
+      "6": 16703,
+      "7": 16631
+    },
+    "full_reproduction_complete": false
+  },
+  "checkpoint3": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "time": 1791120442.2448268,
+    "initial": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 2.2351741790771484e-7
+        }
+      ],
+      "accepted": true
+    },
+    "previous_step2": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3",
+      "tensor_count": 435,
+      "initial_tensor_count": 435,
+      "verified_aliases": {},
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 1.4901161193847656e-7
+        }
+      ],
+      "accepted": true
+    },
+    "accepted": true
+  },
+  "pipeline_tail": [
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "{\"checkpoint\": \"/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_2\", \"tensor_count\": 435, \"initial_tensor_count\": 434, \"verified_aliases\": {\"lm_head.weight\": \"model.embed_tokens.weight\"}, \"nonfinite\": [], \"changed\": [{\"key\": \"model.layers.0.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.1.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.10.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}, {\"key\": \"model.layers.11.self_attn.q_proj.weight\", \"max_abs_delta\": 7.450580596923828e-08}], \"accepted\": true}",
+    "FROZEN_RUNTIME_VERIFIED r1 305",
+    "WAITING_UP_TO_180_SECONDS_FOR_IDLE_GPU_ADMISSION"
+  ]
+}
