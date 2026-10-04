@@ -5,6 +5,11 @@ base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];stage=os.envir
 control=base/'source/experiments/search_e1/control';receipt=base/'receipts'/f'{profile}-{stage}.json'
 if (base/'runs'/profile/stage).exists():raise SystemExit('Stage output already exists; preserve it before starting a fresh run')
 ids=os.environ['CUDA_VISIBLE_DEVICES'];env=dict(os.environ,E1_RUN_ID=uuid.uuid4().hex,RAY_enable_metrics_collection='0',TZ='UTC')
+score_override=base/'receipts/archive-live-physical-score1.json'
+if profile=='archive' and 'grpo' in stage and score_override.exists():
+ proof=json.loads(score_override.read_text())
+ assert sorted(r['rank'] for r in proof['ranks'])==list(range(4)) and all(r['physical_score']==1 for r in proof['ranks'])
+ env['E1_PHYSICAL_SCORE']='1'
 # Ray teardown may outlive the completed driver. Wait briefly without stopping
 # any process; every retry still applies the complete UUID/process admission.
 for attempt in range(37):

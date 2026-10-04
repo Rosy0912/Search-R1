@@ -1,0 +1,140 @@
+{
+  "time": 1791141999.8580186,
+  "host": "hkust4",
+  "phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+  "receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 47824,
+      "5": 44662,
+      "6": 41932,
+      "7": 41637
+    },
+    "sample_count": 28471,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791141989.4780247
+  },
+  "metrics": [
+    "(main_task pid=1437474) step:35 - global_seqlen/min:553106.000 - global_seqlen/max:576725.000 - global_seqlen/minmax_diff:23619.000 - global_seqlen/balanced_min:563794.000 - global_seqlen/balanced_max:563794.000 - global_seqlen/mean:563794.000 - audit/legacy_em:0.329 - audit/strict_em:0.240 - audit/score_disagreement:0.089 - state_tokens/total:417954.000 - state_tokens/coverage:0.220 - actor/kl_coef:0.001 - actor/entropy_loss:0.687 - actor/pg_loss:-0.008 - actor/pg_clipfrac:0.005 - actor/ppo_kl:-0.000 - actor/kl_loss:0.140 - actor/grad_norm:2.518 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.240 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.240 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.007 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.007 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:742.995 - response_length/max:2987.000 - response_length/min:46.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.934 - prompt_length/max:222.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.231 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.991 - env/number_of_valid_action:2.216 - env/ratio_of_valid_action:0.997 - env/number_of_valid_search:1.225 - timing_s/gen:486.930 - timing_s/ref:114.073 - timing_s/adv:4.409 - timing_s/update_actor:911.653 - timing_s/step:1633.550 - timing_per_token_ms/update_actor:0.404 - timing_per_token_ms/ref:0.051 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.256",
+    "(main_task pid=1437474) step:36 - global_seqlen/min:547323.000 - global_seqlen/max:585566.000 - global_seqlen/minmax_diff:38243.000 - global_seqlen/balanced_min:566829.000 - global_seqlen/balanced_max:566830.000 - global_seqlen/mean:566829.250 - audit/legacy_em:0.348 - audit/strict_em:0.258 - audit/score_disagreement:0.090 - state_tokens/total:429826.000 - state_tokens/coverage:0.224 - actor/kl_coef:0.001 - actor/entropy_loss:0.693 - actor/pg_loss:0.011 - actor/pg_clipfrac:0.006 - actor/ppo_kl:0.004 - actor/kl_loss:0.162 - actor/grad_norm:2.643 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.258 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.258 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.007 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.007 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:748.610 - response_length/max:3347.000 - response_length/min:64.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.061 - prompt_length/max:220.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.239 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.989 - env/number_of_valid_action:2.218 - env/ratio_of_valid_action:0.995 - env/number_of_valid_search:1.229 - timing_s/gen:474.100 - timing_s/ref:114.194 - timing_s/adv:4.569 - timing_s/update_actor:911.560 - timing_s/step:1621.287 - timing_per_token_ms/update_actor:0.402 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.247"
+  ],
+  "current_step": [
+    "37"
+  ],
+  "tail": [
+    "(main_task pid=1437474) step:36 - global_seqlen/min:547323.000 - global_seqlen/max:585566.000 - global_seqlen/minmax_diff:38243.000 - global_seqlen/balanced_min:566829.000 - global_seqlen/balanced_max:566830.000 - global_seqlen/mean:566829.250 - audit/legacy_em:0.348 - audit/strict_em:0.258 - audit/score_disagreement:0.090 - state_tokens/total:429826.000 - state_tokens/coverage:0.224 - actor/kl_coef:0.001 - actor/entropy_loss:0.693 - actor/pg_loss:0.011 - actor/pg_clipfrac:0.006 - actor/ppo_kl:0.004 - actor/kl_loss:0.162 - actor/grad_norm:2.643 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.258 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.258 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.007 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.007 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:748.610 - response_length/max:3347.000 - response_length/min:64.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.061 - prompt_length/max:220.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.239 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.989 - env/number_of_valid_action:2.218 - env/ratio_of_valid_action:0.995 - env/number_of_valid_search:1.229 - timing_s/gen:474.100 - timing_s/ref:114.194 - timing_s/adv:4.569 - timing_s/update_actor:911.560 - timing_s/step:1621.287 - timing_per_token_ms/update_actor:0.402 - timing_per_token_ms/ref:0.050 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.247",
+    "(main_task pid=1437474) epoch 0, step 37",
+    "(main_task pid=1437474) [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 746 & 500",
+    "(main_task pid=1437474) [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 679 & 500"
+  ],
+  "nonfinite": false,
+  "sessions": "e1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)\n",
+  "gpu": "0, 33266 MiB, 49140 MiB, 0 %\n1, 5666 MiB, 49140 MiB, 0 %\n2, 29088 MiB, 49140 MiB, 0 %\n3, 5928 MiB, 49140 MiB, 0 %\n4, 7432 MiB, 49140 MiB, 95 %\n5, 7432 MiB, 49140 MiB, 99 %\n6, 7432 MiB, 49140 MiB, 99 %\n7, 8045 MiB, 49140 MiB, 98 %\n",
+  "processes": "1164838, GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 33248 MiB\n840849, GPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 5648 MiB\n3065521, GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 29070 MiB\n3295494, GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 5910 MiB\n1437900, GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 7356 MiB\n1438381, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 7356 MiB\n1438382, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 7356 MiB\n1438383, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 7356 MiB\n1749337, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 610 MiB\n",
+  "frozen_runtime": {
+    "archive": {
+      "files": 669,
+      "changed_or_missing": []
+    }
+  },
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "shared_memory": {
+    "peak_mib": 41637,
+    "service_peak_mib": 630,
+    "current_mib": 8045,
+    "total_mib": 49140,
+    "reserve_mib": 7503,
+    "samples": 12250,
+    "time": 1791141991.033472,
+    "service_pid": 1749337
+  },
+  "oracle_registration": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  }
+}

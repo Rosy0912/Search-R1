@@ -1,0 +1,117 @@
+{
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "time": 1791141927.2525265,
+  "ranks": [
+    {
+      "rank": 0,
+      "pid": 1437900,
+      "previous": "2",
+      "physical_score": 1,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 36,
+        "verbose": false,
+        "_step_count": 37,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          6.31578947368421e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        720
+      ],
+      "logical_ref_micro": 4,
+      "logical_rollout_micro": 4,
+      "time": 1791141927.2510319
+    },
+    {
+      "rank": 2,
+      "pid": 1438382,
+      "previous": "2",
+      "physical_score": 1,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 36,
+        "verbose": false,
+        "_step_count": 37,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          6.31578947368421e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        720
+      ],
+      "logical_ref_micro": 4,
+      "logical_rollout_micro": 4,
+      "time": 1791141927.102955
+    },
+    {
+      "rank": 3,
+      "pid": 1438383,
+      "previous": "2",
+      "physical_score": 1,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 36,
+        "verbose": false,
+        "_step_count": 37,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          6.31578947368421e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        720
+      ],
+      "logical_ref_micro": 4,
+      "logical_rollout_micro": 4,
+      "time": 1791141927.1382437
+    },
+    {
+      "rank": 1,
+      "pid": 1438381,
+      "previous": "2",
+      "physical_score": 1,
+      "scheduler": {
+        "base_lrs": [
+          0.000001
+        ],
+        "last_epoch": 36,
+        "verbose": false,
+        "_step_count": 37,
+        "_get_lr_called_within_step": false,
+        "_last_lr": [
+          6.31578947368421e-7
+        ],
+        "lr_lambdas": [
+          null
+        ]
+      },
+      "optimizer_steps": [
+        720
+      ],
+      "logical_ref_micro": 4,
+      "logical_rollout_micro": 4,
+      "time": 1791141927.1284204
+    }
+  ],
+  "purpose": "Reduce physical read-only scoring pieces from2 to1; logical config unchanged",
+  "training_restarted": false,
+  "frozen_runtime_modified": false
+}
