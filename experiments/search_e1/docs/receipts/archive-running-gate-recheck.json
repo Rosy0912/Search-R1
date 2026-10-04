@@ -1,0 +1,30 @@
+{
+  "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-035/actor/global_step_2",
+  "tensor_count": 435,
+  "initial_tensor_count": 434,
+  "verified_aliases": {
+    "lm_head.weight": "model.embed_tokens.weight"
+  },
+  "nonfinite": [],
+  "changed": [
+    {
+      "key": "model.layers.29.self_attn.q_proj.weight",
+      "max_abs_delta": 3.6135315895080566e-7
+    },
+    {
+      "key": "model.layers.30.self_attn.q_proj.weight",
+      "max_abs_delta": 3.6135315895080566e-7
+    },
+    {
+      "key": "model.layers.31.self_attn.q_proj.weight",
+      "max_abs_delta": 3.4831464290618896e-7
+    },
+    {
+      "key": "model.layers.32.self_attn.q_proj.weight",
+      "max_abs_delta": 3.46451997756958e-7
+    }
+  ],
+  "accepted": true,
+  "checked_unix": 1791105305.73531,
+  "scope": "Preserved two-update memory gate; not a formal-step5 checkpoint"
+}
