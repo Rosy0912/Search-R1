@@ -1,0 +1,101 @@
+{
+  "checked_unix": 1791091870.909964,
+  "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+  "round": 100,
+  "version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca",
+  "calibration_report": {
+    "commit_cv_auc": 0.7963070040183161,
+    "boundary_cv_auc": 0.7509645061728395,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 801,
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "commit_class_counts": [
+      176,
+      625
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true
+  },
+  "head_sha256": {
+    "commit_probe.pkl": "b98a0da81edadc0aac6800dd8e331c55852a12cfab7ca3e60306de8869b71b98",
+    "boundary_probe.pkl": "f9684fa2479777c886cf8a0b9dcaadcecebe577df03ba00cc8bd7b6c85e76822"
+  },
+  "encoder_sha256": {
+    "config.json": "73d4fca429a6f2f7f022736869a70823e40635c8db3257b14a82c6e471f7a23b",
+    "model-00001-of-00003.safetensors": "cd90d8469af7a670615f4b47604bceb513fb83dc1005e4815c83b7c7e7cd0e4e",
+    "model-00002-of-00003.safetensors": "64b0fd1fad2b59734246f250a608b72f3a8392137f296e33fb8361f0fafdd4e1",
+    "model-00003-of-00003.safetensors": "6622f3623b5ec3aff56e5193b8e31a03f9e6dbdaf88a7b09185c27fd15e0dd99",
+    "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+    "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+    "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+  },
+  "heads_actual_sha_match": true,
+  "encoder_checkpoint100_sha_binding_verified": true,
+  "health": {
+    "ok": true,
+    "round": 100,
+    "encoder": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_100",
+    "version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca"
+  },
+  "label_proof_summary": {
+    "generation_allocated_before_release": 19514617344,
+    "generation_allocated_after_release": 16908288,
+    "model": "/data/search-g1/checkpoints/search-g1-a800/actor/global_step_100",
+    "question_count": 300,
+    "searched_valid_trajectory_count": 801,
+    "closed_book_label": "exact_match_no_retrieval",
+    "reliance_label": "normalized_answer_change_after_evidence_deletion",
+    "commit_position": "Xa",
+    "model_authored_answer_spans": true,
+    "group_size": 5,
+    "counterfactual_invalid_count": 0,
+    "counterfactual_strict_invalid_count": 0,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 256,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24
+    },
+    "malformed_calibration_action_policy": "terminate_without_retrieval_or_correction_turn",
+    "boundary_all_reserved_questions": true,
+    "observation_token_cap": 500,
+    "hidden_truncation_side": "left"
+  },
+  "full300_accepted": false,
+  "first_actual_update_with_new_probe": {
+    "checked_unix": 1791091984.1588962,
+    "run_id": "e1856e705ace460bb3a836e2cd9fde93",
+    "metrics": {
+      "step": "101",
+      "critic/rewards/mean": "0.616",
+      "actor/pg_loss": "-0.012",
+      "actor/entropy_loss": "0.962",
+      "actor/kl_loss": "0.323",
+      "actor/ppo_kl": "0.002",
+      "actor/grad_norm": "2.249",
+      "timing_s/step": "283.173"
+    },
+    "probe_version": "e1856e705ace460bb3a836e2cd9fde93:100:ba66ee78b2634d2ebcab9446972331ca",
+    "handles": [
+      {
+        "pid": 1661704,
+        "live": true
+      },
+      {
+        "pid": 1672776,
+        "live": true
+      }
+    ],
+    "finite": true,
+    "errors": [],
+    "gpu_sample_age_s": 0.2543668746948242
+  },
+  "auc_semantics": "Question-grouped CV AUC of intervention-label proxies, not benchmark answer accuracy.",
+  "reward_comparison_semantics": "Probe evaluator changed at100; reward shift across100/101 cannot be attributed solely to policy improvement."
+}
