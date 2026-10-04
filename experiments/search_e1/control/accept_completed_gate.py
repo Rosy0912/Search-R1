@@ -6,7 +6,7 @@ base=Path(os.environ['E1_BASE']);profile=os.environ['E1_PROFILE'];stage=os.envir
 subprocess.run([str(base/'env/bin/python'),str(base/'source/experiments/search_e1/control/verify_runtime.py')],check=True)
 r=json.loads((receipts/f'{profile}-{stage}.json').read_text())
 assert r['run_id']==run_id and r['status']=='COMPLETED' and r['exit_code']==0
-for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK']:assert r['execution_caps'].get(key)==os.environ.get(key)
+for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK','E1_OPTIMIZER_CHUNK']:assert r['execution_caps'].get(key)==os.environ.get(key)
 out=base/'runs'/profile/stage;log=(out/'train.log').read_text()
 assert 'SMOKE_STOP_AFTER_REAL_UPDATES 2' in log
 assert not re.search(r'actor/(?:pg_loss|grad_norm|kl_loss)\s*[:=]\s*(?:nan|inf)',log,re.I)

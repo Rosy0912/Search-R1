@@ -30,9 +30,10 @@ for chunk in [7,16,128]:
  del objects,logits,entropy,lp,gradients,a,b;torch.cuda.empty_cache()
 # Measure actual CUDA allocation, without saved-tensor hooks interacting with compile.
 sizes=[]
-for flag in [0,16]:
+measurement_chunk=int(os.environ.get('E1_CHECK_LOGIT_CHUNK','16'));measurement_rows=int(os.environ.get('E1_CHECK_ROWS','257'))
+for flag in [0,measurement_chunk]:
  os.environ['E1_LOGIT_CHUNK']=str(flag);torch.manual_seed(42)
- x=torch.randn(257,151936,device='cuda',requires_grad=True);y=torch.randint(0,151936,(257,),device='cuda')
+ x=torch.randn(measurement_rows,151936,device='cuda',requires_grad=True);y=torch.randint(0,151936,(measurement_rows,),device='cuda')
  # Warm compilation and backward outside the measurement.
  entropy,lp=statistics(x,y,entropy_fn);(entropy.mean()*.001-lp.mean()).backward()
  del entropy,lp;x.grad=None;torch.cuda.synchronize();torch.cuda.empty_cache()
@@ -41,5 +42,5 @@ for flag in [0,16]:
  sizes.append(torch.cuda.max_memory_allocated()-baseline)
  del x,y,entropy,lp;torch.cuda.empty_cache()
 assert sizes[1]<sizes[0]*.75,sizes
-print(json.dumps(dict(rank=rank,result='FSDP_ROW_STATISTICS_EQUIVALENCE_OK',chunks=[7,16,128],peak_additional_bytes=sizes)),flush=True)
+print(json.dumps(dict(rank=rank,result='FSDP_ROW_STATISTICS_EQUIVALENCE_OK',chunks=[7,16,128],peak_additional_bytes=sizes,measurement_chunk=measurement_chunk,measurement_rows=measurement_rows)),flush=True)
 dist.barrier();dist.destroy_process_group()

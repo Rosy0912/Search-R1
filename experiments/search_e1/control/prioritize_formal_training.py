@@ -18,7 +18,7 @@ try:
   time.sleep(30)
  else:raise RuntimeError('Live gate timed out')
  assert record['status']=='COMPLETED' and record['exit_code']==0
- for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK']:assert record['execution_caps'].get(key)==os.environ.get(key)
+ for key in ['E1_PHYSICAL_MICRO','E1_PHYSICAL_SCORE','E1_JIT_OPTIMIZER','E1_LOGIT_CHUNK','E1_OPTIMIZER_CHUNK']:assert record['execution_caps'].get(key)==os.environ.get(key)
  subprocess.run([python,str(control/'verify_runtime.py')],check=True)
  out=base/'runs'/profile/stage;log=(out/'train.log').read_text()
  assert 'SMOKE_STOP_AFTER_REAL_UPDATES 2' in log
