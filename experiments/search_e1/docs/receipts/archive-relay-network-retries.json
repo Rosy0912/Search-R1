@@ -1,0 +1,19 @@
+{
+  "activated_unix": 1791092034.6420946,
+  "before_sha256": "8310f49c1ac3d8e36a433094ebdc7d4ed8c447c11680a1d473428556e65af0bd",
+  "after_sha256": "2fd4f0a7240c0f97d05128eebcc5caf9c42d7b9b5acbe49797e1a94aa87b63fd",
+  "preserved_training_run": "f04fe593830c4831918ede872812c016",
+  "backend": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 sharded FlatIP",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "b987f2d82e8499c0f562d0dc2eda9c941dcc80c2feb2e8f749cd27db900f24d6"
+  },
+  "scope": "only owned relay; no established retrieval connections; actor/reference phase verified"
+}
