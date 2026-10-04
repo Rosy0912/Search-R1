@@ -82,6 +82,8 @@ def validate_config(config):
         # the explicit full-logits budget before allocating the student logits.
         if config.baselines.distillation.chunk_size < 1:
             raise ValueError('Distillation chunk_size must be positive')
+        if config.baselines.distillation.get('teacher_prompt_mode', 'legacy') not in ('legacy', 'user_context'):
+            raise ValueError('Unknown teacher prompt mode')
         if type(config.baselines.distillation.get('loss_checkpointing', False)) is not bool:
             raise ValueError('Distillation loss_checkpointing must be a boolean')
     if method == 'tree_grpo':

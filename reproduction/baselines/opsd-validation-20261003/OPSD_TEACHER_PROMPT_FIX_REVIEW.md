@@ -1,0 +1,31 @@
+# OPSD teacher user-context 候选独立审查
+
+结论：**当前候选通过设计、源码与CPU结构/对齐审查，无发现的阻断项；不代表真实3B行为或效果通过，不授权自动训练/部署。** 本次只写本报告，不改代码、不提交、不启动GPU或修改远端。
+
+## 审核身份与改动
+
+候选distillation.py SHA256 `4ebe6886d2de09186676f0388e9692c488424fddf9ce003828cc04a65931e5c0`；ppo_baselines.yaml SHA256 `ff292a15d2cb4ec863d89fd188fa4ddd470e9bb90ae7d8f5ab53b2de4d9835f2`；test_opsd_teacher_prompt.py SHA256 `9d45d39702d3e0c8b0802dd59d4a4d2047246c77ea64426591dd5827413bc3ec`。
+
+teacher_inputs添加prompt_mode（函数默认legacy）；opsd_loss从settings读取、缺省legacy。YAML候选默认user_context，是明确改变教师条件的适配候选，不能宣称数学目标/全部梯度与冻结8e一致，也不回填历史。学生输入、已有学生response/history、targets来源、mask、分母、clip及教师权重均未改。generalized_jsd/优化路径不因该候选改变；改变的是教师的条件分布。
+
+## 边界与最小修正审核
+
+实现精确限定Qwen非thinking ChatML：以唯一sentinel构造user消息，比较add_generation_prompt True/False，检查rendered恰1个sentinel、无generation版本是其前缀，且新增generation精确为assistant边界。suffix必须精确为user结束+assistant开头，再编码为IDs。实际去pad的prompt必须严格以suffix IDs结尾，否则拒绝。hint插入user结束之前，保留原suffix和相同学生history。重新计算absolute prediction positions。
+
+该限制关闭“模板忽略generation但仍放行”及“实际prompt缺边界仍插入”风险。hint编码若含any special ID拒绝，防止答案别名制造额外角色/控制token。未知mode、无模板、模板布局差异、错suffix、超长均明确拒绝，不静默回落legacy。此实现不是通用模板适配；Qwen3额外thinking前缀或其他模板会拒绝，是明确兼容边界，后续不能未经审查放宽。
+
+去pad逻辑沿用旧实现，不新引入student重编码或历史移除。无targets时user_context返回与legacy一致，TOP-D既定privileged_answers=false路径不受新提示影响。controller的OPSD路径不调用teacher.log_probs作reward；actor.opsd_loss直接接收到mode，因此没有发现controller丢掉此设置而导致实际loss仍legacy的错误。未来若为TOP-D开启privileged_answers，teacher.log_probs当前不传此mode，不能据这个公共YAML字段声称TOP-D也使用structured答案提示；这不阻断当前纯OPSD候选。
+
+## 独立CPU执行
+
+以CUDA_VISIBLE_DEVICES为空执行新teacher测试与loss日志测试：**10 passed / 2.85s**（9个teacher、1个日志）。真实ByteLevel BPE+PreTrainedTokenizerFast+Qwen ChatML覆盖：hint位于user中；student原张量不变；response字节及prediction positions配对；legacy仍把hint追加assistant之后；无targets相同；6种拒绝负例（缺suffix、忽略generation、无模板、特殊token、context超长、未知mode）。真实tiny Qwen2含内部attention空洞，teacher冻结无梯度、student梯度非零/finite。
+
+额外独立不落盘CPU probe使用两条不同长度prompt/response，包含search/observation/answer历史和排除观察的loss_mask。捕获16个非空分块的实际teacher LM-head结果，逐词表与完整teacher HF forward按positions gather的参考比对；最大absolute delta `2.9802322387695312e-08`，全部close通过。student梯度finite、teacher全部grad None。此处不宣称跨GEMM形状字节相同，也不宣称3B/GPU验收。
+
+## 仍未证明的内容
+
+root真实tokenizer旧构造CPU原始记录确认hint位于assistant前缀之后；新候选在当前固定真实Qwen2.5 tokenizer的tokenizer-only核对仍由root收证。它可以证明角色与tokens，不证明teacher动作概率改善。真实3B样本上，teacher对合法search/answer/结束动作、正确答案、clipping激活及单次更新方向的对照仍PENDING。CPU结构修复与有限梯度不能替代这些证据。
+
+该提示比旧裸注释更忠实于作者“user提供特权信息后重新作答”的结构，但answer-only、Search工具协议、全参数学生和其他超参数仍是适配，不能称原数学任务逐项复现。新的教学transition是Search适配设计，不是已经证明能修复崩溃。component clip原机制反教师风险没有被此patch消除。
+
+后续如批准新source，应冻结明确mode及YAML身份，保留legacy配对对照，先完成真实教师语义诊断，再决定受控短跑；当前通过只允许继续本地候选主审，不自动启动长跑或将停止3007改名成功。

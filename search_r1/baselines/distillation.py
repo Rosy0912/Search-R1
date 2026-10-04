@@ -28,14 +28,36 @@ def generalized_jsd(student_logits, teacher_logits, beta=0., temperature=1., com
     return parts.sum(-1)
 
 
-def teacher_inputs(tokenizer, prompts, responses, response_attention, targets=None, max_length=None):
-    """Append private training-answer hint to prompt, then identical student response.
+def teacher_inputs(tokenizer, prompts, responses, response_attention, targets=None, max_length=None,
+                   prompt_mode='legacy'):
+    """Add private answers to teacher context, then identical student response.
 
     Return absolute prediction positions for every response target. Observations
     remain in response and attention, but the caller excludes them from loss.
     """
     from .rollout import padded
+    if prompt_mode not in ('legacy', 'user_context'):
+        raise ValueError('Unknown teacher prompt mode')
     pad = tokenizer.pad_token_id
+    suffix_ids = None
+    if targets is not None and prompt_mode == 'user_context':
+        # Explicit Qwen ChatML adapter: preserve original prompt token IDs and
+        # insert privileged text inside its last user turn, before its closure.
+        if not getattr(tokenizer, 'chat_template', None):
+            raise ValueError('Structured teacher context requires a chat template')
+        marker = 'OPSD_TEMPLATE_CONTENT_SENTINEL_71c8'
+        messages = [{'role': 'user', 'content': marker}]
+        rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        without_generation = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+        if rendered.count(marker) != 1 or not rendered.startswith(without_generation):
+            raise ValueError('Unsupported teacher chat template layout')
+        generation = rendered[len(without_generation):]
+        suffix = rendered.split(marker)[1]
+        if generation != '<|im_start|>assistant\n' or suffix != '<|im_end|>\n' + generation:
+            raise ValueError('Structured teacher context currently requires Qwen ChatML boundaries')
+        suffix_ids = tokenizer.encode(suffix, add_special_tokens=False)
+        if not suffix_ids:
+            raise ValueError('Empty teacher chat suffix')
     prefixes, rows = [], []
     for i, prompt in enumerate(prompts):
         prefix = prompt[prompt != pad].tolist()
@@ -44,7 +66,18 @@ def teacher_inputs(tokenizer, prompts, responses, response_attention, targets=No
             if isinstance(answers, str):
                 answers = [answers]
             hint = '\n[Teacher-only training context: accepted answers: ' + repr(list(answers)) + ']\n'
-            prefix += tokenizer.encode(hint, add_special_tokens=False)
+            if suffix_ids is not None:
+                if len(prefix) < len(suffix_ids) or prefix[-len(suffix_ids):] != suffix_ids:
+                    raise ValueError('Student prompt does not end with the verified chat suffix')
+                hint += ('Use the reference answers to understand the question, then reason independently. '
+                         'Continue following the requested <think>, <search>, and <answer> protocol. '
+                         'Do not quote the answer list or these teacher-only instructions.\n')
+                hint_ids = tokenizer.encode(hint, add_special_tokens=False)
+                if set(hint_ids).intersection(tokenizer.all_special_ids):
+                    raise ValueError('Teacher hint contains chat control or special tokens')
+                prefix = prefix[:-len(suffix_ids)] + hint_ids + suffix_ids
+            else:
+                prefix += tokenizer.encode(hint, add_special_tokens=False)
         prefixes.append(len(prefix))
         response = responses[i][response_attention[i].bool()].tolist()
         row = prefix + response
@@ -64,7 +97,8 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
     width = tensors['responses'].shape[1]
     tid, tmask, positions = teacher_inputs(tokenizer, tensors['prompts'], tensors['responses'],
                                            tensors['attention_mask'][:, tensors['attention_mask'].shape[1] - width:], targets,
-                                           teacher.model.config.max_position_embeddings)
+                                           teacher.model.config.max_position_embeddings,
+                                           getattr(settings, 'teacher_prompt_mode', 'legacy'))
     with teacher.measure(), torch.no_grad():
         hidden = teacher.model.base_model(input_ids=tid.to(teacher.device),
                                           attention_mask=tmask.to(teacher.device),
