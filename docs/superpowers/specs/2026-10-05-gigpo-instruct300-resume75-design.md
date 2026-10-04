@@ -6,7 +6,7 @@
 
 已读实际Torch2.4 CPU原目标：4token同动作delta各25，negative advantage -1，FP64前向有限而float32反传Inf。实际84精确输入未保存，不能称已重演84。禁止改joint ratio、截断优势/概率比、改变sequence_mean、PG/KL相对权重或跳坏梯度。
 
-在每个完整全局mini128更新前进行no-grad范围探针；探针前后恢复CPU/CUDA/Python/NumPy RNG，训练态和参数不变，不能多推进数据/scheduler/Adam。探针逐微批计算原GiGPO joint log-ratio，仅对有正policy weight、非零优势且PPO未被裁剪封住的导数分支取上界。全8rank MAX归约后得到统一正标量s=exp(min(0,40-max_active_logratio))；必须detach。同一完整mini全部微批及rank对完整PG+KL(+原entropy项)施以同s，不逐micro独立缩放。
+在每个完整全局mini128更新前进行no-grad范围探针；探针前后恢复CPU/CUDA/Python/NumPy及sharding-manager RNG、全部named buffers与每个module训练模式；验证FSDP处于IDLE，参数及_local_shard的layout/device/offload边界返回原态（不能用恢复RNG代替此证据）。native对全部参数和内部shard实物identity前后比较，逐微批probe与真实forward的logp/branch一致。不能多推进数据/scheduler/Adam。探针逐微批计算原GiGPO joint log-ratio，仅对有正policy weight、非零优势且PPO未被裁剪封住的导数分支取上界。全8rank MAX归约后得到统一正标量s=exp(min(0,40-max_active_logratio))；必须detach。同一完整mini全部微批及rank对完整PG+KL(+原entropy项)施以同s，不逐micro独立缩放。
 
 真实反传累积h=s*g。FSDP sharded/replicated归约保持原计数及DP平均；以FP64计算||h||，有限检查不能省略。保持原epsilon=1e-6和C=1的等价裁剪：h*min(1/s, C/(||h||+s*epsilon))。返回并审计未缩放的原范数||h||/s；该值也必须有限，不采用clip(h)/s，不先把h/s写回低精度梯度造成溢出。Adam收到原数学裁剪向量；若真实损失/输入/缩放/梯度/原范数仍非有限则拒绝且保存失败mini详细证据。前向原目标及原诊断数值保持不变。
 
@@ -27,3 +27,14 @@ scheduler直接加载75/LR1e-6/_step_count76，不能重建Adam/重走57warmup�
 原通用512x5、mini128/actor globalmicro16/oldref32、epochs1/20Adam/outer、57warmup、LR1e-6、entropy0/KL.001/lowvar/clip.2/grad1、所有长度及共同instruction/template/data均保持。线上仅h100-8 GPU E5+完整八GPU FAISS/top3/loopback18081/Ray16381。Slurm独占/双15/UUID-OFD/pidfd-cgroup/60秒清理全部保留。不杀他人、不降micro/预算、不跳badgrad。
 
 数值修复、恢复和部署均须独立接受；native不算训练轮数，恢复后的76–80不能从Base重新训练替代。自动监督继续每小时；用户已要求每小时问询/状态更新，报告真实logical完成、恢复新增N/225、checkpoint及评估。失败再按最新授权从最新完整检查点恢复，先诊断真实terminal状态，不因观测timeout重复启动。
+
+
+## 设计审查闭锁补充
+
+尺度40只限制活跃PG输出导数数量级，不是36层网络Jacobian严格上界，不能保证任意输入反传有限。仍严格全rank检验真实scaled gradients、还原FP64原norm、最终送Adam的全部梯度和loss；不finite就拒绝，不跳样本/坏梯度。选择s>0的可表示范围，无法表示或原norm无法表示时拒绝，不能改成任意小常量截断；native/CPU需覆盖极小scale下underflow、正负大项抵消及PG小项/KL主导，验证误差与参考oracle，不以单一scalar toy为全域证据。
+
+所有rank含空mask或本地非法输入仍按同一badflag→MAX序列参与collective；在同步badflag之前只收集错误，不抛出rank-local异常。若probe forward本身出现无法协调的CUDA异常，保存证据并由现有Ray/Slurm故障清理退出，不能在其他rank永远等待而声称数值通过。
+
+恢复双计数：retained logical从75继续76..300，resume新增计数1..225；实际Adam各rank为75时1500、80时1600、300时6000；scheduler为75/80/300，数据cursor分别38400/40960/153600，driver samplerepoch0且完整169028排列一致。旧fresh actual==300或门禁逻辑first5==5不能不改直接用于resume；新收据明确original_retained75/resume_new_N/retained_total75+N，旧失败分支76..83另记算力，不算恢复保留轨迹。
+
+跨job实物保存集合严格14点：原5/25/50/75，新80/100/125/150/175/200/225/250/275/300（80是额外门禁）。严格验证事件身份：原job3185初始0与50，新resume job100/150/200/250/300共七个512；原5与新80共两个64stage；新300最终51713一次。每条来源raw bytes/SHA、job/source/step/evaluation role、实际data manifest必须匹配，不能数值相同去重、任意count放行或补伪receipt。resume不再初始化默认val_before_train，不重用旧9receipt watcher；新的独立结尾验收直接按确定来源的原始driver事件。原checkpoint75虽source旧commit，新恢复必须严格迁移代码身份并保留旧原manifest，不修改其SHA。
