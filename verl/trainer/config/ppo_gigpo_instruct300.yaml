@@ -49,6 +49,8 @@ actor_rollout_ref:
 baselines:
   method: gigpo
   loss_reduction: sequence_mean
+  bapo:
+    stage_validation_size: 64
   local_runtime_only: true
   local_runtime_host: h100-8
   holdout:

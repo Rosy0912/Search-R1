@@ -102,3 +102,19 @@ def test_recursive_rng_identity_handles_numpy_and_torch():
     state=rng_state();assert equal_state(state,copy.deepcopy(state))
     bad=copy.deepcopy(state);bad['torch'][0]^=1
     assert not equal_state(state,bad)
+
+
+def test_fresh_resolved_config_stage64_micro_and_absolute_horizon(monkeypatch):
+    from hydra import compose, initialize_config_dir
+    from pathlib import Path
+    monkeypatch.setenv('GIGPO_E1_ROOT','/new-experiment')
+    monkeypatch.setenv('GIGPO_E1_RUN','/new-experiment/run')
+    directory=Path(__file__).resolve().parents[2]/'verl/trainer/config'
+    with initialize_config_dir(config_dir=str(directory),version_base=None):
+        cfg=compose(config_name='ppo_gigpo_instruct300')
+    assert cfg.baselines.bapo.stage_validation_size==64
+    assert cfg.trainer.total_training_steps==300
+    assert cfg.actor_rollout_ref.actor.optim.lr_warmup_steps==57
+    assert cfg.actor_rollout_ref.actor.ppo_mini_batch_size==128
+    assert cfg.actor_rollout_ref.actor.ppo_micro_batch_size==16
+    assert cfg.actor_rollout_ref.ref.model_path==cfg.actor_rollout_ref.model.path
