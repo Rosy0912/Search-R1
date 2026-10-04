@@ -10,6 +10,13 @@ from verl.workers.actor.dp_actor import DataParallelPPOActor
 from verl.trainer.ppo.core_algos import kl_penalty
 
 
+@pytest.fixture(autouse=True)
+def cpu_actor_rank_device(monkeypatch):
+    # Tests use CPU model/CUDA shims; explicit logical device selection is audited
+    # separately. Do not initialize real CUDA while running this CPU oracle.
+    monkeypatch.setattr(torch.cuda,'current_device',lambda:0)
+
+
 def fixture(rows=16, empty=False):
     mask = torch.zeros(rows, 7, dtype=torch.float64)
     for i in range(rows):
@@ -132,6 +139,7 @@ def test_masked_nonfinite_and_valid_rejection(monkeypatch):
 def gloo_worker(rank, rendezvous, output):
     torch.distributed.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
     TensorDictBase.cuda = lambda self, *a, **kw: self
+    torch.cuda.current_device = lambda: rank  # CPU Gloo test process CUDA shim.
     data = fixture()
     from search_r1.baselines.rollout import select_rows
     results = []

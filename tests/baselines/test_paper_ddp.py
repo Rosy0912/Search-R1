@@ -22,6 +22,7 @@ from search_r1.baselines.rollout import select_rows
 def worker(rank, rendezvous):
     torch.set_num_threads(1)
     dist.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
+    torch.cuda.current_device = lambda: rank  # CPU Gloo model/CUDA shim.
     try:
         for method in ('topd', 'tree_grpo', 'gigpo', 'cosearch'):
             for micro in (1, 2):

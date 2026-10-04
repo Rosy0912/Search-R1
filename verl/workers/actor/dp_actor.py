@@ -187,6 +187,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         log_probs_lst = []
         for micro_batch in micro_batches:
+            micro_batch = micro_batch.cuda(device=torch.cuda.current_device())
             with torch.no_grad():
                 _, log_probs = self._forward_micro_batch(micro_batch, temperature=temperature)
             log_probs_lst.append(log_probs)
@@ -262,7 +263,7 @@ class DataParallelPPOActor(BasePPOActor):
             mini_metrics = {}
 
             for data in micro_batches:
-                data = data.cuda()  # actor device is cpu when using offload
+                data = data.cuda(device=torch.cuda.current_device())  # Explicit logical rank device, including offload.
                 responses = data['responses']
                 response_length = responses.size(1)
                 attention_mask = data['attention_mask']
@@ -283,6 +284,8 @@ class DataParallelPPOActor(BasePPOActor):
 
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
+                if sequence_mean or paper_objective or topd_token_mean:
+                    denominator = denominator.to(log_prob.device)
 
                 if self.config.get('baseline_method') == 'bapo':
                     valid = response_mask.bool()
