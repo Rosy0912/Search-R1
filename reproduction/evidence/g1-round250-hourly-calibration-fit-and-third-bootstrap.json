@@ -61,9 +61,11 @@
   },
   "bootstrap_live": true,
   "pipeline_status": {
-    "stage": "PREPARING_PARENT_CHAIN"
+    "run_id": "f39a52bb7a0b47f3adc9f38fff897e10",
+    "stage": "STARTING_LOCAL_RETRIEVER",
+    "unix": 1791162421.247997
   },
-  "new_run_id": null,
+  "new_run_id": "f39a52bb7a0b47f3adc9f38fff897e10",
   "gpu_current_csv": "0, 4, 81920, 0\n1, 4, 81920, 0\n2, 4, 81920, 0\n3, 4, 81920, 0\n4, 4, 81920, 0\n5, 4, 81920, 0\n6, 4, 81920, 0\n7, 68494, 81920, 0\n",
   "calibration_peak_mib": {
     "5": 17879,
@@ -124,5 +126,6 @@
       "configured_cv_folds": 2
     },
     "physical_lock_root": "/data/search-g1"
-  }
+  },
+  "followup_checked_unix": 1791162441.265338
 }
