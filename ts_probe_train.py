@@ -67,7 +67,7 @@ def make_clf(model):
     return LogisticRegression(class_weight="balanced", C=1.0, max_iter=4000)
 
 
-def cv_auc(X, y, groups, model="lr", n=2, max_n=15000):
+def cv_auc(X, y, groups, model="lr", n=2, max_n=15000, require_all_folds=False):
     if len(np.unique(y)) < 2:
         return float("nan"), None
     # subsample (by row) to bound MLP cost during model selection
@@ -78,6 +78,10 @@ def cv_auc(X, y, groups, model="lr", n=2, max_n=15000):
     aucs = []
     gss = GroupShuffleSplit(n_splits=n, test_size=0.2, random_state=0)
     splits = list(gss.split(X, y, groups))
+    if require_all_folds and (len(splits) != n or any(
+            len(np.unique(y[tr])) < 2 or len(np.unique(y[te])) < 2
+            for tr, te in splits)):
+        return float('nan'), []
     # MLP early stopping adds a stratified split *inside* each training fold.
     # Reject an infeasible candidate as a whole, so candidates are never ranked
     # on different subsets of the same question-grouped held-out folds.
@@ -110,6 +114,8 @@ def main():
                          "reasoning; flip2 also removes reasoning.")
     ap.add_argument("--commit-models", default="lr,mlp64,mlp128,mlp256",
                     help="Comma-separated readout families considered by grouped CV.")
+    ap.add_argument("--require-all-cv-folds", action="store_true",
+                    help="Require both fixed question-grouped folds to support binary AUC.")
     args = ap.parse_args()
     layers = [int(x) for x in args.layers.split(",")]
 
@@ -136,7 +142,8 @@ def main():
         for labk in label_names:
             for model in models:
                 for L in layers:
-                    auc, _ = cv_auc(pos[posk][L], labels[labk], gid, model)
+                    auc, _ = cv_auc(pos[posk][L], labels[labk], gid, model,
+                                    require_all_folds=args.require_all_cv_folds)
                     tag = f"{posk}/{labk}/{model}/L{L}"
                     print(f"  {tag:24s} AUC={auc:.3f}")
                     if auc == auc and auc > best[0]:
@@ -164,7 +171,8 @@ def main():
     bb = (-1, layers[0], "lr")
     for model in ("lr", "mlp64", "mlp128"):
         for L in layers:
-            auc, _ = cv_auc(bx[L], by_boundary, bgroups, model)
+            auc, _ = cv_auc(bx[L], by_boundary, bgroups, model,
+                            require_all_folds=args.require_all_cv_folds)
             print(f"  boundary Xp/{model}/L{L}: AUC={auc:.3f}")
             if auc == auc and auc > bb[0]:
                 bb = (auc, L, model)
@@ -203,6 +211,8 @@ def main():
                 "boundary_class_counts":np.bincount(by_boundary,minlength=2).tolist(),
                 "commit_class_counts":np.bincount(by,minlength=2).tolist(),"question_grouped_cv":True,
                 "boundary_unique_question_weighting":True}
+        report['require_all_cv_folds'] = args.require_all_cv_folds
+        report['configured_cv_folds'] = 2
         with open(os.path.join(args.save,"calibration-report.json"),"w") as f:json.dump(report,f,indent=2)
         print(f"\n[save] commit({bposk}/L{bL}/{blabk}/{bmodel} AUC={best[0]:.3f}) + "
               f"boundary(Xp/L{bb[1]}/{bb[2]} AUC={bb[0]:.3f}) -> {args.save}")

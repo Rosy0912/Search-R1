@@ -56,4 +56,14 @@ class CalibrationData(unittest.TestCase):
     yield np.arange(8),np.arange(8,30)
   with patch.object(training,'GroupShuffleSplit',FixedSplitter),patch.object(training,'make_clf',side_effect=AssertionError('must not fit even first fold')):
    auc,folds=training.cv_auc(X,y,groups,model='mlp256');self.assertTrue(np.isnan(auc));self.assertEqual(folds,[])
+ def test_strict_cv_rejects_one_degenerate_fold_before_any_fit(self):
+  X=np.arange(24,dtype=float).reshape(12,2);y=np.arange(12)%2;groups=np.arange(12)
+  class FixedSplitter:
+   def __init__(self,*a,**k):pass
+   def split(self,*a):
+    yield np.arange(8),np.arange(8,12)
+    yield np.array([0,1,2,3,5,7,9,11]),np.array([4,6,8,10])
+  with patch.object(training,'GroupShuffleSplit',FixedSplitter),patch.object(training,'make_clf',side_effect=AssertionError('must not fit')):
+   auc,folds=training.cv_auc(X,y,groups,model='lr',require_all_folds=True)
+   self.assertTrue(np.isnan(auc));self.assertEqual(folds,[])
 if __name__=='__main__':unittest.main()

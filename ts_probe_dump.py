@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 import argparse, json, os, re, time, hashlib, gc
 from search_g1.signals import contexts, model_search_count
+from search_g1.calibration_evidence import invalid_action_feedback, evidence_deleted_prefix, validate_provenance
 from pathlib import Path
 
 import numpy as np
@@ -126,6 +127,18 @@ def counterfactual_labels(outputs, original_answers):
 
 
 def gen_batch(llm, prompts, max_tokens, sample, stop):
+    limit = getattr(llm, '_g1_calibration_prompt_limit', None)
+    if limit is not None:
+        capacity = llm.llm_engine.model_config.max_model_len
+        if limit + max_tokens > capacity:
+            raise ValueError('Calibration prompt/output budget exceeds engine context')
+        tok = llm._g1_calibration_tokenizer
+        ids = [tok.encode(p, add_special_tokens=False) for p in prompts]
+        llm._g1_calibration_context_stats.append(dict(
+            count=len(ids), max_original_tokens=max(map(len, ids), default=0),
+            truncated=sum(len(x) > limit for x in ids), prompt_limit=limit,
+            max_new=max_tokens))
+        prompts = [{'prompt_token_ids': x[-limit:]} for x in ids]
     sp = SamplingParams(
         temperature=1.0 if sample else 0.0, top_p=1.0 if sample else 1.0,
         max_tokens=max_tokens, stop=stop, include_stop_str_in_output=True)
@@ -133,11 +146,13 @@ def gen_batch(llm, prompts, max_tokens, sample, stop):
     return [o.outputs[0].text for o in outs]
 
 
-def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ranges=False, tokenizer=None, return_counts=False):
+def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ranges=False, tokenizer=None, return_counts=False, correction_feedback=False, return_provenance=False):
     """Multi-turn search generation over a flat list of prompts. Returns generated texts."""
     N = len(prompts0)
     gen = [""] * N
     model_ranges = [[] for _ in range(N)]
+    evidence_ranges = [[] for _ in range(N)]
+    correction_ranges = [[] for _ in range(N)]
     actual_calls = [0] * N
     done = [False] * N
     for turn in range(max_turns + 1):
@@ -154,10 +169,13 @@ def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ran
             model_ranges[i].append([begin, len(gen[i])])
             if action is not None and action[0] == 'search' and turn < max_turns:
                 pending.append((i, action[1]))
+            elif action is None and correction_feedback and turn < max_turns:
+                feedback = invalid_action_feedback()
+                start = len(gen[i]); gen[i] += feedback
+                correction_ranges[i].append([start, len(gen[i])])
             else:
-                # Calibration terminates malformed actions; unlike the trainer,
-                # it does not supply a correction observation for another turn.
-                # never retrieve an empty query from a stray closing tag.
+                # The historical default terminates malformed actions. Opt-in
+                # corrections cannot extend the final answer-only turn.
                 done[i] = True
         if pending:
             docs = retrieve_batch([q for _, q in pending])
@@ -165,8 +183,13 @@ def rollouts_batched(llm, prompts0, sample, max_turns=4, max_new=256, return_ran
                 observation=f"\n<information>{d}</information>\n"
                 if tokenizer is not None:
                     observation=tokenizer.decode(tokenizer.encode(observation,add_special_tokens=False)[:500])
-                gen[i] += observation
+                start = len(gen[i]); gen[i] += observation
+                evidence_ranges[i].append([start, len(gen[i])])
                 actual_calls[i] += 1
+    if return_provenance:
+        for i in range(N):
+            validate_provenance(gen[i], model_ranges[i], evidence_ranges[i], correction_ranges[i])
+        return gen, model_ranges, actual_calls, evidence_ranges, correction_ranges
     if return_counts:
         return gen, model_ranges, actual_calls
     return (gen, model_ranges) if return_ranges else gen
@@ -243,9 +266,13 @@ def main():
     ap.add_argument("--G", type=int, default=5)
     ap.add_argument("--layers", default="21,24,27")
     ap.add_argument("--max_turns", type=int, default=4)
+    ap.add_argument("--rollout_max_new", type=int, default=256)
+    ap.add_argument("--correction_feedback", action="store_true")
     ap.add_argument("--gpu_mem", type=float, default=0.45)
     ap.add_argument("--out", default="dumps/run")
     args = ap.parse_args()
+    if args.max_turns != 4 or args.rollout_max_new not in (256, 500):
+        raise ValueError('Expected four search-capable turns and a declared 256/500 action budget')
 
     layers = [int(x) for x in args.layers.split(",")]
     Path(args.out).mkdir(parents=True, exist_ok=True)
@@ -273,8 +300,13 @@ def main():
           flush=True)
 
     # vLLM engine for generation
+    engine_context = 4608 if args.rollout_max_new == 500 else 4096
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=args.gpu_mem,
-              max_model_len=4096, enforce_eager=True, disable_log_stats=True)
+              max_model_len=engine_context, enforce_eager=True, disable_log_stats=True)
+    llm._g1_calibration_context_stats = []
+    if args.rollout_max_new == 500:
+        llm._g1_calibration_prompt_limit = 4096
+        llm._g1_calibration_tokenizer = tok
     # HF model for hidden extraction
     tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
     tok.truncation_side = 'left'
@@ -297,8 +329,10 @@ def main():
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens, generated_ranges, actual_calls = rollouts_batched(llm, flat_prompts, sample=(args.G > 1),
-                            max_turns=args.max_turns, return_ranges=True, tokenizer=tok, return_counts=True)
+    gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
+                            llm, flat_prompts, sample=(args.G > 1), max_turns=args.max_turns,
+                            max_new=args.rollout_max_new, tokenizer=tok,
+                            correction_feedback=args.correction_feedback, return_provenance=True)
     print(f"[dump] rollouts done ({time.time()-t0:.0f}s)", flush=True)
 
     # build commit/answer-last contexts + 2 flippability contexts (valid rollouts only)
@@ -312,13 +346,10 @@ def main():
         commit_ctx.append(ctx['commit'])
         ans_ctx.append(ctx['answer_state'])
         src = ctx['prefix']
-        # Remove only external observation spans, retaining all model reasoning.
-        pieces=[]; previous=0
-        for start,end in generated_ranges[j]:
-            if start >= len(src):break
-            if start > previous:pieces.append('\n<information></information>\n')
-            pieces.append(src[start:min(end,len(src))]);previous=min(end,len(src))
-        info_empty=''.join(pieces)
+        # Remove only explicitly retrieved evidence. Correction feedback is
+        # context, but must survive this intervention along with model reasoning.
+        info_empty = evidence_deleted_prefix(g, len(src), generated_ranges[j],
+                                             evidence_ranges[j], correction_ranges[j])
         flip_ctx.append(prompts[qi] + info_empty)
         flip2_ctx.append(prompts[qi] + THINK_RE.sub('', info_empty))
         answers.append(ans)
@@ -338,6 +369,7 @@ def main():
 
     # Measure own allocator release; shared-service peaks require separate GPU samples.
     generation_allocated_before_release = torch.cuda.memory_allocated()
+    calibration_context_stats = list(llm._g1_calibration_context_stats)
     # Dispose of generation engine before HF extraction: never overlap both caches.
     try:
         llm.llm_engine.model_executor.shutdown()
@@ -398,8 +430,12 @@ def main():
            "counterfactual_invalid_count":sum(not v for v in cf_valid),
            "counterfactual_strict_invalid_count":sum(not v for v in cf_valid2),
            "invalid_counterfactual_policy":"no_usable_answer_counts_as_flip_source_operational_proxy",
-           "calibration_protocol":{"top_p":1.0,"rollout_max_new":256,"counterfactual_max_new":32,"closed_book_max_new":24},
-           "malformed_calibration_action_policy":"terminate_without_retrieval_or_correction_turn",
+           "calibration_protocol":{"top_p":1.0,"rollout_max_new":args.rollout_max_new,"counterfactual_max_new":32,"closed_book_max_new":24,"correction_feedback":args.correction_feedback},
+           "malformed_calibration_action_policy":"correction_within_four_turn_budget" if args.correction_feedback else "terminate_without_retrieval_or_correction_turn",
+           "evidence_deletion":"typed_retrieval_ranges_only_preserve_model_and_correction",
+           "retrieval_evidence_ranges":evidence_ranges,"correction_feedback_ranges":correction_ranges,
+           "model_ranges":generated_ranges,"rollout_character_lengths":[len(g) for g in gens],
+           "generation_context_policy":{"engine_max_tokens":engine_context,"prompt_max_tokens":4096 if args.rollout_max_new==500 else None,"truncation_side":"left","batches":calibration_context_stats},
            "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
     with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "
