@@ -1,0 +1,182 @@
+{
+  "base": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653",
+  "parent_base": "/mnt/data/shaoshitong/Search-G1-common8-production-61829af9b653",
+  "job_id": "3274",
+  "checked_unix": 1791238045.4608893,
+  "source_hashes_match": true,
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "phase": "initial",
+    "proof_sha256": "261bd8e5d14deb425234c92acfbd3a27cc061a70b16f07095f8b4197e143154c",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "model_gate_coexistence": {
+    "accepted": true,
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "phase": "coexistence",
+    "proof_sha256": "75946a0a83c336f218741a0de3081620686841776b44498ed57bebead0f6d28a",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "actual_initial_probe": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "round": 0,
+    "version": "cc365db0dcbf4526a9a0e79f3fc333b9:0:3d736036963b44e793aeb9c38165b7b5",
+    "live_manifest_sha256": "c6ba8c177cc246f898a7b4db2082de11303746a93cd165ba4afdce827ed5c4d3",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791237844.4940393,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "gpu_sampling": {
+    "sample_count": 448,
+    "first_unix": 1791237053.2694106,
+    "last_unix": 1791238044.3076372,
+    "max_gap_seconds": 11.31471872329712,
+    "cumulative_peak_mib": {
+      "0": 45888,
+      "1": 45445,
+      "2": 45854,
+      "3": 45449,
+      "4": 46235,
+      "5": 45448,
+      "6": 45448,
+      "7": 49357
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "role": "actual_native_discovery_probe_and_coexistence_observation",
+  "job_state": "RUNNING",
+  "stage": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "stage": "BOUNDED_POLICY_CALIBRATION_ONE_OUTER",
+    "unix": 1791238026.1766322,
+    "execution_role": "policy_safety_calibration_discovery"
+  },
+  "actual_completed_child_updates": 0,
+  "actual_production_updates": 0,
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "live_owned_leader_pids": [
+    1749202,
+    1759527,
+    1765837,
+    1766088
+  ],
+  "live_namespace_process_count": 5,
+  "scope": "Actual fresh-model gates and probe calibration; full one-outer measurements and production training not yet complete",
+  "root_selection_method": {
+    "role": "root_explicit_policy_calibration_selection_method",
+    "source_commit": "61f6e1da532e08553410666b430d1933a0e4a49a",
+    "parent_production_run_id": "270f0e2e709a40b499472754d7db69b3",
+    "discovery_run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "frozen_unix": 1791238093.059405,
+    "before_completed_discovery_update": true,
+    "health_rule_document": {
+      "role": "policy_safety_health_rule",
+      "provenance": {
+        "method_origin": "Root explicit conservative admission criterion frozen before the actual discovery outer completed",
+        "purpose": "Do not automatically tolerate a measured accuracy or valid-action decline",
+        "not_a_population_statistical_guarantee": true
+      },
+      "criteria": {
+        "method": "paired_fixed512_absolute_allowed_drop",
+        "allowed_drop": {
+          "weighted_em": 0.0,
+          "weighted_f1": 0.0,
+          "valid_action_rate": 0.0
+        }
+      }
+    },
+    "negative_tail_selection": {
+      "method": "Maximum actual global negative_tail_weight_fraction across all ordered pre/post mini checks of the complete discovery outer",
+      "required_global_observations": 40,
+      "duplicate_rank_global_reports": "Verify all eight copies agree and count each ordinal observation once",
+      "data_requirement": "Complete actual 20 Adam writes and 40 allowed finite checks/rank, actual finite checkpoint1 parameter delta, paired ordered512 before/after, completed native and owned cleanup",
+      "arbitrary_margin_or_floor": false,
+      "fraction_with_zero_negative_mass": 0.0,
+      "confirmation": "Fresh official0 independent native job, same initial probe heads/encoder/reward math and original recipe; every actual check must remain within the frozen candidate envelope and other guards",
+      "scope": "Empirical monitored32 trajectories/one discovery outer; no weighted quantile or population-risk claim"
+    },
+    "fixed_candidates": {
+      "dual_clip": 3.0,
+      "epsilon": 0.2,
+      "target_old_policy_kl": 0.01,
+      "kl_log_bound": 30.0
+    },
+    "negative_tail_limit": null,
+    "production_admission": false,
+    "healthy_checkpoint_accepted": false
+  },
+  "root_selection_method_raw_sha256": "1f41e41ace87161e9885c4d57873e388f9b77ae717ed9427fdfe5c71addce057"
+}
