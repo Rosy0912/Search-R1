@@ -1,0 +1,27 @@
+# Isolated fresh experiment: retain the common assets/search protocol and pure OPSD.
+# This selector never changes the original ppo_opsd_e1_300 profile.
+defaults:
+  - ppo_opsd_e1_300
+  - _self_
+
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 32
+    grad_clip: 0.1
+    optim:
+      lr: 5.0e-6
+      lr_warmup_steps: 0
+  rollout:
+    n_agent: 1
+    temperature: 1.1
+    top_p: 0.95
+    top_k: 20
+trainer:
+  total_training_steps: 200
+  experiment_name: opsd-search-e1-author-200
+baselines:
+  distillation:
+    # The requested temperature is the sampling temperature. Distillation stays T=1.
+    component_clip: 0.05
+  opsd_e1:
+    profile: author200

@@ -965,7 +965,7 @@ class RayPPOTrainer(object):
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
                     if e1:
-                        validate_outer(metrics)
+                        validate_outer(metrics, profile=self.e1_gate.profile)
                         self.actual_outer_updates += 1
                         if self.actual_outer_updates != self.global_steps or e1_questions != 512:
                             raise RuntimeError('E1 actual outer/question counters differ')
@@ -985,7 +985,7 @@ class RayPPOTrainer(object):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
-                    if ((e1 and should_save(self.global_steps)) or
+                    if ((e1 and should_save(self.global_steps, horizon=self.e1_gate.horizon)) or
                         (not e1 and self.config.trainer.save_freq > 0 and
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
@@ -1013,14 +1013,14 @@ class RayPPOTrainer(object):
                         # The iterator's sixth next() has not happened: this is inside
                         # the fifth body, with no DataLoader prefetch workers.
                         self.e1_gate.wait(*self.e1_pause_manifest)
-                    if self.actual_outer_updates == 300:
+                    if self.actual_outer_updates == self.e1_gate.horizon:
                         if self.val_reward_fn is None:
                             raise RuntimeError('E1 requires full final evaluation')
                         self._prepare_final_validation()
                         val_metrics = self._validate()
                         validate_evaluation(val_metrics, 51713)
                         print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)
-                        logger.log(data=val_metrics, step=300)
+                        logger.log(data=val_metrics, step=self.e1_gate.horizon)
                         return
 
                 self.global_steps += 1
@@ -1036,7 +1036,7 @@ class RayPPOTrainer(object):
                         logger.log(data=val_metrics, step=self.global_steps)
                     return
         if e1:
-            raise RuntimeError('E1 dataloader/epoch budget exhausted before actual outer 300')
+            raise RuntimeError('E1 dataloader/epoch budget exhausted before actual outer ' + str(self.e1_gate.horizon))
     
     def _create_loss_mask(self, batch, metrics):
         """Create loss mask for state tokens."""

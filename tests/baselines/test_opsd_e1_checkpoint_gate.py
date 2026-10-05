@@ -171,7 +171,7 @@ def test_real_fit_tail_300_oracle():
     exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),str(source),'exec'),namespace)
     pauses=[];finals=[];logs=[];logger=SimpleNamespace(log=lambda data,step:logs.append(step))
     g=SimpleNamespace(global_steps=1,actual_outer_updates=0,total_training_steps=300,
-        e1_gate=SimpleNamespace(job='fixture',source='source',config_sha='config',wait=lambda *args:pauses.append(g.global_steps)),
+        e1_gate=SimpleNamespace(job='fixture',source='source',config_sha='config',horizon=300,wait=lambda *args:pauses.append(g.global_steps)),
         e1_pause_manifest=('path',{}),val_reward_fn=object(),_prepare_final_validation=lambda:finals.append(g.global_steps),
         _validate=lambda:{'val/qa_count/all':51713,'val/evaluated_count/all':51713})
     for consumed in range(1,301):

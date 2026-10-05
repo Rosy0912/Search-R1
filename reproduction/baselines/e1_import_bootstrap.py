@@ -178,6 +178,7 @@ def collect(repo,required=REQUIRED):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--mode',choices=['cfg','validate','run','collect','preflight'],required=True)
+    parser.add_argument('--profile',choices=['e1_300','author200'],default='e1_300')
     parser.add_argument('preflight_args',nargs=argparse.REMAINDER)
     args=parser.parse_args();repo=repo_first(Path(__file__).resolve().parents[2])
     if args.mode!='preflight' and args.preflight_args:raise ValueError('Unexpected bootstrap arguments')
@@ -186,7 +187,7 @@ def main():
         profile=importlib.import_module('search_r1.baselines.e1_profile')
         for name in ('search_r1.baselines.e1_profile','search_r1.baselines.sharedholdout','search_r1.baselines.holdout'):
             actual_path(repo,name,sys.modules[name])
-        sys.argv=[sys.argv[0]]+(['--validate-assets'] if args.mode=='validate' else [])
+        sys.argv=[sys.argv[0],'--profile',args.profile]+(['--validate-assets'] if args.mode=='validate' else [])
         profile.main();return
     if args.mode=='collect':
         print(json.dumps(collect(repo),indent=2));return  # CPU source inventory, not PASS/receipt.
@@ -202,7 +203,9 @@ def main():
     actual,count=verify_imports(repo,closure)
     print('E1_ACTUAL_IMPORT_CLOSURE_JSON='+json.dumps({'repo':str(repo),'module_count':len(actual['modules']),
           'function_code_count':count,'external_closure_sha256':record['sha256']},sort_keys=True),flush=True)
-    sys.argv=['search_r1.baselines.main','--config-name','ppo_opsd_e1_300']
+    # Compose/asset validation and the actual imported Hydra main use one selector.
+    from search_r1.baselines.e1_profile import PROFILE_CONFIGS
+    sys.argv=['search_r1.baselines.main','--config-name',PROFILE_CONFIGS[args.profile]]
     # The verified module object is invoked; runpy would create a second unchecked object.
     sys.modules['search_r1.baselines.main'].main()
 if __name__=='__main__':main()

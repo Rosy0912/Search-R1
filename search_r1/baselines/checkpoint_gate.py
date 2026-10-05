@@ -262,8 +262,10 @@ def worker_import_checker_config(config):
     return full_import_checker(binding['files']['import_closure'], root, repo)
 
 
-def should_save(step):
-    return step == 5 or (1 <= step <= 300 and step % 25 == 0)
+def should_save(step, horizon=300):
+    if type(horizon) is not int or horizon not in (200, 300):
+        raise ValueError('Unknown reviewed OPSD horizon')
+    return step == 5 or (1 <= step <= horizon and step % 25 == 0)
 
 
 def validate_evaluation(metrics, count):
@@ -274,11 +276,18 @@ def validate_evaluation(metrics, count):
         raise RuntimeError('E1 reward/QA evaluation counts differ')
 
 
-def validate_outer(metrics, world=8):
+def validate_outer(metrics, world=8, profile='e1_300'):
     """A skipped empty mini is a failure, not a fabricated Adam clock tick."""
+    # External reviewers load these exact pinned bytes as a standalone stdlib
+    # module. Keep this evidence consumer independent of package imports.
+    if type(profile) is not str or profile not in ('e1_300', 'author200'):
+        raise ValueError('Unknown isolated OPSD profile')
+    optimizer_steps, samples = (16, 64) if profile == 'author200' else (20, 320)
+    if type(world) is not int or world != 8:
+        raise ValueError('The isolated OPSD profiles require eight ranks')
     for rank in range(world):
-        expected = {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0,
-                    'actor/samples': 320, 'actor/loss_mask_valid': 1,
+        expected = {'actor/optimizer_steps': optimizer_steps, 'actor/skipped_empty_minibatches': 0,
+                    'actor/samples': samples, 'actor/loss_mask_valid': 1,
                     'actor/opsd_loss_finite': 1, 'actor/grad_norm_finite': 1,
                     'teacher/trainable_parameters_per_rank': 0,
                     'teacher/gradient_tensors_per_rank': 0,
@@ -316,11 +325,24 @@ def verify_rsa_signature(payload, signature_hex, public_key):
 
 
 class CheckpointGate:
+    @property
+    def contract(self):
+        from .e1_profile import profile_contract
+        return profile_contract(getattr(self, 'profile', 'e1_300'))
+
+    @property
+    def horizon(self):
+        return self.contract['horizon']
+
     def __init__(self, trainer):
         from omegaconf import OmegaConf
         from .full_state import resolve_warmup_steps
         self.trainer = trainer
         self.settings = trainer.config.baselines.opsd_e1
+        from .e1_profile import profile_name, validate_profile
+        self.profile = profile_name(trainer.config)
+        # Live construction validates the whole fixed profile before training.
+        validate_profile(trainer.config)
         self.root = Path(self.settings.run_root)
         if not self.root.is_absolute() or self.root.resolve(strict=True) != self.root:
             raise ValueError('E1 run root must be an existing physical directory')
@@ -330,9 +352,9 @@ class CheckpointGate:
             raise ValueError('E1 requires a real job and independent gate')
         if (trainer.config.baselines.method != 'opsd' or
                 trainer.config.trainer.n_gpus_per_node != 8 or trainer.config.trainer.nnodes != 1 or
-                resolve_warmup_steps(trainer.config.actor_rollout_ref.actor.optim) != 57 or
-                trainer.config.trainer.total_training_steps != 300):
-            raise ValueError('E1 requires pure OPSD, eight ranks, 57 warmup and 300 actual outers')
+                resolve_warmup_steps(trainer.config.actor_rollout_ref.actor.optim) != self.contract['warmup_steps'] or
+                trainer.config.trainer.total_training_steps != self.horizon):
+            raise ValueError('E1 pure OPSD rank/warmup/horizon profile differs')
         if (not trainer.config.trainer.val_before_train or trainer.config.trainer.get('val_only', False) or
                 trainer.config.trainer.test_freq != 50 or trainer.config.trainer.get('smoke_only', False) or
                 self.settings.acceptance_step != 5 or self.settings.stage_freq != 50):
@@ -341,14 +363,14 @@ class CheckpointGate:
         rollout = trainer.config.actor_rollout_ref.rollout
         distillation = trainer.config.baselines.distillation
         if (actor.use_kl_loss or actor.entropy_coeff or trainer.config.algorithm.kl_ctrl.kl_coef or
-                distillation.component_clip is not None or distillation.beta != 0 or
+                distillation.component_clip != self.contract['component_clip'] or distillation.beta != 0 or
                 distillation.teacher_prompt_mode != 'user_context' or distillation.teacher_device != 'cuda'):
-            raise ValueError('E1 gate supports the reviewed pure/unclipped privileged OPSD only')
-        if (trainer.config.data.train_batch_size != 512 or actor.ppo_mini_batch_size != 128 or
+            raise ValueError('E1 gate supports the selected reviewed pure privileged OPSD only')
+        if (trainer.config.data.train_batch_size != 512 or actor.ppo_mini_batch_size != self.contract['mini_batch'] or
                 actor.ppo_micro_batch_size != 16 or actor.ppo_epochs != 1 or
-                rollout.n != 1 or rollout.n_agent != 5 or rollout.tensor_model_parallel_size != 1 or
-                rollout.temperature != 1 or distillation.temperature != 1):
-            raise ValueError('E1 requires 512x5, global mini128/micro16, one epoch and TP/T1')
+                rollout.n != 1 or rollout.n_agent != self.contract['responses'] or rollout.tensor_model_parallel_size != 1 or
+                rollout.temperature != self.contract['sampling_temperature'] or distillation.temperature != 1):
+            raise ValueError('E1 question/response/mini/micro/epoch/temperature profile differs')
         self.repo = Path(__file__).resolve().parents[2]
         self.source = self.current_source()
         self.config = OmegaConf.to_container(trainer.config, resolve=True)
@@ -444,7 +466,7 @@ class CheckpointGate:
                 payload['actual_outer_updates'] != auth['step'] or payload['next_global_step'] != auth['step'] + 1 or
                 payload['uid'] != self.uid or payload['source_commit'] != self.source or
                 payload['config_sha256'] != self.config_sha or payload['method'] != 'pure_opsd' or
-                payload['version'] != 1 or not 1 <= auth['step'] < 300):
+                payload['version'] != 1 or not 1 <= auth['step'] < self.horizon):
             raise ValueError('Driver recovery checkpoint differs from authorization')
         t = self.trainer
         t.e1_sampler.load_state_dict(payload['sampler'])
@@ -516,7 +538,7 @@ class CheckpointGate:
         record = {'version': 1, 'method': 'pure_opsd', 'run_root': str(self.root),
                   'source_commit': self.source, 'config_sha256': self.config_sha,
                   'global_step': step, 'actual_outer_updates': step, 'next_global_step': step + 1,
-                  'horizon': 300, 'warmup_steps': 57, 'world_size': 8,
+                  'horizon': self.horizon, 'warmup_steps': self.contract['warmup_steps'], 'world_size': 8,
                   'driver_pid': self.pid, 'uid': self.uid, 'job_id': self.job,
                   'pause_nonce': secrets.token_hex(32), 'files': files, 'outer_metrics': metrics}
         path = driver_directory / 'manifest.json'
@@ -574,7 +596,7 @@ class CheckpointGate:
                     row['job_id'] != self.job or row['source_commit'] != self.source or
                     row['config_sha256'] != self.config_sha):
                 raise ValueError('Outer log row belongs to another process/configuration')
-            validate_outer(row['metrics'])
+            validate_outer(row['metrics'], profile=getattr(self, 'profile', 'e1_300'))
         return payload
 
     def wait(self, manifest_path, manifest):
