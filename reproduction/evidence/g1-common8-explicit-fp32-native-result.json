@@ -1,0 +1,2152 @@
+{
+  "accepted": true,
+  "role": "actual_native_initial_model_precision_smoke",
+  "production_admission": false,
+  "scope": "64 ordered questions, one greedy action; not EM, real GRPO, coexistence peak or healthy calibration",
+  "job_id": "3266",
+  "base": "/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287",
+  "source_commit": "1fec248ea93115e30886c5d5a2197090d62d2202",
+  "source_sha256": {
+    "analysis/analysis_cf_label_validity.py": "d20d2c607864ab7b75e723bb16423da4f4a1df9591ec3d616a0288c8af70435c",
+    "analysis/analysis_closedbook_main_base.py": "e2d51b38ca2d55ed54afc8aba2ba920fa55eff272d84321d242038db76eb6a2b",
+    "analysis/analysis_label_robustness.py": "6e61c8927987fd592bf8cc81ec4d1ce81d9efd57b8384f841e986f24be0199fe",
+    "analysis/analysis_necessity_support.py": "4f9cff3b0086f83ee9d28e863a466482e454819eb8522765c057360fb87170c0",
+    "analysis/analysis_reward_variance.py": "dfa1348bd06a5301388d1e6f746ab3d4eef4cee5781c703403bb4bb6d16a9752",
+    "analysis/plot_estimator_fidelity_bars.py": "c01505ca62c9de9fc5b539c103662e0877ebef0ccd2654b2bb4911196193199c",
+    "analysis/reward_variance_analysis.py": "69892e38e6212cca5e60e9c9b079ddcef7e14cefba052bf2be8be3a8ece1567f",
+    "analysis/search_g1_layerwise_auc.py": "a0684713d54ecf389042eee67f68419ba7ebb89acaffa1286a17a65e1e6f9a7a",
+    "cf_judge_server.py": "ba398cff513f9f8a0f8448e9ac3e0479cef5405e1a1b1edb856ff581d55c0ac7",
+    "probe_server.py": "284df6e025822eb654d5858c394ce5c27fe80bb0d538a7d7dfa247081c461900",
+    "recipes/calibrate.sh": "d2ae94cdba58d569d0ecd9ef1d5fe2131e01e9ee01fdb24f5618fec149a24f59",
+    "recipes/coevolve.sh": "21aa7ccb638ac19c3f9fd2a09dd398e6b3402febdb790a3870e88d8e6f4a7166",
+    "recipes/evaluate.sh": "43b8a35429c3b3d9486426b23f8e11fb429176378c736db8a95cbd38a257756c",
+    "recipes/start_cf_judge.sh": "c02f6b971c79728e0a04cdfb8b4103695c78affd2b33ac264be0485a3964afc0",
+    "recipes/start_probe_server.sh": "3944d50e40361ec525b18f466017a6284f11395efd6dbd32223741c42be48aca",
+    "recipes/start_retriever.sh": "06019389c50f1810daed6dec6a0cecd7e85d9c49a7ddadf42f3b3ea0ab6ea930",
+    "recipes/train_search_g1.sh": "e4704982d55b6e377066560ab488b65b68ce07ec87ca58a15709702048cd8738",
+    "reproduction/a800/diagnostics/calibration_repair_250.py": "2e486501284b4ff73c364564a10b79ccadc27f192298ee2476ef5cae4ff48caa",
+    "reproduction/a800/gpu_preflight.py": "ee2f0c63a617726af23c9c30abd90a025a83cbbd1ff9d9b8987c401ddce7dbe2",
+    "reproduction/a800/owned_processes.py": "4168d7c93b4268fa8b2abb8b78efa1cddbd55a47602eca607642e10d04f0dae2",
+    "reproduction/a800/prepare_continuation.py": "a6f9ecd1a9ab962953e2471fea69da7f07036053fbbefb3cca298919ad921999",
+    "reproduction/a800/prepare_data.py": "c374003465334364efdec5bb55d569524f49e5fd41e042eb6a571011b6bf667e",
+    "reproduction/a800/prepare_run.py": "abc38f06bebd79e97bc3fd70959e902e7c2118bcea95d5eebe57545d212f2842",
+    "reproduction/a800/probe_admission.py": "a199f8f6111c5cbf5554e2f80a08f3f8e2936667d3a1079a19a90c888cb7ae48",
+    "reproduction/a800/recover_probes.py": "8696cfaac3e58b56d95ea455e9983f8700d97dc541a716c601204bbb676e25a0",
+    "reproduction/a800/recovery_binding.py": "e9c7fba08962f6fe9ae52acf8515822b9fb420f00b131e477bd9d02e8c2edcf4",
+    "reproduction/a800/refit.py": "8d13578fd7de8ac40138dbf55d96190374cb9800ff4547a5aaa54d95f2938e90",
+    "reproduction/a800/retriever_local.py": "f6e0c783ef37ec5a9c05879d7c190af143bd6b9d16d5b8d48e0d40504909e3d5",
+    "reproduction/a800/run_continuation.py": "acffa2fe189c7f5341ed237ff04fb4d4486a0e63a8cfdabcc975494cf548a90f",
+    "reproduction/a800/run_pipeline.py": "ff7a0147b6170a197bfc203373ae2690e307e726f38f47a1a9ad7a980781a03f",
+    "reproduction/a800/runtime.py": "6bef02a85e7cbcdf62f87f9dd2fa23369552240abfa7a9eb6d4019b0c234dfb5",
+    "reproduction/a800/tokenizer_identity.py": "d5fe9e5ecd54c849a26688737b3b37c56507c2d971ed7d9fe45bd4277eabd12f",
+    "reproduction/a800/train.sh": "0f5dcd36c2c04a751b64a8a9c78ddf0aaa0838d54a29356ab4892872da582ac5",
+    "reproduction/a800/validation_identity.py": "da291dfc85bde27334c00a4ed2b69e04df9837c07f4b8876ea8f33fd54d69966",
+    "reproduction/a800/verify_continuation.py": "f5869be273b12652b75392b474755448dc5b405e45f6d68060262369955da8ab",
+    "reproduction/a800/verify_full.py": "f60c44c8428b066a26571eb3b7200f1c0c66978f015c61f82983f0674f41348c",
+    "reproduction/common8/__init__.py": "035f35086a3cd28e31e048d2a14751d96a59b59b817e3b36dd3d2c65f914d43b",
+    "reproduction/common8/assets_export.py": "407af3ef60040abe4a588ef67271c1b0ee34c1bf55ca67549dab3d9481367214",
+    "reproduction/common8/batch_contract.py": "282b05c9e2418d07f292cda007d0a27a769f216101fe34f315b80a6bc5cebcd3",
+    "reproduction/common8/budget.json": "1cca6927beec6a8c339c49b58278e64dff7a1c963a7d875b3ef445d73b74c389",
+    "reproduction/common8/claim_training.py": "b54c9a3efc9966d70c03c52de8d976c56b8cfd8e279147fc561cb2f4452d780d",
+    "reproduction/common8/configuration.py": "636572bdbf246cdcb097100c090564cc129a020be2e7be35bfb2ee3aea1a4957",
+    "reproduction/common8/diagnostics/fp32_candidate.py": "8ef523121921e1aa8de3fe3a6ec38ea68ca1052732e469baa55b1e9132c5aa2b",
+    "reproduction/common8/diagnostics/fused_arithmetic.py": "0f5e34aa6cc572836284f828c3b12e65f4af328992859481f1f85d314477e55a",
+    "reproduction/common8/diagnostics/padding_backend.py": "8c8bdc4164ca7cd9399ae073ea47178b0854b178522b9ad3fbead7fd7132d32e",
+    "reproduction/common8/disk_admission.py": "4e6e5fa68874686f76e83febbff3e354f7adabbb1e9d1c052c3b773b239a33d8",
+    "reproduction/common8/encoder-assets.json": "0e51c42039045a324717bdf5ecab00a2bbe94e3a34648d9e7be5923447edac38",
+    "reproduction/common8/gpu_preflight.py": "d18e60c67eb80610d028295b35cb9d2ebf516d87b1b3ee769beca18eedd1901f",
+    "reproduction/common8/http_retrieval.py": "e05e1000f4048959f42911feeecbdc57010e9a3c99594909d7d323c6c624dd5e",
+    "reproduction/common8/launch_native.sh": "dba1ba06ffa13a41d83114f5a2d6ba0a28cd929c32889c17a8dc63c1b574b2e2",
+    "reproduction/common8/model_smoke.py": "193447cc5531602bb691329b5cb19f86cd83a06b6e40793613eca2e21ba5aafa",
+    "reproduction/common8/native_allocation.py": "02e01d64c0765a59cd65fe8db94f921c3ed43faea99bba3d23ca28e9f0cf6f0b",
+    "reproduction/common8/precision_evidence.py": "a632b9663649ca5ced63687418058dc2714d4853629ad5af4d0f923d7ab12355",
+    "reproduction/common8/prepare_run.py": "93d79d404b414fa6781e12c641eca3ea3764cdd8c2732e8aafa583372a02bb8d",
+    "reproduction/common8/probe_admission.py": "bbee296e9b0f203b8a36b066ffe902423fb476f63b1870c3e79cd49d50f3971e",
+    "reproduction/common8/recipe.json": "f378ac70ea0c28dba1b7a4f829cf080ec6c916b7b0bd3805bd79d7a26bf7b715",
+    "reproduction/common8/refit.py": "c3870f2e8551b77a61453d730d451f2a1cd638f088542bfa4b6c62cdc7c45b90",
+    "reproduction/common8/retriever.py": "fa97d73f3735505c8510ed6af2c168d9370337ce1f6d502c2dd1660224e45c7c",
+    "reproduction/common8/run_pipeline.py": "af5fef8c58fedf7c52556a5b3ac1f3a8ff47341048bd1869721cc9045b617500",
+    "reproduction/common8/runtime.py": "beacc4828e3fe7b4064af4c6509040ccf084c3b8b5d4352902fd360853af61f7",
+    "reproduction/common8/safety_calibration_evidence.py": "a102c66d763ca581f264a954d32e1493fd9d878329f2075b950e15bda3d8aaf3",
+    "reproduction/common8/scheduler.py": "5626052b653328829cf37078b325af3bda5e71a51ec482acbc2cc10a25037c9c",
+    "reproduction/common8/source_files.py": "9db3789d95a3bb2268227c61a2a7227b6dd3b4be9d48c14b9a142f868744fd0a",
+    "reproduction/common8/stage_retrieval.py": "7f09d8c95e59e90ae6946cda41229e5e7ae94c32763b19b5958baf392a08d6b4",
+    "reproduction/common8/temporary_cache.py": "6299d0dec12380ee028d1d72621f3634563e05197ee53076273d9f71f1f57a52",
+    "reproduction/common8/test_configuration.py": "8a2a5ada728d10c4dd9b2f02f45c5680afacaa5a7b4eee761de062622f74b9b9",
+    "reproduction/common8/test_contract.py": "68f9b4b1535889e690acc5b8e2e70e5dbb8dcc38edbfcbf52514a42ad4ca037c",
+    "reproduction/common8/test_http_retrieval.py": "564b773d43fb36297ce581ae1c9addda446521ed2ad436c87a4592daca608ec9",
+    "reproduction/common8/test_model_smoke.py": "042d32f2845072eb4a38a58803c49365a4ec099be278bc91146267433563b81a",
+    "reproduction/common8/test_policy_safety_evidence.py": "a86605862d1e2b6c9a2a1eecd0e72faefb5583165dc928afa13775f688fd991d",
+    "reproduction/common8/test_policy_safety_native.py": "8d2c6670c1b2aa98bb55c749021ed00daa9bb7e570bf3fe0c4d7d5e76dae8b24",
+    "reproduction/common8/test_precision_evidence.py": "f1a1e118104c17e132c2d8d889226d1b556472a6e979154b3157b740e7661480",
+    "reproduction/common8/test_retriever.py": "c7e236c2db62e08254d7c20046fb28bcd30074420d16b7f31f03a5ef02382c2b",
+    "reproduction/common8/test_rope_precision.py": "0c17c477d10080b93a96d1de8c475d0d387cd3d02e986d06e838085877f1c780",
+    "reproduction/common8/test_safety_calibration_evidence.py": "9737260a52fa4112f9ffdd5f6239861ce9f3a77d9584be98dd6a20f66d5a66d7",
+    "reproduction/common8/test_scheduler.py": "b0aa2dbb051fda19a3d5a625c4a796b1ae26150e4a7d565d34586ed948b1e5a2",
+    "reproduction/common8/test_source_files.py": "0176a13dfe6ea93579584802194b57d3c4b9427cd279eb426545aec7c429a121",
+    "reproduction/common8/test_staging.py": "e4f004f47864896dbd7de0684591c2ee2ab1a73cc65018914d992484f4692a95",
+    "reproduction/common8/test_temporary_cache.py": "a0b95cb5c70d8a7259206ddc1f4f969aaa9a7511953775200124ad68c6deaf5d",
+    "reproduction/common8/train.sh": "d1ef134fee3f7087ab4e6a59321b837b2bb9f43a2cb52e9fb1cab76de0f0ee49",
+    "reproduction/common8/update_evidence.py": "f47fd7a2587c76b42abcc03a70e9ee33abc39a7c926ca224a60ce60a87f8f1f3",
+    "reproduction/common8/validation_identity.py": "3dfe30437085ff211b01510ba75343844e18a46da3444e85da78c791b87bed3b",
+    "reproduction/common8/verify_data.py": "9aab7aa47515a2aaf487c0d7f258f9016af8cf93c4a3c62884c815132c0910c6",
+    "reproduction/common8/verify_full.py": "31bed3a23debce25e4e67a133d5243ac94e050ded556b3ec8ba6aa8d6150327d",
+    "reproduction/common8/worker_evidence.py": "9da45496d29fff39d8d2372916d2427de362d475522ced804423cc7e0ee6ee8f",
+    "reproduction/profile.py": "4e752484a7080c9dc90f942dd9d41e0e6cfc51d96f29f70dbbdd3562b7368bce",
+    "scripts/prepare_qa.py": "ee57a768575649538ed2b671225f3f27fe3763ce4eb67c3a66c3f0f175dade45",
+    "search_g1/__init__.py": "c581e66374e7d57869e38a2f01f324200f3bfa9431967d455d8acdb1bc62c0b9",
+    "search_g1/calibration_evidence.py": "f8cd839673d64ca5495db90d51f587e80cfbc94d93089a426ddfaf19dc1165c8",
+    "search_g1/compute_precision.py": "ed6b25acd86724de5bb20b613349e6e894b27ea0f0543e0faf21429b07e81ef0",
+    "search_g1/gradient_clipping.py": "ece4442f768d4f339ca0019f8093437f19c343b8d65af3e2000b71d450d7edde",
+    "search_g1/numerics.py": "552f0da770556cd2c5fa9d5d2ea4ae459e91276f2044aa3ad4298db1d9e2ff58",
+    "search_g1/policy_safety.py": "ae1cd97436c84942e7761345e3c31aa0154a7dfc2982f910b23abbfcbbb1b9ed",
+    "search_g1/resource.py": "662631cff25c3b61bac3d473d51f209262e67cb918c8e75338a59242e255f743",
+    "search_g1/signals.py": "470865b441c1f9944695006c143481e64afab0bcf041ae882f8ddf1b536a9d20",
+    "search_g1/test_compute_precision.py": "2ecd304bf22ec3d07cea547c32c8745ab170c4aa3535bf8104f2f18d1247b8ab",
+    "search_g1/test_policy_safety.py": "23e878b3cb11f4f28e6389ef73d13dfec52326733879f00fb0f3ceebc86933b8",
+    "search_g1/test_policy_safety_admission.py": "71631a622db7ac07b42af7aced7cc822275c6048ccf700ce655256bff809e8e5",
+    "search_r1/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "search_r1/llm_agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "search_r1/llm_agent/generation.py": "aee2c589a38cd5649db7c2854a8bc87057e9b1982c62fe8193c475dcbc4e9697",
+    "search_r1/llm_agent/tensor_helper.py": "a6895fd4b1eba76bdd207158447011b59b578b6e01a9a51a89008ecea02173ea",
+    "search_r1/qa_protocol.py": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+    "search_r1/search/build_index.sh": "648c8e1a0f31f801445093633bdc169a9d3577e4aa66e1c857912b47e072fc00",
+    "search_r1/search/google_search_server.py": "f83142988b7a3f62c05a47c80e773ebb1e50bfb0670eaacd35c8afc1f90be02f",
+    "search_r1/search/index_builder.py": "bcd248b3953c95c322177154189325e9bfde403e61d40d71fe086b416e7502c6",
+    "search_r1/search/rerank_server.py": "4b1ec07ae97e3a01740f3b5342bf1ffc51495679d290a137ef3c5eade03901f8",
+    "search_r1/search/retrieval.py": "b5652f95cb7e2ccbdf2829f1b1d87db96e888b4d95ec27498494ed32104be601",
+    "search_r1/search/retrieval.sh": "26c31a5ce41ebdb6c3299e3f4a5a885a9f3f644cce407a6b41e8f9ae5ed77ebf",
+    "search_r1/search/retrieval_request.py": "469671b8625574a7fc75011c0fb566004a12c3208dcea4b2aba010fe975f6c6b",
+    "search_r1/search/retrieval_rerank_server.py": "10e2a43c7f43dddac96c0a0c471408dc4a1a6cc715920cac28f3cdfb62df08e1",
+    "search_r1/search/retrieval_server.py": "b0e70e06bbd7d4d820ff7c550142fa6b22725789711f927bdc4960dcdc766ca1",
+    "search_r1/search/serp_search_server.py": "57c57061dc5fdf705900e569e37224ec644bb7ef91377b4be122505597762855",
+    "setup.py": "65c895579e88c9dc0229ff8e6021fa1b50241666674fb9f43cb9fd6153ffbf7f",
+    "tests/reproduction/gpu_gradient_clipping.py": "d2a0b2f3f116c1e18d936facbd9889a6872321ac13ea3d4bfed6c0214d140714",
+    "tests/reproduction/test_actual_prompt_dataset.py": "4249ffbc502f6d55be4b2749336c907fb8b8e0fb5fb5090b8a6dabc7d5aa4a74",
+    "tests/reproduction/test_calibration_context.py": "cc4812fce60425890cbe407efb477b260628ba1efbbc18b8e5550964efd6b7df",
+    "tests/reproduction/test_calibration_contract.py": "e516ddd5344311aebea834c6e9fc1c16bc84b34e0720a4143cb40c58385a08c8",
+    "tests/reproduction/test_calibration_evidence.py": "9879a3595dff59485c56735d0b5a3bb980a415fd0c586dd7acf0721639d662e4",
+    "tests/reproduction/test_counterfactual_protocol.py": "93c85a93c8f21c5d9efa3c1151423c2af510fe9b0aeae0bed09757f76e4def8c",
+    "tests/reproduction/test_evaluator_release.py": "8cb8ed017c03165279071f18a4a2a95ba33e1dc2610eb92048cb7f41bf39bf3e",
+    "tests/reproduction/test_g1_continuation_250.py": "a6a6c17f250b2cc654a2b5eae96c51e9d65393acde5a9d5bf37a4f321e8a2055",
+    "tests/reproduction/test_g1_continuation_acceptance.py": "dba82519a98eaaad278290ae542057680bc3d2ce1ffd393c7675dd425bbc5f7a",
+    "tests/reproduction/test_g1_continuation_admission.py": "d379af29fa73c4e41a08c3b7f71608ed541dfd79edf7f4f38fbf2fccb43e4f63",
+    "tests/reproduction/test_g1_continuation_wiring.py": "cd26f5203aad232c18bd7cd6e36eb42b8e8e850f4115a6932aa64a99f3b06617",
+    "tests/reproduction/test_g1_final.py": "0f9e8611d617919982748dbc9ee997b6d777f9e68452c9bab31611dd16d30179",
+    "tests/reproduction/test_g1_recovery_chain.py": "f5956f6819bdc0d4cce3a63d3fcf5e06a8ecdb29d15b74aba49ae3cbe4e90f85",
+    "tests/reproduction/test_g1_reward_formula.py": "5fe268837c92c4ddcffe5431c4d8b14ef66875ed8bb782fea31b6219d461154b",
+    "tests/reproduction/test_g1_reward_protocol.py": "97ccefd208a4a9c301bc479756754710594b423f264fb837728506b1fb2e138b",
+    "tests/reproduction/test_g1_signals.py": "c05e40c3ec1d0aca632b3b8294314a5be07c4f14187b0ef4f978ea8b63203dbe",
+    "tests/reproduction/test_generation_metadata.py": "8412803c89182914f29f573db92d0aed3a5267b7177a7ff10008c002a17a51ea",
+    "tests/reproduction/test_gradient_clipping.py": "f9068af4f9501deade39997b09fabe3b2da664b0cfecc1427f19f7e6def141e0",
+    "tests/reproduction/test_masked_numerics.py": "bfe54ba6cbf7a34e5ec4ead88fda8387bf8dd7d2ce4a492573c5a63643702210",
+    "tests/reproduction/test_numerics_guard.py": "b85875275d6e7aed25fbd445386cca1dea700dbe6d0db55a15641c45aa8dc66b",
+    "tests/reproduction/test_owned_processes.py": "4a35b2650119971a3e9fb5e3d2348f6a6dbb8055ee539576ea6b2a4968bc2f78",
+    "tests/reproduction/test_probe_admission.py": "4f64b2b976f3f8c3163fbb9380ca40fbf4563f93f197103f3a1642e642a140de",
+    "tests/reproduction/test_probe_calibration_data.py": "4758ea45a66be0942ea16fd1efeed8ee9c098b81a5b6ffbc1a3e3f88583a2f61",
+    "tests/reproduction/test_probe_transport_and_version.py": "2014542036285e31dee0cd1e63b37bba09875d3e88db3cbc842cec70a7c15798",
+    "tests/reproduction/test_r1_handoff.py": "197ffeab143dc5a031549dd535ca53cb43babfc4f50692dceb2e889a3289fa8f",
+    "tests/reproduction/test_terminal_answer_protocol.py": "fded6dcc5067e8f959c51577bc6b538fff6a8023f6470f1c3b844bc281eb3551",
+    "tests/reproduction/test_tokenizer_identity.py": "860ccf8eade3f254f4edd4d103ad2c6cae2b164600c82d0a599f1a7fb8da627e",
+    "tests/reproduction/test_weight_continuation.py": "4e6a5b72f05c10fcc7eec662fada24b2cfa83c9180732c00d5a1cc0fed47e51d",
+    "ts_coevolve.py": "50f1d4daaaed02d77cbbcb501691c525704fe57e9cd87826f4447d9e85c6b4a7",
+    "ts_probe_drift.py": "0055f0fccbe787476d391e17230cfa66994ddad27497cc2c6d815715d01fcea0",
+    "ts_probe_dump.py": "bc6b97e6f5aececd6cba93063ec4406c1ffd9d2eafb7358ec5059d2080522972",
+    "ts_probe_scalars.py": "14fee9ab1d39f7b9ac2998d22ae6f1363cf6cd2d7d7b4df9e20f1d21d96c03d8",
+    "ts_probe_train.py": "0c69ae6971d532494c2742e84925d06c74a9b7d94b02549ca601ec49743b291e",
+    "verl/__init__.py": "41d6e41c33606205fb21af76c9ea180ade26413345a073b07c24848cb06b41f6",
+    "verl/models/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/models/llama/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/models/llama/megatron/__init__.py": "bacfa32a69412dc2a3d55134a1a5a287288d2179c76700b72eed4bc42ed94d53",
+    "verl/models/llama/megatron/checkpoint_utils/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/models/llama/megatron/checkpoint_utils/llama_loader.py": "8132d66d0756561bdf7bcc53a6b77d85bc67a38385f4eff8233377d5ad123a29",
+    "verl/models/llama/megatron/checkpoint_utils/llama_saver.py": "97d6ea7470f04372dac5e6e50b8f4febe1e6db3759706c7da8a2c3593e9017f6",
+    "verl/models/llama/megatron/layers/__init__.py": "164f9b46a38b7c500c99f5a1f11a6b6d0a3160bda61296f8062d20c2720d5743",
+    "verl/models/llama/megatron/layers/parallel_attention.py": "223115766f99e5c92baa9a2d6f2d0451c2f472ddc3e05da176399dbd438daa5e",
+    "verl/models/llama/megatron/layers/parallel_decoder.py": "b9d5db6124b7be26188a159637d65bdab15c50439590745c5736a62ba3c20d5d",
+    "verl/models/llama/megatron/layers/parallel_linear.py": "abea6cdb51b6321ee3bf4ba9f043c32c4ec2dbfad64ebf0981f5beb30293bb11",
+    "verl/models/llama/megatron/layers/parallel_mlp.py": "752d7674c3746007caa5a111ae15f47d30fb769cf30721ede17fca4c2c5e3bab",
+    "verl/models/llama/megatron/layers/parallel_rmsnorm.py": "fd9c0692745aae1afab37e9730178f19ea0c2388f08cdb67646e3a371a3c1deb",
+    "verl/models/llama/megatron/modeling_llama_megatron.py": "4179b782925296874c080c48bba112461a8138d7fd64f53a1e89888473202738",
+    "verl/models/registry.py": "c7a2d330f96d7f793e9b5305bf9f932e92245f23ebb93c572221266391c10494",
+    "verl/models/transformers/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/models/transformers/llama.py": "8ef8564e7b3b45d8aaf2509eff07265b6cd1d6af1da0e588c8976d221d40d323",
+    "verl/models/transformers/monkey_patch.py": "8a0775fa2927755d1fa16e5cc2291e3ea45ec6f146f331bbca1d30e879b09943",
+    "verl/models/transformers/qwen2.py": "81b67ee203676ce26dbf6d5c1f5436ddf1d4a6070e5f646b2b9b87e7d95dd7d1",
+    "verl/models/weight_loader_registry.py": "14826b9646576cfe7b157c6bf293bbfe9c76b861c0803c1ad2d4bb93e7820d59",
+    "verl/protocol.py": "1629cea81ba08b6be40740dd3525fd45d97399aec14a62a28f3c5d19787b61cc",
+    "verl/single_controller/__init__.py": "504089640d8e047b8b53d032a9278ad3374c0efaae8c2a177468c7b2ceb7a02f",
+    "verl/single_controller/base/__init__.py": "2ccb73c92abfe5b47ea9af01ae0d9a2877553267d5c9e702f75c12071b7fea6b",
+    "verl/single_controller/base/decorator.py": "b6e4cd3c8ad3c4fa2eea07df3ef45344bb5dc2e1e8357c0b94a9d19a6bd4daac",
+    "verl/single_controller/base/megatron/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/single_controller/base/megatron/worker.py": "37aa599c7e77c72e99f52ebf1019a3e69e6dfeaa67bb852dc1b2e6afdd6e2c08",
+    "verl/single_controller/base/megatron/worker_group.py": "73362d1f9a2c162dcad2470c3ae93cb0867273a5fa236b135357e76807fa987f",
+    "verl/single_controller/base/register_center/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/single_controller/base/register_center/ray.py": "453fb6557bd4dde011730d92d96b8004e280c2dd75bb60f4d3eff9b8947ae702",
+    "verl/single_controller/base/worker.py": "3a4c40474aab8a2f898cc2fbbcbad7db5a697507065330026f6e7bbc9e11b181",
+    "verl/single_controller/base/worker_group.py": "aee8ea551404288e27a0d12e29304504a1551468ba388b2f0e1292e8ff4dde79",
+    "verl/single_controller/ray/__init__.py": "fc7a2d9064a035f948c196db973149438f977b41d81e55a5e05a3e599c9101ab",
+    "verl/single_controller/ray/base.py": "ea811acd83b3d7028f4effe93d1ee9d30e7d6e03cffb2c97653840c589edf66d",
+    "verl/single_controller/ray/megatron.py": "f07274afae8e1b14e930b48a7b228fd0afe3e409a5012f790481a953858ccde5",
+    "verl/single_controller/version/version": "cbe3535f589345547274a234f4692791149419677a67737b6e17f371b63fdded",
+    "verl/third_party/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/third_party/vllm/__init__.py": "9a1b9a8a579f4de9cc7e9d0419631a3d006e45ed5dc2d8504a96aab0954cac4a",
+    "verl/third_party/vllm/vllm_v_0_3_1/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py": "241d3e47e1bf283647237be71099df7ff857e11ce24c1f6082f9225929a7d4be",
+    "verl/third_party/vllm/vllm_v_0_3_1/config.py": "868aa707443c67986ef8b2c5437b617d640f4d47a53026f7e378ddde22ce7965",
+    "verl/third_party/vllm/vllm_v_0_3_1/llm.py": "bb5dd8a628d2d58b9daf33fe97fd471778b11e07212f5a7ac75c47a48273dca7",
+    "verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py": "ae76e88278e330c7a82b9ed149e76022e1e9522b5199a48f272ea514ed80b6cd",
+    "verl/third_party/vllm/vllm_v_0_3_1/model_loader.py": "9178cfe4c30b03a55856a0a59bdd2cf14856181185050814502fe9012cfcde10",
+    "verl/third_party/vllm/vllm_v_0_3_1/model_runner.py": "3ea4154e940f51a1d1f4770240c905b46ed9b923e32f9aa399a715b9ac9c5ff7",
+    "verl/third_party/vllm/vllm_v_0_3_1/parallel_state.py": "7129fc091140197f245ef083b829dafb7b68341f5f7e83959a31e0cbc063b76d",
+    "verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py": "557315a3db0e6e7d6cf5bd1dae035e15d69c5d0fb707ee395b629f2f9443e7f1",
+    "verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py": "5f5e0fe0298bb98c6b8c453f5d8b403c14786b95ccfaa2e02c83db5f91a2f6df",
+    "verl/third_party/vllm/vllm_v_0_3_1/worker.py": "20cdda355891836b9c8e80e1ba6c8af30634ec5a8f345259d4cc2463b3c04d13",
+    "verl/third_party/vllm/vllm_v_0_4_2/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py": "072ff25d639aac9716f353a7f9573db9296e6f2cdbde8c905b0966f193c5570c",
+    "verl/third_party/vllm/vllm_v_0_4_2/config.py": "c181a4d050364e942f560b53b982af4f3014af9ba932d117cf9cb0eaa327a380",
+    "verl/third_party/vllm/vllm_v_0_4_2/dtensor_weight_loaders.py": "8567b6e6a43a709cad9f2ba6d7d3fc34d19c24ba3c9d8c5866d506207aaf64b0",
+    "verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py": "05fb8e715913bd4e0ac7384bf4e116610639a25700e46c6aafb2fc5df4c81bdc",
+    "verl/third_party/vllm/vllm_v_0_4_2/llm.py": "68f39ae47e9a7bfffc55648d48ec02009514c2b310898ad09de2bbeca5503828",
+    "verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py": "daf7e56923a73e6075ce7e45a648b7d9f2957e26e7c4476be9dec3efb7625556",
+    "verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py": "8031edaf38d3e80ec53b872b3dae963254d54d49bcbd060db61f2b4037461181",
+    "verl/third_party/vllm/vllm_v_0_4_2/model_loader.py": "ec29dcd0785c71e44a3e755ca0d649afc27a98929128f9b76eaa078d76051f13",
+    "verl/third_party/vllm/vllm_v_0_4_2/model_runner.py": "9a7a637e14192a5253c708ba86584995a4f6fecc9a0ec6935c60957f6ca94750",
+    "verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py": "74087793df6f44e874d2f719534c3eeb7ad1e9c2fc8e50b27f4b37e4a1b788f8",
+    "verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py": "29254e03f754ed706f1265f7ab839dd9c465cd48cbd8549ad6cdf8a4db702a63",
+    "verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py": "497a401f78f5c164308c4d48df0144e8b0c7a47bd4dfb3212681c8d511fe98bb",
+    "verl/third_party/vllm/vllm_v_0_4_2/worker.py": "5de27b2ac756955564514b6e0e097b2e7d1c98c93f6a495ffd5ae29a240865a1",
+    "verl/third_party/vllm/vllm_v_0_5_4/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py": "f4fe86d839cefc374e4606f13ce53a7f224e13c2221bca80d775eabb6c03990c",
+    "verl/third_party/vllm/vllm_v_0_5_4/config.py": "b251ce52c26c20987afe04373dfcdea7c74eff72633a07e3f8ea2cafb1b103e6",
+    "verl/third_party/vllm/vllm_v_0_5_4/dtensor_weight_loaders.py": "3f71614c586d78588d8ee69d66e1533896c51e985e0cb8719cb8bd124e35c3f3",
+    "verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py": "8c819582f3ad7b23df842087cdf4a1992392e931cd419bcdc19879742ee828fe",
+    "verl/third_party/vllm/vllm_v_0_5_4/llm.py": "47be604307df31d16239191df3051ded9a7a0d7d7a69f3ee88539686556c2f30",
+    "verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py": "85fe01207028cd8b23f86be73179e2795eb7f45420a7f48db0d27835c9dcd1d1",
+    "verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py": "08dccb70b440541f1f3c68e5f519c1c419bce66360885af1084c4fee2b972079",
+    "verl/third_party/vllm/vllm_v_0_5_4/model_loader.py": "0e43f762258581069c1d20717591a6cbeb42288c033fa2aabc92c77f536768f4",
+    "verl/third_party/vllm/vllm_v_0_5_4/model_runner.py": "5f3ed36a09a9ae7c3ce2036c77f955a6c1b5ed1999dcf7e4df65a2b3ce606c1d",
+    "verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py": "218f8992ae59925bff68ea9deddf3876dc68b70b8e1cd3d1d77893fa5acb94f7",
+    "verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py": "3ce0cddfb329f0898287fcef40209e88cd8d8f6e4dc1e7ad78e31ac2bacfce7f",
+    "verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py": "497a401f78f5c164308c4d48df0144e8b0c7a47bd4dfb3212681c8d511fe98bb",
+    "verl/third_party/vllm/vllm_v_0_5_4/worker.py": "4235c9a8d985c1c4c4b6db086b3515c38681517a11f77004a488c6790383897c",
+    "verl/third_party/vllm/vllm_v_0_6_3/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/third_party/vllm/vllm_v_0_6_3/arg_utils.py": "fa211803d2705904fa27b4af7c4db629e60623046cc675bc04f5786a20675efc",
+    "verl/third_party/vllm/vllm_v_0_6_3/config.py": "9380fdc1024ef0ec327c75c35195a009edfdcf39a4e92f53a45149fe246cec6d",
+    "verl/third_party/vllm/vllm_v_0_6_3/dtensor_weight_loaders.py": "280ba6eacd660cb208f6e0fe1b427cd634c67927121328d6b3bc1226d59d0280",
+    "verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py": "01e371e44c45c0a4ecc2a757f3244a7220f6baa31c52a57d3b6c58f07a367752",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "5bc262b93ac5e938c82cc51f0e48b22a33cf13d0f5966f02afa15b60445203ff",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py": "618c464b9b80f595863c9c831c65a53a854f695012cc506f63c691073bf86e53",
+    "verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py": "d5c3463d34dace74fbea556bd21655f9027572d72ccba407ce035be6074f668a",
+    "verl/third_party/vllm/vllm_v_0_6_3/model_loader.py": "3f033175550ad920a7398e36a7f0b4e16859b692c4098eeb3a5eca7b97219945",
+    "verl/third_party/vllm/vllm_v_0_6_3/model_runner.py": "a30b7696071da0d9a08f30a0b42335cce3acd5331abbfdc0bc64fa3ef56a21ac",
+    "verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py": "c63e53effe7be48e3291d790bd02a7c95795692594655c39922a49381d93b56b",
+    "verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py": "0dd0c264240aeaac9f3bdd86054f1493334194143833de54a8636cfc200d27ae",
+    "verl/third_party/vllm/vllm_v_0_6_3/tokenizer.py": "f6f2517ebbac01f4cfb234ec71776d54e15a088cd883d48014f6c120d73a8da2",
+    "verl/third_party/vllm/vllm_v_0_6_3/worker.py": "d63fc21f39c9a730c9ddd1e776a98f554a7adc7dc9de96ae895d63b476e0577a",
+    "verl/trainer/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/trainer/config/evaluation.yaml": "106cd5daf5846e03aa5866897c7f7c13096e2859cd87a9cb2b73417143aa50ec",
+    "verl/trainer/config/generation.yaml": "fc82ade5d7a06f4aa0a3690b846d73a2dd93e50faf5ab7fd4624e35832c42e86",
+    "verl/trainer/config/ppo_megatron_trainer.yaml": "561c1b5d8a4bc0452150c6dbff8986feb9e1aa0ca9f52ad1166dc6542bb9d955",
+    "verl/trainer/config/ppo_trainer.yaml": "e872ae4f88b3c6bb0a8da0815cfd58970be5b14bc8b2e90ee2a7bc9bfdac8b5c",
+    "verl/trainer/config/sft_trainer.yaml": "121ef7e863948fcb2f7091322e953bc07ae086bd3ae41c6c06d5657adee35a78",
+    "verl/trainer/fsdp_sft_trainer.py": "7d0fe2f63fdc2f2026a8d731ff71dbd5ddddfb3413bc9273336d8514d894ad08",
+    "verl/trainer/main_eval.py": "91d913c8280df50eca396ea2c6d1961d9569a29ed7c7f104a597610e24cfda50",
+    "verl/trainer/main_generation.py": "19a40ee1d20bb06bff56d46b2c1bb9417e6e33539ff35eaae96fd3e55a4e5ae2",
+    "verl/trainer/main_ppo.py": "0567a1e2fb33a418ba3f24a020a2e549438a206419ea83620c7d8f69fa5941f1",
+    "verl/trainer/main_ppo_eco.py": "cf9366860857ffe9529b4462355d2e7e6f3f8e036bd2012bfc21359b58a67dfb",
+    "verl/trainer/ppo/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/trainer/ppo/core_algos.py": "adff53255d8ba659077be57d892c7f058ac41f64b588f1be49016322bc3d2a27",
+    "verl/trainer/ppo/ray_trainer.py": "4dcaebfc9ea6df69681a08077d01f8736d32db794c4b8c46e0cfa0df789c9a40",
+    "verl/trainer/runtime_env.yaml": "4b48b9246dcaa5df082844675c32e6095abd198e347eb928fc8c7d931c13e4d6",
+    "verl/utils/__init__.py": "2a347bac8c8dd4741d639d32cd86e58a081d272b129d0c1125df9398e8661105",
+    "verl/utils/checkpoint_integrity.py": "217ac469840801349322aac205bf8dfcc66c4e90b22bd557f929dfff4838b320",
+    "verl/utils/config.py": "b59763b8653abf6a011abf5304c2679b9e68690d2acc33a9a05fd6cfe0aab542",
+    "verl/utils/dataset/__init__.py": "85b71f93709dab550ee5705fe8fd88e9cc77d4b9465249eaeb92bc7646bda7e3",
+    "verl/utils/dataset/rl_dataset.py": "e95b34a590956ed37e69631c87712c9dacbddc0fae632ca1e5403ed19e409815",
+    "verl/utils/dataset/rm_dataset.py": "927ff2808f7c0928d4399cc1cd213fab2d922365c055a67ad6d4228b162c5d1d",
+    "verl/utils/debug/__init__.py": "7c2e66dafef4ae2d091deec16c763299acc927bc7486268190239d9290c0b77c",
+    "verl/utils/debug/performance.py": "a27524298cce8e7c5b0dc060a9d58f4c79d5a63a2da36293dee491dbb927a211",
+    "verl/utils/debug/trajectory_tracker.py": "f47db3824fe10b827c62110cb49151e075ae3e8bc9ea95905bb5dd915d60b897",
+    "verl/utils/distributed.py": "ee90007c15948b647338f404dd865cc5a0e2586903b8790ce6331d1cf01d2244",
+    "verl/utils/flops_counter.py": "753efda577398fe9378e2ce696eeb6288f153fc03086db63136633b4fc5fad1f",
+    "verl/utils/fs.py": "a922d349ce08eb4e23d878a33eba415e478ca467562b2082708fcc6f409ecb7e",
+    "verl/utils/fsdp_utils.py": "5126d6f195486fb58996f9ede8906e788c2d4ec2bffb7b4902fa21950f26b20b",
+    "verl/utils/hdfs_io.py": "3f006815223e1798ee829b325aa942453cdb6131731f056b07fd8de957d0bcf7",
+    "verl/utils/import_utils.py": "96fbdc91902ef5b62dee939d0a1f5a5cec7c5d93b240966017ef08278e644722",
+    "verl/utils/logger/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/utils/logger/aggregate_logger.py": "9fcaf99c0e6bacb838c7d1e40f1a51dcab6b4fe633b9320d97f5434f032fee9d",
+    "verl/utils/logging_utils.py": "ee547e49dd03ebf83d493ee11ee71c65ef1ae8a6b68d7d21c195e0d24abcea4b",
+    "verl/utils/megatron/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/utils/megatron/memory.py": "422a9340d8aae030664b5e425bb89bffc5d428b34057d091905b84a5033291e1",
+    "verl/utils/megatron/optimizer.py": "f99cc03963e38b1ae6178564adac0f9e731d875589908290dbd844bba1642d80",
+    "verl/utils/megatron/optimizer_config.py": "d978c3e93e3353af1dc30c36d0b14cbd7a2d97189fa861caa9b9591819da2f14",
+    "verl/utils/megatron/pipeline_parallel.py": "322d879dbfd3ae6219944ec328b2b6c0fb19091a45bb4a2257402b4934f1dd46",
+    "verl/utils/megatron/sequence_parallel.py": "5291153114babd5010d809c671c17fe14a7ac06c2ea4d997844bf3b6f1f4154e",
+    "verl/utils/megatron/tensor_parallel.py": "20eb4e2821f5c7f8cf931fa8e16a10b061b69c779fc85dcc5c296533a50da2ec",
+    "verl/utils/megatron_utils.py": "905d61e476d8062c298db358f8490a67e4b836b755ab6fbc0d45559f62d8dd23",
+    "verl/utils/memory_buffer.py": "736f122e7ca97cbfb173aaa97eab0f55fae19d8c0e3fc2da2e1722adeca8c518",
+    "verl/utils/model.py": "fcc69db8a0f05593dd4b66232bbbd5e4f3909c8c7981852d00945c941ac4cb6e",
+    "verl/utils/py_functional.py": "2b7cb3329422c6d5efef8e922eabf4f0942dfc330c04728d6d99159e953a3e6f",
+    "verl/utils/ray_utils.py": "77ef654419c1c1de59a6ec2b32b457eca7dd8cc73fe74a0d98278a3255835b58",
+    "verl/utils/rendezvous/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/utils/rendezvous/ray_backend.py": "902cda6fef0dd91061454e2f2461e3766eaa6b3227d4f7a9e829ab96b3e0b63d",
+    "verl/utils/reward_score/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/utils/reward_score/countdown.py": "69fbf8681a65006b7751e514755334dca779190876e295ce569bf3e9d6c0e0cb",
+    "verl/utils/reward_score/gsm8k.py": "ad8c22fa6becda86f429a9cac622aa9a2e9178758ecde00e3a02a55e09b93b6e",
+    "verl/utils/reward_score/math.py": "fd0eb6f4702e249e3386e91ac03964214bd3deafa5a0b3d9f9a05849930735c7",
+    "verl/utils/reward_score/multiply.py": "c42d763bcce3700fc0b7c17f94cce7eee973d550b61410d9d3f041a26787a180",
+    "verl/utils/reward_score/qa_em.py": "565933963b21062b37c5d4923306f18fa08fbef9a1b54270fb99aab600c323fa",
+    "verl/utils/reward_score/qa_em_format.py": "8c70396596842b7696acbd8debda68641ef0dc4949d0c2cd6f61d0068d3d29ee",
+    "verl/utils/rope_precision.py": "c43b4b489de5cdf71d322b7a27e9044f5448d05412fdc6588a3d4f64c03d300c",
+    "verl/utils/seqlen_balancing.py": "836a381b88a7c2185aea684b8e8c26e7eb0c25c6183e8f2f4d1686c85636fefb",
+    "verl/utils/tokenizer.py": "839dd008294614789194d3d97bedbd2ae381038fc288d7ed1f600bca7dc3470b",
+    "verl/utils/torch_dtypes.py": "db8a3796a51fed225f3781dcfe5341a68ba83811133f6ef0b41aba28958d92d0",
+    "verl/utils/torch_functional.py": "506298fcf51967126489fbdbcf5377d8124db68c9d134c8e6ef109bfad29be42",
+    "verl/utils/tracking.py": "5b481f6dfbe40f957d24c4139a47ccecede04f842631bcfec1796b2a7d3e1609",
+    "verl/utils/ulysses.py": "913c206e6c618e33121f891ff8d499dbbd01989cc79f38a7abb097f4a06cbda1",
+    "verl/utils/weight_continuation.py": "59d432353d49a777e8df6556bcc56ae13a48f1b711dd0ebf00b8ca1642bfb0ad",
+    "verl/version/version": "14be4b45f18e0d8c67b4f719b5144eee88497e413709d11d85b096d8e2346310",
+    "verl/workers/__init__.py": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+    "verl/workers/actor/__init__.py": "3053474474716dc57f7e1b5d80d23b28c7b146d9257f8b6bf3b7878de4eae219",
+    "verl/workers/actor/base.py": "4afcfa27274dd1b58e40cc5484ca352890d5423ce2c162734f1ee6b4fb26890b",
+    "verl/workers/actor/dp_actor.py": "310722decd7c2c431e27cc61c949cc0620845613ba767a075758a2125fe88727",
+    "verl/workers/actor/megatron_actor.py": "4e06adb8ae9802223b7d6c2ccd7658ec71c2286aaeb4139eeeebbf4319dc3df4",
+    "verl/workers/critic/__init__.py": "a61c624ef2dd6bec59cc59302d88d1ccdc151ea5beb776b9733ac19bcfbe8fb7",
+    "verl/workers/critic/base.py": "9609662cb80dc02afb53a424abb6a9ae93e0448d190a3dd5bc4cd5e0d92ea6a2",
+    "verl/workers/critic/dp_critic.py": "53bd4fcebb5aee477d24bb2e9d40d0f1fc94f57677cb918873cc2984234229a3",
+    "verl/workers/critic/megatron_critic.py": "19fb92b0d5cca0024ba7ff77e90ef62772d629bf99210804182945393f1deebb",
+    "verl/workers/fsdp_workers.py": "0ea49eb3b169bfab4de2c31d557459604e65f1ec01d3b1f104c62509c2ea3a11",
+    "verl/workers/megatron_workers.py": "90ba78a113c44e96488c552be884aaa26671bafa717ccba014ed295f2f12e135",
+    "verl/workers/reward_model/__init__.py": "969b640ba9c36d51ddf12380041963eb2255b094318027e76053c191339bd825",
+    "verl/workers/reward_model/base.py": "7f6e0ccd8edaca5a5edc02e8f545297bef4acaea84d0858b870340a157ed0983",
+    "verl/workers/reward_model/megatron/__init__.py": "1a01e19bf170896603577bc8752239de2743685141424dcef64bb685cb2ffd96",
+    "verl/workers/reward_model/megatron/reward_model.py": "0daadd77ea92b1fcfbf9899be9775c7ad951cbb3424ec1d3d05da65c6f804bd9",
+    "verl/workers/rollout/__init__.py": "6dc2b3dd28631c76b826f545091bedc233111ad6bab00511a4fe40e6a1e4cf78",
+    "verl/workers/rollout/base.py": "480b812f13b681735e18347220dc7462a7ae982fb61a46541dc713d4e2608d12",
+    "verl/workers/rollout/hf_rollout.py": "38d84c1bcbe61fa560dc6ab3e5f2acb46a4561c1bb329cf344d6cccc781b1009",
+    "verl/workers/rollout/naive/__init__.py": "551983cdba422a02f03c8b9cce52face25963b511b9029e09247a16afa3c70fd",
+    "verl/workers/rollout/naive/naive_rollout.py": "09dcb0d16d53b02d8cb665b21b4fc74f47ed479bdbe6b0292550d2b1b9a46d61",
+    "verl/workers/rollout/tokenizer.py": "92fbaf5d1c93e2c0d2ec2e399af83be277ac744005466b3016331516708ed00b",
+    "verl/workers/rollout/vllm_rollout/__init__.py": "875ce539030328cfd2feeec2d531a12ca24175762177ba5b4db2256c8669e0f7",
+    "verl/workers/rollout/vllm_rollout/vllm_rollout.py": "da4a0338a8bd7144fc387d19d0fdae421f66bdbae1c627b2097b24eb2871512f",
+    "verl/workers/sharding_manager/__init__.py": "32a39ab63010e701598f3c892357ede984a36a8e9013c78478b3f4a33e36ec21",
+    "verl/workers/sharding_manager/base.py": "d249884ee73ed51563443388163d57caaff198af11f60da44c70b85568c5127f",
+    "verl/workers/sharding_manager/fsdp_ulysses.py": "ec64073e9239d67d0dc7fa360013e779534e1bab8a6eb6991c6b9305aa573867",
+    "verl/workers/sharding_manager/fsdp_vllm.py": "c186b6c455d1e97c1b09c6fd8c80ea915d90f24e318b6fc377794e628583abd8",
+    "verl/workers/sharding_manager/megatron_vllm.py": "44d562b1081c31af36337a9d01b8b66e423fbd9905b1c261fba2296d44b820a2"
+  },
+  "run_id": "c31b70b3ab2349fe966318d3542603d2",
+  "initial_model_sha256": {
+    "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+    "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+    "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+    "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "input_sha256": {
+    "manifest.json": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "train.parquet": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+    "validation.parquet": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "stage.parquet": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "final.parquet": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+    "exclusions-audit.json": "bf22b531d9aef49a3f66ee7f3f89b795821d104807ebf9bfd5f845bd1c7ba65e",
+    "calibration-300.parquet": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+    "audit.json": "699554d16b10b8d4166790776d4269f03be2d6242cc68f1ccb812564ed6aa275"
+  },
+  "actual_grpo_updates": 0,
+  "actual_optimizer_writes": 0,
+  "probability_tolerance": 0.05,
+  "max_actor_reference": 0.0,
+  "max_actor_vllm": 0.00055694580078125,
+  "runtime_precision": [
+    {
+      "rank": 0,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 224,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 8064,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 224,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 1,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 188,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 6768,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 188,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 2,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 254,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 9144,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 254,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 3,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 340,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 12240,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 340,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 4,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 243,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 8748,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 243,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 5,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 363,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 13068,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 363,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 6,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 378,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 13608,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 378,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    },
+    {
+      "rank": 7,
+      "roles": {
+        "actor": {
+          "forward_calls": 4,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "torch.float32",
+          "mixed_reduce_dtype": "torch.float32",
+          "mixed_buffer_dtype": "torch.float32"
+        },
+        "reference": {
+          "forward_calls": 2,
+          "logit_dtypes": [
+            "torch.float32"
+          ],
+          "activation_dtypes": [
+            "torch.float32"
+          ],
+          "autocast_states": [
+            false
+          ],
+          "parameter_dtypes": [
+            "torch.float32"
+          ],
+          "compute_parameter_dtypes": [
+            "torch.float32"
+          ],
+          "buffer_dtypes": [
+            "torch.float32"
+          ],
+          "mixed_parameter_dtype": "None",
+          "mixed_reduce_dtype": "None",
+          "mixed_buffer_dtype": "None"
+        }
+      },
+      "rollout": {
+        "forward_calls": 299,
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "hidden_dtypes": [
+          "torch.float32"
+        ],
+        "cache_dtypes": [
+          "torch.float32"
+        ],
+        "cache_tensor_count": 10764,
+        "logit_dtypes": [
+          "torch.float32"
+        ],
+        "logits_calls": 299,
+        "autocast_states": [
+          false
+        ],
+        "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+      },
+      "torch_matmul_allow_tf32": false,
+      "torch_cudnn_allow_tf32": false,
+      "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+    }
+  ],
+  "complete_proof": {
+    "accepted": true,
+    "run_id": "c31b70b3ab2349fe966318d3542603d2",
+    "slurm_job_id": "3266",
+    "phase": "initial",
+    "ranks": [
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 0,
+        "cuda_uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+        "question_ids": [
+          "7a798345217bf8f29eb5a972466754145b80301abf024e2011f06d02096584e1",
+          "c694a5ea05ac591f1fce885d1b21f17444a7971b468164a5e66deb9c24d769be",
+          "001ef0bbe0e73962444ea93e4222fd2f822af61f83f3b3297f7c01e65ab6924b",
+          "3b512e0cda1e41741a03dca47c298557bc3f8a47978591767aa211cb6c918359",
+          "6451dda704c4c6c9e2e3cb2ad05a63ee8b827d08b2f464a9422e55dc590bbe61",
+          "65f575ada3351532eec6fc1740f196b3c22515956895335160366e706c089c3f",
+          "8eb0becb55c57581d69d40b567b716940e7f7f8bf1df0672b4713834f86ba50c",
+          "139769032716ad6191ef1ef880a7a297504ba284013d291ad13f6a6d41aa7149"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 224,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 8064,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 224,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.0003160834312438965,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            150,
+            224,
+            155,
+            122,
+            200,
+            153,
+            119,
+            172
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.403009,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 1,
+        "cuda_uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+        "question_ids": [
+          "6eaff014569127f4c521c943ec47384eaefa454e33002adabe2b0dd89aa7072f",
+          "7a4067eef0223899263e56d46e15788d4a037c5386ff8bd75aa735b0cc4f3eab",
+          "a0f3e62a9571c99e6637fd7c0570a35842ff2c534a21f19d36997e2b92009c1f",
+          "f4fe1cf272a29ae95f15bedf32dc1efd0fce285fbe1384a1329f8d4f547f3d6d",
+          "391ff65be2fbbb6422620b525fcb3e2aa1d0c19fb4172ae6da3e18337da24e69",
+          "d35b5ec38724fc683f36951929773252d88ba07da2384487a537cc356130a7c9",
+          "547e07613b794e2df679c445e314dc0195582ed81d0f47acd7667ad04951b62f",
+          "914a4d90be8f21581b3ba34b62f13d5c076bb890465b4f3cb48e5ff6fba20876"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 188,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 6768,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 188,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.0002944469451904297,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            180,
+            124,
+            124,
+            126,
+            143,
+            125,
+            188,
+            122
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.403031,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 2,
+        "cuda_uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+        "question_ids": [
+          "1be4974547d5bc5d12ba892e048204435114bbe71f1811b3c48848ec1dfac0b5",
+          "c5d6a1556ff3d02ab848a8ecb1c57719aeb8ed0faab091e722b48dee29be72f5",
+          "547c945f95993a163aa22f415ed27d95b4df1126bed94ebddd5cc2af29d351bf",
+          "01ac6da961ef7143be996df766dd5af4e8401124734bda256c62eceb9eef5f7e",
+          "b5fcc7d25af0ca696557ed237471dd8b4b7f5be2c33f8a73bfe6e5ada55b8e37",
+          "0aca4c3202f33124b738112ab5b5c092054d035e6e1d3909ac7ab95d6eaa29bc",
+          "dbd2afd662dd355af82e891a2740835418a031dd1977ed64afd4d45fd34920ec",
+          "97aae0c080870038867c3d310674a0a63d50a7fa2b4684367e91d1721330dea1"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 254,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 9144,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 254,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.00025326013565063477,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            120,
+            143,
+            120,
+            254,
+            203,
+            155,
+            125,
+            102
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.4029837,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 3,
+        "cuda_uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a",
+        "question_ids": [
+          "6de6433bab08dadcedf960fa800d14ecef963ba4a378f97e0bfc7ab9d11ab34e",
+          "6fdc9f87c377b35fbc6a27ab30f8df8f5ae5b1d82b44fd82d252d20f99c62c65",
+          "f316ae813414f9e116b413c90961dd1a3c8652263b0f1ccb52e5503323772766",
+          "490a90de13178d8f58a64a3d4d36a9e20ab119c9f358c6b6a07d3bde16475154",
+          "6ca7ea1b2fd379db034c507215a4aa6630d0900555aa7b871264b6a47ccbffda",
+          "092e52eb0b3ca38dd721345a7acc60c2f91d0556e0dba129daf68fbd0cf1361b",
+          "cde82b5dba1b4bee86e384becbe8ff7263a76f2f3896c2fa20f8172304e0866d",
+          "93f79ae1dea8bb983f1fc629bb8e3b9cbf4f4d5c817f28dd328e000ae7c45974"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 340,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 12240,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 340,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.00020611286163330078,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            340,
+            129,
+            123,
+            118,
+            198,
+            162,
+            120,
+            135
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.4029813,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 4,
+        "cuda_uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+        "question_ids": [
+          "48b90c17ba2656fe0280fec507a16619f72f43f7145bf99b83a3a00f9f20d6f3",
+          "c11e34cdf72f21c74928ebf875804a17e897942d9227e0fe2844fd652f151304",
+          "c3abfdb1e702fe83cfb6100eb311ff451ee7bb998dc25f5cde2781d4d268ddcc",
+          "ade9ccb826d1562f24d10d668d03d8d8a70e69b84fc06c7340f8476b363c1e82",
+          "3936634770b14a23eebfe0d9ec452f967e4c95c24572e413d7530bed6058a643",
+          "d07ee5829051ecbc37bf5c4a68141f97dee6ab485569705f4c3ef6dc7a6b77f7",
+          "016673ec3a9a73246927c0c497425d911617831c6e1eb5974f4f0a2cadb525d6",
+          "763fa1bc05ebaead0a107c6e7aa079a225d317c19542d6d1c2bd15d81f6b7c89"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 243,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 8748,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 243,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.00055694580078125,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            122,
+            243,
+            229,
+            110,
+            181,
+            229,
+            195,
+            225
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.4029853,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 5,
+        "cuda_uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+        "question_ids": [
+          "c71f978ce38a6e0b69638845604732857cd29274718e6bc737645753bf8d4104",
+          "ce7c79a1cfcffb55c143cc555b041fd648f6a409c41841ac5b4838c9886db53c",
+          "c8ad19b979e30ceb47c4849c5fa345f2b185d3a8e213175f929c59390bacfc1c",
+          "9df54c10b945e6172ba5dee2d2544fe9e60eb5fa5ca498455bf5496bb999440c",
+          "6b401480becdcff11d8d3e4bbb6c1599d5ca979c38b90b3ce672d43f6a3bf652",
+          "bdd6d848167233e74ad7bb4e401c14c65cb4259030f0e53b93ab97520a3b3345",
+          "c6737d30341a3e438a42967ad4261f51f1bed203e8f746c866e020cfc31c7285",
+          "b6c4b743eb35d92d79546588889838ca760323bd4efef13b7dee3899ab0df24a"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 363,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 13068,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 363,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.0005204379558563232,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            139,
+            171,
+            363,
+            206,
+            173,
+            123,
+            149,
+            126
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.4030175,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 6,
+        "cuda_uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+        "question_ids": [
+          "b0c6a315f3080d41537cff11edba3455002cadde8bf50244ec2815d121980940",
+          "0a2d00b9ac29f6fd82616fed5caa502cf1f2b8a01666198825d873df742d5cf4",
+          "049563c2fb5089bdb7a0fdd7bafc5c6555398e4130a08cdab2997d3a41eb52e8",
+          "78f6adb8852462784afef71a71f9c1f0c4aa3f673aa466c4ece8486636c6d5af",
+          "bba59af78881eb4322ee57f801586b31c9306929d2901e3d982d3bb91d5ed045",
+          "44977b91136bc2189999d814831bcdf4ae230b26d0ea0dc157c7bda35487c2b5",
+          "0cc06c402ee665085c170c9d5842a0264b66f88c7394fd8b264026e282172459",
+          "ae7c44b4950a8bd4be866fe5408bb372cfa95e50de92c8b1d1874362cebc3d8e"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 378,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 13608,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 378,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.00031369924545288086,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            238,
+            78,
+            277,
+            209,
+            153,
+            200,
+            123,
+            378
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.403047,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      },
+      {
+        "accepted": true,
+        "run_id": "c31b70b3ab2349fe966318d3542603d2",
+        "slurm_job_id": "3266",
+        "phase": "initial",
+        "rank": 7,
+        "cuda_uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e",
+        "question_ids": [
+          "a7c697876f99a0ee7af35a81f831af90ff3e167893cc458eccfb0e31fb97648c",
+          "753864df0dfd6d12e47cc3cf56b4b10728d445e385aa753ef3a72cd6b23dd017",
+          "bd86ea1848eef56ffc0706cc0f75c4e9504a53346e84c6079dc298b0ff1aebf6",
+          "102f8043b70b53b8b12d0c13ee9ef097ebd1e26293f6cd15ce92528acb7d7270",
+          "7736db06e471e4dc123689114be658195e458d7c1202f344982424dd016d0873",
+          "36ee003a5dbc2738b28983aa11aed5ffa70c6cadbd108f873d3e31065342cbc7",
+          "ad34d20a35bae914cbec6b394ced5a14b4011daa90564d624e8e56665c16f3a4",
+          "3ae4fae5a13974af766e51718a7aac880ba7d631f7a98630a38968b4b6b6c204"
+        ],
+        "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+        "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf",
+        "actual_optimizer_writes": 0,
+        "actual_grpo_updates": 0,
+        "sync_calls": 1,
+        "sync_load_format": "dtensor",
+        "separate_actor_logprob_entrypoint": true,
+        "internal_separate_logprob_max_abs": 0.0,
+        "runtime_precision": {
+          "roles": {
+            "actor": {
+              "forward_calls": 4,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "torch.float32",
+              "mixed_reduce_dtype": "torch.float32",
+              "mixed_buffer_dtype": "torch.float32"
+            },
+            "reference": {
+              "forward_calls": 2,
+              "logit_dtypes": [
+                "torch.float32"
+              ],
+              "activation_dtypes": [
+                "torch.float32"
+              ],
+              "autocast_states": [
+                false
+              ],
+              "parameter_dtypes": [
+                "torch.float32"
+              ],
+              "compute_parameter_dtypes": [
+                "torch.float32"
+              ],
+              "buffer_dtypes": [
+                "torch.float32"
+              ],
+              "mixed_parameter_dtype": "None",
+              "mixed_reduce_dtype": "None",
+              "mixed_buffer_dtype": "None"
+            }
+          },
+          "rollout": {
+            "forward_calls": 299,
+            "parameter_dtypes": [
+              "torch.float32"
+            ],
+            "hidden_dtypes": [
+              "torch.float32"
+            ],
+            "cache_dtypes": [
+              "torch.float32"
+            ],
+            "cache_tensor_count": 10764,
+            "logit_dtypes": [
+              "torch.float32"
+            ],
+            "logits_calls": 299,
+            "autocast_states": [
+              false
+            ],
+            "attention_backend": "vllm.attention.backends.xformers.XFormersImpl"
+          },
+          "torch_matmul_allow_tf32": false,
+          "torch_cudnn_allow_tf32": false,
+          "semantics": "Actual observed tensor dtypes and Torch flags; not proof of all kernel internal arithmetic"
+        },
+        "parity": {
+          "actor_reference_max_abs": 0.0,
+          "actor_vllm_max_abs": 0.00024443864822387695,
+          "tolerance": 0.05,
+          "valid_tokens_per_question": [
+            100,
+            196,
+            224,
+            176,
+            164,
+            181,
+            299,
+            95
+          ]
+        },
+        "resident_services_before_generation": null,
+        "initial_parameters_finite": true,
+        "checked_unix": 1791232295.4030168,
+        "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+      }
+    ],
+    "rank_file_sha256": {
+      "0": "2223cab1726b46eb18412c20b2210ccdab86f4a8808e14387bb7fc0e500f4ed7",
+      "1": "9f2b8653e0030401135e6fae64d065a58048bcce91625f1952da7f7ba838c9e2",
+      "2": "2e869986e540dacd15b8aa202eeb5c95dafecdd9e3b1fd198d81fb5e31ef6d79",
+      "3": "07df5ca88fc8ea2c1529b9825697787389a85a991f3b2a437076dec991b2559f",
+      "4": "82adbf3ea77a8200a0cfaa23843d75f93459649f5f82326c5ad2d9506fd17cd0",
+      "5": "78d21c6d674b4e25610d5e7a30d4f15e6b0ecb168f539feebd5c25acf99df836",
+      "6": "5d8c601d2f7e3b2547d7766a3007695ace4fc6f2596362cecc4bccbac5669036",
+      "7": "db374fdbe8183c0a112a7de8c560db8fc2cfc7906e06cd4f45a96b58abf160a3"
+    },
+    "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak",
+    "actual_grpo_updates": 0
+  },
+  "complete_proof_sha256": "8309ae84076bb6b214cfca05b2a3f2e217b718983e4e9b495874d29eb8a820be",
+  "slurm_job": "JobId=3266 JobName=search-g1-explicit-fp32-smoke UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898800 Nice=0 Account=(null) QOS=(null) JobState=COMPLETED Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:01:56 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-06T04:29:52 EligibleTime=2026-10-06T04:29:52 AccrueTime=2026-10-06T04:29:52 StartTime=2026-10-06T04:29:52 EndTime=2026-10-06T04:31:48 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-06T04:29:52 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1649634 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/preparation/job.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/repo StdErr=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/logs/slurm-3266.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/logs/slurm-3266.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "source_matches": true,
+  "owned_processes": [],
+  "checked_unix": 1791232403.8185658,
+  "precision_limit": "Torch flags do not establish IEEE FP32 behavior inside attention kernels",
+  "independent_aggregate_accepted": true,
+  "original_stage_record": {
+    "path": "stage.parquet",
+    "sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "rows": 64,
+    "source_counts": {
+      "nq": 32,
+      "hotpotqa": 32
+    },
+    "question_ids_sha256": "fb4c92624a04e51a6b9199a45d5a661a834e3b6fe0973690bc677211dc7c8731",
+    "content_identity": {
+      "questions_sha256": "eb3aa9f3456f49c741e0b139ae8c84b5417e4b5e2686d00fd42d29465052b6ed",
+      "rows_sha256": "cc145cf380774d411ab86e12e56e4c562f20c35c4e1f02bf10f2cde84070eb4f"
+    },
+    "canonical_questions_sha256": "c881c4ac3d6ba55967980ace9c6df45deb24a6ba24bf249e3e055d2aa127f235"
+  },
+  "ordered_stage_ids": [
+    "7a798345217bf8f29eb5a972466754145b80301abf024e2011f06d02096584e1",
+    "c694a5ea05ac591f1fce885d1b21f17444a7971b468164a5e66deb9c24d769be",
+    "001ef0bbe0e73962444ea93e4222fd2f822af61f83f3b3297f7c01e65ab6924b",
+    "3b512e0cda1e41741a03dca47c298557bc3f8a47978591767aa211cb6c918359",
+    "6451dda704c4c6c9e2e3cb2ad05a63ee8b827d08b2f464a9422e55dc590bbe61",
+    "65f575ada3351532eec6fc1740f196b3c22515956895335160366e706c089c3f",
+    "8eb0becb55c57581d69d40b567b716940e7f7f8bf1df0672b4713834f86ba50c",
+    "139769032716ad6191ef1ef880a7a297504ba284013d291ad13f6a6d41aa7149",
+    "6eaff014569127f4c521c943ec47384eaefa454e33002adabe2b0dd89aa7072f",
+    "7a4067eef0223899263e56d46e15788d4a037c5386ff8bd75aa735b0cc4f3eab",
+    "a0f3e62a9571c99e6637fd7c0570a35842ff2c534a21f19d36997e2b92009c1f",
+    "f4fe1cf272a29ae95f15bedf32dc1efd0fce285fbe1384a1329f8d4f547f3d6d",
+    "391ff65be2fbbb6422620b525fcb3e2aa1d0c19fb4172ae6da3e18337da24e69",
+    "d35b5ec38724fc683f36951929773252d88ba07da2384487a537cc356130a7c9",
+    "547e07613b794e2df679c445e314dc0195582ed81d0f47acd7667ad04951b62f",
+    "914a4d90be8f21581b3ba34b62f13d5c076bb890465b4f3cb48e5ff6fba20876",
+    "1be4974547d5bc5d12ba892e048204435114bbe71f1811b3c48848ec1dfac0b5",
+    "c5d6a1556ff3d02ab848a8ecb1c57719aeb8ed0faab091e722b48dee29be72f5",
+    "547c945f95993a163aa22f415ed27d95b4df1126bed94ebddd5cc2af29d351bf",
+    "01ac6da961ef7143be996df766dd5af4e8401124734bda256c62eceb9eef5f7e",
+    "b5fcc7d25af0ca696557ed237471dd8b4b7f5be2c33f8a73bfe6e5ada55b8e37",
+    "0aca4c3202f33124b738112ab5b5c092054d035e6e1d3909ac7ab95d6eaa29bc",
+    "dbd2afd662dd355af82e891a2740835418a031dd1977ed64afd4d45fd34920ec",
+    "97aae0c080870038867c3d310674a0a63d50a7fa2b4684367e91d1721330dea1",
+    "6de6433bab08dadcedf960fa800d14ecef963ba4a378f97e0bfc7ab9d11ab34e",
+    "6fdc9f87c377b35fbc6a27ab30f8df8f5ae5b1d82b44fd82d252d20f99c62c65",
+    "f316ae813414f9e116b413c90961dd1a3c8652263b0f1ccb52e5503323772766",
+    "490a90de13178d8f58a64a3d4d36a9e20ab119c9f358c6b6a07d3bde16475154",
+    "6ca7ea1b2fd379db034c507215a4aa6630d0900555aa7b871264b6a47ccbffda",
+    "092e52eb0b3ca38dd721345a7acc60c2f91d0556e0dba129daf68fbd0cf1361b",
+    "cde82b5dba1b4bee86e384becbe8ff7263a76f2f3896c2fa20f8172304e0866d",
+    "93f79ae1dea8bb983f1fc629bb8e3b9cbf4f4d5c817f28dd328e000ae7c45974",
+    "48b90c17ba2656fe0280fec507a16619f72f43f7145bf99b83a3a00f9f20d6f3",
+    "c11e34cdf72f21c74928ebf875804a17e897942d9227e0fe2844fd652f151304",
+    "c3abfdb1e702fe83cfb6100eb311ff451ee7bb998dc25f5cde2781d4d268ddcc",
+    "ade9ccb826d1562f24d10d668d03d8d8a70e69b84fc06c7340f8476b363c1e82",
+    "3936634770b14a23eebfe0d9ec452f967e4c95c24572e413d7530bed6058a643",
+    "d07ee5829051ecbc37bf5c4a68141f97dee6ab485569705f4c3ef6dc7a6b77f7",
+    "016673ec3a9a73246927c0c497425d911617831c6e1eb5974f4f0a2cadb525d6",
+    "763fa1bc05ebaead0a107c6e7aa079a225d317c19542d6d1c2bd15d81f6b7c89",
+    "c71f978ce38a6e0b69638845604732857cd29274718e6bc737645753bf8d4104",
+    "ce7c79a1cfcffb55c143cc555b041fd648f6a409c41841ac5b4838c9886db53c",
+    "c8ad19b979e30ceb47c4849c5fa345f2b185d3a8e213175f929c59390bacfc1c",
+    "9df54c10b945e6172ba5dee2d2544fe9e60eb5fa5ca498455bf5496bb999440c",
+    "6b401480becdcff11d8d3e4bbb6c1599d5ca979c38b90b3ce672d43f6a3bf652",
+    "bdd6d848167233e74ad7bb4e401c14c65cb4259030f0e53b93ab97520a3b3345",
+    "c6737d30341a3e438a42967ad4261f51f1bed203e8f746c866e020cfc31c7285",
+    "b6c4b743eb35d92d79546588889838ca760323bd4efef13b7dee3899ab0df24a",
+    "b0c6a315f3080d41537cff11edba3455002cadde8bf50244ec2815d121980940",
+    "0a2d00b9ac29f6fd82616fed5caa502cf1f2b8a01666198825d873df742d5cf4",
+    "049563c2fb5089bdb7a0fdd7bafc5c6555398e4130a08cdab2997d3a41eb52e8",
+    "78f6adb8852462784afef71a71f9c1f0c4aa3f673aa466c4ece8486636c6d5af",
+    "bba59af78881eb4322ee57f801586b31c9306929d2901e3d982d3bb91d5ed045",
+    "44977b91136bc2189999d814831bcdf4ae230b26d0ea0dc157c7bda35487c2b5",
+    "0cc06c402ee665085c170c9d5842a0264b66f88c7394fd8b264026e282172459",
+    "ae7c44b4950a8bd4be866fe5408bb372cfa95e50de92c8b1d1874362cebc3d8e",
+    "a7c697876f99a0ee7af35a81f831af90ff3e167893cc458eccfb0e31fb97648c",
+    "753864df0dfd6d12e47cc3cf56b4b10728d445e385aa753ef3a72cd6b23dd017",
+    "bd86ea1848eef56ffc0706cc0f75c4e9504a53346e84c6079dc298b0ff1aebf6",
+    "102f8043b70b53b8b12d0c13ee9ef097ebd1e26293f6cd15ce92528acb7d7270",
+    "7736db06e471e4dc123689114be658195e458d7c1202f344982424dd016d0873",
+    "36ee003a5dbc2738b28983aa11aed5ffa70c6cadbd108f873d3e31065342cbc7",
+    "ad34d20a35bae914cbec6b394ced5a14b4011daa90564d624e8e56665c16f3a4",
+    "3ae4fae5a13974af766e51718a7aac880ba7d631f7a98630a38968b4b6b6c204"
+  ],
+  "native_allocation": {
+    "accepted": true,
+    "run_id": "c31b70b3ab2349fe966318d3542603d2",
+    "slurm_job_id": "3266",
+    "node": "h100-8",
+    "actual_job_state": "RUNNING",
+    "requested_gres": "gres:gpu:h100:8",
+    "visible_devices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "actual_allocated_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "actual_cuda_runtime_uuids": [
+      "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+      "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+      "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+      "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a",
+      "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+      "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+      "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+      "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+    ],
+    "actual_allocation_detail": "JobId=3266 JobName=search-g1-explicit-fp32-smoke\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\n   Priority=4294898800 Nice=0 Account=(null) QOS=(null)\n   JobState=RUNNING Reason=None Dependency=(null)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   DerivedExitCode=0:0\n   RunTime=00:00:15 TimeLimit=01:00:00 TimeMin=N/A\n   SubmitTime=2026-10-06T04:29:52 EligibleTime=2026-10-06T04:29:52\n   AccrueTime=2026-10-06T04:29:52\n   StartTime=2026-10-06T04:29:52 EndTime=2026-10-06T05:29:52 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-06T04:29:52 Scheduler=Main\n   Partition=gpu AllocNode:Sid=h100-8:1649634\n   ReqNodeList=h100-8 ExcNodeList=(null)\n   NodeList=h100-8\n   BatchHost=h100-8\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:*\n   TRES=cpu=192,mem=512G,node=1,billing=192\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   JOB_GRES=gpu:h100:8\n     Nodes=h100-8 CPU_IDs=0-191 Mem=524288 GRES=gpu:h100:8(IDX:0-7)\n   MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\n   Command=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/preparation/job.sh\n   WorkDir=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/repo\n   StdErr=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/logs/slurm-3266.log\n   StdIn=/dev/null\n   StdOut=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-c80884cae287/logs/slurm-3266.log\n   Power=\n   TresPerNode=gres:gpu:h100:8\n   \n\n",
+    "physical_gpu_inventory": [
+      [
+        "0",
+        "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+        "81559"
+      ],
+      [
+        "1",
+        "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+        "81559"
+      ],
+      [
+        "2",
+        "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+        "81559"
+      ],
+      [
+        "3",
+        "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a",
+        "81559"
+      ],
+      [
+        "4",
+        "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+        "81559"
+      ],
+      [
+        "5",
+        "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+        "81559"
+      ],
+      [
+        "6",
+        "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+        "81559"
+      ],
+      [
+        "7",
+        "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e",
+        "81559"
+      ]
+    ],
+    "active_node_jobs": [
+      "3266"
+    ],
+    "foreign_compute_applications": [],
+    "checked_unix": 1791232210.6958408,
+    "scope": "exclusive native allocation before project GPU work; not GPU/model/GRPO acceptance"
+  },
+  "runtime_cpu_import": {
+    "returncode": 0,
+    "scope": "CPU package import only; no model or CUDA acceptance"
+  },
+  "resolved_config_sha256": "297bbdd0234397360a5f46f3d5c947aaa945d26003afa83f2140b1f1412477bf"
+}
