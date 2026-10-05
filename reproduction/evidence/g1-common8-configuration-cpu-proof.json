@@ -1,0 +1,20 @@
+{
+  "exit_code": 0,
+  "source_sha256": {
+    "reproduction/common8/configuration.py": "8307bceca62550f94c5196c3c48933bbfbd72d150409afd51b21615123aaecff",
+    "reproduction/common8/recipe.json": "45952f7eabe8e324af73219b02dfad7c4fdf8f090aee99bc6d44aef72ea7c0cf",
+    "reproduction/common8/test_configuration.py": "421677aa3467bf111362e056989d55bf5870968ed2aa02945d5e832d6834d999",
+    "reproduction/common8/budget.json": "1cca6927beec6a8c339c49b58278e64dff7a1c963a7d875b3ef445d73b74c389",
+    "reproduction/common8/batch_contract.py": "282b05c9e2418d07f292cda007d0a27a769f216101fe34f315b80a6bc5cebcd3",
+    "verl/trainer/config/ppo_trainer.yaml": "d990ac6c00f34fcbfde426a520ffc1b96d0ef96f118914ba26033d5eaba314b7",
+    "reproduction/common8/train.sh": "d1ef134fee3f7087ab4e6a59321b837b2bb9f43a2cb52e9fb1cab76de0f0ee49"
+  },
+  "scope": "Actual Hydra CPU composition only; no model/GPU/GRPO execution",
+  "accepted": true,
+  "actual_target_cpu_tests": 5,
+  "legacy_original_script_sha256": "497bee31ad6fe0716fe80ae57dfc95b65b4e866c4c02c21ae9551431876f57f0",
+  "legacy_original_commit": "c1bd274ba28766852c9d97b3dd674847425753e7",
+  "all_58_original_override_tokens_identical": true,
+  "actual_grpo_updates": 0,
+  "checked_unix": 1791194946.644799
+}
