@@ -53,6 +53,10 @@ cannot substitute for this gate or repair already degraded weights.
 found no remaining static implementation blocker in its checked scope.
 `test_policy_safety_native.py` is an isolated eight-GPU component fixture: actual
 FSDP/Adam/actor loop with synthetic forward and explicitly replaced admission.
-Its intended cases are 20 normal writes, one-rank invalid-old zero-write rejection,
-and post-write KL brake retaining one write. It is not Qwen training or production
-calibration. Native result status must be read from evidence before claiming pass.
+Native3252 completed successfully with all eight ranks: 20 normal writes and 40
+checks per rank; rank7 invalid-old rejected before any write; post-write KL brake
+retained exactly one write without a complete outer. Measured norms were about
+2 before clipping and 0.999999523 after. Weights/Adam remained finite and old
+identity unchanged. Scalar/hash proof is in
+`reproduction/evidence/g1-common8-policy-safety-native.json`. It is not Qwen
+training or healthy production calibration; its tiny threshold is a test trigger.
