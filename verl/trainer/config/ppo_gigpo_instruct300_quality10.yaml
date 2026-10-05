@@ -1,0 +1,22 @@
+defaults:
+  - ppo_gigpo_instruct300
+  - _self_
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 256
+    joint_loss_scaling: true
+trainer:
+  acceptance_step: ${oc.decode:${oc.env:GIGPO_QUALITY_GATE}}
+  trajectory_logging: true
+  val_before_train: false
+  experiment_name: gigpo-e1-quality-resume10
+  instruct300:
+    restore_checkpoint: ${oc.env:GIGPO_QUALITY_CHECKPOINT}
+    restore_manifest_sha256: ${oc.env:GIGPO_QUALITY_MANIFEST_SHA256}
+    approval_path: ${oc.env:GIGPO_E1_RUN}/quality-first5-approval.json
+  quality_resume:
+    enabled: true
+    selection_path: ${oc.env:GIGPO_QUALITY_SELECTION}
+    selection_sha256: ${oc.env:GIGPO_QUALITY_SELECTION_SHA256}
+    selection_review_path: ${oc.env:GIGPO_QUALITY_REVIEW}
+    selection_review_sha256: ${oc.env:GIGPO_QUALITY_REVIEW_SHA256}

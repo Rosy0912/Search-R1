@@ -1,0 +1,74 @@
+[
+  {
+    "step": 5,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_5",
+    "manifest_sha256": "3394d7fcde453e03e7ad13e084d32c739a8b4c292c54cab614baf7270c8acda2",
+    "job_id": "3185",
+    "code_commit": "bb1adde13c7fd489aef4feb68a36aeb0d29d5da3",
+    "config_sha256": "d2f4cea0b82a6652593416799a892a64ba70dac8451500ffb3348be473d00515",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 25,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_25",
+    "manifest_sha256": "3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4",
+    "job_id": "3185",
+    "code_commit": "bb1adde13c7fd489aef4feb68a36aeb0d29d5da3",
+    "config_sha256": "d2f4cea0b82a6652593416799a892a64ba70dac8451500ffb3348be473d00515",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 50,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_50",
+    "manifest_sha256": "db39371eda1180bc77b0d2cde24984211b8887d5360dcb24ed73b78804a37159",
+    "job_id": "3185",
+    "code_commit": "bb1adde13c7fd489aef4feb68a36aeb0d29d5da3",
+    "config_sha256": "d2f4cea0b82a6652593416799a892a64ba70dac8451500ffb3348be473d00515",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 75,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_75",
+    "manifest_sha256": "65f5eef374d0eb5378aa50d56b9c883755e961b154526a26c05eefcd127968a9",
+    "job_id": "3185",
+    "code_commit": "bb1adde13c7fd489aef4feb68a36aeb0d29d5da3",
+    "config_sha256": "d2f4cea0b82a6652593416799a892a64ba70dac8451500ffb3348be473d00515",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 80,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume75-job3225-1791150281881004640/checkpoints/actor/global_step_80",
+    "manifest_sha256": "7e108f4d1de488e8484a25deb3d50d9f9a200f2b30e0c90ffc3f9bc68751ad03",
+    "job_id": "3225",
+    "code_commit": "e5b30d7cf35c30a83d07375733501392d6fa42f1",
+    "config_sha256": "b5deaadd43ca16cebaf9c4f0a4320b47a4d7664830cc07d0367ad1e72463d2a8",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 85,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_85",
+    "manifest_sha256": "39bc75d6f38b3e4f52720b510d1dbb4d23c12ca47e1bbc51c4e811aa5419b2ef",
+    "job_id": "3230",
+    "code_commit": "229ee0cf44f754b137dc2226425fbc9fce0b2628",
+    "config_sha256": "46dd450db23b12dade16c54a18b53b9873168ad36e829e56562b120aa5691e48",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 100,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_100",
+    "manifest_sha256": "a29e58f3aaf428ea76d4f1cba90d254b126c10e3c0124f40d080c1881bdd5d00",
+    "job_id": "3230",
+    "code_commit": "229ee0cf44f754b137dc2226425fbc9fce0b2628",
+    "config_sha256": "46dd450db23b12dade16c54a18b53b9873168ad36e829e56562b120aa5691e48",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  },
+  {
+    "step": 125,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_125",
+    "manifest_sha256": "876e787d4e8a79cd0954c130dd9d08044fd3cd3c155d17ad6a9d837d29e17728",
+    "job_id": "3230",
+    "code_commit": "229ee0cf44f754b137dc2226425fbc9fce0b2628",
+    "config_sha256": "46dd450db23b12dade16c54a18b53b9873168ad36e829e56562b120aa5691e48",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+  }
+]

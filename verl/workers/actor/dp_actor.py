@@ -254,6 +254,9 @@ class DataParallelPPOActor(BasePPOActor):
             if paper_objective:
                 from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
                 denominator = row_denominator(len(mini_batch), mini_batch.device)
+                if audit is not None:
+                    audit.row_denominators.append(dict(mini_index=batch_idx, local_rows=len(mini_batch),
+                        actual_denominator=float(denominator.detach().item()), world_size=world))
                 weight_mass, mass_world = global_token_count(mini_batch['policy_weights'])
                 metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
             elif topd_token_mean:

@@ -351,6 +351,9 @@ class LLMGenerationManager:
         
         final_output = DataProto.from_dict(final_output)
         final_output.meta_info.update(meta_info)
+        trace = getattr(self, 'rollout_trace', None)
+        if trace is not None:
+            trace.record_generation(final_output, self.tokenizer)
         
         return final_output
 
@@ -406,6 +409,9 @@ If I want to give the final answer, I should put the answer between <answer> and
             
         assert len(search_results) == 0
             
+        trace = getattr(self, 'rollout_trace', None)
+        if trace is not None:
+            trace.record_turn(predictions, next_obs, active_mask, dones, valid_action, is_search)
         return next_obs, dones, valid_action, is_search
 
     def postprocess_predictions(self, predictions: List[Any]) -> Tuple[List[int], List[bool]]:

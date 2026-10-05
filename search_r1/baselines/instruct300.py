@@ -20,6 +20,8 @@ def prepare_sampler(config, size):
     a = config.actor_rollout_ref.actor
     r = config.actor_rollout_ref.rollout
     from .instruct_resume import enabled as restore_enabled, start_step
+    from .quality_resume import enabled as quality_enabled
+    quality = quality_enabled(config)
     restored = restore_enabled(config)
     origin = start_step(config)
     if (config.trainer.resume.enabled or config.baselines.method != 'gigpo'
@@ -27,7 +29,7 @@ def prepare_sampler(config, size):
             or config.baselines.holdout.input_mode != 'prebuilt_manifest'
             or config.baselines.holdout.manifest_sha256 != DATA_SHA
             or size != 169028 or config.data.train_batch_size != 512
-            or a.ppo_mini_batch_size != 128 or a.ppo_micro_batch_size != 16
+            or a.ppo_mini_batch_size != (256 if quality else 128) or a.ppo_micro_batch_size != 16
             or a.ppo_epochs != 1 or a.optim.lr != 1e-6 or a.optim.lr_warmup_steps != 57
             or a.entropy_coeff != 0 or not a.use_kl_loss or a.kl_loss_coef != .001
             or a.kl_loss_type != 'low_var_kl' or a.clip_ratio != .2 or a.grad_clip != 1
@@ -115,6 +117,10 @@ def save_complete(trainer, checkpoint, worker_receipts):
                   rng=rng_state(), kl_controller=dict(vars(trainer.kl_ctrl)),
                   algorithm_state=json.loads(algorithm_bytes),
                   config=OmegaConf.to_container(trainer.config, resolve=True))
+    from .quality_resume import enabled as quality_enabled
+    if quality_enabled(trainer.config):
+        driver['quality_health'] = trainer.quality_health
+        driver['validation_trace_serial'] = trainer.validation_trace_serial
     receipt = atomic_torch_save(driver, Path(checkpoint) / 'training_state/driver.pt')
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     trainer.instruct_manifest = publish_checkpoint_manifest(
@@ -140,7 +146,8 @@ def roundtrip_and_wait(trainer, final=False):
     if trainer.actor_rollout_wg.checkpoint_pause_identity() != expected:
         raise RuntimeError('Worker state changed before live state roundtrip')
     checkpoint = str(Path(manifest['path']).parent.parent)
-    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas, gate, gate * 20)
+    from .quality_resume import optimizer_steps
+    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas, gate, optimizer_steps(trainer.config, gate))
     if len(loaded) != 8 or {v['rank'] for v in loaded} != set(range(8)) or any(v['logical_step'] != gate for v in loaded):
         raise RuntimeError('Incomplete eight-rank checkpoint roundtrip')
     if trainer.actor_rollout_wg.checkpoint_pause_identity() != expected:
@@ -157,6 +164,10 @@ def roundtrip_and_wait(trainer, final=False):
             or state['source'] != trainer.config.actor_rollout_ref.model.path
             or state['config'] != OmegaConf.to_container(trainer.config, resolve=True)):
         raise RuntimeError('Driver configuration/source/update identity changed')
+    from .quality_resume import enabled as quality_enabled
+    if quality_enabled(trainer.config):
+        if state.get('quality_health') != trainer.quality_health or state.get('validation_trace_serial') != trainer.validation_trace_serial:
+            raise RuntimeError('Quality monitoring or validation trace progress changed before roundtrip')
     algorithm_receipt = next(r for r in manifest['identity']['files'] if '/algorithm/' in r['path'])
     if state['algorithm_state'] != json.loads(Path(algorithm_receipt['path']).read_text()):
         raise RuntimeError('Driver GiGPO state differs from complete algorithm receipt')
@@ -239,7 +250,7 @@ def record_evaluation(trainer, metrics, phase, files):
     if not root:
         raise RuntimeError('Instruct evaluation requires the actual audit directory')
     paths = [files] if isinstance(files, str) else list(files)
-    expected_count = {'initial512': 512, 'periodic512': 512,
+    expected_count = {'initial512': 512, 'periodic512': 512, 'restored512': 512, 'quality512': 512,
                       'stage64': 64, 'final51713': 51713}[phase]
     if metrics.get('val/qa_count/all') != expected_count:
         raise RuntimeError('Evaluation question count differs from its phase')
@@ -248,6 +259,8 @@ def record_evaluation(trainer, metrics, phase, files):
         job_id=os.environ['SLURM_JOB_ID'], commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'], data_identity=DATA_SHA,
         dataset_files=[dict(path=str(p), sha256=file_sha256(p)) for p in paths], metrics=metrics)
+    if getattr(trainer, 'config', None) is not None and getattr(trainer.config.trainer, 'trajectory_logging', False):
+        record['validation_trace_serial'] = trainer.validation_trace_serial
     with (Path(root) / 'evaluations.jsonl').open('a') as stream:
         stream.write(json.dumps(record, sort_keys=True) + '\n')
         stream.flush()

@@ -164,6 +164,7 @@ class ActorAudit:
         self.layout, self.values = shard_sample(model)
         self.rows, self.epochs = len(batch), epochs
         self.grads, self.epoch_hashes, self.micro_stats = [], [], []
+        self.row_denominators = []
 
     def epoch(self):
         self.epoch_hashes.append(fixed_hashes(self.batch))
@@ -206,7 +207,11 @@ class ActorAudit:
         if ref_logp is not None:
             record['reference_minus_current']=stats(ref_logp.detach()-logp.detach(),valid)
         record['loss_parts']={name:stats(value.detach()) for name,value in (loss_parts or {}).items()}
-        directory=Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR'])/'numeric'
+        record.update(rank=self.rank,pid=os.getpid(),run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                      commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                      config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+                      data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
+        directory=Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR'])/'numeric' 
         directory.mkdir(parents=True,exist_ok=True)
         with (directory/f'micro-{self.rank}.jsonl').open('a') as stream:
             stream.write(json.dumps(record)+'\n')
@@ -223,7 +228,7 @@ class ActorAudit:
         mask = self.batch.get('loss_mask', None)
         emit('actor_outer', dict(outer_step=self.step, rows=self.rows, epochs=self.epochs,
              optimizer_steps=updates, skipped_empty_minibatches=skips,
-             micro_stats=self.micro_stats, grad_norm_scope='existing_optimizer_norm_FSDP_global',
+             micro_stats=self.micro_stats, row_denominators=self.row_denominators, grad_norm_scope='existing_optimizer_norm_FSDP_global',
              grad_norms=self.grads, grad_finite=sum(v is not None for v in self.grads),
              grad_nonzero=sum(v is not None and v != 0 for v in self.grads),
              fixed_before=self.before, fixed_epochs=self.epoch_hashes, fixed_after=after,

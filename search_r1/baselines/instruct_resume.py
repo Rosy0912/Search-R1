@@ -16,6 +16,9 @@ SOURCE80 = 'e5b30d7cf35c30a83d07375733501392d6fa42f1'
 
 
 def provenance(config):
+    from .quality_resume import enabled as quality_enabled, selected_origin
+    if quality_enabled(config):
+        return selected_origin(config)
     path = config.trainer.instruct300.restore_checkpoint
     if path == CHECKPOINT75:
         return dict(step=75, checkpoint=CHECKPOINT75, manifest=MANIFEST75,
@@ -37,7 +40,8 @@ def start_step(config):
         return 0
     control = config.trainer.instruct300
     origin = provenance(config)
-    if (control.restore_manifest_sha256 != origin['manifest']
+    if (control.restore_checkpoint != origin['checkpoint']
+            or control.restore_manifest_sha256 != origin['manifest']
             or config.trainer.acceptance_step != origin['step'] + 5 or config.trainer.val_before_train
             or config.trainer.resume.enabled or config.trainer.total_training_steps != 300
             or not config.actor_rollout_ref.actor.get('joint_loss_scaling', False)):
@@ -56,6 +60,9 @@ def _leaves(value, prefix=''):
 
 def migration_diff(saved, current):
     """Reject every configuration change except named continuation controls."""
+    if current.get('trainer', {}).get('quality_resume', {}).get('enabled', False):
+        from .quality_resume import migration_diff as quality_migration
+        return quality_migration(saved, current)
     old, new = _leaves(saved), _leaves(current)
     absent = object()
     changes = {key: (old.get(key, absent), new.get(key, absent))
@@ -92,7 +99,8 @@ def restore(trainer):
     from .instruct300 import check_manifest, equal_state, REVISION
     step = start_step(trainer.config)
     origin = provenance(trainer.config)
-    if step not in (75, 80):
+    from .quality_resume import enabled as quality_enabled
+    if step not in (75, 80) and not quality_enabled(trainer.config):
         raise RuntimeError('Restore called outside the explicit continuation')
     path = Path(origin['checkpoint']) / 'training_state/manifest.json'
     if file_sha256(path) != origin['manifest']:

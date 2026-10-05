@@ -17,6 +17,7 @@ This trainer supports model-agonistic model initialization with huggingface
 """
 
 import os
+from pathlib import Path
 import uuid
 import functools
 from contextlib import contextmanager
@@ -521,6 +522,8 @@ class RayPPOTrainer(object):
         reward_tensor_lst = []
         data_source_lst = []
         qa_rows = []
+        validation_trace_serial = getattr(self, 'validation_trace_serial', 0) + 1
+        self.validation_trace_serial = validation_trace_serial
 
         def collect_qa(batch):
             if not self.config.get('baselines'):
@@ -587,10 +590,16 @@ class RayPPOTrainer(object):
                 reward_tensor_lst.append(reward_tensor)
                 data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
         else:
-            for batch_dict in self.val_dataloader:
+            for validation_batch_index, batch_dict in enumerate(self.val_dataloader):
                 timing_raw = {}
                 test_batch: DataProto = DataProto.from_single_dict(batch_dict)
                 # test_batch = test_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                if getattr(self.config.trainer, 'trajectory_logging', False):
+                    from search_r1.baselines.trajectory_records import RolloutTrace
+                    trace_root = (Path(self.config.trainer.default_local_dir).parent / 'validation_trajectories'
+                                  / f'eval_{validation_trace_serial:04d}' / f'batch_{validation_batch_index:04d}')
+                    generation_manager.rollout_trace = RolloutTrace(
+                        trace_root, self.global_steps, test_batch.non_tensor_batch['index'].tolist(), 1)
                 
                 test_gen_batch = test_batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
                 test_gen_batch.meta_info = {
@@ -618,6 +627,11 @@ class RayPPOTrainer(object):
                     # for certain reward function (e.g. sandbox), the generation can overlap with reward
                     reward_tensor = self.val_reward_fn(test_batch)
 
+                    if getattr(self.config.trainer, 'trajectory_logging', False):
+                        from search_r1.baselines.trajectory_records import record_validation_batch
+                        record_validation_batch(generation_manager.rollout_trace, test_batch, self.tokenizer, reward_tensor)
+                        from search_r1.baselines.trajectory_records import publish_trace_completion
+                        publish_trace_completion(trace_root, self.global_steps, len(test_batch), 'VALIDATION_BATCH_COMPLETE')
                     collect_qa(test_batch)
                     reward_tensor_lst.append(reward_tensor)
                     data_source_lst.append(test_batch.non_tensor_batch.get('data_source', ['unknown'] * reward_tensor.shape[0]))
@@ -797,6 +811,11 @@ class RayPPOTrainer(object):
                 first_training_iterator = iter(self.train_dataloader)
                 restore(self)
                 self.global_steps = instruct_origin
+        from search_r1.baselines.quality_resume import enabled as quality_enabled
+        if quality_enabled(self.config):
+            from search_r1.baselines.quality_resume import initialize_health
+            restored_quality = initialize_health(self)
+            logger.log(data=restored_quality, step=self.global_steps)
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -843,6 +862,13 @@ class RayPPOTrainer(object):
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                if getattr(self.config.trainer, 'trajectory_logging', False):
+                    from search_r1.baselines.trajectory_records import RolloutTrace
+                    batch.non_tensor_batch['audit_trajectory_row'] = np.arange(len(batch), dtype=np.int64)
+                    generation_manager.rollout_trace = RolloutTrace(
+                        Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                        self.global_steps, batch.non_tensor_batch['index'].tolist(),
+                        self.config.actor_rollout_ref.rollout.n_agent)
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
@@ -971,6 +997,11 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            if getattr(self.config.trainer, 'trajectory_logging', False):
+                                from search_r1.baselines.trajectory_records import record_scored_batch
+                                record_scored_batch(
+                                    Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                                    self.global_steps, batch, self.tokenizer)
                             from search_r1.baselines.runtime_audit import enabled as audit_enabled
                             if audit_enabled():
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
@@ -986,18 +1017,25 @@ class RayPPOTrainer(object):
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo'):
                         if metrics.get('actor/optimizer_steps', 0) <= 0:
                             raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
-                        if fresh_instruct and metrics.get('actor/optimizer_steps') != 20:
-                            raise RuntimeError('Instruct300 requires exactly20 optimizer steps per outer')
+                        from search_r1.baselines.quality_resume import enabled as quality_enabled
+                        expected_optimizer_steps = 10 if quality_enabled(self.config) else 20
+                        if fresh_instruct and metrics.get('actor/optimizer_steps') != expected_optimizer_steps:
+                            raise RuntimeError(f'Instruct300 requires exactly{expected_optimizer_steps} optimizer steps per outer')
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
+                    # Detached training metrics must exist before quality monitoring.
+                    metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
                     # validate
                     recovery_eval = (resume.get('enabled', False) and
                                      self.global_steps in (resume.acceptance_step, resume.stop_step))
+                    quality_stage_metrics = None
+                    quality_periodic_metrics = None
                     if fresh_instruct and self.global_steps == instruct_origin + 5:
                         from search_r1.baselines.instruct300 import validate_stage64
                         with _timer('stage_testing', timing_raw):
-                            metrics.update(validate_stage64(self))
+                            quality_stage_metrics = validate_stage64(self)
+                            metrics.update(quality_stage_metrics)
                     if self.val_reward_fn is not None and (recovery_eval or
                             (self.config.trainer.test_freq > 0 and
                              self.global_steps % self.config.trainer.test_freq == 0)):
@@ -1006,7 +1044,14 @@ class RayPPOTrainer(object):
                         if fresh_instruct:
                             from search_r1.baselines.instruct300 import record_evaluation
                             record_evaluation(self, val_metrics, 'periodic512', self.config.data.val_files)
+                        quality_periodic_metrics = val_metrics
                         metrics.update(val_metrics)
+                    if fresh_instruct and quality_enabled(self.config):
+                        from search_r1.baselines.quality_resume import monitor_health
+                        with _timer('quality_monitoring', timing_raw):
+                            quality_stage_metrics = monitor_health(self, metrics, quality_stage_metrics, quality_periodic_metrics)
+                        if quality_stage_metrics is not None:
+                            metrics.update(quality_stage_metrics)
                     if (getattr(self, 'baseline_controller', None) is not None
                             and metrics.get('actor/optimizer_steps', 0) > 0):
                         with _timer('stage_testing', timing_raw):
@@ -1025,8 +1070,13 @@ class RayPPOTrainer(object):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
 
+                if getattr(self.config.trainer, 'trajectory_logging', False):
+                    from search_r1.baselines.trajectory_records import publish_trace_completion
+                    publish_trace_completion(
+                        Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                        self.global_steps, len(batch), 'ACTUAL_OUTER_UPDATE_COMPLETE',
+                        metrics['actor/optimizer_steps'])
                 # collect metrics
-                metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
                 metrics.update(compute_timing_metrics(batch=batch, timing_raw=timing_raw))
 
                 # TODO: make a canonical logger that supports various backend
