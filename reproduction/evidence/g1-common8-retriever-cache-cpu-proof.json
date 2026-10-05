@@ -1,0 +1,18 @@
+{
+  "accepted": true,
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "test_identical_actual_vector_scores_for_both_metrics (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_same_ids_do_not_hide_a_bad_selected_vector (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_wrong_cpu_reference_scores_rejected (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_wrong_gpu_scores_ids_or_nonfinite_vectors_rejected (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_insufficient_tmpfs_refused_before_corpus_loading_and_claim_retained (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_interrupted_cleanup_and_initial_reservation_are_recoverable (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_live_creator_rejected_then_nested_cache_cleanup_repeatable (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_substituted_directory_inode_rejected (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_symlink_refuses_before_any_cache_deletion (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.042s\n\nOK\n",
+  "checked_unix": 1791197183.9221098,
+  "source_sha256": {
+    "reproduction/common8/retriever.py": "0930ce9a11ff1b0ed9de0db79ae158820909cb7ffff7eb3e5b4d0ea320bee7ac",
+    "reproduction/common8/temporary_cache.py": "6299d0dec12380ee028d1d72621f3634563e05197ee53076273d9f71f1f57a52",
+    "reproduction/common8/test_retriever.py": "c7e236c2db62e08254d7c20046fb28bcd30074420d16b7f31f03a5ef02382c2b",
+    "reproduction/common8/test_temporary_cache.py": "a0b95cb5c70d8a7259206ddc1f4f969aaa9a7511953775200124ad68c6deaf5d",
+    "reproduction/common8/encoder-assets.json": "0e51c42039045a324717bdf5ecab00a2bbe94e3a34648d9e7be5923447edac38"
+  },
+  "scope": "Nine small CPU vector/rejection and Linux private-cache ownership/capacity tests; no GPU, large corpus, HTTP or GRPO execution",
+  "actual_grpo_updates": 0,
+  "encoder_source_manifest_independently_matched": true,
+  "strict_read_only_review": "Cache capacity P2 resolved; no remaining concrete static blocker. Actual large-cache/GPU/HTTP execution remains unverified."
+}
