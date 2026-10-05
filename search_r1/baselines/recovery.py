@@ -7,7 +7,7 @@ import copy,json,math,os,subprocess
 from pathlib import Path
 from .checkpoint_gate import digest,validate_gate_config
 
-GUARD_JOURNAL_SHA='16e14271d0f7710d7c86ce00e2a5e10bd0bdd754900be7951b5a0224e9574555'
+GUARD_JOURNAL_SHA='3e0af3352c57c0fb8b677f5b2ecfaa944510556bcdbf501859712e7099d59579'
 RESOURCE_WATCH_SHA='53ed622dcce4aa5475d80f6489683860a3f43d7d1b6e4c6aa5657649d2a75a80'
 OLD_SOURCE='39cdcdd1404213b897bb0de99cc52d72707682f0'
 OLD_ROOT=Path('/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005')
