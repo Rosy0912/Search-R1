@@ -1,0 +1,36 @@
+{
+  "time": 1791198031.378673,
+  "status": "RUNNING",
+  "alive": true,
+  "metric": {
+    "step": "62",
+    "audit/strict_em": "0.384",
+    "actor/grad_norm": "1.627",
+    "timing_s/step": "2127.985"
+  },
+  "memory": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "continuous_observer_started": 1791156535.2196116,
+    "initial_source": "archive-post-jit-memory.json",
+    "initial_source_samples": 1726,
+    "peaks_mib": {
+      "4": 26498,
+      "5": 25214,
+      "6": 26102,
+      "7": 29617
+    },
+    "samples": 19876,
+    "minimum_reserve_mib": {
+      "4": 22642,
+      "5": 23926,
+      "6": 23038,
+      "7": 19523
+    },
+    "shared_gpu_margin_met": true,
+    "updated": 1791198003.0194533,
+    "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "source_run_status": "RUNNING",
+    "source_run_matches": true
+  }
+}

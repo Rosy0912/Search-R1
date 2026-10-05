@@ -1,0 +1,87 @@
+{
+  "run_id": "b8b93546fb314915b3e72f355f22f291",
+  "node": "xielab1",
+  "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+  "driver_group_pid": 139484,
+  "live_owned_group": true,
+  "status": "RUNNING",
+  "completed_iteration": 5,
+  "grpo_updates_per_stage": 200,
+  "minimum_reserve_mib": 9709,
+  "reserves_mib": {
+    "0": 9879,
+    "1": 9893,
+    "2": 9967,
+    "3": 10035,
+    "4": 9811,
+    "5": 10207,
+    "6": 10009,
+    "7": 9709
+  },
+  "nonfinite_actor_metric": false,
+  "checkpoint_checks": {
+    "2": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 3.520399332046509e-07
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 3.390014171600342e-07
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 3.501772880554199e-07
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 3.501772880554199e-07
+        }
+      ],
+      "accepted": true
+    },
+    "5": {
+      "checkpoint": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.0.self_attn.q_proj.weight",
+          "max_abs_delta": 2.905726432800293e-06
+        },
+        {
+          "key": "model.layers.1.self_attn.q_proj.weight",
+          "max_abs_delta": 2.7534551918506622e-06
+        },
+        {
+          "key": "model.layers.10.self_attn.q_proj.weight",
+          "max_abs_delta": 3.080815076828003e-06
+        },
+        {
+          "key": "model.layers.11.self_attn.q_proj.weight",
+          "max_abs_delta": 3.0919909477233887e-06
+        }
+      ],
+      "accepted": true
+    }
+  },
+  "checkpoints": [
+    "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+    "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2"
+  ],
+  "latest_metric": "(main_task pid=142302) step:5 - global_seqlen/min:538137.000 - global_seqlen/max:562534.000 - global_seqlen/minmax_diff:24397.000 - global_seqlen/balanced_min:546664.000 - global_seqlen/balanced_max:546665.000 - global_seqlen/mean:546664.500 - audit/legacy_em:0.269 - audit/strict_em:0.172 - audit/score_disagreement:0.096 - state_tokens/total:474109.000 - state_tokens/coverage:0.258 - actor/kl_coef:0.001 - actor/entropy_loss:0.973 - actor/pg_loss:0.002 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.001 - actor/kl_loss:0.002 - actor/grad_norm:1.400 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.172 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.172 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.008 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.008 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:716.870 - response_length/max:3181.000 - response_length/min:58.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.293 - prompt_length/max:201.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.160 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.984 - env/number_of_valid_action:2.111 - env/ratio_of_valid_action:0.989 - env/number_of_valid_search:1.127 - timing_s/gen:557.723 - timing_s/ref:173.415 - timing_s/adv:4.006 - timing_s/update_actor:862.050 - timing_s/save_checkpoint:22.833 - timing_s/step:1796.639 - timing_per_token_ms/update_actor:0.394 - timing_per_token_ms/gen:0.304 - timing_per_token_ms/ref:0.079 - timing_per_token_ms/adv:0.002",
+  "five_real_updates_accepted": true,
+  "updated": 1791197966.3095176
+}

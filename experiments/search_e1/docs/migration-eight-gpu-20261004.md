@@ -323,3 +323,25 @@ Verified old same-UID/run privatePGID3546009 and its members, confirmed full eig
 New actual HKUST1/xielab1 full run b8b93546fb314915b3e72f355f22f291, private stage group139484, Ray main_task142302. Directory /data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005; tmux e1-r1-aligned-full-20261005; stage FRESH_GRPO_ROUND_1. GPU8 admission clean. Both frozen305-file GRPO/OPSD copies verify; no old full-resume state is loaded. Existing initial heldout validation is actively generating answers. At16:05 completed0/200; no optimizer-update or checkpoint acceptance is claimed from initialization. Sampled peak13113MiB leaves11451MiB, but complete-update worst-case margin remains pending. Original train log is runs/r1/round-1-grpo/train.log.
 
 Read-only CPU acceptance session e1-r1-aligned-acceptance-20261005 runs continuously, pins same run, records actual node/group/iteration/checkpoint/metric/peaks, and checks finite changed synchronous checkpoints2/5 plus five real updates and sampled6GiB headroom. No stopped2-iteration test/reset is introduced. Hourly heartbeat was updated in the app and remains ACTIVE with the newly resolved budget/new directory/run scope, old-run preservation, archive post-JIT historical versus current-phase memory, full GRPO/OPSD/common evaluation and attribution requirements. Old technical goal-block reason is resolved by this human answer; no instruction to pause/cancel the work applies. Full acceptance remains unfinished. No seven-algorithm thread was notified.
+
+## 2026-10-05 19:00 CST: aligned eight-card run passes five real updates and continues
+
+Followed the human requirement to remain on the live run until five real updates passed, rather than treating background startup or initial validation as acceptance. Same HKUST1/xielab1 run `b8b93546fb314915b3e72f355f22f291` completed native actor updates 1–5 without restart or stopping at 2/5. At the 19:00 capture, the last log line is `epoch 0, step 6`; the same owned stage remains RUNNING. Initial validation step 0 is excluded from the five-update count. Initial heldout scores were NQ0.1796875 and HotpotQA0.1796875; these are baseline validation, not training updates.
+
+| Completed update | Strict training EM | Gradient norm | Whole update seconds |
+| --- | --- | --- | --- |
+| 1 | 0.180 | 1.479 | 1755.504 |
+| 2 | 0.150 | 1.385 | 1842.787 |
+| 3 | 0.164 | 1.369 | 1786.719 |
+| 4 | 0.136 | 1.260 | 1812.368 |
+| 5 | 0.172 | 1.400 | 1796.639 |
+
+Values are copied from the native three-decimal log, not higher-precision estimates. All five actor metrics are finite. Average whole update is approximately 30.0 minutes. The log includes occasional vLLM KV-cache RECOMPUTE warnings; these did not cause CUDA OOM or process exit. No restoration or runtime change was needed during this five-update observation.
+
+Both synchronous checkpoints2/5 pass verification: 435 checkpoint tensors finite, 434 initial tensors plus verified tied `lm_head.weight` alias, compatible identities/shapes, all four checked q_proj tensors changed from the common initial weights. At step5 the checked maximum absolute changes range from 2.7534551918506622e-6 to 3.0919909477233887e-6. Actual step5 checkpoint: `/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5`. These are model checkpoints; this receipt does not claim that the checkpoint contains resumable Adam/RNG state.
+
+Across the same run's sampled eight-card peaks, remaining memory is 9879/9893/9967/10035/9811/10207/10009/9709MiB; minimum9709MiB (9.48GiB) passes the6144MiB gate. Continuous CPU observer remains running. Proofs: [five-update acceptance](receipts/aligned-five-iterations.json), [native first-five metrics](receipts/aligned-first-five-metrics.json), [step2 weights](receipts/aligned-step2-weights.json), [step5 weights](receipts/aligned-step5-weights.json).
+
+At the same 19:00 capture, unchanged archive run `f04fe593830c4831918ede872812c016` on HKUST4 completed62/200, latest strict training EM0.384, finite gradient1.627 and RUNNING. Its current JIT-phase shared-GPU peak29617MiB leaves19523MiB; the earlier failed historical shared-card margin remains preserved separately and is not relabeled as passing.
+
+This satisfies the new run's initial five-update numerical/memory acceptance, not complete effect reproduction or a demonstrated reward improvement. Both full pipelines continue toward GRPO/OPSD and common evaluation; aligned stage budget remains200, warmup57, mini128/20 Adam updates, otherwise R1 logical settings. Compare later heldout evaluations under declared common conditions; these five different training batches cannot establish optimization benefit or attribute any gap to the algorithm. No other algorithm thread was notified and no archive/foreign process was stopped.

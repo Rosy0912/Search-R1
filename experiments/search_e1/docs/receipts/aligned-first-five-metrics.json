@@ -1,0 +1,70 @@
+{
+  "run_id": "b8b93546fb314915b3e72f355f22f291",
+  "node": "xielab1",
+  "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+  "captured": 1791198031.3137305,
+  "metrics": [
+    {
+      "step": 1.0,
+      "audit/strict_em": 0.18,
+      "audit/legacy_em": 0.272,
+      "actor/grad_norm": 1.479,
+      "actor/pg_loss": 0.04,
+      "actor/ppo_kl": 0.0,
+      "timing_s/gen": 551.191,
+      "timing_s/ref": 172.869,
+      "timing_s/update_actor": 851.211,
+      "timing_s/step": 1755.504
+    },
+    {
+      "step": 2.0,
+      "audit/strict_em": 0.15,
+      "audit/legacy_em": 0.24,
+      "actor/grad_norm": 1.385,
+      "actor/pg_loss": 0.038,
+      "actor/ppo_kl": 0.0,
+      "timing_s/gen": 589.846,
+      "timing_s/ref": 174.521,
+      "timing_s/update_actor": 873.229,
+      "timing_s/step": 1842.787
+    },
+    {
+      "step": 3.0,
+      "audit/strict_em": 0.164,
+      "audit/legacy_em": 0.25,
+      "actor/grad_norm": 1.369,
+      "actor/pg_loss": 0.022,
+      "actor/ppo_kl": -0.0,
+      "timing_s/gen": 569.691,
+      "timing_s/ref": 173.604,
+      "timing_s/update_actor": 862.093,
+      "timing_s/step": 1786.719
+    },
+    {
+      "step": 4.0,
+      "audit/strict_em": 0.136,
+      "audit/legacy_em": 0.23,
+      "actor/grad_norm": 1.26,
+      "actor/pg_loss": 0.043,
+      "actor/ppo_kl": 0.0,
+      "timing_s/gen": 591.02,
+      "timing_s/ref": 174.1,
+      "timing_s/update_actor": 865.252,
+      "timing_s/step": 1812.368
+    },
+    {
+      "step": 5.0,
+      "audit/strict_em": 0.172,
+      "audit/legacy_em": 0.269,
+      "actor/grad_norm": 1.4,
+      "actor/pg_loss": 0.002,
+      "actor/ppo_kl": 0.001,
+      "timing_s/gen": 557.723,
+      "timing_s/ref": 173.415,
+      "timing_s/update_actor": 862.05,
+      "timing_s/step": 1796.639
+    }
+  ],
+  "precision": "Metrics copied from native three-decimal training log; step 0 validation excluded",
+  "last_log_line": "\u001b[36m(main_task pid=142302)\u001b[0m epoch 0, step 6"
+}

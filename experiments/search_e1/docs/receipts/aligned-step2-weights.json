@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2",
+  "tensor_count": 435,
+  "initial_tensor_count": 434,
+  "verified_aliases": {
+    "lm_head.weight": "model.embed_tokens.weight"
+  },
+  "nonfinite": [],
+  "changed": [
+    {
+      "key": "model.layers.0.self_attn.q_proj.weight",
+      "max_abs_delta": 3.520399332046509e-07
+    },
+    {
+      "key": "model.layers.1.self_attn.q_proj.weight",
+      "max_abs_delta": 3.390014171600342e-07
+    },
+    {
+      "key": "model.layers.10.self_attn.q_proj.weight",
+      "max_abs_delta": 3.501772880554199e-07
+    },
+    {
+      "key": "model.layers.11.self_attn.q_proj.weight",
+      "max_abs_delta": 3.501772880554199e-07
+    }
+  ],
+  "accepted": true
+}
