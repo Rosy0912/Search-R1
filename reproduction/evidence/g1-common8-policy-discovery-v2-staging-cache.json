@@ -1,0 +1,131 @@
+{
+  "role": "sanitized_discovery_v2_original_assets_and_corpus_extraction",
+  "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+  "run_id": "6ed2e25db05342479641cb158e4ee866",
+  "native_job_id": "3278",
+  "actual_observed_unix": 1791240591.142224,
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "6ed2e25db05342479641cb158e4ee866",
+    "slurm_job_id": "3278",
+    "phase": "initial",
+    "proof_sha256": "499cd3d3126a5e00dc7157d0f6cad22e8eeaf19ff14c82beef160ad018b436b4",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "original_asset_integrity": {
+    "e5_Flat.index": {
+      "size": 64559075373,
+      "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166"
+    },
+    "wiki-18.jsonl": {
+      "size": 14393579520,
+      "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9"
+    }
+  },
+  "resources": {
+    "input_bytes": 78952654893,
+    "required_memory_floor_bytes": 349670160474,
+    "actual_allocation_bytes": 549755813888,
+    "actual_available_bytes": 2093297553408,
+    "actual_shm_free_bytes": 1066558070784,
+    "scope": "launch floor; actual model/coexistence peak remains unverified"
+  },
+  "original_corpus_extraction": {
+    "run_id": "6ed2e25db05342479641cb158e4ee866",
+    "slurm_job_id": "3278",
+    "uid": 0,
+    "archive_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+    "archive_size": 14393579520,
+    "archive_device": 27,
+    "archive_inode": 49733408,
+    "member": {
+      "name": "data00/jiajie_jin/flashrag_indexes/wiki_dpr_100w/wiki_dump.jsonl",
+      "size": 14393573105,
+      "uid": 1012,
+      "gid": 1012,
+      "mode": 436,
+      "type": "0",
+      "linkname": ""
+    },
+    "phase": "READY",
+    "created_unix": 1791240498.69759,
+    "output_device": 27,
+    "output_inode": 49733410,
+    "content_sha256": "43d7d3f58d01d711d95b00b70584211eea639fa46802905a4b7e11cf0617752d",
+    "content_size": 14393573105,
+    "completed_unix": 1791240521.1698213,
+    "scope": "original corpus bytes; private CPU filesystem extraction only"
+  },
+  "capacity_admission": {
+    "required_capacity_bytes": 44254480384,
+    "actual_tmpfs_free_bytes": 987605405696,
+    "actual_host_memory_available_bytes": 1946641506304,
+    "checked_unix": 1791240486.6183674,
+    "scope": "Retained JSONL+Arrow temporary+final launch allowance; actual cache peak remains sampled"
+  },
+  "source_only_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "pid": 1001564,
+      "start_ticks": 1552850382,
+      "sid": 1001564,
+      "uid": 0,
+      "port": 19874,
+      "started_unix": 1791239989.0342867,
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "export": "/dataset/shaoshitong/g1-original-export-discovery-v2-6f2e0963",
+      "source_sha256": "f32dfe6671c5acd8f1b8fd36896d06a83ce894772daa0346a8fce2e6f443aa84"
+    },
+    "checked_unix": 1791240554.6484795,
+    "scope": "Only this source-SHA/PID-birth/SID/UID service; fixed pidfd signal"
+  },
+  "gpu_sampling": {
+    "sample_count": 244,
+    "first_unix": 1791240050.4015229,
+    "last_unix": 1791240589.8578258,
+    "max_gap_seconds": 9.689411640167236,
+    "cumulative_peak_mib": {
+      "0": 41927,
+      "1": 41902,
+      "2": 42682,
+      "3": 41903,
+      "4": 41903,
+      "5": 41902,
+      "6": 41903,
+      "7": 41734
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "actual_completed_child_updates": 0,
+  "actual_production_updates": 0,
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "scope": "Actual staged bytes and private native extraction; not completed training, actual retained-file UID independently reread, HTTP/probe/coexistence or healthy-effect acceptance"
+}
