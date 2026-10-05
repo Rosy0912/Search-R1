@@ -1,0 +1,196 @@
+{
+  "job_id": 3249,
+  "job_terminal": "FAILED",
+  "rows": [
+    {
+      "kind": "actor_initialized",
+      "rank": 4,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 4
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 4,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.424044132232666,
+      "actor_vllm_mean": 0.014804048463702202,
+      "actor_vllm_q99": 0.1219070628285408,
+      "valid_tokens": 1660,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 0,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 0
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 0,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.43949586153030396,
+      "actor_vllm_mean": 0.014685072004795074,
+      "actor_vllm_q99": 0.11799225956201553,
+      "valid_tokens": 1247,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 6,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 6
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 6,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.25891566276550293,
+      "actor_vllm_mean": 0.011760835535824299,
+      "actor_vllm_q99": 0.1035979613661766,
+      "valid_tokens": 1494,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 2,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 2
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 2,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.35778117179870605,
+      "actor_vllm_mean": 0.013603448867797852,
+      "actor_vllm_q99": 0.10868378728628159,
+      "valid_tokens": 1281,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 1,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 1
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 1,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.21538546681404114,
+      "actor_vllm_mean": 0.014614090323448181,
+      "actor_vllm_q99": 0.10224775224924088,
+      "valid_tokens": 1188,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 7,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 7
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 7,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 1.0793983936309814,
+      "actor_vllm_mean": 0.015950394794344902,
+      "actor_vllm_q99": 0.11096926033496857,
+      "valid_tokens": 1686,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 5,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 5
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 5,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 1.5509871244430542,
+      "actor_vllm_mean": 0.01266192365437746,
+      "actor_vllm_q99": 0.11212228983640671,
+      "valid_tokens": 1534,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    },
+    {
+      "kind": "actor_initialized",
+      "rank": 3,
+      "optimizer_state_entries": 0
+    },
+    {
+      "kind": "reference_initialized",
+      "rank": 3
+    },
+    {
+      "kind": "actual_parity",
+      "rank": 3,
+      "actor_ref_max": 0.0,
+      "actor_vllm_max": 0.3845718502998352,
+      "actor_vllm_mean": 0.017269544303417206,
+      "actor_vllm_q99": 0.11939052492380142,
+      "valid_tokens": 1338,
+      "optimizer_state_entries": 0,
+      "optimizer_writes": 0
+    }
+  ],
+  "actor_reference_precision_verified": true,
+  "whole_smoke_accepted": false,
+  "remaining": "actor/vLLM max1.5509871244430542 over original .05; no production update",
+  "next_diagnostic": {
+    "base": "/dataset/shaoshitong/Search-G1-common8-backend-precision-85ec3493e18d",
+    "job_id": "3250",
+    "source_commit": "638a063",
+    "wrapper_sha256": "144ea2466e6911007630cf42b2e3d19c8a02afb3fade5b640dc639b018b9d87a",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--partition=gpu",
+      "--nodelist=h100-8",
+      "--nodes=1",
+      "--ntasks=1",
+      "--cpus-per-task=64",
+      "--gres=gpu:h100:8",
+      "--mem=512G",
+      "--exclusive",
+      "--time=01:00:00",
+      "--job-name=search-g1-device-diagnostic",
+      "--chdir=/dataset/shaoshitong/Search-G1-common8-backend-precision-85ec3493e18d/repo",
+      "--output=/dataset/shaoshitong/Search-G1-common8-backend-precision-85ec3493e18d/logs/slurm-%j.log",
+      "--export=ALL,SEARCH_G1_BASE=/dataset/shaoshitong/Search-G1-common8-backend-precision-85ec3493e18d",
+      "/dataset/shaoshitong/Search-G1-common8-backend-precision-85ec3493e18d/preparation/job.sh"
+    ],
+    "actual_grpo_updates": 0,
+    "scope": "Observe repaired actual FP32 rotary hashes and original model parity; no rawQA or optimizer writes",
+    "submitted_unix": 1791226005.7662337
+  }
+}
