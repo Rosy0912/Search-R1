@@ -1,0 +1,224 @@
+{
+  "checked_unix": 1791172359.1914325,
+  "run_id": "739c7771ca50455fa67e458822382788",
+  "completed_update": 264,
+  "new_updates": 7,
+  "rows": [
+    {
+      "step": 258,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.003,
+        "actor/kl_loss": 0.612,
+        "actor/entropy_loss": 1.418,
+        "actor/pg_loss": 0.024,
+        "actor/ppo_kl": 0.073,
+        "actor/grad_norm": 363605.406,
+        "critic/rewards/mean": -0.062,
+        "env/finish_ratio": 0.222,
+        "timing_s/step": 495.81
+      }
+    },
+    {
+      "step": 259,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.748,
+        "actor/entropy_loss": 2.063,
+        "actor/pg_loss": 0.008,
+        "actor/ppo_kl": 0.06,
+        "actor/grad_norm": 0.11,
+        "critic/rewards/mean": -0.1,
+        "env/finish_ratio": 0.005,
+        "timing_s/step": 422.782
+      }
+    },
+    {
+      "step": 260,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.002,
+        "actor/kl_loss": 0.924,
+        "actor/entropy_loss": 2.737,
+        "actor/pg_loss": 0.05,
+        "actor/ppo_kl": 0.135,
+        "actor/grad_norm": 7.212,
+        "critic/rewards/mean": -0.096,
+        "env/finish_ratio": 0.034,
+        "timing_s/step": 404.717
+      }
+    },
+    {
+      "step": 261,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.006,
+        "actor/kl_loss": 1.518,
+        "actor/entropy_loss": 1.487,
+        "actor/pg_loss": 0.415,
+        "actor/ppo_kl": 0.895,
+        "actor/grad_norm": 1799.499,
+        "critic/rewards/mean": -0.084,
+        "env/finish_ratio": 0.125,
+        "timing_s/step": 499.474
+      }
+    },
+    {
+      "step": 262,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.002,
+        "actor/kl_loss": 1.699,
+        "actor/entropy_loss": 1.148,
+        "actor/pg_loss": 4.217,
+        "actor/ppo_kl": 0.798,
+        "actor/grad_norm": 187177.146,
+        "critic/rewards/mean": -0.094,
+        "env/finish_ratio": 0.067,
+        "timing_s/step": 503.286
+      }
+    },
+    {
+      "step": 263,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.006,
+        "actor/kl_loss": 0.81,
+        "actor/entropy_loss": 0.864,
+        "actor/pg_loss": 60008945.54,
+        "actor/ppo_kl": 5.363,
+        "actor/grad_norm": 518129051715226.3,
+        "critic/rewards/mean": -0.072,
+        "env/finish_ratio": 0.198,
+        "timing_s/step": 504.838
+      }
+    },
+    {
+      "step": 264,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 2.647,
+        "actor/entropy_loss": 1.078,
+        "actor/pg_loss": 0.002,
+        "actor/ppo_kl": 3.274,
+        "actor/grad_norm": 520.929,
+        "critic/rewards/mean": -0.099,
+        "env/finish_ratio": 0.011,
+        "timing_s/step": 428.976
+      }
+    }
+  ],
+  "reward_recent": -0.099,
+  "reward_window_mean": -0.08671428571428572,
+  "reward_window_range": [
+    -0.1,
+    -0.062
+  ],
+  "reward_mean_change": -0.22128571428571428,
+  "validation_step": 255,
+  "validation_correct": 0,
+  "validation_em": 0,
+  "validation_counts": {
+    "musique": 9,
+    "nq": 10,
+    "bamboogle": 9,
+    "popqa": 9,
+    "2wikimultihopqa": 9,
+    "triviaqa": 9,
+    "hotpotqa": 9
+  },
+  "validation_source_correct": {
+    "popqa": 0,
+    "hotpotqa": 0,
+    "musique": 0,
+    "nq": 0,
+    "2wikimultihopqa": 0,
+    "bamboogle": 0,
+    "triviaqa": 0
+  },
+  "leaders": {
+    "trainer": {
+      "live": true,
+      "identity": {
+        "pid": 3637406,
+        "start_ticks": 524582919,
+        "sid": 3637406,
+        "uid": 0,
+        "state": "S",
+        "command": "bash reproduction/a800/train.sh "
+      }
+    },
+    "retriever": {
+      "live": true,
+      "identity": {
+        "pid": 3631839,
+        "start_ticks": 524558477,
+        "sid": 3631839,
+        "uid": 0,
+        "state": "S",
+        "command": "/data/search-g1-continuation-250-fp64/env/bin/python reproduction/a800/retriever_local.py --index_path /data/search-r1/assets/wiki/e5_Flat.index --corpus_path /data/search-r1/assets/wiki/wiki-18.jsonl --topk 3 --retriever_name e5 --retriever_model /data/search-r1/assets/e5-base-v2 --faiss_gpu "
+      }
+    },
+    "probe-server": {
+      "live": true,
+      "identity": {
+        "pid": 3636445,
+        "start_ticks": 524575419,
+        "sid": 3636445,
+        "uid": 0,
+        "state": "S",
+        "command": "/data/search-g1-continuation-250-fp64/env/bin/python probe_server.py --manifest /data/search-g1-continuation-250-fp64/artifacts/live/manifest.json --port 18012 "
+      }
+    },
+    "main": {
+      "live": true,
+      "identity": {
+        "pid": 3643039,
+        "start_ticks": 524585455,
+        "sid": 3637406,
+        "uid": 0,
+        "state": "S",
+        "command": "ray::main_task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  "
+      }
+    }
+  },
+  "pipeline": {
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "stage": "GRPO_251_TO_300",
+    "unix": 1791166237.8780622
+  },
+  "raw_gradient_window_peak": 10357024721853502,
+  "raw_gradient_cumulative_peak": 10357024721853502,
+  "gpu_window_peak_mib": {
+    "0": 47027,
+    "1": 47123,
+    "2": 47569,
+    "3": 47473,
+    "5": 17881,
+    "6": 25675
+  },
+  "gpu_cumulative_peak_mib": {
+    "0": 47027,
+    "1": 47123,
+    "2": 47569,
+    "3": 47473,
+    "5": 19203,
+    "6": 25675
+  },
+  "sampler_last": 1791172358.7614639,
+  "window_sample_count": 1450,
+  "max_sample_interval": 2.3490662574768066,
+  "gpu_current_csv": "0, 40831, 81920, 77\n1, 40929, 81920, 79\n2, 40929, 81920, 77\n3, 40831, 81920, 76\n4, 4, 81920, 0\n5, 17879, 81920, 0\n6, 25675, 81920, 0\n7, 68494, 81920, 0\n",
+  "errors": [],
+  "semantics": "console metrics3decimals; unchanged validation is still255 zero64; structural five acceptance not accuracy success",
+  "review": {
+    "concrete_new_evaluator_masking_or_sync_defect_found": false,
+    "evaluation_bypasses_probe": true,
+    "tied_head_same_module": true,
+    "rollout_source_loads_weights_each_call": true,
+    "root_cause": "inconclusive; runtime post-sync parity not measured",
+    "post_run_followup": "after owned cleanup compare matched HF/vLLM logits/greedy and checkpoint250->255 BF16 changes; no interference with live trainer"
+  }
+}
