@@ -1,0 +1,263 @@
+{
+  "archive": {
+    "profile": "archive",
+    "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+    "metrics": [
+      {
+        "step": 1,
+        "audit/strict_em": 0.172,
+        "actor/grad_norm": 2.139,
+        "timing_s/step": 1554.373
+      },
+      {
+        "step": 2,
+        "audit/strict_em": 0.155,
+        "actor/grad_norm": 1.904,
+        "timing_s/step": 1583.847
+      },
+      {
+        "step": 3,
+        "audit/strict_em": 0.155,
+        "actor/grad_norm": 2.058,
+        "timing_s/step": 1606.297
+      },
+      {
+        "step": 4,
+        "audit/strict_em": 0.13,
+        "actor/grad_norm": 1.93,
+        "timing_s/step": 1576.523
+      },
+      {
+        "step": 5,
+        "audit/strict_em": 0.171,
+        "actor/grad_norm": 2.102,
+        "timing_s/step": 1561.022
+      },
+      {
+        "step": 6,
+        "audit/strict_em": 0.168,
+        "actor/grad_norm": 2.049,
+        "timing_s/step": 1553.63
+      },
+      {
+        "step": 7,
+        "audit/strict_em": 0.169,
+        "actor/grad_norm": 2.061,
+        "timing_s/step": 1549.311
+      },
+      {
+        "step": 8,
+        "audit/strict_em": 0.182,
+        "actor/grad_norm": 2.125,
+        "timing_s/step": 1548.682
+      },
+      {
+        "step": 9,
+        "audit/strict_em": 0.192,
+        "actor/grad_norm": 2.01,
+        "timing_s/step": 1543.176
+      },
+      {
+        "step": 10,
+        "audit/strict_em": 0.198,
+        "actor/grad_norm": 1.944,
+        "timing_s/step": 1543.322
+      },
+      {
+        "step": 11,
+        "audit/strict_em": 0.207,
+        "actor/grad_norm": 2.111,
+        "timing_s/step": 1548.482
+      },
+      {
+        "step": 12,
+        "audit/strict_em": 0.202,
+        "actor/grad_norm": 2.083,
+        "timing_s/step": 1547.531
+      },
+      {
+        "step": 13,
+        "audit/strict_em": 0.204,
+        "actor/grad_norm": 2.012,
+        "timing_s/step": 1553.513
+      },
+      {
+        "step": 14,
+        "audit/strict_em": 0.22,
+        "actor/grad_norm": 2.368,
+        "timing_s/step": 1555.498
+      },
+      {
+        "step": 15,
+        "audit/strict_em": 0.212,
+        "actor/grad_norm": 2.341,
+        "timing_s/step": 1549.398
+      },
+      {
+        "step": 16,
+        "audit/strict_em": 0.236,
+        "actor/grad_norm": 2.196,
+        "timing_s/step": 1545.748
+      },
+      {
+        "step": 17,
+        "audit/strict_em": 0.204,
+        "actor/grad_norm": 2.144,
+        "timing_s/step": 1547.809
+      },
+      {
+        "step": 18,
+        "audit/strict_em": 0.245,
+        "actor/grad_norm": 2.495,
+        "timing_s/step": 1550.069
+      },
+      {
+        "step": 19,
+        "audit/strict_em": 0.205,
+        "actor/grad_norm": 1.934,
+        "timing_s/step": 1713.237
+      },
+      {
+        "step": 20,
+        "audit/strict_em": 0.195,
+        "actor/grad_norm": 2.096,
+        "timing_s/step": 2089.349
+      }
+    ],
+    "precision": "native three-decimal log",
+    "note": "Descriptive matched iteration; exact question pairing and rollout random stream equality not independently established; no causal attribution",
+    "mean_first20": 0.19110000000000005,
+    "mean_last10": 0.213
+  },
+  "r1": {
+    "profile": "r1",
+    "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+    "metrics": [
+      {
+        "step": 1,
+        "audit/strict_em": 0.18,
+        "actor/grad_norm": 1.479,
+        "timing_s/step": 1755.504
+      },
+      {
+        "step": 2,
+        "audit/strict_em": 0.15,
+        "actor/grad_norm": 1.385,
+        "timing_s/step": 1842.787
+      },
+      {
+        "step": 3,
+        "audit/strict_em": 0.164,
+        "actor/grad_norm": 1.369,
+        "timing_s/step": 1786.719
+      },
+      {
+        "step": 4,
+        "audit/strict_em": 0.136,
+        "actor/grad_norm": 1.26,
+        "timing_s/step": 1812.368
+      },
+      {
+        "step": 5,
+        "audit/strict_em": 0.172,
+        "actor/grad_norm": 1.4,
+        "timing_s/step": 1796.639
+      },
+      {
+        "step": 6,
+        "audit/strict_em": 0.169,
+        "actor/grad_norm": 1.352,
+        "timing_s/step": 1775.969
+      },
+      {
+        "step": 7,
+        "audit/strict_em": 0.179,
+        "actor/grad_norm": 1.324,
+        "timing_s/step": 1796.154
+      },
+      {
+        "step": 8,
+        "audit/strict_em": 0.19,
+        "actor/grad_norm": 1.484,
+        "timing_s/step": 1821.718
+      },
+      {
+        "step": 9,
+        "audit/strict_em": 0.191,
+        "actor/grad_norm": 1.395,
+        "timing_s/step": 1791.95
+      },
+      {
+        "step": 10,
+        "audit/strict_em": 0.197,
+        "actor/grad_norm": 1.516,
+        "timing_s/step": 1807.674
+      },
+      {
+        "step": 11,
+        "audit/strict_em": 0.194,
+        "actor/grad_norm": 1.523,
+        "timing_s/step": 1811.541
+      },
+      {
+        "step": 12,
+        "audit/strict_em": 0.188,
+        "actor/grad_norm": 1.451,
+        "timing_s/step": 1807.885
+      },
+      {
+        "step": 13,
+        "audit/strict_em": 0.198,
+        "actor/grad_norm": 1.356,
+        "timing_s/step": 1807.969
+      },
+      {
+        "step": 14,
+        "audit/strict_em": 0.214,
+        "actor/grad_norm": 1.521,
+        "timing_s/step": 1832.458
+      },
+      {
+        "step": 15,
+        "audit/strict_em": 0.216,
+        "actor/grad_norm": 1.72,
+        "timing_s/step": 1840.151
+      },
+      {
+        "step": 16,
+        "audit/strict_em": 0.246,
+        "actor/grad_norm": 1.535,
+        "timing_s/step": 1812.474
+      },
+      {
+        "step": 17,
+        "audit/strict_em": 0.206,
+        "actor/grad_norm": 1.382,
+        "timing_s/step": 1845.085
+      },
+      {
+        "step": 18,
+        "audit/strict_em": 0.247,
+        "actor/grad_norm": 1.797,
+        "timing_s/step": 1819.351
+      },
+      {
+        "step": 19,
+        "audit/strict_em": 0.208,
+        "actor/grad_norm": 1.496,
+        "timing_s/step": 1824.474
+      },
+      {
+        "step": 20,
+        "audit/strict_em": 0.196,
+        "actor/grad_norm": 1.276,
+        "timing_s/step": 1844.88
+      }
+    ],
+    "precision": "native three-decimal log",
+    "note": "Descriptive matched iteration; exact question pairing and rollout random stream equality not independently established; no causal attribution",
+    "mean_first20": 0.19205000000000003,
+    "mean_last10": 0.2113
+  },
+  "scope": "Same early iteration indices only, descriptive means over rounded training logs; no matched heldout evaluation or causal conclusion."
+}
