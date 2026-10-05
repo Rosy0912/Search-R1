@@ -1,0 +1,144 @@
+{
+  "requested_utc": "2026-10-05T11:06:21.163Z",
+  "archive": {
+    "time": 1791198630.9014804,
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "status": "RUNNING",
+    "pid": 1434645,
+    "live": true,
+    "node": "xielab5",
+    "metrics": {
+      "step": "62",
+      "audit/strict_em": "0.384",
+      "actor/grad_norm": "1.627",
+      "timing_s/step": "2127.985"
+    },
+    "current_epoch": [
+      "\u001b[36m(main_task pid=1437474)\u001b[0m epoch 0, step 63"
+    ],
+    "memory": {
+      "run_id": "f04fe593830c4831918ede872812c016",
+      "started": 1791152901.890629,
+      "continuous_observer_started": 1791156535.2196116,
+      "initial_source": "archive-post-jit-memory.json",
+      "initial_source_samples": 1726,
+      "peaks_mib": {
+        "4": 26498,
+        "5": 25214,
+        "6": 26102,
+        "7": 29617
+      },
+      "samples": 20176,
+      "minimum_reserve_mib": {
+        "4": 22642,
+        "5": 23926,
+        "6": 23038,
+        "7": 19523
+      },
+      "shared_gpu_margin_met": true,
+      "updated": 1791198629.3855286,
+      "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+      "source_run_status": "RUNNING",
+      "source_run_matches": true
+    },
+    "oracle_memory": {
+      "peak_mib": 43643,
+      "service_peak_mib": 630,
+      "current_mib": 15435,
+      "total_mib": 49140,
+      "reserve_mib": 5497,
+      "samples": 38245,
+      "time": 1791198621.1082468,
+      "service_pid": 1749337
+    },
+    "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50"
+  },
+  "r1": {
+    "time": 1791198455.602937,
+    "node": "xielab1",
+    "run_id": "b8b93546fb314915b3e72f355f22f291",
+    "status": "RUNNING",
+    "pid": 139484,
+    "current_epoch": [
+      "\u001b[36m(main_task pid=142302)\u001b[0m epoch 0, step 6"
+    ],
+    "completed_iteration": 5,
+    "budget": 200,
+    "five_accepted": true,
+    "minimum_reserve_mib": 9709,
+    "checkpoints": [
+      "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+      "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2"
+    ],
+    "sessions": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-r1-aligned-acceptance-20261005: 1 windows (created Mon Oct  5 08:02:58 2026)\ne1-r1-aligned-full-20261005: 1 windows (created Mon Oct  5 08:02:58 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)"
+  },
+  "r1_runtime_health": {
+    "time": 1791198559.863229,
+    "hashes": {
+      "runtime/r1": {
+        "files": 305,
+        "mismatches": []
+      },
+      "opsd-runtime/r1": {
+        "files": 305,
+        "mismatches": []
+      }
+    },
+    "relay": {
+      "ready": true,
+      "ntotal": 21015324,
+      "d": 768,
+      "encoder": "CPU FP32 E5",
+      "index": "full FP32 streaming FlatIP joined scan",
+      "query_micro": 64,
+      "serialized": true,
+      "tf32": false,
+      "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+      "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+    }
+  },
+  "archive_runtime_health": {
+    "time": 1791198559.8559494,
+    "hashes": {
+      "runtime/archive": {
+        "files": 669,
+        "mismatches": []
+      },
+      "opsd-runtime/archive": {
+        "files": 669,
+        "mismatches": []
+      },
+      "runtime/archive-jit-20261005-env-v2": {
+        "files": 669,
+        "mismatches": []
+      }
+    },
+    "health": {
+      "18000": {
+        "ready": true,
+        "ntotal": 21015324,
+        "d": 768,
+        "encoder": "CPU FP32 E5",
+        "index": "full FP32 streaming FlatIP joined scan",
+        "query_micro": 64,
+        "serialized": true,
+        "tf32": false,
+        "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+        "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+      },
+      "18003": {
+        "ready": true,
+        "ntotal": 21015324,
+        "d": 768,
+        "encoder": "CPU FP32 E5",
+        "index": "full FP32 streaming FlatIP joined scan",
+        "query_micro": 64,
+        "serialized": true,
+        "tf32": false,
+        "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+        "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+      }
+    }
+  },
+  "inspection_note": "Initial 127.0.0.1:18003 probe was refused; all configured LAN endpoints (HKUST4 18003/18000 and HKUST1 18001) were subsequently confirmed healthy. No retriever restart performed. Pre-JIT historical shared-GPU margin failure is retained separately from current JIT-phase evidence."
+}

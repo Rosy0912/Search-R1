@@ -1,0 +1,108 @@
+{
+  "run_id": "b8b93546fb314915b3e72f355f22f291",
+  "node": "xielab1",
+  "time": 1791198678.9245105,
+  "world_size": 8,
+  "read_only": true,
+  "updates_per_iteration": 20,
+  "accepted": true,
+  "ranks": [
+    {
+      "rank": 7,
+      "pid": 143291,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.8302505
+    },
+    {
+      "rank": 1,
+      "pid": 143285,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.8304331
+    },
+    {
+      "rank": 2,
+      "pid": 143286,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.826098
+    },
+    {
+      "rank": 4,
+      "pid": 143288,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.9104967
+    },
+    {
+      "rank": 5,
+      "pid": 143289,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.9237652
+    },
+    {
+      "rank": 3,
+      "pid": 143287,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.9184487
+    },
+    {
+      "rank": 6,
+      "pid": 143290,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.9225702
+    },
+    {
+      "rank": 0,
+      "pid": 142966,
+      "scheduler_step": 5,
+      "adam_steps": [
+        100.0
+      ],
+      "learning_rates": [
+        8.771929824561403e-08
+      ],
+      "time": 1791198678.8344898
+    }
+  ],
+  "scope": "Read-only counters from same-run live workers; no state loading, distributed collective, model copy, or optimizer mutation"
+}
