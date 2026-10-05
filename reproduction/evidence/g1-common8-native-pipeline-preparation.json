@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "exit_code": 0,
+  "stdout": "{\"upper_bound_dtype\": \"float32\", \"save_steps\": [5, 50, 100, 150, 200, 250, 300], \"per_save_allowance_bytes\": 14125285376, \"other_run_reserve_bytes\": 8589934592, \"required_free_bytes\": 107466932224, \"scope\": \"CPU original safetensor header shape calculation and disk observation only; not native/run disk admission\", \"actual_free_bytes\": 103400857600}\n",
+  "stderr": "test_actual_format_and_document_hashes_match (reproduction.common8.test_http_retrieval.HttpRetrievalTests) ... ok\ntest_wrong_document_score_or_missing_question_rejected (reproduction.common8.test_http_retrieval.HttpRetrievalTests) ... ok\ntest_identical_actual_vector_scores_for_both_metrics (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_same_ids_do_not_hide_a_bad_selected_vector (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_wrong_cpu_reference_scores_rejected (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_wrong_gpu_scores_ids_or_nonfinite_vectors_rejected (reproduction.common8.test_retriever.RetrievalParityTests) ... ok\ntest_insufficient_tmpfs_refused_before_corpus_loading_and_claim_retained (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_interrupted_cleanup_and_initial_reservation_are_recoverable (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_live_creator_rejected_then_nested_cache_cleanup_repeatable (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_substituted_directory_inode_rejected (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\ntest_symlink_refuses_before_any_cache_deletion (reproduction.common8.test_temporary_cache.CacheOwnershipTests) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.053s\n\nOK\n",
+  "source_sha256": {
+    "reproduction/common8/http_retrieval.py": "e05e1000f4048959f42911feeecbdc57010e9a3c99594909d7d323c6c624dd5e",
+    "reproduction/common8/test_http_retrieval.py": "564b773d43fb36297ce581ae1c9addda446521ed2ad436c87a4592daca608ec9",
+    "reproduction/common8/disk_admission.py": "4e6e5fa68874686f76e83febbff3e354f7adabbb1e9d1c052c3b773b239a33d8",
+    "reproduction/common8/retriever.py": "fa97d73f3735505c8510ed6af2c168d9370337ce1f6d502c2dd1660224e45c7c"
+  },
+  "checked_unix": 1791197700.714656,
+  "actual_grpo_updates": 0,
+  "scope": "11 CPU HTTP-format/vector/cache fixtures and original model header/disk observation; pipeline syntax/static review only, no pipeline/GPU/HTTP service/GRPO execution",
+  "pipeline_review": "Read-only review found and resolved precreated-log claim conflict and nonidentity visible-token refit mismatch; no remaining concrete static blocker. Pipeline not executed/deployed.",
+  "current_pipeline_source_sha256": "af5fef8c58fedf7c52556a5b3ac1f3a8ff47341048bd1869721cc9045b617500"
+}

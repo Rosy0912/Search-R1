@@ -126,7 +126,7 @@ def main(base):
         corpus_sha256=ASSETS['wiki-18.jsonl']['sha256'], encoder_assets=assets, ntotal=int(cpu.ntotal), dimension=768,
         shard_count=8, use_float16=True, query_prefix='query: ', pooling='mean', encoder_dtype='float16',
         question_ids=ids, stage_sha256=record['sha256'], gpu_document_ids=gpu_ids.tolist(),
-        gpu_document_sha256=documents, parity=parity, cache=str(cache), checked_unix=time.time(),
+        gpu_document_sha256=documents, gpu_document_scores=gpu_scores.tolist(), parity=parity, cache=str(cache), checked_unix=time.time(),
         scope='actual original CPU/GPU index and document-order comparison; HTTP readiness and training coexistence separate')
     target = base / 'logs/retrieval-admission.json'
     assert not target.exists()
