@@ -1,0 +1,138 @@
+{
+  "time": 1791187517.3626337,
+  "node": "xielab1",
+  "phase": "2026-10-05T08:02:58+00:00 FRESH_GRPO_ROUND_1\n",
+  "receipt": {
+    "profile": "r1",
+    "stage": "round-1-grpo",
+    "run_id": "b8b93546fb314915b3e72f355f22f291",
+    "admission": {
+      "devices": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24564",
+          "4",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "24564",
+          "4",
+          "0"
+        ]
+      ],
+      "compute_apps": [],
+      "owned_shared_oracle": null
+    },
+    "started_unix": 1791187378.80854,
+    "status": "RUNNING",
+    "utilization": 0.25,
+    "peaks_mib": {
+      "0": 12465,
+      "1": 13113,
+      "2": 12465,
+      "3": 12983,
+      "4": 12465,
+      "5": 12467,
+      "6": 12919,
+      "7": 12467
+    },
+    "sample_count": 61,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "1",
+      "E1_JIT_OPTIMIZER": "1",
+      "E1_LOGIT_CHUNK": "128",
+      "E1_OPTIMIZER_CHUNK": "1",
+      "E1_STAGE_CHUNK_STATES": "1",
+      "E1_GPUS": "8",
+      "E1_VIRTUAL_DP_WORLD": "4"
+    },
+    "pid": 139484,
+    "updated_unix": 1791187504.1375916
+  },
+  "current": [],
+  "metrics": [],
+  "tail": [
+    "(main_task pid=142302) <information>Doc 1(Title: \"A Touch of Frost\") A Touch of Frost A Touch of Frost is a television detective series produced by Yorkshire Television (later ITV Studios) for ITV from 6 December 1992 until 5 April 2010, initially based on the Frost novels by R. D. Wingfield. Writing credit for the three episodes in the first 1992 series went to Richard Harris. The series stars David Jason as Detective Inspector William Edward \"\"Jack\"\" Frost, an experienced and dedicated detective who frequently clashes with his superiors. In his cases, Frost is usually assisted by a variety of different detective sergeants or constables, with each bringing a different slant",
+    "(main_task pid=142302) Doc 2(Title: \"A Touch of Frost (novel)\") A Touch of Frost (novel) A Touch of Frost (1987) is a crime novel by, R.D. Wingfield. The series inspired a popular television series of the same name, starring David Jason as the title character, Detective Inspector Jack Frost; a disheveled, unorthodox and caustic police officer. The murder of a local drug addict, the hunt for a serial rapist, a hit-and-run involving the spoiled son of an MP, and a robbery at a strip joint all have something in common. Detective Inspector Jack Frost has been assigned with the thankless task of investigating them. Fighting the stress and ignoring his",
+    "(main_task pid=142302) Doc 3(Title: \"R. D. Wingfield\") R. D. Wingfield Rodney David Wingfield (6 June 1928 \u2013 31 July 2007) was an English author and radio dramatist. He is best remembered for creating the character of Detective Inspector Jack Frost, who was later played by Sir David Jason in \"\"A Touch of Frost\"\". Rodney David Wingfield was born in Hackney, east London in 1928. He was educated at the Coopers' Company School and during the Second World War was evacuated to Frome, Somerset. Wingfield was exempted from National Service due to poor eyesight and had various office jobs in the East End before joining the Petrofina oil</information>",
+    "(main_task pid=142302) ",
+    "(main_task pid=142302) <answer>David Jason</answer>"
+  ],
+  "old_group_pid_exists": false,
+  "gpu": "0, 1595 MiB, 24564 MiB, 0 %\n1, 1595 MiB, 24564 MiB, 0 %\n2, 1595 MiB, 24564 MiB, 0 %\n3, 1595 MiB, 24564 MiB, 0 %\n4, 1595 MiB, 24564 MiB, 0 %\n5, 1595 MiB, 24564 MiB, 0 %\n6, 1595 MiB, 24564 MiB, 0 %\n7, 1595 MiB, 24564 MiB, 0 %\n",
+  "errors": [],
+  "owned_live": true,
+  "acceptance": {
+    "run_id": "b8b93546fb314915b3e72f355f22f291",
+    "node": "xielab1",
+    "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+    "driver_group_pid": 139484,
+    "live_owned_group": true,
+    "status": "RUNNING",
+    "completed_iteration": 0,
+    "grpo_updates_per_stage": 200,
+    "minimum_reserve_mib": 11451,
+    "reserves_mib": {
+      "0": 12099,
+      "1": 11451,
+      "2": 12099,
+      "3": 11581,
+      "4": 12099,
+      "5": 12097,
+      "6": 11645,
+      "7": 12097
+    },
+    "nonfinite_actor_metric": false,
+    "checkpoint_checks": {},
+    "checkpoints": [],
+    "latest_metric": null,
+    "five_real_updates_accepted": false,
+    "updated": 1791187499.6026332
+  }
+}

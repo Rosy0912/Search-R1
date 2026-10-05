@@ -1,0 +1,20 @@
+{
+  "human_instruction": "\u6309\u7167\u538b\u7f29\u5305\u914d\u7f6e\u6765",
+  "grpo_updates_per_stage": 200,
+  "schedule_total_steps": 201,
+  "warmup_ratio": 0.285,
+  "warmup_steps": 57,
+  "mini_batch_trajectories": 128,
+  "adam_updates_per_iteration": 20,
+  "train_batch_questions": 512,
+  "rollouts_per_question": 5,
+  "logical_actor_micro": 64,
+  "entropy_coeff": 0.001,
+  "loss_reduction": "R1 original logical micro token mean; unchanged",
+  "gpus": 8,
+  "resume_old_optimizer": false,
+  "starting_model": "/data/shaoshitong/search-e1-config-study-20261004/assets/model",
+  "created": 1791187293.1341872,
+  "status_denominator": 200,
+  "reason": "Latest explicit human answer overrides stale /300 status wording"
+}
