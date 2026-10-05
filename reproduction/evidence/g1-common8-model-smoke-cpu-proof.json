@@ -1,0 +1,18 @@
+{
+  "accepted": true,
+  "exit_code": 0,
+  "checked_unix": 1791195550.92095,
+  "source_sha256": {
+    "reproduction/common8/model_smoke.py": "2234e3ed8fba554946cebb5b8a5bc41305860196e9393b0a37b977296930bf86",
+    "reproduction/common8/test_model_smoke.py": "113343fedd5c96404aac581a3a214391679d64968cb1cd8d44c3c9bbd101a198",
+    "reproduction/common8/validation_identity.py": "3dfe30437085ff211b01510ba75343844e18a46da3444e85da78c791b87bed3b",
+    "reproduction/common8/verify_data.py": "9aab7aa47515a2aaf487c0d7f258f9016af8cf93c4a3c62884c815132c0910c6",
+    "reproduction/common8/stage_retrieval.py": "7f09d8c95e59e90ae6946cda41229e5e7ae94c32763b19b5958baf392a08d6b4",
+    "reproduction/common8/native_allocation.py": "02e01d64c0765a59cd65fe8db94f921c3ed43faea99bba3d23ca28e9f0cf6f0b",
+    "reproduction/a800/owned_processes.py": "4168d7c93b4268fa8b2abb8b78efa1cddbd55a47602eca607642e10d04f0dae2"
+  },
+  "scope": "Actual Torch CPU parity/mask/8-proof rejection tests only; no actual model/GPU/GRPO smoke",
+  "actual_grpo_updates": 0,
+  "actual_target_cpu_tests": 5,
+  "independent_static_review": "No remaining definite blocker in actual worker API, greedy/logprob observation, separate reference or all-rank proof aggregation; real GPU tolerance/offload path still untested."
+}
