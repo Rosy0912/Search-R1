@@ -1,0 +1,116 @@
+{
+  "base": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653",
+  "parent_base": "/mnt/data/shaoshitong/Search-G1-common8-production-61829af9b653",
+  "job_id": "3274",
+  "checked_unix": 1791237436.54728,
+  "job_stdout": "JobId=3274 JobName=search-g1-policy-discovery UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898792 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:07:00 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-06T05:50:16 EligibleTime=2026-10-06T05:50:16 AccrueTime=2026-10-06T05:50:16 StartTime=2026-10-06T05:50:16 EndTime=2026-10-06T13:50:16 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-06T05:50:16 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1738948 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/repo/reproduction/common8/launch_calibration_native.sh WorkDir=/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/repo StdErr=/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/logs/native-discovery-3274.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/logs/native-discovery-3274.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "job_returncode": 0,
+  "source_hashes_match": true,
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "phase": "initial",
+    "proof_sha256": "261bd8e5d14deb425234c92acfbd3a27cc061a70b16f07095f8b4197e143154c",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "run-manifest.json": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "completed_updates": 0,
+    "source_commit": "61f6e1da532e08553410666b430d1933a0e4a49a",
+    "train_log": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/logs/search-g1-common8-training.log",
+    "checkpoint_dir": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/checkpoints/search-g1-common8",
+    "policy_calibration_role": "policy_safety_calibration_discovery",
+    "parent_production_run_id": "270f0e2e709a40b499472754d7db69b3"
+  },
+  "pipeline-status.json": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "stage": "STARTING_ORIGINAL_EIGHT_SHARD_FAISS",
+    "unix": 1791237355.492226
+  },
+  "retrieval-staging-status.json": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "stage": "COMPLETE",
+    "accepted": true,
+    "root": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274",
+    "resources": {
+      "input_bytes": 78952654893,
+      "required_memory_floor_bytes": 349670160474,
+      "actual_allocation_bytes": 549755813888,
+      "actual_available_bytes": 2093052018688,
+      "actual_shm_free_bytes": 1066558070784,
+      "scope": "launch floor; actual model/coexistence peak remains unverified"
+    },
+    "files": {
+      "e5_Flat.index": {
+        "size": 64559075373,
+        "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "path": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274/e5_Flat.index"
+      },
+      "wiki-18.jsonl": {
+        "size": 14393579520,
+        "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "path": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274/wiki-18.jsonl"
+      }
+    },
+    "source_node": "h100-9",
+    "target_node": "h100-8",
+    "completed_unix": 1791237355.0505238
+  },
+  "actual_namespace_processes": [
+    {
+      "pid": 1738982,
+      "start_ticks": 2218170386,
+      "sid": 1738977,
+      "uid": 0,
+      "state": "S",
+      "native_job_matches": true
+    },
+    {
+      "pid": 1749202,
+      "start_ticks": 2218204255,
+      "sid": 1749202,
+      "uid": 0,
+      "state": "R",
+      "native_job_matches": true
+    }
+  ],
+  "actual_updates": [],
+  "actual_production_updates": 0,
+  "scope": "Actual native initial-model probability and original transfer integrity; not healthy calibration or production training",
+  "production_admission": false,
+  "retrieval_source_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "pid": 593887,
+      "start_ticks": 1552551910,
+      "sid": 593887,
+      "uid": 0,
+      "port": 19874,
+      "started_unix": 1791237004.319879,
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "export": "/dataset/shaoshitong/g1-common8-original-retrieval-export-discovery-61829af9b653",
+      "source_sha256": "f6697bd55b23ba1e0a2605223ecac65ff105a7982d6d869a81a3663dec996fa5"
+    },
+    "checked_unix": 1791237447.5706515,
+    "scope": "Only this source-SHA/PID-birth/SID/UID stream service stopped"
+  }
+}
