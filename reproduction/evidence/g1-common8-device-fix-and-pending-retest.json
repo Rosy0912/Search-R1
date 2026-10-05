@@ -1,0 +1,105 @@
+{
+  "source_commit": "1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+  "tensordict_indexless_cuda": "cuda:0",
+  "tensordict_explicit_cuda3": "cuda:3",
+  "normalization_source_sha256": "98fe0eb325c96b95549403763687ee8a3a6a8ef562bcab7f0106fe633253cc22",
+  "original_source_file_sha256": "c14d6db3fe8db74b619e38b7236465ea1ec553f5e4a92b5cf2c1eca3839ec2fa",
+  "normalization_relevant_statement": "if CUDA device.index is None: device = torch.device(cuda:0)",
+  "actual_grpo_updates": 0,
+  "device_fix_scope": "Explicit current CUDA ordinal at actor/rollout/ref worker inputs and actor TensorDict microbatch; no recipe/kernel/math changes",
+  "cpu_proof": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "...........\n----------------------------------------------------------------------\nRan 11 tests in 0.599s\n\nOK\n",
+    "source_sha256": {
+      "verl/workers/fsdp_workers.py": "34add4fa0f63eeda732cd0c813095730a825128f75087005b0304f782470abcf",
+      "verl/workers/actor/dp_actor.py": "7e42710cbe6b9f86bb2f337628b32dbaf4930ca03228c306d4365958e3b36161",
+      "reproduction/common8/model_smoke.py": "dfc6dd95a59277faf1590c2018643a931fbb587ab2cf2da8f5b0b1fec7541b3f",
+      "reproduction/common8/test_model_smoke.py": "0d78717e1915e5dc176c35ae5d93781603fdc64ca39028482ecee507a04c7859"
+    },
+    "base": "/dataset/shaoshitong/g1-common8-device-fix-cpu-d5a7a2d82f65",
+    "scope": "actual target CPU guard tests only; no GPU model or optimizer step proof",
+    "checked_unix": 1791201697.072487
+  },
+  "model_retest": {
+    "launch": {
+      "base": "/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871",
+      "job_id": "3244",
+      "source_commit": "1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+      "wrapper_sha256": "526cbf810302fab92cf202ddc690d9f9627d22105c44bdc6d46e745474f7c4ca",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--partition=gpu",
+        "--nodelist=h100-8",
+        "--nodes=1",
+        "--ntasks=1",
+        "--cpus-per-task=64",
+        "--gres=gpu:h100:8",
+        "--mem=512G",
+        "--exclusive",
+        "--time=01:00:00",
+        "--job-name=search-g1-device-diagnostic",
+        "--chdir=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/repo",
+        "--output=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/logs/slurm-%j.log",
+        "--export=ALL,SEARCH_G1_BASE=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871",
+        "/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/preparation/job.sh"
+      ],
+      "actual_grpo_updates": 0,
+      "scope": "Read device/shape metadata immediately before original CE kernel; no values/rawQA, no optimizer writes",
+      "submitted_unix": 1791201783.8049402
+    },
+    "actual_job": "JobId=3244 JobName=search-g1-device-diagnostic UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898822 Nice=0 Account=(null) QOS=(null) JobState=PENDING Reason=Resources Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-05T20:03:03 EligibleTime=2026-10-05T20:03:03 AccrueTime=2026-10-05T20:03:03 StartTime=2026-10-05T21:56:51 EndTime=2026-10-05T22:56:51 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T20:06:04 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1138496 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=(null) SchedNodeList=h100-8 NumNodes=1-1 NumCPUs=64 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=64,mem=512G,node=1,billing=64 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/preparation/job.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/repo StdErr=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/logs/slurm-3244.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-device-fixed-a7385d014871/logs/slurm-3244.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "checked_unix": 1791201965.4557285,
+    "records_count": 0
+  },
+  "full_attempt3": {
+    "launch": {
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--partition=gpu",
+        "--nodelist=h100-8",
+        "--nodes=1",
+        "--ntasks=1",
+        "--cpus-per-task=64",
+        "--gres=gpu:h100:8",
+        "--mem=512G",
+        "--exclusive",
+        "--time=3-00:00:00",
+        "--dependency=afterok:3244",
+        "--job-name=search-g1-common8-attempt3",
+        "--chdir=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo",
+        "--output=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/logs/native-full-%j.log",
+        "--export=ALL,SEARCH_G1_BASE=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad,SEARCH_G1_SOURCE_COMMIT=1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+        "/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo/reproduction/common8/launch_native.sh"
+      ],
+      "exit_code": 0,
+      "stdout": "3245\n",
+      "stderr": "",
+      "checked_unix": 1791201963.6195033,
+      "job_id": "3245",
+      "base": "/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad",
+      "source_commit": "1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+      "retrieval_handle": {
+        "pid": 417522,
+        "start_ticks": 1549046738,
+        "sid": 417522,
+        "uid": 0,
+        "port": 19874,
+        "started_unix": 1791201952.600603,
+        "files": {
+          "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+          "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+        },
+        "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+        "export": "/dataset/shaoshitong/g1-common8-original-retrieval-export-attempt3-52e9bf0006ca",
+        "source_sha256": "2f24d44de8d3d3834a9e62927445c34eebd5dd7b4af365e23c92fc9a9cab0016"
+      }
+    },
+    "actual_job": "JobId=3245 JobName=search-g1-common8-attempt3 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898821 Nice=0 Account=(null) QOS=(null) JobState=PENDING Reason=Dependency Dependency=afterok:3244(unfulfilled) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=3-00:00:00 TimeMin=N/A SubmitTime=2026-10-05T20:06:03 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T20:06:03 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1142617 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=(null) NumNodes=1-1 NumCPUs=64 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=64,mem=512G,node=1,billing=64 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo/reproduction/common8/launch_native.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo StdErr=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/logs/native-full-3245.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/logs/native-full-3245.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "checked_unix": 1791202039.1687837,
+    "production_manifest_exists": false
+  },
+  "scope": "Actual installed TensorDict normalization and CPU review pass; native retest waiting for resources, complete job waits afterok; no GPU fix or training acceptance yet"
+}
