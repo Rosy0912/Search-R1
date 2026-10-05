@@ -1,0 +1,231 @@
+{
+  "base": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653",
+  "parent_base": "/mnt/data/shaoshitong/Search-G1-common8-production-61829af9b653",
+  "job_id": "3274",
+  "checked_unix": 1791238198.4069204,
+  "source_hashes_match": true,
+  "gpu_current": {
+    "returncode": 0,
+    "stdout": "0, 74, 81559, 0\n1, 1, 81559, 0\n2, 1, 81559, 0\n3, 3, 81559, 0\n4, 3, 81559, 0\n5, 1, 81559, 0\n6, 2, 81559, 0\n7, 1, 81559, 0\n",
+    "stderr": ""
+  },
+  "gpu_sampling": {
+    "sample_count": 461,
+    "first_unix": 1791237053.2694106,
+    "last_unix": 1791238072.2052612,
+    "max_gap_seconds": 11.31471872329712,
+    "cumulative_peak_mib": {
+      "0": 45888,
+      "1": 45445,
+      "2": 45854,
+      "3": 45449,
+      "4": 46235,
+      "5": 45448,
+      "6": 45448,
+      "7": 49357
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "phase": "initial",
+    "proof_sha256": "261bd8e5d14deb425234c92acfbd3a27cc061a70b16f07095f8b4197e143154c",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "model_gate_coexistence": {
+    "accepted": true,
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "slurm_job_id": "3274",
+    "phase": "coexistence",
+    "proof_sha256": "75946a0a83c336f218741a0de3081620686841776b44498ed57bebead0f6d28a",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "actual_initial_probe": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "round": 0,
+    "version": "cc365db0dcbf4526a9a0e79f3fc333b9:0:3d736036963b44e793aeb9c38165b7b5",
+    "live_manifest_sha256": "c6ba8c177cc246f898a7b4db2082de11303746a93cd165ba4afdce827ed5c4d3",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791237844.4940393,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "role": "actual_native_discovery_pre_ray_training_failure",
+  "job_state": "FAILED",
+  "stage": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "stage": "OWNED_CLEANUP_FAILED",
+    "unix": 1791238074.1304204,
+    "error": "AssertionError('Unowned/symlink/special cache entry')"
+  },
+  "completed_child_outer_updates": 0,
+  "completed_production_outer_updates": 0,
+  "actual_adam_writes": 0,
+  "actual_adam_writes_evidence": "main_ppo_eco.main ray.init failed before main_task/actor/optimizer creation; no outer metrics",
+  "live_namespace_process_count": 0,
+  "live_owned_pids": [],
+  "owned_ledger_all_stopped": true,
+  "training_start_error": "Ray AF_UNIX socket path exceeded unchanged107-byte system limit",
+  "training_start_socket_path": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/ray/session_2026-10-06_06-07-49_162207_1766577/sockets/plasma_store",
+  "cleanup_error": "UID check rejected one regular file extracted with source-TAR owner1012",
+  "cache_inspection": {
+    "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+    "base": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653",
+    "checked_unix": 1791238274.1109626,
+    "claim": {
+      "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+      "slurm_job_id": "3274",
+      "uid": 0,
+      "root": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274/datasets-cache",
+      "parent_device": 27,
+      "parent_inode": 49733003,
+      "creator": {
+        "pid": 1749202,
+        "start_ticks": 2218204255,
+        "sid": 1749202,
+        "uid": 0,
+        "state": "R",
+        "command": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653/env/bin/python -m reproduction.common8.retriever "
+      },
+      "phase": "CREATED",
+      "created_unix": 1791237424.094452,
+      "root_device": 27,
+      "root_inode": 49733007,
+      "capacity_admission": {
+        "required_capacity_bytes": 29860900864,
+        "actual_tmpfs_free_bytes": 987605405696,
+        "actual_host_memory_available_bytes": 1946573389824,
+        "checked_unix": 1791237471.6045632,
+        "scope": "Arrow temporary+final launch allowance; actual cache peak remains sampled"
+      }
+    },
+    "stage_claim": {
+      "run_id": "cc365db0dcbf4526a9a0e79f3fc333b9",
+      "slurm_job_id": "3274",
+      "uid": 0,
+      "root": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274",
+      "pid": 1745747,
+      "start_ticks": 2218185771,
+      "phase": "STAGED",
+      "created_unix": 1791237170.7490885,
+      "files": [
+        "e5_Flat.index",
+        "wiki-18.jsonl"
+      ],
+      "root_device": 27,
+      "root_inode": 49733003
+    },
+    "total_entries": 45,
+    "abnormal_entries": [
+      {
+        "relative": "downloads/extracted/2c8343a0b5571374cf1d6ae9a7c400aa90a7366cefda73a6f1d835e3fde97989/data00/jiajie_jin/flashrag_indexes/wiki_dpr_100w/wiki_dump.jsonl",
+        "uid": 1012,
+        "mode": "0o100664",
+        "size": 14393573105,
+        "inode": 49733023,
+        "device": 27,
+        "regular": true,
+        "directory": false,
+        "symlink": false
+      }
+    ],
+    "total_regular_bytes": 28161772460,
+    "namespace_paths_only": true,
+    "mutated": false
+  },
+  "archive_inspection": {
+    "base": "/mnt/data/shaoshitong/Search-G1-common8-policy-discovery-61829af9b653",
+    "checked_unix": 1791238382.8085468,
+    "archive_source": "/dev/shm/search-g1-common8-cc365db0dcbf4526a9a0e79f3fc333b9-3274/wiki-18.jsonl",
+    "source_size": 14393579520,
+    "archive_members": [
+      {
+        "name": "data00/jiajie_jin/flashrag_indexes/wiki_dpr_100w/wiki_dump.jsonl",
+        "size": 14393573105,
+        "uid": 1012,
+        "gid": 1012,
+        "mode": "0o664",
+        "type": "0",
+        "regular": true,
+        "directory": false,
+        "linkname": ""
+      }
+    ],
+    "mutated": false
+  },
+  "trainer_tail_sha256": "db13997a7a2ffac48a39638f82ef972c30b751361ed8c4ec16aaf8f39cebb7e8",
+  "native_tail_sha256": "31eedc05400c12d91852cb2ccf9e79b06ef7e3a5d1e04b60211e8be68f10288f",
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "full_owned_temporary_cleanup_complete": false
+}
