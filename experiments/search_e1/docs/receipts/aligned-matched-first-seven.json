@@ -1,0 +1,132 @@
+{
+  "archive": {
+    "profile": "archive",
+    "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+    "metrics": [
+      {
+        "step": 1,
+        "audit/strict_em": 0.172,
+        "audit/legacy_em": 0.261,
+        "actor/grad_norm": 2.139,
+        "actor/pg_loss": 0.021,
+        "timing_s/step": 1554.373
+      },
+      {
+        "step": 2,
+        "audit/strict_em": 0.155,
+        "audit/legacy_em": 0.252,
+        "actor/grad_norm": 1.904,
+        "actor/pg_loss": 0.009,
+        "timing_s/step": 1583.847
+      },
+      {
+        "step": 3,
+        "audit/strict_em": 0.155,
+        "audit/legacy_em": 0.259,
+        "actor/grad_norm": 2.058,
+        "actor/pg_loss": 0.011,
+        "timing_s/step": 1606.297
+      },
+      {
+        "step": 4,
+        "audit/strict_em": 0.13,
+        "audit/legacy_em": 0.216,
+        "actor/grad_norm": 1.93,
+        "actor/pg_loss": -0.007,
+        "timing_s/step": 1576.523
+      },
+      {
+        "step": 5,
+        "audit/strict_em": 0.171,
+        "audit/legacy_em": 0.273,
+        "actor/grad_norm": 2.102,
+        "actor/pg_loss": 0.028,
+        "timing_s/step": 1561.022
+      },
+      {
+        "step": 6,
+        "audit/strict_em": 0.168,
+        "audit/legacy_em": 0.259,
+        "actor/grad_norm": 2.049,
+        "actor/pg_loss": 0.006,
+        "timing_s/step": 1553.63
+      },
+      {
+        "step": 7,
+        "audit/strict_em": 0.169,
+        "audit/legacy_em": 0.25,
+        "actor/grad_norm": 2.061,
+        "actor/pg_loss": -0.017,
+        "timing_s/step": 1549.311
+      }
+    ],
+    "precision": "native three-decimal log",
+    "note": "Exploratory matched iteration only; different GPU layouts; rollout random streams and exact question pairing are not yet independently verified. No causal attribution.",
+    "mean_strict_em": 0.16
+  },
+  "r1": {
+    "profile": "r1",
+    "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+    "metrics": [
+      {
+        "step": 1,
+        "audit/strict_em": 0.18,
+        "audit/legacy_em": 0.272,
+        "actor/grad_norm": 1.479,
+        "actor/pg_loss": 0.04,
+        "timing_s/step": 1755.504
+      },
+      {
+        "step": 2,
+        "audit/strict_em": 0.15,
+        "audit/legacy_em": 0.24,
+        "actor/grad_norm": 1.385,
+        "actor/pg_loss": 0.038,
+        "timing_s/step": 1842.787
+      },
+      {
+        "step": 3,
+        "audit/strict_em": 0.164,
+        "audit/legacy_em": 0.25,
+        "actor/grad_norm": 1.369,
+        "actor/pg_loss": 0.022,
+        "timing_s/step": 1786.719
+      },
+      {
+        "step": 4,
+        "audit/strict_em": 0.136,
+        "audit/legacy_em": 0.23,
+        "actor/grad_norm": 1.26,
+        "actor/pg_loss": 0.043,
+        "timing_s/step": 1812.368
+      },
+      {
+        "step": 5,
+        "audit/strict_em": 0.172,
+        "audit/legacy_em": 0.269,
+        "actor/grad_norm": 1.4,
+        "actor/pg_loss": 0.002,
+        "timing_s/step": 1796.639
+      },
+      {
+        "step": 6,
+        "audit/strict_em": 0.169,
+        "audit/legacy_em": 0.253,
+        "actor/grad_norm": 1.352,
+        "actor/pg_loss": 0.029,
+        "timing_s/step": 1775.969
+      },
+      {
+        "step": 7,
+        "audit/strict_em": 0.179,
+        "audit/legacy_em": 0.266,
+        "actor/grad_norm": 1.324,
+        "actor/pg_loss": 0.045,
+        "timing_s/step": 1796.154
+      }
+    ],
+    "precision": "native three-decimal log",
+    "note": "Exploratory matched iteration only; different GPU layouts; rollout random streams and exact question pairing are not yet independently verified. No causal attribution.",
+    "mean_strict_em": 0.1642857142857143
+  }
+}
