@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50",
+  "tensor_count": 435,
+  "initial_tensor_count": 434,
+  "verified_aliases": {
+    "lm_head.weight": "model.embed_tokens.weight"
+  },
+  "nonfinite": [],
+  "changed": [
+    {
+      "key": "model.layers.29.self_attn.q_proj.weight",
+      "max_abs_delta": 0.0000868805218487978
+    },
+    {
+      "key": "model.layers.30.self_attn.q_proj.weight",
+      "max_abs_delta": 0.00010683573782444
+    },
+    {
+      "key": "model.layers.31.self_attn.q_proj.weight",
+      "max_abs_delta": 0.00012272410094738007
+    },
+    {
+      "key": "model.layers.32.self_attn.q_proj.weight",
+      "max_abs_delta": 0.00009321793913841248
+    }
+  ],
+  "accepted": true
+}
