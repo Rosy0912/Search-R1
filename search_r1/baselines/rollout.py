@@ -6,6 +6,7 @@ All metadata is row-local, so DataProto permutations also permute provenance.
 from dataclasses import dataclass, field
 import copy
 import hashlib
+import os
 import random
 import uuid
 import numpy as np
@@ -144,6 +145,12 @@ class SearchRollout:
             s.anchors.append(anchor)
             s.records.append(dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
                                   scoring_context_matches_generation=matches[i]))
+            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+                s.records[-1].update(action_token_ids=action, observation_token_ids=obs,
+                    raw_generation_token_ids=raw[i].tolist(),
+                    observation_text=observations[i], generation_context_token_ids=s.rolling.copy(),
+                    turn=step, valid_action=bool(valid[i]), valid_search=bool(searches[i]),
+                    done=bool(dones[i]), search_enabled=bool(normal[i]))
             s.response.extend(action + obs)
             s.model_mask.extend([1] * len(action) + [0] * len(obs))
             s.steps.extend([step] * len(action) + [-1] * len(obs))

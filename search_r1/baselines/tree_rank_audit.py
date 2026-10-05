@@ -111,6 +111,23 @@ class TreeRankAudit:
         value = float(norm.detach())
         if not math.isfinite(value):
             raise ValueError('Nonfinite existing Tree optimizer norm')
+        if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+            from .training_state import atomic_save
+            summaries=[]
+            for micro in self.pending_microbatches:
+                tensors=micro['tensors'];valid=tensors['response_mask'].bool()
+                delta=(tensors['log_prob']-tensors['old_log_prob'])[valid].double()
+                adv=tensors['advantages'][valid].double()
+                negative=delta[adv<0]
+                summaries.append(dict(valid_tokens=delta.numel(),
+                    max_log_ratio=float(delta.max()) if delta.numel() else None,
+                    min_log_ratio=float(delta.min()) if delta.numel() else None,
+                    negative_advantage_max_log_ratio=float(negative.max()) if negative.numel() else None,
+                    abs_log_ratio_over2=int((delta.abs()>2).sum()),
+                    loss_parts={k:float(v) for k,v in micro['loss_parts'].items()}))
+            path=Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])/'ratio-tail'/f'step-{self.step:06d}-rank-{self.rank:02d}-optimizer-{len(self.grads):02d}.json'
+            atomic_save(dict(outer_step=self.step,rank=self.rank,optimizer_call=len(self.grads)+1,
+                             preclip_norm=value,microbatches=summaries),path,json_format=True)
         self.grads.append(value)
         self.pending_microbatches.clear()
         self.hook_seconds += time.perf_counter() - start

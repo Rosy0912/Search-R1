@@ -162,7 +162,7 @@ def restore_worker(module, optimizer, scheduler, saved, identity, cold=False):
     saved_groups = saved['optimizer']['param_groups']
     if len(current_groups) != len(saved_groups): raise ValueError('Optimizer group layout changed')
     current_states = optimizer.state_dict()['state']
-    if cold and current_states:
+    if cold and any(not isinstance(state,dict) or state for state in current_states.values()):
         raise ValueError('Cold restore requires an untouched empty optimizer')
     if cold and set(saved['optimizer']['state']) != {
             key for group in saved_groups for key in group['params']}:
@@ -206,6 +206,16 @@ def restore_worker(module, optimizer, scheduler, saved, identity, cold=False):
             parameter.grad = None if gradient is None else gradient.to(parameter.device).clone()
     optimizer.load_state_dict(saved['optimizer']); scheduler.load_state_dict(saved['scheduler'])
     module.train(saved['training']); restore_rng(saved['rng'])
+
+
+def prepare_cold_fsdp_layout(module, offload_param, offload_grad):
+    from torch.distributed.fsdp._runtime_utils import _lazy_init
+    from verl.utils.fsdp_utils import load_fsdp_param_and_grad,offload_fsdp_param_and_grad
+    if offload_param:
+        load_fsdp_param_and_grad(module,torch.cuda.current_device(),load_grad=offload_grad)
+    _lazy_init(module,module)
+    if offload_param:
+        offload_fsdp_param_and_grad(module,offload_grad=offload_grad)
 
 
 def migrate_sampler_batch(sampler, saved, batch_size):
@@ -257,6 +267,7 @@ def driver_snapshot(trainer, identity):
     controller = trainer.baseline_controller
     return cpu_copy(dict(version=1, identity=identity, completed_step=trainer.global_steps,
                          next_step=trainer.global_steps+1, actual_outer_updates=trainer.actual_outer_updates,
+                         recovery_provenance=getattr(trainer,'recovery_provenance',None),
                          sampler=trainer.checkpoint_sampler.state_dict(), rng=rng_state(),
                          algorithm=dict(method=controller.method, stage=controller.stage.state_dict(),
                                         tree_rng=None if controller.tree_rng is None else controller.tree_rng.getstate())))
@@ -274,7 +285,18 @@ def restore_driver(trainer, saved, identity):
         raise ValueError('Algorithm identity changed')
     sampler = saved['sampler']; steps = saved['completed_step']
     batches = sampler['rows'] // sampler['batch_size']
-    if steps and (sampler['epoch'] != (steps-1)//batches
+    provenance=saved.get('recovery_provenance')
+    if provenance:
+        if provenance['parent_completed_step']>steps or provenance['new_batch_size']!=sampler['batch_size']:
+            raise ValueError('Invalid recovery provenance')
+        consumed=provenance['parent_cursor']+(steps-provenance['parent_completed_step'])*sampler['batch_size']
+        limit=batches*sampler['batch_size']
+        expected_epoch=provenance['parent_epoch']+(consumed-1)//limit
+        expected_cursor=(consumed-1)%limit+1
+        if sampler['epoch']!=expected_epoch or sampler['cursor']!=expected_cursor:
+            raise ValueError('Mixed-batch sampler cursor disagrees with completed updates')
+        trainer.recovery_provenance=cpu_copy(provenance)
+    elif steps and (sampler['epoch'] != (steps-1)//batches
                   or sampler['cursor'] != ((steps-1)%batches+1)*sampler['batch_size']):
         raise ValueError('Sampler cursor disagrees with actual completed updates')
     trainer.checkpoint_sampler.load_state_dict(saved['sampler'])
@@ -284,6 +306,42 @@ def restore_driver(trainer, saved, identity):
         controller.tree_rng.setstate(saved['algorithm']['tree_rng'])
     trainer.global_steps = saved['completed_step']; trainer.actual_outer_updates = saved['actual_outer_updates']
     restore_rng(saved['rng'])
+
+
+def recovery_manifest():
+    path=Path(os.environ['TREE_RECOVERY_MANIFEST'])
+    if file_sha(path)!=os.environ['TREE_RECOVERY_MANIFEST_SHA256']:
+        raise ValueError('Recovery parent manifest changed')
+    manifest=json.loads(path.read_text())
+    if manifest['status']!='COMPLETE_SAME_WORLD_STATE_SAVED' or len(manifest['worker_states'])!=8:
+        raise ValueError('Incomplete recovery parent')
+    expected=json.loads(os.environ['TREE_RECOVERY_PARENT_IDENTITY'])
+    if manifest['identity']!=expected:
+        raise ValueError('Recovery parent identity changed')
+    return manifest
+
+
+def restore_recovery_driver(trainer, manifest):
+    record=manifest['driver']
+    if file_sha(record['path'])!=record['sha256']:raise ValueError('Parent driver SHA changed')
+    saved=torch.load(record['path'],map_location='cpu',weights_only=False)
+    if digest(saved)!=record['logical_state_sha256'] or saved['identity']!=manifest['identity']:
+        raise ValueError('Parent driver state changed')
+    step=saved['completed_step']
+    if step!=saved['actual_outer_updates'] or saved['next_step']!=step+1:
+        raise ValueError('Parent recovery counters invalid')
+    if saved['algorithm']['method']!=trainer.baseline_controller.method:
+        raise ValueError('Recovery algorithm changed')
+    migration=migrate_sampler_batch(trainer.checkpoint_sampler,saved['sampler'],trainer.config.data.train_batch_size)
+    trainer.baseline_controller.stage.load_state_dict(saved['algorithm']['stage'])
+    trainer.baseline_controller.tree_rng.setstate(saved['algorithm']['tree_rng'])
+    trainer.actual_outer_updates=step;trainer.global_steps=step
+    trainer.recovery_provenance=dict(parent_identity=manifest['identity'],
+        parent_completed_step=step,parent_cursor=migration['consumed_cursor'],
+        parent_epoch=migration['epoch'],new_batch_size=migration['batch_size'],
+        exact_executor_resume=False)
+    restore_rng(saved['rng'])
+    return migration
 
 
 def wait_for_acceptance(directory, ready, timeout_seconds=43200):
@@ -320,7 +378,10 @@ def wait_for_acceptance(directory, ready, timeout_seconds=43200):
                     raise ValueError('HF checkpoint identity changed after acceptance')
             if receipt.read_bytes() != receipt_bytes:
                 raise ValueError('Acceptance receipt changed during verification')
-            atomic_save(dict(status='RELEASED_FOR_SAME_JOB_6_TO_300', ready_sha256=ready_sha,
+            atomic_save(dict(status='RELEASED_FOR_SAME_JOB_6_TO_300' if ready['completed_outer_updates']==5
+                             else 'RELEASED_FOR_SAME_JOB_CONTINUATION',
+                             completed_outer_updates=ready['completed_outer_updates'],
+                             next_outer_update=ready['next_outer_update'],ready_sha256=ready_sha,
                              approval_sha256=receipt_sha, pause_seconds=time.monotonic()-start),
                         directory / 'released.json', json_format=True)
             return approval

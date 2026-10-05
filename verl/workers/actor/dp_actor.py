@@ -146,6 +146,8 @@ class DataParallelPPOActor(BasePPOActor):
         grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
+        if grad_norm > self.config.get('recovery_max_grad_norm',float('inf')):
+            raise ValueError(f'Recovery preclip gradient gate: {float(grad_norm)}; optimizer step refused')
         self.actor_optimizer.step()
         return grad_norm
 

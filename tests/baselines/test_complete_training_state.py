@@ -63,7 +63,8 @@ def test_gate_timeout_or_wrong_identity_does_not_fetch_sixth_batch(tmp_path):
     sampler=CheckpointBatchSampler(40,4,42,'dataset');iterator=iter(sampler)
     for _ in range(5):next(iterator)
     cursor=sampler.cursor
-    ready=dict(job_id='1',code_commit='code',config_sha256='cfg',data_identity='data',model_identity='model')
+    ready=dict(job_id='1',code_commit='code',config_sha256='cfg',data_identity='data',model_identity='model',
+               completed_outer_updates=5,next_outer_update=6)
     with pytest.raises(TimeoutError):wait_for_acceptance(tmp_path/'timeout',ready,-1)
     assert sampler.cursor==cursor==20
     directory=tmp_path/'invalid';directory.mkdir();(directory/'approved.json').write_text(json.dumps({'status':'PASS','ready_sha256':'wrong'}))

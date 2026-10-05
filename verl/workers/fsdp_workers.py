@@ -340,7 +340,7 @@ class ActorRolloutRefWorker(Worker):
             self.rollout, self.rollout_sharding_manager = self._build_rollout()
 
         if self._is_ref:
-            self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.model.path,
+            self.ref_module_fsdp = self._build_model_optimizer(model_path=self.config.ref.get('model_path',self.config.model.path),
                                                                fsdp_config=self.config.ref.fsdp_config,
                                                                optim_config=None,
                                                                override_model_config=override_model_config,
@@ -548,6 +548,35 @@ class ActorRolloutRefWorker(Worker):
         if self._is_offload_param:
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
 
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_recovery_training_state(self):
+        from search_r1.baselines.training_state import recovery_manifest,file_sha,digest,restore_worker
+        manifest=recovery_manifest()
+        records=[r for r in manifest['worker_states'] if r['identity']['rank']==self.rank]
+        if len(records)!=1:raise ValueError('Recovery rank coverage invalid')
+        record=records[0]
+        if record['identity']['world_size']!=self.world_size or file_sha(record['path'])!=record['sha256']:
+            raise ValueError('Recovery world/shard identity changed')
+        saved=torch.load(record['path'],map_location='cpu',weights_only=False)
+        if digest(saved)!=record['logical_state_sha256']:raise ValueError('Parent worker logical hash changed')
+        if saved['identity']!=record['identity']:raise ValueError('Parent worker identity changed')
+        expected_steps=int(os.environ['TREE_RECOVERY_PARENT_OPTIMIZER_STEPS'])
+        if not saved['optimizer']['state'] or any(int(v['step'])!=expected_steps for v in saved['optimizer']['state'].values()):
+            raise ValueError('Parent Adam step mismatch')
+        # A fresh FSDP wrapper has not initialized its internal local shard yet.
+        # Initialize on the reserved device, then return to the saved offload
+        # layout before copying actor and Adam state. No dummy optimizer step.
+        from search_r1.baselines.training_state import prepare_cold_fsdp_layout,worker_snapshot
+        prepare_cold_fsdp_layout(self.actor_module_fsdp,self._is_offload_param,self._is_offload_grad)
+        restore_worker(self.actor_module_fsdp,self.actor_optimizer,self.actor_lr_scheduler,
+                       saved,record['identity'],cold=True)
+        if digest(worker_snapshot(self.actor_module_fsdp,self.actor_optimizer,self.actor_lr_scheduler,
+                                  record['identity'],cuda=True))!=record['logical_state_sha256']:
+            raise ValueError('Cold restored worker state differs from parent snapshot')
+        return dict(rank=self.rank,parent_identity=record['identity'],scheduler=self.actor_lr_scheduler.last_epoch,
+            adam_steps=sorted(set(int(v['step']) for v in self.actor_optimizer.state.values())),
+            parent_sha256=record['sha256'],scope='Cold state migration; not executor/vLLM equivalence')
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_training_state(self, local_path, identity, verify=False):

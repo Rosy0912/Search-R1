@@ -789,12 +789,27 @@ class RayPPOTrainer(object):
 
         logger = self.logger
         self.global_steps = 0
+        if os.environ.get('TREE_RECOVERY_MANIFEST'):
+            from search_r1.baselines.training_state import recovery_manifest,restore_recovery_driver,atomic_save
+            manifest=recovery_manifest()
+            worker_receipts=self.actor_rollout_wg.load_recovery_training_state()
+            if len(worker_receipts)!=8 or {r['rank'] for r in worker_receipts}!=set(range(8)):
+                raise ValueError('Cold recovery rank receipt incomplete')
+            if any(r['scheduler']!=manifest['identity']['completed_step'] for r in worker_receipts):
+                raise ValueError('Cold recovery scheduler boundary mismatch')
+            migration=restore_recovery_driver(self,manifest)
+            atomic_save(dict(status='COLD_PARENT_STATE_LOADED_PENDING_EVALUATION',workers=worker_receipts,
+                sampler_migration=migration,provenance=self.recovery_provenance),
+                os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'],'recovery-loaded.json'),json_format=True)
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
             val_metrics = self._validate()
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
+            if os.environ.get('TREE_RECOVERY_MANIFEST'):
+                if val_metrics.get('val/f1/all',0)<self.config.trainer.recovery_min_f1:
+                    raise RuntimeError('Restored fixed512 evaluation below recovery quality gate')
             if self.config.trainer.get('val_only', False):
                 return val_metrics
 
@@ -831,7 +846,8 @@ class RayPPOTrainer(object):
                         and self.global_steps == self.config.trainer.acceptance_step+1
                         and not getattr(self, 'acceptance_released', False)):
                     from search_r1.baselines.training_state import wait_for_acceptance
-                    wait_for_acceptance(os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'acceptance-step5'),
+                    wait_for_acceptance(os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'],
+                                                    f'acceptance-step{self.config.trainer.acceptance_step}'),
                                         self.acceptance_ready, self.config.trainer.acceptance_gate_timeout_seconds)
                     self.acceptance_released = True
                 try:
@@ -975,6 +991,14 @@ class RayPPOTrainer(object):
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
                                 audit_controller.audit_actor_batch(batch)
+                            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+                                from search_r1.baselines.trajectory_log import save_rollouts
+                                save_rollouts(batch,self.tokenizer,self.global_steps,
+                                              os.environ['SEARCH_R1_TRAJECTORY_DIR'])
+                            if os.environ.get('TREE_RECOVERY_MANIFEST'):
+                                reward=float(batch.batch['token_level_rewards'].sum(-1).mean())
+                                if reward<self.config.trainer.recovery_min_train_reward:
+                                    raise RuntimeError(f'Recovery reward gate: {reward}; rollout evidence saved before update')
                             from search_r1.baselines.runtime_audit import enabled as audit_enabled
                             if audit_enabled():
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
@@ -992,6 +1016,8 @@ class RayPPOTrainer(object):
                             raise RuntimeError('Outer iteration performed no actor update; budget cannot advance')
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
+                        if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:
+                            raise RuntimeError('Recovery outer optimizer calls differ from required10')
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
@@ -999,6 +1025,10 @@ class RayPPOTrainer(object):
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
+                        if os.environ.get('TREE_RECOVERY_MANIFEST'):
+                            if val_metrics.get('val/f1/all',0)<self.config.trainer.recovery_min_f1:
+                                logger.log(data=val_metrics,step=self.global_steps)
+                                raise RuntimeError('Recovery fixed512 evaluation quality gate')
                     if (getattr(self, 'baseline_controller', None) is not None
                             and metrics.get('actor/optimizer_steps', 0) > 0):
                         with _timer('stage_testing', timing_raw):
