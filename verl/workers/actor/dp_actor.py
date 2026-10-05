@@ -278,7 +278,10 @@ class DataParallelPPOActor(BasePPOActor):
             if paper_objective:
                 from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
                 denominator = row_denominator(len(mini_batch), mini_batch.device)
-                weight_mass, mass_world = global_token_count(mini_batch['policy_weights'])
+                mass_weights = mini_batch['policy_weights']
+                if safety is not None:
+                    mass_weights = torch.where(safety.effective_mask(mini_batch), mass_weights, 0.)
+                weight_mass, mass_world = global_token_count(mass_weights)
                 metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
             elif topd_token_mean:
                 from search_r1.baselines.advantages import token_mean_ppo
@@ -391,7 +394,7 @@ class DataParallelPPOActor(BasePPOActor):
                         audit.failure(error)
                     raise
 
-                micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
+                micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
                 data = {
                     'actor/entropy_loss': entropy_loss.detach().item(),
                     'actor/pg_loss': pg_loss.detach().item(),
