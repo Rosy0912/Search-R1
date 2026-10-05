@@ -1,0 +1,185 @@
+{
+  "checked_unix": 1791179623.0215998,
+  "run_id": "739c7771ca50455fa67e458822382788",
+  "completed_update": 276,
+  "new_updates": 5,
+  "rows": [
+    {
+      "step": 272,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.792,
+        "actor/entropy_loss": 10.226,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": 0,
+        "actor/grad_norm": 0.009,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 632.933
+      }
+    },
+    {
+      "step": 273,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.736,
+        "actor/entropy_loss": 10.264,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.001,
+        "actor/grad_norm": 0.008,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 636.835
+      }
+    },
+    {
+      "step": 274,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.752,
+        "actor/entropy_loss": 10.303,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.001,
+        "actor/grad_norm": 0.007,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 636.34
+      }
+    },
+    {
+      "step": 275,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.791,
+        "actor/entropy_loss": 10.358,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.002,
+        "actor/grad_norm": 0.007,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 639.03
+      }
+    },
+    {
+      "step": 276,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.784,
+        "actor/entropy_loss": 10.372,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.002,
+        "actor/grad_norm": 0.007,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 638.571
+      }
+    }
+  ],
+  "reward_recent": -0.1,
+  "reward_window_mean": -0.1,
+  "reward_window_range": [
+    -0.1,
+    -0.1
+  ],
+  "reward_mean_change": 0,
+  "validation_step": 255,
+  "validation_correct": 0,
+  "validation_em": 0,
+  "validation_counts": {
+    "musique": 9,
+    "nq": 10,
+    "bamboogle": 9,
+    "popqa": 9,
+    "2wikimultihopqa": 9,
+    "triviaqa": 9,
+    "hotpotqa": 9
+  },
+  "validation_source_correct": {
+    "2wikimultihopqa": 0,
+    "popqa": 0,
+    "hotpotqa": 0,
+    "bamboogle": 0,
+    "musique": 0,
+    "triviaqa": 0,
+    "nq": 0
+  },
+  "leaders": {
+    "trainer": {
+      "live": true,
+      "pid": 3637406,
+      "start_ticks": 524582919
+    },
+    "retriever": {
+      "live": true,
+      "pid": 3631839,
+      "start_ticks": 524558477
+    },
+    "probe-server": {
+      "live": true,
+      "pid": 3636445,
+      "start_ticks": 524575419
+    },
+    "main": {
+      "live": true,
+      "pid": 3643039,
+      "start_ticks": 524585455
+    }
+  },
+  "pipeline": {
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "stage": "GRPO_251_TO_300",
+    "unix": 1791166237.8780622
+  },
+  "raw_gradient_window_peak": 0.010362851883438603,
+  "raw_gradient_cumulative_peak": 10357024721853502,
+  "gpu_window_peak_mib": {
+    "0": 48235,
+    "1": 47991,
+    "2": 47991,
+    "3": 48265,
+    "5": 17879,
+    "6": 27169
+  },
+  "gpu_cumulative_peak_mib": {
+    "0": 48235,
+    "1": 48041,
+    "2": 47991,
+    "3": 48265,
+    "5": 19203,
+    "6": 27169
+  },
+  "sampler_last": 1791179621.9079087,
+  "window_sample_count": 1671,
+  "max_sample_interval": 2.3540947437286377,
+  "gpu_current_csv": "0, 47865, 81920, 100\n1, 47961, 81920, 100\n2, 47961, 81920, 96\n3, 47717, 81920, 96\n4, 4, 81920, 0\n5, 17879, 81920, 0\n6, 27169, 81920, 0\n7, 68494, 81920, 0\n",
+  "errors": [],
+  "semantics": "console3decimals; progress is not accuracy success; unchanged evaluation255zero64",
+  "window_seconds": 3560.154813528061,
+  "previous_completed_update": 271,
+  "interpretation": "All five completed updates have invalid actions, zero search/finish and zero group advantages. Reward-driven PG is zero while KL optimization continues. Accuracy has not recovered. Latest finite checkpoint proof remains step255; no claim about current unsaved weights."
+}
