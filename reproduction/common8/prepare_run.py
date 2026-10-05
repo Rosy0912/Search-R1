@@ -78,10 +78,8 @@ def prepare(base,model,official_path,commit):
     model_hashes=verify_model(model,official_path)
     audit=derive_calibration(base)
     repo=base/'repo'
-    source={str(p.relative_to(repo)):digest(p) for p in sorted(repo.rglob('*'))
-        if p.is_file() and p.suffix in ('.py','.sh','.yaml','.yml','.json')
-        and '.git' not in p.parts and '__pycache__' not in p.parts
-        and 'evidence' not in p.parts}
+    from reproduction.common8.source_files import runtime_files
+    source={str(p.relative_to(repo)):digest(p) for p in runtime_files(repo)}
     budget=json.loads((repo/'reproduction/common8/budget.json').read_text())
     assert budget['model_revision']==REVISION and budget['fresh_actor']
     assert budget['common_manifest_sha256']==data_proof['manifest_sha256']

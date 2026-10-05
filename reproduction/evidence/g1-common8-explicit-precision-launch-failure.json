@@ -1,0 +1,15 @@
+{
+  "job_id": "3264",
+  "base": "/dataset/shaoshitong/Search-G1-common8-explicit-fp32-0fd67bdfc2ee",
+  "source_commit": "8d31d7b10e6819663c01815acfa34630aeddef60",
+  "source_matches": true,
+  "slurm_job": "JobId=3264 JobName=search-g1-explicit-fp32-smoke UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898802 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:00:16 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-06T04:19:44 EligibleTime=2026-10-06T04:19:44 AccrueTime=2026-10-06T04:19:44 StartTime=2026-10-06T04:19:45 EndTime=2026-10-06T04:20:01 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-06T04:19:45 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1638719 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-0fd67bdfc2ee/preparation/job.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-0fd67bdfc2ee/repo StdErr=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-0fd67bdfc2ee/logs/slurm-3264.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-explicit-fp32-0fd67bdfc2ee/logs/slurm-3264.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "owned_processes": [],
+  "actual_grpo_updates": 0,
+  "actual_optimizer_writes": 0,
+  "failure": "Launcher passed str to Path-only native_allocation.admit; failed before model initialization",
+  "launcher_fix": "Use existing Path-typed native_allocation CLI",
+  "checked_unix": 1791231881.028889,
+  "scope": "failed launch, no precision or model acceptance",
+  "production_admission": false
+}
