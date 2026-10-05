@@ -18,9 +18,16 @@
   "per_rank_actor_micro_batch": 2,
   "log_prob_micro_batch_size": 32,
   "per_rank_log_prob_micro_batch": 4,
-  "learning_rate": 0.000001,
+  "learning_rate": 1e-06,
   "gradient_clip_global_l2": 1.0,
   "target_actual_outer_updates": 300,
-  "split_counts": {"train": 169028, "validation": 512, "stage": 64, "final": 51713},
-  "training_start_checkpoint": null
+  "split_counts": {
+    "train": 169028,
+    "validation": 512,
+    "stage": 64,
+    "final": 51713
+  },
+  "training_start_checkpoint": null,
+  "lr_warmup_steps_ratio": 0.0,
+  "learning_rate_schedule": "constant"
 }

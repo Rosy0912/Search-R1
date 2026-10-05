@@ -151,9 +151,22 @@ class DataParallelPPOActor(BasePPOActor):
         grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,context=getattr(self,"_gradient_diagnostic_context",None))
         require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group)
         self.actor_optimizer.step()
+        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
+            post = {f'parameter_{i}': p.detach() for i,p in enumerate(self.actor_module.parameters())}
+            for i,state in enumerate(self.actor_optimizer.state.values()):
+                for name,value in state.items():
+                    if torch.is_tensor(value):
+                        post[f'optimizer_{i}_{name}'] = value
+            require_finite(post, stage='after_optimizer_write', process_group=group)
         self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
-        if not torch.distributed.is_initialized() or torch.distributed.get_rank()==0:
-            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
+        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.worker_evidence import append
+            append('OPTIMIZER_WRITE', dict(rank=torch.distributed.get_rank(),
+                context=self._gradient_diagnostic_context, write_count=self._optimizer_writes,
+                learning_rates=[float(group['lr']) for group in self.actor_optimizer.param_groups]))
+        if (__import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8' or
+                not torch.distributed.is_initialized() or torch.distributed.get_rank()==0):
+            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
         return grad_norm
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
@@ -216,6 +229,13 @@ class DataParallelPPOActor(BasePPOActor):
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
         logical_update=data.meta_info.get('logical_update')
+        writes_before = getattr(self, '_optimizer_writes', 0)
+        common8 = __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8'
+        if common8:
+            assert torch.distributed.get_world_size() == 8
+            assert len(data) == 320 and self.config.ppo_mini_batch_size == 16
+            assert self.config.ppo_micro_batch_size == 2 and self.config.ppo_epochs == 1
+
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
         if self.config.state_masking:
@@ -309,4 +329,17 @@ class DataParallelPPOActor(BasePPOActor):
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
+        if common8:
+            writes = self._optimizer_writes - writes_before
+            assert writes == 20
+            append_to_dict(metrics, {'actor/optimizer_steps_this_update': writes})
+            from reproduction.common8.worker_evidence import append
+            append('OUTER_BUDGET', dict(rank=torch.distributed.get_rank(),
+                logical_update=logical_update, local_trajectories=len(batch),
+                local_mini=16, local_micro=2, optimizer_writes=writes,
+                cumulative_writes=self._optimizer_writes))
+            print('SEARCH_G1_OUTER_BUDGET=' + __import__('json').dumps(dict(
+                rank=torch.distributed.get_rank(), logical_update=logical_update,
+                local_trajectories=len(batch), local_mini=16, local_micro=2,
+                optimizer_writes=writes, cumulative_writes=self._optimizer_writes)), flush=True)
         return metrics

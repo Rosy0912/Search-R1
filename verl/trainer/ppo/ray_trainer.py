@@ -412,7 +412,7 @@ class RayPPOTrainer(object):
         print(f"filtered validation dataset size: {len(self.val_dataset.dataframe)}")
         if os.environ.get('SEARCH_G1_BASE'):
             from pathlib import Path
-            from reproduction.a800.validation_identity import bind_validation_dataframe
+            from reproduction.profile import bind_validation_dataframe
             self.val_dataset.dataframe = bind_validation_dataframe(
                 self.val_dataset.dataframe, Path(os.environ['SEARCH_G1_BASE']))
 
@@ -451,6 +451,9 @@ class RayPPOTrainer(object):
         Accumulates metrics across all batches before computing final statistics.
         """
         import torch
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.validation_identity import configure_validation
+            configure_validation(self, final=final)
         reward_tensor_lst = []
         data_source_lst = []
         question_id_lst = []
@@ -574,7 +577,7 @@ class RayPPOTrainer(object):
 
         if os.environ.get('SEARCH_G1_BASE'):
             from pathlib import Path
-            from reproduction.a800.validation_identity import record_validation
+            from reproduction.profile import record_validation
             record_validation(Path(os.environ['SEARCH_G1_BASE']),
                 self.global_steps - 1 if final else self.global_steps,
                 question_id_lst, data_sources.tolist(), reward_tensor.tolist(), final=final)
@@ -875,7 +878,7 @@ class RayPPOTrainer(object):
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
-                            from reproduction.a800.runtime import checkpoint_complete
+                            from reproduction.profile import checkpoint_complete
                             checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
                             checkpoint_complete(self.global_steps, checkpoint)
 
@@ -885,14 +888,17 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
+                if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                    from reproduction.common8.update_evidence import record
+                    record(self.global_steps, metrics, self.reward_fn.expected_probe_version)
                 if continuation_k < self.global_steps <= continuation_k + 5:
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
                 if self.global_steps == self.config.trainer.get('acceptance_step', 0):
-                    from reproduction.a800.runtime import accept_five_updates
+                    from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
                 if self.global_steps in (50,100,150,200,250):
-                    from reproduction.a800.runtime import refresh_after_checkpoint
+                    from reproduction.profile import refresh_after_checkpoint
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
 
                 self.global_steps += 1

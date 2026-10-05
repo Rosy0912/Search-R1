@@ -52,6 +52,9 @@ class ActorRolloutRefWorker(Worker):
 
     def __init__(self, config: DictConfig, role: str):
         super().__init__()
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.batch_contract import independent_worker_config
+            config = independent_worker_config(config)
         self.config = config
         import torch.distributed
         if not torch.distributed.is_initialized():
@@ -92,6 +95,11 @@ class ActorRolloutRefWorker(Worker):
             # TODO: it seems that manual offload is slowly than FSDP offload
             self._is_offload_param = self.config.ref.fsdp_config.get('param_offload', False)
 
+        # Check the supplied global values before in-place rank normalization.
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.batch_contract import check_global
+            check_global(self.config, self.device_mesh.shape[0],
+                         self.ulysses_sequence_parallel_size)
         # normalize config
         if self._is_actor:
             self.config.actor.ppo_mini_batch_size //= (self.device_mesh.shape[0] // self.ulysses_sequence_parallel_size)
@@ -107,6 +115,11 @@ class ActorRolloutRefWorker(Worker):
             self.config.ref.log_prob_micro_batch_size //= (self.device_mesh.shape[0] //
                                                            self.ulysses_sequence_parallel_size)
             self.config.ref.log_prob_micro_batch_size *= self.config.rollout.n
+
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.batch_contract import check_local
+            check_local(self.config, actor=self._is_actor,
+                        rollout=self._is_rollout, reference=self._is_ref)
 
     def _build_model_optimizer(self,
                                model_path,
@@ -238,8 +251,13 @@ class ActorRolloutRefWorker(Worker):
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
             from verl.utils.weight_continuation import scheduler_from_completed
-            actor_lr_scheduler = scheduler_from_completed(
-                actor_optimizer, num_warmup_steps, optim_config.get('completed_updates', 0))
+            if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                assert num_warmup_steps == 0 and optim_config.get('completed_updates', 0) == 0
+                from reproduction.common8.scheduler import constant_scheduler
+                actor_lr_scheduler = constant_scheduler(actor_optimizer)
+            else:
+                actor_lr_scheduler = scheduler_from_completed(
+                    actor_optimizer, num_warmup_steps, optim_config.get('completed_updates', 0))
         else:
             actor_optimizer = None
             actor_lr_scheduler = None

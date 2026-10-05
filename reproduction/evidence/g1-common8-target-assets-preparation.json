@@ -1,0 +1,37 @@
+{
+  "profile": "common8",
+  "training_updates": 0,
+  "scope": "preparation only; no Slurm/GRPO admission",
+  "assets": {
+    "accepted": true,
+    "file_count": 254,
+    "source_hash_manifest_sha256": "8bd19e8091032db0dd06c10cafa06491c1497894237620a12c62f229ad5adebb",
+    "total_bytes": 10692214101,
+    "status": {
+      "stage": "COMPLETE",
+      "pid": 818404,
+      "start_ticks": 2213276662,
+      "unix": 1791188096.539686,
+      "accepted": true,
+      "file_count": 254
+    }
+  },
+  "official_model": {
+    "accepted": true,
+    "repo": "Qwen/Qwen2.5-3B-Instruct",
+    "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "file_count": 11,
+    "official_manifest_sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44"
+  },
+  "probe_dependency_relay": {
+    "stage": "COMPLETE",
+    "pid": 20609,
+    "unix": 1791189561.029629,
+    "accepted": true,
+    "file_count": 4
+  },
+  "headers": {
+    "headers_accepted": true,
+    "archive_sha256": "8da4e86a5a3e3096bf12ab963c666754d292a823faf987d1c84c9702ba7d9250"
+  }
+}

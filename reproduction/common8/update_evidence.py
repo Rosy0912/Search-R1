@@ -1,0 +1,26 @@
+"""Driver records only completed outer updates, after actual worker writes return."""
+import json
+import math
+import os
+from pathlib import Path
+
+
+METRICS=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
+         'actor/kl_loss','actor/ppo_kl','actor/grad_norm','actor/optimizer_steps_this_update')
+
+
+def record(step,metrics,probe_version):
+    base=Path(os.environ['SEARCH_G1_BASE'])
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    assert run['profile']=='common8' and 1<=step<=300
+    scalar={key:float(metrics[key]) for key in METRICS}
+    assert all(math.isfinite(v) for v in scalar.values())
+    assert scalar['actor/optimizer_steps_this_update']==20
+    path=base/'logs/actual-updates.jsonl'
+    prior=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+    assert [row['step'] for row in prior]==list(range(1,step))
+    assert all(row['run_id']==run['run_id'] for row in prior)
+    row=dict(run_id=run['run_id'],step=step,metrics=scalar,probe_version=probe_version)
+    with path.open('a') as f:
+        f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
+    return row

@@ -1,0 +1,26 @@
+{
+  "cpu_contract_tests": 12,
+  "actual_torch_scheduler_tests": 2,
+  "first_twenty_cpu_adam_writes_lr": 1e-06,
+  "header_compilation": true,
+  "training_updates": 0,
+  "source_sha256": {
+    "reproduction/common8/verify_data.py": "9aab7aa47515a2aaf487c0d7f258f9016af8cf93c4a3c62884c815132c0910c6",
+    "reproduction/common8/batch_contract.py": "282b05c9e2418d07f292cda007d0a27a769f216101fe34f315b80a6bc5cebcd3",
+    "reproduction/common8/prepare_run.py": "ea50da403b9f2f2a7c45f4e0e58aa4c404b1c42db3b8d38feeaa41c4f0ed6829",
+    "reproduction/common8/probe_admission.py": "bbee296e9b0f203b8a36b066ffe902423fb476f63b1870c3e79cd49d50f3971e",
+    "reproduction/common8/worker_evidence.py": "f4975b8da0a478b580cb9b38d57f1e94fc44d17947cbc8fffbe1e160280bb955",
+    "reproduction/common8/__init__.py": "035f35086a3cd28e31e048d2a14751d96a59b59b817e3b36dd3d2c65f914d43b",
+    "reproduction/common8/claim_training.py": "b54c9a3efc9966d70c03c52de8d976c56b8cfd8e279147fc561cb2f4452d780d",
+    "reproduction/common8/test_scheduler.py": "b0aa2dbb051fda19a3d5a625c4a796b1ae26150e4a7d565d34586ed948b1e5a2",
+    "reproduction/common8/validation_identity.py": "3dfe30437085ff211b01510ba75343844e18a46da3444e85da78c791b87bed3b",
+    "reproduction/common8/verify_full.py": "31bed3a23debce25e4e67a133d5243ac94e050ded556b3ec8ba6aa8d6150327d",
+    "reproduction/common8/runtime.py": "beacc4828e3fe7b4064af4c6509040ccf084c3b8b5d4352902fd360853af61f7",
+    "reproduction/common8/test_contract.py": "68f9b4b1535889e690acc5b8e2e70e5dbb8dcc38edbfcbf52514a42ad4ca037c",
+    "reproduction/common8/refit.py": "c3870f2e8551b77a61453d730d451f2a1cd638f088542bfa4b6c62cdc7c45b90",
+    "reproduction/common8/scheduler.py": "5626052b653328829cf37078b325af3bda5e71a51ec482acbc2cc10a25037c9c",
+    "reproduction/common8/update_evidence.py": "f47fd7a2587c76b42abcc03a70e9ee33abc39a7c926ca224a60ce60a87f8f1f3"
+  },
+  "checked_unix": 1791190052.348614,
+  "semantics": "CPU preparation only; no real GPU/GRPO update"
+}
