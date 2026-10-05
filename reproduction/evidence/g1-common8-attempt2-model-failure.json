@@ -1,0 +1,61 @@
+{
+  "job_id": "3241",
+  "run": {
+    "run_id": "c9849d21d01345589c8ea288c14babb3",
+    "completed_updates": 0,
+    "source_commit": "4b1a06243e915c73b439fca8c62ba5f928ca812b",
+    "train_log": "/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/search-g1-common8-training.log",
+    "checkpoint_dir": "/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/checkpoints/search-g1-common8"
+  },
+  "stage": {
+    "run_id": "c9849d21d01345589c8ea288c14babb3",
+    "stage": "FAILED",
+    "unix": 1791200459.1869228,
+    "error": "AssertionError('model-initial failed; see project log')"
+  },
+  "job": "JobId=3241 JobName=search-g1-common8-attempt2 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898825 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:01:51 TimeLimit=3-00:00:00 TimeMin=N/A SubmitTime=2026-10-05T19:39:09 EligibleTime=2026-10-05T19:39:09 AccrueTime=2026-10-05T19:39:09 StartTime=2026-10-05T19:39:09 EndTime=2026-10-05T19:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T19:39:09 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1105777 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/repo/reproduction/common8/launch_native.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/repo StdErr=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/native-full-3241.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/native-full-3241.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "actual_processes": {
+    "1106164": {
+      "expected_birth": 2214506084,
+      "present": false
+    },
+    "1107563": {
+      "expected_birth": 2214508184,
+      "present": false
+    }
+  },
+  "owned_cleanup": {
+    "run_id": "c9849d21d01345589c8ea288c14babb3",
+    "cleaned": true,
+    "checked_unix": 1791200460.056952
+  },
+  "source_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "pid": 409746,
+      "start_ticks": 1548885762,
+      "sid": 409746,
+      "uid": 0,
+      "port": 19874,
+      "started_unix": 1791200342.8418055,
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "export": "/dataset/shaoshitong/g1-common8-original-retrieval-export-attempt2-d98818b4061a",
+      "source_sha256": "3319c714c3d8c11c1f8afbe756feb20e176a7f42b2ce99f29f78d8de911a0bf1"
+    },
+    "checked_unix": 1791200827.759856,
+    "reason": "native3241 FAILED before training; no further staging needed"
+  },
+  "actual_grpo_updates": 0,
+  "failure": "flash_attn Triton cross_entropy_fwd_kernel Pointer argument(at4) cannot be accessed (cpu tensor?); first actor old-logprob recomputation",
+  "kernel_argument_4": "labels; actual device/alias causal path still under investigation",
+  "scope": "Actual failed model smoke before training; not GRPO acceptance",
+  "evidence_sha256": {
+    "attempt2-model-observation.json": "9a01958c9f7a8959576a745c9b2ebe9bcab286e763ce904f3831f4d70bb34449",
+    "attempt2-latest-observation.json": "40e1b3de25fff4bd42a3c2a554124384f9f1182b0d8fb139e26464d0ee1dc1b8",
+    "attempt2-retrieval-source-cleanup.json": "236230cfa9e412fdbba81c4d4ff4cd21a4051e47007cc3ba11735361e23b0c54"
+  }
+}
