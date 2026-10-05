@@ -34,7 +34,10 @@ class PolicySafetyRuntime:
         # Different per-rank row/chunk counts would strand an FSDP monitor forward.
         signature = torch.tensor([len(self.batch), len(self.monitor), actor.config.ppo_micro_batch_size,
                                   self.target_kl, self.tail_limit, self.initial_consistency_limit,
-                                  float(config['dual_clip']), float(config['kl_log_bound'])],
+                                  float(config['dual_clip']), float(config['kl_log_bound']),
+                                  actor.config.ppo_mini_batch_size, actor.config.ppo_epochs,
+                                  actor.config.clip_ratio, actor.config.grad_clip,
+                                  actor.config.get('recovery_max_grad_norm', 1e300)],
                                  device=self.device, dtype=torch.float64)
         lo, hi = signature.clone(), signature.clone()
         if dist.is_initialized():

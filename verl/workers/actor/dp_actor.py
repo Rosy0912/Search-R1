@@ -144,11 +144,16 @@ class DataParallelPPOActor(BasePPOActor):
         assert self.config.grad_clip is not None
         from search_r1.baselines.gradient_norm import clip_grad_norm64
         grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
-        if not torch.isfinite(grad_norm):
-            raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
-        if grad_norm > self.config.get('recovery_max_grad_norm',float('inf')):
-            raise ValueError(f'Recovery preclip gradient gate: {float(grad_norm)}; optimizer step refused')
         safety = getattr(self, "_policy_safety", None)
+        if safety is not None:
+            safety.sync_valid(not torch.isfinite(grad_norm) or
+                              grad_norm > self.config.get('recovery_max_grad_norm', float('inf')),
+                              'global_preclip_gradient_gate')
+        else:
+            if not torch.isfinite(grad_norm):
+                raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
+            if grad_norm > self.config.get('recovery_max_grad_norm',float('inf')):
+                raise ValueError(f'Recovery preclip gradient gate: {float(grad_norm)}; optimizer step refused')
         if safety is not None:
             self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
@@ -316,9 +321,12 @@ class DataParallelPPOActor(BasePPOActor):
                     log_prob = torch.where(response_mask, log_prob, 0.)
                     advantages = torch.where(response_mask, advantages, 0.)
                     entropy = torch.where(response_mask, entropy, 0.)
+                policy_weights = data['policy_weights'] if paper_objective else None
+                if safety is not None:
+                    policy_weights = torch.where(response_mask, policy_weights, 0.)
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
-                        old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
+                        old_log_prob, log_prob, advantages, response_mask, policy_weights,
                         clip_ratio, denominator, data.get('step_ids', None),
                         dual_clip=safety_config['dual_clip'] if safety is not None else None)
                 elif topd_token_mean:
@@ -331,7 +339,7 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                   eos_mask=response_mask,
                                                                                   cliprange=clip_ratio)
                 # compute entropy loss from entropy
-                entropy_loss = (verl_F.masked_sum(entropy, data['policy_weights']) / denominator
+                entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
                                 if paper_objective else verl_F.masked_mean(entropy, response_mask))
 
                 # compute policy loss
@@ -343,7 +351,7 @@ class DataParallelPPOActor(BasePPOActor):
                     kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
                                                 ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
                                                 kl_penalty=self.config.kl_loss_type)
-                    kl_loss = (verl_F.masked_sum(kld, data['policy_weights']) / denominator
+                    kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
                                if paper_objective else masked_mean(kld, response_mask))
 
                     policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
