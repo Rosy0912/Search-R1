@@ -1,0 +1,106 @@
+{
+  "role": "sanitized_policy_safety_discovery_v2_launch_and_prospective_method",
+  "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+  "native_job_id": "3278",
+  "discovery_base": "/mnt/data/shaoshitong/g1d-6f2e0963",
+  "parent_base": "/mnt/data/shaoshitong/g1p-6f2e0963",
+  "submitted_unix": 1791240013.6827095,
+  "target_cpu_proof_sha256": "397763140ec0ecca56588fa33985fe2f2fac0ed6e45a06cda3860c09006dfaef",
+  "runtime_file_count": 344,
+  "actual_observation": {
+    "checked_unix": 1791240142.7319694,
+    "finished_unix": 1791240143.0569863,
+    "slurm_job_id": "3278",
+    "source_hashes_match": true,
+    "stage": {
+      "run_id": "6ed2e25db05342479641cb158e4ee866",
+      "stage": "INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE",
+      "unix": 1791240071.1188982
+    },
+    "child": {
+      "run_id": "6ed2e25db05342479641cb158e4ee866",
+      "completed_updates": 0,
+      "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+      "train_log": "/mnt/data/shaoshitong/g1d-6f2e0963/logs/search-g1-common8-training.log",
+      "checkpoint_dir": "/mnt/data/shaoshitong/g1d-6f2e0963/checkpoints/search-g1-common8",
+      "policy_calibration_role": "policy_safety_calibration_discovery",
+      "parent_production_run_id": "03ba871da8604c768f38366b4f72f7de"
+    },
+    "parent": {
+      "run_id": "03ba871da8604c768f38366b4f72f7de",
+      "completed_updates": 0,
+      "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+      "manifest_sha256": "34c73f8be5402b6412533d9a31f487c77988264d988e5af88563cae93a22d433"
+    },
+    "parent_actual_unstarted": {
+      "training_claim_exists": false,
+      "optimizer_evidence_paths": [],
+      "train_log_exists": false,
+      "checkpoint_entries": [],
+      "actual_updates_exists": false
+    },
+    "parent_actual_unstarted_verified": true,
+    "actual_completed_child_updates": 0,
+    "actual_production_updates": 0
+  },
+  "prospective_method_sha256": "f1453d510635b5f8b79afbbf51bb57e42a13d6f9c1a99a76855d865fff61fb54",
+  "prospective_method": {
+    "role": "root_explicit_policy_calibration_selection_method",
+    "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+    "parent_production_run_id": "03ba871da8604c768f38366b4f72f7de",
+    "discovery_run_id": "6ed2e25db05342479641cb158e4ee866",
+    "frozen_unix": 1791240163.1439638,
+    "before_completed_discovery_update": true,
+    "health_rule_document": {
+      "role": "policy_safety_health_rule",
+      "provenance": {
+        "method_origin": "Root explicit conservative admission criterion frozen before the actual discovery outer completed",
+        "purpose": "Do not automatically tolerate a measured accuracy or valid-action decline",
+        "not_a_population_statistical_guarantee": true
+      },
+      "criteria": {
+        "method": "paired_fixed512_absolute_allowed_drop",
+        "allowed_drop": {
+          "weighted_em": 0.0,
+          "weighted_f1": 0.0,
+          "valid_action_rate": 0.0
+        }
+      }
+    },
+    "negative_tail_selection": {
+      "method": "Maximum actual global negative_tail_weight_fraction across all ordered pre/post mini checks of the complete discovery outer",
+      "required_global_observations": 40,
+      "duplicate_rank_global_reports": "Verify all eight copies agree and count each ordinal observation once",
+      "data_requirement": "Complete actual 20 Adam writes and 40 allowed finite checks/rank, actual finite checkpoint1 parameter delta, paired ordered512 before/after, completed native and owned cleanup",
+      "arbitrary_margin_or_floor": false,
+      "fraction_with_zero_negative_mass": 0.0,
+      "confirmation": "Fresh official0 independent native job, same initial probe heads/encoder/reward math and original recipe; every actual check must remain within the frozen candidate envelope and other guards",
+      "scope": "Empirical monitored32 trajectories/one discovery outer; no weighted quantile or population-risk claim"
+    },
+    "fixed_candidates": {
+      "dual_clip": 3.0,
+      "epsilon": 0.2,
+      "target_old_policy_kl": 0.01,
+      "kl_log_bound": 30.0
+    },
+    "negative_tail_limit": null,
+    "production_admission": false,
+    "healthy_checkpoint_accepted": false,
+    "prospective_binding": {
+      "native_job_id": "3278",
+      "discovery_base": "/mnt/data/shaoshitong/g1d-6f2e0963",
+      "parent_base": "/mnt/data/shaoshitong/g1p-6f2e0963",
+      "launch_sha256": "6554b24502ba8aee3ed127675efa8e2e010bd343938b6ac3ad156875cdb16641",
+      "zero_update_observation_sha256": "d38e5298d38746e5bc39a31e0397e8d05ca4ca5cd8a52c962374b18c8d0eca27",
+      "observation_finished_unix": 1791240143.0569863,
+      "child_manifest_sha256": "61895d9251d42d6d7e045d6c3b01099ec4f3b11665cf368229788450fffb0ab4",
+      "parent_manifest_sha256": "34c73f8be5402b6412533d9a31f487c77988264d988e5af88563cae93a22d433",
+      "parent_actual_unstarted_verified": true,
+      "previous_method_preserved_sha256": "1f41e41ace87161e9885c4d57873e388f9b77ae717ed9427fdfe5c71addce057",
+      "scope": "New source/run binding of unchanged prospectively selected conservative method; no measured threshold or effect acceptance"
+    }
+  },
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "scope": "Actual native launch/zero-update observation and prospective unchanged conservative method; not full-outer, GPU health, production or final-effect acceptance"
+}
