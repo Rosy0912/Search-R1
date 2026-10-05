@@ -33,7 +33,9 @@ def allocated_indices(detail, node):
     return indices
 
 
-def cuda_uuids():
+def cuda_uuids(count=8):
+    if type(count) is not int or count < 1:
+        raise ValueError('CUDA UUID count must be a positive integer')
     import ctypes
     import sysconfig
     import uuid
@@ -46,7 +48,7 @@ def cuda_uuids():
     assert re.search(r'struct\s+(?:__device_builtin__\s+)?cudaDeviceProp\s*\{\s*char\s+name\[256\];\s*cudaUUID_t\s+uuid\s*;',header), 'Unknown CUDA property ABI prefix'
     call=lib.cudaGetDeviceProperties_v2;call.argtypes=[ctypes.c_void_p,ctypes.c_int];call.restype=ctypes.c_int
     result=[]
-    for ordinal in range(8):
+    for ordinal in range(count):
         # The complete CUDA-12 structure is much smaller; reserve ample space
         # because only the verified name/UUID prefix is needed here.
         value=ctypes.create_string_buffer(65536)

@@ -55,8 +55,8 @@ def global_statistics(step):
     )
 
 
-def fabricated_segment(outer_count=1):
-    binding = dict(schema_version=1, role='policy_safety_calibration_confirmation',
+def fabricated_segment(outer_count=1, role='policy_safety_calibration_confirmation'):
+    binding = dict(schema_version=1, role=role,
                    run_id='fabricated-structural-test', calibration_sha256=digest('test plan'),
                    outer_count=outer_count, initial_optimizer_writes=0)
     logs = {}
@@ -76,6 +76,9 @@ def fabricated_segment(outer_count=1):
                                          gradient_norm_before=2., gradient_norm_after=.9999995,
                                          learning_rates=[1e-6]))
                     rows.append(dict(kind='POLICY_MONITOR', run_id=binding['run_id'], rank=rank,
+                                     execution_role=role,
+                                     enforcement=dict(negative_tail='observe_only' if role.endswith('discovery') else 'enforced',
+                                                      old_policy_kl='enforced', numerical_finite='enforced', dual_clip='enforced'),
                                      context=copy.deepcopy(context),
                                      stage='after_minibatch' if post else 'before_minibatch',
                                      optimizer_writes=prior + post, calibration_sha256=binding['calibration_sha256'],
@@ -125,9 +128,12 @@ class CalibrationEvidenceTests(unittest.TestCase):
                 binding[key] = value
                 with self.assertRaises(EvidenceError):
                     verify_segment(logs, binding)
-        logs, binding = fabricated_segment()
-        binding['role'] = 'policy_safety_calibration_discovery'
-        self.assertIs(verify_segment(logs, binding)['production_admission'], False)
+        logs, binding = fabricated_segment(role='policy_safety_calibration_discovery')
+        result=verify_segment(logs, binding)
+        self.assertIs(result['production_admission'], False)
+        self.assertEqual(result['enforcement']['negative_tail'],'observe_only')
+        logs[7][0]['enforcement']['negative_tail']='enforced'
+        with self.assertRaises(EvidenceError): verify_segment(logs,binding)
 
     def test_missing_extra_and_wrong_rank_logs_rejected(self):
         for variant in ('missing', 'extra', 'duplicate_payload'):
@@ -259,7 +265,8 @@ class CalibrationEvidenceTests(unittest.TestCase):
             old = torch.zeros_like(new)
             delta = torch.where(masks.bool(), new, 0.).double() - torch.where(masks.bool(), old, 0.).double()
             reports[step] = monitor(delta, advantages, masks, weights,
-                                    c=3., kl_log_bound=30., target_kl=10., negative_tail_limit=.5)
+                                    c=3., kl_log_bound=30., target_kl=10., negative_tail_limit=.5,
+                                    execution_role=binding['role'])
         with tempfile.TemporaryDirectory() as root, patch.dict(os.environ, SEARCH_G1_BASE=root):
             base = Path(root)
             (base / 'logs').mkdir()

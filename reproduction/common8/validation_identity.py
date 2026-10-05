@@ -38,7 +38,13 @@ def configure_validation(trainer, final=False):
     from verl.utils.dataset.rl_dataset import collate_fn
     global _ACTIVE_SPLIT
     step = int(trainer.global_steps)
-    split = 'final' if final else ('validation' if step > 0 and step % 50 == 0 else 'stage')
+    from reproduction.common8.calibration_runtime import active_plan
+    phase = active_plan()
+    if phase is not None:
+        assert not final and step in (0, 1), 'A calibration child has only paired fixed512 evaluations'
+        split = 'validation'
+    else:
+        split = 'final' if final else ('validation' if step > 0 and step % 50 == 0 else 'stage')
     base = Path(os.environ['SEARCH_G1_BASE'])
     _, frame, _ = expected(base, split)
     dataset = copy.copy(trainer.val_dataset)

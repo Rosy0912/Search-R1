@@ -16,7 +16,26 @@ export ECO_BAL_GROUND=0.6 ECO_BAL_NOSEARCH_BONUS=0.5 ECO_W_COST=0.02
 export ECO_WRONG_GROUND_SCALE=0 ECO_PROBE_BASE=0 ECO_PROBE_ALPHA_COST=0 ECO_USE_CF=0
 export ECO_NO_SELF=1 ECO_PROBE_MAX_WAIT=300
 cd "$BASE/repo"
+G1_POLICY_EXECUTION_ROLE="$(python -c 'import json,os; from reproduction.common8.run_pipeline import supported_execution_role; from pathlib import Path; base=Path(os.environ["SEARCH_G1_BASE"]); print(supported_execution_role(json.loads((base/"logs/run-manifest.json").read_text()),base))')"
+case "$G1_POLICY_EXECUTION_ROLE" in
+  production|policy_safety_calibration_discovery|policy_safety_calibration_confirmation) ;;
+  *) printf '%s\n' 'Refusing unsupported policy execution role' >&2; exit 1 ;;
+esac
 python -m reproduction.common8.probe_admission --verify
+case "$G1_POLICY_EXECUTION_ROLE" in
+  policy_safety_calibration_discovery|policy_safety_calibration_confirmation)
+    # Freeze after the final ECO environment and real probe admission. The child
+    # uses the original301 horizon; its bound phase dispatch stops after one outer.
+    python -m reproduction.common8.freeze_calibration_plan
+    ;;
+  production)
+    G1_POLICY_DISCOVERY_BASE="$(python -c 'import json,os,sys; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())[sys.argv[1]])' policy_calibration_discovery_base)"
+    G1_POLICY_CONFIRMATION_BASE="$(python -c 'import json,os,sys; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())[sys.argv[1]])' policy_calibration_confirmation_base)"
+    # The producer verifies this parent's actual gates plus the distinct,
+    # completed child receipts and frozen health decision before launch claim.
+    python -m reproduction.common8.production_safety_admission --base "$BASE" --discovery-base "$G1_POLICY_DISCOVERY_BASE" --confirmation-base "$G1_POLICY_CONFIRMATION_BASE"
+    ;;
+esac
 python -m reproduction.common8.claim_training
 # Fresh official actor/reference and the same resolved recipe used by model admission.
 python -m reproduction.common8.configuration 2>&1 | tee -a "$SEARCH_G1_TRAIN_LOG"

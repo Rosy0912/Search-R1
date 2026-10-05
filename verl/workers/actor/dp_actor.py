@@ -257,7 +257,8 @@ class DataParallelPPOActor(BasePPOActor):
             self.actor_module.train(old_mode)
         report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
                          c=float(safety.dual_clip),kl_log_bound=float(safety.kl_log_bound),
-                         target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group)
+                         target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group,
+                         execution_role=self._policy_execution_role)
         report.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
                       stage=stage,context=self._gradient_diagnostic_context,
                       optimizer_writes=getattr(self,'_optimizer_writes',0),
@@ -308,9 +309,12 @@ class DataParallelPPOActor(BasePPOActor):
         safety = self.config.get('policy_safety', None)
         safety_enabled = safety is not None and safety.enabled
         if safety_enabled:
-            from search_g1.policy_safety import bind_thresholds
+            from search_g1.policy_safety import bind_policy_phase
             group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
-            tail_limit,self._safety_calibration_sha=bind_thresholds(safety,group=group)
+            tail_limit,self._safety_calibration_sha,self._policy_execution_role=bind_policy_phase(
+                self.config,self.actor_optimizer,logical_update=logical_update,
+                optimizer_writes=writes_before,group=group)
+            self._phase_initial_adam_state_entries=len(self.actor_optimizer.state)
             assert common8 and safety.monitor_trajectories_per_rank == 4
             # Freeze actual old/advantage/mask/input bytes once; select length strata.
             length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
@@ -421,6 +425,12 @@ class DataParallelPPOActor(BasePPOActor):
         if common8:
             writes = self._optimizer_writes - writes_before
             assert writes == 20
+            if safety_enabled and self._policy_execution_role != 'production':
+                from search_g1.policy_safety import publish_calibration_optimizer_proof
+                publish_calibration_optimizer_proof(self.actor_module,self.actor_optimizer,
+                    execution_role=self._policy_execution_role,plan_sha256=self._safety_calibration_sha,
+                    initial_writes=writes_before,initial_state_entries=self._phase_initial_adam_state_entries,
+                    final_writes=self._optimizer_writes,group=group)
             append_to_dict(metrics, {'actor/optimizer_steps_this_update': writes})
             from reproduction.common8.worker_evidence import append
             append('OUTER_BUDGET', dict(rank=torch.distributed.get_rank(),

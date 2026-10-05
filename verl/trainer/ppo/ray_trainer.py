@@ -451,12 +451,16 @@ class RayPPOTrainer(object):
         Accumulates metrics across all batches before computing final statistics.
         """
         import torch
+        calibration_phase = None
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
             from reproduction.common8.validation_identity import configure_validation
+            from reproduction.common8.calibration_runtime import active_plan
+            calibration_phase = active_plan()
             configure_validation(self, final=final)
         reward_tensor_lst = []
         data_source_lst = []
         question_id_lst = []
+        calibration_rows = []
         if hasattr(self.val_reward_fn, 'reset_metrics'):
             self.val_reward_fn.reset_metrics()
 
@@ -541,6 +545,10 @@ class RayPPOTrainer(object):
 
                     test_batch = test_batch.union(final_gen_batch_output)
 
+                    if calibration_phase is not None:
+                        from reproduction.common8.calibration_evaluation import rows_from_batch
+                        calibration_rows.extend(rows_from_batch(test_batch, self.tokenizer))
+
                     for key in test_batch.batch.keys():
                         test_batch.batch[key] = test_batch.batch[key].long()
 
@@ -554,6 +562,10 @@ class RayPPOTrainer(object):
         reward_tensor = torch.cat([rw.sum(-1) for rw in reward_tensor_lst], dim=0).cpu()  # (batch_size,)
         # reward_tensor = torch.cat(reward_tensor_lst, dim=0).sum(-1).cpu()  # (batch_size,)
         data_sources = np.concatenate(data_source_lst, axis=0)
+        if calibration_phase is not None:
+            assert self.config.do_search and not final
+            from reproduction.common8.calibration_runtime import evaluation
+            evaluation(*calibration_phase, self.global_steps, calibration_rows, reward_tensor.tolist())
         # evaluate test_score based on data source
         data_source_reward = {}
         for i in range(reward_tensor.shape[0]):
@@ -699,6 +711,12 @@ class RayPPOTrainer(object):
         from verl.utils.weight_continuation import completed_updates
         continuation_k = completed_updates(self.config, self.total_training_steps)
         self.global_steps = continuation_k
+        calibration_phase = None
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.calibration_runtime import active_plan
+            calibration_phase = active_plan()
+            if calibration_phase is not None:
+                assert continuation_k == 0 and self.total_training_steps == 301
         five_update_records = []
         # perform validation before training
         # currently, we only support validation using the reward_function.
@@ -739,7 +757,13 @@ class RayPPOTrainer(object):
                 timing_raw = {}
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                calibration_parents = None
+                if calibration_phase is not None:
+                    from reproduction.common8.calibration_runtime import training_inputs
+                    calibration_parents = training_inputs(batch, calibration_phase)
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                if calibration_phase is not None:
+                    training_inputs(batch, calibration_phase, calibration_parents)
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
@@ -859,6 +883,9 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            if calibration_phase is not None:
+                                from reproduction.common8.calibration_runtime import training_groups_before_update
+                                training_groups_before_update(batch, calibration_phase)
                             batch.meta_info["logical_update"]=self.global_steps
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
@@ -891,6 +918,11 @@ class RayPPOTrainer(object):
                 if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
                     from reproduction.common8.update_evidence import record
                     record(self.global_steps, metrics, self.reward_fn.expected_probe_version)
+                if calibration_phase is not None:
+                    assert self.global_steps == 1, 'Only one fresh calibration outer is permitted'
+                    from reproduction.common8.calibration_runtime import finish_after_update
+                    finish_after_update(self, calibration_phase)
+                    return
                 if continuation_k < self.global_steps <= continuation_k + 5:
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))

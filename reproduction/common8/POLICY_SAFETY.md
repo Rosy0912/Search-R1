@@ -40,11 +40,50 @@ unset until actual healthy calibration. CPU fixtures and synthetic native tests
 are not eligible production proofs. A calibration producer and healthy Qwen
 short-segment GPU/512-question EM/F1/action-rate acceptance remain required.
 
-The original actor/reference/rollout probability gate is unchanged. As of native
-diagnostic3251, all actual synchronized weights and prompt/position histories
-match, actor/reference matches, but actor/rollout max error remains 1.550987,
-above the original 0.05 gate. Fresh production updates remain zero. Safeguards
-cannot substitute for this gate or repair already degraded weights.
+The original actor/reference/rollout probability gate is unchanged. Actual native
+3266 passed on all eight ranks and the original64 questions: actor/reference
+max0, actor/rollout max0.00055694580078125, below the original0.05. Scoped FP32
+actor/reference/FSDP/rollout, actual internal activation/logits and vLLM KV dtype
+were observed; no global monkeypatch or relaxed tolerance was used. This is
+initial single-action probability acceptance, not agent EM, coexistence, a
+2560-trajectory peak or healthy training. Fresh production updates remain zero.
+Earlier3251 probability failures remain immutable evidence.
+
+## Independent calibration phases and production binding
+
+Discovery and confirmation are distinct fresh official-model children of the
+still-unstarted production parent. Each preserves the original301 horizon and
+performs exactly one complete512-question/G5 outer: actual20 Adam writes and40
+fixed-monitor checks per rank, a complete finite canonical checkpoint1, and
+paired evaluation of the original ordered512 validation rows before/after.
+They retain duplicate canonical question occurrences and original GRPO groups.
+No final51713 evaluation or terminal probe refit is dispatched for these children.
+
+Discovery observes the negative tail without treating an invented value as a
+production threshold. KL0.01, log bound30 and c3 remain explicit candidates;
+finite rejection remains enforced. Confirmation requires a threshold choice and
+health rule frozen from the actual discovery evidence before it starts. Both
+children must use the same actual initial heads, encoder and reward mathematics;
+authenticated adoption preserves raw probe bytes and labels and publishes a new
+target-run version. It copies no accepted marker. Actual server unload/reload,
+HTTP, probability and coexistence admissions must still be performed locally.
+
+The bounded runtime produces measurements with production_admission=False.
+The independent schema2 production producer re-reads actual source/data/model
+identity, ordered monitor logs, actual optimizer-state summaries and process
+birth receipts, complete checkpoint bytes/delta, paired512 metrics and owned
+cleanup. It interprets only the explicit frozen health rule. The production
+artifact retains the parent identity and separately identifies the two actual
+child runs/jobs; their20 writes are never relabeled as parent writes. Production
+actor workers verify the artifact read-only with a matched collective decision.
+Missing or damaged evidence, legacy schema or missing source descriptors reject
+before production writes. CPU fixtures do not qualify as healthy admission.
+
+Validation records strict-answer EM and normalized alias F1. `valid_action_rate`
+counts recognized actions, including a recognized final search that the driver
+does not execute; executed logical search calls and question search rate are
+recorded separately. Neither metric is silently renamed as effective search.
+The added F1/action statistics do not change the training reward.
 
 ## Verification
 
@@ -87,6 +126,6 @@ bounded by1 plus FP32 rounding epsilon; that tolerance is numerical, not a healt
 threshold. Real CPU monitor-to-worker-JSON-writer compatibility is tested.
 The reader returns structural verification with `production_admission=False`.
 It cannot authenticate physical execution, certify a healthy checkpoint,
-choose thresholds or replace the remaining discovery/confirmation runner,
-fixed512 EM/F1/actions and independent admission producer. Its tests are part
+choose thresholds or replace actual discovery/confirmation GPU execution,
+fixed512 EM/F1/actions and independent admission verification. Its tests are part
 of the49-test target CPU proof; fabricated schedule fixtures are not real updates.

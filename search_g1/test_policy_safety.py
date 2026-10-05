@@ -5,6 +5,62 @@ import torch.multiprocessing as mp
 from search_g1.policy_safety import dual_clip_terms,monitor
 
 
+def admission_collective_worker(rank,path,out,mode):
+    """Actual Gloo protocol test with an explicit verifier fixture, never admission."""
+    import os,sys
+    from types import ModuleType,SimpleNamespace
+    from unittest.mock import patch
+    from reproduction.common8.policy_calibration_plan import document_sha256
+    from search_g1.policy_safety import bind_thresholds
+    torch.distributed.init_process_group('gloo',init_method='file://'+path,rank=rank,world_size=2)
+    try:
+        base=Path(out+'-base-'+str(rank));(base/'logs').mkdir(parents=True)
+        artifact=dict(schema_version=2,dual_clip=3.,target_old_policy_kl=.01,kl_log_bound=30.,
+                      negative_tail_limit=.02,fixture_marker=rank if mode=='different' else 0)
+        if rank==1 and mode=='schema': artifact['schema_version']=True
+        if rank==1 and mode=='threshold': artifact['dual_clip']=4.
+        (base/'logs/run-manifest.json').write_text(json.dumps(dict(run_id='fixture-parent')))
+        target=base/'logs/policy-safety-calibration.json'
+        if rank!=1 or mode!='missing': target.write_text(json.dumps(artifact))
+        verifier=ModuleType('reproduction.common8.production_safety_admission')
+        def verify_admission(_base,document,_run):
+            if rank==1 and mode=='one_local_error': raise AssertionError('One local proof failure')
+            return .02, '0'*64 if rank==1 and mode=='verifier_hash' else document_sha256(document)
+        verifier.verify_admission=verify_admission
+        config=SimpleNamespace(calibration_manifest=str(target),dual_clip=3.,target_old_policy_kl=.01,
+                               kl_log_bound=30.,negative_tail_limit=None)
+        result=dict(rejected=False,simulated_writes_after_gate=0)
+        with patch.dict(os.environ,SEARCH_G1_BASE=str(base)),patch.dict(sys.modules,{verifier.__name__:verifier}):
+            try:
+                tail,sha=bind_thresholds(config)
+                result.update(tail=tail,sha=sha,simulated_writes_after_gate=1)
+            except RuntimeError as failure:
+                result.update(rejected=True,error=str(failure))
+        Path(out+str(rank)).write_text(json.dumps(result))
+    finally:
+        torch.distributed.destroy_process_group()
+
+
+def phase_collective_worker(rank,path,out,mode):
+    from search_g1.policy_safety import _phase_agreement,DISCOVERY_ROLE
+    torch.distributed.init_process_group('gloo',init_method='file://'+path,rank=rank,world_size=2)
+    try:
+        if mode=='observe':
+            result=monitor(torch.tensor([2.,0.]),torch.tensor([-1.,1.]),torch.ones(2),
+                           torch.tensor([.001,.999]),c=3.,kl_log_bound=30.,target_kl=.01,
+                           negative_tail_limit=None,execution_role=DISCOVERY_ROLE)
+        else:
+            rejected=False
+            try:
+                role=DISCOVERY_ROLE if rank==0 or mode!='role' else 'production'
+                _phase_agreement(dict(role=role),['one local admission failure'] if rank==1 and mode=='failure' else [],None)
+            except RuntimeError: rejected=True
+            result=dict(rejected=rejected)
+        Path(out+str(rank)).write_text(json.dumps(result))
+    finally:
+        torch.distributed.destroy_process_group()
+
+
 def collective_worker(rank,path,out,weighted=False):
     torch.distributed.init_process_group('gloo',init_method='file://'+path,rank=rank,world_size=2)
     d=torch.tensor([[.1,.2]] if rank==0 else [[.3,2.]],dtype=torch.float64)
@@ -16,6 +72,88 @@ def collective_worker(rank,path,out,weighted=False):
 
 
 class SafetyTests(unittest.TestCase):
+    def test_schema2_admission_local_proof_errors_and_hash_drift_collectively_reject(self):
+        for mode in ('valid','one_local_error','different','schema','threshold','missing','verifier_hash'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as root:
+                mp.spawn(admission_collective_worker,args=(root+'/init',root+'/rank',mode),nprocs=2,join=True)
+                rows=[json.loads(Path(root+'/rank'+str(i)).read_text()) for i in range(2)]
+            if mode=='valid':
+                self.assertEqual(rows[0],rows[1]);self.assertEqual(rows[0]['tail'],.02)
+                self.assertFalse(rows[0]['rejected'])
+            else:
+                self.assertTrue(all(row['rejected'] and row['simulated_writes_after_gate']==0 for row in rows))
+                if mode=='one_local_error':
+                    self.assertTrue(rows[0]['error'].endswith('[]'))
+                    self.assertIn('One local proof failure',rows[1]['error'])
+
+    def test_discovery_observes_only_tail_and_retains_every_other_brake(self):
+        from search_g1.policy_safety import DISCOVERY_ROLE,CONFIRMATION_ROLE
+        kwargs=dict(c=3.,kl_log_bound=30.,target_kl=.01,negative_tail_limit=None,execution_role=DISCOVERY_ROLE)
+        d=torch.tensor([2.,0.]);a=torch.tensor([-1.,1.]);m=torch.ones(2)
+        observed=monitor(d,a,m,torch.tensor([.001,.999]),**kwargs)
+        self.assertTrue(observed['allowed']);self.assertEqual(observed['negative_tail_weight_fraction'],1.)
+        self.assertEqual(observed['enforcement']['negative_tail'],'observe_only')
+        kl=monitor(d,a,m,torch.tensor([.1,.9]),**kwargs)
+        self.assertFalse(kl['allowed']);self.assertIn('old_policy_kl',kl['reasons'])
+        for value in (float('nan'),31.):
+            report=monitor(torch.tensor([value,0.]),a,m,m,**kwargs)
+            self.assertFalse(report['allowed']);self.assertFalse(report['kl_estimate_complete'])
+        for role in ('production',CONFIRMATION_ROLE):
+            with self.assertRaises(ValueError): monitor(d,a,m,m,**dict(kwargs,execution_role=role))
+            report=monitor(d,a,m,torch.tensor([.001,.999]),**dict(kwargs,execution_role=role,negative_tail_limit=.1))
+            self.assertFalse(report['allowed']);self.assertIn('negative_advantage_tail',report['reasons'])
+
+    def test_fresh_phase_uses_real_adam_state_and_actual_counters(self):
+        from search_g1.policy_safety import verify_fresh_phase_state
+        parameter=torch.nn.Parameter(torch.tensor([1.]));adam=torch.optim.AdamW([parameter],lr=1e-6)
+        verify_fresh_phase_state(adam,1,0)
+        for step,writes in ((True,0),(1,False),(2,0),(1,1)):
+            with self.assertRaises(ValueError): verify_fresh_phase_state(adam,step,writes)
+        parameter.sum().backward();adam.step()
+        self.assertTrue(adam.state)
+        with self.assertRaises(ValueError): verify_fresh_phase_state(adam,1,0)
+
+    def test_actual_twenty_write_adam_snapshot_does_not_create_or_replace_state(self):
+        from search_g1.policy_safety import calibration_state_snapshot
+        module=torch.nn.Linear(2,1);adam=torch.optim.AdamW(module.parameters(),lr=1e-6)
+        fields,before=calibration_state_snapshot(module,adam)
+        self.assertEqual(before['adam_state_entries'],0);self.assertEqual(before['adam_steps'],[])
+        for _ in range(20):
+            adam.zero_grad();module(torch.ones(1,2)).sum().backward();adam.step()
+        original={p:{key:id(value) for key,value in state.items()} for p,state in adam.state.items()}
+        fields,after=calibration_state_snapshot(module,adam)
+        self.assertEqual(after['adam_steps'],[20.,20.]);self.assertEqual(after['adam_state_tensor_count'],6)
+        self.assertEqual(after['parameter_numel'],3)
+        self.assertTrue(all(torch.isfinite(value).all() for value in fields.values()))
+        self.assertEqual(original,{p:{key:id(value) for key,value in state.items()} for p,state in adam.state.items()})
+
+    def test_cuda_uuid_count_is_strict_and_single_visible_queries_only_ordinal_zero(self):
+        from unittest.mock import patch
+        from reproduction.common8.native_allocation import cuda_uuids
+        for count in (True,0,-1,1.,None):
+            with self.assertRaises(ValueError): cuda_uuids(count=count)
+        calls=[]
+        class FakeCall:
+            def __call__(self,buffer,ordinal):
+                calls.append(ordinal)
+                buffer[256:272]=bytes([ordinal+1])*16
+                return 0
+        class FakeLibrary:
+            cudaGetDeviceProperties_v2=FakeCall()
+        header='struct cudaDeviceProp { char name[256]; cudaUUID_t uuid;'
+        with patch('ctypes.CDLL',return_value=FakeLibrary()),patch.object(Path,'read_text',return_value=header):
+            one=cuda_uuids(count=1)
+            self.assertEqual(calls,[0]);self.assertEqual(len(one),1)
+            calls.clear();eight=cuda_uuids()
+            self.assertEqual(calls,list(range(8)));self.assertEqual(len(set(eight)),8)
+
+    def test_phase_role_and_local_failure_collective_and_observed_tail(self):
+        for mode in ('role','failure','observe'):
+            with tempfile.TemporaryDirectory() as root:
+                mp.spawn(phase_collective_worker,args=(root+'/init',root+'/rank',mode),nprocs=2,join=True)
+                results=[json.loads(Path(root+'/rank'+str(i)).read_text()) for i in range(2)]
+            self.assertEqual(results[0],results[1])
+            self.assertTrue(results[0]['allowed'] if mode=='observe' else results[0]['rejected'])
     def test_direct_formula_values_and_gradients(self):
         d=torch.tensor([-2.,-.1,.1,.3,1.,2.]*3,dtype=torch.float64,requires_grad=True)
         a=torch.tensor([1.]*6+[-1.]*6+[0.]*6,dtype=torch.float64)

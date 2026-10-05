@@ -16,6 +16,11 @@ CALIBRATION_ROLES = frozenset((
     'policy_safety_calibration_discovery',
     'policy_safety_calibration_confirmation',
 ))
+
+
+def _enforcement(role):
+    return dict(negative_tail='observe_only' if role == 'policy_safety_calibration_discovery' else 'enforced',
+                old_policy_kl='enforced', numerical_finite='enforced', dual_clip='enforced')
 OBJECTIVE_WEIGHT_DEFINITION = 'equal two-row micro masked_mean; weighted global numerator/denominator'
 MONITORING_SCOPE = 'fixed four trajectories per rank across length strata; not full rollout'
 QUANTILE_METHOD = 'exact global nearest-order statistic'
@@ -223,6 +228,9 @@ def _verify_segment(rows_by_rank, binding):
                     _require(_integer(row['optimizer_writes'], 'optimizer_writes') == writes,
                              'Wrong monitor write count')
                     _require(row['calibration_sha256'] == binding['calibration_sha256'], 'Changed calibration binding')
+                    _require(row['execution_role'] == binding['role'] and
+                             row['enforcement'] == _enforcement(binding['role']),
+                             'Calibration role or enforced brakes differ')
                     _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
                              row['monitoring_scope'] == MONITORING_SCOPE, 'Unexpected monitoring definition')
                     _require(_integer(row['rejection_count'], 'rejection_count') == 0, 'Prior policy rejection')
@@ -242,7 +250,9 @@ def _verify_segment(rows_by_rank, binding):
                     if key not in observations:
                         observations[key] = dict(run_id=binding['run_id'], context=copy.deepcopy(row['context']),
                                                  stage=stage, optimizer_writes=writes,
-                                                 calibration_sha256=binding['calibration_sha256'], **statistics)
+                                                 calibration_sha256=binding['calibration_sha256'],
+                                                 execution_role=binding['role'],
+                                                 enforcement=copy.deepcopy(row['enforcement']), **statistics)
                     else:
                         _require(all(observations[key][name] == statistics[name] for name in GLOBAL_FIELDS),
                                  'Global monitor fields disagree across ranks')
@@ -282,4 +292,5 @@ def _verify_segment(rows_by_rank, binding):
                 execution_role=binding['role'], run_id=binding['run_id'],
                 calibration_sha256=binding['calibration_sha256'], outer_count=outers,
                 optimizer_writes_per_rank=outers * 20, global_monitors=list(observations.values()),
-                monitor_identities=identities, production_admission=False)
+                monitor_identities=identities,
+                enforcement=_enforcement(binding['role']), production_admission=False)
