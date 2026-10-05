@@ -1,0 +1,154 @@
+{
+  "role": "sanitized_native_failed_policy_diagnostic",
+  "job_id": "3278",
+  "base": "/mnt/data/shaoshitong/g1d-6f2e0963",
+  "run_id": "6ed2e25db05342479641cb158e4ee866",
+  "source_commit": "130d17a0d6f0a3ab4b4aee730928f461e25105f0",
+  "source_disk_hashes_match": true,
+  "source_scope": "Current disk fingerprint; not loaded-module proof",
+  "checked_unix": 1791243502.3142653,
+  "recorded_failed_unix": 1791242780.2912414,
+  "current_slurm_lookup": "slurm_load_jobs error: Invalid job id specified",
+  "current_slurm_lookup_returncode": 1,
+  "actual_completed_child_outers": 0,
+  "actual_completed_production_outers": 0,
+  "rank_partial_write_evidence": {
+    "0": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "28a783d9acc807469797e47e6235d52fbeda19cda3442b9ab5fc27897db6b3d4",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "1": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "b3752707b08f6a1be638194dc71e66c4f095e36a5e7468d3af45411a147bd113",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "2": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "892fbe7867aae38c2156ce7ed071a0085bbaab586190807f01bbc13e2648fa94",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "3": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "ce31fb3ee47e6776b25f3d68bfa412efc6c77ab5baa86de2f3a8525b0eebf3d0",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "4": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "f0c7c8456e857d91ae6cd24eabc27b89c807845a2256e003dcb142b8ac57d82a",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "5": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "277948e38b32df3ca94dbf28e3b3e5fc1b4bf86e3d004dd57337b521c40f39da",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "6": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "4a7f6ca3a98d062b117ac9fb28188f045722aa47cbb06308950fd4604e922285",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    },
+    "7": {
+      "actual_adam_writes": 1,
+      "completed_outer_budgets": 0,
+      "optimizer_log_sha256": "f4e12755e57dd185de6545ae1b2f6e358ebbe95f6bb375b0926d0d653e9fa4d4",
+      "learning_rates": [
+        1e-06
+      ],
+      "global_gradient_norm_before": 2.0633172665748547,
+      "global_gradient_norm_after": 0.9999995155712803
+    }
+  },
+  "first_minibatch_post_global_monitor": {
+    "sampled_old_policy_kl": 0.8070046334064355,
+    "negative_tail_count_fraction": 0.003615127919911012,
+    "negative_tail_weight_fraction": 0.008937197161158454,
+    "dual_clip_saturated_objective_weight_fraction": 0.0049427761244947395,
+    "negative_log_ratio_p95": 0.054309844970703125,
+    "negative_log_ratio_p99": 0.2840423583984375,
+    "negative_log_ratio_max": 6.9947662353515625,
+    "invalid_count": 0,
+    "overflow_count": 0,
+    "effective_token_count": 10454,
+    "negative_token_count": 7192,
+    "negative_tail_count": 26
+  },
+  "monitor_semantics": "Old130d uses HF-final-context oldLP and top_p0.95; this is not verified actual behavior-policy KL. Eight copies describe one global estimate.",
+  "candidate_target_old_policy_kl": 0.01,
+  "diagnostic_rejected": true,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "owned_live_process_count": 0,
+  "owned_staging_root_exists": false,
+  "cleanup": {
+    "run_id": "6ed2e25db05342479641cb158e4ee866",
+    "cleaned": true,
+    "checked_unix": 1791242791.9884546
+  },
+  "gpu_sampling": {
+    "sample_count": 1244,
+    "first_unix": 1791240050.4015229,
+    "last_unix": 1791242790.4605353,
+    "max_gap_seconds": 10.007478713989258,
+    "cumulative_peak_mib": {
+      "0": 62412,
+      "1": 61753,
+      "2": 61754,
+      "3": 61755,
+      "4": 61755,
+      "5": 61458,
+      "6": 61754,
+      "7": 71275
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "raw_scalar_observation_sha256": "7d868f1219078cc5405d5b07ff0c0411b9cddf0e714aff8ac5d0dcc61dff0eb4",
+  "training_reward": "No complete outer metric",
+  "paired_post_validation": "Not produced",
+  "raw_question_or_token_text_published": false
+}
