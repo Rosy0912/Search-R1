@@ -1,0 +1,508 @@
+{
+  "time": 1791181520.489881,
+  "host": "hkust4",
+  "phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+  "receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 47824,
+      "5": 44662,
+      "6": 42836,
+      "7": 43643
+    },
+    "sample_count": 47326,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791181496.2039049
+  },
+  "metrics": [
+    "(main_task pid=1437474) step:53 - global_seqlen/min:584994.000 - global_seqlen/max:608948.000 - global_seqlen/minmax_diff:23954.000 - global_seqlen/balanced_min:597378.000 - global_seqlen/balanced_max:597378.000 - global_seqlen/mean:597378.000 - audit/legacy_em:0.390 - audit/strict_em:0.343 - audit/score_disagreement:0.047 - state_tokens/total:452557.000 - state_tokens/coverage:0.222 - actor/kl_coef:0.001 - actor/entropy_loss:0.646 - actor/pg_loss:0.017 - actor/pg_clipfrac:0.008 - actor/ppo_kl:0.010 - actor/kl_loss:0.410 - actor/grad_norm:2.006 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.343 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.343 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.018 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.018 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:796.020 - response_length/max:3473.000 - response_length/min:115.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.383 - prompt_length/max:226.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.324 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.987 - env/number_of_valid_action:2.295 - env/ratio_of_valid_action:0.994 - env/number_of_valid_search:1.309 - timing_s/gen:700.408 - timing_s/ref:206.359 - timing_s/adv:4.642 - timing_s/update_actor:942.504 - timing_s/step:2064.016 - timing_per_token_ms/update_actor:0.394 - timing_per_token_ms/ref:0.086 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.344",
+    "(main_task pid=1437474) step:54 - global_seqlen/min:560449.000 - global_seqlen/max:618788.000 - global_seqlen/minmax_diff:58339.000 - global_seqlen/balanced_min:597121.000 - global_seqlen/balanced_max:597122.000 - global_seqlen/mean:597121.250 - audit/legacy_em:0.389 - audit/strict_em:0.350 - audit/score_disagreement:0.039 - state_tokens/total:470896.000 - state_tokens/coverage:0.231 - actor/kl_coef:0.001 - actor/entropy_loss:0.659 - actor/pg_loss:-0.023 - actor/pg_clipfrac:0.009 - actor/ppo_kl:0.011 - actor/kl_loss:0.426 - actor/grad_norm:2.215 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.350 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.350 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.008 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.008 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:795.691 - response_length/max:3156.000 - response_length/min:50.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.311 - prompt_length/max:213.000 - prompt_length/min:125.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.304 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.989 - env/number_of_valid_action:2.277 - env/ratio_of_valid_action:0.994 - env/number_of_valid_search:1.288 - timing_s/gen:701.370 - timing_s/ref:206.329 - timing_s/adv:4.860 - timing_s/update_actor:937.838 - timing_s/step:2060.726 - timing_per_token_ms/update_actor:0.393 - timing_per_token_ms/ref:0.086 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.344"
+  ],
+  "current_step": [
+    "55"
+  ],
+  "tail": [
+    "(main_task pid=1437474) Doc 3(Title: \"Carlos Castaneda\") as several instances of apparent plagiarism. Later, anthropologists specializing in Yaqui Indian culture, such as Jane Holden Kelley, questioned the accuracy of Castaneda's work. Other criticisms of Castaneda's work include the total lack of Yaqui vocabulary or terms for any of his experiences, and his refusal to defend himself against the accusation that he received his PhD from UCLA through deception. Stephen C. Thomas notes that Muriel Thayer Painter, in her book \"\"With Good Heart: Yaqui Beliefs and Ceremonies in Pascua Village\"\", gives examples of Yaqui vocabulary associated with spirituality: \"\"morea\"\", an equivalent to the Spanish brujo; \"\"saurino\"\", used to</information>",
+    "(main_task pid=1437474) ",
+    "(main_task pid=1437474) From the searches, I found that Carlos Castaneda did indeed have a PhD in anthropology from UCLA. Therefore, Carlos Castaneda is the author who also had a PhD in anthropology.",
+    "(main_task pid=1437474) <answer>Carlos Castaneda</answer>"
+  ],
+  "checkpoint_directories": [
+    "runs/archive/round-1-grpo/actor/global_step_50"
+  ],
+  "nonfinite": false,
+  "sessions": "e1-archive-jit-continuous-memory-20261005: 1 windows (created Mon Oct  5 07:28:55 2026)\ne1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)\n",
+  "gpu": "0, 33266 MiB, 49140 MiB, 0 %\n1, 5666 MiB, 49140 MiB, 0 %\n2, 29088 MiB, 49140 MiB, 0 %\n3, 5928 MiB, 49140 MiB, 0 %\n4, 15548 MiB, 49140 MiB, 100 %\n5, 17050 MiB, 49140 MiB, 100 %\n6, 17372 MiB, 49140 MiB, 100 %\n7, 18061 MiB, 49140 MiB, 100 %\n",
+  "processes": "1164838, GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 33248 MiB\n840849, GPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 5648 MiB\n3065521, GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 29070 MiB\n3295494, GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 5910 MiB\n1437900, GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 15472 MiB\n1438381, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 16974 MiB\n1438382, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 17296 MiB\n1438383, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 17372 MiB\n1749337, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 610 MiB\n",
+  "frozen_runtime": {
+    "archive": {
+      "files": 669,
+      "changed_or_missing": []
+    },
+    "archive-jit-20261005-env-v2": {
+      "files": 669,
+      "changed_or_missing": []
+    }
+  },
+  "retriever": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "shared_memory": {
+    "peak_mib": 43643,
+    "service_peak_mib": 630,
+    "current_mib": 18061,
+    "total_mib": 49140,
+    "reserve_mib": 5497,
+    "samples": 30395,
+    "time": 1791181516.1362185,
+    "service_pid": 1749337
+  },
+  "oracle_registration": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "live_physical_score_override": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "time": 1791141927.2525265,
+    "ranks": [
+      {
+        "rank": 0,
+        "pid": 1437900,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720.0
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.2510319
+      },
+      {
+        "rank": 2,
+        "pid": 1438382,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720.0
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.102955
+      },
+      {
+        "rank": 3,
+        "pid": 1438383,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720.0
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.1382437
+      },
+      {
+        "rank": 1,
+        "pid": 1438381,
+        "previous": "2",
+        "physical_score": 1,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 36,
+          "verbose": false,
+          "_step_count": 37,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            6.31578947368421e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          720.0
+        ],
+        "logical_ref_micro": 4,
+        "logical_rollout_micro": 4,
+        "time": 1791141927.1284204
+      }
+    ],
+    "purpose": "Reduce physical read-only scoring pieces from2 to1; logical config unchanged",
+    "training_restarted": false,
+    "frozen_runtime_modified": false
+  },
+  "post_score_memory": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791145311.6439264,
+    "physical_score": 1,
+    "peaks_mib": {
+      "4": 40200,
+      "5": 37648,
+      "6": 42836,
+      "7": 43643
+    },
+    "samples": 2101,
+    "full_iterations_to_observe": [
+      39,
+      40
+    ],
+    "status": "OBSERVATION_COMPLETE",
+    "minimum_reserve_mib": {
+      "4": 8940,
+      "5": 11492,
+      "6": 6304,
+      "7": 5497
+    },
+    "last_completed_step": 40,
+    "updated": 1791149716.8894932,
+    "finished": 1791149716.889855
+  },
+  "archive-live-jit-optimizer.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "time": 1791152900.4969888,
+    "ranks": [
+      {
+        "rank": 0,
+        "pid": 1437900,
+        "time": 1791152900.259214,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820.0
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 2,
+        "pid": 1438382,
+        "time": 1791152900.2617974,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820.0
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 3,
+        "pid": 1438383,
+        "time": 1791152900.4955578,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820.0
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      },
+      {
+        "rank": 1,
+        "pid": 1438381,
+        "time": 1791152900.2729511,
+        "scheduler": {
+          "base_lrs": [
+            1e-06
+          ],
+          "last_epoch": 41,
+          "verbose": false,
+          "_step_count": 42,
+          "_get_lr_called_within_step": false,
+          "_last_lr": [
+            7.192982456140351e-07
+          ],
+          "lr_lambdas": [
+            null
+          ]
+        },
+        "optimizer_steps": [
+          820.0
+        ],
+        "state_devices": [
+          "cpu"
+        ],
+        "jit_enabled": true,
+        "logical_optimizer_offload": true,
+        "worker_pre_forward_load": false
+      }
+    ],
+    "training_restarted": false,
+    "frozen_files_modified": false,
+    "loaded_execution_overlay": "per-step Adam CPU/GPU state staging",
+    "equivalence_proof": "fsdp-jit-optimizer-check.log: four-rank bitwise equivalence"
+  },
+  "archive-post-jit-memory.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "physical_score": 1,
+    "jit": true,
+    "peaks_mib": {
+      "4": 25056,
+      "5": 25214,
+      "6": 25302,
+      "7": 25943
+    },
+    "samples": 2431,
+    "full_iterations_to_observe": [
+      43,
+      44
+    ],
+    "status": "OBSERVATION_COMPLETE",
+    "minimum_reserve_mib": {
+      "4": 24084,
+      "5": 23926,
+      "6": 23838,
+      "7": 23197
+    },
+    "last_completed_step": 44,
+    "updated": 1791158002.6296415,
+    "finished": 1791158002.629998
+  },
+  "archive-step50-weights.json": {
+    "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50",
+    "tensor_count": 435,
+    "initial_tensor_count": 434,
+    "verified_aliases": {
+      "lm_head.weight": "model.embed_tokens.weight"
+    },
+    "nonfinite": [],
+    "changed": [
+      {
+        "key": "model.layers.29.self_attn.q_proj.weight",
+        "max_abs_delta": 8.68805218487978e-05
+      },
+      {
+        "key": "model.layers.30.self_attn.q_proj.weight",
+        "max_abs_delta": 0.00010683573782444
+      },
+      {
+        "key": "model.layers.31.self_attn.q_proj.weight",
+        "max_abs_delta": 0.00012272410094738007
+      },
+      {
+        "key": "model.layers.32.self_attn.q_proj.weight",
+        "max_abs_delta": 9.321793913841248e-05
+      }
+    ],
+    "accepted": true
+  },
+  "archive-jit-memory-continuous.json": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "continuous_observer_started": 1791156535.2196116,
+    "initial_source": "archive-post-jit-memory.json",
+    "initial_source_samples": 1726,
+    "peaks_mib": {
+      "4": 25372,
+      "5": 25214,
+      "6": 25732,
+      "7": 26123
+    },
+    "samples": 11971,
+    "minimum_reserve_mib": {
+      "4": 23768,
+      "5": 23926,
+      "6": 23408,
+      "7": 23017
+    },
+    "shared_gpu_margin_met": true,
+    "updated": 1791181509.4238534,
+    "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "source_run_status": "RUNNING",
+    "source_run_matches": true
+  },
+  "archive-jit-env-v2-runtime-overlay.json": {
+    "original": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+    "destination": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+    "changed_files": [
+      "upstream/Search-R1/verl/workers/actor/dp_actor.py",
+      "upstream/Search-R1/verl/workers/fsdp_workers.py",
+      "search_e1/grpo_main.py"
+    ],
+    "original_files_unchanged": true,
+    "logical_config_unchanged": true,
+    "equivalence_proof": "four-rank FSDP_JIT_ADAMW_BITWISE_EQUIVALENCE_OK"
+  }
+}
