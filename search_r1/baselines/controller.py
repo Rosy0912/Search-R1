@@ -325,7 +325,9 @@ class Controller:
                      algorithm_source_commit=self.config.algorithm_source_commit,
                      teacher_path=self.config.distillation.teacher_path,
                      actual_outer_updates=getattr(self, 'actual_outer_updates', None),
-                     resume_supported=False)
+                     resume_supported=bool(self.trainer.config.trainer.get('e1_gate_enabled',False)),
+                     algorithm_json_resume_supported=False,
+                     resume_capability='MANIFEST_BOUND_LEGACY39_STEP25_FULL_NATIVE_STATE' if self.trainer.config.trainer.get('e1_gate_enabled',False) else None)
         temporary = os.path.join(directory, 'state.json.tmp')
         with open(temporary, 'w') as handle:
             json.dump(state, handle, indent=2, allow_nan=False)

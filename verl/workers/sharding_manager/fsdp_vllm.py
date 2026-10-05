@@ -66,6 +66,20 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         else:
             self.gen_random_states = None
 
+    def generation_rng_state(self):
+        return dict(version=1, torch_random_states=self.torch_random_states.cpu().clone(),
+                    gen_random_states=None if self.gen_random_states is None else self.gen_random_states.cpu().clone())
+
+    def load_generation_rng_state(self, value):
+        if type(value.get('version')) is not int or value.get('version') != 1 or (value['gen_random_states'] is None) != (self.device_mesh is None):
+            raise ValueError('Generation RNG topology changed')
+        for name in ('torch_random_states','gen_random_states'):
+            supplied=value[name];current=getattr(self,name)
+            if supplied is not None and (not torch.is_tensor(supplied) or supplied.dtype!=torch.uint8 or supplied.ndim!=1 or supplied.numel()!=current.numel()):
+                raise ValueError('Malformed generation RNG tensor')
+        self.torch_random_states=value['torch_random_states'].cpu().clone()
+        self.gen_random_states=None if value['gen_random_states'] is None else value['gen_random_states'].cpu().clone()
+
     def __enter__(self):
         log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
         params = self.module.state_dict()

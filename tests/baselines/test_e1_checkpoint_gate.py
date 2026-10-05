@@ -149,8 +149,23 @@ def test_actual_worker_save_method_cpu_roundtrip_preserves_objects(tmp_path,monk
         optimizer.zero_grad();model(torch.ones(2,2)).sum().backward();optimizer.step();scheduler.step()
     worker=types.SimpleNamespace(_is_actor=True,_is_offload_param=False,_is_offload_optimizer=False,
         actor_module_fsdp=model,actor_optimizer=optimizer,actor_lr_scheduler=scheduler,rank=0,world_size=1)
+    # New v3 includes the actual sharding-manager generation-RNG methods.
+    manager_source=source.parent/'sharding_manager/fsdp_vllm.py'
+    manager_tree=ast.parse(manager_source.read_text())
+    manager_cls=next(n for n in manager_tree.body if isinstance(n,ast.ClassDef)and n.name=='FSDPVLLMShardingManager')
+    methods=[copy.deepcopy(n)for n in manager_cls.body if isinstance(n,ast.FunctionDef)and n.name in ('generation_rng_state','load_generation_rng_state')]
+    manager_module=ast.Module(body=methods,type_ignores=[]);ast.fix_missing_locations(manager_module)
+    manager_namespace=dict(torch=torch);exec(compile(manager_module,str(manager_source),'exec'),manager_namespace)
+    manager=types.SimpleNamespace(torch_random_states=torch.get_rng_state().clone(),gen_random_states=None,device_mesh=None)
+    for name,fn in manager_namespace.items():
+        if name in ('generation_rng_state','load_generation_rng_state'):setattr(manager,name,types.MethodType(fn,manager))
+    worker.rollout_sharding_manager=manager
+    gen_before=state_digest(manager.generation_rng_state())
     original=(id(model),id(optimizer),id(scheduler));expected=state_digest(dict(model=model.state_dict(),optimizer=optimizer.state_dict(),scheduler=scheduler.state_dict(),rng=rng_state()))
     report=namespace['save_training_state'](worker,str(tmp_path),5,True)
+    native=torch.load(tmp_path/'rank_0.pt',map_location='cpu',weights_only=False)
+    assert native['version']==3 and state_digest(native['generation_rng'])==gen_before
+    assert state_digest(manager.generation_rng_state())==gen_before
     assert report['status']=='EXACT_FULL_STATE_RELOAD_OK' and report['optimizer_state_entries']==2 and report['scheduler_last_epoch']==5
     from torch.distributed.fsdp import StateDictType
     assert requested_state_types==[StateDictType.SHARDED_STATE_DICT]

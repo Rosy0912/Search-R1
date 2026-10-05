@@ -638,6 +638,20 @@ class RayPPOTrainer(object):
 
     def init_workers(self):
         """Init resource pool and worker group"""
+        self.resume_manifest = None
+        if self.config.trainer.get('resume_full_state'):
+            from search_r1.baselines.recovery import validate_manifest,require
+            import subprocess
+            from pathlib import Path
+            source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+            require(source==self.config.baselines.algorithm_source_commit and not subprocess.check_output(['git','status','--porcelain'],text=True).strip(),'Recovery source changed/dirty')
+            run=Path(os.environ['BAPO_RUN_ID']).resolve()
+            witness=Path(self.config.trainer.resume_witness_dir)
+            require(witness.is_absolute()and witness==witness.resolve()and run in witness.parents and not witness.exists(),'Fresh owned recovery witness directory required')
+            self.resume_manifest=validate_manifest(self.config.trainer.resume_full_state,OmegaConf.to_container(self.config,resolve=True),source,run,self.config.trainer.resume_permission)
+            self.resume_witness_directory=witness
+        elif self.config.trainer.get('resume_verify_only') or self.config.trainer.get('resume_permission'):
+            raise ValueError('Recovery flags require complete manifest')
         self.resource_pool_manager.create_resource_pool()
 
         self.resource_pool_to_cls = {pool: {} for pool in self.resource_pool_manager.resource_pool_dict.values()}
@@ -708,6 +722,27 @@ class RayPPOTrainer(object):
         # we should create rollout at the end so that vllm can have a better estimation of kv cache memory
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
+        if self.resume_manifest is not None:
+            from search_r1.baselines.recovery import require
+            reports=self.actor_rollout_wg.load_training_state(self.resume_manifest,str(self.resume_witness_directory))
+            require(len(reports)==8 and {r['rank']for r in reports}==set(range(8)) and all(r['status']=='EXACT_CROSS_JOB_FULL_STATE_RELOAD_OK'for r in reports),'Recovery rank witnesses incomplete')
+            self.resume_rank_reports=reports
+            if self.config.trainer.resume_verify_only:
+                self._verify_recovery_native_v3()
+
+    def _verify_recovery_native_v3(self):
+        """Real production save/reload only for independently permitted GPU verification."""
+        from pathlib import Path
+        import json
+        from search_r1.baselines.recovery import require
+        require(self.resume_manifest is not None and self.config.trainer.resume_verify_only is True,'Only resume verify-only may roundtrip native v3')
+        run=Path(self.resume_manifest['target_run_root']);path=run/'recovery-native-v3-roundtrip'
+        require(run.is_absolute()and run==run.resolve()and not path.exists(),'Fresh owned v3 roundtrip output required')
+        reports=self.actor_rollout_wg.save_training_state(str(path),step=25,roundtrip=True)
+        require(len(reports)==8 and {x['rank']for x in reports}==set(range(8))and all(x['status']=='EXACT_FULL_STATE_RELOAD_OK'and x['native_state_version']==3 and x['roundtrip']is True and x['state_digest']==x['reloaded_state_digest']and x['generation_rng_before_digest']==x['generation_rng_after_digest']for x in reports),'Production v3 roundtrip witnesses incomplete')
+        self.resume_v3_reports=reports
+        for report in reports:print('BAPO_RECOVERY_V3_RANK_JSON='+json.dumps(report,allow_nan=False),flush=True)
+        return reports
 
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
@@ -758,6 +793,27 @@ class RayPPOTrainer(object):
             state_digest=before,pid=os.getpid(),path=str(path.resolve()),
             sha256=__import__('search_r1.baselines.checkpoint_gate',fromlist=['digest']).digest(path),
             sampler_cursor=self.e1_sampler.cursor),indent=2))
+        if step != 5:
+            # Publish completeness only after all eight native shards, driver,
+            # algorithm and HF export have been persisted and hashed.
+            from search_r1.baselines.checkpoint_gate import write_manifest,digest
+            from search_r1.baselines.recovery import write_witness,require
+            run=Path(os.environ['BAPO_RUN_ID']).resolve()
+            source=(run/'source-commit.txt').read_text().strip()
+            require(source==self.config.baselines.algorithm_source_commit,'Checkpoint source mismatch')
+            base=Path(self.config.trainer.default_local_dir)
+            paths=[run/'source-commit.txt']
+            for child in (base/'actor'/f'global_step_{step}',base/'algorithm'/f'global_step_{step}',directory):
+                paths.extend(p for p in child.rglob('*')if p.is_file()and p.name not in ('manifest.json','checkpoint-complete.json'))
+            require(not any(str(p).endswith('.tmp')for p in paths),'Incomplete temporary checkpoint files')
+            manifest=write_manifest(paths,directory,OmegaConf.to_container(self.config,resolve=True),source,run,step,reports)
+            write_witness(directory/'checkpoint-complete.json',dict(status='FULL_STATE_CHECKPOINT_COMPLETE',
+                step=step,actual_outer_updates=controller.actual_outer_updates,source_commit=source,
+                manifest_path=str(manifest),manifest_sha256=digest(manifest),world_size=world,
+                generation_rng_saved=True,recovery_lineage=None if getattr(self,'resume_manifest',None) is None else
+                dict(old_run_root=self.resume_manifest['old_run_root'],old_step=25,
+                     manifest_path=self.config.trainer.resume_full_state,manifest_sha256=digest(self.config.trainer.resume_full_state))))
+
 
     def _e1_pause_after_five(self):
         from pathlib import Path
@@ -808,7 +864,7 @@ class RayPPOTrainer(object):
         self.global_steps = 0
         # perform validation before training
         # currently, we only support validation using the reward_function.
-        if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
+        if getattr(self,'resume_manifest',None) is None and self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
             val_metrics = self._validate()
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
@@ -838,10 +894,47 @@ class RayPPOTrainer(object):
             config=gen_config,
         )
 
-        # start training loop
-        for epoch in range(self.config.trainer.total_epochs):
+        # Construct the first iterator before restoring CPU RNG: DataLoader
+        # iterator creation consumes a base_seed even with num_workers=0.
+        resume_iterator = None
+        start_epoch = 0
+        if getattr(self,'resume_manifest',None) is not None:
+            from pathlib import Path
+            from search_r1.baselines.recovery import validate_driver,write_witness,require,process_identity
+            from search_r1.baselines.full_state import restore_rng,state_digest
+            loaded=torch.load(self.resume_manifest['driver']['path'],map_location='cpu',weights_only=False)
+            validate_driver(loaded,self.resume_manifest)
+            self.e1_sampler.load_state_dict(loaded['sampler'])
+            self.baseline_controller.stage.load_state_dict(loaded['bapo'])
+            self.baseline_controller.actual_outer_updates=loaded['actual_outer_updates']
+            self.global_steps=loaded['next_global_step'];start_epoch=loaded['epoch'];self.e1_epoch=start_epoch
+            resume_iterator=iter(self.train_dataloader)
+            restore_rng(loaded['rng'])
+            require(state_digest(self.e1_sampler.state_dict())==state_digest(loaded['sampler']),'Recovered sampler differs')
+            from search_r1.baselines.full_state import rng_state
+            require(state_digest(rng_state())==state_digest(loaded['rng']),'Recovered driver RNG differs')
+            witness=dict(status='EXACT_CROSS_JOB_DRIVER_RELOAD_OK',old_pid=loaded['driver_pid'],new_pid=os.getpid(),
+                process=process_identity(),runtime_module_path=str(Path(__file__).resolve()),
+                runtime_module_sha256=__import__('hashlib').sha256(Path(__file__).read_bytes()).hexdigest(),
+                loaded_state_digest=state_digest(loaded),step=25,next_step=self.global_steps,actual_outer_updates=25,
+                epoch=start_epoch,sampler_cursor=self.e1_sampler.cursor,
+                restored_sampler_digest=state_digest(self.e1_sampler.state_dict()),saved_sampler_digest=state_digest(loaded['sampler']),
+                restored_rng_digest=state_digest(rng_state()),saved_rng_digest=state_digest(loaded['rng']),
+                no_generation_or_optimizer_update=bool(self.config.trainer.resume_verify_only),bapo=self.baseline_controller.stage.state_dict(),
+                target_source_commit=self.resume_manifest['target_source_commit'],target_run_root=self.resume_manifest['target_run_root'],
+                target_job_id=self.resume_manifest['target_job_id'],sampling_continuity='LEGACY25_GENERATION_RNG_RECONSTRUCTED_NOT_BITWISE_EXACT',
+                verify_only=self.config.trainer.resume_verify_only,rank_witnesses=self.resume_rank_reports)
+            require(witness['new_pid']!=witness['old_pid'],'New driver PID did not change')
+            write_witness(self.resume_witness_directory/'driver.json',witness)
+            print('BAPO_RECOVERY_DRIVER_JSON='+json.dumps(witness,allow_nan=False),flush=True)
+            if self.config.trainer.resume_verify_only:
+                return witness
+        # Only complete continuation contributes to the unchanged total300.
+        for epoch in range(start_epoch,self.config.trainer.total_epochs):
             self.e1_epoch = epoch
-            for batch_dict in self.train_dataloader:
+            iterator=resume_iterator if resume_iterator is not None else iter(self.train_dataloader)
+            resume_iterator=None
+            for batch_dict in iterator:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}

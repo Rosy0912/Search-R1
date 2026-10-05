@@ -163,6 +163,10 @@ algorithm:
     end_state_marker: "</information>"
 
 trainer:
+  resume_full_state: null
+  resume_permission: null
+  resume_witness_dir: null
+  resume_verify_only: false
   total_epochs: 30
   total_training_steps: null
   project_name: verl_examples

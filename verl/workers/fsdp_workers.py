@@ -529,6 +529,63 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_training_state(self, manifest, witness_directory):
+        """Fresh-process same-topology restore; historical generation RNG is absent."""
+        import json,os
+        from pathlib import Path
+        from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, ShardedStateDictConfig
+        from search_r1.baselines.full_state import rng_state,restore_rng,state_digest
+        from search_r1.baselines.recovery import validate_native,exact_file,OLD_RUN,write_witness,require,process_identity
+        require(self._is_actor and self.world_size==8,'Actual eight-rank actor required')
+        entry=next(x for x in manifest['ranks']if x['rank']==self.rank)
+        path=exact_file(entry['state'],OLD_RUN);report=json.loads(exact_file(entry['report'],OLD_RUN).read_text())
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp,torch.cuda.current_device(),load_grad=self._is_offload_grad)
+        if self._is_offload_optimizer:
+            load_fsdp_optimizer(self.actor_optimizer,torch.cuda.current_device())
+        try:
+            with FSDP.state_dict_type(self.actor_module_fsdp,StateDictType.SHARDED_STATE_DICT,ShardedStateDictConfig(offload_to_cpu=True)):
+                error=None
+                try:
+                    loaded=torch.load(path,map_location='cpu',weights_only=False)
+                    validate_native(loaded,report,self.rank,self.world_size)
+                except Exception as exc:
+                    error=f'rank{self.rank}: {type(exc).__name__}: {exc}'
+                errors=[None]*self.world_size
+                torch.distributed.all_gather_object(errors,error)
+                require(not any(errors),'Native input validation rejected on all ranks: '+str(errors))
+                self.actor_module_fsdp.load_state_dict(loaded['model'],strict=True)
+                self.actor_optimizer.load_state_dict(loaded['optimizer'])
+                self.actor_lr_scheduler.load_state_dict(loaded['scheduler'])
+                restore_rng(loaded['rng'])
+                actual=dict(version=2,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=25,
+                            model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
+                            scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()))
+                require(state_digest(actual)==report['state_digest'],'Fresh-process model/Adam/scheduler/RNG reload differs')
+            require(os.getpid()!=report['pid'],'Fresh-process PID did not change')
+            require(os.environ.get('SLURM_JOB_ID')==str(manifest['target_job_id'])and os.environ.get('BAPO_RUN_ID')==manifest['target_run_root'],'Actual rank job/run mismatch')
+            witness=dict(status='EXACT_CROSS_JOB_FULL_STATE_RELOAD_OK',rank=self.rank,world_size=self.world_size,
+                step=25,next_step=26,old_pid=report['pid'],new_pid=os.getpid(),process=process_identity(),
+                runtime_module_path=str(Path(__file__).resolve()),runtime_module_sha256=__import__('hashlib').sha256(Path(__file__).read_bytes()).hexdigest(),old_state_sha256=entry['state']['sha256'],
+                distributed_backend=torch.distributed.get_backend(),model_state_dict_type=actual['model_state_dict_type'],
+                model_dtensor_entries=sum(hasattr(t,'device_mesh')and hasattr(t,'to_local')for t in actual['model'].values()),
+                model_class=self.actor_module.__class__.__name__,
+                model_config={k:getattr(self.actor_model_config,k)for k in ('model_type','hidden_size','num_hidden_layers','vocab_size','architectures')},
+                state_digest=state_digest(actual),scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                optimizer_state_entries=len(self.actor_optimizer.state),lr=self.actor_lr_scheduler.get_last_lr(),
+                target_source_commit=manifest['target_source_commit'],target_run_root=manifest['target_run_root'],
+                actual_env={k:os.environ.get(k)for k in ('SLURM_JOB_ID','BAPO_RUN_ID','CUDA_VISIBLE_DEVICES')},
+                sampling_continuity='LEGACY25_GENERATION_RNG_RECONSTRUCTED_NOT_BITWISE_EXACT',
+                reconstructed_generation_rng_digest=state_digest(self.rollout_sharding_manager.generation_rng_state()))
+            write_witness(Path(witness_directory)/f'rank_{self.rank}.json',witness)
+            print('BAPO_RECOVERY_RANK_JSON='+json.dumps(witness,allow_nan=False),flush=True)
+            torch.distributed.barrier()
+            return witness
+        finally:
+            if self._is_offload_param:offload_fsdp_param_and_grad(self.actor_module_fsdp,offload_grad=self._is_offload_grad)
+            if self._is_offload_optimizer:offload_fsdp_optimizer(self.actor_optimizer)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
         assert self._is_actor
         import torch
@@ -571,10 +628,13 @@ class ActorRolloutRefWorker(Worker):
         try:
             with FSDP.state_dict_type(self.actor_module_fsdp, StateDictType.SHARDED_STATE_DICT,
                                      ShardedStateDictConfig(offload_to_cpu=True)):
-                payload=dict(version=2,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
+                payload=dict(version=3,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
                     model=self.actor_module_fsdp.state_dict(), optimizer=self.actor_optimizer.state_dict(),
-                    scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()))
+                    scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()),
+                    generation_rng=self.rollout_sharding_manager.generation_rng_state())
                 before=state_digest(payload)
+                generation_before=state_digest(payload['generation_rng'])
+                after_digest=before;generation_after=generation_before
                 path=directory/('rank_%d.pt'%self.rank);atomic_save(payload,path)
                 loaded=torch.load(path,map_location='cpu',weights_only=False)
                 if state_digest(loaded)!=before:raise ValueError('Serialized full state changed')
@@ -583,17 +643,33 @@ class ActorRolloutRefWorker(Worker):
                     self.actor_optimizer.load_state_dict(loaded['optimizer'])
                     self.actor_lr_scheduler.load_state_dict(loaded['scheduler'])
                     restore_rng(loaded['rng'])
-                    after=dict(version=2,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
+                    self.rollout_sharding_manager.load_generation_rng_state(loaded['generation_rng'])
+                    after=dict(version=3,model_state_dict_type='SHARDED_STATE_DICT',rank=self.rank,world_size=self.world_size,step=step,
                         model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
-                        scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()))
-                    if state_digest(after)!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
+                        scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()),
+                        generation_rng=self.rollout_sharding_manager.generation_rng_state())
+                    after_digest=state_digest(after);generation_after=state_digest(after['generation_rng'])
+                    if after_digest!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
             from search_r1.baselines.checkpoint_gate import digest
             report=dict(status='EXACT_FULL_STATE_RELOAD_OK' if roundtrip else 'FULL_STATE_SERIALIZED_OK',
                 rank=self.rank,world_size=self.world_size,step=step,path=str(path),sha256=digest(path),
                 model_state_dict_type='SHARDED_STATE_DICT',
                 model_dtensor_entries=sum(hasattr(t,'device_mesh') and hasattr(t,'to_local') for t in loaded['model'].values()),
                 state_digest=before,scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
-                optimizer_state_entries=len(self.actor_optimizer.state),pid=os.getpid())
+                optimizer_state_entries=len(self.actor_optimizer.state),pid=os.getpid(),native_state_version=3,
+                roundtrip=bool(roundtrip),reloaded_state_digest=after_digest,
+                generation_rng_before_digest=generation_before,generation_rng_after_digest=generation_after,
+                generation_rng_topology=dict(version=loaded['generation_rng']['version'],
+                    torch_random_states_numel=loaded['generation_rng']['torch_random_states'].numel(),
+                    torch_random_states_dtype=str(loaded['generation_rng']['torch_random_states'].dtype),
+                    torch_random_states_shape=list(loaded['generation_rng']['torch_random_states'].shape),
+                    gen_random_states_dtype=None if loaded['generation_rng']['gen_random_states']is None else str(loaded['generation_rng']['gen_random_states'].dtype),
+                    gen_random_states_shape=None if loaded['generation_rng']['gen_random_states']is None else list(loaded['generation_rng']['gen_random_states'].shape),
+                    gen_random_states_numel=None if loaded['generation_rng']['gen_random_states']is None else loaded['generation_rng']['gen_random_states'].numel(),
+                    device_mesh=None if self.rollout_sharding_manager.device_mesh is None else dict(
+                        shape=list(self.rollout_sharding_manager.device_mesh.mesh.shape),
+                        names=list(self.rollout_sharding_manager.device_mesh.mesh_dim_names),
+                        ranks=self.rollout_sharding_manager.device_mesh.mesh.cpu().tolist())))
             (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))
             print('FULL_STATE_RANK_JSON='+json.dumps(report,sort_keys=True,allow_nan=False),flush=True)
             torch.distributed.barrier()
