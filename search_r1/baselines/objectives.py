@@ -92,6 +92,7 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
     advantages = torch.where(valid, advantages, 0.)
     weights = torch.where(valid, weights, 0.)
     delta = current - old
+    zero_pg_actions = torch.zeros_like(valid)
     if step_ids is not None:
         action_deltas = []
         for i in range(len(delta)):
@@ -103,13 +104,23 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
                 action_advantages = advantages[i][selected]
                 if not torch.allclose(action_advantages, action_advantages[:1].expand_as(action_advantages)):
                     raise ValueError('GiGPO advantage must be constant within one textual action')
-                row = row + selected * delta[i][selected].sum()
+                joint_delta = delta[i][selected].sum()
+                if not torch.isfinite(joint_delta):
+                    raise ValueError('Nonfinite GiGPO joint logratio')
+                # Require exact zeros throughout the action: allclose permits
+                # small nonzero advantages, whose signal must remain intact.
+                if bool((action_advantages == 0).all()):
+                    zero_pg_actions[i][selected] = True
+                row = row + selected * joint_delta
             action_deltas.append(row)
         delta = torch.stack(action_deltas)
     # Keep the strict joint ratio and PPO surrogate, but evaluate their range in
     # FP64. Weighted reduction happens before autograd casts back to model dtype.
     # In particular, finite clipped/zero-advantage terms must not become 0*inf.
-    ratio = delta.double().exp()
+    # A=0 makes both PPO branches and their PG derivatives exactly zero.
+    # Do not materialize an unused exp(L); retain original L for the KL
+    # diagnostic and leave the independent reference KL term unchanged.
+    ratio = torch.where(zero_pg_actions, torch.zeros_like(delta), delta).double().exp()
     if not torch.isfinite(ratio[valid]).all():
         bad = valid & ~torch.isfinite(ratio)
         diagnostic = dict(count=int(bad.sum()), delta_min=float(delta.detach()[bad].min()),

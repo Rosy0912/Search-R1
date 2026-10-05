@@ -170,19 +170,29 @@ class ActorAudit:
 
     def micro(self, logp, old, mask, loss, step_ids=None, advantages=None, loss_parts=None, ref_logp=None):
         valid = mask.bool()
-        self.micro_stats.append(dict(current_log_probs=stats(logp, valid),
-                                     ratios=stats(torch.exp((logp.detach()[valid] - old.detach()[valid]).double())),
-                                     policy_loss=stats(loss)))
+        zero_pg_tokens = torch.zeros_like(valid)
+        ratios, deltas, zero_actions = [], [], 0
         if step_ids is not None:
-            ratios=[]
-            deltas=[]
             for row in range(len(logp)):
                 for action in torch.unique(step_ids[row][valid[row]]):
                     chosen=valid[row] & (step_ids[row] == action)
                     delta=(logp.detach()[row][chosen]-old.detach()[row][chosen]).sum()
                     deltas.append(delta)
-                    ratios.append(delta.double().exp())
+                    if advantages is not None and bool((advantages[row][chosen] == 0).all()):
+                        zero_pg_tokens[row][chosen] = True
+                        zero_actions += 1
+                    else:
+                        ratios.append(delta.double().exp())
+        ratio_valid = valid & ~zero_pg_tokens
+        self.micro_stats.append(dict(current_log_probs=stats(logp, valid),
+                                     ratios=stats(torch.exp((logp.detach()[ratio_valid] - old.detach()[ratio_valid]).double())),
+                                     policy_loss=stats(loss)))
+        if step_ids is not None:
             self.micro_stats[-1]['joint_action_ratios']=stats(torch.stack(ratios) if ratios else logp.new_empty(0))
+            self.micro_stats[-1]['ratio_scope']='nonzero_PG_actions_only; all_joint_logratios_recorded_separately'
+            self.micro_stats[-1]['exact_zero_pg_actions']=zero_actions
+            self.micro_stats[-1]['exact_zero_pg_tokens']=int(zero_pg_tokens.sum())
+            self.micro_stats[-1]['joint_action_logratios']=stats(torch.stack(deltas) if deltas else logp.new_empty(0))
         if not enabled():
             return
         record=dict(outer_step=self.step, micro_index=len(self.micro_stats),

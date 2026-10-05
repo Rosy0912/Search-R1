@@ -50,7 +50,8 @@ def describe_invalid_joint_probe(old, current, advantages, mask, weights, step_i
                 causes.append('inconsistent_action_advantage')
             if not bool(torch.isfinite(value)):
                 causes.append('nonfinite_joint_logratio')
-            if not bool(torch.isfinite(value.exp())):
+            exact_zero = bool((adv == 0).all())
+            if not exact_zero and not bool(torch.isfinite(value.exp())):
                 causes.append('nonfinite_raw_joint_ratio')
             for cause in causes:
                 reason(cause)
@@ -124,8 +125,11 @@ def active_joint_bound(old, current, advantages, mask, weights, step_ids, clipra
             bad = bad or bool(action < 0) or not torch.allclose(adv, adv[:1].expand_as(adv))
             value = delta[row][selected].sum().double()
             bad = bad or not bool(torch.isfinite(value))
-            # Forward still requires finite ratios, including clipped branches.
-            bad = bad or not bool(torch.isfinite(value.exp()))
+            # Exact-zero PG actions do not require exp(L). The original L and
+            # all inputs still must be finite, and nonzero actions retain the
+            # original strict ratio check, including clipped branches.
+            exact_zero = bool((adv == 0).all())
+            bad = bad or (not exact_zero and not bool(torch.isfinite(value.exp())))
             positive_weight = bool((weights[row][selected] > 0).any())
             a = adv[0]
             active = ((a < 0 and value >= math.log(1 - cliprange))
