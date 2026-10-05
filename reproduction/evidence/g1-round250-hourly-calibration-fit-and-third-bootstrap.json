@@ -1,0 +1,128 @@
+{
+  "checked_unix": 1791162371.8043876,
+  "completed_update": 250,
+  "new_updates": 0,
+  "reward_new_window_mean": null,
+  "reward_new_window_range": null,
+  "reward_recent_historical": 0.215,
+  "reward_precision": "console3decimals",
+  "validation_step": 250,
+  "validation_correct": 7,
+  "validation_total": 64,
+  "validation_em": 0.109375,
+  "validation_unchanged": true,
+  "calibration_report": {
+    "commit_cv_auc": 0.9284678620048168,
+    "boundary_cv_auc": 0.8437472766884532,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 1480,
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "commit_class_counts": [
+      340,
+      1140
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true,
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2
+  },
+  "searched_valid_trajectories": 1480,
+  "sampled_trajectories": 1500,
+  "calibration_cleanup": {
+    "components": {
+      "fit": [],
+      "dump": [],
+      "retriever": []
+    },
+    "unix": 1791159342.8063815
+  },
+  "calibration_source": "ddab367",
+  "third_segment_source": "f8e2ac5",
+  "third_segment_source_matched": 267,
+  "target_regressions_passed": 26,
+  "strict_review_no_remaining_blockers": true,
+  "bootstrap_handle": {
+    "leader": {
+      "pid": 3583167,
+      "start_ticks": 524181117,
+      "sid": 3583167,
+      "uid": 0,
+      "state": "R",
+      "command": "/data/search-g1-continuation-250/env/bin/python -m reproduction.a800.run_continuation --source-commit f8e2ac5 --parent /data/search-g1-continuation-200 --completed 250 --dumps /data/search-g1-calibration-repair-250/artifacts/round250-38e6e4e6ed51462d934304a88c9d08ac/dumps --calibration-acceptance /data/search-g1-calibration-repair-250/artifacts/round250-38e6e4e6ed51462d934304a88c9d08ac/calibration-accepted.json "
+    },
+    "purpose": "weights-only250 continuation; gates before251 trainer",
+    "source_commit": "f8e2ac5",
+    "matched_source_files": 267
+  },
+  "bootstrap_live": true,
+  "pipeline_status": {
+    "stage": "PREPARING_PARENT_CHAIN"
+  },
+  "new_run_id": null,
+  "gpu_current_csv": "0, 4, 81920, 0\n1, 4, 81920, 0\n2, 4, 81920, 0\n3, 4, 81920, 0\n4, 4, 81920, 0\n5, 4, 81920, 0\n6, 4, 81920, 0\n7, 68494, 81920, 0\n",
+  "calibration_peak_mib": {
+    "5": 17879,
+    "6": 37591
+  },
+  "calibration_sample_start": 1791158818.8896506,
+  "calibration_sample_end": 1791159326.1767955,
+  "calibration_sample_count": 233,
+  "historical_training_peak_mib": 40879,
+  "counterfactual_invalid_count": 11,
+  "context_truncated_prompts": 0,
+  "semantics": "real calibration fitted; new segment bootstrap gate, no251 update confirmed; probe AUC is not EM; old training peak historical",
+  "parent_admission": {
+    "accepted": true,
+    "checked_unix": 1791162145.375619,
+    "parent_run_id": "06fe8f4ef2d44848a683850e28076c20",
+    "checkpoint": "/data/search-g1-continuation-200/checkpoints/search-g1-a800/actor/global_step_250",
+    "binding": {
+      "parent_base": "/data/search-g1-continuation-200",
+      "parent_run_id": "06fe8f4ef2d44848a683850e28076c20",
+      "parent_manifest_sha256": "63d73551907f1e0c7e99b0ca8bd0d09f54e91e08b9a5e1007d45eacd52db8867",
+      "parent_train_log_sha256": "a9ba44847c59d9c8de5d090059a11c29b084d81a9326779c15403e94d262ae50",
+      "parent_checkpoint_marker_sha256": "e473d1d773456b1a7bd0ed44deb78b56a3696919a43e4c03f2152f4d17991189",
+      "parent_checkpoint_sha256": {
+        "config.json": "4e1b700cea9fc62f765c0bb16f38ca88c823635108e9fea3888b7d3d92106120",
+        "model-00001-of-00003.safetensors": "7648d140669c477926ec5c62d4b7e027645dd37f8fecad1d8da387eefc82e3ab",
+        "model-00002-of-00003.safetensors": "3acaf3d0127025c60a3330a1f5adc428f35a7fe007d54b8dbaa7e58b83626d1f",
+        "model-00003-of-00003.safetensors": "3eaf0083b60394c45633ba8a6011428477c7eec70939acdbc8c4b9435aaaeb2e",
+        "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+        "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+      },
+      "parent_source_commit": "8148f456a1e285dba28fc715adf4156aff5794db",
+      "tokenizer_identity": {
+        "verified": true,
+        "comparison": "entire normalized backend and parsed config; actual AutoTokenizer backend/special-token/chat/settings identity; byte hashes retained separately"
+      },
+      "checked_unix": 1791162145.3756137
+    },
+    "calibration_report": {
+      "commit_cv_auc": 0.9284678620048168,
+      "boundary_cv_auc": 0.8437472766884532,
+      "commit_position": "Xa",
+      "commit_label": "flip",
+      "unique_question_count": 300,
+      "commit_trajectory_count": 1480,
+      "boundary_class_counts": [
+        263,
+        37
+      ],
+      "commit_class_counts": [
+        340,
+        1140
+      ],
+      "question_grouped_cv": true,
+      "boundary_unique_question_weighting": true,
+      "require_all_cv_folds": true,
+      "configured_cv_folds": 2
+    },
+    "physical_lock_root": "/data/search-g1"
+  }
+}
