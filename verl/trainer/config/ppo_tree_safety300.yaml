@@ -3,6 +3,11 @@ defaults:
   - _self_
 
 actor_rollout_ref:
+  rollout:
+    sampling_consistency:
+      enabled: false
+      enforce: true
+      max_abs_delta: ???
   actor:
     policy_safety:
       enabled: true

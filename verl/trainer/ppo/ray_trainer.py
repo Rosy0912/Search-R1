@@ -1004,6 +1004,9 @@ class RayPPOTrainer(object):
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
                                 from search_r1.baselines.runtime_audit import driver_outer
                                 driver_outer(batch, self.global_steps, self.config.baselines.method)
+                            if os.environ.get('TREE_PPO_CALIBRATION_ONLY') == '1':
+                                from search_r1.baselines.sampling_consistency import finalize_calibration
+                                return finalize_calibration(self, batch)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)

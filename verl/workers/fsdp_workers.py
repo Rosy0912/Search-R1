@@ -361,6 +361,20 @@ class ActorRolloutRefWorker(Worker):
         torch.cuda.empty_cache()
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
+    def calibrate_policy_safety(self, data: DataProto):
+        """Dedicated healthy-checkpoint observation; never calls update_policy."""
+        data = data.to('cuda')
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp, device_id=torch.cuda.current_device(),
+                                     load_grad=self._is_offload_grad)
+        from search_r1.baselines.sampling_consistency import calibrate_actor
+        calibrate_actor(self, data)
+        if self._is_offload_param:
+            offload_fsdp_param_and_grad(self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+        torch.cuda.empty_cache()
+        return DataProto(meta_info={'calibration_complete': True})
+
+    @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
         data = data.to('cuda')
 
@@ -447,6 +461,9 @@ class ActorRolloutRefWorker(Worker):
         prompts = prompts.to('cuda')
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)
+        if 'sampling_consistency' in self.config.rollout:
+            from search_r1.baselines.sampling_consistency import generation_preflight
+            generation_preflight(self, prompts)
 
         assert self._is_rollout
         if self._is_offload_param:
@@ -479,6 +496,12 @@ class ActorRolloutRefWorker(Worker):
                 old_log_probs = self.actor.compute_log_prob(data=output)
                 output.batch['old_log_probs'] = old_log_probs
                 output = self.ulysses_sharding_manager.postprocess_data(output)
+
+        if ('sampling_consistency' in self.config.rollout
+                and self.config.rollout.sampling_consistency.enabled
+                and prompts.meta_info.get('do_sample', True)):
+            from search_r1.baselines.sampling_consistency import record_raw_turn
+            record_raw_turn(self, output)
 
         output = output.to('cpu')
 

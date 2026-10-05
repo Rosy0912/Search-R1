@@ -132,12 +132,12 @@ class PolicySafetyRuntime:
         self.micro += 1
 
     @torch.no_grad()
-    def measure(self, phase):
+    def measure(self, phase, publish=True):
         devices = [self.device.index] if self.device.type == 'cuda' else []
         with torch.random.fork_rng(devices=devices):
-            return self._measure(phase)
+            return self._measure(phase, publish=publish)
 
-    def _measure(self, phase):
+    def _measure(self, phase, publish=True):
         combined = None
         negative = []
         max_abs_delta = torch.zeros((), device=self.device, dtype=torch.float64)
@@ -159,7 +159,7 @@ class PolicySafetyRuntime:
         if self.committed == 0 and phase == 'before_optimizer' and max_abs_delta > self.initial_consistency_limit:
             decision['allowed'] = False
             decision['reasons'].append('initial_old_current_probability_inconsistency')
-        self.publish(phase, decision)
+        if publish: self.publish(phase, decision)
         return decision
 
     @torch.no_grad()

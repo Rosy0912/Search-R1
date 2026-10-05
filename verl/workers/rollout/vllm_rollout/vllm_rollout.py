@@ -172,6 +172,9 @@ class vLLMRollout(BaseRollout):
 
         # users can customize different sampling_params at different run
         with self.update_sampling_params(**kwargs):
+            sampling_distribution = {key: getattr(self.sampling_params, key, None) for key in
+                ('temperature', 'top_p', 'top_k', 'min_p', 'presence_penalty', 'frequency_penalty',
+                 'repetition_penalty', 'n', 'logits_processors')}
             output = self.inference_engine.generate(
                 prompts=None,  # because we have already convert it to prompt token id
                 sampling_params=self.sampling_params,
@@ -219,8 +222,14 @@ class vLLMRollout(BaseRollout):
             },
             batch_size=batch_size)
 
+        consistency = self.config.get('sampling_consistency', {})
+        metadata = {}
+        if consistency.get('enabled', False) and do_sample:
+            batch['__sampling_log_probs'] = log_probs
+            metadata['__sampling_distribution'] = sampling_distribution
+
         # free vllm cache engine
         if self.config.free_cache_engine:
             self.inference_engine.free_cache_engine()
 
-        return DataProto(batch=batch)
+        return DataProto(batch=batch, meta_info=metadata)
