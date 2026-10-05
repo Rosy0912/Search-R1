@@ -78,6 +78,17 @@ def migration_diff(saved, current):
         elif key == 'actor_rollout_ref.actor.ppo_mini_batch_size':
             if (left, right) != (128, 256):
                 raise ValueError('Only the authorized128 to256 mini migration is allowed')
+        elif key == 'critic.ppo_mini_batch_size':
+            if ((left, right) != (128, 256)
+                    or old.get('baselines.method') != 'gigpo' or new.get('baselines.method') != 'gigpo'
+                    or old.get('algorithm.adv_estimator') != new.get('algorithm.adv_estimator')
+                    or new.get('algorithm.adv_estimator') in (None, 'gae')):
+                raise ValueError('Only the unused GiGPO critic mini interpolation may follow actor128 to256')
+        elif key == 'baselines.holdout.output_dir':
+            if (not isinstance(left, str) or not isinstance(right, str)
+                    or Path(left) != Path(old['trainer.default_local_dir']).parent / 'common-data'
+                    or Path(right) != Path(new['trainer.default_local_dir']).parent / 'common-data'):
+                raise ValueError('Holdout output metadata must stay in each independent run/common-data')
         elif key == 'actor_rollout_ref.actor.joint_loss_scaling':
             if left is not missing or right is not True:
                 raise ValueError('Unexpected numeric representation migration')

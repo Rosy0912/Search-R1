@@ -5,6 +5,9 @@ actor_rollout_ref:
   actor:
     ppo_mini_batch_size: 256
     joint_loss_scaling: true
+baselines:
+  holdout:
+    output_dir: ${oc.env:GIGPO_E1_RUN}/common-data
 trainer:
   acceptance_step: ${oc.decode:${oc.env:GIGPO_QUALITY_GATE}}
   trajectory_logging: true

@@ -83,6 +83,26 @@ def test_quality_warning_requires_full512_confirmation(tmp_path,monkeypatch):
     assert saved == [True]
 
 
+def test_actual_run_output_and_unused_critic_interpolation_migration():
+    old = dict(actor_rollout_ref={'actor': {'ppo_mini_batch_size':128}},
+        critic={'ppo_mini_batch_size':128}, algorithm={'adv_estimator':'grpo'},
+        baselines={'method':'gigpo','holdout':{'output_dir':'/old/run/common-data'}},
+        trainer={'default_local_dir':'/old/run/checkpoints'})
+    new = json.loads(json.dumps(old))
+    new['actor_rollout_ref']['actor']['ppo_mini_batch_size']=256
+    new['critic']['ppo_mini_batch_size']=256
+    new['trainer'].update(default_local_dir='/new/run/checkpoints', quality_resume={'enabled':True}, trajectory_logging=True)
+    new['baselines']['holdout']['output_dir']='/new/run/common-data'
+    changes=quality.migration_diff(old,new)
+    assert 'critic.ppo_mini_batch_size' in changes and 'baselines.holdout.output_dir' in changes
+    for invalid in ('foreign_output','critic_size','gae'):
+        before=json.loads(json.dumps(old));after=json.loads(json.dumps(new))
+        if invalid=='foreign_output':after['baselines']['holdout']['output_dir']='/data/foreign'
+        elif invalid=='critic_size':after['critic']['ppo_mini_batch_size']=512
+        else:before['algorithm']['adv_estimator']=after['algorithm']['adv_estimator']='gae'
+        with pytest.raises(ValueError):quality.migration_diff(before,after)
+
+
 def test_declared_restore_path_must_be_selected_path(selection):
     from search_r1.baselines.instruct_resume import start_step
     from omegaconf import open_dict
@@ -113,3 +133,4 @@ def test_quality_yaml_resolves_numeric_gate_and_preserves_common_budget(monkeypa
     assert resolved['actor_rollout_ref']['actor']['ppo_micro_batch_size']==16
     assert resolved['actor_rollout_ref']['actor']['optim']['lr_warmup_steps']==57
     assert resolved['trainer']['total_training_steps']==300
+    assert resolved['baselines']['holdout']['output_dir']=='/tmp/run/common-data'
