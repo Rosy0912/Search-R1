@@ -551,14 +551,14 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_recovery_training_state(self):
-        from search_r1.baselines.training_state import recovery_manifest,file_sha,digest,restore_worker
+        from search_r1.baselines.training_state import recovery_manifest,verified_state_file,digest,restore_worker
         manifest=recovery_manifest()
         records=[r for r in manifest['worker_states'] if r['identity']['rank']==self.rank]
         if len(records)!=1:raise ValueError('Recovery rank coverage invalid')
         record=records[0]
-        if record['identity']['world_size']!=self.world_size or file_sha(record['path'])!=record['sha256']:
+        if record['identity']['world_size']!=self.world_size:
             raise ValueError('Recovery world/shard identity changed')
-        saved=torch.load(record['path'],map_location='cpu',weights_only=False)
+        saved=verified_state_file(record)
         if digest(saved)!=record['logical_state_sha256']:raise ValueError('Parent worker logical hash changed')
         if saved['identity']!=record['identity']:raise ValueError('Parent worker identity changed')
         expected_steps=int(os.environ['TREE_RECOVERY_PARENT_OPTIMIZER_STEPS'])

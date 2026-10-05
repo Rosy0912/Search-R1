@@ -3,6 +3,7 @@ import torch
 from search_r1.baselines.training_state import CheckpointBatchSampler, migrate_sampler_batch
 from search_r1.baselines.training_state import worker_snapshot, restore_worker, digest
 from search_r1.baselines.training_state import driver_snapshot,restore_driver
+from search_r1.baselines.training_state import verified_state_file,atomic_save,file_sha
 from search_r1.baselines.bapo import BoundaryStage
 from types import SimpleNamespace
 import random
@@ -78,3 +79,11 @@ def test_mixed_batch_checkpoint_can_restore_after_epoch_crossing():
         actual_outer_updates=0,baseline_controller=SimpleNamespace(method='tree_grpo',tree_rng=random.Random(1),stage=BoundaryStage()))
     restore_driver(fresh,saved,{'identity':'recovery'})
     assert digest(driver_snapshot(fresh,{'identity':'recovery'}))==digest(saved)
+
+
+def test_parent_loader_verifies_exact_file_before_deserialization(tmp_path):
+    p=tmp_path/'parent.pt';atomic_save({'value':torch.tensor([7.])},p)
+    r={'path':str(p),'sha256':file_sha(p)}
+    assert verified_state_file(r)['value'].item()==7
+    with pytest.raises(ValueError,match='SHA'):
+        verified_state_file({**r,'sha256':'0'*64})

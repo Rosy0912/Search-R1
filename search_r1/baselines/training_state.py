@@ -310,9 +310,10 @@ def restore_driver(trainer, saved, identity):
 
 def recovery_manifest():
     path=Path(os.environ['TREE_RECOVERY_MANIFEST'])
-    if file_sha(path)!=os.environ['TREE_RECOVERY_MANIFEST_SHA256']:
+    raw=path.read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=os.environ['TREE_RECOVERY_MANIFEST_SHA256']:
         raise ValueError('Recovery parent manifest changed')
-    manifest=json.loads(path.read_text())
+    manifest=json.loads(raw)
     if manifest['status']!='COMPLETE_SAME_WORLD_STATE_SAVED' or len(manifest['worker_states'])!=8:
         raise ValueError('Incomplete recovery parent')
     expected=json.loads(os.environ['TREE_RECOVERY_PARENT_IDENTITY'])
@@ -321,10 +322,25 @@ def recovery_manifest():
     return manifest
 
 
+def verified_state_file(record):
+    path=Path(record['path'])
+    with path.open('rb') as stream:
+        before=os.fstat(stream.fileno())
+        h=hashlib.sha256()
+        for block in iter(lambda:stream.read(8*1024**2),b''):h.update(block)
+        if h.hexdigest()!=record['sha256']:raise ValueError('Parent state SHA changed')
+        stream.seek(0)
+        state=torch.load(stream,map_location='cpu',weights_only=False)
+        after=os.fstat(stream.fileno());current=path.stat()
+        for attr in ('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns'):
+            if getattr(before,attr)!=getattr(after,attr) or getattr(before,attr)!=getattr(current,attr):
+                raise ValueError('Parent state changed during loading')
+    return state
+
+
 def restore_recovery_driver(trainer, manifest):
     record=manifest['driver']
-    if file_sha(record['path'])!=record['sha256']:raise ValueError('Parent driver SHA changed')
-    saved=torch.load(record['path'],map_location='cpu',weights_only=False)
+    saved=verified_state_file(record)
     if digest(saved)!=record['logical_state_sha256'] or saved['identity']!=manifest['identity']:
         raise ValueError('Parent driver state changed')
     step=saved['completed_step']
