@@ -1,0 +1,100 @@
+{
+  "accepted": true,
+  "scope": "read-only source retrieval asset provenance; not target transfer, GPU or HTTP admission",
+  "source_cluster": "wuhan-h100",
+  "source_node": "h100-9",
+  "large_assets": {
+    "stage": "COMPLETE",
+    "pid": 362438,
+    "started_unix": 1791191351.9155436,
+    "assets": {
+      "index-part-aa": {
+        "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+        "size": 42949672960,
+        "accepted": true
+      },
+      "index-part-ab": {
+        "sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+        "size": 21609402413,
+        "accepted": true
+      },
+      "index": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/e5_Flat.index",
+        "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "size": 64559075373,
+        "accepted": true
+      },
+      "corpus-gzip": {
+        "sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+        "size": 5123307260,
+        "accepted": true
+      },
+      "corpus": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/wiki-18.jsonl",
+        "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "size": 14393579520,
+        "gzip_decoding_matched": true,
+        "accepted": true
+      },
+      "encoder-model": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/e5-base-v2/model.safetensors",
+        "sha256": "d0d559c47d5f71b1d280b13b62a2657f3e3bc70c0786f9ab91a36545e6a8f693",
+        "size": 437955512,
+        "accepted": true
+      }
+    },
+    "accepted": true,
+    "encoder_metadata_candidates": 8,
+    "finished_unix": 1791191562.5602272
+  },
+  "encoder_small_files": {
+    "accepted": true,
+    "scope": "7 original E5 small config/tokenizer files only; model bound by independent large-asset task",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "files": {
+      "config.json": {
+        "size": 650,
+        "sha256": "01cc39aa39538a8179aa131c8a16adc03b506c92009f091502e4eb0c702f5f78",
+        "git_blob_sha1": "24b4776266ab6abf7a9d6672f42b77f06ef77b87"
+      },
+      "modules.json": {
+        "size": 387,
+        "sha256": "c6e29747481e8b5dd2b58401966aeac910de39092f90cda9a704b1545f902b04",
+        "git_blob_sha1": "ac2039abdf6ff023b27c919bb9675cfe378cb10f"
+      },
+      "sentence_bert_config.json": {
+        "size": 57,
+        "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529",
+        "git_blob_sha1": "4eca68d85ecd3034cf4174d8a4033a75344ea62d"
+      },
+      "special_tokens_map.json": {
+        "size": 125,
+        "sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "git_blob_sha1": "a8b3208c2884c4efb86e49300fdd3dc877220cdf"
+      },
+      "tokenizer.json": {
+        "size": 711396,
+        "sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "git_blob_sha1": "688882a79f44442ddc1f60d70334a7ff5df0fb47"
+      },
+      "tokenizer_config.json": {
+        "size": 314,
+        "sha256": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+        "git_blob_sha1": "8046d4d4aff4529a10e0ad47043bdabd6304fb58"
+      },
+      "vocab.txt": {
+        "size": 231508,
+        "sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "git_blob_sha1": "fb140275c155a9c7c5a3b3e0e77a9e839594a938"
+      }
+    },
+    "metadata_sha256": "a033b9d6e5b4453374c25d8d9a33d70254c1a79ea0d71677f21afb083d94b3fd",
+    "checked_unix": 1791191660.0732799
+  },
+  "actual_grpo_updates": 0,
+  "original_revisions": {
+    "encoder": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "corpus": "69c1c00ffe7c5554c68d8548355cb22e46aabc51",
+    "index": "a4d31160a035f30764604f4827cd8f1d0315eb86"
+  }
+}

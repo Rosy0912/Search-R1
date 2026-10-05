@@ -1,0 +1,13 @@
+{
+  "accepted": true,
+  "wheel_sha256": "7ea5e6aa82897fd0c1af3b1decc9c8659a4398fed42de1d7746715b64bbf9bf9",
+  "isolated_target": "/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib",
+  "actual_import": {
+    "module": "/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib/faiss/__init__.py",
+    "gpu_resource_class_present": true,
+    "scope": "import only; no StandardGpuResources instantiation or GPU/index tests"
+  },
+  "scope": "isolated GPU FAISS install/import only; no GPU allocation, index, HTTP or GRPO admission",
+  "actual_grpo_updates": 0,
+  "checked_unix": 1791192715.8476212
+}

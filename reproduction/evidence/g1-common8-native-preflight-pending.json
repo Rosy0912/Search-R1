@@ -1,0 +1,19 @@
+{
+  "accepted": false,
+  "scope": "authoritative native preflight queue observation only; no GPU acceptance",
+  "job_id": "3235",
+  "state": "PENDING",
+  "reason": "Resources",
+  "last_scheduler_evaluation": "2026-10-05T17:25:05",
+  "source_sha256": {
+    "reproduction/common8/gpu_preflight.py": "d18e60c67eb80610d028295b35cb9d2ebf516d87b1b3ee769beca18eedd1901f",
+    "reproduction/common8/scheduler.py": "5626052b653328829cf37078b325af3bda5e71a51ec482acbc2cc10a25037c9c",
+    "search_g1/numerics.py": "552f0da770556cd2c5fa9d5d2ea4ae459e91276f2044aa3ad4298db1d9e2ff58",
+    "search_g1/gradient_clipping.py": "680fee68c88729299a93cf8dea170b5684e9c682ef2eb407850d7195b12c3a3b"
+  },
+  "superseded_pending_job": "3233",
+  "actual_grpo_updates": 0,
+  "pending_on_node": "h100-8",
+  "node_occupied_by_other_native_job": "3232",
+  "slurm_stdout": "/root/slurm-3235.out"
+}
