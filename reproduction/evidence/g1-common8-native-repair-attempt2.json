@@ -1,0 +1,313 @@
+{
+  "checked_local": "2026-10-05T19:42:03.413869+08:00",
+  "actual_grpo_updates": 0,
+  "original_preflight": {
+    "job_id": "3235",
+    "state": "FAILED",
+    "error": "NCCL collective CUDA802 system not yet initialized"
+  },
+  "retry_mechanics": {
+    "accepted": true,
+    "job_id": "3240",
+    "ranks": [
+      {
+        "accepted": true,
+        "rank": 0,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177162
+      },
+      {
+        "accepted": true,
+        "rank": 1,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177133
+      },
+      {
+        "accepted": true,
+        "rank": 2,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177145
+      },
+      {
+        "accepted": true,
+        "rank": 3,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177178
+      },
+      {
+        "accepted": true,
+        "rank": 4,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177107
+      },
+      {
+        "accepted": true,
+        "rank": 5,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177088
+      },
+      {
+        "accepted": true,
+        "rank": 6,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.0177128
+      },
+      {
+        "accepted": true,
+        "rank": 7,
+        "world_size": 8,
+        "slurm_job_id": "3240",
+        "visible_devices": "0,1,2,3,4,5,6,7",
+        "nccl": true,
+        "bf16": true,
+        "cuda_jit": true,
+        "fsdp_cpu_offload": true,
+        "global_l2_upstream_equivalence": true,
+        "large_finite_l2": true,
+        "one_rank_nan_rejected_without_gradient_mutation": true,
+        "empty_rank_collective_rejection": true,
+        "real_adam_lr": 1e-06,
+        "parameters_and_adam_finite": true,
+        "actual_grpo_updates": 0,
+        "checked_unix": 1791199166.017713
+      }
+    ],
+    "rank_sha256": {
+      "0": "8957c8de02f368a05d7b27b2e1fe71f914cb0d0c66b170d0621312c73eccfa92",
+      "1": "39e811c4c97ef291ce61107d97b47c5dd2d2e860eb13460e114cfdb0f993d7bf",
+      "2": "b23122522f86d9b8299221ed4ceb375f3a7615dcff463d1677106ecca06eb5d9",
+      "3": "250a4ced4011659016519ec61a62427229f862a940b9f0445b1bc30d6b25ae63",
+      "4": "44e70705cc1c154b6447c5bafa1fff5c794b5806493a59768b25b7c5391c1a4c",
+      "5": "7471a5865cdf81b43c0443b14f5962880b2b842ac022e3500ecb7b5334af5997",
+      "6": "cfcbe427a2fcc27e02e72844d796375e4683a0fe3dc5012f180769d116f0f6d5",
+      "7": "f277306626a06142aebeef2a04f0ec2128fc198c0226e0af21e8087bc5b15a16"
+    },
+    "actual_grpo_updates": 0,
+    "source_sha256": {
+      "reproduction/common8/gpu_preflight.py": "d18e60c67eb80610d028295b35cb9d2ebf516d87b1b3ee769beca18eedd1901f",
+      "reproduction/common8/scheduler.py": "5626052b653328829cf37078b325af3bda5e71a51ec482acbc2cc10a25037c9c",
+      "search_g1/numerics.py": "552f0da770556cd2c5fa9d5d2ea4ae459e91276f2044aa3ad4298db1d9e2ff58",
+      "search_g1/gradient_clipping.py": "680fee68c88729299a93cf8dea170b5684e9c682ef2eb407850d7195b12c3a3b"
+    },
+    "nccl_nvls_enable": 0
+  },
+  "attempt1": {
+    "job_id": "3238",
+    "run_id": "b3a8f2a7f2064c398a8f06084c558c72",
+    "state": "FAILED",
+    "error": "missing accelerate at model-initial before training",
+    "actual_updates": 0,
+    "cleanup": {
+      "run_id": "b3a8f2a7f2064c398a8f06084c558c72",
+      "cleaned": true,
+      "checked_unix": 1791199237.2207093
+    },
+    "source_cleanup": {
+      "cleaned": true,
+      "handle": {
+        "pid": 400369,
+        "start_ticks": 1548706833,
+        "sid": 400369,
+        "uid": 0,
+        "port": 19874,
+        "started_unix": 1791198553.5522478,
+        "files": {
+          "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+          "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+        },
+        "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+        "source_sha256": "407af3ef60040abe4a588ef67271c1b0ee34c1bf55ca67549dab3d9481367214",
+        "source_commit": "4b1a06243e915c73b439fca8c62ba5f928ca812b"
+      },
+      "checked_unix": 1791200223.4797544,
+      "reason": "attempt1 failed before training; own source service no longer needed"
+    }
+  },
+  "dependency_repair": {
+    "accepted": true,
+    "files_sha256": {
+      "wheelhouse/accelerate-1.15.0-py3-none-any.whl": "97eacca0b73e45cb867dbf8c5d5d4dc32219544300e0c8992c7334dc2ef33cec",
+      "wheelhouse/contourpy-1.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "ad687a04bc802cbe8b9c399c07162a3c35e227e2daccf1668eb1f278cb698631",
+      "wheelhouse/cycler-0.12.1-py3-none-any.whl": "85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30",
+      "wheelhouse/fonttools-4.65.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "fb53892b570f7f1f0055e75fc4de32673e32f749c4c8a606b63d5c436650e634",
+      "wheelhouse/kiwisolver-1.5.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl": "e05c2f7925f1d88778e53cb44f14e0223204a3bdd09a41664750363acfb1f2ef",
+      "wheelhouse/matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "1aa972116abb4c9d201bf245620b433726cb6856f3bef6a78f776a00f5c92d37",
+      "wheelhouse/pybind11-3.1.0-py3-none-any.whl": "b8488090f8acffbcb6b5d6a85571a6827a0a2981ffb75e5a0b27b87c4a6b7dd0",
+      "wheelhouse/pyparsing-3.3.3-py3-none-any.whl": "ece8c00a69cf01b45d0b1dedabb469c90d8caf996d4fda40f147627a122849a4"
+    },
+    "actual_empty_weights_context": true,
+    "versions": {
+      "accelerate": "1.15.0",
+      "pybind11": "3.1.0",
+      "matplotlib": "3.10.9"
+    },
+    "scope": "actual target CPU imports and meta initializer, same-cluster source wheels; no GPU/model/GRPO"
+  },
+  "wheel_source_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "pid": 406808,
+      "start_ticks": 1548828464,
+      "sid": 406808,
+      "uid": 0,
+      "port": 19875,
+      "started_unix": 1791199769.8603146,
+      "files": {
+        "wheelhouse/accelerate-1.15.0-py3-none-any.whl": 394295,
+        "wheelhouse/contourpy-1.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": 325027,
+        "wheelhouse/cycler-0.12.1-py3-none-any.whl": 8321,
+        "wheelhouse/fonttools-4.65.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": 5253649,
+        "wheelhouse/kiwisolver-1.5.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl": 1628782,
+        "wheelhouse/matplotlib-3.10.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": 8769389,
+        "wheelhouse/pybind11-3.1.0-py3-none-any.whl": 319402,
+        "wheelhouse/pyparsing-3.3.3-py3-none-any.whl": 126420
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance"
+    }
+  },
+  "attempt2": {
+    "job_id": "3241",
+    "base": "/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831",
+    "source_commit": "4b1a06243e915c73b439fca8c62ba5f928ca812b",
+    "run": {
+      "run_id": "c9849d21d01345589c8ea288c14babb3",
+      "completed_updates": 0,
+      "source_commit": "4b1a06243e915c73b439fca8c62ba5f928ca812b",
+      "train_log": "/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/search-g1-common8-training.log",
+      "checkpoint_dir": "/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/checkpoints/search-g1-common8"
+    },
+    "stage": {
+      "run_id": "c9849d21d01345589c8ea288c14babb3",
+      "stage": "INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE",
+      "unix": 1791200394.7820225
+    },
+    "actual_processes": {
+      "1106164": {
+        "expected_birth": 2214506084,
+        "present": false
+      },
+      "1107563": {
+        "expected_birth": 2214508184,
+        "present": true,
+        "actual_birth": 2214508184,
+        "actual_state": "S",
+        "birth_matches": true
+      }
+    },
+    "native_job": "JobId=3241 JobName=search-g1-common8-attempt2 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898825 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:56 TimeLimit=3-00:00:00 TimeMin=N/A SubmitTime=2026-10-05T19:39:09 EligibleTime=2026-10-05T19:39:09 AccrueTime=2026-10-05T19:39:09 StartTime=2026-10-05T19:39:09 EndTime=2026-10-08T19:39:09 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T19:39:09 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1105777 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/repo/reproduction/common8/launch_native.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/repo StdErr=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/native-full-3241.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-attempt2-39e7968c7831/logs/native-full-3241.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "retrieval_handle": {
+      "pid": 409746,
+      "start_ticks": 1548885762,
+      "sid": 409746,
+      "uid": 0,
+      "port": 19874,
+      "started_unix": 1791200342.8418055,
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "export": "/dataset/shaoshitong/g1-common8-original-retrieval-export-attempt2-d98818b4061a",
+      "source_sha256": "3319c714c3d8c11c1f8afbe756feb20e176a7f42b2ce99f29f78d8de911a0bf1"
+    }
+  },
+  "scope": "Native real eight-rank mechanics and actual environment repair; model smoke currently running, no GRPO/five/full validation acceptance",
+  "evidence_sha256": {
+    "preflight-3235-failed-original.log": "11a642ffbed31cd8dd50d770a5b8ddb80304a097b9db0225c46cf6683a026ef5",
+    "model-initial-3238-error.txt": "2258b402858c0aaf777ecc1db1384172fc19ed597ef86093d88a1632141157f9",
+    "attempt1-terminal-observation.json": "2d602e9004ceaef7fb7fc0b48d1a503b5a96fd532b5506c6ce2c7d652d057123",
+    "repair-deps-same-cluster-observation.json": "ac34b744970464350c207bfd4d4b9f28da74870d816e9b0529939a2aa0448ad4",
+    "attempt2-latest-observation.json": "8f841d0fca796b9ff62063a18a1f6b177f4997dea8ae0964b6281a541ec4204c"
+  }
+}
