@@ -11,10 +11,10 @@ from verl.workers.actor.dp_actor import DataParallelPPOActor
 from search_r1.baselines.objectives import attach_policy_weights
 
 
-def run(micro):
+def run(micro,rows=3072,mini=128):
     torch.manual_seed(31)
     model=torch.nn.Linear(1,1,bias=False);model.weight.data.fill_(.015)
-    rows=3072;length=7
+    length=7
     mask=(torch.arange(length)[None,:]<((torch.arange(rows)%8)[:,None])).float()
     prefix=torch.ones(rows,1)
     feature=(torch.arange(rows)%5+1).float()[:,None]
@@ -29,7 +29,7 @@ def run(micro):
     attach_policy_weights(data,'tree_grpo')
     actor=DataParallelPPOActor.__new__(DataParallelPPOActor)
     actor.actor_module=model;actor.actor_optimizer=torch.optim.SGD(model.parameters(),lr=1e-6)
-    actor.config=OmegaConf.create(dict(ppo_mini_batch_size=128,ppo_micro_batch_size=micro,
+    actor.config=OmegaConf.create(dict(ppo_mini_batch_size=mini,ppo_micro_batch_size=micro,
         ppo_epochs=1,state_masking=True,use_kl_loss=True,use_dynamic_bsz=False,
         baseline_method='tree_grpo',entropy_coeff=0.,clip_ratio=.2,grad_clip=1.,
         kl_loss_type='low_var_kl',kl_loss_coef=.001))
@@ -42,7 +42,7 @@ def run(micro):
         gradients.append(model.weight.grad.detach().clone());return step()
     actor._optimizer_step=capture
     with patch.object(TensorDict,'cuda',lambda self,*a,**kw:self):metrics=actor.update_policy(data)
-    assert metrics['actor/optimizer_steps']==24
+    assert metrics['actor/optimizer_steps']==rows//mini
     return metrics,model.weight.detach().clone(),torch.stack(gradients)
 
 
@@ -54,3 +54,11 @@ def test_actual_actor_fixed128_micro2_16_128_same_target_and24_steps():
         torch.testing.assert_close(gradients,reference[2],rtol=2e-6,atol=2e-7)
         for key in ('actor/pg_loss','actor/kl_loss'):
             np.testing.assert_allclose(metrics[key],reference[0][key],rtol=2e-6,atol=2e-7)
+
+
+def test_actual_recovery_rank480_mini48_micro2_performs10_updates():
+    reference=run(48,rows=480,mini=48)
+    metrics,weight,gradients=run(2,rows=480,mini=48)
+    assert metrics['actor/optimizer_steps']==10 and len(gradients)==10
+    torch.testing.assert_close(weight,reference[1],rtol=1e-6,atol=1e-8)
+    torch.testing.assert_close(gradients,reference[2],rtol=2e-6,atol=2e-7)
