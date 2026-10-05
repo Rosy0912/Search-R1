@@ -1,0 +1,237 @@
+{
+  "checked_unix": 1791165869.7251048,
+  "completed_update": 250,
+  "new_updates": 0,
+  "reward_new_window_mean": null,
+  "reward_new_window_range": null,
+  "reward_recent_historical": 0.215,
+  "attempt251_preupdate_sampled_reward": 0.205,
+  "attempt251_reward_semantics": "rollout reward only, not completed training metrics",
+  "validation_step": 250,
+  "validation_correct": 7,
+  "validation_total": 64,
+  "validation_em": 0.109375,
+  "validation_changed": false,
+  "failed_run_id": "f39a52bb7a0b47f3adc9f38fff897e10",
+  "failed_stage": {
+    "run_id": "f39a52bb7a0b47f3adc9f38fff897e10",
+    "stage": "FAILED",
+    "unix": 1791162984.2280383,
+    "error": "AssertionError('trainer failed; see project log')"
+  },
+  "failed_source_immutable_verified": true,
+  "failed_owned_remaining": [],
+  "rejected_diagnostics": [
+    {
+      "stage": "before_optimizer_step",
+      "rank": 0,
+      "local_failed_fields": [
+        "grad_norm"
+      ],
+      "failure_on_another_rank": false
+    },
+    {
+      "stage": "before_optimizer_step",
+      "rank": 2,
+      "local_failed_fields": [
+        "grad_norm"
+      ],
+      "failure_on_another_rank": false
+    }
+  ],
+  "failed_pipeline_window_peak_mib": {
+    "0": 39591,
+    "1": 39773,
+    "2": 39769,
+    "3": 39535,
+    "5": 18001,
+    "6": 24793
+  },
+  "failed_sampler_last": 1791162991.2218223,
+  "fp64_gpu_regression": {
+    "accepted": true,
+    "results": [
+      {
+        "rank": 0,
+        "accepted": true,
+        "results": [
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": true,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": true,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": true,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          }
+        ]
+      },
+      {
+        "rank": 1,
+        "accepted": true,
+        "results": [
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": true,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": true,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": true,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "accepted": true,
+        "results": [
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": true,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": true,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": true,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "accepted": true,
+        "results": [
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": true,
+            "orig_params": false,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": true,
+            "no_shard": false,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          },
+          {
+            "offload": false,
+            "orig_params": false,
+            "no_shard": true,
+            "moderate_matches": true,
+            "huge_raw_norm": 489897958374620300000,
+            "collective_nonfinite_rejected": true
+          }
+        ]
+      }
+    ],
+    "unix": 1791165629.6565645
+  },
+  "fp64_gpu_cleanup": {
+    "remaining": [],
+    "unix": 1791165629.8409383
+  },
+  "cpu_gradient_checks_passed": 6,
+  "cpu_collective_optimizer_checks_passed": 3,
+  "review_no_remaining_blockers": true,
+  "retry_handle": {
+    "leader": {
+      "pid": 3628933,
+      "start_ticks": 524538313,
+      "sid": 3628933,
+      "uid": 0,
+      "state": "R",
+      "command": "/data/search-g1-continuation-250-fp64/env/bin/python -m reproduction.a800.run_continuation --source-commit 8ab2caa --parent /data/search-g1-continuation-200 --completed 250 --dumps /data/search-g1-calibration-repair-250/artifacts/round250-38e6e4e6ed51462d934304a88c9d08ac/dumps --calibration-acceptance /data/search-g1-calibration-repair-250/artifacts/round250-38e6e4e6ed51462d934304a88c9d08ac/calibration-accepted.json "
+    },
+    "purpose": "reviewed FP64 clipping retry from250; not complete251",
+    "source_commit": "8ab2caa",
+    "matched_source_files": 270,
+    "failed_attempt_base": "/data/search-g1-continuation-250"
+  },
+  "retry_live": true,
+  "retry_stage": {
+    "stage": "PREPARING_PARENT_CHAIN"
+  },
+  "retry_run_id": null,
+  "gpu_current_csv": "0, 4, 81920, 0\n1, 4, 81920, 0\n2, 4, 81920, 0\n3, 4, 81920, 0\n4, 4, 81920, 0\n5, 4, 81920, 0\n6, 4, 81920, 0\n7, 68494, 81920, 0\n",
+  "semantics": "Failure before completed251; rejected optimizer write refers only failing minibatch; earlier attempted minibatch writes not excluded. Retry resets from durable250, freshAdam. FP64 clipping fixes demonstrated finite-value norm-overflow path, not proven original cause. Huge raw gradients separately logged."
+}
