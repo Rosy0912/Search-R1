@@ -1,0 +1,420 @@
+{
+  "requested_utc": "2026-10-05T19:41:06.594Z",
+  "archive": {
+    "time": 1791229331.0132542,
+    "node": "xielab5",
+    "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "status": "RUNNING",
+    "pid": 1434645,
+    "live_owned": true,
+    "phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "metrics": [
+      {
+        "step": 74,
+        "audit/strict_em": 0.427,
+        "actor/grad_norm": 1.209,
+        "actor/pg_loss": 0.041,
+        "timing_s/step": 2373.344
+      },
+      {
+        "step": 75,
+        "audit/strict_em": 0.45,
+        "actor/grad_norm": 1.163,
+        "actor/pg_loss": -0.026,
+        "timing_s/step": 2303.103
+      },
+      {
+        "step": 76,
+        "audit/strict_em": 0.43,
+        "actor/grad_norm": 1.131,
+        "actor/pg_loss": 0.039,
+        "timing_s/step": 2283.683
+      }
+    ],
+    "current_step": [
+      "77"
+    ],
+    "nonfinite_actor_rows": 0,
+    "errors": [],
+    "log_age_seconds": 85.9743959903717,
+    "checkpoints": [
+      "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50"
+    ],
+    "validation_rows": [
+      "(main_task pid=1437474) step:0 - val/test_score/nq:0.176 - val/test_score/hotpotqa:0.203",
+      "(main_task pid=1437474) step:50 - global_seqlen/min:573784.000 - global_seqlen/max:611214.000 - global_seqlen/minmax_diff:37430.000 - global_seqlen/balanced_min:597173.000 - global_seqlen/balanced_max:597174.000 - global_seqlen/mean:597173.500 - audit/legacy_em:0.382 - audit/strict_em:0.338 - audit/score_disagreement:0.043 - state_tokens/total:477065.000 - state_tokens/coverage:0.234 - actor/kl_coef:0.001 - actor/entropy_loss:0.672 - actor/pg_loss:0.033 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.012 - actor/kl_loss:0.293 - actor/grad_norm:6.298 - mfu/actor:0.000 - actor/lr:0.000 - val/test_score/nq:0.309 - val/test_score/hotpotqa:0.324 - critic/score/mean:0.338 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.338 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.016 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.016 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:795.390 - response_length/max:3041.000 - response_length/min:141.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.693 - prompt_length/max:227.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.311 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.986 - env/number_of_valid_action:2.276 - env/ratio_of_valid_action:0.992 - env/number_of_valid_search:1.290 - timing_s/gen:738.471 - timing_s/ref:205.441 - timing_s/adv:4.959 - timing_s/update_actor:934.896 - timing_s/testing:1490.543 - timing_s/save_checkpoint:25.028 - timing_s/step:3608.639 - timing_per_token_ms/update_actor:0.391 - timing_per_token_ms/ref:0.086 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/gen:0.363"
+    ],
+    "hashes": {
+      "runtime/archive": {
+        "files": 669,
+        "mismatches": []
+      },
+      "opsd-runtime/archive": {
+        "files": 669,
+        "mismatches": []
+      },
+      "runtime/archive-jit-20261005-env-v2": {
+        "files": 669,
+        "mismatches": []
+      }
+    },
+    "health": {
+      "http://10.123.4.11:18003/health": {
+        "ready": true,
+        "ntotal": 21015324,
+        "d": 768,
+        "encoder": "CPU FP32 E5",
+        "index": "full FP32 streaming FlatIP joined scan",
+        "query_micro": 64,
+        "serialized": true,
+        "tf32": false,
+        "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+        "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+      },
+      "http://10.123.4.11:18000/health": {
+        "ready": true,
+        "ntotal": 21015324,
+        "d": 768,
+        "encoder": "CPU FP32 E5",
+        "index": "full FP32 streaming FlatIP joined scan",
+        "query_micro": 64,
+        "serialized": true,
+        "tf32": false,
+        "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+        "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+      }
+    },
+    "gpu": "0, 33266 MiB, 49140 MiB, 0 %\n1, 1536 MiB, 49140 MiB, 0 %\n2, 29088 MiB, 49140 MiB, 0 %\n3, 5928 MiB, 49140 MiB, 0 %\n4, 4422 MiB, 49140 MiB, 0 %\n5, 3234 MiB, 49140 MiB, 0 %\n6, 4422 MiB, 49140 MiB, 0 %\n7, 5035 MiB, 49140 MiB, 33 %",
+    "sessions": "e1-archive-jit-continuous-memory-20261005: 1 windows (created Mon Oct  5 07:28:55 2026)\ne1-peer-20261004: 1 windows (created Sun Oct  4 00:58:25 2026)\ne1-priority-5iter-archive-20261004: 1 windows (created Sun Oct  4 10:02:46 2026)\ne1-retriever-20261004: 1 windows (created Sun Oct  4 13:33:53 2026)\ne1-stream-batched-memory-20261004: 1 windows (created Sun Oct  4 20:01:47 2026)\ne1-stream-batched-oracle-20261004: 1 windows (created Sun Oct  4 19:59:14 2026)",
+    "jit_memory": {
+      "run_id": "f04fe593830c4831918ede872812c016",
+      "started": 1791152901.890629,
+      "continuous_observer_started": 1791156535.2196116,
+      "initial_source": "archive-post-jit-memory.json",
+      "initial_source_samples": 1726,
+      "peaks_mib": {
+        "4": 28664,
+        "5": 26488,
+        "6": 28684,
+        "7": 32771
+      },
+      "samples": 34891,
+      "minimum_reserve_mib": {
+        "4": 20476,
+        "5": 22652,
+        "6": 20456,
+        "7": 16369
+      },
+      "shared_gpu_margin_met": true,
+      "updated": 1791229328.2336462,
+      "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+      "source_run_status": "RUNNING",
+      "source_run_matches": true
+    },
+    "oracle_memory": {
+      "peak_mib": 43643,
+      "service_peak_mib": 630,
+      "current_mib": 5035,
+      "total_mib": 49140,
+      "reserve_mib": 5497,
+      "samples": 52340,
+      "time": 1791229321.8159037,
+      "service_pid": 1749337
+    },
+    "checkpoint50_proof": {
+      "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50",
+      "tensor_count": 435,
+      "initial_tensor_count": 434,
+      "verified_aliases": {
+        "lm_head.weight": "model.embed_tokens.weight"
+      },
+      "nonfinite": [],
+      "changed": [
+        {
+          "key": "model.layers.29.self_attn.q_proj.weight",
+          "max_abs_delta": 0.0000868805218487978
+        },
+        {
+          "key": "model.layers.30.self_attn.q_proj.weight",
+          "max_abs_delta": 0.00010683573782444
+        },
+        {
+          "key": "model.layers.31.self_attn.q_proj.weight",
+          "max_abs_delta": 0.00012272410094738007
+        },
+        {
+          "key": "model.layers.32.self_attn.q_proj.weight",
+          "max_abs_delta": 0.00009321793913841248
+        }
+      ],
+      "accepted": true
+    }
+  },
+  "r1": {
+    "time": 1791229330.709028,
+    "node": "xielab1",
+    "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+    "run_id": "b8b93546fb314915b3e72f355f22f291",
+    "status": "RUNNING",
+    "pid": 139484,
+    "live_owned": true,
+    "phase": "2026-10-05T08:02:58+00:00 FRESH_GRPO_ROUND_1\n",
+    "metrics": [
+      {
+        "step": 20,
+        "audit/strict_em": 0.196,
+        "actor/grad_norm": 1.276,
+        "actor/pg_loss": 0.005,
+        "timing_s/step": 1844.88
+      },
+      {
+        "step": 21,
+        "audit/strict_em": 0.226,
+        "actor/grad_norm": 1.957,
+        "actor/pg_loss": 0.041,
+        "timing_s/step": 1833.79
+      },
+      {
+        "step": 22,
+        "audit/strict_em": 0.212,
+        "actor/grad_norm": 1.601,
+        "actor/pg_loss": 0.034,
+        "timing_s/step": 1858.616
+      }
+    ],
+    "current_step": [
+      "23"
+    ],
+    "nonfinite_actor_rows": 0,
+    "errors": [],
+    "log_age_seconds": 192.60608291625977,
+    "checkpoints": [
+      "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+      "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2"
+    ],
+    "validation_rows": [
+      "(main_task pid=142302) step:0 - val/test_score/nq:0.180 - val/test_score/hotpotqa:0.180"
+    ],
+    "hashes": {
+      "runtime/r1": {
+        "files": 305,
+        "mismatches": []
+      },
+      "opsd-runtime/r1": {
+        "files": 305,
+        "mismatches": []
+      }
+    },
+    "health": {
+      "http://10.120.17.101:18001/health": {
+        "ready": true,
+        "ntotal": 21015324,
+        "d": 768,
+        "encoder": "CPU FP32 E5",
+        "index": "full FP32 streaming FlatIP joined scan",
+        "query_micro": 64,
+        "serialized": true,
+        "tf32": false,
+        "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+        "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+      }
+    },
+    "gpu": "0, 6325 MiB, 24564 MiB, 99 %\n1, 6363 MiB, 24564 MiB, 98 %\n2, 6363 MiB, 24564 MiB, 99 %\n3, 6363 MiB, 24564 MiB, 99 %\n4, 6363 MiB, 24564 MiB, 99 %\n5, 6363 MiB, 24564 MiB, 99 %\n6, 6363 MiB, 24564 MiB, 99 %\n7, 6325 MiB, 24564 MiB, 99 %",
+    "sessions": "e1-assist-peer-20261004: 1 windows (created Sat Oct  3 18:16:01 2026)\ne1-migration-assets-20261004: 1 windows (created Sun Oct  4 10:23:48 2026)\ne1-oracle-joined-relay-20261004: 1 windows (created Sun Oct  4 12:09:16 2026)\ne1-r1-aligned-acceptance-20261005: 1 windows (created Mon Oct  5 08:02:58 2026)\ne1-r1-aligned-full-20261005: 1 windows (created Mon Oct  5 08:02:58 2026)\ne1-reporter-wheel-peer-20261004: 1 windows (created Sat Oct  3 21:55:23 2026)",
+    "acceptance": {
+      "run_id": "b8b93546fb314915b3e72f355f22f291",
+      "node": "xielab1",
+      "base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+      "driver_group_pid": 139484,
+      "live_owned_group": true,
+      "status": "RUNNING",
+      "completed_iteration": 22,
+      "grpo_updates_per_stage": 200,
+      "minimum_reserve_mib": 9319,
+      "reserves_mib": {
+        "0": 9879,
+        "1": 9319,
+        "2": 9737,
+        "3": 9645,
+        "4": 9695,
+        "5": 9827,
+        "6": 9779,
+        "7": 9709
+      },
+      "nonfinite_actor_metric": false,
+      "checkpoint_checks": {
+        "2": {
+          "checkpoint": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2",
+          "tensor_count": 435,
+          "initial_tensor_count": 434,
+          "verified_aliases": {
+            "lm_head.weight": "model.embed_tokens.weight"
+          },
+          "nonfinite": [],
+          "changed": [
+            {
+              "key": "model.layers.0.self_attn.q_proj.weight",
+              "max_abs_delta": 3.520399332046509e-7
+            },
+            {
+              "key": "model.layers.1.self_attn.q_proj.weight",
+              "max_abs_delta": 3.390014171600342e-7
+            },
+            {
+              "key": "model.layers.10.self_attn.q_proj.weight",
+              "max_abs_delta": 3.501772880554199e-7
+            },
+            {
+              "key": "model.layers.11.self_attn.q_proj.weight",
+              "max_abs_delta": 3.501772880554199e-7
+            }
+          ],
+          "accepted": true
+        },
+        "5": {
+          "checkpoint": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+          "tensor_count": 435,
+          "initial_tensor_count": 434,
+          "verified_aliases": {
+            "lm_head.weight": "model.embed_tokens.weight"
+          },
+          "nonfinite": [],
+          "changed": [
+            {
+              "key": "model.layers.0.self_attn.q_proj.weight",
+              "max_abs_delta": 0.000002905726432800293
+            },
+            {
+              "key": "model.layers.1.self_attn.q_proj.weight",
+              "max_abs_delta": 0.0000027534551918506622
+            },
+            {
+              "key": "model.layers.10.self_attn.q_proj.weight",
+              "max_abs_delta": 0.000003080815076828003
+            },
+            {
+              "key": "model.layers.11.self_attn.q_proj.weight",
+              "max_abs_delta": 0.0000030919909477233887
+            }
+          ],
+          "accepted": true
+        }
+      },
+      "checkpoints": [
+        "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_5",
+        "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/round-1-grpo/actor/global_step_2"
+      ],
+      "five_real_updates_accepted": true,
+      "updated": 1791229314.7823985
+    },
+    "adam5_proof": {
+      "run_id": "b8b93546fb314915b3e72f355f22f291",
+      "node": "xielab1",
+      "time": 1791198678.9245105,
+      "world_size": 8,
+      "read_only": true,
+      "updates_per_iteration": 20,
+      "accepted": true,
+      "ranks": [
+        {
+          "rank": 7,
+          "pid": 143291,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.8302505
+        },
+        {
+          "rank": 1,
+          "pid": 143285,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.8304331
+        },
+        {
+          "rank": 2,
+          "pid": 143286,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.826098
+        },
+        {
+          "rank": 4,
+          "pid": 143288,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.9104967
+        },
+        {
+          "rank": 5,
+          "pid": 143289,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.9237652
+        },
+        {
+          "rank": 3,
+          "pid": 143287,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.9184487
+        },
+        {
+          "rank": 6,
+          "pid": 143290,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.9225702
+        },
+        {
+          "rank": 0,
+          "pid": 142966,
+          "scheduler_step": 5,
+          "adam_steps": [
+            100
+          ],
+          "learning_rates": [
+            8.771929824561403e-8
+          ],
+          "time": 1791198678.8344898
+        }
+      ],
+      "scope": "Read-only counters from same-run live workers; no state loading, distributed collective, model copy, or optimizer mutation"
+    }
+  }
+}
