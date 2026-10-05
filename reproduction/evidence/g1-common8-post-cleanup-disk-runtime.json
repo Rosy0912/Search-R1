@@ -1,0 +1,28 @@
+{
+  "upper_bound_dtype": "float32",
+  "save_steps": [
+    5,
+    50,
+    100,
+    150,
+    200,
+    250,
+    300
+  ],
+  "per_save_allowance_bytes": 14125285376,
+  "other_run_reserve_bytes": 8589934592,
+  "required_free_bytes": 107466932224,
+  "scope": "actual CPU model header/disk and retained env imports after duplicate cleanup; not native fulljob/model/GPU/GRPO admission",
+  "actual_free_bytes": 107898847232,
+  "fits": true,
+  "runtime_imports": {
+    "torch": "2.4.0",
+    "flash-attn": "2.7.4.post1",
+    "transformers": "4.46.3",
+    "ray": "2.40.0",
+    "pyarrow": "25.0.1",
+    "scikit-learn": "1.5.2"
+  },
+  "actual_grpo_updates": 0,
+  "checked_unix": 1791198404.975418
+}
