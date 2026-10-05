@@ -1,0 +1,260 @@
+{
+  "checked_unix": 1791169269.6892457,
+  "run_id": "739c7771ca50455fa67e458822382788",
+  "completed_update": 257,
+  "new_updates": 7,
+  "actual_rows": [
+    {
+      "step": 251,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.113,
+        "actor/kl_loss": 0.361,
+        "actor/entropy_loss": 1.014,
+        "actor/pg_loss": 0.008,
+        "actor/ppo_kl": 0.018,
+        "actor/grad_norm": 0.487,
+        "critic/rewards/mean": 0.188,
+        "env/finish_ratio": 1,
+        "env/ratio_of_valid_action": 0.671,
+        "timing_s/step": 327.483
+      }
+    },
+    {
+      "step": 252,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.073,
+        "actor/kl_loss": 0.467,
+        "actor/entropy_loss": 0.799,
+        "actor/pg_loss": -0.017,
+        "actor/ppo_kl": 0.003,
+        "actor/grad_norm": 440.47,
+        "critic/rewards/mean": 0.137,
+        "env/finish_ratio": 1,
+        "env/ratio_of_valid_action": 0.673,
+        "timing_s/step": 326.719
+      }
+    },
+    {
+      "step": 253,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.131,
+        "actor/kl_loss": 0.54,
+        "actor/entropy_loss": 0.851,
+        "actor/pg_loss": -0.011,
+        "actor/ppo_kl": 0.004,
+        "actor/grad_norm": 5.017,
+        "critic/rewards/mean": 0.2,
+        "env/finish_ratio": 0.983,
+        "env/ratio_of_valid_action": 0.665,
+        "timing_s/step": 357.085
+      }
+    },
+    {
+      "step": 254,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.061,
+        "actor/kl_loss": 0.45,
+        "actor/entropy_loss": 0.845,
+        "actor/pg_loss": 0.001,
+        "actor/ppo_kl": 0.006,
+        "actor/grad_norm": 4714.181,
+        "critic/rewards/mean": 0.126,
+        "env/finish_ratio": 0.986,
+        "env/ratio_of_valid_action": 0.662,
+        "timing_s/step": 339.675
+      }
+    },
+    {
+      "step": 255,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.111,
+        "actor/kl_loss": 0.441,
+        "actor/entropy_loss": 0.871,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": 0.021,
+        "actor/grad_norm": 0.682,
+        "critic/rewards/mean": 0.173,
+        "env/finish_ratio": 1,
+        "env/ratio_of_valid_action": 0.678,
+        "timing_s/step": 389.438
+      }
+    },
+    {
+      "step": 256,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.022,
+        "actor/kl_loss": 0.276,
+        "actor/entropy_loss": 0.982,
+        "actor/pg_loss": 0.042,
+        "actor/ppo_kl": 0.057,
+        "actor/grad_norm": 40.416,
+        "critic/rewards/mean": 0.047,
+        "env/finish_ratio": 0.955,
+        "env/ratio_of_valid_action": 0.518,
+        "timing_s/step": 392.911
+      }
+    },
+    {
+      "step": 257,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0.058,
+        "actor/kl_loss": 0.368,
+        "actor/entropy_loss": 1.038,
+        "actor/pg_loss": -0.023,
+        "actor/ppo_kl": 0.035,
+        "actor/grad_norm": 1.379,
+        "critic/rewards/mean": 0.071,
+        "env/finish_ratio": 0.703,
+        "env/ratio_of_valid_action": 0.443,
+        "timing_s/step": 408.711
+      }
+    }
+  ],
+  "reward_recent": 0.071,
+  "reward_window_mean": 0.13457142857142856,
+  "reward_range": [
+    0.047,
+    0.2
+  ],
+  "reward_difference_previous_nonempty_mean": -0.26651948051948054,
+  "reward_precision": "console3decimals; probe changed at250/freshAdam so change not pure policy comparison",
+  "five_accepted": true,
+  "five_checkpoint": {
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "step": 255,
+    "validated_tensor_count": 435,
+    "finite_all_saved_tensors": true,
+    "checkpoint": "/data/search-g1-continuation-250-fp64/checkpoints/search-g1-a800/actor/global_step_255",
+    "files_sha256": {
+      "model-00002-of-00003.safetensors": "8488d4f031abce59eb505ad7162c14159e03f5bbf4b2e87466b1b4660e0b59e3",
+      "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+      "model-00003-of-00003.safetensors": "694dda7e803d291a9bb8a28dd8b2f9113e0afebb3970f78b1555b7cbd02f5a9e",
+      "model-00001-of-00003.safetensors": "9a26a050ab6bda30a28b88c3d9f0543d1ec1ccd6997cbaad328b2496a4f908b9",
+      "config.json": "b6de45d1f90298bcc0c753a71aeb59471bb5773e2c9b5b7c1066a46086d27663"
+    }
+  },
+  "five_changed_parameter_count": 435,
+  "five_sha256": "c0865e368efbae70e38a8752ee21a99dc1073c2da9602e28e338e801d9c6cdb4",
+  "validation_step": 255,
+  "validation_correct": 0,
+  "validation_em": 0,
+  "validation_em_change_pp": -10.9375,
+  "validation_source_counts": {
+    "musique": 9,
+    "triviaqa": 9,
+    "popqa": 9,
+    "hotpotqa": 9,
+    "bamboogle": 9,
+    "nq": 10,
+    "2wikimultihopqa": 9
+  },
+  "validation_source_correct": {
+    "musique": 0,
+    "triviaqa": 0,
+    "popqa": 0,
+    "hotpotqa": 0,
+    "bamboogle": 0,
+    "nq": 0,
+    "2wikimultihopqa": 0
+  },
+  "trainer_identity": {
+    "pid": 3637406,
+    "start_ticks": 524582919,
+    "sid": 3637406,
+    "uid": 0,
+    "state": "S",
+    "command": "bash reproduction/a800/train.sh "
+  },
+  "main_identity": {
+    "pid": 3643039,
+    "start_ticks": 524585455,
+    "sid": 3637406,
+    "uid": 0,
+    "state": "S",
+    "command": "ray::main_task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  "
+  },
+  "pipeline": {
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "stage": "GRPO_251_TO_300",
+    "unix": 1791166237.8780622
+  },
+  "raw_gradient_peak": 94162.80361221405,
+  "raw_gradient_abs_peak": 4743.9794921875,
+  "gpu_window_peak_mib": {
+    "0": 47027,
+    "1": 47123,
+    "2": 47569,
+    "3": 46879,
+    "5": 19203,
+    "6": 25437
+  },
+  "gpu_cumulative_peak_mib": {
+    "0": 47027,
+    "1": 47123,
+    "2": 47569,
+    "3": 46879,
+    "5": 19203,
+    "6": 25437
+  },
+  "sampler_last": 1791169268.6679764,
+  "sample_count": 1544,
+  "max_sample_interval": 2.2938570976257324,
+  "gpu_current_csv": "0, 47027, 81920, 100\n1, 47123, 81920, 100\n2, 47569, 81920, 100\n3, 46879, 81920, 100\n4, 4, 81920, 0\n5, 17879, 81920, 0\n6, 25437, 81920, 0\n7, 68494, 81920, 0\n",
+  "error_markers": [],
+  "independent_checkpoint_scan": {
+    "checked_unix": 1791169225.0758665,
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "step": 255,
+    "accepted_checkpoint_structure": true,
+    "validated_tensor_count": 435,
+    "finite_all_saved": true,
+    "changed_parameters": 435,
+    "max_absolute_parameter_delta": 6.224960088729858e-05,
+    "source250_sha_verified": true,
+    "fresh255_sha_verified": true,
+    "actual_fixed64_unique_ids": 64,
+    "actual_fixed64_correct": 0,
+    "source_counts": {
+      "musique": 9,
+      "bamboogle": 9,
+      "hotpotqa": 9,
+      "nq": 10,
+      "2wikimultihopqa": 9,
+      "popqa": 9,
+      "triviaqa": 9
+    },
+    "semantics": "independent saved tensor/finite/hash/delta and fixed64 binary rows check; five progress acceptance is not successful accuracy reproduction"
+  },
+  "semantics": "Five progress gate passed, not paper-quality accuracy acceptance; accuracy collapsed, large raw gradients. Original recipe/current trainer untouched; read-only review ongoing.",
+  "review_observation": {
+    "evaluation_bypasses_probe": true,
+    "printed_255_answer_payload_lengths": [
+      1,
+      2,
+      1,
+      2,
+      2,
+      1,
+      1
+    ],
+    "printed_255_unique_answers": 4,
+    "printed_initial250_answer_payload_lengths": [
+      12,
+      4,
+      1,
+      3,
+      4,
+      5,
+      4
+    ],
+    "printed_initial250_unique_answers": 7,
+    "scope": "seven private printed examples, not full64 parsing classification; wrong/invalid split for full64 unknown; no causal proof"
+  }
+}
