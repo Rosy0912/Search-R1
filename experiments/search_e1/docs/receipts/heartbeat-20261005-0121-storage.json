@@ -1,0 +1,16 @@
+{
+  "archive": {
+    "chunk_id": "f9eecf",
+    "wall_time_seconds": 0.887872541,
+    "exit_code": 0,
+    "original_token_count": 206,
+    "output": "文件系统        容量  已用  可用 已用% 挂载点\n/dev/sdc1        15T  5.5T  8.3T   40% /weka_3\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-040-low-headroom-step1-saved/actor/global_step_1\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-035/actor/global_step_1\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-035/actor/global_step_2\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-025/actor/global_step_1\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-025/actor/global_step_2\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-030/actor/global_step_1\n/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/smoke-030/actor/global_step_2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+  },
+  "r1": {
+    "chunk_id": "891886",
+    "wall_time_seconds": 0.420405417,
+    "exit_code": 0,
+    "original_token_count": 100,
+    "output": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sdb1        29T   26T  1.8T  94% /data\n/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/round-1-grpo/actor/global_step_3\n/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_1\n/data/shaoshitong/search-e1-config-study-8gpu-20261004/runs/r1/smoke-025/actor/global_step_2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+  }
+}
