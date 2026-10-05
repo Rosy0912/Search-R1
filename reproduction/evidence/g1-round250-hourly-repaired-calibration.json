@@ -1,0 +1,47 @@
+{
+  "checked_unix": 1791158915.7775664,
+  "run_id": "06fe8f4ef2d44848a683850e28076c20",
+  "completed_update": 250,
+  "new_updates": 0,
+  "reward_new_window_mean": null,
+  "reward_new_window_range": null,
+  "reward_latest_historical": 0.215,
+  "validation_step": 250,
+  "validation_correct": 7,
+  "validation_total": 64,
+  "validation_em": 0.109375,
+  "validation_changed": false,
+  "calibration_job": {
+    "directory": "/data/search-g1-calibration-repair-250/artifacts/round250-38e6e4e6ed51462d934304a88c9d08ac",
+    "leader": {
+      "pid": 3547249,
+      "start_ticks": 523830491,
+      "sid": 3547249,
+      "uid": 0,
+      "state": "R",
+      "command": "/data/search-g1/env/bin/python /data/search-g1-calibration-repair-250/calibrate_owned.py "
+    },
+    "purpose": "actual300/G5 calibration only; no trainer",
+    "source_commit": "ddab367"
+  },
+  "calibration_root_live": true,
+  "calibration_status": {
+    "stage": "GENUINE_300_G5_INTERVENTIONS",
+    "unix": 1791158818.6844022
+  },
+  "original_training_owned_remaining": [],
+  "gpu_current_csv": "0, 4, 81920, 0\n1, 4, 81920, 0\n2, 4, 81920, 0\n3, 4, 81920, 0\n4, 4, 81920, 0\n5, 17879, 81920, 0\n6, 37591, 81920, 36\n7, 68494, 81920, 0\n",
+  "calibration_sample_count": 45,
+  "calibration_sampling_start": 1791158818.8896506,
+  "calibration_sampling_end": 1791158914.6780882,
+  "calibration_gpu_peaks_mib": {
+    "5": 17879,
+    "6": 37591
+  },
+  "historical_training_peak_mib": 40879,
+  "training_sample_stopped_unix": 1791147060.7653642,
+  "source_repair_commit": "ddab367",
+  "target_cpu_tests_passed": 25,
+  "review_no_blockers": true,
+  "semantics": "Calibration-only job. No trainer or new GRPO update. Old training peak is historical; calibration sampling separate. Disk source hash is not loaded-module proof."
+}
