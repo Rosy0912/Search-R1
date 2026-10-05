@@ -81,7 +81,7 @@ def row_denominator(rows, device):
     return count.clamp_min(1) / world
 
 
-def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None):
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, dual_clip=None):
     """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
     valid = mask.bool()
     for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
@@ -92,6 +92,18 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
     advantages = torch.where(valid, advantages, 0.)
     weights = torch.where(valid, weights, 0.)
     delta = current - old
+    if dual_clip is not None:
+        from .policy_safety import dual_clip_terms, joint_log_ratios
+        # Safety branch is explicitly authorized; the legacy mathematical path stays frozen.
+        if step_ids is not None:
+            _, delta = joint_log_ratios(old, current, advantages, mask, step_ids)
+        else:
+            delta = current.double() - old.double()
+        terms = dual_clip_terms(delta, advantages, mask, cliprange, dual_clip)
+        loss = F.masked_sum(terms, weights) / denominator
+        mass = weights.sum().clamp_min(torch.finfo(weights.dtype).tiny)
+        saturated = ((advantages > 0) & (delta > __import__('math').log1p(cliprange))) | ((advantages < 0) & (delta < __import__('math').log1p(-cliprange)))
+        return loss, F.masked_sum(saturated.double(), weights) / mass, F.masked_sum(-delta, weights) / mass
     zero_pg_actions = torch.zeros_like(valid)
     if step_ids is not None:
         action_deltas = []

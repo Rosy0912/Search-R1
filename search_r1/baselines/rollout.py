@@ -92,6 +92,8 @@ class SearchRollout:
                                   (self.config.force_final_answer and not state.final_used))
 
     def advance(self, states, meta):
+        if getattr(self.manager, "rollout_trace", None) is not None and self.ranker is not None:
+            raise ValueError("Compact trajectory logging requires the GiGPO unranked rollout")
         from verl import DataProto
         matches = [s.prompt + s.response == s.rolling for s in states]
         mismatches = sum(not match for match in matches)
@@ -127,12 +129,19 @@ class SearchRollout:
                 continue
             predictions = [text[i] for i in indices]
             if self.ranker is None:
+                trace_options = {'record_trace': False} if getattr(self.manager, 'rollout_trace', None) is not None else {}
                 result = self.manager.execute_predictions(predictions, self.tokenizer.pad_token,
-                                                           torch.ones(len(indices), dtype=torch.bool), do_search=do_search)
+                                                           torch.ones(len(indices), dtype=torch.bool), do_search=do_search,
+                                                           **trace_options)
             else:
                 result = self.ranker.execute(self.manager, predictions, [states[i] for i in indices], do_search)
+            if len(result) != 4 or any(len(part) != len(indices) for part in result):
+                raise ValueError('Environment result coverage changed')
             for j, i in enumerate(indices):
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
+        trace = getattr(self.manager, 'rollout_trace', None)
+        if trace is not None:
+            trace.record_active_turn([state.source for state in states], text, observations, dones, valid, searches)
         obs_tokens = self.manager._process_next_obs(observations)
         for i, s in enumerate(states):
             action = tokens[i][tokens[i] != pad].tolist()

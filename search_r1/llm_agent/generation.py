@@ -357,7 +357,7 @@ class LLMGenerationManager:
         
         return final_output
 
-    def execute_predictions(self, predictions: List[str], pad_token: str, active_mask=None, do_search=True) -> List[str]:
+    def execute_predictions(self, predictions: List[str], pad_token: str, active_mask=None, do_search=True, record_trace=True) -> List[str]:
         """
         Execute predictions across multiple environments.
         NOTE: the function is the actual `step` function in the environment
@@ -410,7 +410,7 @@ If I want to give the final answer, I should put the answer between <answer> and
         assert len(search_results) == 0
             
         trace = getattr(self, 'rollout_trace', None)
-        if trace is not None:
+        if trace is not None and record_trace:
             trace.record_turn(predictions, next_obs, active_mask, dones, valid_action, is_search)
         return next_obs, dones, valid_action, is_search
 

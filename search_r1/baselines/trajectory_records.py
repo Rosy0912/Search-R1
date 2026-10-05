@@ -51,6 +51,24 @@ class RolloutTrace:
                 for i in range(len(self.ids))]
         return atomic_rows(self.root / f'turn_{self.turn:02d}.jsonl.gz', rows)
 
+    def record_active_turn(self, row_indices, predictions, observations, dones, valid_action, is_search):
+        """Expand active original rows without changing the rollout's compact batch."""
+        import operator
+        indices = [operator.index(row) for row in row_indices]
+        vectors = (predictions, observations, dones, valid_action, is_search)
+        if any(len(vector) != len(indices) for vector in vectors):
+            raise ValueError('Active trajectory vector coverage changed')
+        if len(set(indices)) != len(indices) or any(row < 0 or row >= len(self.ids) for row in indices):
+            raise ValueError('Active trajectory row identity invalid')
+        expanded = [[''] * len(self.ids), [''] * len(self.ids),
+                    [True] * len(self.ids), [False] * len(self.ids), [False] * len(self.ids)]
+        active = [False] * len(self.ids)
+        for offset, row in enumerate(indices):
+            active[row] = True
+            for destination, source in zip(expanded, vectors):
+                destination[row] = source[offset]
+        return self.record_turn(expanded[0], expanded[1], active, *expanded[2:])
+
     def record_generation(self, output, tokenizer):
         if len(output) != len(self.ids):
             raise ValueError('Trajectory generation coverage changed')

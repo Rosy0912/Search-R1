@@ -146,8 +146,142 @@ class DataParallelPPOActor(BasePPOActor):
         grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip, loss_scale)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
+        if self.config.get('policy_safety', {}).get('enabled', False):
+            self._last_safety_grad_norm_after = clip_grad_norm64(self.actor_module, float('inf'))
         self.actor_optimizer.step()
         return grad_norm
+
+    def _safety_sync_invalid(self, bad, device, identity, phase, writes, tensors=None, current=None, details=None):
+        """All ranks meet this boundary before a local validator may raise."""
+        import os, json
+        from pathlib import Path
+        from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
+        group = getattr(self.actor_module, 'process_group', None)
+        flag = torch.tensor(int(bad), device=device, dtype=torch.int32)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(flag, op=torch.distributed.ReduceOp.MAX, group=group)
+        if not bool(flag):
+            return
+        rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+        record = dict(identity, phase=phase, actual_optimizer_writes=writes,
+            rank=rank, pid=os.getpid(), local_invalid=bool(bad), details=details,
+            run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'), commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+            config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+            data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
+        error = None
+        try:
+            root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+            if root:
+                folder = Path(root) / 'policy-safety';folder.mkdir(parents=True, exist_ok=True)
+                stem = f'numeric-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}'
+                atomic_torch_save(dict(record=record, tensors=cpu_snapshot(tensors), current=cpu_snapshot(current)), folder / (stem+'.pt'))
+                (folder / (stem+'.json')).write_text(json.dumps(record, allow_nan=False, sort_keys=True))
+        except Exception as exc:
+            error = repr(exc)
+        io_bad = torch.tensor(int(error is not None), device=device, dtype=torch.int32)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(io_bad, op=torch.distributed.ReduceOp.MAX, group=group)
+        raise RuntimeError('POLICY_SAFETY_REJECTED: synchronized invalid input/state' + ('; diagnostic IO failed' if bool(io_bad) else ''))
+
+    @torch.no_grad()
+    def _policy_safety_guard(self, monitor, temperature, control, identity, phase, writes):
+        from search_r1.baselines.policy_safety import local_statistics, global_statistics, rejection_reason
+        from search_r1.baselines.loss_scaling import TransparentProbe, coordinated_badflag
+        from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
+        import os, json
+        from pathlib import Path
+        group = getattr(self.actor_module, 'process_group', None)
+        # Match one global decision before FSDP forward, including a locally corrupt shard/Adam.
+        device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
+        state_bad = False
+        values = list(self.actor_module.parameters()) + list(self.actor_module.buffers())
+        values += [v for state in self.actor_optimizer.state.values() for v in state.values() if torch.is_tensor(v)]
+        for value in values:
+            for chunk in value.detach().reshape(-1).split(262144):
+                state_bad = state_bad or not bool(torch.isfinite(chunk).all())
+        self._safety_sync_invalid(state_bad, device, identity, phase+'_state', writes,
+                                  monitor, details='NONFINITE_MODEL_BUFFER_OR_ADAM')
+        from search_r1.baselines.runtime_audit import tensor_hash
+        monitor_hashes = {key: tensor_hash(value) for key, value in monitor.items()}
+        monitor_changed = monitor_hashes != self._safety_monitor_identity
+        parts, current_logps = [], []
+        probe = TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None))
+        entered = False; entry_error = exit_error = None
+        try:
+            try:
+                probe.__enter__(); entered = True
+            except Exception as exc:
+                entry_error = repr(exc)
+            self._safety_sync_invalid(entry_error is not None or getattr(probe, 'invalid', True),
+                device, identity, phase+'_probe_entry', writes, monitor, details=entry_error)
+            with torch.no_grad():
+                for micro_index, micro in enumerate(monitor.split(self.config.ppo_micro_batch_size)):
+                    schema_error = None
+                    try:
+                        expected = micro['old_log_probs'].shape
+                        if any(micro[key].shape != expected for key in ('advantages','policy_weights','step_ids','responses')):
+                            raise ValueError('Monitor action tensor shape changed')
+                        if micro['step_ids'].dtype not in (torch.int8,torch.int16,torch.int32,torch.int64):
+                            raise ValueError('Monitor action identity dtype changed')
+                    except Exception as exc:
+                        schema_error = repr(exc)
+                    self._safety_sync_invalid(schema_error is not None, device, identity,
+                        phase+f'_schema{micro_index}', writes, micro, details=schema_error)
+                    micro = micro.cuda()
+                    _, current = self._forward_micro_batch(micro, temperature)
+                    mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -micro['responses'].shape[1]:]
+                    stats_error = None
+                    try:
+                        part = local_statistics(micro['old_log_probs'], current, micro['advantages'], mask,
+                            micro['policy_weights'], micro['step_ids'], control['dual_clip'], control['kl_log_bound'])
+                    except Exception as exc:
+                        stats_error = repr(exc)
+                    self._safety_sync_invalid(stats_error is not None, device, identity,
+                        phase+f'_stats{micro_index}', writes, micro, current, details=stats_error)
+                    parts.append(part)
+                    current_logps.append(current.detach().cpu())
+        finally:
+            if entered:
+                try:
+                    probe.__exit__(None, None, None)
+                except Exception as exc:
+                    exit_error = repr(exc)
+        self._safety_sync_invalid(exit_error is not None or probe.invalid,
+            device, identity, phase+'_probe_exit', writes, monitor, details=exit_error)
+        if monitor_changed:
+            parts[0][0][3] += 1
+        stats = global_statistics(parts, group)
+        reason = rejection_reason(stats, control)
+        record = dict(identity, phase=phase, actual_optimizer_writes=writes, allowed=reason is None,
+                      rejection_reason=reason, statistics=stats, fixed_monitor_hashes=monitor_hashes,
+                      temperature=temperature, monitor_identity_changed=monitor_changed)
+        record.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
+            pid=os.getpid(), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+            commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+            config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+            data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
+        if phase == 'after':
+            record['gradient_norm_after_clip'] = float(self._last_safety_grad_norm_after)
+        # Every rank writes its own actual inputs on rejection. No partial outer is completed.
+        error = None
+        try:
+            root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+            if root:
+                rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+                folder = Path(root) / 'policy-safety';folder.mkdir(parents=True, exist_ok=True)
+                with (folder / f'rank-{rank}.jsonl').open('a') as stream:
+                    stream.write(json.dumps(record, allow_nan=False, sort_keys=True) + '\n');stream.flush()
+                if reason:
+                    atomic_torch_save(dict(record=record, monitor={k:cpu_snapshot(v) for k,v in monitor.items()},
+                                           current_log_probs=current_logps),
+                                      folder / f'rejected-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}.pt')
+        except Exception as exc:
+            error = repr(exc)
+        device = parts[0][0].device
+        coordinated_badflag(error is not None, device, group)
+        if reason:
+            raise RuntimeError('POLICY_SAFETY_REJECTED: ' + json.dumps(record, allow_nan=False, sort_keys=True))
+        return stats
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
         """Compute the log probability of the responses given input_ids, attention_mask and position_ids
@@ -203,32 +337,72 @@ class DataParallelPPOActor(BasePPOActor):
         # make sure we are in training mode
         self.actor_module.train()
         outer_identity = dict(data.meta_info)
+        safety = self.config.get('policy_safety', {})
+        safety_enabled = safety.get('enabled', False)
+        if safety_enabled:
+            from search_r1.baselines.policy_safety import validate_config
+            safety_device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
+            entry_error = None
+            try:
+                validate_config(safety)
+                if self.config.get('baseline_method') != 'gigpo' or self.config.use_dynamic_bsz or self.config.ppo_epochs != 1:
+                    raise ValueError('Policy safety requires the reviewed fixed-micro GiGPO epoch1 path')
+            except Exception as exc:
+                entry_error = repr(exc)
+            self._safety_sync_invalid(entry_error is not None, safety_device,
+                dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
+                'entry_config', 0, details=entry_error)
 
-        assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
-        self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
-        temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
+        preparation_error = None
+        try:
+            assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
+            self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
+            temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
-        select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
-        if self.config.state_masking:
-            select_keys.append('loss_mask')
-        if self.config.use_kl_loss:
-            select_keys.append('ref_log_prob')
-        paper_objective = 'policy_weights' in data.batch.keys()
-        if paper_objective:
-            select_keys.append('policy_weights')
-            if self.config.get('baseline_method') == 'gigpo':
-                select_keys.append('step_ids')
-        batch = data.select(batch_keys=select_keys).batch
+            select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
+            if self.config.state_masking:
+                select_keys.append('loss_mask')
+            if self.config.use_kl_loss:
+                select_keys.append('ref_log_prob')
+            paper_objective = 'policy_weights' in data.batch.keys()
+            if paper_objective:
+                select_keys.append('policy_weights')
+                if self.config.get('baseline_method') == 'gigpo':
+                    select_keys.append('step_ids')
+            batch = data.select(batch_keys=select_keys).batch
 
-        audit = None
-        if self.config.get('baseline_method') in ('grpo', 'gigpo'):
-            from search_r1.baselines.runtime_audit import enabled, ActorAudit
-            if enabled():
-                audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+            audit = None
+            if self.config.get('baseline_method') in ('grpo', 'gigpo'):
+                from search_r1.baselines.runtime_audit import enabled, ActorAudit
+                if enabled():
+                    audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
 
-        # Split to make minibatch iterator for updating the actor
-        # See PPO paper for details. https://arxiv.org/abs/1707.06347
-        dataloader = batch.split(self.config.ppo_mini_batch_size)
+            # Split to make minibatch iterator for updating the actor
+            # See PPO paper for details. https://arxiv.org/abs/1707.06347
+            dataloader = batch.split(self.config.ppo_mini_batch_size)
+            monitor = None
+            if safety_enabled:
+                monitor_error = None
+                try:
+                    monitor = dataloader[0].clone()
+                    world = torch.distributed.get_world_size() if torch.distributed.is_initialized() else 1
+                    if len(monitor) * world != safety['monitor_first_global_rows'] or len(dataloader) != 10:
+                        raise ValueError('Fixed monitor global256/ten-minibatch coverage mismatch')
+                    from search_r1.baselines.runtime_audit import tensor_hash
+                    self._safety_monitor_identity = {key: tensor_hash(value) for key, value in monitor.items()}
+                except Exception as exc:
+                    monitor_error = repr(exc)
+                if monitor_error:
+                    raise ValueError(monitor_error)
+
+        except Exception as exc:
+            if not safety_enabled:
+                raise
+            preparation_error = repr(exc)
+        if safety_enabled:
+            self._safety_sync_invalid(preparation_error is not None, safety_device,
+                dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
+                'entry_preparation', 0, details=preparation_error)
 
         metrics = {}
         updates = skipped = 0
@@ -269,12 +443,15 @@ class DataParallelPPOActor(BasePPOActor):
                 # split batch into micro_batches
                 micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
 
+            if safety_enabled:
+                self._policy_safety_guard(monitor, temperature, safety,
+                    dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx), 'before', updates)
             self.actor_optimizer.zero_grad()
             mini_metrics = {}
 
             loss_scale = 1.
             probe_logps = []
-            scaled_joint = self.config.get('joint_loss_scaling', False)
+            scaled_joint = self.config.get('joint_loss_scaling', False) and not safety_enabled
             if scaled_joint:
                 if not paper_objective or self.config.get('baseline_method') != 'gigpo':
                     raise ValueError('Joint loss scaling is only defined for the GiGPO paper objective')
@@ -357,10 +534,29 @@ class DataParallelPPOActor(BasePPOActor):
                         invalid = invalid | (~torch.isfinite(data['ref_log_prob'][response_mask.bool()]).all()).to(torch.int32)
                     coordinated_badflag(bool(invalid) or mismatch, log_prob.device, group)
 
+                if safety_enabled:
+                    from search_r1.baselines.policy_safety import local_statistics
+                    from search_r1.baselines.loss_scaling import coordinated_badflag
+                    numeric_error = None
+                    try:
+                        probe_stats = local_statistics(old_log_prob, log_prob, advantages, response_mask,
+                            data['policy_weights'], data['step_ids'], safety['dual_clip'], safety['kl_log_bound'])
+                        invalid = bool(probe_stats[0][3])
+                        if self.config.use_kl_loss:
+                            valid = response_mask.bool()
+                            ref_delta = data['ref_log_prob'][valid].double() - log_prob[valid].double()
+                            invalid = invalid or not bool(torch.isfinite(ref_delta).all())
+                    except Exception as exc:
+                        invalid = True;numeric_error = repr(exc)
+                    self._safety_sync_invalid(invalid, log_prob.device,
+                        dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx),
+                        f'gradient_micro{micro_index}', updates, data, log_prob.detach(), details=numeric_error)
+
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
-                        clip_ratio, denominator, data.get('step_ids', None))
+                        clip_ratio, denominator, data.get('step_ids', None),
+                        dual_clip=safety['dual_clip'] if safety_enabled else None)
                 elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
@@ -380,8 +576,8 @@ class DataParallelPPOActor(BasePPOActor):
                 if self.config.use_kl_loss:
                     ref_log_prob = data['ref_log_prob']
                     # compute kl loss
-                    kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
-                                                ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
+                    kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob.double() if safety_enabled else log_prob, 0.),
+                                                ref_logprob=torch.where(response_mask.bool(), ref_log_prob.double() if safety_enabled else ref_log_prob, 0.),
                                                 kl_penalty=self.config.kl_loss_type)
                     kl_loss = (verl_F.masked_sum(kld, data['policy_weights']) / denominator
                                if paper_objective else masked_mean(kld, response_mask))
@@ -400,9 +596,12 @@ class DataParallelPPOActor(BasePPOActor):
                         parts['kl'] = kl_loss
                     audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
                         advantages=advantages, loss_parts=parts,
-                        ref_logp=ref_log_prob if self.config.use_kl_loss else None)
-                if scaled_joint:
-                    coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device, group)
+                        ref_logp=ref_log_prob if self.config.use_kl_loss else None,
+                        dual_clip=safety['dual_clip'] if safety_enabled else None)
+                if scaled_joint or safety_enabled:
+                    from search_r1.baselines.loss_scaling import coordinated_badflag
+                    coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
+                                        getattr(self.actor_module, 'process_group', None))
                 (loss * loss_scale if scaled_joint else loss).backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
@@ -441,7 +640,12 @@ class DataParallelPPOActor(BasePPOActor):
             if audit is not None:
                 audit.gradient(grad_norm)
             updates += 1
+            if safety_enabled:
+                self._policy_safety_guard(monitor, temperature, safety,
+                    dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx), 'after', updates)
             data = {'actor/grad_norm': grad_norm.detach().item()}
+            if safety_enabled:
+                data['actor/grad_norm_after_clip'] = float(self._last_safety_grad_norm_after)
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
         if audit is not None:
