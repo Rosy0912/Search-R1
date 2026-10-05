@@ -1,0 +1,1534 @@
+{
+  "launch": {
+    "base": "/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04",
+    "job_id": "3242",
+    "source_commit": "4b1a06243e915c73b439fca8c62ba5f928ca812b",
+    "wrapper_sha256": "526cbf810302fab92cf202ddc690d9f9627d22105c44bdc6d46e745474f7c4ca",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--partition=gpu",
+      "--nodelist=h100-8",
+      "--nodes=1",
+      "--ntasks=1",
+      "--cpus-per-task=64",
+      "--gres=gpu:h100:8",
+      "--mem=512G",
+      "--exclusive",
+      "--time=01:00:00",
+      "--job-name=search-g1-device-diagnostic",
+      "--chdir=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/repo",
+      "--output=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/logs/slurm-%j.log",
+      "--export=ALL,SEARCH_G1_BASE=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04",
+      "/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/preparation/job.sh"
+    ],
+    "actual_grpo_updates": 0,
+    "scope": "Read device/shape metadata immediately before original CE kernel; no values/rawQA, no optimizer writes",
+    "submitted_unix": 1791201071.4212363
+  },
+  "job": "JobId=3242 JobName=search-g1-device-diagnostic UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898824 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:01:31 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-05T19:51:11 EligibleTime=2026-10-05T19:51:11 AccrueTime=2026-10-05T19:51:11 StartTime=2026-10-05T19:51:11 EndTime=2026-10-05T19:52:42 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T19:51:11 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1121562 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/preparation/job.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/repo StdErr=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/logs/slurm-3242.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-device-diagnostic-b36d345d2e04/logs/slurm-3242.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "checked_unix": 1791201190.2678044,
+  "actual_training_updates": 0,
+  "actual_device_records": [
+    {
+      "stage": "rollout_return",
+      "rank": 0,
+      "cuda_current_device": 0,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140551485652992,
+          "storage_pointer": 140551485652992,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140551487659520,
+          "storage_pointer": 140551487659520,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140616591321088,
+          "storage_pointer": 140616591321088,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140616589685248,
+          "storage_pointer": 140616589685248,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140551486177280,
+          "storage_pointer": 140551486177280,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 0,
+      "cuda_current_device": 0,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140551485652992,
+          "storage_pointer": 140551485652992,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140551487659520,
+          "storage_pointer": 140551487659520,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140616591321088,
+          "storage_pointer": 140616591321088,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140616589685248,
+          "storage_pointer": 140616589685248,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140551486177280,
+          "storage_pointer": 140551486177280,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 0,
+      "cuda_current_device": 0,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140551487659520,
+          "storage_pointer": 140551487659520,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140616591321088,
+          "storage_pointer": 140616591321088,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140616589685248,
+          "storage_pointer": 140616589685248,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140551486177280,
+          "storage_pointer": 140551486177280,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 4,
+      "cuda_current_device": 4,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140445228466176,
+          "storage_pointer": 140445228466176,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140445229018112,
+          "storage_pointer": 140445229018112,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227155456,
+          "storage_pointer": 140445227155456,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140445227744256,
+          "storage_pointer": 140445227744256,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227449856,
+          "storage_pointer": 140445227449856,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 4,
+      "cuda_current_device": 4,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140445228466176,
+          "storage_pointer": 140445228466176,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140445229018112,
+          "storage_pointer": 140445229018112,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227155456,
+          "storage_pointer": 140445227155456,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140445227744256,
+          "storage_pointer": 140445227744256,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227449856,
+          "storage_pointer": 140445227449856,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 4,
+      "cuda_current_device": 4,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140445229018112,
+          "storage_pointer": 140445229018112,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227155456,
+          "storage_pointer": 140445227155456,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140445227744256,
+          "storage_pointer": 140445227744256,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140445227449856,
+          "storage_pointer": 140445227449856,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 1,
+      "cuda_current_device": 1,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140125588946944,
+          "storage_pointer": 140125588946944,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140125589492224,
+          "storage_pointer": 140125589492224,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587636224,
+          "storage_pointer": 140125587636224,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140125588225024,
+          "storage_pointer": 140125588225024,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587930624,
+          "storage_pointer": 140125587930624,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 1,
+      "cuda_current_device": 1,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140125588946944,
+          "storage_pointer": 140125588946944,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140125589492224,
+          "storage_pointer": 140125589492224,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587636224,
+          "storage_pointer": 140125587636224,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140125588225024,
+          "storage_pointer": 140125588225024,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587930624,
+          "storage_pointer": 140125587930624,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 1,
+      "cuda_current_device": 1,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140125589492224,
+          "storage_pointer": 140125589492224,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587636224,
+          "storage_pointer": 140125587636224,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140125588225024,
+          "storage_pointer": 140125588225024,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140125587930624,
+          "storage_pointer": 140125587930624,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 2,
+      "cuda_current_device": 2,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140291079405568,
+          "storage_pointer": 140291079405568,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140291079953920,
+          "storage_pointer": 140291079953920,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078094848,
+          "storage_pointer": 140291078094848,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140291078683648,
+          "storage_pointer": 140291078683648,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078389248,
+          "storage_pointer": 140291078389248,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 2,
+      "cuda_current_device": 2,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140291079405568,
+          "storage_pointer": 140291079405568,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140291079953920,
+          "storage_pointer": 140291079953920,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078094848,
+          "storage_pointer": 140291078094848,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140291078683648,
+          "storage_pointer": 140291078683648,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078389248,
+          "storage_pointer": 140291078389248,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 2,
+      "cuda_current_device": 2,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140291079953920,
+          "storage_pointer": 140291079953920,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078094848,
+          "storage_pointer": 140291078094848,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140291078683648,
+          "storage_pointer": 140291078683648,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140291078389248,
+          "storage_pointer": 140291078389248,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 6,
+      "cuda_current_device": 6,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140371542933504,
+          "storage_pointer": 140371542933504,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140371543490048,
+          "storage_pointer": 140371543490048,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541622784,
+          "storage_pointer": 140371541622784,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140371542211584,
+          "storage_pointer": 140371542211584,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541917184,
+          "storage_pointer": 140371541917184,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 6,
+      "cuda_current_device": 6,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140371542933504,
+          "storage_pointer": 140371542933504,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140371543490048,
+          "storage_pointer": 140371543490048,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541622784,
+          "storage_pointer": 140371541622784,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140371542211584,
+          "storage_pointer": 140371542211584,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541917184,
+          "storage_pointer": 140371541917184,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 6,
+      "cuda_current_device": 6,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140371543490048,
+          "storage_pointer": 140371543490048,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541622784,
+          "storage_pointer": 140371541622784,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140371542211584,
+          "storage_pointer": 140371542211584,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140371541917184,
+          "storage_pointer": 140371541917184,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 3,
+      "cuda_current_device": 3,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140197932302336,
+          "storage_pointer": 140197932302336,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140197932853760,
+          "storage_pointer": 140197932853760,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140197930991616,
+          "storage_pointer": 140197930991616,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140197931580416,
+          "storage_pointer": 140197931580416,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140197931286016,
+          "storage_pointer": 140197931286016,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 3,
+      "cuda_current_device": 3,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140197932302336,
+          "storage_pointer": 140197932302336,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140197932853760,
+          "storage_pointer": 140197932853760,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140197930991616,
+          "storage_pointer": 140197930991616,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140197931580416,
+          "storage_pointer": 140197931580416,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140197931286016,
+          "storage_pointer": 140197931286016,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 3,
+      "cuda_current_device": 3,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140197932853760,
+          "storage_pointer": 140197932853760,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140197930991616,
+          "storage_pointer": 140197930991616,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140197931580416,
+          "storage_pointer": 140197931580416,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140197931286016,
+          "storage_pointer": 140197931286016,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 7,
+      "cuda_current_device": 7,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140545105330176,
+          "storage_pointer": 140545105330176,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140545105894400,
+          "storage_pointer": 140545105894400,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104019456,
+          "storage_pointer": 140545104019456,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140545104608256,
+          "storage_pointer": 140545104608256,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104313856,
+          "storage_pointer": 140545104313856,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 7,
+      "cuda_current_device": 7,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 140545105330176,
+          "storage_pointer": 140545105330176,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140545105894400,
+          "storage_pointer": 140545105894400,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104019456,
+          "storage_pointer": 140545104019456,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140545104608256,
+          "storage_pointer": 140545104608256,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104313856,
+          "storage_pointer": 140545104313856,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 7,
+      "cuda_current_device": 7,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140545105894400,
+          "storage_pointer": 140545105894400,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104019456,
+          "storage_pointer": 140545104019456,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140545104608256,
+          "storage_pointer": 140545104608256,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140545104313856,
+          "storage_pointer": 140545104313856,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "rollout_return",
+      "rank": 5,
+      "cuda_current_device": 5,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 139716560420864,
+          "storage_pointer": 139716560420864,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 139716560945152,
+          "storage_pointer": 139716560945152,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559110144,
+          "storage_pointer": 139716559110144,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 139716559698944,
+          "storage_pointer": 139716559698944,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559404544,
+          "storage_pointer": 139716559404544,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "sharding_postprocess_return",
+      "rank": 5,
+      "cuda_current_device": 5,
+      "tensors": {
+        "prompts": {
+          "device": "cuda:0",
+          "pointer": 139716560420864,
+          "storage_pointer": 139716560420864,
+          "shape": [
+            8,
+            4096
+          ],
+          "dtype": "torch.int64"
+        },
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 139716560945152,
+          "storage_pointer": 139716560945152,
+          "shape": [
+            8,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559110144,
+          "storage_pointer": 139716559110144,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 139716559698944,
+          "storage_pointer": 139716559698944,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559404544,
+          "storage_pointer": 139716559404544,
+          "shape": [
+            8,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 5,
+      "cuda_current_device": 5,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 139716560945152,
+          "storage_pointer": 139716560945152,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559110144,
+          "storage_pointer": 139716559110144,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 139716559698944,
+          "storage_pointer": 139716559698944,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 139716559404544,
+          "storage_pointer": 139716559404544,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    },
+    {
+      "rank": 6,
+      "call": 1,
+      "logits_device": "cuda:6",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140371543490048,
+      "cuda_current_device": 6
+    },
+    {
+      "rank": 0,
+      "call": 1,
+      "logits_device": "cuda:0",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140551487659520,
+      "cuda_current_device": 0
+    },
+    {
+      "rank": 7,
+      "call": 1,
+      "logits_device": "cuda:7",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140545105894400,
+      "cuda_current_device": 7
+    },
+    {
+      "rank": 4,
+      "call": 1,
+      "logits_device": "cuda:4",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140445229018112,
+      "cuda_current_device": 4
+    },
+    {
+      "rank": 5,
+      "call": 1,
+      "logits_device": "cuda:5",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 139716560945152,
+      "cuda_current_device": 5
+    },
+    {
+      "rank": 2,
+      "call": 1,
+      "logits_device": "cuda:2",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140291079953920,
+      "cuda_current_device": 2
+    },
+    {
+      "rank": 3,
+      "call": 1,
+      "logits_device": "cuda:3",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140197932853760,
+      "cuda_current_device": 3
+    },
+    {
+      "rank": 1,
+      "call": 1,
+      "logits_device": "cuda:1",
+      "labels_device": "cuda:0",
+      "logits_dtype": "torch.bfloat16",
+      "labels_dtype": "torch.int64",
+      "logits_shape": [
+        4,
+        500,
+        151936
+      ],
+      "labels_shape": [
+        4,
+        500
+      ],
+      "labels_pointer": 140125589492224,
+      "cuda_current_device": 1
+    },
+    {
+      "stage": "actor_microbatch_before_forward",
+      "rank": 0,
+      "cuda_current_device": 0,
+      "tensors": {
+        "responses": {
+          "device": "cuda:0",
+          "pointer": 140551487675520,
+          "storage_pointer": 140551487659520,
+          "shape": [
+            4,
+            500
+          ],
+          "dtype": "torch.int64"
+        },
+        "input_ids": {
+          "device": "cuda:0",
+          "pointer": 140616591468160,
+          "storage_pointer": 140616591321088,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "attention_mask": {
+          "device": "cuda:0",
+          "pointer": 140616589832320,
+          "storage_pointer": 140616589685248,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        },
+        "position_ids": {
+          "device": "cuda:0",
+          "pointer": 140551486324352,
+          "storage_pointer": 140551486177280,
+          "shape": [
+            4,
+            4596
+          ],
+          "dtype": "torch.int64"
+        }
+      }
+    }
+  ],
+  "cross_device_failure_proved": true,
+  "mismatch_ranks": [
+    6,
+    7,
+    4,
+    5,
+    2,
+    3,
+    1
+  ],
+  "not_cpu_labels": true,
+  "cause_scope": "Real rank-local logits versus CUDA0 labels before original CE; conversion mechanism and production Ray versus torchrun mapping still under review",
+  "evidence_sha256": "849fa567708c6d0e343dc8a317e7eb453b2bb2223e10268203ccb26271ff4140"
+}
