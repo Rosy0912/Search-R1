@@ -13,6 +13,37 @@ def validate_config(config, require_thresholds=True):
         raise ValueError('Invalid Dual-Clip or exponential rejection boundary')
     if config.get('monitor_first_global_rows') != 256:
         raise ValueError('This continuation monitors the fixed first global256 rows')
+    mode = config.get('mode', 'production')
+    if mode not in ('production', 'native_fixture', 'calibration'):
+        raise ValueError('Unknown policy safety execution scope')
+    if require_thresholds and mode != 'production':
+        # Isolated tests cannot bootstrap themselves with a fake production acceptance.
+        # The reviewed owned launcher binds this scope before any CUDA use.
+        import hashlib, json, os
+        from pathlib import Path
+        path = os.environ.get('GIGPO_POLICY_NATIVE_BINDING')
+        expected_sha = os.environ.get('GIGPO_POLICY_NATIVE_BINDING_SHA256')
+        if not path or not Path(path).is_file():
+            raise ValueError('Missing independently reviewed isolated-test authorization')
+        raw = Path(path).read_bytes()
+        proof = json.loads(raw)
+        if (hashlib.sha256(raw).hexdigest() != expected_sha
+                or proof.get('status') != 'REVIEWED_FOR_NATIVE_ONLY'
+                or proof.get('validation_scope') != 'GIGPO_POLICY_SAFETY_NATIVE_ONLY'
+                or re.fullmatch(r'[0-9a-f]{40}', str(os.environ.get('SEARCH_R1_BASELINE_COMMIT'))) is None
+                or proof.get('code_commit') != os.environ.get('SEARCH_R1_BASELINE_COMMIT')
+                or proof.get('restore_step') != 25
+                or proof.get('restore_manifest_sha256') != '3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4'
+                or proof.get('restore_checkpoint') != '/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_25'
+                or mode not in proof.get('allowed_safety_modes', [])):
+            raise ValueError('Isolated-test scope/source/authorization changed')
+        if mode == 'native_fixture':
+            kl, tail = config.get('target_old_policy_kl'), config.get('negative_tail_limit')
+            if kl is None or tail is None or not math.isfinite(kl) or kl <= 0 or not 0 <= tail <= 1:
+                raise ValueError('Native fixture requires explicit test-only thresholds')
+            if [kl, tail] not in proof.get('native_test_threshold_sets', []):
+                raise ValueError('Test thresholds differ from independently reviewed fixture')
+        return
     if require_thresholds:
         kl, tail = config.get('target_old_policy_kl'), config.get('negative_tail_limit')
         if (kl is None or tail is None or not math.isfinite(kl) or kl <= 0
@@ -168,6 +199,8 @@ def global_statistics(parts, group=None):
 def rejection_reason(stats, config):
     if stats['rejected_numeric_count'] or stats['weight_mass'] <= 0:
         return 'NONFINITE_OR_EXP_RANGE_OR_EMPTY_EFFECTIVE_MONITOR'
+    if config.get('mode', 'production') == 'calibration':
+        return None  # Isolated diagnostic collection; never eligible for formal acceptance.
     if stats['sampled_old_policy_kl'] > config['target_old_policy_kl']:
         return 'OLD_POLICY_TOKEN_KL'
     if stats['negative_tail_fraction_count'] > config['negative_tail_limit']:

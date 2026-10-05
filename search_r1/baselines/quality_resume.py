@@ -95,7 +95,7 @@ def migration_diff(saved, current):
         elif key.startswith('actor_rollout_ref.actor.policy_safety.'):
             if left is not missing or new.get('baselines.method') != 'gigpo':
                 raise ValueError('Only newly authorized GiGPO policy protections may be added')
-            allowed = {'enabled', 'dual_clip', 'kl_log_bound', 'monitor_first_global_rows',
+            allowed = {'enabled', 'mode', 'dual_clip', 'kl_log_bound', 'monitor_first_global_rows',
                        'target_old_policy_kl', 'negative_tail_limit', 'calibration_evidence_sha256', 'calibration_evidence_path'}
             if key.rsplit('.', 1)[-1] not in allowed:
                 raise ValueError('Unknown policy safety control')
@@ -117,6 +117,8 @@ def migration_diff(saved, current):
     if any(key.startswith('actor_rollout_ref.actor.policy_safety.') for key in changes):
         from .policy_safety import validate_config
         validate_config(current['actor_rollout_ref']['actor']['policy_safety'], require_thresholds=False)
+        if current['actor_rollout_ref']['actor']['policy_safety'].get('mode', 'production') != 'production':
+            raise ValueError('Formal continuation cannot use native/calibration authorization')
     return {key: dict(old=None if left is missing else left, new=None if right is missing else right)
             for key, (left, right) in sorted(changes.items())}
 

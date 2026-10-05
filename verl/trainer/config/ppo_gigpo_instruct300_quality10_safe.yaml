@@ -5,6 +5,7 @@ actor_rollout_ref:
   actor:
     policy_safety:
       enabled: true
+      mode: production
       dual_clip: 3.0
       kl_log_bound: 30.0
       monitor_first_global_rows: 256

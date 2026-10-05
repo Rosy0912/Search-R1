@@ -26,3 +26,7 @@ negative_tail_limit比较“联合动作delta>log(c)的负优势独立动作数/
 新增安全配置文件 `verl/trainer/config/ppo_gigpo_instruct300_quality10_safe.yaml` 继承所有原共同配置；阈值及标定证据路径/SHA尚为null，生产严格拒绝。生产要求实际读取独审校准artifact，SHA、scope、source、25恢复manifest和阈值全部一致。CPU测试中的synthetic-calibration-fixture是解析器夹具，不能作正式证据。旧native3243和正式f1 READY不是新安全目标的验收。必须新版本native/formal接受器理解安全audit(联合rawexp不计算，只保留真实完整logratio)，禁止将空raw-ratio字段冒充旧scope通过。
 
 CPU已覆盖真实actor循环10Adam写入/160gradmicro和post新权重读取、实际post拒绝只写1Adam不finishouter，以及真实2rankGloo的空rank/坏rank/精确全局分位数；仍不代替真实8GPU/FSDP/Flash/完整恢复与短段质量验收。FSDP/NCCL内部fatal错误须超时及资源清理，不能承诺通过外部badflag消除全部框架死锁。h100-8在稍后只读复查已空闲，但新GPU标定/接受helper仍待独审，不按旧helper启动。
+
+Native execution scope separation
+
+The GPU diagnostic uses an independently reviewed native-only binding containing the exact source commit, complete selected step25 path and manifest, and explicit fixture thresholds [100, 1]. These are permissive diagnostic controls, not calibrated production thresholds. Every guard logs its execution and admission scope. Calibration may only collect healthy actual rollout statistics while retaining numeric rejection; formal continuation accepts production mode only and requires a separately accepted calibration artifact. Neither a fixture PASS nor a calibration allowed row authorizes production. The native validator rejects empty scalar loss, nonfinite KL, empty effective monitor and inflated self-reported fixture thresholds.

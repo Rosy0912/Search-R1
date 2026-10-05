@@ -95,3 +95,21 @@ def test_corrupt_mask_rejected_but_padding_probability_nan_not_rejected():
     c=dict(enabled=True,dual_clip=3.,kl_log_bound=30.,monitor_first_global_rows=256,
            target_old_policy_kl=.01,negative_tail_limit=.5,calibration_evidence_sha256='x')
     with pytest.raises(ValueError):validate_config(c)
+
+
+def test_native_scope_requires_real_reviewed_binding_and_cannot_be_production_proof(tmp_path,monkeypatch):
+    import hashlib,json
+    c=dict(enabled=True,mode='native_fixture',dual_clip=3.,kl_log_bound=30.,monitor_first_global_rows=256,
+           target_old_policy_kl=.01,negative_tail_limit=.5)
+    with pytest.raises(ValueError):validate_config(c)
+    p=tmp_path/'binding.json'
+    raw=json.dumps(dict(status='REVIEWED_FOR_NATIVE_ONLY',validation_scope='GIGPO_POLICY_SAFETY_NATIVE_ONLY',
+         code_commit='f'*40,restore_step=25,restore_manifest_sha256='3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4',restore_checkpoint='/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/checkpoints/actor/global_step_25',allowed_safety_modes=['native_fixture','calibration'],native_test_threshold_sets=[[.01,.5]])).encode();p.write_bytes(raw)
+    monkeypatch.setenv('GIGPO_POLICY_NATIVE_BINDING',str(p))
+    monkeypatch.setenv('GIGPO_POLICY_NATIVE_BINDING_SHA256',hashlib.sha256(raw).hexdigest())
+    monkeypatch.setenv('SEARCH_R1_BASELINE_COMMIT','f'*40)
+    validate_config(c)
+    c['mode']='production'
+    with pytest.raises(ValueError):validate_config(c)
+    c['mode']='native_fixture';p.write_bytes(raw+b' ')
+    with pytest.raises(ValueError):validate_config(c)

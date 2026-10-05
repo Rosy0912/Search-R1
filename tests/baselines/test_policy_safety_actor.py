@@ -12,6 +12,7 @@ from verl.workers.actor.dp_actor import DataParallelPPOActor
 def actor_and_data(monkeypatch, audit_root, target):
     monkeypatch.setattr(TensorDict, 'cuda', lambda self: self)
     monkeypatch.delenv('SEARCH_R1_BASELINE_AUDIT_DIR', raising=False)
+    monkeypatch.delenv('SEARCH_R1_BASELINE_COMMIT', raising=False)
     config = OmegaConf.create(dict(ppo_mini_batch_size=256, ppo_micro_batch_size=16, ppo_epochs=1,
         use_dynamic_bsz=False, state_masking=True, use_kl_loss=True, kl_loss_type='low_var_kl',
         kl_loss_coef=.001, clip_ratio=.2, entropy_coeff=0., grad_clip=1., baseline_method='gigpo',

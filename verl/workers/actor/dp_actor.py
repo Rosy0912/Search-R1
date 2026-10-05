@@ -255,6 +255,13 @@ class DataParallelPPOActor(BasePPOActor):
         record = dict(identity, phase=phase, actual_optimizer_writes=writes, allowed=reason is None,
                       rejection_reason=reason, statistics=stats, fixed_monitor_hashes=monitor_hashes,
                       temperature=temperature, monitor_identity_changed=monitor_changed)
+        mode = control.get('mode', 'production')
+        record.update(execution_mode=mode,
+            admission_scope={'production':'production_calibrated','native_fixture':'test_thresholds','calibration':'numeric_only'}[mode],
+            dual_clip=control['dual_clip'], kl_log_bound=control['kl_log_bound'],
+            target_old_policy_kl=control.get('target_old_policy_kl'), negative_tail_limit=control.get('negative_tail_limit'),
+            native_binding_sha256=os.environ.get('GIGPO_POLICY_NATIVE_BINDING_SHA256') if mode != 'production' else None,
+            calibration_evidence_sha256=control.get('calibration_evidence_sha256') if mode == 'production' else None)
         record.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
             pid=os.getpid(), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
             commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
