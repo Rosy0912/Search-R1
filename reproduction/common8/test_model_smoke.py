@@ -19,6 +19,7 @@ class ModelSmokeTests(unittest.TestCase):
         ids = [str(i) for i in range(64)]; uuids = [str(i) for i in range(8)]
         rows = [dict(accepted=True, rank=r, run_id='cpu-only', slurm_job_id='cpu-only', phase='initial',
                      cuda_uuid=uuids[r], actual_optimizer_writes=0, sync_calls=1, sync_load_format='dtensor',
+                     separate_actor_logprob_entrypoint=True, internal_separate_logprob_max_abs=0.,
                      question_ids=ids[r*8:(r+1)*8], resolved_config_sha256='same',
                      parity=dict(tolerance=LOGPROB_ATOL, actor_reference_max_abs=0., actor_vllm_max_abs=0.,
                                  valid_tokens_per_question=[1]*8)) for r in range(8)]
@@ -64,6 +65,14 @@ class ModelSmokeTests(unittest.TestCase):
             with self.assertRaises(AssertionError): aggregate(bad, 'cpu-only', 'cpu-only', 'initial', ids, uuids)
         rows[0]['parity']['actor_vllm_max_abs'] = float('nan')
         with self.assertRaises(AssertionError): aggregate(rows, 'cpu-only', 'cpu-only', 'initial', ids, uuids)
+
+    def test_missing_or_bad_actual_worker_recomputation_rejected(self):
+        for field, value in (('separate_actor_logprob_entrypoint', False),
+                             ('internal_separate_logprob_max_abs', float('nan')),
+                             ('internal_separate_logprob_max_abs', LOGPROB_ATOL + .01)):
+            rows, ids, uuids = self.proofs(); rows[3][field] = value
+            with self.assertRaises(AssertionError):
+                aggregate(rows, 'cpu-only', 'cpu-only', 'initial', ids, uuids)
 
 
 if __name__ == '__main__': unittest.main()

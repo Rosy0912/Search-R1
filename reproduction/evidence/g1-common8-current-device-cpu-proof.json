@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "...........\n----------------------------------------------------------------------\nRan 11 tests in 0.599s\n\nOK\n",
+  "source_sha256": {
+    "verl/workers/fsdp_workers.py": "34add4fa0f63eeda732cd0c813095730a825128f75087005b0304f782470abcf",
+    "verl/workers/actor/dp_actor.py": "7e42710cbe6b9f86bb2f337628b32dbaf4930ca03228c306d4365958e3b36161",
+    "reproduction/common8/model_smoke.py": "dfc6dd95a59277faf1590c2018643a931fbb587ab2cf2da8f5b0b1fec7541b3f",
+    "reproduction/common8/test_model_smoke.py": "0d78717e1915e5dc176c35ae5d93781603fdc64ca39028482ecee507a04c7859"
+  },
+  "base": "/dataset/shaoshitong/g1-common8-device-fix-cpu-d5a7a2d82f65",
+  "scope": "actual target CPU guard tests only; no GPU model or optimizer step proof",
+  "checked_unix": 1791201697.072487
+}

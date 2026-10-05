@@ -55,6 +55,8 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids):
         assert (proof['run_id'], proof['slurm_job_id'], proof['phase']) == (run_id, job_id, phase)
         assert proof['cuda_uuid'] == uuids[rank]
         assert proof['actual_optimizer_writes'] == 0 and proof['sync_calls'] == 1
+        assert proof['separate_actor_logprob_entrypoint'] is True
+        assert 0 <= proof['internal_separate_logprob_max_abs'] <= LOGPROB_ATOL
         assert proof['sync_load_format'] == 'dtensor'
         assert len(proof['question_ids']) == 8
         assert proof['parity']['tolerance'] == LOGPROB_ATOL
@@ -169,7 +171,20 @@ def main(base, phase):
             output = actor.generate_sequences(prompts)
         finally:
             engine.generate, engine.sync_model_weights = original_generate, original_sync
+        # Exercise the actual agent trainer's separate worker recomputation too.
+        internal = output.pop(batch_keys=['old_log_probs']).batch['old_log_probs']
+        independent = actor.compute_log_prob(output)
+        # Direct calls mutate the input DataProto's device; Ray serialization
+        # would isolate that mutation in the production controller.
+        output = output.to('cpu').union(independent)
+        width = output.batch['responses'].shape[-1]
+        valid = output.batch['attention_mask'][:, -width:].bool()
+        api_error = (internal[valid].float() - output.batch['old_log_probs'][valid].float()).abs()
+        collective(api_error.numel() > 0 and torch.isfinite(api_error).all()
+                   and api_error.max().item() <= LOGPROB_ATOL,
+                   'Internal and actual separate actor logprob entrypoints disagree')
         ref = reference.compute_ref_log_prob(output)
+        output = output.to('cpu')
         collective(len(capture) == len(sync_calls) == 1, 'Did not observe exactly one actual rollout and weight sync')
         response_width = output.batch['responses'].shape[-1]
         parity, error = None, None
@@ -190,6 +205,8 @@ def main(base, phase):
                      question_ids=ids[rank*8:(rank+1)*8], stage_sha256=record['sha256'],
                      resolved_config_sha256=config_hash, actual_optimizer_writes=0,
                      actual_grpo_updates=0, sync_calls=len(sync_calls), sync_load_format=sync_calls[0],
+                     separate_actor_logprob_entrypoint=True,
+                     internal_separate_logprob_max_abs=float(api_error.max()),
                      parity=parity, resident_services_before_generation=services,
                      initial_parameters_finite=True, checked_unix=time.time(),
                      scope='64-question single-action greedy actual worker smoke; not agent EM or full training peak')
