@@ -148,7 +148,7 @@ def worker_snapshot(module, optimizer, scheduler, identity, cuda=False):
     return value
 
 
-def restore_worker(module, optimizer, scheduler, saved, identity):
+def restore_worker(module, optimizer, scheduler, saved, identity, cold=False):
     if saved['version'] != 2 or saved['identity'] != identity: raise ValueError('Worker snapshot identity changed')
     finite(saved)
     parameters = dict(module.named_parameters()); buffers = dict(module.named_buffers())
@@ -161,7 +161,13 @@ def restore_worker(module, optimizer, scheduler, saved, identity):
     current_groups = optimizer.param_groups
     saved_groups = saved['optimizer']['param_groups']
     if len(current_groups) != len(saved_groups): raise ValueError('Optimizer group layout changed')
-    if saved['optimizer']['state'].keys() != optimizer.state_dict()['state'].keys():
+    current_states = optimizer.state_dict()['state']
+    if cold and current_states:
+        raise ValueError('Cold restore requires an untouched empty optimizer')
+    if cold and set(saved['optimizer']['state']) != {
+            key for group in saved_groups for key in group['params']}:
+        raise ValueError('Cold Adam state coverage incomplete')
+    if not cold and saved['optimizer']['state'].keys() != current_states.keys():
         raise ValueError('Initialized Adam state coverage changed during same-world restore')
     parameter_by_id = {}
     for current, group in zip(current_groups, saved_groups):
@@ -200,6 +206,30 @@ def restore_worker(module, optimizer, scheduler, saved, identity):
             parameter.grad = None if gradient is None else gradient.to(parameter.device).clone()
     optimizer.load_state_dict(saved['optimizer']); scheduler.load_state_dict(saved['scheduler'])
     module.train(saved['training']); restore_rng(saved['rng'])
+
+
+def migrate_sampler_batch(sampler, saved, batch_size):
+    """Keep consumed questions exactly; only change subsequent batch boundaries.
+
+    A mixed-batch run cannot infer its cursor from outer count alone. Callers
+    must retain parent provenance and the saved cursor in recovery receipts.
+    """
+    if sampler.batch_size != batch_size or batch_size < 1:
+        raise ValueError('Recovery sampler batch mismatch')
+    for key in ('rows', 'identity', 'shuffle'):
+        if saved[key] != getattr(sampler, key):
+            raise ValueError('Recovery sampler identity changed')
+    order, cursor = saved['order'], saved['cursor']
+    if order is None or len(order) != sampler.rows or set(order) != set(range(sampler.rows)):
+        raise ValueError('Incomplete recovery permutation')
+    if not 0 <= cursor <= sampler.rows or cursor % batch_size:
+        raise ValueError('Recovery cursor does not align with new batch')
+    migrated = cpu_copy(saved)
+    migrated['batch_size'] = batch_size
+    sampler.load_state_dict(migrated)
+    return dict(parent_batch_size=saved['batch_size'], batch_size=batch_size,
+                consumed_cursor=cursor, epoch=saved['epoch'],
+                permutation_sha256=digest(order), exact_executor_resume=False)
 
 
 def snapshot_worker_to_file(module, optimizer, scheduler, path, identity, verify=False, cuda=False):
