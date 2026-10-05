@@ -84,7 +84,7 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
     current = torch.where(valid, current, 0.)
     advantages = torch.where(valid, advantages, 0.)
     weights = torch.where(valid, weights, 0.)
-    delta = current - old
+    delta = current.double() - old.double() if dual_clip is not None else current - old
     if step_ids is not None:
         action_deltas = []
         for i in range(len(delta)):

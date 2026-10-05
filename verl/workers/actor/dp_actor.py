@@ -308,7 +308,14 @@ class DataParallelPPOActor(BasePPOActor):
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
 
                 if safety is not None:
-                    safety.inputs(old_log_prob, log_prob, advantages, safety.effective_mask(data), data["policy_weights"], entropy, data.get("ref_log_prob", None))
+                    response_mask = safety.effective_mask(data)
+                    safety.inputs(old_log_prob, log_prob, advantages, response_mask, data["policy_weights"], entropy, data.get("ref_log_prob", None))
+                    # Sanitize nonsupervised padding before every loss/diagnostic operation.
+                    # Existing rollout masks and the global row denominator stay unchanged.
+                    old_log_prob = torch.where(response_mask, old_log_prob, 0.)
+                    log_prob = torch.where(response_mask, log_prob, 0.)
+                    advantages = torch.where(response_mask, advantages, 0.)
+                    entropy = torch.where(response_mask, entropy, 0.)
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],

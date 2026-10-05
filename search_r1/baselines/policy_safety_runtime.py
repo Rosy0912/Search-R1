@@ -31,6 +31,17 @@ class PolicySafetyRuntime:
         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
         if flag.item():
             raise PolicySafetyRefusal(f'Global safety startup refusal; local diagnosis: {error}')
+        # Different per-rank row/chunk counts would strand an FSDP monitor forward.
+        signature = torch.tensor([len(self.batch), len(self.monitor), actor.config.ppo_micro_batch_size,
+                                  self.target_kl, self.tail_limit, self.initial_consistency_limit,
+                                  float(config['dual_clip']), float(config['kl_log_bound'])],
+                                 device=self.device, dtype=torch.float64)
+        lo, hi = signature.clone(), signature.clone()
+        if dist.is_initialized():
+            dist.all_reduce(lo, op=dist.ReduceOp.MIN)
+            dist.all_reduce(hi, op=dist.ReduceOp.MAX)
+        if not torch.equal(lo, hi):
+            raise PolicySafetyRefusal('Global safety startup refusal: rank configuration/count mismatch')
 
     @staticmethod
     def effective_mask(data):
@@ -52,7 +63,7 @@ class PolicySafetyRuntime:
         if (not all(math.isfinite(value) for value in
                     (self.target_kl, self.tail_limit, self.initial_consistency_limit, dual_clip, bound))
                 or self.initial_consistency_limit < 0 or self.target_kl <= 0
-                or not 0 <= self.tail_limit <= 1 or dual_clip <= 1 or bound <= 0):
+                or not 0 <= self.tail_limit <= 1 or dual_clip <= 1 + float(actor.config.clip_ratio) or bound <= 0):
             raise ValueError('Invalid explicit safety thresholds')
         count = int(config['monitor_rows_per_rank'])
         if count != config['monitor_rows_per_rank'] or not 0 < count <= len(batch) or count % actor.config.ppo_micro_batch_size:
