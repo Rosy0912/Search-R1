@@ -151,6 +151,16 @@ class DataParallelPPOActor(BasePPOActor):
         grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,context=getattr(self,"_gradient_diagnostic_context",None))
         require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group)
         self.actor_optimizer.step()
+        self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
+        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.worker_evidence import append
+            append('OPTIMIZER_WRITE', dict(rank=torch.distributed.get_rank(),
+                context=self._gradient_diagnostic_context, write_count=self._optimizer_writes,
+                gradient_norm_before=float(grad_norm),gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
+                learning_rates=[float(group['lr']) for group in self.actor_optimizer.param_groups]))
+        if (__import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8' or
+                not torch.distributed.is_initialized() or torch.distributed.get_rank()==0):
+            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
         if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
             post = {f'parameter_{i}': p.detach() for i,p in enumerate(self.actor_module.parameters())}
             for i,state in enumerate(self.actor_optimizer.state.values()):
@@ -158,15 +168,6 @@ class DataParallelPPOActor(BasePPOActor):
                     if torch.is_tensor(value):
                         post[f'optimizer_{i}_{name}'] = value
             require_finite(post, stage='after_optimizer_write', process_group=group)
-        self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
-        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
-            from reproduction.common8.worker_evidence import append
-            append('OPTIMIZER_WRITE', dict(rank=torch.distributed.get_rank(),
-                context=self._gradient_diagnostic_context, write_count=self._optimizer_writes,
-                learning_rates=[float(group['lr']) for group in self.actor_optimizer.param_groups]))
-        if (__import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8' or
-                not torch.distributed.is_initialized() or torch.distributed.get_rank()==0):
-            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
         return grad_norm
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
@@ -219,7 +220,52 @@ class DataParallelPPOActor(BasePPOActor):
 
         return log_probs
 
+    def _monitor_old_policy(self, frozen, safety, tail_limit, stage):
+        from search_g1.policy_safety import monitor
+        from reproduction.common8.worker_evidence import append
+        group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
+        import hashlib
+        current_hashes={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest() for name,value in frozen.items()}
+        device=torch.device('cuda',torch.cuda.current_device()) if torch.distributed.is_initialized() and torch.distributed.get_backend(group)=='nccl' else torch.device('cpu')
+        require_finite({'frozen_monitor_identity':torch.tensor(int(current_hashes==self._monitor_identity['tensor_sha256']),device=device)},
+                       stage='frozen_monitor_identity',process_group=group,positive=('frozen_monitor_identity',))
+        old_mode = self.actor_module.training
+        self.actor_module.eval()
+        values = []; masks = []; advantages = []; weights = []
+        try:
+            with torch.no_grad():
+                for micro in frozen.split(self.config.ppo_micro_batch_size):
+                    micro = micro.cuda(device=torch.cuda.current_device())
+                    _, new = self._forward_micro_batch(micro, temperature=self._monitor_temperature)
+                    mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
+                    valid = mask.bool()
+                    delta = torch.where(valid,new,0.).double() - torch.where(valid,micro['old_log_probs'],0.).double()
+                    values.append(delta);masks.append(mask);advantages.append(micro['advantages'])
+                    weights.append(mask.double()/mask.sum().clamp_min(1).double())
+        finally:
+            self.actor_module.train(old_mode)
+        report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
+                         c=float(safety.dual_clip),kl_log_bound=float(safety.kl_log_bound),
+                         target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group)
+        report.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
+                      stage=stage,context=self._gradient_diagnostic_context,
+                      optimizer_writes=getattr(self,'_optimizer_writes',0),
+                      calibration_sha256=self._safety_calibration_sha,
+                      monitor_identity=self._monitor_identity,
+                      objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
+                      monitoring_scope='fixed four trajectories per rank across length strata; not full rollout',
+                      rejection_count=getattr(self,'_policy_rejections',0)+int(not report['allowed']))
+        append('POLICY_MONITOR',report)
+        if not report['allowed']:
+            self._policy_rejections=report['rejection_count']
+            self.actor_optimizer.zero_grad()
+            raise RuntimeError('Old-rollout reuse stopped collectively; already-written steps retained: '+repr(report['reasons']))
+        return report
+
     def update_policy(self, data: DataProto):
+        from search_g1.policy_safety import bind_actual_config
+        group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+        bind_actual_config(self.config,group=group)
         # Collective finite checks require matching microbatch counts on all ranks.
         assert not self.config.use_dynamic_bsz, 'Search-G1 finite-update protocol requires fixed microbatch scheduling'
         # make sure we are in training mode
@@ -248,9 +294,32 @@ class DataParallelPPOActor(BasePPOActor):
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
         dataloader = batch.split(self.config.ppo_mini_batch_size)
 
+        safety = self.config.get('policy_safety', None)
+        safety_enabled = safety is not None and safety.enabled
+        if safety_enabled:
+            from search_g1.policy_safety import bind_thresholds
+            group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+            tail_limit,self._safety_calibration_sha=bind_thresholds(safety,group=group)
+            assert common8 and safety.monitor_trajectories_per_rank == 4
+            # Freeze actual old/advantage/mask/input bytes once; select length strata.
+            length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
+            ordered=torch.argsort(length_mask.sum(-1),stable=True)
+            indices=ordered[torch.linspace(0,len(batch)-1,4,device=ordered.device).long()]
+            require_finite({'monitor_actor_lengths':length_mask[indices].sum(-1)},
+                           stage='frozen_monitor_selection_before_any_minibatch',
+                           process_group=group,positive=('monitor_actor_lengths',))
+            frozen=batch[indices].clone()
+            self._monitor_temperature=temperature
+            import hashlib
+            self._monitor_identity=dict(selection_indices=indices.detach().cpu().tolist(),
+                actor_token_lengths=length_mask[indices].sum(-1).detach().cpu().tolist(),
+                tensor_sha256={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
+                               for name,value in frozen.items()})
         metrics = {}
         for batch_idx, data in enumerate(dataloader):
             self._gradient_diagnostic_context=dict(logical_update=logical_update,minibatch_index=batch_idx,prior_optimizer_writes=getattr(self,"_optimizer_writes",0))
+            if safety_enabled:
+                self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
             # split batch into micro_batches
             mini_batch = data
             if self.config.use_dynamic_bsz:
@@ -279,11 +348,18 @@ class DataParallelPPOActor(BasePPOActor):
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
 
+                if safety_enabled:
+                    authored=response_mask.bool()
+                    group=self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+                    require_finite(dict(new=torch.where(authored,log_prob,0.),old=torch.where(authored,old_log_prob,0.),
+                                        advantage=torch.where(authored,advantages,0.),mass=response_mask.sum()),
+                                   stage='before_dual_clip_exp',process_group=group,positive=('mass',))
                 pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
                                                                               log_prob=log_prob,
                                                                               advantages=advantages,
                                                                               eos_mask=response_mask,
-                                                                              cliprange=clip_ratio)
+                                                                              cliprange=clip_ratio,
+                                                                              dual_clip=float(safety.dual_clip) if safety_enabled else None)
                 # compute entropy loss from entropy
                 entropy_loss = verl_F.masked_mean(entropy, response_mask)
 
@@ -326,6 +402,8 @@ class DataParallelPPOActor(BasePPOActor):
                 append_to_dict(metrics, data)
 
             grad_norm = self._optimizer_step()
+            if safety_enabled:
+                self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()

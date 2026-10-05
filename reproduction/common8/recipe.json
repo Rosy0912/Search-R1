@@ -56,5 +56,7 @@
   "trainer.default_local_dir=@BASE@/checkpoints/search-g1-common8",
   "max_turns=4",
   "retriever.url=http://127.0.0.1:18010/retrieve",
-  "retriever.topk=3"
+  "retriever.topk=3",
+  "actor_rollout_ref.actor.policy_safety.enabled=true",
+  "actor_rollout_ref.actor.policy_safety.calibration_manifest=@BASE@/logs/policy-safety-calibration.json"
 ]

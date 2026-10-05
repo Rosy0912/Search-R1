@@ -32,6 +32,14 @@ actor_rollout_ref:
     grad_clip: 1.0
     state_masking: False
     clip_ratio: 0.2
+    policy_safety:
+      enabled: false
+      dual_clip: 3.0
+      target_old_policy_kl: 0.01 # candidate, requires healthy calibration approval
+      negative_tail_limit: null # determined by the bound healthy calibration artifact
+      kl_log_bound: 30.0
+      monitor_trajectories_per_rank: 4
+      calibration_manifest: null
     entropy_coeff: 0.001
     use_kl_loss: False # True for GRPO
     kl_loss_coef: 0.001 # for grpo

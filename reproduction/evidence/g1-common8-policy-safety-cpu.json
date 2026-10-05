@@ -1,0 +1,21 @@
+{
+  "returncode": 0,
+  "tests_passed": 15,
+  "target": "Torch2.4 actual target environment, CPU and two-process Gloo",
+  "source_sha256": {
+    "search_g1/policy_safety.py": "b7ee5d8ef84a3c0d6829736a3555e5332f2ea11159af01b6369af27faa0c8976",
+    "search_g1/test_policy_safety.py": "e99f9202cfc8928313382ac0ae11fa84715a39dc19d8ad1616197351f30b9901",
+    "search_g1/test_policy_safety_admission.py": "71631a622db7ac07b42af7aced7cc822275c6048ccf700ce655256bff809e8e5",
+    "search_g1/gradient_clipping.py": "ece4442f768d4f339ca0019f8093437f19c343b8d65af3e2000b71d450d7edde",
+    "verl/trainer/ppo/core_algos.py": "adff53255d8ba659077be57d892c7f058ac41f64b588f1be49016322bc3d2a27",
+    "verl/workers/actor/dp_actor.py": "0a044a983882895d0f57824b62d4d450609b20cc34105e9611fb63c18f02ab16",
+    "verl/trainer/config/ppo_trainer.yaml": "badc16f5a3aff8cd921e076bdbe0c25a20a67be87d7dffc09309ea5509af068e",
+    "reproduction/common8/recipe.json": "371b7288845c43bfdad0dc16de18892a515c15ec07a308ad9fddbebd2bf88ec2",
+    "reproduction/common8/worker_evidence.py": "9da45496d29fff39d8d2372916d2427de362d475522ced804423cc7e0ee6ee8f",
+    "reproduction/common8/prepare_run.py": "21994b1d77d7a25790928c23a08911da7f2e30f180d2f3a4c449bb4fd1087716",
+    "reproduction/common8/test_policy_safety_evidence.py": "a86605862d1e2b6c9a2a1eecd0e72faefb5583165dc928afa13775f688fd991d"
+  },
+  "production_admission": false,
+  "native_gpu_test_accepted": false,
+  "scope": "Formula/gradient/admission fixture/collective rejection/evidence reader; no real healthy threshold calibration"
+}

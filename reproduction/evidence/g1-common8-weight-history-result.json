@@ -1,0 +1,34 @@
+{
+  "job_id": 3251,
+  "terminal": "FAILED",
+  "source_commit": "638a063",
+  "actual_grpo_updates": 0,
+  "weight_rank_count": 8,
+  "mapped_tensors_per_rank": [
+    434,
+    434,
+    434,
+    434,
+    434,
+    434,
+    434,
+    434
+  ],
+  "all_mapped_weights_equal": true,
+  "all_tied_equal_and_same_storage": true,
+  "all_prompt_histories_equal": true,
+  "all_positions_contiguous": true,
+  "prompt_count_per_rank": [
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8
+  ],
+  "actor_rollout_max": 1.5509871244430542,
+  "probability_gate_accepted": false,
+  "scope": "Actual sync-return preoffload weights and matched prompt/position histories; no proof of identical attention backend arithmetic"
+}

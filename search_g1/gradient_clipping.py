@@ -63,4 +63,9 @@ def clip_global_l2(module,max_norm,*,chunk_size=1048576,diagnostic=True,context=
             x=flat[start:start+chunk_size]
             x.copy_((x.to(dtype=torch.float64)*coefficient.to(x.device)).to(x.dtype))
     require_finite({str(i):g for i,g in enumerate(grads)},stage='after_fp64_gradient_clipping',process_group=group)
+    post_shard,_=_sum_squares(sharded,communication_device,chunk_size)
+    post_replica,_=_sum_squares(replicated,communication_device,chunk_size)
+    if sharded:dist.all_reduce(post_shard,group=group)
+    module._last_clipped_global_l2=torch.sqrt(post_shard+post_replica)
+    require_finite({'actual_post_clip_norm':module._last_clipped_global_l2},stage='measured_after_gradient_clipping',process_group=group)
     return norm
