@@ -1,0 +1,220 @@
+{
+  "checked_unix": 1791176062.8667862,
+  "run_id": "739c7771ca50455fa67e458822382788",
+  "completed_update": 271,
+  "new_updates": 7,
+  "rows": [
+    {
+      "step": 265,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.659,
+        "actor/entropy_loss": 0.582,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -8.582,
+        "actor/grad_norm": 0.138,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 581.122
+      }
+    },
+    {
+      "step": 266,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.205,
+        "actor/entropy_loss": 0.441,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.672,
+        "actor/grad_norm": 0.033,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 615.512
+      }
+    },
+    {
+      "step": 267,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.246,
+        "actor/entropy_loss": 1.882,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.061,
+        "actor/grad_norm": 0.045,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 529.73
+      }
+    },
+    {
+      "step": 268,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 1.133,
+        "actor/entropy_loss": 3.495,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": -0.006,
+        "actor/grad_norm": 0.03,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 401.197
+      }
+    },
+    {
+      "step": 269,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 1.014,
+        "actor/entropy_loss": 5.687,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": 0.004,
+        "actor/grad_norm": 0.024,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 378.992
+      }
+    },
+    {
+      "step": 270,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.889,
+        "actor/entropy_loss": 8.941,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": 0.009,
+        "actor/grad_norm": 0.019,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 554.111
+      }
+    },
+    {
+      "step": 271,
+      "probe_version": "739c7771ca50455fa67e458822382788:250:4362792d4a444dbcbb10f7de899a2c46",
+      "metrics": {
+        "train/perf/em": 0,
+        "actor/kl_loss": 0.68,
+        "actor/entropy_loss": 10.01,
+        "actor/pg_loss": 0,
+        "actor/ppo_kl": 0.004,
+        "actor/grad_norm": 0.012,
+        "critic/rewards/mean": -0.1,
+        "critic/advantages/max": 0,
+        "critic/advantages/min": 0,
+        "env/finish_ratio": 0,
+        "env/ratio_of_valid_action": 0,
+        "env/actual_retrieval_calls/total": 0,
+        "timing_s/step": 627.99
+      }
+    }
+  ],
+  "reward_recent": -0.1,
+  "reward_window_mean": -0.1,
+  "reward_window_range": [
+    -0.1,
+    -0.1
+  ],
+  "reward_mean_change": -0.01328571428571429,
+  "validation_step": 255,
+  "validation_correct": 0,
+  "validation_em": 0,
+  "validation_counts": {
+    "musique": 9,
+    "nq": 10,
+    "bamboogle": 9,
+    "popqa": 9,
+    "2wikimultihopqa": 9,
+    "triviaqa": 9,
+    "hotpotqa": 9
+  },
+  "validation_source_correct": {
+    "popqa": 0,
+    "bamboogle": 0,
+    "triviaqa": 0,
+    "musique": 0,
+    "hotpotqa": 0,
+    "nq": 0,
+    "2wikimultihopqa": 0
+  },
+  "leaders": {
+    "trainer": {
+      "live": true,
+      "pid": 3637406,
+      "start_ticks": 524582919
+    },
+    "retriever": {
+      "live": true,
+      "pid": 3631839,
+      "start_ticks": 524558477
+    },
+    "probe-server": {
+      "live": true,
+      "pid": 3636445,
+      "start_ticks": 524575419
+    },
+    "main": {
+      "live": true,
+      "pid": 3643039,
+      "start_ticks": 524585455
+    }
+  },
+  "pipeline": {
+    "run_id": "739c7771ca50455fa67e458822382788",
+    "stage": "GRPO_251_TO_300",
+    "unix": 1791166237.8780622
+  },
+  "raw_gradient_window_peak": 0.20741371467286512,
+  "raw_gradient_cumulative_peak": 10357024721853502,
+  "gpu_window_peak_mib": {
+    "0": 47625,
+    "1": 48041,
+    "2": 47721,
+    "3": 48071,
+    "5": 17879,
+    "6": 26663
+  },
+  "gpu_cumulative_peak_mib": {
+    "0": 47625,
+    "1": 48041,
+    "2": 47721,
+    "3": 48071,
+    "5": 19203,
+    "6": 26663
+  },
+  "sampler_last": 1791176062.4044828,
+  "window_sample_count": 1739,
+  "max_sample_interval": 2.2617528438568115,
+  "gpu_current_csv": "0, 40831, 81920, 73\n1, 40929, 81920, 0\n2, 40927, 81920, 82\n3, 40831, 81920, 81\n4, 4, 81920, 0\n5, 17879, 81920, 0\n6, 26663, 81920, 0\n7, 68494, 81920, 0\n",
+  "errors": [],
+  "semantics": "console3decimals; finite/progress does not establish successful training; no fresh evaluation since255"
+}
