@@ -1,0 +1,31 @@
+{
+  "time": 1791186992.381362,
+  "node": "xielab1",
+  "old_run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+  "old_processes": [
+    {
+      "pid": 3546009,
+      "uid": 1005,
+      "pgid": 3546009,
+      "cmdline": "bash /data/shaoshitong/search-e1-config-study-8gpu-20261004/source/experiments/search_e1/control/train_profile.sh ",
+      "run_matches": true
+    },
+    {
+      "pid": 3548832,
+      "uid": 1005,
+      "pgid": 3546009,
+      "cmdline": "ray::main_task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ",
+      "run_matches": true
+    }
+  ],
+  "old_status": "RUNNING",
+  "old_latest_metrics": [
+    "(main_task pid=3548832) step:40 - global_seqlen/min:593859.000 - global_seqlen/max:622338.000 - global_seqlen/minmax_diff:28479.000 - global_seqlen/balanced_min:609989.000 - global_seqlen/balanced_max:609990.000 - global_seqlen/mean:609989.500 - audit/legacy_em:0.333 - audit/strict_em:0.225 - audit/score_disagreement:0.108 - state_tokens/total:531956.000 - state_tokens/coverage:0.255 - actor/kl_coef:0.001 - actor/entropy_loss:1.069 - actor/pg_loss:0.023 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.001 - actor/kl_loss:0.181 - actor/grad_norm:1.206 - mfu/actor:0.000 - actor/lr:0.000 - critic/score/mean:0.225 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.225 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.004 - critic/advantages/max:1.789 - critic/advantages/min:-1.789 - critic/returns/mean:-0.004 - critic/returns/max:1.789 - critic/returns/min:-1.789 - response_length/mean:814.706 - response_length/max:3348.000 - response_length/min:33.000 - response_length/clip_ratio:0.000 - prompt_length/mean:138.402 - prompt_length/max:243.000 - prompt_length/min:125.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:2.291 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.988 - env/number_of_valid_action:2.268 - env/ratio_of_valid_action:0.995 - env/number_of_valid_search:1.280 - timing_s/gen:595.669 - timing_s/ref:173.846 - timing_s/adv:4.391 - timing_s/update_actor:849.582 - timing_s/step:1799.668 - timing_per_token_ms/adv:0.002 - timing_per_token_ms/update_actor:0.348 - timing_per_token_ms/ref:0.071 - timing_per_token_ms/gen:0.286"
+  ],
+  "old_current_iteration": [
+    "41"
+  ],
+  "new_stage_receipt_exists": false,
+  "budget_answer_receipt_exists": false,
+  "new_training_started": false
+}
