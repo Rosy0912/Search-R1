@@ -147,12 +147,13 @@ class DataParallelPPOActor(BasePPOActor):
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
         gradients = {f'gradient_{i}':p.grad for i,p in enumerate(self.actor_module.parameters()) if p.grad is not None}
         require_finite(gradients,stage='before_gradient_clipping',process_group=group)
-        if isinstance(self.actor_module, FSDP):
-            grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)
-        else:
-            grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)
+        from search_g1.gradient_clipping import clip_global_l2
+        grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,context=getattr(self,"_gradient_diagnostic_context",None))
         require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group)
         self.actor_optimizer.step()
+        self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
+        if not torch.distributed.is_initialized() or torch.distributed.get_rank()==0:
+            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
         return grad_norm
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
@@ -214,6 +215,7 @@ class DataParallelPPOActor(BasePPOActor):
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
+        logical_update=data.meta_info.get('logical_update')
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
         if self.config.state_masking:
@@ -228,6 +230,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         metrics = {}
         for batch_idx, data in enumerate(dataloader):
+            self._gradient_diagnostic_context=dict(logical_update=logical_update,minibatch_index=batch_idx,prior_optimizer_writes=getattr(self,"_optimizer_writes",0))
             # split batch into micro_batches
             mini_batch = data
             if self.config.use_dynamic_bsz:
