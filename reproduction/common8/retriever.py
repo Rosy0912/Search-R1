@@ -19,7 +19,7 @@ from reproduction.common8.configuration import REPO
 from reproduction.common8.stage_retrieval import ASSETS, binding, memory_bytes, atomic
 from reproduction.common8.verify_data import digest
 from reproduction.common8.validation_identity import expected
-from reproduction.common8.temporary_cache import create as create_cache, admit_capacity
+from reproduction.common8.temporary_cache import create as create_cache, extract_corpus
 
 
 def compare_search(queries, cpu_scores, cpu_ids, gpu_scores, gpu_ids, cpu_vectors, gpu_vectors, metric):
@@ -90,8 +90,8 @@ def main(base):
         index = original_read(path, *args, **kwargs); cpu_indices.append(index); return index
     def corpus(path):
         assert Path(path) == Path(staged['files']['wiki-18.jsonl']['path'])
-        admit_capacity(base, cache)
-        return datasets.load_dataset('json', data_files=path, split='train', num_proc=4, cache_dir=str(cache))
+        corpus_file = extract_corpus(base, cache, Path(path))
+        return datasets.load_dataset('json', data_files=str(corpus_file), split='train', num_proc=4, cache_dir=str(cache))
     upstream.load_corpus = corpus
     upstream.config = upstream.Config(retrieval_method='e5', retrieval_topk=3,
         index_path=staged['files']['e5_Flat.index']['path'], corpus_path=staged['files']['wiki-18.jsonl']['path'],
