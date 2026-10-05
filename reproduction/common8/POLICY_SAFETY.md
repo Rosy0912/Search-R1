@@ -60,3 +60,19 @@ retained exactly one write without a complete outer. Measured norms were about
 identity unchanged. Scalar/hash proof is in
 `reproduction/evidence/g1-common8-policy-safety-native.json`. It is not Qwen
 training or healthy production calibration; its tiny threshold is a test trigger.
+
+## Independently reconstructable global statistics
+
+Later additive monitor fields preserve the decision and objective unchanged:
+`weighted_k3_numerator`, `effective_weight_mass`,
+`negative_effective_weight_mass`, and `tail_effective_weight_mass`. They are
+already globally reduced. Identical records from eight ranks represent one
+observation and must not be summed again. A finite numerator from an incomplete
+KL estimate is only a diagnostic subtotal; it is not a valid full KL. Nonfinite
+global totals produce null accumulators and collective rejection.
+
+18 actual-target CPU/two-process Gloo tests passed in 10.626 seconds; hashes and
+scope are in `g1-common8-policy-safety-cpu-accumulators.json`. The historical
+native3252 proof remains bound to its frozen source; it does not prove these
+later additive fields on eight GPUs. Actual healthy Qwen calibration and the
+fixed512 EM/F1/effective-action assessment are still required.

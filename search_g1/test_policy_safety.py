@@ -5,10 +5,12 @@ import torch.multiprocessing as mp
 from search_g1.policy_safety import dual_clip_terms,monitor
 
 
-def collective_worker(rank,path,out):
+def collective_worker(rank,path,out,weighted=False):
     torch.distributed.init_process_group('gloo',init_method='file://'+path,rank=rank,world_size=2)
     d=torch.tensor([[.1,.2]] if rank==0 else [[.3,2.]],dtype=torch.float64)
-    r=monitor(d,-torch.ones_like(d),torch.ones_like(d),torch.ones_like(d),c=3.,kl_log_bound=30.,target_kl=10.,negative_tail_limit=.1)
+    a=torch.tensor([[-1.,1.]] if rank==0 else [[-1.,-1.]],dtype=torch.float64) if weighted else -torch.ones_like(d)
+    w=torch.tensor([[.1,.2]] if rank==0 else [[.3,.4]],dtype=torch.float64) if weighted else torch.ones_like(d)
+    r=monitor(d,a,torch.ones_like(d),w,c=3.,kl_log_bound=30.,target_kl=10.,negative_tail_limit=.1)
     Path(out+str(rank)).write_text(json.dumps(r))
     torch.distributed.destroy_process_group()
 
@@ -37,6 +39,7 @@ class SafetyTests(unittest.TestCase):
         for value in [800.,float('nan'),float('inf')]:
             d=torch.tensor([value]);r=monitor(d,-torch.ones(1),torch.ones(1),torch.ones(1),c=3.,kl_log_bound=30.,target_kl=.01,negative_tail_limit=.1)
             self.assertFalse(r['allowed']);self.assertIsNone(r['sampled_old_policy_kl'])
+            self.assertFalse(r['kl_estimate_complete']);self.assertEqual(r['weighted_k3_numerator'],0.)
         r=monitor(torch.tensor([float('nan'),0.]),torch.tensor([float('nan'),1.]),torch.tensor([0.,1.]),torch.tensor([float('inf'),1.]),c=3.,kl_log_bound=30.,target_kl=.01,negative_tail_limit=.1)
         self.assertTrue(r['allowed']);self.assertEqual(r['sampled_old_policy_kl'],0.)
 
@@ -65,6 +68,65 @@ class SafetyTests(unittest.TestCase):
         self.assertEqual(a['negative_log_ratio_p99'],2.)
         expected=sum(math.expm1(x)-x for x in [.1,.2,.3,2.])/4
         self.assertAlmostEqual(a['sampled_old_policy_kl'],expected)
+
+    def test_global_accumulators_independently_reconstruct_weighted_ratios(self):
+        deltas=[.1,2.,-.2,.3]
+        advantages=[-1.,-1.,1.,-1.]
+        weights=[.1,.2,.3,.4]
+        r=monitor(torch.tensor(deltas+[float('nan')],dtype=torch.float64),
+                  torch.tensor(advantages+[float('nan')],dtype=torch.float64),
+                  torch.tensor([1.,1.,1.,1.,0.],dtype=torch.float64),
+                  torch.tensor(weights+[float('inf')],dtype=torch.float64),
+                  c=3.,kl_log_bound=30.,target_kl=10.,negative_tail_limit=.5)
+        numerator=sum(w*(math.expm1(d)-d) for d,w in zip(deltas,weights))
+        mass=sum(weights)
+        negative_mass=sum(w for a,w in zip(advantages,weights) if a<0)
+        tail_mass=sum(w for d,a,w in zip(deltas,advantages,weights) if a<0 and d>math.log(3.))
+        self.assertTrue(r['allowed'] and r['kl_estimate_complete'])
+        for key,expected in [('weighted_k3_numerator',numerator),('effective_weight_mass',mass),
+                             ('negative_effective_weight_mass',negative_mass),('tail_effective_weight_mass',tail_mass)]:
+            self.assertAlmostEqual(r[key],expected)
+        self.assertAlmostEqual(r['sampled_old_policy_kl'],r['weighted_k3_numerator']/r['effective_weight_mass'])
+        self.assertAlmostEqual(r['negative_tail_weight_fraction'],r['tail_effective_weight_mass']/r['negative_effective_weight_mass'])
+        self.assertAlmostEqual(r['dual_clip_saturated_objective_weight_fraction'],r['tail_effective_weight_mass']/r['effective_weight_mass'])
+        self.assertNotAlmostEqual(r['negative_tail_weight_fraction'],r['negative_tail_count_fraction'])
+
+    def test_nonfinite_global_totals_do_not_emit_finite_accumulators(self):
+        r=monitor(torch.zeros(2,dtype=torch.float64),-torch.ones(2,dtype=torch.float64),
+                  torch.ones(2,dtype=torch.float64),torch.full((2,),1e308,dtype=torch.float64),
+                  c=3.,kl_log_bound=30.,target_kl=10.,negative_tail_limit=.5)
+        self.assertFalse(r['allowed'] or r['kl_estimate_complete'])
+        self.assertIn('nonfinite_global_totals',r['reasons'])
+        for key in ('weighted_k3_numerator','effective_weight_mass',
+                    'negative_effective_weight_mass','tail_effective_weight_mass'):
+            self.assertIsNone(r[key])
+
+    def test_two_rank_replicated_reports_are_one_global_observation(self):
+        with tempfile.TemporaryDirectory() as root:
+            mp.spawn(collective_worker,args=(root+'/init',root+'/rank',True),nprocs=2,join=True)
+            reports=[json.loads(Path(root+'/rank'+str(i)).read_text()) for i in range(2)]
+        self.assertEqual(reports[0],reports[1])
+        expected_numerator=sum(w*(math.expm1(d)-d) for d,w in zip([.1,.2,.3,2.],[.1,.2,.3,.4]))
+        for report in reports:
+            self.assertFalse(report['allowed']);self.assertEqual(report['reasons'],['negative_advantage_tail'])
+            self.assertAlmostEqual(report['weighted_k3_numerator'],expected_numerator)
+            self.assertAlmostEqual(report['effective_weight_mass'],1.)
+            self.assertAlmostEqual(report['negative_effective_weight_mass'],.8)
+            self.assertAlmostEqual(report['tail_effective_weight_mass'],.4)
+            self.assertAlmostEqual(report['sampled_old_policy_kl'],expected_numerator)
+            self.assertAlmostEqual(report['negative_tail_weight_fraction'],.5)
+            self.assertAlmostEqual(report['dual_clip_saturated_objective_weight_fraction'],.4)
+            self.assertEqual(report['effective_token_count'],4)
+            self.assertEqual(report['negative_token_count'],3)
+            self.assertEqual(report['negative_tail_count'],1)
+        # Select one consensus report for this observation; eight copies in rank
+        # logs must not multiply its already-reduced numerator, masses or counts.
+        replicated_rank_logs=reports*4
+        self.assertTrue(all(row==replicated_rank_logs[0] for row in replicated_rank_logs))
+        observation=replicated_rank_logs[0]
+        self.assertAlmostEqual(observation['effective_weight_mass'],1.)
+        self.assertEqual(observation['effective_token_count'],4)
+        self.assertNotAlmostEqual(sum(row['effective_weight_mass'] for row in replicated_rank_logs),1.)
 
 
 if __name__=='__main__':unittest.main()

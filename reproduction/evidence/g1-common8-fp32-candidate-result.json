@@ -1,0 +1,782 @@
+{
+  "job_id": "3260",
+  "terminal": "COMPLETED",
+  "source_commit": "638a063",
+  "wrapper_sha256": "8ef523121921e1aa8de3fe3a6ec38ea68ca1052732e469baa55b1e9132c5aa2b",
+  "actual_grpo_updates": 0,
+  "precision_candidate_only": true,
+  "production_admission": false,
+  "actual_probability_gate_accepted": true,
+  "original_tolerance": 0.05,
+  "actor_reference_max_abs": 0.0,
+  "actor_vllm_max_abs": 0.00055694580078125,
+  "run_id": "5303ccbd5cf649a19b2520843c143054",
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "model_sha256": {
+    "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+    "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+    "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+    "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "input_sha256": {
+    "manifest.json": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "train.parquet": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+    "validation.parquet": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "stage.parquet": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "final.parquet": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+    "exclusions-audit.json": "bf22b531d9aef49a3f66ee7f3f89b795821d104807ebf9bfd5f845bd1c7ba65e",
+    "calibration-300.parquet": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+    "audit.json": "699554d16b10b8d4166790776d4269f03be2d6242cc68f1ccb812564ed6aa275"
+  },
+  "complete_proof_sha256": "e0b376155169efd4a41a42395187b9da3781989495d16aebd1d74c562a79922b",
+  "rank_proof_sha256": {
+    "0": "77b34a41daeaafe9a2ccdfb5ef0660277e9f3cc39d04a17efc63b14b9676fb47",
+    "1": "0e9fa756ac0551cfb2864c57c9982b9ccc868b5ca5edc287b6b34673bd5b6154",
+    "2": "80788cccdb0d0cfe947d83ee1c95d165045c3cf71904598dcfe56b5464bd272d",
+    "3": "ab563ecce33301ea5f16b039703a58ad22a449acdcfeb42c7def263718c4be61",
+    "4": "d336fdc6d63895344d512c6884a3e4f83f4081cdff92904643ba1f10a2245a09",
+    "5": "06987af2950c3dfa1cb368dc9c8d0d74ee72506b98bca96f906fd0fa7c244829",
+    "6": "3b944d0598c030152b34b1254663575c3cbe8193b0cd206ba8c6850af545d131",
+    "7": "b7809192dde8e7871f5f38042422795f81607319625a0c1468dc503d4d55bd8a"
+  },
+  "ranks": [
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 0,
+      "cuda_uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+      "question_ids": [
+        "7a798345217bf8f29eb5a972466754145b80301abf024e2011f06d02096584e1",
+        "c694a5ea05ac591f1fce885d1b21f17444a7971b468164a5e66deb9c24d769be",
+        "001ef0bbe0e73962444ea93e4222fd2f822af61f83f3b3297f7c01e65ab6924b",
+        "3b512e0cda1e41741a03dca47c298557bc3f8a47978591767aa211cb6c918359",
+        "6451dda704c4c6c9e2e3cb2ad05a63ee8b827d08b2f464a9422e55dc590bbe61",
+        "65f575ada3351532eec6fc1740f196b3c22515956895335160366e706c089c3f",
+        "8eb0becb55c57581d69d40b567b716940e7f7f8bf1df0672b4713834f86ba50c",
+        "139769032716ad6191ef1ef880a7a297504ba284013d291ad13f6a6d41aa7149"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.0003160834312438965,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          150,
+          224,
+          155,
+          122,
+          200,
+          153,
+          119,
+          172
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.9979684,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 1,
+      "cuda_uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+      "question_ids": [
+        "6eaff014569127f4c521c943ec47384eaefa454e33002adabe2b0dd89aa7072f",
+        "7a4067eef0223899263e56d46e15788d4a037c5386ff8bd75aa735b0cc4f3eab",
+        "a0f3e62a9571c99e6637fd7c0570a35842ff2c534a21f19d36997e2b92009c1f",
+        "f4fe1cf272a29ae95f15bedf32dc1efd0fce285fbe1384a1329f8d4f547f3d6d",
+        "391ff65be2fbbb6422620b525fcb3e2aa1d0c19fb4172ae6da3e18337da24e69",
+        "d35b5ec38724fc683f36951929773252d88ba07da2384487a537cc356130a7c9",
+        "547e07613b794e2df679c445e314dc0195582ed81d0f47acd7667ad04951b62f",
+        "914a4d90be8f21581b3ba34b62f13d5c076bb890465b4f3cb48e5ff6fba20876"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.0002944469451904297,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          180,
+          124,
+          124,
+          126,
+          143,
+          125,
+          188,
+          122
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.9980001,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 2,
+      "cuda_uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+      "question_ids": [
+        "1be4974547d5bc5d12ba892e048204435114bbe71f1811b3c48848ec1dfac0b5",
+        "c5d6a1556ff3d02ab848a8ecb1c57719aeb8ed0faab091e722b48dee29be72f5",
+        "547c945f95993a163aa22f415ed27d95b4df1126bed94ebddd5cc2af29d351bf",
+        "01ac6da961ef7143be996df766dd5af4e8401124734bda256c62eceb9eef5f7e",
+        "b5fcc7d25af0ca696557ed237471dd8b4b7f5be2c33f8a73bfe6e5ada55b8e37",
+        "0aca4c3202f33124b738112ab5b5c092054d035e6e1d3909ac7ab95d6eaa29bc",
+        "dbd2afd662dd355af82e891a2740835418a031dd1977ed64afd4d45fd34920ec",
+        "97aae0c080870038867c3d310674a0a63d50a7fa2b4684367e91d1721330dea1"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.00025326013565063477,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          120,
+          143,
+          120,
+          254,
+          203,
+          155,
+          125,
+          102
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.997955,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 3,
+      "cuda_uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a",
+      "question_ids": [
+        "6de6433bab08dadcedf960fa800d14ecef963ba4a378f97e0bfc7ab9d11ab34e",
+        "6fdc9f87c377b35fbc6a27ab30f8df8f5ae5b1d82b44fd82d252d20f99c62c65",
+        "f316ae813414f9e116b413c90961dd1a3c8652263b0f1ccb52e5503323772766",
+        "490a90de13178d8f58a64a3d4d36a9e20ab119c9f358c6b6a07d3bde16475154",
+        "6ca7ea1b2fd379db034c507215a4aa6630d0900555aa7b871264b6a47ccbffda",
+        "092e52eb0b3ca38dd721345a7acc60c2f91d0556e0dba129daf68fbd0cf1361b",
+        "cde82b5dba1b4bee86e384becbe8ff7263a76f2f3896c2fa20f8172304e0866d",
+        "93f79ae1dea8bb983f1fc629bb8e3b9cbf4f4d5c817f28dd328e000ae7c45974"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.00020611286163330078,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          340,
+          129,
+          123,
+          118,
+          198,
+          162,
+          120,
+          135
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.997989,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 4,
+      "cuda_uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+      "question_ids": [
+        "48b90c17ba2656fe0280fec507a16619f72f43f7145bf99b83a3a00f9f20d6f3",
+        "c11e34cdf72f21c74928ebf875804a17e897942d9227e0fe2844fd652f151304",
+        "c3abfdb1e702fe83cfb6100eb311ff451ee7bb998dc25f5cde2781d4d268ddcc",
+        "ade9ccb826d1562f24d10d668d03d8d8a70e69b84fc06c7340f8476b363c1e82",
+        "3936634770b14a23eebfe0d9ec452f967e4c95c24572e413d7530bed6058a643",
+        "d07ee5829051ecbc37bf5c4a68141f97dee6ab485569705f4c3ef6dc7a6b77f7",
+        "016673ec3a9a73246927c0c497425d911617831c6e1eb5974f4f0a2cadb525d6",
+        "763fa1bc05ebaead0a107c6e7aa079a225d317c19542d6d1c2bd15d81f6b7c89"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.00055694580078125,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          122,
+          243,
+          229,
+          110,
+          181,
+          229,
+          195,
+          225
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.998018,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 5,
+      "cuda_uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+      "question_ids": [
+        "c71f978ce38a6e0b69638845604732857cd29274718e6bc737645753bf8d4104",
+        "ce7c79a1cfcffb55c143cc555b041fd648f6a409c41841ac5b4838c9886db53c",
+        "c8ad19b979e30ceb47c4849c5fa345f2b185d3a8e213175f929c59390bacfc1c",
+        "9df54c10b945e6172ba5dee2d2544fe9e60eb5fa5ca498455bf5496bb999440c",
+        "6b401480becdcff11d8d3e4bbb6c1599d5ca979c38b90b3ce672d43f6a3bf652",
+        "bdd6d848167233e74ad7bb4e401c14c65cb4259030f0e53b93ab97520a3b3345",
+        "c6737d30341a3e438a42967ad4261f51f1bed203e8f746c866e020cfc31c7285",
+        "b6c4b743eb35d92d79546588889838ca760323bd4efef13b7dee3899ab0df24a"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.0005204379558563232,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          139,
+          171,
+          363,
+          206,
+          173,
+          123,
+          149,
+          126
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.9979608,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 6,
+      "cuda_uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+      "question_ids": [
+        "b0c6a315f3080d41537cff11edba3455002cadde8bf50244ec2815d121980940",
+        "0a2d00b9ac29f6fd82616fed5caa502cf1f2b8a01666198825d873df742d5cf4",
+        "049563c2fb5089bdb7a0fdd7bafc5c6555398e4130a08cdab2997d3a41eb52e8",
+        "78f6adb8852462784afef71a71f9c1f0c4aa3f673aa466c4ece8486636c6d5af",
+        "bba59af78881eb4322ee57f801586b31c9306929d2901e3d982d3bb91d5ed045",
+        "44977b91136bc2189999d814831bcdf4ae230b26d0ea0dc157c7bda35487c2b5",
+        "0cc06c402ee665085c170c9d5842a0264b66f88c7394fd8b264026e282172459",
+        "ae7c44b4950a8bd4be866fe5408bb372cfa95e50de92c8b1d1874362cebc3d8e"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.00031369924545288086,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          238,
+          78,
+          277,
+          209,
+          153,
+          200,
+          123,
+          378
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.9979854,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    },
+    {
+      "accepted": true,
+      "run_id": "5303ccbd5cf649a19b2520843c143054",
+      "slurm_job_id": "3260",
+      "phase": "initial",
+      "rank": 7,
+      "cuda_uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e",
+      "question_ids": [
+        "a7c697876f99a0ee7af35a81f831af90ff3e167893cc458eccfb0e31fb97648c",
+        "753864df0dfd6d12e47cc3cf56b4b10728d445e385aa753ef3a72cd6b23dd017",
+        "bd86ea1848eef56ffc0706cc0f75c4e9504a53346e84c6079dc298b0ff1aebf6",
+        "102f8043b70b53b8b12d0c13ee9ef097ebd1e26293f6cd15ce92528acb7d7270",
+        "7736db06e471e4dc123689114be658195e458d7c1202f344982424dd016d0873",
+        "36ee003a5dbc2738b28983aa11aed5ffa70c6cadbd108f873d3e31065342cbc7",
+        "ad34d20a35bae914cbec6b394ced5a14b4011daa90564d624e8e56665c16f3a4",
+        "3ae4fae5a13974af766e51718a7aac880ba7d631f7a98630a38968b4b6b6c204"
+      ],
+      "stage_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "resolved_config_sha256": "e3b1d23804994fedd88e312b98a4287a9d64d02b4e083475bd2533ff377dd033",
+      "actual_optimizer_writes": 0,
+      "actual_grpo_updates": 0,
+      "sync_calls": 1,
+      "sync_load_format": "dtensor",
+      "separate_actor_logprob_entrypoint": true,
+      "internal_separate_logprob_max_abs": 0.0,
+      "parity": {
+        "actor_reference_max_abs": 0.0,
+        "actor_vllm_max_abs": 0.00024443864822387695,
+        "tolerance": 0.05,
+        "valid_tokens_per_question": [
+          100,
+          196,
+          224,
+          176,
+          164,
+          181,
+          299,
+          95
+        ]
+      },
+      "resident_services_before_generation": null,
+      "initial_parameters_finite": true,
+      "checked_unix": 1791229692.9979885,
+      "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+    }
+  ],
+  "precision_records": [
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 4,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 4,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 4,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.00055694580078125,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 0,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 0,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 0,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.0003160834312438965,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 6,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 6,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 6,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.00031369924545288086,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 2,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 2,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 2,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.00025326013565063477,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 1,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 1,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 1,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.0002944469451904297,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 7,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 7,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 7,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.00024443864822387695,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 5,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 5,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 5,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.0005204379558563232,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 3,
+      "role": "actor",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "torch.float32",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides",
+      "actual_rollout_parameter_dtypes": [
+        "torch.float32"
+      ]
+    },
+    {
+      "kind": "actual_fp32_initialization",
+      "rank": 3,
+      "role": "reference",
+      "parameter_dtypes": [
+        "torch.float32"
+      ],
+      "buffer_dtypes": [
+        "torch.float32"
+      ],
+      "fsdp_mixed_param_dtype": "None",
+      "autocast_cuda_enabled": false,
+      "allow_tf32_matmul": false,
+      "requested_rollout_dtype": "float32",
+      "actual_grpo_updates": 0,
+      "semantics": "Isolated precision candidate; official same model/data/recipe budgets, actual resolved dtype overrides"
+    },
+    {
+      "kind": "actual_fp32_parity",
+      "rank": 3,
+      "actor_reference_max_abs": 0.0,
+      "actor_vllm_max_abs": 0.00020611286163330078,
+      "tolerance": 0.05,
+      "parameter_writes": 0,
+      "precision_candidate_only": true
+    }
+  ],
+  "remaining_namespace_pids": [],
+  "semantics": "Isolated FP32 tensor/parameter candidate with global CUDA autocast override and Torch TF32 flags disabled. Actual activation/logits/KV cache dtype not yet observed; no claim every attention internal kernel excludes FastF32.",
+  "scope": "64-question single-action greedy actual worker smoke; not agent EM or full training peak"
+}

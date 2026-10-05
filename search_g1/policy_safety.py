@@ -25,6 +25,8 @@ def monitor(delta, advantages, mask, weights, *, c, kl_log_bound, target_kl,
 
     Invalid/over-bound samples generate finite diagnostics and a rejection flag;
     their substituted zero is NEVER reported as a true complete KL estimate.
+    Accumulator fields are already global; identical rank reports describe one
+    observation. The numerator is diagnostic when kl_estimate_complete is false.
     """
     if not (math.isfinite(target_kl) and target_kl > 0 and
             math.isfinite(negative_tail_limit) and 0 <= negative_tail_limit <= 1 and
@@ -74,6 +76,9 @@ def monitor(delta, advantages, mask, weights, *, c, kl_log_bound, target_kl,
     if fraction > negative_tail_limit: reasons.append('negative_advantage_tail')
     return dict(allowed=not reasons,reasons=reasons,sampled_old_policy_kl=kl,
                 kl_estimate_complete=complete,effective_weight_mass=mass if finite_totals else None,
+                weighted_k3_numerator=numerator if finite_totals else None,
+                negative_effective_weight_mass=nmass if finite_totals else None,
+                tail_effective_weight_mass=tmass if finite_totals else None,
                 effective_token_count=int(count),negative_token_count=int(ncount),
                 negative_tail_count=int(tcount),negative_tail_count_fraction=tcount/ncount if ncount else 0.,
                 negative_tail_weight_fraction=fraction,dual_clip_saturated_objective_weight_fraction=tmass/mass if finite_totals and mass>0 else None,

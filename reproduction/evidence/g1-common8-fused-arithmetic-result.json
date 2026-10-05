@@ -1,0 +1,231 @@
+{
+  "job_id": 3257,
+  "terminal": "FAILED",
+  "source_commit": "638a063",
+  "wrapper_sha256": "0f5e34aa6cc572836284f828c3b12e65f4af328992859481f1f85d314477e55a",
+  "actual_grpo_updates": 0,
+  "probability_gate_accepted": false,
+  "record_count": 2896,
+  "all_records_after_one_actual_dtensor_sync": true,
+  "comparisons": {
+    "qkv": {
+      "record_count": 576,
+      "rank_count": 8,
+      "shapes": [
+        [
+          8,
+          2048
+        ],
+        [
+          1039,
+          2048
+        ],
+        [
+          1043,
+          2048
+        ],
+        [
+          1045,
+          2048
+        ],
+        [
+          1052,
+          2048
+        ],
+        [
+          1110,
+          2048
+        ],
+        [
+          1120,
+          2048
+        ],
+        [
+          1139,
+          2048
+        ],
+        [
+          1193,
+          2048
+        ]
+      ],
+      "original_vs_split_same_operand": {
+        "max_abs": 0.25,
+        "weighted_mean_abs": 2.3648354700217725e-06,
+        "value_count": 811468800,
+        "different_values": 459819
+      },
+      "original_vs_no_reduced_fused": {
+        "max_abs": 0.0,
+        "weighted_mean_abs": 0.0,
+        "value_count": 811468800,
+        "different_values": 0
+      },
+      "original_vs_no_reduced_split": {
+        "max_abs": 0.25,
+        "weighted_mean_abs": 2.3648354700217725e-06,
+        "value_count": 811468800,
+        "different_values": 459819
+      }
+    },
+    "gate_up": {
+      "record_count": 576,
+      "rank_count": 8,
+      "shapes": [
+        [
+          8,
+          2048
+        ],
+        [
+          1039,
+          2048
+        ],
+        [
+          1043,
+          2048
+        ],
+        [
+          1045,
+          2048
+        ],
+        [
+          1052,
+          2048
+        ],
+        [
+          1110,
+          2048
+        ],
+        [
+          1120,
+          2048
+        ],
+        [
+          1139,
+          2048
+        ],
+        [
+          1193,
+          2048
+        ]
+      ],
+      "original_vs_split_same_operand": {
+        "max_abs": 0.0,
+        "weighted_mean_abs": 0.0,
+        "value_count": 6978631680,
+        "different_values": 0
+      },
+      "original_vs_no_reduced_fused": {
+        "max_abs": 0.0,
+        "weighted_mean_abs": 0.0,
+        "value_count": 6978631680,
+        "different_values": 0
+      },
+      "original_vs_no_reduced_split": {
+        "max_abs": 0.0,
+        "weighted_mean_abs": 0.0,
+        "value_count": 6978631680,
+        "different_values": 0
+      }
+    },
+    "rmsnorm": {
+      "record_count": 1168,
+      "rank_count": 8,
+      "shapes": [
+        [
+          8,
+          2048
+        ],
+        [
+          1039,
+          2048
+        ],
+        [
+          1043,
+          2048
+        ],
+        [
+          1045,
+          2048
+        ],
+        [
+          1052,
+          2048
+        ],
+        [
+          1110,
+          2048
+        ],
+        [
+          1120,
+          2048
+        ],
+        [
+          1139,
+          2048
+        ],
+        [
+          1193,
+          2048
+        ]
+      ],
+      "original_vs_HF_same_operand": {
+        "max_abs": 0.03125,
+        "weighted_mean_abs": 5.203852713010976e-09,
+        "value_count": 1316382720,
+        "different_values": 1981
+      }
+    },
+    "silu": {
+      "record_count": 576,
+      "rank_count": 8,
+      "shapes": [
+        [
+          8,
+          22016
+        ],
+        [
+          1039,
+          22016
+        ],
+        [
+          1043,
+          22016
+        ],
+        [
+          1045,
+          22016
+        ],
+        [
+          1052,
+          22016
+        ],
+        [
+          1110,
+          22016
+        ],
+        [
+          1120,
+          22016
+        ],
+        [
+          1139,
+          22016
+        ],
+        [
+          1193,
+          22016
+        ]
+      ],
+      "original_vs_HF_same_operand": {
+        "max_abs": 0.0,
+        "weighted_mean_abs": 0.0,
+        "value_count": 3489315840,
+        "different_values": 0
+      }
+    }
+  },
+  "scope": "First actual prefill and decode arithmetic calls per module; same operands; original outputs always returned; not full kernel equivalence",
+  "excluded_previous_job": 3256,
+  "excluded_reason": "Its first per-module samples included startup profile; preserved locally as warmup evidence, no production numerical inference"
+}
