@@ -1,0 +1,43 @@
+{
+  "target_cpu": {
+    "base": "/dataset/shaoshitong/g1-common8-rope-fix-cpu-2f7413107aa6",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.025s\n\nOK\n",
+    "sha256": {
+      "verl/utils/rope_precision.py": "c43b4b489de5cdf71d322b7a27e9044f5448d05412fdc6588a3d4f64c03d300c",
+      "verl/utils/fsdp_utils.py": "5126d6f195486fb58996f9ede8906e788c2d4ec2bffb7b4902fa21950f26b20b",
+      "verl/workers/fsdp_workers.py": "0ea49eb3b169bfab4de2c31d557459604e65f1ec01d3b1f104c62509c2ea3a11",
+      "reproduction/common8/test_rope_precision.py": "0c17c477d10080b93a96d1de8c475d0d387cd3d02e986d06e838085877f1c780"
+    }
+  },
+  "native_launch": {
+    "base": "/dataset/shaoshitong/Search-G1-common8-rope-fixed-5f3ae309cfae",
+    "job_id": "3249",
+    "source_commit": "638a063",
+    "wrapper_sha256": "a904b548788cdef15da4cf1a9c0fe7cafe551231c409f5548ff39b18130d0638",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--partition=gpu",
+      "--nodelist=h100-8",
+      "--nodes=1",
+      "--ntasks=1",
+      "--cpus-per-task=64",
+      "--gres=gpu:h100:8",
+      "--mem=512G",
+      "--exclusive",
+      "--time=01:00:00",
+      "--job-name=search-g1-device-diagnostic",
+      "--chdir=/dataset/shaoshitong/Search-G1-common8-rope-fixed-5f3ae309cfae/repo",
+      "--output=/dataset/shaoshitong/Search-G1-common8-rope-fixed-5f3ae309cfae/logs/slurm-%j.log",
+      "--export=ALL,SEARCH_G1_BASE=/dataset/shaoshitong/Search-G1-common8-rope-fixed-5f3ae309cfae",
+      "/dataset/shaoshitong/Search-G1-common8-rope-fixed-5f3ae309cfae/preparation/job.sh"
+    ],
+    "actual_grpo_updates": 0,
+    "scope": "Observe repaired actual FP32 rotary hashes and original model parity; no rawQA or optimizer writes",
+    "submitted_unix": 1791225724.8063126
+  },
+  "production_training_updates": 0,
+  "acceptance": "CPU tests passed; native results pending, production not started"
+}
