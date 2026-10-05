@@ -148,7 +148,16 @@ class DataParallelPPOActor(BasePPOActor):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         if grad_norm > self.config.get('recovery_max_grad_norm',float('inf')):
             raise ValueError(f'Recovery preclip gradient gate: {float(grad_norm)}; optimizer step refused')
+        safety = getattr(self, "_policy_safety", None)
+        if safety is not None:
+            self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
+            safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
         self.actor_optimizer.step()
+        if safety is not None:
+            safety.committed += 1
+            safety.last_grad_preclip = float(grad_norm)
+            safety.last_grad_postclip = self.last_postclip_grad_norm
+            safety.publish("optimizer_committed", dict(allowed=True, reasons=[]))
         return grad_norm
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
@@ -236,6 +245,12 @@ class DataParallelPPOActor(BasePPOActor):
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
         dataloader = batch.split(self.config.ppo_mini_batch_size)
 
+        safety = None
+        safety_config = self.config.get("policy_safety", {})
+        if safety_config.get("enabled", False):
+            from search_r1.baselines.policy_safety_runtime import PolicySafetyRuntime
+            safety = PolicySafetyRuntime(self, batch, data.meta_info, safety_config)
+        self._policy_safety = safety
         metrics = {}
         updates = skipped = 0
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
@@ -270,6 +285,8 @@ class DataParallelPPOActor(BasePPOActor):
                 # split batch into micro_batches
                 micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
 
+            if safety is not None:
+                safety.measure("before_optimizer")
             self.actor_optimizer.zero_grad()
             mini_metrics = {}
 
@@ -290,10 +307,13 @@ class DataParallelPPOActor(BasePPOActor):
                 # all return: (bsz, response_length)
                 entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
 
+                if safety is not None:
+                    safety.inputs(old_log_prob, log_prob, advantages, safety.effective_mask(data), data["policy_weights"], entropy, data.get("ref_log_prob", None))
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, data['policy_weights'],
-                        clip_ratio, denominator, data.get('step_ids', None))
+                        clip_ratio, denominator, data.get('step_ids', None),
+                        dual_clip=safety_config['dual_clip'] if safety is not None else None)
                 elif topd_token_mean:
                     pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                         old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
@@ -336,9 +356,19 @@ class DataParallelPPOActor(BasePPOActor):
                         diagnostic['diagnostic_data'] = {
                             key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
                             if key in data}
-                    audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
-                        advantages=advantages, loss_parts=parts,
-                        ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
+                    audit_failed = False
+                    try:
+                        audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
+                            advantages=advantages, loss_parts=parts,
+                            ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
+                    except Exception:
+                        if safety is None:
+                            raise
+                        audit_failed = True
+                    if safety is not None:
+                        safety.sync_valid(audit_failed, 'rank_audit_micro_before_backward')
+                if safety is not None:
+                    safety.sync_valid(~torch.isfinite(loss), "micro_loss_before_backward")
                 try:
                     loss.backward()
                 except Exception as error:
@@ -370,13 +400,34 @@ class DataParallelPPOActor(BasePPOActor):
                     audit.failure(error)
                 raise
             if audit is not None:
-                audit.gradient(grad_norm)
+                if safety is None:
+                    audit.gradient(grad_norm)
+                else:
+                    audit_failed = False
+                    try:
+                        audit.gradient(grad_norm)
+                    except Exception:
+                        audit_failed = True
+                    safety.sync_valid(audit_failed, "rank_audit_after_committed_write")
             updates += 1
+            if safety is not None:
+                safety.committed = updates
+                safety.parameters_and_adam()
+                safety.measure('after_optimizer')
+                append_to_dict(metrics, {'actor/postclip_grad_norm': self.last_postclip_grad_norm})
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
         if audit is not None:
-            audit.finish(updates, skipped)
+            if safety is None:
+                audit.finish(updates, skipped)
+            else:
+                audit_failed = False
+                try:
+                    audit.finish(updates, skipped)
+                except Exception:
+                    audit_failed = True
+                safety.sync_valid(audit_failed, "rank_audit_finish")
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
         if paper_objective:

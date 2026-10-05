@@ -4,6 +4,7 @@ Weights survive row permutations. Mini batches estimate the complete rollout
 objective by uniformly sampling rows; no local-rank question re-normalization.
 """
 from collections import defaultdict
+import math
 import torch
 from verl.utils import torch_functional as F
 
@@ -73,7 +74,7 @@ def row_denominator(rows, device):
     return count.clamp_min(1) / world
 
 
-def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None):
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, dual_clip=None):
     """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
     valid = mask.bool()
     for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
@@ -98,6 +99,17 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
                 row = row + selected * delta[i][selected].sum()
             action_deltas.append(row)
         delta = torch.stack(action_deltas)
+    if dual_clip is not None:
+        if step_ids is not None:
+            raise ValueError("Token Dual-Clip integration only; GiGPO requires separate action review")
+        from .policy_safety import dual_clip_terms
+        terms = dual_clip_terms(old, current, advantages, valid, cliprange, dual_clip)
+        loss = F.masked_sum(terms, weights) / denominator
+        safe_mass = weights.sum().clamp_min(torch.finfo(weights.dtype).tiny)
+        clipped = ((advantages > 0) & (delta > math.log1p(cliprange))) | ((advantages < 0) & (delta < math.log1p(-cliprange)))
+        clipfrac = F.masked_sum(clipped.float(), weights) / safe_mass
+        kl = F.masked_sum(-delta, weights) / safe_mass
+        return loss, clipfrac, kl
     ratio = delta.exp()
     if not torch.isfinite(ratio[valid]).all():
         raise ValueError('Policy ratio overflow on a supervised action/token')
