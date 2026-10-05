@@ -1,0 +1,27 @@
+{
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "started": 1791152901.890629,
+  "physical_score": 1,
+  "jit": true,
+  "peaks_mib": {
+    "4": 25056,
+    "5": 25214,
+    "6": 25302,
+    "7": 25943
+  },
+  "samples": 2431,
+  "full_iterations_to_observe": [
+    43,
+    44
+  ],
+  "status": "OBSERVATION_COMPLETE",
+  "minimum_reserve_mib": {
+    "4": 24084,
+    "5": 23926,
+    "6": 23838,
+    "7": 23197
+  },
+  "last_completed_step": 44,
+  "updated": 1791158002.6296415,
+  "finished": 1791158002.629998
+}

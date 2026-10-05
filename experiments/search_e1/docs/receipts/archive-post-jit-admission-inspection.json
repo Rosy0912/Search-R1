@@ -1,0 +1,21 @@
+{
+  "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+  "training": [
+    1438383
+  ],
+  "services": [
+    1749337
+  ],
+  "used_mib": 15531,
+  "total_mib": 49140,
+  "historical_peak_mib": 25943,
+  "original_historical_peak_mib": 43643,
+  "phase_evidence": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "completed": "archive-post-jit-memory.json",
+    "continuous": "archive-jit-memory-continuous.json",
+    "updated": 1791159757.5324178
+  },
+  "time": 1791159787.0379055,
+  "inspect_only": true
+}
