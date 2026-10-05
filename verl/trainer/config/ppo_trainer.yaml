@@ -25,6 +25,8 @@ actor_rollout_ref:
     use_remove_padding: False
   actor:
     strategy: fsdp  # This is for backward-compatibility
+    compute_dtype: bfloat16 # legacy default; common8 explicitly uses float32
+    allow_tf32: null # null preserves the caller's legacy Torch flags
     ppo_mini_batch_size: 256
     ppo_micro_batch_size: 64
     use_dynamic_bsz: False
@@ -62,6 +64,8 @@ actor_rollout_ref:
       optimizer_offload: False
       fsdp_size: -1
   ref:
+    compute_dtype: bfloat16
+    allow_tf32: null
     fsdp_config:
       param_offload: False
       wrap_policy:

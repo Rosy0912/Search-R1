@@ -17,8 +17,9 @@ from reproduction.common8.configuration import REPO, resolved
 from reproduction.common8.stage_retrieval import binding, memory_bytes
 from reproduction.common8.validation_identity import expected
 from reproduction.common8.verify_data import digest
+from reproduction.common8.precision_evidence import PrecisionObservation, verify_precision
 
-LOGPROB_ATOL = 0.05  # BF16 SDPA/vLLM backend parity bound, not a training hyperparameter.
+LOGPROB_ATOL = 0.05  # Original unchanged backend parity bound, not a training hyperparameter.
 
 
 def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
@@ -58,6 +59,7 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids):
         assert proof['separate_actor_logprob_entrypoint'] is True
         assert 0 <= proof['internal_separate_logprob_max_abs'] <= LOGPROB_ATOL
         assert proof['sync_load_format'] == 'dtensor'
+        verify_precision(proof['runtime_precision'])
         assert len(proof['question_ids']) == 8
         assert proof['parity']['tolerance'] == LOGPROB_ATOL
         assert len(proof['parity']['valid_tokens_per_question']) == 8
@@ -114,6 +116,7 @@ def main(base, phase):
     assert cuda_uuids() == allocation['actual_cuda_runtime_uuids']
     torch.cuda.set_device(rank)
     dist.init_process_group('nccl', timeout=datetime.timedelta(seconds=600))
+    precision = None
     try:
         def collective(ok, message):
             value = torch.tensor(int(bool(ok)), device='cuda', dtype=torch.int32)
@@ -144,6 +147,8 @@ def main(base, phase):
         actor.init_model()
         reference = ActorRolloutRefWorker(config.actor_rollout_ref, role='ref')
         reference.init_model()
+        # Installed after init/profiling; only actual synced model forwards are observed.
+        precision = PrecisionObservation(actor, reference)
         for role, module in (('actor', actor.actor_module_fsdp), ('reference', reference.ref_module_fsdp)):
             require_finite({n: p.detach() for n, p in module.named_parameters()},
                            stage='common8-smoke-initial-' + role, process_group=module.process_group)
@@ -198,6 +203,13 @@ def main(base, phase):
         collective(sync_calls == ['dtensor'], 'Unexpected actual rollout weight load format')
         collective(not actor.actor_optimizer.state and getattr(actor.actor, '_optimizer_writes', 0) == 0,
                    'A model smoke must not write optimizer state')
+        runtime_precision = precision.snapshot()
+        precision_error = None
+        try:
+            verify_precision(runtime_precision)
+        except (AssertionError, KeyError) as failure:
+            precision_error = repr(failure)
+        collective(precision_error is None, 'Actual common8 FP32 runtime precision rejected: ' + str(precision_error))
         if phase == 'coexistence':
             assert coexistence(base, run, job) == services, 'Resident services changed across the smoke'
         proof = dict(accepted=True, run_id=run['run_id'], slurm_job_id=job['JobId'], phase=phase,
@@ -207,6 +219,7 @@ def main(base, phase):
                      actual_grpo_updates=0, sync_calls=len(sync_calls), sync_load_format=sync_calls[0],
                      separate_actor_logprob_entrypoint=True,
                      internal_separate_logprob_max_abs=float(api_error.max()),
+                     runtime_precision=runtime_precision,
                      parity=parity, resident_services_before_generation=services,
                      initial_parameters_finite=True, checked_unix=time.time(),
                      scope='64-question single-action greedy actual worker smoke; not agent EM or full training peak')
@@ -223,6 +236,8 @@ def main(base, phase):
                 json.dump(final, f, indent=2); f.flush(); os.fsync(f.fileno())
             print('COMMON8_MODEL_SMOKE_ACCEPTED=' + phase, flush=True)
     finally:
+        if precision is not None:
+            precision.close()
         dist.destroy_process_group()
 
 

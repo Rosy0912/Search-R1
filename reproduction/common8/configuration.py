@@ -49,6 +49,13 @@ def resolved(base):
                  config.actor_rollout_ref.actor.ulysses_sequence_parallel_size)
     assert config.data.train_batch_size == 512
     assert config.actor_rollout_ref.actor.grad_clip == 1.0
+    for role in ('actor', 'ref'):
+        part = config.actor_rollout_ref[role]
+        assert part.compute_dtype == 'float32' and part.allow_tf32 is False
+        assert part.fsdp_config.model_dtype == 'fp32'
+    mixed = config.actor_rollout_ref.actor.fsdp_config.mixed_precision
+    assert all(mixed[k] == 'fp32' for k in ('param_dtype', 'reduce_dtype', 'buffer_dtype'))
+    assert config.actor_rollout_ref.rollout.dtype == 'float32'
     assert config.trainer.total_training_steps == 301
     assert config.actor_rollout_ref.model.path == run['initial_model']
     assert config.trainer.default_local_dir == run['checkpoint_dir']

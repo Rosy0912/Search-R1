@@ -1,0 +1,22 @@
+{
+  "returncode": 0,
+  "tests_passed": 22,
+  "elapsed_seconds": 0.884,
+  "source_sha256": {
+    "search_g1/compute_precision.py": "c89a1c71e614385c1d412fef825d825029af47d64b913b87d8ce17e1da33d9c8",
+    "search_g1/test_compute_precision.py": "80480fd806c442b10c7e74732516ed1437fc343e8fe6d85fb03820dee92f1d18",
+    "verl/workers/actor/dp_actor.py": "861e3628e119026cd12e2db2690f76ac55d76d34e3ba6d04259f72bc79b52ca2",
+    "reproduction/common8/configuration.py": "636572bdbf246cdcb097100c090564cc129a020be2e7be35bfb2ee3aea1a4957",
+    "reproduction/common8/recipe.json": "f378ac70ea0c28dba1b7a4f829cf080ec6c916b7b0bd3805bd79d7a26bf7b715",
+    "verl/trainer/config/ppo_trainer.yaml": "e872ae4f88b3c6bb0a8da0815cfd58970be5b14bc8b2e90ee2a7bc9bfdac8b5c",
+    "reproduction/common8/model_smoke.py": "193447cc5531602bb691329b5cb19f86cd83a06b6e40793613eca2e21ba5aafa",
+    "reproduction/common8/test_model_smoke.py": "042d32f2845072eb4a38a58803c49365a4ec099be278bc91146267433563b81a",
+    "reproduction/common8/test_configuration.py": "8a2a5ada728d10c4dd9b2f02f45c5680afacaa5a7b4eee761de062622f74b9b9",
+    "reproduction/common8/precision_evidence.py": "24e83761bd2bbb945d5ca3a3a6f1acc1b3221000a1cb5099a03ef792a97b062e",
+    "reproduction/common8/test_precision_evidence.py": "e6dcb23a01a99cadac154ec433eb71b7cd4fdff614fb45fcdcc0582296c89cea"
+  },
+  "target": "Torch2.4 actual target CPU; no CUDA visibility",
+  "scope": "Preliminary explicit precision helper/config/actual CPU forward-hook/schema; before later collective guard repair",
+  "production_admission": false,
+  "native_gpu_test_accepted": false
+}

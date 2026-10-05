@@ -28,7 +28,10 @@ class ConfigurationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             base, run = self.fixture(root)
             _, config, args = c.resolved(base)
-            self.assertEqual(len(args), 58)
+            self.assertEqual(len(args), len(json.loads(c.RECIPE.read_text())))
+            self.assertEqual(config.actor_rollout_ref.actor.compute_dtype, "float32")
+            self.assertFalse(config.actor_rollout_ref.ref.allow_tf32)
+            self.assertEqual(config.actor_rollout_ref.rollout.dtype, "float32")
             self.assertEqual(config.data.train_batch_size * config.actor_rollout_ref.rollout.n_agent, 2560)
             self.assertEqual(2560 // config.actor_rollout_ref.actor.ppo_mini_batch_size, 20)
             self.assertEqual(config.actor_rollout_ref.rollout.prompt_length, 4096)

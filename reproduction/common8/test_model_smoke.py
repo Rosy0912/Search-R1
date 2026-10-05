@@ -3,6 +3,7 @@ import copy
 import unittest
 import torch
 from reproduction.common8.model_smoke import compare, aggregate, LOGPROB_ATOL
+from reproduction.common8.test_precision_evidence import fixture_proof
 
 
 class ModelSmokeTests(unittest.TestCase):
@@ -21,6 +22,7 @@ class ModelSmokeTests(unittest.TestCase):
                      cuda_uuid=uuids[r], actual_optimizer_writes=0, sync_calls=1, sync_load_format='dtensor',
                      separate_actor_logprob_entrypoint=True, internal_separate_logprob_max_abs=0.,
                      question_ids=ids[r*8:(r+1)*8], resolved_config_sha256='same',
+                     runtime_precision=fixture_proof(),
                      parity=dict(tolerance=LOGPROB_ATOL, actor_reference_max_abs=0., actor_vllm_max_abs=0.,
                                  valid_tokens_per_question=[1]*8)) for r in range(8)]
         return rows, ids, uuids

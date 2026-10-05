@@ -76,3 +76,17 @@ scope are in `g1-common8-policy-safety-cpu-accumulators.json`. The historical
 native3252 proof remains bound to its frozen source; it does not prove these
 later additive fields on eight GPUs. Actual healthy Qwen calibration and the
 fixed512 EM/F1/effective-action assessment are still required.
+
+## Pure calibration evidence verification
+
+`safety_calibration_evidence.verify_segment` verifies complete eight-rank
+20-write/40-check schedules, eachLR1e-6, frozen local identities, complete
+globally reduced statistics, independent weighted-ratio arithmetic, and
+unchanged-policy continuity between adjacent mini checks. Post-clip norms are
+bounded by1 plus FP32 rounding epsilon; that tolerance is numerical, not a health
+threshold. Real CPU monitor-to-worker-JSON-writer compatibility is tested.
+The reader returns structural verification with `production_admission=False`.
+It cannot authenticate physical execution, certify a healthy checkpoint,
+choose thresholds or replace the remaining discovery/confirmation runner,
+fixed512 EM/F1/actions and independent admission producer. Its tests are part
+of the49-test target CPU proof; fabricated schedule fixtures are not real updates.

@@ -1,0 +1,25 @@
+{
+  "returncode": 0,
+  "tests_passed": 49,
+  "elapsed_seconds": 6.154,
+  "target": "Actual target Torch2.4 CPU and real two-process private-group Gloo; CUDA invisible",
+  "source_sha256": {
+    "search_g1/compute_precision.py": "ed6b25acd86724de5bb20b613349e6e894b27ea0f0543e0faf21429b07e81ef0",
+    "search_g1/test_compute_precision.py": "2ecd304bf22ec3d07cea547c32c8745ab170c4aa3535bf8104f2f18d1247b8ab",
+    "verl/workers/actor/dp_actor.py": "310722decd7c2c431e27cc61c949cc0620845613ba767a075758a2125fe88727",
+    "reproduction/common8/configuration.py": "636572bdbf246cdcb097100c090564cc129a020be2e7be35bfb2ee3aea1a4957",
+    "reproduction/common8/recipe.json": "f378ac70ea0c28dba1b7a4f829cf080ec6c916b7b0bd3805bd79d7a26bf7b715",
+    "verl/trainer/config/ppo_trainer.yaml": "e872ae4f88b3c6bb0a8da0815cfd58970be5b14bc8b2e90ee2a7bc9bfdac8b5c",
+    "reproduction/common8/model_smoke.py": "193447cc5531602bb691329b5cb19f86cd83a06b6e40793613eca2e21ba5aafa",
+    "reproduction/common8/test_model_smoke.py": "042d32f2845072eb4a38a58803c49365a4ec099be278bc91146267433563b81a",
+    "reproduction/common8/test_configuration.py": "8a2a5ada728d10c4dd9b2f02f45c5680afacaa5a7b4eee761de062622f74b9b9",
+    "reproduction/common8/precision_evidence.py": "a632b9663649ca5ced63687418058dc2714d4853629ad5af4d0f923d7ab12355",
+    "reproduction/common8/test_precision_evidence.py": "f1a1e118104c17e132c2d8d889226d1b556472a6e979154b3157b740e7661480",
+    "reproduction/common8/safety_calibration_evidence.py": "a102c66d763ca581f264a954d32e1493fd9d878329f2075b950e15bda3d8aaf3",
+    "reproduction/common8/test_safety_calibration_evidence.py": "9737260a52fa4112f9ffdd5f6239861ce9f3a77d9584be98dd6a20f66d5a66d7"
+  },
+  "scope": "Explicit precision/scoped autocast/collective precision faults, source-bound configuration, actual CPU hooks including unregistered FSDP live Tensor views, model proof schemas and pure calibration evidence coalescer",
+  "production_admission": false,
+  "native_gpu_test_accepted": false,
+  "calibration_healthy_accepted": false
+}

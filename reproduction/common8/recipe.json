@@ -58,5 +58,15 @@
   "retriever.url=http://127.0.0.1:18010/retrieve",
   "retriever.topk=3",
   "actor_rollout_ref.actor.policy_safety.enabled=true",
-  "actor_rollout_ref.actor.policy_safety.calibration_manifest=@BASE@/logs/policy-safety-calibration.json"
+  "actor_rollout_ref.actor.policy_safety.calibration_manifest=@BASE@/logs/policy-safety-calibration.json",
+  "actor_rollout_ref.actor.compute_dtype=float32",
+  "actor_rollout_ref.actor.allow_tf32=false",
+  "actor_rollout_ref.ref.compute_dtype=float32",
+  "actor_rollout_ref.ref.allow_tf32=false",
+  "+actor_rollout_ref.actor.fsdp_config.model_dtype=fp32",
+  "+actor_rollout_ref.actor.fsdp_config.mixed_precision.param_dtype=fp32",
+  "+actor_rollout_ref.actor.fsdp_config.mixed_precision.reduce_dtype=fp32",
+  "+actor_rollout_ref.actor.fsdp_config.mixed_precision.buffer_dtype=fp32",
+  "+actor_rollout_ref.ref.fsdp_config.model_dtype=fp32",
+  "actor_rollout_ref.rollout.dtype=float32"
 ]

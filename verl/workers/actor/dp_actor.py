@@ -19,6 +19,7 @@ import itertools
 from typing import Iterable, Tuple
 
 import torch
+from search_g1.compute_precision import ComputePrecision
 from search_g1.numerics import require_finite
 from torch import nn
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
@@ -49,6 +50,11 @@ class DataParallelPPOActor(BasePPOActor):
         super().__init__(config)
         self.actor_module = actor_module
         self.actor_optimizer = actor_optimizer
+        self.compute_precision = ComputePrecision.from_config(self.config)
+        self.compute_precision.validate_module(self.actor_module,
+                                               process_group=getattr(self.actor_module, 'process_group', None))
+        self.compute_precision.configure_worker()
+        self.last_forward_precision = None
         self.use_remove_padding = self.config.get('use_remove_padding', False)
         print(f'Actor use_remove_padding={self.use_remove_padding}')
         self.ulysses_sequence_parallel_size = self.config.ulysses_sequence_parallel_size
@@ -63,7 +69,8 @@ class DataParallelPPOActor(BasePPOActor):
             log_probs: # (bs, response_len)
         """
         response_length = micro_batch['responses'].size(-1)
-        with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+        precision_group = getattr(self.actor_module, 'process_group', None)
+        with self.compute_precision.autocast(process_group=precision_group):
             input_ids = micro_batch['input_ids']
             batch_size, seqlen = input_ids.shape
             attention_mask = micro_batch['attention_mask']
@@ -96,6 +103,8 @@ class DataParallelPPOActor(BasePPOActor):
                                            attention_mask=None,
                                            position_ids=position_ids_rmpad,
                                            use_cache=False)  # prevent model thinks we are generating
+                self.last_forward_precision = self.compute_precision.observe_logits(output.logits,
+                                                                                    process_group=precision_group)
                 logits_rmpad = output.logits.squeeze(0)  # (total_nnz, vocab_size)
 
                 logits_rmpad.div_(temperature)
@@ -133,6 +142,8 @@ class DataParallelPPOActor(BasePPOActor):
                                            attention_mask=attention_mask,
                                            position_ids=position_ids,
                                            use_cache=False)  # prevent model thinks we are generating
+                self.last_forward_precision = self.compute_precision.observe_logits(output.logits,
+                                                                                    process_group=precision_group)
                 logits = output.logits
                 logits.div_(temperature)
                 logits = logits[:, -response_length - 1:-1]  # (bsz, response_length)
