@@ -1,0 +1,180 @@
+{
+  "job_id": "3244",
+  "source_commit": "1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+  "actual_grpo_updates": 0,
+  "state": "FAILED",
+  "failure": "valid-token actor/reference/vLLM logprob parity over existing 0.05 bound",
+  "device_fix_observed": {
+    "ce_calls": 42,
+    "ranks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "device_mismatches": 0,
+    "scope": "observed actual calls only, not optimizer path acceptance"
+  },
+  "internal_separate_gate": "all eight ranks reached final parity, so previous collective <=0.05 internal/separate gate passed; exact deltas not published before final rejection",
+  "actual_parity_by_rank": [
+    {
+      "rank": 0,
+      "actor_reference_max_abs": 0.3488903045654297,
+      "actor_vllm_max_abs": 0.43949586153030396,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        149,
+        209,
+        144,
+        135,
+        153,
+        177,
+        131,
+        149
+      ]
+    },
+    {
+      "rank": 1,
+      "actor_reference_max_abs": 0.24625778198242188,
+      "actor_vllm_max_abs": 0.21538546681404114,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        210,
+        124,
+        129,
+        126,
+        131,
+        167,
+        179,
+        122
+      ]
+    },
+    {
+      "rank": 2,
+      "actor_reference_max_abs": 0.21346473693847656,
+      "actor_vllm_max_abs": 0.35778117179870605,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        116,
+        199,
+        125,
+        215,
+        243,
+        155,
+        125,
+        103
+      ]
+    },
+    {
+      "rank": 3,
+      "actor_reference_max_abs": 0.2780570983886719,
+      "actor_vllm_max_abs": 0.3845718502998352,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        279,
+        140,
+        132,
+        134,
+        214,
+        184,
+        120,
+        135
+      ]
+    },
+    {
+      "rank": 4,
+      "actor_reference_max_abs": 0.4150962829589844,
+      "actor_vllm_max_abs": 0.424044132232666,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        212,
+        255,
+        229,
+        115,
+        128,
+        281,
+        195,
+        245
+      ]
+    },
+    {
+      "rank": 5,
+      "actor_reference_max_abs": 0.6249961853027344,
+      "actor_vllm_max_abs": 1.5509871244430542,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        139,
+        152,
+        500,
+        173,
+        172,
+        123,
+        149,
+        126
+      ]
+    },
+    {
+      "rank": 6,
+      "actor_reference_max_abs": 0.3991050720214844,
+      "actor_vllm_max_abs": 0.25891566276550293,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        167,
+        78,
+        242,
+        195,
+        155,
+        200,
+        124,
+        333
+      ]
+    },
+    {
+      "rank": 7,
+      "actor_reference_max_abs": 0.5110855102539062,
+      "actor_vllm_max_abs": 1.0793983936309814,
+      "tolerance": 0.05,
+      "valid_tokens_per_question": [
+        101,
+        188,
+        152,
+        392,
+        410,
+        181,
+        155,
+        107
+      ]
+    }
+  ],
+  "dependent_full3245": "JobId=3245 JobName=search-g1-common8-attempt3 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898821 Nice=0 Account=(null) QOS=(null) JobState=PENDING Reason=DependencyNeverSatisfied Dependency=afterok:3244(failed) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=3-00:00:00 TimeMin=N/A SubmitTime=2026-10-05T20:06:03 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-05T20:06:03 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1142617 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=(null) NumNodes=1-1 NumCPUs=64 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=64,mem=512G,node=1,billing=64 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo/reproduction/common8/launch_native.sh WorkDir=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/repo StdErr=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/logs/native-full-3245.log StdIn=/dev/null StdOut=/dataset/shaoshitong/Search-G1-common8-attempt3-e63d6d38a0ad/logs/native-full-3245.log Power= TresPerNode=gres:gpu:h100:8 \n",
+  "owned_source_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "pid": 417522,
+      "start_ticks": 1549046738,
+      "sid": 417522,
+      "uid": 0,
+      "port": 19874,
+      "started_unix": 1791201952.600603,
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "export": "/dataset/shaoshitong/g1-common8-original-retrieval-export-attempt3-52e9bf0006ca",
+      "source_sha256": "2f24d44de8d3d3834a9e62927445c34eebd5dd7b4af365e23c92fc9a9cab0016"
+    },
+    "checked_unix": 1791202740.7713234,
+    "reason": "native3244 numerical parity FAILED; dependent3245 never started; no staging needed"
+  },
+  "evidence_sha256": {
+    "device-fix-native-observation.json": "097f39815f29674f094d8a8da7d1be3cca812734e269b14d32427c0911a17f87",
+    "device-fix-native-failure-detail.json": "874f695d6bed7b7c8bed27e0042e561b1c9a64042aa88cff4b9c482d993bcdc0",
+    "tensordict-parse-to-source.json": "c37261bbf5a757a4849694fe1c8725a35645a6cb41eab2b4dcfebc92f02ee126"
+  },
+  "remaining_cause": "Precision/backend mismatch not yet causal-proven; inspect actor/ref RoPE buffer dtype/value and exact same-input teacher forcing before changing any bound or recipe"
+}
