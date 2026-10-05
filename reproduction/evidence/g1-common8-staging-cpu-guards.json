@@ -1,0 +1,13 @@
+{
+  "accepted": true,
+  "source_sha256": {
+    "reproduction/common8/stage_retrieval.py": "7f09d8c95e59e90ae6946cda41229e5e7ae94c32763b19b5958baf392a08d6b4",
+    "reproduction/common8/test_staging.py": "e4f004f47864896dbd7de0684591c2ee2ab1a73cc65018914d992484f4692a95",
+    "reproduction/common8/native_allocation.py": "02e01d64c0765a59cd65fe8db94f921c3ed43faea99bba3d23ca28e9f0cf6f0b",
+    "reproduction/a800/owned_processes.py": "4168d7c93b4268fa8b2abb8b78efa1cddbd55a47602eca607642e10d04f0dae2"
+  },
+  "actual_target_cpu_tests": 5,
+  "scope": "Linux tiny-file failure-recovery and ownership guards; no 79GB transfer/native resource/GPU/GRPO admission",
+  "actual_grpo_updates": 0,
+  "checked_unix": 1791193779.640765
+}
