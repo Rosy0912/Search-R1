@@ -1,0 +1,21 @@
+{
+  "source_sha256": {
+    "verl/utils/rope_precision.py": "c43b4b489de5cdf71d322b7a27e9044f5448d05412fdc6588a3d4f64c03d300c",
+    "verl/utils/fsdp_utils.py": "5126d6f195486fb58996f9ede8906e788c2d4ec2bffb7b4902fa21950f26b20b",
+    "verl/workers/fsdp_workers.py": "0ea49eb3b169bfab4de2c31d557459604e65f1ec01d3b1f104c62509c2ea3a11",
+    "reproduction/common8/test_rope_precision.py": "0c17c477d10080b93a96d1de8c475d0d387cd3d02e986d06e838085877f1c780"
+  },
+  "causal_evidence": "g1-common8-rope-causal-diagnostic.json",
+  "design": "Clone original real FP32 Qwen inv_freq before whole-model dtype conversion; restore clone and original_inv_freq alias afterward; preserve nonpersistent registration. Use optimizer.state.get in offload/load to avoid initialization side effects.",
+  "static_independent_review": "No remaining static production blocker identified; actual HF/FSDP/native verification still required.",
+  "local_torch_check": {
+    "torch_version": "2.8.0",
+    "passed": true,
+    "scope": "local actual Torch buffer rounding/preservation/alias/nonpersistent/rounded-input rejection; custom rotary-shaped module, not target HF or native acceptance",
+    "target_cpu_status": "SSH observation failed twice; upload execution unknown; inspect namespace before repeating"
+  },
+  "target_cpu_test": "Unverified: SSH Connection closed by UNKNOWN port 65535. Inspect existing g1-common8-rope-fix-cpu-* directory before resubmitting.",
+  "native_test": "Not launched; original frozen remote sources unchanged.",
+  "actual_training_updates": 0,
+  "remaining": "actor/vLLM parity cause remains unresolved; do not relax tolerance to force acceptance."
+}

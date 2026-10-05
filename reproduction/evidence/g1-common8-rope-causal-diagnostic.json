@@ -1,0 +1,201 @@
+{
+  "job_id": 3247,
+  "source_commit": "1e19d6d60e69d273aef53d72874f8d13da8d25f5",
+  "wrapper_sha256": "efa6697f29206b7adfbb7dac67c9d911353ca447137ff0c78b2bfed6f9da9e95",
+  "records": 40,
+  "rows": [
+    {
+      "rank": 0,
+      "before": {
+        "max_abs": 0.3488903045654297,
+        "mean_abs": 0.015182683244347572,
+        "q99_abs": 0.14001215994358063,
+        "valid_tokens": 1247
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1247
+      },
+      "input_sha256": {
+        "input_ids": "1de0a790c44780f41ced0b0d28b9c5ff0ca6c4f53d8a750732f669f4e9332e22",
+        "responses": "311db08ee8b5c34730e09ac300f3fb600563e75f4c2b69d0869920fadcefc1fe",
+        "attention_mask": "75f843be2b114c97612ca7b15c81d29d606ba11d0224932e6b85353d551aee69",
+        "position_ids": "177be38ceeedf7efd6253d83ec1e2f354a0684b9ec6e2ab177c0053fd0edf792"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 1,
+      "before": {
+        "max_abs": 0.24625778198242188,
+        "mean_abs": 0.014878871850669384,
+        "q99_abs": 0.10558062046766281,
+        "valid_tokens": 1188
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1188
+      },
+      "input_sha256": {
+        "input_ids": "3cc8624afbf28b8d85cfc26168fa2b3cceea7335dce68e202622341a46b3ae8a",
+        "responses": "5b4655543a64fc5607ce37c16c4c76839685188b90dfa16e870123884cf42565",
+        "attention_mask": "84ce2858fa41b36d7188bc376b9c4af3ad3ebd4513f4e03c11440040049b455c",
+        "position_ids": "2b0b9f04b5bdd604de626e5b2e3b8c49b8f2e895f394655fc9197d8580b216b2"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 2,
+      "before": {
+        "max_abs": 0.21346473693847656,
+        "mean_abs": 0.01341173890978098,
+        "q99_abs": 0.11401364952325821,
+        "valid_tokens": 1281
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1281
+      },
+      "input_sha256": {
+        "input_ids": "0c2e85d39cf51af1e7b1c6452c91db4e5ff66cba79744017fdfc1d202295ce76",
+        "responses": "a65264ace5276610325cb468d39139a6871256becc268fd6103b09ea1d7183f3",
+        "attention_mask": "b8611ddcf6d53f065c1172ea99dfed249ffbd2b8f182222cc85a43f3a3986070",
+        "position_ids": "e9d2fff900ffd20d37c624ab661d3a3c462d8ca7d2f5868b8f834a4d894dc382"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 3,
+      "before": {
+        "max_abs": 0.2780570983886719,
+        "mean_abs": 0.015635864809155464,
+        "q99_abs": 0.10590542107820511,
+        "valid_tokens": 1338
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1338
+      },
+      "input_sha256": {
+        "input_ids": "49ed02213b428cc9a953eb35e97524853fc0c636b3b76660d83875f79b3eb15a",
+        "responses": "35175af3de439618dd27a31497e0b91fde64bf0f9af0e5d5cc4c22d37f53d326",
+        "attention_mask": "677321f249f35794fe576485f44398ddb89f912158c54b51a0470c2bc030a67f",
+        "position_ids": "be65d8f8bc3b847f6a543059e64977d1176abe5e6c4b611f8cd38383eb4735cc"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 4,
+      "before": {
+        "max_abs": 0.4150962829589844,
+        "mean_abs": 0.016245489940047264,
+        "q99_abs": 0.11923472583293915,
+        "valid_tokens": 1660
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1660
+      },
+      "input_sha256": {
+        "input_ids": "532dd781ef13d3045cb16d8213f713ba6efbf92ed3cbd3d84a0ce3edf1168399",
+        "responses": "905971ad007cb5d3fd5019009780007b5eb5ae6157fd2172a840b0eb2af45f02",
+        "attention_mask": "751c2bc8e78fe947a207dc5eeb69d4c22ada29b932507ed99c560d27938542aa",
+        "position_ids": "4765e2e59496b5ff8867ab90d0ef41885940e0b7d253f515465810f477a2de80"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 5,
+      "before": {
+        "max_abs": 0.6249961853027344,
+        "mean_abs": 0.011844192631542683,
+        "q99_abs": 0.11851757764816284,
+        "valid_tokens": 1534
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1534
+      },
+      "input_sha256": {
+        "input_ids": "8acb522259e6b952e1d26bace1117a458d7c4544e42f92344ea0af73c2dce796",
+        "responses": "c089c320da792ac00b57346101881a13d7cab8560f26ccd94531888212af2ec0",
+        "attention_mask": "2bf366f0f3256d99d563a5502926fd10cbf681431c8991991c54d6f38600f73d",
+        "position_ids": "4c49ef44eab63d39fe8b7345ae2d4080a2ee3b0b291e5231853fe5bfb27011cb"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 6,
+      "before": {
+        "max_abs": 0.3991050720214844,
+        "mean_abs": 0.012819185853004456,
+        "q99_abs": 0.12448602169752121,
+        "valid_tokens": 1494
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1494
+      },
+      "input_sha256": {
+        "input_ids": "319bf4337dca751eb6b0ffdad18ca82b22ff1807f8fdf442b6cdd3a98716f8bb",
+        "responses": "650925b78d2c4281762305ace235add6c3128bd0fa4f376561437278febdd1f5",
+        "attention_mask": "936d79e503a142301231a88956a34b2f3c8f2bee22e403d73a044e8344cd511b",
+        "position_ids": "4b49c924a6c23f4b906800e9aacc9cc54fa9981f381af2598aa383f3037e7f5a"
+      },
+      "parameter_shards": 37
+    },
+    {
+      "rank": 7,
+      "before": {
+        "max_abs": 0.5110855102539062,
+        "mean_abs": 0.01594890095293522,
+        "q99_abs": 0.11098171770572662,
+        "valid_tokens": 1686
+      },
+      "after": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "q99_abs": 0.0,
+        "valid_tokens": 1686
+      },
+      "input_sha256": {
+        "input_ids": "eab136352b74dd355496774a34db90c579177deca910e4091e45fde645780c66",
+        "responses": "b148d20774c2900f377338b0e51be322d165b5b52714988759708e4d4f1c070b",
+        "attention_mask": "e504bc52ddebbf2e4f10a90e366d376151664dbe14849e23bdc68ecc43d6f3e2",
+        "position_ids": "50dcf1da07e821e531ce7630e3484023f648f8984b2ae218e7dfd0e301062037"
+      },
+      "parameter_shards": 37
+    }
+  ],
+  "total_valid_tokens": 11428,
+  "before_max": 0.6249961853027344,
+  "after_max": 0,
+  "actor_buffer_dtype": "float32",
+  "reference_original_buffer_dtype": "bfloat16",
+  "inv_freq_max_abs_delta": 0.0011547207832336426,
+  "diagnostic_only": true,
+  "actual_training_updates": 0,
+  "namespace_residual": [],
+  "job_terminal": "FAILED",
+  "expected_original_gate_still_rejects": true,
+  "limitations": [
+    "Does not resolve actor/vLLM parity.",
+    "Restoration evidence assigns original object; original hash assertion compares aliases and is not an independent no-mutation hash proof.",
+    "optimizer_state_entries=37 is present, not zero; no optimizer update path is invoked.",
+    "Same inputs and results prove causality for sampled tokens, not all possible inputs."
+  ]
+}

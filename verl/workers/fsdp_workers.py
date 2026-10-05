@@ -180,7 +180,8 @@ class ActorRolloutRefWorker(Worker):
                                                                 attn_implementation='sdpa',
                                                                 trust_remote_code=trust_remote_code)
             # some parameters may not in torch_dtype. TODO(zhangchi.usc1992) remove this after we switch to fsdp2
-            actor_module.to(torch_dtype)
+            from verl.utils.rope_precision import cast_preserving_qwen_rope
+            cast_preserving_qwen_rope(actor_module, torch_dtype)
 
             if enable_gradient_checkpointing:
                 actor_module.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
