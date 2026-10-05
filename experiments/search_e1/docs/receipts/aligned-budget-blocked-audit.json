@@ -1,0 +1,27 @@
+{
+  "blocking_condition": "New goal requires archive per-stage200 budget but also iteration/300; required budget clarification unanswered.",
+  "consecutive_goal_turns": 3,
+  "prepared_commit": "03c0338",
+  "new_base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+  "requirements": {
+    "new_training_started": false,
+    "budget_receipt_exists": false,
+    "original_runtime_305_hashes_match": true,
+    "opsd_runtime_305_hashes_match": true,
+    "common_model_12_file_identity_saved": true,
+    "common_data_identity_saved": true,
+    "candidate_configs_200_300_verified": true,
+    "old_full_eight_rank_state40_saved": true,
+    "uninterrupted_acceptance_observer_prepared": true
+  },
+  "existing_run": {
+    "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+    "node": "xielab1",
+    "pid": 3546009,
+    "verified_live": true,
+    "completed": 40,
+    "current": 41
+  },
+  "scope": "Only new replacement goal blocked for budget choice; no running job, artifact or automation cancelled; not completed.",
+  "next_action": "Upon human budget answer: record chosen budget, revalidate ownership and GPUs, stop only preserved old R1 group, launch one fresh full8 run and observer, verify real5 updates and full remaining pipeline."
+}
