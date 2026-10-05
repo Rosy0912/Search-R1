@@ -38,11 +38,12 @@ class ContinuationWiring(unittest.TestCase):
         ns = {}
         exec(compile(ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[])),
                      'actual-fit-init', 'exec'), ns)
-        config = OmegaConf.create({'trainer': {'weight_continuation_step': 200, 'acceptance_step': 205},
-            'actor_rollout_ref': {'model': {'path': '/base', 'actor_checkpoint_path': '/checkpoint200'}}})
-        trainer = SimpleNamespace(config=config, total_training_steps=301, logger=None, val_reward_fn=None)
-        ns['initialize'](trainer)
-        self.assertEqual(trainer.global_steps, 201)
+        for step in (200,250):
+            config = OmegaConf.create({'trainer': {'weight_continuation_step': step, 'acceptance_step': step+5},
+                'actor_rollout_ref': {'model': {'path': '/base', 'actor_checkpoint_path': '/checkpoint'+str(step)}}})
+            trainer = SimpleNamespace(config=config, total_training_steps=301, logger=None, val_reward_fn=None)
+            ns['initialize'](trainer)
+            self.assertEqual(trainer.global_steps, step+1)
 
 
 if __name__ == '__main__':

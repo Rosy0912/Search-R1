@@ -23,7 +23,7 @@ import json,os
 from pathlib import Path
 run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
 k=run.get('completed_updates',0)
-assert type(k) is int and k in (0,200)
+assert type(k) is int and k in (0,200,250)
 assert run['target_updates']==300 and run['acceptance_update']==k+5
 if k:print(run['actor_checkpoint'])
 PYCODE
@@ -31,8 +31,9 @@ PYCODE
 CONTINUATION_ARGS=()
 ACCEPTANCE=5
 if [[ -n "$ACTOR_CHECKPOINT" ]]; then
-  ACCEPTANCE=205
-  CONTINUATION_ARGS=(+trainer.weight_continuation_step=200 "+actor_rollout_ref.model.actor_checkpoint_path=$ACTOR_CHECKPOINT")
+  COMPLETED="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())["completed_updates"])')"
+  ACCEPTANCE=$((COMPLETED+5))
+  CONTINUATION_ARGS=("+trainer.weight_continuation_step=$COMPLETED" "+actor_rollout_ref.model.actor_checkpoint_path=$ACTOR_CHECKPOINT")
 fi
 python -m verl.trainer.main_ppo_eco "${CONTINUATION_ARGS[@]}" \
  data.train_files="$BASE/data/train.parquet" data.val_files="$BASE/data/validation-64.parquet" \

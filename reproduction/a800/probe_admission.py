@@ -22,7 +22,7 @@ def atomic(path, payload):
 
 def initial_evaluator(run):
     completed=run.get('completed_updates',0)
-    assert type(completed) is int and completed in (0,200)
+    assert type(completed) is int and completed in (0,200,250)
     if completed:
         assert run['acceptance_update']==completed+5
         return completed, run['actor_checkpoint'], run['actor_checkpoint_sha256']
@@ -42,6 +42,11 @@ def calibrated_version(run, live):
     assert proof['model_authored_answer_spans'] is True and proof['boundary_all_reserved_questions'] is True
     assert len(set(proof['question_ids']))==300
     assert proof['searched_valid_trajectory_count']>0
+    if round_id==250 and run.get('completed_updates')==250:
+        assert report.get('require_all_cv_folds') is True and report.get('configured_cv_folds')==2
+        protocol=proof['calibration_protocol']
+        assert protocol['rollout_max_new']==500 and protocol['correction_feedback'] is True
+        assert proof['evidence_deletion']=='typed_retrieval_ranges_only_preserve_model_and_correction'
     for key in ('commit','boundary'):
         assert len(report[key+'_class_counts'])==2 and min(report[key+'_class_counts'])>0
         assert math.isfinite(report[key+'_cv_auc']) and 0<=report[key+'_cv_auc']<=1

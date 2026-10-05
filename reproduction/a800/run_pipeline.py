@@ -142,8 +142,8 @@ class Pipeline:
             response=self.endpoint('retriever',p,'18010/retrieve','post',{'queries':['capital of France'],'topk':3,'return_scores':True});assert len(response['result'][0])==3
             publish(self.base/'logs/retrieval-http-admission.json',dict(run_id=self.run['run_id'],result=response))
             if self.run.get('completed_updates',0):
-                assert self.run['completed_updates']==200
-                self.stage('REFITTING_PRESERVED_ROUND200_PROBES')
+                assert self.run['completed_updates'] in (200,250)
+                self.stage('REFITTING_PRESERVED_ROUND'+str(self.run['completed_updates'])+'_PROBES')
                 c=self.start('initial-calibration',[self.python,'reproduction/a800/recover_probes.py','--dumps',self.run['recovery_dumps']],[]);self.wait('initial-calibration',c)
             else:
                 self.stage('TRAINING_BOTH_INITIAL_PROBES')
@@ -161,7 +161,7 @@ class Pipeline:
             totals={int(r[0]):int(r[1]) for r in gpu_rows('index,memory.total')}
             assert all(v/totals[i]<=.98 for i,v in self.max_used.items()), 'Measured initial pipeline peak exceeds GPU admission limit'
             publish(self.base/'logs/initial-resource-admission.json',dict(run_id=self.run['run_id'],sampled_peak_mib=self.max_used,sample_interval_seconds=2,scope='initial calibration and probe/retrieval sampled occupancy; not proof of all instantaneous peaks. Periodic refit requires confirmed old-encoder release.',accepted=True))
-            self.stage('GRPO_201_TO_300' if self.run.get('completed_updates',0) else 'GRPO_1_TO_300')
+            self.stage('GRPO_'+str(self.run.get('completed_updates',0)+1)+'_TO_300')
             log=Path(self.run['train_log']);assert not log.exists();log.write_text('SEARCH_G1_RUN '+self.run['run_id']+'\n')
             t=self.start('trainer',['bash','reproduction/a800/train.sh'],[0,1,2,3],{'SEARCH_G1_TRAIN_LOG':str(log)});self.wait('trainer',t)
             self.stage('FINAL300_ACCEPTANCE')

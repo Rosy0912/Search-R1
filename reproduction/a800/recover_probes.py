@@ -20,10 +20,11 @@ from reproduction.a800.recovery_binding import verify_interventions
 
 def recover(base, dump):
     run=json.loads((base/'logs/run-manifest.json').read_text())
-    assert run['completed_updates']==200 and run['initial_probe_version'] is None
+    completed=run['completed_updates']
+    assert completed in (200,250) and run['initial_probe_version'] is None
     assert not (base/'artifacts/live/manifest.json').exists()
     parent=Path(run['parent']['parent_base'])
-    assert dump.resolve().is_relative_to((parent/'artifacts').resolve())
+    assert dump.resolve()==Path(run['recovery_dumps']).resolve()
     assert digest(parent/'logs/run-manifest.json')==run['parent']['parent_manifest_sha256']
     assert digest(Path(json.loads((parent/'logs/run-manifest.json').read_text())['train_log']))==run['parent']['parent_train_log_sha256']
     marker=Path(run['actor_checkpoint'])/'complete.json'
@@ -40,23 +41,25 @@ def recover(base, dump):
             with np.load(p,allow_pickle=False) as z:
                 for key in z.files:
                     if z[key].dtype.kind in 'fc':assert np.isfinite(z[key]).all(), 'Nonfinite calibration '+key
-    round_dir=base/'artifacts'/('round_200-recovered-'+uuid.uuid4().hex)
+    round_dir=base/'artifacts'/('round_'+str(completed)+'-recovered-'+uuid.uuid4().hex)
     round_dir.mkdir(parents=True,exist_ok=False);heads=round_dir/'heads'
     with (round_dir/'fit.log').open('w') as log:
         subprocess.run([str(base/'env/bin/python'),str(base/'repo/ts_probe_train.py'),
-            '--dumps',str(dump),'--layers','21,24,27','--commit-position','Xa','--commit-label','flip','--save',str(heads)],
+            '--dumps',str(dump),'--layers','21,24,27','--commit-position','Xa','--commit-label','flip','--save',str(heads)]+(['--require-all-cv-folds'] if completed==250 else []),
             stdout=log,stderr=subprocess.STDOUT,check=True)
     verify_interventions(dump,run['recovery_dump_sha256'])
     report=json.loads((heads/'calibration-report.json').read_text())
     for name in ('commit_probe.pkl','boundary_probe.pkl'):
         obj=joblib.load(heads/name);assert list(obj['clf'].classes_)==[0,1] and np.isfinite(obj['auc'])
-    payload=dict(run_id=run['run_id'],round=200,version=run['run_id']+':200:'+uuid.uuid4().hex,
+        from reproduction.a800.recovery_binding import finite_fitted_values
+        finite_fitted_values(vars(obj['clf']))
+    payload=dict(run_id=run['run_id'],round=completed,version=run['run_id']+':'+str(completed)+':'+uuid.uuid4().hex,
         encoder=run['actor_checkpoint'],encoder_sha256=run['actor_checkpoint_sha256'],
         commit=str(heads/'commit_probe.pkl'),boundary=str(heads/'boundary_probe.pkl'),
         head_sha256={name:digest(heads/name) for name in ('commit_probe.pkl','boundary_probe.pkl')},
         calibration_report=report,label_proof=proof,published_unix=time.time(),
         recovery=dict(parent_run_id=run['parent']['parent_run_id'],dump_sha256=hashes,
-            semantics='preserved actual checkpoint200 closed-book/evidence-deletion interventions; heads refitted with reviewed small-sample guard; new segment identity'))
+            semantics=f'preserved actual checkpoint{completed} closed-book/evidence-deletion interventions; heads refitted; new segment identity'))
     payload['archived_manifest']=str(round_dir/'manifest.json')
     calibrated_version(run,payload)
     publish(round_dir/'manifest.json',payload)

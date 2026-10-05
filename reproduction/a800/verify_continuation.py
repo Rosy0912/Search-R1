@@ -21,7 +21,7 @@ def segment_rows(text,run,first,last):
 
 
 def bind_segment_versions(rows,run,initial_round,adopted,expected_rounds):
-    assert initial_round in (0,200)
+    assert initial_round in (0,200,250)
     assert len(adopted)==len(expected_rounds)
     assert [int(v.split(':')[1]) for v in adopted]==expected_rounds
     assert all(v.startswith(run['run_id']+':') for v in adopted)
@@ -78,49 +78,79 @@ def saved_boundary(run,step,full=False):
     return proof
 
 
+def audit_chain(base,run,last):
+    """Audit immutable run segments back to the original source, without requiring
+    a failed parent's terminal300 acceptance. Every segment has its own five.
+    """
+    chain=[];seen=set();end=last
+    while True:
+        assert run['run_id'] not in seen, 'Cyclic/repeated ancestry'
+        seen.add(run['run_id'])
+        start=run.get('completed_updates',0)
+        assert start in (0,200,250) and start<end<=300
+        assert run['target_updates']==300 and run['acceptance_update']==start+5
+        verify_segment_inputs(base,run)
+        text=Path(run['train_log']).read_text(errors='replace')
+        rows=segment_rows(text,run,start+1,end)
+        adopted=re.findall(r'SEARCH_G1_REFIT_ADOPTED=([^\s]+)',text)
+        bind_segment_versions(rows,run,start,adopted,list(range(start+50,end,50)))
+        five=verify_five(base,run,start+1)
+        initial=json.loads((base/'logs/initial-probes-accepted.json').read_text())
+        if start:
+            archived_path=Path(initial['evaluator_manifest'])
+            assert digest(archived_path)==initial['live_manifest_sha256']
+            archived=json.loads(archived_path.read_text())
+            from reproduction.a800.probe_admission import calibrated_version
+            assert calibrated_version(run,archived)==run['initial_probe_version']
+            from reproduction.a800.recovery_binding import verify_interventions
+            assert archived['recovery']['dump_sha256']==run['recovery_dump_sha256']
+            verify_interventions(Path(run['recovery_dumps']),run['recovery_dump_sha256'])
+            assert set(archived['label_proof']['question_ids'])==set(json.loads((base/'data/audit.json').read_text())['calibration_question_ids'])
+            if start==250:
+                from reproduction.a800.recovery_binding import verify_repair_calibration
+                assert digest(Path(run['calibration_acceptance']))==run['calibration_acceptance_sha256']
+                verify_repair_calibration(Path(run['recovery_dumps']),Path(run['calibration_acceptance']))
+        saves=sorted(set([start+5]+list(range(start+50,end+1,50))))
+        proofs={str(step):saved_boundary(run,step,full=step==300) for step in saves}
+        chain.append(dict(base=str(base),run_id=run['run_id'],first=start+1,last=end,rows=rows,
+            five_sha256=five,adopted=adopted,saves=proofs,source_commit=run['source_commit']))
+        if not start:break
+        binding=run['parent'];parent=Path(binding['parent_base'])
+        old=json.loads((parent/'logs/run-manifest.json').read_text())
+        assert old['run_id']==binding['parent_run_id']
+        assert digest(parent/'logs/run-manifest.json')==binding['parent_manifest_sha256']
+        assert digest(Path(old['train_log']))==binding['parent_train_log_sha256']
+        assert run['input_sha256']==old['input_sha256'] and run['initial_model_sha256']==old['initial_model_sha256']
+        assert run['validation_question_ids']==old['validation_question_ids']
+        checkpoint=Path(old['checkpoint_dir'])/'actor'/f'global_step_{start}'
+        assert Path(run['actor_checkpoint'])==checkpoint
+        assert digest(checkpoint/'complete.json')==binding['parent_checkpoint_marker_sha256']
+        assert run['actor_checkpoint_sha256']==binding['parent_checkpoint_sha256']
+        for name,value in run['actor_checkpoint_sha256'].items():assert digest(checkpoint/name)==value
+        base,run,end=parent,old,start
+    chain.reverse()
+    assert chain[0]['first']==1 and chain[-1]['last']==last
+    assert all(a['last']+1==b['first'] for a,b in zip(chain,chain[1:]))
+    return chain
+
+
 def verify(base):
-    run=json.loads((base/'logs/run-manifest.json').read_text());binding=run['parent']
-    assert run['completed_updates']==200 and run['target_updates']==300 and run['acceptance_update']==205
-    parent=Path(binding['parent_base']);old=json.loads((parent/'logs/run-manifest.json').read_text())
-    assert old['run_id']==binding['parent_run_id'] and old['run_id']!=run['run_id']
-    assert digest(parent/'logs/run-manifest.json')==binding['parent_manifest_sha256']
-    assert digest(Path(old['train_log']))==binding['parent_train_log_sha256']
-    assert run['input_sha256']==old['input_sha256'] and run['initial_model_sha256']==old['initial_model_sha256']
-    assert run['validation_question_ids']==old['validation_question_ids']
-    assert Path(run['actor_checkpoint'])==Path(old['checkpoint_dir'])/'actor/global_step_200'
-    assert digest(Path(run['actor_checkpoint'])/'complete.json')==binding['parent_checkpoint_marker_sha256']
-    for name,value in run['actor_checkpoint_sha256'].items():assert digest(Path(run['actor_checkpoint'])/name)==value
-    verify_segment_inputs(parent,old);verify_segment_inputs(base,run)
-    initial=json.loads((base/'logs/initial-probes-accepted.json').read_text())
-    archived_path=Path(initial['evaluator_manifest'])
-    assert digest(archived_path)==initial['live_manifest_sha256']
-    archived=json.loads(archived_path.read_text())
-    from reproduction.a800.probe_admission import calibrated_version
-    assert calibrated_version(run,archived)==run['initial_probe_version']
-    assert archived['recovery']['dump_sha256']==run['recovery_dump_sha256']
-    from reproduction.a800.recovery_binding import verify_interventions
-    verify_interventions(Path(run['recovery_dumps']),run['recovery_dump_sha256'])
-    assert set(archived['label_proof']['question_ids'])==set(json.loads((base/'data/audit.json').read_text())['calibration_question_ids'])
-    old_text=Path(old['train_log']).read_text(errors='replace');new_text=Path(run['train_log']).read_text(errors='replace')
-    first=segment_rows(old_text,old,1,200);second=segment_rows(new_text,run,201,300)
-    old_adopted=re.findall(r'SEARCH_G1_REFIT_ADOPTED=([^\s]+)',old_text)
-    new_adopted=re.findall(r'SEARCH_G1_REFIT_ADOPTED=([^\s]+)',new_text)
-    bind_segment_versions(first,old,0,old_adopted,[50,100,150])
-    bind_segment_versions(second,run,200,new_adopted,[250])
-    five_hashes={old['run_id']:verify_five(parent,old,1),run['run_id']:verify_five(base,run,201)}
-    validation=final_validation(new_text,run['validation_source_counts'])
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    assert run.get('completed_updates') in (200,250)
+    chain=audit_chain(base,run,300)
+    text=Path(run['train_log']).read_text(errors='replace')
+    validation=final_validation(text,run['validation_source_counts'])
     final_path=base/'logs/final-fixed64-identity.json'
     rows=fixed64_identity(json.loads(final_path.read_text()),run,validation)
-    proofs={}
-    for step in (5,50,100,150,200):proofs[str(step)]=saved_boundary(old,step)
-    for step in (205,250,300):proofs[str(step)]=saved_boundary(run,step,full=step==300)
-    result=dict(run_id=run['run_id'],parent_run_id=old['run_id'],accepted=True,
-        actual_update_count=len(first)+len(second),actual_segments=[[1,200],[201,300]],
-        continuation_semantics=run['continuation_semantics'],saved_steps=list(map(int,proofs)),
+    proofs={k:v for part in chain for k,v in part['saves'].items()}
+    result=dict(run_id=run['run_id'],accepted=True,actual_update_count=sum(len(p['rows']) for p in chain),
+        actual_segments=[[p['first'],p['last']] for p in chain],ancestry=chain,
+        continuation_semantics=run['continuation_semantics'],saved_steps=sorted(map(int,proofs)),
         fresh_final_checkpoint=proofs['300'],fixed64_final_validation=validation,actual_fixed64_identity=rows,
-        final_identity_sha256=digest(final_path),five_update_acceptance_sha256=five_hashes,
-        adopted_refit_versions={old['run_id']:old_adopted,run['run_id']:new_adopted},
+        final_identity_sha256=digest(final_path),five_update_acceptance_sha256={p['run_id']:p['five_sha256'] for p in chain},
+        adopted_refit_versions={p['run_id']:p['adopted'] for p in chain},
         training_console_precision='three decimal places; final JSON EM uses actual binary rows',checked_unix=time.time())
+    assert result['actual_update_count']==300
     publish(base/'logs/full-run-acceptance.json',result)
     print('SEARCH_G1_INTERRUPTED_FULL300_ACCEPTED='+run['run_id'],flush=True)
     return result
