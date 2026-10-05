@@ -1,0 +1,26 @@
+{
+  "created": 1791186049.0403757,
+  "old_base": "/data/shaoshitong/search-e1-config-study-8gpu-20261004",
+  "new_base": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005",
+  "start_model": "/data/shaoshitong/search-e1-config-study-20261004/assets/model",
+  "data": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data",
+  "resume": false,
+  "pending_budget_clarification": "archive200 versus objective /300",
+  "shared_links": [
+    "assets",
+    "env",
+    "data",
+    "hf-cache"
+  ],
+  "runtime_copy": "verified original r1; not full-resume",
+  "data_hashes": {
+    "test.parquet": "0dc0a42064945a2006f3762d860bcf4f9c7d031282b5a224bb0702c555bc9c4e",
+    "train.parquet": "7bf4c168a6f69d0f5b7d206a2e3f4ff21365b3960dab0040b3805c79b85698d4",
+    "manifest.json": "c67f5ecba92a04869a2a26c6e23b39a65219a1320b517fddf1e691470c33c164",
+    "validation.jsonl": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+    "test.jsonl": "f1ade9239143d53636ae66b9c90ac083a195a1bc2492e6a8bd9dd56111cfdcab",
+    "test-common-64.jsonl": "4f90b95df204b9f90dacc9ce2530dfe8bf02f60396b120c9e858cfea6861fc50",
+    "validation.parquet": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71",
+    "train.jsonl": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f"
+  }
+}

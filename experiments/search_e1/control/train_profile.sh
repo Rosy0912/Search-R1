@@ -56,6 +56,11 @@ elif [[ "$PROFILE" == r1 ]]; then
 else
  exit 2
 fi
+if [[ -n "${E1_ALIGNED_STEPS:-}" ]]; then
+ [[ "$PROFILE" == r1 && "$GPUS" == 8 && "$continuing" == 0 ]] || exit 2
+ [[ "$E1_ALIGNED_STEPS" == 200 || "$E1_ALIGNED_STEPS" == 300 ]] || exit 2
+ export STEPS="$E1_ALIGNED_STEPS" MINIBATCH=128
+fi
 # Only A activates the archive's per-trajectory reduction. B preserves micro64.
 if [[ "$PROFILE" == r1 ]]; then
  export E1_DISABLE_TRAJECTORY_BATCHING=1

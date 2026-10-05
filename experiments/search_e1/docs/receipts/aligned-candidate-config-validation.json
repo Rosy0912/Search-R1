@@ -1,0 +1,116 @@
+{
+  "200": {
+    "config_path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/config-budget-200/train.log",
+    "sha256": "7ce2b4d2e09822fe0a93f7cfb5ba19b12336a0ca2f33d9a605d8a122bcfe34ab",
+    "actor": {
+      "strategy": "fsdp",
+      "ppo_mini_batch_size": 128,
+      "ppo_micro_batch_size": 64,
+      "use_dynamic_bsz": false,
+      "ppo_max_token_len_per_gpu": 16384,
+      "grad_clip": 1.0,
+      "state_masking": true,
+      "clip_ratio": 0.2,
+      "entropy_coeff": 0.001,
+      "use_kl_loss": true,
+      "kl_loss_coef": 0.001,
+      "kl_loss_type": "low_var_kl",
+      "ppo_epochs": 1,
+      "shuffle": false,
+      "ulysses_sequence_parallel_size": 1,
+      "optim": {
+        "lr": 1e-06,
+        "lr_warmup_steps_ratio": 0.285,
+        "min_lr_ratio": null,
+        "warmup_style": "constant",
+        "total_training_steps": -1
+      },
+      "fsdp_config": {
+        "wrap_policy": {
+          "min_num_params": 0
+        },
+        "param_offload": true,
+        "grad_offload": true,
+        "optimizer_offload": true,
+        "fsdp_size": -1
+      }
+    },
+    "trainer": {
+      "total_epochs": 20,
+      "total_training_steps": 201,
+      "project_name": "Search-E1",
+      "experiment_name": "search-e1",
+      "logger": [
+        "console"
+      ],
+      "nnodes": 1,
+      "n_gpus_per_node": 8,
+      "save_freq": 50,
+      "test_freq": 50,
+      "critic_warmup": 0,
+      "default_hdfs_dir": null,
+      "default_local_dir": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/config-budget-200",
+      "val_before_train": true,
+      "val_only": false
+    },
+    "warmup": 57,
+    "adam_updates_per_iteration": 20
+  },
+  "300": {
+    "config_path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/config-budget-300/train.log",
+    "sha256": "71d4661314e5eb0705fa29685ce698aefb312cff75f1ed5da0e96368655bdcdd",
+    "actor": {
+      "strategy": "fsdp",
+      "ppo_mini_batch_size": 128,
+      "ppo_micro_batch_size": 64,
+      "use_dynamic_bsz": false,
+      "ppo_max_token_len_per_gpu": 16384,
+      "grad_clip": 1.0,
+      "state_masking": true,
+      "clip_ratio": 0.2,
+      "entropy_coeff": 0.001,
+      "use_kl_loss": true,
+      "kl_loss_coef": 0.001,
+      "kl_loss_type": "low_var_kl",
+      "ppo_epochs": 1,
+      "shuffle": false,
+      "ulysses_sequence_parallel_size": 1,
+      "optim": {
+        "lr": 1e-06,
+        "lr_warmup_steps_ratio": 0.285,
+        "min_lr_ratio": null,
+        "warmup_style": "constant",
+        "total_training_steps": -1
+      },
+      "fsdp_config": {
+        "wrap_policy": {
+          "min_num_params": 0
+        },
+        "param_offload": true,
+        "grad_offload": true,
+        "optimizer_offload": true,
+        "fsdp_size": -1
+      }
+    },
+    "trainer": {
+      "total_epochs": 20,
+      "total_training_steps": 301,
+      "project_name": "Search-E1",
+      "experiment_name": "search-e1",
+      "logger": [
+        "console"
+      ],
+      "nnodes": 1,
+      "n_gpus_per_node": 8,
+      "save_freq": 50,
+      "test_freq": 50,
+      "critic_warmup": 0,
+      "default_hdfs_dir": null,
+      "default_local_dir": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/runs/r1/config-budget-300",
+      "val_before_train": true,
+      "val_only": false
+    },
+    "warmup": 85,
+    "adam_updates_per_iteration": 20
+  }
+}

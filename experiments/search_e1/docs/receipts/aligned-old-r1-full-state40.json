@@ -1,0 +1,96 @@
+{
+  "run_id": "5dfc903d248842b4bfc4e1ebcf5d94e8",
+  "world_size": 8,
+  "global_step": 40,
+  "ranks": [
+    {
+      "rank": 2,
+      "pid": 3549814,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-2.pt",
+      "bytes": 4628970258,
+      "time": 1791186425.9931054
+    },
+    {
+      "rank": 0,
+      "pid": 3549569,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-0.pt",
+      "bytes": 4628970258,
+      "time": 1791186425.6885612
+    },
+    {
+      "rank": 4,
+      "pid": 3549816,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-4.pt",
+      "bytes": 4628970258,
+      "time": 1791186426.452356
+    },
+    {
+      "rank": 5,
+      "pid": 3549817,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-5.pt",
+      "bytes": 4628970258,
+      "time": 1791186426.4546583
+    },
+    {
+      "rank": 6,
+      "pid": 3549818,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-6.pt",
+      "bytes": 4628970258,
+      "time": 1791186425.9406755
+    },
+    {
+      "rank": 7,
+      "pid": 3549819,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-7.pt",
+      "bytes": 4628970258,
+      "time": 1791186426.3306818
+    },
+    {
+      "rank": 1,
+      "pid": 3549813,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-1.pt",
+      "bytes": 4628970258,
+      "time": 1791186425.9694574
+    },
+    {
+      "rank": 3,
+      "pid": 3549815,
+      "scheduler_step": 40,
+      "optimizer_steps": [
+        400.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/preserved/replacement-state-5dfc903d248842b4bfc4e1ebcf5d94e8/full-rank-3.pt",
+      "bytes": 4628970258,
+      "time": 1791186426.3686342
+    }
+  ],
+  "time": 1791186426.5182593
+}
