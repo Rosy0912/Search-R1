@@ -1,0 +1,132 @@
+{
+  "checked_unix": 1791250058.661417,
+  "observation_finished_unix": 1791250058.9872305,
+  "job_id": "3288",
+  "pipeline-status.json": {
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "stage": "REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE",
+    "unix": 1791249919.1203358
+  },
+  "source_hashes_match": true,
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "slurm_job_id": "3288",
+    "phase": "initial",
+    "proof_sha256": "3bd271622431aeaccfd8cdf17f284bf6894921e0bde5b65334966021d9d81162",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "model_gate_coexistence": {
+    "accepted": true,
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "slurm_job_id": "3288",
+    "phase": "coexistence",
+    "proof_sha256": "9a98744613eda41af408f1854929719d8e5a6ec3c90560bd8de3d4cce901b903",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "actual_initial_probe": {
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "round": 0,
+    "version": "e996fd4e6f9e453cb861beda904688e9:0:61d6ae41256f430282ff7997a4cb8068",
+    "live_manifest_sha256": "6a030f722b872ad3f63f0a6d11678480ff894f875a91b12d970c89fb9f5dedea",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791249896.4756129,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "gpu_sampling": {
+    "sample_count": 464,
+    "first_unix": 1791249032.1533697,
+    "last_unix": 1791250056.691574,
+    "max_gap_seconds": 10.355078935623169,
+    "cumulative_peak_mib": {
+      "0": 45896,
+      "1": 45453,
+      "2": 45454,
+      "3": 45449,
+      "4": 45447,
+      "5": 45448,
+      "6": 45456,
+      "7": 49549
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "child_actual_unstarted_verified": true,
+  "parent_actual_unstarted_verified": true,
+  "role": "actual_v4_probe_and_model_retriever_coexistence",
+  "original_readonly_observation_sha256": "af62f4188edda6bb8b0b4d4bfab667c65e42d840165105404b7c9e1bc3b35190",
+  "source_commit": "3fdf92f71cf624f78611cf5ab5f03dba64ce4fec",
+  "actual_completed_child_updates": 0,
+  "actual_production_updates": 0,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "scope": "Actual probe classification/initial and coexistence greedy gates; not agentEM/fullstochasticgate/20write or production health"
+}

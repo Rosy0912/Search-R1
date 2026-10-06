@@ -1,0 +1,200 @@
+{
+  "role": "actual_native_failed_boundary_projection",
+  "run_id": "e996fd4e6f9e453cb861beda904688e9",
+  "slurm_job_id": "3288",
+  "source_commit": "3fdf92f71cf624f78611cf5ab5f03dba64ce4fec",
+  "observed_unix": 1791250913.216334,
+  "terminal_observation_sha256": "2090b80ef5e5ba0add26fee434b6615404808df0c1989d06de18fd68c093ccb6",
+  "terminal_state": "FAILED",
+  "terminal_exit_code": "1:0",
+  "failure_stage": "first_training_rollout_before_context_probability_or_actor_update",
+  "failure_reason": "closing_tag_inside_token_nonwhitespace_tail",
+  "actual_completed_outer_updates": 0,
+  "actual_production_updates": 0,
+  "behavior_gate_count": 0,
+  "optimizer_evidence_paths": [],
+  "checkpoint_entries": [],
+  "owned_cleanup": {
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "cleaned": true,
+    "checked_unix": 1791250820.8895743
+  },
+  "live_recorded_pid_count": 0,
+  "live_namespace_count": 0,
+  "sampler": {
+    "sample_count": 810,
+    "first_unix": 1791249032.1533697,
+    "last_unix": 1791250820.1980414,
+    "max_gap_seconds": 10.355078935623169,
+    "cumulative_peak_mib": {
+      "0": 47246,
+      "1": 46427,
+      "2": 46434,
+      "3": 46805,
+      "4": 46435,
+      "5": 46500,
+      "6": 47184,
+      "7": 50459
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "source_hashes_match": true,
+  "parent_actual_unstarted_verified": true,
+  "accepted": false,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "adam_tensor_state_audited": false,
+  "write_evidence_scope": "First training generation stack precedes context/probability/actor update; no optimizer evidence paths. This is not an Adam-state tensor audit.",
+  "scope": "Sanitized actual failed-job evidence; initial probability/probe passing proofs are setup only. Failed original source/log/private traces remain immutable.",
+  "native_cpu_diagnostic_sha256": "714f4c1904ea7aefd52380618a3c04330bcfec5a4ece4210eb49afacacff5639",
+  "private_failed_trace_metadata": {
+    "size_bytes": 18577281,
+    "sha256": "2ee0d91545892dadda15605a58fbbde27885d8f4ef282a48c16d41768da50698",
+    "mtime_ns": 1791250802785600725,
+    "mode": "0o600",
+    "role": "common8_failed_partial_generation",
+    "logical_update": 1,
+    "complete_outer": false,
+    "failure_reason_class": "BehaviorTraceError",
+    "record_count": 2560,
+    "sampling_record_count": 2560,
+    "environment_event_count": 0
+  },
+  "actual_boundary_replay": {
+    "reason_counts": {
+      "passed_old_boundary": 2551,
+      "closing_tag_inside_token_nonwhitespace_tail": 8,
+      "ambiguous_decoding_boundary": 1
+    },
+    "call_ordinal_counts": {
+      "0": 2560
+    },
+    "selected_lp_bad_record_count": 0,
+    "max_request_token_count": 235,
+    "max_raw_token_count": 500,
+    "crossing_count": 8,
+    "scope": "Actual old helper and official tokenizer replay on native CPU; raw text/tokenIDs/LPs stay private; not GPU or healthy admission"
+  },
+  "actual_initial512": {
+    "size_bytes": 249290,
+    "sha256": "fe4d8d986d49dab8ea4c15513a44eba3f8bb73486f011605b656b2bda399f23d",
+    "mtime_ns": 1791250748555226463,
+    "mode": "0o644",
+    "role": "policy_safety_calibration_evaluation_measurement",
+    "question_count": 512,
+    "source_counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "question_ids_count": 512,
+    "question_ids_sha256": "b8557f89a232e9f0cf4532222e679ceb141d0d398ed4d9ca91906cf67355bbe6",
+    "rows_count": 512,
+    "rows_sha256": "11ddfcefc0fccf63d154331752c11bf340e8aadba4ffda2b80b8d2d68182281c",
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743,
+    "executed_search_question_rate": 0.978515625,
+    "executed_search_calls_per_question": 1.158203125,
+    "executed_search_question_count": 501,
+    "executed_search_call_count": 593,
+    "valid_action_rate": 0.9459227467811159,
+    "valid_action_count": 1102,
+    "action_opportunity_count": 1165,
+    "valid_action_rate_definition": "micro average: sum(valid_action_stats)/sum(turns_stats); recognized actions per generation turn, including final recognized but unexecuted search",
+    "executed_search_definition": "completed logical retriever searches from actual_retrieval_stats; excludes final do_search=False and does not count HTTP retries",
+    "production_admission": false,
+    "semantics": "ordered measurement only; no health or production acceptance",
+    "run_id": "e996fd4e6f9e453cb861beda904688e9",
+    "parent_production_run_id": "6298da59ef434c328573918529738547",
+    "slurm_job_id": "3288",
+    "plan_sha256": "5baf09bc521fe0f4a240c08955c4e26c7ca155c57aa9f059b131ec0437ea8e8a",
+    "step": 0,
+    "phase_role": "policy_safety_calibration_discovery",
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "checked_unix": 1791250748.5484717
+  },
+  "actual_optimizer_evidence_census": [
+    {
+      "path": "optimizer-rank-0.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-0.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-1.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-1.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-2.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-2.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-3.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-3.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-4.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-4.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-5.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-5.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-6.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-6.json",
+      "exists": false
+    },
+    {
+      "path": "optimizer-rank-7.jsonl",
+      "exists": false
+    },
+    {
+      "path": "policy-calibration-optimizer-rank-7.json",
+      "exists": false
+    }
+  ],
+  "actual_training_log_markers": {
+    "size_bytes": 102508,
+    "sha256": "af6acfb7e8a028d043efb2170faed7cfa786b023014df4d84fcfd3ae09185140",
+    "mtime_ns": 1791250805261526492,
+    "mode": "0o644",
+    "optimizer_write_marker_count": 0,
+    "outer_budget_marker_count": 0,
+    "closing_boundary_error_count": 2
+  }
+}
