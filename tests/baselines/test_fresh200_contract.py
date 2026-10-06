@@ -14,18 +14,21 @@ class Fresh200BoundaryContract(unittest.TestCase):
 
     def events(self, outer, status='COMPLETE', writes=None):
         expected=outer_contract(outer)['expected_optimizer_steps']
-        return [dict(rank=rank, actual_outer=outer,status=status,update_complete=status=='COMPLETE',
-                     optimizer_steps=expected if writes is None else writes,expected_optimizer_steps=expected) for rank in range(8)]
+        return [dict(rank=rank, actual_outer=outer,attempt_id=1,status=status,update_complete=status=='COMPLETE',
+                     optimizer_steps=expected if writes is None else writes,expected_optimizer_steps=expected,
+                     optimizer_opportunities_total=expected,processed_opportunities=expected if writes is None else writes,
+                     skipped_opportunities=0,unprocessed_opportunities=0 if writes is None else expected-writes,
+                     attempt_complete=status=='COMPLETE',postabort=status=='ABORTED') for rank in range(8)]
 
     def test_partial_never_advances_scheduler(self):
-        events=self.events(50,'PARTIAL',3)
+        events=self.events(50,'ABORTED',3)
         self.assertFalse(validate_rank_updates(events,50))
         self.assertTrue(all(not scheduler_may_step(e) for e in events))
         events=self.events(49)
         self.assertTrue(validate_rank_updates(events,49))
         self.assertTrue(all(scheduler_may_step(e) for e in events))
-        events[7].update(status='PARTIAL',update_complete=False,optimizer_steps=19)
-        self.assertFalse(validate_rank_updates(events,49))
+        events[7].update(status='ABORTED',postabort=True,attempt_complete=False,update_complete=False,optimizer_steps=19,processed_opportunities=19,unprocessed_opportunities=1)
+        with self.assertRaises(ValueError):validate_rank_updates(events,49)
 
     def test_complete_rejects_missing_writes_and_ranks(self):
         for events in (self.events(50,writes=9),self.events(50)[:-1]):
@@ -48,7 +51,7 @@ class Fresh200BoundaryContract(unittest.TestCase):
             self.assertEqual(fresh200_lr_factor(completed),factor)
 
     def test_fresh_restore_denied(self):
-        actor=dict(fresh200_enabled=True,policy_safety=dict(enabled=True),entropy_coeff=0.,use_kl_loss=False,kl_loss_coef=0.,grad_clip=1.,clip_ratio=.2,
+        actor=dict(fresh200_enabled=True,policy_safety=dict(enabled=True,threshold_origin='user_fixed',target_old_policy_kl=.2,negative_tail_limit=.2,skip_on_policy_guard=True),entropy_coeff=0.,use_kl_loss=False,kl_loss_coef=0.,grad_clip=1.,clip_ratio=.2,
             loss_reduction='sequence_mean',ppo_mini_batch_size=128,ppo_micro_batch_size=16,ppo_epochs=1,use_dynamic_bsz=False,
             optim=dict(num_warmup_steps=57,lr=1e-6,lr_warmup_steps_ratio=0.,warmup_style='constant'))
         config=dict(trainer=dict(fresh200_enabled=True,fresh200_gate_enabled=True,e1_gate_enabled=False,total_training_steps=201,

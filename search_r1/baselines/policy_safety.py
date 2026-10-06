@@ -11,6 +11,16 @@ import torch
 import torch.distributed as dist
 
 
+class NonfiniteSamplingPolicy(ValueError):
+    """Actual effective selected LP is nonfinite; structural admission passed."""
+    pass
+
+
+class SkipOptimizerOpportunity(ValueError):
+    """All ranks have rejected this mini; no live write has occurred."""
+    pass
+
+
 class PartialPolicyUpdate(RuntimeError):
     def __init__(self, event):
         self.event = event
@@ -32,6 +42,36 @@ def consensus(ok, group=None):
     return bool(flag.item())
 
 
+def persist_rank_update_event(path, event, group=None):
+    """IO failure is collective fatal feedback, never a rank-local escape."""
+    from pathlib import Path
+    import os
+    error=None
+    try:
+        path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('w') as handle:
+            handle.write(json.dumps(event,indent=2,default=str));handle.flush();os.fsync(handle.fileno())
+        fd=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+        try:os.fsync(fd)
+        finally:os.close(fd)
+    except Exception as caught:error=repr(caught)
+    if consensus(error is None,group):return event,None
+    event=dict(event)
+    if event.get('status')=='INFRASTRUCTURE_FAULT':
+        # A second IO failure must not erase original commit-copy truth.
+        event['additional_infrastructure_faults']=list(event.get('additional_infrastructure_faults',[]))+[
+            dict(reason='rank_update_ledger_io_fault',ledger_io_error=error)]
+    else:
+        event.update(status='INFRASTRUCTURE_FAULT',fatal=True,update_complete=False,
+            attempt_complete=False,postabort=True,reason='rank_update_ledger_io_fault',
+            confirmed_previous_optimizer_steps=event['optimizer_steps'],
+            failed_commit_progress=dict(local_commit_complete=False,ledger_io_error=error),
+            current_state_requires_native_save=True)
+    events=[None]*dist.get_world_size(group) if distributed(group) else [event]
+    if distributed(group):dist.all_gather_object(events,event,group=group)
+    return event,events
+
+
 def agree_document(document, ok=True, group=None):
     encoded = json.dumps(document, sort_keys=True, allow_nan=False).encode()
     digest = torch.tensor(list(hashlib.sha256(encoded).digest()), dtype=torch.uint8, device=collective_device(group))
@@ -50,11 +90,11 @@ def finite_inputs(old, current, advantages, mask, weights, group=None):
         ok = ok and bool(torch.isfinite(value[valid]).all())
     ok = ok and bool((weights[valid] >= 0).all())
     if not consensus(ok, group):
-        raise ValueError('Nonfinite policy input on at least one rank')
+        raise SkipOptimizerOpportunity('Nonfinite policy input on at least one rank')
     # Double subtraction avoids fp32 finite operands overflowing before checking.
     delta = torch.where(valid, current, 0.).double() - torch.where(valid, old, 0.).double()
     if not consensus(bool(torch.isfinite(delta[valid]).all()), group):
-        raise ValueError('Nonfinite policy subtraction on at least one rank')
+        raise SkipOptimizerOpportunity('Nonfinite policy subtraction on at least one rank')
     return delta
 
 

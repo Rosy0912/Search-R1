@@ -104,17 +104,17 @@ def test_partial_write_retains_prior_adam_and_zeroes_unapplied_gradient():
     p.square().backward();opt.step();prior=p.detach().clone();opt.zero_grad()
     p.square().backward()
     actor=SimpleNamespace(actor_optimizer=opt,_safety_writes=1,_safety_expected_writes=20,
-                         _safety_actual_outer=1,_safety_rollout_identity='frozen-1')
+                         _safety_actual_outer=1,_safety_rollout_identity='frozen-1',_safety_processed=2,_safety_skips=[],_safety_attempt_id=1)
     with pytest.raises(PartialPolicyUpdate) as caught:
         DataParallelPPOActor._reject_safety(actor,'negative_advantage_tail',{'allowed':False})
-    assert caught.value.event['status']=='PARTIAL' and caught.value.event['optimizer_steps']==1
+    assert caught.value.event['status']=='ABORTED' and caught.value.event['optimizer_steps']==1
     assert caught.value.event['update_complete'] is False and p.grad is None
     torch.testing.assert_close(p,prior)
     assert opt.state[p]['step'].item()==1
 
 
 @pytest.mark.parametrize('outer,expected',[(49,20),(50,10)])
-@pytest.mark.parametrize('reject_post',[False,True,'nonfinite_state'])
+@pytest.mark.parametrize('reject_post',[False,True,'nonfinite_state','pre_mini','pre_rollout','all_minis','half_mini','commit_fault','shadow_step_fault','shadow_prepare_fault'])
 def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expected,reject_post):
     """CPU actor transaction oracle; production admissions are explicitly stubbed.
 
@@ -137,7 +137,7 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
     monkeypatch.setattr(safety_module,'distributed',lambda *a:False)
     monkeypatch.setattr(reduction,'global_token_count',lambda mask:(mask.sum(),1))
     monkeypatch.setattr(objectives,'row_denominator',lambda rows,device:torch.tensor(float(rows),device=device))
-    monkeypatch.setattr(contract,'verify_policy_safety_artifact',lambda config:(1.,'cpu-test-admission'))
+    monkeypatch.setattr(contract,'verify_fixed_policy_safety_artifact',lambda config:(1.,'cpu-test-admission'))
     monkeypatch.setattr(contract,'verify_sampling_policy_binding',lambda data,config:'cpu-test-sampling')
     safety=dict(enabled=True,dual_clip=3,kl_log_bound=30.,target_old_policy_kl=1.,negative_tail_limit=1.)
     config=OmegaConf.create(dict(ppo_mini_batch_size=16,ppo_micro_batch_size=2,ppo_epochs=1,
@@ -148,36 +148,92 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
     old=-one.clone();old[-1]=float('nan')
     data=DataProto.from_dict(dict(responses=one.long(),input_ids=one.long(),attention_mask=one.long(),
         position_ids=one.long(),loss_mask=policy_mask,old_log_probs=old,advantages=-one,ref_log_prob=torch.full_like(one,float('inf'))),
-        meta_info=dict(temperature=1.,actual_outer=outer,rollout_identity='cpu-test-rollout'))
+        meta_info=dict(temperature=1.,actual_outer=outer,attempt_id=1,rollout_identity='cpu-test-rollout',policy_snapshot_id='cpu-test-snapshot'))
     model=torch.nn.Linear(1,1,bias=False).double();model.weight.data.zero_()
     optimizer=torch.optim.AdamW(model.parameters(),lr=.001)
+    if reject_post=='shadow_step_fault':
+        original_adam=torch.optim.AdamW.step;shadow_steps=[0]
+        def shadow_failure(optimizer_,*args,**kwargs):
+            shadow_steps[0]+=1
+            if shadow_steps[0]==2:raise RuntimeError('fixture shadow step allocation/kernel failure')
+            return original_adam(optimizer_,*args,**kwargs)
+        monkeypatch.setattr(torch.optim.AdamW,'step',shadow_failure)
+    if reject_post=='shadow_prepare_fault':
+        original_init=torch.optim.AdamW.__init__;shadow_builds=[0]
+        def shadow_build_failure(optimizer_,*args,**kwargs):
+            shadow_builds[0]+=1
+            if shadow_builds[0]==2:raise RuntimeError('fixture shadow preparation failure')
+            return original_init(optimizer_,*args,**kwargs)
+        monkeypatch.setattr(torch.optim.AdamW,'__init__',shadow_build_failure)
+    forward_count=[0]
     def forward(micro_batch,temperature):
         current=micro_batch['old_log_probs']+model.weight.reshape(())
+        if torch.is_grad_enabled():
+            forward_count[0]+=1
+            if reject_post=='half_mini' and forward_count[0]==2:current=current*float('nan')
         entropy=torch.where(micro_batch['loss_mask'].bool(),torch.zeros_like(current),float('nan'))
         return entropy,current
     actor=SimpleNamespace(config=config,actor_module=model,actor_optimizer=optimizer,
         _forward_micro_batch=forward,ulysses_sequence_parallel_size=1)
     def step():
         norm=DataParallelPPOActor._optimizer_step(actor)
+        if reject_post=='commit_fault':
+            from search_r1.baselines.optimizer_transaction import OptimizerCommitFault
+            raise OptimizerCommitFault(dict(parameter_copies=1,state_entries=1,local_commit_complete=True))
         if reject_post=='nonfinite_state':optimizer.state[model.weight]['exp_avg'].fill_(float('nan'))
         return norm
     actor._optimizer_step=step
     captured=[]
     actor._safety_evidence_sink=captured.append
-    if reject_post is True:
+    if reject_post in (True,'pre_mini','pre_rollout','all_minis'):
+        monitor_count=[0]
         original=DataParallelPPOActor._monitor_frozen_policy
         def reject(self,frozen,safety,stage,monitor_batch=None):
             report=original(self,frozen,safety,stage,monitor_batch)
-            if stage=='after_adam':report.update(allowed=False,reasons=['cpu-test-post-write-brake'])
+            if stage=='before_adam_full_minibatch':monitor_count[0]+=1
+            if ((reject_post is True and stage=='after_adam') or
+                (reject_post=='pre_rollout' and stage=='before_adam') or
+                (reject_post=='pre_mini' and stage=='before_adam_full_minibatch' and monitor_count[0]==1) or
+                (reject_post=='all_minis' and stage=='before_adam_full_minibatch')):
+                report.update(allowed=False,reasons=['cpu-test-brake'])
             return report
         monkeypatch.setattr(DataParallelPPOActor,'_monitor_frozen_policy',reject)
     result=DataParallelPPOActor.update_policy(actor,data)
     event=result['fresh200_update_state']
+    if reject_post=='nonfinite_state':
+        assert event['status']=='INFRASTRUCTURE_FAULT' and event['optimizer_steps']==1
+        assert event['confirmed_previous_optimizer_steps']==1
+        assert event['failed_commit_progress']['count_already_recorded'] is True
+        assert event['failed_commit_progress']['stage']=='post_commit_state_nonfinite'
+        assert not event['update_complete'] and event['postabort'] is True
+        assert actor._safety_writes==1 and optimizer.state[model.weight]['step'].item()==1
+        return
+    if reject_post in ('shadow_step_fault','shadow_prepare_fault'):
+        assert event['status']=='INFRASTRUCTURE_FAULT' and event['optimizer_steps']==1
+        assert event['confirmed_previous_optimizer_steps']==1 and event['failed_commit_progress']['stage']==('shadow_step' if reject_post=='shadow_step_fault' else 'shadow_prepare')
+        assert event['failed_commit_progress']['local_commit_complete'] is False and not event['update_complete']
+        assert optimizer.state[model.weight]['step'].item()==1 and model.weight.grad is None
+        return
+    if reject_post=='commit_fault':
+        assert event['status']=='INFRASTRUCTURE_FAULT' and event['optimizer_steps']==1
+        assert event['confirmed_previous_optimizer_steps']==0 and event['postabort'] is True
+        assert not event['update_complete'] and event['failed_commit_progress']['local_commit_complete']
+        assert optimizer.state[model.weight]['step'].item()==1 and model.weight.grad is None
+        return
     assert event['expected_optimizer_steps']==expected
-    assert event['optimizer_steps']==(1 if reject_post else expected)
-    assert event['status']==('PARTIAL' if reject_post else 'COMPLETE')
-    assert event['update_complete']==(not reject_post)
-    if reject_post=='nonfinite_state':assert event['reason']=='post_adam_nonfinite_parameters_or_optimizer_state'
+    expected_writes=1 if reject_post is True else (0 if reject_post in ('pre_rollout','all_minis') else expected-1 if reject_post in ('pre_mini','half_mini') else expected)
+    assert event['optimizer_steps']==expected_writes
+    expected_status='ABORTED' if reject_post is True else 'SKIPPED' if expected_writes==0 else 'COMPLETE_WITH_SKIPS' if expected_writes<expected else 'COMPLETE'
+    assert event['status']==expected_status
+    assert event['update_complete']==(expected_status in ('COMPLETE','COMPLETE_WITH_SKIPS'))
+    assert event['processed_opportunities']==event['optimizer_steps']+event['skipped_opportunities']
+    assert event['processed_opportunities']+event['unprocessed_opportunities']==expected
+    from search_r1.baselines.fresh200_contract import validate_rank_updates
+    ranks=[dict(event,rank=i) for i in range(8)]
+    assert validate_rank_updates(ranks,outer)==event['update_complete']
+    if expected_writes==0:
+        assert not optimizer.state and model.weight.grad is None
+        return
     assert optimizer.state[model.weight]['step'].item()==event['optimizer_steps']
     assert model.weight.grad is None
     assert all(r['monitoring_scope'] in ('full_frozen_rollout','full_current_minibatch') for r in result['fresh200_policy_monitor'])

@@ -372,7 +372,8 @@ class ActorRolloutRefWorker(Worker):
         if self._is_actor:
             self.flops_counter = FlopsCounter(self.actor_model_config)
 
-        if self._is_actor and self.config.actor.get('fresh200_diagnostic_only', False):
+        if self._is_actor and self.config.actor.get('fresh200_enabled', False):
+            import json
             from search_r1.baselines.fresh200_native_evidence import tensor_digest,native_process,file_sha,capture_official_alignment
             from search_r1.baselines.fresh200_contract import critical_source_hashes
             from pathlib import Path
@@ -381,11 +382,15 @@ class ActorRolloutRefWorker(Worker):
             try:directory.mkdir(parents=True,exist_ok=True)
             except OSError as error:directory_error=str(error)
             if not consensus(directory_error is None):raise ValueError('Collective native initial state directory failed')
+            initial_fresh=(len(self.actor_optimizer.state)==0 and self.actor_lr_scheduler.last_epoch==0
+                           and self.world_size==8 and all(group['lr']==1e-6/57 for group in self.actor_optimizer.param_groups))
+            if not consensus(initial_fresh): raise RuntimeError('Fresh200 official initial actor requires Adam0/scheduler0/initialLR/8ranks')
             official_alignment=capture_official_alignment(self,directory)
             initial_error=None
             try:
                 path=directory/f'native-initial-rank_{self.rank}.pt'
-                if path.exists():raise ValueError('Refusing to overwrite immutable native initial state')
+                metadata_path=directory/f'native-initial-rank_{self.rank}.json'
+                if path.exists() or metadata_path.exists():raise ValueError('Refusing to overwrite immutable native initial state')
                 parameters={name:param.detach().cpu().clone() for name,param in self.actor_module_fsdp.named_parameters()}
                 process=native_process(self.rank,self.world_size)
                 self._fresh200_native_process=process
@@ -396,7 +401,9 @@ class ActorRolloutRefWorker(Worker):
                     official_model_manifest_sha256='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44',
                     model_tensor_sha256={name:tensor_digest(param) for name,param in parameters.items()},official_alignment=official_alignment,
                     optimizer_state_entries=len(self.actor_optimizer.state),scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
-                    lr=self.actor_lr_scheduler.get_last_lr())
+                    lr=self.actor_lr_scheduler.get_last_lr(),native_process=process,source_sha256=critical_source_hashes(),
+                    status='ACTUAL_INITIAL_STATE_CAPTURED_NOT_RELEASE')
+                metadata_path.write_text(json.dumps(self._fresh200_initial_state,indent=2,allow_nan=False))
                 del parameters,payload
             except Exception as error:
                 initial_error=str(error)
@@ -488,12 +495,27 @@ class ActorRolloutRefWorker(Worker):
                     event['rank'] = self.rank
                     rank_updates = [None] * self.world_size
                     dist.all_gather_object(rank_updates, event)
-                    validate_rank_updates(rank_updates, data.meta_info['actual_outer'])
+                    from search_r1.baselines.policy_safety import agree_document
+                    decision_keys=('status','update_complete','attempt_complete','optimizer_steps',
+                        'expected_optimizer_steps','optimizer_opportunities_total','processed_opportunities',
+                        'skipped_opportunities','unprocessed_opportunities','skipped_indices','skipped_reasons',
+                        'postabort','actual_outer','attempt_id')
+                    self._fresh200_last_update_event=event
+                    fatal_update=any(item.get('status')=='INFRASTRUCTURE_FAULT' for item in rank_updates)
+                    decision={key:event.get(key) for key in decision_keys}
+                    if not fatal_update:
+                        if not agree_document(decision,group=self.actor_module_fsdp.process_group):
+                            raise RuntimeError('All-rank skip/write decision mismatch; scheduler refused')
+                        validate_rank_updates(rank_updates, data.meta_info['actual_outer'])
                     from pathlib import Path
                     import json
                     fault = Path(self.config.actor.fresh200_fault_dir)
-                    fault.mkdir(parents=True, exist_ok=True)
-                    (fault / ('rank_%d-outer_%d.json' % (self.rank, data.meta_info['actual_outer']))).write_text(json.dumps(event, indent=2, default=str))
+                    from search_r1.baselines.policy_safety import persist_rank_update_event
+                    path=fault / ('rank_%d-outer_%d-attempt_%s.json' % (self.rank,data.meta_info['actual_outer'],data.meta_info.get('attempt_id','missing')))
+                    event,fatal_events=persist_rank_update_event(path,event,self.actor_module_fsdp.process_group)
+                    if fatal_events is not None:
+                        rank_updates=fatal_events;fatal_update=True
+                        self._fresh200_last_update_event=event
             delta_time = timer.last
             global_num_tokens = data.meta_info['global_token_num']
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
@@ -501,7 +523,7 @@ class ActorRolloutRefWorker(Worker):
 
             if fresh200:
                 from search_r1.baselines.fresh200_contract import validate_rank_updates
-                if validate_rank_updates(rank_updates, data.meta_info['actual_outer']):
+                if not fatal_update and validate_rank_updates(rank_updates, data.meta_info['actual_outer']):
                     self.actor_lr_scheduler.step()
             elif metrics.get('actor/optimizer_steps', 0) > 0:
                 self.actor_lr_scheduler.step()
@@ -516,7 +538,11 @@ class ActorRolloutRefWorker(Worker):
             # Preserve ACTOR_RANK_UPDATE_JSON above as the original local
             # record. Every returned DataProto now carries the same global
             # reporting metrics, so concat retaining first metadata is safe.
-            if aggregate_bapo_metrics:
+            if fresh200 and fatal_update:
+                # Local complete/partial commit counts can differ on an infrastructure fault.
+                # Their exact truth lives in rank_updates; never average/replicate that metric.
+                metrics={'actor/lr':lr,'actor/scheduler_outer_steps':self.actor_lr_scheduler.last_epoch}
+            elif aggregate_bapo_metrics:
                 from search_r1.baselines.actor_metrics import aggregate_sequence_mean_actor_metrics
                 metrics = aggregate_sequence_mean_actor_metrics(
                     metrics, self.ulysses_sequence_parallel_size,
@@ -756,10 +782,13 @@ class ActorRolloutRefWorker(Worker):
                     generation_rng=self.rollout_sharding_manager.generation_rng_state())
                 if self.config.actor.get('fresh200_diagnostic_only',False):
                     payload.update(diagnostic_optimizer_writes=getattr(self,'_diagnostic_write_count',0),formal_outer_updates=0,scheduler_outer_steps=self.actor_lr_scheduler.last_epoch)
+                if self.config.actor.get('fresh200_enabled',False):
+                    payload['latest_rank_event']=getattr(self,'_fresh200_last_update_event',None)
+                    payload['attempt_id']=None if payload['latest_rank_event'] is None else payload['latest_rank_event'].get('attempt_id')
                 if state_status is not None:
                     payload['update_status']=state_status
                     payload['attempted_outer']=step
-                    payload['previous_complete_outer']=step-1 if state_status=='PARTIAL' else step
+                    payload['previous_complete_outer']=step-1 if state_status in ('PARTIAL','ABORTED','SKIPPED') else step
                 before=state_digest(payload)
                 generation_before=state_digest(payload['generation_rng'])
                 after_digest=before;generation_after=generation_before
@@ -776,8 +805,10 @@ class ActorRolloutRefWorker(Worker):
                         model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
                         scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()),
                         generation_rng=self.rollout_sharding_manager.generation_rng_state())
+                    if self.config.actor.get('fresh200_enabled',False):
+                        after.update(latest_rank_event=payload.get('latest_rank_event'),attempt_id=payload.get('attempt_id'))
                     if state_status is not None:
-                        after.update(update_status=state_status,attempted_outer=step,previous_complete_outer=step-1 if state_status=='PARTIAL' else step)
+                        after.update(update_status=state_status,attempted_outer=step,previous_complete_outer=step-1 if state_status in ('PARTIAL','ABORTED','SKIPPED') else step)
                     after_digest=state_digest(after);generation_after=state_digest(after['generation_rng'])
                     if after_digest!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
             from search_r1.baselines.checkpoint_gate import digest
@@ -800,8 +831,10 @@ class ActorRolloutRefWorker(Worker):
                         shape=list(self.rollout_sharding_manager.device_mesh.mesh.shape),
                         names=list(self.rollout_sharding_manager.device_mesh.mesh_dim_names),
                         ranks=self.rollout_sharding_manager.device_mesh.mesh.cpu().tolist())))
-            if state_status=='PARTIAL':
-                report.update(status='PARTIAL_CURRENT_STATE_SAVED',attempted_outer=step,previous_complete_outer=step-1)
+            if self.config.actor.get('fresh200_enabled',False):
+                report.update(attempt_id=payload.get('attempt_id'),latest_rank_event=payload.get('latest_rank_event'))
+            if state_status in ('PARTIAL','ABORTED','SKIPPED'):
+                report.update(status=state_status+'_CURRENT_STATE_SAVED',attempted_outer=step,previous_complete_outer=step-1)
             (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))
             print('FULL_STATE_RANK_JSON='+json.dumps(report,sort_keys=True,allow_nan=False),flush=True)
             torch.distributed.barrier()

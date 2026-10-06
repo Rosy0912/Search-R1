@@ -31,8 +31,12 @@ actor_rollout_ref:
       source_commit: ${baselines.algorithm_source_commit}
       dual_clip: 3
       kl_log_bound: 30.0
-      target_old_policy_kl: 0.01
-      negative_tail_limit: null
+      target_old_policy_kl: 0.2
+      negative_tail_limit: 0.2
+      threshold_origin: user_fixed
+      skip_on_policy_guard: true
+      fixed_threshold_artifact: ${oc.env:BAPO_FRESH200_FIXED_THRESHOLD_ARTIFACT,}
+      fixed_threshold_artifact_sha256: ${oc.env:BAPO_FRESH200_FIXED_THRESHOLD_SHA256,}
       evidence_review_sha256: ${oc.env:BAPO_FRESH200_REVIEW_SHA256,}
       evidence_review_nonce: ${oc.env:BAPO_FRESH200_REVIEW_NONCE,}
       calibration_manifest: ${oc.env:BAPO_FRESH200_CALIBRATION_MANIFEST,}

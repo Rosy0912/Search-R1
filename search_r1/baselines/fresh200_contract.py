@@ -42,6 +42,10 @@ def validate_fresh_config(config):
               config['algorithm']['kl_ctrl'].get('kl_coef') == 0.0,
               trainer.get('fresh200_gate_receipt') is not None,
               actor.get('fresh200_enabled') is True, actor.get('policy_safety',{}).get('enabled') is True,
+              actor.get('policy_safety',{}).get('threshold_origin') == 'user_fixed',
+              actor.get('policy_safety',{}).get('target_old_policy_kl') == .2,
+              actor.get('policy_safety',{}).get('negative_tail_limit') == .2,
+              actor.get('policy_safety',{}).get('skip_on_policy_guard') is True,
               ar['model'].get('revision') == 'aa8e72537993ba99e69dfaafa59ed015b17504d1',
               not ar['model'].get('override_config'),
               config['baselines']['holdout'].get('manifest_sha256') == '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24',
@@ -68,28 +72,92 @@ def validate_fresh_config(config):
     return 200, 57
 
 
-def validate_rank_updates(events, actual_outer):
-    contract=outer_contract(actual_outer)
-    if len(events) != 8 or {e.get('rank') for e in events} != set(range(8)):
-        raise ValueError('Fresh200 all-rank write ledger missing/duplicate')
-    for event in events:
-        if event.get('actual_outer') != actual_outer or event.get('expected_optimizer_steps') != contract['expected_optimizer_steps']:
-            raise ValueError('Fresh200 rank update identity/count mismatch')
-        count=event.get('optimizer_steps')
-        if type(count) is not int or not 0 <= count <= contract['expected_optimizer_steps']:
-            raise ValueError('Fresh200 invalid Adam write count')
-        if event.get('status') == 'COMPLETE':
-            if count != contract['expected_optimizer_steps'] or event.get('update_complete') is not True:
-                raise ValueError('Fresh200 COMPLETE requires all expected Adam writes')
-        elif event.get('status') != 'PARTIAL' or event.get('update_complete') is not False:
-            raise ValueError('Fresh200 update status invalid')
-    return all(event['status'] == 'COMPLETE' for event in events)
+def _valid_skip_event(event):
+    total=event.get('expected_optimizer_steps');writes=event.get('optimizer_steps')
+    processed=event.get('processed_opportunities');skipped=event.get('skipped_opportunities')
+    unprocessed=event.get('unprocessed_opportunities')
+    if (any(type(x) is not int or x < 0 for x in (total,writes,processed,skipped,unprocessed))
+            or total not in (10,20) or processed != writes+skipped
+            or processed+unprocessed != total or event.get('optimizer_opportunities_total') != total
+            or type(event.get('optimizer_opportunities_total')) is not int
+            or type(event.get('actual_outer')) is not int or not 1 <= event['actual_outer'] <= 200
+            or type(event.get('attempt_id')) is not int or event['attempt_id'] < 1
+            or type(event.get('attempt_complete')) is not bool
+            or type(event.get('update_complete')) is not bool or type(event.get('postabort')) is not bool):
+        return False
+    status=event.get('status')
+    if status in ('COMPLETE','COMPLETE_WITH_SKIPS'):
+        if (event['postabort'] or not event['attempt_complete'] or not event['update_complete']
+                or processed != total or writes < 1 or unprocessed != 0):return False
+        return (skipped == 0 and writes == total) if status == 'COMPLETE' else skipped > 0
+    if event['update_complete']:return False
+    if status == 'SKIPPED':
+        return writes == 0 and not event['postabort'] and event['attempt_complete'] == (processed == total)
+    if status == 'ABORTED':
+        return event['postabort'] and not event['attempt_complete']
+    return False
 
 
 def scheduler_may_step(event):
-    return (event.get('status') == 'COMPLETE' and event.get('update_complete') is True
-            and type(event.get('optimizer_steps')) is int
-            and event['optimizer_steps'] == event.get('expected_optimizer_steps'))
+    return _valid_skip_event(event) and event.get('status') in ('COMPLETE','COMPLETE_WITH_SKIPS')
+
+
+def validate_rank_updates(events, actual_outer):
+    contract=outer_contract(actual_outer);expected=contract['expected_optimizer_steps']
+    if (len(events) != 8 or any(type(e.get('rank')) is not int for e in events)
+            or {e.get('rank') for e in events} != set(range(8))):
+        raise ValueError('Fresh200 all-rank write ledger missing/duplicate/invalid rank type')
+    decision_keys=('actual_outer','attempt_id','status','optimizer_steps','expected_optimizer_steps',
+                   'optimizer_opportunities_total','processed_opportunities','skipped_opportunities',
+                   'unprocessed_opportunities','attempt_complete','update_complete','postabort')
+    first={key:events[0].get(key) for key in decision_keys}
+    for event in events:
+        if (not _valid_skip_event(event) or event['actual_outer'] != actual_outer
+                or event['expected_optimizer_steps'] != expected):
+            raise ValueError('Fresh200 invalid opportunity/write/completion identity')
+        if {key:event.get(key) for key in decision_keys} != first:
+            raise ValueError('Fresh200 rank decisions/counts differ; scheduler admission rejected')
+    return scheduler_may_step(events[0])
+
+
+def verify_fixed_policy_safety_artifact(safety_config):
+    """Bind explicit human thresholds; never label them empirically calibrated."""
+    import hashlib,json,subprocess,re
+    def need(ok,message):
+        if not ok:raise ValueError(message)
+    need(safety_config.get('threshold_origin') == 'user_fixed', 'Explicit user-fixed threshold origin required')
+    need(safety_config.get('enabled') is True and safety_config.get('dual_clip') == 3,
+         'BAPO safety and Dual-Clip c3 required')
+    need(safety_config.get('target_old_policy_kl') == .2 and safety_config.get('negative_tail_limit') == .2,
+         'Actual fixed KL/tail thresholds must both equal user0.2')
+    need(safety_config.get('skip_on_policy_guard') is True, 'Policy guard must skip and continue')
+    path = Path(safety_config.get('fixed_threshold_artifact') or '')
+    need(path.is_absolute() and path.is_file() and path.resolve() == path and not path.is_symlink(),
+         'Canonical immutable fixed-threshold document required')
+    raw = path.read_bytes(); sha = hashlib.sha256(raw).hexdigest()
+    need(sha == safety_config.get('fixed_threshold_artifact_sha256'), 'Fixed threshold artifact hash mismatch')
+    doc = json.loads(raw); source = safety_config.get('source_commit')
+    repo = Path(__file__).resolve().parents[2]
+    need(isinstance(source,str) and re.fullmatch('[0-9a-f]{40}',source), 'Exact new source commit required')
+    need(subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip() == source,
+         'Actual runtime source differs from fixed-threshold binding')
+    need(not subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],text=True).strip(),
+         'Actual fixed-threshold source is dirty')
+    need(doc.get('protocol') == 'BAPO_FRESH200_USER_FIXED_SAFETY_V1'
+         and doc.get('scope') == 'USER_FIXED_THRESHOLDS_NOT_NATIVE_ACCEPTANCE_NOT_EMPIRICAL_CALIBRATION'
+         and doc.get('source_commit') == source and doc.get('source_sha256') == critical_source_hashes(),
+         'Fixed threshold provenance/source hash mismatch')
+    need(doc.get('thresholds') == {'dual_clip':3,'sampled_old_policy_kl':.2,'negative_advantage_tail_fraction':.2,
+                                 'negative_tail_ratio_boundary':3,'kl_log_bound':30.,'on_guard':'skip_and_continue'},
+         'Fixed threshold mathematical definition differs')
+    need(safety_config.get('kl_log_bound') == 30., 'Fixed finite exponent bound differs')
+    need(doc.get('monitor_scopes') == ['full_frozen_rollout','full_current_minibatch'], 'Full policy monitor scopes required')
+    need(doc.get('model_revision') == 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+         and doc.get('data_manifest_sha256') == '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24',
+         'Fixed threshold model/data binding differs')
+    need(isinstance(doc.get('human_goal_sha256'),str) and re.fullmatch('[0-9a-f]{64}',doc['human_goal_sha256']),
+         'Bound human objective required')
+    return .2, sha
 
 
 def verify_policy_safety_artifact(safety_config):
@@ -98,6 +166,8 @@ def verify_policy_safety_artifact(safety_config):
     CPU integrity proves bindings, never substitutes for the two CUDA experiments.
     The candidate KL and tail rules remain empirical, not guaranteed bounds.
     """
+    if safety_config.get("threshold_origin") == "user_fixed":
+        return verify_fixed_policy_safety_artifact(safety_config)
     import hashlib
     import json
     import math
@@ -181,22 +251,26 @@ def verify_sampling_policy_binding(data, safety_config):
     if actual_audit.get('context_verified') is not True or actual_audit.get('policy_snapshot_id')!=snapshot:
         raise ValueError('Actual sampling turn/context audit rejected')
     journals=data.non_tensor_batch.get('fresh200_turns',[])
-    if not journals or any(turn.get('effective_stop_provenance',{}).get('probability_role')!='stochastic_sampling_policy' for row in journals for turn in row):
+    if len(journals)==0 or any(turn.get('effective_stop_provenance',{}).get('probability_role')!='stochastic_sampling_policy' for row in journals for turn in row):
         raise ValueError('Actual stochastic sampler proof required; greedy journals cannot bind training')
     batch=data.batch
     sampled=batch['sampling_log_probs'];mask=batch['sampling_mask'].bool();old=batch['old_log_probs']
     if sampled.shape!=old.shape or mask.shape!=old.shape or not mask.any():
         raise ValueError('Selected sampler policy shape/coverage mismatch')
-    if not torch.isfinite(sampled[mask]).all() or not torch.isfinite(old[mask]).all():
-        raise ValueError('Actual selected sampler/HF probabilities nonfinite')
-    # Fixed strict candidate tolerance; independent CUDA experiments must establish
-    # that this is valid for the actual selected vLLM/HF implementations.
-    atol=float(safety_config.get('sampling_logprob_atol', 1e-3))
-    if not 0<atol<=1e-3 or not torch.allclose(old[mask], sampled[mask], atol=atol, rtol=0.):
-        raise ValueError('Actual selected sampler and unchanged HF old policy differ')
     loss_mask=batch.get('loss_mask')
     if loss_mask is None or not torch.equal(loss_mask.bool(), mask):
         raise ValueError('Sampler supervised mask differs from actor policy mask')
+    if not torch.isfinite(sampled[mask]).all():
+        raise ValueError('Actual selected sampler probability transport nonfinite')
+    # A NaN must not hide finite parity errors or invalid configured tolerance.
+    atol=float(safety_config.get('sampling_logprob_atol', 1e-3))
+    finite_old=torch.isfinite(old)
+    comparable=mask & finite_old
+    if not 0<atol<=1e-3 or not torch.allclose(old[comparable], sampled[comparable], atol=atol, rtol=0.):
+        raise ValueError('Actual selected sampler and unchanged HF old policy differ')
+    if not finite_old[mask].all():
+        from search_r1.baselines.policy_safety import NonfiniteSamplingPolicy
+        raise NonfiniteSamplingPolicy('Actual unchanged HF old-policy selected log-probabilities nonfinite')
     return hashlib.sha256(snapshot.encode()).hexdigest()
 
 
@@ -241,8 +315,9 @@ def verify_official_model_assets(model_path):
 def critical_source_hashes():
     import hashlib
     root=Path(__file__).resolve().parents[2]
-    names=('search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py',
+    names=('search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
         'search_r1/baselines/fresh200_contract.py','search_r1/baselines/fresh200_native_evidence.py',
+        'search_r1/baselines/fresh200_driver.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/main.py',
         'verl/workers/actor/dp_actor.py','verl/workers/fsdp_workers.py','verl/trainer/ppo/ray_trainer.py',
         'search_r1/llm_agent/generation.py','search_r1/llm_agent/sampling_tokens.py',
         'search_r1/llm_agent/sampling_trace.py','search_r1/llm_agent/sampling_capture.py',

@@ -13,6 +13,11 @@ import torch.distributed as dist
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 
 
+class GradientStructureFault(RuntimeError):
+    """All ranks rejected clipping structure before its norm collectives."""
+    pass
+
+
 def _norm64(params, device, chunk_size=262144, uniform=True):
     grads = [p.grad for p in params if p.grad is not None]
     if uniform and len({g.dtype for g in grads}) > 1:
@@ -50,39 +55,49 @@ def _failure(grads, norm):
 @torch.no_grad()
 def clip_grad_norm64(module, max_norm):
     """L2 max_norm/(global_norm+1e-6), cast coefficient as native FSDP does."""
-    if max_norm < 0:
-        raise ValueError('Negative max_norm')
+    if max_norm < 0 and not isinstance(module,FSDP):
+        raise GradientStructureFault('Negative max_norm')
     if isinstance(module, FSDP):
         from torch.distributed.fsdp._runtime_utils import _lazy_init
         from torch.distributed.fsdp._common_utils import TrainingState
         _lazy_init(module, module)
-        if not module._is_root:
-            raise RuntimeError('Gradient clipping requires root FSDP')
-        module._assert_state(TrainingState.IDLE)
-        sharded, nonsharded, grads = set(), set(), []
-        sharded_order, nonsharded_order = [], []
-        gradient_ids = set()
-        for handle in module._all_handles:
-            target = sharded if handle.uses_sharded_strategy else nonsharded
-            ordered = sharded_order if handle.uses_sharded_strategy else nonsharded_order
-            params = handle.flat_param._params if handle._use_orig_params else [handle.flat_param]
-            for param in params:
-                if param not in target:
-                    target.add(param)
-                    ordered.append(param)
-                if param.grad is not None and id(param.grad) not in gradient_ids:
-                    grads.append(param.grad)
-                    gradient_ids.add(id(param.grad))
-        for param in module.parameters():
-            if param not in sharded and param not in nonsharded:
-                nonsharded.add(param)
-                nonsharded_order.append(param)
-                if param.grad is not None and id(param.grad) not in gradient_ids:
-                    grads.append(param.grad)
-                    gradient_ids.add(id(param.grad))
-        device = module.compute_device
-        sharded_norm = _norm64(sharded_order, device)
-        nonsharded_norm = _norm64(nonsharded_order, device, uniform=bool(sharded))
+        structure_error=None
+        try:
+            if max_norm < 0: raise ValueError('Negative max_norm')
+            if not module._is_root:
+                raise RuntimeError('Gradient clipping requires root FSDP')
+            module._assert_state(TrainingState.IDLE)
+            sharded, nonsharded, grads = set(), set(), []
+            sharded_order, nonsharded_order = [], []
+            gradient_ids = set()
+            for handle in module._all_handles:
+                target = sharded if handle.uses_sharded_strategy else nonsharded
+                ordered = sharded_order if handle.uses_sharded_strategy else nonsharded_order
+                params = handle.flat_param._params if handle._use_orig_params else [handle.flat_param]
+                for param in params:
+                    if param not in target:
+                        target.add(param)
+                        ordered.append(param)
+                    if param.grad is not None and id(param.grad) not in gradient_ids:
+                        grads.append(param.grad)
+                        gradient_ids.add(id(param.grad))
+            for param in module.parameters():
+                if param not in sharded and param not in nonsharded:
+                    nonsharded.add(param)
+                    nonsharded_order.append(param)
+                    if param.grad is not None and id(param.grad) not in gradient_ids:
+                        grads.append(param.grad)
+                        gradient_ids.add(id(param.grad))
+            device = module.compute_device
+            sharded_norm = _norm64(sharded_order, device)
+            nonsharded_norm = _norm64(nonsharded_order, device, uniform=bool(sharded))
+        except Exception as error:
+            structure_error=str(error)
+        # Norm gathering has no collective. Every rank reaches THIS reduction
+        # before finite/norm reductions, even if one local dtype/partition failed.
+        structure_bad=torch.tensor(int(structure_error is not None),dtype=torch.int32,device=module.compute_device)
+        dist.all_reduce(structure_bad,op=dist.ReduceOp.MAX,group=module.process_group)
+        if bool(structure_bad): raise GradientStructureFault('Collective clipping structure rejected: '+str(structure_error))
         # All ranks perform this reduction, including NO_SHARD/empty ranks.
         # A corrupt replicated gradient on one rank must reject on every rank.
         bad = (~(torch.isfinite(sharded_norm) & torch.isfinite(nonsharded_norm))).to(torch.int32)
