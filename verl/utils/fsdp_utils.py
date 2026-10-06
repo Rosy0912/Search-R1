@@ -140,9 +140,14 @@ def load_fsdp_param_and_grad(module, device_id, load_grad=False):
 
 
 def offload_fsdp_optimizer(optimizer):
+    missing = object()
     for param_group in optimizer.param_groups:
         for param in param_group['params']:
-            state = optimizer.state[param]
+            # Adam initializes state lazily; indexing its defaultdict would
+            # create an empty entry during a read-only device transfer.
+            state = optimizer.state.get(param, missing)
+            if state is missing:
+                continue
             for key, value in state.items():
                 if isinstance(value, torch.Tensor):
                     state[key] = value.to("cpu", non_blocking=True)
@@ -150,9 +155,14 @@ def offload_fsdp_optimizer(optimizer):
 
 
 def load_fsdp_optimizer(optimizer, device_id):
+    missing = object()
     for param_group in optimizer.param_groups:
         for param in param_group['params']:
-            state = optimizer.state[param]
+            # Adam initializes state lazily; indexing its defaultdict would
+            # create an empty entry during a read-only device transfer.
+            state = optimizer.state.get(param, missing)
+            if state is missing:
+                continue
             for key, value in state.items():
                 if isinstance(value, torch.Tensor):
                     state[key] = value.to(device_id, non_blocking=True)

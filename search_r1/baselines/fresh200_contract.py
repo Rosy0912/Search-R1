@@ -326,5 +326,5 @@ def critical_source_hashes():
         'search_r1/baselines/rollout.py','verl/trainer/main_ppo.py',
         'verl/trainer/config/ppo_bapo_fresh200.yaml','verl/trainer/config/ppo_baselines.yaml',
         'verl/trainer/config/ppo_trainer.yaml','verl/utils/dataset/rl_dataset.py',
-        'verl/utils/tokenizer.py','verl/utils/torch_functional.py','verl/utils/model.py')
+        'verl/utils/tokenizer.py','verl/utils/torch_functional.py','verl/utils/model.py','verl/utils/fsdp_utils.py')
     return {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in names}
