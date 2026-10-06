@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "role": "actual_four_complete_outers_same_process_progress",
+  "job_id": "3309",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "actual_receipt_sha256": "b3626de9aed4bba1ac458bc0e7b68e07f3bc7c91213e642e657708bc8935d7dd",
+  "observed_native_unix": 1791304839.6552074,
+  "observed_scalar_unix": 1791304859.404278,
+  "native": {
+    "end_time": "2026-10-08T21:50:20",
+    "exit_code": "0:0",
+    "node": "h100-8",
+    "restart_count": "0",
+    "scope": "actual native record captured by existing observe(); no terminal-success inference",
+    "start_time": "2026-10-06T21:50:20",
+    "state": "RUNNING",
+    "submit_time": "2026-10-06T21:50:19",
+    "terminal_success": "not_evaluated"
+  },
+  "original_source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "sealed_source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+  "observed_inventory": {
+    "observed_full_inventory_count": 375,
+    "observed_full_inventory_sha256": "1ba1d152764789fdc4ebe6110dcea0a7fbdab0cfaf63e5908e16c854be1ae16e",
+    "scope": "Exact complete observed inventory: immutable372 source and exact3 run-specific serialized Hydra outputs; no wildcard exclusions, no loaded-module/configuration/health proof.",
+    "sealed_source_count": 372,
+    "sealed_source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+    "serialized_output_artifact_sha256": {
+      "outputs/2026-10-06/22-08-27/.hydra/config.yaml": "5692a36209b01ab176873babd64c5c06cbee28bf1771f46dc3d1e14942042cee",
+      "outputs/2026-10-06/22-08-27/.hydra/hydra.yaml": "f4061c7bf05398adb69dc539c2a3fb33e970b081e8181393316fff448aa00c19",
+      "outputs/2026-10-06/22-08-27/.hydra/overrides.yaml": "1375ad88b5a88e795f2f83d133cf20fa23021d9ff8f6b830fea0d2ff0efacbfb"
+    }
+  },
+  "actual_trainer": {
+    "actual_identity": {
+      "pid": 2864716,
+      "sid": 2864716,
+      "start_ticks": 2224036912,
+      "uid": 0
+    },
+    "birth_matches": true,
+    "checked_unix": 1791304858.623486,
+    "evidence_state": "observed",
+    "namespace_matches": true,
+    "process_state": "S",
+    "saved_identity": {
+      "pid": 2864716,
+      "sid": 2864716,
+      "start_ticks": 2224036912,
+      "uid": 0
+    }
+  },
+  "actual_completed_driver_progress": {
+    "actual_total_writes_unavailable": true,
+    "actual_total_writes_unavailable_reason": "optimizer ledgers are not collected; inflight/abandoned retained writes may exceed the agreed driver counter",
+    "agreed_writes_at_last_return_per_rank": 80,
+    "fixed_warmup_outer": 57,
+    "observed_attempt_count": 4,
+    "observed_driver_completed_outer": 4,
+    "observed_fully_skipped_attempts": 0,
+    "observed_processed_opportunities_per_rank": 80,
+    "observed_scheduler_advances": 4,
+    "observed_skipped_opportunities_per_rank": 0,
+    "scope": "visible driver all-eight-rank agreement prefix; agreed write counter is per rank and is not multiplied by eight; no fsync/acceptance claim",
+    "target_completed_outer": 200
+  },
+  "all8_scheduler_latest": {
+    "evidence_state": "observed",
+    "scope": "historically bound latest complete receipt state agrees across eight distinct ranks, including gate and manifest budget provenance; a suffix COMPLETE is not a driver-completed outer or a liveness claim",
+    "state": {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "28dd16dca54d4a49886caa87e95a33ef",
+      "attempt_index": 4,
+      "batch_gate_sha256": "114d8c8c55f8c7c7e11e4d2796defad22b1dad07c625ab0134a373894d967613",
+      "completed_outer_after": 4,
+      "completed_outer_before": 3,
+      "consumed_learning_rates": [
+        5.2631578947368416e-08
+      ],
+      "kind": "COMPLETE",
+      "logical_update": 4,
+      "next_learning_rates": [
+        7.017543859649122e-08
+      ],
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_contract_sha256": "4530ed69ad4d7b39c7ebe0dda37a82a6917d81da2c3efcf02dc312471a35c116",
+      "scheduler_last_epoch_after": 4,
+      "scheduler_last_epoch_before": 3,
+      "scheduler_step_count_after": 5,
+      "scheduler_step_count_before": 4,
+      "writes_after": 80,
+      "writes_before": 60
+    }
+  },
+  "metrics": {
+    "last_metrics_completed_step": 4,
+    "latest_attempt_id": "28dd16dca54d4a49886caa87e95a33ef",
+    "latest_behavior_probability_gate_sha256": "114d8c8c55f8c7c7e11e4d2796defad22b1dad07c625ab0134a373894d967613",
+    "latest_metrics": {
+      "actor/entropy_loss": 0.8760398065671324,
+      "actor/grad_norm": 1.9881505334610527,
+      "actor/kl_loss": 0.0,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_loss": 0.04810186933097653,
+      "actor/ppo_kl": 1.5860176851845154e-07,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/mean": 0.2238292694091797
+    },
+    "metrics_lag_completed_outer": 0,
+    "metrics_state": "available",
+    "probe_version": "db5235708c354bffae6d0120c1cb5459:0:5057ca1a82aa41d7874cd1f01deb9ce2",
+    "scheduler_gate_binding_state": "observed_all_eight_ranks",
+    "scope": "full precision actual-updates scalar prefix; absence may be valid driver-to-metrics lag"
+  },
+  "reward_change_vs_complete3": -0.00839965045452118,
+  "current_gpu": {
+    "evidence_state": "observed",
+    "gpus": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 11864,
+        "util_percent": 0,
+        "uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012"
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 11205,
+        "util_percent": 0,
+        "uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c"
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 11206,
+        "util_percent": 0,
+        "uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd"
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 11207,
+        "util_percent": 0,
+        "uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 11207,
+        "util_percent": 0,
+        "uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369"
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 11208,
+        "util_percent": 0,
+        "uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548"
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 11206,
+        "util_percent": 0,
+        "uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1"
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 22179,
+        "util_percent": 0,
+        "uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+      }
+    ],
+    "query_finished_unix": 1791304859.0108418,
+    "query_started_unix": 1791304858.646413,
+    "scope": "current physical node inventory; not attribution of all occupancy to this run",
+    "stdout_sha256": "d163f3b33a591f87d7838028a394625a991165f748a98519d979e778bbda0bdf"
+  },
+  "sampler": {
+    "actual_identity": {
+      "pid": 2836860,
+      "sid": 2836822,
+      "start_ticks": 2223930773,
+      "uid": 0
+    },
+    "birth_matches": true,
+    "checked_unix": 1791304859.3727818,
+    "evidence_state": "observed",
+    "namespace_matches": true,
+    "process_state": "R",
+    "saved_identity": {
+      "pid": 2836860,
+      "sid": 2836822,
+      "start_ticks": 2223930773,
+      "uid": 0
+    }
+  },
+  "gpu_sampled_prefix": {
+    "sample_count": 4650,
+    "age_of_last_sample_seconds": 1.4335763454437256,
+    "observed_interval_min_seconds": 2.110985517501831,
+    "observed_interval_max_seconds": 9.60345983505249,
+    "windows": {
+      "boundary_straddling": {
+        "boundary_unix": 1791295703.8806205,
+        "evidence_state": "no_complete_samples",
+        "query_finished_unix": null,
+        "query_started_unix": null,
+        "sample_count": 0,
+        "sampled_peak_mib": null,
+        "scope": "query crosses the claim boundary; excluded from both setup and trainer-window peaks"
+      },
+      "setup": {
+        "evidence_state": "observed",
+        "query_finished_unix": 1791295702.6075037,
+        "query_started_unix": 1791294644.205981,
+        "sample_count": 481,
+        "sampled_peak_mib": {
+          "0": 45896,
+          "1": 45453,
+          "2": 45446,
+          "3": 45457,
+          "4": 45455,
+          "5": 45948,
+          "6": 45456,
+          "7": 49349
+        },
+        "window_end_unix": 1791295703.8806205,
+        "window_start_unix": 1791294634.0372572
+      },
+      "trainer_window": {
+        "evidence_state": "observed",
+        "query_finished_unix": 1791304857.832851,
+        "query_started_unix": 1791295704.6079967,
+        "sample_count": 4169,
+        "sampled_peak_mib": {
+          "0": 63028,
+          "1": 62201,
+          "2": 62370,
+          "3": 62203,
+          "4": 62203,
+          "5": 61478,
+          "6": 61776,
+          "7": 72449
+        },
+        "scope": "from authenticated launch claim, including trainer startup/model initialization, generation and optimizer writes; not an optimizer-only peak",
+        "window_end_unix": 1791304859.2664273,
+        "window_start_unix": 1791295703.8806205
+      }
+    }
+  },
+  "latest_dev512_step": 0,
+  "latest_dev512_EM_correct_count": 91,
+  "latest_dev512_total": 512,
+  "latest_dev512_F1": 0.24118301022177743,
+  "after5_score_available": false,
+  "five_accepted": false,
+  "goal_complete": false,
+  "hourly_anchor_advanced": false,
+  "walltime_amended": false,
+  "independent_newcode_v8_state": "TEXT draft only; review before any execute",
+  "interpretation": [
+    "4completeouters/80processedopportunities/80agreedAdamwrites perrank/0skips; never sum8replicas",
+    "inflight physical suffix not captured byv7, so totalcurrentphysicalwrites remainunknown",
+    "instant GPUutil0 at this capture while originaltrainerbirthmatchedlive; no inference ofstoppedjob or failurecause",
+    "sampledpeak72449/81559MiB88.83% is fulltrainerwindowincludingstartup/generation/optimizer, not unsampledmax",
+    "only4early batchrewards, not accuracytrend; step5 paired512/stage64/checkpoint/Adam stillpending",
+    "disk sealedmap plus exact3Hydra inventory is not universal loaded-module proof"
+  ],
+  "publication": "sanitizedsource/scalar/hash; no credentials/model/data/QA/IDs/tokenjournal/fulltraininglogs"
+}
