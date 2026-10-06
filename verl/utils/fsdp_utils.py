@@ -142,6 +142,8 @@ def load_fsdp_param_and_grad(module, device_id, load_grad=False):
 def offload_fsdp_optimizer(optimizer):
     for param_group in optimizer.param_groups:
         for param in param_group['params']:
+            if param not in optimizer.state:
+                continue
             state = optimizer.state[param]
             for key, value in state.items():
                 if isinstance(value, torch.Tensor):
@@ -152,6 +154,8 @@ def offload_fsdp_optimizer(optimizer):
 def load_fsdp_optimizer(optimizer, device_id):
     for param_group in optimizer.param_groups:
         for param in param_group['params']:
+            if param not in optimizer.state:
+                continue
             state = optimizer.state[param]
             for key, value in state.items():
                 if isinstance(value, torch.Tensor):

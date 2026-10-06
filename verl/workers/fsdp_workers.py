@@ -86,7 +86,10 @@ def inspect_fresh_worker_state(worker, expected_model_path):
 
 
 def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer, lr_before_outer):
-    """Admit each rank's actual 20 writes, advance once and retain direct evidence.
+    """Admit 20 processed opportunities and at least one write with guard continue.
+
+    Advance once after admission and retain direct evidence. The legacy strict
+    branch continues to require all 20 writes and zero skips.
 
     An incomplete outer retains its real optimizer writes. No rollback or mean
     metric can turn partial progress into completed outer credit.
