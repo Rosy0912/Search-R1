@@ -41,7 +41,11 @@ def capture_requests(outputs, requests, row_ids, snapshot, call_id, ordinal, sam
 
 
 def prefix(tokens, decode):
-    """Retain complete raw tokens through a closed action; never retokenize."""
+    """Return a whole-token prefix and its first closed action projection.
+
+    The final retained token may decode past the closing tag. Its complete
+    token/probability stays in the actor context; only executor text is cut.
+    """
     require(bool(tokens), 'empty raw output')
     text = decode(tokens)
     endings = [text.find(tag)+len(tag) for tag in ('</search>', '</answer>') if tag in text]
@@ -51,7 +55,6 @@ def prefix(tokens, decode):
     for count in range(1,len(tokens)+1):
         retained = decode(tokens[:count])
         if len(retained) >= end and retained[:end] == text[:end]:
-            require(not retained[end:].strip(), 'closed-tag token straddles further text')
             return count,text[:end]
     raise ValueError('Fresh200 sampling rejected: unstable prefix projection')
 

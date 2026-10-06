@@ -33,9 +33,19 @@ class SamplingTraceTests(unittest.TestCase):
         n,text=trace.prefix(tokens,lambda ids: ''.join(texts[i] for i in ids))
         self.assertEqual(n,3); self.assertIn('<special>',text)
 
-    def test_closed_tag_token_straddle_rejects(self):
-        with self.assertRaisesRegex(ValueError,'straddles'):
-            trace.prefix([1],lambda ids: '<answer>x</answer>extra' if ids else '')
+    def test_closed_tag_token_straddle_retains_whole_token_with_action_projection(self):
+        tokens=[1,2]
+        pieces={1:'<answer>x</answer>extra',2:' later raw text'}
+        n,text=trace.prefix(tokens,lambda ids: ''.join(pieces[t] for t in ids))
+        self.assertEqual(n,1);self.assertEqual(text,'<answer>x</answer>')
+        self.assertEqual(tokens[:n],[1])
+        first=turn([10],tokens,[7]);first['kept_token_count']=n;first['turn_sha256']=trace.sha({k:v for k,v in first.items() if k!='turn_sha256'})
+        second=turn([10,1,7],[3],[],1)
+        trace.audit_row([10],[1,7,3],[1,0,1],[-.1,0.,-.1],[first,second],'row','snapshot')
+        # Replacing the sampled boundary token/context cannot pass the journal audit.
+        second=turn([10,9,7],[3],[],1)
+        with self.assertRaisesRegex(ValueError,'context'):
+            trace.audit_row([10],[1,7,3],[1,0,1],[-.1,0.,-.1],[first,second],'row','snapshot')
 
     def test_closed_tag_boundary_keeps_whitespace(self):
         self.assertEqual(trace.prefix([1,2],lambda ids: '<answer>x</answer> ' if len(ids)==1 else '<answer>x</answer> trailing')[0],1)

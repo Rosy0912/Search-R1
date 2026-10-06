@@ -224,3 +224,25 @@ def test_initial_shape_guard_remains_strict_for_sliced_view():
     with pytest.raises(ValueError,match='initial prompt mismatch'):
         manager.run_llm_loop(gen,gen.batch['input_ids'][:,-1:])
     assert not worker.calls
+
+@pytest.mark.parametrize('evaluation',[False,True])
+def test_bapo_whole_boundary_token_spill_keeps_next_request_and_probability_role(evaluation):
+    controller,manager,worker,gen,qa=fixture();original=manager.tokenizer.decode
+    def decode(ids,**kwargs):
+        return original(ids,**kwargs).replace('</search>','</search>spill')
+    manager.tokenizer.decode=decode
+    if evaluation:gen.meta_info['fresh200_evaluation']=True
+    seen=[];execute=manager.execute_predictions
+    def record_execute(predictions,*args,**kwargs):
+        seen.extend(predictions);return execute(predictions,*args,**kwargs)
+    manager.execute_predictions=record_execute
+    result,_=controller.generate(manager,gen,qa,{})
+    assert seen[0]=='<search>x</search>' # executor projection, not decode(raw token).
+    assert manager.tokenizer.decode([2])=='<search>x</search>spill'
+    assert result.batch['responses'].tolist()==[[2,7,8,4,0,3]]*2
+    assert result.batch['sampling_mask'].tolist()==[[True,False,False,True,True,True]]*2
+    assert worker.calls[1]==[[10,2,7,8],[11,2,7,8]]
+    assert result.batch['sampling_log_probs'][:,0].tolist()==[-.125]*2
+    assert audit_batch(result)['context_verified']
+    role='greedy_model_logprob_not_sampling_policy' if evaluation else 'stochastic_sampling_policy'
+    assert result.non_tensor_batch['fresh200_turns'][0][0]['effective_stop_provenance']['probability_role']==role
