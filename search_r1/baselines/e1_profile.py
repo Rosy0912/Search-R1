@@ -8,7 +8,8 @@ COMMON_SHA = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
 OFFICIAL_SHA = '7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 
-PROFILE_CONFIGS = {'e1_300': 'ppo_opsd_e1_300', 'author200': 'ppo_opsd_e1_author200'}
+PROFILE_CONFIGS = {'e1_300': 'ppo_opsd_e1_300', 'author200': 'ppo_opsd_e1_author200',
+                   'multitraj200': 'ppo_opsd_e1_multitraj200'}
 
 
 def profile_name(config):
@@ -23,6 +24,12 @@ def profile_name(config):
 def profile_contract(name='e1_300'):
     if type(name) is not str or name not in PROFILE_CONFIGS:
         raise ValueError('Unknown isolated OPSD profile')
+    if name == 'multitraj200':
+        return dict(horizon=200, warmup_steps=57, lr=1e-6, grad_clip=1,
+                    mini_batch=256, actor_micro_batch=32, log_prob_micro_batch=64,
+                    responses=5, sampling_temperature=1, top_p=1, top_k=-1,
+                    component_clip=None, optimizer_steps=10,
+                    samples_per_rank=320, save_freq=50)
     if name == 'author200':
         return dict(horizon=200, warmup_steps=0, lr=5e-6, grad_clip=.1,
                     mini_batch=32, responses=1, sampling_temperature=1.1,
@@ -53,19 +60,22 @@ def validate_profile(cfg):
         'baselines.holdout.input_mode':'prebuilt_manifest','baselines.holdout.manifest_sha256':COMMON_SHA,
         'data.train_batch_size':512,'data.val_batch_size':512,
         'data.train_data_num':None,'data.val_data_num':None,
-        'actor_rollout_ref.actor.ppo_mini_batch_size':contract['mini_batch'],'actor_rollout_ref.actor.ppo_micro_batch_size':16,
+        'actor_rollout_ref.actor.ppo_mini_batch_size':contract['mini_batch'],
+        'actor_rollout_ref.actor.ppo_micro_batch_size':contract.get('actor_micro_batch',16),
         'actor_rollout_ref.actor.grad_clip':contract['grad_clip'],'actor_rollout_ref.actor.clip_ratio':0.2,
         'actor_rollout_ref.actor.ppo_epochs':1,'actor_rollout_ref.actor.entropy_coeff':0,
         'actor_rollout_ref.actor.use_kl_loss':False,'actor_rollout_ref.actor.kl_loss_coef':0,
         'actor_rollout_ref.actor.optim.lr':contract['lr'],'actor_rollout_ref.actor.optim.lr_warmup_steps':contract['warmup_steps'],
         'actor_rollout_ref.actor.optim.lr_warmup_steps_ratio':0,'actor_rollout_ref.actor.optim.warmup_style':'constant',
         'actor_rollout_ref.rollout.n_agent':contract['responses'],'actor_rollout_ref.rollout.n':1,
-        'actor_rollout_ref.rollout.log_prob_micro_batch_size':32,'actor_rollout_ref.ref.log_prob_micro_batch_size':32,
+        'actor_rollout_ref.rollout.log_prob_micro_batch_size':contract.get('log_prob_micro_batch',32),
+        'actor_rollout_ref.ref.log_prob_micro_batch_size':contract.get('log_prob_micro_batch',32),
         'actor_rollout_ref.rollout.tensor_model_parallel_size':1,
         'actor_rollout_ref.rollout.temperature':contract['sampling_temperature'],'actor_rollout_ref.rollout.top_p':contract['top_p'],'actor_rollout_ref.rollout.top_k':contract['top_k'],
         'algorithm.kl_ctrl.kl_coef':0,'trainer.total_training_steps':contract['horizon'],
         'trainer.n_gpus_per_node':8,'trainer.nnodes':1,
-        'trainer.save_freq':25,'trainer.test_freq':50,'trainer.acceptance_step':5,'trainer.val_before_train':True,
+        'trainer.save_freq':contract.get('save_freq',25),'trainer.test_freq':50,
+        'trainer.acceptance_step':5,'trainer.val_before_train':True,
         'trainer.smoke_only':False,'data.max_prompt_length':4096,'data.max_start_length':2048,
         'data.max_response_length':500,'data.max_obs_length':500,'max_turns':4,'force_final_answer':False,
         'retriever.topk':3,'baselines.distillation.teacher_device':'cuda',
@@ -76,6 +86,9 @@ def validate_profile(cfg):
         'baselines.opsd_e1.enabled':True,'baselines.opsd_e1.gate_required':True,
         'baselines.opsd_e1.acceptance_step':5,'baselines.opsd_e1.stage_num':64,'baselines.opsd_e1.stage_freq':50,
     }
+    if profile_name(cfg) == 'multitraj200':
+        expected['baselines.distillation.response_only_logits'] = True
+        expected['baselines.distillation.teacher_forward_micro_batch'] = 2
     for key, value in expected.items():
         actual = get(key)
         # bools must not pass as integer identity.

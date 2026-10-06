@@ -47,9 +47,18 @@ def load_json(path):
 REVIEW_LOG_MARKERS = ('OPSD_E1_OUTER_JSON=', 'OPSD_E1_STEP5_PAUSED_JSON=',
                       'OPSD_E1_STEP5_RELEASED_JSON=', 'FULL_STATE_RANK_JSON=',
                       'BASELINE_EVALUATION_METRICS_JSON=', 'SEARCH_R1_FINAL_METRICS_JSON=')
+FSDP_WARNING_SHA256 = 'ca839d30fda12e0b12dea934e1f1bf998bd80ed716e8e4c88927691a9bb1c6a3'
+FSDP_WARNING_BYTES = 99345
+FSDP_WARNING_TEXT = ('FSDP.state_dict_type() and FSDP.set_state_dict_type() are being '
+                     'deprecated. Please use APIs, get_state_dict() and set_state_dict(), '
+                     'which can support different parallelisms, FSDP1, FSDP2, DDP. '
+                     'API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html'
+                     '#torch.distributed.checkpoint.state_dict.get_state_dict .'
+                     'Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .')
 
 
-def parse_log_marker(line, marker, *, driver_pid, job_id, worker_pids=(), checkpoint_warning_path=None):
+def parse_log_marker(line, marker, *, driver_pid, job_id, worker_pids=(), checkpoint_warning_path=None,
+                     fsdp_warning_source_bytes=None):
     """Decode one exact object; accept only the observed typed own-worker warning.
 
     Ray may interleave its warning record on the same physical stdout line.
@@ -103,6 +112,17 @@ def parse_log_marker(line, marker, *, driver_pid, job_id, worker_pids=(), checkp
     suffix = raw.lstrip()[end:].strip()
     if not suffix:
         return value
+    dedup = r'(?:(?P<dedupcolour>\x1b\[32m)? \[repeated (?P<repeat>[1-8])x across cluster\](?(dedupcolour)\x1b\[0m))?'
+    native_dedup = (marker == 'FULL_STATE_RANK_JSON=' and prefix and kind == 'WorkerDict'
+            and type(value.get('rank')) is int and 0 <= value['rank'] < 8
+            and type(value.get('world_size')) is int and value['world_size'] == 8
+            and value.get('status') in ('FULL_STATE_SERIALIZED_OK', 'EXACT_FULL_STATE_RELOAD_OK'))
+    if native_dedup:
+        repeat = re.match(r'\x1b\[32m \[repeated 7x across cluster\]\x1b\[0m', suffix)
+        if repeat:
+            suffix = suffix[repeat.end():].strip()
+            if not suffix:
+                return value
     if checkpoint_warning_path is None:
         spec = importlib.util.find_spec('torch')
         if spec is None or spec.origin is None:
@@ -113,12 +133,38 @@ def parse_log_marker(line, marker, *, driver_pid, job_id, worker_pids=(), checkp
         raise ValueError('Actual absolute checkpoint warning source required')
     warning = (':1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. '
                "Please use `torch.amp.autocast('cpu', args...)` instead.")
-    pattern = (r'(?P<colour>\x1b\[36m)?\(WorkerDict pid=(?P<pid>[1-9][0-9]*)\)(?(colour)\x1b\[0m) '
+    worker_prefix = r'(?P<colour>\x1b\[36m)?\(WorkerDict pid=(?P<pid>[1-9][0-9]*)\)(?(colour)\x1b\[0m) '
+    pattern = (worker_prefix
                + re.escape(str(checkpoint_warning_path) + warning)
-               + r'(?:(?P<dedupcolour>\x1b\[32m)? \[repeated (?P<repeat>[1-8])x across cluster\](?(dedupcolour)\x1b\[0m))?')
+               + dedup)
     match = re.fullmatch(pattern, suffix)
+    if match and int(match.group('pid')) in workers:
+        return value
+    # The only additional accepted warning is from this exact deployed Torch
+    # source, line and literal. Captured source bytes support local original
+    # evidence replay; live callers read the actual installed physical file.
+    fsdp_path = checkpoint_warning_path.parent.parent / 'distributed/fsdp/fully_sharded_data_parallel.py'
+    fsdp_pattern = worker_prefix + re.escape(str(fsdp_path) + ':689: FutureWarning: ' + FSDP_WARNING_TEXT) + dedup
+    match = re.fullmatch(fsdp_pattern, suffix)
     if not match or int(match.group('pid')) not in workers:
         raise ValueError('Unrecognized/unowned interleaved warning suffix')
+    if fsdp_warning_source_bytes is None:
+        if fsdp_path.resolve(strict=True) != fsdp_path or not fsdp_path.is_file():
+            raise ValueError('Actual physical FSDP warning source required')
+        before = fsdp_path.stat()
+        with fsdp_path.open('rb') as handle:
+            opened = os.fstat(handle.fileno())
+            source = handle.read()
+            after_opened = os.fstat(handle.fileno())
+        after = fsdp_path.stat()
+        fields = ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns', 'st_uid')
+        if len({tuple(getattr(state, k) for k in fields) for state in (before, opened, after_opened, after)}) != 1:
+            raise ValueError('FSDP warning source changed while reading')
+    else:
+        source = fsdp_warning_source_bytes
+    if (type(source) is not bytes or len(source) != FSDP_WARNING_BYTES
+            or hashlib.sha256(source).hexdigest() != FSDP_WARNING_SHA256):
+        raise ValueError('Pinned native FSDP warning source SHA/bytes differ')
     return value
 
 
@@ -187,10 +233,15 @@ def atomic_json(path, value):
 
 IMPORT_OBJECTS = {
     'search_r1.baselines.checkpoint_gate': ('CheckpointGate.verify_receipt',),
-    'search_r1.baselines.full_state': ('rng_state', 'StatefulSampler.state_dict'),
-    'search_r1.baselines.controller': ('Controller.compute_advantages',),
+    'search_r1.baselines.full_state': ('rng_state', 'restore_rng', 'StatefulSampler.state_dict',
+                                     'teacher_state', 'restore_teacher_state'),
+    'search_r1.baselines.controller': ('Controller.compute_advantages',
+                                     'Controller.opsd_state_dict', 'Controller.load_opsd_state_dict'),
     'search_r1.baselines.distillation': ('opsd_loss', 'teacher_inputs'),
     'search_r1.baselines.actor': ('DistillationActor._update_policy',),
+    'search_r1.baselines.trajectory_archive': ('validate_archive', 'validate_checkpoint_archives',
+                                             'TrajectoryArchive.checkpoint_inventory',
+                                             'generate_rank_teacher_diagnostics'),
     'verl.trainer.ppo.ray_trainer': ('RayPPOTrainer.fit',),
     'verl.workers.fsdp_workers': ('ActorRolloutRefWorker._training_state_payload',
                                 'ActorRolloutRefWorker._load_training_state_payload'),
@@ -262,9 +313,15 @@ def worker_import_checker_config(config):
     return full_import_checker(binding['files']['import_closure'], root, repo)
 
 
-def should_save(step, horizon=300):
+def should_save(step, horizon=300, profile='e1_300'):
     if type(horizon) is not int or horizon not in (200, 300):
         raise ValueError('Unknown reviewed OPSD horizon')
+    if type(profile) is not str or profile not in ('e1_300', 'author200', 'multitraj200'):
+        raise ValueError('Unknown isolated OPSD profile')
+    if profile == 'multitraj200':
+        if horizon != 200 or type(step) is not int:
+            raise ValueError('Multi-trajectory OPSD save clock differs')
+        return step == 5 or (1 <= step <= horizon and step % 50 == 0)
     return step == 5 or (1 <= step <= horizon and step % 25 == 0)
 
 
@@ -280,9 +337,10 @@ def validate_outer(metrics, world=8, profile='e1_300'):
     """A skipped empty mini is a failure, not a fabricated Adam clock tick."""
     # External reviewers load these exact pinned bytes as a standalone stdlib
     # module. Keep this evidence consumer independent of package imports.
-    if type(profile) is not str or profile not in ('e1_300', 'author200'):
+    if type(profile) is not str or profile not in ('e1_300', 'author200', 'multitraj200'):
         raise ValueError('Unknown isolated OPSD profile')
-    optimizer_steps, samples = (16, 64) if profile == 'author200' else (20, 320)
+    optimizer_steps, samples = {'author200': (16, 64), 'e1_300': (20, 320),
+                               'multitraj200': (10, 320)}[profile]
     if type(world) is not int or world != 8:
         raise ValueError('The isolated OPSD profiles require eight ranks')
     for rank in range(world):
@@ -367,7 +425,7 @@ class CheckpointGate:
                 distillation.teacher_prompt_mode != 'user_context' or distillation.teacher_device != 'cuda'):
             raise ValueError('E1 gate supports the selected reviewed pure privileged OPSD only')
         if (trainer.config.data.train_batch_size != 512 or actor.ppo_mini_batch_size != self.contract['mini_batch'] or
-                actor.ppo_micro_batch_size != 16 or actor.ppo_epochs != 1 or
+                actor.ppo_micro_batch_size != self.contract.get('actor_micro_batch', 16) or actor.ppo_epochs != 1 or
                 rollout.n != 1 or rollout.n_agent != self.contract['responses'] or rollout.tensor_model_parallel_size != 1 or
                 rollout.temperature != self.contract['sampling_temperature'] or distillation.temperature != 1):
             raise ValueError('E1 question/response/mini/micro/epoch/temperature profile differs')
@@ -489,6 +547,16 @@ class CheckpointGate:
         files = dict(self.bindings)
         files['launch_binding'] = self.binding_record
         files['review_public_key'] = self.key_record
+        if getattr(self, 'profile', 'e1_300') == 'multitraj200':
+            archive = getattr(self.trainer.baseline_controller, 'trajectory_archive', None)
+            if archive is None:
+                raise RuntimeError('Actual multi-response trajectory recorder missing')
+            archive_files = archive.checkpoint_inventory(step)
+            if type(archive_files) is not dict or len(archive_files) != 20 * step or set(files) & set(archive_files):
+                raise RuntimeError('Complete distinct paired trajectory checkpoint inventory required')
+            for record in archive_files.values():
+                verify_file(record, self.root)
+            files.update(archive_files)
         actor_directory = Path(actor_directory)
         hf_index = load_json(owned_file(actor_directory / 'model.safetensors.index.json', self.root))
         shards = set(hf_index.get('weight_map', {}).values())

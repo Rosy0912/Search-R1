@@ -104,23 +104,54 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
                                            tensors['attention_mask'][:, tensors['attention_mask'].shape[1] - width:], targets,
                                            teacher.model.config.max_position_embeddings,
                                            getattr(settings, 'teacher_prompt_mode', 'legacy'))
+    teacher_micro = getattr(settings, 'teacher_forward_micro_batch', None)
+    if teacher_micro is not None and (type(teacher_micro) is not int or teacher_micro < 1):
+        raise ValueError('teacher_forward_micro_batch must be a positive integer or null')
+    teacher_micro = teacher_micro or tid.shape[0]
     with teacher.measure(), torch.no_grad():
-        hidden = teacher.model.base_model(input_ids=tid.to(teacher.device),
-                                          attention_mask=tmask.to(teacher.device),
-                                          use_cache=False).last_hidden_state
+        # This only splits independent frozen-teacher rows. Student microbatch,
+        # full contexts, q distributions, masks and global loss weights stay
+        # unchanged; padded sequence width is preserved in each teacher call.
+        if teacher_micro >= tid.shape[0]:
+            hidden = teacher.model.base_model(input_ids=tid.to(teacher.device),
+                                             attention_mask=tmask.to(teacher.device),
+                                             use_cache=False).last_hidden_state
+        else:
+            hidden = torch.cat([
+                teacher.model.base_model(input_ids=tid[start:start+teacher_micro].to(teacher.device),
+                                         attention_mask=tmask[start:start+teacher_micro].to(teacher.device),
+                                         use_cache=False).last_hidden_state
+                for start in range(0, tid.shape[0], teacher_micro)
+            ], dim=0)
     teacher.scored_tokens += int(tmask.sum())
     device = tensors['input_ids'].device
-    # Chunking loss does not bound the model's full logits allocation.
+    # Preserve the ordinary model/FSDP forward. Qwen's native head slicing
+    # omits unused prompt logits, including exactly the predecessor needed to
+    # predict response token zero. It does not change vocabulary or context.
+    response_only = getattr(settings, 'response_only_logits', False)
+    if type(response_only) is not bool:
+        raise ValueError('response_only_logits must be a boolean')
+    keep = width + 1
+    if response_only and keep > tensors['input_ids'].shape[1]:
+        raise ValueError('OPSD response has no preceding prompt prediction')
+    forward_kwargs = {'num_logits_to_keep': keep} if response_only else {}
+    # Chunking loss alone does not bound the model's full logits allocation.
     if hasattr(settings, 'max_student_logits_gib'):
         bytes_per_element = 2 if device.type == 'cuda' else 4
-        allocation = tensors['input_ids'].numel() * student_model.config.vocab_size * bytes_per_element
+        positions_to_project = tensors['input_ids'].shape[0] * keep if response_only else tensors['input_ids'].numel()
+        allocation = positions_to_project * student_model.config.vocab_size * bytes_per_element
         if allocation > settings.max_student_logits_gib * 1024 ** 3:
             raise ValueError('OPSD full-logits estimate exceeds explicit budget; reduce microbatch/length')
     context = torch.autocast(device_type='cuda', dtype=torch.bfloat16) if device.type == 'cuda' else nullcontext()
     with context:
         logits = student_model(input_ids=tensors['input_ids'], attention_mask=tensors['attention_mask'],
-                               position_ids=tensors['position_ids'], use_cache=False).logits
-        student = logits[:, -width - 1:-1]
+                               position_ids=tensors['position_ids'], use_cache=False, **forward_kwargs).logits
+        if response_only:
+            if logits.shape != (tensors['input_ids'].shape[0], keep, student_model.config.vocab_size):
+                raise ValueError('Student does not support exact native response-only logits')
+            student = logits[:, :-1]
+        else:
+            student = logits[:, -width - 1:-1]
     # A connected scalar zero needs one vocabulary column, not a second full
     # response-logits allocation. All supervised columns are validated below.
     seed = student[..., :1]

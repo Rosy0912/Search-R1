@@ -65,7 +65,7 @@ def padded(rows, pad, left=False):
 
 
 class SearchRollout:
-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report'):
+    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', capture_raw=False):
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -76,6 +76,9 @@ class SearchRollout:
             raise ValueError('context_alignment must be report or error')
         self.context_alignment = context_alignment
         self.ranker = ranker
+        if type(capture_raw) is not bool:
+            raise ValueError('Raw trajectory capture selector must be boolean')
+        self.capture_raw = capture_raw
         self.rng = random.Random(seed)
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
                          trajectories=0, padded_rows=0, context_mismatches=0)
@@ -141,8 +144,23 @@ class SearchRollout:
             anchor = hashlib.sha256(np.asarray(key_tokens, dtype=np.int64).tobytes()).hexdigest()
             step = len(s.anchors)
             s.anchors.append(anchor)
-            s.records.append(dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
-                                  scoring_context_matches_generation=matches[i]))
+            record = dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
+                          scoring_context_matches_generation=matches[i])
+            if self.capture_raw:
+                response_attention = output.batch.get('attention_mask')
+                raw_mask = ((raw[i] != pad).long() if response_attention is None else
+                            response_attention[i, -generated.shape[1]:])
+                record.update(dict(turn_index=step, generation_context_token_ids=list(s.rolling),
+                    raw_response_token_ids=raw[i].cpu().tolist(),
+                    raw_response_attention_mask=raw_mask.cpu().tolist(),
+                    raw_response_text=self.tokenizer.decode(raw[i], skip_special_tokens=False),
+                    postprocessed_action_token_ids=list(action),
+                    observation_text_before_truncation=observations[i],
+                    observation_token_ids_before_truncation=self.tokenizer.encode(observations[i], add_special_tokens=False),
+                    retained_observation_token_ids=list(obs),
+                    normal_search_round=bool(normal[i]), done=bool(dones[i]),
+                    valid_action=int(valid[i]), valid_search=int(searches[i])))
+            s.records.append(record)
             s.response.extend(action + obs)
             s.model_mask.extend([1] * len(action) + [0] * len(obs))
             s.steps.extend([step] * len(action) + [-1] * len(obs))

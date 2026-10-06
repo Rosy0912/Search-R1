@@ -14,7 +14,7 @@ import struct
 import types
 
 REQUIRED = tuple('search_r1.baselines.'+n for n in
-    ('main','holdout','sharedholdout','e1_profile','preflight','controller','actor','distillation','full_state','checkpoint_gate')) + (
+    ('main','holdout','sharedholdout','e1_profile','preflight','controller','actor','distillation','full_state','checkpoint_gate','trajectory_archive')) + (
     'verl.workers.fsdp_workers','verl.trainer.ppo.ray_trainer')
 PREFIXES=('search_r1','verl','reproduction.baselines')
 LIBRARY_MODULES=('hydra.main','torch.utils._contextlib','contextlib','dataclasses')
@@ -178,7 +178,7 @@ def collect(repo,required=REQUIRED):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--mode',choices=['cfg','validate','run','collect','preflight'],required=True)
-    parser.add_argument('--profile',choices=['e1_300','author200'],default='e1_300')
+    parser.add_argument('--profile',choices=['e1_300','author200','multitraj200'],default='e1_300')
     parser.add_argument('preflight_args',nargs=argparse.REMAINDER)
     args=parser.parse_args();repo=repo_first(Path(__file__).resolve().parents[2])
     if args.mode!='preflight' and args.preflight_args:raise ValueError('Unexpected bootstrap arguments')

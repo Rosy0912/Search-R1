@@ -25,7 +25,10 @@ class DistillationActor(DataParallelPPOActor):
 
     def update_policy(self, data):
         with self.teacher.on_device():
+            from .trajectory_archive import generate_rank_teacher_diagnostics
+            diagnostic_metrics = generate_rank_teacher_diagnostics(self.teacher, data, self.tokenizer)
             metrics = self._update_policy(data)
+            metrics.update(diagnostic_metrics)
         return self._collect_observations(metrics, data)
 
     def _update_policy(self, data):
@@ -52,6 +55,10 @@ class DistillationActor(DataParallelPPOActor):
                     skipped += 1
                     continue
                 denominator = total / world
+                used_lrs = [group['lr'] for group in self.actor_optimizer.param_groups]
+                if not used_lrs or any(not math.isfinite(v) for v in used_lrs) or len(set(used_lrs)) != 1:
+                    raise ValueError('OPSD optimizer groups have invalid or differing learning rates')
+                append_to_dict(metrics, {'actor/optimizer_lr_used': used_lrs[0]})
                 self.actor_optimizer.zero_grad()
                 mini_loss = 0.
                 for micro_offset in range(0, len(mini), micro_size):
@@ -97,7 +104,7 @@ class DistillationActor(DataParallelPPOActor):
             observations['actor/loss_mask_valid'] = int(valid.item())
         observations['actor/optimizer_steps'] = metrics['actor/optimizer_steps']
         observations['actor/skipped_empty_minibatches'] = metrics['actor/skipped_empty_minibatches']
-        for key in ('actor/opsd_loss', 'actor/grad_norm'):
+        for key in ('actor/opsd_loss', 'actor/grad_norm', 'actor/optimizer_lr_used'):
             values = metrics.get(key, [])
             if values:
                 observations[key + '_mean'] = sum(values) / len(values)

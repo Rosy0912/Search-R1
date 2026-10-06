@@ -141,6 +141,10 @@ class Controller:
         self.method = self.config.method
         self.stage = BoundaryStage(patience=self.config.bapo.patience)
         self.ranker = self.teacher = None
+        self.trajectory_archive = None
+        if (self.method == 'opsd' and self.config.get('opsd_e1', {}).get('profile') == 'multitraj200'):
+            from .trajectory_archive import TrajectoryArchive
+            self.trajectory_archive = TrajectoryArchive(trainer)
         if self.method == 'opsd' and self.config.get('opsd_e1', {}).get('enabled', False):
             from torch.utils.data import DataLoader
             from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
@@ -188,9 +192,26 @@ class Controller:
             from .distillation import FrozenTeacher
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
 
+    def prepare_trajectory_outer(self, batch, step):
+        if self.trajectory_archive is not None:
+            self.trajectory_archive.prepare_outer(batch, step)
+
+    def attach_trajectory_groups(self, batch):
+        if self.trajectory_archive is not None:
+            self.trajectory_archive.attach_groups(batch)
+
+    def archive_student_trajectories(self, batch, metrics):
+        if self.trajectory_archive is not None:
+            metrics.update(self.trajectory_archive.archive_student(batch))
+
+    def verify_trajectory_training_rows(self, batch):
+        if self.trajectory_archive is not None:
+            self.trajectory_archive.verify_training_rows(batch)
+
     def generate(self, manager, gen_batch, qa_batch, metrics):
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
-                               self.config.context_alignment)
+                               self.config.context_alignment,
+                               capture_raw=self.trajectory_archive is not None)
         if self.ranker:
             self.ranker.question_uids = qa_batch.non_tensor_batch['index'].tolist()
             self.ranker.validation = False
@@ -288,6 +309,8 @@ class Controller:
         return data
 
     def after_actor(self, data, metrics):
+        if self.trajectory_archive is not None:
+            metrics.update(self.trajectory_archive.finish_outer(metrics))
         if self.ranker:
             answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
             outcomes = {}
@@ -352,12 +375,17 @@ class Controller:
         from omegaconf import OmegaConf
         if self.method != 'opsd' or not self.config.get('opsd_e1', {}).get('enabled', False):
             raise ValueError('OPSD E1 state requested outside its opt-in path')
-        return {'version': 1, 'method': 'pure_opsd', 'global_step': int(step),
+        state = {'version': 1, 'method': 'pure_opsd', 'global_step': int(step),
                 'distillation': OmegaConf.to_container(self.config.distillation, resolve=True),
                 'resume_scope': 'same_live_objects_same_topology',
                 'outcome_rewards_train_policy': False}
+        if self.trajectory_archive is not None:
+            state['trajectory_archive'] = self.trajectory_archive.state_dict(step)
+        return state
 
     def load_opsd_state_dict(self, state, step):
+        if self.trajectory_archive is not None:
+            self.trajectory_archive.load_state_dict(state['trajectory_archive'], step)
         if state != self.opsd_state_dict(step):
             raise ValueError('Saved pure OPSD algorithm/configuration differs')
 

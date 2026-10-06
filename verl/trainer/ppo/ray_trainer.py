@@ -817,7 +817,11 @@ class RayPPOTrainer(object):
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 e1_questions = len(batch) if e1 else None
+                if self.baseline_controller is not None:
+                    self.baseline_controller.prepare_trajectory_outer(batch, self.global_steps)
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                if self.baseline_controller is not None:
+                    self.baseline_controller.attach_trajectory_groups(batch)
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
@@ -877,6 +881,8 @@ class RayPPOTrainer(object):
                     # balance the number of valid tokens on each dp rank.
                     # Note that this breaks the order of data inside the batch.
                     # Please take care when you implement group based adv computation such as GRPO and rloo
+                    if self.baseline_controller is not None:
+                        self.baseline_controller.archive_student_trajectories(batch, metrics)
                     self._balance_batch(batch, metrics=metrics)
 
                     # compute global_valid tokens
@@ -946,6 +952,8 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            if self.baseline_controller is not None:
+                                self.baseline_controller.verify_trajectory_training_rows(batch)
                             from search_r1.baselines.runtime_audit import enabled as audit_enabled
                             if audit_enabled():
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
@@ -985,7 +993,7 @@ class RayPPOTrainer(object):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
-                    if ((e1 and should_save(self.global_steps, horizon=self.e1_gate.horizon)) or
+                    if ((e1 and should_save(self.global_steps, horizon=self.e1_gate.horizon, profile=self.e1_gate.profile)) or
                         (not e1 and self.config.trainer.save_freq > 0 and
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
