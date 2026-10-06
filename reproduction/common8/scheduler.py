@@ -155,6 +155,7 @@ def _identity(base, *, job_id):
           'Scheduler is not bound to this actual native allocation')
     return dict(run_id=run['run_id'], source_commit=run['source_commit'], slurm_job_id=job_id,
                 source_map_sha256=hashlib.sha256(_canonical(run['source_sha256'])).hexdigest(),
+                policy_safety_mode=run.get('policy_safety_mode'),
                 scheduler_contract_sha256=hashlib.sha256(_canonical(budget)).hexdigest())
 
 
@@ -171,6 +172,8 @@ class OuterSchedulerEvidence:
         self.optimizer, self.scheduler = optimizer, scheduler
         self.rank, self.world_size = rank, world_size
         self.completed_outer, self.pending, self.rejected = 0, None, False
+        self.recoverable = self.identity['policy_safety_mode']=='inline_first_five'
+        self.actual_writes, self.last_attempt_index, self.used_attempt_ids = 0, 0, set()
         self.prepared = None
         self.process_pid, self.process_start_ticks = os.getpid(), _start_ticks()
         _need(self.process_start_ticks > 0, 'Missing actual process birth ticks')
@@ -208,12 +211,19 @@ class OuterSchedulerEvidence:
               _learning_rates(self.optimizer) == [expected_lr(self.completed_outer)] * len(self.optimizer.param_groups),
               'Scheduler/counter/LR changed outside a completed outer')
 
-    def begin_outer(self, logical_update, *, optimizer_writes, batch_gate_sha256):
+    def begin_outer(self, logical_update, *, optimizer_writes, batch_gate_sha256,
+                    attempt_id=None, attempt_index=None):
         _need(not self.rejected and self.pending is None and
               type(logical_update) is int and logical_update == self.completed_outer + 1 and
               logical_update <= TARGET_OUTERS and type(optimizer_writes) is int and
-              optimizer_writes == self.completed_outer * WRITES_PER_OUTER and
+              optimizer_writes == (self.actual_writes if self.recoverable else self.completed_outer * WRITES_PER_OUTER) and
               re.fullmatch('[0-9a-f]{64}', batch_gate_sha256), 'Wrong sequential outer/write/behavior-gate binding')
+        if self.recoverable:
+            _need(isinstance(attempt_id,str) and re.fullmatch('[0-9a-f]{32}',attempt_id) and
+                  attempt_id not in self.used_attempt_ids and type(attempt_index) is int and
+                  attempt_index==self.last_attempt_index+1,'Reused or nonsequential formal attempt identity')
+        else:
+            _need(attempt_id is None and attempt_index is None,'Legacy scheduler cannot admit recoverable attempts')
         self._check_state()
         row = dict(logical_update=logical_update, writes_before=optimizer_writes,
                    writes_after=optimizer_writes, actual_optimizer_writes=0,
@@ -225,27 +235,42 @@ class OuterSchedulerEvidence:
                    scheduler_step_count_before=self.scheduler._step_count,
                    scheduler_step_count_after=self.scheduler._step_count,
                    batch_gate_sha256=batch_gate_sha256, scheduler_advances=0)
+        if self.recoverable:
+            row.update(attempt_id=attempt_id,attempt_index=attempt_index,opportunities_processed=0,
+                       optimizer_opportunities=WRITES_PER_OUTER)
         self._append(dict(kind='BEGIN', **row))
         self.pending = row
+        if self.recoverable:
+            self.last_attempt_index=attempt_index
+            self.used_attempt_ids.add(attempt_id)
 
     def agreement_state(self):
         """Exclude rank/process identity, include the actual shared counters."""
         return dict(enabled=True, **self.identity,
                     completed_outer=self.completed_outer, pending=self.pending,
+                    cumulative_actual_optimizer_writes=self.actual_writes,
+                    last_attempt_index=self.last_attempt_index,
                     prepared=self.prepared, last_epoch=self.scheduler.last_epoch,
                     step_count=self.scheduler._step_count,
                     learning_rates=_learning_rates(self.optimizer))
 
-    def prepare_outer(self, *, optimizer_writes):
+    def prepare_outer(self, *, optimizer_writes, opportunities_processed=None):
         _need(self.pending is not None and not self.rejected, 'No active accepted outer to complete')
         _need(self.prepared is None, 'Duplicate scheduler commit preparation')
         self._check_state()
         before = self.pending['writes_before']
-        _need(type(optimizer_writes) is int and optimizer_writes - before == WRITES_PER_OUTER,
-              'Exactly20 dynamically observed real optimizer writes required before scheduler advance')
+        if self.recoverable:
+            _need(type(opportunities_processed) is int and opportunities_processed==WRITES_PER_OUTER and
+                  type(optimizer_writes) is int and 1<=optimizer_writes-before<=WRITES_PER_OUTER,
+                  'All20 opportunities and at least one real Adam write required before scheduler advance')
+        else:
+            _need(type(optimizer_writes) is int and optimizer_writes - before == WRITES_PER_OUTER,
+                  'Exactly20 dynamically observed real optimizer writes required before scheduler advance')
         row = dict(self.pending)
         row.update(kind='COMMIT_PREPARED', writes_after=optimizer_writes,
                    actual_optimizer_writes=optimizer_writes-before)
+        if self.recoverable:
+            row['opportunities_processed']=opportunities_processed
         self._append(row)
         self.prepared = row
         return row
@@ -271,11 +296,12 @@ class OuterSchedulerEvidence:
                    scheduler_step_count_after=self.scheduler._step_count, scheduler_advances=1)
         self._append(row)
         self.completed_outer, self.pending, self.prepared = after, None, None
+        self.actual_writes=row['writes_after']
         return row
 
-    def complete_outer(self, *, optimizer_writes):
+    def complete_outer(self, *, optimizer_writes, opportunities_processed=None):
         """Local mechanics helper; the real worker uses collective stages."""
-        self.prepare_outer(optimizer_writes=optimizer_writes)
+        self.prepare_outer(optimizer_writes=optimizer_writes,opportunities_processed=opportunities_processed)
         return self.commit_prepared()
 
     def failure_snapshot(self, *, optimizer_writes, reason, commit_started=True):
@@ -317,6 +343,27 @@ class OuterSchedulerEvidence:
         self._append(row)
         self.rejected, self.pending, self.prepared = True, None, None
         _need(unchanged, 'Rejected outer had an unauthorized scheduler advance')
+        return row
+
+    def abort_attempt(self, *, optimizer_writes, opportunities_processed, guard_stage, guard_reasons):
+        """Recover only a wholly skipped or abandoned attempt; retain real Adam."""
+        _need(self.recoverable and self.pending is not None and self.prepared is None and not self.rejected,
+              'No explicitly recoverable active attempt')
+        before=self.pending['writes_before']
+        _need(type(opportunities_processed) is int and 0<=opportunities_processed<=WRITES_PER_OUTER and
+              type(optimizer_writes) is int and 0<=optimizer_writes-before<=opportunities_processed and
+              (opportunities_processed<WRITES_PER_OUTER or optimizer_writes==before),
+              'An all20 processed attempt with a successful write must complete')
+        self._check_state()
+        row=dict(self.pending)
+        row.update(kind='ABORTED_ATTEMPT',writes_after=optimizer_writes,
+            actual_optimizer_writes=optimizer_writes-before,opportunities_processed=opportunities_processed,
+            guard_stage=guard_stage,guard_reasons=list(guard_reasons),recoverable_guard=True,
+            retained_partial_adam_writes=True,no_automatic_rollback=True,
+            next_learning_rates=_learning_rates(self.optimizer),scheduler_advances=0,
+            scheduler_unchanged_on_rejection=True)
+        self._append(row)
+        self.actual_writes,self.pending,self.prepared=optimizer_writes,None,None
         return row
 
     def close(self):

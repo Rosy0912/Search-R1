@@ -33,8 +33,13 @@ PROBE_SOURCE_FILES = (
 AUTHORIZED_BUDGET_FIELDS = frozenset((
     'target_actual_outer_updates', 'learning_rate_schedule',
     'lr_warmup_steps', 'entropy_coefficient', 'reference_kl_coefficient',
-    'contract_kind',
+    'contract_kind', 'policy_safety_mode', 'safeguards',
+    'optimizer_opportunities_per_outer', 'optimizer_completion_rule',
+    'optimizer_step_count_semantics',
 ))
+# The current formal contract is checked before removing these fields. They
+# affect optimizer accounting/safety, not the unchanged initial probe producer;
+# this archived adoption API never grants health or training-state inheritance.
 
 
 def _check(condition, message):

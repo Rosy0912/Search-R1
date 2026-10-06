@@ -73,8 +73,12 @@ def active_plan():
         return None
     base = Path(os.environ['SEARCH_G1_BASE'])
     run = json.loads((base / 'logs/run-manifest.json').read_text())
-    if 'policy_calibration_role' not in run:
+    from reproduction.common8.formal_contract import assert_formal_run,has_formal_markers
+    role=run.get('policy_calibration_role','production')
+    if has_formal_markers(run):
+        assert_formal_run(run)
         return None
+    if role=='production':return None
     plan, sha = load_plan(base, run)
     return base, run, plan, sha
 

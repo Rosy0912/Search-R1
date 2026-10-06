@@ -19,6 +19,7 @@ class ConfigurationTests(unittest.TestCase):
         model = str(base / 'official model')
         run = dict(profile='common8', run_id='cpu-fixture-only', completed_updates=0, initial_model=model,
                    contract_kind='fresh200_warmup57',target_updates=200,acceptance_update=5,
+                   policy_safety_mode='inline_first_five',
                    reference_model=model, model_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1',
                    budget=json.loads((c.REPO / 'reproduction/common8/budget.json').read_text()),
                    train_log=str(base / 'logs/training.log'),
@@ -55,6 +56,11 @@ class ConfigurationTests(unittest.TestCase):
             self.assertTrue(config.actor_rollout_ref.actor.use_kl_loss)
             self.assertEqual(config.actor_rollout_ref.actor.kl_loss_coef,0.)
             self.assertEqual(config.actor_rollout_ref.actor.kl_loss_type,'low_var_kl')
+            self.assertEqual(config.actor_rollout_ref.actor.policy_safety.mode,'inline_first_five')
+            self.assertEqual(config.actor_rollout_ref.actor.policy_safety.target_old_policy_kl,.2)
+            self.assertEqual(run['budget']['optimizer_opportunities_per_outer'],20)
+            self.assertEqual(run['budget']['optimizer_completion_rule'],
+                             'all20_opportunities_processed_and_at_least_one_write')
 
     def test_stale_recipe_hash_is_rejected(self):
         with tempfile.TemporaryDirectory() as root:

@@ -407,7 +407,9 @@ class ActorRolloutRefWorker(Worker):
                         scheduler_evidence = self._outer_scheduler_evidence
                         scheduler_evidence.begin_outer(data.meta_info['logical_update'],
                             optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),
-                            batch_gate_sha256=data.meta_info['behavior_probability_gate']['sha256'])
+                            batch_gate_sha256=data.meta_info['behavior_probability_gate']['sha256'],
+                            **({key:data.meta_info[key] for key in ('attempt_id','attempt_index')}
+                               if scheduler_evidence.recoverable else {}))
                         return scheduler_evidence.agreement_state()
                     collective_call(begin_scheduler, stage='begin')
                 # Every minibatch guard finishes inside update_policy. A rejected
@@ -415,12 +417,27 @@ class ActorRolloutRefWorker(Worker):
                 with Timer(name='update_policy', logger=None) as timer:
                     metrics = self.actor.update_policy(data=data)
                 delta_time = timer.last
-                if scheduler_evidence is not None:
+                attempt_result=getattr(self.actor,'_last_attempt_result',None)
+                if attempt_result is not None and attempt_result['status']=='recoverable_guard':
+                    if scheduler_evidence is None or not scheduler_evidence.recoverable:
+                        raise RuntimeError('Recoverable actor result lacks its explicit formal scheduler')
+                    def abort_scheduler_attempt():
+                        schedule=scheduler_evidence.abort_attempt(
+                            optimizer_writes=getattr(self.actor,'_optimizer_writes',0),
+                            opportunities_processed=attempt_result['opportunities_processed'],
+                            guard_stage=attempt_result['guard_stage'],guard_reasons=attempt_result['guard_reasons'])
+                        return scheduler_evidence.agreement_state()
+                    collective_call(abort_scheduler_attempt,stage='abort_attempt')
+                    metrics['actor/scheduler_advances_this_outer']=0
+                    metrics['actor/completed_outer']=scheduler_evidence.completed_outer
+                elif scheduler_evidence is not None:
                     def prepare_scheduler():
                         global_num_tokens = data.meta_info['global_token_num']
                         estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
                         metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
-                        scheduler_evidence.prepare_outer(optimizer_writes=getattr(self.actor, '_optimizer_writes', 0))
+                        scheduler_evidence.prepare_outer(optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),
+                            **(dict(opportunities_processed=attempt_result['opportunities_processed'])
+                               if scheduler_evidence.recoverable else {}))
                         return scheduler_evidence.agreement_state()
                     collective_call(prepare_scheduler, stage='prepare')
                     commit_started = True
@@ -468,7 +485,15 @@ class ActorRolloutRefWorker(Worker):
             log_gpu_memory_usage('After update policy', logger=logger)
 
             # TODO: here, we should return all metrics
-            output = DataProto(meta_info={'metrics': metrics})
+            if attempt_result is None:
+                output = DataProto(meta_info={'metrics': metrics})
+            else:
+                import numpy as np
+                attempt_result=dict(attempt_result,
+                    scheduler_advances=metrics['actor/scheduler_advances_this_outer'],
+                    completed_outer=scheduler_evidence.completed_outer)
+                output = DataProto(meta_info={'metrics': metrics},
+                    non_tensor_batch={'recoverable_outer_result':np.array([attempt_result],dtype=object)})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')

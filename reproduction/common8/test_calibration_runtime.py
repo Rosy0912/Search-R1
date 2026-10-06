@@ -179,6 +179,28 @@ class CalibrationRuntimeTests(unittest.TestCase):
             with patch.dict(os.environ,SEARCH_G1_PROFILE='a800'):
                 self.assertIsNone(runtime.active_plan())
 
+    def test_valid_explicit_formal_production_never_requests_archived_child_plan(self):
+        from reproduction.common8.test_configuration import ConfigurationTests
+        with tempfile.TemporaryDirectory() as root:
+            base,run=ConfigurationTests().fixture(root);run['policy_calibration_role']='production'
+            path=base/'logs/run-manifest.json';path.write_text(json.dumps(run))
+            with patch.dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=str(base)), \
+                 patch.object(runtime,'load_plan',side_effect=AssertionError('formal production must not load old child plan')) as load:
+                self.assertIsNone(runtime.active_plan());load.assert_not_called()
+                run['policy_calibration_role']='policy_safety_calibration_discovery';path.write_text(json.dumps(run))
+                with self.assertRaises(AssertionError):runtime.active_plan()
+                load.assert_not_called()
+
+    def test_isolated_top_warmup_marker_rejects_child_before_loading_archived_plan(self):
+        with tempfile.TemporaryDirectory() as root:
+            base=Path(root);(base/'logs').mkdir()
+            (base/'logs/run-manifest.json').write_text(json.dumps(dict(
+                policy_calibration_role='policy_safety_calibration_discovery',lr_warmup_steps=57)))
+            with patch.dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=root), \
+                 patch.object(runtime,'load_plan') as load:
+                with self.assertRaises((AssertionError,KeyError)):runtime.active_plan()
+                load.assert_not_called()
+
     def test_active_plan_uses_actual_external_job_and_original_plan_files(self):
         fixture=plan_fixtures.CalibrationPlanTests();fixture.setUp()
         with tempfile.TemporaryDirectory() as root:

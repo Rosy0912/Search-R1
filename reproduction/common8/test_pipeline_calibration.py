@@ -1,5 +1,6 @@
 """CPU dispatch/artifact tests; no fixture proves real native policy execution."""
 import json
+import stat
 import os
 import subprocess
 import sys
@@ -30,26 +31,76 @@ class PipelineCalibrationTests(unittest.TestCase):
         pipeline.run=run;pipeline.start=Mock(return_value=object());pipeline.wait=Mock();pipeline.stage=Mock()
         return pipeline
 
-    def test_formal200_adopts_diagnostic_without_extra_confirmation_or_fresh_restart(self):
+    def test_inline_formal200_fits_actual_initial_probes_without_old_diagnostic_admission(self):
         with tempfile.TemporaryDirectory() as root:
             pipeline=self.formal_pipeline(root)
             sources=adoption_inputs(pipeline.run,pipeline.base)
-            self.assertNotIn('policy_calibration_confirmation_base',sources)
+            self.assertEqual(sources,{})
             pipeline.initial_probe_calibration()
             command=pipeline.start.call_args.args[1]
-            self.assertIn('reproduction.common8.adopt_fresh200_probes',command)
-            self.assertIn('--diagnostic-proof',command);self.assertIn('--terminal-proof',command)
+            self.assertIn('reproduction.common8.refit',command)
+            self.assertIn('--step',command);self.assertIn('0',command)
+            self.assertNotIn('--diagnostic-proof',command);self.assertNotIn('--terminal-proof',command)
             pipeline.start.reset_mock();stage=pipeline.train_and_verify()
             self.assertEqual(stage,'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP')
             self.assertEqual([c.args[0] for c in pipeline.start.call_args_list],['trainer','final-acceptance'])
 
-    def test_formal200_missing_original_diagnostic_descriptor_rejected_before_launch(self):
-        for name in ('diagnostic_proof','diagnostic_terminal_proof'):
-            with self.subTest(name=name),tempfile.TemporaryDirectory() as root:
-                pipeline=self.formal_pipeline(root);pipeline.run.pop(name)
-                with self.assertRaisesRegex(RuntimeError,'Authenticated initial-probe adoption'):
+    def test_inline_formal200_unknown_or_missing_mode_rejected_before_launch(self):
+        for mode in (None,'legacy'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as root:
+                pipeline=self.formal_pipeline(root)
+                if mode is None:pipeline.run.pop('policy_safety_mode')
+                else:pipeline.run['policy_safety_mode']=mode
+                with self.assertRaises((AssertionError,KeyError)):
                     pipeline.initial_probe_calibration()
                 pipeline.start.assert_not_called()
+
+    def test_formal_markers_reject_child_role_before_owned_registration_or_native_admission(self):
+        for role in CALIBRATION_ROLES:
+            for marker in ('top','budget_only','top_warmup_only'):
+                with self.subTest(role=role,marker=marker),tempfile.TemporaryDirectory() as root:
+                    pipeline=self.formal_pipeline(root);run=pipeline.run;run['policy_calibration_role']=role
+                    if marker=='budget_only':
+                        run.pop('contract_kind');run.pop('policy_safety_mode');run['target_updates']=1
+                    elif marker=='top_warmup_only':
+                        run.clear();run.update(policy_calibration_role=role,lr_warmup_steps=57)
+                    with patch('reproduction.common8.run_pipeline.OwnedProcesses') as owned:
+                        with self.assertRaises((AssertionError,KeyError)):Pipeline(pipeline.base,run)
+                    owned.assert_not_called()
+                    with self.assertRaises((AssertionError,KeyError)):execution_role(run)
+
+    def test_gpu_sample_file_and_parent_are_synced_and_failures_prevent_finished_stage(self):
+        for fail in (False,True):
+            with self.subTest(fail=fail),tempfile.TemporaryDirectory() as root:
+                base=Path(root);(base/'logs').mkdir();pipeline=Pipeline.__new__(Pipeline)
+                pipeline.base=base;pipeline.run=dict(run_id='CPU-sampler-fixture',source_sha256={'fixture.py':'a'*64})
+                pipeline.physical_indices={0};pipeline.max_used={};pipeline.sample_error=None
+                pipeline.stop_sampling=threading.Event();pipeline.stage=Mock();seen=[];real=os.fsync
+                def rows(*args):
+                    pipeline.stop_sampling.set()
+                    return [['0','constructed-uuid','1','81920','0']]
+                def sync(fd):
+                    directory=stat.S_ISDIR(os.fstat(fd).st_mode);seen.append('directory' if directory else 'file')
+                    if directory and fail:raise OSError('constructed sampler parent durability failure')
+                    return real(fd)
+                with patch.dict(os.environ,SLURM_JOB_ID='123'),patch('reproduction.common8.run_pipeline.gpu_rows',side_effect=rows), \
+                     patch('reproduction.a800.owned_processes.identity',return_value=dict(pid=123,start_ticks=456,sid=123,uid=0)), \
+                     patch.object(os,'fsync',side_effect=sync):pipeline.sample()
+                self.assertEqual(seen,['file','directory'])
+                if fail:
+                    self.assertIn('parent durability failure',pipeline.sample_error)
+                    with self.assertRaisesRegex(RuntimeError,'finish durably'):pipeline.finish_sampling(None)
+                    self.assertEqual(pipeline.stage.call_args.args[0],'FAILED')
+                else:
+                    self.assertIsNone(pipeline.sample_error);pipeline.finish_sampling(None);pipeline.stage.assert_not_called()
+
+    def test_live_or_failed_sampler_cannot_acknowledge_finished(self):
+        for alive,error in ((True,None),(False,'constructed failed sampler')):
+            pipeline=Pipeline.__new__(Pipeline);pipeline.stop_sampling=threading.Event();pipeline.sample_error=error;pipeline.stage=Mock()
+            sampler=Mock();sampler.is_alive.return_value=alive
+            with self.assertRaisesRegex(RuntimeError,'finish durably'):pipeline.finish_sampling(sampler)
+            sampler.join.assert_called_once_with(35);self.assertTrue(pipeline.stop_sampling.is_set())
+            self.assertEqual(pipeline.stage.call_args.args[0],'FAILED')
 
     def pipeline(self, base, role=None, adoption_sources=True):
         pipeline=Pipeline.__new__(Pipeline)
@@ -103,7 +154,7 @@ class PipelineCalibrationTests(unittest.TestCase):
             (Path(root)/'logs').mkdir()
             pipeline=self.pipeline(root,CALIBRATION_ROLES[1],adoption_sources=False)
             pipeline.owned=SimpleNamespace(jobs={},stop_all=Mock())
-            pipeline.stop_sampling=threading.Event();pipeline.sample=Mock()
+            pipeline.stop_sampling=threading.Event();pipeline.sample_error=None;pipeline.sample=Mock()
             with patch('reproduction.common8.run_pipeline.gpu_rows',return_value=[]),patch(
                     'reproduction.common8.run_pipeline.threading.Thread') as sampler,self.assertRaisesRegex(
                     RuntimeError,'Authenticated initial-probe adoption'):

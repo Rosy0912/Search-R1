@@ -11,15 +11,16 @@ from reproduction.common8.verify_data import digest, verify
 from reproduction.common8.validation_identity import expected
 from reproduction.common8.policy_calibration_plan import document_sha256
 from reproduction.common8.formal_contract import (
-    TARGET_UPDATES, SAVE_STEPS, PROBE_ROUNDS, assert_formal_run, verify_formal_config,
+    TARGET_UPDATES, SAVE_STEPS, PROBE_ROUNDS, FORMAL_COUNTING, assert_formal_run, verify_formal_config,
 )
 
 
 def verify_five_scheduler_prefix(five, full):
     """Compare the actual complete five interval, independent of row counts."""
     selected=[row for row in full['selected_rows'] if 1<=row['logical_update']<=5]
-    assert [(row['logical_update'],row['kind']) for row in selected]==[
-        (step,kind) for step in range(1,6) for kind in ('BEGIN','COMMIT_PREPARED','COMPLETE')]
+    completed=[row for row in selected if row['kind']=='COMPLETE']
+    assert [row['logical_update'] for row in completed]==list(range(1,6))
+    assert all(row['opportunities_processed']==20 and 1<=row['actual_optimizer_writes']<=20 for row in completed)
     assert five['selected_rows']==selected, 'Five scheduler evidence differs from the final actual interval'
     return selected
 
@@ -39,10 +40,24 @@ def verify_full(base):
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
     verify_write_receipt_links(base, behavior_gates, 1, TARGET_UPDATES)
-    budgets=budget_rows(read_console_form(base,run['run_id']),1,TARGET_UPDATES)
+    budgets=budget_rows(read_console_form(base,run['run_id']),1,TARGET_UPDATES,complete_records=records)
     scheduler_receipts=verify_scheduler_receipts(base,run,1,TARGET_UPDATES,behavior_gates)
     five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
     assert five['accepted'] is True and five['run_id']==run['run_id']
+    from reproduction.common8.formal_inline_safety import verify_plan,verify_first_five
+    artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text())
+    _,inline_plan_sha=verify_plan(base,artifact,run)
+    from reproduction.common8.formal_attempt_audit import verify_attempt_history
+    inline_all_attempts=verify_attempt_history(base,run,records,scheduler_receipts,
+                                              last=TARGET_UPDATES,plan_sha256=inline_plan_sha)
+    assert five['policy_safety_mode']==run['policy_safety_mode'] and five['formal_inline_plan_sha256']==inline_plan_sha
+    inline_first_five=verify_first_five(base,run,{str(step):behavior_gates[str(step)] for step in range(1,6)},
+                                      verify_scheduler_receipts(base,run,1,5,behavior_gates))
+    assert inline_first_five['selected_evidence_sha256']==five['formal_inline_first_five']['selected_evidence_sha256'], \
+        'Actual first-five immutable attempt/state/monitor selection changed'
+    from reproduction.common8.formal_inline_evaluation import verify_pair
+    paired_development=verify_pair(base,run)
+    assert five['paired_development']==paired_development, 'Actual paired5120/5 measurements changed after acceptance'
     assert [r['step'] for r in five['actual_updates']]==list(range(1,6))
     for saved,actual in zip(five['actual_updates'],records[:5]):
         assert saved['probe_version']==actual['probe_version']
@@ -83,21 +98,15 @@ def verify_full(base):
                               if n not in ('vocab.json','merges.txt','generation_config.json')}
             assert encoder.resolve()==Path(run['initial_model']).resolve()
             archive_path=archived_paths[live['version']]
-            assert archive_path.parent.name.startswith('round_0-adopted-'), 'Formal initial0 must retain authenticated adoption scope'
-            adoption=json.loads((base/'logs/initial-probe-adoption.json').read_text())
-            assert adoption['schema_version']==3 and adoption['role']=='fresh200_initial_probe_adoption'
-            assert adoption['run_id']==run['run_id'] and adoption['contract_kind']==run['contract_kind']
-            assert adoption['adopted'] is True and adoption['version']==live['version']
-            assert adoption['production_admission'] is False and adoption['healthy_checkpoint_accepted'] is False
-            assert adoption['origin']==live['adoption_origin']
-            assert adoption['target_source_sha256']==run['source_sha256']
-            assert adoption['target_budget_sha256']==document_sha256(run['budget'])
-            assert adoption['live_manifest_sha256']==digest(archive_path)
-            origin=adoption['origin'];provenance=archive_path.parent/'provenance'
-            for filename,key in (('original-version-manifest.json','archive_sha256'),
-                                 ('original-diagnostic-proof.json','diagnostic_proof_sha256'),
-                                 ('original-native-terminal-proof.json','terminal_proof_sha256')):
-                assert digest(provenance/filename)==origin[key]
+            assert archive_path.parent.name.startswith('round_0-attempt-'), 'Formal initial0 is freshly fitted in this namespace'
+            initial_probe=json.loads((base/'logs/formal-inline-initial-probe.json').read_text())
+            assert initial_probe['schema_version']==1 and initial_probe['role']=='fresh200_actual_initial_probe'
+            assert initial_probe['run_id']==run['run_id'] and initial_probe['source_map_sha256']==document_sha256(run['source_sha256'])
+            assert initial_probe['version']==live['version']==run['initial_probe_version']
+            assert initial_probe['model_revision']==run['model_revision'] and initial_probe['initial_model_sha256']==run['initial_model_sha256']
+            assert initial_probe['input_sha256']==run['input_sha256']
+            assert initial_probe['archive']==str(archive_path.relative_to(base)) and initial_probe['archive_sha256']==digest(archive_path)
+            assert 'adoption_origin' not in live, 'Failed old diagnostic state must not be inherited'
         else:
             snapshot=snapshots[str(round_id)]
             expected_encoder=dict(snapshot['files_sha256'])
@@ -135,17 +144,24 @@ def verify_full(base):
     for source,score in zip(evaluation['data_sources'],scores):correct[source]+=score
     for source,score in zip(evaluation['data_sources'],f1):source_f1[source].append(score)
     proof=dict(run_id=run['run_id'],contract_kind=run['contract_kind'],structural_accepted=True,actual_outer_updates=TARGET_UPDATES,
-        per_rank_optimizer_writes=TARGET_UPDATES*20,final_saved_tensor_count=count,
+        optimizer_completion_rule=FORMAL_COUNTING,per_rank_optimizer_opportunities=TARGET_UPDATES*20,
+        per_rank_actual_optimizer_writes={rank:receipt['cumulative_actual_optimizer_writes']
+                                        for rank,receipt in scheduler_receipts.items()},
+        final_saved_tensor_count=count,
         shared_data=data,checkpoint_proofs=snapshots,final_counts=dict(counts),
         behavior_probability_gates=behavior_gates,
         scheduler_receipts=scheduler_receipts,formal_config=config_proof,
+        policy_safety_mode=run['policy_safety_mode'],formal_inline_plan_sha256=inline_plan_sha,
+        formal_inline_first_five=inline_first_five,formal_inline_all_attempts=inline_all_attempts,
+        paired_development=paired_development,
         final_correct=correct,final_weighted_em=evaluation['weighted_em'],
         final_source_em={s:correct[s]/counts[s] for s in counts},
         final_source_f1={s:math.fsum(source_f1[s])/counts[s] for s in counts},
         final_weighted_f1=evaluation['weighted_f1'],
         semantics='full training/data/numerical structure verified; accuracy is the measured result, not automatically reproduction success',
         checked_unix=time.time())
-    with (base/'logs/full-run-acceptance.json').open('x') as f:json.dump(proof,f,indent=2)
+    from reproduction.common8.calibration_runtime import write_once
+    write_once(base/'logs/full-run-acceptance.json',proof)
     return proof
 
 

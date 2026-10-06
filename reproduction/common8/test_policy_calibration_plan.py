@@ -20,7 +20,9 @@ class CalibrationPlanTests(unittest.TestCase):
         # These fixtures authenticate the immutable old diagnostic contract;
         # changing today's formal recipe must not relabel its mathematics.
         budget.update(copy.deepcopy(MATHEMATICS))
-        for name in ('contract_kind','lr_warmup_steps','entropy_coefficient'):
+        for name in ('contract_kind','lr_warmup_steps','entropy_coefficient','policy_safety_mode',
+                     'safeguards','optimizer_opportunities_per_outer','optimizer_completion_rule',
+                     'optimizer_step_count_semantics'):
             budget.pop(name,None)
         self.parent = dict(profile='common8', run_id='production', completed_updates=0,
                            model_revision=MODEL_REVISION, initial_model='/official', reference_model='/official',

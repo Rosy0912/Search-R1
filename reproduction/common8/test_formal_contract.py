@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from reproduction.common8.formal_contract import (
-    CONTRACT_KIND, FORMAL_MATHEMATICS, PROBE_ROUNDS, SAVE_STEPS,
+    CONTRACT_KIND, FORMAL_COUNTING, FORMAL_MATHEMATICS, FORMAL_SAFEGUARDS, SAFETY_MODE, PROBE_ROUNDS, SAVE_STEPS,
     assert_formal_run, consumed_lr, verify_formal_config,
 )
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
@@ -25,6 +25,11 @@ class FormalContractTests(unittest.TestCase):
         self.assertEqual(FORMAL_MATHEMATICS['lr_warmup_steps'],57)
         self.assertEqual(FORMAL_MATHEMATICS['entropy_coefficient'],0.)
         self.assertEqual(FORMAL_MATHEMATICS['reference_kl_coefficient'],0.)
+        self.assertNotIn('optimizer_completion_rule',MATHEMATICS)
+        self.assertEqual(FORMAL_MATHEMATICS['optimizer_completion_rule'],FORMAL_COUNTING)
+        self.assertEqual(FORMAL_MATHEMATICS['optimizer_opportunities_per_outer'],20)
+        self.assertEqual(FORMAL_MATHEMATICS['policy_safety_mode'],SAFETY_MODE)
+        self.assertEqual(FORMAL_SAFEGUARDS['target_old_policy_kl'],.2)
         self.assertEqual(PROBE_ROUNDS,(0,50,100,150))
         self.assertEqual(SAVE_STEPS,(5,50,100,150,200))
 
@@ -50,21 +55,38 @@ class FormalContractTests(unittest.TestCase):
                     (('actor_rollout_ref','actor','kl_loss_coef'),.001),
                     (('actor_rollout_ref','actor','use_kl_loss'),False),
                     (('actor_rollout_ref','actor','ppo_micro_batch_size'),128),
+                    (('actor_rollout_ref','actor','policy_safety','mode'),'legacy'),
+                    (('actor_rollout_ref','actor','policy_safety','target_old_policy_kl'),.01),
                     (('actor_rollout_ref','rollout','temperature'),.5)):
                 bad=copy.deepcopy(document);part=bad
                 for key in path[:-1]:part=part[key]
                 part[path[-1]]=value
                 with self.subTest(path=path),self.assertRaises(AssertionError):verify_formal_config(bad,run,base)
-            for key,value in (('contract_kind','constant300'),('target_updates',300),('completed_updates',1)):
+            for key,value in (('contract_kind','constant300'),('target_updates',300),('completed_updates',1),
+                              ('policy_safety_mode','legacy')):
                 bad=copy.deepcopy(run);bad[key]=value
                 with self.subTest(key=key),self.assertRaises(AssertionError):assert_formal_run(bad)
 
-    def scheduler_fixture(self,root,last=2):
+    def scheduler_fixture(self,root,last=2,successes=None,include_abort=False):
         base,run=test_configuration.ConfigurationTests().fixture(root)
         run.update(source_commit='a'*40)
         source=hashlib.sha256(canonical_bytes(run['source_sha256'])).hexdigest()
         contract=hashlib.sha256(canonical_bytes(run['budget'])).hexdigest()
-        gates={str(i):dict(proof_sha256=str(i)*64) for i in range(1,last+1)}
+        attempts=[];records=[];physical=0
+        if include_abort:
+            attempts.append(dict(step=1,processed=5,successes=3,complete=False))
+        attempts += [dict(step=i,processed=20,successes=(successes[i-1] if successes else 20),complete=True)
+                     for i in range(1,last+1)]
+        gates={}
+        for ordinal,attempt in enumerate(attempts,1):
+            attempt.update(attempt_id=f'{ordinal:032x}',attempt_index=ordinal,before=physical,
+                           proof_sha256=f'{ordinal:064x}')
+            physical+=attempt['successes'];attempt['after']=physical
+            if attempt['complete']:
+                gates[str(attempt['step'])]=dict(proof_sha256=attempt['proof_sha256'])
+                records.append(dict(step=attempt['step'],attempt_id=attempt['attempt_id'],attempt_index=ordinal,
+                    optimizer_writes_before=attempt['before'],optimizer_writes_after=physical,opportunities_processed=20))
+        (base/'logs/actual-updates.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in records))
         (base/'logs/training-launch-claim.json').write_text(json.dumps(dict(run_id=run['run_id'],slurm_job_id='123',
             shell_pid=10,shell_start_ticks=999)))
         leader=dict(pid=10,start_ticks=999,sid=10,uid=123)
@@ -73,9 +95,23 @@ class FormalContractTests(unittest.TestCase):
             jobs={'trainer':dict(leader=leader,ledger=ledger,state='STARTED')})))
         (base/'logs/run-manifest.json').write_text(json.dumps(run))
         for rank in range(8):
-            rows=[]
-            for step in range(1,last+1):
-                for ordinal,kind in enumerate(('BEGIN','COMMIT_PREPARED','COMPLETE')):
+            rows=[];workers=[]
+            for attempt in attempts:
+                step=attempt['step'];ordinal=attempt['attempt_index'];before=attempt['before']
+                cumulative=before
+                for mini in range(attempt['processed']):
+                    success=mini<attempt['successes']
+                    context=dict(logical_update=step,attempt_id=attempt['attempt_id'],attempt_index=ordinal,minibatch_index=mini)
+                    workers.append(dict(run_id=run['run_id'],rank=rank,kind='OPPORTUNITY',context=context,
+                        opportunity_index=mini,processed=True,optimizer_write_succeeded=success,
+                        status='written' if success else 'skipped_guard',optimizer_writes_before=cumulative,
+                        optimizer_writes_after=cumulative+int(success)))
+                    if success:
+                        cumulative+=1
+                        workers.append(dict(run_id=run['run_id'],rank=rank,kind='OPTIMIZER_WRITE',context=context,
+                                            write_count=cumulative,learning_rates=[consumed_lr(step)]))
+                kinds=('BEGIN','COMMIT_PREPARED','COMPLETE') if attempt['complete'] else ('BEGIN','ABORTED_ATTEMPT')
+                for stage,kind in enumerate(kinds):
                     after=step if kind=='COMPLETE' else step-1
                     written=kind!='BEGIN'
                     rows.append(dict(schema_version=1,kind=kind,role='fresh200_outer_scheduler',
@@ -83,21 +119,35 @@ class FormalContractTests(unittest.TestCase):
                         source_map_sha256=source,scheduler_contract_sha256=contract,slurm_job_id='123',rank=rank,world_size=8,
                         logical_update=step,warmup_steps=57,base_learning_rate=1e-6,
                         process_pid=100+rank,process_start_ticks=1000+rank,
-                        observed_unix=100.+step+ordinal*.1,
-                        batch_gate_sha256=gates[str(step)]['proof_sha256'],
+                        observed_unix=100.+ordinal*4+stage*.1,
+                        attempt_id=attempt['attempt_id'],attempt_index=ordinal,
+                        batch_gate_sha256=attempt['proof_sha256'],
                         completed_outer_before=step-1,completed_outer_after=after,
                         scheduler_last_epoch_before=step-1,scheduler_last_epoch_after=after,
                         scheduler_step_count_before=step,scheduler_step_count_after=after+1,
-                        writes_before=(step-1)*20,writes_after=(step if written else step-1)*20,
-                        actual_optimizer_writes=20 if written else 0,scheduler_advances=int(kind=='COMPLETE'),
+                        writes_before=before,writes_after=attempt['after'] if written else before,
+                        actual_optimizer_writes=attempt['successes'] if written else 0,
+                        opportunities_processed=attempt['processed'] if written else 0,optimizer_opportunities=20,
+                        recoverable_guard=True,retained_partial_adam_writes=True,no_automatic_rollback=True,
+                        scheduler_unchanged_on_rejection=True,scheduler_advances=int(kind=='COMPLETE'),
                         consumed_learning_rates=[consumed_lr(step)],next_learning_rates=[1e-6*min(after/57,1.)]))
             (base/'logs'/f'scheduler-rank-{rank}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+            (base/'logs'/f'optimizer-rank-{rank}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in workers))
         return base,run,gates
+
+    def verify_scheduler(self,base,run,first,last,gates):
+        # This test isolates the durable scheduler/opportunity reader. The
+        # full2560 native trace gate has its own real-byte rejection tests.
+        def gate(_base,_run,step,update_record=None,attempt_id=None,attempt_index=None):
+            ordinal=update_record['attempt_index'] if update_record is not None else attempt_index
+            return dict(proof_sha256=f'{ordinal:064x}')
+        with patch('reproduction.common8.behavior_runtime.read_gate_receipt',side_effect=gate):
+            return verify_scheduler_receipts(base,run,first,last,gates)
 
     def test_durable_scheduler_binding_rejects_duplicate_rejected_wrong_counter_or_lr(self):
         with tempfile.TemporaryDirectory() as root:
             base,run,gates=self.scheduler_fixture(root)
-            proof=verify_scheduler_receipts(base,run,1,2,gates)
+            proof=self.verify_scheduler(base,run,1,2,gates)
             self.assertEqual(len(proof),8)
             path=base/'logs/scheduler-rank-3.jsonl';original=path.read_bytes()
             for field,value in (('kind','REJECTED'),('source_commit','b'*40),
@@ -107,19 +157,19 @@ class FormalContractTests(unittest.TestCase):
                     ('process_pid',999),('contract_kind','old')):
                 rows=[json.loads(line) for line in original.splitlines()];rows[1][field]=value
                 path.write_text(''.join(json.dumps(r)+'\n' for r in rows))
-                with self.subTest(field=field),self.assertRaises(AssertionError):verify_scheduler_receipts(base,run,1,2,gates)
+                with self.subTest(field=field),self.assertRaises(AssertionError):self.verify_scheduler(base,run,1,2,gates)
             path.write_bytes(original+original.splitlines()[0]+b'\n')
-            with self.assertRaises(AssertionError):verify_scheduler_receipts(base,run,1,2,gates)
+            with self.assertRaises(AssertionError):self.verify_scheduler(base,run,1,2,gates)
 
     def test_fatal_console_invalidates_otherwise_complete_scheduler_triplets(self):
         with tempfile.TemporaryDirectory() as root:
             base,run,gates=self.scheduler_fixture(root)
-            self.assertEqual(len(verify_scheduler_receipts(base,run,1,2,gates)),8)
+            self.assertEqual(len(self.verify_scheduler(base,run,1,2,gates)),8)
             Path(run['train_log']).write_text('SEARCH_G1_FATAL_SCHEDULER_EVIDENCE='+json.dumps(dict(
                 run_id=run['run_id'],actual_scheduler_last_epoch=2,
                 actual_scheduler_step_count=3,writes_after=40,fatal_no_automatic_resume=True))+'\n')
             with self.assertRaisesRegex(AssertionError,'Fatal scheduler console'):
-                verify_scheduler_receipts(base,run,1,2,gates)
+                self.verify_scheduler(base,run,1,2,gates)
 
     def test_first_outer_twenty_actual_zero_lr_writes_not_constant_lr(self):
         from reproduction.common8.test_contract import evidence
@@ -138,15 +188,15 @@ class FormalContractTests(unittest.TestCase):
                     row['process_start_ticks']=9999 if mode=='unknown' else 1000
                 path.write_text(''.join(json.dumps(r)+'\n' for r in rows))
                 with self.subTest(mode=mode),self.assertRaises(AssertionError):
-                    verify_scheduler_receipts(base,run,1,2,gates)
+                    self.verify_scheduler(base,run,1,2,gates)
                 path.write_bytes(original)
 
     def test_actual_five_scheduler_interval_matches_full_two_hundred_receipts(self):
         from reproduction.common8.verify_full import verify_five_scheduler_prefix
         with tempfile.TemporaryDirectory() as root:
             base,run,gates=self.scheduler_fixture(root,last=200)
-            five=verify_scheduler_receipts(base,run,1,5,gates)
-            full=verify_scheduler_receipts(base,run,1,200,gates)
+            five=self.verify_scheduler(base,run,1,5,gates)
+            full=self.verify_scheduler(base,run,1,200,gates)
             for rank in range(8):
                 selected=verify_five_scheduler_prefix(five[str(rank)],full[str(rank)])
                 self.assertEqual(len(selected),15)
@@ -157,6 +207,32 @@ class FormalContractTests(unittest.TestCase):
         with patch('subprocess.run') as subprocess_run,patch('requests.Session') as session:
             self.assertIsNone(refresh_after_checkpoint(200,'unused'))
         subprocess_run.assert_not_called();session.assert_not_called()
+
+    def test_opportunities_complete_with_fewer_writes_and_keep_abandoned_partial_writes(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,run,gates=self.scheduler_fixture(root,successes=[17,1],include_abort=True)
+            proof=self.verify_scheduler(base,run,1,2,gates)
+            for receipt in proof.values():
+                self.assertEqual(receipt['cumulative_actual_optimizer_writes'],21)
+                self.assertEqual(receipt['complete_outer_optimizer_opportunities'],40)
+            path=base/'logs/optimizer-rank-3.jsonl';rows=[json.loads(line) for line in path.read_text().splitlines()]
+            rows=[row for row in rows if not (row['kind']=='OPPORTUNITY' and row['context']['attempt_index']==2 and row['opportunity_index']==19)]
+            path.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(AssertionError,'opportunity receipt'):
+                self.verify_scheduler(base,run,1,2,gates)
+
+    def test_first_five_prefix_keeps_aborted_attempts_without_counting_them_as_updates(self):
+        from reproduction.common8.verify_full import verify_five_scheduler_prefix
+        with tempfile.TemporaryDirectory() as root:
+            base,run,gates=self.scheduler_fixture(root,last=6,include_abort=True)
+            five=self.verify_scheduler(base,run,1,5,gates)
+            full=self.verify_scheduler(base,run,1,6,gates)
+            selected=verify_five_scheduler_prefix(five['0'],full['0'])
+            self.assertEqual(len(selected),17)
+            self.assertEqual(sum(row['kind']=='COMPLETE' for row in selected),5)
+            self.assertEqual(sum(row['kind']=='ABORTED_ATTEMPT' for row in selected),1)
+            bad=copy.deepcopy(five['0']);bad['selected_rows']=bad['selected_rows'][2:]
+            with self.assertRaises(AssertionError):verify_five_scheduler_prefix(bad,full['0'])
 
 
 if __name__=='__main__':unittest.main()

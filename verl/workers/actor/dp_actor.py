@@ -50,6 +50,8 @@ class DataParallelPPOActor(BasePPOActor):
         super().__init__(config)
         self.actor_module = actor_module
         self.actor_optimizer = actor_optimizer
+        # Fresh workers must expose zero writes before any guard can skip Adam.
+        self._optimizer_writes = 0
         self.compute_precision = ComputePrecision.from_config(self.config)
         self.compute_precision.validate_module(self.actor_module,
                                                process_group=getattr(self.actor_module, 'process_group', None))
@@ -157,10 +159,12 @@ class DataParallelPPOActor(BasePPOActor):
 
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
         gradients = {f'gradient_{i}':p.grad for i,p in enumerate(self.actor_module.parameters()) if p.grad is not None}
-        require_finite(gradients,stage='before_gradient_clipping',process_group=group)
+        recoverable = getattr(self, '_recoverable_guard_mode', False)
+        require_finite(gradients,stage='before_gradient_clipping',process_group=group,recoverable=recoverable)
         from search_g1.gradient_clipping import clip_global_l2
-        grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,context=getattr(self,"_gradient_diagnostic_context",None))
-        require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group)
+        grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,
+            context=getattr(self,"_gradient_diagnostic_context",None),recoverable=recoverable)
+        require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group,recoverable=recoverable)
         self.actor_optimizer.step()
         self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
         if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
@@ -168,7 +172,8 @@ class DataParallelPPOActor(BasePPOActor):
             append('OPTIMIZER_WRITE', dict(rank=torch.distributed.get_rank(),
                 context=self._gradient_diagnostic_context, write_count=self._optimizer_writes,
                 gradient_norm_before=float(grad_norm),gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
-                learning_rates=[float(group['lr']) for group in self.actor_optimizer.param_groups]))
+                learning_rates=[float(part['lr']) for part in self.actor_optimizer.param_groups]),
+                collective=recoverable,group=group)
         if (__import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8' or
                 not torch.distributed.is_initialized() or torch.distributed.get_rank()==0):
             print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
@@ -267,15 +272,78 @@ class DataParallelPPOActor(BasePPOActor):
                       objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
                       monitoring_scope='fixed four trajectories per rank across length strata; not full rollout',
                       rejection_count=getattr(self,'_policy_rejections',0)+int(not report['allowed']))
-        append('POLICY_MONITOR',report)
+        append('POLICY_MONITOR',report,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
         if not report['allowed']:
             self._policy_rejections=report['rejection_count']
             self.actor_optimizer.zero_grad()
+            if getattr(self,'_recoverable_guard_mode',False):
+                from search_g1.policy_safety import RecoverableGuard
+                raise RecoverableGuard(stage=stage,reasons=report['reasons'],diagnostic=report)
             raise RuntimeError('Old-rollout reuse stopped collectively; already-written steps retained: '+repr(report['reasons']))
         return report
 
     def update_policy(self, data: DataProto):
-        from search_g1.policy_safety import bind_actual_config
+        """Finish each formal attempt with a typed all-rank disposition."""
+        from search_g1.policy_safety import (RecoverableGuard, recoverable_mode,
+            bind_actual_config, agree_attempt_result, _phase_agreement)
+        group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+        bind_actual_config(self.config,group=group)
+        self._recoverable_guard_mode = recoverable_mode(self.config,group=group)
+        self._last_attempt_result = None
+        if not self._recoverable_guard_mode:
+            return self._update_policy_attempt(data)
+        import re
+        attempt_id = data.meta_info.get('attempt_id')
+        attempt_index = data.meta_info.get('attempt_index')
+        logical_update = data.meta_info.get('logical_update')
+        writes_before = getattr(self,'_optimizer_writes',0)
+        errors = []
+        if not (isinstance(attempt_id,str) and re.fullmatch('[0-9a-f]{32}',attempt_id) and
+                type(attempt_index) is int and attempt_index==getattr(self,'_last_attempt_index',0)+1 and
+                attempt_id not in getattr(self,'_used_attempt_ids',set()) and
+                type(logical_update) is int and logical_update==getattr(self,'_complete_outers',0)+1):
+            errors.append('Nonsequential or reused formal attempt identity')
+        _phase_agreement(dict(attempt_id=attempt_id,attempt_index=attempt_index,
+                             logical_update=logical_update,writes_before=writes_before),errors,group)
+        self._last_attempt_index = attempt_index
+        self._used_attempt_ids = getattr(self,'_used_attempt_ids',set()) | {attempt_id}
+        metrics = self._update_policy_attempt(data)
+        writes_after = getattr(self,'_optimizer_writes',0)
+        processed = len(self._last_opportunities)
+        complete = processed==20 and writes_after>writes_before
+        result = dict(status='complete' if complete else 'recoverable_guard',
+            rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
+            logical_update=logical_update,attempt_id=attempt_id,attempt_index=attempt_index,
+            optimizer_writes_before=writes_before,optimizer_writes_after=writes_after,
+            optimizer_writes_this_attempt=writes_after-writes_before,
+            opportunities_processed=processed,
+            opportunity_statuses=[row['status'] for row in self._last_opportunities],
+            guard_stage=None if complete else 'all_update_opportunities_skipped',
+            guard_reasons=[] if complete else ['no_successful_adam_write'],
+            complete_outer=complete,retained_partial_adam_writes=not complete,
+            no_automatic_rollback=True)
+        agree_attempt_result(result,group=group)
+        if complete:
+            assert 1<=result['optimizer_writes_this_attempt']<=20
+            self._complete_outers = logical_update
+        else:
+            assert 0<=result['optimizer_writes_this_attempt']<=20
+            from reproduction.common8.worker_evidence import append
+            append('ABORTED_ATTEMPT',dict(rank=result['rank'],logical_update=logical_update,
+                attempt_id=attempt_id,attempt_index=attempt_index,
+                context=getattr(self,'_gradient_diagnostic_context',None),
+                behavior_probability_gate_sha256=data.meta_info['behavior_probability_gate']['sha256'],
+                optimizer_writes=result['optimizer_writes_this_attempt'],
+                cumulative_writes=writes_after,writes_before=writes_before,
+                guard_stage=result['guard_stage'],guard_reasons=result['guard_reasons'],
+                opportunities_processed=processed,
+                recoverable_guard=True,complete_outer=False,scheduler_advances=0,
+                retained_partial_adam_writes=True,no_automatic_rollback=True),collective=True,group=group)
+        self._last_attempt_result = result
+        return metrics
+
+    def _update_policy_attempt(self, data: DataProto):
+        from search_g1.policy_safety import bind_actual_config, RecoverableGuard
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
         bind_actual_config(self.config,group=group)
         # Collective finite checks require matching microbatch counts on all ranks.
@@ -318,6 +386,13 @@ class DataParallelPPOActor(BasePPOActor):
                 self.config,self.actor_optimizer,logical_update=logical_update,
                 optimizer_writes=writes_before,group=group)
             self._phase_initial_adam_state_entries=len(self.actor_optimizer.state)
+            if getattr(self,'_recoverable_guard_mode',False) and not getattr(self,'_inline_initial_optimizer_published',False):
+                assert writes_before==0 and logical_update==1
+                from reproduction.common8.formal_inline_safety import publish_optimizer_state
+                publish_optimizer_state(self.actor_module,self.actor_optimizer,logical_update=logical_update,
+                    writes=writes_before,group=group,complete=False,
+                    attempt_id=data.meta_info['attempt_id'],attempt_index=data.meta_info['attempt_index'])
+                self._inline_initial_optimizer_published=True
             assert common8 and safety.monitor_trajectories_per_rank == 4
             # Freeze actual old/advantage/mask/input bytes once; select length strata.
             length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
@@ -334,108 +409,66 @@ class DataParallelPPOActor(BasePPOActor):
                 tensor_sha256={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
                                for name,value in frozen.items()})
         metrics = {}
-        for batch_idx, data in enumerate(dataloader):
+        attempt_meta = {key:data.meta_info[key] for key in ('attempt_id','attempt_index')} if getattr(self,'_recoverable_guard_mode',False) else {}
+        self._last_opportunities = []
+        for batch_idx, mini_batch in enumerate(dataloader):
             self._gradient_diagnostic_context=dict(logical_update=logical_update,minibatch_index=batch_idx,prior_optimizer_writes=getattr(self,"_optimizer_writes",0))
+            if getattr(self,'_recoverable_guard_mode',False):
+                self._gradient_diagnostic_context.update(**attempt_meta)
             if common8:
                 self._gradient_diagnostic_context['behavior_probability_gate_sha256'] = batch_gate_sha
-            if safety_enabled:
-                self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
-            # split batch into micro_batches
-            mini_batch = data
-            if self.config.use_dynamic_bsz:
-                max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
-                micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
-            else:
-                # split batch into micro_batches
-                micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
-
-            self.actor_optimizer.zero_grad()
-
-            for data in micro_batches:
-                data = data.cuda(device=torch.cuda.current_device())  # TensorDict must follow this rank, including offload
-                responses = data['responses']
-                response_length = responses.size(1)
-                attention_mask = data['attention_mask']
-                response_mask = attention_mask[:, -response_length:]
-                if self.config.state_masking:
-                    response_mask = data['loss_mask']
-                old_log_prob = data['old_log_probs']
-                advantages = data['advantages']
-
-                clip_ratio = self.config.clip_ratio
-                entropy_coeff = self.config.entropy_coeff
-
-                # all return: (bsz, response_length)
-                entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
-
-                if safety_enabled:
-                    authored=response_mask.bool()
-                    group=self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
-                    require_finite(dict(new=torch.where(authored,log_prob,0.),old=torch.where(authored,old_log_prob,0.),
-                                        advantage=torch.where(authored,advantages,0.),mass=response_mask.sum()),
-                                   stage='before_dual_clip_exp',process_group=group,positive=('mass',))
-                pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
-                                                                              log_prob=log_prob,
-                                                                              advantages=advantages,
-                                                                              eos_mask=response_mask,
-                                                                              cliprange=clip_ratio,
-                                                                              dual_clip=float(safety.dual_clip) if safety_enabled else None)
-                # compute entropy loss from entropy
-                entropy_loss = verl_F.masked_mean(entropy, response_mask)
-
-                # compute policy loss
-                policy_loss = pg_loss - entropy_loss * entropy_coeff
-
-                if self.config.use_kl_loss:
-                    ref_log_prob = data['ref_log_prob']
-                    # compute kl loss
-                    masked_log_prob = torch.where(response_mask.bool(),log_prob,torch.zeros_like(log_prob))
-                    masked_ref_log_prob = torch.where(response_mask.bool(),ref_log_prob,torch.zeros_like(ref_log_prob))
-                    # Disabled reference regularization must not evaluate exp
-                    # only to multiply a possible overflow by zero. Actual
-                    # reference LPs still undergo finite checks below; the
-                    # distinct sampling-policy brakes remain active.
-                    if self.config.kl_loss_coef == 0:
-                        kl_loss = log_prob.new_zeros(())
+            before_opportunity = getattr(self,'_optimizer_writes',0)
+            opportunity_metrics = {}; guard = None
+            try:
+                self._run_minibatch(mini_batch,temperature=temperature,safety_enabled=safety_enabled,
+                    safety=safety,frozen=frozen if safety_enabled else None,
+                    tail_limit=tail_limit if safety_enabled else None,metrics=opportunity_metrics)
+            except RecoverableGuard as rejection:
+                if not getattr(self,'_recoverable_guard_mode',False):
+                    raise
+                guard = rejection
+                self.actor_optimizer.zero_grad()
+            after_opportunity = getattr(self,'_optimizer_writes',0)
+            wrote = after_opportunity==before_opportunity+1
+            assert after_opportunity-before_opportunity in (0,1)
+            guard_events = [dict(stage=guard.stage,reasons=guard.reasons)] if guard is not None else []
+            if guard is not None and not wrote:
+                # Every skipped opportunity still gets a real post monitor of
+                # the retained parameters, never a substituted or reused report.
+                try:
+                    self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')
+                except RecoverableGuard as post_guard:
+                    guard_events.append(dict(stage=post_guard.stage,reasons=post_guard.reasons))
+            if wrote:
+                for key,value in opportunity_metrics.items():
+                    if isinstance(value,list):
+                        metrics.setdefault(key,[]).extend(value)
                     else:
-                        kld = core_algos.kl_penalty(logprob=masked_log_prob,
-                                                  ref_logprob=masked_ref_log_prob,
-                                                  kl_penalty=self.config.kl_loss_type)
-                        kl_loss = masked_mean(kld, response_mask)
-                        policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
-                    metrics['actor/kl_loss'] = kl_loss.detach().item()
-                    metrics['actor/kl_coef'] = self.config.kl_loss_coef
-
-                loss = policy_loss / self.gradient_accumulation
-                numerical_fields = dict(loss=loss,pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
-                                        response_tokens=response_mask.sum())
-                numerical_fields.update(authored_log_prob=torch.where(response_mask.bool(),log_prob,torch.zeros_like(log_prob)),
-                    authored_old_log_prob=torch.where(response_mask.bool(),old_log_prob,torch.zeros_like(old_log_prob)),
-                    authored_advantages=torch.where(response_mask.bool(),advantages,torch.zeros_like(advantages)))
-                if self.config.use_kl_loss:
-                    numerical_fields['kl_loss'] = kl_loss
-                    numerical_fields['authored_ref_log_prob'] = masked_ref_log_prob
-                group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
-                require_finite(numerical_fields,stage='before_backward',process_group=group,positive=('response_tokens',))
-                loss.backward()
-
-                data = {
-                    'actor/entropy_loss': entropy_loss.detach().item(),
-                    'actor/pg_loss': pg_loss.detach().item(),
-                    'actor/pg_clipfrac': pg_clipfrac.detach().item(),
-                    'actor/ppo_kl': ppo_kl.detach().item(),
-                }
-                append_to_dict(metrics, data)
-
-            grad_norm = self._optimizer_step()
-            if safety_enabled:
-                self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')
-            data = {'actor/grad_norm': grad_norm.detach().item()}
-            append_to_dict(metrics, data)
+                        metrics[key]=value
+            if getattr(self,'_recoverable_guard_mode',False):
+                row = dict(rank=torch.distributed.get_rank(),context=dict(self._gradient_diagnostic_context),
+                    opportunity_index=batch_idx,processed=True,
+                    status='written_with_post_guard' if wrote and guard is not None else 'written' if wrote else 'skipped_guard',
+                    optimizer_write_succeeded=wrote,optimizer_writes_before=before_opportunity,
+                    optimizer_writes_after=after_opportunity,
+                    guard_stage=guard.stage if guard is not None else None,
+                    guard_reasons=guard.reasons if guard is not None else [],guard_events=guard_events)
+                from search_g1.policy_safety import _phase_agreement
+                _phase_agreement({key:value for key,value in row.items() if key!='rank'},[],group)
+                from reproduction.common8.worker_evidence import append
+                append('OPPORTUNITY',row,collective=True,group=group)
+                self._last_opportunities.append(row)
         self.actor_optimizer.zero_grad()
         if common8:
             writes = self._optimizer_writes - writes_before
-            assert writes == 20
+            if getattr(self,'_recoverable_guard_mode',False):
+                assert len(self._last_opportunities)==20 and 0<=writes<=20
+                if writes==0:
+                    return {}  # Fully skipped attempt has no completed metrics/budget/proof.
+                metrics['actor/update_opportunities_this_attempt']=20
+                metrics['actor/skipped_update_opportunities']=20-writes
+            else:
+                assert writes == 20
             if safety_enabled and self._policy_execution_role != 'production':
                 from search_g1.policy_safety import publish_calibration_optimizer_proof
                 publish_calibration_optimizer_proof(self.actor_module,self.actor_optimizer,
@@ -443,13 +476,77 @@ class DataParallelPPOActor(BasePPOActor):
                     initial_writes=writes_before,initial_state_entries=self._phase_initial_adam_state_entries,
                     final_writes=self._optimizer_writes,group=group)
             append_to_dict(metrics, {'actor/optimizer_steps_this_update': writes})
+            if getattr(self,'_recoverable_guard_mode',False):
+                from reproduction.common8.formal_inline_safety import publish_optimizer_state
+                publish_optimizer_state(self.actor_module,self.actor_optimizer,logical_update=logical_update,
+                    writes=self._optimizer_writes,group=group,complete=True,
+                    **attempt_meta)
             from reproduction.common8.worker_evidence import append
-            append('OUTER_BUDGET', dict(rank=torch.distributed.get_rank(),
+            budget = dict(rank=torch.distributed.get_rank(),
                 logical_update=logical_update, local_trajectories=len(batch),
                 local_mini=16, local_micro=2, optimizer_writes=writes,
-                cumulative_writes=self._optimizer_writes))
-            print('SEARCH_G1_OUTER_BUDGET=' + __import__('json').dumps(dict(
-                rank=torch.distributed.get_rank(), logical_update=logical_update,
-                local_trajectories=len(batch), local_mini=16, local_micro=2,
-                optimizer_writes=writes, cumulative_writes=self._optimizer_writes)), flush=True)
+                cumulative_writes=self._optimizer_writes)
+            if getattr(self,'_recoverable_guard_mode',False):
+                budget.update(**attempt_meta,opportunities_processed=20,
+                              optimizer_writes_before=writes_before,optimizer_writes_after=self._optimizer_writes)
+            append('OUTER_BUDGET',budget,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
+            print('SEARCH_G1_OUTER_BUDGET=' + __import__('json').dumps(budget), flush=True)
         return metrics
+
+    def _run_minibatch(self, mini_batch, *, temperature, safety_enabled, safety, frozen, tail_limit, metrics):
+        """One update opportunity; caller records its disposition on every rank."""
+        group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+        recoverable = getattr(self,'_recoverable_guard_mode',False)
+        if safety_enabled:
+            self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
+        if self.config.use_dynamic_bsz:
+            micro_batches,_ = rearrange_micro_batches(batch=mini_batch,
+                max_token_len=self.config.ppo_max_token_len_per_gpu*self.ulysses_sequence_parallel_size)
+        else:
+            micro_batches=mini_batch.split(self.config.ppo_micro_batch_size)
+        self.actor_optimizer.zero_grad()
+        for micro in micro_batches:
+            micro=micro.cuda(device=torch.cuda.current_device())
+            width=micro['responses'].size(1)
+            mask=micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:,-width:]
+            old=micro['old_log_probs'];advantages=micro['advantages']
+            entropy,new=self._forward_micro_batch(micro_batch=micro,temperature=temperature)
+            authored=mask.bool()
+            if safety_enabled:
+                require_finite(dict(new=torch.where(authored,new,0.),old=torch.where(authored,old,0.),
+                    advantage=torch.where(authored,advantages,0.),mass=mask.sum()),
+                    stage='before_dual_clip_exp',process_group=group,positive=('mass',),recoverable=recoverable)
+            pg_loss,clipfrac,ppo_kl=core_algos.compute_policy_loss(old_log_prob=old,log_prob=new,
+                advantages=advantages,eos_mask=mask,cliprange=self.config.clip_ratio,
+                dual_clip=float(safety.dual_clip) if safety_enabled else None)
+            entropy_loss=verl_F.masked_mean(entropy,mask)
+            policy_loss=pg_loss-entropy_loss*self.config.entropy_coeff
+            numerical_fields=dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
+                response_tokens=mask.sum(),authored_log_prob=torch.where(authored,new,0.),
+                authored_old_log_prob=torch.where(authored,old,0.),
+                authored_advantages=torch.where(authored,advantages,0.))
+            if self.config.use_kl_loss:
+                masked_new=torch.where(authored,new,torch.zeros_like(new))
+                masked_ref=torch.where(authored,micro['ref_log_prob'],torch.zeros_like(micro['ref_log_prob']))
+                # Zero reference coefficient does not evaluate an unnecessary exponential.
+                if self.config.kl_loss_coef==0:
+                    kl_loss=new.new_zeros(())
+                else:
+                    kl_loss=masked_mean(core_algos.kl_penalty(logprob=masked_new,
+                        ref_logprob=masked_ref,kl_penalty=self.config.kl_loss_type),mask)
+                    policy_loss=policy_loss+kl_loss*self.config.kl_loss_coef
+                numerical_fields.update(kl_loss=kl_loss,authored_ref_log_prob=masked_ref)
+                metrics['actor/kl_loss']=kl_loss.detach().item()
+                metrics['actor/kl_coef']=self.config.kl_loss_coef
+            loss=policy_loss/self.gradient_accumulation
+            numerical_fields['loss']=loss
+            require_finite(numerical_fields,stage='before_backward',process_group=group,
+                           positive=('response_tokens',),recoverable=recoverable)
+            loss.backward()
+            append_to_dict(metrics,{'actor/entropy_loss':entropy_loss.detach().item(),
+                'actor/pg_loss':pg_loss.detach().item(),'actor/pg_clipfrac':clipfrac.detach().item(),
+                'actor/ppo_kl':ppo_kl.detach().item()})
+        grad_norm=self._optimizer_step()
+        append_to_dict(metrics,{'actor/grad_norm':grad_norm.detach().item()})
+        if safety_enabled:
+            self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')

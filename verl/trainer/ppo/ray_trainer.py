@@ -17,6 +17,7 @@ This trainer supports model-agonistic model initialization with huggingface
 """
 
 import os
+import itertools
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -445,7 +446,7 @@ class RayPPOTrainer(object):
             self.config.actor_rollout_ref.actor.optim.completed_updates = continuation_k
             self.config.critic.optim.total_training_steps = total_training_steps
 
-    def _validate(self, final=False):
+    def _validate(self, final=False, inline_development=False):
         """
         The training loop of PPO with global metric computation.
         Accumulates metrics across all batches before computing final statistics.
@@ -456,7 +457,12 @@ class RayPPOTrainer(object):
             from reproduction.common8.validation_identity import configure_validation
             from reproduction.common8.calibration_runtime import active_plan
             calibration_phase = active_plan()
-            configure_validation(self, final=final)
+            if inline_development:
+                assert not final and calibration_phase is None
+                from reproduction.common8.formal_inline_evaluation import configure_development
+                configure_development(self)
+            else:
+                configure_validation(self, final=final)
         reward_tensor_lst = []
         data_source_lst = []
         question_id_lst = []
@@ -578,6 +584,9 @@ class RayPPOTrainer(object):
         reward_tensor = torch.cat([rw.sum(-1) for rw in reward_tensor_lst], dim=0).cpu()  # (batch_size,)
         # reward_tensor = torch.cat(reward_tensor_lst, dim=0).sum(-1).cpu()  # (batch_size,)
         data_sources = np.concatenate(data_source_lst, axis=0)
+        if inline_development:
+            from reproduction.common8.formal_inline_evaluation import record_development
+            record_development(self.global_steps,common8_evaluation_rows,reward_tensor.tolist())
         if calibration_phase is not None:
             assert self.config.do_search and not final
             from reproduction.common8.calibration_runtime import evaluation
@@ -745,6 +754,7 @@ class RayPPOTrainer(object):
             if calibration_phase is not None:
                 assert continuation_k == 0 and self.total_training_steps == 301
         five_update_records = []
+        inline_attempts=None
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -753,6 +763,16 @@ class RayPPOTrainer(object):
             logger.log(data=val_metrics, step=self.global_steps)
             if self.config.trainer.get('val_only', False):
                 return
+
+        if os.environ.get('SEARCH_G1_PROFILE')=='common8':
+            from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
+            if active_run() is not None:
+                assert continuation_k==0 and self.global_steps==0
+                assert self.total_training_steps==201 and len(self.train_dataloader)>0
+                assert self.config.trainer.critic_warmup<=1 and not self.use_critic
+                from reproduction.common8.recoverable_attempt import AttemptProgress
+                inline_attempts=AttemptProgress()
+                evaluate_development(self)
 
         # we start from step 1
         self.global_steps += 1
@@ -777,17 +797,21 @@ class RayPPOTrainer(object):
         )
 
         # start training loop
-        for epoch in range(self.config.trainer.total_epochs):
+        for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
             for batch_dict in self.train_dataloader:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
+                attempt_result=None
+                attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 behavior_identity = None
                 if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
                     from reproduction.common8.behavior_runtime import prepare_identity
-                    behavior_identity = prepare_identity(batch, self.global_steps, repeats=5)
+                    behavior_identity = prepare_identity(batch, self.global_steps, repeats=5,
+                        **({key:attempt_identity[key] for key in ('attempt_id','attempt_index')}
+                           if attempt_identity is not None else {}))
                 calibration_parents = None
                 if calibration_phase is not None:
                     from reproduction.common8.calibration_runtime import training_inputs
@@ -935,7 +959,20 @@ class RayPPOTrainer(object):
                                 from reproduction.common8.calibration_runtime import training_groups_before_update
                                 training_groups_before_update(batch, calibration_phase)
                             batch.meta_info["logical_update"]=self.global_steps
+                            if attempt_identity is not None:
+                                batch.meta_info.update(attempt_identity)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
+                        if inline_attempts is not None:
+                            from reproduction.common8.recoverable_attempt import record_attempt
+                            attempt_result=inline_attempts.finish(
+                                actor_output.non_tensor_batch['recoverable_outer_result'].tolist())
+                            record_attempt(attempt_result)
+                            if not attempt_result['complete_outer']:
+                                # The next dataloader batch is a fresh512/G5
+                                # rollout at the retained weights in this process.
+                                if inline_attempts.aborted_attempts<=3 or inline_attempts.aborted_attempts%10==0:
+                                    print('SEARCH_G1_RECOVERABLE_ATTEMPT_SKIPPED='+json.dumps(attempt_result),flush=True)
+                                continue
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
 
@@ -965,7 +1002,8 @@ class RayPPOTrainer(object):
                 logger.log(data=metrics, step=self.global_steps)
                 if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
                     from reproduction.common8.update_evidence import record
-                    record(self.global_steps, metrics, self.reward_fn.expected_probe_version)
+                    record(self.global_steps, metrics, self.reward_fn.expected_probe_version,
+                           **(dict(attempt_result=attempt_result) if inline_attempts is not None else {}))
                 if calibration_phase is not None:
                     assert self.global_steps == 1, 'Only one fresh calibration outer is permitted'
                     from reproduction.common8.calibration_runtime import finish_after_update
@@ -975,6 +1013,9 @@ class RayPPOTrainer(object):
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
                 if self.global_steps == self.config.trainer.get('acceptance_step', 0):
+                    if os.environ.get('SEARCH_G1_PROFILE')=='common8':
+                        from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
+                        if active_run() is not None:evaluate_development(self)
                     from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
                 if self.global_steps in (50,100,150,200,250) and self.global_steps + 1 < self.total_training_steps:

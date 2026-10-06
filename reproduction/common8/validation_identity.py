@@ -88,11 +88,19 @@ def record_validation(base, step, ids, sources, rewards, final=False, *, f1=None
     path = base / 'logs' / filename
     if final:
         with path.open('x') as f:
-            json.dump(proof, f)
+            json.dump(proof, f,allow_nan=False);f.flush();os.fsync(f.fileno())
     else:
         temp = path.with_suffix('.tmp')
-        temp.write_text(json.dumps(proof))
+        with temp.open('w') as f:
+            json.dump(proof,f,allow_nan=False);f.flush();os.fsync(f.fileno())
         temp.replace(path)
-    with (base/'logs/validation-identities.jsonl').open('a') as f:
-        f.write(json.dumps(proof) + '\n')
+    parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(parent_fd)
+    finally:os.close(parent_fd)
+    ledger=base/'logs/validation-identities.jsonl'
+    with ledger.open('a') as f:
+        f.write(json.dumps(proof,allow_nan=False) + '\n');f.flush();os.fsync(f.fileno())
+    parent_fd=os.open(ledger.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(parent_fd)
+    finally:os.close(parent_fd)
     return proof

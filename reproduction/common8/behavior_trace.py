@@ -639,7 +639,7 @@ def _evidence_value(value):
     return value, False
 
 
-def write_private_evidence(base, trace):
+def write_private_evidence(base, trace, *, attempt_id=None):
     """Preserve complete or partial real failure evidence before any audit.
 
     This verifies disk/env identity but does not claim a real GPU allocation;
@@ -665,7 +665,15 @@ def write_private_evidence(base, trace):
     content = canonical_bytes(value)
     parent.mkdir(mode=0o700, exist_ok=True)
     _require(stat.S_IMODE(parent.stat().st_mode) == 0o700, 'raw_trace_artifact_directory_not_private')
-    path = parent / ('outer-' + str(trace['logical_update']) + '.json')
+    if run.get('policy_safety_mode')=='inline_first_five':
+        _require(isinstance(attempt_id,str) and len(attempt_id)==32 and
+                 all(char in '0123456789abcdef' for char in attempt_id), 'missing_formal_trace_attempt_identity')
+        _require(trace.get('policy_snapshot_id')==run['run_id']+':'+str(trace['logical_update'])+':policy-'+attempt_id,
+                 'formal_trace_attempt_snapshot_changed')
+        path=parent/('attempt-'+attempt_id+'.json')
+    else:
+        _require(attempt_id is None,'legacy_trace_cannot_admit_formal_attempt')
+        path = parent / ('outer-' + str(trace['logical_update']) + '.json')
     _exclusive_private_file(path, content)
     return dict(private_trace_path=str(path), private_trace_sha256=hashlib.sha256(content).hexdigest(),
                 serialization_transformed=transformed, raw_trace_must_not_be_published=True,

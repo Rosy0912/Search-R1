@@ -91,6 +91,21 @@ class ActualGPUCoverageTests(unittest.TestCase):
         self.assertEqual(proof['maximum_sampling_gap_seconds'], 22.)
         self.assertIn('instantaneous peaks between samples are unmeasured', proof['semantics'])
 
+    def test_completed_attempt_window_excludes_retry_begin_but_peak_coverage_keeps_retry(self):
+        item=self.fixture()
+        for receipt in item[4].values():
+            for row in receipt['selected_rows']:row['attempt_id']=f"{row['logical_update']:032x}"
+            receipt['selected_rows'].insert(0,dict(logical_update=1,kind='BEGIN',
+                attempt_id='a'*32,observed_unix=11.))
+            receipt['selected_rows'].insert(1,dict(logical_update=1,kind='ABORTED_ATTEMPT',
+                attempt_id='a'*32,observed_unix=14.))
+        item[0][2]['gpus'][7]['used_mib']=980
+        proof=self.verify(item)
+        self.assertEqual(proof['actual_optimizer_windows'][0]['begin_unix'],15.)
+        self.assertEqual(proof['sampled_peak_fraction']['7'],.98)
+        item[0][2]['gpus'][7]['used_mib']=981
+        with self.assertRaisesRegex(AssertionError,'existing admission limit'):self.verify(item)
+
     def test_reader_waits_for_new_sample_after_gate_entry_and_checks_live_producer(self):
         rows, run, claim, *_ = self.fixture()
         with tempfile.TemporaryDirectory() as directory:

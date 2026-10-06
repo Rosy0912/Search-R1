@@ -35,6 +35,7 @@ actor_rollout_ref:
     state_masking: False
     clip_ratio: 0.2
     policy_safety:
+      mode: null # inline_first_five is an explicit formal-only recoverable mode
       enabled: false
       dual_clip: 3.0
       target_old_policy_kl: 0.01 # candidate, requires healthy calibration approval

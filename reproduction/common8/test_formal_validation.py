@@ -1,5 +1,7 @@
 """Ordered EM/F1 scalar fixtures; no native evaluation or model result is claimed."""
 import json
+import os
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -29,6 +31,24 @@ class FormalValidationTests(unittest.TestCase):
             self.assertEqual(result['weighted_em'],.5)
             self.assertEqual(result['weighted_f1'],.75)
             self.assertEqual(result['f1'],[1.,.5])
+
+    def test_final_and_stage_identity_and_ledger_are_durable_before_return(self):
+        for final in (False,True):
+            for fail in (False,True):
+                with self.subTest(final=final,fail=fail),tempfile.TemporaryDirectory() as root:
+                    base,expected=self.fixture(root);split='final' if final else 'stage';seen=[];real=os.fsync
+                    def sync(fd):
+                        directory=stat.S_ISDIR(os.fstat(fd).st_mode);seen.append('directory' if directory else 'file')
+                        if directory and fail:raise OSError('constructed validation parent durability failure')
+                        return real(fd)
+                    with patch.object(v,'_ACTIVE_SPLIT',split),patch.object(v,'COUNTS',{split:2}), \
+                         patch.object(v,'expected',return_value=expected),patch.object(os,'fsync',side_effect=sync):
+                        if fail:
+                            with self.assertRaisesRegex(OSError,'parent durability failure'):
+                                v.record_validation(base,200 if final else 5,expected[2],['nq','triviaqa'],[1.,0.],final=final,f1=[1.,.5])
+                        else:v.record_validation(base,200 if final else 5,expected[2],['nq','triviaqa'],[1.,0.],final=final,f1=[1.,.5])
+                    self.assertEqual(seen,['file','directory'] if fail else ['file','directory','file','directory'])
+                    self.assertEqual((base/'logs/validation-identities.jsonl').exists(),not fail)
 
     def test_missing_nonfinite_invalid_f1_or_changed_identity_rejected(self):
         variants=[dict(f1=None),dict(f1=[1.,float('nan')]),dict(f1=[1.,1.1]),

@@ -90,6 +90,7 @@ class FreshProbeAdoptionTests(unittest.TestCase):
                         source_sha256=dict(source_hashes, **{'reproduction/common8/new-bootstrap.py': 'b' * 64}),
                         budget=new_budget, policy_calibration_role='production',
                         contract_kind='fresh200_warmup57', target_updates=200, acceptance_update=5,
+                        policy_safety_mode=FORMAL_MATHEMATICS['policy_safety_mode'],
                         initial_probe_version=None,
                         checkpoint_dir=str(self.base / 'checkpoints/search-g1-common8'),
                         train_log=str(self.base / 'logs/train.log'),

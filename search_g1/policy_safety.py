@@ -5,6 +5,63 @@ import torch.distributed as dist
 
 DISCOVERY_ROLE = 'policy_safety_calibration_discovery'
 CONFIRMATION_ROLE = 'policy_safety_calibration_confirmation'
+INLINE_RECOVERABLE_MODE = 'inline_first_five'
+
+
+class RecoverableGuard(RuntimeError):
+    """A collectively decided policy/numerical guard, before the next Adam write.
+
+    Catching this type retains all earlier actual Adam writes. Configuration,
+    identity, transport, storage and post-write state failures never use it.
+    """
+    def __init__(self, *, stage, reasons, diagnostic=None):
+        self.stage = stage
+        self.reasons = list(reasons)
+        self.diagnostic = diagnostic or {}
+        super().__init__('Recoverable old-rollout guard at '+stage+': '+repr(self.reasons))
+
+
+def recoverable_mode(actor_config, *, group=None):
+    """Bind the new mode collectively; old production/calibration remains fatal."""
+    import json, os
+    from pathlib import Path
+    errors = []; document = {}
+    try:
+        safety = actor_config.get('policy_safety', None)
+        configured = safety.get('mode', None) if safety is not None else None
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            mode = run.get('policy_safety_mode')
+            enabled = (mode == INLINE_RECOVERABLE_MODE)
+            if enabled and (configured != INLINE_RECOVERABLE_MODE or safety.get('enabled') is not True or
+                            run.get('policy_calibration_role', 'production') != 'production' or
+                            run.get('contract_kind') != 'fresh200_warmup57'):
+                raise ValueError('Recoverable guards require the explicit bound formal production mode')
+            if not enabled and configured == INLINE_RECOVERABLE_MODE:
+                raise ValueError('Actor recoverable mode is not bound to the run')
+        else:
+            enabled = False
+            if configured == INLINE_RECOVERABLE_MODE:
+                raise ValueError('Recoverable formal mode requires common8')
+        document = dict(recoverable_guard_mode=enabled, actor_mode=configured)
+    except Exception as failure:
+        errors.append(type(failure).__name__+': '+str(failure))
+    _phase_agreement(document, errors, group)
+    return document['recoverable_guard_mode']
+
+
+def agree_attempt_result(result, *, group=None):
+    """All live ranks finish with the same disposition and actual write counts."""
+    if dist.is_initialized():
+        results = [None] * dist.get_world_size(group)
+        dist.all_gather_object(results, result, group=group)
+        shared = ('status', 'logical_update', 'attempt_id', 'attempt_index',
+                  'optimizer_writes_before', 'optimizer_writes_after',
+                  'optimizer_writes_this_attempt', 'opportunities_processed',
+                  'opportunity_statuses', 'guard_stage', 'guard_reasons')
+        if any(any(peer[name] != result[name] for name in shared) for peer in results):
+            raise RuntimeError('Collective attempt dispositions or actual Adam counts differ')
+    return result
 
 
 def enforcement_for_role(role):
@@ -110,12 +167,15 @@ def bind_thresholds(config, *, group=None):
         if path != base/'logs/policy-safety-calibration.json':raise ValueError('Unbound calibration path')
         artifact=_strict_json(path.read_bytes())
         run=_strict_json((base/'logs/run-manifest.json').read_bytes())
-        if type(artifact['schema_version']) is not int or artifact['schema_version'] not in (2, 3):
+        if type(artifact['schema_version']) is not int or artifact['schema_version'] not in (2, 3, 4):
             raise ValueError('Explicit production admission or typed guarded fresh200 bootstrap required')
         # This reader verifies the frozen parent probability proof and the real
         # confirmation child proof with their distinct run IDs. It has no writes,
         # fresh/no-claim checks or live GPU/HTTP actions after training is claimed.
-        if artifact['schema_version'] == 3:
+        if artifact['schema_version'] == 4:
+            from reproduction.common8.formal_inline_safety import verify_plan
+            tail,verified_sha=verify_plan(base,artifact,run)
+        elif artifact['schema_version'] == 3:
             from reproduction.common8.fresh200_bootstrap import verify_bootstrap
             tail,verified_sha=verify_bootstrap(base,artifact,run)
         else:

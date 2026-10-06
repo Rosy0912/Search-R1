@@ -100,9 +100,14 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
         for rank in range(8):
             selected = [row for row in scheduler_receipts[str(rank)]['selected_rows']
                         if row['logical_update'] == step]
-            begin = [row for row in selected if row['kind'] == 'BEGIN']
             complete = [row for row in selected if row['kind'] == 'COMPLETE']
-            assert len(begin) == len(complete) == 1
+            assert len(complete) == 1
+            # Failed rollout attempts have independent BEGIN rows; the
+            # completed optimizer window uses the actual selected attempt.
+            # GPU peak coverage below still includes every earlier attempt.
+            begin = [row for row in selected if row['kind'] == 'BEGIN' and
+                     (not complete[0].get('attempt_id') or row.get('attempt_id')==complete[0]['attempt_id'])]
+            assert len(begin) == 1
             start, end = begin[0]['observed_unix'], complete[0]['observed_unix']
             assert _number(start) and _number(end) and claimed <= start <= end <= entered, \
                 'Actual first-five scheduler time window differs'

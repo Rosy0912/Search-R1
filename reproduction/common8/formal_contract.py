@@ -10,11 +10,18 @@ TARGET_UPDATES = 200
 WARMUP_STEPS = 57
 SAVE_STEPS = (5, 50, 100, 150, 200)
 PROBE_ROUNDS = (0, 50, 100, 150)
+SAFETY_MODE = 'inline_first_five'
+FORMAL_COUNTING = 'all20_opportunities_processed_and_at_least_one_write'
+FORMAL_SAFEGUARDS = dict(dual_clip=3.0,epsilon=0.2,target_old_policy_kl=0.2,
+                         kl_log_bound=30.0,negative_tail_limit=0.01)
 FORMAL_MATHEMATICS = copy.deepcopy(MATHEMATICS)
 FORMAL_MATHEMATICS.update(target_actual_outer_updates=TARGET_UPDATES,
     lr_warmup_steps=WARMUP_STEPS,
     learning_rate_schedule='linear_fixed_outer_warmup_then_constant',
-    entropy_coefficient=0.0, reference_kl_coefficient=0.0)
+    entropy_coefficient=0.0, reference_kl_coefficient=0.0,
+    policy_safety_mode=SAFETY_MODE,safeguards=copy.deepcopy(FORMAL_SAFEGUARDS),
+    optimizer_opportunities_per_outer=20,optimizer_completion_rule=FORMAL_COUNTING,
+    optimizer_step_count_semantics='opportunities; actual successful writes reported separately')
 
 
 def consumed_lr(step):
@@ -22,9 +29,21 @@ def consumed_lr(step):
     return 1e-6 * min((step - 1) / WARMUP_STEPS, 1.0)
 
 
+
+def has_formal_markers(run):
+    """Conflicting child-role labels cannot bypass recognizable formal fields."""
+    budget=run.get('budget') if isinstance(run.get('budget'),dict) else {}
+    return ('policy_safety_mode' in run or 'policy_safety_mode' in budget or
+            run.get('contract_kind')==CONTRACT_KIND or budget.get('contract_kind')==CONTRACT_KIND or
+            run.get('target_updates')==TARGET_UPDATES or
+            budget.get('target_actual_outer_updates')==TARGET_UPDATES or
+            run.get('lr_warmup_steps')==WARMUP_STEPS or budget.get('lr_warmup_steps')==WARMUP_STEPS)
+
+
 def assert_formal_run(run):
     assert run['profile'] == 'common8' and run['contract_kind'] == CONTRACT_KIND
     assert run.get('policy_calibration_role', 'production') == 'production'
+    assert run['policy_safety_mode']==SAFETY_MODE, 'Formal training requires the explicit prospective inline mode'
     assert type(run['completed_updates']) is int and run['completed_updates'] == 0
     assert type(run['target_updates']) is int and run['target_updates'] == TARGET_UPDATES
     assert type(run['acceptance_update']) is int and run['acceptance_update'] == 5
@@ -88,14 +107,15 @@ def verify_formal_config(document, run, base):
     assert document['max_turns'] == 4 and document['do_search'] is True
     exact(document['retriever'], dict(url='http://127.0.0.1:18010/retrieve', topk=3), 'Retrieval')
     policy = actor['policy_safety']
-    exact(policy, dict(enabled=True, dual_clip=3.0, target_old_policy_kl=0.01,
-        kl_log_bound=30.0, negative_tail_limit=None), 'Safeguard candidates')
+    exact(policy, dict(enabled=True,mode=SAFETY_MODE,dual_clip=FORMAL_SAFEGUARDS['dual_clip'],
+        target_old_policy_kl=FORMAL_SAFEGUARDS['target_old_policy_kl'],
+        kl_log_bound=FORMAL_SAFEGUARDS['kl_log_bound'],negative_tail_limit=FORMAL_SAFEGUARDS['negative_tail_limit']), 'Prospective formal safeguards')
     assert policy['calibration_manifest'] == str(base / 'logs/policy-safety-calibration.json')
     repo = Path(__file__).resolve().parents[2]
     for name in ('reproduction/common8/recipe.json', 'reproduction/common8/budget.json',
                  'verl/trainer/config/ppo_trainer.yaml'):
         assert hashlib.sha256((repo / name).read_bytes()).hexdigest() == run['source_sha256'][name]
-    return dict(contract_kind=CONTRACT_KIND,
+    return dict(contract_kind=CONTRACT_KIND,policy_safety_mode=SAFETY_MODE,
         mathematical_config_sha256=hashlib.sha256(canonical_bytes(FORMAL_MATHEMATICS)).hexdigest(),
         resolved_config_sha256=hashlib.sha256(canonical_bytes(document)).hexdigest(),
         source_map_sha256=hashlib.sha256(canonical_bytes(run['source_sha256'])).hexdigest(),

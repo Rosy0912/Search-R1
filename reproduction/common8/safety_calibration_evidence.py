@@ -197,6 +197,167 @@ def verify_segment(rows_by_rank, binding):
         raise EvidenceError('Malformed calibration evidence: ' + str(failure)) from failure
 
 
+def verify_formal_segment(rows_by_rank, binding):
+    """Audit20 processed opportunities and actual retained Adam writes separately.
+
+    This pure check does not authenticate physical execution or accuracy health.
+    Rejected monitors must correspond to explicit guarded skip/postwrite records.
+    """
+    from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, SAFETY_MODE, consumed_lr
+    _require(binding['schema_version'] == 1 and binding['role'] == 'production' and
+             binding['policy_safety_mode'] == SAFETY_MODE, 'Not explicit inline formal evidence')
+    _require(binding['candidate_thresholds'] == FORMAL_SAFEGUARDS, 'Frozen formal safeguards differ')
+    outers = _integer(binding['outer_count'], 'outer_count', minimum=1)
+    _require(outers <= 200 and binding['initial_optimizer_writes'] == 0, 'Invalid formal counters')
+    _hash(binding['calibration_sha256'], 'formal plan binding')
+    attempts = binding['complete_attempts']
+    _require([r['step'] for r in attempts] == list(range(1, outers + 1)), 'Incomplete complete-outer selection')
+    _require(len({r['attempt_id'] for r in attempts}) == outers, 'Duplicate completed attempt identity')
+    _require(set(rows_by_rank) == set(range(8)), 'Need all eight formal rank logs')
+    observations = {}; identities = {}; dispositions = {}; selected_attempts = {}
+    previous_attempt = 0; previous_writes = 0
+    for record in attempts:
+        outer = record['step']; index = _integer(record['attempt_index'], 'attempt_index', minimum=1)
+        start = _integer(record['optimizer_writes_before'], 'optimizer_writes_before')
+        end = _integer(record['optimizer_writes_after'], 'optimizer_writes_after')
+        _require(index > previous_attempt and start >= previous_writes and 1 <= end - start <= 20,
+                 'Completed opportunity/actual-write counters differ')
+        _require(record['opportunities_processed'] == 20, 'Incomplete opportunities cannot count as outer')
+        selected_attempts[outer] = record
+        previous_attempt, previous_writes = index, end
+    for rank in range(8):
+        rows = rows_by_rank[rank]; cursor = 0
+        for outer in range(1, outers + 1):
+            attempt = selected_attempts[outer]; counter = attempt['optimizer_writes_before']
+            identity = None; frozen = None
+            for mini in range(20):
+                _require(cursor < len(rows), 'Missing formal opportunity evidence')
+                before = rows[cursor]; cursor += 1
+                write = None
+                if cursor < len(rows) and rows[cursor]['kind'] == 'OPTIMIZER_WRITE':
+                    write = rows[cursor]; cursor += 1
+                _require(cursor + 1 < len(rows), 'Missing post-monitor or opportunity decision')
+                after, decision = rows[cursor:cursor + 2]; cursor += 2
+                prior = counter; succeeded = write is not None
+                expected_context = dict(logical_update=outer, minibatch_index=mini, prior_optimizer_writes=prior,
+                    attempt_id=attempt['attempt_id'], attempt_index=attempt['attempt_index'])
+                for event in [before, after, decision] + ([] if write is None else [write]):
+                    context = event['context']
+                    _require(set(context) == set(expected_context) | {'behavior_probability_gate_sha256'},
+                             'Unbound formal opportunity context')
+                    _require(all(context[key] == value for key, value in expected_context.items()),
+                             'Formal opportunity context differs')
+                    _hash(context['behavior_probability_gate_sha256'], 'formal actual behavior gate')
+                    _require(context['behavior_probability_gate_sha256'] == attempt['behavior_probability_gate_sha256'],
+                             'Completed attempt gate differs')
+                _row(decision, rank, binding, 'OPPORTUNITY')
+                _require(decision['processed'] is True and decision['opportunity_index'] == mini,
+                         'Skipped opportunities were not actually processed in order')
+                _require(type(decision['optimizer_write_succeeded']) is bool and
+                         decision['optimizer_write_succeeded'] == succeeded, 'Claimed Adam write differs from actual record')
+                _require(decision['optimizer_writes_before'] == prior and
+                         decision['optimizer_writes_after'] == prior + int(succeeded), 'Opportunity actual-write counters differ')
+                guards = decision['guard_events']
+                _require(isinstance(guards, list), 'Missing explicit opportunity guard events')
+                for event in guards:
+                    _require(isinstance(event['stage'], str) and event['stage'] and isinstance(event['reasons'], list)
+                             and event['reasons'] and all(isinstance(x, str) and x for x in event['reasons']),
+                             'Malformed real guard event')
+                expected_status = ('written_with_post_guard' if guards else 'written') if succeeded else 'skipped_guard'
+                _require(decision['status'] == expected_status and (succeeded or bool(guards)),
+                         'Opportunity skip/write disposition differs')
+                local_global = {name: copy.deepcopy(value) for name, value in decision.items() if name != 'rank'}
+                key = (outer, mini)
+                if key in dispositions:
+                    _require(dispositions[key] == local_global, 'Ranks disagree on actual opportunity outcome')
+                else:
+                    dispositions[key] = local_global
+                for row, stage, writes in ((before, 'before_minibatch', prior),
+                                          (after, 'after_minibatch', prior + int(succeeded))):
+                    _row(row, rank, binding, 'POLICY_MONITOR')
+                    _require(row['stage'] == stage and row['optimizer_writes'] == writes, 'Formal monitor/actual-write order differs')
+                    _require(row['calibration_sha256'] == binding['calibration_sha256'], 'Formal frozen plan differs')
+                    _require(row['execution_role'] == 'production' and row['enforcement'] == _enforcement('production'),
+                             'Formal brakes are not enforced')
+                    _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
+                             row['monitoring_scope'] == MONITORING_SCOPE, 'Formal monitor weighting/scope differs')
+                    _integer(row['rejection_count'], 'actual cumulative rejection_count')
+                    _identity(row['monitor_identity'])
+                    if identity is None:
+                        identity = copy.deepcopy(row['monitor_identity']); identities[(outer, rank)] = identity
+                    _require(identity == row['monitor_identity'], 'Frozen formal monitor inputs changed')
+                    _require(type(row['allowed']) is bool, 'Invalid guard decision')
+                    if row['kl_estimate_complete'] is True:
+                        numerical = dict(row, allowed=True, reasons=[])
+                        statistics = _statistics(numerical)
+                        reasons = []
+                        if statistics['sampled_old_policy_kl'] > FORMAL_SAFEGUARDS['target_old_policy_kl']:
+                            reasons.append('old_policy_kl')
+                        if statistics['negative_tail_weight_fraction'] > FORMAL_SAFEGUARDS['negative_tail_limit']:
+                            reasons.append('negative_advantage_tail')
+                        _require(row['reasons'] == reasons and row['allowed'] == (not reasons),
+                                 'Actual complete monitor does not match frozen brake decision')
+                        statistics['allowed'] = row['allowed']
+                        statistics['reasons'] = copy.deepcopy(row['reasons'])
+                        fixed = tuple(statistics[name] for name in ('effective_weight_mass', 'negative_effective_weight_mass',
+                            'effective_token_count', 'negative_token_count'))
+                        if frozen is None: frozen = fixed
+                        _require(fixed == frozen, 'Frozen formal sample weights changed')
+                    else:
+                        _require(row['allowed'] is False and row['sampled_old_policy_kl'] is None and row['reasons'],
+                                 'Incomplete numerical estimate cannot be admitted as true KL')
+                        _require(any(reason in row['reasons'] for reason in (
+                            'nonfinite_global_totals', 'nonfinite_or_negative_effective_input',
+                            'delta_above_kl_log_bound', 'empty_effective_samples')), 'Unexplained incomplete estimate')
+                        statistics = {name: copy.deepcopy(row[name]) for name in GLOBAL_FIELDS}
+                    if not row['allowed']:
+                        _require(any(event['stage'] == stage and event['reasons'] == row['reasons'] for event in guards),
+                                 'Rejected policy monitor lacks its actual guard disposition')
+                        if stage == 'before_minibatch':
+                            _require(not succeeded, 'Rejected pre-monitor cannot enter Adam write')
+                    key = (outer, mini, stage)
+                    if key not in observations:
+                        observations[key] = dict(run_id=binding['run_id'], context=copy.deepcopy(row['context']),
+                            stage=stage, optimizer_writes=writes, calibration_sha256=binding['calibration_sha256'],
+                            execution_role='production', enforcement=_enforcement('production'), **statistics)
+                    else:
+                        _require(all(observations[key][name] == statistics[name] for name in GLOBAL_FIELDS),
+                                 'Eight rank global formal observations disagree')
+                if write is not None:
+                    _row(write, rank, binding, 'OPTIMIZER_WRITE')
+                    _require(write['write_count'] == prior + 1 and write['learning_rates'] and
+                             all(type(rate) in (int, float) and rate == consumed_lr(outer) for rate in write['learning_rates']),
+                             'Actual formal Adam write or consumed LR differs')
+                    _finite(write['gradient_norm_before'], 'gradient_norm_before')
+                    _require(_finite(write['gradient_norm_after'], 'gradient_norm_after') <=
+                             GRADIENT_CLIP_LIMIT + GRADIENT_CLIP_FLOAT32_TOLERANCE, 'Actual formal L2 clipping differs')
+                    counter += 1
+            _require(cursor < len(rows), 'Missing completed opportunity budget')
+            budget = rows[cursor]; cursor += 1; _row(budget, rank, binding, 'OUTER_BUDGET')
+            for name, value in dict(logical_update=outer, attempt_id=attempt['attempt_id'], attempt_index=attempt['attempt_index'],
+                local_trajectories=320, local_mini=16, local_micro=2, opportunities_processed=20,
+                optimizer_writes=attempt['optimizer_writes_after'] - attempt['optimizer_writes_before'],
+                optimizer_writes_before=attempt['optimizer_writes_before'], optimizer_writes_after=counter,
+                cumulative_writes=counter).items():
+                _require(budget[name] == value, 'Completed formal budget differs: ' + name)
+            _require(counter == attempt['optimizer_writes_after'], 'Complete outer actual success count differs')
+        _require(cursor == len(rows), 'Extra completed opportunity evidence')
+    for (outer, mini, stage), observation in observations.items():
+        count = sum(sum(identities[(outer, rank)]['actor_token_lengths']) for rank in range(8))
+        _require(observation['effective_token_count'] == count, 'Formal global token count differs')
+        if observation['kl_estimate_complete']:
+            _same_arithmetic(observation['effective_weight_mass'], 16., 'formal global masked-mean weight mass')
+        if mini and stage == 'before_minibatch':
+            _adjacent(observations[(outer, mini - 1, 'after_minibatch')], observation)
+    return dict(role='formal_completed_opportunity_monitor_audit', run_id=binding['run_id'],
+        complete_outer_count=outers, processed_opportunities_per_rank=outers * 20,
+        completed_outer_actual_writes_per_rank=sum(r['optimizer_writes_after'] - r['optimizer_writes_before'] for r in attempts),
+        actual_cumulative_optimizer_writes_per_rank=attempts[-1]['optimizer_writes_after'],
+        guard_triggered_monitor_count=sum(not r['allowed'] for r in observations.values()),
+        global_monitors=list(observations.values()), opportunity_dispositions=list(dispositions.values()),
+        production_admission=False, scope='pure structural validation; physical execution separately authenticated')
+
+
 def _verify_segment(rows_by_rank, binding):
     _require(isinstance(binding, Mapping), 'Missing evidence binding')
     _require(type(binding['schema_version']) is int and binding['schema_version'] == SCHEMA_VERSION,

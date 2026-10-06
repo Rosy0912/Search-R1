@@ -9,7 +9,7 @@ from pathlib import Path
 from reproduction.a800.owned_processes import OwnedProcesses,publish
 from reproduction.common8.verify_data import digest
 from reproduction.common8.stage_retrieval import binding,memory_bytes
-from reproduction.common8.formal_contract import CONTRACT_KIND, assert_formal_run
+from reproduction.common8.formal_contract import CONTRACT_KIND,SAFETY_MODE, assert_formal_run, has_formal_markers
 ALLOWED=tuple(range(8))
 CALIBRATION_ROLES=('policy_safety_calibration_discovery','policy_safety_calibration_confirmation')
 _interrupt_requested=None
@@ -18,12 +18,18 @@ _interrupt_requested=None
 def execution_role(run):
     role=run.get('policy_calibration_role','production')
     assert role in ('production',)+CALIBRATION_ROLES, 'Unknown policy execution role; never fall back to production'
+    if has_formal_markers(run):assert_formal_run(run)
     return role
 
 
 def adoption_inputs(run,base=None):
     """Require explicit source directories; their actual proofs are checked later."""
     role=execution_role(run)
+    if role=='production' and run.get('contract_kind')==CONTRACT_KIND:
+        # Only the exact new contract can omit external diagnostic sources.
+        assert_formal_run(run)
+        assert run['policy_safety_mode']==SAFETY_MODE
+        return {}
     if role==CALIBRATION_ROLES[0]:return {}
     names=['policy_calibration_discovery_base']
     formal=role=='production' and run.get('contract_kind')==CONTRACT_KIND
@@ -105,8 +111,20 @@ class Pipeline:
                         run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],
                         source_map_sha256=source_sha,sampler_identity=producer,sampling_interval_seconds=2,
                         query_started_unix=query_started,unix=time.time(),gpus=rows))+'\n');f.flush()
+                    os.fsync(f.fileno())
+                    parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+                    try:os.fsync(parent_fd)
+                    finally:os.close(parent_fd)
                     self.stop_sampling.wait(2)
         except Exception as e:self.sample_error=repr(e)
+    def finish_sampling(self,sampler):
+        self.stop_sampling.set()
+        if sampler is not None:sampler.join(35)  # nvidia-smi queries have a30s bound.
+        if (sampler is not None and sampler.is_alive()) or self.sample_error is not None:
+            reason='GPU sampling did not finish durably: '+str(self.sample_error)
+            self.stage('FAILED',error=reason)
+            raise RuntimeError(reason)
+
     def start(self,name,args,gpus,extra=None):
         assert _interrupt_requested is None, 'Pipeline stop requested before component launch'
         assert set(gpus)<=set(ALLOWED)
@@ -249,7 +267,7 @@ class Pipeline:
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
         role=supported_execution_role(self.run,self.base)
-        if role==CALIBRATION_ROLES[0]:
+        if role==CALIBRATION_ROLES[0] or (role=='production' and self.run.get('contract_kind')==CONTRACT_KIND):
             self.stage('REAL_INITIAL_300_QUESTION_CALIBRATION')
             c=self.start('initial-calibration',[self.python,'-m','reproduction.common8.refit','--step','0','--model',self.run['initial_model']],[7])
             self.wait('initial-calibration',c)
@@ -326,8 +344,7 @@ class Pipeline:
             except Exception as error:
                 self.stage('OWNED_CLEANUP_FAILED',error=repr(error));raise
             finally:
-                self.stop_sampling.set()
-                if sampler is not None:sampler.join(5)
+                self.finish_sampling(sampler)
         if success:self.stage(finished_stage)
 
 

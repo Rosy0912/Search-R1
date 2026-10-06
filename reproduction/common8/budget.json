@@ -14,6 +14,9 @@
   "ppo_mini_batch_size": 128,
   "ppo_epochs": 1,
   "optimizer_steps_per_outer": 20,
+  "optimizer_opportunities_per_outer": 20,
+  "optimizer_completion_rule": "all20_opportunities_processed_and_at_least_one_write",
+  "optimizer_step_count_semantics": "opportunities; actual successful writes reported separately",
   "ppo_micro_batch_size": 16,
   "per_rank_actor_micro_batch": 2,
   "log_prob_micro_batch_size": 32,
@@ -43,5 +46,13 @@
   "allow_tf32": false,
   "lr_warmup_steps": 57,
   "entropy_coefficient": 0.0,
-  "contract_kind": "fresh200_warmup57"
+  "contract_kind": "fresh200_warmup57",
+  "policy_safety_mode": "inline_first_five",
+  "safeguards": {
+    "dual_clip": 3.0,
+    "epsilon": 0.2,
+    "target_old_policy_kl": 0.2,
+    "kl_log_bound": 30.0,
+    "negative_tail_limit": 0.01
+  }
 }

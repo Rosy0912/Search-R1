@@ -57,7 +57,7 @@ def _native_run():
     return base, run, job
 
 
-def prepare_identity(parent_batch, logical_update, *, repeats, validation=False):
+def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None):
     base, run, job = _native_run()
     count = len(parent_batch)
     assert type(logical_update) is int and logical_update >= 0
@@ -68,13 +68,22 @@ def prepare_identity(parent_batch, logical_update, *, repeats, validation=False)
         if hasattr(group, 'item'):
             group = group.item()
         parent_ids.append(str(index) + '-' + document_sha256(group))
-    ids = [run['run_id'] + '-' + str(logical_update) + '-' + parent + '-sample-' + str(sample)
+    inline=run.get('policy_safety_mode')=='inline_first_five' and not validation
+    if inline:
+        assert isinstance(attempt_id,str) and len(attempt_id)==32 and all(char in '0123456789abcdef' for char in attempt_id)
+        assert type(attempt_index) is int and attempt_index>=1
+    else:
+        assert attempt_id is None and attempt_index is None
+    occurrence=('-attempt-'+attempt_id) if inline else ''
+    ids = [run['run_id'] + '-' + str(logical_update) + occurrence + '-' + parent + '-sample-' + str(sample)
            for parent in parent_ids for sample in range(repeats)]
     # A validation nonce distinguishes repeated before/after calls at one step.
-    snapshot = run['run_id'] + ':' + str(logical_update) + ':' + ('validation-' if validation else 'policy-') + uuid.uuid4().hex
-    return dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id=job,
+    snapshot = run['run_id'] + ':' + str(logical_update) + ':' + ('validation-' if validation else 'policy-') + (attempt_id if inline else uuid.uuid4().hex)
+    identity=dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id=job,
                 logical_update=logical_update, policy_snapshot_id=snapshot,
                 parent_group_ids=parent_ids, trajectory_ids=ids, validation=validation)
+    if inline:identity.update(attempt_id=attempt_id,attempt_index=attempt_index)
+    return identity
 
 
 def attach_generation_identity(gen_batch, identity, *, do_sample):
@@ -82,6 +91,8 @@ def attach_generation_identity(gen_batch, identity, *, do_sample):
     gen_batch.non_tensor_batch['behavior_row_id'] = np.array(identity['trajectory_ids'], dtype=object)
     gen_batch.meta_info.update(behavior_identity=identity, policy_snapshot_id=identity['policy_snapshot_id'],
                                recompute_log_prob=False, do_sample=do_sample)
+    if 'attempt_id' in identity:
+        gen_batch.meta_info.update(attempt_id=identity['attempt_id'],attempt_index=identity['attempt_index'])
 
 
 def actor_rows(batch):
@@ -119,7 +130,7 @@ def context_before_forward(batch):
         policy_snapshot_id=identity['policy_snapshot_id'], sampling=sampling,
         parent_group_ids=identity['parent_group_ids'], trajectories=trajectories, actor_rows=rows)
     bindings = _bindings(identity, sampling)
-    private = write_private_evidence(base, trace)
+    private = write_private_evidence(base, trace,attempt_id=identity.get('attempt_id'))
     assert private['serialization_transformed'] is False
     audit = audit_outer(trace, actor_rows=rows, **bindings)
     assert audit['trace_sha256'] == private['private_trace_sha256']
@@ -159,7 +170,11 @@ def freeze_after_probability_gate(batch, context, hf_output):
                      for index, value in enumerate(batch.non_tensor_batch['behavior_trajectory_id'].tolist())},
                  private_trace_sha256=context['private']['private_trace_sha256'],
                  denominator='actual_selected_sampling_log_probs_after_all_token_context_and_0.05_gate')
-    path = base / 'logs' / ('behavior-probability-outer-' + str(proof['logical_update']) + '.json')
+    identity=batch.meta_info['behavior_identity']
+    attempt_id=identity.get('attempt_id');attempt_index=identity.get('attempt_index')
+    if run.get('policy_safety_mode')=='inline_first_five':
+        proof.update(attempt_id=attempt_id,attempt_index=attempt_index)
+    path = gate_path(base,run,proof['logical_update'],attempt_id=attempt_id)
     content = canonical_bytes(proof)
     descriptor = os.open(str(path), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
     with os.fdopen(descriptor, 'wb') as stream:
@@ -171,6 +186,9 @@ def freeze_after_probability_gate(batch, context, hf_output):
         os.close(directory)
     batch.meta_info['behavior_probability_gate'] = dict(path=str(path), sha256=hashlib.sha256(content).hexdigest(),
         run_id=run['run_id'], slurm_job_id=job, logical_update=proof['logical_update'])
+    if attempt_id is not None:
+        batch.meta_info['behavior_probability_gate'].update(attempt_id=attempt_id,attempt_index=attempt_index)
+        batch.meta_info.update(attempt_id=attempt_id,attempt_index=attempt_index)
     return proof
 
 
@@ -226,13 +244,27 @@ def failed_generation_evidence(identity, records, reason):
                                                'logical_update', 'policy_snapshot_id')}
     trace.update(role='common8_failed_partial_generation', actual_sampling_records=records,
                  failure_reason=reason, complete_outer=False)
-    write_private_evidence(base, trace)
+    write_private_evidence(base, trace,attempt_id=identity.get('attempt_id'))
 
 
-def read_gate_receipt(base, run, step, *, update_record=None):
+def gate_path(base,run,step,*,attempt_id=None):
+    if run.get('policy_safety_mode')=='inline_first_five':
+        assert isinstance(attempt_id,str) and len(attempt_id)==32 and all(char in '0123456789abcdef' for char in attempt_id)
+        return Path(base)/'logs'/('behavior-probability-attempt-'+attempt_id+'.json')
+    assert attempt_id is None
+    return Path(base)/'logs'/('behavior-probability-outer-'+str(step)+'.json')
+
+
+def read_gate_receipt(base, run, step, *, update_record=None,attempt_id=None,attempt_index=None):
     """Light scalar/hash binding; never claim this rereads raw trajectories."""
     base = Path(base)
-    path = base / 'logs' / ('behavior-probability-outer-' + str(step) + '.json')
+    if run.get('policy_safety_mode')=='inline_first_five':
+        if update_record is not None:
+            assert attempt_id is None or attempt_id==update_record['attempt_id']
+            assert attempt_index is None or attempt_index==update_record['attempt_index']
+            attempt_id,attempt_index=update_record['attempt_id'],update_record['attempt_index']
+        assert type(attempt_index) is int and attempt_index>=1
+    path = gate_path(base,run,step,attempt_id=attempt_id)
     assert path.resolve() == path
     raw = path.read_bytes()
     proof = json.loads(raw)
@@ -243,6 +275,9 @@ def read_gate_receipt(base, run, step, *, update_record=None):
     assert proof['source_sha256'] == run['source_sha256']
     assert proof['slurm_job_id'] == allocation['slurm_job_id']
     assert proof['logical_update'] == step and proof['trajectory_count'] == 2560
+    if run.get('policy_safety_mode')=='inline_first_five':
+        assert proof['attempt_id']==attempt_id and proof['attempt_index']==attempt_index
+        assert proof['policy_snapshot_id']==run['run_id']+':'+str(step)+':policy-'+attempt_id
     assert proof['actual_frozen_old_all_finite'] is True
     assert 0 <= proof['max_abs_discrepancy'] <= proof['tolerance'] == 0.05
     assert proof['sampling']['temperature'] == proof['sampling']['top_p'] == 1.0
@@ -251,14 +286,19 @@ def read_gate_receipt(base, run, step, *, update_record=None):
     if update_record is not None:
         assert update_record['behavior_probability_gate_sha256'] == sha
         assert update_record['behavior_trace_sha256'] == proof['trace_sha256'] == proof['private_trace_sha256']
-    return dict(proof_sha256=sha, private_trace_sha256=proof['private_trace_sha256'],
+    result=dict(proof_sha256=sha, private_trace_sha256=proof['private_trace_sha256'],
                 included_actor_token_count=proof['included_actor_token_count'],
                 max_abs_discrepancy=proof['max_abs_discrepancy'])
+    if run.get('policy_safety_mode')=='inline_first_five':
+        result.update(attempt_id=attempt_id,attempt_index=attempt_index)
+    return result
 
 
 def verify_write_receipt_links(base, gates, first, last):
     """One scalar-ledger scan binds every pre/post monitor and Adam write."""
     base = Path(base)
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    attempt_gates={}
     for rank in range(8):
         rows = [json.loads(line) for line in (base / 'logs' / ('optimizer-rank-' + str(rank) + '.jsonl')).read_text().splitlines()]
         for row in rows:
@@ -266,7 +306,14 @@ def verify_write_receipt_links(base, gates, first, last):
                 continue
             step = row['context']['logical_update']
             if first <= step <= last:
-                assert row['context']['behavior_probability_gate_sha256'] == gates[str(step)]['proof_sha256']
+                if run.get('policy_safety_mode')=='inline_first_five':
+                    attempt=row['context']['attempt_id'];index=row['context']['attempt_index']
+                    if attempt not in attempt_gates:
+                        attempt_gates[attempt]=read_gate_receipt(base,run,step,attempt_id=attempt,attempt_index=index)
+                    expected=attempt_gates[attempt]['proof_sha256']
+                else:
+                    expected=gates[str(step)]['proof_sha256']
+                assert row['context']['behavior_probability_gate_sha256'] == expected
 
 
 def verify_worker_input(data, *, logical_update, group):
@@ -280,7 +327,7 @@ def verify_worker_input(data, *, logical_update, group):
     try:
         base, run, job = _native_run()
         receipt = data.meta_info['behavior_probability_gate']
-        path = base / 'logs' / ('behavior-probability-outer-' + str(logical_update) + '.json')
+        path = gate_path(base,run,logical_update,attempt_id=data.meta_info.get('attempt_id'))
         assert receipt['path'] == str(path) and path.resolve() == path and path.stat().st_uid == os.getuid()
         raw = path.read_bytes()
         assert hashlib.sha256(raw).hexdigest() == receipt['sha256']
@@ -290,6 +337,9 @@ def verify_worker_input(data, *, logical_update, group):
         assert proof['source_sha256'] == run['source_sha256']
         assert proof['slurm_job_id'] == receipt['slurm_job_id'] == job
         assert type(logical_update) is int and proof['logical_update'] == receipt['logical_update'] == logical_update
+        if run.get('policy_safety_mode')=='inline_first_five':
+            assert proof['attempt_id']==receipt['attempt_id']==data.meta_info['attempt_id']
+            assert proof['attempt_index']==receipt['attempt_index']==data.meta_info['attempt_index']
         assert proof['trajectory_count'] == 2560 and len(proof['row_tensor_sha256']) == 2560
         assert proof['max_abs_discrepancy'] <= 0.05 and data.meta_info['temperature'] == 1.0
         assert len(data) == 320 and torch.equal(data.batch['old_log_probs'], data.batch['sampling_log_probs'])

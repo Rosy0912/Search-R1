@@ -29,13 +29,13 @@ case "$G1_POLICY_EXECUTION_ROLE" in
     python -m reproduction.common8.freeze_calibration_plan
     ;;
   production)
-    G1_POLICY_DISCOVERY_BASE="$(python -c 'import json,os,sys; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())[sys.argv[1]])' policy_calibration_discovery_base)"
     G1_CONTRACT_KIND="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text()).get("contract_kind","legacy300"))')"
     if [[ "$G1_CONTRACT_KIND" == fresh200_warmup57 ]]; then
-      G1_DIAGNOSTIC_PROOF="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())["diagnostic_proof"])')"
-      G1_TERMINAL_PROOF="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())["diagnostic_terminal_proof"])')"
-      python -m reproduction.common8.fresh200_bootstrap --base "$BASE" --discovery-base "$G1_POLICY_DISCOVERY_BASE" --diagnostic-proof "$G1_DIAGNOSTIC_PROOF" --terminal-proof "$G1_TERMINAL_PROOF"
+      # supported_execution_role rejects a missing/wrong policy_safety_mode first.
+      # Freeze real fresh0 probes and prospective candidates before this claim.
+      python -m reproduction.common8.formal_inline_safety --prepare --base "$BASE"
     else
+      G1_POLICY_DISCOVERY_BASE="$(python -c 'import json,os,sys; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())[sys.argv[1]])' policy_calibration_discovery_base)"
       G1_POLICY_CONFIRMATION_BASE="$(python -c 'import json,os,sys; from pathlib import Path; print(json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text())[sys.argv[1]])' policy_calibration_confirmation_base)"
       python -m reproduction.common8.production_safety_admission --base "$BASE" --discovery-base "$G1_POLICY_DISCOVERY_BASE" --confirmation-base "$G1_POLICY_CONFIRMATION_BASE"
     fi
