@@ -128,6 +128,8 @@ class Controller:
         self.config = trainer.config.baselines
         torch.manual_seed(self.config.seed)
         self.method = self.config.method
+        # Zero completed outers is meaningful before the first attempt or fault backup.
+        self.actual_outer_updates = 0
         self.stage = BoundaryStage(patience=self.config.bapo.patience)
         self.ranker = self.teacher = None
         if self.method == 'bapo':

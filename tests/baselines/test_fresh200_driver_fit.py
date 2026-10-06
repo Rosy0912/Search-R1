@@ -17,7 +17,7 @@ from search_r1.baselines.full_state import StatefulSampler
 from search_r1.baselines.fresh200_contract import fresh200_lr_factor
 
 
-@pytest.mark.parametrize('fatal_metadata',[False,True,'commit_fault'])
+@pytest.mark.parametrize('fatal_metadata',[False,True,'commit_fault','actor_rpc_fault','actor_rpc_fault_backup_failure'])
 def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts(tmp_path,fatal_metadata):
     t=RayPPOTrainer.__new__(RayPPOTrainer)
     t.config=OmegaConf.create(dict(max_turns=4,force_final_answer=False,do_search=False,
@@ -38,7 +38,7 @@ def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts
         return {key:(torch.stack([row[key]for row in items]) if isinstance(items[0][key],torch.Tensor)
                      else np.array([row[key].item() for row in items])) for key in items[0]}
     t.train_dataloader=DataLoader(rows,batch_size=1,sampler=t.e1_sampler,collate_fn=collate,num_workers=0)
-    controller=Controller.__new__(Controller);controller.method='bapo';controller.ranker=None;controller.actual_outer_updates=0
+    controller=Controller(NS(config=OmegaConf.create(dict(baselines=dict(method='grpo',seed=42,bapo=dict(patience=2))))));controller.method='bapo'
     controller.stage=NS(state_dict=lambda:dict(stage=1),load_state_dict=lambda state:None)
     def advantages(batch,metrics):
         batch.batch['advantages']=torch.ones_like(batch.batch['responses']).float()
@@ -59,6 +59,7 @@ def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts
             position_ids=torch.tensor([[0,1]]),old_log_probs=torch.zeros(1,1)),
             meta_info=dict(batch.meta_info))
     def update(batch):
+        if str(fatal_metadata).startswith('actor_rpc_fault'):raise RuntimeError('ORIGINAL_ACTOR_ADMISSION_REJECTED_BEFORE_WRITES')
         outer=batch.meta_info['actual_outer'];attempt=batch.meta_info['attempt_id'];expected=20 if outer<50 else 10
         first=outer not in seen;seen.add(outer)
         if first and outer in (1,50):status='ABORTED';writes=3 if outer==1 else expected;processed=writes;postabort=True
@@ -84,6 +85,7 @@ def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts
         return DataProto(meta_info=dict(metrics={'actor/optimizer_steps':[writes]},fresh200_rank_updates=events))
     def save_native(directory,step,roundtrip,state_status):
         native.append(dict(step=step,tag=state_status,scheduler=worker.scheduler_steps))
+        if fatal_metadata=='actor_rpc_fault_backup_failure':raise OSError('NATIVE_BACKUP_IO_FAILURE')
         return [dict(rank=r) for r in range(8)]
     worker.generate_sequences=generation;worker.update_actor=update
     worker.save_checkpoint=lambda *args:None;worker.save_training_state=save_native;t.actor_rollout_wg=worker
@@ -92,9 +94,29 @@ def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts
             sampling_verifier_status='PASS_ACTUAL_BATCH_BINDING_NOT_RELEASE')
     with patch('search_r1.baselines.fresh200_driver.persist_first_sampling_batch',side_effect=proof_boundary),patch.dict(os.environ,{'BAPO_RUN_ID':str(tmp_path)}),patch('verl.trainer.ppo.ray_trainer.compute_data_metrics',return_value={}),patch('verl.trainer.ppo.ray_trainer.compute_timing_metrics',return_value={}),contextlib.redirect_stdout(io.StringIO()):
         if fatal_metadata:
-            with pytest.raises(ValueError):t.fit()
+            if str(fatal_metadata).startswith('actor_rpc_fault'):
+                with pytest.raises(RuntimeError,match='ORIGINAL_ACTOR_ADMISSION_REJECTED_BEFORE_WRITES'):t.fit()
+            else:
+                with pytest.raises(ValueError):t.fit()
         else:t.fit()
     if not fatal_metadata:assert t.fresh200_first_sampling_proof['attempt_id']==2
+    if str(fatal_metadata).startswith('actor_rpc_fault'):
+        assert controller.actual_outer_updates==0 and t.fresh200_progress.completed_outers==0
+        assert calls==[] and native==[dict(step=1,tag='PARTIAL',scheduler=0)] and stage_calls==[] and pauses==[]
+        if fatal_metadata=='actor_rpc_fault_backup_failure':
+            directory=tmp_path/'diagnostics/attempt_1_INFRA_FAULT'
+            assert 'ORIGINAL_ACTOR_ADMISSION_REJECTED_BEFORE_WRITES' in (directory/'driver-fault.raw.log').read_text()
+            assert 'NATIVE_BACKUP_IO_FAILURE' in (directory/'backup-fault.raw.log').read_text()
+            assert (directory/'all-rank-fatal-ledger.json').is_file()
+            assert not (tmp_path/'fresh200_state/attempt_1_candidate_outer_1_PARTIAL/driver.pt').exists()
+            return
+        backup=torch.load(tmp_path/'fresh200_state/attempt_1_candidate_outer_1_PARTIAL/driver.pt',weights_only=False)
+        assert backup['actual_outer_updates']==0 and backup['previous_completed_outer']==0 and backup['status']=='PARTIAL'
+        assert backup['rank_write_ledger']==[] and backup['progress']['actual_adam_writes_per_rank']==[0]*8
+        raw=(tmp_path/'diagnostics/attempt_1_INFRA_FAULT/driver-fault.raw.log').read_text()
+        assert 'ORIGINAL_ACTOR_ADMISSION_REJECTED_BEFORE_WRITES' in raw
+        assert not (tmp_path/'diagnostics/attempt_1_INFRA_FAULT/backup-fault.raw.log').exists()
+        return
     if fatal_metadata:
         assert t.fresh200_progress.completed_outers==0 and len(calls)==1 and stage_calls==[] and pauses==[]
         assert native==[dict(step=1,tag='PARTIAL',scheduler=0)]
@@ -123,3 +145,19 @@ def test_actual_fit_recycles_sampler_until200_accepted_with_fresh_abort_rollouts
     assert partial['source_commit']=='a'*40 and partial['attempt_id']==1 and partial['previous_completed_outer']==0
     assert partial['status']=='ABORTED' and partial['next_global_step']==1 and partial['reward_metrics']['bapo/reward_fixture']==1.
     assert partial['progress']['actual_adam_writes_per_rank']==[3]*8
+
+
+def test_real_bapo_controller_has_zero_complete_counter_before_any_attempt():
+    import pandas as pd
+    class FixtureDataset:
+        def __init__(self,prompt):self.dataframe=pd.DataFrame({'prompt':[prompt]})
+        def __len__(self):return 1
+        def __getitem__(self,index):return {'prompt':self.dataframe.iloc[index]['prompt']}
+    trainer=NS(config=OmegaConf.create(dict(
+        baselines=dict(method='bapo',seed=42,bapo=dict(patience=2,alpha=1.,bonus=0.,stage_validation_files=['fixture'],stage_validation_size=1)),
+        data=dict(prompt_key='prompt',max_prompt_length=4096,val_batch_size=1,final_val_files=[]))),
+        tokenizer=NS(),train_dataset=FixtureDataset('train'),val_dataset=FixtureDataset('debug'))
+    with patch('verl.utils.dataset.rl_dataset.RLHFDataset',return_value=FixtureDataset('holdout')):
+        controller=Controller(trainer)
+    assert controller.actual_outer_updates==0
+    assert controller.stage.state_dict() and controller.method=='bapo'

@@ -1,6 +1,7 @@
 """python -m search_r1.baselines.main baselines.method=gigpo [Hydra overrides]."""
 import hydra
 import ray
+from omegaconf import OmegaConf
 from .controller import validate_config
 
 
@@ -35,6 +36,9 @@ def main(config):
     validate_config(config)
     from .preflight import validate_assets_and_retriever
     validate_assets_and_retriever(config)
+    # Ray workers can predate launcher environment exports. Resolve in the
+    # verified driver before serialization; workers must use those same values.
+    OmegaConf.resolve(config)
     from verl.trainer.main_ppo import main_task
     if not ray.is_initialized():
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
