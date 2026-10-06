@@ -5,6 +5,7 @@ import os
 import re
 import time
 import hashlib
+from numbers import Real
 from pathlib import Path
 from reproduction.a800.runtime import checkpoint_complete
 from reproduction.common8.verify_data import digest, verify
@@ -249,6 +250,14 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     return result
 
 
+def _validate_reduced_count(value, *, minimum, maximum):
+    """Accept finite integer-valued real scalars from the metric reducer."""
+    assert isinstance(value, Real) and not isinstance(value, bool)
+    assert minimum <= value <= maximum
+    assert math.isfinite(value) and value == int(value)
+    return int(value)
+
+
 def accept_five_updates(checkpoint, records):
     import torch
     from safetensors import safe_open
@@ -274,10 +283,10 @@ def accept_five_updates(checkpoint, records):
         for key in ('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
                     'actor/kl_loss','actor/ppo_kl','actor/grad_norm'):
             assert math.isfinite(r['metrics'][key])
-        successes=r['metrics']['actor/optimizer_steps_this_update']
-        assert type(successes) in (int,float) and float(successes).is_integer()
-        assert 1<=successes<=20 and r['metrics']['actor/update_opportunities_this_attempt']==20
-        assert r['metrics']['actor/skipped_update_opportunities']==20-successes
+        successes=_validate_reduced_count(r['metrics']['actor/optimizer_steps_this_update'],minimum=1,maximum=20)
+        opportunities=_validate_reduced_count(r['metrics']['actor/update_opportunities_this_attempt'],minimum=20,maximum=20)
+        skipped=_validate_reduced_count(r['metrics']['actor/skipped_update_opportunities'],minimum=0,maximum=19)
+        assert opportunities==20 and skipped==20-successes
         saved_record = actual[r['step']-1]
         assert saved_record['run_id'] == run['run_id']
         assert saved_record['probe_version'] == r['probe_version']

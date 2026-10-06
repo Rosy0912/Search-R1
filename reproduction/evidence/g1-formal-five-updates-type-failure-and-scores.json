@@ -1,0 +1,110 @@
+{
+  "role": "actual_formal_first_five_followed_by_acceptance_type_failure",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "native_job_id": "3309",
+  "loaded_source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "completed_outers": 5,
+  "processed_opportunities_per_rank": 100,
+  "agreed_returned_adam_writes_per_rank": 100,
+  "skipped_opportunities_per_rank": 0,
+  "warmup_advances": 5,
+  "replicas_not_multiplied": true,
+  "reward_exact": [
+    0.18585431575775146,
+    0.20196983218193054,
+    0.23222891986370087,
+    0.2238292694091797,
+    0.2630924880504608
+  ],
+  "saved_step5_serialized_tensor_count": 435,
+  "producer_saved_all_tensors_finite": true,
+  "full_five_acceptance": false,
+  "paired512": {
+    "role": "actual_paired512_scalar_only",
+    "run_id": "db5235708c354bffae6d0120c1cb5459",
+    "source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+    "actual_rows_recomputed": true,
+    "same_ordered_unique512_ids": true,
+    "ordered_ids_sha256": "b8557f89a232e9f0cf4532222e679ceb141d0d398ed4d9ca91906cf67355bbe6",
+    "plan_sha256": "626966eb2ff6d76227424fb16dba0e8810c741ad659049e29ac989b4b527c5fd",
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "before": {
+      "step": 0,
+      "checked_unix": 1791296323.1089888,
+      "correct": 91,
+      "count": 512,
+      "EM": 0.177734375,
+      "F1": 0.24118301022177743,
+      "source_correct": {
+        "nq": 51,
+        "hotpotqa": 40
+      },
+      "source_counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "valid_action_rate": 0.9459227467811159,
+      "search_question_count": 501,
+      "search_call_count": 593,
+      "artifact_sha256": "2acbfae9f828452e54488e6024bc4af88429f59551715e96cf41dbbe668f1b1a"
+    },
+    "after": {
+      "step": 5,
+      "checked_unix": 1791307279.020966,
+      "correct": 106,
+      "count": 512,
+      "EM": 0.20703125,
+      "F1": 0.2758182202960885,
+      "source_correct": {
+        "nq": 62,
+        "hotpotqa": 44
+      },
+      "source_counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "valid_action_rate": 0.9645776566757494,
+      "search_question_count": 506,
+      "search_call_count": 555,
+      "artifact_sha256": "c48ce2a743193588be48bec0a0d976f577fbe6bf1e975122841e3f195d0896cf"
+    },
+    "EM_change_percentage_points": 2.9296875,
+    "F1_change_percentage_points": 3.4635210074311056,
+    "five_acceptance": false,
+    "native_success": false,
+    "scope": "Actual existing same512 score rows audited; no new evaluation invoked, no raw IDs/QA included; does not override known acceptance type failure."
+  },
+  "stage64": {
+    "step0": {
+      "correct": 14,
+      "count": 64,
+      "EM": 0.21875,
+      "F1": 0.30167993505026125
+    },
+    "step5": {
+      "correct": 16,
+      "count": 64,
+      "EM": 0.25,
+      "F1": 0.3512632492690059
+    },
+    "same_ordered_ids_checked": true
+  },
+  "failure": {
+    "private_evidence_sha256": "409c607f54ddd7da483861508666cd8acd986446fb54bf18f3a7c7e71a32a123",
+    "cause": "exact builtin numeric type assertion rejected a real live NumPy metric at firstfive acceptance",
+    "not_guard_or_adam_failure": true
+  },
+  "original_pipeline_stage": "OWNED_CLEANUP_FAILED",
+  "original_native_terminal_state": "UNKNOWN_PURGED",
+  "native_success": false,
+  "separate_current_resource_reconciliation_sha256": "ac6fcaaf8509ef991318c27dec497120879f191ba512aa31aac0165191b120b5",
+  "new_numeric_repair": {
+    "runtime_sha256": "e349939fca092e9dc2682567db276971795966c659a8d13840ef350991abd567",
+    "new_regression_test_sha256": "f27929f5768274b60998a232ac07d4386dd00f34227df18a9bc10a8a8a2f17f9",
+    "new_context_free_static_review": "PASS",
+    "review_sha256": "d351a9ed209055a6f1fa70a5fa8554cdeaa7ee5bfb30addbfa44b43e188a62f0",
+    "actual_native_target_regression_pass": false
+  },
+  "goal_complete": false,
+  "scope": "Preserved actual failedattempt and positive early same-example scores; no paper accuracy/five/goal acceptance, no restart, no full-state resume; only scalar/hash/source publication."
+}
