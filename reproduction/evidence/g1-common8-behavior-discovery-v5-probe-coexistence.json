@@ -1,0 +1,140 @@
+{
+  "job_id": "3294",
+  "checked_unix": 1791255569.9769633,
+  "source_hashes_match": true,
+  "pipeline-status.json": {
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "stage": "REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE",
+    "unix": 1791255429.7594857
+  },
+  "actual_initial_probe": {
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "round": 0,
+    "version": "ee0d52bd4edb465993214a2a48f7521a:0:c2a508a98477476fadf550a49bc17450",
+    "live_manifest_sha256": "880aadaeaa0ef15cddb10bc83c6e5b8e7586e0d8a74677138eb8d44f2ba287c7",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791255408.2976243,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "model_gate_initial": {
+    "accepted": true,
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "slurm_job_id": "3294",
+    "phase": "initial",
+    "proof_sha256": "63b57a0e39d95b8e3e7bfb1eb74d530086a2c0d59c89c4f2b6f4a7cb57c43f00",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "model_gate_coexistence": {
+    "accepted": true,
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "slurm_job_id": "3294",
+    "phase": "coexistence",
+    "proof_sha256": "bcbceec48c0033b6ace12cc8fa8554f7b40214a4650add30dff9bc0ab775a708",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "gpu_sampling": {
+    "sample_count": 447,
+    "first_unix": 1791254584.1162627,
+    "last_unix": 1791255569.2513735,
+    "max_gap_seconds": 8.861470699310303,
+    "cumulative_peak_mib": {
+      "0": 45888,
+      "1": 45453,
+      "2": 45454,
+      "3": 45457,
+      "4": 45455,
+      "5": 45448,
+      "6": 45456,
+      "7": 49349
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "parent_actual_unstarted_verified": true,
+  "role": "actual_initial_probe_and_coexistence_not_training_admission",
+  "source_commit": "e670dfacab4ff0146f7ea0ca60e3f49675a4d2f6",
+  "original_observation_sha256": "7c3e919aff329b61eb269e7b1b0705d5dbe6dc55ab571c3a230231d70e08ad0e",
+  "actual_complete_discovery_outers": 0,
+  "actual_production_updates": 0,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "original_source_service_cleanup": {
+    "original_receipt_sha256": "807bb53fe13671ab5510694bf46b2243719ef89dd67e6249ea248032c3c55833",
+    "cleaned": true,
+    "checked_unix": 1791255086.7746058,
+    "pid": 1092223,
+    "start_ticks": 1554302891,
+    "sid": 1092223,
+    "uid": 0,
+    "original_assets_retained": true
+  },
+  "scope": "Actual initial300 probe fit and eight-rank greedy model/retriever/probe coexistence; no complete2560 stochastic probability proof,20writes,paired512 health or fresh checkpoint audit"
+}
