@@ -1,0 +1,61 @@
+{
+  "role": "actual_common8_special_token_repair_target_cpu",
+  "runtime_source_commit": "f0445f4edf0dbea916ff63bedafe356d6d9ebcdb",
+  "source_map_sha256": "0caacf25e7eae533760b52139ee86b009a11b0c3ce1fa191834f362b94c9da3e",
+  "source_count": 354,
+  "original_target_receipt_sha256": "2a6ffec1a4a8c8c53d138a6975af6daadd90221cd0256879902002ea082ae24f",
+  "checked_unix": 1791274045.038903,
+  "source_unchanged": true,
+  "modules": [
+    "reproduction.common8.test_policy_calibration_plan",
+    "reproduction.common8.test_freeze_calibration_plan",
+    "reproduction.common8.test_safety_calibration_evidence",
+    "reproduction.common8.test_calibration_evaluation",
+    "reproduction.common8.test_calibration_runtime",
+    "reproduction.common8.test_prepare_calibration_run",
+    "reproduction.common8.test_adopt_initial_probes",
+    "reproduction.common8.test_production_safety_admission",
+    "reproduction.common8.test_pipeline_calibration",
+    "search_g1.test_policy_safety",
+    "reproduction.common8.test_temporary_cache",
+    "reproduction.common8.test_sampling_capture",
+    "reproduction.common8.test_behavior_trace",
+    "reproduction.common8.test_behavior_probability",
+    "reproduction.common8.test_behavior_runtime",
+    "reproduction.common8.test_generation_behavior"
+  ],
+  "actual_tests_run": 264,
+  "skipped": [],
+  "failures": 0,
+  "errors": 0,
+  "distribution_versions": {
+    "torch": "2.4.0",
+    "transformers": "4.46.3",
+    "vllm": "0.6.3",
+    "tensordict": "0.5.0"
+  },
+  "vllm_module_version": "dev",
+  "cuda_available": false,
+  "cuda_initialized_before": false,
+  "cuda_initialized_after": false,
+  "duration_seconds": 90.30957126617432,
+  "shell_syntax_checks": [
+    {
+      "path": "reproduction/common8/train.sh",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "reproduction/common8/launch_calibration_native.sh",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "actual_production_updates": 0,
+  "physical_behavior_admitted": false,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "scope": "Actual target CPU/Gloo and installed-parent request group integration, with no model engine initialization/GPU/Adam. Does not substitute actual full2560 probability/context or policy-health admission."
+}
