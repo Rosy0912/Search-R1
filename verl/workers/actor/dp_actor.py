@@ -267,6 +267,7 @@ class DataParallelPPOActor(BasePPOActor):
         io_bad = torch.tensor(int(error is not None), device=device, dtype=torch.int32)
         if torch.distributed.is_initialized():
             torch.distributed.all_reduce(io_bad, op=torch.distributed.ReduceOp.MAX, group=group)
+        record.update(global_diagnostic_io_failed=bool(io_bad), local_diagnostic_io_error=error)
         from search_r1.baselines.policy_safety import PolicySafetyRejected
         raise PolicySafetyRejected('synchronized invalid input/state' + ('; diagnostic IO failed' if bool(io_bad) else ''), record)
 
@@ -385,7 +386,8 @@ class DataParallelPPOActor(BasePPOActor):
         except ValueError as matched_error:
             from search_r1.baselines.policy_safety import PolicySafetyRejected
             raise PolicySafetyRejected('matched monitor evidence IO refusal', dict(record,
-                matched_guard='ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL', local_io_error=error)) from matched_error
+                matched_guard='ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL',
+                global_diagnostic_io_failed=True, allowed=False, local_io_error=error)) from matched_error
         if reason:
             from search_r1.baselines.policy_safety import PolicySafetyRejected
             raise PolicySafetyRejected(json.dumps(record, allow_nan=False, sort_keys=True), record)
@@ -802,12 +804,24 @@ class DataParallelPPOActor(BasePPOActor):
                     except Exception as evidence_error:
                         diagnostic_error = repr(evidence_error)
                 if safety_enabled and isinstance(optimizer_error, MatchedGradientRejected):
+                    # All ranks already reached the original FSDP gradient MAX
+                    # refusal. Only that typed matched branch may synchronize
+                    # local diagnostic IO; unknown optimizer/collective errors
+                    # below escape directly and never enter this new boundary.
+                    device = (self.actor_module.compute_device if isinstance(self.actor_module, FSDP)
+                              else next(self.actor_module.parameters()).device)
+                    diagnostic_io_bad = torch.tensor(int(optimizer_error.diagnostic_error is not None
+                        or diagnostic_error is not None), device=device, dtype=torch.int32)
+                    if torch.distributed.is_initialized():
+                        torch.distributed.all_reduce(diagnostic_io_bad, op=torch.distributed.ReduceOp.MAX,
+                            group=getattr(self.actor_module, 'process_group', None))
                     from search_r1.baselines.policy_safety import PolicySafetyRejected
                     raise PolicySafetyRejected(str(optimizer_error), dict(
                         outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
                         attempt_id=getattr(self, '_fresh200_attempt_id', None),
                         phase='global_gradient_before_adam', actual_optimizer_writes=updates,
                         matched_guard='ORIGINAL_FSDP_ALL_REDUCE_MAX_GRADIENT_REFUSAL',
+                        global_diagnostic_io_failed=bool(diagnostic_io_bad),
                         gradient_diagnostic_error=optimizer_error.diagnostic_error,
                         failed_mini_diagnostic_error=diagnostic_error)) from optimizer_error
                 raise

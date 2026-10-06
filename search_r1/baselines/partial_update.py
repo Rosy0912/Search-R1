@@ -94,6 +94,12 @@ def preserve_worker(worker, data, rejection, refusal_index=None):
 
 def rejection_disposition(record):
     """Expired old-policy support always abandons the remaining rollout reuse."""
+    # Diagnostic evidence failure is not a numerical opportunity refusal. The
+    # original matched IO decision takes precedence even when phase/reason
+    # still describes an otherwise skippable monitor or expired old rollout.
+    if (record.get('global_diagnostic_io_failed') is True
+            or record.get('matched_guard') == 'ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL'):
+        return 'fail_closed'
     phase = record.get('phase', '')
     if type(record.get('mini_index')) is not int or not 0 <= record['mini_index'] < 20:
         return 'fail_closed'
