@@ -33,6 +33,24 @@ def generalized_jsd(student_logits, teacher_logits, beta=0., temperature=1., com
     return parts.sum(-1)
 
 
+def _teacher_chunk_divergence(student_logits, teacher_features, valid, teacher,
+                              beta, temperature, component_clip):
+    """Recompute one frozen FP32 target projection inside the loss checkpoint.
+
+    All chunk tensors and scalar settings are explicit arguments. No target
+    logits or next loop chunk are captured. Teacher.measure includes the
+    forward projection and its backward recomputation in the existing costs.
+    """
+    with teacher.measure(), torch.no_grad():
+        target_logits = teacher.model.get_output_embeddings()(teacher_features)
+    target_logits = target_logits.to(student_logits.device)
+    source_logits = torch.where(valid[..., None], student_logits, 0.)
+    target_logits = torch.where(valid[..., None], target_logits, 0.)
+    if not torch.isfinite(source_logits).all() or not torch.isfinite(target_logits).all():
+        raise ValueError('Nonfinite OPSD logits on supervised tokens')
+    return generalized_jsd(source_logits, target_logits, beta, temperature, component_clip)
+
+
 def teacher_inputs(tokenizer, prompts, responses, response_attention, targets=None, max_length=None,
                    prompt_mode='legacy'):
     """Add private answers to teacher context, then identical student response.
@@ -99,6 +117,11 @@ def teacher_inputs(tokenizer, prompts, responses, response_attention, targets=No
 
 def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, denominator):
     """Identical CPU/GPU loss path; full logits retain gradients only for student."""
+    teacher_recompute = getattr(settings, 'teacher_logits_recompute', False)
+    if type(teacher_recompute) is not bool:
+        raise ValueError('teacher_logits_recompute must be a boolean')
+    if teacher_recompute and any(p.requires_grad for p in teacher.model.parameters()):
+        raise ValueError('Teacher logits recomputation requires a frozen teacher')
     width = tensors['responses'].shape[1]
     tid, tmask, positions = teacher_inputs(tokenizer, tensors['prompts'], tensors['responses'],
                                            tensors['attention_mask'][:, tensors['attention_mask'].shape[1] - width:], targets,
@@ -173,16 +196,28 @@ def opsd_loss(student_model, teacher, tensors, tokenizer, targets, settings, den
         stop = min(start + settings.chunk_size, width)
         pos = positions[:, start:stop].clamp(0, hidden.shape[1] - 1).to(teacher.device)
         features = hidden.gather(1, pos[..., None].expand(-1, -1, hidden.shape[-1]))
+        valid = tensors['loss_mask'][:, start:stop].bool()
+        divergence_fn = checkpoint if getattr(settings, 'loss_checkpointing', False) else None
+        if teacher_recompute:
+            # The checkpoint retains compact hidden features and the student
+            # view, rather than a FP32 full-vocabulary target for every chunk.
+            # The teacher remains resident through the actor's backward.
+            args = (student[:, start:stop], features, valid, teacher,
+                    settings.beta, settings.temperature, settings.component_clip)
+            if divergence_fn is not None:
+                divergence = divergence_fn(_teacher_chunk_divergence, *args, use_reentrant=False)
+            else:
+                divergence = _teacher_chunk_divergence(*args)
+            total = total + (divergence * tensors['loss_mask'][:, start:stop]).sum()
+            continue
         with teacher.measure(), torch.no_grad():
             target_logits = teacher.model.get_output_embeddings()(features)
         # CUDA copies may wait for the student stream; exclude that from CPU teacher timing.
         target_logits = target_logits.to(device)
-        valid = tensors['loss_mask'][:, start:stop].bool()
         source_logits = torch.where(valid[..., None], student[:, start:stop], 0.)
         target_logits = torch.where(valid[..., None], target_logits, 0.)
         if not torch.isfinite(source_logits).all() or not torch.isfinite(target_logits).all():
             raise ValueError('Nonfinite OPSD logits on supervised tokens')
-        divergence_fn = checkpoint if getattr(settings, 'loss_checkpointing', False) else None
         args = (source_logits, target_logits, settings.beta, settings.temperature, settings.component_clip)
         if divergence_fn is not None:
             # Explicit immutable arguments avoid capturing another loop chunk.

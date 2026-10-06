@@ -29,5 +29,7 @@ baselines:
     response_only_logits: false
     # Full native FP32 teacher batch matches student actor micro global32/local4.
     teacher_forward_micro_batch: 4
+    # Recompute frozen FP32 target projection inside the nonreentrant loss checkpoint.
+    teacher_logits_recompute: true
   opsd_e1:
     profile: multitraj200

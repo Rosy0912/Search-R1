@@ -89,6 +89,7 @@ def validate_profile(cfg):
     if profile_name(cfg) == 'multitraj200':
         expected['baselines.distillation.response_only_logits'] = False
         expected['baselines.distillation.teacher_forward_micro_batch'] = 4
+        expected['baselines.distillation.teacher_logits_recompute'] = True
     for key, value in expected.items():
         actual = get(key)
         # bools must not pass as integer identity.

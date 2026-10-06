@@ -107,33 +107,69 @@ def synthetic_tensors(tok, micro, input_width, response_width, device):
         actual_user_context_adapter_pass=True,scope='synthetic full-width capacity only')
 
 
-def gpu_full_path_repeatability(model, teacher, tok, device, settings):
-    """Repeat the same native full teacher/student path before diagnostic Adam.
+def cosine_roundoff(raw):
+    """Normalize only diagnostic cosine roundoff, preserving the raw value."""
+    import math
+    if type(raw) not in (int, float) or not math.isfinite(raw):
+        raise ValueError('Nonfinite or nonnumeric diagnostic cosine')
+    if -1 <= raw <= 1:
+        return raw, False
+    rounded = min(1., max(-1., raw))
+    if abs(raw - rounded) > 1e-12:
+        raise ValueError('Diagnostic cosine exceeds roundoff tolerance')
+    return rounded, True
+
+
+def gpu_teacher_logits_recompute_equivalence(model, teacher, tok, device, settings):
+    """Compare stored and recomputed targets before diagnostic Adam.
 
     The short tensors are synthetic ChatML inputs, not an RL update or data
     split. Both calls use the native full-position student head and the full
-    four-row teacher forward. This tests repeatability of one path, not
-    equivalence of teacher row segmentation or a response-only head. Save all
-    observed differences and reject substantial differences before training.
+    four-row teacher forward. The only setting varied is whether frozen target
+    projections are saved or recomputed inside the nonreentrant loss checkpoint.
+    Forward and backward teacher-head hooks are separated, and backward chunks
+    are matched to their original features instead of concatenating duplicate q.
     """
     import math
+    import copy
+    import hashlib
     import torch
     from search_r1.baselines.distillation import opsd_loss
     tensors,_=synthetic_tensors(tok,4,96,32,device)
+    tensors['loss_mask'][:,24:32] = 1  # Two nonempty chunks exercise backward binding.
     denominator=tensors['loss_mask'].sum()
-    if settings.response_only_logits is not False or type(settings.teacher_forward_micro_batch) is not int or settings.teacher_forward_micro_batch != 4:
-        raise ValueError('Native full student head and exact full teacher row micro4 required')
-    variants=[settings,settings]
+    if (settings.response_only_logits is not False or type(settings.teacher_forward_micro_batch) is not int
+            or settings.teacher_forward_micro_batch != 4 or settings.teacher_logits_recompute is not True
+            or settings.loss_checkpointing is not True):
+        raise ValueError('Native full head, teacher4 and checkpointed target recomputation required')
+    variants=[copy.copy(settings),copy.copy(settings)]
+    variants[0].teacher_logits_recompute=False
+    variants[1].teacher_logits_recompute=True
     losses=[];old_gradients=None;squared_old=squared_new=squared_delta=dot=0.0
     maximum_abs_delta=0.0;members=0;parameter_statistics=[];teacher_outputs=[];teacher_logits=[]
-    def capture_teacher(_module,_args,value):teacher_outputs.append(value.detach().cpu())
+    phase='forward';teacher_costs=[]
+    def capture_teacher(_module,args,value):
+        features=args[0].detach().cpu().contiguous()
+        digest=hashlib.sha256(str((features.dtype,tuple(features.shape))).encode()+
+                              features.view(torch.uint8).numpy().tobytes()).hexdigest()
+        teacher_outputs.append((phase,digest,value.detach().cpu()))
     teacher_hook=teacher.model.get_output_embeddings().register_forward_hook(capture_teacher)
     for variant in variants:
         model.zero_grad(set_to_none=True)
+        phase='forward'
+        cost_before=(teacher.wall_seconds,teacher.cpu_seconds)
         loss=opsd_loss(model,teacher,tensors,tok,[['Paris']]*4,variant,denominator)
-        if not torch.isfinite(loss):raise ValueError('Nonfinite short GPU repeatability loss')
+        if not torch.isfinite(loss):raise ValueError('Nonfinite short GPU recomputation loss')
+        phase='backward'
+        cost_forward=(teacher.wall_seconds,teacher.cpu_seconds)
         loss.backward();torch.cuda.synchronize();losses.append(float(loss.detach()))
-        teacher_logits.append(torch.cat(teacher_outputs,dim=1));teacher_outputs.clear()
+        teacher_costs.append(dict(teacher_logits_recompute=variant.teacher_logits_recompute,
+            forward_teacher_host_wall_seconds=cost_forward[0]-cost_before[0],
+            forward_teacher_cpu_seconds=cost_forward[1]-cost_before[1],
+            backward_teacher_host_wall_seconds=teacher.wall_seconds-cost_forward[0],
+            backward_teacher_cpu_seconds=teacher.cpu_seconds-cost_forward[1],
+            scope='Existing measured teacher intervals include backward projection recomputation; host wall is enqueue/transfer interval, not exclusive GPU kernel time'))
+        teacher_logits.append(list(teacher_outputs));teacher_outputs.clear()
         if old_gradients is None:
             old_gradients=[]
             for name,parameter in model.named_parameters():
@@ -149,7 +185,7 @@ def gpu_full_path_repeatability(model, teacher, tok, device, settings):
                 value=parameter.grad
                 if (value is None)!=(before is None):raise ValueError('FSDP gradient participation changed')
                 if value is None:continue
-                if not torch.isfinite(value).all():raise ValueError('Nonfinite repeated native path GPU gradient')
+                if not torch.isfinite(value).all():raise ValueError('Nonfinite recomputed-target GPU gradient')
                 after=value.detach().cpu()
                 if before.shape!=after.shape:raise ValueError('FSDP gradient shard shape changed')
                 # Each shard is checked in bounded blocks; no second full
@@ -164,7 +200,7 @@ def gpu_full_path_repeatability(model, teacher, tok, device, settings):
                 squared_old+=parameter_old;squared_new+=parameter_new;squared_delta+=parameter_delta
                 maximum_abs_delta=max(maximum_abs_delta,parameter_max)
                 parameter_statistics.append(dict(name=name,shard_elements=before.numel(),
-                    native_first_squared_norm=parameter_old,native_repeat_squared_norm=parameter_new,
+                    native_stored_squared_norm=parameter_old,native_recomputed_squared_norm=parameter_new,
                     difference_squared_norm=parameter_delta,maximum_abs_difference=parameter_max))
                 members+=1
     teacher_hook.remove();model.zero_grad(set_to_none=True)
@@ -173,25 +209,58 @@ def gpu_full_path_repeatability(model, teacher, tok, device, settings):
     dist.all_reduce(statistics,op=dist.ReduceOp.SUM)
     global_old,global_new,global_delta,global_dot=statistics.tolist()
     relative_l2=math.sqrt(global_delta/max(global_old,1e-300))
-    cosine=global_dot/math.sqrt(max(global_old*global_new,1e-300))
+    cosine_raw=global_dot/math.sqrt(max(global_old*global_new,1e-300))
+    cosine,cosine_rounded=cosine_roundoff(cosine_raw)
     relative_loss=abs(losses[1]-losses[0])/max(abs(losses[0]),1e-12)
-    if teacher_logits[0].shape!=teacher_logits[1].shape:raise ValueError('Teacher q projection shape changed')
-    logits_max=float((teacher_logits[0]-teacher_logits[1]).abs().max())
-    q_before=teacher_logits[0].float().softmax(-1);q_after=teacher_logits[1].float().softmax(-1)
-    q_l1=float((q_after-q_before).abs().sum(-1).mean())
-    result=dict(comparison_kind='SAME_NATIVE_FULL_HEAD_FULL_TEACHER4_PATH_REPEATABILITY',
-        response_only_logits=False, first_teacher_forward_micro_batch=4,
-        repeat_teacher_forward_micro_batch=4,
-        native_first_full_head_loss=losses[0],native_repeat_full_head_loss=losses[1],
+    stored_forward=[(key,value) for when,key,value in teacher_logits[0] if when=='forward']
+    stored_backward=[(key,value) for when,key,value in teacher_logits[0] if when=='backward']
+    recompute_forward=[(key,value) for when,key,value in teacher_logits[1] if when=='forward']
+    recompute_backward=[(key,value) for when,key,value in teacher_logits[1] if when=='backward']
+    if (stored_backward or len(stored_forward)!=2 or len(recompute_forward)!=2
+            or len(recompute_backward)!=2):
+        raise ValueError('Actual teacher projection forward/backward chunk counts differ')
+    # Backward recomputation visits checkpoints in reverse order. Pair by the
+    # exact feature digest, including duplicate-feature multiplicity.
+    unmatched=list(recompute_backward);aligned_backward=[]
+    for key,forward in recompute_forward:
+        matches=[i for i,(candidate,_) in enumerate(unmatched) if candidate==key]
+        if not matches:raise ValueError('Backward teacher features differ from forward chunk')
+        _,value=unmatched.pop(matches[0]);aligned_backward.append((key,value))
+    if unmatched:raise ValueError('Unpaired backward teacher projections')
+    def compare_q(before,after):
+        if [key for key,_ in before]!=[key for key,_ in after]:
+            raise ValueError('Teacher projection features/order changed')
+        first=torch.cat([value for _,value in before],dim=1)
+        second=torch.cat([value for _,value in after],dim=1)
+        if first.shape!=second.shape:raise ValueError('Teacher q projection shape changed')
+        logits_max=float((first-second).abs().max())
+        q_l1=float((second.float().softmax(-1)-first.float().softmax(-1)).abs().sum(-1).mean())
+        return logits_max,q_l1
+    forward_logits_max,forward_q_l1=compare_q(stored_forward,recompute_forward)
+    backward_logits_max,backward_q_l1=compare_q(recompute_forward,aligned_backward)
+    logits_max=max(forward_logits_max,backward_logits_max);q_l1=max(forward_q_l1,backward_q_l1)
+    result=dict(comparison_kind='NATIVE_FULL_HEAD_FULL_TEACHER4_STORED_VS_RECOMPUTED_TARGETS',
+        response_only_logits=False, stored_teacher_forward_micro_batch=4,
+        recomputed_teacher_forward_micro_batch=4,
+        stored_teacher_logits_recompute=False,recomputed_teacher_logits_recompute=True,
+        teacher_projection_calls=dict(stored_forward=2,stored_backward=0,recomputed_forward=2,recomputed_backward=2),
+        teacher_cost_intervals=teacher_costs,
+        teacher_projection_forward_feature_sha256=[key for key,_ in stored_forward],
+        teacher_projection_backward_feature_sha256=[key for key,_ in aligned_backward],
+        native_stored_full_head_loss=losses[0],native_recomputed_full_head_loss=losses[1],
         loss_absolute_difference=abs(losses[1]-losses[0]),loss_relative_difference=relative_loss,
         shard_gradient_relative_l2=relative_l2,shard_gradient_cosine=cosine,
+        shard_gradient_cosine_raw=cosine_raw,shard_gradient_cosine_roundoff_applied=cosine_rounded,
+        maximum_cosine_roundoff=1e-12,
         shard_gradient_max_abs_difference=maximum_abs_delta,checked_gradient_shards=members,
-        local_native_first_squared_gradient_norm=squared_old,local_native_repeat_squared_gradient_norm=squared_new,
-        global_native_first_squared_gradient_norm=global_old,global_native_repeat_squared_gradient_norm=global_new,
+        local_native_stored_squared_gradient_norm=squared_old,local_native_recomputed_squared_gradient_norm=squared_new,
+        global_native_stored_squared_gradient_norm=global_old,global_native_recomputed_squared_gradient_norm=global_new,
         parameter_statistics=parameter_statistics,teacher_FP32_logits_max_absolute_difference=logits_max,
         teacher_q_mean_probability_l1_difference=q_l1,maximum_teacher_q_mean_l1_difference=1e-4,
+        teacher_q_forward_mean_probability_l1_difference=forward_q_l1,
+        teacher_q_backward_mean_probability_l1_difference=backward_q_l1,
         maximum_relative_gradient_l2=.02,minimum_gradient_cosine=.9999,maximum_relative_loss=.002,
-        scope='Actual official-model eight-rank native full-head/full-teacher4 BF16 FSDP short synthetic same-path gradient repeatability; not teacher-row2 equivalence; no Adam calls or RL outer iterations')
+        scope='Actual official-model eight-rank native full-head/full-teacher4 BF16 FSDP stored-versus-recomputed target gradient comparison; separate forward/backward q; no Adam calls or RL outer iterations')
     result['passed']=(members>0 and global_old>0 and global_new>0 and
         all(math.isfinite(v) for v in (relative_l2,cosine,relative_loss,q_l1,logits_max)) and
         relative_l2<=.02 and cosine>=.9999 and relative_loss<=.002 and q_l1<=1e-4)
@@ -229,7 +298,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     result = dict(rank=rank, local_rank=local_rank, world_size=world, local_micro=args.micro,
                   allocation=allocation, job_id=allocation['job_id'], hostname=allocation['hostname'], passed=False,
-                  input_width=args.input_width, response_width=args.response_width, source_commit=os.environ['E1_EXPECTED_SOURCE'], official_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1', component_clip=None, teacher_prompt_mode='user_context', max_student_logits_gib=8.0,response_only_logits=False,teacher_forward_micro_batch=4)
+                  input_width=args.input_width, response_width=args.response_width, source_commit=os.environ['E1_EXPECTED_SOURCE'], official_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1', component_clip=None, teacher_prompt_mode='user_context', max_student_logits_gib=8.0,response_only_logits=False,teacher_forward_micro_batch=4,teacher_logits_recompute=True)
     started = time.perf_counter()
     try:
         torch.set_num_threads(4)
@@ -317,7 +386,7 @@ def main():
         mask = tensors['loss_mask']
         result['synthetic_prompt_runtime'] = synthetic_prompt
         settings = SimpleNamespace(chunk_size=16, beta=0., temperature=1., component_clip=None, teacher_prompt_mode='user_context',
-                                   max_student_logits_gib=8., loss_checkpointing=True, response_only_logits=False,teacher_forward_micro_batch=4)
+                                   max_student_logits_gib=8., loss_checkpointing=True, response_only_logits=False,teacher_forward_micro_batch=4,teacher_logits_recompute=True)
         dist.barrier()
         torch.cuda.synchronize()
         result['pre_cleanup_allocated_bytes'] = torch.cuda.memory_allocated()
@@ -336,18 +405,18 @@ def main():
         with teacher.on_device():
             memory_phase('teacher_cuda_ready')
             result['teacher_active_runtime'] = teacher_runtime_audit(teacher, device)
-            result['short_native_full_path_repeatability']=gpu_full_path_repeatability(
+            result['short_native_teacher_logits_recompute_equivalence']=gpu_teacher_logits_recompute_equivalence(
                 model,teacher,tok,device,settings)
             # All ranks must reject together so no peer waits inside a later
             # FSDP collective after another rank fails this numeric gate.
-            repeatable=torch.tensor(int(result['short_native_full_path_repeatability']['passed']),device=device)
-            dist.all_reduce(repeatable,op=dist.ReduceOp.MIN)
-            (output/f'repeatability-rank-{rank}.json').write_text(json.dumps(
-                result['short_native_full_path_repeatability'],indent=2)+'\n')
-            if repeatable.item()!=1:raise AssertionError('Native full-head/full-teacher4 same-path gradient repeatability failed')
+            equivalent=torch.tensor(int(result['short_native_teacher_logits_recompute_equivalence']['passed']),device=device)
+            dist.all_reduce(equivalent,op=dist.ReduceOp.MIN)
+            (output/f'teacher-logits-recompute-rank-{rank}.json').write_text(json.dumps(
+                result['short_native_teacher_logits_recompute_equivalence'],indent=2)+'\n')
+            if equivalent.item()!=1:raise AssertionError('Native stored-versus-recomputed teacher target comparison failed')
             for key in decoder_calls:decoder_calls[key]=0
             torch.cuda.empty_cache();torch.cuda.reset_peak_memory_stats()
-            memory_phase('worst_width_update_start_after_short_repeatability')
+            memory_phase('worst_width_update_start_after_target_recompute_comparison')
             # Second update keeps Adam states resident during the next full graph.
             optimizer_step_records = []
             for optimizer_step in range(2):

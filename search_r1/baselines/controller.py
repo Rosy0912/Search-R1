@@ -86,6 +86,8 @@ def validate_config(config):
             raise ValueError('Unknown teacher prompt mode')
         if type(config.baselines.distillation.get('loss_checkpointing', False)) is not bool:
             raise ValueError('Distillation loss_checkpointing must be a boolean')
+        if type(config.baselines.distillation.get('teacher_logits_recompute', False)) is not bool:
+            raise ValueError('Distillation teacher_logits_recompute must be a boolean')
     if method == 'tree_grpo':
         tree = config.baselines.tree
         if config.actor_rollout_ref.rollout.n_agent != tree.roots:
