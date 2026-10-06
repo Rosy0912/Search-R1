@@ -39,6 +39,7 @@ class State:
     steps: list = field(default_factory=list)
     anchors: list = field(default_factory=list)
     records: list = field(default_factory=list)
+    raw_ledger: list = field(default_factory=list)
     observation: list = field(default_factory=list)
     turns: int = 0
     done: bool = False
@@ -66,7 +67,7 @@ def padded(rows, pad, left=False):
 
 
 class SearchRollout:
-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report'):
+    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None):
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -79,13 +80,30 @@ class SearchRollout:
         self.ranker = ranker
         self.rng = random.Random(seed)
         self.audit = None
+        self.token_preservation = token_preservation
+        self.tokenizer_identity = None
+        self.seen_sampling_ids = set()
+        self.failure_context = None
+        if token_preservation is not None:
+            from .tree_raw_tokens import tokenizer_identity, require
+            require(self.tokenizer.pad_token_id == 151643 and self.tokenizer.eos_token_id == 151645,
+                    'Frozen actual PAD/EOS identity changed')
+            self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
                          trajectories=0, padded_rows=0, context_mismatches=0)
+        if token_preservation is not None:
+            self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
+                raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
+                semantic_prefix_scan_wall_seconds=0.)
 
     def initial_states(self, gen_batch):
         states = []
         for i in range(len(gen_batch)):
             ids = gen_batch.batch['input_ids'][i][gen_batch.batch['attention_mask'][i].bool()].tolist()
+            if self.token_preservation is not None:
+                from .tree_raw_tokens import require
+                require(self.tokenizer.pad_token_id not in ids and len(ids) <= self.config.max_start_length,
+                        'Initial prompt PAD/left truncation is unsupported')
             states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
         return states
 
@@ -94,11 +112,33 @@ class SearchRollout:
                                   (self.config.force_final_answer and not state.final_used))
 
     def advance(self, states, meta):
+        started=None
+        if self.token_preservation is not None:
+            import time
+            started=time.perf_counter(),time.process_time()
+            self.failure_context=dict(stage='before_generation',contexts=[s.rolling.copy() for s in states],
+                scoring_contexts=[s.prompt+s.response for s in states],raw_ledgers=[s.raw_ledger for s in states])
+        try:
+            return self._advance(states, meta)
+        except Exception as exc:
+            if self.token_preservation is not None and os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
+                from .training_state import atomic_save
+                directory=os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'],'token-preservation-rejections')
+                os.makedirs(directory,exist_ok=True)
+                atomic_save(dict(status='CURRENT_ROLLOUT_REJECTED_BEFORE_RETURN',error=repr(exc),
+                    cost=self.cost.copy(),failure_context=self.failure_context,
+                    tokenizer_identity=self.tokenizer_identity,probability_accepted=False,
+                    rejected_advance_wall_seconds=time.perf_counter()-started[0],
+                    rejected_advance_cpu_seconds=time.process_time()-started[1]),
+                    os.path.join(directory,uuid.uuid4().hex+'.json'),json_format=True)
+            raise
+
+    def _advance(self, states, meta):
         from verl import DataProto
         matches = [s.prompt + s.response == s.rolling for s in states]
         mismatches = sum(not match for match in matches)
         self.cost['context_mismatches'] += mismatches
-        if mismatches and self.context_alignment == 'error':
+        if mismatches and (self.context_alignment == 'error' or self.token_preservation is not None):
             raise ValueError('Actual rollout prefix differs from full-trajectory scoring prefix')
         pad = self.tokenizer.pad_token_id
         ids = padded([s.rolling for s in states], pad, left=True)
@@ -120,6 +160,29 @@ class SearchRollout:
         self.cost['generated_tokens'] += int((generated != pad).sum())
         raw = generated[:len(states)]
         tokens, text = self.manager._postprocess_responses(raw)
+        prepared_actions = None
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import EMISSION, sampled_action, require
+            emissions=output.non_tensor_batch.get(EMISSION)
+            require(emissions is not None and len(emissions) == len(generated),'Actual emitted length/finish metadata missing')
+            self.cost['raw_slots'] += int(generated.numel())
+            self.cost['raw_emitted_tokens'] += sum(record['true_emitted_length'] for record in emissions)
+            self.failure_context=dict(native_emissions=emissions.tolist(),legacy_text=text,
+                contexts=[s.rolling.copy() for s in states])
+            prepared_actions=[]
+            for i,s in enumerate(states):
+                record=emissions[i]
+                require(record['prompt_token_ids'] == s.rolling,'Actual native prompt differs from policy/scoring history')
+                require(record['sample_id'] not in self.seen_sampling_ids,'Duplicate physical sampling identity')
+                self.seen_sampling_ids.add(record['sample_id'])
+                action,ledger=sampled_action(self.tokenizer,record,raw[i].tolist(),
+                    tokens[i][tokens[i] != pad].tolist(),text[i],self.tokenizer_identity)
+                prepared_actions.append((action,ledger))
+                self.cost['raw_retained_tokens'] += len(action)
+                self.cost['raw_discarded_tail_tokens'] += record['true_emitted_length']-len(action)
+                self.cost['semantic_prefix_scan_cpu_seconds'] += ledger['prefix_scan_cpu_seconds']
+                self.cost['semantic_prefix_scan_wall_seconds'] += ledger['prefix_scan_wall_seconds']
+            self.cost['raw_discarded_tail_tokens'] += sum(record['true_emitted_length'] for record in emissions[len(states):])
         # A batch can contain normal and final-only steps. Never search for the latter.
         normal = [s.turns < self.config.max_turns for s in states]
         observations, dones, valid, searches = [''] * len(states), [0] * len(states), [0] * len(states), [0] * len(states)
@@ -137,8 +200,21 @@ class SearchRollout:
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
         obs_tokens = self.manager._process_next_obs(observations)
         for i, s in enumerate(states):
-            action = tokens[i][tokens[i] != pad].tolist()
+            action = tokens[i][tokens[i] != pad].tolist() if prepared_actions is None else prepared_actions[i][0]
             obs = obs_tokens[i][obs_tokens[i] != pad].tolist()
+            if prepared_actions is not None:
+                from .tree_raw_tokens import require
+                ledger=prepared_actions[i][1]
+                require(len(s.response)+len(action)+len(obs) <= self.config.max_prompt_length and
+                        len(s.rolling)+len(action)+len(obs) <= self.config.max_prompt_length,
+                        'Score-cap or rolling left-crop requires a separate unambiguous projection protocol')
+                semantic_count=sum(len(x['action']['canonical_semantic_token_ids'])+len(x['observation_token_ids'])
+                                   for x in s.raw_ledger)+len(ledger['canonical_semantic_token_ids'])+len(obs)
+                require(semantic_count <= self.config.max_prompt_length,'Legacy semantic timeline would cross score cap')
+                s.raw_ledger.append(dict(turn=len(s.anchors),action=ledger,observation_token_ids=obs.copy(),
+                    observation_text=observations[i],generation_context_token_ids=s.rolling.copy(),
+                    generation_context_attention=[1]*len(s.rolling),
+                    generation_context_positions=positions[i][attention[i].bool()].tolist()))
             key_tokens = s.rolling if self.anchor_mode == 'context' else s.observation
             anchor = hashlib.sha256(np.asarray(key_tokens, dtype=np.int64).tobytes()).hexdigest()
             step = len(s.anchors)
@@ -198,8 +274,24 @@ class SearchRollout:
                            action_records=object_array([s.records for s in states]),
                            trajectory_uid=object_array([s.trajectory for s in states]),
                            tree_uid=object_array([s.tree for s in states]))
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import FIELD, trajectory_projection, require
+            non_tensors[FIELD]=object_array([trajectory_projection(s,self.config.max_prompt_length) for s in states])
+            occurrences={}
+            total=0
+            for state in states:
+                for record in state.raw_ledger:
+                    action=record['action'];sample=action['native_emission']['sample_id']
+                    for offset,(token,logp) in enumerate(zip(action['action_token_ids'],action['selected_logprobs'])):
+                        key=(sample,offset);value=(token,logp)
+                        require(key not in occurrences or occurrences[key]==value,'Inherited sampling occurrence changed')
+                        occurrences[key]=value;total+=1
+            self.cost['raw_inherited_leaf_tokens']=total-len(occurrences)
         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
         result.meta_info.update(self.output_meta)
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import PROTOCOL
+            result.meta_info['tree_raw_token_protocol']=PROTOCOL
         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],

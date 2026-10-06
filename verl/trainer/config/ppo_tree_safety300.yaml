@@ -4,6 +4,7 @@ defaults:
 
 actor_rollout_ref:
   rollout:
+    tree_raw_emission: false
     sampling_consistency:
       enabled: false
       enforce: true
@@ -23,3 +24,11 @@ actor_rollout_ref:
 trainer:
   acceptance_step: 115
   experiment_name: tree-safety300
+
+baselines:
+  tree:
+    token_preservation:
+      enabled: false
+      protocol: tree_sampled_prefix_legacy_semantics_v1
+      # Must bind the existing healthy tokenizer; never guessed at opt-in.
+      tokenizer_sha256: null

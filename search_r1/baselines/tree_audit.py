@@ -14,7 +14,7 @@ def fingerprint(value):
 
 def state_signature(state):
     return {key: fingerprint(getattr(state, key)) for key in
-            ('prompt', 'rolling', 'response', 'model_mask', 'steps', 'anchors', 'records', 'observation',
+            ('prompt', 'rolling', 'response', 'model_mask', 'steps', 'anchors', 'records', 'raw_ledger', 'observation',
              'source', 'tree', 'node', 'turns', 'done', 'final_used', 'valid_actions', 'valid_searches')}
 
 

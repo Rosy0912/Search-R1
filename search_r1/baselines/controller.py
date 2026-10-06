@@ -13,6 +13,11 @@ from .bapo import BoundaryStage, BoundaryReward, decode_answers, ordinary_answer
 METHODS = ('grpo', 'gigpo', 'tree_grpo', 'bapo', 'opsd', 'topd', 'cosearch')
 
 
+def option(settings,key,default=None):
+    getter=getattr(settings,'get',None)
+    return getter(key,default) if callable(getter) else getattr(settings,key,default)
+
+
 def canonical_paths(paths):
     paths = [paths] if isinstance(paths, str) else list(paths)
     return {str(Path(path).expanduser().resolve()) for path in paths}
@@ -84,12 +89,25 @@ def validate_config(config):
             raise ValueError('Distillation chunk_size must be positive')
     if method == 'tree_grpo':
         tree = config.baselines.tree
+        preservation=option(tree,'token_preservation', {})
+        enabled=option(preservation,'enabled', False)
+        if enabled:
+            from .tree_raw_tokens import PROTOCOL, require
+            require(option(preservation,'protocol') == PROTOCOL and config.actor_rollout_ref.rollout.get('tree_raw_emission', False),
+                    'Tree token preservation/native metadata configuration differs')
+            require(config.max_turns==4 and config.force_final_answer is False and
+                    (config.data.max_start_length,config.data.max_prompt_length,
+                     config.data.max_response_length,config.data.max_obs_length)==(2048,4096,500,500) and
+                    (tree.roots,tree.leaves)==(2,3), 'Fixed Tree search budgets/caps changed')
         if config.actor_rollout_ref.rollout.n_agent != tree.roots:
             raise ValueError('Tree roots must equal rollout.n_agent')
         if min(tree.roots, tree.leaves, tree.expansions, tree.rounds) < 1:
             raise ValueError('Tree budgets must be positive')
         if tree.leaves > 1 + tree.expansions * tree.rounds:
             raise ValueError('Insufficient expansions for selected leaves')
+    if config.actor_rollout_ref.rollout.get('tree_raw_emission', False) and not (
+            method == 'tree_grpo' and option(option(config.baselines.tree,'token_preservation',{}),'enabled',False)):
+        raise ValueError('Native raw emission metadata only accepts the explicitly opted-in Tree protocol')
     if method == 'bapo':
         holdout = config.baselines.bapo.stage_validation_files
         if config.baselines.bapo.stage_validation_freq < 1:
@@ -174,8 +192,10 @@ class Controller:
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
 
     def generate(self, manager, gen_batch, qa_batch, metrics):
+        preservation=(option(self.config.tree,'token_preservation',{}) if self.method=='tree_grpo' else {})
+        preservation=preservation if option(preservation,'enabled',False) else None
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
-                               self.config.context_alignment)
+                               self.config.context_alignment, token_preservation=preservation)
         if self.tree_rng is not None:
             # Keep parent/leaf sampling continuous across outer updates while
             # constructing a fresh engine and cost ledger for each rollout.
@@ -217,6 +237,10 @@ class Controller:
         return output, sources
 
     def audit_actor_batch(self, batch):
+        if self.method=='tree_grpo' and option(option(self.config.tree,'token_preservation',{}),'enabled',False):
+            from .tree_raw_tokens import FIELD,require,semantic_spans
+            require(FIELD in batch.non_tensor_batch,'Opted-in actor batch lost raw/semantic provenance')
+            for i in range(len(batch)):semantic_spans(batch[i],self.trainer.tokenizer)
         if self.method != 'tree_grpo' or not os.environ.get('SEARCH_R1_TREE_AUDIT_DIR'):
             return
         audit = getattr(self, 'latest_tree_audit', None)
@@ -347,5 +371,17 @@ def ranked_validation_manager(manager, controller):
         def run_llm_loop(self, gen_batch, initial_input_ids):
             engine = SearchRollout(manager, ranker=controller.ranker)
             result, _ = engine.run(gen_batch)
+            return result
+    return Adapter()
+
+
+def token_preserving_validation_manager(manager, controller):
+    """Same greedy one-trajectory validation, with the Tree semantic projection."""
+    class Adapter:
+        timing_raw = None
+        def run_llm_loop(self, gen_batch, initial_input_ids):
+            settings=controller.config.tree.token_preservation
+            engine=SearchRollout(manager,context_alignment='error',token_preservation=settings)
+            result,_=engine.run(gen_batch)
             return result
     return Adapter()

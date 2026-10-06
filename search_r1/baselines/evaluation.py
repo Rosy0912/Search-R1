@@ -14,7 +14,10 @@ def batch_answer_metrics(data, tokenizer):
         mask = item.batch['attention_mask'][-width:].bool()
         if 'info_mask' in item.batch:
             mask = mask & item.batch['info_mask'][-width:].bool()
-        spans = decode_model_response_spans(tokenizer, item.batch['responses'], mask)
+        from .tree_raw_tokens import semantic_spans
+        spans = semantic_spans(item,tokenizer)
+        if spans is None:
+            spans = decode_model_response_spans(tokenizer, item.batch['responses'], mask)
         answer = answer_from_spans(spans)
         targets = item.non_tensor_batch['reward_model']['ground_truth']['target']
         if isinstance(targets, str):

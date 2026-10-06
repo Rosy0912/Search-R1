@@ -175,7 +175,9 @@ class vLLMRollout(BaseRollout):
             sampling_distribution = {key: getattr(self.sampling_params, key, None) for key in
                 ('temperature', 'top_p', 'top_k', 'min_p', 'presence_penalty', 'frequency_penalty',
                  'repetition_penalty', 'n', 'logits_processors')}
-            output = self.inference_engine.generate(
+            native_method = (self.inference_engine.generate_with_emission_metadata
+                             if self.config.get('tree_raw_emission', False) else self.inference_engine.generate)
+            output = native_method(
                 prompts=None,  # because we have already convert it to prompt token id
                 sampling_params=self.sampling_params,
                 prompt_token_ids=idx_list,
@@ -224,6 +226,20 @@ class vLLMRollout(BaseRollout):
 
         consistency = self.config.get('sampling_consistency', {})
         metadata = {}
+        non_tensors = {}
+        if self.config.get('tree_raw_emission', False):
+            from search_r1.baselines.tree_raw_tokens import EMISSION, require
+            from search_r1.baselines.rollout import object_array
+            require(len(output) == 3 and len(output[2]) == len(response), 'Complete native emission rows missing')
+            require(self.pad_token_id != eos_token_id, 'PAD==EOS unsupported by Tree token preservation')
+            emitted = torch.zeros_like(response_attention_mask)
+            for row, record in enumerate(output[2]):
+                n = record['true_emitted_length']
+                require(response[row,:n].tolist() == record['raw_emitted_token_ids'] and
+                        self.pad_token_id not in record['raw_emitted_token_ids'], 'Native raw token IDs/PAD unsupported')
+                emitted[row,:n] = 1
+            require(torch.equal(emitted, response_attention_mask), 'Native finish/true emitted length disagrees with original EOS mask')
+            non_tensors[EMISSION] = object_array(output[2])
         if consistency.get('enabled', False) and do_sample:
             batch['__sampling_log_probs'] = log_probs
             metadata['__sampling_distribution'] = sampling_distribution
@@ -232,4 +248,4 @@ class vLLMRollout(BaseRollout):
         if self.config.free_cache_engine:
             self.inference_engine.free_cache_engine()
 
-        return DataProto(batch=batch, meta_info=metadata)
+        return DataProto(batch=batch, non_tensor_batch=non_tensors, meta_info=metadata)

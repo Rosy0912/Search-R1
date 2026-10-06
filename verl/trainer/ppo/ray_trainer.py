@@ -538,6 +538,10 @@ class RayPPOTrainer(object):
         if controller is not None and controller.ranker is not None:
             from search_r1.baselines.controller import ranked_validation_manager
             generation_manager = ranked_validation_manager(generation_manager, controller)
+        elif (controller is not None and controller.method == 'tree_grpo' and
+              controller.config.tree.get('token_preservation',{}).get('enabled',False)):
+            from search_r1.baselines.controller import token_preserving_validation_manager
+            generation_manager = token_preserving_validation_manager(generation_manager, controller)
 
         if not self.config.do_search:
             for test_data in self.val_dataloader:

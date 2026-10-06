@@ -161,6 +161,18 @@ class LLM(LLM):
         outputs = super()._run_engine(use_tqdm=use_tqdm)
         return self._post_process_outputs(outputs)
 
+    def generate_with_emission_metadata(self, **kwargs):
+        """Tree opt-in: observe native final lengths before the existing pad path."""
+        import uuid
+        if getattr(self, '_tree_emission_call', None) is not None:
+            raise ValueError('Concurrent Tree native-emission capture is forbidden')
+        self._tree_emission_call = uuid.uuid4().hex
+        self._tree_emission_params = kwargs['sampling_params']
+        try:
+            return self.generate(**kwargs)
+        finally:
+            self._tree_emission_call = self._tree_emission_params = None
+
     # # NOTE(shengguangming): add for verl
     # # TODO(sgm): we can optimize it by making the dataloader yield List[int] without padding.
     # def _pre_process_inputs(self, prompt_token_ids: torch.Tensor) -> List[int]:
@@ -172,6 +184,11 @@ class LLM(LLM):
 
     # NOTE(shengguangming): add for verl
     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
+        metadata = None
+        if getattr(self, '_tree_emission_call', None) is not None:
+            from search_r1.baselines.tree_raw_tokens import capture_native_emissions
+            metadata = capture_native_emissions(request_outputs, self._tree_emission_params,
+                self._tree_emission_call, torch.distributed.get_rank())
         output_token_ids = []
         logprobs = []
         for request_output in request_outputs:  # List[RequestOutput]
@@ -191,6 +208,8 @@ class LLM(LLM):
         output_token_ids = pad_sequence(output_token_ids, batch_first=True, padding_value=pad_token_id)
         if len(logprobs) > 0:
             logprobs = pad_sequence(logprobs, batch_first=True, padding_value=pad_token_id)
+        if metadata is not None:
+            return output_token_ids, logprobs, metadata
         return output_token_ids, logprobs
 
     def sync_model_weights(self, actor_weights: Dict[str, torch.Tensor], load_format: str) -> None:

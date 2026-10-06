@@ -85,7 +85,10 @@ class RewardManager():
                 model_mask = data_item.batch['info_mask'][prompt_length:prompt_length + valid_response_length]
             else:
                 model_mask = torch.ones_like(valid_response_ids, dtype=torch.bool)
-            model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
+            from search_r1.baselines.tree_raw_tokens import semantic_spans
+            model_spans = semantic_spans(data_item,self.tokenizer)
+            if model_spans is None:
+                model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
 
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
 
