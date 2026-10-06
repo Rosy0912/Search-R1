@@ -231,7 +231,7 @@ class DataParallelPPOActor(BasePPOActor):
             raise RuntimeError('Frozen rollout identity changed; not a numerical skip')
         training = self.actor_module.training
         self.actor_module.eval()
-        current, masks, advantages, weights, old = [], [], [], [], []
+        current, masks, advantages, weights, old, hf0 = [], [], [], [], [], []
         try:
             with torch.no_grad():
                 for micro in (frozen if monitor_batch is None else monitor_batch).split(self.config.ppo_micro_batch_size):
@@ -240,6 +240,7 @@ class DataParallelPPOActor(BasePPOActor):
                     mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
                     current.append(new); masks.append(mask); advantages.append(micro['advantages'])
                     old.append(micro['old_log_probs'])
+                    hf0.append(micro['frozen_hf_log_probs'])
                     weights.append(mask.double() / mask.sum(-1, keepdim=True).clamp_min(1).double())
         finally:
             self.actor_module.train(training)
@@ -247,7 +248,10 @@ class DataParallelPPOActor(BasePPOActor):
                          c=float(safety['dual_clip']), kl_log_bound=float(safety['kl_log_bound']),
                          target_kl=float(safety['target_old_policy_kl']), negative_tail_limit=self._safety_tail_limit,
                          group=self._safety_group)
-        report.update(stage=stage, monitoring_scope='full_frozen_rollout' if monitor_batch is None else 'full_current_minibatch',
+        from search_r1.baselines.behavior_policy import hf_drift_summary
+        report['hf_diagnostic_drift']=hf_drift_summary(torch.cat(hf0),torch.cat(old),torch.cat(current),torch.cat(masks),torch.cat(weights))
+        report.update(denominator_role='actual_native_stochastic_sampling_policy',
+                      cross_backend_hf_drift_is_separate=True, stage=stage, monitoring_scope='full_frozen_rollout' if monitor_batch is None else 'full_current_minibatch',
                       monitored_local_rows=len(frozen if monitor_batch is None else monitor_batch),
                       monitored_tensor_sha256=self._safety_monitor_identity if monitor_batch is None else tensor_identity(monitor_batch),
                       objective_weight_definition='sequence_mean reciprocal supervised row length; global weight mass',
@@ -370,7 +374,7 @@ class DataParallelPPOActor(BasePPOActor):
                 numerical_error = str(error)
             except Exception as error:
                 structural_error = str(error)
-            # Identity/context/parity errors remain fatal even if another rank
+            # Identity/context/transport errors remain fatal even if another rank
             # has numerical rejection. Every rank enters these reductions.
             if not consensus(structural_error is None, self._safety_group):
                 raise RuntimeError('Sampling structural admission rejected: '+str(structural_error))
@@ -389,6 +393,8 @@ class DataParallelPPOActor(BasePPOActor):
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
+        if safety:
+            select_keys.append('frozen_hf_log_probs')
         if self.config.state_masking:
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:

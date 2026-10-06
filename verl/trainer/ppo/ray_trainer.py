@@ -619,7 +619,7 @@ class RayPPOTrainer(object):
                     test_batch = test_batch.union(final_gen_batch_output)
                     
                     for key in test_batch.batch.keys():
-                        if key not in ('sampling_log_probs','old_log_probs'):
+                        if key not in ('sampling_log_probs','old_log_probs','frozen_hf_log_probs'):
                             test_batch.batch[key] = test_batch.batch[key].long()
                     
                     # evaluate using reward_function
@@ -1172,6 +1172,9 @@ class RayPPOTrainer(object):
                         with torch.no_grad():
                             output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                             final_gen_batch_output = final_gen_batch_output.union(output)
+                            if self.config.trainer.get('fresh200_enabled', False):
+                                from search_r1.baselines.behavior_policy import bind_actual_behavior
+                                bind_actual_behavior(final_gen_batch_output)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)
@@ -1194,7 +1197,7 @@ class RayPPOTrainer(object):
 
                     # batch.batch.apply(lambda x, key: x.long() if key != "old_log_probs" else x, inplace=True, key=True)
                     for key in batch.batch.keys():
-                        if key not in ('old_log_probs', 'sampling_log_probs'):
+                        if key not in ('old_log_probs', 'sampling_log_probs', 'frozen_hf_log_probs'):
                             batch.batch[key] = batch.batch[key].long()
 
                     if self.use_reference_policy:

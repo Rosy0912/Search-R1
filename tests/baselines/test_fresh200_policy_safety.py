@@ -130,6 +130,8 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
     import search_r1.baselines.fresh200_contract as contract
     import search_r1.baselines.distillation as reduction
     import search_r1.baselines.objectives as objectives
+    import search_r1.llm_agent.sampling_tokens as sampling_tokens
+    from search_r1.baselines.behavior_policy import bind_actual_behavior, validate_behavior_tensors
     monkeypatch.setattr(torch.cuda,'current_device',lambda:0)
     monkeypatch.setattr(TensorDictBase,'cuda',lambda self,*a,**kw:self)
     monkeypatch.setattr(torch.distributed,'is_initialized',lambda:True)
@@ -138,7 +140,14 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
     monkeypatch.setattr(reduction,'global_token_count',lambda mask:(mask.sum(),1))
     monkeypatch.setattr(objectives,'row_denominator',lambda rows,device:torch.tensor(float(rows),device=device))
     monkeypatch.setattr(contract,'verify_fixed_policy_safety_artifact',lambda config:(1.,'cpu-test-admission'))
-    monkeypatch.setattr(contract,'verify_sampling_policy_binding',lambda data,config:'cpu-test-sampling')
+    # The native context/GPU admission boundary is synthetic in this transaction
+    # oracle. Exercise the real new denominator binder/transport validator so
+    # downstream faults cannot be hidden by an obsolete HF-only fixture.
+    monkeypatch.setattr(sampling_tokens,'audit_batch',lambda data:dict(probability_role='stochastic_sampling_policy'))
+    def verify_fixture_behavior(data,config):
+        validate_behavior_tensors(data)
+        return 'cpu-test-sampling'
+    monkeypatch.setattr(contract,'verify_sampling_policy_binding',verify_fixture_behavior)
     safety=dict(enabled=True,dual_clip=3,kl_log_bound=30.,target_old_policy_kl=1.,negative_tail_limit=1.)
     config=OmegaConf.create(dict(ppo_mini_batch_size=16,ppo_micro_batch_size=2,ppo_epochs=1,
         state_masking=True,use_kl_loss=True,kl_loss_coef=0.,kl_loss_type='low_var_kl',use_dynamic_bsz=False,baseline_method='bapo',
@@ -147,8 +156,13 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
     policy_mask=one.clone();policy_mask[-1]=0
     old=-one.clone();old[-1]=float('nan')
     data=DataProto.from_dict(dict(responses=one.long(),input_ids=one.long(),attention_mask=one.long(),
-        position_ids=one.long(),loss_mask=policy_mask,old_log_probs=old,advantages=-one,ref_log_prob=torch.full_like(one,float('inf'))),
+        position_ids=one.long(),loss_mask=policy_mask,old_log_probs=old,
+        sampling_log_probs=old-.03,sampling_mask=policy_mask,
+        advantages=-one,ref_log_prob=torch.full_like(one,float('inf'))),
         meta_info=dict(temperature=1.,actual_outer=outer,attempt_id=1,rollout_identity='cpu-test-rollout',policy_snapshot_id='cpu-test-snapshot'))
+    bind_actual_behavior(data)
+    torch.testing.assert_close(data.batch['frozen_hf_log_probs'],old,equal_nan=True)
+    torch.testing.assert_close(data.batch['old_log_probs'],data.batch['sampling_log_probs'],equal_nan=True)
     model=torch.nn.Linear(1,1,bias=False).double();model.weight.data.zero_()
     optimizer=torch.optim.AdamW(model.parameters(),lr=.001)
     if reject_post=='shadow_step_fault':
@@ -167,7 +181,7 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
         monkeypatch.setattr(torch.optim.AdamW,'__init__',shadow_build_failure)
     forward_count=[0]
     def forward(micro_batch,temperature):
-        current=micro_batch['old_log_probs']+model.weight.reshape(())
+        current=micro_batch['frozen_hf_log_probs']+model.weight.reshape(())
         if torch.is_grad_enabled():
             forward_count[0]+=1
             if reject_post=='half_mini' and forward_count[0]==2:current=current*float('nan')
@@ -243,6 +257,10 @@ def test_actor_schedule_and_partial_adam_transaction_cpu(monkeypatch,outer,expec
         assert payload['old_log_probs'].shape==payload['current_log_probs'].shape==payload['weights'].shape
         assert payload['mask'].shape[0]==payload['report']['monitored_local_rows']
         assert payload['current_log_probs'].device.type=='cpu'
+        selected=payload['mask'].bool()
+        assert torch.all(payload['old_log_probs'][selected]==-1.03)
+        assert payload['report']['denominator_role']=='actual_native_stochastic_sampling_policy'
+        assert payload['report']['hf_diagnostic_drift']['baseline_vs_behavior_max_abs']==pytest.approx(.03)
 
 
 def test_full_minibatch_brake_catches_rollout_average_dilution():

@@ -97,7 +97,7 @@ def persist_first_sampling_batch(data, directory, safety, source, run, shared_bi
     mask=data.batch['sampling_mask'].bool()
     import torch
     try:
-        delta=(data.batch['old_log_probs'][mask].double()-data.batch['sampling_log_probs'][mask].double()).abs()
+        delta=(data.batch['frozen_hf_log_probs'][mask].double()-data.batch['sampling_log_probs'][mask].double()).abs()
         maximum=float(delta.max()) if delta.numel() and torch.isfinite(delta).all() else None
     except Exception:maximum=None
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=False)
@@ -107,10 +107,13 @@ def persist_first_sampling_batch(data, directory, safety, source, run, shared_bi
         tensors={k:v.detach().cpu().clone() for k,v in data.batch.items()},
         meta_info=copy.deepcopy(data.meta_info),non_tensor_batch=copy.deepcopy(data.non_tensor_batch),
         sampling_binding_sha256=binding,max_selected_logprob_abs_diff=maximum,
-        selected_tokens=int(mask.sum()),sampling_logprob_atol=float(safety.get('sampling_logprob_atol',1e-3)))
+        selected_tokens=int(mask.sum()),sampling_logprob_atol=float(safety.get('sampling_logprob_atol',1e-3)),
+        probability_contract='ACTUAL_NATIVE_BEHAVIOR_V2_HF_DIAGNOSTIC_SEPARATE',
+        hf_native_drift_is_identity_gate=False,
+        behavior_policy_role=data.meta_info.get('behavior_policy_role'))
     path=directory/'formal-first-sampling-batch.pt';atomic_save(payload,path)
     with path.open('rb') as handle:os.fsync(handle.fileno())
-    report={k:payload[k] for k in ('version','status','source_commit','source_sha256','run_root','driver_pid','attempt_id','actual_outer','sampling_binding_sha256','max_selected_logprob_abs_diff','selected_tokens','sampling_logprob_atol')}
+    report={k:payload[k] for k in ('version','status','source_commit','source_sha256','run_root','driver_pid','attempt_id','actual_outer','sampling_binding_sha256','max_selected_logprob_abs_diff','selected_tokens','sampling_logprob_atol','probability_contract','hf_native_drift_is_identity_gate','behavior_policy_role')}
     report.update(path=str(path.resolve()),sha256=digest(path))
     admission_error=None
     try:verify_sampling_policy_binding(data,safety)

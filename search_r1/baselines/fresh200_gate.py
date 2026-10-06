@@ -233,9 +233,13 @@ def validate_first_sampling_evidence(members, config, source, run, driver_pid, r
             or type(payload.get('attempt_id')) is not int or payload['attempt_id']<1
             or type(payload.get('actual_outer')) is not int or not 1<=payload['actual_outer']<=5):
         raise ValueError('First formal raw sampling identity differs')
-    for key in ('version','status','source_commit','source_sha256','run_root','driver_pid','attempt_id','actual_outer','sampling_binding_sha256','max_selected_logprob_abs_diff','selected_tokens','sampling_logprob_atol'):
+    for key in ('version','status','source_commit','source_sha256','run_root','driver_pid','attempt_id','actual_outer','sampling_binding_sha256','max_selected_logprob_abs_diff','selected_tokens','sampling_logprob_atol','probability_contract','hf_native_drift_is_identity_gate','behavior_policy_role'):
         if json.dumps(report.get(key),sort_keys=True,allow_nan=False)!=json.dumps(payload.get(key),sort_keys=True,allow_nan=False):
             raise ValueError('First raw proof/report typed identity differs: '+key)
+    if (payload.get('probability_contract')!='ACTUAL_NATIVE_BEHAVIOR_V2_HF_DIAGNOSTIC_SEPARATE'
+            or payload.get('hf_native_drift_is_identity_gate') is not False
+            or payload.get('behavior_policy_role')!='actual_native_stochastic_sampling_policy'):
+        raise ValueError('First sampling actual behavior contract missing')
     data=DataProto.from_dict(tensors=payload['tensors'],non_tensors=payload['non_tensor_batch'],meta_info=payload['meta_info'])
     if (type(data.meta_info.get('attempt_id')) is not int or data.meta_info['attempt_id']!=payload['attempt_id']
             or type(data.meta_info.get('actual_outer')) is not int or data.meta_info['actual_outer']!=payload['actual_outer']
@@ -243,7 +247,7 @@ def validate_first_sampling_evidence(members, config, source, run, driver_pid, r
         raise ValueError('First batch actual attempt/shared inputs differ')
     binding=verify_sampling_policy_binding(data,config['actor_rollout_ref']['actor']['policy_safety'])
     mask=data.batch['sampling_mask'].bool()
-    gap=float((data.batch['old_log_probs'][mask].double()-data.batch['sampling_log_probs'][mask].double()).abs().max())
+    gap=float((data.batch['frozen_hf_log_probs'][mask].double()-data.batch['sampling_log_probs'][mask].double()).abs().max())
     if (binding!=payload.get('sampling_binding_sha256') or binding!=report.get('sampling_binding_sha256')
             or gap!=payload.get('max_selected_logprob_abs_diff') or gap!=report.get('max_selected_logprob_abs_diff')
             or int(mask.sum())!=report.get('selected_tokens')):

@@ -10,18 +10,18 @@ from search_r1.baselines.fresh200_gate import validate_first_sampling_evidence
 
 
 def batch(gap=0.):
-    return DataProto.from_dict(tensors=dict(old_log_probs=torch.tensor([[gap]]),
+    return DataProto.from_dict(tensors=dict(old_log_probs=torch.zeros(1,1),frozen_hf_log_probs=torch.tensor([[gap]]),
         sampling_log_probs=torch.zeros(1,1),sampling_mask=torch.ones(1,1,dtype=torch.bool),
         loss_mask=torch.ones(1,1,dtype=torch.bool)),non_tensors=dict(fresh200_turns=np.array([
             [dict(effective_stop_provenance=dict(probability_role='stochastic_sampling_policy'))]],dtype=object)),
-        meta_info=dict(attempt_id=1,actual_outer=1,policy_snapshot_id='actual-first-policy',sampling_context_audit={'captured':True}))
+        meta_info=dict(behavior_policy_role='actual_native_stochastic_sampling_policy',frozen_hf_probability_role='unchanged_hf_recomputation_diagnostic',attempt_id=1,actual_outer=1,policy_snapshot_id='actual-first-policy',sampling_context_audit={'captured':True}))
 
 
 @pytest.mark.parametrize('gap',[0.,.1,float('nan')])
 def test_first_actual_tensor_proof_retained_even_when_verifier_fails(tmp_path,gap):
     directory=tmp_path/'proof';data=batch(gap)
-    with patch('search_r1.llm_agent.sampling_tokens.audit_batch',return_value=dict(context_verified=True,policy_snapshot_id='actual-first-policy')):
-        if gap==0.:
+    with patch('search_r1.llm_agent.sampling_tokens.audit_batch',return_value=dict(probability_role='stochastic_sampling_policy',context_verified=True,policy_snapshot_id='actual-first-policy')):
+        if gap==gap:
             report=persist_first_sampling_batch(data,directory,{},'a'*40,tmp_path,{'real_input_sha':'fixture'})
             assert report['sampling_verifier_status']=='PASS_ACTUAL_BATCH_BINDING_NOT_RELEASE'
         elif gap!=gap:
@@ -35,7 +35,7 @@ def test_first_actual_tensor_proof_retained_even_when_verifier_fails(tmp_path,ga
     assert payload['meta_info']==data.meta_info and payload['attempt_id']==1
     report=json.loads((directory/'formal-first-sampling-batch.json').read_text())
     assert report['max_selected_logprob_abs_diff']==(None if gap!=gap else pytest.approx(gap))
-    assert report['sampling_verifier_status'].startswith('PASS' if gap==0. else 'NUMERIC_REJECTED' if gap!=gap else 'FAIL')
+    assert report['sampling_verifier_status'].startswith('PASS' if gap==gap else 'NUMERIC_REJECTED' if gap!=gap else 'FAIL')
     with pytest.raises(FileExistsError):persist_first_sampling_batch(data,directory,{},'a'*40,tmp_path,{})
 
 
@@ -48,7 +48,7 @@ def test_gate_replays_actual_saved_probabilities_and_requires_all_initial_files(
     from search_r1.baselines.fresh200_gate import digest
     from search_r1.baselines.fresh200_contract import critical_source_hashes
     data=batch();data.meta_info['fresh200_shared_input_bindings']={'data_sha':'actual-fixture'}
-    with patch('search_r1.llm_agent.sampling_tokens.audit_batch',return_value=dict(context_verified=True,policy_snapshot_id='actual-first-policy')):
+    with patch('search_r1.llm_agent.sampling_tokens.audit_batch',return_value=dict(probability_role='stochastic_sampling_policy',context_verified=True,policy_snapshot_id='actual-first-policy')):
         report=persist_first_sampling_batch(data,tmp_path/'proof',{},'a'*40,tmp_path,data.meta_info['fresh200_shared_input_bindings'])
         initial=tmp_path/'initial';initial.mkdir()
         official=initial/'native-initial-official-hf.pt';torch.save({'CPU_FIXTURE_NOT_NATIVE':True},official)
@@ -70,5 +70,5 @@ def test_gate_replays_actual_saved_probabilities_and_requires_all_initial_files(
         members[str(raw_path)]=digest(raw_path)
         meta_path=raw_path.with_suffix('.json');meta=json.loads(meta_path.read_text());meta['sha256']=members[str(raw_path)]
         meta_path.write_text(json.dumps(meta));members[str(meta_path)]=digest(meta_path)
-        with pytest.raises(ValueError,match='unchanged HF old policy differ'):
+        with pytest.raises(ValueError,match='PPO denominator differs'):
             validate_first_sampling_evidence(members,config,'a'*40,tmp_path,report['driver_pid'])

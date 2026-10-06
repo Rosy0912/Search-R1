@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 def test_actual_probability_nonfinite_whole_attempt_skip(monkeypatch):
     actor,data,model,optimizer=_fixture(monkeypatch)
-    data.batch['old_log_probs'][0,0]=float('nan')
+    data.batch['frozen_hf_log_probs'][0,0]=float('nan')
     from verl.workers.actor.dp_actor import DataParallelPPOActor
     result=DataParallelPPOActor.update_policy(actor,data)
     event=result['fresh200_update_state']
@@ -23,9 +23,9 @@ def test_actual_binding_structural_error_still_fatal(monkeypatch,failure):
     if failure=='finite_parity':data.batch['old_log_probs'][0,0]+=.1
     elif failure=='sampled_transport_nan':data.batch['sampling_log_probs'][0,0]=float('nan')
     elif failure=='finite_parity_with_nan':
-        data.batch['old_log_probs'][0,0]=float('nan');data.batch['old_log_probs'][1,0]+=.1
+        data.batch['frozen_hf_log_probs'][0,0]=float('nan');data.batch['old_log_probs'][1,0]+=.1
     else:
-        data.batch['old_log_probs'][0,0]=float('nan')
+        data.batch['frozen_hf_log_probs'][0,0]=float('nan')
         if failure=='identity_with_nan':data.meta_info['policy_snapshot_id']='different'
         else:data.batch['loss_mask'][0,0]=0
     from verl.workers.actor.dp_actor import DataParallelPPOActor
@@ -48,6 +48,8 @@ def _fixture(monkeypatch):
         meta_info=dict(preserve_sampling_tokens=True,policy_snapshot_id='snapshot'))
     data=manager.run_llm_loop(gen,ids)
     data.batch['old_log_probs']=data.batch['sampling_log_probs'].clone()
+    from search_r1.baselines.behavior_policy import bind_actual_behavior
+    bind_actual_behavior(data)
     data.batch['loss_mask']=data.batch['sampling_mask'].long()
     data.batch['advantages']=-torch.ones_like(data.batch['old_log_probs'])
     data.meta_info.update(actual_outer=1,attempt_id=1,rollout_identity='test-actual-context',temperature=1.)
@@ -75,7 +77,7 @@ def test_eight_rank_actual_verifier_one_numeric_rejection_consensus(monkeypatch,
     from search_r1.llm_agent.sampling_tokens import audit_batch
     from verl.workers.actor.dp_actor import DataParallelPPOActor
     fixtures=[_fixture(monkeypatch) for _ in range(8)]
-    bad=fixtures[3][1];bad.batch['old_log_probs'][0,0]=float('nan')
+    bad=fixtures[3][1];bad.batch['frozen_hf_log_probs'][0,0]=float('nan')
     if snapshot_conflict:
         bad.meta_info['policy_snapshot_id']='different-valid-snapshot'
         for turns in bad.non_tensor_batch['fresh200_turns']:

@@ -237,7 +237,7 @@ def verify_policy_safety_artifact(safety_config):
 
 
 def verify_sampling_policy_binding(data, safety_config):
-    """Compare actual transported sampler log-probs to unchanged HF old policy."""
+    """Bind the actual stochastic behavior denominator; HF stays diagnostic."""
     import hashlib
     import torch
     if data.meta_info.get('fresh200_evaluation') is True or data.meta_info.get('probability_role')=='greedy_model_logprob_not_sampling_policy':
@@ -262,15 +262,8 @@ def verify_sampling_policy_binding(data, safety_config):
         raise ValueError('Sampler supervised mask differs from actor policy mask')
     if not torch.isfinite(sampled[mask]).all():
         raise ValueError('Actual selected sampler probability transport nonfinite')
-    # A NaN must not hide finite parity errors or invalid configured tolerance.
-    atol=float(safety_config.get('sampling_logprob_atol', 1e-3))
-    finite_old=torch.isfinite(old)
-    comparable=mask & finite_old
-    if not 0<atol<=1e-3 or not torch.allclose(old[comparable], sampled[comparable], atol=atol, rtol=0.):
-        raise ValueError('Actual selected sampler and unchanged HF old policy differ')
-    if not finite_old[mask].all():
-        from search_r1.baselines.policy_safety import NonfiniteSamplingPolicy
-        raise NonfiniteSamplingPolicy('Actual unchanged HF old-policy selected log-probabilities nonfinite')
+    from .behavior_policy import validate_behavior_tensors
+    validate_behavior_tensors(data)
     return hashlib.sha256(snapshot.encode()).hexdigest()
 
 
@@ -317,7 +310,8 @@ def critical_source_hashes():
     root=Path(__file__).resolve().parents[2]
     names=('search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
         'search_r1/baselines/fresh200_contract.py','search_r1/baselines/fresh200_native_evidence.py',
-        'search_r1/baselines/fresh200_driver.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/main.py',
+        'search_r1/baselines/fresh200_driver.py',
+        'search_r1/baselines/behavior_policy.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/main.py',
         'verl/workers/actor/dp_actor.py','verl/workers/fsdp_workers.py','verl/trainer/ppo/ray_trainer.py',
         'search_r1/llm_agent/generation.py','search_r1/llm_agent/sampling_tokens.py',
         'search_r1/llm_agent/sampling_trace.py','search_r1/llm_agent/sampling_capture.py',

@@ -7,7 +7,8 @@ from search_r1.baselines.fresh200_native_evidence import replay_matrices, verify
 
 class NativeReplayCounterexamples(unittest.TestCase):
     def payload(self):
-        return dict(old_log_probs=torch.tensor([[-2.,-2.],[-2.,-2.]],dtype=torch.float64),
+        return dict(denominator_role='actual_native_stochastic_sampling_policy',hf_probability_role='unchanged_hf_recomputation_diagnostic',
+            frozen_hf_log_probs=torch.tensor([[-2.5,-2.5],[-2.5,-2.5]],dtype=torch.float64),old_log_probs=torch.tensor([[-2.,-2.],[-2.,-2.]],dtype=torch.float64),
             current_log_probs=torch.tensor([[-.8,-2.],[-2.,-2.]],dtype=torch.float64),
             advantages=torch.tensor([[-1.,1.],[-1.,-1.]],dtype=torch.float64),
             mask=torch.tensor([[1.,0.],[1.,1.]],dtype=torch.float64),
@@ -17,6 +18,12 @@ class NativeReplayCounterexamples(unittest.TestCase):
         self.assertAlmostEqual(replay['negative_tail_weight_fraction'],.5)
         self.assertAlmostEqual(replay['sampled_old_policy_kl'],(math.exp(1.2)-1-1.2)/2)
         self.assertEqual(replay['effective_token_count'],3)
+    def test_roles_and_hf_diagnostic_are_required(self):
+        for key in ('denominator_role','hf_probability_role','frozen_hf_log_probs'):
+            bad=self.payload();bad.pop(key)
+            with self.assertRaises(ValueError):replay_matrices(bad,2)
+        bad=self.payload();bad['frozen_hf_log_probs']=bad['frozen_hf_log_probs'].long()
+        with self.assertRaises(ValueError):replay_matrices(bad,2)
     def test_boolean_claims_without_matrices_do_not_admit(self):
         with self.assertRaises(ValueError):replay_matrices(dict(cuda_probability_parity=True,context_audit=True,fresh_model=True),2)
         with self.assertRaises(ValueError):verify_native_sample(dict(scope='full_frozen_rollout',global_mini_batch_size=128,native_shards=[]),{},'discovery',{128:'/run',256:'/other'})
@@ -24,7 +31,7 @@ class NativeReplayCounterexamples(unittest.TestCase):
         bad=self.payload();bad['sampling_log_probs'][0,0]-=.01
         with self.assertRaises(ValueError):replay_matrices(bad,2)
     def test_nonfinite_or_nonbinary_rejected(self):
-        for field in ('old_log_probs','current_log_probs','advantages','sampling_log_probs'):
+        for field in ('old_log_probs','current_log_probs','advantages','sampling_log_probs','frozen_hf_log_probs'):
             bad=self.payload();bad[field][0,0]=float('nan')
             with self.assertRaises(ValueError):replay_matrices(bad,2)
         bad=self.payload();bad['mask'][0,0]=.5

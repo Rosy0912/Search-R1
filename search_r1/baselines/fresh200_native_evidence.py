@@ -98,6 +98,7 @@ def verify_native_process(process,source):
 def replay_matrices(payload,expected_rows,kl_log_bound=30.):
     """Independent float64 sequence weighting and k3/tail recomputation."""
     import torch
+    require(payload.get('denominator_role')=='actual_native_stochastic_sampling_policy' and payload.get('hf_probability_role')=='unchanged_hf_recomputation_diagnostic', 'explicit behavior/HF diagnostic roles missing')
     names=('old_log_probs','current_log_probs','advantages','mask','sampling_log_probs')
     require(all(isinstance(payload.get(n),torch.Tensor) for n in names), 'raw probability/advantage/mask matrices required')
     old,current,adv,mask,sampled=[payload[n].double() for n in names]
@@ -106,7 +107,9 @@ def replay_matrices(payload,expected_rows,kl_log_bound=30.):
     valid=mask.bool()
     require(bool(valid.any()) and all(bool(torch.isfinite(x[valid]).all()) for x in (old,current,adv,sampled)), 'nonfinite/empty native policy samples')
     require(bool((old[valid]<=0).all()) and bool((current[valid]<=0).all()) and bool((sampled[valid]<=0).all()), 'invalid probability logs')
-    require(bool(torch.allclose(old[valid],sampled[valid],atol=1e-3,rtol=0)), 'actual selected/HF old-policy probability mismatch')
+    require(bool(torch.equal(old[valid],sampled[valid])), 'actual captured behavior/optimizer denominator transport mismatch')
+    hf=payload.get('frozen_hf_log_probs')
+    require(isinstance(hf,torch.Tensor) and hf.is_floating_point() and hf.shape==old.shape and bool(torch.isfinite(hf[valid]).all()), 'frozen HF diagnostic matrix missing/nonfinite')
     weights=mask/mask.sum(-1,keepdim=True).clamp_min(1)
     if 'weights' in payload:
         require(torch.equal(payload['weights'].double(),weights), 'raw monitor weights differ from sequence weighting')
@@ -176,7 +179,7 @@ def verify_native_sample(sample,identity,role,layout_run_ids):
         path=Path(entry.get('path',''))
         require(path.is_absolute() and path.is_file() and file_sha(path)==entry.get('sha256'),'native tensor shard missing/changed')
         payload=torch.load(path,map_location='cpu',weights_only=True)
-        require(payload.get('schema')=='BAPO_NATIVE_DIAGNOSTIC_V1' and payload.get('identity')==identity
+        require(payload.get('schema')=='BAPO_NATIVE_DIAGNOSTIC_BEHAVIOR_V2' and payload.get('identity')==identity
                 and payload.get('role')==role and payload.get('scope')==scope
                 and payload.get('global_mini_batch_size')==mini and payload.get('phase')==sample.get('phase')
                 and payload.get('phase') in ('pre_adam','post_adam')
@@ -213,13 +216,13 @@ def verify_native_sample(sample,identity,role,layout_run_ids):
         baseline_key=file_signature(baseline)
         if baseline_key not in _ROLLOUT_CACHE:
             base=torch.load(baseline,map_location='cpu',weights_only=True)
-            combined=dict(base['context_tensors'],old_log_probs=base['old_log_probs'],advantages=base['advantages'],loss_mask=base['mask'],sampling_log_probs=base['sampling_log_probs'])
+            combined=dict(base['context_tensors'],old_log_probs=base['old_log_probs'],frozen_hf_log_probs=base['frozen_hf_log_probs'],advantages=base['advantages'],loss_mask=base['mask'],sampling_log_probs=base['sampling_log_probs'])
             full_hashes={name:tensor_digest(tensor) for name,tensor in combined.items()}
             require(full_hashes==ledger['frozen_rollout_tensor_sha256'],'actual initial rollout tensor digest mismatch')
             subsets={i:{name:tensor_digest(tensor[i*(mini//8):(i+1)*(mini//8)]) for name,tensor in combined.items()} for i in range(expected)}
             _ROLLOUT_CACHE[baseline_key]=dict(full=full_hashes,minis=subsets)
             del base,combined
-        combined=dict(payload['context_tensors'],old_log_probs=payload['old_log_probs'],advantages=payload['advantages'],loss_mask=payload['mask'],sampling_log_probs=payload['sampling_log_probs'])
+        combined=dict(payload['context_tensors'],old_log_probs=payload['old_log_probs'],frozen_hf_log_probs=payload['frozen_hf_log_probs'],advantages=payload['advantages'],loss_mask=payload['mask'],sampling_log_probs=payload['sampling_log_probs'])
         actual_hashes={name:tensor_digest(tensor) for name,tensor in combined.items()}
         expected_hashes=_ROLLOUT_CACHE[baseline_key]['full'] if scope=='full_frozen_rollout' else _ROLLOUT_CACHE[baseline_key]['minis'][sample['diagnostic_write_index']]
         require(actual_hashes==expected_hashes,'actual rollout or current mini changed across diagnostic writes')
@@ -310,7 +313,7 @@ def run_diagnostic_update(worker,data,mini,role,directory):
     # last LR remains 1/57 and must never be reported as the LR actually used.
     for group in worker.actor_optimizer.param_groups:group['lr']=float(config.diagnostic_probe_lr)
     batch=data.batch;events=[];ledger=[];writes=0;stop_reason=None
-    frozen_names=('old_log_probs','advantages','loss_mask','sampling_log_probs','prompts','responses','input_ids','attention_mask','info_mask','position_ids')
+    frozen_names=('old_log_probs','frozen_hf_log_probs','advantages','loss_mask','sampling_log_probs','prompts','responses','input_ids','attention_mask','info_mask','position_ids')
     frozen_identity={name:tensor_digest(batch[name]) for name in frozen_names}
     def capture(scope,part,phase,index):
         rows=len(part);training=worker.actor_module_fsdp.training;worker.actor_module_fsdp.eval()
@@ -325,7 +328,7 @@ def run_diagnostic_update(worker,data,mini,role,directory):
         start=index*(mini//8) if scope=='full_current_minibatch' else 0
         idx=list(range(start,start+rows))
         tensors={name:part[name].detach().cpu() for name in ('prompts','responses','input_ids','attention_mask','info_mask','position_ids')}
-        payload=dict(schema='BAPO_NATIVE_DIAGNOSTIC_V1',identity=identity,role=role,scope=scope,phase=phase,
+        payload=dict(schema='BAPO_NATIVE_DIAGNOSTIC_BEHAVIOR_V2',identity=identity,role=role,scope=scope,phase=phase,
             global_mini_batch_size=mini,diagnostic_write_index=index,completed_diagnostic_writes=writes,frozen_rollout_tensor_sha256=frozen_identity,
             native_process=process,initial_state=initial,source_sha256=identity['source_sha256'],shared_input_bindings=shared_inputs,
             actual_optimizer_lr=[g['lr'] for g in worker.actor_optimizer.param_groups],scheduler_cached_last_lr=worker.actor_lr_scheduler.get_last_lr(),
@@ -333,6 +336,9 @@ def run_diagnostic_update(worker,data,mini,role,directory):
             row_ids=[str(data.non_tensor_batch['fresh200_row_id'][i]) for i in idx],
             journals=[data.non_tensor_batch['fresh200_turns'][i] for i in idx],context_tensors=tensors,
             old_log_probs=part['old_log_probs'].detach().cpu(),current_log_probs=current,
+            frozen_hf_log_probs=part['frozen_hf_log_probs'].detach().cpu(),
+            denominator_role='actual_native_stochastic_sampling_policy',
+            hf_probability_role='unchanged_hf_recomputation_diagnostic',
             advantages=part['advantages'].detach().cpu(),mask=part['loss_mask'].detach().cpu(),
             sampling_log_probs=part['sampling_log_probs'].detach().cpu())
         numerical=None;capture_error=None;captured_sha=None
