@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "role": "common8_actual_behavior_discovery_probe_and_coexistence",
+  "source_commit": "a09a5530fd16fa0c04c0aa157ee56462aab825f4",
+  "native_job_id": "3283",
+  "run_id": "d08276e6875d416c8d6f63772c88ff96",
+  "checked_unix": 1791246477.7673962,
+  "observation_file": "policy-discovery-v3-native-observation.json",
+  "observation_sha256": "0ab12a26fe2358cf436c33f60a01096ad9235fe895608e5b9e31d394019f7867",
+  "stage": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "stage": "BOUNDED_POLICY_CALIBRATION_ONE_OUTER",
+    "unix": 1791246406.7123327,
+    "execution_role": "policy_safety_calibration_discovery"
+  },
+  "initial_probability_gate": {
+    "accepted": true,
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "slurm_job_id": "3283",
+    "phase": "initial",
+    "proof_sha256": "4d300acdf91530f2bb9b5d309dd73f4d5a5184978ad202e5b90ce6f29caf1820",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "coexistence_probability_gate": {
+    "accepted": true,
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "slurm_job_id": "3283",
+    "phase": "coexistence",
+    "proof_sha256": "3c8dbfd66a80e73e7cb1d1c2374fd70e12c758500cadaf4a622eafdeb75176d3",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "actual_initial_probe": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "round": 0,
+    "version": "d08276e6875d416c8d6f63772c88ff96:0:fed99fa692604a799d6b7c6f126857a9",
+    "live_manifest_sha256": "ea12783e4537166ff9d03738fc884f6869eb223f64fb21993a2c3f26b18c4861",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791246226.6277435,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "original_staging": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "slurm_job_id": "3283",
+    "stage": "COMPLETE",
+    "accepted": true,
+    "root": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283",
+    "resources": {
+      "input_bytes": 78952654893,
+      "required_memory_floor_bytes": 349670160474,
+      "actual_allocation_bytes": 549755813888,
+      "actual_available_bytes": 2087177146368,
+      "actual_shm_free_bytes": 1066558070784,
+      "scope": "launch floor; actual model/coexistence peak remains unverified"
+    },
+    "files": {
+      "e5_Flat.index": {
+        "size": 64559075373,
+        "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "path": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283/e5_Flat.index"
+      },
+      "wiki-18.jsonl": {
+        "size": 14393579520,
+        "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "path": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283/wiki-18.jsonl"
+      }
+    },
+    "source_node": "h100-9",
+    "target_node": "h100-8",
+    "completed_unix": 1791245720.4205856
+  },
+  "original_corpus_extraction": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "slurm_job_id": "3283",
+    "uid": 0,
+    "archive": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283/wiki-18.jsonl",
+    "archive_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+    "archive_size": 14393579520,
+    "archive_device": 27,
+    "archive_inode": 49733920,
+    "member": {
+      "name": "data00/jiajie_jin/flashrag_indexes/wiki_dpr_100w/wiki_dump.jsonl",
+      "size": 14393573105,
+      "uid": 1012,
+      "gid": 1012,
+      "mode": 436,
+      "type": "0",
+      "linkname": ""
+    },
+    "partial": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283/datasets-cache/wiki_dump.jsonl.partial",
+    "target": "/dev/shm/search-g1-common8-d08276e6875d416c8d6f63772c88ff96-3283/datasets-cache/wiki_dump.jsonl",
+    "phase": "READY",
+    "created_unix": 1791245855.5039806,
+    "output_device": 27,
+    "output_inode": 49733922,
+    "content_sha256": "43d7d3f58d01d711d95b00b70584211eea639fa46802905a4b7e11cf0617752d",
+    "content_size": 14393573105,
+    "completed_unix": 1791245879.0725336,
+    "scope": "original corpus bytes; private CPU filesystem extraction only"
+  },
+  "tiny_source_cleanup": {
+    "proof_sha256": "093526cb716cbe8a872eb5eb3ffb1b111cb4f1802bc23445eb122f737265a0e7",
+    "checked_unix": 1791246173.4327278,
+    "cleaned": true,
+    "scope": "Only this source-SHA/PID-birth/SID/UID service; fixed pidfd signal"
+  },
+  "actual_completed_discovery_outers": 0,
+  "actual_production_updates": 0,
+  "parent_actual_unstarted_verified": true,
+  "actual_behavior_gate_count": 0,
+  "gpu_sampling": {
+    "sample_count": 484,
+    "first_unix": 1791245410.8452764,
+    "last_unix": 1791246476.0860426,
+    "max_gap_seconds": 8.443350076675415,
+    "cumulative_peak_mib": {
+      "0": 46590,
+      "1": 45861,
+      "2": 45454,
+      "3": 45455,
+      "4": 45447,
+      "5": 45454,
+      "6": 45446,
+      "7": 50137
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "runtime_effectiveness_accepted": false,
+  "production_admission": false,
+  "scope": "Actual setup, initial probes and greedy coexistence; full stochastic2560 parity, complete20 writes and paired512 effect remain pending. Disk bytes are not loaded-module proof."
+}
