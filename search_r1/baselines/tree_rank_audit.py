@@ -18,6 +18,9 @@ class TreeRankAudit:
         start = time.perf_counter()
         self.model = model
         self.step = int(meta['baseline_outer_step'])
+        from .tree_guard_continue import evidence_suffix
+        self.attempt_suffix = evidence_suffix(meta)
+        self.attempt_id = meta.get('baseline_attempt_id')
         distributed = torch.distributed.is_initialized()
         self.rank = torch.distributed.get_rank() if distributed else 0
         self.world = torch.distributed.get_world_size() if distributed else 1
@@ -55,7 +58,7 @@ class TreeRankAudit:
         try:
             root = Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR']) / 'failures'
             root.mkdir(parents=True, exist_ok=True)
-            target = root / (f'step-{self.step:06d}-rank-{self.rank:02d}-'
+            target = root / (f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-'
                              f'optimizer-{len(self.grads):03d}-pid-{os.getpid()}.pt')
             microbatches = [dict(tensors={k: v.cpu() for k, v in m['tensors'].items()},
                                 loss_parts={k: v.cpu() for k, v in m['loss_parts'].items()})
@@ -83,7 +86,7 @@ class TreeRankAudit:
                 gradient_evidence.append(dict(name=name, count=flat.numel(),
                     finite_count=finite_count, max_finite_abs=max_abs,
                     nonfinite_sample_indices=bad_indices, nonfinite_sample_values=bad_values))
-            record = dict(outer_step=self.step, rank=self.rank, world_size=self.world,
+            record = dict(outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank, world_size=self.world,
                 successful_optimizer_calls=len(self.grads), exception=str(error),
                 source_sha256=self.source,
                 code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
@@ -125,8 +128,8 @@ class TreeRankAudit:
                     negative_advantage_max_log_ratio=float(negative.max()) if negative.numel() else None,
                     abs_log_ratio_over2=int((delta.abs()>2).sum()),
                     loss_parts={k:float(v) for k,v in micro['loss_parts'].items()}))
-            path=Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])/'ratio-tail'/f'step-{self.step:06d}-rank-{self.rank:02d}-optimizer-{len(self.grads):02d}.json'
-            atomic_save(dict(outer_step=self.step,rank=self.rank,optimizer_call=len(self.grads)+1,
+            path=Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])/'ratio-tail'/f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-optimizer-{len(self.grads):02d}.json'
+            atomic_save(dict(outer_step=self.step,attempt_id=self.attempt_id,rank=self.rank,optimizer_call=len(self.grads)+1,
                              preclip_norm=value,microbatches=summaries),path,json_format=True)
         self.grads.append(value)
         self.pending_microbatches.clear()
@@ -141,8 +144,8 @@ class TreeRankAudit:
         compatible = self.layout == layout
         root = Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])
         root.mkdir(parents=True, exist_ok=True)
-        target = root / f'step-{self.step:06d}-rank-{self.rank:02d}.json'
-        record = dict(kind='tree_actor_rank', outer_step=self.step, rank=self.rank,
+        target = root / f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}.json'
+        record = dict(kind='tree_actor_rank', outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank,
             world_size=self.world, pid=os.getpid(), job_id=os.environ.get('SLURM_JOB_ID'),
             code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
             config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
@@ -159,6 +162,12 @@ class TreeRankAudit:
             local_shard_sample_after_sha256=tensor_hash(values),
             local_shard_sample_scope='fixed up to8192 local coordinates, no gather; zero sample delta does not prove entire shard unchanged',
             hook_body_seconds_excluding_publication=self.hook_seconds+time.perf_counter()-start)
+        if hasattr(self, 'guard_ledger'):
+            record.update(optimizer_opportunity_ledger=self.guard_ledger,
+                opportunities_processed=len(self.guard_ledger),
+                opportunities_skipped=sum(e['actual_writes']==0 for e in self.guard_ledger),
+                gradient_norm_source='Observed successful-return preclip norms retained in actual opportunity ledger',
+                rollout_braked=True)
         pending = target.with_suffix('.pending')
         with pending.open('x') as stream:
             json.dump(record, stream, indent=2, allow_nan=False)
@@ -166,3 +175,11 @@ class TreeRankAudit:
             os.fsync(stream.fileno())
         os.link(pending, target)
         pending.unlink()
+
+    def guard_finish(self, updates, skips, ledger):
+        """Report the real returned writes, including a brake after optimizer return."""
+        self.guard_ledger = ledger
+        self.grads = [entry['gradient_preclip'] for entry in ledger if entry['actual_writes']]
+        if not all(value is not None and math.isfinite(value) for value in self.grads):
+            raise ValueError('Guard ledger lacks an actual finite successful-write norm')
+        self.finish(updates, skips)

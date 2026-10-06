@@ -67,21 +67,22 @@ class BehaviorMuConfigTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'temperature-one sampling'):validate(c)
 class NativeProcessorCaptureTests(unittest.TestCase):
     def params(self):
-        return NS(n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
+        return NS(n=1,best_of=1,_real_n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
                   repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
-                  include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None)
+                  include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None,
+                  truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None)
     def capture(self,params):
         from search_r1.baselines.tree_raw_tokens import capture_native_emissions
         env={k:'fixture-only' for k in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256','SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
         r=NS(request_id='cpu0',finished=True,prompt_token_ids=[8],outputs=[NS(token_ids=[9],logprobs=[{9:NS(logprob=-.5)}],finish_reason='length',stop_reason=None)])
         with patch.dict('os.environ',env):return capture_native_emissions([r],params,'cpu0',0)[0]
     def test_actual_none_processor_field_is_captured(self):
-        r=self.capture(self.params());self.assertEqual(len(r['sampling_params']),18)
+        r=self.capture(self.params());self.assertEqual(len(r['sampling_params']),24)
         self.assertIsNone(r['sampling_params']['logits_processors'])
         self.assertEqual(r['raw_selected_logprobs'],[-.5])
     def test_missing_or_non_none_processor_does_not_get_default(self):
         p=self.params();del p.logits_processors
-        with self.assertRaises(AttributeError):self.capture(p)
+        with self.assertRaisesRegex(ValueError,'Explicit actual logits_processors metadata'):self.capture(p)
         for processors in [[],[object()]]:
             p=self.params();p.logits_processors=processors
             with self.subTest(processors=bool(processors)),self.assertRaisesRegex(ValueError,'actual logits_processors=None'):self.capture(p)

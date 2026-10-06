@@ -19,6 +19,7 @@ This trainer supports model-agonistic model initialization with huggingface
 import os
 import uuid
 import functools
+import itertools
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
@@ -780,6 +781,9 @@ class RayPPOTrainer(object):
                         actual_update_limit=self.config.trainer.actual_update_limit)
         if self.actual_outer_updates != self.global_steps:
             raise ValueError('Saved actual update counter differs from completed step')
+        from search_r1.baselines.tree_guard_continue import enabled as continue_enabled, accounting
+        if continue_enabled(self.config.actor_rollout_ref.actor):
+            identity['guard_continue_accounting'] = accounting(self)
         directory = os.path.join(self.config.trainer.default_local_dir, 'training_state', f'global_step_{self.global_steps}')
         verify = self.global_steps == self.config.trainer.acceptance_step
         workers = self.actor_rollout_wg.save_training_state(directory, identity, verify=verify)
@@ -913,7 +917,9 @@ class RayPPOTrainer(object):
         )
 
         # start training loop
-        for epoch in range(self.config.trainer.total_epochs):
+        # Refused attempts consume real data; completed-outer target, rather
+        # than a fixed number of attempts/epochs, terminates fresh training.
+        for epoch in (itertools.count() if fresh200 else range(self.config.trainer.total_epochs)):
             batch_iterator = iter(self.train_dataloader)
             while True:
                 # Wait BEFORE fetching the sixth question batch. Keep every
@@ -935,6 +941,10 @@ class RayPPOTrainer(object):
                 timing_raw = {}
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                if fresh200:
+                    from search_r1.baselines.tree_guard_continue import begin_attempt
+                    attempt_metadata = begin_attempt(self)
+                    batch.meta_info.update(attempt_metadata)
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
 
                 # pop those keys for generation
@@ -1063,6 +1073,8 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            if fresh200:
+                                batch.meta_info.update(attempt_metadata)
                             validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
@@ -1100,7 +1112,14 @@ class RayPPOTrainer(object):
                                 raise
                             if fresh200:
                                 from search_r1.baselines.tree_partial_state import stop_on_partial_actor_result
-                                stop_on_partial_actor_result(self, batch, actor_output)
+                                if stop_on_partial_actor_result(self, batch, actor_output):
+                                    metrics.update({'training/attempt_id': self.training_attempts,
+                                        'training/refused_attempts': self.refused_attempts,
+                                        'training/actual_outer_updates': self.actual_outer_updates})
+                                    logger.log(data=metrics, step=self.training_attempts)
+                                    continue
+                                from search_r1.baselines.tree_guard_continue import validate_completed_result
+                                validate_completed_result(self, actor_output)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
                         if getattr(self, 'baseline_controller', None) is not None:
@@ -1113,8 +1132,13 @@ class RayPPOTrainer(object):
                         if fresh200:
                             from search_r1.baselines.tree_fresh200 import validate_completed_outer
                             validate_completed_outer(metrics, self.global_steps)
+                            from search_r1.baselines.tree_guard_continue import record_completed_result
+                            record_completed_result(self, actor_output)
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
+                        if fresh200:
+                            metrics['training/attempt_id'] = self.training_attempts
+                            metrics['training/refused_attempts'] = getattr(self, 'refused_attempts', 0)
                         if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:
                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
 

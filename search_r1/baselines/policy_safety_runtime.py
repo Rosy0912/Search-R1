@@ -10,9 +10,10 @@ from .policy_safety import update_statistics, admission, global_negative_quantil
 
 
 class PolicySafetyRefusal(RuntimeError):
-    def __init__(self, message, *, matched_all_ranks=False):
+    def __init__(self, message, *, matched_all_ranks=False, safety_guard=False):
         super().__init__(message)
         self.matched_all_ranks = matched_all_ranks
+        self.safety_guard = safety_guard
 
 
 BEHAVIOR_MU_PROTOCOL = 'tree_behavior_mu_centered_ppo_v1'
@@ -145,6 +146,9 @@ class PolicySafetyRuntime:
                 or not actor.config.state_masking):
             raise ValueError('Safety requires fixed-micro state-masked Tree DP without sequence parallelism')
         self.step = int(meta['baseline_outer_step'])
+        from .tree_guard_continue import evidence_suffix
+        self.attempt_suffix = evidence_suffix(meta)
+        self.attempt_id = meta.get('baseline_attempt_id')
         self.target_kl = float(config['target_old_policy_kl'])
         self.corrected_profile = behavior_mu_correction_enabled(config)
         if self.corrected_profile:
@@ -209,8 +213,8 @@ class PolicySafetyRuntime:
 
     def publish(self, phase, decision):
         self.sequence += 1
-        path = self.root / f'step-{self.step:06d}-rank-{self.rank:02d}-event-{self.sequence:04d}.json'
-        record = dict(outer_step=self.step, rank=self.rank, phase=phase,
+        path = self.root / f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-event-{self.sequence:04d}.json'
+        record = dict(outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank, phase=phase,
                       committed_optimizer_calls=self.committed, micro=self.micro,
                       outer_completed=False, scheduler_advanced=False, automatic_rollback=False,
                       monitor_local_row_indices=self.indices.tolist(), monitor_rows=len(self.monitor),
@@ -235,8 +239,13 @@ class PolicySafetyRuntime:
         if flag.item():
             raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes', matched_all_ranks=True)
         if not decision['allowed']:
+            reasons = decision.get('reasons', [])
+            faults = {'initial_actor_same_partition_repeat_inconsistency',
+                      'initial_old_current_probability_inconsistency'}
+            safety_guard = bool(reasons) and not any(reason in faults for reason in reasons)
             raise PolicySafetyRefusal(f'Policy safety refusal after {self.committed} committed calls: '
-                                      f'{decision.get("reasons")}; evidence {path}', matched_all_ranks=True)
+                                      f'{reasons}; evidence {path}', matched_all_ranks=True,
+                                      safety_guard=safety_guard and not phase.startswith('rank_audit'))
 
     def sync_valid(self, bad, phase):
         flag = torch.as_tensor(bad, dtype=torch.long, device=self.device)

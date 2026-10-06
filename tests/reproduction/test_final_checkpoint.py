@@ -6,6 +6,7 @@ This checks checkpoint timing and model identity, not PPO or GPU numerics.
 """
 import ast
 import json
+import os
 from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
@@ -27,14 +28,19 @@ def real_iteration_tail():
                   and "critic_warmup" in ast.unparse(n.test))
     body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger").body
     body += step.body[update:] + batches.body[batches.body.index(step) + 1:]
+    # Keep the real loop context for the fresh guarded `continue` branch.
+    # Nonfresh tail tests still execute exactly one source iteration.
+    loop = ast.For(target=ast.Name(id='_cpu_iteration',ctx=ast.Store()),
+        iter=ast.Tuple(elts=[ast.Constant(value=0)],ctx=ast.Load()),body=body,orelse=[])
     function = ast.FunctionDef(
         name="iteration_tail",
         args=ast.arguments(posonlyargs=[], args=[ast.arg(arg="self")],
                            kwonlyargs=[], kw_defaults=[], defaults=[]),
-        body=body, decorator_list=[])
+        body=[loop], decorator_list=[])
     compiled = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
     namespace = {
-        "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,
+        "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,"os":os,"fresh200":False,
+        "validate_final_behavior_mu_batch":lambda *args:None,
         "_timer": lambda *args: nullcontext(), "reduce_metrics": lambda x: x,
         "compute_data_metrics": lambda **kwargs: {},
         "compute_timing_metrics": lambda **kwargs: {}, "pprint": lambda x: None,
@@ -50,6 +56,7 @@ class FakeTrainer:
         self.use_critic = False
         self.config = SimpleNamespace(
             do_search=False,
+            actor_rollout_ref=SimpleNamespace(actor=SimpleNamespace()),
             trainer=SimpleNamespace(critic_warmup=0, save_freq=save_freq, test_freq=test_freq))
         self.weight = 0
         self.events = []

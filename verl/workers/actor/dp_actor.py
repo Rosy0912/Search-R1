@@ -47,6 +47,7 @@ class DataParallelPPOActor(BasePPOActor):
         super().__init__(config)
         self.actor_module = actor_module
         self.actor_optimizer = actor_optimizer
+        self._fresh_total_committed_optimizer_calls = 0
         self.use_remove_padding = self.config.get('use_remove_padding', False)
         print(f'Actor use_remove_padding={self.use_remove_padding}')
         self.ulysses_sequence_parallel_size = self.config.ulysses_sequence_parallel_size
@@ -150,7 +151,7 @@ class DataParallelPPOActor(BasePPOActor):
             if safety is None or refusal.matched_all_ranks is not True:
                 raise
             from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
-            raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
+            raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True, safety_guard=True) from refusal
         if safety is not None:
             safety.sync_valid(not torch.isfinite(grad_norm) or
                               grad_norm > self.config.get('recovery_max_grad_norm', float('inf')),
@@ -167,11 +168,12 @@ class DataParallelPPOActor(BasePPOActor):
                 if refusal.matched_all_ranks is not True:
                     raise
                 from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
-                raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
+                raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True, safety_guard=True) from refusal
             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
         self.actor_optimizer.step()
         # Record the returned write before any publish/audit that may fail.
         self._actual_committed_optimizer_calls = getattr(self, '_actual_committed_optimizer_calls', 0) + 1
+        self._fresh_total_committed_optimizer_calls = getattr(self, '_fresh_total_committed_optimizer_calls', 0) + 1
         if safety is not None:
             safety.committed += 1
             safety.last_grad_preclip = float(grad_norm)
@@ -278,185 +280,231 @@ class DataParallelPPOActor(BasePPOActor):
         self._policy_safety = safety
         metrics = {}
         updates = skipped = 0
+        from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled
+        continuing_guard = guard_continue_enabled(self.config)
+        self._fresh_guard_refusal = None
+        self._fresh_opportunity_ledger = []
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
                 dataloader for _ in range(self.config.ppo_epochs))):
-            if audit is not None and batch_idx % len(dataloader) == 0:
-                audit.epoch()
-            # split batch into micro_batches
-            mini_batch = data
-            from search_r1.baselines.distillation import global_token_count
-            count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
-            total, world = global_token_count(count_mask)
-            if total.item() == 0:
+            before_calls = self._actual_committed_optimizer_calls
+            opportunity = dict(index=batch_idx + 1, rows=len(data),
+                local_row_indices=list(range((batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size,
+                    (batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size + len(data))))
+            if continuing_guard and self._fresh_guard_refusal is not None:
+                self._fresh_opportunity_ledger.append(dict(opportunity,
+                    status='SKIPPED_BY_PRIOR_ROLLOUT_BRAKE', actual_writes=0))
                 skipped += 1
                 continue
-            if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
-                raise ValueError('Paper actor objective requires driver-computed policy_weights')
-            topd_token_mean = self.config.get('baseline_method') == 'topd'
-            if paper_objective:
-                from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
-                denominator = row_denominator(len(mini_batch), mini_batch.device)
-                mass_weights = mini_batch['policy_weights']
-                if safety is not None:
-                    mass_weights = torch.where(safety.effective_mask(mini_batch), mass_weights, 0.)
-                weight_mass, mass_world = global_token_count(mass_weights)
-                metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
-            elif topd_token_mean:
-                from search_r1.baselines.advantages import token_mean_ppo
-                denominator = total / world
-            if self.config.use_dynamic_bsz:
-                max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
-                micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
-            else:
+            try:
+                if audit is not None and batch_idx % len(dataloader) == 0:
+                    audit.epoch()
                 # split batch into micro_batches
-                micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
-
-            if safety is not None:
-                safety.measure("before_optimizer")
-            self.actor_optimizer.zero_grad()
-            mini_metrics = {}
-
-            for data in micro_batches:
-                data = data.cuda()  # actor device is cpu when using offload
-                responses = data['responses']
-                response_length = responses.size(1)
-                attention_mask = data['attention_mask']
-                response_mask = attention_mask[:, -response_length:]
-                if self.config.state_masking:
-                    response_mask = data['loss_mask']
-                old_log_prob = data['old_log_probs']
-                advantages = data['advantages']
-
-                clip_ratio = self.config.clip_ratio
-                entropy_coeff = self.config.entropy_coeff
-
-                # all return: (bsz, response_length)
-                entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
-
-                if safety is not None:
-                    response_mask = safety.effective_mask(data)
-                    safety.inputs(old_log_prob, log_prob, advantages, response_mask, data["policy_weights"], entropy, data.get("ref_log_prob", None))
-                    # Sanitize nonsupervised padding before every loss/diagnostic operation.
-                    # Existing rollout masks and the global row denominator stay unchanged.
-                    old_log_prob = torch.where(response_mask, old_log_prob, 0.)
-                    log_prob = torch.where(response_mask, log_prob, 0.)
-                    advantages = torch.where(response_mask, advantages, 0.)
-                    entropy = torch.where(response_mask, entropy, 0.)
-                policy_weights = data['policy_weights'] if paper_objective else None
-                if safety is not None:
-                    policy_weights = torch.where(response_mask, policy_weights, 0.)
+                mini_batch = data
+                from search_r1.baselines.distillation import global_token_count
+                count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
+                total, world = global_token_count(count_mask)
+                if total.item() == 0:
+                    skipped += 1
+                    if continuing_guard:
+                        self._fresh_opportunity_ledger.append(dict(opportunity, status="SKIPPED_EMPTY", actual_writes=0))
+                    continue
+                if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
+                    raise ValueError('Paper actor objective requires driver-computed policy_weights')
+                topd_token_mean = self.config.get('baseline_method') == 'topd'
                 if paper_objective:
-                    pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
-                        old_log_prob, log_prob, advantages, response_mask, policy_weights,
-                        clip_ratio, denominator, data.get('step_ids', None),
-                        dual_clip=safety_config['dual_clip'] if safety is not None else None)
-                elif topd_token_mean:
-                    pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
-                        old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
-                else:
-                    pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
-                                                                                  log_prob=log_prob,
-                                                                                  advantages=advantages,
-                                                                                  eos_mask=response_mask,
-                                                                                  cliprange=clip_ratio)
-                # compute entropy loss from entropy
-                entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
-                                if paper_objective else verl_F.masked_mean(entropy, response_mask))
-
-                # compute policy loss
-                policy_loss = pg_loss - entropy_loss * entropy_coeff
-
-                if self.config.use_kl_loss:
-                    ref_log_prob = data['ref_log_prob']
-                    # compute kl loss
-                    kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
-                                                ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
-                                                kl_penalty=self.config.kl_loss_type)
-                    kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
-                               if paper_objective else masked_mean(kld, response_mask))
-
-                    policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
-                    if paper_objective:
-                        mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
-                    else:
-                        metrics['actor/kl_loss'] = kl_loss.detach().item()
-                    metrics['actor/kl_coef'] = self.config.kl_loss_coef
-
-                loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
-                if audit is not None:
-                    parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
-                    if self.config.use_kl_loss:
-                        parts['kl'] = kl_loss
-                    diagnostic = {}
-                    if method == 'tree_grpo':
-                        diagnostic['diagnostic_data'] = {
-                            key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
-                            if key in data}
-                    audit_failed = False
-                    try:
-                        audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
-                            advantages=advantages, loss_parts=parts,
-                            ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
-                    except Exception:
-                        if safety is None:
-                            raise
-                        audit_failed = True
+                    from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
+                    denominator = row_denominator(len(mini_batch), mini_batch.device)
+                    mass_weights = mini_batch['policy_weights']
                     if safety is not None:
-                        safety.sync_valid(audit_failed, 'rank_audit_micro_before_backward')
+                        mass_weights = torch.where(safety.effective_mask(mini_batch), mass_weights, 0.)
+                    weight_mass, mass_world = global_token_count(mass_weights)
+                    metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
+                elif topd_token_mean:
+                    from search_r1.baselines.advantages import token_mean_ppo
+                    denominator = total / world
+                if self.config.use_dynamic_bsz:
+                    max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
+                    micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
+                else:
+                    # split batch into micro_batches
+                    micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
+
                 if safety is not None:
-                    safety.sync_valid(~torch.isfinite(loss), "micro_loss_before_backward")
+                    safety.measure("before_optimizer")
+                self.actor_optimizer.zero_grad()
+                mini_metrics = {}
+
+                for data in micro_batches:
+                    data = data.cuda()  # actor device is cpu when using offload
+                    responses = data['responses']
+                    response_length = responses.size(1)
+                    attention_mask = data['attention_mask']
+                    response_mask = attention_mask[:, -response_length:]
+                    if self.config.state_masking:
+                        response_mask = data['loss_mask']
+                    old_log_prob = data['old_log_probs']
+                    advantages = data['advantages']
+
+                    clip_ratio = self.config.clip_ratio
+                    entropy_coeff = self.config.entropy_coeff
+
+                    # all return: (bsz, response_length)
+                    entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
+
+                    if safety is not None:
+                        response_mask = safety.effective_mask(data)
+                        safety.inputs(old_log_prob, log_prob, advantages, response_mask, data["policy_weights"], entropy, data.get("ref_log_prob", None))
+                        # Sanitize nonsupervised padding before every loss/diagnostic operation.
+                        # Existing rollout masks and the global row denominator stay unchanged.
+                        old_log_prob = torch.where(response_mask, old_log_prob, 0.)
+                        log_prob = torch.where(response_mask, log_prob, 0.)
+                        advantages = torch.where(response_mask, advantages, 0.)
+                        entropy = torch.where(response_mask, entropy, 0.)
+                    policy_weights = data['policy_weights'] if paper_objective else None
+                    if safety is not None:
+                        policy_weights = torch.where(response_mask, policy_weights, 0.)
+                    if paper_objective:
+                        pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
+                            old_log_prob, log_prob, advantages, response_mask, policy_weights,
+                            clip_ratio, denominator, data.get('step_ids', None),
+                            dual_clip=safety_config['dual_clip'] if safety is not None else None)
+                    elif topd_token_mean:
+                        pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
+                            old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
+                    else:
+                        pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
+                                                                                      log_prob=log_prob,
+                                                                                      advantages=advantages,
+                                                                                      eos_mask=response_mask,
+                                                                                      cliprange=clip_ratio)
+                    # compute entropy loss from entropy
+                    entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
+                                    if paper_objective else verl_F.masked_mean(entropy, response_mask))
+
+                    # compute policy loss
+                    policy_loss = pg_loss - entropy_loss * entropy_coeff
+
+                    if self.config.use_kl_loss:
+                        ref_log_prob = data['ref_log_prob']
+                        # compute kl loss
+                        kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
+                                                    ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
+                                                    kl_penalty=self.config.kl_loss_type)
+                        kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
+                                   if paper_objective else masked_mean(kld, response_mask))
+
+                        policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
+                        if paper_objective:
+                            mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
+                        else:
+                            metrics['actor/kl_loss'] = kl_loss.detach().item()
+                        metrics['actor/kl_coef'] = self.config.kl_loss_coef
+
+                    loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+                    if audit is not None:
+                        parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
+                        if self.config.use_kl_loss:
+                            parts['kl'] = kl_loss
+                        diagnostic = {}
+                        if method == 'tree_grpo':
+                            diagnostic['diagnostic_data'] = {
+                                key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
+                                if key in data}
+                        audit_failed = False
+                        try:
+                            audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
+                                advantages=advantages, loss_parts=parts,
+                                ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
+                        except Exception:
+                            if safety is None:
+                                raise
+                            audit_failed = True
+                        if safety is not None:
+                            safety.sync_valid(audit_failed, 'rank_audit_micro_before_backward')
+                    if safety is not None:
+                        safety.sync_valid(~torch.isfinite(loss), "micro_loss_before_backward")
+                    try:
+                        loss.backward()
+                    except Exception as error:
+                        if method == 'tree_grpo' and audit is not None:
+                            audit.failure(error)
+                        raise
+
+                    micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
+                    data = {
+                        'actor/entropy_loss': entropy_loss.detach().item(),
+                        'actor/pg_loss': pg_loss.detach().item(),
+                        'actor/pg_clipfrac': pg_clipfrac.detach().item(),
+                        'actor/ppo_kl': ppo_kl.detach().item(),
+                    }
+                    if paper_objective:
+                        for key, value in data.items():
+                            if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
+                                value *= micro_mass / metric_mass.item()
+                            mini_metrics[key] = mini_metrics.get(key, 0.) + value
+                    else:
+                        append_to_dict(metrics, data)
+
+                if paper_objective:
+                    append_to_dict(metrics, mini_metrics)
                 try:
-                    loss.backward()
+                    grad_norm = self._optimizer_step()
                 except Exception as error:
                     if method == 'tree_grpo' and audit is not None:
                         audit.failure(error)
                     raise
-
-                micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
-                data = {
-                    'actor/entropy_loss': entropy_loss.detach().item(),
-                    'actor/pg_loss': pg_loss.detach().item(),
-                    'actor/pg_clipfrac': pg_clipfrac.detach().item(),
-                    'actor/ppo_kl': ppo_kl.detach().item(),
-                }
-                if paper_objective:
-                    for key, value in data.items():
-                        if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
-                            value *= micro_mass / metric_mass.item()
-                        mini_metrics[key] = mini_metrics.get(key, 0.) + value
-                else:
-                    append_to_dict(metrics, data)
-
-            if paper_objective:
-                append_to_dict(metrics, mini_metrics)
-            try:
-                grad_norm = self._optimizer_step()
-            except Exception as error:
-                if method == 'tree_grpo' and audit is not None:
-                    audit.failure(error)
-                raise
-            if audit is not None:
-                if safety is None:
-                    audit.gradient(grad_norm)
-                else:
-                    audit_failed = False
-                    try:
+                if audit is not None:
+                    if safety is None:
                         audit.gradient(grad_norm)
-                    except Exception:
-                        audit_failed = True
-                    safety.sync_valid(audit_failed, "rank_audit_after_committed_write")
-            updates += 1
-            if safety is not None:
-                safety.committed = updates
-                safety.parameters_and_adam()
-                safety.measure('after_optimizer')
-                append_to_dict(metrics, {'actor/postclip_grad_norm': self.last_postclip_grad_norm})
-            data = {'actor/grad_norm': grad_norm.detach().item()}
-            append_to_dict(metrics, data)
-        self.actor_optimizer.zero_grad()
-        if audit is not None:
+                    else:
+                        audit_failed = False
+                        try:
+                            audit.gradient(grad_norm)
+                        except Exception:
+                            audit_failed = True
+                        safety.sync_valid(audit_failed, "rank_audit_after_committed_write")
+                updates += 1
+                if safety is not None:
+                    safety.committed = updates
+                    safety.parameters_and_adam()
+                    safety.measure('after_optimizer')
+                    append_to_dict(metrics, {'actor/postclip_grad_norm': self.last_postclip_grad_norm})
+                data = {'actor/grad_norm': grad_norm.detach().item()}
+                append_to_dict(metrics, data)
+            except Exception as error:
+                from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+                if (not continuing_guard or not isinstance(error, PolicySafetyRefusal)
+                        or error.matched_all_ranks is not True or error.safety_guard is not True):
+                    raise
+                self._fresh_guard_refusal = error
+                actual = self._actual_committed_optimizer_calls - before_calls
+                if actual not in (0, 1):
+                    raise ValueError('One opportunity committed an invalid optimizer count') from error
+                self._fresh_opportunity_ledger.append(dict(opportunity, actual_writes=actual,
+                    status='SUCCESS_ADAM_WRITE_BRAKE_AFTER_WRITE' if actual else 'SKIPPED_SAFETY_GUARD_BEFORE_WRITE',
+                    gradient_preclip=getattr(safety, 'last_grad_preclip', None) if actual else None,
+                    gradient_postclip=getattr(safety, 'last_grad_postclip', None) if actual else None,
+                    guard_reason=str(error), matched_all_ranks=True))
+                skipped += int(actual == 0)
+                updates = self._actual_committed_optimizer_calls
+                continue
+            if continuing_guard:
+                self._fresh_opportunity_ledger.append(dict(opportunity, status='SUCCESS_ADAM_WRITE',
+                    gradient_preclip=float(grad_norm),
+                    gradient_postclip=getattr(self, 'last_postclip_grad_norm', None),
+                    actual_writes=self._actual_committed_optimizer_calls - before_calls))
+        if self._fresh_guard_refusal is None:
+            self.actor_optimizer.zero_grad()
+        elif audit is not None:
+            audit_failed = False
+            try:
+                audit.guard_finish(updates, skipped, self._fresh_opportunity_ledger)
+            except Exception:
+                audit_failed = True
+            safety.sync_valid(audit_failed, 'rank_audit_guard_finish')
+        if audit is not None and self._fresh_guard_refusal is None:
             if safety is None:
                 audit.finish(updates, skipped)
             else:
@@ -471,6 +519,9 @@ class DataParallelPPOActor(BasePPOActor):
             metrics['actor/behavior_mu_additional_initial_repeat_native_forward_calls'] = safety.initial_actor_repeat_native_forward_calls
             metrics['actor/behavior_mu_monitor_forward_wall_seconds'] = safety.monitor_forward_wall_seconds
         metrics['actor/optimizer_steps'] = updates
+        if continuing_guard:
+            metrics['actor/optimizer_opportunities_processed'] = len(self._fresh_opportunity_ledger)
+            metrics['actor/optimizer_opportunities_skipped'] = sum(e['actual_writes'] == 0 for e in self._fresh_opportunity_ledger)
         metrics['actor/skipped_empty_minibatches'] = skipped
         if paper_objective:
             from search_r1.baselines.objectives import reduce_paper_metrics

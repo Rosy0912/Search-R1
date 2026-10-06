@@ -265,12 +265,18 @@ def snapshot_worker_to_file(module, optimizer, scheduler, path, identity, verify
 
 def driver_snapshot(trainer, identity):
     controller = trainer.baseline_controller
-    return cpu_copy(dict(version=1, identity=identity, completed_step=trainer.global_steps,
+    saved = cpu_copy(dict(version=1, identity=identity, completed_step=trainer.global_steps,
                          next_step=trainer.global_steps+1, actual_outer_updates=trainer.actual_outer_updates,
                          recovery_provenance=getattr(trainer,'recovery_provenance',None),
                          sampler=trainer.checkpoint_sampler.state_dict(), rng=rng_state(),
                          algorithm=dict(method=controller.method, stage=controller.stage.state_dict(),
                                         tree_rng=None if controller.tree_rng is None else controller.tree_rng.getstate())))
+    if 'guard_continue_accounting' in identity:
+        from .tree_guard_continue import accounting
+        saved['guard_continue_accounting'] = accounting(trainer)
+        if saved['guard_continue_accounting'] != identity['guard_continue_accounting']:
+            raise ValueError('Complete driver attempt accounting differs from worker identity')
+    return saved
 
 
 def restore_driver(trainer, saved, identity):
@@ -284,6 +290,32 @@ def restore_driver(trainer, saved, identity):
     if saved['algorithm']['method'] != controller.method:
         raise ValueError('Algorithm identity changed')
     sampler = saved['sampler']; steps = saved['completed_step']
+    continue_state = saved.get('guard_continue_accounting')
+    if continue_state is not None:
+        from .tree_guard_continue import PROTOCOL
+        attempts, refused = continue_state['training_attempts'], continue_state['refused_attempts']
+        if (continue_state != identity.get('guard_continue_accounting') or continue_state['protocol'] != PROTOCOL
+                or type(attempts) is not int or type(refused) is not int or refused < 0
+                or attempts != steps + refused or continue_state['completed_outer_updates'] != steps
+                or len(continue_state['partial_evidence']) != continue_state['guard_refused_attempts']
+                or sum(not entry['credited_outer_candidate'] for entry in continue_state['partial_evidence']) != refused):
+            raise ValueError('Invalid complete attempt/refusal accounting')
+        rank_totals = continue_state['partial_optimizer_calls_per_rank']
+        if any(type(value) is not int or value < 0 for value in rank_totals.values()):
+            raise ValueError('Invalid historical partial optimizer writes')
+        complete_totals = continue_state['completed_optimizer_calls_per_rank']
+        if any(type(value) is not int or not steps <= value <= steps * 20 for value in complete_totals.values()):
+            raise ValueError('Invalid completed actual optimizer writes')
+        expected_totals = {str(rank): complete_totals.get(str(rank), 0) + rank_totals.get(str(rank), 0)
+                           for rank in range(trainer.actor_rollout_wg.world_size)}
+        if continue_state['total_optimizer_calls_per_rank'] != expected_totals:
+            raise ValueError('Complete optimizer totals omit historical partial writes')
+        trainer.training_attempts = attempts; trainer.refused_attempts = refused
+        trainer.guard_refused_attempts = continue_state['guard_refused_attempts']
+        trainer.completed_optimizer_calls_per_rank = cpu_copy(complete_totals)
+        trainer.partial_optimizer_calls_per_rank = cpu_copy(rank_totals)
+        trainer.partial_attempt_evidence = cpu_copy(continue_state['partial_evidence'])
+        steps = attempts  # Cursor advances once per consumed rollout attempt.
     batches = sampler['rows'] // sampler['batch_size']
     provenance=saved.get('recovery_provenance')
     if provenance:

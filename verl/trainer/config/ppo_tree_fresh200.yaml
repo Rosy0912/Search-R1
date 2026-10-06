@@ -7,6 +7,7 @@ actor_rollout_ref:
     model_path: ${oc.env:TREE_INSTRUCT_MODEL}
   actor:
     fresh200_protocol: tree_fresh200_five_leaf_v1
+    guard_continue_protocol: tree_guard_continue_fresh_rollout_v1
     use_kl_loss: true
     kl_loss_coef: 0.0
     kl_loss_type: low_var_kl
@@ -17,7 +18,7 @@ actor_rollout_ref:
       dual_clip: 3.0
       kl_log_bound: 30.0
       monitor_rows_per_rank: 32
-      target_old_policy_kl: ???
+      target_old_policy_kl: 0.2
       negative_tail_limit: ???
       initial_old_logprob_max_abs_delta: ???
       sampling_probability_correction:

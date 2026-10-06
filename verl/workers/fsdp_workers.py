@@ -105,6 +105,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         return bool(flag.item())
     outer = data.meta_info.get('baseline_outer_step')
     writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
+    from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled, validate_ledger
+    continuing_guard = guard_continue_enabled(worker.config.actor)
+    ledger = getattr(worker.actor, '_fresh_opportunity_ledger', [])
     returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
     error = None
     before_lrs = None
@@ -114,8 +117,12 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
             raise ValueError('Fresh scheduler admission requires the explicit fresh200 profile')
         if type(outer) is not int or outer < 1:
             raise ValueError('Fresh outer must be a positive direct driver counter')
-        if (type(writes) is not int or writes != 20 or type(returned_writes) is not int
-                or returned_writes != writes or type(skips) is not int or skips != 0):
+        if continuing_guard:
+            validate_ledger(ledger, writes, allow_zero=False)
+            if returned_writes != writes or metrics.get('actor/optimizer_opportunities_processed') != 20:
+                raise ValueError('Fresh completed opportunity accounting differs from actual actor ledger')
+        elif (type(writes) is not int or writes != 20 or type(returned_writes) is not int
+              or returned_writes != writes or type(skips) is not int or skips != 0):
             raise ValueError('Fresh outer requires each rank to commit 20 optimizer calls and skip zero')
         if (type(scheduler_before_outer) is not int or scheduler_before_outer != outer - 1
                 or worker.actor_lr_scheduler.last_epoch != scheduler_before_outer):
@@ -126,8 +133,10 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
     except Exception as exc:
         error = repr(exc)
     # A valid counter on each rank must also identify the same outer globally.
-    signature = torch.tensor(outer if type(outer) is int and 0 < outer < 2**53 else -1,
-                             dtype=torch.float64, device=device)
+    signature_values = [outer if type(outer) is int and 0 < outer < 2**53 else -1]
+    if continuing_guard:
+        signature_values += [writes if type(writes) is int else -1, len(ledger), skips if type(skips) is int else -1]
+    signature = torch.tensor(signature_values, dtype=torch.float64, device=device)
     lo, hi = signature.clone(), signature.clone()
     if dist.is_initialized():
         dist.all_reduce(lo, op=dist.ReduceOp.MIN); dist.all_reduce(hi, op=dist.ReduceOp.MAX)
@@ -157,6 +166,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
     record = dict(rank=rank, world_size=world, training_protocol='tree_fresh200_five_leaf_v1',
                   observed_outer=outer if type(outer) is int else None,
                   actual_optimizer_calls=writes if type(writes) is int else None,
+                  opportunities_processed=len(ledger) if continuing_guard else 20,
+                  opportunities_skipped=sum(e['actual_writes']==0 for e in ledger) if continuing_guard else 0,
+                  optimizer_opportunity_ledger=ledger if continuing_guard else None,
                   skipped_empty_minibatches=skips if type(skips) is int else None,
                   returned_optimizer_calls=returned_writes if type(returned_writes) is int else None,
                   direct_count_source='actor optimizer.step successful-return counter before any publish/audit IO',
@@ -181,7 +193,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
     try:
         if any(record[key] is None for key in ('code_commit','config_sha256','data_identity','model_identity','job_id','run_id')):
             raise ValueError('Missing fresh rank source/run identity')
-        path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/f'outer-{outer:06d}-rank{rank:02d}.json'
+        from search_r1.baselines.tree_guard_continue import evidence_suffix
+        path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/f'outer-{outer:06d}{evidence_suffix(data.meta_info)}-rank{rank:02d}.json'
+        record['attempt_id'] = data.meta_info.get('baseline_attempt_id')
         record_sha = atomic_save(record, path, json_format=True)
     except Exception as exc:
         io_error = repr(exc)
@@ -554,18 +568,22 @@ class ActorRolloutRefWorker(Worker):
             from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
             from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
             partial = None
+            completed = None
             try:
                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
                     prepare_partial_worker_context(self, data)
                 with Timer(name='update_policy', logger=None) as timer:
                     metrics = self.actor.update_policy(data=data)
+                if (getattr(self.actor, '_fresh_guard_refusal', None) is not None
+                        and self.actor._actual_committed_optimizer_calls == 0):
+                    raise self.actor._fresh_guard_refusal
                 delta_time = timer.last
                 global_num_tokens = data.meta_info['global_token_num']
                 estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
                 metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
-                    fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
+                    self._fresh_direct_record = fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
                 elif metrics.get('actor/optimizer_steps', 0) > 0:
                     self.actor_lr_scheduler.step()
                 lr = self.actor_lr_scheduler.get_last_lr()[0]
@@ -573,12 +591,19 @@ class ActorRolloutRefWorker(Worker):
                 metrics['actor/lr_before_outer'] = lr_before_outer
                 metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
                 metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
+                if getattr(self.actor, '_fresh_guard_refusal', None) is not None:
+                    partial = persist_matched_partial_worker(self, data, self.actor._fresh_guard_refusal, scheduler_before_outer)
+                from search_r1.baselines.tree_guard_continue import enabled as continue_enabled
+                if continue_enabled(self.config.actor):
+                    from search_r1.baselines.partial_worker_state import completed_actor_result
+                    completed = completed_actor_result(self, data, scheduler_before_outer)
 
             except PolicySafetyRefusal as refusal:
                 if (refusal.matched_all_ranks is not True
                         or self.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1'):
                     raise
-                partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
+                if partial is None:
+                    partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
                 metrics = {'actor/optimizer_steps': self.actor._actual_committed_optimizer_calls,
                            'actor/scheduler_step_before_outer': scheduler_before_outer,
                            'actor/scheduler_step_after_outer': self.actor_lr_scheduler.last_epoch,
@@ -586,8 +611,14 @@ class ActorRolloutRefWorker(Worker):
 
             log_gpu_memory_usage('After update policy', logger=logger)
 
+            if partial is not None:
+                from search_r1.baselines.partial_worker_state import reset_saved_guard_gradients
+                partial = reset_saved_guard_gradients(self, partial)
+
             # TODO: here, we should return all metrics
-            output = DataProto(meta_info={'metrics': metrics, **({'tree_partial_state': partial} if partial is not None else {})})
+            output = DataProto(meta_info={'metrics': metrics,
+                **({'tree_partial_state': partial} if partial is not None else {}),
+                **({'tree_fresh_actor_result': completed} if completed is not None else {})})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')
@@ -782,12 +813,21 @@ class ActorRolloutRefWorker(Worker):
         from search_r1.baselines.training_state import snapshot_worker_to_file
         identity = dict(identity, rank=self.rank, world_size=self.world_size,
                         cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))
+        if 'guard_continue_accounting' in identity:
+            expected = identity['guard_continue_accounting']['total_optimizer_calls_per_rank'][str(self.rank)]
+            if (self.actor._fresh_total_committed_optimizer_calls != expected
+                    or self.actor_lr_scheduler.last_epoch != identity['completed_step']):
+                raise ValueError('Checkpoint actual cumulative optimizer/scheduler accounting differs')
         path = os.path.join(local_path, f'rank-{self.rank:02d}.pt')
         # At this boundary actor params/optimizer already occupy their configured
         # offload devices. Restore into that same layout without reinitializing.
-        return snapshot_worker_to_file(self.actor_module_fsdp, self.actor_optimizer,
+        receipt = snapshot_worker_to_file(self.actor_module_fsdp, self.actor_optimizer,
                                        self.actor_lr_scheduler, path, identity,
                                        verify=verify, cuda=True)
+        if 'guard_continue_accounting' in identity:
+            receipt['actual_total_optimizer_calls'] = self.actor._fresh_total_committed_optimizer_calls
+            receipt['observed_adam_steps'] = sorted(set(int(value['step']) for value in self.actor_optimizer.state.values()))
+        return receipt
 
 
 class CriticWorker(Worker):

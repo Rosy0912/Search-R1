@@ -32,6 +32,9 @@ def validate_fresh200_config(config):
     tree, holdout, trainer = config.baselines.tree, config.baselines.holdout, config.trainer
     safety = actor.get('policy_safety', {})
     correction = safety.get('sampling_probability_correction', {})
+    from .tree_guard_continue import PROTOCOL as CONTINUE_PROTOCOL
+    if actor.get('guard_continue_protocol') != CONTINUE_PROTOCOL or safety.get('target_old_policy_kl') != .2:
+        raise ValueError('Fresh200 requires explicit fresh-rollout guard continuation and sampled-policy KL 0.2')
     if (safety.get('enabled') is not True or safety.get('dual_clip') != 3.
             or tree.get('token_preservation', {}).get('enabled') is not True
             or tree.get('behavior_mu', {}).get('enabled') is not True
@@ -84,8 +87,16 @@ def validate_fresh_sampler(sampler):
 
 
 def validate_completed_outer(metrics, outer):
-    """Credit only a full 20-write outer and one scheduler advance."""
-    expected = {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0,
+    """Credit twenty processed opportunities, actual writes >=1, one scheduler advance."""
+    opportunities = metrics.get('actor/optimizer_opportunities_processed')
+    writes = metrics.get('actor/optimizer_steps')
+    if opportunities is not None:
+        if opportunities != 20 or writes is None or not 1 <= writes <= 20 or writes != int(writes):
+            raise RuntimeError('Fresh200 incomplete opportunities or zero actual optimizer writes')
+        expected = {'actor/optimizer_opportunities_skipped': 20-writes,
+                    'actor/scheduler_step_before_outer': outer-1, 'actor/scheduler_step_after_outer': outer}
+    else:
+        expected = {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0,
                 'actor/scheduler_step_before_outer': outer - 1,
                 'actor/scheduler_step_after_outer': outer}
     if any(metrics.get(k) != value for k, value in expected.items()):

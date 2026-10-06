@@ -24,12 +24,14 @@ def save_rollouts(batch, tokenizer, step, directory):
     No sampling or truncation; publication failure aborts before actor update.
     Existing evidence is never replaced. Manifest means both payloads exist.
     """
-    directory=Path(directory)/f'outer-{step:06d}'
+    from .tree_guard_continue import evidence_suffix
+    directory=Path(directory)/f'outer-{step:06d}{evidence_suffix(batch.meta_info)}'
     directory.mkdir(parents=True,exist_ok=False)
     identity=dict(outer_step=int(step),job_id=os.environ.get('SLURM_JOB_ID'),
         source=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
         config=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
         data=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
+    identity['attempt_id'] = batch.meta_info.get('baseline_attempt_id')
     tensors={k:cpu_copy(v) for k,v in batch.batch.items()}
     required={'input_ids','responses','attention_mask','info_mask','old_log_probs',
               'ref_log_prob','advantages','policy_weights','token_level_rewards','loss_mask'}
