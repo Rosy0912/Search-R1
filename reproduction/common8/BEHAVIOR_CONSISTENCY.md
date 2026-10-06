@@ -14,12 +14,31 @@ IDs, selected token log-probabilities, finish/stop reason, sampler settings,
 trajectory identity and policy snapshot through the controller. Tensor and
 non-tensor row identities are padded, trimmed and reordered together.
 
-The actual raw token prefix is retained through the first closing action tag;
+The actual raw token prefix follows the original boundary: retain through the
+first search closing tag if present, otherwise the first answer closing tag;
 model output is never decoded and then re-tokenized into a different action.
 Only a trailing whitespace suffix within the closing token is allowed.
-Ambiguous special tokens, noncausal action boundaries, altered prefixes and
+Ambiguous special tokens, nonrepresentable token boundaries, altered prefixes and
 context-window overflow reject the complete outer, with private evidence.
 No trajectory is discarded to make the gate pass.
+
+Runtime `a09a5530` incorrectly rejected an answer closing tag followed by a
+search closing tag as “noncausal”; native discovery3283 stopped during the
+initial paired512 evaluation, before a behavior gate or completed outer.
+Independent execution of the original parser/executor showed that this was an
+extra implementation bug. The old validation-failure handler returned without
+writing a private raw journal, so the stopped3283 trace cannot be reconstructed
+or retroactively claimed. Future evaluation failures use an independent private
+validation journal with run/job/source identity, snapshot nonce and failed-only
+scope, including logical step0. They do not replace or certify training outers.
+Upstream truncation gives search closing precedence,
+then the executor selects the first complete action. An answer followed by a
+search therefore keeps both sampled spans but executes answer/done with no
+retrieval. The correction retains all original IDs, selected probabilities and
+actor masks through that boundary, without moving or cleaning either span.
+Strict QA extraction still rejects the mixed authored span: EM/F1 stay zero,
+and the active Search-G1 invalid-answer reward floor remains -0.1. This does
+not establish native probability parity or a healthy policy.
 
 The initial request and final HF prompt both select the original last 2048
 prompt tokens. Retrieval observations and correction feedback remain context

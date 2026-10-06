@@ -116,15 +116,11 @@ def raw_prefix_to_first_closing_tag(raw_generated_token_ids, decode, *, eos_toke
     eligible = raw[:-1] if trailing_eos else raw
     text = decode(eligible)
     _require(isinstance(text, str) and '\ufffd' not in text, 'ambiguous_decoding_boundary')
-    # The existing decoded-response truncation prioritizes a search closing tag
-    # over an answer closing tag anywhere in the string. Reject an ambiguous
-    # later search rather than silently change that boundary to an earlier
-    # answer when retaining only a causal raw-token prefix.
-    if '</answer>' in text and '</search>' in text:
-        _require(text.find('</search>') < text.find('</answer>'),
-                 'noncausal_answer_before_search_closing_order')
-    ends = [(text.find(tag) + len(tag), tag) for tag in ('</search>', '</answer>') if tag in text]
-    closing = min(ends)[1] if ends else None
+    # Match the upstream decoded-response boundary: a search closing tag
+    # takes precedence anywhere in the text. The executor separately chooses
+    # the first complete action in that retained text; do not reorder actions
+    # or discard an earlier answer from the original sampled token prefix.
+    closing = '</search>' if '</search>' in text else '</answer>' if '</answer>' in text else None
     count, retained_text, execution, whitespace = len(eligible), text, text, ''
     if closing is not None:
         # Bounded500-token generation makes this independent CPU scan small;

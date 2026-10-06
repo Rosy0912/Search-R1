@@ -7,6 +7,7 @@ only scalar/hash evidence; raw token journals remain private on the native node.
 import hashlib
 import json
 import os
+import stat
 import uuid
 from pathlib import Path
 
@@ -15,6 +16,7 @@ import torch
 
 from reproduction.common8.behavior_trace import (
     audit_outer, make_actor_row, make_trace, write_private_evidence,
+    _exclusive_private_file, _evidence_value,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
 
@@ -172,11 +174,53 @@ def freeze_after_probability_gate(batch, context, hf_output):
     return proof
 
 
+def _failed_validation_evidence(identity, records, reason):
+    """Private failed evaluation records; never a training outer or loaded proof."""
+    base, run, job = _native_run()
+    step = identity['logical_update']
+    assert identity['validation'] is True and type(step) is int and step >= 0
+    assert identity['run_id'] == run['run_id'] and identity['source_sha256'] == run['source_sha256']
+    assert identity['slurm_job_id'] == job and isinstance(reason, str) and reason
+    assert type(records) is list
+    snapshot = identity['policy_snapshot_id']
+    prefix = run['run_id'] + ':' + str(step) + ':validation-'
+    assert isinstance(snapshot, str) and snapshot.startswith(prefix)
+    nonce = snapshot[len(prefix):]
+    assert len(nonce) == 32 and all(char in '0123456789abcdef' for char in nonce)
+    artifacts = base / 'artifacts'
+    assert artifacts.is_dir() and artifacts.resolve() == artifacts and artifacts.stat().st_uid == os.getuid()
+    parent = artifacts / 'behavior-validation-failures'
+    assert not parent.is_symlink() and parent.resolve() == parent
+    parent.mkdir(mode=0o700, exist_ok=True)
+    descriptor = os.open(str(artifacts), os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    assert parent.stat().st_uid == os.getuid() and stat.S_IMODE(parent.stat().st_mode) == 0o700
+    trace = dict(role='common8_failed_validation_generation', run_id=run['run_id'],
+        source_sha256=run['source_sha256'], source_snapshot_kind='current_disk_bytes_not_loaded_module_proof',
+        loaded_source_authenticated=False, slurm_job_id=job, logical_update=step,
+        policy_snapshot_id=snapshot, snapshot_nonce=nonce, validation=True,
+        actual_sampling_records=records, failure_reason=reason, complete_outer=False,
+        actual_training_outer=False, accepted=False, context_verified=False,
+        production_admission=False, healthy_checkpoint_accepted=False,
+        physical_execution_authenticated=False)
+    value, transformed = _evidence_value(trace)
+    content = canonical_bytes(value)
+    path = parent / ('validation-step-' + str(step) + '-' + nonce + '.json')
+    _exclusive_private_file(path, content)
+    return dict(private_validation_trace_path=str(path), private_validation_trace_sha256=hashlib.sha256(content).hexdigest(),
+        serialization_transformed=transformed, logical_update=step,
+        role=trace['role'], raw_trace_must_not_be_published=True, actual_training_outer=False,
+        loaded_source_authenticated=False, accepted=False, context_verified=False,
+        production_admission=False, healthy_checkpoint_accepted=False,
+        physical_execution_authenticated=False)
+
+
 def failed_generation_evidence(identity, records, reason):
     if identity.get('validation'):
-        # Validation failures are still failures, but never masquerade as an
-        # actual training outer with update >=1 in the private writer namespace.
-        return
+        return _failed_validation_evidence(identity, records, reason)
     base, run, job = _native_run()
     trace = {name: identity[name] for name in ('run_id', 'source_sha256', 'slurm_job_id',
                                                'logical_update', 'policy_snapshot_id')}

@@ -1,5 +1,8 @@
 """Real CPU protocol fixtures; they do not authenticate GPU execution/health."""
+import ast
 import copy
+import re
+from types import SimpleNamespace
 import hashlib
 import json
 import os
@@ -10,6 +13,36 @@ from pathlib import Path
 from unittest.mock import patch
 
 from reproduction.common8 import behavior_trace as bt
+
+
+def original_upstream_manager():
+    """Execute the original parser/executor bodies with explicit CPU boundaries.
+
+    AST extraction avoids importing model/retriever code. Only annotations
+    are removed; tokenizer/search are fixtures, not native execution evidence.
+    """
+    source = Path(__file__).resolve().parents[2] / 'search_r1/llm_agent/generation.py'
+    tree = ast.parse(source.read_text())
+    names = {'_postprocess_responses', 'postprocess_predictions', 'execute_predictions'}
+    nodes = [node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef) and node.name in names]
+    assert {node.name for node in nodes} == names
+    for node in nodes:
+        node.returns = None
+        for arg in node.args.args:
+            arg.annotation = None
+    namespace = {'re': re}
+    exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])), str(source), 'exec'), namespace)
+    manager_type = type('OriginalCpuParser', (), {name: namespace[name] for name in names})
+    manager = manager_type()
+    manager.config = SimpleNamespace(no_think_rl=False)
+    manager.tokenizer = SimpleNamespace(batch_decode=lambda rows, **kwargs: rows)
+    manager._batch_tokenize = lambda rows: rows
+    manager.search_calls = []
+    def search(queries):
+        manager.search_calls.append(list(queries))
+        return ['CPU fixture evidence'] * len(queries)
+    manager.batch_search = search
+    return manager
 
 
 def tiny_outer_fixture():
@@ -87,10 +120,29 @@ class RawPrefixTests(unittest.TestCase):
         self.assertEqual(proof['retained_trailing_whitespace'], ' \n')
         self.assertTrue(proof['token_boundary_whitespace_retained'])
 
-    def test_answer_then_later_search_is_noncausal_for_original_parser(self):
-        with self.assertRaisesRegex(bt.BehaviorTraceError, 'noncausal'):
-            self.cut({1: '<answer>A</answer>', 2: '<search>B</search>'}, [1, 2])
-        self.assertEqual(self.cut({1: '<search>B</search>', 2: '<answer>A</answer>'}, [1, 2])['kept_token_ids'], [1])
+    def test_original_search_boundary_and_first_complete_action_ast(self):
+        cases = (
+            ({1: '<answer>A</answer>', 2: '<search>B</search>'}, [1, 2], [1, 2], 'answer', 1, 0),
+            ({1: '<search>B</search>', 2: '<answer>A</answer>'}, [1, 2], [1], 'search', 0, 1),
+            ({1: '</answer>', 2: '<search>B</search>'}, [1, 2], [1, 2], 'search', 0, 1),
+            ({1: '<answer>A</answer>', 2: '</search>'}, [1, 2], [1, 2], 'answer', 1, 0),
+            ({1: '<search>B</search>', 2: '<search>C</search>'}, [1, 2], [1], 'search', 0, 1),
+        )
+        for fragments, raw, kept, action, done, searches in cases:
+            with self.subTest(raw=fragments):
+                proof = self.cut(fragments, raw)
+                original = original_upstream_manager()
+                _, texts = original._postprocess_responses([''.join(fragments[token] for token in raw)])
+                self.assertEqual(proof['execution_text'], texts[0])
+                self.assertEqual(proof['kept_token_ids'], kept)
+                self.assertEqual(original.postprocess_predictions(texts)[0], [action])
+                observation, dones, valid, is_search = original.execute_predictions(texts, None, [True])
+                self.assertEqual((dones, valid, is_search), ([done], [1], [searches]))
+                self.assertEqual(len(original.search_calls[-1]), searches)
+
+    def test_selected_search_boundary_still_rejects_nonwhitespace_token_suffix(self):
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'nonwhitespace'):
+            self.cut({1: '<answer>A</answer><search>B</search>secret'}, [1])
 
     def test_no_tag_only_tail_eos_excluded(self):
         proof = self.cut({1: 'text'}, [1, 99])

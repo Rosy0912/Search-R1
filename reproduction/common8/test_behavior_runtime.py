@@ -3,6 +3,8 @@ import copy
 import datetime
 import hashlib
 import json
+import os
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -157,6 +159,75 @@ def gloo_worker(rank, base, store):
 
 
 class BehaviorRuntimeTests(unittest.TestCase):
+    def test_private_failed_validation_journal_step0_and_later_eval_are_not_outers(self):
+        with tempfile.TemporaryDirectory(prefix='g1-cpu-validation-failure-') as directory:
+            base = Path(directory).resolve()
+            (base / 'artifacts').mkdir()
+            run = dict(run_id='cpu-validation', source_sha256={'cpu-fixture': 'a' * 64})
+            records = [dict(raw_generated_token_ids=[20, 21], selected_logprobs=[-.25, float('nan')])]
+            for step in (0, 5):
+                identity = dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id='123',
+                    logical_update=step, validation=True,
+                    policy_snapshot_id=run['run_id'] + ':' + str(step) + ':validation-' + ('a' if step == 0 else 'b') * 32)
+                # Only the actual native namespace/source boundary is a CPU adapter.
+                with patch.object(runtime, '_native_run', return_value=(base, run, '123')):
+                    receipt = runtime.failed_generation_evidence(identity, records, 'CPU fixture failure')
+                    with self.assertRaises(FileExistsError):
+                        runtime.failed_generation_evidence(identity, records, 'CPU fixture failure')
+                path = Path(receipt['private_validation_trace_path'])
+                self.assertEqual(stat.S_IMODE(path.parent.stat().st_mode), 0o700)
+                self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+                self.assertEqual(path.stat().st_uid, os.getuid())
+                raw = path.read_bytes(); value = json.loads(raw)
+                self.assertEqual(hashlib.sha256(raw).hexdigest(), receipt['private_validation_trace_sha256'])
+                self.assertEqual(value['actual_sampling_records'][0]['raw_generated_token_ids'], [20, 21])
+                self.assertEqual(value['actual_sampling_records'][0]['selected_logprobs'][1],
+                                 {'__behavior_trace_nonfinite_float__': 'nan'})
+                self.assertEqual(value['policy_snapshot_id'], identity['policy_snapshot_id'])
+                self.assertEqual(value['logical_update'], step)
+                self.assertEqual(value['role'], 'common8_failed_validation_generation')
+                self.assertEqual(value['source_snapshot_kind'], 'current_disk_bytes_not_loaded_module_proof')
+                for key in ('accepted', 'context_verified', 'production_admission', 'healthy_checkpoint_accepted',
+                            'physical_execution_authenticated', 'loaded_source_authenticated', 'actual_training_outer'):
+                    self.assertIs(value[key], False)
+                self.assertIs(receipt['serialization_transformed'], True)
+                self.assertIs(receipt['raw_trace_must_not_be_published'], True)
+            self.assertFalse((base / 'artifacts/behavior-traces').exists())
+            self.assertTrue(torch.isnan(torch.tensor(records[0]['selected_logprobs'][1])))
+
+    def test_private_validation_identity_snapshot_and_owned_path_reject(self):
+        with tempfile.TemporaryDirectory(prefix='g1-cpu-validation-reject-') as directory:
+            base = Path(directory).resolve(); (base / 'artifacts').mkdir()
+            run = dict(run_id='cpu-validation', source_sha256={'cpu-fixture': 'a' * 64})
+            identity = dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id='123',
+                logical_update=0, validation=True, policy_snapshot_id=run['run_id'] + ':0:validation-' + 'a' * 32)
+            for change in ({'slurm_job_id': '124'}, {'source_sha256': {}}, {'run_id': 'other'},
+                           {'logical_update': True}, {'policy_snapshot_id': '../outside'}, {'validation': 1}):
+                with patch.object(runtime, '_native_run', return_value=(base, run, '123')):
+                    with self.assertRaises(AssertionError):
+                        runtime.failed_generation_evidence(dict(identity, **change), [], 'CPU fixture')
+            outside = base / 'outside'; outside.mkdir(mode=0o700)
+            parent = base / 'artifacts/behavior-validation-failures'; parent.symlink_to(outside)
+            with patch.object(runtime, '_native_run', return_value=(base, run, '123')):
+                with self.assertRaises(AssertionError):runtime.failed_generation_evidence(identity, [], 'CPU fixture')
+            self.assertEqual(list(outside.iterdir()), [])
+            parent.unlink(); parent.mkdir(mode=0o755)
+            with patch.object(runtime, '_native_run', return_value=(base, run, '123')):
+                with self.assertRaises(AssertionError):runtime.failed_generation_evidence(identity, [], 'CPU fixture')
+            self.assertEqual(list(parent.iterdir()), [])
+
+    def test_training_failure_keeps_existing_outer_writer(self):
+        base = Path('/CPU-only')
+        run = dict(run_id='cpu-train', source_sha256={})
+        identity = dict(run_id=run['run_id'], source_sha256={}, slurm_job_id='123',
+                        logical_update=1, policy_snapshot_id='cpu-policy', validation=False)
+        with patch.object(runtime, '_native_run', return_value=(base, run, '123')), \
+             patch.object(runtime, 'write_private_evidence') as write:
+            runtime.failed_generation_evidence(identity, [{'CPU_fixture': True}], 'CPU fixture')
+            write.assert_called_once()
+            self.assertEqual(write.call_args.args[1]['role'], 'common8_failed_partial_generation')
+            self.assertEqual(write.call_args.args[1]['logical_update'], 1)
+
     def test_public_receipt_bytes_and_update_record_bind_without_raw_reread(self):
         with tempfile.TemporaryDirectory(prefix='g1-cpu-receipt-') as directory:
             data, context, _, proof, run, _ = cpu_fixture(directory)

@@ -4,6 +4,7 @@ The tiny tokenizer and worker perform no model/GPU kernels. These tests verify
 the real controller's tensor/identity/context operations, not native execution,
 HF probabilities, physical eight-rank resources, or healthy-policy admission.
 """
+import ast
 import copy
 import re
 import unittest
@@ -16,6 +17,12 @@ import torch
 from verl import DataProto
 from reproduction.common8 import behavior_trace as bt
 from reproduction.common8 import generation_behavior as controller
+from reproduction.common8.test_behavior_trace import original_upstream_manager
+from search_g1.signals import contexts
+from search_r1.qa_protocol import extract_final_answer
+from verl.utils.reward_score.qa_em import compute_score_generated_em
+from reproduction.common8.calibration_evaluation import _f1, rows_from_batch
+from pathlib import Path
 
 
 def sampler_fixture():
@@ -359,13 +366,63 @@ class ControllerCpuTests(unittest.TestCase):
                 self.assertEqual(len(records), 8)
                 self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
 
-    def test_answer_followed_by_future_search_rejects_not_retokenizes_or_filters(self):
+    def test_answer_before_search_retains_all_tokens_lp_masks_and_original_action(self):
         raw = [23, 24, 20, 21, 99]
         manager = ManagerFixture(lambda ordinal, identity: raw)
-        records = self.run_failure(manager, 'noncausal_answer_before_search')
-        self.assertEqual(records[0]['raw_generated_token_ids'], raw)
+        original = original_upstream_manager()
+        manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
         self.assertEqual(manager.tokenizer.encode_calls, 0)
-        self.assertEqual(len(records), 8)
+        self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
+        kept = raw[:-1]
+        self.assertEqual(result.batch['responses'][0].tolist(), kept)
+        self.assertEqual(result.batch['sampling_log_probs'][0].tolist(), [-.25, -.375, -.5, -.625])
+        self.assertEqual(result.batch['sampling_mask'][0].tolist(), [True] * 4)
+        self.assertEqual(result.batch['info_mask'][0, -4:].tolist(), [1] * 4)
+        self.assertEqual(result.batch['input_ids'][0].tolist(), [10, 11] + kept)
+        self.assertEqual(result.meta_info['actual_retrieval_stats'], [0, 0])
+        self.assertEqual(result.meta_info['valid_action_stats'], [1, 1])
+        self.assertEqual(result.meta_info['active_mask'], [False, False])
+        self.assertEqual(original.search_calls, [[]])
+        turn = result.non_tensor_batch['behavior_turns'][0][0]
+        self.assertEqual(turn['actual_request_token_ids'], [10, 11])
+        self.assertEqual(turn['raw_generated_token_ids'], raw)
+        self.assertEqual(turn['kept_token_count'], 4)
+        self.assertIs(turn['final_turn'], True)
+        self.assertEqual(turn['observation_token_ids'], [])
+        text = turn['prefix_cut']['execution_text']
+        self.assertEqual(text, '<answer>A</answer><search>query</search>')
+        row = bt.make_actor_row(trajectory_id='cpu-traj-0', prompt_width=2,
+            **{key: result.batch[key][0].tolist() for key in
+               ('input_ids', 'attention_mask', 'info_mask', 'position_ids')})
+        count, projected, mask = bt._audit_trajectory([turn], row, result.meta_info['behavior_sampling'], 'cpu-policy0')
+        self.assertEqual(count, 4)
+        self.assertEqual(projected, result.batch['sampling_log_probs'][0].tolist())
+        self.assertEqual(mask, [True] * 4)
+        # Reward uses the complete authored span, never a cleaned first answer.
+        retained = turn['prefix_cut']['decoded_retained_prefix']
+        self.assertIsNone(extract_final_answer([retained]))
+        self.assertIsNone(contexts('', retained, [(0, len(retained))]))
+        self.assertEqual(compute_score_generated_em([retained], ['A']), 0.0)
+        self.assertEqual(_f1(None, ['A']), 0.0)
+        result.non_tensor_batch.update(
+            __g1_question_id=np.array(['cpu-question0', 'cpu-question1'], dtype=object),
+            data_source=np.array(['nq', 'hotpotqa'], dtype=object),
+            reward_model=np.array([{'ground_truth': {'target': ['A']}}] * 2, dtype=object))
+        decoder = SimpleNamespace(decode=lambda ids: ''.join(manager.tokenizer.fragments.get(int(token), 'P') for token in ids))
+        measured = rows_from_batch(result, decoder)
+        for measurement in measured:
+            self.assertEqual((measurement['em'], measurement['f1'], measurement['answer_present']), (0, 0.0, False))
+            self.assertEqual((measurement['actual_calls'], measurement['valid_action'], measurement['turns']), (0, 1, 1))
+        source = Path(__file__).resolve().parents[2] / 'verl/trainer/main_ppo_eco.py'
+        tree = ast.parse(source.read_text())
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'EcoRewardManager')
+        method = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == '_score_probe')
+        namespace = {}
+        exec(compile(ast.Module(body=[method], type_ignores=[]), str(source), 'exec'), namespace)
+        score, trust, kind = namespace['_score_probe'](SimpleNamespace(PENALTY=.1),
+            dict(n_search=0, correct=False, answer=None), None)
+        self.assertEqual((score, trust, kind), (-.1, 0.0, None))
 
     def test_inside_tag_token_nonwhitespace_retains_failure_evidence(self):
         raw = [26, 99]

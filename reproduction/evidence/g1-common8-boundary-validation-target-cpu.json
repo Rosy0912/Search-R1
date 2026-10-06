@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "role": "actual_target_cpu_boundary_and_validation_evidence_regression",
+  "target_base": "/dataset/shaoshitong/g1-common8-behavior-cpu-de8679933326",
+  "target_proof_file": "behavior-consistency-target-cpu-v2-result.json",
+  "target_proof_sha256": "5399795ab3c6b50400d378493aecede6307663672e32ebc38a13fc201ac64e35",
+  "checked_unix": 1791247669.9475987,
+  "source_file_count": 353,
+  "source_map_sha256": "91174372029ae4be7d82195de95158261b7a56ae9fd1b440cd63b00141cea25f",
+  "modules": [
+    "reproduction.common8.test_policy_calibration_plan",
+    "reproduction.common8.test_freeze_calibration_plan",
+    "reproduction.common8.test_safety_calibration_evidence",
+    "reproduction.common8.test_calibration_evaluation",
+    "reproduction.common8.test_calibration_runtime",
+    "reproduction.common8.test_prepare_calibration_run",
+    "reproduction.common8.test_adopt_initial_probes",
+    "reproduction.common8.test_production_safety_admission",
+    "reproduction.common8.test_pipeline_calibration",
+    "search_g1.test_policy_safety",
+    "reproduction.common8.test_temporary_cache",
+    "reproduction.common8.test_sampling_capture",
+    "reproduction.common8.test_behavior_trace",
+    "reproduction.common8.test_behavior_probability",
+    "reproduction.common8.test_behavior_runtime",
+    "reproduction.common8.test_generation_behavior"
+  ],
+  "tests_run": 226,
+  "skip_count": 0,
+  "failures": 0,
+  "errors": 0,
+  "torch_version": "2.4.0+cu121",
+  "cuda_available": false,
+  "duration_seconds": 84.28287148475647,
+  "shell_syntax_returncode": 0,
+  "reviewed_changed_files_sha256": {
+    "reproduction/common8/behavior_runtime.py": "9cf6c1e573f4c82ce269b8a5cbc8111967adaf9eb9e220ac19f73f76072ab17f",
+    "reproduction/common8/behavior_trace.py": "efa5a06a2fb38d1c6fd3ad50cd248f40e44c413522babe4fbca03d7fa8fa473c",
+    "reproduction/common8/test_behavior_runtime.py": "2fc1729275da4bfa78515b8bffca2631ac8e950c0043d213b2775b28618581b6",
+    "reproduction/common8/test_behavior_trace.py": "bb8ba8d023f49a2608a1063ed796124a5346614eb7313e489a96d039d1c5e53e",
+    "reproduction/common8/test_generation_behavior.py": "b7a68b2111da103e8bbae43e490491d5268619f7b34d220279b49b4f414e1cd6"
+  },
+  "independent_local_cpu_review": {
+    "tests_run": 54,
+    "skip_count": 0,
+    "concrete_blockers": 0
+  },
+  "actual_production_updates": 0,
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "physical_execution_authenticated": false,
+  "scope": "Actual target CPU/Gloo/source-byte regression; not GPU probability parity, native update, sampled KL health or effects. Failed3283 source and missing historical validation raw journal are not altered."
+}
