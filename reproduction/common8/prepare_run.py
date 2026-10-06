@@ -7,6 +7,7 @@ import time
 import uuid
 from pathlib import Path
 from reproduction.common8.verify_data import digest, probe_question_id, verify
+from reproduction.common8.formal_contract import CONTRACT_KIND, TARGET_UPDATES, assert_formal_run
 
 REVISION='aa8e72537993ba99e69dfaafa59ed015b17504d1'
 OFFICIAL_MANIFEST_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
@@ -92,12 +93,14 @@ def prepare(base,model,official_path,commit):
         source_commit=commit,source_sha256=source,
         source_snapshot_semantics='disk fingerprint before launch; not proof of loaded modules',
         input_sha256=inputs,calibration_question_ids=audit['calibration_question_ids'],
-        target_updates=300,save_interval=50,acceptance_update=5,initial_probe_version=None,
+        contract_kind=CONTRACT_KIND,target_updates=TARGET_UPDATES,
+        save_interval=50,acceptance_update=5,initial_probe_version=None,
         checkpoint_dir=str(base/'checkpoints/search-g1-common8'),
         train_log=str(base/'logs/search-g1-common8-training.log'),
-        optimizer_semantics='fresh Adam; fresh actor; no prior training checkpoint',
+        optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:json.dump(result,f,indent=2)
     return result

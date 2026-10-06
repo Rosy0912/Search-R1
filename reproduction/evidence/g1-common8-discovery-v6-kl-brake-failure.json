@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "checked_unix": 1791277596.550112,
+  "scope": "Read-only failed diagnostic scalar evidence; no production or healthy admission",
+  "run_id": "0873410ce2f146499a581314184214f9",
+  "native_job_id": "3298",
+  "source_commit": "f0445f4edf0dbea916ff63bedafe356d6d9ebcdb",
+  "completed_child_outer_updates": 0,
+  "completed_production_outer_updates": 0,
+  "rank_writes": [
+    {
+      "file": "optimizer-rank-0.jsonl",
+      "receipt_sha256": "0696ae255d0fcd1d72f73caa1d16bcf54709fe16cf73da7acec582f44d05b48f",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-1.jsonl",
+      "receipt_sha256": "42e6dc00717b01e6b2901136674b2f99e81e25009303f13750a077d0e6003c57",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-2.jsonl",
+      "receipt_sha256": "e809ba384ac56e581ed64f39f1f8bf805dcf7064d0ece199b7bec4172ae99315",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-3.jsonl",
+      "receipt_sha256": "55b3540373037bab670b90b0d1a6764f1390313088ac8e9a4c2fe6d3f8ec8bbc",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-4.jsonl",
+      "receipt_sha256": "34c9e2d1c7eb9e07f8e77c63e7ebde5a62bae84428be52eeebf880645fbf6baf",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-5.jsonl",
+      "receipt_sha256": "eb5b886654ab6940f67fc2047e8dfe0683c6393cfcda7c6a98c6dddee201f9bd",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-6.jsonl",
+      "receipt_sha256": "36c58efb3293d4faf6acbe6b4a271844ea2f6a83f733ea8a886e0d861e82eeac",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    },
+    {
+      "file": "optimizer-rank-7.jsonl",
+      "receipt_sha256": "bd150ebd35e5928f5fa26f3496b0ed6c8c32ab090b9e92a84845202f98f0adf2",
+      "actual_writes": 1,
+      "last_write_count": 1,
+      "gradient_norm_before": 1.9319460036012301,
+      "gradient_norm_after": 0.9999994825633258,
+      "consumed_learning_rates": [
+        1e-06
+      ],
+      "monitors": [
+        {
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 2.0918964659958124e-10,
+          "negative_tail_weight_fraction": 0.0,
+          "negative_log_ratio_p95": 2.002716064453125e-05,
+          "negative_log_ratio_p99": 4.9114227294921875e-05,
+          "negative_log_ratio_max": 0.0005487799644470215,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 0,
+          "optimizer_writes": 0,
+          "stage": "before_minibatch"
+        },
+        {
+          "allowed": false,
+          "reasons": [
+            "old_policy_kl"
+          ],
+          "sampled_old_policy_kl": 0.10240438014914058,
+          "negative_tail_weight_fraction": 0.0003546393654988782,
+          "negative_log_ratio_p95": 0.062055110931396484,
+          "negative_log_ratio_p99": 0.183760404586792,
+          "negative_log_ratio_max": 1.1911344528198242,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "effective_token_count": 10230,
+          "negative_token_count": 4848,
+          "negative_tail_count": 2,
+          "optimizer_writes": 1,
+          "stage": "after_minibatch"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "run_id": "0873410ce2f146499a581314184214f9",
+    "cleaned": true,
+    "checked_unix": 1791277017.1368926
+  },
+  "train_log_sha256": "1ed2e9699934ca834ea1644c97adb95eee3a41dc6be92620b6cbe77b3eff88fb",
+  "failure": "after first real Adam write: sampled old-policy KL brake",
+  "candidate_old_policy_kl": 0.01,
+  "actual_post_first_write_old_policy_kl": 0.10240438014914058,
+  "diagnostic_constant_lr": 1e-06,
+  "formal_new_goal": {
+    "target200": true,
+    "warmup57": true,
+    "started": false
+  },
+  "healthy_checkpoint_accepted": false,
+  "negative_tail_threshold_selected": false,
+  "native_terminal_capture": "Slurm controller already purged this job at observation; pipeline FAILED and actual cleanup proven, no COMPLETED claim",
+  "raw_private_receipt_sha256": "2dc9326b141382827cc7804c87f59982ccb334a5d38887a2c38c83fb467afd8e"
+}

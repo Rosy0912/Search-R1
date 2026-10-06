@@ -85,7 +85,7 @@ def _mask(value, width, name):
     return value
 
 
-def rows_from_batch(batch, tokenizer):
+def rows_from_batch(batch, tokenizer, *, allowed_sources=None):
     """Extract strict generated-span EM/F1 and actual ordered executor counts.
 
     Raw question, evidence and answer text stay in the existing remote trajectory
@@ -93,6 +93,8 @@ def rows_from_batch(batch, tokenizer):
     Zero-token/missing/invalid answers remain questions with EM=F1=0.
     """
     count = len(batch)
+    sources = frozenset(SOURCE_COUNTS if allowed_sources is None else allowed_sources)
+    _require(bool(sources), 'empty allowed source set')
     _require(count > 0, 'empty batch')
     actual = _metadata(batch, 'actual_retrieval_stats', count)
     valid = _metadata(batch, 'valid_action_stats', count)
@@ -107,7 +109,7 @@ def rows_from_batch(batch, tokenizer):
         question_id = item.non_tensor_batch['__g1_question_id']
         source = item.non_tensor_batch['data_source']
         _require(isinstance(question_id, str) and bool(question_id), 'missing question ID')
-        _require(isinstance(source, str) and source in SOURCE_COUNTS, 'unexpected data source')
+        _require(isinstance(source, str) and source in sources, 'unexpected data source')
         prompts = _tokens(item.batch['prompts'], 'prompts')
         responses = _tokens(item.batch['responses'], 'responses')
         plen = prompts.numel()

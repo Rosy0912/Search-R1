@@ -110,13 +110,17 @@ def bind_thresholds(config, *, group=None):
         if path != base/'logs/policy-safety-calibration.json':raise ValueError('Unbound calibration path')
         artifact=_strict_json(path.read_bytes())
         run=_strict_json((base/'logs/run-manifest.json').read_bytes())
-        if type(artifact['schema_version']) is not int or artifact['schema_version']!=2:
-            raise ValueError('Explicit schema2 production admission required; no legacy fallback')
+        if type(artifact['schema_version']) is not int or artifact['schema_version'] not in (2, 3):
+            raise ValueError('Explicit production admission or typed guarded fresh200 bootstrap required')
         # This reader verifies the frozen parent probability proof and the real
         # confirmation child proof with their distinct run IDs. It has no writes,
         # fresh/no-claim checks or live GPU/HTTP actions after training is claimed.
-        from reproduction.common8.production_safety_admission import verify_admission
-        tail,verified_sha=verify_admission(base,artifact,run)
+        if artifact['schema_version'] == 3:
+            from reproduction.common8.fresh200_bootstrap import verify_bootstrap
+            tail,verified_sha=verify_bootstrap(base,artifact,run)
+        else:
+            from reproduction.common8.production_safety_admission import verify_admission
+            tail,verified_sha=verify_admission(base,artifact,run)
         if artifact['dual_clip']!=float(config.dual_clip) or artifact['target_old_policy_kl']!=float(config.target_old_policy_kl) or artifact['kl_log_bound']!=float(config.kl_log_bound):raise ValueError('Calibration thresholds differ')
         if type(tail) not in (int,float) or not math.isfinite(tail) or not 0<=tail<=1:
             raise ValueError('Invalid calibrated tail limit')

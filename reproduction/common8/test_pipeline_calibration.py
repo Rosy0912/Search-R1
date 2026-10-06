@@ -15,6 +15,42 @@ from reproduction.common8.verify_data import digest
 
 
 class PipelineCalibrationTests(unittest.TestCase):
+    def formal_pipeline(self,root):
+        from reproduction.common8.test_configuration import ConfigurationTests
+        base,run=ConfigurationTests().fixture(root)
+        discovery=base.parent/'old immutable diagnostic';discovery.mkdir();discovery=discovery.resolve()
+        descriptor=base/'preparation';descriptor.mkdir()
+        for name in ('diagnostic.json','terminal.json'):
+            (descriptor/name).write_text('{"scope":"CPU dispatch fixture, not actual admission"}')
+        run.update(policy_calibration_discovery_base=str(discovery.resolve()),
+            diagnostic_proof=str((descriptor/'diagnostic.json').resolve()),
+            diagnostic_terminal_proof=str((descriptor/'terminal.json').resolve()),
+            train_log=str(base/'logs/train.log'))
+        pipeline=Pipeline.__new__(Pipeline);pipeline.base=base;pipeline.python='cpu-only-python'
+        pipeline.run=run;pipeline.start=Mock(return_value=object());pipeline.wait=Mock();pipeline.stage=Mock()
+        return pipeline
+
+    def test_formal200_adopts_diagnostic_without_extra_confirmation_or_fresh_restart(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.formal_pipeline(root)
+            sources=adoption_inputs(pipeline.run,pipeline.base)
+            self.assertNotIn('policy_calibration_confirmation_base',sources)
+            pipeline.initial_probe_calibration()
+            command=pipeline.start.call_args.args[1]
+            self.assertIn('reproduction.common8.adopt_fresh200_probes',command)
+            self.assertIn('--diagnostic-proof',command);self.assertIn('--terminal-proof',command)
+            pipeline.start.reset_mock();stage=pipeline.train_and_verify()
+            self.assertEqual(stage,'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP')
+            self.assertEqual([c.args[0] for c in pipeline.start.call_args_list],['trainer','final-acceptance'])
+
+    def test_formal200_missing_original_diagnostic_descriptor_rejected_before_launch(self):
+        for name in ('diagnostic_proof','diagnostic_terminal_proof'):
+            with self.subTest(name=name),tempfile.TemporaryDirectory() as root:
+                pipeline=self.formal_pipeline(root);pipeline.run.pop(name)
+                with self.assertRaisesRegex(RuntimeError,'Authenticated initial-probe adoption'):
+                    pipeline.initial_probe_calibration()
+                pipeline.start.assert_not_called()
+
     def pipeline(self, base, role=None, adoption_sources=True):
         pipeline=Pipeline.__new__(Pipeline)
         pipeline.base=Path(base);pipeline.python=str(Path(base)/'env/bin/python')
@@ -34,7 +70,7 @@ class PipelineCalibrationTests(unittest.TestCase):
             pipeline=self.pipeline(root)
             pipeline.calibration_measurements=Mock(side_effect=AssertionError('not a child'))
             stage=pipeline.train_and_verify()
-        self.assertEqual(stage,'FINISHED_FULL300_FINAL51713_AND_OWNED_CLEANUP')
+        self.assertEqual(stage,'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP')
         self.assertEqual([call.args[0] for call in pipeline.start.call_args_list],['trainer','final-acceptance'])
         self.assertIn('reproduction.common8.verify_full',pipeline.start.call_args_list[1].args[1])
         pipeline.calibration_measurements.assert_not_called()

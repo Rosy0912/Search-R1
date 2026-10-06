@@ -5,11 +5,13 @@ import joblib,numpy as np
 from search_g1.resource import evaluator_gpu_lock
 from reproduction.common8.verify_data import digest
 from reproduction.a800.recovery_binding import finite_fitted_values
+from reproduction.common8.formal_contract import PROBE_ROUNDS, assert_formal_run
 
 ap=argparse.ArgumentParser();ap.add_argument('--step',type=int,required=True);ap.add_argument('--model',required=True);args=ap.parse_args()
 base=Path(os.environ.get('SEARCH_G1_BASE','/data/search-g1'));run=json.loads((base/'logs/run-manifest.json').read_text())
 assert run['profile']=='common8' and run.get('completed_updates',0)==0
-assert args.step in (0,50,100,150,200,250)
+assert_formal_run(run)
+assert args.step in PROBE_ROUNDS, 'Terminal200 does not refit an unused reward evaluator'
 for name,sha in run['input_sha256'].items(): assert digest(base/'data'/name)==sha
 assert run['probe_visible_device'] is not None, 'Probe placement has not passed resource admission'
 if args.step:

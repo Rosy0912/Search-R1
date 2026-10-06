@@ -6,13 +6,14 @@ from pathlib import Path
 from reproduction.common8.verify_data import digest, verify
 from reproduction.a800 import probe_admission as generic
 from reproduction.a800.recovery_binding import finite_fitted_values
+from reproduction.common8.formal_contract import assert_formal_run
 
 
 def check_common(base):
     import joblib
     run=json.loads((base/'logs/run-manifest.json').read_text())
     assert run['profile']=='common8' and run['completed_updates']==0
-    assert run['acceptance_update']==5 and run['target_updates']==300
+    assert_formal_run(run)
     assert run['initial_model']==run['reference_model']
     assert run['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
     verify(base/'data')

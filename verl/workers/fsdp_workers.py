@@ -239,24 +239,21 @@ class ActorRolloutRefWorker(Worker):
 
         # TODO: add more optimizer args into config
         if self._is_actor:
-            from verl.utils.torch_functional import get_constant_schedule_with_warmup
-            actor_optimizer = optim.AdamW(actor_module_fsdp.parameters(),
+            def fresh_optimizer():
+                return optim.AdamW(actor_module_fsdp.parameters(),
                                           lr=optim_config.lr,
                                           betas=optim_config.get('betas', (0.9, 0.999)),
                                           weight_decay=optim_config.get('weight_decay', 1e-2))
-
-            total_steps = optim_config.get('total_training_steps', 0)
-            num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
-
-            print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
-
-            from verl.utils.weight_continuation import scheduler_from_completed
             if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
-                assert num_warmup_steps == 0 and optim_config.get('completed_updates', 0) == 0
-                from reproduction.common8.scheduler import constant_scheduler
-                actor_lr_scheduler = constant_scheduler(actor_optimizer)
+                from reproduction.common8.scheduler import collective_actor_initialization
+                actor_optimizer, actor_lr_scheduler = collective_actor_initialization(fresh_optimizer, optim_config,
+                    execution_role=os.environ.get('SEARCH_G1_CALIBRATION_ROLE', 'production'))
             else:
+                from verl.utils.weight_continuation import scheduler_from_completed
+                actor_optimizer = fresh_optimizer()
+                total_steps = optim_config.get('total_training_steps', 0)
+                num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
+                num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
                 actor_lr_scheduler = scheduler_from_completed(
                     actor_optimizer, num_warmup_steps, optim_config.get('completed_updates', 0))
         else:
@@ -392,15 +389,79 @@ class ActorRolloutRefWorker(Worker):
 
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
-            # perform training
-            with Timer(name='update_policy', logger=None) as timer:
-                metrics = self.actor.update_policy(data=data)
-            delta_time = timer.last
-            global_num_tokens = data.meta_info['global_token_num']
-            estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
-            metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
-
-            self.actor_lr_scheduler.step()
+            scheduler_evidence = None
+            commit_started = False
+            try:
+                if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                    from reproduction.common8.scheduler import OuterSchedulerEvidence, collective_call
+                    def begin_scheduler():
+                        nonlocal scheduler_evidence
+                        if getattr(self.actor_lr_scheduler, '_common8_schedule_kind', None) != 'fresh200_warmup57':
+                            return dict(enabled=False,
+                                        schedule_kind=getattr(self.actor_lr_scheduler, '_common8_schedule_kind', None))
+                        if not hasattr(self, '_outer_scheduler_evidence'):
+                            self._outer_scheduler_evidence = OuterSchedulerEvidence(
+                                os.environ['SEARCH_G1_BASE'], self.actor_optimizer, self.actor_lr_scheduler,
+                                rank=torch.distributed.get_rank(), world_size=torch.distributed.get_world_size(),
+                                job_id=os.environ['SLURM_JOB_ID'])
+                        scheduler_evidence = self._outer_scheduler_evidence
+                        scheduler_evidence.begin_outer(data.meta_info['logical_update'],
+                            optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),
+                            batch_gate_sha256=data.meta_info['behavior_probability_gate']['sha256'])
+                        return scheduler_evidence.agreement_state()
+                    collective_call(begin_scheduler, stage='begin')
+                # Every minibatch guard finishes inside update_policy. A rejected
+                # batch can retain real Adam writes, but never advances warmup.
+                with Timer(name='update_policy', logger=None) as timer:
+                    metrics = self.actor.update_policy(data=data)
+                delta_time = timer.last
+                if scheduler_evidence is not None:
+                    def prepare_scheduler():
+                        global_num_tokens = data.meta_info['global_token_num']
+                        estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
+                        metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
+                        scheduler_evidence.prepare_outer(optimizer_writes=getattr(self.actor, '_optimizer_writes', 0))
+                        return scheduler_evidence.agreement_state()
+                    collective_call(prepare_scheduler, stage='prepare')
+                    commit_started = True
+                    schedule = None
+                    def commit_scheduler():
+                        nonlocal schedule
+                        schedule = scheduler_evidence.commit_prepared()
+                        return scheduler_evidence.agreement_state()
+                    collective_call(commit_scheduler, stage='commit')
+                    metrics['actor/lr_consumed'] = schedule['consumed_learning_rates'][0]
+                    metrics['actor/completed_outer'] = schedule['completed_outer_after']
+                    metrics['actor/scheduler_advances_this_outer'] = schedule['scheduler_advances']
+                else:
+                    # Frozen constant-LR diagnostics and other legacy profiles.
+                    global_num_tokens = data.meta_info['global_token_num']
+                    estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
+                    metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
+                    self.actor_lr_scheduler.step()
+            except BaseException as error:
+                if scheduler_evidence is not None:
+                    try:
+                        if commit_started:
+                            scheduler_evidence.fail_after_commit(
+                                optimizer_writes=getattr(self.actor, '_optimizer_writes', 0), reason=type(error).__name__)
+                        elif scheduler_evidence.pending is not None:
+                            scheduler_evidence.reject_outer(
+                                optimizer_writes=getattr(self.actor, '_optimizer_writes', 0), reason=type(error).__name__)
+                    except BaseException as receipt_error:
+                        # Failure to persist must not disguise a committed
+                        # scheduler as an unchanged brake rejection.
+                        fallback = scheduler_evidence.failure_snapshot(
+                            optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),
+                            reason=type(error).__name__+'; receipt='+type(receipt_error).__name__,
+                            commit_started=commit_started)
+                        # Separate console channel retains actual counters if
+                        # both durable COMPLETE and fatal ledger append fail.
+                        print('SEARCH_G1_FATAL_SCHEDULER_EVIDENCE='+
+                              __import__('json').dumps(fallback,allow_nan=False),flush=True)
+                        logger.error('Fatal scheduler evidence failure after %s: %s',
+                                     'commit' if commit_started else 'rejection', type(receipt_error).__name__)
+                raise
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
 

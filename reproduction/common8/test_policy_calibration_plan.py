@@ -17,6 +17,11 @@ from reproduction.common8.policy_calibration_plan import (
 class CalibrationPlanTests(unittest.TestCase):
     def setUp(self):
         budget = json.loads((Path(__file__).parent / 'budget.json').read_text())
+        # These fixtures authenticate the immutable old diagnostic contract;
+        # changing today's formal recipe must not relabel its mathematics.
+        budget.update(copy.deepcopy(MATHEMATICS))
+        for name in ('contract_kind','lr_warmup_steps','entropy_coefficient'):
+            budget.pop(name,None)
         self.parent = dict(profile='common8', run_id='production', completed_updates=0,
                            model_revision=MODEL_REVISION, initial_model='/official', reference_model='/official',
                            source_commit='1'*40, source_sha256={'source.py': '1'*64},

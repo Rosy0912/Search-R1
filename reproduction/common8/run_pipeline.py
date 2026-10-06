@@ -9,6 +9,7 @@ from pathlib import Path
 from reproduction.a800.owned_processes import OwnedProcesses,publish
 from reproduction.common8.verify_data import digest
 from reproduction.common8.stage_retrieval import binding,memory_bytes
+from reproduction.common8.formal_contract import CONTRACT_KIND, assert_formal_run
 ALLOWED=tuple(range(8))
 CALIBRATION_ROLES=('policy_safety_calibration_discovery','policy_safety_calibration_confirmation')
 _interrupt_requested=None
@@ -25,7 +26,8 @@ def adoption_inputs(run,base=None):
     role=execution_role(run)
     if role==CALIBRATION_ROLES[0]:return {}
     names=['policy_calibration_discovery_base']
-    if role=='production':names.append('policy_calibration_confirmation_base')
+    formal=role=='production' and run.get('contract_kind')==CONTRACT_KIND
+    if role=='production' and not formal:names.append('policy_calibration_confirmation_base')
     sources={}
     for name in names:
         value=run.get(name)
@@ -38,6 +40,16 @@ def adoption_inputs(run,base=None):
     directories=list(sources.values())+([] if base is None else [Path(base).resolve()])
     if len(directories)!=len(set(directories)):
         raise RuntimeError('Authenticated initial-probe adoption requires distinct target/discovery/confirmation bases')
+    if formal:
+        assert_formal_run(run)
+        for name in ('diagnostic_proof','diagnostic_terminal_proof'):
+            value=run.get(name)
+            if not isinstance(value,str) or not value or any(c in value for c in '\r\n\0'):
+                raise RuntimeError('Authenticated initial-probe adoption requires explicit '+name)
+            path=Path(value)
+            if not path.is_absolute() or str(path.resolve())!=value or not path.is_file():
+                raise RuntimeError('Authenticated initial-probe adoption requires a canonical existing '+name)
+            sources[name]=path
     return sources
 
 
@@ -54,7 +66,8 @@ def request_interrupt(sig,frame):
 
 
 def gpu_rows(fields,kind='gpu'):
-    return list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits'],text=True))))
+    # Operational query bound, not an occupancy/sampling-gap acceptance limit.
+    return list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits'],text=True,timeout=30))))
 
 
 class Pipeline:
@@ -76,14 +89,22 @@ class Pipeline:
     def sample(self):
         path=self.base/'logs'/('gpu-samples-'+self.run['run_id']+'.jsonl')
         try:
+            from reproduction.a800.owned_processes import identity
+            from reproduction.common8.policy_calibration_plan import canonical_bytes
+            producer=identity(os.getpid())
+            producer={key:producer[key] for key in ('pid','start_ticks','sid','uid')}
+            source_sha=hashlib.sha256(canonical_bytes(self.run['source_sha256'])).hexdigest()
             with path.open('a') as f:
                 while not self.stop_sampling.is_set():
-                    rows=[]
-                    for r in gpu_rows('index,memory.used,memory.total,utilization.gpu'):
+                    rows=[];query_started=time.time()
+                    for r in gpu_rows('index,uuid,memory.used,memory.total,utilization.gpu'):
                         if int(r[0]) in self.physical_indices:
-                            item=dict(index=int(r[0]),used_mib=int(r[1]),total_mib=int(r[2]),util_percent=int(r[3]));rows.append(item)
+                            item=dict(index=int(r[0]),uuid=r[1].strip(),used_mib=int(r[2]),total_mib=int(r[3]),util_percent=int(r[4]));rows.append(item)
                             self.max_used[item['index']]=max(self.max_used.get(item['index'],0),item['used_mib'])
-                    f.write(json.dumps(dict(run_id=self.run['run_id'],unix=time.time(),gpus=rows))+'\n');f.flush()
+                    f.write(json.dumps(dict(schema_version=1,role='actual_common8_gpu_occupancy',
+                        run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],
+                        source_map_sha256=source_sha,sampler_identity=producer,sampling_interval_seconds=2,
+                        query_started_unix=query_started,unix=time.time(),gpus=rows))+'\n');f.flush()
                     self.stop_sampling.wait(2)
         except Exception as e:self.sample_error=repr(e)
     def start(self,name,args,gpus,extra=None):
@@ -214,7 +235,7 @@ class Pipeline:
         return path
     def train_and_verify(self):
         role=supported_execution_role(self.run,self.base)
-        self.stage('GRPO_1_TO_300' if role=='production' else 'BOUNDED_POLICY_CALIBRATION_ONE_OUTER',execution_role=role)
+        self.stage('GRPO_1_TO_200' if role=='production' else 'BOUNDED_POLICY_CALIBRATION_ONE_OUTER',execution_role=role)
         log=Path(self.run['train_log'])
         assert not log.exists(), 'Canonical trainer log belongs to the claimed trainer, not preparation'
         t=self.start('trainer',['bash','reproduction/common8/train.sh'],ALLOWED,{'SEARCH_G1_TRAIN_LOG':str(log)})
@@ -222,10 +243,10 @@ class Pipeline:
         if role in CALIBRATION_ROLES:
             self.calibration_measurements()
             return 'FINISHED_POLICY_CALIBRATION_MEASUREMENTS_AND_OWNED_CLEANUP'
-        self.stage('FINAL300_COMPLETE_SHARED_EVALUATION_ACCEPTANCE')
+        self.stage('FINAL200_COMPLETE_SHARED_EVALUATION_ACCEPTANCE')
         v=self.start('final-acceptance',[self.python,'-m','reproduction.common8.verify_full','--base',str(self.base)],[])
         self.wait('final-acceptance',v)
-        return 'FINISHED_FULL300_FINAL51713_AND_OWNED_CLEANUP'
+        return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
         role=supported_execution_role(self.run,self.base)
         if role==CALIBRATION_ROLES[0]:
@@ -235,8 +256,14 @@ class Pipeline:
         else:
             self.stage('AUTHENTICATED_INITIAL_PROBE_ADOPTION',execution_role=role)
             sources=adoption_inputs(self.run,self.base)
-            c=self.start('initial-probe-adoption',[self.python,'-m','reproduction.common8.adopt_initial_probes',
-                         '--base',str(self.base),'--discovery-base',str(sources['policy_calibration_discovery_base'])],ALLOWED)
+            formal=role=='production' and self.run.get('contract_kind')==CONTRACT_KIND
+            module='reproduction.common8.adopt_fresh200_probes' if formal else 'reproduction.common8.adopt_initial_probes'
+            command=[self.python,'-m',module,'--base',str(self.base),
+                '--discovery-base',str(sources['policy_calibration_discovery_base'])]
+            if formal:
+                command.extend(['--diagnostic-proof',str(sources['diagnostic_proof']),
+                                '--terminal-proof',str(sources['diagnostic_terminal_proof'])])
+            c=self.start('initial-probe-adoption',command,ALLOWED)
             self.wait('initial-probe-adoption',c)
     def execute(self, export_port):
         sampler=None;success=False;finished_stage=None

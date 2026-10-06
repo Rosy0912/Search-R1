@@ -16,6 +16,8 @@ def check_global(config, world_size, sequence_parallel):
     assert config.ref.log_prob_micro_batch_size == 32
     assert config.actor.optim.lr == 1e-6
     assert config.actor.optim.lr_warmup_steps_ratio == 0
+    assert config.actor.optim.lr_warmup_steps == 57
+    assert config.actor.optim.warmup_style == 'constant'
 
 
 def check_local(config, *, actor, rollout, reference):

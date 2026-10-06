@@ -3,6 +3,7 @@ import json
 import math
 import os
 from pathlib import Path
+from reproduction.common8.formal_contract import TARGET_UPDATES, assert_formal_run
 
 
 METRICS=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
@@ -12,7 +13,8 @@ METRICS=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
 def record(step,metrics,probe_version):
     base=Path(os.environ['SEARCH_G1_BASE'])
     run=json.loads((base/'logs/run-manifest.json').read_text())
-    assert run['profile']=='common8' and 1<=step<=300
+    assert_formal_run(run)
+    assert type(step) is int and 1<=step<=TARGET_UPDATES
     scalar={key:float(metrics[key]) for key in METRICS}
     assert all(math.isfinite(v) for v in scalar.values())
     assert scalar['actor/optimizer_steps_this_update']==20

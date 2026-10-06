@@ -15,7 +15,8 @@ from reproduction.common8.worker_evidence import append, read_console_form
 
 def config():
     return NS(actor=NS(ppo_mini_batch_size=128, ppo_micro_batch_size=16,
-                       ppo_epochs=1, optim=NS(lr=1e-6,lr_warmup_steps_ratio=0.0)),
+                       ppo_epochs=1, optim=NS(lr=1e-6,lr_warmup_steps_ratio=0.0,
+                                              lr_warmup_steps=57,warmup_style='constant')),
               rollout=NS(n=1, n_agent=5, log_prob_micro_batch_size=32),
               ref=NS(log_prob_micro_batch_size=32))
 
@@ -26,7 +27,7 @@ def evidence():
         for mini in range(20):
             lines.append('SEARCH_G1_OPTIMIZER_WRITE='+json.dumps(dict(rank=rank,
                 context=dict(logical_update=1,minibatch_index=mini),write_count=mini+1,
-                learning_rates=[1e-6])))
+                learning_rates=[0.0])))
         lines.append('SEARCH_G1_OUTER_BUDGET='+json.dumps(dict(rank=rank,
             logical_update=1,local_trajectories=320,local_mini=16,
             local_micro=2,optimizer_writes=20,cumulative_writes=20)))
@@ -46,7 +47,7 @@ class ContractTests(unittest.TestCase):
             with self.assertRaises(AssertionError):read_console_form(base,'other-run')
 
     def test_fresh_claim_rejects_partial_attempt_evidence(self):
-        for artifact in ('training-launch-claim.json','optimizer-rank-0.jsonl',
+        for artifact in ('training-launch-claim.json','optimizer-rank-0.jsonl','scheduler-rank-0.jsonl',
                          'trainer.log','checkpoint'):
             with self.subTest(artifact=artifact), tempfile.TemporaryDirectory() as tmp:
                 base=Path(tmp);logs=base/'logs';logs.mkdir()

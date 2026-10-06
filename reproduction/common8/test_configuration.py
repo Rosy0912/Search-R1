@@ -12,16 +12,22 @@ from reproduction.common8 import configuration as c
 
 class ConfigurationTests(unittest.TestCase):
     def fixture(self, root):
-        base = Path(root) / 'fixture with spaces'
+        # macOS temp roots may spell the same directory /var or /private/var;
+        # match production's canonical namespace before constructing bindings.
+        base = (Path(root) / 'fixture with spaces').resolve()
         (base / 'logs').mkdir(parents=True)
         model = str(base / 'official model')
         run = dict(profile='common8', run_id='cpu-fixture-only', completed_updates=0, initial_model=model,
+                   contract_kind='fresh200_warmup57',target_updates=200,acceptance_update=5,
                    reference_model=model, model_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1',
                    budget=json.loads((c.REPO / 'reproduction/common8/budget.json').read_text()),
+                   train_log=str(base / 'logs/training.log'),
                    checkpoint_dir=str(base / 'checkpoints/search-g1-common8'),
                    source_sha256={n: c.sha(c.REPO / n) for n in
-                       ('reproduction/common8/recipe.json', 'verl/trainer/config/ppo_trainer.yaml')})
+                       ('reproduction/common8/recipe.json', 'reproduction/common8/budget.json',
+                        'verl/trainer/config/ppo_trainer.yaml')})
         (base / 'logs/run-manifest.json').write_text(json.dumps(run))
+        (base / 'logs/training.log').write_text('constructed CPU fixture console; no training run\n')
         return base, run
 
     def test_real_hydra_composes_budget_paths_and_interpolations(self):
@@ -42,6 +48,13 @@ class ConfigurationTests(unittest.TestCase):
             self.assertEqual(config.data.val_batch_size, 64)
             self.assertEqual(config.trainer.acceptance_step, 5)
             self.assertEqual(config.trainer.logger, ['console'])
+            self.assertEqual(config.trainer.total_training_steps,201)
+            self.assertEqual(config.actor_rollout_ref.actor.optim.lr_warmup_steps,57)
+            self.assertEqual(config.actor_rollout_ref.actor.optim.lr_warmup_steps_ratio,0.)
+            self.assertEqual(config.actor_rollout_ref.actor.entropy_coeff,0.)
+            self.assertTrue(config.actor_rollout_ref.actor.use_kl_loss)
+            self.assertEqual(config.actor_rollout_ref.actor.kl_loss_coef,0.)
+            self.assertEqual(config.actor_rollout_ref.actor.kl_loss_type,'low_var_kl')
 
     def test_stale_recipe_hash_is_rejected(self):
         with tempfile.TemporaryDirectory() as root:

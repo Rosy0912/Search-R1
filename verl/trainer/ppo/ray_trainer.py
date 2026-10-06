@@ -461,6 +461,7 @@ class RayPPOTrainer(object):
         data_source_lst = []
         question_id_lst = []
         calibration_rows = []
+        common8_evaluation_rows = []
         if hasattr(self.val_reward_fn, 'reset_metrics'):
             self.val_reward_fn.reset_metrics()
 
@@ -553,6 +554,9 @@ class RayPPOTrainer(object):
 
                     test_batch = test_batch.union(final_gen_batch_output)
 
+                    if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                        from reproduction.common8.validation_identity import rows_from_validation_batch
+                        common8_evaluation_rows.extend(rows_from_validation_batch(test_batch, self.tokenizer))
                     if calibration_phase is not None:
                         from reproduction.common8.calibration_evaluation import rows_from_batch
                         calibration_rows.extend(rows_from_batch(test_batch, self.tokenizer))
@@ -602,9 +606,20 @@ class RayPPOTrainer(object):
         if os.environ.get('SEARCH_G1_BASE'):
             from pathlib import Path
             from reproduction.profile import record_validation
+            evaluation_kwargs = {}
+            if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                assert self.config.do_search, 'Formal common8 validation uses the actual search agent protocol'
+                assert [row['question_id'] for row in common8_evaluation_rows] == question_id_lst
+                assert [row['data_source'] for row in common8_evaluation_rows] == data_sources.tolist()
+                assert [row['em'] for row in common8_evaluation_rows] == reward_tensor.tolist()
+                evaluation_kwargs['f1'] = [row['f1'] for row in common8_evaluation_rows]
+                for source in data_source_reward:
+                    values = [row['f1'] for row in common8_evaluation_rows if row['data_source']==source]
+                    metric_dict[f'val/f1/{source}'] = sum(values)/len(values)
+                metric_dict['val/weighted_f1'] = sum(evaluation_kwargs['f1'])/len(evaluation_kwargs['f1'])
             record_validation(Path(os.environ['SEARCH_G1_BASE']),
                 self.global_steps - 1 if final else self.global_steps,
-                question_id_lst, data_sources.tolist(), reward_tensor.tolist(), final=final)
+                question_id_lst, data_sources.tolist(), reward_tensor.tolist(), final=final, **evaluation_kwargs)
         return metric_dict
 
 
@@ -962,7 +977,7 @@ class RayPPOTrainer(object):
                 if self.global_steps == self.config.trainer.get('acceptance_step', 0):
                     from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
-                if self.global_steps in (50,100,150,200,250):
+                if self.global_steps in (50,100,150,200,250) and self.global_steps + 1 < self.total_training_steps:
                     from reproduction.profile import refresh_after_checkpoint
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
 

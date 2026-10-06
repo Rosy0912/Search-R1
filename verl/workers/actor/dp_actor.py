@@ -391,12 +391,18 @@ class DataParallelPPOActor(BasePPOActor):
                     # compute kl loss
                     masked_log_prob = torch.where(response_mask.bool(),log_prob,torch.zeros_like(log_prob))
                     masked_ref_log_prob = torch.where(response_mask.bool(),ref_log_prob,torch.zeros_like(ref_log_prob))
-                    kld = core_algos.kl_penalty(logprob=masked_log_prob,
-                                                ref_logprob=masked_ref_log_prob,
-                                                kl_penalty=self.config.kl_loss_type)
-                    kl_loss = masked_mean(kld, response_mask)
-
-                    policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
+                    # Disabled reference regularization must not evaluate exp
+                    # only to multiply a possible overflow by zero. Actual
+                    # reference LPs still undergo finite checks below; the
+                    # distinct sampling-policy brakes remain active.
+                    if self.config.kl_loss_coef == 0:
+                        kl_loss = log_prob.new_zeros(())
+                    else:
+                        kld = core_algos.kl_penalty(logprob=masked_log_prob,
+                                                  ref_logprob=masked_ref_log_prob,
+                                                  kl_penalty=self.config.kl_loss_type)
+                        kl_loss = masked_mean(kld, response_mask)
+                        policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
                     metrics['actor/kl_loss'] = kl_loss.detach().item()
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 

@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from reproduction.common8.batch_contract import check_global
+from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config
 
 REPO = Path(__file__).resolve().parents[2]
 RECIPE = REPO / 'reproduction/common8/recipe.json'
@@ -20,6 +21,7 @@ def arguments(base):
     run = json.loads((base / 'logs/run-manifest.json').read_text())
     budget = json.loads((REPO / 'reproduction/common8/budget.json').read_text())
     assert run['profile'] == 'common8' and run['budget'] == budget
+    assert_formal_run(run)
     assert run['model_revision'] == budget['model_revision']
     assert run['initial_model'] == run['reference_model']
     assert run['completed_updates'] == 0, 'Admission is for a fresh run only'
@@ -56,11 +58,12 @@ def resolved(base):
     mixed = config.actor_rollout_ref.actor.fsdp_config.mixed_precision
     assert all(mixed[k] == 'fp32' for k in ('param_dtype', 'reduce_dtype', 'buffer_dtype'))
     assert config.actor_rollout_ref.rollout.dtype == 'float32'
-    assert config.trainer.total_training_steps == 301
+    assert config.trainer.total_training_steps == 201
     assert config.actor_rollout_ref.model.path == run['initial_model']
     assert config.trainer.default_local_dir == run['checkpoint_dir']
     assert config.data.train_files == str(Path(base).resolve() / 'data/train.parquet')
     assert config.data.val_files == str(Path(base).resolve() / 'data/stage.parquet')
+    verify_formal_config(OmegaConf.to_container(config, resolve=True), run, base)
     return run, config, overrides
 
 
@@ -81,6 +84,7 @@ def launch(base):
                  checked_unix=time.time(), recipe_sha256=sha(RECIPE),
                  resolved_config_sha256=hashlib.sha256(canonical).hexdigest(),
                  resolved_config=document, actual_argv_overrides=overrides,
+                 formal_contract=verify_formal_config(document, run, base),
                  semantics='resolved launch configuration; not actual optimizer or model evidence')
     with (base / 'logs/resolved-training-config.json').open('x') as f:
         json.dump(proof, f, indent=2); f.flush(); os.fsync(f.fileno())

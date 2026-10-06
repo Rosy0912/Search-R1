@@ -9,6 +9,7 @@ from pathlib import Path
 from reproduction.common8.verify_data import digest, probe_question_id, COUNTS, MANIFEST_SHA
 
 _ACTIVE_SPLIT = 'stage'
+_ACTIVE_SOURCE_COUNTS = None
 
 
 def expected(base, split):
@@ -36,7 +37,7 @@ def bind_validation_dataframe(frame, base, split='stage'):
 def configure_validation(trainer, final=False):
     from torch.utils.data import DataLoader
     from verl.utils.dataset.rl_dataset import collate_fn
-    global _ACTIVE_SPLIT
+    global _ACTIVE_SPLIT, _ACTIVE_SOURCE_COUNTS
     step = int(trainer.global_steps)
     from reproduction.common8.calibration_runtime import active_plan
     phase = active_plan()
@@ -46,16 +47,23 @@ def configure_validation(trainer, final=False):
     else:
         split = 'final' if final else ('validation' if step > 0 and step % 50 == 0 else 'stage')
     base = Path(os.environ['SEARCH_G1_BASE'])
-    _, frame, _ = expected(base, split)
+    record, frame, _ = expected(base, split)
     dataset = copy.copy(trainer.val_dataset)
     dataset.dataframe = bind_validation_dataframe(frame, base, split)
     trainer.val_dataloader = DataLoader(dataset, batch_size=64, shuffle=False,
         drop_last=False, collate_fn=collate_fn)
     _ACTIVE_SPLIT = split
+    _ACTIVE_SOURCE_COUNTS = dict(record['source_counts'])
     print('SEARCH_G1_EVALUATION_SPLIT=' + split, flush=True)
 
 
-def record_validation(base, step, ids, sources, rewards, final=False):
+def rows_from_validation_batch(batch, tokenizer):
+    from reproduction.common8.calibration_evaluation import rows_from_batch
+    assert _ACTIVE_SOURCE_COUNTS, 'Exact shared validation split must be bound before scoring'
+    return rows_from_batch(batch, tokenizer, allowed_sources=_ACTIVE_SOURCE_COUNTS)
+
+
+def record_validation(base, step, ids, sources, rewards, final=False, *, f1=None):
     split = _ACTIVE_SPLIT
     assert final == (split == 'final')
     record, frame, expected_ids = expected(base, split)
@@ -63,11 +71,16 @@ def record_validation(base, step, ids, sources, rewards, final=False):
     assert ids == expected_ids and len(scores) == COUNTS[split]
     assert sources == frame['data_source'].tolist()
     assert all(math.isfinite(x) and x in (0., 1.) for x in scores)
+    assert f1 is not None, 'Actual generated-answer F1 is required; EM is not F1'
+    f1 = [float(x) for x in f1]
+    assert len(f1)==len(scores) and all(math.isfinite(x) and 0<=x<=1 for x in f1)
+    assert all(em<=score for em,score in zip(scores,f1)), 'EM and alias-normalized F1 disagree'
     counts = dict(Counter(sources))
     assert counts == record['source_counts']
     run = json.loads((base / 'logs/run-manifest.json').read_text())
     proof = dict(run_id=run['run_id'], split=split, step=int(step), final=final,
         question_ids=ids, data_sources=sources, em=scores, counts=counts,
+        f1=f1, weighted_f1=math.fsum(f1)/len(f1),
         correct=sum(scores), weighted_em=sum(scores)/len(scores),
         validation_sha256=record['sha256'], checked_unix=time.time())
     # Repeated normalized questions in the canonical final product are retained.
