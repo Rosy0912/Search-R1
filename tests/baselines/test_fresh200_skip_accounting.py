@@ -18,6 +18,7 @@ from search_r1.baselines.fresh200 import (begin_attempt, consume_attempt,
     driver_flow_state, initialize_attempt_ledger, record_epoch_end,
     restore_driver_flow, restore_attempt_ledger, validate_attempt_ledger)
 from search_r1.baselines.partial_update import rejection_disposition
+from tests.baselines.test_fresh200_worker_skip_static import KnownRefusal, actual_worker_rejection
 
 
 def training_fixture(size=4097):
@@ -201,8 +202,17 @@ def test_drop_last_epoch_tail_is_recorded_separately_from_complete_iterations():
 @pytest.mark.parametrize('reason', ['OLD_POLICY_TOKEN_KL',
     'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL','NEGATIVE_JOINT_ACTION_TAIL_COUNT'])
 def test_old_policy_probability_support_rejection_abandons_stale_rollout(reason):
+    actor = SimpleNamespace(actor_module=torch.nn.Linear(1, 1, bias=False),
+        _fresh200_attempt_id=1, _last_safety_grad_norm_after=torch.tensor(0.))
+    event = {'OLD_POLICY_TOKEN_KL': 'kl',
+             'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL': 'calibration_kl',
+             'NEGATIVE_JOINT_ACTION_TAIL_COUNT': 'tail'}[reason]
+    with pytest.raises(KnownRefusal) as caught:
+        actual_worker_rejection(actor, 4, 0, event)
+    assert caught.value.record['rejection_reason'] == reason
+    assert rejection_disposition(caught.value.record) == 'abandon'
     assert rejection_disposition({'rejection_reason':reason,'mini_index':4,
-                                  'phase':'before'})=='abandon'
+                                  'phase':'before'})=='fail_closed'
 
 
 def test_unknown_exception_text_is_not_a_safe_numerical_skip():

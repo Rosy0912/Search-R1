@@ -93,30 +93,36 @@ def preserve_worker(worker, data, rejection, refusal_index=None):
 
 
 def rejection_disposition(record):
-    """Expired old-policy support always abandons the remaining rollout reuse."""
+    """Only a completed, recognized numerical decision can authorize recovery."""
     # Diagnostic evidence failure is not a numerical opportunity refusal. The
     # original matched IO decision takes precedence even when phase/reason
     # still describes an otherwise skippable monitor or expired old rollout.
     if (record.get('global_diagnostic_io_failed') is True
             or record.get('matched_guard') == 'ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL'):
         return 'fail_closed'
+    if record.get('global_diagnostic_io_failed') is not False:
+        return 'fail_closed'
     phase = record.get('phase', '')
     if type(record.get('mini_index')) is not int or not 0 <= record['mini_index'] < 20:
         return 'fail_closed'
-    if record.get('rejection_reason') in ('OLD_POLICY_TOKEN_KL',
-            'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL', 'NEGATIVE_JOINT_ACTION_TAIL_COUNT'):
+    kind, marker = record.get('refusal_kind'), record.get('matched_guard')
+    if (kind == 'known_policy_limit' and marker == 'ORIGINAL_GLOBAL_STATISTICS_POLICY_REFUSAL'
+            and record.get('rejection_reason') in ('OLD_POLICY_TOKEN_KL',
+            'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL', 'NEGATIVE_JOINT_ACTION_TAIL_COUNT')):
         return 'abandon' if phase in ('before', 'after') else 'fail_closed'
-    phases = {'before', 'after', 'global_gradient_before_adam',
-              'gradient_action_prefix_schema', 'gradient_action_prefix_outputs'}
-    phases.update(f'gradient_micro{i}{suffix}' for i in range(8) for suffix in ('', '_loss'))
-    # Probe enter/exit catches may contain unknown original state/collective
-    # failures. Their typed envelope does not authorize a safe numerical skip.
-    phases.update(f'{side}_state' for side in ('before', 'after'))
-    phases.update(f'{side}_{kind}{i}' for side in ('before', 'after')
-                  for kind in ('schema', 'stats') for i in range(16))
-    phases.update(f'{side}_action_prefix_micro{i}{suffix}' for side in ('before', 'after')
-                  for i in range(16) for suffix in ('_schema', '_outputs'))
-    if phase in phases:
+    if (kind == 'known_numeric_monitor' and marker == 'ORIGINAL_GLOBAL_STATISTICS_NUMERIC_REFUSAL'
+            and phase in ('before', 'after')
+            and record.get('rejection_reason') == 'NONFINITE_OR_EXP_RANGE_OR_EMPTY_EFFECTIVE_MONITOR'):
+        return 'skip_opportunity'
+    if (kind == 'known_gradient' and marker == 'ORIGINAL_FSDP_ALL_REDUCE_MAX_GRADIENT_REFUSAL'
+            and phase == 'global_gradient_before_adam'):
+        return 'skip_opportunity'
+    if kind == 'known_numeric' and ((marker == 'ORIGINAL_ALL_REDUCE_MAX_NUMERIC_REFUSAL'
+            and phase in {f'gradient_micro{i}' for i in range(8)}
+            and record.get('details') == 'NONFINITE_OR_EXP_RANGE_EFFECTIVE_GRADIENT_INPUT')
+            or (marker == 'ORIGINAL_ALL_REDUCE_MAX_LOSS_REFUSAL'
+            and phase in {f'gradient_micro{i}_loss' for i in range(8)}
+            and record.get('details') == 'NONFINITE_TRAINING_LOSS')):
         return 'skip_opportunity'
     return 'fail_closed'
 
@@ -128,6 +134,8 @@ def continue_worker_after_rejection(worker, data, rejection, refusal_index):
     from verl.workers.fsdp_workers import _checkpoint_matched_stage
     if not isinstance(rejection, PolicySafetyRejected):
         raise TypeError('Unknown exceptions cannot become a safe skip')
+    if rejection_disposition(rejection.record) == 'fail_closed':
+        raise rejection
     receipt, error = None, None
     try:
         receipt = preserve_worker(worker, data, rejection, refusal_index)

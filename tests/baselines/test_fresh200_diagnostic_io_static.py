@@ -21,8 +21,7 @@ from tests.baselines.test_fresh200_worker_skip_static import (
 
 class IORefusal(KnownRefusal):
     def __init__(self, reason, record):
-        super().__init__(record)
-        self.reason = reason
+        super().__init__(reason, record)
 
 
 class GradientRefusal(ValueError):
@@ -32,16 +31,27 @@ class GradientRefusal(ValueError):
 
 
 def source_handler(method, selector, namespace, *, whole_optimizer_handler=False):
-    tree = ast.parse((ROOT / 'verl/workers/actor/dp_actor.py').read_text())
+    source = (ROOT / 'verl/workers/actor/dp_actor.py').read_text()
+    tree = ast.parse(source)
     function = next(node for node in ast.walk(tree)
                     if isinstance(node, ast.FunctionDef) and node.name == method)
-    handler = next(node for node in ast.walk(function) if isinstance(node, ast.ExceptHandler)
-                   and selector in ast.get_source_segment((ROOT / 'verl/workers/actor/dp_actor.py').read_text(), node))
-    if whole_optimizer_handler:
+    if method == '_policy_safety_guard':
+        index = next(index for index, node in enumerate(function.body)
+            if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+            and target.id == 'io_bad' for target in node.targets))
+        skeleton = ast.parse('def invoke(record,error,supplied=None,device="cpu",group=None):\n    pass\n').body[0]
+        # Keep the original diagnostic IO MAX, record update, and typed branch;
+        # the removed broad ValueError handler must not be resurrected here.
+        skeleton.body = copy.deepcopy(function.body[index:index + 4])
+    elif whole_optimizer_handler:
+        handler = next(node for node in ast.walk(function) if isinstance(node, ast.ExceptHandler)
+                       and selector in ast.get_source_segment(source, node))
         skeleton = ast.parse('def invoke(self, supplied, safety_enabled, scaled_joint, batch_idx, updates, outer_identity):\n'
             '    try:\n        raise supplied\n    except BaseException as optimizer_error:\n        pass\n').body[0]
         skeleton.body[0].handlers[0].body = copy.deepcopy(handler.body)
     else:
+        handler = next(node for node in ast.walk(function) if isinstance(node, ast.ExceptHandler)
+                       and selector in ast.get_source_segment(source, node))
         skeleton = ast.parse('def invoke(record, error, supplied):\n'
             '    try:\n        raise supplied\n    except ValueError as matched_error:\n        pass\n').body[0]
         skeleton.body[0].handlers[0].body = copy.deepcopy(handler.body)
@@ -69,7 +79,7 @@ def common_transport(rank, decisions):
 
 def actual_io_emitter(kind, rank, worker, reason=None, phase='before', global_io_failed=True):
     local_error = 'OSError: only rank3 diagnostic path failed' if rank==3 and global_io_failed else None
-    proxy, calls = common_transport(rank, [1,int(global_io_failed)] if kind=='invalid'
+    proxy, calls = common_transport(rank, [2,int(global_io_failed)] if kind=='invalid'
                                     else [int(global_io_failed)])
     namespace = dict(torch=proxy, os=os, json=json, Path=Path, PolicySafetyRejected=IORefusal,
         FSDP=type('UnusedCPUFSDP',(),{}), MatchedGradientRejected=GradientRefusal)
@@ -165,6 +175,23 @@ def test_unknown_original_optimizer_error_never_enters_diagnostic_max(tmp_path):
         handler(SimpleNamespace(actor_module=worker.actor_module_fsdp),
                 OSError('original optimizer/collective'),True,False,2,2,dict(baseline_outer_step=1))
     assert calls==[]
+
+
+@pytest.mark.parametrize('error_type', [ValueError, RuntimeError, torch.cuda.OutOfMemoryError])
+def test_unknown_original_monitor_io_max_is_not_a_typed_refusal(error_type):
+    original = error_type('unknown original monitor diagnostic IO MAX')
+    proxy, calls = common_transport(0, [])
+    def original_failure(flag, op, group):
+        calls.append(int(flag))
+        raise original
+    proxy.distributed.all_reduce = original_failure
+    namespace = dict(torch=proxy, PolicySafetyRejected=IORefusal)
+    handler = source_handler('_policy_safety_guard', 'matched monitor evidence IO refusal', namespace)
+    record = dict(outer_step=1, mini_index=2, phase='before')
+    with pytest.raises(error_type) as caught:
+        handler(record, None)
+    assert caught.value is original and not isinstance(caught.value, KnownRefusal)
+    assert calls == [0] and 'matched_guard' not in record
 
 
 def finite_loss_fixture(worker,rank,decisions,*,local_io_failure=False,unknown=None):

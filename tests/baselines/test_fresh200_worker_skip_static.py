@@ -7,6 +7,8 @@ import FSDP workers, initialize Ray/distributed/CUDA, or claim eight-GPU proof.
 import ast
 import copy
 import hashlib
+import json
+import math
 import os
 from pathlib import Path
 from types import SimpleNamespace
@@ -16,16 +18,15 @@ import torch
 
 from search_r1.baselines.partial_update import (_adam_steps,
     materialize_continuation_state, rejection_disposition)
-from search_r1.baselines.fresh200 import record_worker_attempt
+from search_r1.baselines.fresh200 import CALIBRATION_SCOPE, record_worker_attempt
+from search_r1.baselines.policy_safety import (
+    PolicySafetyRejected, calibrated_or_candidate_rejection, global_statistics, local_statistics)
 
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
-class KnownRefusal(Exception):
-    def __init__(self, record):
-        super().__init__('synthetic matched refusal')
-        self.record = record
+KnownRefusal = PolicySafetyRejected
 
 
 def source_function(relative, name, namespace):
@@ -43,6 +44,65 @@ def source_function(relative, name, namespace):
     module = ast.fix_missing_locations(ast.Module(body=[node], type_ignores=[]))
     exec(compile(module, str(ROOT / relative), 'exec'), namespace)
     return namespace[name]
+
+
+def source_monitor_tail(namespace):
+    """Actual global-statistic/reason/record/diagnostic-IO producer body."""
+    source = (ROOT / 'verl/workers/actor/dp_actor.py').read_text()
+    function = next(node for node in ast.walk(ast.parse(source))
+                    if isinstance(node, ast.FunctionDef) and node.name == '_policy_safety_guard')
+    index = next(index for index, node in enumerate(function.body)
+        if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call)
+        and isinstance(node.value.func, ast.Name) and node.value.func.id == 'global_statistics')
+    skeleton = ast.parse('def emit(self,parts,control,identity,phase,writes,monitor,monitor_hashes,'
+        'monitor_changed,temperature,current_logps,group=None):\n    pass\n').body[0]
+    skeleton.body = copy.deepcopy(function.body[index:])
+    class ImportsProvidedByFixture(ast.NodeTransformer):
+        def visit_Import(self, node): return ast.copy_location(ast.Pass(), node)
+        def visit_ImportFrom(self, node): return ast.copy_location(ast.Pass(), node)
+    skeleton = ImportsProvidedByFixture().visit(skeleton)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[skeleton], type_ignores=[])),
+        str(ROOT / 'verl/workers/actor/dp_actor.py'), 'exec'), namespace)
+    return namespace['emit']
+
+
+def actual_worker_rejection(actor, mini, writes, event):
+    """Never synthesize marker/kind metadata; use the source producer bodies."""
+    proxy = SimpleNamespace(int32=torch.int32, tensor=torch.tensor,
+        distributed=SimpleNamespace(is_initialized=lambda: True, get_rank=lambda: 0,
+            all_reduce=lambda flag, op, group=None: None, ReduceOp=SimpleNamespace(MAX='MAX')))
+    namespace = dict(torch=proxy, os=os, json=json, Path=Path,
+        PolicySafetyRejected=KnownRefusal, global_statistics=global_statistics,
+        calibrated_or_candidate_rejection=calibrated_or_candidate_rejection,
+        atomic_torch_save=lambda state, path: dict(path=str(path)), cpu_snapshot=copy.deepcopy,
+        CALIBRATION_SCOPE=CALIBRATION_SCOPE)
+    sync = source_function('verl/workers/actor/dp_actor.py', '_safety_sync_invalid', namespace)
+    identity = dict(outer_step=1, mini_index=mini)
+    if event == 'post_nonfinite':
+        bad = not bool(torch.isfinite(actor.actor_module.weight).all())
+        return sync(actor, bad, 'cpu', identity, 'after_state', writes,
+            details='NONFINITE_MODEL_BUFFER_OR_ADAM', refusal_kind='terminal_state')
+    old = torch.zeros(1, 2, dtype=torch.float64)
+    current = torch.full_like(old, float('nan') if event in ('pre_numeric', 'post_numeric')
+                              else .7 if event == 'tail' else 1.)
+    advantages, mask, weights = -torch.ones_like(old), torch.ones_like(old), torch.full_like(old, .5)
+    steps = torch.zeros(1, 2, dtype=torch.long)
+    part = local_statistics(old, current, advantages, mask, weights, steps, 3., 30.)
+    monitor = dict(old_log_probs=old, advantages=advantages, loss_mask=mask,
+                   policy_weights=weights, step_ids=steps)
+    if event == 'pre_numeric':
+        return sync(actor, bool(part[0][3]), 'cpu', identity, 'gradient_micro0', writes,
+            tensors=monitor, current=current, details='NONFINITE_OR_EXP_RANGE_EFFECTIVE_GRADIENT_INPUT',
+            refusal_kind='known_numeric')
+    control = dict(dual_clip=3., kl_log_bound=30., mode='native_fixture',
+                   target_old_policy_kl=10. if event == 'tail' else .2,
+                   negative_tail_limit=0. if event == 'tail' else 1.)
+    if event == 'calibration_kl':
+        control.update(mode='calibration', calibration_scope=CALIBRATION_SCOPE,
+                       candidate_old_policy_kl=.2)
+    emit = source_monitor_tail(namespace)
+    return emit(actor, [part], control, identity, 'after', writes, monitor,
+                {'fixture': 'fixed-original-input'}, False, 1., [current])
 
 
 def worker_fixture(tmp_path, events):
@@ -116,7 +176,8 @@ def worker_fixture(tmp_path, events):
         actor_lr_scheduler=scheduler, rank=0, world_size=8,
         rollout_sharding_manager=None, checkpoint_pause_identity=identity,
         checkpoint_runtime_metadata=metadata)
-    actor = SimpleNamespace()
+    actor = SimpleNamespace(actor_module=model, actor_optimizer=optimizer,
+                            _last_safety_grad_norm_after=torch.tensor(1.))
 
     def update(data):
         for mini in range(data.meta_info['fresh200_processed_opportunities'], 20):
@@ -124,21 +185,16 @@ def worker_fixture(tmp_path, events):
             event = events.get(mini)
             if event == 'unknown': raise OSError('original forward/collective failure')
             optimizer.zero_grad(set_to_none=True)
-            model.weight.grad = torch.ones_like(model.weight)
-            actor._fresh200_attempt_gradient_micros += 8
             if event != 'pre_numeric':
+                model.weight.grad = torch.ones_like(model.weight)
+                actor._fresh200_attempt_gradient_micros += 8
                 optimizer.step()
                 actor._fresh200_attempt_adam_writes += 1
             if event == 'post_nonfinite':
                 with torch.no_grad(): model.weight.fill_(float('nan'))
             if event is not None:
-                record = dict(outer_step=1, mini_index=mini, phase='after' if event in ('kl','tail')
-                    else 'global_gradient_before_adam' if event == 'pre_numeric' else 'after',
-                    actual_optimizer_writes=actor._fresh200_attempt_adam_writes)
-                if event in ('kl','tail'):
-                    record['rejection_reason'] = ('OLD_POLICY_TOKEN_KL' if event == 'kl'
-                                                  else 'NEGATIVE_JOINT_ACTION_TAIL_COUNT')
-                raise KnownRefusal(record)
+                actual_worker_rejection(actor, mini, actor._fresh200_attempt_adam_writes, event)
+                raise AssertionError('Actual source rejection producer unexpectedly returned')
         return {'actor/opportunities_processed':20}
 
     actor.update_policy = update
@@ -212,11 +268,12 @@ def test_unknown_original_failure_escapes_without_recovery_collective(tmp_path):
 
 def test_written_nonfinite_state_fails_closed_instead_of_fresh_continuation(tmp_path):
     worker,data,method,calls,stages,saved=worker_fixture(tmp_path,{0:'post_nonfinite'})
-    with pytest.raises(RuntimeError,match='nonfinite'): method(worker,data)
+    with pytest.raises(KnownRefusal) as caught: method(worker,data)
     assert calls==[0]
     assert _adam_steps({'optimizer':worker.actor_optimizer.state_dict()})==1
-    assert list(saved.values())[0]['partial_update']['actual_adam_total']==1
-    assert 'safe_skip/save_postclear_continuation_state' not in stages
+    assert caught.value.record['actual_optimizer_writes']==1
+    assert rejection_disposition(caught.value.record)=='fail_closed'
+    assert saved=={} and stages==['attempt/entry_actual_counters']
 
 
 def test_unknown_typed_phase_cannot_authorize_safe_skip():

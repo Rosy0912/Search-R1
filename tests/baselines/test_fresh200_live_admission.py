@@ -66,7 +66,7 @@ def extract(path, names, namespace, constants=False, class_name=None):
 
 
 def source_namespace():
-    namespace = dict(copy=copy, hashlib=hashlib, json=json, math=math, os=os,
+    namespace = dict(copy=copy, hashlib=hashlib, json=json, math=math, os=os, dist=torch.distributed,
                      stat=stat, Path=Path, OmegaConf=OmegaConf, torch=torch, re=re)
     extract(ROOT / 'search_r1/baselines/fresh200.py',
             {'calibration_initialization', 'validate_attempt_ledger',
@@ -74,7 +74,7 @@ def source_namespace():
     extract(ROOT / 'search_r1/baselines/fresh200_live.py', LIVE_FUNCTIONS,
             namespace, constants=True)
     extract(ROOT / 'search_r1/baselines/policy_safety.py',
-            {'rejection_reason', 'calibrated_or_candidate_rejection'}, namespace)
+            {'rejection_reason', 'calibrated_or_candidate_rejection', 'local_statistics', 'global_statistics'}, namespace)
     extract(ROOT / 'search_r1/baselines/partial_update.py',
             {'_adam_steps', 'rejection_disposition'}, namespace)
     # These placement helpers are CPU boundary substitutes, not FSDP evidence.
@@ -375,20 +375,23 @@ class LiveAdmission(unittest.TestCase):
             weight_mass=1., sampled_old_policy_kl=.201, negative_tail_fraction_count=1.), policy)
         self.assertEqual(reason, 'OLD_POLICY_TOKEN_KL')
         self.assertEqual(self.ns['rejection_disposition'](dict(rejection_reason=reason,
-            phase='after', mini_index=2)), 'abandon')
+            phase='after', mini_index=2)), 'fail_closed')
         self.assertEqual(self.ns['rejection_disposition'](dict(rejection_reason=reason,
             phase='after_unknown', mini_index=2)), 'fail_closed')
         # Reuse only the legacy fixture's AST helper/fixture definitions. Its
         # project imports and test bodies are never imported or evaluated.
         class KnownRefusal(Exception):
-            def __init__(self, record):
-                super().__init__('synthetic matched refusal')
+            def __init__(self, reason, record):
+                super().__init__(reason)
                 self.record = record
-        namespace = dict(ast=ast, copy=copy, hashlib=hashlib, os=os, Path=Path,
+        namespace = dict(ast=ast, copy=copy, hashlib=hashlib, json=json, math=math, os=os, Path=Path,
             SimpleNamespace=SimpleNamespace, torch=torch, ROOT=ROOT, KnownRefusal=KnownRefusal,
-            _adam_steps=self.ns['_adam_steps'], rejection_disposition=self.ns['rejection_disposition'])
+            _adam_steps=self.ns['_adam_steps'], rejection_disposition=self.ns['rejection_disposition'],
+            local_statistics=self.ns['local_statistics'], global_statistics=self.ns['global_statistics'],
+            CALIBRATION_SCOPE=self.ns['CALIBRATION_SCOPE'],
+            calibrated_or_candidate_rejection=self.ns['calibrated_or_candidate_rejection'])
         extract(ROOT / 'tests/baselines/test_fresh200_worker_skip_static.py',
-                {'source_function', 'worker_fixture'}, namespace)
+                {'source_function', 'source_monitor_tail', 'actual_worker_rejection', 'worker_fixture'}, namespace)
         worker, data, method, calls, stages, saved = namespace['worker_fixture'](self.run / 'synthetic-partial', {2: 'kl'})
         metrics, receipt = method(worker, data)
         self.assertEqual(calls, [0, 1, 2])
@@ -398,6 +401,10 @@ class LiveAdmission(unittest.TestCase):
         self.assertTrue(receipt['abandoned'])
         self.assertFalse(receipt['counted_complete'])
         self.assertEqual(receipt['refusals'][0]['partial_update']['rejection']['rejection_reason'], reason)
+        actual_rejection = receipt['refusals'][0]['partial_update']['rejection']
+        self.assertEqual(actual_rejection['refusal_kind'], 'known_policy_limit')
+        self.assertEqual(actual_rejection['matched_guard'], 'ORIGINAL_GLOBAL_STATISTICS_POLICY_REFUSAL')
+        self.assertEqual(self.ns['rejection_disposition'](actual_rejection), 'abandon')
         self.assertEqual(self.ns['_adam_steps']({'optimizer': worker.actor_optimizer.state_dict()}), 3)
         self.assertEqual(metrics['actor/optimizer_steps'], 3)
         self.assertTrue(saved)

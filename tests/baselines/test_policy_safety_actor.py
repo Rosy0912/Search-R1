@@ -83,7 +83,8 @@ def test_entry_errors_reject_before_any_optimizer_write(monkeypatch,tmp_path,fai
         (tmp_path/'synthetic-calibration-fixture.json').unlink()
     else:
         data.batch.pop('ref_log_prob')
-    with pytest.raises(RuntimeError,match='POLICY_SAFETY_REJECTED'):
+    expected = FileNotFoundError if failure == 'calibration_missing' else KeyError
+    with pytest.raises(expected):
         actor.update_policy(data)
     assert not actor.actor_optimizer.state
-    assert len(list((tmp_path/'policy-safety').glob('numeric-*.json')))==1
+    assert not list((tmp_path/'policy-safety').glob('numeric-*.json'))

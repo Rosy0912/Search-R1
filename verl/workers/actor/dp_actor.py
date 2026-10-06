@@ -64,16 +64,16 @@ class DataParallelPPOActor(BasePPOActor):
                 or any(key in micro_batch for key in ACTION_PREFIX_KEYS)):
             return self._forward_flat_micro_batch(micro_batch, temperature)
         from search_r1.baselines.action_prefix_forward import (
-            prepare_action_prefix_micro, scatter_action_prefix_outputs)
+            ActionPrefixStructureError, prepare_action_prefix_micro, scatter_action_prefix_outputs)
         prepared = None
         error = None
         try:
             if (isinstance(temperature, bool) or not isinstance(temperature, numbers.Real)
                     or not math.isfinite(temperature) or temperature <= 0):
-                raise ValueError('Invalid probability temperature')
+                raise ActionPrefixStructureError('Invalid probability temperature')
             pad_id, eos_id = self._action_prefix_token_ids
             prepared = prepare_action_prefix_micro(micro_batch, pad_id, eos_id)
-        except Exception as exc:
+        except ActionPrefixStructureError as exc:
             error = repr(exc)
         context = getattr(self, '_action_prefix_forward_context', {})
         device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
@@ -90,7 +90,7 @@ class DataParallelPPOActor(BasePPOActor):
         try:
             entropy, logp = flat_result
             result = scatter_action_prefix_outputs(prepared, entropy, logp)
-        except Exception as exc:
+        except ActionPrefixStructureError as exc:
             error = repr(exc)
         # Structural post-forward failures meet a common boundary before any
         # rank enters another model forward, monitor reduction, or backward.
@@ -101,6 +101,7 @@ class DataParallelPPOActor(BasePPOActor):
         return result
 
     def _action_prefix_batch_keys(self, data):
+        from search_r1.baselines.action_prefix_forward import ActionPrefixStructureError
         generation_probe = (data.meta_info.get('generation_actor_token_identity') == 'sampled_completion_v1'
                             and 'step_ids' not in data.batch and 'info_mask' not in data.batch)
         requested = (data.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1'
@@ -114,14 +115,14 @@ class DataParallelPPOActor(BasePPOActor):
         try:
             if (data.meta_info.get('actor_token_identity') != 'sampled_action_prefix_v1'
                     or not all(key in data.batch for key in ACTION_PREFIX_KEYS)):
-                raise ValueError('Sampled-action training provenance missing')
+                raise ActionPrefixStructureError('Sampled-action training provenance missing')
             ids = (data.meta_info.get('pad_token_id'), data.meta_info.get('eos_token_id'))
             if any(type(value) is not int or value < 0 for value in ids):
-                raise ValueError('Actual tokenizer PAD/EOS identity missing')
+                raise ActionPrefixStructureError('Actual tokenizer PAD/EOS identity missing')
             self._action_prefix_token_ids = ids
             if data.meta_info.get('use_dynamic_bsz', False):
-                raise ValueError('Sampled-action prefixes require fixed trajectory micro-batches')
-        except Exception as exc:
+                raise ActionPrefixStructureError('Sampled-action prefixes require fixed trajectory micro-batches')
+        except ActionPrefixStructureError as exc:
             error = repr(exc)
         context = getattr(self, '_action_prefix_forward_context', {})
         device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
@@ -236,19 +237,28 @@ class DataParallelPPOActor(BasePPOActor):
             self._fresh200_written_mini = getattr(self, '_fresh200_current_mini', None)
         return grad_norm
 
-    def _safety_sync_invalid(self, bad, device, identity, phase, writes, tensors=None, current=None, details=None):
-        """All ranks meet this boundary before a local validator may raise."""
+    def _safety_sync_invalid(self, bad, device, identity, phase, writes, tensors=None, current=None,
+                             details=None, refusal_kind='structural'):
+        """Only explicit validators enter this MAX; unknown errors bypass it."""
         import os, json
         from pathlib import Path
         from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
+        if refusal_kind not in ('structural', 'known_numeric', 'terminal_state'):
+            raise ValueError('Unknown safety refusal classification')
         group = getattr(self.actor_module, 'process_group', None)
-        flag = torch.tensor(int(bad), device=device, dtype=torch.int32)
+        # A structural failure must also be fatal on a clean numerical peer.
+        # Keep the original single MAX, encoding fatal as2 and numeric as1.
+        flag = torch.tensor(int(bad) * (1 if refusal_kind == 'known_numeric' else 2),
+                            device=device, dtype=torch.int32)
         if torch.distributed.is_initialized():
             torch.distributed.all_reduce(flag, op=torch.distributed.ReduceOp.MAX, group=group)
         if not bool(flag):
             return
         rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+        global_kind = (refusal_kind if int(flag) == 1 else
+                       ('terminal_state' if refusal_kind == 'terminal_state' else 'structural'))
         record = dict(identity, phase=phase, actual_optimizer_writes=writes,
+            refusal_kind=global_kind,
             attempt_id=getattr(self, '_fresh200_attempt_id', None),
             rank=rank, pid=os.getpid(), local_invalid=bool(bad), details=details,
             run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'), commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
@@ -268,13 +278,23 @@ class DataParallelPPOActor(BasePPOActor):
         if torch.distributed.is_initialized():
             torch.distributed.all_reduce(io_bad, op=torch.distributed.ReduceOp.MAX, group=group)
         record.update(global_diagnostic_io_failed=bool(io_bad), local_diagnostic_io_error=error)
+        # The marker proves an actual completed common invalid decision AND
+        # healthy completed diagnostic IO decision. Neither unknown MAX errors
+        # nor diagnostic failures reach this numerical continuation authority.
+        if global_kind == 'known_numeric' and not bool(io_bad):
+            record['matched_guard'] = ('ORIGINAL_ALL_REDUCE_MAX_LOSS_REFUSAL'
+                if phase in {f'gradient_micro{i}_loss' for i in range(8)}
+                    and details == 'NONFINITE_TRAINING_LOSS'
+                else 'ORIGINAL_ALL_REDUCE_MAX_NUMERIC_REFUSAL')
         from search_r1.baselines.policy_safety import PolicySafetyRejected
         raise PolicySafetyRejected('synchronized invalid input/state' + ('; diagnostic IO failed' if bool(io_bad) else ''), record)
 
     @torch.no_grad()
     def _policy_safety_guard(self, monitor, temperature, control, identity, phase, writes):
         from search_r1.baselines.policy_safety import local_statistics, global_statistics, rejection_reason
-        from search_r1.baselines.loss_scaling import TransparentProbe, coordinated_badflag
+        from search_r1.baselines.loss_scaling import TransparentProbe
+        from search_r1.baselines.action_prefix_forward import (
+            ActionPrefixStructureError, validate_action_statistics_structure)
         from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
         import os, json
         from pathlib import Path
@@ -288,20 +308,18 @@ class DataParallelPPOActor(BasePPOActor):
             for chunk in value.detach().reshape(-1).split(262144):
                 state_bad = state_bad or not bool(torch.isfinite(chunk).all())
         self._safety_sync_invalid(state_bad, device, identity, phase+'_state', writes,
-                                  monitor, details='NONFINITE_MODEL_BUFFER_OR_ADAM')
+                                  monitor, details='NONFINITE_MODEL_BUFFER_OR_ADAM', refusal_kind='terminal_state')
         from search_r1.baselines.runtime_audit import tensor_hash
         monitor_hashes = {key: tensor_hash(value) for key, value in monitor.items()}
         monitor_changed = monitor_hashes != self._safety_monitor_identity
         parts, current_logps = [], []
         probe = TransparentProbe(self.actor_module, getattr(self, 'rollout_sharding_manager', None))
-        entered = False; entry_error = exit_error = None
+        entered = False
         try:
-            try:
-                probe.__enter__(); entered = True
-            except Exception as exc:
-                entry_error = repr(exc)
-            self._safety_sync_invalid(entry_error is not None or getattr(probe, 'invalid', True),
-                device, identity, phase+'_probe_entry', writes, monitor, details=entry_error)
+            probe.__enter__(); entered = True
+            self._safety_sync_invalid(getattr(probe, 'invalid', True),
+                device, identity, phase+'_probe_entry', writes, monitor,
+                details='INVALID_PROBE_ENTRY_STATE', refusal_kind='terminal_state')
             with torch.no_grad():
                 for micro_index, micro in enumerate(monitor.split(self.config.ppo_micro_batch_size)):
                     self._action_prefix_forward_context = dict(identity, writes=writes,
@@ -310,36 +328,47 @@ class DataParallelPPOActor(BasePPOActor):
                     try:
                         expected = micro['old_log_probs'].shape
                         if any(micro[key].shape != expected for key in ('advantages','policy_weights','step_ids','responses')):
-                            raise ValueError('Monitor action tensor shape changed')
-                        if micro['step_ids'].dtype not in (torch.int8,torch.int16,torch.int32,torch.int64):
-                            raise ValueError('Monitor action identity dtype changed')
-                    except Exception as exc:
+                            raise ActionPrefixStructureError('Monitor action tensor shape changed')
+                        support = (micro['loss_mask'] if self.config.state_masking else
+                                   micro['attention_mask'][:, -micro['responses'].shape[1]:])
+                        validate_action_statistics_structure(micro['old_log_probs'], None,
+                            micro['advantages'], support, micro['policy_weights'], micro['step_ids'])
+                    except ActionPrefixStructureError as exc:
                         schema_error = repr(exc)
-                    self._safety_sync_invalid(schema_error is not None, device, identity,
-                        phase+f'_schema{micro_index}', writes, micro, details=schema_error)
+                    self._safety_sync_invalid(schema_error is not None or monitor_changed, device, identity,
+                        phase+f'_schema{micro_index}', writes, micro,
+                        details=schema_error or ('CHANGED_FIXED_MONITOR_IDENTITY' if monitor_changed else None))
                     micro = micro.cuda()
                     _, current = self._forward_micro_batch(micro, temperature)
                     mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -micro['responses'].shape[1]:]
-                    stats_error = None
+                    structure_error = None
                     try:
-                        part = local_statistics(micro['old_log_probs'], current, micro['advantages'], mask,
-                            micro['policy_weights'], micro['step_ids'], control['dual_clip'], control['kl_log_bound'])
-                    except Exception as exc:
-                        stats_error = repr(exc)
-                    self._safety_sync_invalid(stats_error is not None, device, identity,
-                        phase+f'_stats{micro_index}', writes, micro, current, details=stats_error)
+                        validate_action_statistics_structure(micro['old_log_probs'], current,
+                            micro['advantages'], mask, micro['policy_weights'], micro['step_ids'])
+                    except ActionPrefixStructureError as exc:
+                        structure_error = repr(exc)
+                    self._safety_sync_invalid(structure_error is not None, device, identity,
+                        phase+f'_stats{micro_index}', writes, micro, current, details=structure_error)
+                    # Unknown statistic/Torch failures are not a matched numeric
+                    # decision and must not enter another validation MAX.
+                    part = local_statistics(micro['old_log_probs'], current, micro['advantages'], mask,
+                        micro['policy_weights'], micro['step_ids'], control['dual_clip'], control['kl_log_bound'])
                     parts.append(part)
                     current_logps.append(current.detach().cpu())
         finally:
             if entered:
+                import sys
+                original = sys.exc_info()[1]
                 try:
                     probe.__exit__(None, None, None)
-                except Exception as exc:
-                    exit_error = repr(exc)
-        self._safety_sync_invalid(exit_error is not None or probe.invalid,
-            device, identity, phase+'_probe_exit', writes, monitor, details=exit_error)
-        if monitor_changed:
-            parts[0][0][3] += 1
+                except BaseException as cleanup_error:
+                    if original is None:
+                        raise
+                    if hasattr(original, 'add_note'):
+                        original.add_note('Probe cleanup also failed: ' + repr(cleanup_error))
+        self._safety_sync_invalid(probe.invalid,
+            device, identity, phase+'_probe_exit', writes, monitor,
+            details='INVALID_PROBE_EXIT_STATE', refusal_kind='terminal_state')
         stats = global_statistics(parts, group)
         from search_r1.baselines.policy_safety import calibrated_or_candidate_rejection
         reason = calibrated_or_candidate_rejection(stats, control)
@@ -347,6 +376,13 @@ class DataParallelPPOActor(BasePPOActor):
                       attempt_id=getattr(self, '_fresh200_attempt_id', None),
                       rejection_reason=reason, statistics=stats, fixed_monitor_hashes=monitor_hashes,
                       temperature=temperature, monitor_identity_changed=monitor_changed)
+        if reason == 'NONFINITE_OR_EXP_RANGE_OR_EMPTY_EFFECTIVE_MONITOR':
+            record.update(refusal_kind='known_numeric_monitor',
+                          matched_guard='ORIGINAL_GLOBAL_STATISTICS_NUMERIC_REFUSAL')
+        elif reason in ('OLD_POLICY_TOKEN_KL', 'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL',
+                        'NEGATIVE_JOINT_ACTION_TAIL_COUNT'):
+            record.update(refusal_kind='known_policy_limit',
+                          matched_guard='ORIGINAL_GLOBAL_STATISTICS_POLICY_REFUSAL')
         mode = control.get('mode', 'production')
         record.update(execution_mode=mode,
             admission_scope={'production':'production_calibrated','native_fixture':'test_thresholds','calibration':'numeric_only'}[mode],
@@ -381,13 +417,15 @@ class DataParallelPPOActor(BasePPOActor):
         except Exception as exc:
             error = repr(exc)
         device = parts[0][0].device
-        try:
-            coordinated_badflag(error is not None, device, group)
-        except ValueError as matched_error:
+        io_bad = torch.tensor(int(error is not None), device=device, dtype=torch.int32)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(io_bad, op=torch.distributed.ReduceOp.MAX, group=group)
+        record.update(global_diagnostic_io_failed=bool(io_bad), local_io_error=error)
+        if bool(io_bad):
             from search_r1.baselines.policy_safety import PolicySafetyRejected
             raise PolicySafetyRejected('matched monitor evidence IO refusal', dict(record,
                 matched_guard='ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL',
-                global_diagnostic_io_failed=True, allowed=False, local_io_error=error)) from matched_error
+                refusal_kind='diagnostic_io', allowed=False))
         if reason:
             from search_r1.baselines.policy_safety import PolicySafetyRejected
             raise PolicySafetyRejected(json.dumps(record, allow_nan=False, sort_keys=True), record)
@@ -451,6 +489,8 @@ class DataParallelPPOActor(BasePPOActor):
         return log_probs
 
     def update_policy(self, data: DataProto):
+        from search_r1.baselines.action_prefix_forward import (
+            ActionPrefixStructureError, validate_action_statistics_structure)
         # make sure we are in training mode
         self.actor_module.train()
         outer_identity = dict(data.meta_info)
@@ -464,11 +504,12 @@ class DataParallelPPOActor(BasePPOActor):
             from search_r1.baselines.policy_safety import validate_config
             safety_device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
             entry_error = None
+            # Any unknown configuration/evidence failure propagates directly.
+            validate_config(safety)
             try:
-                validate_config(safety)
                 if self.config.get('baseline_method') != 'gigpo' or self.config.use_dynamic_bsz or self.config.ppo_epochs != 1:
-                    raise ValueError('Policy safety requires the reviewed fixed-micro GiGPO epoch1 path')
-            except Exception as exc:
+                    raise ActionPrefixStructureError('Policy safety requires the reviewed fixed-micro GiGPO epoch1 path')
+            except ActionPrefixStructureError as exc:
                 entry_error = repr(exc)
             self._safety_sync_invalid(entry_error is not None, safety_device,
                 dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
@@ -519,19 +560,19 @@ class DataParallelPPOActor(BasePPOActor):
                     monitor, expected_minis = select_fixed_monitor(batch, self.config.ppo_mini_batch_size,
                         world, safety['monitor_first_global_rows'])
                     if len(dataloader) != expected_minis:
-                        raise ValueError('PPO splitter does not cover the complete fixed rollout')
+                        raise ActionPrefixStructureError('PPO splitter does not cover the complete fixed rollout')
                     from search_r1.baselines.runtime_audit import tensor_hash
                     monitor_identity = {key: tensor_hash(value) for key, value in monitor.items()}
                     if (fresh_attempt and outer_identity.get('fresh200_processed_opportunities', 0) > 0
                             and monitor_identity != self._safety_monitor_identity):
-                        raise ValueError('Matched skip re-entry changed the fixed monitor samples')
+                        raise ActionPrefixStructureError('Matched skip re-entry changed the fixed monitor samples')
                     self._safety_monitor_identity = monitor_identity
-                except Exception as exc:
+                except ActionPrefixStructureError as exc:
                     monitor_error = repr(exc)
                 if monitor_error:
-                    raise ValueError(monitor_error)
+                    raise ActionPrefixStructureError(monitor_error)
 
-        except Exception as exc:
+        except ActionPrefixStructureError as exc:
             if not safety_enabled:
                 raise
             preparation_error = repr(exc)
@@ -680,9 +721,14 @@ class DataParallelPPOActor(BasePPOActor):
 
                 if safety_enabled:
                     from search_r1.baselines.policy_safety import local_statistics
-                    from search_r1.baselines.loss_scaling import coordinated_badflag
-                    numeric_error = None
+                    structure_error = None
                     try:
+                        validate_action_statistics_structure(old_log_prob, log_prob, advantages,
+                            response_mask, data['policy_weights'], data['step_ids'])
+                    except ActionPrefixStructureError as exc:
+                        structure_error = repr(exc)
+                    invalid = structure_error is not None
+                    if structure_error is None:
                         probe_stats = local_statistics(old_log_prob, log_prob, advantages, response_mask,
                             data['policy_weights'], data['step_ids'], safety['dual_clip'], safety['kl_log_bound'])
                         invalid = bool(probe_stats[0][3])
@@ -690,11 +736,11 @@ class DataParallelPPOActor(BasePPOActor):
                             valid = response_mask.bool()
                             ref_delta = data['ref_log_prob'][valid].double() - log_prob[valid].double()
                             invalid = invalid or not bool(torch.isfinite(ref_delta).all())
-                    except Exception as exc:
-                        invalid = True;numeric_error = repr(exc)
                     self._safety_sync_invalid(invalid, log_prob.device,
                         dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx),
-                        f'gradient_micro{micro_index}', updates, data, log_prob.detach(), details=numeric_error)
+                        f'gradient_micro{micro_index}', updates, data, log_prob.detach(),
+                        details=structure_error or 'NONFINITE_OR_EXP_RANGE_EFFECTIVE_GRADIENT_INPUT',
+                        refusal_kind='structural' if structure_error is not None else 'known_numeric')
 
                 if paper_objective:
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
@@ -751,7 +797,8 @@ class DataParallelPPOActor(BasePPOActor):
                         dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
                              micro_index_in_mini=micro_index),
                         f'gradient_micro{micro_index}_loss', updates, tensors=data,
-                        current=log_prob.detach(), details='NONFINITE_TRAINING_LOSS')
+                        current=log_prob.detach(), details='NONFINITE_TRAINING_LOSS',
+                        refusal_kind='known_numeric')
                 elif scaled_joint:
                     from search_r1.baselines.loss_scaling import coordinated_badflag
                     coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
@@ -818,6 +865,7 @@ class DataParallelPPOActor(BasePPOActor):
                         outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
                         attempt_id=getattr(self, '_fresh200_attempt_id', None),
                         phase='global_gradient_before_adam', actual_optimizer_writes=updates,
+                        refusal_kind='known_gradient',
                         matched_guard='ORIGINAL_FSDP_ALL_REDUCE_MAX_GRADIENT_REFUSAL',
                         global_diagnostic_io_failed=bool(diagnostic_io_bad),
                         gradient_diagnostic_error=optimizer_error.diagnostic_error,

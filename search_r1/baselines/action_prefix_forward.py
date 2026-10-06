@@ -27,6 +27,10 @@ ACTION_PREFIX_KEYS = (
 _INTEGER_DTYPES = (torch.uint8, torch.int8, torch.int16, torch.int32, torch.int64)
 
 
+class ActionPrefixStructureError(ValueError):
+    """An explicit local structure check failed; never a numerical safe skip."""
+
+
 @dataclass(frozen=True)
 class PreparedActionPrefixMicro:
     flat_micro: dict
@@ -40,7 +44,43 @@ class PreparedActionPrefixMicro:
 
 def _require(condition, message):
     if not condition:
-        raise ValueError(message)
+        raise ActionPrefixStructureError(message)
+
+
+def validate_action_statistics_structure(old, current, advantages, mask, weights, step_ids):
+    """Separate action provenance from the unchanged numerical statistic.
+
+    Nonfinite probability/advantage/weight values remain visible to the numeric
+    guard. Shape, support, and finite action-advantage disagreement are fatal.
+    Unexpected Torch/runtime errors propagate without being reclassified.
+    """
+    _require(isinstance(old, torch.Tensor) and old.ndim == 2 and old.shape[0] > 0,
+             'Invalid old action probability shape')
+    expected, device = tuple(old.shape), old.device
+    values = [('old', old), ('advantages', advantages), ('weights', weights)]
+    if current is not None:
+        values.append(('current', current))
+    for name, value in values:
+        _require(isinstance(value, torch.Tensor) and tuple(value.shape) == expected
+                 and value.device == device and value.is_floating_point(),
+                 'Invalid action statistics shape/device/dtype: ' + name)
+    support = _support_tensor(mask, expected, device, 'effective policy mask')
+    _require(isinstance(step_ids, torch.Tensor) and tuple(step_ids.shape) == expected
+             and step_ids.device == device
+             and step_ids.dtype in (torch.int8, torch.int16, torch.int32, torch.int64),
+             'Invalid action statistics identity shape/device/dtype')
+    _require(bool((step_ids[support] >= 0).all()), 'Negative effective action identity')
+    finite_weights = torch.isfinite(weights)
+    _require(bool((weights[support & finite_weights] >= 0).all()), 'Negative finite policy weight')
+    for row in range(len(old)):
+        for action in torch.unique(step_ids[row][support[row]]):
+            selected = support[row] & (step_ids[row] == action)
+            advantage = advantages[row][selected]
+            # A NaN is numerical evidence; it cannot manufacture a structural
+            # disagreement. Finite values use the statistic's original allclose.
+            if bool(torch.isfinite(advantage).all()):
+                _require(torch.allclose(advantage, advantage[:1].expand_as(advantage)),
+                         'Inconsistent finite joint action advantage')
 
 
 def _integer_tensor(micro, name, shape=None, device=None):
