@@ -1,0 +1,136 @@
+{
+  "role": "actual_failed3294_scalar_special_token_diagnosis",
+  "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+  "slurm_job_id": "3294",
+  "source_commit": "e670dfacab4ff0146f7ea0ca60e3f49675a4d2f6",
+  "original_evidence_sha256": {
+    "policy-discovery-v5-special-diagnostic-v3.json": "74fa2e96c27369414ba44e187a34d202f48317a57f6f06598b3f78e5348775c9",
+    "policy-discovery-v5-special-diagnostic-v4.json": "c267a8cd91774ad15dfc89fa89c42f2f00538bcb83bd657a766bba423b4eec9e",
+    "policy-discovery-v5-before512-readonly.json": "bb6ba67f1bfdc7168d9fee90aa625a8bd21fc4fc5e7803987e59af449c75f397"
+  },
+  "checked_unix": 1791259262.1355193,
+  "source_snapshot_kind": "current_disk_hashes_not_loaded_module_proof",
+  "sampling_record_count": 5336,
+  "ordinal_counts": {
+    "0": 2560,
+    "1": 2456,
+    "2": 320
+  },
+  "raw_token_count": 855739,
+  "raw_special_token_class_counts": {
+    "eos": 5258,
+    "other_special": 4
+  },
+  "candidate_record_count": 3,
+  "candidate_helper_replay_count": 3,
+  "candidate_helper_replay_omitted_count": 0,
+  "retained_census_scope": "Only actually replayed candidate records; unknown membership remains null",
+  "existing_helper_error_counts": {
+    "included_special_or_pad_token": 1
+  },
+  "failing_sampling_record_index": 5022,
+  "failing_ordinal": 2,
+  "failing_raw_count": 158,
+  "failing_special_positions": [
+    {
+      "captured_pre_padding_position": true,
+      "category": "other_special",
+      "in_official_generation_config_eos": false,
+      "inside_original_retained_prefix": true,
+      "is_final_raw_position": false,
+      "matches_actual_native_stop_reason": false,
+      "raw_position": 3,
+      "special_symbol_sha256": "17a9ea43212df48ca4fca436c080e1e35cded043b9197b44a4bd53fbb04f3193",
+      "trailing_eos_excluded": false
+    },
+    {
+      "captured_pre_padding_position": true,
+      "category": "eos",
+      "in_official_generation_config_eos": true,
+      "inside_original_retained_prefix": false,
+      "is_final_raw_position": true,
+      "matches_actual_native_stop_reason": false,
+      "raw_position": 157,
+      "special_symbol_sha256": "d6b60b51acc9448b15da9cb03f644d0ec8c410e37735817f39e15764aa75a37f",
+      "trailing_eos_excluded": true
+    }
+  ],
+  "dual_projection_comparison": {
+    "accepted": false,
+    "closing_kinds_equal": true,
+    "context_verified": false,
+    "execution_hashes_equal": false,
+    "first_complete_action_kinds_equal": true,
+    "raw_ids_or_lp_changed": false,
+    "reward_cleaned": false,
+    "special_removal_creates_projected_closing": false,
+    "upstream_skip_special": {
+      "closing_tag_kind": "search",
+      "decoded_prefix_stable": true,
+      "earliest_whole_prefix_count": 51,
+      "execution_char_count": 227,
+      "execution_sha256": "5b8b0d25aeb39d090ee9d6db6a76e866fb73759ceab941ac4af7e8f9ff85899a",
+      "first_complete_action_kind": "search",
+      "first_complete_action_payload_sha256": "a8b771920b8319e47251d1360f5e880bc18e8d329b0f0d003ea3c7e615558947",
+      "first_complete_action_span_sha256": "0e2e24211adf43a76185fceeebade2c3e74ed8ac20b5f3e1e72b94bbae4d94a8",
+      "full_decode_char_count": 749,
+      "full_decode_sha256": "c9e3ba2cdf09996509be910c4477e9fa2f660065ddbad35b6f4a788acd393a11",
+      "full_replacement_count": 0,
+      "retained_decode_char_count": 228,
+      "retained_decode_sha256": "4882f9702b7ae4ec38421831a0fee1e20b60eaf56485d696e06aa06e77cbdf64",
+      "retained_replacement_count": 0,
+      "retained_special_token_count": 1,
+      "suffix_class": "nonwhitespace",
+      "suffix_sha256": "41b805ea7ac014e23556e98bb374702a08344268f92489a02f0880849394a1e4"
+    },
+    "upstream_text_is_executor_projection_only": true,
+    "visible": {
+      "closing_tag_kind": "search",
+      "decoded_prefix_stable": true,
+      "earliest_whole_prefix_count": 51,
+      "execution_char_count": 239,
+      "execution_sha256": "34fae2f62ab9b4b110321ed77c9bccd0e36334c5acd72a7687b16495146762b6",
+      "first_complete_action_kind": "search",
+      "first_complete_action_payload_sha256": "a8b771920b8319e47251d1360f5e880bc18e8d329b0f0d003ea3c7e615558947",
+      "first_complete_action_span_sha256": "0e2e24211adf43a76185fceeebade2c3e74ed8ac20b5f3e1e72b94bbae4d94a8",
+      "full_decode_char_count": 761,
+      "full_decode_sha256": "a87d8f24310be6d7c70d21266e5cf98f98f21606d6b685c759d8581821c55867",
+      "full_replacement_count": 0,
+      "retained_decode_char_count": 240,
+      "retained_decode_sha256": "bbd1ae4beb07d85ed7c76096f8e7c0958a0391d18469e23340ceb8b70349dd8e",
+      "retained_replacement_count": 0,
+      "retained_special_token_count": 1,
+      "suffix_class": "nonwhitespace",
+      "suffix_sha256": "41b805ea7ac014e23556e98bb374702a08344268f92489a02f0880849394a1e4"
+    },
+    "visible_text_is_full_authored_reward_projection": true,
+    "whole_prefix_counts_equal": true
+  },
+  "raw_count_or_lp_length_mismatch_count": 0,
+  "selected_lp_nonfinite_count": 0,
+  "initial_before512": {
+    "exists": true,
+    "step": 0,
+    "question_count": 512,
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743,
+    "valid_action_count": 1102,
+    "action_opportunity_count": 1165,
+    "valid_action_rate": 0.9459227467811159,
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "ordered_question_ids_sha256": "b8557f89a232e9f0cf4532222e679ceb141d0d398ed4d9ca91906cf67355bbe6"
+  },
+  "new_evaluation_generated": false,
+  "actual_completed_updates": 0,
+  "engine_effective_stop_set_authenticated": false,
+  "context_verified": false,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "accepted": false,
+  "raw_qa_or_generated_ids_or_lp_values_published": false,
+  "scope": "All stored raw rows census; all3 special candidates replayed, not all-row context or final masks; existing initial512 only, no post-update score"
+}
