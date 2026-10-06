@@ -223,6 +223,30 @@ class Tests(unittest.TestCase):
             self.assertEqual(len(actor.calls),0)
             self.assertEqual(len(actor.actor_optimizer.state),0)
 
+    def test_resealed_wrong_legacy_semantics_refuse_mu_body_and_actor_before_writes(self):
+        from search_r1.baselines.tree_raw_tokens import FIELD as RAW_FIELD, fingerprint
+        for fields in ('ids','reward','both'):
+            cfg=config();actor=Actor(cfg);data=make_data(self.factory,cfg)
+            projection=data.non_tensor_batch[RAW_FIELD][0];action=projection['raw_ledger'][0]['action']
+            fake='<answer>WRONG</answer>'
+            if fields in ('ids','both'):action['canonical_semantic_token_ids']=self.factory.tok.encode(fake)
+            if fields in ('reward','both'):action['legacy_reward_action_text']=fake
+            action['action_binding_sha256']=fingerprint({k:v for k,v in action.items()
+                if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
+            obs=projection['raw_ledger'][0]['observation_token_ids']
+            projection['semantic_response_token_ids']=action['canonical_semantic_token_ids']+obs
+            projection['semantic_model_mask']=[1]*len(action['canonical_semantic_token_ids'])+[0]*len(obs)
+            projection['binding_sha256']=fingerprint({k:v for k,v in projection.items() if k!='binding_sha256'})
+            binding=data.non_tensor_batch[FIELD][0]
+            binding['raw_projection_sha256']=projection['binding_sha256']
+            binding['action_receipts'][0]['action_binding_sha256']=action['action_binding_sha256']
+            binding['binding_sha256']=fingerprint({k:v for k,v in binding.items() if k!='binding_sha256'})
+            with self.subTest(fields=fields):
+                with self.assertRaisesRegex(ValueError,'Legacy IDs/reward'):
+                    validate_behavior_mu_batch(data,expected_provenance=runtime_provenance(os.environ))
+                with self.assertRaisesRegex(PolicySafetyRefusal,'Legacy IDs/reward'):actor.update_policy(data)
+                self.assertEqual(len(actor.calls),0);self.assertEqual(len(actor.actor_optimizer.state),0)
+
     def test_wrong_or_empty_protocol_and_missing_repeat_limit_refuse(self):
         for bad in ('',None,'wrong'):
             cfg=config();cfg.policy_safety.sampling_probability_correction['protocol']=bad

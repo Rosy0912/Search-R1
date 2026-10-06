@@ -43,9 +43,18 @@ class Tokenizer:
         self.parts={1:'<answer>',2:'Paris',3:'</answer>tail',4:'</an',5:'swer>',6:'later',
             7:'<search>capital</search>extra',8:'提示',9:'中文',10:'X',11:'Y'}
         self.enc={};self.next=100
-        self.backend_tokenizer=NS(decoder=NS(__getstate__=lambda:json.dumps(BYTELEVEL_DECODER_STATE).encode()))
+        self.backend_padding=None;self.backend_truncation=None;self.backend_normalizer=None
+        self.backend_tokenizer=NS(decoder=NS(__getstate__=lambda:json.dumps(BYTELEVEL_DECODER_STATE).encode()),
+            to_str=self.backend_state)
+    def backend_state(self):
+        return json.dumps(dict(version='1.0',model=dict(type='SyntheticFixedByteVocabulary',
+            byte_tokens=[1000+byte for byte in range(256)],pieces={str(k):(v if isinstance(v,bytes) else v.encode()).hex()
+                for k,v in self.parts.items()}),normalizer=self.backend_normalizer,pre_tokenizer=None,
+            post_processor=None,decoder=BYTELEVEL_DECODER_STATE,
+            added_tokens=[dict(id=token,special=True) for token in self.all_special_ids],
+            padding=self.backend_padding,truncation=self.backend_truncation))
     def convert_ids_to_tokens(self,token):
-        piece=self.parts[token]
+        piece=bytes([token-1000]) if 1000<=token<1256 else self.parts[token]
         data=piece if isinstance(piece,bytes) else piece.encode('utf-8')
         alphabet={byte:character for character,byte in BYTELEVEL_INVERSE.items()}
         return ''.join(alphabet[byte] for byte in data)
@@ -57,14 +66,12 @@ class Tokenizer:
                 result.extend(b'' if skip_special_tokens else
                     ('<eos>' if token==self.eos_token_id else '<special>').encode())
             else:
-                piece=self.parts[token];result.extend(piece if isinstance(piece,bytes) else piece.encode('utf-8'))
+                piece=bytes([token-1000]) if 1000<=token<1256 else self.parts[token]
+                result.extend(piece if isinstance(piece,bytes) else piece.encode('utf-8'))
         return bytes(result).decode('utf-8',errors='replace')
     def batch_decode(self,rows,**kwargs):return [self.decode(row,**kwargs) for row in rows]
     def encode(self,text,add_special_tokens=False):
-        if text=='':return []
-        if text not in self.enc:
-            self.enc[text]=self.next;self.parts[self.next]=text;self.next+=1
-        return [self.enc[text]]
+        return [1000+byte for byte in text.encode('utf-8')]
     def __call__(self,texts,**kwargs):
         rows=[self.encode(text) for text in texts];width=max(1,max(map(len,rows)))
         return {'input_ids':torch.tensor([row+[self.pad_token_id]*(width-len(row)) for row in rows])}
@@ -106,6 +113,7 @@ class RawTokenTests(unittest.TestCase):
         (path/'tokenizer.json').write_text('{"fixture":"synthetic"}')
         self.tok=Tokenizer(path);self.sha=hashlib.sha256((path/'tokenizer.json').read_bytes()).hexdigest()
         self.identity=tokenizer_identity(self.tok,self.sha)
+        self.pinned_parts=copy.deepcopy(self.tok.parts)
         self.verl=ModuleType('verl');self.verl.DataProto=TinyProto
         self.fake_verl=patch.dict(sys.modules,{'verl':self.verl});self.fake_verl.start()
         self.ns={'torch':torch,'re':re,'List':List,'Any':Any,'Tuple':Tuple,'Dict':dict}
@@ -118,6 +126,10 @@ class RawTokenTests(unittest.TestCase):
         self.manager.batch_search=lambda queries:['fixture-doc']*len(queries)
     def tearDown(self):self.fake_verl.stop();self.tmp.cleanup()
     def action(self,ids):
+        # Test-native pieces are deliberately changed by several UTF8 fixtures.
+        # Pin their declared fixed vocabulary before sampling the new fixture.
+        if self.tok.parts!=self.pinned_parts:
+            self.identity=tokenizer_identity(self.tok,self.sha);self.pinned_parts=copy.deepcopy(self.tok.parts)
         row=ids+[self.tok.pad_token_id]*(500-len(ids))
         legacy_ids,text=self.manager._postprocess_responses(torch.tensor([row]))
         return sampled_action(self.tok,emission(ids),row,legacy_ids[0][legacy_ids[0]!=self.tok.pad_token_id].tolist(),text[0],self.identity)

@@ -293,6 +293,10 @@ class ActorRolloutRefWorker(Worker):
         # note that we have to create model in fp32. Otherwise, the optimizer is in bf16, which is incorrect
         # TODO(zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
         self.tokenizer = hf_tokenizer(local_path, trust_remote_code=trust_remote_code)
+        if (self.config.actor.get('baseline_method') == 'tree_grpo' and
+                self.config.actor.get('policy_safety', {}).get('sampling_probability_correction', {}).get('enabled') is True):
+            from search_r1.baselines.tree_raw_tokens import register_validation_tokenizer
+            self._tree_raw_validation_tokenizer_identity = register_validation_tokenizer(self.tokenizer)
 
         torch_dtype = fsdp_config.get('model_dtype', None)
         if torch_dtype is None:
