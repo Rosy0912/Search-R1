@@ -14,6 +14,7 @@
 # Adapted from https://github.com/vllm-project/vllm/blob/main/vllm/entrypoints/llm.py
 
 from typing import Dict, List, Optional, Tuple, Union
+import math
 
 import torch
 import torch.nn as nn
@@ -26,6 +27,37 @@ from vllm.utils import Counter
 
 from .arg_utils import EngineArgs
 from .llm_engine_sp import LLMEngine
+
+
+def capture_request_behavior(request_outputs):
+    """Capture actual completions before padding; private common8 evidence."""
+    rows = []
+    for request in request_outputs:
+        if len(request.outputs) != 1 or request.prompt_token_ids is None or request.finished is not True:
+            raise ValueError('common8 requires one completion and actual prompt tokens')
+        completion = request.outputs[0]
+        tokens = list(completion.token_ids)
+        if any(type(token) is not int or token < 0 for token in tokens + list(request.prompt_token_ids)):
+            raise ValueError('Invalid actual completion token IDs')
+        if completion.logprobs is None or len(completion.logprobs) != len(tokens):
+            raise ValueError('Missing actual selected-token log probabilities')
+        values = []
+        for token, distribution in zip(tokens, completion.logprobs):
+            if distribution is None or token not in distribution:
+                raise ValueError('Actual selected-token log probability missing')
+            value = float(distribution[token].logprob)
+            if not math.isfinite(value):
+                raise ValueError('Nonfinite actual selected-token log probability')
+            values.append(value)
+        rows.append(dict(request_id=str(request.request_id),
+                         actual_request_token_ids=list(request.prompt_token_ids),
+                         raw_generated_token_ids=tokens, raw_generated_token_count=len(tokens),
+                         selected_logprobs=values,
+                         finish_reason=completion.finish_reason,
+                         stop_reason=completion.stop_reason))
+    if len({row['request_id'] for row in rows}) != len(rows):
+        raise ValueError('Duplicate actual request IDs')
+    return rows
 
 
 class LLM(LLM):
@@ -172,6 +204,7 @@ class LLM(LLM):
 
     # NOTE(shengguangming): add for verl
     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
+        behavior = capture_request_behavior(request_outputs) if getattr(self, 'capture_behavior_trace', False) else None
         output_token_ids = []
         logprobs = []
         for request_output in request_outputs:  # List[RequestOutput]
@@ -191,6 +224,8 @@ class LLM(LLM):
         output_token_ids = pad_sequence(output_token_ids, batch_first=True, padding_value=pad_token_id)
         if len(logprobs) > 0:
             logprobs = pad_sequence(logprobs, batch_first=True, padding_value=pad_token_id)
+        if behavior is not None:
+            return output_token_ids, logprobs, behavior
         return output_token_ids, logprobs
 
     def sync_model_weights(self, actor_weights: Dict[str, torch.Tensor], load_format: str) -> None:

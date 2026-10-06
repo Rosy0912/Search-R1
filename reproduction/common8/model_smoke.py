@@ -159,7 +159,8 @@ def main(base, phase):
         indices = list(range(rank * 8, (rank + 1) * 8))
         batch = collate_fn([dataset[i] for i in indices])
         prompts = DataProto.from_dict(tensors={k: batch[k] for k in ('input_ids', 'attention_mask', 'position_ids')},
-                                     meta_info={'do_sample': False, 'recompute_log_prob': True})
+                                     meta_info={'do_sample': False, 'recompute_log_prob': True,
+                                                'common8_model_smoke': True})
         engine = actor.rollout.inference_engine
         capture, sync_calls = [], []
         original_generate, original_sync = engine.generate, engine.sync_model_weights

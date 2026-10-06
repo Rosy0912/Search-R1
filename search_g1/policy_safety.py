@@ -251,7 +251,7 @@ def _verify_phase_runtime(base,run,plan,actor_config):
           a['kl_loss_coef']==.001 and a['kl_loss_type']=='low_var_kl' and
           a['use_dynamic_bsz'] is False and a['ulysses_sequence_parallel_size']==1,
           'Actual actor mathematics differs')
-    check(roll['n']==1 and roll['n_agent']==5 and roll['temperature']==1 and roll['top_p']==.95 and
+    check(roll['n']==1 and roll['n_agent']==5 and roll['temperature']==1 and roll['top_p']==1.0 and
           roll['log_prob_micro_batch_size']==32 and r['log_prob_micro_batch_size']==32 and
           roll['dtype']=='float32','Actual sampling/reference mathematics differs')
     for part in (a,r):

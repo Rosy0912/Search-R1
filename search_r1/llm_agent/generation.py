@@ -220,6 +220,10 @@ class LLMGenerationManager:
     def run_llm_loop(self, gen_batch, initial_input_ids: torch.Tensor) -> Tuple[Dict, Dict]:
         """Run main LLM generation loop."""
 
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.generation_behavior import run
+            return run(self, gen_batch, initial_input_ids)
+
         original_left_side = {'input_ids': initial_input_ids[:, -self.config.max_start_length:]}
         original_right_side = {'responses': initial_input_ids[:, []], 'responses_with_info_mask': initial_input_ids[:, []]}
 

@@ -212,6 +212,11 @@ def finish_after_update(trainer, phase):
     assert len(updates) == 1 and updates[0]['step'] == 1 and updates[0]['run_id'] == run['run_id']
     assert updates[0]['probe_version'] == run['initial_probe_version']
     assert updates[0]['metrics']['actor/optimizer_steps_this_update'] == 20
+    from reproduction.common8.behavior_runtime import read_gate_receipt
+    behavior_gate = read_gate_receipt(base, run, 1, update_record=updates[0])
+    for rank_rows in logs.values():
+        assert all(row['context']['behavior_probability_gate_sha256'] == behavior_gate['proof_sha256']
+                   for row in rank_rows if row['kind'] in ('OPTIMIZER_WRITE', 'POLICY_MONITOR'))
     # Current frozen probe remains the one used to generate the actual rewards.
     live = json.loads((base / 'artifacts/live/manifest.json').read_text())
     assert live['version'] == run['initial_probe_version'] and live['round'] == 0
@@ -252,6 +257,7 @@ def finish_after_update(trainer, phase):
                   evaluation_before=before, evaluation_after=after,
                   evaluation_sha256=dict(before=digest(before_path), after=digest(after_path)),
                   actual_updates=updates, production_admission=False,
+                  behavior_probability_gate=behavior_gate,
                   healthy_checkpoint_accepted=False, checked_unix=time.time(),
                   semantics='complete child measurements; health and threshold decision require separate frozen review')
     write_once(base / 'logs/policy-calibration-segment.json', result)

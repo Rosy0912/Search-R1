@@ -20,7 +20,11 @@ def record(step,metrics,probe_version):
     prior=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
     assert [row['step'] for row in prior]==list(range(1,step))
     assert all(row['run_id']==run['run_id'] for row in prior)
-    row=dict(run_id=run['run_id'],step=step,metrics=scalar,probe_version=probe_version)
+    from reproduction.common8.behavior_runtime import read_gate_receipt
+    gate = read_gate_receipt(base, run, step)
+    row=dict(run_id=run['run_id'],step=step,metrics=scalar,probe_version=probe_version,
+             behavior_probability_gate_sha256=gate['proof_sha256'],
+             behavior_trace_sha256=gate['private_trace_sha256'])
     with path.open('a') as f:
         f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
     return row

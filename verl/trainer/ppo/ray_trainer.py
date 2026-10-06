@@ -522,6 +522,11 @@ class RayPPOTrainer(object):
             for batch_dict in self.val_dataloader:
                 timing_raw = {}
                 test_batch: DataProto = DataProto.from_single_dict(batch_dict)
+                behavior_identity = None
+                if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                    from reproduction.common8.behavior_runtime import prepare_identity
+                    behavior_identity = prepare_identity(test_batch, self.global_steps,
+                                                         repeats=1, validation=True)
                 if os.environ.get('SEARCH_G1_BASE'):
                     question_id_lst.extend(test_batch.non_tensor_batch['__g1_question_id'].tolist())
                 # test_batch = test_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
@@ -534,6 +539,9 @@ class RayPPOTrainer(object):
                     'do_sample': False,
                     'validate': True,
                 }
+                if behavior_identity is not None:
+                    from reproduction.common8.behavior_runtime import attach_generation_identity
+                    attach_generation_identity(test_gen_batch, behavior_identity, do_sample=False)
                 with _timer('step', timing_raw):
                     first_input_ids = test_gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone()
                     with _timer('gen', timing_raw):
@@ -549,8 +557,12 @@ class RayPPOTrainer(object):
                         from reproduction.common8.calibration_evaluation import rows_from_batch
                         calibration_rows.extend(rows_from_batch(test_batch, self.tokenizer))
 
-                    for key in test_batch.batch.keys():
-                        test_batch.batch[key] = test_batch.batch[key].long()
+                    if behavior_identity is not None:
+                        from reproduction.common8.behavior_runtime import cast_token_fields
+                        cast_token_fields(test_batch)
+                    else:
+                        for key in test_batch.batch.keys():
+                            test_batch.batch[key] = test_batch.batch[key].long()
 
                     # evaluate using reward_function
                     # for certain reward function (e.g. sandbox), the generation can overlap with reward
@@ -757,6 +769,10 @@ class RayPPOTrainer(object):
                 timing_raw = {}
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                behavior_identity = None
+                if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                    from reproduction.common8.behavior_runtime import prepare_identity
+                    behavior_identity = prepare_identity(batch, self.global_steps, repeats=5)
                 calibration_parents = None
                 if calibration_phase is not None:
                     from reproduction.common8.calibration_runtime import training_inputs
@@ -767,6 +783,9 @@ class RayPPOTrainer(object):
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
+                if behavior_identity is not None:
+                    from reproduction.common8.behavior_runtime import attach_generation_identity
+                    attach_generation_identity(gen_batch, behavior_identity, do_sample=True)
 
                 ####################
                 # original code here
@@ -796,12 +815,23 @@ class RayPPOTrainer(object):
                             )
 
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
-                        for key in final_gen_batch_output.batch.keys():
-                            final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
+                        if behavior_identity is not None:
+                            from reproduction.common8.behavior_runtime import (
+                                cast_token_fields, context_before_forward, freeze_after_probability_gate,
+                            )
+                            cast_token_fields(final_gen_batch_output)
+                            behavior_context = context_before_forward(final_gen_batch_output)
+                        else:
+                            for key in final_gen_batch_output.batch.keys():
+                                final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
 
                         with torch.no_grad():
                             output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
-                            final_gen_batch_output = final_gen_batch_output.union(output)
+                            if behavior_identity is not None:
+                                freeze_after_probability_gate(final_gen_batch_output, behavior_context, output)
+                                del behavior_context
+                            else:
+                                final_gen_batch_output = final_gen_batch_output.union(output)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)
@@ -823,9 +853,12 @@ class RayPPOTrainer(object):
                     batch.meta_info['global_token_num'] = torch.sum(batch.batch['attention_mask'], dim=-1).tolist()
 
                     # batch.batch.apply(lambda x, key: x.long() if key != "old_log_probs" else x, inplace=True, key=True)
-                    for key in batch.batch.keys():
-                        if key != 'old_log_probs':
-                            batch.batch[key] = batch.batch[key].long()
+                    if behavior_identity is not None:
+                        cast_token_fields(batch)
+                    else:
+                        for key in batch.batch.keys():
+                            if key != 'old_log_probs':
+                                batch.batch[key] = batch.batch[key].long()
 
                     if self.use_reference_policy:
                         # compute reference log_prob

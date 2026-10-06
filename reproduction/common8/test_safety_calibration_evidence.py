@@ -93,6 +93,66 @@ def fabricated_segment(outer_count=1, role='policy_safety_calibration_confirmati
 
 
 class CalibrationEvidenceTests(unittest.TestCase):
+    def test_legacy_three_field_and_new_gate_contexts_coalesce_once(self):
+        logs, binding = fabricated_segment(2)
+        legacy = verify_segment(logs, binding)
+        gates = {outer: digest('fabricated CPU receipt outer ' + str(outer)) for outer in (1, 2)}
+        for rows in logs.values():
+            for row in rows:
+                if row['kind'] in ('POLICY_MONITOR', 'OPTIMIZER_WRITE'):
+                    row['context']['behavior_probability_gate_sha256'] = gates[row['context']['logical_update']]
+        original = copy.deepcopy(logs)
+        result = verify_segment(logs, binding)
+        self.assertEqual(len(result['global_monitors']), 80)
+        self.assertEqual(result['optimizer_writes_per_rank'], 40)
+        self.assertIs(result['production_admission'], False)
+        self.assertNotIn('accepted', result)
+        for previous, current in zip(legacy['global_monitors'], result['global_monitors']):
+            self.assertEqual(current['weighted_k3_numerator'], previous['weighted_k3_numerator'])
+            self.assertEqual(current['effective_weight_mass'], previous['effective_weight_mass'])
+            self.assertEqual(current['context']['behavior_probability_gate_sha256'],
+                             gates[current['context']['logical_update']])
+        self.assertEqual(logs, original)
+
+    def test_gate_context_bad_hash_and_unknown_field_rejected(self):
+        for value in ('not-a-sha', 'a' * 63, 'g' * 64, None, True):
+            logs, binding = fabricated_segment()
+            logs[7][0]['context']['behavior_probability_gate_sha256'] = value
+            with self.subTest(hash=value), self.assertRaises(EvidenceError):
+                verify_segment(logs, binding)
+        for include_gate in (False, True):
+            logs, binding = fabricated_segment()
+            context = logs[7][0]['context']
+            if include_gate:
+                context['behavior_probability_gate_sha256'] = digest('fabricated CPU receipt')
+            context['unknown_context_field'] = 'unbound'
+            with self.subTest(include_gate=include_gate), self.assertRaisesRegex(EvidenceError, 'context schema'):
+                verify_segment(logs, binding)
+
+    def test_gate_cannot_change_between_checks_writes_or_minibatches(self):
+        for index in (0, 1, 2, 3, 31, 59):
+            logs, binding = fabricated_segment()
+            for rows in logs.values():
+                for row in rows:
+                    if row['kind'] in ('POLICY_MONITOR', 'OPTIMIZER_WRITE'):
+                        row['context']['behavior_probability_gate_sha256'] = digest('fabricated CPU original gate')
+            logs[0][index]['context']['behavior_probability_gate_sha256'] = digest('fabricated CPU different gate')
+            with self.subTest(event=index), self.assertRaisesRegex(EvidenceError, 'gate changed'):
+                verify_segment(logs, binding)
+
+    def test_all_rank_gate_presence_and_hash_must_agree_within_outer(self):
+        for rank_seven_gate in (None, digest('fabricated CPU rank seven different gate')):
+            logs, binding = fabricated_segment()
+            for rank, rows in logs.items():
+                for row in rows:
+                    if row['kind'] in ('POLICY_MONITOR', 'OPTIMIZER_WRITE'):
+                        if rank != 7:
+                            row['context']['behavior_probability_gate_sha256'] = digest('fabricated CPU common gate')
+                        elif rank_seven_gate is not None:
+                            row['context']['behavior_probability_gate_sha256'] = rank_seven_gate
+            with self.subTest(rank_seven_gate=rank_seven_gate), self.assertRaisesRegex(EvidenceError, 'across ranks'):
+                verify_segment(logs, binding)
+
     def test_complete_segment_coalesces_global_reports_once(self):
         logs, binding = fabricated_segment()
         result = verify_segment(logs, binding)

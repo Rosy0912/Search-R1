@@ -170,7 +170,11 @@ def _row(row, rank, binding, kind):
 def _context(row, outer, mini, prior):
     context = row['context']
     expected = dict(logical_update=outer, minibatch_index=mini, prior_optimizer_writes=prior)
-    _require(isinstance(context, Mapping) and set(context) == set(expected), 'Unexpected context schema')
+    gate_key = 'behavior_probability_gate_sha256'
+    _require(isinstance(context, Mapping) and set(context) in
+             (set(expected), set(expected) | {gate_key}), 'Unexpected context schema')
+    if gate_key in context:
+        _hash(context[gate_key], 'actual behavior gate context')
     for name, value in expected.items():
         _require(_integer(context[name], name) == value, 'Wrong mini/write context: ' + name)
 
@@ -207,6 +211,7 @@ def _verify_segment(rows_by_rank, binding):
              all(type(rank) is int for rank in rows_by_rank) and set(rows_by_rank) == set(range(8)),
              'Need exactly eight distinct rank logs')
     observations = {}
+    behavior_gates = {}
     identities = {outer: {} for outer in range(1, outers + 1)}
     for rank in range(8):
         rows = rows_by_rank[rank]
@@ -258,6 +263,14 @@ def _verify_segment(rows_by_rank, binding):
                                  'Global monitor fields disagree across ranks')
                 _row(write, rank, binding, 'OPTIMIZER_WRITE')
                 _context(write, outer, mini, prior)
+                # Old immutable logs have no behavior receipt. New logs bind
+                # every check/write, across all ranks, to one gate per outer.
+                for event in (before, write, after):
+                    gate = event['context'].get('behavior_probability_gate_sha256')
+                    if outer not in behavior_gates:
+                        behavior_gates[outer] = gate
+                    _require(gate == behavior_gates[outer],
+                             'Behavior probability gate changed within outer or across ranks')
                 _require(_integer(write['write_count'], 'write_count') == prior + 1, 'Wrong actual write count')
                 rates = write['learning_rates']
                 _require(isinstance(rates, list) and bool(rates), 'Missing actual learning rates')

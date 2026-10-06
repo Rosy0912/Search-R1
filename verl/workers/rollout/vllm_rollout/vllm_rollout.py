@@ -25,6 +25,9 @@ When working with Megatron:
 - After inference, all the parameters that doesn't belong to this pp rank is freed.
 """
 from typing import List
+import os
+import copy
+import numpy as np
 from contextlib import contextmanager
 from omegaconf import DictConfig
 import torch
@@ -38,6 +41,36 @@ from verl.workers.rollout.base import BaseRollout
 from verl.third_party.vllm import LLM, vllm_version
 from verl.third_party.vllm import parallel_state as vllm_ps
 from vllm import SamplingParams
+
+
+def actual_sampling_metadata(params, do_sample):
+    """Read effective vLLM parameters, rejecting transformed common8 policy."""
+    if type(do_sample) is not bool:
+        raise ValueError('common8 sampling mode must be explicit boolean')
+    fields = ('n', 'best_of', 'temperature', 'top_p', 'top_k', 'min_p',
+              'presence_penalty', 'frequency_penalty', 'repetition_penalty',
+              'logprobs', 'prompt_logprobs', 'max_tokens', 'min_tokens',
+              'stop', 'stop_token_ids', 'ignore_eos', 'include_stop_str_in_output',
+              'skip_special_tokens', 'spaces_between_special_tokens',
+              'truncate_prompt_tokens', 'seed', 'detokenize', 'logits_processors',
+              'logit_bias', 'allowed_token_ids', 'guided_decoding')
+    result = {key: copy.deepcopy(getattr(params, key, None)) for key in fields}
+    result['do_sample'] = do_sample
+    result['logprob_semantics'] = 'selected_token_logprob_at_actual_sampling_call'
+    expected = dict(n=1, temperature=1.0 if do_sample else 0.0,
+                    top_p=1.0, top_k=-1, min_p=0.0, presence_penalty=0.0,
+                    frequency_penalty=0.0, repetition_penalty=1.0)
+    if any(type(result[key]) is bool or result[key] != value for key, value in expected.items()):
+        raise ValueError('common8 actual sampler is not the declared neutral policy')
+    if result['best_of'] not in (None, 1) or result['logits_processors'] not in (None, []):
+        raise ValueError('common8 best-of/logits processors are not neutral')
+    if result['logprobs'] != 1 or result['min_tokens'] not in (None, 0):
+        raise ValueError('common8 selected probabilities or minimum-token policy invalid')
+    if (result['truncate_prompt_tokens'] is not None or result['ignore_eos'] is not False or
+            result['logit_bias'] not in (None, {}) or result['allowed_token_ids'] is not None or
+            result['guided_decoding'] is not None):
+        raise ValueError('common8 effective token/logit transformations are not neutral')
+    return result
 
 # TODO
 # 1. support pp in vllm
@@ -140,6 +173,23 @@ class vLLMRollout(BaseRollout):
 
     @torch.no_grad()
     def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto:
+        common8 = os.environ.get('SEARCH_G1_PROFILE') == 'common8'
+        smoke = prompts.meta_info.get('common8_model_smoke') is True
+        if common8 and smoke and prompts.meta_info.get('do_sample') is not False:
+            raise ValueError('common8 model-smoke exception requires explicit greedy mode')
+        common8 = common8 and not smoke
+        if common8:
+            call_id = prompts.meta_info.get('behavior_call_id')
+            ordinal = prompts.meta_info.get('behavior_rollout_ordinal')
+            snapshot = prompts.meta_info.get('policy_snapshot_id')
+            row_ids = prompts.non_tensor_batch.get('behavior_row_id')
+            if (not isinstance(call_id, str) or not call_id or not isinstance(snapshot, str) or not snapshot or
+                    type(ordinal) is not int or ordinal < 0 or
+                    row_ids is None or len(row_ids) != len(prompts) or
+                    any(not isinstance(value, str) or not value for value in row_ids)):
+                raise ValueError('Missing row-aligned common8 sampling call identity')
+            if self.config.n != 1 or self.config.tensor_model_parallel_size != 1:
+                raise ValueError('common8 behavior protocol requires n1/tensor-parallel1')
         # rebuild vllm cache engine
         if self.config.free_cache_engine:
             self.inference_engine.init_cache_engine()
@@ -172,11 +222,31 @@ class vLLMRollout(BaseRollout):
 
         # users can customize different sampling_params at different run
         with self.update_sampling_params(**kwargs):
-            output = self.inference_engine.generate(
-                prompts=None,  # because we have already convert it to prompt token id
-                sampling_params=self.sampling_params,
-                prompt_token_ids=idx_list,
-                use_tqdm=False)
+            sampler_actual = actual_sampling_metadata(self.sampling_params, do_sample) if common8 else None
+            prior_capture = getattr(self.inference_engine, 'capture_behavior_trace', False)
+            try:
+                if common8:
+                    self.inference_engine.capture_behavior_trace = True
+                output = self.inference_engine.generate(
+                    prompts=None,  # because we have already convert it to prompt token id
+                    sampling_params=self.sampling_params,
+                    prompt_token_ids=idx_list,
+                    use_tqdm=False)
+            finally:
+                if common8:
+                    self.inference_engine.capture_behavior_trace = prior_capture
+
+        behavior = None
+        if common8:
+            if len(output) != 3 or len(output[2]) != batch_size:
+                raise ValueError('Missing actual pre-padding sampling behavior')
+            behavior = output[2]
+            for i, row in enumerate(behavior):
+                if row['actual_request_token_ids'] != idx_list[i]:
+                    raise ValueError('Actual vLLM request prompt differs from submitted tokens')
+                row.update(schema_version=1, rollout_call_id=call_id, rollout_ordinal=ordinal,
+                           row_id=row_ids[i], policy_snapshot_id=snapshot, sampling=copy.deepcopy(sampler_actual),
+                           eos_token_id=eos_token_id, pad_token_id=self.pad_token_id)
 
         # TODO(sgm): disable logprob when recompute_log_prob is enable
         # if n = 1: (bs, response_length) ; if n > 1: (bs * n, response_length)
@@ -219,8 +289,20 @@ class vLLMRollout(BaseRollout):
             },
             batch_size=batch_size)
 
+        if common8:
+            probabilities = torch.zeros(response.shape, dtype=torch.float32, device=response.device)
+            sampled_mask = torch.zeros(response.shape, dtype=torch.bool, device=response.device)
+            for i, row in enumerate(behavior):
+                count = row['raw_generated_token_count']
+                if count > response.shape[1] or response[i, :count].tolist() != row['raw_generated_token_ids']:
+                    raise ValueError('Padded response differs from actual sampled tokens')
+                probabilities[i, :count] = torch.tensor(row['selected_logprobs'], dtype=torch.float32, device=response.device)
+                sampled_mask[i, :count] = True
+            batch['sampling_log_probs'] = probabilities
+            batch['sampling_mask'] = sampled_mask
+
         # free vllm cache engine
         if self.config.free_cache_engine:
             self.inference_engine.free_cache_engine()
 
-        return DataProto(batch=batch)
+        return DataProto(batch=batch, non_tensor_batch={'sampling_behavior': np.array(behavior, dtype=object)} if common8 else {})

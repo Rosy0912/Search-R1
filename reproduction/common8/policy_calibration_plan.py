@@ -40,7 +40,7 @@ MATHEMATICS = dict(
     advantage_estimator='grpo', original_state_masking=True,
     objective_reduction='original two-row micro masked_mean',
     reference_kl_coefficient=0.001, reference_kl_type='low_var_kl',
-    sampling_temperature=1.0, sampling_top_p=0.95, epsilon=0.2,
+    sampling_temperature=1.0, sampling_top_p=1.0, epsilon=0.2,
     compute_dtype='float32', rollout_dtype='float32', allow_tf32=False,
 )
 PHASE_BUDGET = dict(

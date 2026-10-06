@@ -79,7 +79,7 @@ class FreezeCalibrationPlanTests(unittest.TestCase):
         return dict(actor_rollout_ref=dict(actor=actor,
                     ref=dict(log_prob_micro_batch_size=32, compute_dtype='float32', allow_tf32=False,
                              fsdp_config=dict(model_dtype='fp32')),
-                    rollout=dict(n=1, n_agent=5, temperature=1.0, top_p=.95, log_prob_micro_batch_size=32, dtype='float32'),
+                    rollout=dict(n=1, n_agent=5, temperature=1.0, top_p=1.0, log_prob_micro_batch_size=32, dtype='float32'),
                     model=dict(path=self.run['initial_model'])),
                     algorithm=dict(adv_estimator='grpo', no_think_rl=False),
                     data=dict(train_batch_size=512, val_batch_size=64, max_prompt_length=4096, max_response_length=500,

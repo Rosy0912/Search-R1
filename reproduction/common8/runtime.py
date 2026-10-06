@@ -54,6 +54,9 @@ def accept_five_updates(checkpoint, records):
     assert [r['step'] for r in records] == list(range(1,6))
     actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     assert [r['step'] for r in actual] == list(range(1,6))
+    from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
+    behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in actual}
+    verify_write_receipt_links(base, behavior_gates, 1, 5)
     for r in records:
         assert r['probe_version'] == run['initial_probe_version']
         for key in ('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
@@ -86,6 +89,7 @@ def accept_five_updates(checkpoint, records):
     result = dict(run_id=run['run_id'], accepted=True, actual_updates=records,
         checkpoint=proof, changed_parameters=changed, budget_rows=budgets,
         shared_data=data_proof, stage_validation=validation, checked_unix=time.time(),
+        behavior_probability_gates=behavior_gates,
         semantics='structural training gate, not accuracy reproduction success')
     with (base/'logs/five-updates-acceptance.json').open('x') as f:
         json.dump(result,f,default=lambda x:x.item())

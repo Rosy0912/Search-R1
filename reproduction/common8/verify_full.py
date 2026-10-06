@@ -19,6 +19,9 @@ def verify_full(base):
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     assert [r['step'] for r in records]==list(range(1,301))
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
+    from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
+    behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
+    verify_write_receipt_links(base, behavior_gates, 1, 300)
     budgets=budget_rows(read_console_form(base,run['run_id']),1,300)
     five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
     assert five['accepted'] is True and five['run_id']==run['run_id']
@@ -85,6 +88,7 @@ def verify_full(base):
     proof=dict(run_id=run['run_id'],structural_accepted=True,actual_outer_updates=300,
         per_rank_optimizer_writes=6000,final_saved_tensor_count=count,
         shared_data=data,checkpoint_proofs=snapshots,final_counts=dict(counts),
+        behavior_probability_gates=behavior_gates,
         final_correct=correct,final_weighted_em=evaluation['weighted_em'],
         semantics='full training/data/numerical structure verified; accuracy is the measured result, not automatically reproduction success',
         checked_unix=time.time())

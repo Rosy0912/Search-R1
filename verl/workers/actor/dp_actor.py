@@ -285,14 +285,17 @@ class DataParallelPPOActor(BasePPOActor):
 
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
-        temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
         logical_update=data.meta_info.get('logical_update')
         writes_before = getattr(self, '_optimizer_writes', 0)
         common8 = __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8'
         if common8:
+            from reproduction.common8.behavior_runtime import verify_worker_input
+            verify_worker_input(data, logical_update=logical_update, group=group)
+            batch_gate_sha = data.meta_info['behavior_probability_gate']['sha256']
             assert torch.distributed.get_world_size() == 8
             assert len(data) == 320 and self.config.ppo_mini_batch_size == 16
             assert self.config.ppo_micro_batch_size == 2 and self.config.ppo_epochs == 1
+        temperature = data.meta_info['temperature']
 
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
@@ -333,6 +336,8 @@ class DataParallelPPOActor(BasePPOActor):
         metrics = {}
         for batch_idx, data in enumerate(dataloader):
             self._gradient_diagnostic_context=dict(logical_update=logical_update,minibatch_index=batch_idx,prior_optimizer_writes=getattr(self,"_optimizer_writes",0))
+            if common8:
+                self._gradient_diagnostic_context['behavior_probability_gate_sha256'] = batch_gate_sha
             if safety_enabled:
                 self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
             # split batch into micro_batches

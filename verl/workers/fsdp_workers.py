@@ -422,6 +422,11 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""
+        independent_meta = {}
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.behavior_runtime import rollout_logprob_metadata
+            independent_meta = rollout_logprob_metadata(self.config.rollout)
+            data.meta_info.update(independent_meta)
         data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         assert self._is_rollout
@@ -437,7 +442,7 @@ class ActorRolloutRefWorker(Worker):
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data)
             old_log_probs = self.actor.compute_log_prob(data=data)
-            output = DataProto.from_dict(tensors={'old_log_probs': old_log_probs})
+            output = DataProto.from_dict(tensors={'old_log_probs': old_log_probs}, meta_info=independent_meta)
             output = self.ulysses_sharding_manager.postprocess_data(output)
 
         output = output.to('cpu')
@@ -452,6 +457,12 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def generate_sequences(self, prompts: DataProto):
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            smoke = prompts.meta_info.get('common8_model_smoke') is True
+            if smoke and prompts.meta_info.get('do_sample') is not False:
+                raise ValueError('common8 model-smoke exception requires explicit greedy mode')
+            if not smoke and prompts.meta_info.get('recompute_log_prob') is not False:
+                raise ValueError('common8 requires explicit recompute_log_prob=False before rollout; driver audits actual behavior first')
         prompts = prompts.to(torch.device('cuda', torch.cuda.current_device()))
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)

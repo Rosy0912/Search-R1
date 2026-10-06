@@ -73,7 +73,7 @@ def _mathematics(document, base, run):
                part['fsdp_config']['model_dtype'] == 'fp32', 'Actual reference/actor precision differs')
     _check(all(actor['fsdp_config']['mixed_precision'][name] == 'fp32'
                for name in ('param_dtype', 'reduce_dtype', 'buffer_dtype')), 'Actual FSDP precision differs')
-    for name, value in dict(n=1, n_agent=5, temperature=1.0, top_p=0.95,
+    for name, value in dict(n=1, n_agent=5, temperature=1.0, top_p=1.0,
                             log_prob_micro_batch_size=32, dtype='float32').items():
         _check(type(rollout[name]) is not bool and rollout[name] == value, 'Actual rollout differs: ' + name)
     _check(type(reference['log_prob_micro_batch_size']) is int and reference['log_prob_micro_batch_size'] == 32,
