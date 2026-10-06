@@ -144,8 +144,23 @@ class DataParallelPPOActor(BasePPOActor):
         assert self.config.grad_clip is not None
 
         from search_r1.baselines.gradient_norm import clip_grad_norm64
-        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
-        if not torch.isfinite(grad_norm):
+        if getattr(self, '_active_policy_safety', None):
+            from search_r1.baselines.policy_safety import consensus
+            try:
+                grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
+                norm_ok = bool(torch.isfinite(grad_norm))
+            except ValueError:
+                norm_ok = False
+                grad_norm = torch.tensor(0.)
+            if not consensus(norm_ok, self._safety_group):
+                DataParallelPPOActor._reject_safety(self, 'gradient_clip_rejected')
+        else:
+            grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
+        if getattr(self, '_active_policy_safety', None):
+            from search_r1.baselines.policy_safety import consensus
+            if not consensus(bool(torch.isfinite(grad_norm)), self._safety_group):
+                DataParallelPPOActor._reject_safety(self, 'nonfinite_gradient_norm')
+        elif not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         self.actor_optimizer.step()
         return grad_norm
@@ -201,15 +216,127 @@ class DataParallelPPOActor(BasePPOActor):
 
         return log_probs
 
+    def _monitor_frozen_policy(self, frozen, safety, stage, monitor_batch=None):
+        from search_r1.baselines.policy_safety import monitor, consensus, tensor_identity
+        import time
+        started = time.monotonic()
+        identity_ok = tensor_identity(frozen) == self._safety_monitor_identity
+        if not consensus(identity_ok, self._safety_group):
+            return dict(allowed=False, reasons=['frozen_rollout_identity_changed'], stage=stage)
+        training = self.actor_module.training
+        self.actor_module.eval()
+        current, masks, advantages, weights, old = [], [], [], [], []
+        try:
+            with torch.no_grad():
+                for micro in (frozen if monitor_batch is None else monitor_batch).split(self.config.ppo_micro_batch_size):
+                    micro = micro.cuda(device=torch.cuda.current_device())
+                    _, new = self._forward_micro_batch(micro, self._safety_temperature)
+                    mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
+                    current.append(new); masks.append(mask); advantages.append(micro['advantages'])
+                    old.append(micro['old_log_probs'])
+                    weights.append(mask.double() / mask.sum(-1, keepdim=True).clamp_min(1).double())
+        finally:
+            self.actor_module.train(training)
+        report = monitor(torch.cat(old), torch.cat(current), torch.cat(advantages), torch.cat(masks), torch.cat(weights),
+                         c=float(safety['dual_clip']), kl_log_bound=float(safety['kl_log_bound']),
+                         target_kl=float(safety['target_old_policy_kl']), negative_tail_limit=self._safety_tail_limit,
+                         group=self._safety_group)
+        report.update(stage=stage, monitoring_scope='full_frozen_rollout' if monitor_batch is None else 'full_current_minibatch',
+                      monitored_local_rows=len(frozen if monitor_batch is None else monitor_batch),
+                      monitored_tensor_sha256=self._safety_monitor_identity if monitor_batch is None else tensor_identity(monitor_batch),
+                      objective_weight_definition='sequence_mean reciprocal supervised row length; global weight mass',
+                      rollout_identity=self._safety_rollout_identity, tensor_sha256=self._safety_monitor_identity,
+                      calibration_sha256=self._safety_calibration_sha, monitor_seconds=time.monotonic()-started)
+        capture_ok = True
+        capture_error = None
+        sink = getattr(self, '_safety_evidence_sink', None)
+        if sink is not None:
+            try:
+                observed = frozen if monitor_batch is None else monitor_batch
+                sink(dict(report=report, old_log_probs=torch.cat(old).detach().cpu(),
+                          current_log_probs=torch.cat(current).detach().cpu(),
+                          advantages=torch.cat(advantages).detach().cpu(),
+                          mask=torch.cat(masks).detach().cpu(), weights=torch.cat(weights).detach().cpu(),
+                          monitor_batch={key: value.detach().cpu() for key, value in observed.items()}))
+            except Exception as error:
+                capture_ok = False
+                capture_error = str(error)
+        if not consensus(capture_ok, self._safety_group):
+            report.update(allowed=False, reasons=report['reasons'] + ['diagnostic_evidence_sink_failure'],
+                          evidence_capture_local_error=capture_error)
+        self._safety_reports.append(report)
+        return report
+
     def update_policy(self, data: DataProto):
+        from search_r1.baselines.policy_safety import PartialPolicyUpdate
+        self._safety_writes = 0
+        outer = data.meta_info.get('actual_outer')
+        self._safety_expected_writes = (20 if outer <= 49 else 10) if type(outer) is int and 1 <= outer <= 200 else None
+        self._safety_reports = []
+        try:
+            return DataParallelPPOActor._update_policy_impl(self, data)
+        except ValueError as error:
+            if not (self.config.get('policy_safety') or {}).get('enabled', False):
+                raise
+            self.actor_optimizer.zero_grad()
+            return {'actor/optimizer_steps': self._safety_writes,
+                    'fresh200_update_state': dict(status='PARTIAL', update_complete=False,
+                        optimizer_steps=self._safety_writes, expected_optimizer_steps=self._safety_expected_writes,
+                        reason=str(error), actual_outer=getattr(self, '_safety_actual_outer', None),
+                        rollout_identity=getattr(self, '_safety_rollout_identity', None)),
+                    'fresh200_policy_monitor': self._safety_reports}
+        except PartialPolicyUpdate as failure:
+            self.actor_optimizer.zero_grad()
+            return {'actor/optimizer_steps': self._safety_writes,
+                    'fresh200_update_state': failure.event,
+                    'fresh200_policy_monitor': self._safety_reports}
+
+    def _reject_safety(self, reason, report=None):
+        from search_r1.baselines.policy_safety import PartialPolicyUpdate
+        self.actor_optimizer.zero_grad()
+        raise PartialPolicyUpdate(dict(status='PARTIAL', update_complete=False,
+            optimizer_steps=self._safety_writes, expected_optimizer_steps=self._safety_expected_writes,
+            reason=reason, report=report, actual_outer=self._safety_actual_outer,
+            rollout_identity=self._safety_rollout_identity))
+
+    def _update_policy_impl(self, data: DataProto):
         # make sure we are in training mode
         self.actor_module.train()
 
         sequence_mean = self.config.get('loss_reduction', 'token_mean') == 'sequence_mean'
         if sequence_mean and self.config.use_dynamic_bsz and torch.distributed.is_initialized():
             raise ValueError('Distributed sequence_mean requires fixed micro batches')
-        assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
-        self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
+        from search_r1.baselines.policy_safety import bind_config, consensus, agree_document, tensor_identity
+        self._safety_group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
+        self._safety_actual_outer = data.meta_info.get('actual_outer')
+        self._safety_rollout_identity = data.meta_info.get('rollout_identity')
+        safety = bind_config(self.config, dict(actual_outer=self._safety_actual_outer,
+                            rollout_identity=self._safety_rollout_identity, local_rows=len(data)), self._safety_group)
+        self._active_policy_safety = safety
+        mini_size = self.config.ppo_mini_batch_size
+        if safety:
+            outer = self._safety_actual_outer
+            world = torch.distributed.get_world_size(self._safety_group) if torch.distributed.is_initialized() else 1
+            layout_ok = type(outer) is int and 1 <= outer <= 200 and bool(self._safety_rollout_identity)
+            layout_ok = layout_ok and world == 8 and self.config.ppo_micro_batch_size == 2 and len(data) == 320
+            if not consensus(layout_ok, self._safety_group):
+                DataParallelPPOActor._reject_safety(self, 'invalid_fresh200_layout')
+            mini_size = 16 if outer <= 49 else 32
+            self._safety_expected_writes = 20 if outer <= 49 else 10
+            try:
+                from search_r1.baselines.fresh200_contract import verify_policy_safety_artifact, verify_sampling_policy_binding
+                tail, sha = verify_policy_safety_artifact(safety)
+                sampling_sha = verify_sampling_policy_binding(data, safety)
+                artifact_ok = True
+                admission_error = None
+            except Exception as error:
+                tail, sha, sampling_sha, artifact_ok = None, None, None, False
+                admission_error = str(error)
+            if not agree_document({'calibration_sha256': sha, 'tail_limit': tail, 'sampling_policy_binding': sampling_sha}, artifact_ok, self._safety_group):
+                DataParallelPPOActor._reject_safety(self, 'calibration_or_sampling_admission_rejected', {'local_error': admission_error})
+            self._safety_tail_limit, self._safety_calibration_sha = tail, sha
+        assert mini_size % self.config.ppo_micro_batch_size == 0
+        self.gradient_accumulation = mini_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
@@ -226,7 +353,11 @@ class DataParallelPPOActor(BasePPOActor):
 
         # Split to make minibatch iterator for updating the actor
         # See PPO paper for details. https://arxiv.org/abs/1707.06347
-        dataloader = batch.split(self.config.ppo_mini_batch_size)
+        dataloader = batch.split(mini_size)
+        if safety:
+            frozen = batch.clone()
+            self._safety_monitor_identity = tensor_identity(frozen)
+            self._safety_temperature = temperature
 
         metrics = {}
         updates = skipped = 0
@@ -237,6 +368,13 @@ class DataParallelPPOActor(BasePPOActor):
                 dataloader for _ in range(self.config.ppo_epochs))):
             # split batch into micro_batches
             mini_batch = data
+            if safety:
+                report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam')
+                if not report['allowed']:
+                    DataParallelPPOActor._reject_safety(self, 'policy_monitor', report)
+                report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam_full_minibatch', mini_batch)
+                if not report['allowed']:
+                    DataParallelPPOActor._reject_safety(self, 'policy_monitor_full_minibatch', report)
             from search_r1.baselines.distillation import global_token_count
             count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
             total, world = global_token_count(count_mask)
@@ -297,7 +435,8 @@ class DataParallelPPOActor(BasePPOActor):
                     pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                         old_log_prob, log_prob, advantages, response_mask, policy_weights,
                         clip_ratio, denominator, None if sequence_mean else data.get('step_ids', None),
-                        log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None)
+                        log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None,
+                        dual_clip=float(safety['dual_clip']) if safety else None, safety_group=self._safety_group)
                     if sequence_mean:
                         pg_clipfrac = pg_clipfrac * policy_weights.sum() / denominator
                         ppo_kl = ppo_kl * policy_weights.sum() / denominator
@@ -312,13 +451,13 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                   cliprange=clip_ratio,
                                                                                   log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None)
                 # compute entropy loss from entropy
-                entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
-                                if sequence_mean or paper_objective else verl_F.masked_mean(entropy, response_mask))
+                entropy_loss = (verl_F.masked_sum(torch.where(response_mask.bool(), entropy, 0.), policy_weights) / denominator
+                                if sequence_mean or paper_objective else verl_F.masked_mean(torch.where(response_mask.bool(), entropy, 0.), response_mask))
 
                 # compute policy loss
                 policy_loss = pg_loss - entropy_loss * entropy_coeff
 
-                if self.config.use_kl_loss:
+                if self.config.use_kl_loss and (not safety or self.config.kl_loss_coef != 0):
                     ref_log_prob = data['ref_log_prob']
                     # compute kl loss
                     kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
@@ -335,6 +474,8 @@ class DataParallelPPOActor(BasePPOActor):
                     metrics['actor/kl_coef'] = self.config.kl_loss_coef
 
                 loss = policy_loss if sequence_mean or paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+                if safety and not consensus(bool(torch.isfinite(loss)) and bool(torch.isfinite(entropy[response_mask.bool()]).all()), self._safety_group):
+                    DataParallelPPOActor._reject_safety(self, 'nonfinite_loss_or_entropy')
                 loss.backward()
 
                 data = {
@@ -351,8 +492,25 @@ class DataParallelPPOActor(BasePPOActor):
 
             if sequence_mean:
                 append_to_dict(metrics, mini_metrics)
+            if safety:
+                finite_gradients = all(p.grad is None or bool(torch.isfinite(p.grad).all()) for p in self.actor_module.parameters())
+                if not consensus(finite_gradients, self._safety_group):
+                    DataParallelPPOActor._reject_safety(self, 'nonfinite_gradients')
             grad_norm = self._optimizer_step()
             updates += 1
+            self._safety_writes = updates
+            if safety:
+                state_finite = all(bool(torch.isfinite(p).all()) for p in self.actor_module.parameters())
+                state_finite = state_finite and all(bool(torch.isfinite(value).all())
+                    for state in self.actor_optimizer.state.values() for value in state.values() if torch.is_tensor(value))
+                if not consensus(state_finite, self._safety_group):
+                    DataParallelPPOActor._reject_safety(self, 'post_adam_nonfinite_parameters_or_optimizer_state')
+                report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam')
+                if not report['allowed']:
+                    DataParallelPPOActor._reject_safety(self, 'policy_monitor', report)
+                report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam_full_minibatch', mini_batch)
+                if not report['allowed']:
+                    DataParallelPPOActor._reject_safety(self, 'policy_monitor_full_minibatch', report)
             data = {'actor/grad_norm': grad_norm.detach().item()}
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
@@ -365,4 +523,11 @@ class DataParallelPPOActor(BasePPOActor):
             norms = metrics.get('actor/grad_norm', [])
             metrics['bapo/grad_norm_min'] = min(norms) if norms else 0.
             metrics['bapo/grad_norm_max'] = max(norms) if norms else 0.
+        if safety:
+            if not consensus(updates == self._safety_expected_writes, self._safety_group):
+                DataParallelPPOActor._reject_safety(self, 'optimizer_write_count_mismatch')
+            metrics['fresh200_update_state'] = dict(status='COMPLETE', update_complete=True,
+                optimizer_steps=updates, expected_optimizer_steps=self._safety_expected_writes,
+                actual_outer=self._safety_actual_outer, rollout_identity=self._safety_rollout_identity)
+            metrics['fresh200_policy_monitor'] = self._safety_reports
         return metrics

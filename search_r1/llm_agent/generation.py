@@ -22,6 +22,7 @@ class GenerationConfig:
     search_url: str = None
     topk: int = 3
     force_final_answer: bool = True
+    preserve_sampling_tokens: bool = False
 
 class LLMGenerationManager:
     def __init__(
@@ -223,6 +224,10 @@ class LLMGenerationManager:
     def run_llm_loop(self, gen_batch, initial_input_ids: torch.Tensor) -> Tuple[Dict, Dict]:
         """Run main LLM generation loop."""
         
+        if self.config.preserve_sampling_tokens:
+            from .sampling_tokens import run
+            return run(self, gen_batch, initial_input_ids)
+
         original_left_side = {'input_ids': initial_input_ids[:, -self.config.max_start_length:]}
         original_right_side = {'responses': initial_input_ids[:, []], 'responses_with_info_mask': initial_input_ids[:, []]}
         

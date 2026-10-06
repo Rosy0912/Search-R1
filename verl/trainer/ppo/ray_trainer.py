@@ -409,7 +409,8 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
-        e1 = getattr(self.config.trainer, 'e1_gate_enabled', False)
+        e1 = (getattr(self.config.trainer, 'e1_gate_enabled', False)
+              or getattr(self.config.trainer, 'fresh200_enabled', False))
         self.e1_sampler = None
         if e1:
             from search_r1.baselines.full_state import StatefulSampler
@@ -466,6 +467,9 @@ class RayPPOTrainer(object):
                 raise ValueError('E1 requires actual300 (steps301), warmup114, save25/5, BAPO formal run')
             if not self.config.trainer.get('e1_gate_receipt'):
                 raise ValueError('E1 requires an independent fifth-outer release receipt path')
+        if getattr(self.config.trainer, 'fresh200_enabled', False):
+            from search_r1.baselines.fresh200_contract import validate_fresh_config
+            validate_fresh_config(OmegaConf.to_container(self.config, resolve=True))
         self.total_training_steps = total_training_steps
         print(f'Total training steps: {self.total_training_steps}')
 
@@ -523,6 +527,16 @@ class RayPPOTrainer(object):
             force_final_answer=self.config.get('force_final_answer', True),
         )
 
+        if self.config.trainer.get('fresh200_enabled',False):
+            gen_config.preserve_sampling_tokens=True
+        validation_snapshot=f'{os.environ.get("BAPO_RUN_ID","validation")}:eval:{uuid.uuid4().hex}:outer_{getattr(self,"global_steps",0)}'
+
+        def bind_fresh200_eval(gen_batch):
+            if self.config.trainer.get('fresh200_enabled',False):
+                gen_batch.meta_info.update(preserve_sampling_tokens=True,fresh200_evaluation=True,
+                    probability_role='greedy_model_logprob_not_sampling_policy',policy_snapshot_id=validation_snapshot)
+                gen_batch.non_tensor_batch['fresh200_row_id']=np.array([str(uuid.uuid4()) for _ in range(len(gen_batch))],dtype=object)
+
         # Agent config preparation
         validation_manager_class = LLMGenerationManager
         validation_controller = getattr(self, 'baseline_controller', None)
@@ -557,6 +571,8 @@ class RayPPOTrainer(object):
                     'validate': True,
                 }
 
+                bind_fresh200_eval(test_gen_batch)
+
                 # pad to be divisible by dp_size
                 test_gen_batch_padded, pad_size = pad_dataproto_to_divisor(test_gen_batch, self.actor_rollout_wg.world_size)
                 test_output_gen_batch_padded = self.actor_rollout_wg.generate_sequences(test_gen_batch_padded)
@@ -587,6 +603,7 @@ class RayPPOTrainer(object):
                     'do_sample': False,
                     'validate': True,
                 }
+                bind_fresh200_eval(test_gen_batch)
                 with _timer('step', timing_raw):
                     first_input_ids = test_gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone()
                     with _timer('gen', timing_raw):
@@ -599,7 +616,8 @@ class RayPPOTrainer(object):
                     test_batch = test_batch.union(final_gen_batch_output)
                     
                     for key in test_batch.batch.keys():
-                        test_batch.batch[key] = test_batch.batch[key].long()
+                        if key not in ('sampling_log_probs','old_log_probs'):
+                            test_batch.batch[key] = test_batch.batch[key].long()
                     
                     # evaluate using reward_function
                     # for certain reward function (e.g. sandbox), the generation can overlap with reward
@@ -639,6 +657,13 @@ class RayPPOTrainer(object):
     def init_workers(self):
         """Init resource pool and worker group"""
         self.resume_manifest = None
+        if self.config.trainer.get('fresh200_enabled', False):
+            from search_r1.baselines.fresh200_native_evidence import bind_shared_inputs
+            self.fresh200_shared_input_bindings=bind_shared_inputs(self.config.baselines.holdout.manifest_path,
+                dict(train=self.config.data.train_files,validation=self.config.data.val_files,
+                     final=self.config.data.final_val_files,stage=self.config.baselines.bapo.stage_validation_files))
+            from search_r1.baselines.fresh200_contract import validate_fresh_config
+            validate_fresh_config(OmegaConf.to_container(self.config, resolve=True))
         if self.config.trainer.get('resume_full_state'):
             from search_r1.baselines.recovery import validate_manifest,require
             import subprocess
@@ -759,8 +784,80 @@ class RayPPOTrainer(object):
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
             self.baseline_controller.save(self.global_steps)
-        if getattr(self.config.trainer, 'e1_gate_enabled', False):
+        if getattr(self.config.trainer, 'fresh200_enabled', False):
+            self._save_fresh200_state(actor_local_path, 'COMPLETE', getattr(self, 'fresh200_rank_updates', []))
+        elif getattr(self.config.trainer, 'e1_gate_enabled', False):
             self._save_e1_full_state(actor_local_path)
+
+    def _save_fresh200_state(self, actor_local_path, status, rank_updates):
+        from pathlib import Path
+        from search_r1.baselines.full_state import rng_state, restore_rng, state_digest, atomic_save
+        from search_r1.baselines.fresh200_contract import outer_contract
+        step = self.global_steps
+        directory = Path(self.config.trainer.default_local_dir) / 'fresh200_state' / (f'outer_{step}_{status}')
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / 'all-rank-write-ledger.json').write_text(json.dumps(rank_updates, indent=2, default=str))
+        reports = self.actor_rollout_wg.save_training_state(str(directory / 'ranks'), step,
+                                                          roundtrip=(status == 'COMPLETE' and step == 5), state_status=status)
+        if len(reports) != 8 or {r['rank'] for r in reports} != set(range(8)):
+            raise ValueError('Fresh200 checkpoint lacks all eight current-state shards')
+        controller = self.baseline_controller
+        payload = dict(version=1, protocol='BAPO_FRESH200_V1', status=status, driver_pid=os.getpid(),
+            global_step=step, next_global_step=step + (status == 'COMPLETE'), epoch=self.e1_epoch,
+            sampler=self.e1_sampler.state_dict(), rng=rng_state(), bapo=controller.stage.state_dict(),
+            actual_outer_updates=controller.actual_outer_updates, rank_write_ledger=rank_updates,
+            outer_contract=outer_contract(step))
+        path=directory/'driver.pt'; atomic_save(payload,path)
+        loaded=torch.load(path,map_location='cpu',weights_only=False)
+        if state_digest(loaded)!=state_digest(payload):
+            raise ValueError('Fresh200 driver serialization mismatch')
+        if status == 'COMPLETE' and step == 5:
+            self.e1_sampler.load_state_dict(loaded['sampler']); restore_rng(loaded['rng'])
+            controller.stage.load_state_dict(loaded['bapo'])
+            controller.actual_outer_updates=loaded['actual_outer_updates']
+            after=dict(loaded)
+            after.update(sampler=self.e1_sampler.state_dict(),rng=rng_state(),
+                bapo=controller.stage.state_dict(),actual_outer_updates=controller.actual_outer_updates)
+            if state_digest(after)!=state_digest(loaded):
+                raise ValueError('Fresh200 driver sampler/RNG/BAPO reload mismatch')
+        from search_r1.baselines.checkpoint_gate import digest
+        (directory/'driver-reload.json').write_text(json.dumps(dict(
+            status=('EXACT_DRIVER_RELOAD_OK' if step==5 else 'DRIVER_SERIALIZED_OK') if status=='COMPLETE' else 'PARTIAL_CURRENT_STATE_SAVED',
+            step=step, pid=os.getpid(), path=str(path.resolve()), sha256=digest(path),
+            state_digest=state_digest(payload)), indent=2))
+        # A PARTIAL directory is diagnostic current state, never a final/full-state completion marker.
+        (directory/'status.json').write_text(json.dumps(dict(status=status, actual_outer=step,
+            completed_outer_updates=controller.actual_outer_updates, retry_allowed=False,
+            automatic_rollback_allowed=False), indent=2))
+        self.fresh200_state_directory=directory; self.fresh200_state_reports=reports
+        return directory
+
+    def _fresh200_partial_exit(self, rank_updates):
+        from pathlib import Path
+        directory=Path(self.config.trainer.default_local_dir)/'diagnostics'/f'outer_{self.global_steps}_PARTIAL'
+        directory.mkdir(parents=True,exist_ok=True)
+        (directory/'all-rank-write-ledger.json').write_text(json.dumps(rank_updates,indent=2,default=str))
+        self.actor_rollout_wg.save_checkpoint(str(directory/'actor'), None)
+        self._save_fresh200_state(str(directory/'actor'), 'PARTIAL', rank_updates)
+        raise RuntimeError('Fresh200 PARTIAL: current writes saved; no outer increment, scheduler step, automatic rollback or retry')
+
+    def _fresh200_pause_after_five(self):
+        from pathlib import Path
+        import subprocess
+        from search_r1.baselines.fresh200_gate import write_manifest, wait_for_release
+        source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+        if source!=self.config.baselines.algorithm_source_commit:
+            raise ValueError('Fresh200 source-start differs from current source')
+        run=Path(os.environ['BAPO_RUN_ID']).resolve()
+        source_record=run/'source-commit.txt'
+        if source_record.read_text().strip()!=source:
+            raise ValueError('Fresh200 source marker differs')
+        paths=[source_record]
+        base=Path(self.config.trainer.default_local_dir)
+        for directory in (base/'actor'/'global_step_5',base/'algorithm'/'global_step_5',self.fresh200_state_directory):
+            paths.extend(p for p in directory.rglob('*') if p.is_file())
+        manifest=write_manifest(paths,self.fresh200_state_directory,OmegaConf.to_container(self.config,resolve=True),source,run,5,self.fresh200_state_reports)
+        wait_for_release(Path(self.config.trainer.fresh200_gate_receipt),manifest,Path.cwd())
 
     def _save_e1_full_state(self, actor_local_path):
         from pathlib import Path
@@ -888,6 +985,9 @@ class RayPPOTrainer(object):
             force_final_answer=self.config.get('force_final_answer', True),
         )
 
+        if self.config.trainer.get('fresh200_enabled', False):
+            gen_config.preserve_sampling_tokens = True
+
         generation_manager = LLMGenerationManager(
             tokenizer=self.tokenizer,
             actor_rollout_wg=self.actor_rollout_wg,
@@ -944,6 +1044,10 @@ class RayPPOTrainer(object):
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
+                if self.config.trainer.get('fresh200_enabled', False):
+                    gen_batch.meta_info.update(preserve_sampling_tokens=True,recompute_log_prob=False,
+                        policy_snapshot_id=f'{os.environ["BAPO_RUN_ID"]}:before_outer_{self.global_steps}')
+                    gen_batch.non_tensor_batch['fresh200_row_id'] = np.array([str(uuid.uuid4()) for _ in range(len(gen_batch))],dtype=object)
 
                 ####################
                 # original code here
@@ -980,8 +1084,12 @@ class RayPPOTrainer(object):
 
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         for key in final_gen_batch_output.batch.keys():
-                            final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
+                            if key != 'sampling_log_probs':
+                                final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
 
+                        if self.config.trainer.get('fresh200_enabled', False):
+                            from search_r1.llm_agent.sampling_tokens import audit_batch
+                            final_gen_batch_output.meta_info['sampling_context_audit'] = audit_batch(final_gen_batch_output)
                         with torch.no_grad():
                             output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                             final_gen_batch_output = final_gen_batch_output.union(output)
@@ -1007,7 +1115,7 @@ class RayPPOTrainer(object):
 
                     # batch.batch.apply(lambda x, key: x.long() if key != "old_log_probs" else x, inplace=True, key=True)
                     for key in batch.batch.keys():
-                        if key != 'old_log_probs':
+                        if key not in ('old_log_probs', 'sampling_log_probs'):
                             batch.batch[key] = batch.batch[key].long()
 
                     if self.use_reference_policy:
@@ -1036,7 +1144,10 @@ class RayPPOTrainer(object):
                         batch.batch['token_level_scores'] = reward_tensor
 
                         # compute rewards. apply_kl_penalty if available
-                        if self.baseline_controller is not None and self.baseline_controller.method in ('topd', 'opsd'):
+                        if self.config.trainer.get('fresh200_enabled', False):
+                            batch.batch['token_level_rewards'] = batch.batch['token_level_scores']
+                            metrics['critic/kl_coeff'] = 0.0
+                        elif self.baseline_controller is not None and self.baseline_controller.method in ('topd', 'opsd'):
                             batch.batch['token_level_rewards'] = batch.batch['token_level_scores']
                         elif not self.config.actor_rollout_ref.actor.use_kl_loss:
                             batch, kl_metrics = apply_kl_penalty(batch,
@@ -1056,6 +1167,38 @@ class RayPPOTrainer(object):
                         else:
                             batch = self.baseline_controller.compute_advantages(batch, metrics)
 
+                    if self.config.trainer.get('fresh200_diagnostic_only',False):
+                        from pathlib import Path
+                        directory=Path(self.config.trainer.default_local_dir)/'native-diagnostics'
+                        directory.mkdir(parents=True,exist_ok=True)
+                        batch,metrics=self._create_loss_mask(batch,metrics)
+                        batch.meta_info['fresh200_shared_input_bindings']=self.fresh200_shared_input_bindings
+                        role=self.config.trainer.fresh200_diagnostic_role
+                        mini=self.config.trainer.fresh200_diagnostic_global_mini
+                        try:
+                            diagnostic=self.actor_rollout_wg.capture_fresh200_diagnostic(batch,mini,role,str(directory))
+                            events=diagnostic.meta_info['fresh200_diagnostic_events']
+                            (directory/'all-rank-diagnostic-ledger.json').write_text(json.dumps(events,indent=2,default=str))
+                        except Exception:
+                            import traceback
+                            (directory/'driver-fault.raw.log').write_text(traceback.format_exc())
+                            self.actor_rollout_wg.save_training_state(str(directory/'FAULT_CURRENT_STATE'),0,roundtrip=False,state_status='DIAGNOSTIC_FAULT')
+                            raise
+                        diagnostic_fault=any(e.get('stop_reason') is not None or e.get('status')=='DIAGNOSTIC_PARTIAL_FAULT' for e in events)
+                        state_tag='DIAGNOSTIC_PARTIAL' if diagnostic_fault else 'DIAGNOSTIC_ONLY'
+                        reports=self.actor_rollout_wg.save_training_state(str(directory/'DIAGNOSTIC_FINAL_STATE'),0,roundtrip=False,state_status=state_tag)
+                        (directory/'diagnostic-state-reports.json').write_text(json.dumps(reports,indent=2,default=str))
+                        (directory/'status.json').write_text(json.dumps(dict(status='DIAGNOSTIC_ONLY_NOT_PRODUCTION',
+                            role=role,global_mini_batch_size=mini,formal_outer_updates=0,scheduler_outer_steps=0,
+                            optimizer_writes_per_rank=[e['optimizer_writes'] for e in events],
+                            diagnostic_status=[e['status'] for e in events],release_allowed=False),indent=2))
+                        from search_r1.baselines.full_state import atomic_save,rng_state
+                        atomic_save(dict(status=state_tag,formal_outer_updates=0,sampler=self.e1_sampler.state_dict(),
+                            rng=rng_state(),bapo=self.baseline_controller.stage.state_dict(),rank_write_ledger=events),directory/'driver-diagnostic-state.pt')
+                        if diagnostic_fault:
+                            raise RuntimeError('Diagnostic PARTIAL: all available rank writes/current state retained; no formal increment or release')
+                        return {'status':'DIAGNOSTIC_ONLY_NOT_PRODUCTION','formal_outer_updates':0}
+
                     # update critic
                     if self.use_critic:
                         with _timer('update_critic', timing_raw):
@@ -1069,7 +1212,17 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            if self.config.trainer.get('fresh200_enabled', False):
+                                from search_r1.baselines.fresh200_contract import outer_contract
+                                batch.meta_info.update(outer_contract(self.global_steps))
+                                from search_r1.baselines.policy_safety import tensor_identity
+                                batch.meta_info['rollout_identity'] = tensor_identity(batch.batch)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
+                            if self.config.trainer.get('fresh200_enabled', False):
+                                from search_r1.baselines.fresh200_contract import validate_rank_updates
+                                self.fresh200_rank_updates = actor_output.meta_info['fresh200_rank_updates']
+                                if not validate_rank_updates(self.fresh200_rank_updates, self.global_steps):
+                                    self._fresh200_partial_exit(self.fresh200_rank_updates)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
                         if getattr(self, 'baseline_controller', None) is not None:
@@ -1108,12 +1261,18 @@ class RayPPOTrainer(object):
                         dict(step=self.global_steps, metrics=metrics), sort_keys=True,
                         default=lambda value: value.item(), allow_nan=False), flush=True)
 
+                if self.config.trainer.get('fresh200_enabled', False) and self.global_steps == 5:
+                    self._fresh200_pause_after_five()
                 if getattr(self.config.trainer, 'e1_gate_enabled', False) and self.global_steps == 5:
                     self._e1_pause_after_five()
                 completed_step = self.global_steps
                 self.global_steps += 1
 
                 if self.global_steps >= self.total_training_steps:
+                    if self.config.trainer.get('fresh200_enabled', False):
+                        if completed_step != 200 or self.baseline_controller.actual_outer_updates != 200:
+                            raise ValueError('Fresh200 must complete exactly 200 actual outer updates')
+                        self.global_steps = completed_step
                     if getattr(self.config.trainer, 'e1_gate_enabled', False):
                         if completed_step != 300 or self.baseline_controller.actual_outer_updates != 300:
                             raise ValueError('E1 must end at exactly actual outer300')

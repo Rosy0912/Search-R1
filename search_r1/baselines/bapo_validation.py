@@ -34,7 +34,12 @@ class CountedRollout:
         output = self.worker.generate_sequences(batch)
         # Count before the existing manager removes padding rows or truncates
         # actions at </search>/</answer> and rolling response caps.
-        self.cost['generated_tokens'] += int((output.batch['responses'] != self.pad_id).sum())
+        if batch.meta_info.get('preserve_sampling_tokens') is True:
+            records = output.non_tensor_batch.get('fresh200_sampling')
+            if records is None: raise ValueError('Fresh200 evaluation missing native token records')
+            self.cost['generated_tokens'] += sum(len(r['raw_generated_token_ids']) for r in records)
+        else:
+            self.cost['generated_tokens'] += int((output.batch['responses'] != self.pad_id).sum())
         return output
 
 
@@ -49,6 +54,9 @@ class BapoValidationManager(LLMGenerationManager):
 
     def run_llm_loop(self, gen_batch, initial_input_ids):
         self.cost['trajectories'] += len(gen_batch)
+        if getattr(self.config, 'preserve_sampling_tokens', False):
+            if gen_batch.meta_info.get('fresh200_evaluation') is not True or gen_batch.meta_info.get('do_sample') is not False:
+                raise ValueError('Fresh200 evaluation requires explicitly labeled greedy role')
         output = super().run_llm_loop(gen_batch, initial_input_ids)
         for key, value in validation_answer_counts(output, self.tokenizer).items():
             self.answer_counts[key] += value

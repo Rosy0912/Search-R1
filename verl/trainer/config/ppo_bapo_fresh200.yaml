@@ -1,0 +1,131 @@
+defaults:
+  - ppo_baselines
+  - _self_
+
+data:
+  train_files: ${oc.env:BAPO_FRESH200_DATA}/train.parquet
+  val_files: ${oc.env:BAPO_FRESH200_DATA}/validation.parquet
+  final_val_files: ${oc.env:BAPO_FRESH200_DATA}/final.parquet
+  train_data_num: null
+  val_data_num: null
+  train_batch_size: 512
+  val_batch_size: 32
+  max_prompt_length: 4096
+  max_start_length: 2048
+  max_response_length: 500
+  max_obs_length: 500
+
+actor_rollout_ref:
+  model:
+    path: ${oc.env:BAPO_FRESH200_MODEL}
+    revision: aa8e72537993ba99e69dfaafa59ed015b17504d1
+    enable_gradient_checkpointing: true
+    use_remove_padding: true
+  actor:
+    fresh200_enabled: true
+    fresh200_diagnostic_only: ${trainer.fresh200_diagnostic_only}
+    diagnostic_max_writes: ${trainer.fresh200_diagnostic_max_writes}
+    diagnostic_probe_lr: ${trainer.fresh200_diagnostic_probe_lr}
+    policy_safety:
+      enabled: true
+      source_commit: ${baselines.algorithm_source_commit}
+      dual_clip: 3
+      kl_log_bound: 30.0
+      target_old_policy_kl: 0.01
+      negative_tail_limit: null
+      evidence_review_sha256: ${oc.env:BAPO_FRESH200_REVIEW_SHA256,}
+      evidence_review_nonce: ${oc.env:BAPO_FRESH200_REVIEW_NONCE,}
+      calibration_manifest: ${oc.env:BAPO_FRESH200_CALIBRATION_MANIFEST,}
+      calibration_sha256: ${oc.env:BAPO_FRESH200_CALIBRATION_SHA256,}
+    fresh200_fault_dir: ${oc.env:BAPO_FRESH200_RUN}/diagnostics/worker-events
+    loss_reduction: sequence_mean
+    entropy_coeff: 0.0
+    use_kl_loss: false
+    kl_loss_coef: 0.0
+    kl_loss_type: low_var_kl
+    clip_ratio: 0.2
+    grad_clip: 1.0
+    ppo_mini_batch_size: 128
+    ppo_micro_batch_size: 16
+    ppo_epochs: 1
+    use_dynamic_bsz: false
+    optim:
+      lr: 1.0e-6
+      betas: [0.9, 0.999]
+      weight_decay: 0.01
+      num_warmup_steps: 57
+      lr_warmup_steps_ratio: 0.0
+      warmup_style: constant
+    fsdp_config:
+      param_offload: true
+      grad_offload: true
+      optimizer_offload: true
+  rollout:
+    n: 1
+    n_agent: 5
+    temperature: 1.0
+    top_p: 1.0
+    top_k: -1
+    tensor_model_parallel_size: 1
+    gpu_memory_utilization: 0.4
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+  ref:
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+    fsdp_config:
+      param_offload: true
+
+max_turns: 4
+force_final_answer: false
+retriever:
+  url: ${oc.env:BAPO_FRESH200_RETRIEVER_URL}
+  topk: 3
+
+trainer:
+  total_training_steps: 201
+  total_epochs: 15
+  save_freq: 50
+  acceptance_step: 5
+  test_freq: 50
+  val_before_train: true
+  smoke_only: false
+  e1_gate_enabled: false
+  fresh200_enabled: true
+  fresh200_diagnostic_only: false
+  fresh200_diagnostic_role: null
+  fresh200_diagnostic_global_mini: null
+  fresh200_diagnostic_max_writes: 1
+  fresh200_diagnostic_probe_lr: 1.0e-6
+  fresh200_gate_enabled: true
+  fresh200_official_model: Qwen/Qwen2.5-3B-Instruct
+  fresh200_gate_receipt: ${oc.env:BAPO_FRESH200_RUN}/logs/fresh200-step5-independent-release.json
+  experiment_name: bapo-qwen2.5-3b-instruct-fresh200
+  default_local_dir: ${oc.env:BAPO_FRESH200_RUN}/checkpoints
+  n_gpus_per_node: 8
+  nnodes: 1
+  logger: [console]
+
+baselines:
+  method: bapo
+  seed: 42
+  holdout:
+    enabled: true
+    input_mode: prebuilt_manifest
+    manifest_path: ${oc.env:BAPO_FRESH200_DATA}/manifest.json
+    manifest_sha256: ${oc.env:BAPO_FRESH200_DATA_MANIFEST_SHA256}
+    data_root: ${oc.env:BAPO_FRESH200_DATA}
+    seed: 42
+  bapo:
+    stage_validation_files: ${oc.env:BAPO_FRESH200_DATA}/stage.parquet
+    stage_validation_size: 64
+    stage_validation_freq: 1
+    patience: 5
+    alpha: 0.05
+    bonus: 0.5
+    resample_attempts: 2
+
+algorithm:
+  kl_ctrl:
+    type: fixed
+    kl_coef: 0.0

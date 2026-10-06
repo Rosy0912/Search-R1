@@ -124,6 +124,18 @@ class ActorRolloutRefWorker(Worker):
 
         log_gpu_memory_usage('Before init from HF AutoModel', logger=logger)
         local_path = copy_local_path_from_hdfs(model_path)
+        if self.config.actor.get('fresh200_enabled', False):
+            from search_r1.baselines.fresh200_contract import verify_official_model_assets
+            from search_r1.baselines.policy_safety import consensus
+            ok=True
+            if self.rank==0:
+                try:
+                    verify_official_model_assets(local_path)
+                except Exception as error:
+                    print('FRESH200_OFFICIAL_MODEL_REJECTED='+repr(error),flush=True)
+                    ok=False
+            if not consensus(ok):
+                raise ValueError('Fresh200 official local model assets rejected')
 
         # note that we have to create model in fp32. Otherwise, the optimizer is in bf16, which is incorrect
         # TODO(zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
@@ -136,7 +148,8 @@ class ActorRolloutRefWorker(Worker):
             torch_dtype = PrecisionType.to_dtype(torch_dtype)
 
         # override model kwargs
-        actor_model_config = AutoConfig.from_pretrained(local_path, trust_remote_code=trust_remote_code)
+        model_revision = self.config.model.get('revision') if self.config.actor.get('fresh200_enabled', False) else None
+        actor_model_config = AutoConfig.from_pretrained(local_path, trust_remote_code=trust_remote_code, revision=model_revision)
 
         if use_remove_padding:
             from verl.models.registry import check_model_support_rmpad
@@ -165,7 +178,7 @@ class ActorRolloutRefWorker(Worker):
                                                                 torch_dtype=torch_dtype,
                                                                 config=actor_model_config,
                                                                 attn_implementation='flash_attention_2',
-                                                                trust_remote_code=trust_remote_code)
+                                                                trust_remote_code=trust_remote_code, revision=model_revision)
             # some parameters may not in torch_dtype. TODO(zhangchi.usc1992) remove this after we switch to fsdp2
             actor_module.to(torch_dtype)
 
@@ -237,8 +250,13 @@ class ActorRolloutRefWorker(Worker):
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 
-            actor_lr_scheduler = get_constant_schedule_with_warmup(optimizer=actor_optimizer,
-                                                                   num_warmup_steps=num_warmup_steps)
+            if self.config.actor.get('fresh200_enabled', False):
+                from torch.optim.lr_scheduler import LambdaLR
+                from search_r1.baselines.fresh200_contract import fresh200_lr_factor
+                actor_lr_scheduler = LambdaLR(actor_optimizer, fresh200_lr_factor)
+            else:
+                actor_lr_scheduler = get_constant_schedule_with_warmup(optimizer=actor_optimizer,
+                                                                       num_warmup_steps=num_warmup_steps)
         else:
             actor_optimizer = None
             actor_lr_scheduler = None
@@ -354,7 +372,70 @@ class ActorRolloutRefWorker(Worker):
         if self._is_actor:
             self.flops_counter = FlopsCounter(self.actor_model_config)
 
+        if self._is_actor and self.config.actor.get('fresh200_diagnostic_only', False):
+            from search_r1.baselines.fresh200_native_evidence import tensor_digest,native_process,file_sha,capture_official_alignment
+            from search_r1.baselines.fresh200_contract import critical_source_hashes
+            from pathlib import Path
+            directory=Path(self.config.actor.fresh200_fault_dir);directory_error=None
+            from search_r1.baselines.policy_safety import consensus
+            try:directory.mkdir(parents=True,exist_ok=True)
+            except OSError as error:directory_error=str(error)
+            if not consensus(directory_error is None):raise ValueError('Collective native initial state directory failed')
+            official_alignment=capture_official_alignment(self,directory)
+            initial_error=None
+            try:
+                path=directory/f'native-initial-rank_{self.rank}.pt'
+                if path.exists():raise ValueError('Refusing to overwrite immutable native initial state')
+                parameters={name:param.detach().cpu().clone() for name,param in self.actor_module_fsdp.named_parameters()}
+                process=native_process(self.rank,self.world_size)
+                self._fresh200_native_process=process
+                payload=dict(model_parameters=parameters,optimizer=self.actor_optimizer.state_dict(),
+                    scheduler=self.actor_lr_scheduler.state_dict(),native_process=process,source_sha256=critical_source_hashes())
+                torch.save(payload,path)
+                self._fresh200_initial_state = dict(path=str(path.resolve()),sha256=file_sha(path),
+                    official_model_manifest_sha256='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44',
+                    model_tensor_sha256={name:tensor_digest(param) for name,param in parameters.items()},official_alignment=official_alignment,
+                    optimizer_state_entries=len(self.actor_optimizer.state),scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                    lr=self.actor_lr_scheduler.get_last_lr())
+                del parameters,payload
+            except Exception as error:
+                initial_error=str(error)
+                print('FRESH200_NATIVE_INITIAL_CAPTURE_FAULT='+repr(error),flush=True)
+            if not consensus(initial_error is None):raise ValueError('Collective native initial state/provenance capture failed')
         torch.cuda.empty_cache()
+
+    @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
+    def capture_fresh200_diagnostic(self, data: DataProto, global_mini, role, directory):
+        assert self._is_actor
+        from search_r1.baselines.fresh200_native_evidence import run_diagnostic_update
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(self.actor_module_fsdp,torch.cuda.current_device(),load_grad=self._is_offload_grad)
+        if self._is_offload_optimizer:
+            load_fsdp_optimizer(self.actor_optimizer,torch.cuda.current_device())
+        try:
+            with self.ulysses_sharding_manager:
+                data=self.ulysses_sharding_manager.preprocess_data(data.to('cuda'))
+                try:
+                    event=run_diagnostic_update(self,data,global_mini,role,directory)
+                except Exception as error:
+                    self.actor_optimizer.zero_grad(set_to_none=True)
+                    import traceback,json
+                    from pathlib import Path
+                    event=dict(getattr(self,'_diagnostic_last_report',{}))
+                    event.update(status='DIAGNOSTIC_PARTIAL_FAULT',role=role,global_mini_batch_size=global_mini,
+                        rank=self.rank,optimizer_writes=getattr(self,'_diagnostic_write_count',0),
+                        formal_outer_updates=0,scheduler_outer_steps=self.actor_lr_scheduler.last_epoch,
+                        stop_reason=str(error),raw_exception=traceback.format_exc())
+                    print('FRESH200_DIAGNOSTIC_RANK_FAULT_JSON='+json.dumps(event,default=str),flush=True)
+                    try:
+                        Path(directory,f'rank_{self.rank}_diagnostic_ledger.json').write_text(json.dumps(event,indent=2,default=str))
+                    except OSError:pass
+                import torch.distributed as dist
+                events=[None]*self.world_size;dist.all_gather_object(events,event)
+                return DataProto(meta_info={'fresh200_diagnostic_events':events})
+        finally:
+            if self._is_offload_param:offload_fsdp_param_and_grad(self.actor_module_fsdp,offload_grad=self._is_offload_grad)
+            if self._is_offload_optimizer:offload_fsdp_optimizer(self.actor_optimizer)
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
@@ -384,13 +465,45 @@ class ActorRolloutRefWorker(Worker):
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
                 lr_before = self.actor_lr_scheduler.get_last_lr()[0]
-                metrics = self.actor.update_policy(data=data)
+                fresh200 = self.config.actor.get('fresh200_enabled', False)
+                try:
+                    metrics = self.actor.update_policy(data=data)
+                except Exception as error:
+                    if not fresh200 or not isinstance(getattr(error, 'event', None), dict):
+                        if fresh200:
+                            import traceback
+                            from pathlib import Path
+                            fault = Path(self.config.actor.fresh200_fault_dir)
+                            fault.mkdir(parents=True, exist_ok=True)
+                            (fault / ('rank_%d-outer_%d.raw.log' % (self.rank, data.meta_info['actual_outer']))).write_text(traceback.format_exc())
+                        raise
+                    metrics = {'fresh200_update_state': error.event,
+                               'actor/optimizer_steps': error.event['optimizer_steps']}
+                rank_updates = None
+                if fresh200:
+                    from search_r1.baselines.fresh200_contract import validate_rank_updates
+                    import torch.distributed as dist
+                    event = dict(metrics.pop('fresh200_update_state'))
+                    event['policy_monitor'] = metrics.pop('fresh200_policy_monitor', [])
+                    event['rank'] = self.rank
+                    rank_updates = [None] * self.world_size
+                    dist.all_gather_object(rank_updates, event)
+                    validate_rank_updates(rank_updates, data.meta_info['actual_outer'])
+                    from pathlib import Path
+                    import json
+                    fault = Path(self.config.actor.fresh200_fault_dir)
+                    fault.mkdir(parents=True, exist_ok=True)
+                    (fault / ('rank_%d-outer_%d.json' % (self.rank, data.meta_info['actual_outer']))).write_text(json.dumps(event, indent=2, default=str))
             delta_time = timer.last
             global_num_tokens = data.meta_info['global_token_num']
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
             metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
-            if metrics.get('actor/optimizer_steps', 0) > 0:
+            if fresh200:
+                from search_r1.baselines.fresh200_contract import validate_rank_updates
+                if validate_rank_updates(rank_updates, data.meta_info['actual_outer']):
+                    self.actor_lr_scheduler.step()
+            elif metrics.get('actor/optimizer_steps', 0) > 0:
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
@@ -408,7 +521,7 @@ class ActorRolloutRefWorker(Worker):
                 metrics = aggregate_sequence_mean_actor_metrics(
                     metrics, self.ulysses_sequence_parallel_size,
                     self.config.rollout.tensor_model_parallel_size)
-            output = DataProto(meta_info={'metrics': metrics})
+            output = DataProto(meta_info={'metrics': metrics, **({'fresh200_rank_updates': rank_updates} if fresh200 else {})})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')
@@ -434,11 +547,18 @@ class ActorRolloutRefWorker(Worker):
         data.batch = data.batch.cuda(device=torch.cuda.current_device())
         meta_info = {'eos_token_id': self.tokenizer.eos_token_id, 'pad_token_id': self.tokenizer.pad_token_id}
         data.meta_info.update(meta_info)
+        fresh200=self.config.actor.get('fresh200_enabled',False)
+        old_policy_meta={}
+        if fresh200:
+            old_policy_meta=dict(micro_batch_size=self.config.rollout.log_prob_micro_batch_size,
+                temperature=self.config.rollout.temperature,use_dynamic_bsz=self.config.rollout.log_prob_use_dynamic_bsz,
+                max_token_len=self.config.rollout.log_prob_max_token_len_per_gpu)
+            data.meta_info.update(old_policy_meta)
 
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data)
             old_log_probs = self.actor.compute_log_prob(data=data)
-            output = DataProto.from_dict(tensors={'old_log_probs': old_log_probs})
+            output = DataProto.from_dict(tensors={'old_log_probs': old_log_probs},meta_info=old_policy_meta)
             output = self.ulysses_sharding_manager.postprocess_data(output)
             
         output = output.to('cpu')
@@ -531,6 +651,8 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_training_state(self, manifest, witness_directory):
         """Fresh-process same-topology restore; historical generation RNG is absent."""
+        if self.config.actor.get('fresh200_enabled', False):
+            raise ValueError('Fresh200 forbids restoration of old model/Adam/scheduler')
         import json,os
         from pathlib import Path
         from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, ShardedStateDictConfig
@@ -615,7 +737,7 @@ class ActorRolloutRefWorker(Worker):
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
-    def save_training_state(self, local_path, step, roundtrip=False):
+    def save_training_state(self, local_path, step, roundtrip=False, state_status=None):
         """Per-rank same-topology SHARDED/DTensor model plus native Adam/RNG."""
         import json
         from pathlib import Path
@@ -632,6 +754,12 @@ class ActorRolloutRefWorker(Worker):
                     model=self.actor_module_fsdp.state_dict(), optimizer=self.actor_optimizer.state_dict(),
                     scheduler=self.actor_lr_scheduler.state_dict(), rng=rng_state(torch.cuda.current_device()),
                     generation_rng=self.rollout_sharding_manager.generation_rng_state())
+                if self.config.actor.get('fresh200_diagnostic_only',False):
+                    payload.update(diagnostic_optimizer_writes=getattr(self,'_diagnostic_write_count',0),formal_outer_updates=0,scheduler_outer_steps=self.actor_lr_scheduler.last_epoch)
+                if state_status is not None:
+                    payload['update_status']=state_status
+                    payload['attempted_outer']=step
+                    payload['previous_complete_outer']=step-1 if state_status=='PARTIAL' else step
                 before=state_digest(payload)
                 generation_before=state_digest(payload['generation_rng'])
                 after_digest=before;generation_after=generation_before
@@ -648,6 +776,8 @@ class ActorRolloutRefWorker(Worker):
                         model=self.actor_module_fsdp.state_dict(),optimizer=self.actor_optimizer.state_dict(),
                         scheduler=self.actor_lr_scheduler.state_dict(),rng=rng_state(torch.cuda.current_device()),
                         generation_rng=self.rollout_sharding_manager.generation_rng_state())
+                    if state_status is not None:
+                        after.update(update_status=state_status,attempted_outer=step,previous_complete_outer=step-1 if state_status=='PARTIAL' else step)
                     after_digest=state_digest(after);generation_after=state_digest(after['generation_rng'])
                     if after_digest!=before:raise ValueError('Full state reload changed model/Adam/scheduler/RNG')
             from search_r1.baselines.checkpoint_gate import digest
@@ -670,6 +800,8 @@ class ActorRolloutRefWorker(Worker):
                         shape=list(self.rollout_sharding_manager.device_mesh.mesh.shape),
                         names=list(self.rollout_sharding_manager.device_mesh.mesh_dim_names),
                         ranks=self.rollout_sharding_manager.device_mesh.mesh.cpu().tolist())))
+            if state_status=='PARTIAL':
+                report.update(status='PARTIAL_CURRENT_STATE_SAVED',attempted_outer=step,previous_complete_outer=step-1)
             (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))
             print('FULL_STATE_RANK_JSON='+json.dumps(report,sort_keys=True,allow_nan=False),flush=True)
             torch.distributed.barrier()

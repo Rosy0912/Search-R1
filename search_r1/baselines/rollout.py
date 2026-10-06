@@ -48,6 +48,10 @@ class State:
     trajectory: str = field(default_factory=lambda: uuid.uuid4().hex)
     node: str = field(default_factory=lambda: uuid.uuid4().hex)
 
+    sampling_row_id: str = ""
+    sampling_turns: list = field(default_factory=list)
+    sampling_logprobs: list = field(default_factory=list)
+
     def branch(self):
         child = copy.deepcopy(self)
         child.trajectory = uuid.uuid4().hex
@@ -66,6 +70,7 @@ def padded(rows, pad, left=False):
 
 class SearchRollout:
     def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report'):
+        self.preserve_sampling_tokens = getattr(manager.config, "preserve_sampling_tokens", False)
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -84,7 +89,14 @@ class SearchRollout:
         states = []
         for i in range(len(gen_batch)):
             ids = gen_batch.batch['input_ids'][i][gen_batch.batch['attention_mask'][i].bool()].tolist()
-            states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
+            if self.preserve_sampling_tokens:
+                from search_r1.llm_agent.sampling_trace import require
+                require(0 < len(ids) <= self.config.max_start_length, 'initial BAPO context would be cropped')
+                row_ids = gen_batch.non_tensor_batch.get('fresh200_row_id')
+                require(row_ids is not None and len(set(map(str,row_ids))) == len(gen_batch), 'BAPO row identity missing')
+                states.append(State(i, ids, ids, observation=ids, sampling_row_id=str(row_ids[i])))
+            else:
+                states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
         return states
 
     def pending(self, state):
@@ -92,6 +104,8 @@ class SearchRollout:
                                   (self.config.force_final_answer and not state.final_used))
 
     def advance(self, states, meta):
+        if self.preserve_sampling_tokens:
+            return self._advance_sampling(states, meta)
         from verl import DataProto
         matches = [s.prompt + s.response == s.rolling for s in states]
         mismatches = sum(not match for match in matches)
@@ -159,6 +173,64 @@ class SearchRollout:
             s.valid_searches += searches[i]
             self.cost['retrieval_calls'] += int(searches[i] and normal[i])
 
+    def _advance_sampling(self, states, meta):
+        from verl import DataProto
+        from search_r1.llm_agent.sampling_tokens import left_pad
+        from search_r1.llm_agent.sampling_trace import require, prefix, sha
+        require(self.ranker is None, 'fresh200 custom ranker unsupported')
+        requests=[s.rolling for s in states]
+        require(all(s.prompt+s.response==s.rolling for s in states), 'BAPO sampled/actor context mismatch')
+        require(all(0<len(r)<=self.config.max_prompt_length for r in requests), 'BAPO rolling context would be cropped')
+        ordinals={len(s.sampling_turns) for s in states}
+        require(len(ordinals)==1, 'BAPO mixed native turn ordinal')
+        extra=(-len(states))%self.config.num_gpus
+        identities=[s.sampling_row_id for s in states]+['padding-'+uuid.uuid4().hex for _ in range(extra)]
+        callmeta=meta.copy()
+        callmeta.update(fresh200_call_id=uuid.uuid4().hex,fresh200_turn_index=next(iter(ordinals)),recompute_log_prob=False)
+        batch=DataProto.from_dict(left_pad(requests+[requests[0]]*extra,self.tokenizer.pad_token_id),
+            non_tensors={'fresh200_row_id':identities},meta_info=callmeta)
+        self.cost['prefill_tokens']+=sum(map(len,requests))+extra*len(requests[0])
+        self.cost['padded_rows']+=extra
+        output=self.manager.actor_rollout_wg.generate_sequences(batch)
+        require(len(output)==len(identities) and 'fresh200_sampling' in output.non_tensor_batch, 'BAPO missing actual native traces')
+        records=output.non_tensor_batch['fresh200_sampling'].tolist()
+        require([r['row_id'] for r in records]==identities, 'BAPO native row identity')
+        self.output_meta=meta.copy()
+        self.output_meta.update(output.meta_info)
+        self.cost['generated_tokens']+=sum(len(r['raw_generated_token_ids']) for r in records)
+        cuts=[];texts=[]
+        for i,state in enumerate(states):
+            record=records[i];raw=record['raw_generated_token_ids']
+            require(record['actual_request_token_ids']==state.rolling and record['policy_snapshot_id']==meta['policy_snapshot_id'], 'BAPO actual native context')
+            require(output.batch['responses'][i,:len(raw)].tolist()==raw,'BAPO raw token transport')
+            require(torch.equal(output.batch['sampling_log_probs'][i,:len(raw)].float().cpu(),torch.tensor(record['selected_logprobs'],dtype=torch.float32)), 'BAPO raw selected LP transport')
+            n,text=prefix(raw,lambda ts:self.tokenizer.decode(ts,skip_special_tokens=False,clean_up_tokenization_spaces=False))
+            cuts.append(n);texts.append(text)
+        normal=[s.turns<self.config.max_turns for s in states]
+        observations,dones,valid,searches=['']*len(states),[0]*len(states),[0]*len(states),[0]*len(states)
+        for do_search in (True,False):
+            indices=[i for i,flag in enumerate(normal) if flag==do_search]
+            if not indices:continue
+            result=self.manager.execute_predictions([texts[i] for i in indices],self.tokenizer.pad_token,
+                torch.ones(len(indices),dtype=torch.bool),do_search=do_search)
+            for j,i in enumerate(indices):
+                observations[i],dones[i],valid[i],searches[i]=(part[j] for part in result)
+        for i,state in enumerate(states):
+            n=cuts[i];record=records[i];action=record['raw_generated_token_ids'][:n]
+            obs=self.tokenizer.encode(observations[i],add_special_tokens=False)[:self.config.max_obs_length]
+            require(len(state.response)+len(action)+len(obs)<=self.config.max_prompt_length,'BAPO response would be truncated')
+            key=state.rolling if self.anchor_mode=='context' else state.observation
+            anchor=hashlib.sha256(np.asarray(key,dtype=np.int64).tobytes()).hexdigest();step=len(state.anchors)
+            state.anchors.append(anchor)
+            state.records.append(dict(text=texts[i],action_tokens=len(action),observation_tokens=len(obs),scoring_context_matches_generation=True))
+            record.update(kept_token_count=n,environment_token_ids=obs);record['turn_sha256']=sha(record)
+            state.sampling_turns.append(record);state.sampling_logprobs.extend(record['selected_logprobs'][:n]+[0.]*len(obs))
+            state.response.extend(action+obs);state.model_mask.extend([1]*len(action)+[0]*len(obs));state.steps.extend([step]*len(action)+[-1]*len(obs))
+            state.rolling=state.prompt+state.response;state.observation=obs
+            state.turns+=int(normal[i]);state.final_used|=not normal[i];state.done=bool(dones[i]);state.node=uuid.uuid4().hex
+            state.valid_actions+=valid[i];state.valid_searches+=searches[i]
+            self.cost['retrieval_calls']+=int(searches[i] and normal[i])
+
     def complete(self, states, meta):
         snapshots = [[] for _ in states]
         while True:
@@ -180,7 +252,15 @@ class SearchRollout:
         step_ids = padded([s.steps for s in states], -1)
         input_ids = torch.cat((prompts, response), 1)
         attention = (input_ids != pad).long()
-        info = torch.cat(((prompts != pad).long(), mask), 1)
+        prompt_mask = (prompts != pad).long()
+        if self.preserve_sampling_tokens:
+            prompt_mask = torch.zeros_like(prompts)
+            response_mask = torch.zeros_like(response)
+            for i,state in enumerate(states):
+                prompt_mask[i,-len(state.prompt):] = 1
+                response_mask[i,:len(state.response)] = 1
+            attention = torch.cat((prompt_mask,response_mask),1)
+        info = torch.cat((prompt_mask, mask), 1)
         tensors = dict(prompts=prompts, responses=response,
                        responses_with_info_mask=torch.where(mask.bool(), response, pad),
                        input_ids=input_ids, attention_mask=attention, info_mask=info,
@@ -190,12 +270,23 @@ class SearchRollout:
                            action_records=object_array([s.records for s in states]),
                            trajectory_uid=object_array([s.trajectory for s in states]),
                            tree_uid=object_array([s.tree for s in states]))
+        if self.preserve_sampling_tokens:
+            # padded() is integer-only upstream; transport selected probabilities explicitly.
+            tensors['sampling_log_probs'] = torch.zeros(response.shape,dtype=torch.float32)
+            for i,state in enumerate(states):
+                tensors['sampling_log_probs'][i,:len(state.sampling_logprobs)] = torch.tensor(state.sampling_logprobs)
+            tensors['sampling_mask'] = mask.bool()
+            non_tensors.update(fresh200_row_id=object_array([s.sampling_row_id for s in states]),
+                               fresh200_turns=object_array([s.sampling_turns for s in states]))
         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
         result.meta_info.update(self.output_meta)
         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],
                                      valid_search_stats=[s.valid_searches for s in states]))
+        if self.preserve_sampling_tokens:
+            from search_r1.llm_agent.sampling_tokens import audit_batch
+            result.meta_info['sampling_context_audit'] = audit_batch(result)
         return result, np.asarray([s.source for s in states], dtype=np.int64)
 
     def run(self, gen_batch, tree=None):

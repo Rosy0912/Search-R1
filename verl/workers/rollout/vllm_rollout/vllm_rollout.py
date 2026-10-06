@@ -25,7 +25,8 @@ When working with Megatron:
 - After inference, all the parameters that doesn't belong to this pp rank is freed.
 """
 from typing import List
-from contextlib import contextmanager
+import numpy as np
+from contextlib import contextmanager, nullcontext
 from omegaconf import DictConfig
 import torch
 import torch.distributed
@@ -120,6 +121,7 @@ class vLLMRollout(BaseRollout):
         print(f"kwargs: {kwargs}")
         self.sampling_params = SamplingParams(**kwargs)
 
+        self.tokenizer = tokenizer
         self.pad_token_id = tokenizer.pad_token_id
 
     @contextmanager
@@ -154,10 +156,22 @@ class vLLMRollout(BaseRollout):
 
         batch_size = idx.size(0)
 
+        preserve = prompts.meta_info.get("preserve_sampling_tokens") is True
+        if preserve:
+            from search_r1.llm_agent.sampling_trace import require, capture_requests
+            require(self.config.n == 1, "fresh200 requires one completion per request")
+            require("fresh200_row_id" in prompts.non_tensor_batch, "missing row identity")
+            require(bool(prompts.meta_info.get("policy_snapshot_id")), "missing snapshot")
         idx_list = []
         # parse idx from torch.Tensor to List[List[str]]
         for i in range(batch_size):
-            idx_list.append(_pre_process_inputs(self.pad_token_id, idx[i]))
+            if preserve:
+                require(bool(((attention_mask[i] == 0) | (attention_mask[i] == 1)).all()), "invalid request mask")
+                request = idx[i][attention_mask[i].bool()].tolist()
+                require(bool(request), "empty native request")
+                idx_list.append(request)
+            else:
+                idx_list.append(_pre_process_inputs(self.pad_token_id, idx[i]))
 
         do_sample = prompts.meta_info.get('do_sample', True)
         if not do_sample:
@@ -172,11 +186,63 @@ class vLLMRollout(BaseRollout):
 
         # users can customize different sampling_params at different run
         with self.update_sampling_params(**kwargs):
-            output = self.inference_engine.generate(
-                prompts=None,  # because we have already convert it to prompt token id
-                sampling_params=self.sampling_params,
-                prompt_token_ids=idx_list,
-                use_tqdm=False)
+            native_records = []
+            original_postprocess = None
+            if preserve:
+                # Capture actual RequestOutput bytes before the wrapper pads tensors.
+                original_postprocess = self.inference_engine._post_process_outputs
+                had_instance_method = '_post_process_outputs' in vars(self.inference_engine)
+                sampling = {name: getattr(self.sampling_params, name, None) for name in (
+                    'n', 'temperature', 'top_p', 'top_k', 'min_p', 'max_tokens', 'min_tokens',
+                    'presence_penalty', 'frequency_penalty', 'repetition_penalty', 'ignore_eos',
+                    'stop', 'stop_token_ids', 'logprobs', 'seed', 'best_of',
+                    'truncate_prompt_tokens', 'logits_processors', 'logit_bias',
+                    'allowed_token_ids', 'guided_decoding', 'include_stop_str_in_output',
+                    'skip_special_tokens', 'spaces_between_special_tokens')}
+                from search_r1.llm_agent.sampling_capture import capture_groups, sampler_values, neutral_sampler
+                evaluation = prompts.meta_info.get('fresh200_evaluation') is True
+                require(do_sample is (not evaluation), 'fresh200 train/evaluation sampler role differs')
+                neutral_sampler(sampler_values(self.sampling_params), evaluation)
+                sampling['probability_role'] = 'greedy_model_logprob_not_sampling_policy' if evaluation else 'stochastic_sampling_policy'
+                sampling['logprob_semantics'] = 'actual_native_selected_token_logprob'
+                sampling['actual_loaded_generation_config_fields'] = dict(
+                    getattr(self.inference_engine.llm_engine, 'generation_config_fields', {}))
+                # Native HF probability admission must independently verify that the
+                # configured sampler transformations have compatible semantics.
+                require(not sampling['logits_processors'] and not sampling['logit_bias']
+                        and not sampling['allowed_token_ids'] and not sampling['guided_decoding']
+                        and sampling['truncate_prompt_tokens'] in (None, -1),
+                        'unverifiable custom sampler transformation')
+                def captured(request_outputs):
+                    native_records.extend(capture_requests(request_outputs, idx_list,
+                        prompts.non_tensor_batch['fresh200_row_id'].tolist(),
+                        prompts.meta_info['policy_snapshot_id'], prompts.meta_info['fresh200_call_id'],
+                        prompts.meta_info['fresh200_turn_index'], sampling, eos_token_id, self.pad_token_id))
+                    from search_r1.llm_agent.sampling_trace import sha
+                    for record in native_records:
+                        proof = group_records.get(record['request_id'])
+                        require(proof is not None, 'missing actual effective group proof')
+                        record['effective_stop_provenance'] = proof
+                        record['native_sha256'] = sha({k:v for k,v in record.items() if k != 'native_sha256'})
+                    return original_postprocess(request_outputs)
+                self.inference_engine._post_process_outputs = captured
+            try:
+                scope = capture_groups(self.inference_engine.llm_engine, self.sampling_params, idx_list, tokenizer=self.tokenizer, evaluation=evaluation) if preserve else nullcontext((None,None))
+                with scope as captured_groups:
+                    group_records, caller_values = captured_groups
+                    output = self.inference_engine.generate(
+                        prompts=None, sampling_params=self.sampling_params,
+                        prompt_token_ids=idx_list, use_tqdm=False)
+                    if preserve:
+                        require(len(group_records) == len(native_records), 'actual group/completion count differs')
+            finally:
+                if preserve:
+                    if had_instance_method:
+                        self.inference_engine._post_process_outputs = original_postprocess
+                    else:
+                        del self.inference_engine._post_process_outputs
+            if preserve:
+                require(len(native_records) == batch_size, 'missing actual RequestOutput capture')
 
         # TODO(sgm): disable logprob when recompute_log_prob is enable
         # if n = 1: (bs, response_length) ; if n > 1: (bs * n, response_length)
@@ -205,6 +271,15 @@ class vLLMRollout(BaseRollout):
         response_position_ids = position_ids[:, -1:] + delta_position_id
         position_ids = torch.cat([position_ids, response_position_ids], dim=-1)
         response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
+        if preserve:
+            response_attention_mask = torch.zeros_like(response, dtype=attention_mask.dtype)
+            for index, record in enumerate(native_records):
+                count = len(record['raw_generated_token_ids'])
+                require(count <= response.size(1), 'raw completion exceeds tensor')
+                require(response[index, :count].tolist() == record['raw_generated_token_ids'], 'raw token transport')
+                require(torch.equal(log_probs[index, :count].float().cpu(),
+                    torch.tensor(record['selected_logprobs'], dtype=torch.float32)), 'native selected logprob transport')
+                response_attention_mask[index, :count] = 1
         attention_mask = torch.cat((attention_mask, response_attention_mask), dim=-1)
 
         # all the tp ranks should contain the same data here. data in all ranks are valid
@@ -223,4 +298,11 @@ class vLLMRollout(BaseRollout):
         if self.config.free_cache_engine:
             self.inference_engine.free_cache_engine()
 
+        if preserve:
+            batch['sampling_log_probs'] = torch.where(response_attention_mask.bool(), log_probs, 0.)
+            batch['sampling_mask'] = response_attention_mask.bool()
+            records = np.empty(len(native_records), dtype=object)
+            records[:] = native_records
+            return DataProto(batch=batch, non_tensor_batch={'fresh200_sampling': records},
+                             meta_info={'preserve_sampling_tokens': True})
         return DataProto(batch=batch)

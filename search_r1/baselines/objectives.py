@@ -46,9 +46,12 @@ def row_denominator(rows, device):
     return count.clamp_min(1) / world
 
 
-def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, log_ratio_clip=None):
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, log_ratio_clip=None, dual_clip=None, safety_group=None):
     """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
     valid = mask.bool()
+    if dual_clip is not None:
+        from .policy_safety import finite_inputs
+        checked_delta = finite_inputs(old, current, advantages, mask, weights, safety_group)
     for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
         if not torch.isfinite(value[valid]).all():
             raise ValueError(f'Nonfinite policy {name} on a supervised token')
@@ -56,7 +59,7 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
     current = torch.where(valid, current, 0.)
     advantages = torch.where(valid, advantages, 0.)
     weights = torch.where(valid, weights, 0.)
-    delta = current - old
+    delta = checked_delta if dual_clip is not None else current - old
     if step_ids is not None:
         action_deltas = []
         for i in range(len(delta)):
@@ -75,13 +78,18 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
         if log_ratio_clip <= 0 or not __import__("math").isfinite(log_ratio_clip):
             raise ValueError("log_ratio_clip must be finite and positive")
         # Author BAPO token-PPO stability guard, before exponentiation.
-        delta = delta.clamp(-log_ratio_clip, log_ratio_clip)
+        delta = delta.clamp_max(log_ratio_clip) if dual_clip is not None else delta.clamp(-log_ratio_clip, log_ratio_clip)
     ratio = delta.exp()
     if not torch.isfinite(ratio[valid]).all():
         raise ValueError('Policy ratio overflow on a supervised action/token')
     loss1 = -advantages * ratio
     loss2 = -advantages * ratio.clamp(1 - cliprange, 1 + cliprange)
-    loss = F.masked_sum(torch.maximum(loss1, loss2), weights) / denominator
+    surrogate = torch.maximum(loss1, loss2)
+    if dual_clip is not None:
+        from .policy_safety import dual_clip_surrogate
+        surrogate = dual_clip_surrogate(delta, advantages, mask, cliprange, dual_clip,
+                                        log_ratio_clip or 20.)
+    loss = F.masked_sum(surrogate, weights) / denominator
     mass = weights.sum()
     safe_mass = torch.where(mass > 0, mass, torch.ones_like(mass))
     clipfrac = F.masked_sum((loss2 > loss1).float(), weights) / safe_mass
