@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "role": "actual_behavior_discovery_v3_validation_boundary_failure",
+  "source_commit": "a09a5530fd16fa0c04c0aa157ee56462aab825f4",
+  "run_id": "d08276e6875d416c8d6f63772c88ff96",
+  "native_job_id": "3283",
+  "observation_file": "policy-discovery-v3-native-observation-1791246910473584.json",
+  "observation_sha256": "d2b9efe7053cda91381712690ad275c21ba5cc2d215fb24b12fe1ca7af77ebde",
+  "checked_unix": 1791246910.473584,
+  "scheduler": {
+    "returncode": 0,
+    "stdout": "JobId=3283 JobName=search-g1-policy-discovery-v3 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898783 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:24:11 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-06T08:09:32 EligibleTime=2026-10-06T08:09:32 AccrueTime=2026-10-06T08:09:32 StartTime=2026-10-06T08:09:33 EndTime=2026-10-06T08:33:44 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-06T08:09:33 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1926260 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=64 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=64 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/g1d-2541e8f3/repo/reproduction/common8/launch_calibration_native.sh WorkDir=/mnt/data/shaoshitong/g1d-2541e8f3/repo StdErr=/mnt/data/shaoshitong/g1d-2541e8f3/logs/native-discovery-v3-3283.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/g1d-2541e8f3/logs/native-discovery-v3-3283.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "stderr": "",
+    "actual_state": "FAILED",
+    "actual_exit_code": "1:0"
+  },
+  "pipeline_failure": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "stage": "FAILED",
+    "unix": 1791246811.9857757,
+    "error": "AssertionError('trainer failed; see project log')"
+  },
+  "failure_invariant": "noncausal_answer_before_search_closing_order",
+  "failure_phase": "initial512_validation_before_training",
+  "actual_completed_discovery_outers": 0,
+  "observed_optimizer_evidence_paths": [],
+  "actual_optimizer_writes": 0,
+  "actual_behavior_gate_count": 0,
+  "actual_production_updates": 0,
+  "parent_actual_unstarted_verified": true,
+  "owned_cleanup": {
+    "run_id": "d08276e6875d416c8d6f63772c88ff96",
+    "cleaned": true,
+    "checked_unix": 1791246823.9627697
+  },
+  "actual_active_namespace_count": 0,
+  "source_hashes_match": true,
+  "gpu_sampling": {
+    "sample_count": 639,
+    "first_unix": 1791245410.8452764,
+    "last_unix": 1791246823.5777087,
+    "max_gap_seconds": 8.81422472000122,
+    "cumulative_peak_mib": {
+      "0": 46590,
+      "1": 45897,
+      "2": 45894,
+      "3": 45897,
+      "4": 45887,
+      "5": 45898,
+      "6": 45886,
+      "7": 50137
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "failed_validation_raw_token_journal_retained": false,
+  "raw_journal_limitation": "Frozen a09 failed_generation_evidence returns immediately for validation; no old token journal is fabricated.",
+  "root_cause_scope": "Independent original-method CPU inspection establishes added ordering rejection conflicts with upstream truncation and first-complete-action semantics. This is a controller boundary bug; no completed update, actual behavior parity, KL/gradient or policy-effect conclusion follows.",
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false
+}
