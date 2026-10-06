@@ -1,0 +1,85 @@
+{
+  "job_id": "3294",
+  "checked_unix": 1791256551.399966,
+  "source_hashes_match": true,
+  "pipeline-status.json": {
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "stage": "FAILED",
+    "unix": 1791256485.8607833,
+    "error": "AssertionError('trainer failed; see project log')"
+  },
+  "cleanup-status.json": {
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "cleaned": true,
+    "checked_unix": 1791256497.1137056
+  },
+  "child_actual_unstarted": {
+    "training_claim_exists": true,
+    "optimizer_evidence_paths": [],
+    "train_log_exists": true,
+    "checkpoint_entries": [],
+    "actual_updates_exists": false,
+    "segment_exists": false,
+    "segment_complete_exists": false
+  },
+  "parent_actual_unstarted_verified": true,
+  "gpu_sampling": {
+    "sample_count": 869,
+    "first_unix": 1791254584.1162627,
+    "last_unix": 1791256497.1304061,
+    "max_gap_seconds": 8.861470699310303,
+    "cumulative_peak_mib": {
+      "0": 47258,
+      "1": 48263,
+      "2": 47176,
+      "3": 46427,
+      "4": 48223,
+      "5": 48518,
+      "6": 47494,
+      "7": 51481
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "role": "actual_native_discovery_v5_failure_before_actor_update",
+  "source_commit": "e670dfacab4ff0146f7ea0ca60e3f49675a4d2f6",
+  "original_terminal_observation_sha256": "681b38622bb4c32284dbd203fbede46f61efa46db6bde04de450797d64b2df70",
+  "actual_slurm_terminal": {
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "end_time_china": "2026-10-06T11:14:57",
+    "restart_count": 0
+  },
+  "error": {
+    "class": "BehaviorTraceError",
+    "reason": "included_special_or_pad_token",
+    "phase": "first_training_generation",
+    "source_call_order": [
+      "ray_trainer.fit:812",
+      "generation_behavior._run:164",
+      "behavior_trace.raw_prefix_to_first_closing_tag:145"
+    ],
+    "source_order_before_context_probability_and_actor_update": true,
+    "actual_offending_token_category": "not_yet_diagnosed"
+  },
+  "actual_complete_discovery_outers": 0,
+  "actual_production_updates": 0,
+  "actual_optimizer_evidence_path_count": 0,
+  "actual_behavior_gate_count": 0,
+  "checkpoint_entry_count": 0,
+  "actual_owned_namespace_count": 0,
+  "actual_live_recorded_pid_count": 0,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "independent_optimizer_tensor_state_audited": false,
+  "scope": "Original captured Slurm terminal/source-order/negative evidence and independent owned-empty census; no Adam tensor-state audit, threshold selection, after512 score or healthy acceptance"
+}
