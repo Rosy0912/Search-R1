@@ -605,7 +605,10 @@ class RayPPOTrainer(object):
                 }
                 bind_fresh200_eval(test_gen_batch)
                 with _timer('step', timing_raw):
-                    first_input_ids = test_gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone()
+                    # Raw mode must retain the full input tensor aligned with its original mask.
+                    # Generation removes padding and rejects actual overlong context.
+                    first_input_ids = (test_gen_batch.batch['input_ids'] if gen_config.preserve_sampling_tokens
+                                       else test_gen_batch.batch['input_ids'][:, -gen_config.max_start_length:]).clone()
                     with _timer('gen', timing_raw):
                         generation_manager.timing_raw = timing_raw
                         final_gen_batch_output = generation_manager.run_llm_loop(
@@ -1067,7 +1070,8 @@ class RayPPOTrainer(object):
                 ####################
                 # with _timer('step', timing_raw):
                     else:
-                        first_input_ids = gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone().long()
+                        first_input_ids = (gen_batch.batch['input_ids'] if gen_config.preserve_sampling_tokens
+                                           else gen_batch.batch['input_ids'][:, -gen_config.max_start_length:]).clone().long()
 
                         with _timer('gen', timing_raw):
                             generation_manager.timing_raw = timing_raw

@@ -24,7 +24,7 @@ def params():
 class Tokenizer:
     pad_token_id=0;eos_token_id=0;pad_token='<pad>'
     def decode(self,ids,**kwargs):
-        return ''.join({2:'<search>x</search>',3:'<answer>y</answer>',0:'<eos>',4:'<special>'}[i] for i in ids)
+        return ''.join({2:'<search>x</search>',3:'<answer>y</answer>',0:'<eos>',4:'<special>'}[int(i)] for i in ids)
     def encode(self,text,**kwargs):return [7,8] if text else []
 
 
@@ -172,3 +172,55 @@ def test_greedy_capture_cannot_be_admitted_as_stochastic_policy():
     caller.temperature=1.
     with pytest.raises(ValueError,match='sampling transformation'):
         with capture_groups(Engine(Tokenizer()),caller,[[10]],evaluation=True): pass
+
+
+@pytest.mark.parametrize('rows',[2,64,512])
+def test_actual_validate_pop_with4096_padding_preserves_full_initial_tensor(rows):
+    # Actual3300 caller: dataset width4096 vs max_start2048. No native CUDA claim.
+    from omegaconf import open_dict
+    from test_models_and_driver import config
+    from verl.trainer.ppo.ray_trainer import RayPPOTrainer
+    from search_r1.baselines.bapo_validation import BapoValidationManager
+    _,original,worker,_,_=fixture()
+    c=config('bapo')
+    with open_dict(c.trainer):c.trainer.fresh200_enabled=True
+    c.trainer.n_gpus_per_node=2;c.trainer.nnodes=1
+    c.data.max_start_length=2048;c.data.max_prompt_length=4096
+    c.max_turns=2;c.force_final_answer=False
+    t=RayPPOTrainer.__new__(RayPPOTrainer);t.config=c;t.tokenizer=original.tokenizer
+    t.actor_rollout_wg=worker;t.baseline_controller=NS(method='bapo',ranker=None)
+    ids=torch.zeros((rows,4096),dtype=torch.long);mask=torch.zeros_like(ids)
+    # Include a genuine token equal to EOS/pad in attended context; cannot infer mask from tokens.
+    ids[:,-3:]=torch.tensor([10,0,11]);mask[:,-3:]=1
+    t.val_dataloader=[dict(input_ids=ids,attention_mask=mask,position_ids=(mask.cumsum(-1)-1)*mask,
+        reward_model=np.array([{'ground_truth':{'target':'y'}}]*rows,dtype=object),data_source=np.array(['nq']*rows,dtype=object))]
+    seen=[]
+    def reward(data):
+        seen.append(data);audit_batch(data)
+        return torch.zeros_like(data.batch['responses'],dtype=torch.float32)
+    t.val_reward_fn=reward
+    with patch.object(BapoValidationManager,'execute_predictions',side_effect=original.execute_predictions),patch('search_r1.baselines.evaluation.batch_answer_metrics',return_value=[]):
+        metrics=t._validate()
+    assert metrics['val/evaluated_count/nq']==rows and metrics['val/cost/generated_tokens']==5*rows
+    assert worker.calls[0]==[[10,0,11]]*rows
+    assert worker.calls[1]==[[10,0,11,2,7,8]]*rows
+    assert seen[0].batch['prompts'].tolist()==[[10,0,11]]*rows
+    assert seen[0].batch['attention_mask'][0].tolist()==[1]*9
+    assert seen[0].batch['attention_mask'][-1].tolist()==[1]*9
+    assert audit_batch(seen[0])['probability_role']=='greedy_model_logprob_not_sampling_policy'
+
+
+def test_full_padded_initial_raw_loop_rejects_real_overlong_context_before_worker():
+    _,manager,worker,gen,_=fixture()
+    ids=torch.full((2,20),10,dtype=torch.long)
+    gen.batch['input_ids']=ids;gen.batch['attention_mask']=torch.ones_like(ids);gen.batch['position_ids']=torch.arange(20).repeat(2,1)
+    with pytest.raises(ValueError,match='initial context would be cropped'):
+        manager.run_llm_loop(gen,ids)
+    assert not worker.calls
+
+
+def test_initial_shape_guard_remains_strict_for_sliced_view():
+    _,manager,worker,gen,_=fixture()
+    with pytest.raises(ValueError,match='initial prompt mismatch'):
+        manager.run_llm_loop(gen,gen.batch['input_ids'][:,-1:])
+    assert not worker.calls
