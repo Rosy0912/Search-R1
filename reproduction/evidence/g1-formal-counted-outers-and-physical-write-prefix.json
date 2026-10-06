@@ -1,0 +1,739 @@
+{
+  "role": "sanitized_actual_formal_progress_and_logged_physical_write_prefix",
+  "native_job_id": "3309",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "base": "/mnt/data/shaoshitong/g1f-3ff5337a",
+  "runtime_source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "source_inventory": {
+    "observed_full_inventory_count": 375,
+    "observed_full_inventory_sha256": "1ba1d152764789fdc4ebe6110dcea0a7fbdab0cfaf63e5908e16c854be1ae16e",
+    "scope": "Exact complete observed inventory: immutable372 source and exact3 run-specific serialized Hydra outputs; no wildcard exclusions, no loaded-module/configuration/health proof.",
+    "sealed_source_count": 372,
+    "sealed_source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+    "serialized_output_artifact_sha256": {
+      "outputs/2026-10-06/22-08-27/.hydra/config.yaml": "5692a36209b01ab176873babd64c5c06cbee28bf1771f46dc3d1e14942042cee",
+      "outputs/2026-10-06/22-08-27/.hydra/hydra.yaml": "f4061c7bf05398adb69dc539c2a3fb33e970b081e8181393316fff448aa00c19",
+      "outputs/2026-10-06/22-08-27/.hydra/overrides.yaml": "1375ad88b5a88e795f2f83d133cf20fa23021d9ff8f6b830fea0d2ff0efacbfb"
+    }
+  },
+  "actual_native_checked_unix": 1791306042.583818,
+  "actual_scalar_collection_finished_unix": 1791306061.4878747,
+  "raw_readonly_receipt_sha256": "c8563d0984906281d2e1d94a821a087822b7b9c201619b96bb23dd7e275f4c80",
+  "native": {
+    "end_time": "2026-10-08T21:50:20",
+    "exit_code": "0:0",
+    "node": "h100-8",
+    "restart_count": "0",
+    "scope": "actual native record captured by existing observe(); no terminal-success inference",
+    "start_time": "2026-10-06T21:50:20",
+    "state": "RUNNING",
+    "submit_time": "2026-10-06T21:50:19",
+    "terminal_success": "not_evaluated"
+  },
+  "same_trainer_birth": {
+    "actual_identity": {
+      "pid": 2864716,
+      "sid": 2864716,
+      "start_ticks": 2224036912,
+      "uid": 0
+    },
+    "birth_matches": true,
+    "checked_unix": 1791306060.1187968,
+    "evidence_state": "observed",
+    "namespace_matches": true,
+    "process_state": "S",
+    "saved_identity": {
+      "pid": 2864716,
+      "sid": 2864716,
+      "start_ticks": 2224036912,
+      "uid": 0
+    }
+  },
+  "approved_counting": {
+    "opportunities_per_attempt_per_rank": 20,
+    "complete_outer": "all20 opportunities processed and at least1 successful Adam write; all8 ranks agree at driver return",
+    "zero_write_or_abandoned": "not counted toward200 and no warmup advance",
+    "actual_writes": "reported separately; rank replicas not multiplied8; retained/inflight prefix separately scoped"
+  },
+  "progress": {
+    "actual_total_writes_unavailable": true,
+    "actual_total_writes_unavailable_reason": "separately captured rank logged-write prefix lower bounds are not an atomic actual total; inflight or unlogged retained writes may exceed the agreed driver counter",
+    "agreed_writes_at_last_return_per_rank": 80,
+    "fixed_warmup_outer": 57,
+    "observed_attempt_count": 4,
+    "observed_driver_completed_outer": 4,
+    "observed_fully_skipped_attempts": 0,
+    "observed_processed_opportunities_per_rank": 80,
+    "observed_scheduler_advances": 4,
+    "observed_skipped_opportunities_per_rank": 0,
+    "scope": "visible driver all-eight-rank agreement prefix; agreed write counter is per rank and is not multiplied by eight; no fsync/acceptance claim",
+    "target_completed_outer": 200
+  },
+  "physical_write_prefixes": {
+    "actual_total_writes_unavailable": true,
+    "availability_state": "available",
+    "available_rank_count": 8,
+    "available_rank_logged_prefix_max": 86,
+    "available_rank_logged_prefix_min": 86,
+    "available_ranks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "per_rank": [
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877156,
+          "sid": 2864716,
+          "start_ticks": 2224040582,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.1704009,
+          "capture_started_size": 507230,
+          "capture_started_unix": 1791306061.169833,
+          "captured_bytes": 507230,
+          "captured_sha256": "5b67d738c91a32e54db6199722d48068175d640644085b5c0e126cd424139303",
+          "complete_prefix_bytes": 507230,
+          "complete_prefix_sha256": "5b67d738c91a32e54db6199722d48068175d640644085b5c0e126cd424139303",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742372,
+          "observation_incomplete": false,
+          "observed_size_after": 507230,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-0.jsonl"
+        },
+        "rank": 0,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877501,
+          "sid": 2864716,
+          "start_ticks": 2224041132,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.1966527,
+          "capture_started_size": 507563,
+          "capture_started_unix": 1791306061.1963038,
+          "captured_bytes": 507563,
+          "captured_sha256": "9b9282a12478ee618715b33b02d3fcf5a7f5953a1872690674f17e639f9d9221",
+          "complete_prefix_bytes": 507563,
+          "complete_prefix_sha256": "9b9282a12478ee618715b33b02d3fcf5a7f5953a1872690674f17e639f9d9221",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742371,
+          "observation_incomplete": false,
+          "observed_size_after": 507563,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-1.jsonl"
+        },
+        "rank": 1,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877502,
+          "sid": 2864716,
+          "start_ticks": 2224041133,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.2239795,
+          "capture_started_size": 507230,
+          "capture_started_unix": 1791306061.223588,
+          "captured_bytes": 507230,
+          "captured_sha256": "a3f39d4f7e447c0ce71529c54419e5f5794f0d0a55406a7493db58c6c7471d4c",
+          "complete_prefix_bytes": 507230,
+          "complete_prefix_sha256": "a3f39d4f7e447c0ce71529c54419e5f5794f0d0a55406a7493db58c6c7471d4c",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742369,
+          "observation_incomplete": false,
+          "observed_size_after": 507230,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-2.jsonl"
+        },
+        "rank": 2,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877503,
+          "sid": 2864716,
+          "start_ticks": 2224041134,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.2498012,
+          "capture_started_size": 507257,
+          "capture_started_unix": 1791306061.2495148,
+          "captured_bytes": 507257,
+          "captured_sha256": "361320a9a6c5f48793069401a46e437a4b41cc9b3a60fde32c42e3501e24ed3b",
+          "complete_prefix_bytes": 507257,
+          "complete_prefix_sha256": "361320a9a6c5f48793069401a46e437a4b41cc9b3a60fde32c42e3501e24ed3b",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742370,
+          "observation_incomplete": false,
+          "observed_size_after": 507257,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-3.jsonl"
+        },
+        "rank": 3,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877505,
+          "sid": 2864716,
+          "start_ticks": 2224041136,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.2750359,
+          "capture_started_size": 507417,
+          "capture_started_unix": 1791306061.2745707,
+          "captured_bytes": 507417,
+          "captured_sha256": "8dfeab3c3dbb4a3275327cb86d89ed2cb0d212d9543c215a83ee973ad46117b8",
+          "complete_prefix_bytes": 507417,
+          "complete_prefix_sha256": "8dfeab3c3dbb4a3275327cb86d89ed2cb0d212d9543c215a83ee973ad46117b8",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742373,
+          "observation_incomplete": false,
+          "observed_size_after": 507417,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-4.jsonl"
+        },
+        "rank": 4,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877506,
+          "sid": 2864716,
+          "start_ticks": 2224041137,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.300202,
+          "capture_started_size": 507417,
+          "capture_started_unix": 1791306061.2998972,
+          "captured_bytes": 507417,
+          "captured_sha256": "54e8130a04eb313fd36488ca75f901f5d282fdaaafa45e09f8bb420753892546",
+          "complete_prefix_bytes": 507417,
+          "complete_prefix_sha256": "54e8130a04eb313fd36488ca75f901f5d282fdaaafa45e09f8bb420753892546",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742368,
+          "observation_incomplete": false,
+          "observed_size_after": 507417,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-5.jsonl"
+        },
+        "rank": 5,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877504,
+          "sid": 2864716,
+          "start_ticks": 2224041135,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.3258839,
+          "capture_started_size": 507350,
+          "capture_started_unix": 1791306061.3256059,
+          "captured_bytes": 507350,
+          "captured_sha256": "00efded3e523c48d849de4f7d30d9465832bf3a02b29636c1b0a2ffb280c2214",
+          "complete_prefix_bytes": 507350,
+          "complete_prefix_sha256": "00efded3e523c48d849de4f7d30d9465832bf3a02b29636c1b0a2ffb280c2214",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742367,
+          "observation_incomplete": false,
+          "observed_size_after": 507350,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-6.jsonl"
+        },
+        "rank": 6,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      },
+      {
+        "earlier_driver_agreed_writes_per_rank": 80,
+        "evidence_state": "observed",
+        "historical_process_birth": {
+          "pid": 2877507,
+          "sid": 2864716,
+          "start_ticks": 2224041138,
+          "uid": 0
+        },
+        "inflight_logged_write_delta_since_driver_return": 6,
+        "logged_current_attempt_successful_writes": 6,
+        "observation_incomplete": false,
+        "observed_logged_successful_write_prefix_lower_bound": 86,
+        "physical_prefix_available": true,
+        "provenance": {
+          "appended_after_capture": false,
+          "capture_finished_unix": 1791306061.3834836,
+          "capture_started_size": 507363,
+          "capture_started_unix": 1791306061.3828497,
+          "captured_bytes": 507363,
+          "captured_sha256": "3737decdae76d99f87c5c7c0181c2ef85379f63880e1093dacab157a7d993374",
+          "complete_prefix_bytes": 507363,
+          "complete_prefix_sha256": "3737decdae76d99f87c5c7c0181c2ef85379f63880e1093dacab157a7d993374",
+          "complete_rows": 349,
+          "dev": 64768,
+          "evidence_state": "observed",
+          "inode": 173742374,
+          "observation_incomplete": false,
+          "observed_size_after": 507363,
+          "owner_uid": 0,
+          "partial_tail_bytes": 0,
+          "partial_tail_sha256": null,
+          "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/optimizer-rank-7.jsonl"
+        },
+        "rank": 7,
+        "scope": "newline-complete observed logged successful-write prefix lower bound at this rank capture time; no simultaneous commit, finite-state, driver completion, acceptance, liveness, or total-write inference",
+        "writer_identity_scope": "external same-attempt BEGIN plus admitted historical birth; actual write row has no independent job/source/PID signature"
+      }
+    ],
+    "physical_prefix_available": true,
+    "scope": "distinct capture-time lower bounds; min/max describe only available-rank skew, never a logical quorum or all-eight atomic total; replicas are not summed",
+    "unavailable_ranks": [],
+    "unknown_prefix_reasons": {}
+  },
+  "latest_scheduler_state": {
+    "evidence_state": "observed",
+    "scope": "historically bound latest rank receipt state agrees across eight distinct ranks, including gate and manifest budget provenance; BEGIN or another suffix kind is not a driver-completed outer or a liveness claim",
+    "state": {
+      "actual_optimizer_writes": 0,
+      "attempt_id": "98767c7b2dca451088d2276ca9e1be45",
+      "attempt_index": 5,
+      "batch_gate_sha256": "2992adae161c3dbbcfda2eca12f5af82e7d09cdaf1e1b1dc407c1c6270c93ab7",
+      "completed_outer_after": 4,
+      "completed_outer_before": 4,
+      "consumed_learning_rates": [
+        7.017543859649122e-08
+      ],
+      "kind": "BEGIN",
+      "logical_update": 5,
+      "next_learning_rates": [
+        7.017543859649122e-08
+      ],
+      "opportunities_processed": 0,
+      "scheduler_advances": 0,
+      "scheduler_contract_sha256": "4530ed69ad4d7b39c7ebe0dda37a82a6917d81da2c3efcf02dc312471a35c116",
+      "scheduler_last_epoch_after": 4,
+      "scheduler_last_epoch_before": 4,
+      "scheduler_step_count_after": 5,
+      "scheduler_step_count_before": 5,
+      "writes_after": 80,
+      "writes_before": 80
+    }
+  },
+  "metrics": {
+    "last_metrics_completed_step": 4,
+    "latest_attempt_id": "28dd16dca54d4a49886caa87e95a33ef",
+    "latest_behavior_probability_gate_sha256": "114d8c8c55f8c7c7e11e4d2796defad22b1dad07c625ab0134a373894d967613",
+    "latest_metrics": {
+      "actor/entropy_loss": 0.8760398065671324,
+      "actor/grad_norm": 1.9881505334610527,
+      "actor/kl_loss": 0.0,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_loss": 0.04810186933097653,
+      "actor/ppo_kl": 1.5860176851845154e-07,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/mean": 0.2238292694091797
+    },
+    "metrics_lag_completed_outer": 0,
+    "metrics_state": "available",
+    "probe_version": "db5235708c354bffae6d0120c1cb5459:0:5057ca1a82aa41d7874cd1f01deb9ce2",
+    "scheduler_gate_binding_state": "observed_all_eight_ranks",
+    "scope": "full precision actual-updates scalar prefix; absence may be valid driver-to-metrics lag"
+  },
+  "development_evaluations": [
+    {
+      "checked_unix": 1791296323.1089888,
+      "evidence_state": "observed",
+      "metrics": {
+        "correct_count": 91,
+        "executed_search_calls_per_question": 1.158203125,
+        "executed_search_question_rate": 0.978515625,
+        "f1_sum": 123.48570123355005,
+        "valid_action_rate": 0.9459227467811159,
+        "weighted_em": 0.177734375,
+        "weighted_f1": 0.24118301022177743
+      },
+      "plan_sha256": "626966eb2ff6d76227424fb16dba0e8810c741ad659049e29ac989b4b527c5fd",
+      "provenance": {
+        "appended_after_capture": false,
+        "capture_finished_unix": 1791306060.1303556,
+        "capture_started_size": 249499,
+        "capture_started_unix": 1791306060.1302142,
+        "captured_bytes": 249499,
+        "captured_sha256": "2acbfae9f828452e54488e6024bc4af88429f59551715e96cf41dbbe668f1b1a",
+        "dev": 64768,
+        "evidence_state": "observed",
+        "inode": 173742342,
+        "observation_incomplete": false,
+        "observed_size_after": 249499,
+        "owner_uid": 0,
+        "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/formal-inline-development-before.json"
+      },
+      "scope": "observed paired dev512 aggregate scalars; raw rows/IDs/answers not exported",
+      "step": 0,
+      "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+    },
+    {
+      "evidence_state": "not_yet_applicable",
+      "observation_incomplete": true,
+      "reason_code": "missing_file",
+      "scope": "future step5 evaluation not yet applicable",
+      "step": 5
+    }
+  ],
+  "current_gpu": {
+    "evidence_state": "observed",
+    "gpus": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 60562,
+        "util_percent": 100,
+        "uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012"
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 59607,
+        "util_percent": 100,
+        "uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c"
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 59608,
+        "util_percent": 100,
+        "uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd"
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 59609,
+        "util_percent": 100,
+        "uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 59905,
+        "util_percent": 100,
+        "uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369"
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 59904,
+        "util_percent": 100,
+        "uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548"
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 59608,
+        "util_percent": 100,
+        "uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1"
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 70581,
+        "util_percent": 100,
+        "uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+      }
+    ],
+    "query_finished_unix": 1791306060.6003377,
+    "query_started_unix": 1791306060.1373835,
+    "scope": "current physical node inventory; not attribution of all occupancy to this run",
+    "stdout_sha256": "095d71d165aa6cad6b95b2cf3aaf800322b1d80c99e2955eefd187cd7c97e080"
+  },
+  "gpu_sample_prefix_summary": {
+    "age_of_last_sample_seconds": 1.8436944484710693,
+    "authenticated_run_started_unix": 1791294634.0372572,
+    "authenticated_training_claim_unix": 1791295703.8806205,
+    "cumulative_sampled_peak_mib": {
+      "0": 63028,
+      "1": 62201,
+      "2": 62370,
+      "3": 62203,
+      "4": 62203,
+      "5": 61478,
+      "6": 61776,
+      "7": 72449
+    },
+    "gap_examples": [],
+    "gap_examples_truncated": false,
+    "largest_idle_gap_seconds": null,
+    "latest_sample_gpus": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 60562,
+        "util_percent": 100,
+        "uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012"
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 59607,
+        "util_percent": 100,
+        "uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c"
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 59608,
+        "util_percent": 100,
+        "uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd"
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 59609,
+        "util_percent": 100,
+        "uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 59905,
+        "util_percent": 100,
+        "uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369"
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 59904,
+        "util_percent": 100,
+        "uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548"
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 59608,
+        "util_percent": 100,
+        "uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1"
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 70581,
+        "util_percent": 100,
+        "uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+      }
+    ],
+    "nominal_sampling_interval_seconds": 2,
+    "observation_incomplete": false,
+    "observed_gap_count": 0,
+    "observed_interval_max_seconds": 9.60345983505249,
+    "observed_interval_min_seconds": 2.110985517501831,
+    "sample_count": 5197,
+    "sample_state": "available",
+    "sampler_identity": {
+      "pid": 2836860,
+      "sid": 2836822,
+      "start_ticks": 2223930773,
+      "uid": 0
+    },
+    "sampling_finished_unix": 1791306059.1789858,
+    "sampling_started_unix": 1791294644.205981,
+    "sampling_window_seconds": 11414.973004817963,
+    "scope": "entire captured newline-complete prefix for this run; sampled peak is not an unsampled peak or a full rollout peak",
+    "unclassified_sample_count": 0,
+    "windows": {
+      "boundary_straddling": {
+        "boundary_unix": 1791295703.8806205,
+        "evidence_state": "no_complete_samples",
+        "query_finished_unix": null,
+        "query_started_unix": null,
+        "sample_count": 0,
+        "sampled_peak_mib": null,
+        "scope": "query crosses the claim boundary; excluded from both setup and trainer-window peaks"
+      },
+      "setup": {
+        "evidence_state": "observed",
+        "query_finished_unix": 1791295702.6075037,
+        "query_started_unix": 1791294644.205981,
+        "sample_count": 481,
+        "sampled_peak_mib": {
+          "0": 45896,
+          "1": 45453,
+          "2": 45446,
+          "3": 45457,
+          "4": 45455,
+          "5": 45948,
+          "6": 45456,
+          "7": 49349
+        },
+        "window_end_unix": 1791295703.8806205,
+        "window_start_unix": 1791294634.0372572
+      },
+      "trainer_window": {
+        "evidence_state": "observed",
+        "query_finished_unix": 1791306059.1789858,
+        "query_started_unix": 1791295704.6079967,
+        "sample_count": 4716,
+        "sampled_peak_mib": {
+          "0": 63028,
+          "1": 62201,
+          "2": 62370,
+          "3": 62203,
+          "4": 62203,
+          "5": 61478,
+          "6": 61776,
+          "7": 72449
+        },
+        "scope": "from authenticated launch claim, including trainer startup/model initialization, generation and optimizer writes; not an optimizer-only peak",
+        "window_end_unix": 1791306061.0226803,
+        "window_start_unix": 1791295703.8806205
+      }
+    }
+  },
+  "gpu_sample_prefix_provenance": {
+    "appended_after_capture": false,
+    "capture_finished_unix": 1791306060.6188211,
+    "capture_started_size": 7406622,
+    "capture_started_unix": 1791306060.6004558,
+    "captured_bytes": 7406622,
+    "captured_sha256": "009a00f6d984c483474dde94d69c8feff0aaf90f74693e44e28f596f4be51b76",
+    "complete_prefix_bytes": 7406622,
+    "complete_prefix_sha256": "009a00f6d984c483474dde94d69c8feff0aaf90f74693e44e28f596f4be51b76",
+    "complete_rows": 5197,
+    "dev": 64768,
+    "evidence_state": "observed",
+    "inode": 173740890,
+    "observation_incomplete": false,
+    "observed_size_after": 7406622,
+    "owner_uid": 0,
+    "partial_tail_bytes": 0,
+    "partial_tail_sha256": null,
+    "path": "/mnt/data/shaoshitong/g1f-3ff5337a/logs/gpu-samples-db5235708c354bffae6d0120c1cb5459.jsonl"
+  },
+  "reader_review_and_tests": {
+    "fresh_no_context_review_report_sha256": "7cbb2ab138b961cbde570d0bcf95555889f424894632a9e99703f2383b7efb72",
+    "review_proof_sha256": "c00ad2d8c4d86c29a73748ab74b64f4c792779b804cbdc4079746bfe862cfce0",
+    "actual_offline_result_sha256": "05ff1ea59b7c64cc03d8ef6d9c58b4d8b1d1a9d761fdcd97fc83ba422541b15d",
+    "actual_offline_tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reader_source_sha256": {
+      "README.md": "e4814177d8ed4dc1d302eb81207960623a21fbbc522b846af24804f169d67b8e",
+      "collect_formal_progress.py": "688a2b686ef7a99f44c4eda15a860155dbb3b7e5aafb503a9601aff4df8c9b34",
+      "formal_progress_core.py": "45c0a4660df4e4bd00d32ab20bcc5b124bc4154237bacea952d824524d948b47",
+      "test_formal_progress.py": "6472cf6075cf4e58ea84858a9e7bc880ee696012af80fb7395b2a1f9f049a5ee"
+    },
+    "scope": "external reporting code only; offline tests are not model, CUDA, checkpoint, Adam, five-update or scientific-accuracy acceptance"
+  },
+  "publication_policy": "scalar/source/hash only; no raw worker rows, question IDs, QA, tokens, models, data or credentials",
+  "five_update_acceptance": "not yet observed",
+  "terminal_success": "not inferred from RUNNING ExitCode0:0",
+  "goal_complete": false,
+  "hourly_anchor_advanced": false,
+  "walltime_amended": false
+}
