@@ -12,7 +12,7 @@ from unittest import mock
 
 from reproduction.common8.freeze_calibration_plan import freeze, _mathematics, _resolved_document
 from reproduction.common8.policy_calibration_plan import (
-    CONFIRMATION_ROLE, DISCOVERY_ROLE, PlanError, canonical_bytes, document_sha256, freeze_rule,
+    CONFIRMATION_ROLE, DISCOVERY_ROLE, MATHEMATICS, PlanError, canonical_bytes, document_sha256, freeze_rule,
 )
 from reproduction.common8 import test_policy_calibration_plan as plan_fixtures
 
@@ -189,7 +189,7 @@ class FreezeCalibrationPlanTests(unittest.TestCase):
                 with self.assertRaises(PlanError): freeze(self.base, self.env)
             self.assertFalse((self.base / 'logs/policy-safety-calibration-plan.json').exists())
 
-    def test_real_hydra_resolved_recipe_matches_math_without_model_or_data_execution(self):
+    def test_legacy_calibration_cannot_relabel_the_new_fresh200_recipe(self):
         try:
             import hydra  # noqa: F401
         except ImportError:
@@ -199,12 +199,15 @@ class FreezeCalibrationPlanTests(unittest.TestCase):
         for name in ('reproduction/common8/recipe.json', 'verl/trainer/config/ppo_trainer.yaml'):
             run['source_sha256'][name] = hashlib.sha256((configuration.REPO / name).read_bytes()).hexdigest()
         (self.base / 'logs/run-manifest.json').write_bytes(canonical_bytes(run))
-        document = _resolved_document(self.base, run)
-        _mathematics(document, self.base, run)
-        self.assertEqual(document['actor_rollout_ref']['actor']['ppo_mini_batch_size'], 128)
-        self.assertEqual(document['actor_rollout_ref']['actor']['ppo_micro_batch_size'], 16)
-        self.assertEqual(document['trainer']['total_training_steps'], 301)
-        self.assertEqual(document['actor_rollout_ref']['actor']['optim']['warmup_style'], 'constant')
+        # This current source is the new200/57/refKL0 recipe. The immutable
+        # old diagnostic verifier must execute its own original recipe;
+        # copying this new recipe hash into a legacy manifest is not consent
+        # to reinterpret that manifest as a new physical calibration run.
+        with self.assertRaises(AssertionError):
+            _resolved_document(self.base, run)
+        self.assertEqual(MATHEMATICS['target_actual_outer_updates'],300)
+        self.assertEqual(MATHEMATICS['learning_rate_schedule'],'constant')
+        self.assertEqual(MATHEMATICS['reference_kl_coefficient'],.001)
 
     def test_changed_parent_head_gate_or_reward_cannot_overwrite_plan(self):
         self.invoke()
