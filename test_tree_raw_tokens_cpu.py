@@ -19,7 +19,8 @@ import numpy as np
 import torch
 
 from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,capture_native_sampling_settings,
-    sampled_action,canonical_text,trajectory_projection,semantic_spans,tokenizer_identity)
+    sampled_action,canonical_text,trajectory_projection,semantic_spans,tokenizer_identity,
+    BYTELEVEL_DECODER_STATE,BYTELEVEL_INVERSE,validate_action_utf8_proof,fingerprint)
 from search_r1.baselines.rollout import State,SearchRollout,object_array
 
 
@@ -36,19 +37,28 @@ def source_functions(path,klass,names,namespace):
 class Tokenizer:
     pad_token_id=151643;eos_token_id=151645;bos_token_id=None;pad_token='<pad>'
     clean_up_tokenization_spaces=False
+    all_special_ids=[151643,151645,152000]
     def __init__(self,path):
         self.name_or_path=str(path)
         self.parts={1:'<answer>',2:'Paris',3:'</answer>tail',4:'</an',5:'swer>',6:'later',
             7:'<search>capital</search>extra',8:'提示',9:'中文',10:'X',11:'Y'}
         self.enc={};self.next=100
+        self.backend_tokenizer=NS(decoder=NS(__getstate__=lambda:json.dumps(BYTELEVEL_DECODER_STATE).encode()))
+    def convert_ids_to_tokens(self,token):
+        piece=self.parts[token]
+        data=piece if isinstance(piece,bytes) else piece.encode('utf-8')
+        alphabet={byte:character for character,byte in BYTELEVEL_INVERSE.items()}
+        return ''.join(alphabet[byte] for byte in data)
     def decode(self,ids,skip_special_tokens=False):
         ids=ids.tolist() if hasattr(ids,'tolist') else ids
-        result=''
+        result=bytearray()
         for token in ids:
             if token in (self.pad_token_id,self.eos_token_id,152000):
-                result+= '' if skip_special_tokens else ('<eos>' if token==self.eos_token_id else '<special>')
-            else:result+=self.parts[token]
-        return result
+                result.extend(b'' if skip_special_tokens else
+                    ('<eos>' if token==self.eos_token_id else '<special>').encode())
+            else:
+                piece=self.parts[token];result.extend(piece if isinstance(piece,bytes) else piece.encode('utf-8'))
+        return bytes(result).decode('utf-8',errors='replace')
     def batch_decode(self,rows,**kwargs):return [self.decode(row,**kwargs) for row in rows]
     def encode(self,text,add_special_tokens=False):
         if text=='':return []
@@ -167,6 +177,132 @@ class RawTokenTests(unittest.TestCase):
                 if skip_special_tokens and list(ids)==[1]:return '\ufffd' if mode=='replacement' else 'not-a-prefix'
                 return original(ids,skip_special_tokens)
             with patch.object(self.tok,'decode',changed),self.assertRaises(ValueError):self.action([1,2,3,151645])
+
+    def test_split_utf8_2_3_4_byte_characters_and_all_original_scalars(self):
+        for text in ('é','中','😀','é中😀'):
+            with self.subTest(text=text):
+                data=text.encode('utf-8');ids=list(range(200,200+len(data)))
+                self.tok.parts.update({token:bytes([byte]) for token,byte in zip(ids,data)})
+                action,ledger=self.action(ids+[151645])
+                self.assertEqual(action,ids+[151645]);self.assertEqual(ledger['canonical_text'],text)
+                self.assertEqual(ledger['selected_logprobs'],emission(action)['raw_selected_logprobs'])
+                proof=ledger['utf8_boundary_proof']
+                self.assertTrue(proof['pending_prefix_events']);self.assertTrue(proof['final_utf8_complete'])
+                self.assertEqual(proof['native_prefix_agreement_count'],len(action))
+                self.assertEqual(ledger['whole_prefix_decode'],self.tok.decode(action,skip_special_tokens=True))
+                validate_action_utf8_proof(ledger,self.tok)
+
+    def test_fixed_bytelevel_alphabet_against_independent_literal_token_pieces(self):
+        # Literal ByteLevel spellings, independent of the fixture encoder.
+        pieces={200:'Ã',201:'©',202:'ä',203:'¸',204:'Ń',205:'ð',206:'Ł',207:'ĺ',208:'Ģ'}
+        data={200:b'\xc3',201:b'\xa9',202:b'\xe4',203:b'\xb8',204:b'\xad',
+              205:b'\xf0',206:b'\x9f',207:b'\x98',208:b'\x80'}
+        self.tok.parts.update(data)
+        original=self.tok.convert_ids_to_tokens
+        with patch.object(self.tok,'convert_ids_to_tokens',side_effect=lambda token:pieces.get(token) or original(token)):
+            action,ledger=self.action(list(pieces)+[151645])
+        self.assertEqual(ledger['canonical_text'],'é中😀');self.assertEqual(action,list(pieces)+[151645])
+        self.assertEqual({c:BYTELEVEL_INVERSE[c] for c in ('Ġ','Ċ','Ā','ġ','Ģ','Ł','ł','Ń')},
+                         {'Ġ':32,'Ċ':10,'Ā':0,'ġ':127,'Ģ':128,'Ł':159,'ł':160,'Ń':173})
+
+    def test_every_legal_partition_of_single_unicode_char_is_complete_at_same_text(self):
+        for text in ('é','中','😀'):
+            data=text.encode('utf-8')
+            for mask in range(1<<(len(data)-1)):
+                ends=[i+1 for i in range(len(data)-1) if mask&(1<<i)]+[len(data)]
+                starts=[0]+ends[:-1];ids=list(range(200,200+len(ends)))
+                self.tok.parts.update({token:data[start:end] for token,start,end in zip(ids,starts,ends)})
+                with self.subTest(text=text,ends=ends):
+                    action,ledger=self.action(ids+[151645])
+                    self.assertEqual(action,ids+[151645]);self.assertEqual(ledger['canonical_text'],text)
+                    validate_action_utf8_proof(ledger,self.tok)
+
+    def test_tag_and_utf8_share_original_token_retains_until_complete_boundary(self):
+        self.tok.parts.update({200:b'<answer>Paris</answer>\xe4',201:b'\xb8',202:b'\xad',203:'later'})
+        action,ledger=self.action([200,201,202,203,151645])
+        self.assertEqual(action,[200,201,202]);self.assertEqual(ledger['canonical_text'],'<answer>Paris</answer>')
+        self.assertEqual(ledger['indivisible_extra_text'],'中')
+        self.assertEqual(ledger['utf8_boundary_proof']['complete_original_token_boundaries'],[3,4,5])
+        self.assertEqual(ledger['selected_logprobs'],[-.25,-.5,-.75])
+        validate_action_utf8_proof(ledger,self.tok)
+
+    def test_utf8_search_priority_tool_and_legacy_reward_text_unchanged(self):
+        self.tok.parts.update({200:b'<answer>A</answer><search>\xe4',201:b'\xb8\xad</search>tail'})
+        action,ledger=self.action([200,201,151645])
+        self.assertEqual(action,[200,201])
+        self.assertEqual(ledger['canonical_text'],'<answer>A</answer><search>中</search>')
+        # Canonical truncation is Search-first; the original tool parser still
+        # selects the first complete tag, which is the answer in this example.
+        self.assertEqual(self.manager.postprocess_predictions([ledger['canonical_text']]),(['answer'],['A']))
+        self.assertEqual(ledger['legacy_reward_action_text'],ledger['canonical_text'])
+        self.assertEqual(ledger['indivisible_extra_text'],'tail')
+        validate_action_utf8_proof(ledger,self.tok)
+
+    def test_special_token_between_utf8_bytes_is_skipped_only_in_semantic_decode(self):
+        self.tok.parts.update({200:b'\xe4',201:b'\xb8\xad'})
+        action,ledger=self.action([200,152000,201,151645])
+        self.assertEqual(action,[200,152000,201,151645]);self.assertEqual(ledger['canonical_text'],'中')
+        self.assertEqual(ledger['utf8_boundary_proof']['complete_original_token_boundaries'],[3,4])
+        self.assertEqual([x['pending_utf8_hex'] for x in ledger['utf8_boundary_proof']['pending_prefix_events']],['e4','e4'])
+
+    def test_invalid_terminal_utf8_and_real_replacement_fail_closed(self):
+        for data in (b'\xff',b'\x80',b'\xc0\xaf',b'\xed\xa0\x80',b'\xf4\x90\x80\x80',
+                     b'\xe4X',b'\xe4',b'\xf0\x9f',b'\xef\xbf\xbd',b'</answer>\xe4'):
+            with self.subTest(data=data):
+                self.tok.parts[200]=data
+                with self.assertRaises(ValueError):self.action([200,151645])
+
+    def test_unsupported_decoder_cleanup_and_original_piece_mismatch_refuse(self):
+        for state in ({'type':'Metaspace'},dict(BYTELEVEL_DECODER_STATE,use_regex=True),
+                      dict(BYTELEVEL_DECODER_STATE,trim_offsets=0)):
+            decoder=NS(__getstate__=lambda:json.dumps(state).encode())
+            with self.subTest(state=state),patch.object(self.tok.backend_tokenizer,'decoder',decoder):
+                with self.assertRaises(ValueError):tokenizer_identity(self.tok,self.sha)
+                with self.assertRaises(ValueError):self.action([1,2,3,151645])
+        with patch.object(self.tok,'clean_up_tokenization_spaces',True),self.assertRaises(ValueError):
+            self.action([1,2,3,151645])
+        with patch.object(self.tok,'convert_ids_to_tokens',return_value='中'),self.assertRaises(ValueError):
+            self.action([1,2,3,151645])
+        with patch.object(self.tok,'convert_ids_to_tokens',return_value='X'),self.assertRaises(ValueError):
+            self.action([1,2,3,151645])
+
+    def test_pending_native_output_and_frozen_special_identity_cannot_be_suppressed(self):
+        self.tok.parts.update({200:b'\xe4',201:b'\xb8\xad'})
+        original=self.tok.decode
+        def suppressed(ids,skip_special_tokens=False):
+            if skip_special_tokens and list(ids)==[200]:return ''
+            return original(ids,skip_special_tokens)
+        with patch.object(self.tok,'decode',suppressed),self.assertRaises(ValueError):self.action([200,201,151645])
+        with patch.object(self.tok,'all_special_ids',[151643,151645]),self.assertRaises(ValueError):
+            self.action([200,201,151645])
+        _,ledger=self.action([200,201,151645])
+        def changed_full(ids,skip_special_tokens=False):
+            if skip_special_tokens and list(ids)==[200,201,151645]:return 'wrong-full-text'
+            return original(ids,skip_special_tokens)
+        with patch.object(self.tok,'decode',changed_full),self.assertRaises(ValueError):
+            validate_action_utf8_proof(ledger,self.tok)
+
+    def test_rebound_utf8_proof_and_incomplete_cut_refused_by_validator(self):
+        self.tok.parts.update({200:b'<answer>Paris</answer>\xe4',201:b'\xb8\xad'})
+        _,ledger=self.action([200,201,151645])
+        for mutation in ('pending','boundaries','agreement','cut'):
+            changed=copy.deepcopy(ledger)
+            if mutation=='pending':changed['utf8_boundary_proof']['pending_prefix_events'][0]['pending_utf8_hex']='f0'
+            elif mutation=='boundaries':changed['utf8_boundary_proof']['complete_original_token_boundaries']=[1,2,3]
+            elif mutation=='agreement':changed['utf8_boundary_proof']['native_prefix_agreement_sha256']='0'*64
+            else:changed['cut']=1
+            changed['action_binding_sha256']=fingerprint({k:v for k,v in changed.items()
+                if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
+            with self.subTest(mutation=mutation),self.assertRaises(ValueError):validate_action_utf8_proof(changed,self.tok)
+
+    def test_split_utf8_trajectory_and_actual_reward_use_legacy_semantic_ids(self):
+        self.tok.parts.update({200:b'<answer>\xe4',201:b'\xb8\xad</answer>tail'})
+        state=self.state([200,201,151645]);item=self.item(state)
+        self.assertEqual(semantic_spans(item,self.tok),['<answer>中</answer>'])
+        self.assertEqual(state.response,[200,201])
+        self.assertNotEqual(item.non_tensor_batch[FIELD]['semantic_response_token_ids'],state.response)
+        item.non_tensor_batch[FIELD]['raw_ledger'][0]['action']['utf8_boundary_proof']['pending_prefix_events'][0]['pending_utf8_hex']='ff'
+        with self.assertRaises(ValueError):semantic_spans(item,self.tok)
 
     def test_pad_equals_eos_genuine_pad_missing_length_empty_and_over500_refuse(self):
         with patch.object(self.tok,'pad_token_id',151645),self.assertRaises(ValueError):self.action([151645])
