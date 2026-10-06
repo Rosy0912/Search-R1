@@ -17,8 +17,40 @@ non-tensor row identities are padded, trimmed and reordered together.
 The actual raw token prefix follows the original boundary: retain through the
 first search closing tag if present, otherwise the first answer closing tag;
 model output is never decoded and then re-tokenized into a different action.
-Only a trailing whitespace suffix within the closing token is allowed.
-Ambiguous special tokens, nonrepresentable token boundaries, altered prefixes and
+A closing character boundary may fall inside a BPE token. The complete
+crossing token and its actual selected logprob and actor mask are retained,
+including any suffix. The executor receives the original character prefix;
+subsequent requests, actor/reference recomputation and strict authored-span
+reward decoding retain the complete token. New proofs record the exact suffix
+and classify it as absent, whitespace or nonwhitespace; original whitespace-only
+proofs remain readable with their original strict meaning. A nonwhitespace
+suffix is never labelled whitespace or removed to make an answer valid.
+
+This token-atomic adaptation preserves the original action projection, not the
+old retokenized next-request context or each trajectory's old reward. A terminal
+answer with nonwhitespace suffix remains invalid under the existing strict QA
+parser. No token is split, assigned a fabricated partial-token probability,
+retokenized, masked out or used as a cleaned reward span. Native discovery3288
+with immutable source3fdf stopped on the previous extra whitespace-only guard;
+the new protocol is tested with synthetic CPU token fragments, not claimed as
+an observation of that job's actual tokenizer or as a passed GPU gate.
+
+Decoding is a deterministic text projection and may be lossy. A genuine
+replacement character is retained verbatim in executor queries, context and
+strict reward text. New closed proofs carry the decoded full generation, a
+projection role explicitly disclaiming UTF-8 validity, and exact full/retained
+replacement-character counts. This does not prove valid raw UTF-8 or distinguish
+an encoded literal replacement from invalid bytes. Full text must start with
+the retained decoded prefix exactly; no-tag projections must equal it. The
+prefix is never extended until Unicode improves. Older proof schemas preserve
+their original no-replacement meaning.
+
+Native3288's separate malformed-byte row was checked privately against the
+original tokenizer decoder; the original and explicit decoder projections and
+search action were equal with a stable prefix. The new CPU tests use synthetic
+decoder projections and do not stand in for native probability acceptance.
+
+Ambiguous special tokens, unstable Unicode prefix boundaries, altered prefixes and
 context-window overflow reject the complete outer, with private evidence.
 No trajectory is discarded to make the gate pass.
 

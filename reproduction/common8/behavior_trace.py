@@ -18,6 +18,7 @@ SCHEMA_VERSION = 1
 TRACE_ROLE = 'common8_actual_behavior_trace'
 AUDIT_ROLE = 'common8_behavior_context_audit'
 LOGPROB_SEMANTICS = 'selected_token_logprob_at_actual_sampling_call'
+DECODE_PROJECTION_ROLE = 'deterministic_tokenizer_text_projection_not_utf8_validity_proof'
 SAMPLING_FIELDS = frozenset((
     'n', 'best_of', 'do_sample', 'temperature', 'top_p', 'top_k', 'min_p',
     'presence_penalty', 'frequency_penalty', 'repetition_penalty', 'ignore_eos',
@@ -103,11 +104,15 @@ def raw_prefix_to_first_closing_tag(raw_generated_token_ids, decode, *, eos_toke
     """Locate a decoded closing tag, then take only the original token prefix.
 
     The caller's decoder must retain special tokens and disable cleanup. A
-    closing tag inside a token is permitted only if its remaining characters
-    are whitespace; the entire token is retained and that difference recorded.
+    closing tag inside a token retains that complete sampled token, including
+    any suffix. Only the executor receives the original character projection;
+    context, loss masks and reward decoding keep the full authored token.
     With no tag only one genuine trailing EOS is removed. Internal special
     tokens are never silently removed. Actual raw length comes from vLLM before
     padding; this function never guesses that length from EOS/pad IDs.
+    Deterministic decode may be lossy. Replacement characters remain verbatim,
+    with an explicit census; full decoded text must contain the selected prefix
+    exactly, without extending that token prefix to repair UTF-8.
     """
     raw = _tokens(raw_generated_token_ids, 'raw_generated_token_ids')
     _require(type(eos_token_id) is int and type(pad_token_id) is int, 'missing_actual_eos_pad_identity')
@@ -115,13 +120,13 @@ def raw_prefix_to_first_closing_tag(raw_generated_token_ids, decode, *, eos_toke
     trailing_eos = bool(raw and raw[-1] == eos_token_id)
     eligible = raw[:-1] if trailing_eos else raw
     text = decode(eligible)
-    _require(isinstance(text, str) and '\ufffd' not in text, 'ambiguous_decoding_boundary')
+    _require(isinstance(text, str), 'invalid_decoder_result')
     # Match the upstream decoded-response boundary: a search closing tag
     # takes precedence anywhere in the text. The executor separately chooses
     # the first complete action in that retained text; do not reorder actions
     # or discard an earlier answer from the original sampled token prefix.
     closing = '</search>' if '</search>' in text else '</answer>' if '</answer>' in text else None
-    count, retained_text, execution, whitespace = len(eligible), text, text, ''
+    count, retained_text, execution, suffix = len(eligible), text, text, ''
     if closing is not None:
         # Bounded500-token generation makes this independent CPU scan small;
         # it avoids assumptions about monotone Unicode prefix decoding.
@@ -131,16 +136,21 @@ def raw_prefix_to_first_closing_tag(raw_generated_token_ids, decode, *, eos_toke
             if closing in candidate:
                 end = candidate.find(closing) + len(closing)
                 remainder = candidate[end:]
-                _require(not remainder or remainder.isspace(), 'closing_tag_inside_token_nonwhitespace_tail')
-                _require('\ufffd' not in candidate and text.startswith(candidate), 'ambiguous_decoding_boundary')
-                retained_text, execution, whitespace = candidate, candidate[:end], remainder
+                _require(text.startswith(candidate), 'ambiguous_decoding_boundary')
+                retained_text, execution, suffix = candidate, candidate[:end], remainder
                 break
         else:
             raise BehaviorTraceError('closing_tag_without_raw_prefix_boundary')
     kept = eligible[:count]
     _require(not special.intersection(kept), 'included_special_or_pad_token')
+    classification = 'none' if not suffix else 'whitespace' if suffix.isspace() else 'nonwhitespace'
+    whitespace = suffix if classification == 'whitespace' else ''
     return dict(kept_token_count=count, kept_token_ids=kept, closing_tag=closing,
                 execution_text=execution, decoded_retained_prefix=retained_text,
+                retained_token_boundary_suffix=suffix, token_boundary_suffix_classification=classification,
+                decode_projection_role=DECODE_PROJECTION_ROLE, decoded_full_generation=text,
+                full_decode_replacement_count=text.count('\ufffd'),
+                retained_decode_replacement_count=retained_text.count('\ufffd'),
                 retained_trailing_whitespace=whitespace,
                 token_boundary_whitespace_retained=bool(whitespace),
                 trailing_eos_excluded=trailing_eos, raw_generated_token_count=len(raw),
@@ -208,7 +218,11 @@ def _verify_turn(turn):
         expected_fields = {'kept_token_count', 'kept_token_ids', 'closing_tag', 'execution_text',
             'decoded_retained_prefix', 'retained_trailing_whitespace', 'token_boundary_whitespace_retained',
             'trailing_eos_excluded', 'raw_generated_token_count', 'raw_tokens_sha256', 'retained_tokens_sha256'}
-        _require(type(cut) is dict and set(cut) == expected_fields and
+        new_fields = {'retained_token_boundary_suffix', 'token_boundary_suffix_classification'}
+        projection_fields = {'decode_projection_role', 'decoded_full_generation',
+                             'full_decode_replacement_count', 'retained_decode_replacement_count'}
+        _require(type(cut) is dict and set(cut) in (expected_fields, expected_fields | new_fields,
+                                                 expected_fields | new_fields | projection_fields) and
                  type(cut['kept_token_count']) is int and cut['kept_token_count'] == count and
                  _tokens(cut['kept_token_ids'], 'cut_kept_token_ids') == raw[:count] and
                  type(cut['raw_generated_token_count']) is int and cut['raw_generated_token_count'] == len(raw) and
@@ -216,18 +230,51 @@ def _verify_turn(turn):
                  cut['retained_tokens_sha256'] == document_sha256(raw[:count]), 'raw_prefix_proof_changed')
         _require(type(cut['trailing_eos_excluded']) is bool and
                  cut['trailing_eos_excluded'] == bool(raw and raw[-1] == turn['eos_token_id']), 'trailing_eos_proof_changed')
-        tail = cut['retained_trailing_whitespace']
-        _require(isinstance(tail, str) and (not tail or tail.isspace()) and
+        whitespace = cut['retained_trailing_whitespace']
+        # Legacy proofs are readable only with their original whitespace-only
+        # semantics. New proofs classify arbitrary suffixes without disguising
+        # them as whitespace, removing their tokens, or cleaning reward text.
+        suffix = cut.get('retained_token_boundary_suffix', whitespace)
+        _require(isinstance(suffix, str) and isinstance(whitespace, str), 'invalid_decoded_suffix')
+        classification = 'none' if not suffix else 'whitespace' if suffix.isspace() else 'nonwhitespace'
+        if new_fields <= set(cut):
+            _require(cut['token_boundary_suffix_classification'] == classification,
+                     'decoded_suffix_classification_changed')
+        else:
+            _require(classification != 'nonwhitespace', 'legacy_suffix_is_not_whitespace')
+        _require(whitespace == (suffix if classification == 'whitespace' else '') and
                  type(cut['token_boundary_whitespace_retained']) is bool and
-                 cut['token_boundary_whitespace_retained'] == bool(tail) and
-                 isinstance(cut['execution_text'], str) and
-                 cut['decoded_retained_prefix'] == cut['execution_text'] + tail, 'decoded_cut_whitespace_changed')
+                 cut['token_boundary_whitespace_retained'] == (classification == 'whitespace') and
+                 isinstance(cut['execution_text'], str) and isinstance(cut['decoded_retained_prefix'], str) and
+                 cut['decoded_retained_prefix'] == cut['execution_text'] + suffix,
+                 'decoded_cut_suffix_changed')
+        if projection_fields <= set(cut):
+            full = cut['decoded_full_generation']
+            _require(cut['decode_projection_role'] == DECODE_PROJECTION_ROLE and isinstance(full, str) and
+                     type(cut['full_decode_replacement_count']) is int and
+                     type(cut['retained_decode_replacement_count']) is int and
+                     cut['full_decode_replacement_count'] == full.count('\ufffd') and
+                     cut['retained_decode_replacement_count'] == cut['decoded_retained_prefix'].count('\ufffd'),
+                     'deterministic_decode_projection_or_replacement_census_changed')
+            _require(full.startswith(cut['decoded_retained_prefix']), 'ambiguous_decoding_boundary')
+            projected_closing = '</search>' if '</search>' in full else '</answer>' if '</answer>' in full else None
+            _require(cut['closing_tag'] == projected_closing, 'full_decode_action_projection_changed')
+            if projected_closing is None:
+                _require(full == cut['decoded_retained_prefix'], 'no_tag_decode_projection_changed')
+        else:
+            # Old exact schemas keep their original no-replacement meaning.
+            _require('\ufffd' not in cut['decoded_retained_prefix'], 'legacy_ambiguous_decoding_boundary')
         _require(cut['closing_tag'] in (None, '</search>', '</answer>'), 'unknown_closing_tag')
         if cut['closing_tag'] is not None:
-            _require(count > 0 and cut['execution_text'].endswith(cut['closing_tag']),
+            closing = cut['closing_tag']
+            decoded = cut['decoded_retained_prefix']
+            _require(closing in decoded and cut['execution_text'] == decoded[:decoded.find(closing) + len(closing)] and
+                     closing == ('</search>' if '</search>' in decoded else '</answer>'),
+                     'execution_is_not_original_character_projection')
+            _require(count > 0 and cut['execution_text'].endswith(closing),
                      'closing_execution_text_changed')
         else:
-            _require(count == len(raw) - int(cut['trailing_eos_excluded']) and not tail, 'unproven_no_tag_truncation')
+            _require(count == len(raw) - int(cut['trailing_eos_excluded']) and not suffix, 'unproven_no_tag_truncation')
     observation = _tokens(turn['observation_token_ids'], 'observation_token_ids')
     correction = _tokens(turn['correction_token_ids'], 'correction_token_ids')
     _require(not (observation and correction), 'ambiguous_environment_segment_order')

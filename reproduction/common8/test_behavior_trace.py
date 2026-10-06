@@ -109,9 +109,15 @@ class RawPrefixTests(unittest.TestCase):
         self.assertTrue(proof['trailing_eos_excluded'])
         self.assertEqual(proof['raw_generated_token_count'], 5)
 
-    def test_inside_token_nonwhitespace_rejects(self):
-        with self.assertRaisesRegex(bt.BehaviorTraceError, 'nonwhitespace'):
-            self.cut({1: '<answer>A</answer>secret'}, [1])
+    def test_inside_token_nonwhitespace_preserves_whole_token(self):
+        proof = self.cut({1: '<answer>A</answer>secret'}, [1])
+        self.assertEqual(proof['kept_token_ids'], [1])
+        self.assertEqual(proof['execution_text'], '<answer>A</answer>')
+        self.assertEqual(proof['decoded_retained_prefix'], '<answer>A</answer>secret')
+        self.assertEqual(proof['retained_token_boundary_suffix'], 'secret')
+        self.assertEqual(proof['token_boundary_suffix_classification'], 'nonwhitespace')
+        self.assertEqual(proof['retained_trailing_whitespace'], '')
+        self.assertFalse(proof['token_boundary_whitespace_retained'])
 
     def test_inside_token_whitespace_preserves_whole_token(self):
         proof = self.cut({1: '<answer>A</answer> \n', 2: 'later'}, [1, 2])
@@ -140,9 +146,11 @@ class RawPrefixTests(unittest.TestCase):
                 self.assertEqual((dones, valid, is_search), ([done], [1], [searches]))
                 self.assertEqual(len(original.search_calls[-1]), searches)
 
-    def test_selected_search_boundary_still_rejects_nonwhitespace_token_suffix(self):
-        with self.assertRaisesRegex(bt.BehaviorTraceError, 'nonwhitespace'):
-            self.cut({1: '<answer>A</answer><search>B</search>secret'}, [1])
+    def test_selected_search_boundary_preserves_nonwhitespace_token_suffix(self):
+        proof = self.cut({1: '<answer>A</answer><search>B</search>secret'}, [1])
+        self.assertEqual(proof['execution_text'], '<answer>A</answer><search>B</search>')
+        self.assertEqual(proof['decoded_retained_prefix'], '<answer>A</answer><search>B</search>secret')
+        self.assertEqual(proof['kept_token_ids'], [1])
 
     def test_no_tag_only_tail_eos_excluded(self):
         proof = self.cut({1: 'text'}, [1, 99])
@@ -152,9 +160,14 @@ class RawPrefixTests(unittest.TestCase):
             with self.subTest(raw=raw), self.assertRaises(bt.BehaviorTraceError):
                 self.cut({1: 'text', 99: '<eos>', 0: '<pad>', 98: '<special>'}, raw)
 
-    def test_ambiguous_unicode_decoder_boundary_rejects(self):
-        with self.assertRaisesRegex(bt.BehaviorTraceError, 'ambiguous'):
-            self.cut({1: '\ufffd'}, [1])
+    def test_lossy_no_tag_projection_is_explicit(self):
+        proof = self.cut({1: 'text\ufffd'}, [1, 99])
+        self.assertEqual(proof['kept_token_ids'], [1])
+        self.assertEqual(proof['decoded_full_generation'], 'text\ufffd')
+        self.assertEqual(proof['full_decode_replacement_count'], 1)
+        self.assertEqual(proof['retained_decode_replacement_count'], 1)
+        self.assertEqual(proof['decode_projection_role'], bt.DECODE_PROJECTION_ROLE)
+        self.assertIsNone(proof['closing_tag'])
 
     def test_original_token_whitespace_proof_is_checked(self):
         proof = self.cut({20: '<answer>A</answer> \n'}, [20, 99])
@@ -181,6 +194,149 @@ class RawPrefixTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(bt.BehaviorTraceError):
                 bt.make_turn(record, trajectory_id=turn['trajectory_id'], turn_index=0,
                              kept_token_count=1, special_token_ids=[0, 99], prefix_cut=changed)
+
+
+    def test_atomic_suffix_executor_stays_original_first_action(self):
+        # Synthetic fragment-to-ID fixtures, not actual Qwen/GPU tokens.
+        cases = ('<search>q</search>tail', '<answer>A</answer>tail',
+                 '<answer>A</answer><search>q</search>tail',
+                 '<search>q</search><answer>A</answer>tail')
+        for text in cases:
+            with self.subTest(text=text):
+                proof = self.cut({20: text}, [20, 99])
+                original = original_upstream_manager()
+                _, execution = original._postprocess_responses([text])
+                self.assertEqual(proof['execution_text'], execution[0])
+                self.assertEqual(proof['decoded_retained_prefix'], text)
+                self.assertEqual(proof['kept_token_ids'], [20])
+                self.assertEqual(original.postprocess_predictions([proof['execution_text']]),
+                                 original.postprocess_predictions(execution))
+
+    def test_new_suffix_proof_tampering_and_legacy_whitespace(self):
+        trace, _ = tiny_outer_fixture()
+        turn = trace['trajectories'][0]['turns'][0]
+        record = {key: turn[key] for key in bt._NATIVE_FIELDS}
+        make = lambda proof: bt.make_turn(record, trajectory_id=turn['trajectory_id'], turn_index=0,
+            kept_token_count=1, special_token_ids=[0, 99], prefix_cut=proof)
+        proof = self.cut({20: '<search>q</search>tail'}, [20, 99])
+        make(proof)
+        for field, value in (('retained_token_boundary_suffix', 'changed'),
+                             ('token_boundary_suffix_classification', 'whitespace'),
+                             ('retained_trailing_whitespace', 'tail'),
+                             ('token_boundary_whitespace_retained', True),
+                             ('execution_text', '<search>fake</search>'),
+                             ('decoded_retained_prefix', '<search>q</search>')):
+            with self.subTest(field=field), self.assertRaises(bt.BehaviorTraceError):
+                make(dict(proof, **{field: value}))
+        legacy = self.cut({20: '<answer>A</answer> \n'}, [20, 99])
+        for name in ('retained_token_boundary_suffix', 'token_boundary_suffix_classification',
+                     'decode_projection_role', 'decoded_full_generation', 'full_decode_replacement_count',
+                     'retained_decode_replacement_count'):
+            del legacy[name]
+        make(legacy)
+        legacy['retained_trailing_whitespace'] = 'tail'
+        legacy['decoded_retained_prefix'] = legacy['execution_text'] + 'tail'
+        with self.assertRaises(bt.BehaviorTraceError): make(legacy)
+
+    def test_atomic_suffix_future_context_lp_and_mask_preserved(self):
+        trace, bindings = tiny_outer_fixture()
+        # Token20 includes closing+suffix; it remains one complete action token.
+        first = trace['trajectories'][0]['turns'][0]
+        first['prefix_cut'] = self.cut({20: '<search>q</search>tail'}, [20, 99])
+        report = bt.project_sampling_logprobs(trace, **bindings)
+        self.assertTrue(report['audit']['context_verified'])
+        self.assertEqual(report['sampling_log_probs'][0], [-0.2, 0.0, -0.30000000000000004, 0.0])
+        self.assertEqual(report['sampling_mask'][0], [True, False, True, False])
+        self.assertEqual(trace['trajectories'][0]['turns'][1]['actual_request_token_ids'], [10, 11, 20, 30])
+        trace['trajectories'][0]['turns'][1]['actual_request_token_ids'] = [10, 11, 777, 30]
+        with self.assertRaises(bt.BehaviorTraceError): bt.audit_outer(trace, **bindings)
+
+    def test_atomic_answer_tail_is_not_cleaned_for_strict_reward(self):
+        from search_r1.qa_protocol import extract_final_answer
+        from search_g1.signals import contexts
+        proof = self.cut({20: '<answer>A</answer>tail'}, [20, 99])
+        full = proof['decoded_retained_prefix']
+        self.assertIsNone(extract_final_answer([full]))
+        self.assertIsNone(contexts('CPU fixture prompt', full, [[0, len(full)]]))
+        self.assertEqual(extract_final_answer([proof['execution_text']]), 'A')
+        # The last value is only the executor projection, never the reward span.
+
+    def test_suffix_does_not_relax_eos_special_or_unicode_boundary(self):
+        proof = self.cut({20: '<search>q</search>tail'}, [20, 99])
+        self.assertTrue(proof['trailing_eos_excluded'])
+        for raw in ([99, 20], [98, 20], [0, 20]):
+            with self.subTest(raw=raw), self.assertRaises(bt.BehaviorTraceError):
+                self.cut({20: '<search>q</search>tail', 99: '<eos>', 98: '<special>', 0: '<pad>'}, raw)
+        def unstable(ids):
+            return '<answer>A</answer>tail' if len(ids) == 1 else '<answer>B</answer>tailmore'
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'ambiguous'):
+            bt.raw_prefix_to_first_closing_tag([20, 21], unstable, eos_token_id=99, pad_token_id=0,
+                                              special_token_ids=[0, 99])
+        proof = self.cut({20: '<answer>A</answer>\ufffd'}, [20])
+        self.assertEqual(proof['retained_decode_replacement_count'], 1)
+        self.assertEqual(proof['retained_token_boundary_suffix'], '\ufffd')
+
+
+    def test_stable_lossy_projection_keeps_prefix_does_not_extend_to_repair(self):
+        proof = self.cut({20: '<search>q\ufffd</search> ', 21: 'later\ufffd'}, [20, 21, 99])
+        self.assertEqual(proof['kept_token_ids'], [20])
+        self.assertEqual(proof['execution_text'], '<search>q\ufffd</search>')
+        self.assertEqual((proof['full_decode_replacement_count'], proof['retained_decode_replacement_count']), (2, 1))
+        original = original_upstream_manager()
+        _, execution = original._postprocess_responses([proof['decoded_full_generation']])
+        self.assertEqual(execution, [proof['execution_text']])
+
+    def test_synthetic_byte_projection_keeps_invalid_bytes_but_never_extends_to_heal(self):
+        # Synthetic byte fragments are not Qwen vocabulary/GPU observations.
+        stable = {20: b'<search>q\xff</search> ', 21: b'later'}
+        decode = lambda ids: b''.join(stable[token] for token in ids).decode('utf-8', errors='replace')
+        proof = bt.raw_prefix_to_first_closing_tag([20, 21], decode, eos_token_id=99,
+                                                pad_token_id=0, special_token_ids=[0, 99])
+        self.assertEqual(proof['kept_token_ids'], [20])
+        self.assertEqual(proof['execution_text'], '<search>q\ufffd</search>')
+        self.assertEqual(proof['retained_decode_replacement_count'], 1)
+        healing = {20: b'<search>q</search>\xc3', 21: b'\xa9'}
+        decode = lambda ids: b''.join(healing[token] for token in ids).decode('utf-8', errors='replace')
+        self.assertIn('\ufffd', decode([20]))
+        self.assertNotIn('\ufffd', decode([20, 21]))
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'ambiguous_decoding_boundary'):
+            bt.raw_prefix_to_first_closing_tag([20, 21], decode, eos_token_id=99,
+                                             pad_token_id=0, special_token_ids=[0, 99])
+
+    def test_lossy_projection_census_role_fullprefix_and_no_tag_are_verified(self):
+        trace, _ = tiny_outer_fixture(); turn = trace['trajectories'][0]['turns'][0]
+        record = {key: turn[key] for key in bt._NATIVE_FIELDS}
+        make = lambda proof: bt.make_turn(record, trajectory_id=turn['trajectory_id'], turn_index=0,
+            kept_token_count=1, special_token_ids=[0, 99], prefix_cut=proof)
+        proof = self.cut({20: '<search>q\ufffd</search>tail'}, [20, 99]); make(proof)
+        for field, value in (('decode_projection_role', 'lossless'),
+                             ('full_decode_replacement_count', 0),
+                             ('retained_decode_replacement_count', True),
+                             ('retained_decode_replacement_count', -1),
+                             ('decoded_full_generation', '<search>changed\ufffd</search>tail')):
+            with self.subTest(field=field), self.assertRaises(bt.BehaviorTraceError):
+                make(dict(proof, **{field: value}))
+        for remove in (('decode_projection_role',),
+                       ('decode_projection_role', 'decoded_full_generation', 'full_decode_replacement_count',
+                        'retained_decode_replacement_count')):
+            changed = copy.deepcopy(proof)
+            for field in remove: del changed[field]
+            with self.subTest(remove=remove), self.assertRaises(bt.BehaviorTraceError): make(changed)
+        # Claiming no tag cannot swallow the original action boundary.
+        changed = dict(proof, closing_tag=None, execution_text=proof['decoded_retained_prefix'],
+                       retained_token_boundary_suffix='', token_boundary_suffix_classification='none')
+        with self.assertRaises(bt.BehaviorTraceError): make(changed)
+        no_tag = self.cut({20: 'text\ufffd'}, [20, 99]); make(no_tag)
+        changed = dict(no_tag, decoded_full_generation='text\ufffdextra')
+        with self.assertRaises(bt.BehaviorTraceError): make(changed)
+
+    def test_lossy_retained_token_still_preserves_lp_mask_and_next_raw_context(self):
+        trace, bindings = tiny_outer_fixture()
+        trace['trajectories'][0]['turns'][0]['prefix_cut'] = self.cut({20: '<search>q\ufffd</search>tail'}, [20, 99])
+        projected = bt.project_sampling_logprobs(trace, **bindings)
+        self.assertEqual(projected['sampling_log_probs'][0], [-.2, 0., -.30000000000000004, 0.])
+        self.assertEqual(projected['sampling_mask'][0], [True, False, True, False])
+        self.assertEqual(trace['trajectories'][0]['turns'][1]['actual_request_token_ids'], [10, 11, 20, 30])
 
 
 class OuterProtocolTests(unittest.TestCase):

@@ -169,8 +169,13 @@ class CorpusExtractionTests(unittest.TestCase):
                 data = self.stream.read(size)
                 if self.first:
                     self.first = False
+                    old = owner.archive.stat()
                     with owner.archive.open('r+b') as source:
                         source.seek(-1, os.SEEK_END); source.write(b'x'); source.flush(); os.fsync(source.fileno())
+                    # Exercise the metadata drift guard even when this tiny
+                    # same-size write occurs within one filesystem clock tick.
+                    os.utime(owner.archive, ns=(old.st_atime_ns, old.st_mtime_ns + 1_000_000_000))
+                    owner.assertNotEqual(owner.archive.stat().st_mtime_ns, old.st_mtime_ns)
                 return data
         with patch.object(tarfile.TarFile, 'extractfile', lambda tar, member: Modified(original(tar, member))):
             with self.assertRaisesRegex(AssertionError, 'changed while reading'): self.extract()

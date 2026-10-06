@@ -43,7 +43,8 @@ class TokenizerFixture:
     fragments = {0: '<pad>', 98: '<special>', 99: '<eos>',
                  20: '<search>query', 21: '</search> \n', 22: 'discarded tail',
                  23: '<answer>A', 24: '</answer>', 25: 'invalid action',
-                 26: '<answer>A</answer>secret'}
+                 26: '<answer>A</answer>secret', 27: '<search>query</search>secret',
+                 28: '<answer>A</answer>\ufffd'}
 
     def __init__(self):
         self.decode_calls = []
@@ -424,10 +425,126 @@ class ControllerCpuTests(unittest.TestCase):
             dict(n_search=0, correct=False, answer=None), None)
         self.assertEqual((score, trust, kind), (-.1, 0.0, None))
 
-    def test_inside_tag_token_nonwhitespace_retains_failure_evidence(self):
+    def test_inside_answer_token_nonwhitespace_preserves_full_lp_mask_and_invalid_reward(self):
+        # Synthetic token26 contains a closing tag plus a suffix; no actual
+        # tokenizer/GPU behavior is claimed by this CPU transport fixture.
         raw = [26, 99]
-        records = self.run_failure(ManagerFixture(lambda ordinal, identity: raw), 'nonwhitespace')
+        manager = ManagerFixture(lambda ordinal, identity: raw)
+        original = original_upstream_manager()
+        manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
+        self.assertEqual(manager.tokenizer.encode_calls, 0)
+        self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
+        self.assertEqual(result.batch['responses'][0].tolist(), [26])
+        self.assertEqual(result.batch['sampling_log_probs'][0].tolist(), [-.25])
+        self.assertEqual(result.batch['sampling_mask'][0].tolist(), [True])
+        self.assertEqual(result.batch['info_mask'][0, -1:].tolist(), [1])
+        self.assertEqual(result.batch['input_ids'][0].tolist(), [10, 11, 26])
+        self.assertEqual(original.search_calls, [[]])
+        self.assertEqual(result.meta_info['actual_retrieval_stats'], [0, 0])
+        self.assertEqual(result.meta_info['valid_action_stats'], [1, 1])
+        turn = result.non_tensor_batch['behavior_turns'][0][0]
+        cut = turn['prefix_cut']
+        self.assertEqual(turn['raw_generated_token_ids'], raw)
+        self.assertEqual(cut['execution_text'], '<answer>A</answer>')
+        self.assertEqual(cut['decoded_retained_prefix'], '<answer>A</answer>secret')
+        self.assertEqual(cut['retained_token_boundary_suffix'], 'secret')
+        self.assertEqual(cut['token_boundary_suffix_classification'], 'nonwhitespace')
+        self.assertEqual(cut['retained_trailing_whitespace'], '')
+        self.assertIs(cut['token_boundary_whitespace_retained'], False)
+        full = cut['decoded_retained_prefix']
+        self.assertIsNone(extract_final_answer([full]))
+        self.assertIsNone(contexts('', full, [(0, len(full))]))
+        self.assertEqual(compute_score_generated_em([full], ['A']), 0.)
+        self.assertEqual(_f1(None, ['A']), 0.)
+        source = Path(__file__).resolve().parents[2] / 'verl/trainer/main_ppo_eco.py'
+        cls = next(node for node in ast.parse(source.read_text()).body
+                   if isinstance(node, ast.ClassDef) and node.name == 'EcoRewardManager')
+        method = next(node for node in cls.body if isinstance(node, ast.FunctionDef) and node.name == '_score_probe')
+        namespace = {}
+        exec(compile(ast.Module(body=[method], type_ignores=[]), str(source), 'exec'), namespace)
+        self.assertEqual(namespace['_score_probe'](SimpleNamespace(PENALTY=.1),
+                         dict(n_search=0, correct=False, answer=None), None), (-.1, 0., None))
+
+    def test_inside_search_token_suffix_is_in_actual_next_request_and_actor_context(self):
+        manager = ManagerFixture(lambda ordinal, identity: [27, 99] if ordinal == 0 else [26, 99])
+        original = original_upstream_manager()
+        manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
+        self.assertEqual(manager.tokenizer.encode_calls, 0)
+        self.assertEqual(len(manager.actor_rollout_wg.calls), 2)
+        self.assertEqual(original.search_calls, [['query', 'query'], []])
+        # The AST executor's actual fixture information string maps to token31;
+        # it remains environment context with zero actor loss/probability.
+        self.assertEqual(result.batch['responses'][0].tolist(), [27, 31, 26])
+        self.assertEqual(result.batch['sampling_log_probs'][0].tolist(), [-.25, 0., -.25])
+        self.assertEqual(result.batch['sampling_mask'][0].tolist(), [True, False, True])
+        self.assertEqual(result.batch['info_mask'][0, -3:].tolist(), [1, 0, 1])
+        self.assertEqual(result.batch['input_ids'][0].tolist(), [10, 11, 27, 31, 26])
+        turns = result.non_tensor_batch['behavior_turns'][0]
+        self.assertEqual(turns[0]['prefix_cut']['execution_text'], '<search>query</search>')
+        self.assertEqual(turns[0]['prefix_cut']['decoded_retained_prefix'], '<search>query</search>secret')
+        self.assertEqual(turns[1]['actual_request_token_ids'], [10, 11, 27, 31])
+        next_call = manager.actor_rollout_wg.calls[1]
+        self.assertEqual(next_call.batch['input_ids'][0, next_call.batch['attention_mask'][0].bool()].tolist(),
+                         [10, 11, 27, 31])
+        row = bt.make_actor_row(trajectory_id='cpu-traj-0', prompt_width=2,
+            **{key: result.batch[key][0].tolist() for key in ('input_ids', 'attention_mask', 'info_mask', 'position_ids')})
+        count, projected, mask = bt._audit_trajectory(turns, row, result.meta_info['behavior_sampling'], 'cpu-policy0')
+        self.assertEqual((count, projected, mask), (2, [-.25, 0., -.25], [True, False, True]))
+        self.assertEqual(result.meta_info['actual_retrieval_stats'], [1, 1])
+
+    def test_ambiguous_closing_token_unicode_retains_private_failure_evidence(self):
+        raw = [28, 29, 99]
+        manager = ManagerFixture(lambda ordinal, identity: raw)
+        normal_decode = manager.tokenizer.decode
+        def unstable_decode(ids, **kwargs):
+            decoded = normal_decode(ids, **kwargs)
+            return decoded.replace('<answer>A', '<answer>B') if ids == [28] else decoded
+        manager.tokenizer.decode = unstable_decode
+        records = self.run_failure(manager, 'ambiguous_decoding_boundary')
         self.assertEqual(records[0]['raw_generated_token_ids'], raw)
+        self.assertEqual(records[0]['selected_logprobs'], [-.25, -.375, -.5])
+        self.assertEqual(len(records), 8)
+        self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
+
+    def test_stable_lossy_decoder_projection_keeps_raw_context_and_environment_text(self):
+        manager = ManagerFixture(lambda ordinal, identity: [27, 99] if ordinal == 0 else [23, 24, 99])
+        manager.tokenizer.fragments = dict(manager.tokenizer.fragments)
+        manager.tokenizer.fragments[27] = '<search>query\ufffd</search>tail'
+        original = original_upstream_manager(); manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
+        self.assertEqual(manager.tokenizer.encode_calls, 0)
+        self.assertEqual(original.search_calls, [['query\ufffd', 'query\ufffd'], []])
+        self.assertEqual(result.batch['responses'][0].tolist(), [27, 31, 23, 24])
+        self.assertEqual(result.batch['sampling_log_probs'][0].tolist(), [-.25, 0., -.25, -.375])
+        self.assertEqual(result.batch['sampling_mask'][0].tolist(), [True, False, True, True])
+        turns = result.non_tensor_batch['behavior_turns'][0]
+        cut = turns[0]['prefix_cut']
+        self.assertEqual(cut['execution_text'], '<search>query\ufffd</search>')
+        self.assertEqual(cut['decoded_retained_prefix'], '<search>query\ufffd</search>tail')
+        self.assertEqual((cut['full_decode_replacement_count'], cut['retained_decode_replacement_count']), (1, 1))
+        self.assertEqual(cut['decode_projection_role'], bt.DECODE_PROJECTION_ROLE)
+        self.assertEqual(turns[1]['actual_request_token_ids'], [10, 11, 27, 31])
+        row = bt.make_actor_row(trajectory_id='cpu-traj-0', prompt_width=2,
+            **{key: result.batch[key][0].tolist() for key in ('input_ids', 'attention_mask', 'info_mask', 'position_ids')})
+        count, projected, mask = bt._audit_trajectory(turns, row, result.meta_info['behavior_sampling'], 'cpu-policy0')
+        self.assertEqual((count, projected, mask), (3, [-.25, 0., -.25, -.375], [True, False, True, True]))
+
+    def test_lossy_final_answer_projection_is_not_sanitized_for_reward(self):
+        manager = ManagerFixture(lambda ordinal, identity: [28, 99])
+        original = original_upstream_manager(); manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
+        self.assertEqual(result.batch['responses'][0].tolist(), [28])
+        self.assertEqual(result.batch['sampling_log_probs'][0].tolist(), [-.25])
+        self.assertEqual(result.batch['info_mask'][0, -1:].tolist(), [1])
+        cut = result.non_tensor_batch['behavior_turns'][0][0]['prefix_cut']
+        self.assertEqual(cut['execution_text'], '<answer>A</answer>')
+        self.assertEqual(cut['decoded_retained_prefix'], '<answer>A</answer>\ufffd')
+        self.assertEqual(cut['retained_decode_replacement_count'], 1)
+        self.assertIsNone(extract_final_answer([cut['decoded_retained_prefix']]))
+        self.assertEqual(compute_score_generated_em([cut['decoded_retained_prefix']], ['A']), 0.)
+        self.assertEqual(manager.tokenizer.encode_calls, 0)
 
     def test_return_row_and_size_failures_preserve_offending_native_return(self):
         for failure, expression, count in (('wrong-row', 'row_identity', 8),
