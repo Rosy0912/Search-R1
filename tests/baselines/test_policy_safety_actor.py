@@ -83,8 +83,10 @@ def test_entry_errors_reject_before_any_optimizer_write(monkeypatch,tmp_path,fai
         (tmp_path/'synthetic-calibration-fixture.json').unlink()
     else:
         data.batch.pop('ref_log_prob')
-    expected = FileNotFoundError if failure == 'calibration_missing' else KeyError
-    with pytest.raises(expected):
+    expected = ValueError if failure == 'calibration_missing' else KeyError
+    with pytest.raises(expected) as caught:
         actor.update_policy(data)
+    if failure == 'calibration_missing':
+        assert str(caught.value) == 'Missing independent GPU calibration acceptance artifact'
     assert not actor.actor_optimizer.state
     assert not list((tmp_path/'policy-safety').glob('numeric-*.json'))
