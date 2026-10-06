@@ -1,0 +1,53 @@
+{
+  "actual_matching_trainer_births": 467,
+  "before512": {
+    "checked_unix": 1791296323.1089888,
+    "correct_count": 91,
+    "executed_search_calls_per_question": 1.158203125,
+    "executed_search_question_rate": 0.978515625,
+    "f1_sum": 123.48570123355005,
+    "plan_sha256": "626966eb2ff6d76227424fb16dba0e8810c741ad659049e29ac989b4b527c5fd",
+    "question_count": 512,
+    "role": "formal_inline_development_evaluation",
+    "source_correct": {
+      "hotpotqa": 40,
+      "nq": 51
+    },
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "source_em": {
+      "hotpotqa": 0.15625,
+      "nq": 0.19921875
+    },
+    "source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+    "step": 0,
+    "valid_action_rate": 0.9459227467811159,
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743
+  },
+  "before512_raw_sha256": "2acbfae9f828452e54488e6024bc4af88429f59551715e96cf41dbbe668f1b1a",
+  "final200_accepted": false,
+  "five_complete_outer_accepted": false,
+  "job_id": "3309",
+  "manifest_completed_updates_is_not_live_authority": true,
+  "native_state": "RUNNING",
+  "observed_unix": 1791296805.3631616,
+  "pipeline_entered_unix": 1791295682.059573,
+  "pipeline_stage": "GRPO_1_TO_200",
+  "role": "actual_formal_training_entry_and_before512",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "schema_version": 1,
+  "scope": "Actual same native trainer entry plus pre-training512 scalar scores; no completed outer or physical writes inferred from entry or manifest0. No after-five evaluation yet.",
+  "source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "source_hashes_match": true,
+  "source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+  "trainer_birth": {
+    "pid": 2864716,
+    "sid": 2864716,
+    "start_ticks": 2224036912,
+    "uid": 0
+  }
+}
