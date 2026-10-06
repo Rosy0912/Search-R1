@@ -44,7 +44,7 @@ def fresh_worker(calls=20):
     assert scheduler.last_epoch==0 and scheduler.get_last_lr()==[0.]
     for _ in range(calls):
         param.grad=torch.ones_like(param);opt.step();opt.zero_grad()
-    worker=N(_is_actor=True,actor_optimizer=opt,actor_lr_scheduler=scheduler,
+    worker=N(_is_actor=True,actor=N(_actual_committed_optimizer_calls=calls),actor_optimizer=opt,actor_lr_scheduler=scheduler,
              config=C(actor=C(fresh200_protocol='tree_fresh200_five_leaf_v1'),model=C(path='/synthetic/official-model')))
     return worker,param
 

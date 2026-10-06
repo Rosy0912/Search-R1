@@ -50,15 +50,29 @@ def canonical_text(text):
     return text
 
 
-def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
-    """Called before facade padding, retaining real request IDs and scalar values."""
-    fields=('n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
+def capture_native_sampling_settings(sampling_params):
+    """Read original native attributes; usable before engine processor construction."""
+    fields=('n','best_of','_real_n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
         'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
-        'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors')
+        'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors',
+        'truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids')
+    for key in fields:
+        require(hasattr(sampling_params,key), 'Explicit actual '+key+' metadata is required')
     settings={key:copy.deepcopy(getattr(sampling_params,key)) for key in fields}
+    for key in ('best_of','_real_n'):
+        require(type(settings[key]) is int and settings[key]==1,
+                'Native raw-token protocol requires actual '+key+'=1')
+    for key in ('truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids'):
+        require(settings[key] is None, 'Native raw-token protocol requires actual '+key+'=None')
     require(settings['logits_processors'] is None, 'Native raw-token protocol requires actual logits_processors=None')
     require(settings['n']==1 and settings['max_tokens']==500 and settings['ignore_eos'] is False and
             settings['min_tokens']==0 and not settings['stop'], 'Unsupported native stop/distribution protocol')
+    return settings
+
+
+def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
+    """Called before facade padding, retaining real request IDs and scalar values."""
+    settings=capture_native_sampling_settings(sampling_params)
     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
         'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
     require(all(isinstance(value,str) and value for value in provenance.values()),

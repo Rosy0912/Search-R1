@@ -24,7 +24,9 @@ PROVENANCE_KEYS = ('SEARCH_R1_BASELINE_COMMIT', 'SEARCH_R1_BASELINE_CONFIG_SHA25
                    'SEARCH_R1_BASELINE_RUN_ID', 'SLURM_JOB_ID')
 PLAIN_DISTRIBUTION = dict(temperature=1., top_p=1., top_k=-1, min_p=0.,
                           presence_penalty=0., frequency_penalty=0.,
-                          repetition_penalty=1., n=1, logits_processors=None)
+                          repetition_penalty=1., n=1, best_of=1, _real_n=1, logits_processors=None,
+                          truncate_prompt_tokens=None, guided_decoding=None,
+                          logit_bias=None, allowed_token_ids=None)
 
 
 def require(value, message):
@@ -59,6 +61,9 @@ def validate_distribution(value):
             'Actual native sampling distribution metadata missing')
     for key, expected in PLAIN_DISTRIBUTION.items():
         actual = value[key]
+        if key in ('best_of','_real_n'):
+            require(type(actual) is int and actual == 1,
+                    'Actual '+key+' must be the recorded integer1')
         require((actual is None if expected is None else
                  type(actual) in (int, float) and type(actual) is not bool and actual == expected),
                 'Unsupported actual sampling distribution: ' + key)

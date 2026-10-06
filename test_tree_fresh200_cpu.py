@@ -33,7 +33,7 @@ def config():
         leaves=3, leaf_quotas=[3, 2], token_preservation=dict(enabled=True), behavior_mu=dict(enabled=True)),
         holdout=dict(input_mode='prebuilt_manifest', manifest_sha256=DATA_SHA256)),
         actor_rollout_ref=dict(model=dict(path='official-same-local-path'), ref=dict(model_path='official-same-local-path',
-        log_prob_micro_batch_size=32), rollout=dict(n_agent=2, n=1, log_prob_micro_batch_size=32, tree_raw_emission=True),
+        log_prob_micro_batch_size=32), rollout=dict(n_agent=2, n=1, best_of=1, log_prob_micro_batch_size=32, tree_raw_emission=True),
         actor=dict(ppo_mini_batch_size=128, ppo_micro_batch_size=16, ppo_epochs=1,
         ulysses_sequence_parallel_size=1, use_dynamic_bsz=False, fresh200_protocol=PROTOCOL,
         optim=dict(lr=1e-6, lr_warmup_steps=57, lr_warmup_steps_ratio=0, total_training_steps=200),
@@ -96,6 +96,14 @@ class Fresh200Tests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 refuse_recovery_environment({name: 'old-value'})
 
+    def test_fresh_sampling_cannot_select_best_of_multiple_or_guess_default(self):
+        for value in (None, 2, True, '1'):
+            c = config(); c.actor_rollout_ref.rollout.best_of = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                validate_fresh200_config(c)
+        c = config(); del c.actor_rollout_ref.rollout['best_of']
+        with self.assertRaises(ValueError): validate_fresh200_config(c)
+
     def test_actual_checkpoint_sampler_starts_uniterated_and_refuses_consumed_state(self):
         from search_r1.baselines.training_state import CheckpointBatchSampler
         sampler = CheckpointBatchSampler(169028, 512, 42, DATA_SHA256, True)
@@ -151,9 +159,24 @@ class Fresh200Tests(unittest.TestCase):
     def test_legacy_rectangular_quotas_remain_unchanged(self):
         tree = node(dict(roots=2, leaves=3))
         self.assertEqual(leaf_quotas(tree), (3, 3))
+        self.assertEqual(leaf_quotas(N(roots=2, leaves=3)), (3, 3))
         for value in [[3], [3, 0], [True, 2], [2, 2]]:
             tree.leaf_quotas = value
             with self.subTest(value=value), self.assertRaises(ValueError): leaf_quotas(tree)
+
+    def test_actual_attribute_tree_preserves_exact_five_leaf_budget(self):
+        manager = N(tokenizer=N(pad_token_id=151643), config=N(max_start_length=2048),
+                    tensor_fn=N(create_position_ids=lambda m: (m.cumsum(-1)-1)*m))
+        engine = CompleteEngine(manager); engine.output_meta = {}
+        tree = N(roots=2, rounds=1, expansions=2, leaves=3, leaf_quotas=[3, 2])
+        batch = TinyProto(dict(input_ids=torch.tensor([[8], [8]]),
+                               attention_mask=torch.ones(2, 1, dtype=torch.long)))
+        fake = ModuleType('verl'); fake.DataProto = TinyProto
+        with patch.dict('sys.modules', {'verl': fake}):
+            output, sources = engine.run(batch, tree)
+        self.assertEqual(len(output), 5)
+        self.assertEqual(engine.cost['trajectories'], 5)
+        self.assertEqual([sources.tolist().count(i) for i in range(2)], [3, 2])
 
     def test_actual_constant_scheduler_57_outer_warmup(self):
         source = Path(__file__).parent/'verl/utils/torch_functional.py'

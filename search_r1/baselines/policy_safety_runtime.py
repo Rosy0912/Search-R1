@@ -10,7 +10,9 @@ from .policy_safety import update_statistics, admission, global_negative_quantil
 
 
 class PolicySafetyRefusal(RuntimeError):
-    pass
+    def __init__(self, message, *, matched_all_ranks=False):
+        super().__init__(message)
+        self.matched_all_ranks = matched_all_ranks
 
 
 BEHAVIOR_MU_PROTOCOL = 'tree_behavior_mu_centered_ppo_v1'
@@ -78,14 +80,14 @@ def validate_actor_probability_profile(actor, data, config):
     flag = torch.tensor(int(error is not None), device=device)
     if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
     if flag.item():
-        raise PolicySafetyRefusal('Global probability-profile startup refusal; local diagnosis: '+str(error))
+        raise PolicySafetyRefusal('Global probability-profile startup refusal; local diagnosis: '+str(error), matched_all_ranks=True)
     signature = torch.tensor([int(corrected), int(bool(config.get('enabled', False)))], device=device)
     lo, hi = signature.clone(), signature.clone()
     if dist.is_initialized():
         dist.all_reduce(lo, op=dist.ReduceOp.MIN)
         dist.all_reduce(hi, op=dist.ReduceOp.MAX)
     if not torch.equal(lo, hi):
-        raise PolicySafetyRefusal('Global probability-profile startup refusal: rank profile mismatch')
+        raise PolicySafetyRefusal('Global probability-profile startup refusal: rank profile mismatch', matched_all_ranks=True)
     return corrected
 
 
@@ -113,7 +115,7 @@ class PolicySafetyRuntime:
         flag = torch.tensor(int(error is not None), device=self.device)
         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
         if flag.item():
-            raise PolicySafetyRefusal(f'Global safety startup refusal; local diagnosis: {error}')
+            raise PolicySafetyRefusal(f'Global safety startup refusal; local diagnosis: {error}', matched_all_ranks=True)
         # Different per-rank row/chunk counts would strand an FSDP monitor forward.
         signature = torch.tensor([len(self.batch), len(self.monitor), actor.config.ppo_micro_batch_size,
                                   self.target_kl, self.tail_limit, self.initial_consistency_limit,
@@ -128,7 +130,7 @@ class PolicySafetyRuntime:
             dist.all_reduce(lo, op=dist.ReduceOp.MIN)
             dist.all_reduce(hi, op=dist.ReduceOp.MAX)
         if not torch.equal(lo, hi):
-            raise PolicySafetyRefusal('Global safety startup refusal: rank configuration/count mismatch')
+            raise PolicySafetyRefusal('Global safety startup refusal: rank configuration/count mismatch', matched_all_ranks=True)
 
     @staticmethod
     def effective_mask(data):
@@ -231,10 +233,10 @@ class PolicySafetyRuntime:
         flag = torch.tensor(int(failed), device=self.device)
         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
         if flag.item():
-            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes')
+            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes', matched_all_ranks=True)
         if not decision['allowed']:
             raise PolicySafetyRefusal(f'Policy safety refusal after {self.committed} committed calls: '
-                                      f'{decision.get("reasons")}; evidence {path}')
+                                      f'{decision.get("reasons")}; evidence {path}', matched_all_ranks=True)
 
     def sync_valid(self, bad, phase):
         flag = torch.as_tensor(bad, dtype=torch.long, device=self.device)

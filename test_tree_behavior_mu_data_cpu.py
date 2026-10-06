@@ -12,7 +12,7 @@ from unittest.mock import patch
 import numpy as np
 import torch
 
-from test_tree_raw_tokens_cpu import Tokenizer, TinyProto, params, ENV
+from test_tree_raw_tokens_cpu import Tokenizer, TinyProto, params, ENV, source_functions
 from search_r1.baselines.rollout import SearchRollout, State, object_array
 from search_r1.baselines.tree_raw_tokens import (FIELD as RAW_FIELD, capture_native_emissions,
                                                sampled_action, fingerprint)
@@ -50,7 +50,9 @@ class BehaviorMuDataTests(unittest.TestCase):
             finish_reason='stop' if ids[-1] == 151645 else 'length', stop_reason=None)
         request = NS(request_id='fixture-request', finished=True, outputs=[out], prompt_token_ids=[8])
         record = capture_native_emissions([request], p, call, 0)[0]
-        self.assertEqual(len(record['sampling_params']), 18)
+        self.assertEqual(len(record['sampling_params']), 24)
+        self.assertEqual(record['sampling_params']['best_of'], 1)
+        self.assertEqual(record['sampling_params']['_real_n'], 1)
         self.assertIsNone(record['sampling_params']['logits_processors'])
         text = self.tok.decode(ids, skip_special_tokens=True)
         from search_r1.baselines.tree_raw_tokens import canonical_text
@@ -70,6 +72,92 @@ class BehaviorMuDataTests(unittest.TestCase):
 
     def validate(self, data):
         return validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ))
+
+    def test_native_best_of_is_recorded_without_defaulting(self):
+        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
+                 finish_reason='stop', stop_reason=None)
+        request = NS(request_id='best-of-fixture', finished=True, outputs=[out], prompt_token_ids=[8])
+        settings = params()
+        captured = capture_native_emissions([request], settings, 'best-of-capture', 0)[0]
+        self.assertEqual(captured['sampling_params']['best_of'], 1)
+        self.assertEqual(len(captured['sampling_params']), 24)
+        for actual in (None, 2, 1., True):
+            settings.best_of = actual
+            with self.subTest(actual=actual), self.assertRaisesRegex(ValueError, 'best_of'):
+                capture_native_emissions([request], settings, 'bad-best-of', 0)
+
+    def test_missing_native_best_of_is_not_inferred_from_n1(self):
+        settings = params(); del settings.best_of
+        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
+                 finish_reason='stop', stop_reason=None)
+        request = NS(request_id='missing-best-of', finished=True, outputs=[out], prompt_token_ids=[8])
+        with self.assertRaisesRegex(ValueError, 'best_of'):
+            capture_native_emissions([request], settings, 'missing-best-of', 0)
+
+    def test_best_of_ledger_missing_and_resealed_distribution_drift_refuse(self):
+        for actual in ('missing', None, 2, 1., True):
+            state = self.state()
+            action = state.raw_ledger[0]['action']
+            settings = action['native_emission']['sampling_params']
+            if actual == 'missing': del settings['best_of']
+            else: settings['best_of'] = actual
+            # Re-seal the actual source action to exercise the sampling contract,
+            # rather than relying only on generic ledger hash drift rejection.
+            action['action_binding_sha256'] = fingerprint({k: v for k, v in action.items()
+                if not k.startswith('prefix_scan_') and k != 'action_binding_sha256'})
+            with self.subTest(actual=actual), self.assertRaises(ValueError):
+                self.output([state])
+        data = self.output()
+        data.non_tensor_batch[RAW_FIELD][0]['raw_ledger'][0]['action']['native_emission']['sampling_params']['best_of'] = 2
+        with self.assertRaises(ValueError): self.validate(data)
+
+    def test_native_context_processor_controls_and_real_n_cannot_be_hidden(self):
+        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
+                 finish_reason='stop', stop_reason=None)
+        request = NS(request_id='native-control-fixture', finished=True, outputs=[out], prompt_token_ids=[8])
+        for key, actual in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
+                            ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
+            settings=params();setattr(settings,key,actual)
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,key):
+                capture_native_emissions([request],settings,'bad-native-control',0)
+        for key in ('truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids','_real_n'):
+            settings=params();delattr(settings,key)
+            with self.subTest(missing=key),self.assertRaisesRegex(ValueError,key):
+                capture_native_emissions([request],settings,'missing-native-control',0)
+
+    def test_native_control_missing_or_resealed_mu_binding_drift_refuses(self):
+        for key, actual in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
+                            ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
+            for missing in (False,True):
+                state=self.state();action=state.raw_ledger[0]['action'];settings=action['native_emission']['sampling_params']
+                if missing:del settings[key]
+                else:settings[key]=actual
+                action['action_binding_sha256']=fingerprint({k:v for k,v in action.items()
+                    if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
+                with self.subTest(key=key,missing=missing),self.assertRaises(ValueError):self.output([state])
+        data=self.output()
+        data.non_tensor_batch[RAW_FIELD][0]['raw_ledger'][0]['action']['native_emission']['sampling_params']['allowed_token_ids']=[151645]
+        with self.assertRaises(ValueError):self.validate(data)
+
+    def test_actual_facade_native_entry_refuses_initial_controls_before_generate(self):
+        native=source_functions('verl/third_party/vllm/vllm_v_0_6_3/llm.py','LLM',
+            ['generate_with_emission_metadata'],{})['generate_with_emission_metadata']
+        for key,value in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
+                          ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
+            for missing in (False,True):
+                calls=[]
+                def fake_native(**kwargs):
+                    calls.append(kwargs)
+                    # An old engine might clear a processor-construction input.
+                    # This callback must never receive unsupported initial values.
+                    setattr(kwargs['sampling_params'],key,None)
+                facade=NS(generate=fake_native)
+                settings=params()
+                if missing:delattr(settings,key)
+                else:setattr(settings,key,value)
+                with self.subTest(key=key,missing=missing),self.assertRaisesRegex(ValueError,key):
+                    native(facade,sampling_params=settings)
+                self.assertEqual(calls,[],'Initial unsupported settings reached the native entrypoint')
 
     def test_actual_compose_emits_exact_fp32_and_zero_observation_padding(self):
         data = self.output([self.state(), self.state([7, 151645], call='second-call', obs=[])])

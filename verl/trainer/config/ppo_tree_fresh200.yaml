@@ -25,6 +25,7 @@ actor_rollout_ref:
         protocol: tree_behavior_mu_centered_ppo_v1
         initial_actor_repeat_max_abs_delta: null
   rollout:
+    best_of: 1
     tree_raw_emission: false
     sampling_consistency:
       enabled: false

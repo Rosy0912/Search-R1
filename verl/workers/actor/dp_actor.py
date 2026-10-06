@@ -158,6 +158,8 @@ class DataParallelPPOActor(BasePPOActor):
             self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
         self.actor_optimizer.step()
+        # Record the returned write before any publish/audit that may fail.
+        self._actual_committed_optimizer_calls = getattr(self, '_actual_committed_optimizer_calls', 0) + 1
         if safety is not None:
             safety.committed += 1
             safety.last_grad_preclip = float(grad_norm)
@@ -216,6 +218,8 @@ class DataParallelPPOActor(BasePPOActor):
         return log_probs
 
     def update_policy(self, data: DataProto):
+        self._actual_committed_optimizer_calls = 0
+        self._policy_safety = None
         # make sure we are in training mode
         self.actor_module.train()
         method = self.config.get('baseline_method')

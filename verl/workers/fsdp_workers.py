@@ -104,7 +104,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
         return bool(flag.item())
     outer = data.meta_info.get('baseline_outer_step')
-    writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
+    writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
+    returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
     error = None
     before_lrs = None
     try:
@@ -113,7 +114,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
             raise ValueError('Fresh scheduler admission requires the explicit fresh200 profile')
         if type(outer) is not int or outer < 1:
             raise ValueError('Fresh outer must be a positive direct driver counter')
-        if type(writes) is not int or writes != 20 or type(skips) is not int or skips != 0:
+        if (type(writes) is not int or writes != 20 or type(returned_writes) is not int
+                or returned_writes != writes or type(skips) is not int or skips != 0):
             raise ValueError('Fresh outer requires each rank to commit 20 optimizer calls and skip zero')
         if (type(scheduler_before_outer) is not int or scheduler_before_outer != outer - 1
                 or worker.actor_lr_scheduler.last_epoch != scheduler_before_outer):
@@ -156,7 +158,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
                   observed_outer=outer if type(outer) is int else None,
                   actual_optimizer_calls=writes if type(writes) is int else None,
                   skipped_empty_minibatches=skips if type(skips) is int else None,
-                  direct_count_source='actor.update_policy local return before any rank reduction',
+                  returned_optimizer_calls=returned_writes if type(returned_writes) is int else None,
+                  direct_count_source='actor optimizer.step successful-return counter before any publish/audit IO',
                   scheduler_step_before=scheduler_before_outer, scheduler_step_after=after,
                   scheduler_step_invoked=scheduler_step_invoked,
                   learning_rates_before=before_lrs, learning_rates_after=after_lrs,
@@ -184,8 +187,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         io_error = repr(exc)
     global_io_invalid = global_invalid(io_error)
     if global_before_invalid or global_after_invalid or global_io_invalid:
-        raise RuntimeError('Global fresh outer scheduler/accounting refusal; actual optimizer writes retained; local: '
-                           +str(error or step_error or io_error))
+        from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+        raise PolicySafetyRefusal('Global fresh outer scheduler/accounting refusal; actual optimizer writes retained; local: '
+                                  +str(error or step_error or io_error), matched_all_ranks=True)
     metrics['actor/fresh_direct_rank_outer_admitted'] = 1
     return dict(path=str(path), sha256=record_sha, rank=rank, actual_optimizer_calls=writes,
                 scheduler_step_before=scheduler_before_outer, scheduler_step_after=after)
@@ -543,30 +547,47 @@ class ActorRolloutRefWorker(Worker):
 
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
-            # perform training
-            with Timer(name='update_policy', logger=None) as timer:
-                lr_before_outer = self.actor_lr_scheduler.get_last_lr()[0]
-                scheduler_before_outer = self.actor_lr_scheduler.last_epoch
-                metrics = self.actor.update_policy(data=data)
-            delta_time = timer.last
-            global_num_tokens = data.meta_info['global_token_num']
-            estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
-            metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
+            # Preserve actual counters before any startup refusal or audit IO.
+            lr_before_outer = self.actor_lr_scheduler.get_last_lr()[0]
+            scheduler_before_outer = self.actor_lr_scheduler.last_epoch
+            self.actor._actual_committed_optimizer_calls = 0
+            from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+            from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
+            partial = None
+            try:
+                if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+                    prepare_partial_worker_context(self, data)
+                with Timer(name='update_policy', logger=None) as timer:
+                    metrics = self.actor.update_policy(data=data)
+                delta_time = timer.last
+                global_num_tokens = data.meta_info['global_token_num']
+                estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
+                metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
-            if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
-                fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
-            elif metrics.get('actor/optimizer_steps', 0) > 0:
-                self.actor_lr_scheduler.step()
-            lr = self.actor_lr_scheduler.get_last_lr()[0]
-            metrics['actor/lr'] = lr
-            metrics['actor/lr_before_outer'] = lr_before_outer
-            metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
-            metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
+                if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+                    fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
+                elif metrics.get('actor/optimizer_steps', 0) > 0:
+                    self.actor_lr_scheduler.step()
+                lr = self.actor_lr_scheduler.get_last_lr()[0]
+                metrics['actor/lr'] = lr
+                metrics['actor/lr_before_outer'] = lr_before_outer
+                metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
+                metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
+
+            except PolicySafetyRefusal as refusal:
+                if (refusal.matched_all_ranks is not True
+                        or self.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1'):
+                    raise
+                partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
+                metrics = {'actor/optimizer_steps': self.actor._actual_committed_optimizer_calls,
+                           'actor/scheduler_step_before_outer': scheduler_before_outer,
+                           'actor/scheduler_step_after_outer': self.actor_lr_scheduler.last_epoch,
+                           'actor/partial_outer_refused': 1}
 
             log_gpu_memory_usage('After update policy', logger=logger)
 
             # TODO: here, we should return all metrics
-            output = DataProto(meta_info={'metrics': metrics})
+            output = DataProto(meta_info={'metrics': metrics, **({'tree_partial_state': partial} if partial is not None else {})})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')

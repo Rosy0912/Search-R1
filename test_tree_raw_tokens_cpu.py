@@ -18,7 +18,7 @@ import string
 import numpy as np
 import torch
 
-from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,
+from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,capture_native_sampling_settings,
     sampled_action,canonical_text,trajectory_projection,semantic_spans,tokenizer_identity)
 from search_r1.baselines.rollout import State,SearchRollout,object_array
 
@@ -61,9 +61,10 @@ class Tokenizer:
 
 
 def params():
-    return NS(n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
+    return NS(n=1,best_of=1,_real_n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
         repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
-        include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None)
+        include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None,
+        truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None)
 
 
 ENV={'SEARCH_R1_BASELINE_COMMIT':'a'*40,'SEARCH_R1_BASELINE_CONFIG_SHA256':'b'*64,
@@ -298,6 +299,7 @@ class RawTokenTests(unittest.TestCase):
         completion=NS(token_ids=ids,logprobs=[{token:NS(logprob=-.25)} for token in ids],finish_reason='stop',stop_reason=None)
         request=NS(request_id='actual9',finished=True,outputs=[completion],prompt_token_ids=[8])
         facade=NS(llm_engine=NS(tokenizer=self.tok),_tree_emission_call='fixture',_tree_emission_params=params())
+        facade._tree_emission_before_settings=capture_native_sampling_settings(facade._tree_emission_params)
         with patch.dict(os.environ,ENV),patch.object(torch.distributed,'get_rank',return_value=0),patch(
                 'search_r1.baselines.tree_raw_tokens.capture_native_emissions',side_effect=observe_native):
             result=function(facade,[request])
@@ -305,6 +307,33 @@ class RawTokenTests(unittest.TestCase):
         self.assertEqual(result[2][0]['raw_emitted_token_ids'],ids)
         facade._tree_emission_call=None
         self.assertEqual(len(function(facade,[request])),2)
+
+    def test_actual_facade_pre_post_control_binding_and_cleanup(self):
+        from torch.nn.utils.rnn import pad_sequence
+        methods=source_functions('verl/third_party/vllm/vllm_v_0_6_3/llm.py','LLM',
+            ['generate_with_emission_metadata','_post_process_outputs'],
+            dict(torch=torch,pad_sequence=pad_sequence,List=List,Tuple=Tuple,RequestOutput=object))
+        completion=NS(token_ids=[151645],logprobs=[{151645:NS(logprob=-.25)}],finish_reason='stop',stop_reason=None)
+        request=NS(request_id='pre-post-controls',finished=True,outputs=[completion],prompt_token_ids=[8])
+        for changed in (None,('temperature',2.),('best_of',2),('guided_decoding',{'json':{}}),
+                        ('logit_bias',{151645:1.}),('allowed_token_ids',[151645])):
+            calls=[];facade=NS(llm_engine=NS(tokenizer=self.tok))
+            def generate(**kwargs):
+                calls.append('native-entry')
+                if changed:setattr(kwargs['sampling_params'],changed[0],changed[1])
+                return methods['_post_process_outputs'](facade,[request])
+            facade.generate=generate
+            with self.subTest(changed=changed),patch.dict(os.environ,ENV),patch.object(torch.distributed,'get_rank',return_value=0):
+                if changed:
+                    with self.assertRaises(ValueError):methods['generate_with_emission_metadata'](facade,sampling_params=params())
+                else:
+                    result=methods['generate_with_emission_metadata'](facade,sampling_params=params())
+                    self.assertEqual(len(result),3)
+                    self.assertEqual(len(result[2][0]['sampling_params']),24)
+                self.assertEqual(calls,['native-entry'])
+                self.assertIsNone(facade._tree_emission_call)
+                self.assertIsNone(facade._tree_emission_params)
+                self.assertIsNone(facade._tree_emission_before_settings)
 
 
 if __name__=='__main__':unittest.main()

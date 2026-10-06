@@ -166,12 +166,15 @@ class LLM(LLM):
         import uuid
         if getattr(self, '_tree_emission_call', None) is not None:
             raise ValueError('Concurrent Tree native-emission capture is forbidden')
+        from search_r1.baselines.tree_raw_tokens import capture_native_sampling_settings
+        before_settings = capture_native_sampling_settings(kwargs['sampling_params'])
         self._tree_emission_call = uuid.uuid4().hex
         self._tree_emission_params = kwargs['sampling_params']
+        self._tree_emission_before_settings = before_settings
         try:
             return self.generate(**kwargs)
         finally:
-            self._tree_emission_call = self._tree_emission_params = None
+            self._tree_emission_call = self._tree_emission_params = self._tree_emission_before_settings = None
 
     # # NOTE(shengguangming): add for verl
     # # TODO(sgm): we can optimize it by making the dataloader yield List[int] without padding.
@@ -186,7 +189,10 @@ class LLM(LLM):
     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
         metadata = None
         if getattr(self, '_tree_emission_call', None) is not None:
-            from search_r1.baselines.tree_raw_tokens import capture_native_emissions
+            from search_r1.baselines.tree_raw_tokens import capture_native_emissions, capture_native_sampling_settings
+            actual_settings = capture_native_sampling_settings(self._tree_emission_params)
+            if actual_settings != self._tree_emission_before_settings:
+                raise ValueError('Actual Tree native sampling controls changed during engine generation')
             metadata = capture_native_emissions(request_outputs, self._tree_emission_params,
                 self._tree_emission_call, torch.distributed.get_rank())
         output_token_ids = []

@@ -323,9 +323,9 @@ class SearchRollout:
         roots = states[:]
         snapshots = self.complete(states, gen_batch.meta_info)
         if tree is not None:
-            from .tree_fresh200 import leaf_quotas
+            from .tree_fresh200 import leaf_quotas, tree_option
             quotas = leaf_quotas(tree)
-            exact_quota = getattr(tree, 'get', lambda k, d=None: d)('leaf_quotas') is not None
+            exact_quota = tree_option(tree, 'leaf_quotas') is not None
             if len(states) % tree.roots:
                 raise ValueError('Tree root rows do not contain complete question groups')
             leaves_by_root = [[root] for root in states]

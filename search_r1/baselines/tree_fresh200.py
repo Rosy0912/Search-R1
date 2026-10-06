@@ -6,9 +6,14 @@ REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 DATA_SHA256 = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
 
 
+def tree_option(tree, key, default=None):
+    getter = getattr(tree, 'get', None)
+    return getter(key, default) if callable(getter) else getattr(tree, key, default)
+
+
 def leaf_quotas(tree):
     """Legacy rectangular trees or explicit per-root allocation, never drop extras."""
-    quotas = tree.get('leaf_quotas')
+    quotas = tree_option(tree, 'leaf_quotas')
     if quotas is None:
         return (int(tree.leaves),) * int(tree.roots)
     quotas = tuple(quotas)
@@ -42,6 +47,7 @@ def validate_fresh200_config(config):
         raise ValueError('Fresh200 model/split/protocol identity changed')
     if ((tree.roots, tree.rounds, tree.expansions, tree.leaves) != (2, 1, 2, 3)
             or leaf_quotas(tree) != (3, 2) or rollout.n_agent != 2 or rollout.n != 1
+            or type(rollout.get('best_of')) is not int or rollout.best_of != 1
             or config.data.train_batch_size != 512
             or (actor.ppo_mini_batch_size, actor.ppo_micro_batch_size, actor.ppo_epochs) != (128, 16, 1)
             or (rollout.log_prob_micro_batch_size, ref.log_prob_micro_batch_size) != (32, 32)

@@ -1083,7 +1083,24 @@ class RayPPOTrainer(object):
                             if os.environ.get('TREE_PPO_CALIBRATION_ONLY') == '1':
                                 from search_r1.baselines.sampling_consistency import finalize_calibration
                                 return finalize_calibration(self, batch)
-                            actor_output = self.actor_rollout_wg.update_actor(batch)
+                            if fresh200:
+                                from search_r1.baselines.tree_partial_state import partial_context
+                                batch.meta_info['tree_partial_context'] = partial_context(self)
+                            try:
+                                actor_output = self.actor_rollout_wg.update_actor(batch)
+                            except Exception as actor_error:
+                                if fresh200:
+                                    from search_r1.baselines.tree_partial_state import preserve_unmatched_actor_failure
+                                    try:
+                                        evidence = preserve_unmatched_actor_failure(self, batch, actor_error)
+                                        print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE=' + evidence, flush=True)
+                                    except Exception as evidence_error:
+                                        print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE_FAILED=' +
+                                              repr(evidence_error), flush=True)
+                                raise
+                            if fresh200:
+                                from search_r1.baselines.tree_partial_state import stop_on_partial_actor_result
+                                stop_on_partial_actor_result(self, batch, actor_output)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
                         if getattr(self, 'baseline_controller', None) is not None:
