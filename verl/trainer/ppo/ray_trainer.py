@@ -20,6 +20,7 @@ import os
 from pathlib import Path
 import uuid
 import functools
+import itertools
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
@@ -806,6 +807,8 @@ class RayPPOTrainer(object):
             if self.config.actor_rollout_ref.actor.policy_safety.get('mode') != 'production':
                 raise RuntimeError('Formal fresh200 fit cannot use uncalibrated diagnostic admission')
             self.actual_outer_updates = 0
+            from search_r1.baselines.fresh200 import initialize_attempt_ledger
+            initialize_attempt_ledger(self)
         instruct_origin = 0
         first_training_iterator = None
         if fresh_instruct:
@@ -861,7 +864,8 @@ class RayPPOTrainer(object):
         )
 
         # start training loop
-        for epoch in range(self.config.trainer.total_epochs):
+        epochs = itertools.count() if fresh200_enabled(self.config) else range(self.config.trainer.total_epochs)
+        for epoch in epochs:
             epoch_batches = (first_training_iterator if epoch == 0 and first_training_iterator is not None
                              else self.train_dataloader)
             if fresh200_enabled(self.config):
@@ -875,12 +879,20 @@ class RayPPOTrainer(object):
                 timing_raw = {}
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                if fresh200_enabled(self.config):
+                    from search_r1.baselines.fresh200 import begin_attempt
+                    attempt_id = begin_attempt(self, batch)
+                else:
+                    attempt_id = None
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                trajectory_root = Path(self.config.trainer.default_local_dir).parent / 'trajectories'
+                if attempt_id is not None:
+                    trajectory_root = trajectory_root / 'attempts' / f'attempt_{attempt_id:06d}'
                 if getattr(self.config.trainer, 'trajectory_logging', False):
                     from search_r1.baselines.trajectory_records import RolloutTrace
                     batch.non_tensor_batch['audit_trajectory_row'] = np.arange(len(batch), dtype=np.int64)
                     generation_manager.rollout_trace = RolloutTrace(
-                        Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                        trajectory_root,
                         self.global_steps, batch.non_tensor_batch['index'].tolist(),
                         self.config.actor_rollout_ref.rollout.n_agent)
 
@@ -1014,7 +1026,7 @@ class RayPPOTrainer(object):
                             if getattr(self.config.trainer, 'trajectory_logging', False):
                                 from search_r1.baselines.trajectory_records import record_scored_batch
                                 record_scored_batch(
-                                    Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                                    trajectory_root,
                                     self.global_steps, batch, self.tokenizer)
                             from search_r1.baselines.runtime_audit import enabled as audit_enabled
                             if audit_enabled():
@@ -1038,11 +1050,27 @@ class RayPPOTrainer(object):
                                             error=repr(actor_error), preservation_error=repr(preservation_error),
                                             automatic_rollback=False, automatic_resume=False),
                                             Path(self.config.trainer.default_local_dir).parent / 'audit' /
-                                                f'partial-driver-save-failed-outer{self.global_steps}.json')
+                                                f'partial-driver-save-failed-attempt{attempt_id}-outer{self.global_steps}.json')
                                 # Failed or partially written outer never increments the completed counter.
                                 raise
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
+                        if fresh200_enabled(self.config):
+                            from search_r1.baselines.fresh200 import consume_attempt
+                            from search_r1.baselines.partial_update import save_attempt_driver
+                            outcome = consume_attempt(self, actor_output)
+                            save_attempt_driver(self, batch, outcome)
+                            metrics.update(training_actual_attempts=outcome['ledger']['attempts'],
+                                training_actual_adam_total=outcome['ledger']['actual_adam_total'],
+                                training_skipped_attempts=outcome['ledger']['skipped_attempts'])
+                            if not outcome['counted_complete']:
+                                if getattr(self.config.trainer, 'trajectory_logging', False):
+                                    from search_r1.baselines.trajectory_records import publish_trace_completion
+                                    publish_trace_completion(trajectory_root, self.global_steps, len(batch),
+                                        'ATTEMPT_NOT_COUNTED_FRESH_BATCH_NEXT', metrics['actor/optimizer_steps'])
+                                logger.log(data=metrics, step=self.actual_outer_updates)
+                                self.global_steps = self.actual_outer_updates + 1
+                                continue  # New batch, newly scored old policy and new GiGPO groups.
                         if getattr(self, 'baseline_controller', None) is not None:
                             self.baseline_controller.after_actor(batch, metrics)
 
@@ -1052,9 +1080,14 @@ class RayPPOTrainer(object):
                             raise RuntimeError('GRPO/GiGPO outer iteration performed no actor update; budget cannot advance')
                         from search_r1.baselines.quality_resume import enabled as quality_enabled
                         expected_optimizer_steps = 10 if quality_enabled(self.config) else 20
-                        if fresh_instruct and metrics.get('actor/optimizer_steps') != expected_optimizer_steps:
+                        if (fresh_instruct and not fresh200_enabled(self.config)
+                                and metrics.get('actor/optimizer_steps') != expected_optimizer_steps):
                             raise RuntimeError(f'Instruct300 requires exactly{expected_optimizer_steps} optimizer steps per outer')
-                        self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+                        if not fresh200_enabled(self.config):
+                            self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+                        elif (metrics.get('actor/opportunities_processed') != 20
+                                or metrics.get('actor/attempt_counted_complete') != 1):
+                            raise RuntimeError('Fresh outer did not process all20 opportunities with a real Adam write')
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
 
                     # Detached training metrics must exist before quality monitoring.
@@ -1106,7 +1139,7 @@ class RayPPOTrainer(object):
                 if getattr(self.config.trainer, 'trajectory_logging', False):
                     from search_r1.baselines.trajectory_records import publish_trace_completion
                     publish_trace_completion(
-                        Path(self.config.trainer.default_local_dir).parent / 'trajectories',
+                        trajectory_root,
                         self.global_steps, len(batch), 'ACTUAL_OUTER_UPDATE_COMPLETE',
                         metrics['actor/optimizer_steps'])
                 # collect metrics
@@ -1167,6 +1200,9 @@ class RayPPOTrainer(object):
                         print('SEARCH_R1_FINAL_METRICS_JSON=' + json.dumps(val_metrics, sort_keys=True), flush=True)
                         logger.log(data=val_metrics, step=self.global_steps)
                     return
+            if fresh200_enabled(self.config):
+                from search_r1.baselines.fresh200 import record_epoch_end
+                record_epoch_end(self)
     
     def _create_loss_mask(self, batch, metrics):
         """Create loss mask for state tokens."""

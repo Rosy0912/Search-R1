@@ -23,10 +23,10 @@ class MatchedGradientRejected(ValueError):
         return (type(self), (str(self), self.diagnostic_error))
 
 
-def _matched_gradient_rejection(grads, norm):
+def _matched_gradient_rejection(grads, norm, identity=None):
     diagnostic_error = None
     try:
-        _failure(grads, norm)
+        _failure(grads, norm, identity)
     except Exception as error:
         diagnostic_error = repr(error)
     raise MatchedGradientRejected(
@@ -45,7 +45,7 @@ def _norm64(params, device, chunk_size=262144, uniform=True):
     return torch.linalg.vector_norm(torch.stack(norms), 2) if norms else torch.zeros((), device=device, dtype=torch.float64)
 
 
-def _failure(grads, norm):
+def _failure(grads, norm, identity=None):
     root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
     if not root:
         return
@@ -61,9 +61,12 @@ def _failure(grads, norm):
                 value = float(valid.abs().max())
                 maximum = value if maximum is None else max(maximum, value)
         counts.append(dict(count=grad.numel(), finite=finite_count, max_abs=maximum))
-    p = Path(root) / 'numeric' / f'gradient-failure-{rank}.json'
+    stem = (f'gradient-failure-attempt{identity["attempt_id"]}-step{identity["outer_step"]}'
+            f'-mini{identity["mini_index"]}-rank{rank}' if identity and identity.get('attempt_id') is not None
+            else f'gradient-failure-{rank}')
+    p = Path(root) / 'numeric' / (stem + '.json')
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(dict(rank=rank, pid=os.getpid(), gradient_tensors=counts,
+    p.write_text(json.dumps(dict(rank=rank, pid=os.getpid(), identity=identity, gradient_tensors=counts,
         global_norm64=float(norm), norm_scope='FSDP global sharded plus once-counted nonsharded'), allow_nan=True))
 
 
@@ -81,7 +84,7 @@ def _multiply64_in_place(tensor, coefficient):
 
 
 @torch.no_grad()
-def clip_grad_norm64(module, max_norm, loss_scale=1.):
+def clip_grad_norm64(module, max_norm, loss_scale=1., identity=None):
     """L2 max_norm/(global_norm+1e-6), cast coefficient as native FSDP does."""
     if max_norm < 0:
         raise ValueError('Negative max_norm')
@@ -125,7 +128,7 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
         bad = (~(torch.isfinite(sharded_norm) & torch.isfinite(nonsharded_norm))).to(torch.int32)
         dist.all_reduce(bad, op=dist.ReduceOp.MAX, group=module.process_group)
         if bool(bad):
-            _matched_gradient_rejection(grads, torch.full((), float('nan'), dtype=torch.float64, device=device))
+            _matched_gradient_rejection(grads, torch.full((), float('nan'), dtype=torch.float64, device=device), identity)
         if sharded:
             norm = sharded_norm.square()
             dist.all_reduce(norm, group=module.process_group)
@@ -142,7 +145,7 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
         device = grads[0].device if grads else torch.device('cpu')
         norm = _norm64(params, device, uniform=False)
     if not torch.isfinite(norm):
-        _failure(grads, norm)
+        _failure(grads, norm, identity)
         raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
     scale = scale.to(norm.device)
     original_norm = norm / scale
@@ -150,7 +153,7 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
     if isinstance(module, FSDP) and float(scale) != 1.:
         dist.all_reduce(original_bad, op=dist.ReduceOp.MAX, group=module.process_group)
     if bool(original_bad):
-        _failure(grads, original_norm)
+        _failure(grads, original_norm, identity)
         raise ValueError('Nonfinite unscaled actor gradient norm; optimizer step refused')
     coefficient = torch.minimum(1. / scale, float(max_norm) / (norm + scale * 1e-6))
     for grad in grads:
@@ -166,6 +169,6 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
     if isinstance(module, FSDP) and float(scale) != 1.:
         dist.all_reduce(clipped_bad, op=dist.ReduceOp.MAX, group=module.process_group)
     if bool(clipped_bad):
-        _failure(grads, original_norm)
+        _failure(grads, original_norm, identity)
         raise ValueError('Nonfinite clipped actor gradients; optimizer step refused')
     return original_norm

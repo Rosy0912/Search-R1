@@ -293,6 +293,7 @@ def save_complete(trainer, checkpoint, worker_receipts):
     from .fresh200 import enabled as fresh200_enabled, driver_flow_state
     if fresh200_enabled(trainer.config):
         driver['fresh200_driver_flow'] = driver_flow_state(trainer)
+        driver['fresh200_attempt_ledger'] = driver['fresh200_driver_flow']['attempt_ledger']
     receipt = atomic_torch_save(driver, Path(checkpoint) / 'training_state/driver.pt')
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     extras = [extra]
@@ -358,7 +359,20 @@ def roundtrip_and_wait(trainer, final=False):
         raise RuntimeError('Incomplete live eight-rank runtime metadata before reload')
     checkpoint = str(Path(manifest['path']).parent.parent)
     from .quality_resume import optimizer_steps
-    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas, gate, optimizer_steps(trainer.config, gate))
+    expected_optimizer_writes = optimizer_steps(trainer.config, gate)
+    if fresh200_enabled(trainer.config):
+        from .fresh200 import initialize_attempt_ledger
+        actual_ledger = initialize_attempt_ledger(trainer)
+        if (actual_ledger['active_attempt'] is not None
+                or actual_ledger['completed_outer_updates'] != gate):
+            raise RuntimeError('Complete reload requires a completed actual attempt ledger')
+        expected_optimizer_writes = actual_ledger['actual_adam_total']
+        if any(value['fresh200_worker_ledger']['actual_adam_total'] != expected_optimizer_writes
+                or value['fresh200_worker_ledger']['attempts'] != actual_ledger['attempts']
+                or value['fresh200_worker_ledger']['completed_outer_updates'] != gate
+                for value in runtime_before):
+            raise RuntimeError('Actual driver/all8 worker opportunity ledgers differ before reload')
+    loaded = trainer.actor_rollout_wg.load_training_state(checkpoint, shas, gate, expected_optimizer_writes)
     if (len(loaded) != 8 or {v['rank'] for v in loaded} != set(range(8))
             or any(v['logical_step'] != gate or v.get('actual_rank_pt_reload') is not True
                    or v.get('actual_complete_runtime_readback') is not True for v in loaded)):
@@ -397,7 +411,8 @@ def roundtrip_and_wait(trainer, final=False):
     if fresh200_enabled(trainer.config):
         from .fresh200 import driver_flow_state, restore_driver_flow
         flow_before = driver_flow_state(trainer)
-        if flow_before != state.get('fresh200_driver_flow'):
+        if (flow_before != state.get('fresh200_driver_flow')
+                or state.get('fresh200_attempt_ledger') != actual_ledger):
             raise RuntimeError('Saved driver iterator/validation progress differs from the actual live flow')
         flow_roundtrip = restore_driver_flow(trainer, state['fresh200_driver_flow'])
         if driver_flow_state(trainer) != flow_before:
@@ -406,8 +421,12 @@ def roundtrip_and_wait(trainer, final=False):
     trainer.recovery_sampler.load_state_dict(state['sampler'])
     after = trainer.recovery_sampler.state_dict()
     if (not equal_state(before, after) or not equal_state(after, state['sampler'])
-            or before['cursor'] != gate * 512):
+            or (not fresh200_enabled(trainer.config) and before['cursor'] != gate * 512)):
         raise RuntimeError('Live data order/cursor changed in checkpoint roundtrip')
+    if fresh200_enabled(trainer.config):
+        from .fresh200 import _sampler_position
+        if actual_ledger['history'][-1]['sampler_position'] != _sampler_position(trainer.recovery_sampler):
+            raise RuntimeError('Complete checkpoint cursor/epoch/permutation is not its actual last attempt')
     kl_before = dict(vars(trainer.kl_ctrl))
     if not equal_state(kl_before, state['kl_controller']):
         raise RuntimeError('KL controller state changed')
@@ -426,6 +445,11 @@ def roundtrip_and_wait(trainer, final=False):
         actual_controller_stage_reload=True, actual_rng_reload=True, live_algorithm=algorithm_after,
         grouping_scope='stateless_per_rollout; no persistent group cache or live rollout at completed outer',
         driver_pid=os.getpid(), driver_cursor=after['cursor'], actual_driver_flow_roundtrip=flow_roundtrip)
+    if fresh200_enabled(trainer.config):
+        driver_roundtrip.update(actual_attempt_ledger_reload=True,
+            actual_adam_total=expected_optimizer_writes, attempts=actual_ledger['attempts'],
+            completed_outer_updates=actual_ledger['completed_outer_updates'],
+            actual_sampler_position=_sampler_position(trainer.recovery_sampler))
     worker_runtime_roundtrip = dict(actual_all8_saved_state_readback=True,
         complete_live_before_after_equal=True,
         scope=['python_rng', 'numpy_rng', 'torch_cpu_rng', 'torch_cuda_rng', 'sharding_rng',

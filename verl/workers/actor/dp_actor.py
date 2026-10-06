@@ -220,12 +220,20 @@ class DataParallelPPOActor(BasePPOActor):
     def _optimizer_step(self, loss_scale=1.):
         assert self.config.grad_clip is not None
         from search_r1.baselines.gradient_norm import clip_grad_norm64
-        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip, loss_scale)
+        identity = None
+        if self.config.get('fresh200_protocol', False):
+            identity = dict(attempt_id=getattr(self, '_fresh200_attempt_id', None),
+                outer_step=getattr(self, '_fresh200_completed_before', 0) + 1,
+                mini_index=getattr(self, '_fresh200_current_mini', None))
+        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip, loss_scale, identity=identity)
         if not torch.isfinite(grad_norm):
             raise ValueError('Nonfinite actor gradient norm; optimizer step refused')
         if self.config.get('policy_safety', {}).get('enabled', False):
-            self._last_safety_grad_norm_after = clip_grad_norm64(self.actor_module, float('inf'))
+            self._last_safety_grad_norm_after = clip_grad_norm64(self.actor_module, float('inf'), identity=identity)
         self.actor_optimizer.step()
+        if self.config.get('fresh200_protocol', False):
+            self._fresh200_attempt_adam_writes = getattr(self, '_fresh200_attempt_adam_writes', 0) + 1
+            self._fresh200_written_mini = getattr(self, '_fresh200_current_mini', None)
         return grad_norm
 
     def _safety_sync_invalid(self, bad, device, identity, phase, writes, tensors=None, current=None, details=None):
@@ -241,6 +249,7 @@ class DataParallelPPOActor(BasePPOActor):
             return
         rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
         record = dict(identity, phase=phase, actual_optimizer_writes=writes,
+            attempt_id=getattr(self, '_fresh200_attempt_id', None),
             rank=rank, pid=os.getpid(), local_invalid=bool(bad), details=details,
             run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'), commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
             config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
@@ -250,7 +259,7 @@ class DataParallelPPOActor(BasePPOActor):
             root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
             if root:
                 folder = Path(root) / 'policy-safety';folder.mkdir(parents=True, exist_ok=True)
-                stem = f'numeric-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}'
+                stem = f'numeric-attempt{getattr(self, "_fresh200_attempt_id", None)}-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}'
                 atomic_torch_save(dict(record=record, tensors=cpu_snapshot(tensors), current=cpu_snapshot(current)), folder / (stem+'.pt'))
                 (folder / (stem+'.json')).write_text(json.dumps(record, allow_nan=False, sort_keys=True))
         except Exception as exc:
@@ -334,6 +343,7 @@ class DataParallelPPOActor(BasePPOActor):
         from search_r1.baselines.policy_safety import calibrated_or_candidate_rejection
         reason = calibrated_or_candidate_rejection(stats, control)
         record = dict(identity, phase=phase, actual_optimizer_writes=writes, allowed=reason is None,
+                      attempt_id=getattr(self, '_fresh200_attempt_id', None),
                       rejection_reason=reason, statistics=stats, fixed_monitor_hashes=monitor_hashes,
                       temperature=temperature, monitor_identity_changed=monitor_changed)
         mode = control.get('mode', 'production')
@@ -366,7 +376,7 @@ class DataParallelPPOActor(BasePPOActor):
                 if reason:
                     atomic_torch_save(dict(record=record, monitor={k:cpu_snapshot(v) for k,v in monitor.items()},
                                            current_log_probs=current_logps),
-                                      folder / f'rejected-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}.pt')
+                                      folder / f'rejected-attempt{getattr(self, "_fresh200_attempt_id", None)}-step{identity.get("outer_step")}-mini{identity["mini_index"]}-{phase}-rank{rank}.pt')
         except Exception as exc:
             error = repr(exc)
         device = parts[0][0].device
@@ -442,8 +452,10 @@ class DataParallelPPOActor(BasePPOActor):
         # make sure we are in training mode
         self.actor_module.train()
         outer_identity = dict(data.meta_info)
+        fresh_attempt = self.config.get('fresh200_protocol', False) and 'fresh200_attempt_id' in outer_identity
+        prior_writes = outer_identity.get('fresh200_attempt_adam_writes', 0) if fresh_attempt else 0
         self._action_prefix_forward_context = dict(outer_step=outer_identity.get('baseline_outer_step'),
-            mini_index=-1, writes=0, phase='update_action_prefix')
+            mini_index=-1, writes=prior_writes, phase='update_action_prefix')
         safety = self.config.get('policy_safety', {})
         safety_enabled = safety.get('enabled', False)
         if safety_enabled:
@@ -458,7 +470,7 @@ class DataParallelPPOActor(BasePPOActor):
                 entry_error = repr(exc)
             self._safety_sync_invalid(entry_error is not None, safety_device,
                 dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
-                'entry_config', 0, details=entry_error)
+                'entry_config', prior_writes, details=entry_error)
 
         # The prefix API owns a matched validation collective. Keep it out
         # of the local preparation catch so an unknown collective failure
@@ -487,7 +499,11 @@ class DataParallelPPOActor(BasePPOActor):
             if self.config.get('baseline_method') in ('grpo', 'gigpo'):
                 from search_r1.baselines.runtime_audit import enabled, ActorAudit
                 if enabled():
-                    audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+                    audit = getattr(self, '_fresh200_attempt_audit', None) if fresh_attempt else None
+                    if audit is None:
+                        audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
+                        if fresh_attempt:
+                            self._fresh200_attempt_audit = audit
 
             # Split to make minibatch iterator for updating the actor
             # See PPO paper for details. https://arxiv.org/abs/1707.06347
@@ -503,7 +519,11 @@ class DataParallelPPOActor(BasePPOActor):
                     if len(dataloader) != expected_minis:
                         raise ValueError('PPO splitter does not cover the complete fixed rollout')
                     from search_r1.baselines.runtime_audit import tensor_hash
-                    self._safety_monitor_identity = {key: tensor_hash(value) for key, value in monitor.items()}
+                    monitor_identity = {key: tensor_hash(value) for key, value in monitor.items()}
+                    if (fresh_attempt and outer_identity.get('fresh200_processed_opportunities', 0) > 0
+                            and monitor_identity != self._safety_monitor_identity):
+                        raise ValueError('Matched skip re-entry changed the fixed monitor samples')
+                    self._safety_monitor_identity = monitor_identity
                 except Exception as exc:
                     monitor_error = repr(exc)
                 if monitor_error:
@@ -516,14 +536,20 @@ class DataParallelPPOActor(BasePPOActor):
         if safety_enabled:
             self._safety_sync_invalid(preparation_error is not None, safety_device,
                 dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
-                'entry_preparation', 0, details=preparation_error)
+                'entry_preparation', prior_writes, details=preparation_error)
 
         metrics = {}
-        updates = skipped = 0
+        updates = prior_writes
+        skipped = outer_identity.get('fresh200_skipped_opportunities', 0) if fresh_attempt else 0
+        processed_before = outer_identity.get('fresh200_processed_opportunities', 0) if fresh_attempt else 0
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
         # Default E=1 preserves the reviewed reproduction's update schedule.
         for batch_idx, data in enumerate(itertools.chain.from_iterable(
                 dataloader for _ in range(self.config.ppo_epochs))):
+            if batch_idx < processed_before:
+                continue  # Re-entry after a matched skip never replays a processed opportunity.
+            if fresh_attempt:
+                self._fresh200_current_mini = batch_idx
             if audit is not None and batch_idx % len(dataloader) == 0:
                 audit.epoch()
             # split batch into micro_batches
@@ -713,7 +739,8 @@ class DataParallelPPOActor(BasePPOActor):
                     audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
                         advantages=advantages, loss_parts=parts,
                         ref_logp=ref_log_prob if self.config.use_kl_loss else None,
-                        dual_clip=safety['dual_clip'] if safety_enabled else None)
+                        dual_clip=safety['dual_clip'] if safety_enabled else None,
+                        mini_index=batch_idx, micro_index_in_mini=micro_index)
                 if scaled_joint or safety_enabled:
                     from search_r1.baselines.loss_scaling import coordinated_badflag
                     try:
@@ -724,10 +751,16 @@ class DataParallelPPOActor(BasePPOActor):
                             from search_r1.baselines.policy_safety import PolicySafetyRejected
                             raise PolicySafetyRejected(str(matched_error), dict(
                                 outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
+                                attempt_id=getattr(self, '_fresh200_attempt_id', None),
+                                micro_index_in_mini=micro_index,
                                 phase=f'gradient_micro{micro_index}_loss', actual_optimizer_writes=updates,
                                 matched_guard='ORIGINAL_ALL_REDUCE_MAX_LOSS_REFUSAL')) from matched_error
                         raise
                 (loss * loss_scale if scaled_joint else loss).backward()
+                if audit is not None:
+                    audit.gradient_micro_batches += 1
+                if fresh_attempt:
+                    self._fresh200_attempt_gradient_micros += 1
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
                 data = {
@@ -772,14 +805,15 @@ class DataParallelPPOActor(BasePPOActor):
                     from search_r1.baselines.policy_safety import PolicySafetyRejected
                     raise PolicySafetyRejected(str(optimizer_error), dict(
                         outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
+                        attempt_id=getattr(self, '_fresh200_attempt_id', None),
                         phase='global_gradient_before_adam', actual_optimizer_writes=updates,
                         matched_guard='ORIGINAL_FSDP_ALL_REDUCE_MAX_GRADIENT_REFUSAL',
                         gradient_diagnostic_error=optimizer_error.diagnostic_error,
                         failed_mini_diagnostic_error=diagnostic_error)) from optimizer_error
                 raise
+            updates += 1
             if audit is not None:
                 audit.gradient(grad_norm)
-            updates += 1
             if safety_enabled:
                 self._policy_safety_guard(monitor, temperature, safety,
                     dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx), 'after', updates)
@@ -789,9 +823,12 @@ class DataParallelPPOActor(BasePPOActor):
             append_to_dict(metrics, data)
         self.actor_optimizer.zero_grad()
         if audit is not None:
-            audit.finish(updates, skipped)
+            audit.finish(updates, skipped, complete=not fresh_attempt or updates > 0)
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
+        if fresh_attempt:
+            metrics['actor/opportunities_processed'] = len(dataloader) * self.config.ppo_epochs
+            metrics['actor/actual_gradient_micro_batches'] = self._fresh200_attempt_gradient_micros
         if paper_objective:
             from search_r1.baselines.objectives import reduce_paper_metrics
             reduce_paper_metrics(metrics, batch.device)

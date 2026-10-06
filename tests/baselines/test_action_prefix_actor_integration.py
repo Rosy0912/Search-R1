@@ -48,9 +48,20 @@ def actor_fixture(monkeypatch, tmp_path, rows=320, fresh_geometry=False):
                  target_old_policy_kl=.1, negative_tail_limit=.1, dual_clip=3., kl_log_bound=30.)
     if fresh_geometry:
         proof.update(fresh_module.calibration_initialization())
+        synthetic_ledger = dict(schema=fresh_module.ATTEMPT_SCHEMA, completed_outer_updates=2,
+            attempts=2, skipped_attempts=0, actual_adam_total=40,
+            successful_adam_writes_completed_outers=40, successful_adam_writes_abandoned_attempts=0,
+            skipped_opportunities=0, gradient_micro_batches=320, consumed_training_questions=1024,
+            active_attempt=None, epoch_ends=[], history=[dict(attempt_id=i,
+                completed_before=i-1, actual_adam_total_before=(i-1)*20,
+                opportunities_processed=20, actual_successful_adam_writes=20,
+                skipped_opportunities=0, gradient_micro_batches=160, abandoned=False,
+                counted_complete=True, actual_adam_total=i*20, scheduler_step=i,
+                safe_to_continue=True) for i in (1,2)])
         proof.update(scope=fresh_module.CALIBRATION_SCOPE,
             calibration_actual_outer_budget=2, actual_optimizer_steps_per_rank=40,
-            actual_gradient_micro_per_rank=320, retained_training_updates_contributed=0)
+            actual_gradient_micro_per_rank=320, retained_training_updates_contributed=0,
+            target_old_policy_kl=fresh_module.TOKEN_KL_LIMIT, fresh200_attempt_ledger=synthetic_ledger)
     raw = json.dumps(proof).encode()
     proof_path = tmp_path / 'SYNTHETIC-CPU-CONTROL-FIXTURE-NOT-GPU-ACCEPTANCE.json'
     proof_path.write_bytes(raw)
@@ -65,6 +76,7 @@ def actor_fixture(monkeypatch, tmp_path, rows=320, fresh_geometry=False):
         config.ppo_mini_batch_size = 16
         config.kl_loss_coef = 0.
         config.policy_safety.calibration_scope = fresh_module.CALIBRATION_SCOPE
+        config.policy_safety.target_old_policy_kl = fresh_module.TOKEN_KL_LIMIT
     trajectories = []
     for row in range(rows):
         actions = []

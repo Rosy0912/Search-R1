@@ -94,6 +94,8 @@ def _validate_checkpoint_state(state, module, optimizer, scheduler, rank, world_
         raise ValueError('Saved worker logical step differs from explicit restore source')
     if require_complete and state.get('complete_internal') is not True:
         raise ValueError('Fresh Instruct requires complete internal FSDP state')
+    if require_complete and ('partial_update' in state or 'continuation_boundary' in state):
+        raise ValueError('Partial diagnostic/continuation states cannot masquerade as complete checkpoints')
     live = dict(module.named_parameters())
     saved = state['model_shards']
     if saved.keys() != live.keys():
@@ -179,6 +181,15 @@ def _validate_checkpoint_state(state, module, optimizer, scheduler, rank, world_
         metadata = state['runtime_metadata']
         required = {'rank', 'rng', 'scheduler', 'module_modes', 'parameters', 'buffers',
                     'local_shards', 'optimizer_tensors', 'sharding_rng'}
+        if 'fresh200_worker_ledger' in state:
+            from search_r1.baselines.fresh200 import validate_worker_attempt_ledger
+            validate_worker_attempt_ledger(state['fresh200_worker_ledger'])
+            required.add('fresh200_worker_ledger')
+            if (not equal_state(metadata.get('fresh200_worker_ledger'), state['fresh200_worker_ledger'])
+                    or state['fresh200_worker_ledger']['completed_outer_updates'] != state['logical_step']
+                    or (expected_adam_steps is not None and
+                        state['fresh200_worker_ledger']['actual_adam_total'] != expected_adam_steps)):
+                raise ValueError('Saved actual worker attempt ledger differs from the accepted boundary')
         if (not isinstance(metadata, dict) or set(metadata) != required or metadata['rank'] != rank
                 or not equal_state(metadata['rng'], state['rng'])
                 or not equal_state(metadata['scheduler'], state['scheduler'])
@@ -601,11 +612,15 @@ class ActorRolloutRefWorker(Worker):
 
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
+            attempt_receipt = None
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
                 from search_r1.baselines.policy_safety import PolicySafetyRejected
                 try:
-                    metrics = self.actor.update_policy(data=data)
+                    if self.config.actor.get('fresh200_protocol', False) and 'fresh200_attempt_id' in data.meta_info:
+                        metrics, attempt_receipt = self._fresh200_update_attempt(data)
+                    else:
+                        metrics = self.actor.update_policy(data=data)
                 except PolicySafetyRejected as rejection:
                     if self.config.actor.get('preserve_partial_policy_safety_state', False):
                         from search_r1.baselines.partial_update import preserve_worker
@@ -619,10 +634,10 @@ class ActorRolloutRefWorker(Worker):
                                 from search_r1.baselines.recovery import atomic_json_save
                                 from pathlib import Path
                                 outer = data.meta_info['baseline_outer_step']
-                                folder = Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR']) / 'partial-updates' / f'outer_{outer:06d}'
-                                folder.mkdir(parents=True, exist_ok=True)
+                                from search_r1.baselines.partial_update import _folder
+                                folder = _folder(outer, data.meta_info.get('fresh200_attempt_id'))
                                 atomic_json_save(dict(status='PARTIAL_WORKER_STATE_SAVE_FAILED', rank=self.rank,
-                                    pid=os.getpid(), outer_step=outer,
+                                    pid=os.getpid(), outer_step=outer, attempt_id=data.meta_info.get('fresh200_attempt_id'),
                                     job_id=os.environ.get('SLURM_JOB_ID'),
                                     run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
                                     source_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
@@ -637,7 +652,10 @@ class ActorRolloutRefWorker(Worker):
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
             metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
-            if metrics.get('actor/optimizer_steps', 0) > 0:
+            if attempt_receipt is not None:
+                from search_r1.baselines.fresh200 import record_worker_attempt
+                record_worker_attempt(self, attempt_receipt)
+            elif metrics.get('actor/optimizer_steps', 0) > 0:
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
@@ -645,7 +663,12 @@ class ActorRolloutRefWorker(Worker):
             log_gpu_memory_usage('After update policy', logger=logger)
 
             # TODO: here, we should return all metrics
-            output = DataProto(meta_info={'metrics': metrics})
+            if attempt_receipt is not None:
+                import numpy as np
+                output = DataProto(non_tensor_batch={'fresh200_attempt_receipts':
+                    np.asarray([attempt_receipt], dtype=object)}, meta_info={'metrics': metrics})
+            else:
+                output = DataProto(meta_info={'metrics': metrics})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')
@@ -656,6 +679,100 @@ class ActorRolloutRefWorker(Worker):
             offload_fsdp_optimizer(optimizer=self.actor_optimizer)
         torch.cuda.empty_cache()
         return output
+
+    def _fresh200_update_attempt(self, data):
+        """Resume only the next mini after a known matched numeric/gradient refusal."""
+        from search_r1.baselines.policy_safety import PolicySafetyRejected
+        from search_r1.baselines.partial_update import (continue_worker_after_rejection,
+            rejection_disposition, _adam_steps)
+        meta = data.meta_info
+        prior = getattr(self, 'fresh200_worker_ledger', dict(attempts=0,
+            completed_outer_updates=0, actual_adam_total=0))
+        error = None
+        try:
+            if (meta['fresh200_attempt_id'] != prior['attempts'] + 1
+                    or meta['fresh200_completed_before'] != prior['completed_outer_updates']
+                    or meta['fresh200_adam_total_before'] != prior['actual_adam_total']
+                    or self.actor_lr_scheduler.last_epoch != prior['completed_outer_updates']):
+                raise ValueError('Attempt identity does not follow the same live worker ledger')
+            if _adam_steps({'optimizer': self.actor_optimizer.state_dict()}) != prior['actual_adam_total']:
+                raise ValueError('Worker ledger differs from actual Adam slots before attempt')
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('attempt/entry_actual_counters', error)
+        self.actor._fresh200_attempt_id = meta['fresh200_attempt_id']
+        self.actor._fresh200_completed_before = meta['fresh200_completed_before']
+        self.actor._fresh200_attempt_adam_writes = 0
+        self.actor._fresh200_attempt_gradient_micros = 0
+        self.actor._fresh200_attempt_audit = None
+        self.actor._fresh200_written_mini = None
+        meta.update(fresh200_attempt_adam_writes=0, fresh200_processed_opportunities=0,
+                    fresh200_skipped_opportunities=0)
+        refusals, abandoned, processed = [], False, 0
+        while processed < 20:
+            try:
+                metrics = self.actor.update_policy(data=data)
+                processed = int(metrics['actor/opportunities_processed'])
+                break
+            except PolicySafetyRejected as rejection:
+                disposition = rejection_disposition(rejection.record)
+                if disposition == 'fail_closed':
+                    raise  # Config/entry failures cannot authorize a fresh continuation.
+                refusal = continue_worker_after_rejection(self, data, rejection, len(refusals) + 1)
+                refusals.append(refusal)
+                processed = rejection.record['mini_index'] + 1
+                actual_writes = self.actor._fresh200_attempt_adam_writes
+                if actual_writes != rejection.record['actual_optimizer_writes']:
+                    raise RuntimeError('Actual successful optimizer calls differ from matched refusal count')
+                meta.update(fresh200_attempt_adam_writes=actual_writes,
+                    fresh200_processed_opportunities=processed,
+                    fresh200_skipped_opportunities=processed - actual_writes)
+                abandoned = disposition == 'abandon'
+                if abandoned or processed == 20:
+                    metrics = dict(actor_placeholder=0)
+                    audit = self.actor._fresh200_attempt_audit
+                    if audit is not None:
+                        audit.finish(actual_writes, processed - actual_writes,
+                                     complete=not abandoned and actual_writes > 0)
+                    break
+                # Only matched refusal reaches here. Unknown original model,
+                # optimizer, Ray or collective errors escape without another MAX.
+        writes = self.actor._fresh200_attempt_adam_writes
+        micros = self.actor._fresh200_attempt_gradient_micros
+        countable = processed == 20 and writes > 0 and not abandoned
+        error, total = None, None
+        try:
+            self.actor_optimizer.zero_grad(set_to_none=True)
+            tensors = list(self.actor_module_fsdp.parameters()) + list(self.actor_module_fsdp.buffers())
+            tensors += [p._local_shard for p in self.actor_module_fsdp.parameters() if hasattr(p, '_local_shard')]
+            tensors += [value for slot in self.actor_optimizer.state.values()
+                        for value in slot.values() if isinstance(value, torch.Tensor)]
+            if (any(p.grad is not None for p in self.actor_module_fsdp.parameters())
+                    or not all(bool(torch.isfinite(value).all()) for value in tensors)):
+                raise ValueError('Attempt endpoint has pending gradients or nonfinite model/Adam')
+            total = _adam_steps({'optimizer': self.actor_optimizer.state_dict()})
+            if total != meta['fresh200_adam_total_before'] + writes or not 0 <= writes <= processed <= 20:
+                raise ValueError('Actual Adam slots differ from successful optimizer calls')
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('attempt/finite_actual_endpoint', error)
+        signature = torch.tensor([meta['fresh200_attempt_id'], processed, writes, micros, total,
+            int(abandoned), int(countable)], dtype=torch.int64, device='cuda')
+        low, high = signature.clone(), signature.clone()
+        torch.distributed.all_reduce(low, op=torch.distributed.ReduceOp.MIN)
+        torch.distributed.all_reduce(high, op=torch.distributed.ReduceOp.MAX)
+        if not torch.equal(low, high):
+            raise RuntimeError('Actual eight-rank attempt accounting differs')
+        receipt = dict(rank=self.rank, pid=os.getpid(), attempt_id=meta['fresh200_attempt_id'],
+            completed_before=meta['fresh200_completed_before'], opportunities_processed=processed,
+            actual_successful_adam_writes=writes, skipped_opportunities=processed - writes,
+            gradient_micro_batches=micros, abandoned=abandoned, counted_complete=countable,
+            actual_adam_total=total, scheduler_step=self.actor_lr_scheduler.last_epoch,
+            safe_to_continue=True, refusals=refusals)
+        metrics.update({'actor/optimizer_steps': writes, 'actor/opportunities_processed': processed,
+            'actor/skipped_opportunities': processed - writes, 'actor/attempt_counted_complete': int(countable),
+            'actor/actual_gradient_micro_batches': micros, 'actor/skipped_empty_minibatches': 0})
+        return metrics, receipt
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
@@ -817,7 +934,7 @@ class ActorRolloutRefWorker(Worker):
         module = self.actor_module_fsdp
         placement = lambda values: {name: dict(device=str(value.device), dtype=str(value.dtype),
                                                shape=list(value.shape)) for name, value in values}
-        return dict(rank=self.rank, rng=cpu_snapshot(rng_state()),
+        result = dict(rank=self.rank, rng=cpu_snapshot(rng_state()),
             scheduler=cpu_snapshot(self.actor_lr_scheduler.state_dict()),
             module_modes={name: child.training for name, child in module.named_modules()},
             parameters=placement(module.named_parameters()), buffers=placement(module.named_buffers()),
@@ -829,6 +946,11 @@ class ActorRolloutRefWorker(Worker):
                 if isinstance(value, torch.Tensor)),
             sharding_rng={key: cpu_snapshot(getattr(self.rollout_sharding_manager, key, None))
                           for key in ('gen_random_states', 'torch_random_states')})
+        if self.config.actor.get('fresh200_protocol', False):
+            result['fresh200_worker_ledger'] = cpu_snapshot(getattr(self, 'fresh200_worker_ledger',
+                dict(schema='FRESH200_WORKER_ACTUAL_ATTEMPTS_V1', attempts=0,
+                     completed_outer_updates=0, actual_adam_total=0, history=[])))
+        return result
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_training_state(self, local_path, expected_rank_shas, expected_logical_step=None, expected_optimizer_steps=None):
@@ -846,6 +968,8 @@ class ActorRolloutRefWorker(Worker):
                 self.config.actor.get('complete_internal_state', False))
             if self.config.actor.get('fresh200_protocol', False) and 'runtime_metadata' not in state:
                 raise ValueError('Fresh200 state lacks complete live runtime metadata')
+            if self.config.actor.get('fresh200_protocol', False) and 'fresh200_worker_ledger' not in state:
+                raise ValueError('Fresh200 state lacks actual attempt/write accounting')
             if 'runtime_metadata' in state:
                 _validate_checkpoint_runtime_placement(self, state['runtime_metadata'])
             if state.get('complete_internal', False):
@@ -886,6 +1010,9 @@ class ActorRolloutRefWorker(Worker):
                 self.rank, self.world_size, self.rollout_sharding_manager)
             if 'runtime_metadata' in state:
                 _restore_checkpoint_runtime_metadata(self, state['runtime_metadata'])
+            if 'fresh200_worker_ledger' in state:
+                from search_r1.baselines.recovery import cpu_snapshot
+                self.fresh200_worker_ledger = cpu_snapshot(state['fresh200_worker_ledger'])
             from search_r1.baselines.instruct300 import equal_state
             actual_runtime = self.checkpoint_runtime_metadata()
             if (not equal_state(actual_runtime['rng'], state['rng'])
@@ -974,9 +1101,10 @@ class ActorRolloutRefWorker(Worker):
                     # GPU. Bind the placement returned to the caller, not that
                     # temporary export placement, while retaining all real RNG.
                     state['runtime_metadata'] = before_save[0]
+                    state['fresh200_worker_ledger'] = before_save[0]['fresh200_worker_ledger']
                     _validate_checkpoint_state(state, self.actor_module_fsdp, self.actor_optimizer,
                         self.actor_lr_scheduler, self.rank, self.world_size, self.rollout_sharding_manager,
-                        logical_step, logical_step * 20, require_complete=True)
+                        logical_step, state['fresh200_worker_ledger']['actual_adam_total'], require_complete=True)
                 receipt = atomic_torch_save(state, os.path.join(local_path, 'training_state',
                                                                f'rank_{self.rank}.pt'))
                 receipt['pause_identity'] = state['pause_identity']

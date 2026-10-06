@@ -54,7 +54,7 @@ def driver_outer(batch, outer_step, method):
     tensors = {key: stats(batch.batch[key], mask) for key in
         ('old_log_probs', 'advantages', 'policy_weights', 'token_level_rewards', 'returns')
         if key in batch.batch.keys()}
-    emit('driver_outer', dict(outer_step=outer_step, method=method, rows=len(batch),
+    emit('driver_outer', dict(outer_step=outer_step, attempt_id=batch.meta_info.get('fresh200_attempt_id'), method=method, rows=len(batch),
         questions=len(set(batch.non_tensor_batch['uid'])), tensors=tensors,
         action_tokens=int(mask.sum()), observation_tokens=int((
             batch.batch['attention_mask'][:, -width:] * (1 - batch.batch['info_mask'][:, -width:])).sum())))
@@ -159,17 +159,20 @@ class ActorAudit:
     def __init__(self, model, batch, meta, epochs):
         self.model, self.batch = model, batch
         self.step = int(meta['baseline_outer_step'])
+        self.attempt_id = meta.get('fresh200_attempt_id')
         self.rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
         self.before = fixed_hashes(batch)
         self.layout, self.values = shard_sample(model)
         self.rows, self.epochs = len(batch), epochs
         self.grads, self.epoch_hashes, self.micro_stats = [], [], []
+        self.gradient_micro_batches = 0
         self.row_denominators = []
 
     def epoch(self):
         self.epoch_hashes.append(fixed_hashes(self.batch))
 
-    def micro(self, logp, old, mask, loss, step_ids=None, advantages=None, loss_parts=None, ref_logp=None, dual_clip=None):
+    def micro(self, logp, old, mask, loss, step_ids=None, advantages=None, loss_parts=None,
+              ref_logp=None, dual_clip=None, mini_index=None, micro_index_in_mini=None):
         valid = mask.bool()
         zero_pg_tokens = torch.zeros_like(valid)
         ratios, deltas, zero_actions = [], [], 0
@@ -199,7 +202,8 @@ class ActorAudit:
             self.micro_stats[-1]['joint_action_logratios']=stats(torch.stack(deltas) if deltas else logp.new_empty(0))
         if not enabled():
             return
-        record=dict(outer_step=self.step, micro_index=len(self.micro_stats),
+        record=dict(outer_step=self.step, attempt_id=self.attempt_id, micro_index=len(self.micro_stats),
+                    mini_index=mini_index, micro_index_in_mini=micro_index_in_mini,
                     optimizer_steps_completed=len(self.grads), statistics=self.micro_stats[-1])
         if step_ids is not None:
             record['joint_action_logratios']=stats(torch.stack(deltas) if deltas else logp.new_empty(0))
@@ -223,13 +227,15 @@ class ActorAudit:
         value = float(norm.detach())
         self.grads.append(value if math.isfinite(value) else None)
 
-    def finish(self, updates, skips):
+    def finish(self, updates, skips, complete=True):
         layout, values = shard_sample(self.model)
         compatible = layout == self.layout
         change = stats(values - self.values) if compatible else None
         after = fixed_hashes(self.batch)
         mask = self.batch.get('loss_mask', None)
-        emit('actor_outer', dict(outer_step=self.step, rows=self.rows, epochs=self.epochs,
+        emit('actor_outer' if complete else 'actor_attempt_incomplete', dict(outer_step=self.step,
+             attempt_id=self.attempt_id, counted_complete=complete, opportunities_processed=updates+skips,
+             actual_gradient_micro_batches=self.gradient_micro_batches, rows=self.rows, epochs=self.epochs,
              optimizer_steps=updates, skipped_empty_minibatches=skips,
              micro_stats=self.micro_stats, row_denominators=self.row_denominators, grad_norm_scope='existing_optimizer_norm_FSDP_global',
              grad_norms=self.grads, grad_finite=sum(v is not None for v in self.grads),

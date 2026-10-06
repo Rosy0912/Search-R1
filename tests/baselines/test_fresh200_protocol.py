@@ -4,11 +4,11 @@ import pickle
 import unittest
 from omegaconf import OmegaConf
 
-from search_r1.baselines.fresh200 import (CALIBRATION_SCOPE, CHECKPOINT_STEPS, GOAL_UPDATED_AT,
+from search_r1.baselines.fresh200 import (CALIBRATION_SCOPE, CHECKPOINT_STEPS, GOAL_UPDATED_AT, TOKEN_KL_LIMIT,
     calibration_initialization, driver_flow_state, restore_driver_flow, fixed_monitor_layout, select_fixed_monitor, stop_step, validate_calibration_initialization,
     validate_initial_workers, validate_protocol)
 from search_r1.baselines.policy_safety import (PolicySafetyRejected, calibrated_or_candidate_rejection,
-                                             matched_policy_rejection)
+                                             matched_policy_rejection, validate_config)
 
 
 def config():
@@ -22,7 +22,7 @@ def config():
             grad_clip=1, fresh200_protocol=True, preserve_partial_policy_safety_state=True,
             joint_loss_scaling=True, actor_token_identity='sampled_action_prefix_v1',
             policy_safety=dict(calibration_scope=CALIBRATION_SCOPE, enabled=True, dual_clip=3.,
-                kl_log_bound=30., monitor_first_global_rows=256)),
+                kl_log_bound=30., monitor_first_global_rows=256, target_old_policy_kl=TOKEN_KL_LIMIT)),
             rollout=dict(n_agent=5, n=1, tensor_model_parallel_size=1, log_prob_micro_batch_size=32,
                 actor_token_identity='sampled_action_prefix_v1'),
             ref=dict(log_prob_micro_batch_size=32, actor_token_identity='sampled_action_prefix_v1')),
@@ -31,7 +31,15 @@ def config():
             trajectory_logging=True, n_gpus_per_node=8, nnodes=1,
             fresh200=dict(enabled=True, goal_updated_at=GOAL_UPDATED_AT, initial_outer_step=0,
                 initial_adam_steps=0, initial_scheduler_step=0, initial_data_cursor=0,
-                checkpoint_steps=list(CHECKPOINT_STEPS), preserve_partial_updates=True))))
+                checkpoint_steps=list(CHECKPOINT_STEPS), preserve_partial_updates=True,
+                **{key:value for key,value in calibration_initialization().items() if key in (
+                    'optimizer_opportunities_per_outer', 'no_skip_adam_per_outer_per_rank',
+                    'no_skip_gradient_micro_per_outer_per_rank', 'counters_are_no_skip_reference',
+                    'full_outer_requires_all_opportunities_processed',
+                    'full_outer_requires_at_least_one_actual_adam_write',
+                    'actual_write_counts_must_be_reported_separately', 'zero_write_or_abandoned_outer_counts',
+                    'token_kl_threshold_source', 'token_kl_human_goal_updated_at',
+                    'counting_rules_source', 'counting_human_goal_updated_at')}))))
 
 
 class Protocol(unittest.TestCase):
@@ -50,6 +58,7 @@ class Protocol(unittest.TestCase):
             ('actor_rollout_ref.actor.kl_loss_coef', .001), ('algorithm.kl_ctrl.kl_coef', .001),
             ('actor_rollout_ref.actor.optim.lr_warmup_steps', 0),
             ('actor_rollout_ref.actor.optim.initial_logical_step', 25),
+            ('actor_rollout_ref.actor.policy_safety.target_old_policy_kl', .01),
             ('trainer.fresh200.initial_adam_steps', False)]
         for key, value in cases:
             with self.subTest(key=key):
@@ -95,13 +104,61 @@ class Protocol(unittest.TestCase):
             bad[5][key] = wrong
             with self.subTest(key=key), self.assertRaises(ValueError): validate_initial_workers(bad, refs)
 
-    def test_candidate_kl_is_diagnostic_and_tail_unset(self):
-        stats = dict(rejected_numeric_count=0, weight_mass=1, sampled_old_policy_kl=.02,
+    def test_human_kl_brake_point_two_and_tail_remains_separate(self):
+        stats = dict(rejected_numeric_count=0, weight_mass=1, sampled_old_policy_kl=.201,
             negative_tail_fraction_count=.9)
-        control = dict(mode='calibration', calibration_scope=CALIBRATION_SCOPE, candidate_old_policy_kl=.01)
+        control = dict(mode='calibration', calibration_scope=CALIBRATION_SCOPE,
+                      target_old_policy_kl=TOKEN_KL_LIMIT, candidate_old_policy_kl=TOKEN_KL_LIMIT)
         self.assertEqual(calibrated_or_candidate_rejection(stats, control), 'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL')
-        stats['sampled_old_policy_kl'] = .009
+        stats['sampled_old_policy_kl'] = .2
         self.assertIsNone(calibrated_or_candidate_rejection(stats, control))
+        stats['sampled_old_policy_kl'] = .02
+        self.assertIsNone(calibrated_or_candidate_rejection(stats, control))
+        stats['rejected_numeric_count'] = 1
+        self.assertEqual(calibrated_or_candidate_rejection(stats, control),
+                         'NONFINITE_OR_EXP_RANGE_OR_EMPTY_EFFECTIVE_MONITOR')
+
+    def test_fresh_kl_setting_is_explicit_without_changing_legacy_setting(self):
+        base = dict(enabled=True, dual_clip=3., kl_log_bound=30., monitor_first_global_rows=256)
+        for mode in ('production', 'calibration'):
+            valid = dict(base, mode=mode, calibration_scope=CALIBRATION_SCOPE,
+                         target_old_policy_kl=TOKEN_KL_LIMIT)
+            validate_config(valid, require_thresholds=False)
+            for wrong in (None, .01, .1, float('nan')):
+                with self.subTest(mode=mode, wrong=wrong), self.assertRaises(ValueError):
+                    validate_config(dict(valid, target_old_policy_kl=wrong), require_thresholds=False)
+        validate_config(dict(base, mode='production', target_old_policy_kl=.01), require_thresholds=False)
+
+    def test_fresh_calibration_binding_requires_the_same_point_two_kl(self):
+        import hashlib
+        import json
+        import os
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        control = dict(enabled=True, mode='calibration', dual_clip=3., kl_log_bound=30.,
+            monitor_first_global_rows=256, calibration_scope=CALIBRATION_SCOPE,
+            target_old_policy_kl=TOKEN_KL_LIMIT, candidate_old_policy_kl=TOKEN_KL_LIMIT)
+        # Synthetic CPU authorization validator fixture, never deployment proof.
+        proof = dict(calibration_initialization(), status='REVIEWED_FOR_CALIBRATION_ONLY',
+            validation_scope=CALIBRATION_SCOPE, code_commit='a' * 40,
+            allowed_safety_modes=['calibration'], calibration_actual_outer_budget=2,
+            candidate_old_policy_kl=TOKEN_KL_LIMIT, target_old_policy_kl=TOKEN_KL_LIMIT)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'synthetic-cpu-binding.json'
+            def check(value, configuration):
+                raw = json.dumps(value).encode()
+                path.write_bytes(raw)
+                with patch.dict(os.environ, {'GIGPO_POLICY_NATIVE_BINDING': str(path),
+                    'GIGPO_POLICY_NATIVE_BINDING_SHA256': hashlib.sha256(raw).hexdigest(),
+                    'SEARCH_R1_BASELINE_COMMIT': 'a' * 40}):
+                    validate_config(configuration)
+            check(proof, control)
+            for key in ('candidate_old_policy_kl', 'target_old_policy_kl'):
+                with self.subTest(key=key), self.assertRaises(ValueError):
+                    check(dict(proof, **{key: .01}), control)
+            with self.assertRaises(ValueError):
+                check(proof, dict(control, candidate_old_policy_kl=.01))
 
     def test_typed_rejection_roundtrip_retains_partial_writes(self):
         value = PolicySafetyRejected('guard', dict(actual_optimizer_writes=7, outer_step=3))

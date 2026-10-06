@@ -33,7 +33,7 @@ actor_rollout_ref:
       dual_clip: 3.0
       kl_log_bound: 30.0
       monitor_first_global_rows: 256
-      target_old_policy_kl: null
+      target_old_policy_kl: 0.2
       negative_tail_limit: null
       candidate_old_policy_kl: null
       calibration_evidence_sha256: null
@@ -81,3 +81,15 @@ trainer:
     initial_data_cursor: 0
     checkpoint_steps: [5, 50, 100, 150, 200]
     preserve_partial_updates: true
+    optimizer_opportunities_per_outer: 20
+    no_skip_adam_per_outer_per_rank: 20
+    no_skip_gradient_micro_per_outer_per_rank: 160
+    counters_are_no_skip_reference: true
+    full_outer_requires_all_opportunities_processed: true
+    full_outer_requires_at_least_one_actual_adam_write: true
+    actual_write_counts_must_be_reported_separately: true
+    zero_write_or_abandoned_outer_counts: false
+    token_kl_threshold_source: human
+    token_kl_human_goal_updated_at: 1791282908
+    counting_rules_source: human
+    counting_human_goal_updated_at: 1791283983

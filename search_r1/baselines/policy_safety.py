@@ -1,4 +1,4 @@
-"""Opt-in Dual-Clip and synchronized old-policy admission; no rollback or skipped outer."""
+"""Opt-in Dual-Clip and synchronized admission; fresh attempts retain actual writes."""
 import math
 import re
 import torch
@@ -44,6 +44,10 @@ def validate_config(config, require_thresholds=True):
     mode = config.get('mode', 'production')
     if mode not in ('production', 'native_fixture', 'calibration'):
         raise ValueError('Unknown policy safety execution scope')
+    from .fresh200 import CALIBRATION_SCOPE, TOKEN_KL_LIMIT
+    fresh = config.get('calibration_scope') == CALIBRATION_SCOPE
+    if fresh and config.get('target_old_policy_kl') != TOKEN_KL_LIMIT:
+        raise ValueError('Fresh200 sampled-old token KL differs from the human-selected 0.2')
     if require_thresholds and mode != 'production':
         # Isolated tests cannot bootstrap themselves with a fake production acceptance.
         # The reviewed owned launcher binds this scope before any CUDA use.
@@ -65,7 +69,8 @@ def validate_config(config, require_thresholds=True):
                     or proof.get('allowed_safety_modes') != ['calibration']
                     or proof.get('calibration_actual_outer_budget') != 2
                     or proof.get('candidate_old_policy_kl') != config.get('candidate_old_policy_kl')
-                    or config.get('candidate_old_policy_kl') != .01):
+                    or proof.get('target_old_policy_kl') != TOKEN_KL_LIMIT
+                    or config.get('candidate_old_policy_kl') != TOKEN_KL_LIMIT):
                 raise ValueError('Fresh official calibration authorization differs')
             validate_calibration_initialization(proof)
             return
@@ -106,9 +111,15 @@ def validate_config(config, require_thresholds=True):
         scope = CALIBRATION_SCOPE if fresh else 'GIGPO_POLICY_SAFETY_HEALTHY25_CALIBRATION'
         if fresh:
             validate_calibration_initialization(proof)
+            from .fresh200 import validate_attempt_ledger
+            ledger = proof.get('fresh200_attempt_ledger')
+            if not isinstance(ledger, dict):
+                raise ValueError('Fresh calibration requires its actual opportunity/write ledger')
+            validate_attempt_ledger(ledger)
             if (proof.get('calibration_actual_outer_budget') != 2
-                    or proof.get('actual_optimizer_steps_per_rank') != 40
-                    or proof.get('actual_gradient_micro_per_rank') != 320
+                    or ledger['completed_outer_updates'] != 2 or ledger['active_attempt'] is not None
+                    or proof.get('actual_optimizer_steps_per_rank') != ledger['actual_adam_total']
+                    or proof.get('actual_gradient_micro_per_rank') != ledger['gradient_micro_batches']
                     or proof.get('retained_training_updates_contributed') != 0):
                 raise ValueError('Fresh calibration actual diagnostic budget differs')
         if (proof.get('status') != 'PASS' or proof.get('scope') != scope
