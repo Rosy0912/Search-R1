@@ -1,0 +1,173 @@
+{
+  "role": "actual_search_g1_common8_hourly_observation",
+  "checked_unix": 1791275134.5022206,
+  "native_job": "3298",
+  "native_state": "RUNNING",
+  "discovery_run_id": "0873410ce2f146499a581314184214f9",
+  "production_run_id": "ce621248da274ca3bcf130261f8bcc9d",
+  "source_commit": "f0445f4edf0dbea916ff63bedafe356d6d9ebcdb",
+  "source_hashes_match": true,
+  "original_observation_sha256": "362bbe35567c6f3ea4b074671194b5d4ce8439b71c1d9c3d4772854684e8a0f2",
+  "window_origin": "first hourly report for this new H100 run; previous A800 anchor is not comparable",
+  "window_start_unix": 1791274222.3586774,
+  "window_duration_seconds": 912.1435432434082,
+  "new_actual_discovery_updates": 0,
+  "new_actual_production_updates": 0,
+  "completed_discovery_updates": 0,
+  "completed_production_updates": 0,
+  "reward_sample_count": 0,
+  "reward_recent": null,
+  "reward_mean": null,
+  "reward_range": null,
+  "reward_change": null,
+  "latest_this_run_em": null,
+  "historical_before512_em": 0.177734375,
+  "historical_before512_correct": 91,
+  "historical_before512_total": 512,
+  "historical_before512_scope": "Prior3294 step0, not current3298 or after-update evaluation",
+  "stage": "REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE",
+  "initial_probe": {
+    "run_id": "0873410ce2f146499a581314184214f9",
+    "round": 0,
+    "version": "0873410ce2f146499a581314184214f9:0:8485e45247be4eb393b035375dfd48d9",
+    "live_manifest_sha256": "4c3abe6108953c8a1c980c0d330a6206442cfb70d0d7379a0947266994dd2df4",
+    "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+    "encoder_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    "head_sha256": {
+      "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+      "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+    },
+    "published_unix": 1791275092.919441,
+    "question_count": 300,
+    "unique_question_count": 300,
+    "commit_cv_auc": 0.905198036442294,
+    "boundary_cv_auc": 0.7774344405594406,
+    "commit_class_counts": [
+      269,
+      675
+    ],
+    "boundary_class_counts": [
+      263,
+      37
+    ],
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2,
+    "calibration_protocol": {
+      "top_p": 1.0,
+      "rollout_max_new": 500,
+      "counterfactual_max_new": 32,
+      "closed_book_max_new": 24,
+      "correction_feedback": true
+    },
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction"
+  },
+  "initial_greedy_model_gate": {
+    "accepted": true,
+    "run_id": "0873410ce2f146499a581314184214f9",
+    "slurm_job_id": "3298",
+    "phase": "initial",
+    "proof_sha256": "4a6f9cb8ca899a16cf2a2a0fa4cf1af0a99aa7772ab846b5f9a900765482bfb7",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "full2560_behavior_gate_accepted": false,
+  "gpu_current": [
+    {
+      "index": 0,
+      "used_mib": 7316,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 1,
+      "used_mib": 6609,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 2,
+      "used_mib": 6610,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 3,
+      "used_mib": 6611,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 4,
+      "used_mib": 6611,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 5,
+      "used_mib": 6610,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 6,
+      "used_mib": 6610,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    },
+    {
+      "index": 7,
+      "used_mib": 13273,
+      "total_mib": 81559,
+      "utilization_percent": 0
+    }
+  ],
+  "gpu_sampling": {
+    "sample_count": 399,
+    "first_unix": 1791274261.5235484,
+    "last_unix": 1791275132.833,
+    "max_gap_seconds": 7.959716081619263,
+    "cumulative_peak_mib": {
+      "0": 41927,
+      "1": 41902,
+      "2": 41904,
+      "3": 41905,
+      "4": 41895,
+      "5": 41904,
+      "6": 41903,
+      "7": 41736
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "scope": "Actual hourly scalar/hash and native process/source observation. ProbeAUC is not EM; setup/probe GPU peak is not production peak; no completed outer/Adam or post-eval proof."
+}
