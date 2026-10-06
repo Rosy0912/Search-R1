@@ -1,0 +1,151 @@
+{
+  "current_gpu": {
+    "checked_unix": 1791299301.480247,
+    "gpus": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 43214,
+        "util_percent": 100,
+        "uuid": "GPU-53210089-2b52-bf37-b574-f91e8892a012"
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 42555,
+        "util_percent": 100,
+        "uuid": "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c"
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 42556,
+        "util_percent": 100,
+        "uuid": "GPU-85473c01-4753-bf6f-080f-9c89017440dd"
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 42557,
+        "util_percent": 100,
+        "uuid": "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 42557,
+        "util_percent": 100,
+        "uuid": "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369"
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 42556,
+        "util_percent": 100,
+        "uuid": "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548"
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 42556,
+        "util_percent": 100,
+        "uuid": "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1"
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 53527,
+        "util_percent": 100,
+        "uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+      }
+    ],
+    "raw_sha256": "979de01b6b89e48bd564683e473720a933e9320345f303c58ba94f9292965fac",
+    "scope": "current node physical occupancy, not sampled training peak"
+  },
+  "gpu_sample_prefix": {
+    "captured_complete_prefix_sha256": "d01515787c0a4eca57918e4fadda7ba895e347055511c67424541eefdeb1da0a",
+    "captured_raw_sha256": "d01515787c0a4eca57918e4fadda7ba895e347055511c67424541eefdeb1da0a",
+    "checked_unix": 1791299489.34992,
+    "cumulative_peak_mib": {
+      "0": 63028,
+      "1": 61477,
+      "2": 62370,
+      "3": 61479,
+      "4": 61479,
+      "5": 61478,
+      "6": 61478,
+      "7": 72449
+    },
+    "deferred_tail_bytes": 0,
+    "first_sample_unix": 1791294644.421893,
+    "job_id": "3309",
+    "last_sample_age_seconds": 17.191975116729736,
+    "last_sample_unix": 1791299472.1599488,
+    "max_gap_seconds": 2.0103859901428223,
+    "role": "readonly_gpu_sample_prefix_summary",
+    "run_id": "db5235708c354bffae6d0120c1cb5459",
+    "sample_count": 2199,
+    "sampler_identity": {
+      "pid": 2836860,
+      "sid": 2836822,
+      "start_ticks": 2223930773,
+      "uid": 0
+    },
+    "scope": "complete visible prefix only; trainer window begins authenticated training claim and includes initialization/generation/optimizer. Not optimizer-only or unsampled peak; no current sampler liveness inference",
+    "setup_peak_mib": {
+      "0": 45896,
+      "1": 45453,
+      "2": 45446,
+      "3": 45457,
+      "4": 45455,
+      "5": 45948,
+      "6": 45456,
+      "7": 49349
+    },
+    "setup_sample_count": 481,
+    "straddling_sample_count": 0,
+    "trainer_window_peak_mib": {
+      "0": 63028,
+      "1": 61477,
+      "2": 62370,
+      "3": 61479,
+      "4": 61479,
+      "5": 61478,
+      "6": 61478,
+      "7": 72449
+    },
+    "trainer_window_sample_count": 1718,
+    "training_claim": {
+      "claimed_unix": 1791295703.8806205,
+      "run_id": "db5235708c354bffae6d0120c1cb5459",
+      "semantics": "exclusive launch claim, not evidence of a completed update",
+      "shell_pid": 2864716,
+      "shell_start_ticks": 2224036912,
+      "slurm_job_id": "3309"
+    },
+    "training_claim_raw_sha256": "e86b254882854054003832996879d6cf1bfc2059596345ba439a25bbba59978c"
+  },
+  "hourly_anchor_advanced": false,
+  "job_id": "3309",
+  "native_checked_unix": 1791299408.3733356,
+  "native_state": "RUNNING",
+  "overall_goal_complete": false,
+  "role": "formal_first_training_window_gpu_scalar",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "sampler_birth_observed_in_namespace": {
+    "pid": 2836860,
+    "sid": 2836822,
+    "start_ticks": 2223930773,
+    "uid": 0
+  },
+  "scope": "Node physical occupancy and complete captured sampling prefix; current/sampled/setup/trainer windows separated. No model-health/driver-count/unsampled peak or loaded-source inference.",
+  "source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "source_hashes_match": true,
+  "source_map_sha256": "63c97052a028b4edafb4d2c4f5140f6aef40e0b0c835dd4fdcda04acb1cc5372",
+  "trainer_leader_birth": {
+    "pid": 2864716,
+    "sid": 2864716,
+    "start_ticks": 2224036912,
+    "uid": 0
+  }
+}
