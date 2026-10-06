@@ -67,7 +67,7 @@ def padded(rows, pad, left=False):
 
 
 class SearchRollout:
-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None):
+    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None, behavior_mu=None):
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -81,6 +81,11 @@ class SearchRollout:
         self.rng = random.Random(seed)
         self.audit = None
         self.token_preservation = token_preservation
+        from .tree_behavior_mu import validate_options, runtime_provenance, require
+        self.behavior_mu = validate_options(behavior_mu)
+        require(self.behavior_mu is None or token_preservation is not None,
+                'Behavior probabilities require raw-token dual representation')
+        self.behavior_mu_provenance = runtime_provenance(os.environ) if self.behavior_mu else None
         self.tokenizer_identity = None
         self.seen_sampling_ids = set()
         self.failure_context = None
@@ -287,11 +292,24 @@ class SearchRollout:
                         require(key not in occurrences or occurrences[key]==value,'Inherited sampling occurrence changed')
                         occurrences[key]=value;total+=1
             self.cost['raw_inherited_leaf_tokens']=total-len(occurrences)
+        if self.behavior_mu is not None:
+            from .tree_behavior_mu import compose_behavior_mu_rows, TENSOR, FIELD as MU_FIELD
+            sampled, bindings = compose_behavior_mu_rows(states, non_tensors[FIELD],
+                response_width=response.shape[1], expected_provenance=self.behavior_mu_provenance)
+            tensors[TENSOR] = sampled
+            non_tensors[MU_FIELD] = object_array(bindings)
         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
         result.meta_info.update(self.output_meta)
         if self.token_preservation is not None:
             from .tree_raw_tokens import PROTOCOL
             result.meta_info['tree_raw_token_protocol']=PROTOCOL
+        if self.behavior_mu is not None:
+            from .tree_behavior_mu import (PROTOCOL as MU_PROTOCOL, META, PROVENANCE_META,
+                                           validate_behavior_mu_batch)
+            result.meta_info[META] = MU_PROTOCOL
+            result.meta_info[PROVENANCE_META] = copy.deepcopy(self.behavior_mu_provenance)
+            result.meta_info['tree_behavior_mu_collection'] = validate_behavior_mu_batch(result,
+                expected_provenance=self.behavior_mu_provenance)
         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],

@@ -42,7 +42,45 @@ def phase_validation_frame(frame, count, seed):
     return frame.sample(n=min(int(count), len(frame)), random_state=int(seed)).reset_index(drop=True)
 
 
+def validate_behavior_mu_config(config):
+    """Explicit Tree-only correction; never infer opt-in from captured scalars."""
+    actor = config.actor_rollout_ref.actor
+    safety = option(actor, 'policy_safety', {})
+    correction = option(safety, 'sampling_probability_correction', {})
+    tree = option(config.baselines, 'tree', {})
+    behavior = option(tree, 'behavior_mu', {})
+    enabled = option(behavior, 'enabled', False)
+    actor_enabled = option(correction, 'enabled', False)
+    if type(enabled) is not bool or type(actor_enabled) is not bool or enabled != actor_enabled:
+        raise ValueError('Explicit Tree behavior-mu and actor correction boolean opt-ins must match')
+    if not enabled:
+        return
+    protocol = 'tree_behavior_mu_centered_ppo_v1'
+    rollout = config.actor_rollout_ref.rollout
+    preservation = option(tree, 'token_preservation', {})
+    if (config.baselines.method != 'tree_grpo' or option(safety, 'enabled', False) is not True
+            or option(behavior, 'protocol') != protocol or option(correction, 'protocol') != protocol
+            or option(preservation, 'enabled', False) is not True
+            or option(preservation, 'protocol') != 'tree_sampled_prefix_legacy_semantics_v1'
+            or option(rollout, 'tree_raw_emission', False) is not True):
+        raise ValueError('Behavior-mu requires explicit guarded Tree raw-token/native-emission protocol')
+    if (config.max_turns != 4 or config.force_final_answer is not False
+            or (config.data.max_start_length, config.data.max_prompt_length,
+                config.data.max_response_length, config.data.max_obs_length) != (2048, 4096, 500, 500)
+            or (tree.roots, tree.leaves) != (2, 3)
+            or config.data.train_batch_size != 640 or actor.ppo_mini_batch_size != 384
+            or actor.ppo_micro_batch_size != 16 or actor.ppo_epochs != 1
+            or actor.optim.lr != 1e-6
+            or (config.trainer.n_gpus_per_node, config.trainer.nnodes) != (8, 1)):
+        raise ValueError('Behavior-mu candidate must preserve the authorized Tree recovery protocol')
+    required = dict(temperature=1.0, top_p=1.0, top_k=-1, min_p=0.0,
+                    presence_penalty=0.0, frequency_penalty=0.0, repetition_penalty=1.0)
+    if any(option(rollout, key, value) != value for key, value in required.items()):
+        raise ValueError('Behavior-mu candidate requires the original plain temperature-one sampling support')
+
+
 def validate_config(config):
+    validate_behavior_mu_config(config)
     method = config.baselines.method
     if method not in METHODS:
         raise ValueError(f'Unknown baseline method {method}')
@@ -194,8 +232,11 @@ class Controller:
     def generate(self, manager, gen_batch, qa_batch, metrics):
         preservation=(option(self.config.tree,'token_preservation',{}) if self.method=='tree_grpo' else {})
         preservation=preservation if option(preservation,'enabled',False) else None
+        behavior = option(self.config.tree, 'behavior_mu', {}) if self.method == 'tree_grpo' else {}
+        behavior = behavior if option(behavior, 'enabled', False) else None
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
-                               self.config.context_alignment, token_preservation=preservation)
+                               self.config.context_alignment, token_preservation=preservation,
+                               behavior_mu=behavior)
         if self.tree_rng is not None:
             # Keep parent/leaf sampling continuous across outer updates while
             # constructing a fresh engine and cost ledger for each rollout.

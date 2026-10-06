@@ -54,8 +54,9 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
     """Called before facade padding, retaining real request IDs and scalar values."""
     fields=('n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
         'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
-        'include_stop_str_in_output','logprobs','prompt_logprobs','seed')
+        'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors')
     settings={key:copy.deepcopy(getattr(sampling_params,key)) for key in fields}
+    require(settings['logits_processors'] is None, 'Native raw-token protocol requires actual logits_processors=None')
     require(settings['n']==1 and settings['max_tokens']==500 and settings['ignore_eos'] is False and
             settings['min_tokens']==0 and not settings['stop'], 'Unsupported native stop/distribution protocol')
     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',

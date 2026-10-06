@@ -1,4 +1,4 @@
-"""Read-only raw-turn sampler/FSDP diagnostics, never a replacement PPO old policy."""
+"""Read-only probability diagnostics for legacy and explicit behavior-mu profiles."""
 import math
 import os
 from pathlib import Path
@@ -163,6 +163,23 @@ def record_raw_turn(worker, output):
         raise RuntimeError('Global raw-turn sampling/FSDP consistency refusal: '+repr(decision['reasons']))
 
 
+def calibration_monitor_snapshot(safety, data, corrected):
+    """Bind the observed monitor, actual mu, full beta and frozen monitor beta."""
+    snapshot = {key: cpu_copy(value) for key, value in safety.monitor.items()}
+    if corrected:
+        from .tree_behavior_mu import FIELD as BINDING_FIELD
+        beta = safety.actor_monitor_beta
+        old = safety.monitor['old_log_probs']
+        if (not isinstance(beta, torch.Tensor) or not beta.is_floating_point()
+                or beta.shape != old.shape
+                or not torch.isfinite(beta[safety.effective_mask(safety.monitor)]).all()):
+            raise ValueError('Missing/nonfinite frozen same-partition beta monitor')
+        selected = safety.indices.detach().cpu().numpy()
+        snapshot['actor_same_partition_beta_monitor'] = cpu_copy(beta)
+        snapshot['behavior_mu_source_row_bindings'] = cpu_copy(data.non_tensor_batch[BINDING_FIELD][selected])
+    return snapshot
+
+
 def calibrate_actor(worker, data):
     """No optimizer call or scheduler advance; diagnostics only in a dedicated stage."""
     from .policy_safety_runtime import PolicySafetyRuntime
@@ -177,8 +194,13 @@ def calibrate_actor(worker, data):
                         for state in worker.actor_optimizer.state.values() if 'step' in state})
         if steps != [int(os.environ['TREE_RECOVERY_PARENT_OPTIMIZER_STEPS'])]:
             raise ValueError('Actual Adam state differs from accepted parent')
+        from .policy_safety_runtime import behavior_mu_correction_enabled
+        corrected = behavior_mu_correction_enabled(worker.config.actor.policy_safety)
         rank = dist.get_rank()
         record = dict(rank=rank, world_size=dist.get_world_size(), optimizer_committed=0,
+                  behavior_mu_corrected_profile=corrected,
+                  probability_gate_scope=('actual_behavior_mu_binding_and_same_actor_monitor_repeat; original_sampler_actor_gate_not_passed'
+                                          if corrected else 'original_raw_sampling_and_actor_initial_consistency'),
                   scheduler_advanced=False, parent_completed_outer=int(data.meta_info['calibration_parent_outer']),
                   observed_outer=int(data.meta_info['baseline_outer_step']), restored_optimizer_steps=steps,
                   scheduler_step=worker.actor_lr_scheduler.last_epoch,
@@ -189,23 +211,33 @@ def calibrate_actor(worker, data):
                   data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                   model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
                   job_id=os.environ['SLURM_JOB_ID'],run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
-        if (not record['diagnostic_records'] or len(record['diagnostic_entries']) != len(record['diagnostic_records'])
+        if ((not corrected and not record['diagnostic_records'])
+                or len(record['diagnostic_entries']) != len(record['diagnostic_records'])
                 or record['scheduler_step'] != record['parent_completed_outer']):
             raise ValueError('Missing sampling evidence or wrong restored scheduler')
     except Exception as exc:
         error = repr(exc)
     sync_prepare(error,device)
-    check_signature([steps[0],record['scheduler_step'],record['observed_outer'],len(record['diagnostic_entries'])],device)
-    safety = PolicySafetyRuntime(worker.actor, data.batch, data.meta_info, worker.config.actor.policy_safety)
+    check_signature([steps[0],record['scheduler_step'],record['observed_outer'],len(record['diagnostic_entries']),corrected],device)
+    if corrected:
+        from .policy_safety_runtime import validate_actor_probability_profile
+        validate_actor_probability_profile(worker.actor, data, worker.config.actor.policy_safety)
+    safety = PolicySafetyRuntime(worker.actor, data.batch, data.meta_info, worker.config.actor.policy_safety,
+                                 source_data=data)
     with torch.no_grad():
         decision = safety.measure('before_optimizer', publish=False)
-    record.update(decision=decision,monitor_local_row_indices=safety.indices.tolist())
+    record.update(decision=decision,monitor_local_row_indices=safety.indices.tolist(),
+                  additional_initial_actor_repeat_native_forward_calls=safety.initial_actor_repeat_native_forward_calls,
+                  monitor_native_forward_calls=safety.monitor_native_forward_calls)
     failed = False
     try:
         root = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'probability-calibration'
         record['monitor_path'] = str(root/f'rank-{rank:02d}-monitor.pt')
-        record['monitor_sha256'] = atomic_save({key: cpu_copy(value) for key, value in safety.monitor.items()},
-                                              record['monitor_path'])
+        snapshot = calibration_monitor_snapshot(safety, data, corrected)
+        if corrected:
+            record['actual_behavior_mu_row_bindings_validated'] = True
+            record['actual_same_partition_beta_monitor_saved'] = True
+        record['monitor_sha256'] = atomic_save(snapshot, record['monitor_path'])
         atomic_save(record, root/f'rank-{rank:02d}.json', json_format=True)
     except Exception:
         failed = True
@@ -215,14 +247,31 @@ def calibrate_actor(worker, data):
     return record
 
 
+def calibration_boundary_matches(trainer, parent, corrected):
+    """Original observation boundary or explicit corrected profile, no writes."""
+    if type(corrected) is not bool:
+        return False
+    settings = trainer.config.actor_rollout_ref
+    if (trainer.global_steps != parent + 1 or trainer.actual_outer_updates != parent
+            or not settings.actor.policy_safety.enabled):
+        return False
+    consistency = settings.rollout.sampling_consistency
+    if corrected:
+        return consistency.enabled is False and consistency.enforce is True
+    return bool(consistency.enabled) and not bool(consistency.enforce)
+
+
 def finalize_calibration(trainer, batch):
     """Driver-only terminal observation, before the ordinary actor update path."""
     import json
     parent = trainer.recovery_provenance['parent_completed_step']
-    if (trainer.global_steps != parent + 1 or trainer.actual_outer_updates != parent
-            or not trainer.config.actor_rollout_ref.actor.policy_safety.enabled
-            or not trainer.config.actor_rollout_ref.rollout.sampling_consistency.enabled
-            or trainer.config.actor_rollout_ref.rollout.sampling_consistency.enforce):
+    from .policy_safety_runtime import behavior_mu_correction_enabled
+    safety_config = trainer.config.actor_rollout_ref.actor.policy_safety
+    corrected = behavior_mu_correction_enabled(safety_config)
+    if corrected:
+        from .controller import validate_behavior_mu_config
+        validate_behavior_mu_config(trainer.config)
+    if not calibration_boundary_matches(trainer, parent, corrected):
         raise RuntimeError('Dedicated zero-write calibration configuration/boundary changed')
     batch.meta_info['baseline_outer_step'] = trainer.global_steps
     batch.meta_info['calibration_parent_outer'] = parent
@@ -238,7 +287,10 @@ def finalize_calibration(trainer, batch):
                     job_id=os.environ['SLURM_JOB_ID'],run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
     if any(record['rank'] != rank or record['world_size'] != 8
            or record['optimizer_committed'] != 0 or record['scheduler_advanced']
-           or record['scheduler_step'] != parent or not record['diagnostic_records']
+           or record['scheduler_step'] != parent or (not corrected and not record['diagnostic_records'])
+           or record.get('behavior_mu_corrected_profile', False) != corrected
+           or (corrected and record.get('actual_behavior_mu_row_bindings_validated') is not True)
+           or (corrected and record.get('actual_same_partition_beta_monitor_saved') is not True)
            or record['parent_completed_outer'] != parent or record['observed_outer'] != trainer.global_steps
            or any(record.get(key) != value for key,value in expected.items())
            for rank, record in enumerate(workers)):
@@ -262,7 +314,10 @@ def finalize_calibration(trainer, batch):
         if (not Path(record['monitor_path']).resolve().is_relative_to(root.resolve())
                 or file_sha(record['monitor_path']) != record['monitor_sha256']):
             raise RuntimeError('Calibration monitor snapshot binding changed')
-    ready = dict(status='CALIBRATION_OBSERVED_ZERO_WRITES', workers=workers,
+    ready = dict(status=('BEHAVIOR_MU_CALIBRATION_OBSERVED_ZERO_WRITES' if corrected
+                         else 'CALIBRATION_OBSERVED_ZERO_WRITES'), workers=workers,
+                 behavior_mu_corrected_profile=corrected,
+                 original_sampler_actor_probability_gate_accepted=False if corrected else None,
                  parent_completed_outer=parent, observed_outer=trainer.global_steps,
                  new_completed_outer=0, optimizer_committed=0, scheduler_advanced=False,
                  sampler_cursor_before_outer=trainer.recovery_provenance['parent_cursor'],

@@ -220,11 +220,16 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_module.train()
         method = self.config.get('baseline_method')
 
+        safety_config = self.config.get("policy_safety", {})
+        from search_r1.baselines.policy_safety_runtime import validate_actor_probability_profile
+        corrected_profile = validate_actor_probability_profile(self, data, safety_config)
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
+        if corrected_profile:
+            select_keys += ['actor_old_log_probs', 'sampled_old_log_probs']
         if self.config.state_masking:
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:
@@ -251,10 +256,9 @@ class DataParallelPPOActor(BasePPOActor):
         dataloader = batch.split(self.config.ppo_mini_batch_size)
 
         safety = None
-        safety_config = self.config.get("policy_safety", {})
         if safety_config.get("enabled", False):
             from search_r1.baselines.policy_safety_runtime import PolicySafetyRuntime
-            safety = PolicySafetyRuntime(self, batch, data.meta_info, safety_config)
+            safety = PolicySafetyRuntime(self, batch, data.meta_info, safety_config, source_data=data)
         self._policy_safety = safety
         metrics = {}
         updates = skipped = 0
@@ -446,6 +450,10 @@ class DataParallelPPOActor(BasePPOActor):
                 except Exception:
                     audit_failed = True
                 safety.sync_valid(audit_failed, "rank_audit_finish")
+        if safety is not None and corrected_profile:
+            metrics['actor/behavior_mu_monitor_native_forward_calls'] = safety.monitor_native_forward_calls
+            metrics['actor/behavior_mu_additional_initial_repeat_native_forward_calls'] = safety.initial_actor_repeat_native_forward_calls
+            metrics['actor/behavior_mu_monitor_forward_wall_seconds'] = safety.monitor_forward_wall_seconds
         metrics['actor/optimizer_steps'] = updates
         metrics['actor/skipped_empty_minibatches'] = skipped
         if paper_objective:

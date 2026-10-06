@@ -20,6 +20,11 @@ actor_rollout_ref:
       target_old_policy_kl: ???
       negative_tail_limit: ???
       initial_old_logprob_max_abs_delta: ???
+      sampling_probability_correction:
+        enabled: false
+        protocol: tree_behavior_mu_centered_ppo_v1
+        # Independent candidate gate; never marks the original sampler gate PASS.
+        initial_actor_repeat_max_abs_delta: null
 
 trainer:
   acceptance_step: 115
@@ -32,3 +37,6 @@ baselines:
       protocol: tree_sampled_prefix_legacy_semantics_v1
       # Must bind the existing healthy tokenizer; never guessed at opt-in.
       tokenizer_sha256: null
+    behavior_mu:
+      enabled: false
+      protocol: tree_behavior_mu_centered_ppo_v1

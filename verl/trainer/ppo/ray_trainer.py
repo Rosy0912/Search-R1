@@ -104,6 +104,46 @@ import torch
 from verl.utils.torch_functional import masked_mean
 
 
+def cast_rollout_structural_fields(data, actor_config, preserve_old=False):
+    """Keep exact legacy casts; the explicit mu profile preserves all floats."""
+    from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
+    corrected = behavior_mu_correction_enabled(actor_config.get('policy_safety', {}))
+    for key in data.batch.keys():
+        if (preserve_old and key == 'old_log_probs') or (corrected and data.batch[key].is_floating_point()):
+            continue
+        data.batch[key] = data.batch[key].long()
+
+
+def prepare_behavior_mu_old_policy(data, actor_config):
+    from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
+    corrected = behavior_mu_correction_enabled(actor_config.get('policy_safety', {}))
+    if not corrected:
+        return False
+    from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
+    validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    beta = data.batch['old_log_probs']
+    sampled = data.batch['sampled_old_log_probs']
+    if not beta.is_floating_point() or beta.shape != sampled.shape or sampled.dtype != torch.float32:
+        raise ValueError('Behavior-mu profile requires independent floating actor beta and FP32 sampled mu')
+    data.batch['actor_old_log_probs'] = beta.detach().clone()
+    data.batch['old_log_probs'] = sampled.detach().clone()
+    data.meta_info['tree_behavior_mu_corrected_profile'] = True
+    return True
+
+
+def validate_final_behavior_mu_batch(data, actor_config):
+    from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
+    if not behavior_mu_correction_enabled(actor_config.get('policy_safety', {})):
+        return
+    from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
+    receipt = validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    if (data.meta_info.get('tree_behavior_mu_corrected_profile') is not True
+            or 'actor_old_log_probs' not in data.batch.keys()
+            or not torch.equal(data.batch['old_log_probs'], data.batch['sampled_old_log_probs'])):
+        raise ValueError('Final balanced behavior-mu batch has no fixed mu/independent beta binding')
+    return receipt
+
+
 def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, kl_penalty='kl'):
     responses = data.batch['responses']
     response_length = responses.size(1)
@@ -114,7 +154,11 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, 
 
     # compute kl between ref_policy and current policy
     if 'ref_log_prob' in data.batch.keys():
-        kld = core_algos.kl_penalty(torch.where(response_mask.bool(), data.batch['old_log_probs'], 0.),
+        # The behavior-mu PPO denominator does not change the original beta reward KL.
+        reward_policy_log_probs = (data.batch['actor_old_log_probs']
+                                   if data.meta_info.get('tree_behavior_mu_corrected_profile') is True
+                                   else data.batch['old_log_probs'])
+        kld = core_algos.kl_penalty(torch.where(response_mask.bool(), reward_policy_log_probs, 0.),
                                     torch.where(response_mask.bool(), data.batch['ref_log_prob'], 0.),
                                     kl_penalty=kl_penalty)  # (batch_size, response_length)
         kld = kld * response_mask
@@ -902,12 +946,12 @@ class RayPPOTrainer(object):
                                 batch = select_rows(batch, sources)
 
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
-                        for key in final_gen_batch_output.batch.keys():
-                            final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
+                        cast_rollout_structural_fields(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
                         with torch.no_grad():
                             output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                             final_gen_batch_output = final_gen_batch_output.union(output)
+                        prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)
@@ -924,14 +968,13 @@ class RayPPOTrainer(object):
                     # Note that this breaks the order of data inside the batch.
                     # Please take care when you implement group based adv computation such as GRPO and rloo
                     self._balance_batch(batch, metrics=metrics)
+                    validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
 
                     # compute global_valid tokens
                     batch.meta_info['global_token_num'] = torch.sum(batch.batch['attention_mask'], dim=-1).tolist()
 
                     # batch.batch.apply(lambda x, key: x.long() if key != "old_log_probs" else x, inplace=True, key=True)
-                    for key in batch.batch.keys():
-                        if key != 'old_log_probs':
-                            batch.batch[key] = batch.batch[key].long()
+                    cast_rollout_structural_fields(batch, self.config.actor_rollout_ref.actor, preserve_old=True)
 
                     if self.use_reference_policy:
                         # compute reference log_prob
@@ -992,6 +1035,7 @@ class RayPPOTrainer(object):
                         with _timer('update_actor', timing_raw):
                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
                                 batch, metrics = self._create_loss_mask(batch, metrics)
+                            validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
                                 audit_controller.audit_actor_batch(batch)

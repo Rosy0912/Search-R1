@@ -1,0 +1,97 @@
+{
+  "status": "OWNER_SOURCE_CPU_CANDIDATE_NOT_INDEPENDENTLY_RELEASED",
+  "protocol": "tree_behavior_mu_centered_ppo_v1",
+  "base_commit": "927ab58",
+  "commit_created": false,
+  "source_files": {
+    "search_r1/baselines/tree_behavior_mu.py": "809fa84287adce3c7a9f5840bde5d0dd85957951937a8988c272fd5c4f4a69a6",
+    "search_r1/baselines/rollout.py": "a24e84fccd6029cf1f63c6452a998c805e5ead8dd843be73a3eba3cb1bc9e47f",
+    "test_tree_behavior_mu_data_cpu.py": "de1835539c0fbabc9f0fdad0a04ee435d7249a5cb45001b745f1cb424cce5831"
+  },
+  "owner_decision": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-same-backend-probability-diagnosis/OWNER_BEHAVIOR_MU_IMPLEMENTATION_DECISION.md",
+    "sha256": "13621eb03b5885b2adf4987eda769eb114dde0b341530b3a7edaef8a986ba91f"
+  },
+  "native_capture_source": {
+    "path": "search_r1/baselines/tree_raw_tokens.py",
+    "sha256": "ccbfc2f7faebdc8cc6603e4eb66441ac9b774dc9d2ffb5c14b79119c2c5396d5",
+    "sampling_params_field_count": 18,
+    "owner_modified_not_this_agent": true
+  },
+  "interface": {
+    "constructor": "SearchRollout(..., token_preservation=preservation, behavior_mu=None)",
+    "opt_in": {
+      "enabled": true,
+      "protocol": "tree_behavior_mu_centered_ppo_v1"
+    },
+    "tensor": "sampled_old_log_probs",
+    "dtype": "torch.float32",
+    "row_non_tensor": "tree_behavior_mu_binding",
+    "meta_protocol": "tree_behavior_mu_protocol",
+    "meta_provenance": "tree_behavior_mu_runtime_provenance",
+    "validator": "validate_behavior_mu_batch(data, *, expected_provenance, required=True)",
+    "trusted_expected_provenance": "runtime_provenance(os.environ), original six ENV keys, supplied by driver/actor",
+    "stages": [
+      "compose result",
+      "driver after final balancing and loss_mask",
+      "actor before tensor selection at matched all-rank refusal point"
+    ],
+    "permute_rule": "all tensor and non_tensor rows together; whole-batch meta remains fixed",
+    "extra_beta_advantage_weight_fields": "permitted; neither substituted into mu nor given numerical acceptance",
+    "optional_loss_mask": "must exactly equal original response actor mask"
+  },
+  "contracts": [
+    "default OFF; enabled requires prior raw dual representation",
+    "raw emission exact selected scalar FP32 bits and original retained token prefix only",
+    "original source/config/data/model/run/job ENV values compared to trusted expected",
+    "actual recorded plain SamplingParams including logits_processors=None; no assumed missing defaults",
+    "temperature1/top_p1/top_k-1/min_p0/n1/default penalties/EOS-only/no extra stop/seedNone",
+    "original full prefix/positions/attention/model mask/turn reconstruction; observation/padding mu=+0",
+    "original 2048 start/4096 no crop or cap expansion/500 emitted and observation caps",
+    "original raw semantics and action SHA preserved; unsupported raw boundaries continue to refuse",
+    "per-action SHA references original full token/scalar ledger; no quadratic per-token prefix duplication",
+    "same physical sample/action identity across copied leaves must match; inherited occurrences counted separately",
+    "no loss, advantage, leaf weight, reduction denominator, optimizer, or threshold implementation"
+  ],
+  "cpu": {
+    "command": "python3 -m unittest -v test_tree_behavior_mu_data_cpu.py",
+    "exit_code": 0,
+    "tests": 11,
+    "elapsed_seconds": 0.062,
+    "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+    "python_executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "torch": "2.8.0",
+    "platform": "macOS-15.3-arm64-arm-64bit",
+    "cuda_initialized": false,
+    "scope": "tiny synthetic CPU native-emission objects + actual SearchRollout.compose + TinyProto stub",
+    "cases": [
+      "exact FP32/observation/padding",
+      "default OFF/raw dependency",
+      "missing scalar/binding/meta/raw",
+      "altered/scalar-not-FP32/dtype",
+      "obs/pad/NaN/loss-mask reject",
+      "joint row reorder and mismatched reorder",
+      "2 roots x3 leaves/deepcopy/physical-vs-inherited counts",
+      "greedy/filters/processors/stop/seed refusal",
+      "runtime/context/position/turn/attention/model-mask mutation",
+      "beta/advantages/weights independent",
+      "standalone assembly vs actual compose without input mutation"
+    ],
+    "old_15_tests_rerun": false
+  },
+  "limitations": [
+    "Not actual DataProto/TensorDict/Ray/FSDP/all-rank execution evidence",
+    "No real model/tokenizer/rollout PT or remote assets read; synthetic temporary tokenizer JSON only",
+    "No GPU/native numerical/short training/fair effectiveness or capacity acceptance",
+    "Frozen runtime/environment and actual sampler execution authenticity are separate deployment evidence",
+    "Source index remains original State.source; QA reward/source mapping stays with existing controller/Tree audit",
+    "Raw token protocol unsupported rolling/cap/PAD/EOS/UTF8 boundaries were not expanded",
+    "Greedy validation has behavior_mu=None; its scalar is never classified as training mu"
+  ],
+  "probability_accepted": false,
+  "training_accepted": false,
+  "GPU_capacity_proven": false,
+  "remote_operations": 0,
+  "gpu_operations": 0,
+  "optimizer_operations": 0
+}
