@@ -1,0 +1,56 @@
+{
+  "role": "external_preflight_before_mutation_rejection",
+  "checked_unix": 1791248408.8595545,
+  "source_commit": "3fdf92f71cf624f78611cf5ab5f03dba64ce4fec",
+  "old_source_commit": "a09a5530fd16fa0c04c0aa157ee56462aab825f4",
+  "actual_readonly_proof_sha256": "8bae1dce8e2c6179d5a07c62e36ae000c5e57911b9ba7c93119b4403ca5eb4e1",
+  "original_source_bytes_unchanged": true,
+  "original_runtime_snapshot_metadata": [
+    {
+      "base": "/mnt/data/shaoshitong/g1d-2541e8f3",
+      "expected_count": 353,
+      "actual_count": 356,
+      "extra": [
+        {
+          "path": "outputs/2026-10-06/08-27-31/.hydra/config.yaml",
+          "bytes": 5408,
+          "sha256": "a2ba9ea4b9ef14a627fb2d10a4c934270bd1f553fbde0350f18df5564b3c8565",
+          "mtime": 1791246451.5330515,
+          "symlink": false
+        },
+        {
+          "path": "outputs/2026-10-06/08-27-31/.hydra/hydra.yaml",
+          "bytes": 9872,
+          "sha256": "038f8fb91a9358abef0e11b18ed3cbb98edb8be891c8e241986d93e9ee35f935",
+          "mtime": 1791246451.5410511,
+          "symlink": false
+        },
+        {
+          "path": "outputs/2026-10-06/08-27-31/.hydra/overrides.yaml",
+          "bytes": 3212,
+          "sha256": "c21fd81f265ac6c61e280d65259ec4d85543402e8406b04e70ca8b01eb9ac73c",
+          "mtime": 1791246451.545051,
+          "symlink": false
+        }
+      ],
+      "missing": [],
+      "changed": []
+    },
+    {
+      "base": "/mnt/data/shaoshitong/g1p-2541e8f3",
+      "expected_count": 353,
+      "actual_count": 353,
+      "extra": [],
+      "missing": [],
+      "changed": []
+    }
+  ],
+  "failure": "Original complete a09 source file set changed",
+  "cause": "Three original generated Hydra YAML snapshots included by external source enumeration; all353 original files unchanged",
+  "new_submit_intent_exists": false,
+  "new_native_launch_exists": false,
+  "actual_production_updates": 0,
+  "production_admission": false,
+  "healthy_checkpoint_accepted": false,
+  "scope": "Actual metadata/hash read and missing local intent/launch; no new submission, model test, or health proof"
+}
