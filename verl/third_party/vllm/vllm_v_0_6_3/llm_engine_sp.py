@@ -14,6 +14,7 @@
 # Adapted from https://github.com/vllm-project/vllm/blob/main/vllm/engine/llm_engine.py
 
 from functools import partial
+import os
 from typing import Callable, Dict, Optional, Type, Union
 
 import torch
@@ -202,7 +203,15 @@ class LLMEngine(LLMEngine):
             return tokenizer_group.get_lora_tokenizer(sequence.lora_request)
 
         self.seq_counter = Counter()
-        self.generation_config_fields = _load_generation_config_dict(model_config)
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from transformers import GenerationConfig
+            from reproduction.common8.sampling_capture import generation_source, loaded_generation
+            original_generation, generation_binding = generation_source(model_config, _load_generation_config_dict)
+            self.generation_config_fields = _load_generation_config_dict(model_config)
+            self._common8_generation_provenance = loaded_generation(generation_binding,
+                self.generation_config_fields, GenerationConfig.from_dict(original_generation).to_diff_dict())
+        else:
+            self.generation_config_fields = _load_generation_config_dict(model_config)
 
         self.input_preprocessor = InputPreprocessor(model_config, self.tokenizer)
 
@@ -334,6 +343,15 @@ class LLMEngine(LLMEngine):
         )
 
     # TODO(sgm): add for verl but we may not tokenizer in Rollout
+    def _create_sequence_group_with_sampling(self, request_id, seq, sampling_params, *args, **kwargs):
+        capture = getattr(self, '_common8_stop_capture', None)
+        if capture is not None:
+            capture.before(request_id, seq, sampling_params)
+        group = super()._create_sequence_group_with_sampling(request_id, seq, sampling_params, *args, **kwargs)
+        if capture is not None:
+            capture.after(request_id, seq, sampling_params, group)
+        return group
+
     def _init_tokenizer(self, tokenizer, **tokenizer_init_kwargs):
         init_kwargs = dict(enable_lora=bool(self.lora_config),
                            max_num_seqs=self.scheduler_config.max_num_seqs,

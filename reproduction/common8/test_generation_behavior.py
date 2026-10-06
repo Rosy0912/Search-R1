@@ -18,6 +18,7 @@ from verl import DataProto
 from reproduction.common8 import behavior_trace as bt
 from reproduction.common8 import generation_behavior as controller
 from reproduction.common8.test_behavior_trace import original_upstream_manager
+from reproduction.common8.test_sampling_capture import complete_sampling_fixture, stop_provenance_fixture
 from search_g1.signals import contexts
 from search_r1.qa_protocol import extract_final_answer
 from verl.utils.reward_score.qa_em import compute_score_generated_em
@@ -26,13 +27,13 @@ from pathlib import Path
 
 
 def sampler_fixture():
-    return dict(n=1, best_of=1, do_sample=True, temperature=1.0, top_p=1.0,
+    return complete_sampling_fixture(dict(n=1, best_of=1, do_sample=True, temperature=1.0, top_p=1.0,
                 top_k=-1, min_p=0.0, presence_penalty=0.0, frequency_penalty=0.0,
                 repetition_penalty=1.0, ignore_eos=False, logprobs=1, min_tokens=0,
                 logits_processors=[], logprob_semantics=bt.LOGPROB_SEMANTICS,
                 max_tokens=500, stop=None, stop_token_ids=None, seed=None,
                 logit_bias=None, allowed_token_ids=None, guided_decoding=None,
-                truncate_prompt_tokens=None)
+                truncate_prompt_tokens=None))
 
 
 class TokenizerFixture:
@@ -51,9 +52,10 @@ class TokenizerFixture:
         self.encode_calls = 0
 
     def decode(self, ids, *, skip_special_tokens, clean_up_tokenization_spaces):
-        assert skip_special_tokens is False and clean_up_tokenization_spaces is False
+        assert type(skip_special_tokens) is bool and clean_up_tokenization_spaces is False
         self.decode_calls.append(list(ids))
-        return ''.join(self.fragments.get(value, 'P') for value in ids)
+        return ''.join(self.fragments.get(value, 'P') for value in ids
+                       if not skip_special_tokens or value not in self.all_special_ids)
 
     def encode(self, *args, **kwargs):
         self.encode_calls += 1
@@ -92,6 +94,9 @@ class WorkerFixture:
                 raw_generated_token_count=len(raw), selected_logprobs=[-0.25 - 0.125 * j for j in range(len(raw))],
                 finish_reason='stop' if raw and raw[-1] == 99 else 'length', stop_reason=None,
                 eos_token_id=99, pad_token_id=0, sampling=sampling))
+            records[-1]['effective_stop_provenance'] = stop_provenance_fixture(records[-1],
+                run_id='f' * 32, slurm_job_id='12345',
+                source_sha256={'cpu_fixture.py': 'a' * 64})
         width = max(len(record['raw_generated_token_ids']) for record in records)
         response = torch.zeros((len(records), width), dtype=torch.long)
         selected = torch.zeros((len(records), width), dtype=torch.float32)
@@ -162,8 +167,8 @@ def generation_fixture(prompts=None, *, validation=False, do_sample=True):
     prompts = prompts or [[10, 11], [10, 11]]
     padded = controller._left_pad(prompts, 0)
     identities = ['cpu-traj-' + str(index) for index in range(len(prompts))]
-    identity = dict(run_id='cpu-controller-fixture', source_sha256={'cpu_fixture.py': 'a' * 64},
-                    slurm_job_id='not-native-cpu-fixture', logical_update=0 if validation else 1,
+    identity = dict(run_id='f' * 32, source_sha256={'cpu_fixture.py': 'a' * 64},
+                    slurm_job_id='12345', logical_update=0 if validation else 1,
                     policy_snapshot_id='cpu-policy0', parent_group_ids=['cpu-parent'],
                     trajectory_ids=identities, validation=validation)
     batch = DataProto.from_dict(padded, non_tensors={'behavior_row_id': identities},
@@ -357,15 +362,58 @@ class ControllerCpuTests(unittest.TestCase):
         self.assertEqual(event['observation_or_correction_token_ids'][0], [30] * 4)
         self.assertEqual(records[0]['raw_generated_token_ids'], [20, 21, 22, 99])
 
-    def test_internal_eos_pad_and_special_reject_whole_outer_with_raw_evidence(self):
-        for special in (0, 98, 99):
+    def test_internal_actual_stop_and_pad_reject_whole_outer_with_raw_evidence(self):
+        for special in (0, 99):
             with self.subTest(special=special):
                 raw = [23, special, 24, 99]
                 manager = ManagerFixture(lambda ordinal, identity: raw)
-                records = self.run_failure(manager, 'included_special_or_pad_token')
+                records = self.run_failure(manager, 'included_actual_stop_or_pad_token')
                 self.assertEqual(records[0]['raw_generated_token_ids'], raw)
                 self.assertEqual(len(records), 8)
                 self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
+
+    def test_nonterminal_special_keeps_actual_token_lp_masks_and_next_request(self):
+        def script(ordinal, identity):
+            return [20, 98, 21, 99] if ordinal == 0 else [23, 24, 99]
+        manager = ManagerFixture(script)
+        original = original_upstream_manager()
+        manager.execute_predictions = original.execute_predictions
+        _, batch, result = self.run_success(manager)
+        self.assertEqual(original.search_calls[0], ['query', 'query'])
+        self.assertEqual(manager.tokenizer.encode_calls, 0)
+        first = result.non_tensor_batch['behavior_turns'][0][0]
+        second = result.non_tensor_batch['behavior_turns'][0][1]
+        self.assertEqual(first['prefix_cut']['kept_token_ids'], [20, 98, 21])
+        self.assertIn('<special>', first['prefix_cut']['decoded_retained_prefix'])
+        self.assertNotIn('<special>', first['prefix_cut']['execution_text'])
+        self.assertEqual(first['prefix_cut']['included_nonterminal_special_positions'], [1])
+        self.assertEqual(result.batch['responses'][0, :3].tolist(), [20, 98, 21])
+        self.assertEqual(result.batch['sampling_log_probs'][0, :3].tolist(), [-.25, -.375, -.5])
+        self.assertEqual(result.batch['info_mask'][0, -result.batch['responses'].shape[1]:][:3].tolist(), [1, 1, 1])
+        self.assertEqual(second['actual_request_token_ids'][:5], [10, 11, 20, 98, 21])
+        self.assertEqual(first['effective_stop_provenance']['row_id'], 'cpu-traj-0')
+        self.assertEqual(batch.meta_info['behavior_identity'], result.meta_info['behavior_identity'])
+
+    def test_special_inside_answer_is_not_cleaned_for_reward(self):
+        raw = [23, 98, 24, 99]
+        manager = ManagerFixture(lambda ordinal, identity: raw)
+        original = original_upstream_manager()
+        manager.execute_predictions = original.execute_predictions
+        _, _, result = self.run_success(manager)
+        turn = result.non_tensor_batch['behavior_turns'][0][0]
+        self.assertEqual(turn['prefix_cut']['execution_text'], '<answer>A</answer>')
+        self.assertEqual(turn['prefix_cut']['decoded_retained_prefix'], '<answer>A<special></answer>')
+        self.assertEqual(result.batch['responses'][0].tolist(), raw[:-1])
+        self.assertEqual(result.batch['sampling_mask'][0].tolist(), [True] * 3)
+        self.assertEqual(compute_score_generated_em([turn['prefix_cut']['decoded_retained_prefix']], {'target': ['A']}), 0)
+
+    def test_nonterminal_special_after_closing_is_not_added_to_kept_prefix(self):
+        _, _, result = self.run_success(ManagerFixture(lambda ordinal, identity: [23, 24, 98, 99]))
+        turn = result.non_tensor_batch['behavior_turns'][0][0]
+        self.assertEqual(turn['raw_generated_token_ids'], [23, 24, 98, 99])
+        self.assertEqual(turn['prefix_cut']['kept_token_ids'], [23, 24])
+        self.assertEqual(turn['prefix_cut']['included_nonterminal_special_positions'], [])
+        self.assertEqual(result.batch['responses'][0].tolist(), [23, 24])
 
     def test_answer_before_search_retains_all_tokens_lp_masks_and_original_action(self):
         raw = [23, 24, 20, 21, 99]

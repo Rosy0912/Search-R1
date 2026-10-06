@@ -50,9 +50,34 @@ original tokenizer decoder; the original and explicit decoder projections and
 search action were equal with a stable prefix. The new CPU tests use synthetic
 decoder projections and do not stand in for native probability acceptance.
 
-Ambiguous special tokens, unstable Unicode prefix boundaries, altered prefixes and
+Unverified special tokens, unstable Unicode prefix boundaries, altered prefixes and
 context-window overflow reject the complete outer, with private evidence.
 No trajectory is discarded to make the gate pass.
+
+Native3294 stopped before the first actor update because the prefix guard treated
+every tokenizer special ID as EOS or padding. Private replay found one retained
+other-special token inside an otherwise valid search prefix. Both the visible
+authored projection and the original skip-special executor projection reached
+the same search closing after 51 whole tokens, with identical search payload.
+This was a generation guard failure, not evidence of a gradient or Adam failure.
+
+The separate repair captures each actual engine request group's sampling clone,
+sequence EOS and effective stop IDs after the installed engine has applied the
+original generation configuration. It binds this metadata to the original
+request tokens, row, generation call, run, job and source. It does not change the
+caller sampling parameters or the engine's stop behavior. EOS, padding and any
+actual stopping ID remain forbidden inside a retained action. Other special IDs
+are allowed only with this complete captured provenance; legacy records retain
+their original stricter meaning.
+
+The executor uses the original skip-special character projection, while strict
+reward retains the complete visible authored span. Whole raw tokens, selected
+log-probabilities, actor masks and next-request tokens remain intact, including
+the other-special token. An executor-valid action can still receive invalid
+answer reward when the authored span fails the existing strict parser. The two
+projection hashes, boundaries and suffixes are audited independently. This
+repair neither drops a trajectory nor masks or cleans a generated token, and
+does not replace the all-token context/probability gate below.
 
 Runtime `a09a5530` incorrectly rejected an answer closing tag followed by a
 search closing tag as “noncausal”; native discovery3283 stopped during the

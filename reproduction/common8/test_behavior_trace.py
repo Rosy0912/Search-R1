@@ -339,6 +339,104 @@ class RawPrefixTests(unittest.TestCase):
         self.assertEqual(trace['trajectories'][0]['turns'][1]['actual_request_token_ids'], [10, 11, 20, 30])
 
 
+
+class DualProjectionTests(unittest.TestCase):
+    """Constructed protocol cases, not native engine or GPU acceptance."""
+    def turn(self, raw, fragments, *, stops=(99,), observations=(), index=0, request=None):
+        from reproduction.common8.test_sampling_capture import complete_sampling_fixture, stop_provenance_fixture
+        sampling = complete_sampling_fixture(dict(n=1, best_of=1, do_sample=True, temperature=1., top_p=1.,
+            top_k=-1, min_p=0., presence_penalty=0., frequency_penalty=0., repetition_penalty=1.,
+            ignore_eos=False, logprobs=1, min_tokens=0, logits_processors=[],
+            logprob_semantics=bt.LOGPROB_SEMANTICS, max_tokens=500, stop_token_ids=[]))
+        special = {0, 98, 99}
+        decode = lambda ids: ''.join(fragments.get(i, '<eos>' if i == 99 else '<pad>' if i == 0 else '<special>') for i in ids)
+        executor_decode = lambda ids: decode([i for i in ids if i not in special])
+        cut = bt.raw_prefix_to_first_closing_tag(raw, decode, eos_token_id=99, pad_token_id=0,
+            special_token_ids=sorted(special), executor_decode=executor_decode, effective_stop_token_ids=list(stops))
+        record = dict(schema_version=1, request_id='constructed-request-' + str(index), row_id='constructed-row',
+            rollout_ordinal=index, rollout_call_id='constructed-call-' + str(index),
+            policy_snapshot_id='constructed-policy', actual_request_token_ids=request or [10, 11],
+            raw_generated_token_ids=list(raw), raw_generated_token_count=len(raw),
+            selected_logprobs=[-.25 - i * .125 for i in range(len(raw))], finish_reason='stop' if raw[-1] == 99 else 'length',
+            stop_reason=None, eos_token_id=99, pad_token_id=0, sampling=sampling)
+        record['effective_stop_provenance'] = stop_provenance_fixture(record, effective_stop_token_ids=stops)
+        return bt.make_turn(record, trajectory_id='constructed-row', turn_index=index,
+            kept_token_count=cut['kept_token_count'], special_token_ids=sorted(special), prefix_cut=cut,
+            observation_token_ids=observations, final_turn=not bool(observations))
+
+    def test_other_special_preserved_before_and_inside_action(self):
+        for raw in ([98, 20, 21, 99], [20, 98, 21, 99]):
+            turn = self.turn(raw, {20: '<search>q', 21: '</search>tail'})
+            cut = turn['prefix_cut']
+            self.assertEqual(cut['kept_token_ids'], raw[:-1])
+            self.assertEqual(cut['execution_text'], '<search>q</search>')
+            self.assertIn('<special>', cut['decoded_retained_prefix'])
+            self.assertEqual(cut['token_boundary_suffix_classification'], 'nonwhitespace')
+            self.assertEqual(bt._verify_turn(turn)[1:3], (raw, turn['selected_logprobs']))
+
+    def test_skip_projection_can_join_closing_but_raw_reward_text_is_preserved(self):
+        turn = self.turn([20, 98, 21, 99], {20: '<answer>A</ans', 21: 'wer>'})
+        cut = turn['prefix_cut']
+        self.assertEqual(cut['execution_text'], '<answer>A</answer>')
+        self.assertEqual(cut['decoded_retained_prefix'], '<answer>A</ans<special>wer>')
+        self.assertEqual(cut['kept_token_ids'], [20, 98, 21])
+        from verl.utils.reward_score.qa_em import compute_score_generated_em
+        self.assertEqual(compute_score_generated_em([cut['decoded_retained_prefix']], {'target': ['A']}), 0.)
+
+    def test_dual_decode_requires_explicit_stop_proof_and_internal_actual_stops_reject(self):
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'missing_effective_stop_provenance'):
+            bt.raw_prefix_to_first_closing_tag([98], lambda ids: '<special>', eos_token_id=99,
+                pad_token_id=0, special_token_ids=[0, 98, 99], executor_decode=lambda ids: '')
+        for token in (0, 99, 98):
+            with self.subTest(token=token), self.assertRaisesRegex(bt.BehaviorTraceError, 'included_actual_stop_or_pad_token'):
+                self.turn([20, token, 21, 99], {20: '<answer>A', 21: '</answer>'}, stops=(98, 99))
+
+    def test_legacy_special_rejection_cannot_be_bypassed_without_dual_proof(self):
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'included_special_or_pad_token'):
+            bt.raw_prefix_to_first_closing_tag([98], lambda ids: '<special>',
+                eos_token_id=99, pad_token_id=0, special_token_ids=[0, 98, 99])
+        turn = self.turn([20, 98, 21, 99], {20: '<answer>A', 21: '</answer>'})
+        del turn['effective_stop_provenance']; del turn['request_id']
+        with self.assertRaisesRegex(bt.BehaviorTraceError, 'dual_decode_without_actual_stop_provenance'):
+            bt._verify_turn(turn)
+
+    def test_provenance_and_projection_tampering_reject(self):
+        original = self.turn([20, 98, 21, 99], {20: '<answer>A', 21: '</answer>'})
+        alterations = [
+            lambda t: t['prefix_cut'].__setitem__('included_nonterminal_special_positions', []),
+            lambda t: t['prefix_cut'].__setitem__('effective_stop_token_ids_sha256', '0' * 64),
+            lambda t: t['prefix_cut'].__setitem__('execution_text', '<answer>B</answer>'),
+            lambda t: t['prefix_cut'].__setitem__('decoded_executor_previous_prefix', '<answer>A</answer>'),
+            lambda t: t['prefix_cut'].__setitem__('retained_decode_replacement_count', 1),
+            lambda t: t['effective_stop_provenance'].__setitem__('row_id', 'wrong-row'),
+            lambda t: t['effective_stop_provenance'].__setitem__('request_id', 'wrong-request'),
+            lambda t: t['effective_stop_provenance'].__setitem__('effective_all_stop_token_ids', [98, 99]),
+        ]
+        for modify in alterations:
+            changed = copy.deepcopy(original); modify(changed)
+            with self.subTest(modification=alterations.index(modify)), self.assertRaises(bt.BehaviorTraceError):
+                bt._verify_turn(changed)
+
+    def test_raw_special_lp_mask1_and_next_context_are_audited(self):
+        first = self.turn([20, 98, 21, 99], {20: '<search>q', 21: '</search>'}, observations=[30])
+        second = self.turn([22, 23, 99], {22: '<answer>A', 23: '</answer>'}, index=1,
+                           request=[10, 11, 20, 98, 21, 30])
+        row = bt.make_actor_row(trajectory_id='constructed-row',
+            input_ids=[10, 11, 20, 98, 21, 30, 22, 23], attention_mask=[1] * 8,
+            info_mask=[1, 1, 1, 1, 1, 0, 1, 1], position_ids=list(range(8)), prompt_width=2)
+        count, projected_lp, included = bt._audit_trajectory([first, second], row, first['sampling'], 'constructed-policy')
+        self.assertEqual(count, 5)
+        self.assertEqual(projected_lp, [-.25, -.375, -.5, 0., -.25, -.375])
+        self.assertEqual(included, [True, True, True, False, True, True])
+        for change in ('mask', 'context', 'retokenize'):
+            turns, changed = copy.deepcopy([first, second]), copy.deepcopy(row)
+            if change == 'mask': changed['info_mask'][3] = 0
+            elif change == 'context': turns[1]['actual_request_token_ids'][3] = 97
+            else: changed['input_ids'][3] = 97
+            with self.subTest(change=change), self.assertRaises(bt.BehaviorTraceError):
+                bt._audit_trajectory(turns, changed, first['sampling'], 'constructed-policy')
+
+
 class OuterProtocolTests(unittest.TestCase):
     def setUp(self):
         self.trace, self.bindings = tiny_outer_fixture()

@@ -12,8 +12,9 @@ import torch
 
 from verl import DataProto
 from reproduction.common8.behavior_trace import (
-    BehaviorTraceError, make_turn, raw_prefix_to_first_closing_tag,
+    BehaviorTraceError, document_sha256, make_turn, raw_prefix_to_first_closing_tag,
 )
+from reproduction.common8.sampling_capture import validate_effective_stop_provenance
 
 
 def _require(condition, reason):
@@ -161,10 +162,28 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
             original = torch.tensor(record['selected_logprobs'], dtype=torch.float32)
             _require(torch.equal(output.batch['sampling_log_probs'][local, :count].cpu(), original),
                      'native_selected_probability_transport_changed')
+            _require('effective_stop_provenance' in record and 'request_id' in record,
+                     'missing_actual_group_stop_provenance')
+            proof = record['effective_stop_provenance']
+            try:
+                stop_ids, _ = validate_effective_stop_provenance(proof,
+                    request_id=record['request_id'], actual_request_token_ids=requests[local],
+                    sampling=current, eos_token_id=eos, pad_token_id=pad)
+            except (ValueError, TypeError, KeyError) as error:
+                raise BehaviorTraceError('invalid_effective_stop_provenance') from error
+            config_proof = proof['generation_config']
+            _require(proof['rollout_call_id'] == call_id and proof['row_id'] == row_ids[index] and
+                     config_proof['run_id'] == identity['run_id'] and
+                     config_proof['slurm_job_id'] == identity['slurm_job_id'] and
+                     config_proof['source_map_sha256'] == document_sha256(identity['source_sha256']),
+                     'actual_group_stop_identity_changed')
             cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'],
                 lambda tokens: tokenizer.decode(tokens, skip_special_tokens=False,
                                                 clean_up_tokenization_spaces=False),
-                eos_token_id=eos, pad_token_id=pad, special_token_ids=special)
+                eos_token_id=eos, pad_token_id=pad, special_token_ids=special,
+                executor_decode=lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
+                                                clean_up_tokenization_spaces=False),
+                effective_stop_token_ids=sorted(stop_ids))
             # A trailing EOS exclusion is allowed only for a genuine native stop,
             # never because EOS shares the tensor's padding ID.
             if cut['trailing_eos_excluded']:

@@ -227,11 +227,21 @@ class vLLMRollout(BaseRollout):
             try:
                 if common8:
                     self.inference_engine.capture_behavior_trace = True
-                output = self.inference_engine.generate(
-                    prompts=None,  # because we have already convert it to prompt token id
-                    sampling_params=self.sampling_params,
-                    prompt_token_ids=idx_list,
-                    use_tqdm=False)
+                    from reproduction.common8.sampling_capture import capture_scope
+                    with capture_scope(self.inference_engine.llm_engine, self.sampling_params,
+                            sampler_actual, call_id, list(row_ids), idx_list) as actual_groups:
+                        output = self.inference_engine.generate(
+                            prompts=None, sampling_params=self.sampling_params,
+                            prompt_token_ids=idx_list, use_tqdm=False)
+                        if len(output) != 3:
+                            raise ValueError('Missing actual pre-padding sampling behavior')
+                        actual_groups.attach(output[2])
+                else:
+                    output = self.inference_engine.generate(
+                        prompts=None,  # because we have already convert it to prompt token id
+                        sampling_params=self.sampling_params,
+                        prompt_token_ids=idx_list,
+                        use_tqdm=False)
             finally:
                 if common8:
                     self.inference_engine.capture_behavior_trace = prior_capture
