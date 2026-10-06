@@ -48,6 +48,10 @@ def validate_config(config, require_thresholds=True):
     fresh = config.get('calibration_scope') == CALIBRATION_SCOPE
     if fresh and config.get('target_old_policy_kl') != TOKEN_KL_LIMIT:
         raise ValueError('Fresh200 sampled-old token KL differs from the human-selected 0.2')
+    if require_thresholds and config.get('live_training_protocol') is True:
+        from .fresh200_live import validate_live_safety_config
+        validate_live_safety_config(config)
+        return
     if require_thresholds and mode != 'production':
         # Isolated tests cannot bootstrap themselves with a fake production acceptance.
         # The reviewed owned launcher binds this scope before any CUDA use.
@@ -138,6 +142,15 @@ def calibrated_or_candidate_rejection(stats, config):
     reason = rejection_reason(stats, config)
     if reason is not None:
         return reason
+    if config.get('mode') == 'calibration' and config.get('live_training_protocol') is True:
+        # The retained live first5 always applies the human known KL brake.
+        # Its unknown empirical tail is observation-only until the actual step5
+        # policy review. Legacy isolated calibration below keeps its semantics.
+        from .fresh200_live import validate_live_safety_config
+        validate_live_safety_config(config)
+        if stats['sampled_old_policy_kl'] > config['target_old_policy_kl']:
+            return 'OLD_POLICY_TOKEN_KL'
+        return None
     from .fresh200 import CALIBRATION_SCOPE
     if (config.get('mode') == 'calibration' and config.get('calibration_scope') == CALIBRATION_SCOPE
             and stats['sampled_old_policy_kl'] > config['candidate_old_policy_kl']):

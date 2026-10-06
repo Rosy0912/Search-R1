@@ -181,6 +181,8 @@ def _validate_checkpoint_state(state, module, optimizer, scheduler, rank, world_
         metadata = state['runtime_metadata']
         required = {'rank', 'rng', 'scheduler', 'module_modes', 'parameters', 'buffers',
                     'local_shards', 'optimizer_tensors', 'sharding_rng'}
+        if 'fresh200_live_admission' in metadata:
+            required.add('fresh200_live_admission')
         if 'fresh200_worker_ledger' in state:
             from search_r1.baselines.fresh200 import validate_worker_attempt_ledger
             validate_worker_attempt_ledger(state['fresh200_worker_ledger'])
@@ -236,6 +238,9 @@ def _validate_checkpoint_runtime_placement(worker, metadata):
 
 def _restore_checkpoint_runtime_metadata(worker, metadata):
     """Restore saved placement with the existing FSDP offload helpers/modes."""
+    live_protocol = worker.config.actor.get('fresh200_live_protocol') is True
+    if ('fresh200_live_admission' in metadata) != live_protocol:
+        raise ValueError('Saved and live worker Fresh200 admission protocols differ')
     _validate_checkpoint_runtime_placement(worker, metadata)
     module = worker.actor_module_fsdp
     if worker._is_offload_param:
@@ -266,6 +271,9 @@ def _restore_checkpoint_runtime_metadata(worker, metadata):
     # overwriting children through a parent train() call.
     for name, child in module.named_modules():
         child.training = metadata['module_modes'][name]
+    if live_protocol:
+        from search_r1.baselines.fresh200_live import restore_worker_admission_state
+        restore_worker_admission_state(worker, metadata['fresh200_live_admission'])
 
 
 class ActorRolloutRefWorker(Worker):
@@ -950,6 +958,9 @@ class ActorRolloutRefWorker(Worker):
             result['fresh200_worker_ledger'] = cpu_snapshot(getattr(self, 'fresh200_worker_ledger',
                 dict(schema='FRESH200_WORKER_ACTUAL_ATTEMPTS_V1', attempts=0,
                      completed_outer_updates=0, actual_adam_total=0, history=[])))
+        if self.config.actor.get('fresh200_live_protocol') is True:
+            from search_r1.baselines.fresh200_live import worker_admission_state
+            result['fresh200_live_admission'] = cpu_snapshot(worker_admission_state(self))
         return result
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
@@ -970,6 +981,9 @@ class ActorRolloutRefWorker(Worker):
                 raise ValueError('Fresh200 state lacks complete live runtime metadata')
             if self.config.actor.get('fresh200_protocol', False) and 'fresh200_worker_ledger' not in state:
                 raise ValueError('Fresh200 state lacks actual attempt/write accounting')
+            if ('fresh200_live_admission' in state.get('runtime_metadata', {})) != (
+                    self.config.actor.get('fresh200_live_protocol') is True):
+                raise ValueError('Saved and live worker Fresh200 admission protocols differ')
             if 'runtime_metadata' in state:
                 _validate_checkpoint_runtime_placement(self, state['runtime_metadata'])
             if state.get('complete_internal', False):

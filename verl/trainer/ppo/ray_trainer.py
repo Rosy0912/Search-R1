@@ -736,25 +736,28 @@ class RayPPOTrainer(object):
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
 
-    def _save_checkpoint(self):
-        actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
+    def _save_checkpoint(self, checkpoint_root=None):
+        if checkpoint_root is not None and self.config.trainer.default_hdfs_dir is not None:
+            raise ValueError('An explicit local checkpoint root requires default_hdfs_dir=None')
+        checkpoint_root = self.config.trainer.default_local_dir if checkpoint_root is None else checkpoint_root
+        actor_local_path = os.path.join(checkpoint_root, 'actor',
                                         f'global_step_{self.global_steps}')
         actor_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
             self.config.trainer.default_hdfs_dir, 'actor')
         checkpoint_receipts = self.actor_rollout_wg.save_checkpoint(actor_local_path, actor_remote_path)
 
         if self.use_critic:
-            critic_local_path = os.path.join(self.config.trainer.default_local_dir, 'critic',
+            critic_local_path = os.path.join(checkpoint_root, 'critic',
                                              f'global_step_{self.global_steps}')
             critic_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
                 self.config.trainer.default_hdfs_dir, 'critic')
             self.critic_wg.save_checkpoint(critic_local_path, critic_remote_path)
         if getattr(self, 'baseline_controller', None) is not None:
-            self.baseline_controller.save(self.global_steps)
+            self.baseline_controller.save(self.global_steps, checkpoint_root=checkpoint_root)
 
         from search_r1.baselines.instruct300 import enabled as instruct_enabled, save_complete
         if instruct_enabled(self.config):
-            save_complete(self, actor_local_path, checkpoint_receipts)
+            save_complete(self, actor_local_path, checkpoint_receipts, checkpoint_root=checkpoint_root)
         elif getattr(self, 'recovery_sampler', None) is not None:
             from search_r1.baselines.recovery import atomic_torch_save, rng_state, publish_checkpoint_manifest
             driver_receipt = atomic_torch_save(dict(

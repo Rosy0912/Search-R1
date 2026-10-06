@@ -300,8 +300,9 @@ class Controller:
         return {'bapo/stage_validation': score, 'bapo/early_stage': int(self.stage.early),
                 'bapo/stalled': self.stage.stalled}
 
-    def save(self, step):
-        directory = os.path.join(self.trainer.config.trainer.default_local_dir, 'algorithm', f'global_step_{step}')
+    def save(self, step, checkpoint_root=None):
+        checkpoint_root = self.trainer.config.trainer.default_local_dir if checkpoint_root is None else checkpoint_root
+        directory = os.path.join(checkpoint_root, 'algorithm', f'global_step_{step}')
         os.makedirs(directory, exist_ok=True)
         if self.ranker:
             self.ranker.save(os.path.join(directory, 'ranker'))

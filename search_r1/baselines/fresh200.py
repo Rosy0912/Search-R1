@@ -89,6 +89,13 @@ def validate_protocol(config):
     for key in ('initial_outer_step', 'initial_adam_steps', 'initial_scheduler_step', 'initial_data_cursor'):
         if type(controls.get(key)) is not int:
             raise ValueError('Fresh initialization counters must be real integer zero: ' + key)
+    if a.get('fresh200_live_protocol') is True:
+        from .fresh200_live import LIVE_GOAL_UPDATED_AT
+        if (a.policy_safety.get('live_training_protocol') is not True
+                or type(controls.get('live_goal_updated_at')) is not int
+                or controls.get('live_goal_updated_at') != LIVE_GOAL_UPDATED_AT
+                or t.get('default_hdfs_dir') is not None):
+            raise ValueError('Live fresh200 training authority/transport differs')
     for key in ('optimizer_opportunities_per_outer', 'no_skip_adam_per_outer_per_rank',
             'no_skip_gradient_micro_per_outer_per_rank', 'counters_are_no_skip_reference',
             'full_outer_requires_all_opportunities_processed',
@@ -155,8 +162,12 @@ def record_initialization(trainer):
     actor = trainer.actor_rollout_wg.fresh_initialization_identity()
     reference = trainer.ref_policy_wg.fresh_initialization_identity()
     validate_initial_workers(actor, reference)
+    initialization = calibration_initialization()
+    if trainer.config.actor_rollout_ref.actor.get('fresh200_live_protocol') is True:
+        from .fresh200_live import live_initialization
+        initialization = live_initialization()
     trainer.fresh200_initial_identity = dict(status='ACTUAL_FRESH_OFFICIAL_ZERO_STATE',
-        initialization=calibration_initialization(), actor_workers=actor,
+        initialization=initialization, actor_workers=actor,
         reference_workers=reference, actual_completed_outer_updates=0,
         sampler=dict(size=sampler['size'], cursor=sampler['cursor'], epoch=sampler['epoch'], order=sampler['order']))
     atomic_json_save(trainer.fresh200_initial_identity,
@@ -259,7 +270,17 @@ def begin_attempt(trainer, batch):
     attempt = dict(attempt_id=ledger['attempts'], completed_before=ledger['completed_outer_updates'],
         actual_adam_total_before=ledger['actual_adam_total'], sampler_position=position,
         driver_pid=os.getpid())
+    # Keep an honest active512 attempt even if the known-idle metadata RPC
+    # below fails; unknown errors still terminate without recovery dispatch.
     ledger['active_attempt'] = attempt
+    if getattr(getattr(getattr(trainer, 'config', None), 'actor_rollout_ref', None),
+               'actor', {}).get('fresh200_live_protocol') is True:
+        from .fresh200_live import driver_admission_state
+        admission = driver_admission_state(trainer)['payload']
+        attempt.update(config_epoch=admission['config_epoch'],
+                       config_sha256=admission['config_record']['sha256'])
+        batch.meta_info.update(fresh200_config_epoch=attempt['config_epoch'],
+                               fresh200_config_sha256=attempt['config_sha256'])
     batch.meta_info.update(fresh200_attempt_id=attempt['attempt_id'],
         fresh200_completed_before=attempt['completed_before'],
         fresh200_adam_total_before=attempt['actual_adam_total_before'],

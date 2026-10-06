@@ -271,10 +271,11 @@ def check_manifest(manifest):
     if sum(r['path'].endswith('/driver.pt') for r in files) != 1 or sum('/algorithm/' in r['path'] for r in files) != 1:
         raise RuntimeError('Missing complete driver/algorithm receipts')
 
-def save_complete(trainer, checkpoint, worker_receipts):
+def save_complete(trainer, checkpoint, worker_receipts, checkpoint_root=None):
     from .instruct_resume import start_step
     step = trainer.global_steps
-    algorithm = Path(trainer.config.trainer.default_local_dir) / 'algorithm' / f'global_step_{step}' / 'state.json'
+    checkpoint_root = trainer.config.trainer.default_local_dir if checkpoint_root is None else checkpoint_root
+    algorithm = Path(checkpoint_root) / 'algorithm' / f'global_step_{step}' / 'state.json'
     algorithm_bytes = algorithm.read_bytes()
     algorithm_state = json.loads(algorithm_bytes)
     if algorithm_state != _live_gigpo_state(trainer, step):
@@ -294,6 +295,10 @@ def save_complete(trainer, checkpoint, worker_receipts):
     if fresh200_enabled(trainer.config):
         driver['fresh200_driver_flow'] = driver_flow_state(trainer)
         driver['fresh200_attempt_ledger'] = driver['fresh200_driver_flow']['attempt_ledger']
+    if trainer.config.actor_rollout_ref.actor.get('fresh200_live_protocol') is True:
+        from copy import deepcopy
+        from .fresh200_live import driver_admission_state
+        driver['fresh200_live_admission'] = deepcopy(driver_admission_state(trainer))
     receipt = atomic_torch_save(driver, Path(checkpoint) / 'training_state/driver.pt')
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     extras = [extra]
@@ -317,8 +322,9 @@ def save_complete(trainer, checkpoint, worker_receipts):
                        else 'fresh_official_instruct'), extra_receipts=extras)
 
 
-def roundtrip_and_wait(trainer, final=False):
+def roundtrip_and_wait(trainer, final=False, timing_observer=None):
     """Reload the actual saved rank states into the same workers before the gate."""
+    timing_started = time.monotonic() if timing_observer is not None else None
     manifest = trainer.instruct_manifest
     from .instruct_resume import start_step
     origin = start_step(trainer.config)
@@ -395,6 +401,21 @@ def roundtrip_and_wait(trainer, final=False):
             or state.get('driver_pid') != os.getpid()
             or state['config'] != OmegaConf.to_container(trainer.config, resolve=True)):
         raise RuntimeError('Driver configuration/source/update identity changed')
+    live_protocol = trainer.config.actor_rollout_ref.actor.get('fresh200_live_protocol') is True
+    if ('fresh200_live_admission' in state) != live_protocol:
+        raise RuntimeError('Saved and live driver Fresh200 admission protocols differ')
+    admission_before, admission_after = None, None
+    if live_protocol:
+        from copy import deepcopy
+        from .fresh200_live import driver_admission_state, restore_driver_admission_state
+        admission_before = deepcopy(driver_admission_state(trainer))
+        if not equal_state(admission_before, state['fresh200_live_admission']):
+            raise RuntimeError('Saved driver admission differs from the actual live state before reload')
+        restore_driver_admission_state(trainer, state['fresh200_live_admission'])
+        admission_after = driver_admission_state(trainer)
+        if (not equal_state(admission_after, admission_before)
+                or not equal_state(admission_after, state['fresh200_live_admission'])):
+            raise RuntimeError('Actual driver admission readback differs after reload')
     from .quality_resume import enabled as quality_enabled
     if quality_enabled(trainer.config):
         if state.get('quality_health') != trainer.quality_health or state.get('validation_trace_serial') != trainer.validation_trace_serial:
@@ -445,6 +466,9 @@ def roundtrip_and_wait(trainer, final=False):
         actual_controller_stage_reload=True, actual_rng_reload=True, live_algorithm=algorithm_after,
         grouping_scope='stateless_per_rollout; no persistent group cache or live rollout at completed outer',
         driver_pid=os.getpid(), driver_cursor=after['cursor'], actual_driver_flow_roundtrip=flow_roundtrip)
+    if live_protocol:
+        driver_roundtrip.update(actual_live_admission_reload=True,
+            fresh200_live_admission=admission_after)
     if fresh200_enabled(trainer.config):
         driver_roundtrip.update(actual_attempt_ledger_reload=True,
             actual_adam_total=expected_optimizer_writes, attempts=actual_ledger['attempts'],
@@ -455,6 +479,8 @@ def roundtrip_and_wait(trainer, final=False):
         scope=['python_rng', 'numpy_rng', 'torch_cpu_rng', 'torch_cuda_rng', 'sharding_rng',
                'full_scheduler_state', 'module_training_modes', 'parameter_buffer_local_shard_placement',
                'optimizer_tensor_placement'])
+    if live_protocol:
+        worker_runtime_roundtrip['scope'].append('fresh200_live_admission')
     approval_path = Path(trainer.config.trainer.instruct300.approval_path)
     if final:
         atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
@@ -463,12 +489,17 @@ def roundtrip_and_wait(trainer, final=False):
             checkpoint_pause_identity=expected, driver_cursor=after['cursor'],
             logical_step=target, actual_new_updates=expected_actual, retained_original_updates=origin),
             approval_path.with_name(f'final{target}-state-roundtrip.json'))
+        if timing_observer is not None:
+            timing_observer('source_full_state_reload', time.monotonic() - timing_started)
         return
     atomic_json_save(dict(manifest=manifest, actual_state_roundtrip=loaded,
                           hf_loader_roundtrip=hf_roundtrip, actual_driver_state_roundtrip=driver_roundtrip,
                           actual_worker_runtime_roundtrip=worker_runtime_roundtrip,
                           checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
                      approval_path.with_name(f'resume{gate}-ready.json' if origin else 'instruct5-ready.json'))
+    if timing_observer is not None:
+        timing_observer('source_full_state_reload_before_first5_wait', time.monotonic() - timing_started)
+    timing_wait_started = time.monotonic() if timing_observer is not None else None
     deadline = time.monotonic() + trainer.config.trainer.instruct300.wait_seconds
     expected_binding = dict(job_id=os.environ['SLURM_JOB_ID'], source=manifest['identity']['source'],
                             logical_step=gate, actual_new_updates=5, manifest_sha256=manifest['sha256'])
@@ -496,8 +527,12 @@ def roundtrip_and_wait(trainer, final=False):
                 raise RuntimeError('Live driver sampler/KL/GiGPO state changed during acceptance pause')
             if flow_before is not None and driver_flow_state(trainer) != flow_before:
                 raise RuntimeError('Live iterator/validation trace progress changed during acceptance pause')
+            if live_protocol and not equal_state(driver_admission_state(trainer), admission_after):
+                raise RuntimeError('Live driver admission changed during acceptance pause')
             recheck_inputs(trainer)
             check_manifest(manifest)
+            if timing_observer is not None:
+                timing_observer('independent_first5_review_wait_and_final_recheck', time.monotonic() - timing_wait_started)
             return
         time.sleep(1)
     raise TimeoutError('Step5 waiting for independent review; sixth fetch never authorized')

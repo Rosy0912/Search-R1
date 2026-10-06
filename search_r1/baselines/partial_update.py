@@ -268,6 +268,9 @@ def save_attempt_driver(trainer, batch, outcome):
         config=OmegaConf.to_container(trainer.config, resolve=True),
         batch=cpu_snapshot(dict(tensors=dict(batch.batch), non_tensors=batch.non_tensor_batch,
                                meta_info=batch.meta_info)), automatic_rollback=False)
+    if trainer.config.actor_rollout_ref.actor.get('fresh200_live_protocol') is True:
+        from .fresh200_live import driver_admission_state
+        state['fresh200_live_admission'] = driver_admission_state(trainer)
     receipt = atomic_torch_save(state, target)
     atomic_json_save(dict(attempt=attempt, ledger=outcome['ledger'], driver_receipt=receipt), folder / 'attempt-result.json')
     return receipt
