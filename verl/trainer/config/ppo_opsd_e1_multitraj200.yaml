@@ -25,8 +25,8 @@ baselines:
   distillation:
     # Full forward KL, no vocabulary-component clamp or replacement clipping.
     component_clip: null
-    # Normal FSDP forward with the exact causal response logits, full vocabulary.
-    response_only_logits: true
+    # Native full-position/full-vocabulary FSDP head; causal response loss unchanged.
+    response_only_logits: false
     # Frozen FP32 teacher row chunks; student actor micro remains global32/local4.
     teacher_forward_micro_batch: 2
   opsd_e1:

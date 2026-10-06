@@ -107,13 +107,15 @@ def synthetic_tensors(tok, micro, input_width, response_width, device):
         actual_user_context_adapter_pass=True,scope='synthetic full-width capacity only')
 
 
-def gpu_response_head_equivalence(model, teacher, tok, device, settings):
+def gpu_teacher_row_equivalence(model, teacher, tok, device, settings):
     """Native BF16 gradient comparison before any diagnostic Adam mutation.
 
     The short tensors are synthetic ChatML inputs, not an RL update or data
-    split. CPU algebra tests establish exact equivalence; native BF16 kernels
-    may round differently when GEMM row counts change. Save all observed
+    split. CPU algebra tests establish exact equivalence; native FP32 teacher
+    row segmentation may change rounding and propagate into BF16 gradients. Save all observed
     differences and reject substantial differences before fresh training.
+    Both variants retain the native full-position student head. Only the
+    frozen teacher base-model row batch changes from four to two.
     """
     import math
     import torch
@@ -121,8 +123,9 @@ def gpu_response_head_equivalence(model, teacher, tok, device, settings):
     from search_r1.baselines.distillation import opsd_loss
     tensors,_=synthetic_tensors(tok,4,96,32,device)
     denominator=tensors['loss_mask'].sum()
-    variants=[SimpleNamespace(**dict(vars(settings),response_only_logits=False,
-                                    teacher_forward_micro_batch=4)),settings]
+    if settings.response_only_logits is not False or type(settings.teacher_forward_micro_batch) is not int or settings.teacher_forward_micro_batch != 2:
+        raise ValueError('Native full student head and exact teacher row micro2 required')
+    variants=[SimpleNamespace(**dict(vars(settings),teacher_forward_micro_batch=4)),settings]
     losses=[];old_gradients=None;squared_old=squared_new=squared_delta=dot=0.0
     maximum_abs_delta=0.0;members=0;parameter_statistics=[];teacher_outputs=[];teacher_logits=[]
     def capture_teacher(_module,_args,value):teacher_outputs.append(value.detach().cpu())
@@ -138,7 +141,7 @@ def gpu_response_head_equivalence(model, teacher, tok, device, settings):
             for name,parameter in model.named_parameters():
                 value=parameter.grad
                 if value is not None and not torch.isfinite(value).all():
-                    raise ValueError('Nonfinite full-head GPU comparison gradient')
+                    raise ValueError('Nonfinite teacher4 GPU comparison gradient')
                 old_gradients.append((name,None if value is None else value.detach().cpu().clone()))
         else:
             parameters=list(model.named_parameters())
@@ -148,7 +151,7 @@ def gpu_response_head_equivalence(model, teacher, tok, device, settings):
                 value=parameter.grad
                 if (value is None)!=(before is None):raise ValueError('FSDP gradient participation changed')
                 if value is None:continue
-                if not torch.isfinite(value).all():raise ValueError('Nonfinite sliced-head GPU comparison gradient')
+                if not torch.isfinite(value).all():raise ValueError('Nonfinite teacher2 GPU comparison gradient')
                 after=value.detach().cpu()
                 if before.shape!=after.shape:raise ValueError('FSDP gradient shard shape changed')
                 # Each shard is checked in bounded blocks; no second full
@@ -163,7 +166,7 @@ def gpu_response_head_equivalence(model, teacher, tok, device, settings):
                 squared_old+=parameter_old;squared_new+=parameter_new;squared_delta+=parameter_delta
                 maximum_abs_delta=max(maximum_abs_delta,parameter_max)
                 parameter_statistics.append(dict(name=name,shard_elements=before.numel(),
-                    full_squared_norm=parameter_old,response_squared_norm=parameter_new,
+                    teacher4_squared_norm=parameter_old,teacher2_squared_norm=parameter_new,
                     difference_squared_norm=parameter_delta,maximum_abs_difference=parameter_max))
                 members+=1
     teacher_hook.remove();model.zero_grad(set_to_none=True)
@@ -178,16 +181,18 @@ def gpu_response_head_equivalence(model, teacher, tok, device, settings):
     logits_max=float((teacher_logits[0]-teacher_logits[1]).abs().max())
     q_before=teacher_logits[0].float().softmax(-1);q_after=teacher_logits[1].float().softmax(-1)
     q_l1=float((q_after-q_before).abs().sum(-1).mean())
-    result=dict(full_head_loss=losses[0],response_head_loss=losses[1],
+    result=dict(response_only_logits=False, baseline_teacher_forward_micro_batch=4,
+        production_teacher_forward_micro_batch=2,
+        teacher4_full_head_loss=losses[0],teacher2_full_head_loss=losses[1],
         loss_absolute_difference=abs(losses[1]-losses[0]),loss_relative_difference=relative_loss,
         shard_gradient_relative_l2=relative_l2,shard_gradient_cosine=cosine,
         shard_gradient_max_abs_difference=maximum_abs_delta,checked_gradient_shards=members,
-        local_full_head_squared_gradient_norm=squared_old,local_response_head_squared_gradient_norm=squared_new,
-        global_full_head_squared_gradient_norm=global_old,global_response_head_squared_gradient_norm=global_new,
+        local_teacher4_squared_gradient_norm=squared_old,local_teacher2_squared_gradient_norm=squared_new,
+        global_teacher4_squared_gradient_norm=global_old,global_teacher2_squared_gradient_norm=global_new,
         parameter_statistics=parameter_statistics,teacher_FP32_logits_max_absolute_difference=logits_max,
         teacher_q_mean_probability_l1_difference=q_l1,maximum_teacher_q_mean_l1_difference=1e-4,
         maximum_relative_gradient_l2=.02,minimum_gradient_cosine=.9999,maximum_relative_loss=.002,
-        scope='Actual official-model eight-rank native BF16 FSDP short synthetic gradient equivalence; no Adam calls or RL outer iterations')
+        scope='Actual official-model eight-rank native full-head BF16 FSDP short synthetic teacher-row4 versus teacher-row2 gradient equivalence; no Adam calls or RL outer iterations')
     result['passed']=(members>0 and global_old>0 and global_new>0 and
         all(math.isfinite(v) for v in (relative_l2,cosine,relative_loss,q_l1,logits_max)) and
         relative_l2<=.02 and cosine>=.9999 and relative_loss<=.002 and q_l1<=1e-4)
@@ -225,7 +230,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     result = dict(rank=rank, local_rank=local_rank, world_size=world, local_micro=args.micro,
                   allocation=allocation, job_id=allocation['job_id'], hostname=allocation['hostname'], passed=False,
-                  input_width=args.input_width, response_width=args.response_width, source_commit=os.environ['E1_EXPECTED_SOURCE'], official_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1', component_clip=None, teacher_prompt_mode='user_context', max_student_logits_gib=8.0,response_only_logits=True,teacher_forward_micro_batch=2)
+                  input_width=args.input_width, response_width=args.response_width, source_commit=os.environ['E1_EXPECTED_SOURCE'], official_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1', component_clip=None, teacher_prompt_mode='user_context', max_student_logits_gib=8.0,response_only_logits=False,teacher_forward_micro_batch=2)
     started = time.perf_counter()
     try:
         torch.set_num_threads(4)
@@ -313,7 +318,7 @@ def main():
         mask = tensors['loss_mask']
         result['synthetic_prompt_runtime'] = synthetic_prompt
         settings = SimpleNamespace(chunk_size=16, beta=0., temperature=1., component_clip=None, teacher_prompt_mode='user_context',
-                                   max_student_logits_gib=8., loss_checkpointing=True, response_only_logits=True,teacher_forward_micro_batch=2)
+                                   max_student_logits_gib=8., loss_checkpointing=True, response_only_logits=False,teacher_forward_micro_batch=2)
         dist.barrier()
         torch.cuda.synchronize()
         result['pre_cleanup_allocated_bytes'] = torch.cuda.memory_allocated()
@@ -332,15 +337,15 @@ def main():
         with teacher.on_device():
             memory_phase('teacher_cuda_ready')
             result['teacher_active_runtime'] = teacher_runtime_audit(teacher, device)
-            result['short_native_response_head_equivalence']=gpu_response_head_equivalence(
+            result['short_native_teacher_row_equivalence']=gpu_teacher_row_equivalence(
                 model,teacher,tok,device,settings)
             # All ranks must reject together so no peer waits inside a later
             # FSDP collective after another rank fails this numeric gate.
-            equivalent=torch.tensor(int(result['short_native_response_head_equivalence']['passed']),device=device)
+            equivalent=torch.tensor(int(result['short_native_teacher_row_equivalence']['passed']),device=device)
             dist.all_reduce(equivalent,op=dist.ReduceOp.MIN)
             (output/f'equivalence-rank-{rank}.json').write_text(json.dumps(
-                result['short_native_response_head_equivalence'],indent=2)+'\n')
-            if equivalent.item()!=1:raise AssertionError('Native response-head/teacher-segmentation gradient equivalence failed')
+                result['short_native_teacher_row_equivalence'],indent=2)+'\n')
+            if equivalent.item()!=1:raise AssertionError('Native full-head teacher-row segmentation gradient equivalence failed')
             for key in decoder_calls:decoder_calls[key]=0
             torch.cuda.empty_cache();torch.cuda.reset_peak_memory_stats()
             memory_phase('worst_width_update_start_after_short_equivalence')

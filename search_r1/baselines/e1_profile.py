@@ -87,7 +87,7 @@ def validate_profile(cfg):
         'baselines.opsd_e1.acceptance_step':5,'baselines.opsd_e1.stage_num':64,'baselines.opsd_e1.stage_freq':50,
     }
     if profile_name(cfg) == 'multitraj200':
-        expected['baselines.distillation.response_only_logits'] = True
+        expected['baselines.distillation.response_only_logits'] = False
         expected['baselines.distillation.teacher_forward_micro_batch'] = 2
     for key, value in expected.items():
         actual = get(key)
