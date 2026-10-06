@@ -21,6 +21,7 @@ UTF8_BOUNDARY_PROTOCOL = 'tree_original_bytelevel_utf8_prefix_v1'
 BYTELEVEL_DECODER_STATE = dict(type='ByteLevel',add_prefix_space=False,trim_offsets=False,use_regex=False)
 _VALIDATION_TOKENIZERS = {}
 _TOKENIZER_FILE_SHA_CACHE = {}
+_ENCODER_SEMANTICS_CACHE = None
 
 
 def require(value,message):
@@ -97,7 +98,7 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
         try:current=stable+decoder.decode(piece,final=False)
         except UnicodeDecodeError as error:
             raise ValueError('Tree raw-token protocol: Illegal original UTF8 byte sequence') from error
-        require('\ufffd' not in current,'Actual UTF8 replacement character unsupported')
+        # Strict decoding rejects invalid bytes but permits literal EF BF BD (U+FFFD).
         require(current.startswith(stable),'Nonmonotonic completed UTF8 prefix unsupported')
         stable=current;pending=decoder.getstate()[0]
         expected=bytes(raw).decode('utf-8',errors='replace')
@@ -142,21 +143,32 @@ def _tokenizer_file_identity(tokenizer):
 
 
 def _encoder_binding(tokenizer):
+    global _ENCODER_SEMANTICS_CACHE
     backend=getattr(tokenizer,'backend_tokenizer',None)
     require(callable(getattr(backend,'to_str',None)),'Actual full native encoder state required')
-    try:state=json.loads(backend.to_str())
+    try:
+        serialized=backend.to_str()
+        cached=_ENCODER_SEMANTICS_CACHE
+        cache_hit=type(serialized) is str and cached is not None and serialized==cached[0]
+        if not cache_hit:state=json.loads(serialized)
     except (TypeError,ValueError,UnicodeError) as error:
         raise ValueError('Tree raw-token protocol: Actual full native encoder state cannot be proven') from error
-    require(type(state) is dict and all(key in state for key in
-        ('model','normalizer','pre_tokenizer','post_processor','decoder','added_tokens')),
-        'Complete actual native encoder semantic state required')
-    # HF batch tokenization legitimately changes these per-call options. Neither
-    # affects encode(canonical, add_special_tokens=False), which resets them.
-    state.pop('padding',None);state.pop('truncation',None)
+    if cache_hit:
+        semantics_sha=cached[1]
+    else:
+        require(type(state) is dict and all(key in state for key in
+            ('model','normalizer','pre_tokenizer','post_processor','decoder','added_tokens')),
+            'Complete actual native encoder semantic state required')
+        # HF batch tokenization legitimately changes these per-call options. Neither
+        # affects encode(canonical, add_special_tokens=False), which resets them.
+        state.pop('padding',None);state.pop('truncation',None)
+        semantics_sha=fingerprint(state)
+        # One immutable tuple; local reads cannot mix concurrent state/hash updates.
+        if type(serialized) is str:_ENCODER_SEMANTICS_CACHE=(serialized,semantics_sha)
     flags={key:dict(present=hasattr(tokenizer,key),value=getattr(tokenizer,key,None)) for key in
         ('clean_up_tokenization_spaces','split_special_tokens','add_prefix_space','do_lower_case',
          'bos_token','eos_token','pad_token','unk_token','additional_special_tokens','all_special_tokens')}
-    return dict(backend_semantics_sha256=fingerprint(state),hf_semantic_runtime_flags=flags)
+    return dict(backend_semantics_sha256=semantics_sha,hf_semantic_runtime_flags=flags)
 
 
 def _current_tokenizer_identity(tokenizer):
