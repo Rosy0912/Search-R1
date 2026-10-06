@@ -42,6 +42,26 @@ mu is an explicit, separate objective change; neither a widened tolerance nor
 beta/mu importance weighting is silently introduced. Full beta retains the
 original reward/reference semantics; monitor beta checks same-partition repeat.
 
+The subsequent context-free review rejected the clean8a3bc24 freeze: F04 showed
+that the existing FSDP bad-gradient MAX reduction raised an ordinary ValueError,
+bypassing partial worker preservation after a previous real Adam step. The new
+dedicated gradient refusal carries matched evidence only after that reduction
+successfully returns and its group covers the default worker world. Both actor
+clip calls translate only this dedicated, proven matched refusal when safety
+is active. Other errors, local preparation failures, unsuccessful collectives
+and subgroup-only refusals stay unmatched. Tiny real two-rank Gloo/Adam cases
+preserve one actual write, unchanged scheduler, changed parameters and the NaN
+gradient; they do not prove real FSDP/NCCL/GPU execution. The source worker uses
+a full-world FSDP mesh and the fresh protocol requires DP8 with SP1.
+
+The same review rejected V5's optimized-interpreter behavior. WrapperV6 must
+use explicit launcher checks, refuse an optimized supervisor before runtime
+imports and force PYTHONOPTIMIZE=0 in every owned child environment, protecting
+the existing shared resource guard's assertions. This is a restriction on this
+task's reviewed entry and children, not a claim that the external guard was
+changed or made safe through every possible entry point. V5 and all original
+counterexamples remain rejected evidence.
+
 Execution requires a new clean source commit and a context-free strict review
 of these bytes, the complete fifteen-file runtime wrapper, and the same-node
 preparation/dispatch helpers. Whole official model and split byte identities,

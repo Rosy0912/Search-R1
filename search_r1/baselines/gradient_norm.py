@@ -13,6 +13,18 @@ import torch.distributed as dist
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 
 
+class SynchronizedGradientNormRefusal(ValueError):
+    """Nonfinite refusal after a completed FSDP bad-gradient MAX reduction.
+
+    Only a group covering the default worker world can authorize the worker's
+    all-rank partial-state path. Setup/dtype/collective failures stay ordinary
+    exceptions and carry no completed-reduction evidence.
+    """
+    def __init__(self, message, *, matched_all_ranks=False):
+        super().__init__(message)
+        self.matched_all_ranks = matched_all_ranks
+
+
 def _norm64(params, device, chunk_size=262144, uniform=True):
     grads = [p.grad for p in params if p.grad is not None]
     if uniform and len({g.dtype for g in grads}) > 1:
@@ -97,7 +109,9 @@ def clip_grad_norm64(module, max_norm):
         dist.all_reduce(bad, op=dist.ReduceOp.MAX, group=module.process_group)
         if bool(bad):
             _failure(grads, torch.full((), float('nan'), dtype=torch.float64, device=device))
-            raise ValueError('Nonfinite actor gradient elements; optimizer step refused on all ranks')
+            raise SynchronizedGradientNormRefusal(
+                'Nonfinite actor gradient elements; optimizer step refused on all FSDP ranks',
+                matched_all_ranks=(dist.get_world_size(module.process_group) == dist.get_world_size()))
         if sharded:
             norm = sharded_norm.square()
             dist.all_reduce(norm, group=module.process_group)

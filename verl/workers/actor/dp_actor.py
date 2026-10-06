@@ -142,9 +142,15 @@ class DataParallelPPOActor(BasePPOActor):
 
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
-        from search_r1.baselines.gradient_norm import clip_grad_norm64
-        grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
+        from search_r1.baselines.gradient_norm import clip_grad_norm64, SynchronizedGradientNormRefusal
         safety = getattr(self, "_policy_safety", None)
+        try:
+            grad_norm = clip_grad_norm64(self.actor_module, self.config.grad_clip)
+        except SynchronizedGradientNormRefusal as refusal:
+            if safety is None or refusal.matched_all_ranks is not True:
+                raise
+            from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+            raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
         if safety is not None:
             safety.sync_valid(not torch.isfinite(grad_norm) or
                               grad_norm > self.config.get('recovery_max_grad_norm', float('inf')),
@@ -155,7 +161,13 @@ class DataParallelPPOActor(BasePPOActor):
             if grad_norm > self.config.get('recovery_max_grad_norm',float('inf')):
                 raise ValueError(f'Recovery preclip gradient gate: {float(grad_norm)}; optimizer step refused')
         if safety is not None:
-            self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
+            try:
+                self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
+            except SynchronizedGradientNormRefusal as refusal:
+                if refusal.matched_all_ranks is not True:
+                    raise
+                from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+                raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
         self.actor_optimizer.step()
         # Record the returned write before any publish/audit that may fail.

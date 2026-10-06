@@ -249,7 +249,7 @@ class RawTokenTests(unittest.TestCase):
         engine,calls=self.engine([7,151645])
         engine.rng.choice=lambda nodes:nodes[-1]
         inputs=TinyProto(dict(input_ids=torch.tensor([[8],[8]]),attention_mask=torch.ones((2,1),dtype=torch.long)))
-        output,sources=engine.run(inputs,NS(rounds=1,expansions=2,leaves=3))
+        output,sources=engine.run(inputs,NS(roots=2,rounds=1,expansions=2,leaves=3))
         self.assertEqual(len(output),6);self.assertEqual(sources.tolist(),[0,0,0,1,1,1])
         self.assertEqual(len(calls),5);self.assertEqual(engine.cost['retrieval_calls'],12)
         self.assertEqual(engine.cost['raw_inherited_leaf_tokens'],12)
