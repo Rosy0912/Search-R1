@@ -1,0 +1,107 @@
+{
+  "role": "actual_native_discovery_v5_start_and_prospective_identity_binding",
+  "source_commit": "e670dfacab4ff0146f7ea0ca60e3f49675a4d2f6",
+  "native_job_id": "3294",
+  "submitted_unix": 1791254547.486915,
+  "actual_checked_unix": 1791254632.4441888,
+  "actual_job_state": "RUNNING",
+  "actual_stage": {
+    "run_id": "ee0d52bd4edb465993214a2a48f7521a",
+    "stage": "INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE",
+    "unix": 1791254604.9559221
+  },
+  "discovery_run_id": "ee0d52bd4edb465993214a2a48f7521a",
+  "parent_run_id": "00f18587fb4444faa62210eb72c84e98",
+  "source_file_count": 353,
+  "source_hashes_match": true,
+  "actual_target_cpu_tests": 239,
+  "target_cpu_proof_sha256": "f8154af061533d1ef23a56fb10be2ffef71676d245ec491ecc2961bdffe1d8c0",
+  "zero_write_observation_sha256": "c57f8e39d081ff114d9ce9c2c3e8f532c0cb15ef54caf2039b44d65dbf0f4889",
+  "prospective_method_sha256": "f1afea3e3ab67b3a6e8b7913fc08e5cdfe8ef081a37137bfb672a7189a24f1d5",
+  "method_freeze_receipt_sha256": "cd93dcbb95e042c5ff082b937eaa88d4a1fb198b7bb8e1085a9044600d268664",
+  "actual_method_frozen_unix": 1791254892.100599,
+  "preregistered_criteria": {
+    "dual_clip": 3.0,
+    "epsilon": 0.2,
+    "target_old_policy_kl": 0.01,
+    "kl_log_bound": 30.0
+  },
+  "health_rule_document": {
+    "role": "policy_safety_health_rule",
+    "provenance": {
+      "method_origin": "Root explicit conservative admission criterion frozen before the actual discovery outer completed",
+      "purpose": "Do not automatically tolerate a measured accuracy or valid-action decline",
+      "not_a_population_statistical_guarantee": true
+    },
+    "criteria": {
+      "method": "paired_fixed512_absolute_allowed_drop",
+      "allowed_drop": {
+        "weighted_em": 0.0,
+        "weighted_f1": 0.0,
+        "valid_action_rate": 0.0
+      }
+    }
+  },
+  "negative_tail_selection": {
+    "method": "Maximum actual global negative_tail_weight_fraction across all ordered pre/post mini checks of the complete discovery outer",
+    "required_global_observations": 40,
+    "duplicate_rank_global_reports": "Verify all eight copies agree and count each ordinal observation once",
+    "data_requirement": "Complete actual 20 Adam writes and 40 allowed finite checks/rank, actual finite checkpoint1 parameter delta, paired ordered512 before/after, completed native and owned cleanup",
+    "arbitrary_margin_or_floor": false,
+    "fraction_with_zero_negative_mass": 0.0,
+    "confirmation": "Fresh official0 independent native job, same initial probe heads/encoder/reward math and original recipe; every actual check must remain within the frozen candidate envelope and other guards",
+    "scope": "Empirical monitored32 trajectories/one discovery outer; no weighted quantile or population-risk claim"
+  },
+  "prospective_binding": {
+    "launch_sha256": "1d50b96ed51f916e21891c1db88af03cdc3dea035bdec8471aa66959877c041f",
+    "native_job_id": "3294",
+    "discovery_base": "/mnt/data/shaoshitong/g1d-a6933c85",
+    "parent_base": "/mnt/data/shaoshitong/g1p-a6933c85",
+    "child_manifest_sha256": "64bd7142811821aba7eef492ae58e809cbfae1a84960c5d3966aef68f6182ee7",
+    "parent_manifest_sha256": "e198188e069991f95fd1140cb10884f70f0d9f75dfac5f795b73190c934963cd",
+    "zero_update_observation_sha256": "c57f8e39d081ff114d9ce9c2c3e8f532c0cb15ef54caf2039b44d65dbf0f4889",
+    "preregistration_sha256": "e9591b3c5e6f1b870fb64adb24ecebea59ea272e4e2781ba473088e756591df0",
+    "preregistered_unix": 1791254061.213394,
+    "target_cpu_proof_sha256": "f8154af061533d1ef23a56fb10be2ffef71676d245ec491ecc2961bdffe1d8c0",
+    "actual_target_cpu_tests": 239,
+    "source_map_sha256": "2bee41505c1c01bd87083b6e792d7e1c4233ad3998b77345c66357b16b134b8e",
+    "parent_actual_unstarted_verified": true,
+    "child_actual_unstarted_verified": true,
+    "actual_stage": "STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL",
+    "scope": "Actual source/manifests/allocation and strict no trainer claim/log/Adam ledger/update/checkpoint; no model/GPU/healthy admission"
+  },
+  "negative_tail_limit": null,
+  "actual_complete_discovery_outers": 0,
+  "actual_production_updates": 0,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "physical_model_execution_authenticated": false,
+  "gpu_sampling": {
+    "sample_count": 21,
+    "first_unix": 1791254584.1162627,
+    "last_unix": 1791254631.334105,
+    "max_gap_seconds": 3.3501970767974854,
+    "cumulative_peak_mib": {
+      "0": 4009,
+      "1": 3992,
+      "2": 3992,
+      "3": 3993,
+      "4": 3993,
+      "5": 3992,
+      "6": 3993,
+      "7": 3752
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "scope": "Actual initial native/source/zero-write metadata and prospective method; not complete2560 behavior gate, complete20writes, checkpoint health or production admission"
+}
