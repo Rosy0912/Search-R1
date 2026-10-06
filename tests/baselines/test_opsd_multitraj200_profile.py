@@ -55,7 +55,7 @@ def test_exact_new_budget_and_preserved_old_contracts(cfg):
     assert (rollout['temperature'], rollout['top_p'], rollout['top_k']) == (1, 1, -1)
     assert result['baselines']['distillation']['component_clip'] is None
     assert result['baselines']['distillation']['response_only_logits'] is False
-    assert result['baselines']['distillation']['teacher_forward_micro_batch'] == 2
+    assert result['baselines']['distillation']['teacher_forward_micro_batch'] == 4
     assert not actor['use_kl_loss'] and actor['kl_loss_coef'] == actor['entropy_coeff'] == 0
     assert actor['optim']['lr'] == 1e-6 and actor['optim']['lr_warmup_steps'] == 57
     assert actor['grad_clip'] == 1 and actor['ppo_epochs'] == 1
@@ -92,8 +92,10 @@ def test_exact_new_budget_and_preserved_old_contracts(cfg):
     ('baselines.distillation.response_only_logits', None),
     ('baselines.distillation.teacher_forward_micro_batch', True),
     ('baselines.distillation.teacher_forward_micro_batch', 1),
+    ('baselines.distillation.teacher_forward_micro_batch', 2),
     ('baselines.distillation.teacher_forward_micro_batch', -1),
     ('baselines.distillation.teacher_forward_micro_batch', 2.0),
+    ('baselines.distillation.teacher_forward_micro_batch', 4.0),
     ('baselines.distillation.temperature', 1.1),
     ('baselines.distillation.beta', .1),
     ('actor_rollout_ref.actor.use_kl_loss', True),

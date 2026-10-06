@@ -27,7 +27,7 @@ baselines:
     component_clip: null
     # Native full-position/full-vocabulary FSDP head; causal response loss unchanged.
     response_only_logits: false
-    # Frozen FP32 teacher row chunks; student actor micro remains global32/local4.
-    teacher_forward_micro_batch: 2
+    # Full native FP32 teacher batch matches student actor micro global32/local4.
+    teacher_forward_micro_batch: 4
   opsd_e1:
     profile: multitraj200

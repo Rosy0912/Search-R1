@@ -10,7 +10,7 @@ from search_r1.baselines.distillation import FrozenTeacher
 from tests.baselines import test_models_and_driver as fixtures
 
 ROOT = Path(__file__).resolve().parents[2]
-TOOLS = ROOT.parent/'e1-unclipped-multitraj200-nativehead/formal-tools-candidate'
+TOOLS = ROOT.parent/'e1-unclipped-multitraj200-fullteacher/formal-tools-candidate'
 
 
 def load_source(path, name):
@@ -25,10 +25,10 @@ def capacity_fixture(formal, numeric):
     # This declared local fixture does not claim a job,8GPU,Adam or RL evidence.
     return dict(passed=True, source_commit=formal.SOURCE, job_id='LOCAL_CPU_FIXTURE',
         world_size=8, optimizer_steps=2, component_clip=None, response_only_logits=False,
-        teacher_forward_micro_batch=2, local_micro=4, input_width=6144,
+        teacher_forward_micro_batch=4, local_micro=4, input_width=6144,
         response_width=4096, minimum_required_free_fraction=.15,
         estimated_peak_device_used_bytes=60., gpu_total_bytes=100.,
-        short_native_teacher_row_equivalence=numeric,
+        short_native_full_path_repeatability=numeric,
         old_logprob_capacity=dict(passed=True,local_micro=8,global_micro=64,
             logprob_shape=[8,4096],entropy_shape=[8,4096],logprob_finite=True,
             entropy_finite=True,estimated_peak_device_used_bytes=40.))
@@ -42,9 +42,10 @@ def formal(monkeypatch):
 
 @pytest.fixture
 def numeric():
-    return dict(response_only_logits=False, baseline_teacher_forward_micro_batch=4,
-        production_teacher_forward_micro_batch=2, passed=True,
-        global_teacher4_squared_gradient_norm=1.,global_teacher2_squared_gradient_norm=1.,
+    return dict(comparison_kind='SAME_NATIVE_FULL_HEAD_FULL_TEACHER4_PATH_REPEATABILITY',
+        response_only_logits=False, first_teacher_forward_micro_batch=4,
+        repeat_teacher_forward_micro_batch=4, passed=True,
+        global_native_first_squared_gradient_norm=1.,global_native_repeat_squared_gradient_norm=1.,
         shard_gradient_relative_l2=0.,shard_gradient_cosine=1.,
         loss_relative_difference=0.,teacher_q_mean_probability_l1_difference=0.)
 
@@ -74,15 +75,24 @@ def test_real_cpu_qwen_probe_writer_to_formal_consumer(formal, monkeypatch, chec
         monkeypatch.setattr(torch.distributed,'all_reduce',lambda *a,**k:None)
         settings = SimpleNamespace(chunk_size=16,beta=0.,temperature=1.,component_clip=None,
             teacher_prompt_mode='user_context',max_student_logits_gib=8.,
-            loss_checkpointing=checkpoint,response_only_logits=False,teacher_forward_micro_batch=2)
+            loss_checkpointing=checkpoint,response_only_logits=False,teacher_forward_micro_batch=4)
         shape_calls=[]
         hook=student.lm_head.register_forward_pre_hook(lambda _,args:shape_calls.append(tuple(args[0].shape)))
-        numeric=probe.gpu_teacher_row_equivalence(student,teacher,tok,torch.device('cpu'),settings)
+        teacher_batches=[]
+        teacher_hook=teacher.model.base_model.register_forward_pre_hook(
+            lambda _,args,kwargs:teacher_batches.append(kwargs['input_ids'].shape[0]),with_kwargs=True)
+        numeric=probe.gpu_full_path_repeatability(student,teacher,tok,torch.device('cpu'),settings)
         hook.remove()
+        teacher_hook.remove()
         assert shape_calls == [(4,96,16),(4,96,16)]
+        assert teacher_batches == [4,4]  # One native whole teacher forward per call.
         assert numeric['passed'] is True
         assert numeric['response_only_logits'] is False
-        assert (numeric['baseline_teacher_forward_micro_batch'],numeric['production_teacher_forward_micro_batch'])==(4,2)
+        assert numeric['comparison_kind']=='SAME_NATIVE_FULL_HEAD_FULL_TEACHER4_PATH_REPEATABILITY'
+        assert (numeric['first_teacher_forward_micro_batch'],numeric['repeat_teacher_forward_micro_batch'])==(4,4)
+        assert numeric['teacher_FP32_logits_max_absolute_difference']==0
+        assert numeric['teacher_q_mean_probability_l1_difference']==0
+        assert numeric['shard_gradient_relative_l2']==0
         assert numeric['maximum_relative_gradient_l2']==.02
         assert numeric['minimum_gradient_cosine']==.9999
         assert numeric['maximum_relative_loss']==.002
@@ -96,7 +106,8 @@ def test_real_cpu_qwen_probe_writer_to_formal_consumer(formal, monkeypatch, chec
 
 @pytest.mark.parametrize('key,value',[
     ('response_only_logits',True),('response_only_logits',0),
-    ('teacher_forward_micro_batch',True),('teacher_forward_micro_batch',2.),
+    ('teacher_forward_micro_batch',True),('teacher_forward_micro_batch',4.),
+    ('teacher_forward_micro_batch',2),
 ])
 def test_capacity_flag_and_teacher_row_type_refused(formal,numeric,key,value):
     row=capacity_fixture(formal,numeric);row[key]=value
@@ -104,9 +115,10 @@ def test_capacity_flag_and_teacher_row_type_refused(formal,numeric,key,value):
 
 
 @pytest.mark.parametrize('key,value',[
-    ('response_only_logits',True),('baseline_teacher_forward_micro_batch',4.),
-    ('production_teacher_forward_micro_batch',2.),('global_teacher4_squared_gradient_norm',True),
-    ('global_teacher2_squared_gradient_norm',float('inf')),('shard_gradient_relative_l2',-1.),
+    ('response_only_logits',True),('first_teacher_forward_micro_batch',4.),
+    ('repeat_teacher_forward_micro_batch',4.),('repeat_teacher_forward_micro_batch',2),
+    ('comparison_kind','TEACHER4_VS2_EQUIVALENCE'),('global_native_first_squared_gradient_norm',True),
+    ('global_native_repeat_squared_gradient_norm',float('inf')),('shard_gradient_relative_l2',-1.),
     ('shard_gradient_relative_l2',.0200001),('shard_gradient_cosine',.9998999),
     ('shard_gradient_cosine',1.01),('loss_relative_difference',-.001),
     ('loss_relative_difference',.0020001),('teacher_q_mean_probability_l1_difference',.000100001),
@@ -117,9 +129,10 @@ def test_numeric_typed_range_and_unchanged_thresholds_refused(formal,numeric,key
     with pytest.raises(ValueError):formal.validate_capacity_rank(capacity_fixture(formal,numeric),'LOCAL_CPU_FIXTURE')
 
 
-def test_legacy_response_head_object_not_accepted(formal,numeric):
+@pytest.mark.parametrize('legacy_field',['short_native_response_head_equivalence','short_native_teacher_row_equivalence'])
+def test_legacy_equivalence_objects_not_accepted(formal,numeric,legacy_field):
     row=capacity_fixture(formal,numeric)
-    row['short_native_response_head_equivalence']=row.pop('short_native_teacher_row_equivalence')
+    row[legacy_field]=row.pop('short_native_full_path_repeatability')
     with pytest.raises(KeyError):formal.validate_capacity_rank(row,'LOCAL_CPU_FIXTURE')
 
 
