@@ -794,11 +794,18 @@ class RayPPOTrainer(object):
         logger = self.logger
         from search_r1.baselines.instruct300 import enabled as instruct_enabled, roundtrip_and_wait
         fresh_instruct = instruct_enabled(self.config)
+        from search_r1.baselines.fresh200 import stop_step as instruct_stop_step
+        instruct_target = instruct_stop_step(self.config)
         if fresh_instruct:
             from search_r1.baselines.holdout import _validate_prebuilt
             self.instruct_data_identity = _validate_prebuilt(self.config)
         resume = self.config.trainer.get('resume', {})
         self.global_steps = int(resume.start_step) if resume.get('enabled', False) else 0
+        from search_r1.baselines.fresh200 import enabled as fresh200_enabled
+        if fresh200_enabled(self.config):
+            if self.config.actor_rollout_ref.actor.policy_safety.get('mode') != 'production':
+                raise RuntimeError('Formal fresh200 fit cannot use uncalibrated diagnostic admission')
+            self.actual_outer_updates = 0
         instruct_origin = 0
         first_training_iterator = None
         if fresh_instruct:
@@ -816,6 +823,8 @@ class RayPPOTrainer(object):
             from search_r1.baselines.quality_resume import initialize_health
             restored_quality = initialize_health(self)
             logger.log(data=restored_quality, step=self.global_steps)
+        from search_r1.baselines.fresh200 import record_initialization
+        record_initialization(self)
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -855,6 +864,11 @@ class RayPPOTrainer(object):
         for epoch in range(self.config.trainer.total_epochs):
             epoch_batches = (first_training_iterator if epoch == 0 and first_training_iterator is not None
                              else self.train_dataloader)
+            if fresh200_enabled(self.config):
+                # This is the same iterator creation the following for loop
+                # previously performed implicitly. No extra iterator/RNG draw.
+                epoch_batches = iter(epoch_batches)
+                self.fresh200_active_train_iterator = epoch_batches
             for batch_dict in epoch_batches:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
@@ -1007,7 +1021,26 @@ class RayPPOTrainer(object):
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
                                 from search_r1.baselines.runtime_audit import driver_outer
                                 driver_outer(batch, self.global_steps, self.config.baselines.method)
-                            actor_output = self.actor_rollout_wg.update_actor(batch)
+                            try:
+                                actor_output = self.actor_rollout_wg.update_actor(batch)
+                            except BaseException as actor_error:
+                                from search_r1.baselines.fresh200 import enabled as fresh200_enabled
+                                from search_r1.baselines.policy_safety import matched_policy_rejection
+                                if fresh200_enabled(self.config) and matched_policy_rejection(actor_error) is not None:
+                                    from search_r1.baselines.partial_update import preserve_driver
+                                    try:
+                                        preserve_driver(self, batch, actor_error)
+                                    except BaseException as preservation_error:
+                                        from search_r1.baselines.recovery import atomic_json_save
+                                        atomic_json_save(dict(status='PARTIAL_DRIVER_STATE_SAVE_FAILED',
+                                            failed_outer_step=self.global_steps,
+                                            actual_completed_outer_updates=getattr(self, 'actual_outer_updates', 0),
+                                            error=repr(actor_error), preservation_error=repr(preservation_error),
+                                            automatic_rollback=False, automatic_resume=False),
+                                            Path(self.config.trainer.default_local_dir).parent / 'audit' /
+                                                f'partial-driver-save-failed-outer{self.global_steps}.json')
+                                # Failed or partially written outer never increments the completed counter.
+                                raise
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
                         if getattr(self, 'baseline_controller', None) is not None:
@@ -1032,9 +1065,9 @@ class RayPPOTrainer(object):
                     quality_stage_metrics = None
                     quality_periodic_metrics = None
                     if fresh_instruct and self.global_steps == instruct_origin + 5:
-                        from search_r1.baselines.instruct300 import validate_stage64
+                        from search_r1.baselines.instruct300 import validate_first5
                         with _timer('stage_testing', timing_raw):
-                            quality_stage_metrics = validate_stage64(self)
+                            quality_stage_metrics = validate_first5(self)
                             metrics.update(quality_stage_metrics)
                     if self.val_reward_fn is not None and (recovery_eval or
                             (self.config.trainer.test_freq > 0 and
@@ -1063,7 +1096,7 @@ class RayPPOTrainer(object):
                              (resume.get('enabled', False) and
                               self.global_steps in (resume.acceptance_step, resume.stop_step)) or
                              (not fresh_instruct and self.global_steps + 1 >= self.total_training_steps) or
-                             (fresh_instruct and self.global_steps == 300)):
+                             (fresh_instruct and self.global_steps == instruct_target)):
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
@@ -1085,8 +1118,8 @@ class RayPPOTrainer(object):
                 if fresh_instruct:
                     if self.global_steps == instruct_origin + 5:
                         roundtrip_and_wait(self)
-                    if self.global_steps == 300:
-                        if self.actual_outer_updates != 300 - instruct_origin:
+                    if self.global_steps == instruct_target:
+                        if self.actual_outer_updates != instruct_target - instruct_origin:
                             raise RuntimeError('Instruct300 actual updates differ from stop counter')
                         roundtrip_and_wait(self, final=True)
                         self._prepare_final_validation()
@@ -1095,11 +1128,11 @@ class RayPPOTrainer(object):
                         record_evaluation(self, final_metrics, 'final51713', self.config.data.final_val_files)
                         if final_metrics.get('val/qa_count/all') != 51713:
                             raise RuntimeError('Instruct300 final evaluation count differs')
-                        print('SEARCH_R1_INSTRUCT300_COMPLETE_JSON=' + json.dumps(dict(
-                            logical_step=300, actual_new_updates=self.actual_outer_updates,
-                            retained_original_updates=instruct_origin, retained_total_updates=300,
+                        print(f'SEARCH_R1_INSTRUCT{instruct_target}_COMPLETE_JSON=' + json.dumps(dict(
+                            logical_step=instruct_target, actual_new_updates=self.actual_outer_updates,
+                            retained_original_updates=instruct_origin, retained_total_updates=instruct_target,
                             final_metrics=final_metrics), sort_keys=True), flush=True)
-                        logger.log(data=final_metrics, step=300)
+                        logger.log(data=final_metrics, step=instruct_target)
                         return
                     self.global_steps += 1
                     continue

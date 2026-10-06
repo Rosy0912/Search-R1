@@ -64,7 +64,7 @@ class DataParallelPPOActor(BasePPOActor):
                 or any(key in micro_batch for key in ACTION_PREFIX_KEYS)):
             return self._forward_flat_micro_batch(micro_batch, temperature)
         from search_r1.baselines.action_prefix_forward import (
-            prepare_action_prefix_micro, forward_prepared_action_prefix)
+            prepare_action_prefix_micro, scatter_action_prefix_outputs)
         prepared = None
         error = None
         try:
@@ -81,10 +81,15 @@ class DataParallelPPOActor(BasePPOActor):
             dict(outer_step=context.get('outer_step'), mini_index=context.get('mini_index', -1)),
             context.get('phase', 'action_prefix') + '_schema', context.get('writes', 0),
             tensors=micro_batch, details=error)
+        # This original model call may include FSDP collectives. An unknown
+        # error must propagate directly: peers may still be in that forward,
+        # so it cannot safely become a new validation MAX.
+        flat_result = self._forward_flat_micro_batch(prepared.flat_micro, temperature)
         result = None
         error = None
         try:
-            result = forward_prepared_action_prefix(prepared, temperature, self._forward_flat_micro_batch)
+            entropy, logp = flat_result
+            result = scatter_action_prefix_outputs(prepared, entropy, logp)
         except Exception as exc:
             error = repr(exc)
         # Structural post-forward failures meet a common boundary before any
@@ -253,7 +258,8 @@ class DataParallelPPOActor(BasePPOActor):
         io_bad = torch.tensor(int(error is not None), device=device, dtype=torch.int32)
         if torch.distributed.is_initialized():
             torch.distributed.all_reduce(io_bad, op=torch.distributed.ReduceOp.MAX, group=group)
-        raise RuntimeError('POLICY_SAFETY_REJECTED: synchronized invalid input/state' + ('; diagnostic IO failed' if bool(io_bad) else ''))
+        from search_r1.baselines.policy_safety import PolicySafetyRejected
+        raise PolicySafetyRejected('synchronized invalid input/state' + ('; diagnostic IO failed' if bool(io_bad) else ''), record)
 
     @torch.no_grad()
     def _policy_safety_guard(self, monitor, temperature, control, identity, phase, writes):
@@ -325,7 +331,8 @@ class DataParallelPPOActor(BasePPOActor):
         if monitor_changed:
             parts[0][0][3] += 1
         stats = global_statistics(parts, group)
-        reason = rejection_reason(stats, control)
+        from search_r1.baselines.policy_safety import calibrated_or_candidate_rejection
+        reason = calibrated_or_candidate_rejection(stats, control)
         record = dict(identity, phase=phase, actual_optimizer_writes=writes, allowed=reason is None,
                       rejection_reason=reason, statistics=stats, fixed_monitor_hashes=monitor_hashes,
                       temperature=temperature, monitor_identity_changed=monitor_changed)
@@ -336,6 +343,10 @@ class DataParallelPPOActor(BasePPOActor):
             target_old_policy_kl=control.get('target_old_policy_kl'), negative_tail_limit=control.get('negative_tail_limit'),
             native_binding_sha256=os.environ.get('GIGPO_POLICY_NATIVE_BINDING_SHA256') if mode != 'production' else None,
             calibration_evidence_sha256=control.get('calibration_evidence_sha256') if mode == 'production' else None)
+        from search_r1.baselines.fresh200 import CALIBRATION_SCOPE
+        if mode == 'calibration' and control.get('calibration_scope') == CALIBRATION_SCOPE:
+            record.update(admission_scope='calibration_candidate_token_kl_and_numeric_only',
+                candidate_old_policy_kl=control['candidate_old_policy_kl'], production_thresholds_accepted=False)
         record.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
             pid=os.getpid(), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
             commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
@@ -359,9 +370,15 @@ class DataParallelPPOActor(BasePPOActor):
         except Exception as exc:
             error = repr(exc)
         device = parts[0][0].device
-        coordinated_badflag(error is not None, device, group)
+        try:
+            coordinated_badflag(error is not None, device, group)
+        except ValueError as matched_error:
+            from search_r1.baselines.policy_safety import PolicySafetyRejected
+            raise PolicySafetyRejected('matched monitor evidence IO refusal', dict(record,
+                matched_guard='ORIGINAL_ALL_REDUCE_MAX_MONITOR_IO_REFUSAL', local_io_error=error)) from matched_error
         if reason:
-            raise RuntimeError('POLICY_SAFETY_REJECTED: ' + json.dumps(record, allow_nan=False, sort_keys=True))
+            from search_r1.baselines.policy_safety import PolicySafetyRejected
+            raise PolicySafetyRejected(json.dumps(record, allow_nan=False, sort_keys=True), record)
         return stats
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
@@ -443,6 +460,10 @@ class DataParallelPPOActor(BasePPOActor):
                 dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=-1),
                 'entry_config', 0, details=entry_error)
 
+        # The prefix API owns a matched validation collective. Keep it out
+        # of the local preparation catch so an unknown collective failure
+        # propagates without attempting another entry_preparation MAX.
+        action_prefix_keys = self._action_prefix_batch_keys(data)
         preparation_error = None
         try:
             assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
@@ -450,7 +471,7 @@ class DataParallelPPOActor(BasePPOActor):
             temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
             select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
-            select_keys += self._action_prefix_batch_keys(data)
+            select_keys += action_prefix_keys
             if self.config.state_masking:
                 select_keys.append('loss_mask')
             if self.config.use_kl_loss:
@@ -475,10 +496,12 @@ class DataParallelPPOActor(BasePPOActor):
             if safety_enabled:
                 monitor_error = None
                 try:
-                    monitor = dataloader[0].clone()
                     world = torch.distributed.get_world_size() if torch.distributed.is_initialized() else 1
-                    if len(monitor) * world != safety['monitor_first_global_rows'] or len(dataloader) != 10:
-                        raise ValueError('Fixed monitor global256/ten-minibatch coverage mismatch')
+                    from search_r1.baselines.fresh200 import select_fixed_monitor
+                    monitor, expected_minis = select_fixed_monitor(batch, self.config.ppo_mini_batch_size,
+                        world, safety['monitor_first_global_rows'])
+                    if len(dataloader) != expected_minis:
+                        raise ValueError('PPO splitter does not cover the complete fixed rollout')
                     from search_r1.baselines.runtime_audit import tensor_hash
                     self._safety_monitor_identity = {key: tensor_hash(value) for key, value in monitor.items()}
                 except Exception as exc:
@@ -693,8 +716,17 @@ class DataParallelPPOActor(BasePPOActor):
                         dual_clip=safety['dual_clip'] if safety_enabled else None)
                 if scaled_joint or safety_enabled:
                     from search_r1.baselines.loss_scaling import coordinated_badflag
-                    coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
-                                        getattr(self.actor_module, 'process_group', None))
+                    try:
+                        coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
+                                            getattr(self.actor_module, 'process_group', None))
+                    except ValueError as matched_error:
+                        if safety_enabled:
+                            from search_r1.baselines.policy_safety import PolicySafetyRejected
+                            raise PolicySafetyRejected(str(matched_error), dict(
+                                outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
+                                phase=f'gradient_micro{micro_index}_loss', actual_optimizer_writes=updates,
+                                matched_guard='ORIGINAL_ALL_REDUCE_MAX_LOSS_REFUSAL')) from matched_error
+                        raise
                 (loss * loss_scale if scaled_joint else loss).backward()
 
                 micro_mass = data['policy_weights'].sum().detach().item() if paper_objective else 0.
@@ -716,19 +748,34 @@ class DataParallelPPOActor(BasePPOActor):
                 append_to_dict(metrics, mini_metrics)
             try:
                 grad_norm = self._optimizer_step(loss_scale) if scaled_joint else self._optimizer_step()
-            except BaseException:
+            except BaseException as optimizer_error:
+                from search_r1.baselines.gradient_norm import MatchedGradientRejected
+                diagnostic_error = None
                 if scaled_joint:
-                    import os
-                    from pathlib import Path
-                    from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
-                    root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
-                    if root:
-                        rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
-                        atomic_torch_save(dict(outer_identity=outer_identity, mini_index=batch_idx,
-                            loss_scale=float(loss_scale), active_logratio_bound=float(bound),
-                            mini_batch={key: cpu_snapshot(value) for key, value in mini_batch.items()},
-                            real_log_probs=probe_logps, failed_before_adam=True),
-                            Path(root) / 'numeric' / f'failed-mini-rank-{rank}.pt')
+                    # Evidence IO must not replace a known matched refusal with a
+                    # rank-local OSError and thereby omit that rank's real state.
+                    try:
+                        import os
+                        from pathlib import Path
+                        from search_r1.baselines.recovery import atomic_torch_save, cpu_snapshot
+                        root = os.environ.get('SEARCH_R1_BASELINE_AUDIT_DIR')
+                        if root:
+                            rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+                            atomic_torch_save(dict(outer_identity=outer_identity, mini_index=batch_idx,
+                                loss_scale=float(loss_scale), active_logratio_bound=float(bound),
+                                mini_batch={key: cpu_snapshot(value) for key, value in mini_batch.items()},
+                                real_log_probs=probe_logps, failed_before_adam=True),
+                                Path(root) / 'numeric' / f'failed-mini-rank-{rank}.pt')
+                    except Exception as evidence_error:
+                        diagnostic_error = repr(evidence_error)
+                if safety_enabled and isinstance(optimizer_error, MatchedGradientRejected):
+                    from search_r1.baselines.policy_safety import PolicySafetyRejected
+                    raise PolicySafetyRejected(str(optimizer_error), dict(
+                        outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
+                        phase='global_gradient_before_adam', actual_optimizer_writes=updates,
+                        matched_guard='ORIGINAL_FSDP_ALL_REDUCE_MAX_GRADIENT_REFUSAL',
+                        gradient_diagnostic_error=optimizer_error.diagnostic_error,
+                        failed_mini_diagnostic_error=diagnostic_error)) from optimizer_error
                 raise
             if audit is not None:
                 audit.gradient(grad_norm)

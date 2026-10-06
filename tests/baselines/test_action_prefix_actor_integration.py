@@ -2,8 +2,9 @@
 
 320 trajectories represent one rank's share of the global2560 rollout. We
 exercise the actual wrapper, selection, safety probes, losses and Adam control.
-The one-rank monitor is32; only validate_config's fixed global256 field is
-translated in this CPU fixture. No distributed/CUDA/FSDP acceptance is claimed.
+The one-rank monitor is32; fixed global geometry is translated explicitly to
+the declared rank share in this CPU fixture. Actual production checks remain
+unchanged. No distributed/CUDA/FSDP acceptance is claimed.
 """
 import copy
 import hashlib
@@ -21,7 +22,7 @@ from search_r1.baselines.action_prefix_forward import ACTION_PREFIX_KEYS
 from tests.baselines.test_action_prefix_forward import micro_fixture, PAD, EOS
 
 
-def actor_fixture(monkeypatch, tmp_path, rows=320):
+def actor_fixture(monkeypatch, tmp_path, rows=320, fresh_geometry=False):
     monkeypatch.setattr(TensorDict, 'cuda', lambda self: self)
     monkeypatch.delenv('SEARCH_R1_BASELINE_COMMIT', raising=False)
     monkeypatch.setenv('SEARCH_R1_BASELINE_AUDIT_DIR', str(tmp_path))
@@ -36,9 +37,20 @@ def actor_fixture(monkeypatch, tmp_path, rows=320):
         translated['monitor_first_global_rows'] = 256
         return original_validate(translated)
     monkeypatch.setattr(safety_module, 'validate_config', fixture_validate)
+    import search_r1.baselines.fresh200 as fresh_module
+    original_layout = fresh_module.fixed_monitor_layout
+    def rankshare_layout(local_rows, local_mini, world, global_monitor_rows):
+        assert world == 1 and global_monitor_rows == 32
+        return original_layout(local_rows, local_mini, 8, 256)
+    monkeypatch.setattr(fresh_module, 'fixed_monitor_layout', rankshare_layout)
     proof = dict(status='PASS', scope='GIGPO_POLICY_SAFETY_HEALTHY25_CALIBRATION', rank_count=8,
                  restore_manifest_sha256='3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4',
                  target_old_policy_kl=.1, negative_tail_limit=.1, dual_clip=3., kl_log_bound=30.)
+    if fresh_geometry:
+        proof.update(fresh_module.calibration_initialization())
+        proof.update(scope=fresh_module.CALIBRATION_SCOPE,
+            calibration_actual_outer_budget=2, actual_optimizer_steps_per_rank=40,
+            actual_gradient_micro_per_rank=320, retained_training_updates_contributed=0)
     raw = json.dumps(proof).encode()
     proof_path = tmp_path / 'SYNTHETIC-CPU-CONTROL-FIXTURE-NOT-GPU-ACCEPTANCE.json'
     proof_path.write_bytes(raw)
@@ -49,6 +61,10 @@ def actor_fixture(monkeypatch, tmp_path, rows=320):
         complete_internal_state=True, policy_safety=dict(enabled=True, dual_clip=3., kl_log_bound=30.,
             monitor_first_global_rows=32, target_old_policy_kl=.1, negative_tail_limit=.1,
             calibration_evidence_path=str(proof_path), calibration_evidence_sha256=hashlib.sha256(raw).hexdigest())))
+    if fresh_geometry:
+        config.ppo_mini_batch_size = 16
+        config.kl_loss_coef = 0.
+        config.policy_safety.calibration_scope = fresh_module.CALIBRATION_SCOPE
     trajectories = []
     for row in range(rows):
         actions = []
@@ -64,7 +80,7 @@ def actor_fixture(monkeypatch, tmp_path, rows=320):
         policy_weights=mask.double() / mask.sum(-1, keepdim=True).clamp_min(1),
         advantages=mask.double(), old_log_probs=torch.zeros(rows, 20, dtype=torch.float64),
         ref_log_prob=torch.zeros(rows, 20, dtype=torch.float64))
-    data = DataProto.from_dict(tensors, meta_info=dict(temperature=1., baseline_outer_step=26,
+    data = DataProto.from_dict(tensors, meta_info=dict(temperature=1., baseline_outer_step=1 if fresh_geometry else 26,
         actor_token_identity='sampled_action_prefix_v1', pad_token_id=PAD, eos_token_id=EOS,
         micro_batch_size=4, use_dynamic_bsz=False))
 
@@ -75,6 +91,8 @@ def actor_fixture(monkeypatch, tmp_path, rows=320):
         with torch.no_grad():
             actor.actor_module.weight.zero_()
         actor.actor_optimizer = torch.optim.Adam(actor.actor_module.parameters(), lr=.001)
+        if fresh_geometry:
+            actor.actor_optimizer.param_groups[0]['lr'] = 1e-6 / 57
         actor.flat_calls, actor.boundary_calls, actor.raw_gradients = [], [], []
         original_sync = actor._safety_sync_invalid
         def sync(self, bad, device, identity, phase, writes, *args, **kwargs):
@@ -261,3 +279,74 @@ def test_malformed_flat_output_reaches_outputs_boundary_after_one_forward(monkey
     records = list((tmp_path / 'policy-safety').glob('numeric-*.json'))
     assert len(records) == 1
     assert 'Invalid flat output' in json.loads(records[0].read_text())['details']
+
+
+@pytest.mark.parametrize('failure', ['unknown model failure', 'unknown collective failure'])
+def test_unknown_original_forward_error_has_no_new_outputs_collective(monkeypatch, tmp_path, failure):
+    actor, reference, data, selected = actor_fixture(monkeypatch, tmp_path, rows=8)
+    original_error = RuntimeError(failure)
+    calls = []
+    def original_failure(self, micro_batch, temperature):
+        calls.append((micro_batch, temperature))
+        raise original_error
+    actor._forward_flat_micro_batch = MethodType(original_failure, actor)
+    with pytest.raises(RuntimeError) as result:
+        actor.compute_log_prob(data)
+    assert result.value is original_error
+    assert len(calls) == 1
+    assert [row['phase'] for row in actor.boundary_calls] == [
+        'log_prob_action_prefix_batch_schema', 'log_prob_action_prefix_schema']
+    assert not actor.actor_optimizer.state
+
+
+def test_unknown_prefix_collective_error_is_not_caught_by_preparation(monkeypatch, tmp_path):
+    actor, reference, data, selected = actor_fixture(monkeypatch, tmp_path)
+    original_error = RuntimeError('unknown original prefix MAX failure')
+    original_sync = actor._safety_sync_invalid
+    calls = []
+    def sync(self, bad, device, identity, phase, writes, *args, **kwargs):
+        calls.append(phase)
+        if phase == 'update_action_prefix_batch_schema':
+            raise original_error
+        return original_sync(bad, device, identity, phase, writes, *args, **kwargs)
+    actor._safety_sync_invalid = MethodType(sync, actor)
+    with pytest.raises(RuntimeError) as result:
+        actor.update_policy(data)
+    assert result.value is original_error
+    assert calls == ['entry_config', 'update_action_prefix_batch_schema']
+    assert not actor.flat_calls and not actor.actor_optimizer.state
+
+
+def test_rankshare_actual_actor_twenty_adam_micro160_refcoefzero(monkeypatch, tmp_path):
+    # Tiny differentiable CPU probability interface, one declared rank share;
+    # this checks real DPActor control but supplies no GPU/calibration proof.
+    actor, reference, data, selected = actor_fixture(monkeypatch, tmp_path, fresh_geometry=True)
+    assign_fixed_logps(actor, reference, data)
+    fixed_old = data.batch['old_log_probs'].clone()
+    ref_weight = reference.actor_module.weight.detach().clone()
+    rng = torch.get_rng_state().clone()
+    metrics = actor.update_policy(data)
+    assert metrics['actor/optimizer_steps'] == 20
+    assert metrics['actor/skipped_empty_minibatches'] == 0
+    assert int(next(iter(actor.actor_optimizer.state.values()))['step']) == 20
+    assert len(actor.raw_gradients) == 20
+    gradient = [row for row in actor.flat_calls if row['phase'] == 'gradient_action_prefix']
+    before = [row for row in actor.flat_calls if row['phase'].startswith('before_action_prefix')]
+    after = [row for row in actor.flat_calls if row['phase'].startswith('after_action_prefix')]
+    assert len(gradient) == 160 and len(before) == len(after) == 320
+    assert len(actor.flat_calls) == 800 and all(row['rows'] == 8 for row in actor.flat_calls)
+    assert all(row['grad_enabled'] for row in gradient)
+    assert all(not row['grad_enabled'] for row in before + after)
+    assert metrics['actor/kl_coef'] == 0.
+    torch.testing.assert_close(data.batch['old_log_probs'], fixed_old)
+    torch.testing.assert_close(reference.actor_module.weight, ref_weight)
+    torch.testing.assert_close(torch.get_rng_state(), rng)
+    assert float(actor.actor_module.weight.detach()) > 0
+    lengths = data.batch['loss_mask'].sum(-1).double()
+    action_lengths = data.batch['actor_action_lengths'][:16].double()
+    expected_gradient = -(action_lengths.square().sum(-1) / lengths[:16]).sum() / 16
+    torch.testing.assert_close(actor.raw_gradients[0].reshape(()), expected_gradient)
+    records = [json.loads(line) for line in (tmp_path / 'policy-safety/rank-0.jsonl').read_text().splitlines()]
+    assert len(records) == 40 and all(row['allowed'] for row in records)
+    assert [row['actual_optimizer_writes'] for row in records if row['phase'] == 'after'] == list(range(1, 21))
+    assert all(set(ACTION_PREFIX_KEYS).issubset(keys) for keys in selected)

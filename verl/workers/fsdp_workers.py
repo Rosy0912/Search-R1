@@ -44,6 +44,219 @@ logger = logging.getLogger(__file__)
 logger.setLevel(os.getenv('VERL_PPO_LOGGING_LEVEL', 'WARN'))
 
 
+def _checkpoint_matched_stage(phase, error):
+    """Decide a known local phase at the same boundary on every actor rank.
+
+    Callers must never call this from an unknown FSDP/collective exception path.
+    Collective failures here also propagate directly; this is not a recovery
+    protocol for a broken process group, nor does it undo any completed writes.
+    """
+    device = torch.device('cuda', torch.cuda.current_device())
+    failed = torch.tensor(int(error is not None), dtype=torch.int32, device=device)
+    torch.distributed.all_reduce(failed, op=torch.distributed.ReduceOp.MAX)
+    if not failed.item():
+        return
+    # Fixed-size diagnostics prevent an exception string from allocating an
+    # unbounded object collective. All ranks enter this only after the same MAX.
+    try:
+        diagnostic = (type(error).__name__ + ': ' + str(error)) if error is not None else ''
+    except Exception:
+        diagnostic = type(error).__name__ + ': diagnostic formatting failed'
+    encoded = diagnostic.encode('utf-8', errors='replace')[:1024]
+    local = torch.zeros(1024, dtype=torch.uint8, device=device)
+    if encoded:
+        local[:len(encoded)] = torch.tensor(list(encoded), dtype=torch.uint8, device=device)
+    rows = [torch.empty_like(local) for _ in range(torch.distributed.get_world_size())]
+    torch.distributed.all_gather(rows, local)
+    errors = {rank: bytes(row.cpu().tolist()).rstrip(b'\0').decode('utf-8', errors='replace')
+              for rank, row in enumerate(rows) if row.any().item()}
+    raise RuntimeError(f'Matched checkpoint phase rejected: {phase}; errors={errors!r}; '
+                       'automatic_rollback=False; collective_failure_recovery=False')
+
+
+def _validate_checkpoint_state(state, module, optimizer, scheduler, rank, world_size,
+                               sharding_manager, expected_step, expected_adam_steps,
+                               require_complete):
+    """Non-mutating counterpart of recovery.load_worker_training_state checks.
+
+    Keep these checks aligned with that loader so all ranks validate before any
+    rank copies parameters or loads Adam/scheduler/RNG. Constructor-only roots
+    validate saved local shards against their real current parameter layout;
+    the same checks run again after PyTorch initializes its own local shards.
+    """
+    import math
+    from search_r1.baselines.recovery import parameter_layout, validate_rng
+    if (not isinstance(state, dict) or state.get('schema') != 1
+            or type(state.get('logical_step')) is not int
+            or state['layout'] != parameter_layout(module, optimizer, rank, world_size)):
+        raise ValueError('Training-state schema/progress/layout changed')
+    if expected_step is not None and state['logical_step'] != expected_step:
+        raise ValueError('Saved worker logical step differs from explicit restore source')
+    if require_complete and state.get('complete_internal') is not True:
+        raise ValueError('Fresh Instruct requires complete internal FSDP state')
+    live = dict(module.named_parameters())
+    saved = state['model_shards']
+    if saved.keys() != live.keys():
+        raise ValueError('Model shard identity changed')
+
+    def validate_tensors(sources, targets, label):
+        if sources.keys() != targets.keys():
+            raise ValueError('Incomplete checkpoint tensor coverage: ' + label)
+        for name, target in targets.items():
+            source = sources[name]
+            if (not isinstance(source, torch.Tensor) or source.device.type != 'cpu'
+                    or source.shape != target.shape or source.dtype != target.dtype
+                    or not torch.isfinite(source).all()):
+                raise ValueError('Invalid checkpoint tensor: ' + label + '/' + name)
+
+    validate_tensors(saved, live, 'model_shards')
+    if state.get('complete_internal', False):
+        local = ({name: parameter._local_shard for name, parameter in live.items()
+                  if hasattr(parameter, '_local_shard')} if module._is_root is not None
+                 else live)
+        validate_tensors(state['local_shards'], local, 'local_shards')
+        validate_tensors(state['buffers'], dict(module.named_buffers()), 'buffers')
+    saved_groups = state['optimizer']['param_groups']
+    slots = state['optimizer']['state']
+    if len(saved_groups) != len(optimizer.param_groups):
+        raise ValueError('Optimizer group count changed')
+    identities = []
+    if expected_adam_steps is not None and not slots:
+        raise ValueError('Saved Adam slots are empty at an accepted update boundary')
+    for saved_group, group in zip(saved_groups, optimizer.param_groups):
+        if (len(saved_group['params']) != len(group['params'])
+                or {key: value for key, value in saved_group.items() if key not in ('params', 'lr')}
+                != {key: value for key, value in group.items() if key not in ('params', 'lr')}):
+            raise ValueError('Optimizer parameter group/hyperparameters changed')
+        for identity, parameter in zip(saved_group['params'], group['params']):
+            identities.append(identity)
+            slot = slots.get(identity)
+            if slot is None:
+                continue
+            required = {'step', 'exp_avg', 'exp_avg_sq'}
+            if group.get('amsgrad', False):
+                required.add('max_exp_avg_sq')
+            if set(slot) != required:
+                raise ValueError('Unexpected AdamW state fields')
+            step = slot['step']
+            if (not isinstance(step, torch.Tensor) or step.numel() != 1
+                    or not torch.isfinite(step).all() or step.item() < 0
+                    or step.item() != int(step.item())
+                    or (expected_adam_steps is not None and step.item() != expected_adam_steps)):
+                raise ValueError('Invalid or unexpected actual Adam update count')
+            for key in required - {'step'}:
+                value = slot[key]
+                if (not isinstance(value, torch.Tensor) or value.device.type != 'cpu'
+                        or value.shape != parameter.shape or value.dtype != parameter.dtype
+                        or not torch.isfinite(value).all()):
+                    raise ValueError('Invalid AdamW moment: ' + key)
+    if len(set(identities)) != len(identities) or not set(slots).issubset(identities):
+        raise ValueError('Invalid optimizer parameter identity mapping')
+    schedule = state['scheduler']
+    rates = [base * fn(state['logical_step']) for base, fn in zip(scheduler.base_lrs, scheduler.lr_lambdas)]
+    if (schedule.get('last_epoch') != state['logical_step']
+            or len(schedule.get('_last_lr', [])) != len(optimizer.param_groups)
+            or schedule.get('base_lrs') != scheduler.base_lrs
+            or schedule.get('_step_count') != state['logical_step'] + 1
+            or schedule.get('_last_lr') != rates
+            or [group.get('lr') for group in saved_groups] != rates
+            or any(not isinstance(rate, (float, int)) or not math.isfinite(rate) or rate < 0
+                   for rate in schedule['_last_lr'])):
+        raise ValueError('Invalid scheduler learning rate or position')
+    validate_rng(state['rng'])
+    if set(state['sharding_rng']) != {'gen_random_states', 'torch_random_states'}:
+        raise ValueError('Sharding RNG field coverage changed')
+    for key, value in state['sharding_rng'].items():
+        current = getattr(sharding_manager, key, None)
+        if value is None:
+            if current is not None:
+                raise ValueError('Missing saved sharding RNG')
+        elif (not isinstance(value, torch.Tensor) or value.dtype != torch.uint8
+                or value.device.type != 'cpu' or current is None or value.shape != current.shape):
+            raise ValueError('Invalid sharding RNG')
+    if 'runtime_metadata' in state:
+        from search_r1.baselines.instruct300 import equal_state
+        metadata = state['runtime_metadata']
+        required = {'rank', 'rng', 'scheduler', 'module_modes', 'parameters', 'buffers',
+                    'local_shards', 'optimizer_tensors', 'sharding_rng'}
+        if (not isinstance(metadata, dict) or set(metadata) != required or metadata['rank'] != rank
+                or not equal_state(metadata['rng'], state['rng'])
+                or not equal_state(metadata['scheduler'], state['scheduler'])
+                or not equal_state(metadata['sharding_rng'], state['sharding_rng'])):
+            raise ValueError('Saved complete runtime metadata disagrees with the actual rank state')
+        modes = {name: child.training for name, child in module.named_modules()}
+        if (metadata['module_modes'].keys() != modes.keys()
+                or any(type(mode) is not bool for mode in metadata['module_modes'].values())):
+            raise ValueError('Invalid saved module training-mode coverage')
+        legal_devices = {'cpu'}
+        if torch.cuda.is_initialized():
+            legal_devices.add(str(torch.device('cuda', torch.cuda.current_device())))
+        parameter_ids = {id(parameter): identity for saved_group, group in zip(saved_groups, optimizer.param_groups)
+                         for identity, parameter in zip(saved_group['params'], group['params'])}
+        saved_moments = {str(index) + '/' + key: value for index, parameter in enumerate(module.parameters())
+                         for key, value in sorted(slots.get(parameter_ids[id(parameter)], {}).items())
+                         if isinstance(value, torch.Tensor)}
+        for key, sources in [('parameters', saved), ('buffers', state['buffers']),
+                             ('local_shards', state['local_shards']), ('optimizer_tensors', saved_moments)]:
+            if metadata[key].keys() != sources.keys():
+                raise ValueError('Invalid saved placement field coverage: ' + key)
+            for name, source in sources.items():
+                placement = metadata[key][name]
+                if (set(placement) != {'device', 'dtype', 'shape'} or placement['device'] not in legal_devices
+                        or placement['dtype'] != str(source.dtype) or placement['shape'] != list(source.shape)):
+                    raise ValueError('Invalid saved CPU/current-device placement: ' + key + '/' + name)
+
+
+def _validate_checkpoint_runtime_placement(worker, metadata):
+    """Only the original configured CPU/current-CUDA offload layout is legal."""
+    cuda_device = str(torch.device('cuda', torch.cuda.current_device()))
+    parameter_device = 'cpu' if worker._is_offload_param else cuda_device
+    for key in ('parameters', 'local_shards'):
+        if any(value['device'] != parameter_device for value in metadata[key].values()):
+            raise ValueError('Saved parameter placement differs from the original offload configuration')
+    if worker._is_offload_optimizer:
+        if any(value['device'] != 'cpu' for value in metadata['optimizer_tensors'].values()):
+            raise ValueError('Saved Adam placement differs from the original CPU offload configuration')
+    else:
+        for name, value in metadata['optimizer_tensors'].items():
+            if not name.endswith('/step') and value['device'] != cuda_device:
+                raise ValueError('Saved Adam moment is outside its original current-CUDA configuration')
+
+
+def _restore_checkpoint_runtime_metadata(worker, metadata):
+    """Restore saved placement with the existing FSDP offload helpers/modes."""
+    _validate_checkpoint_runtime_placement(worker, metadata)
+    module = worker.actor_module_fsdp
+    if worker._is_offload_param:
+        offload_fsdp_param_and_grad(module, offload_grad=worker._is_offload_grad)
+    else:
+        load_fsdp_param_and_grad(module, device_id=torch.cuda.current_device(), load_grad=worker._is_offload_grad)
+    for name, buffer in module.named_buffers():
+        buffer.data = buffer.data.to(metadata['buffers'][name]['device'])
+    if worker._is_offload_optimizer:
+        offload_fsdp_optimizer(worker.actor_optimizer)
+    else:
+        moments_need_loading = any(str(value.device) != metadata['optimizer_tensors'][str(index) + '/' + key]['device']
+            for index, parameter in enumerate(module.parameters())
+            for key, value in worker.actor_optimizer.state.get(parameter, {}).items()
+            if isinstance(value, torch.Tensor) and key != 'step')
+        if moments_need_loading:
+            load_fsdp_optimizer(worker.actor_optimizer, device_id=torch.cuda.current_device())
+        # Native Adam's non-capturable scalar step can legitimately remain on
+        # CPU while moments are on GPU. The existing helper loads all tensors;
+        # preserve that saved scalar placement after loading the real moments.
+        for index, parameter in enumerate(module.parameters()):
+            step = worker.actor_optimizer.state.get(parameter, {}).get('step')
+            if isinstance(step, torch.Tensor):
+                device = metadata['optimizer_tensors'][str(index) + '/step']['device']
+                if str(step.device) != device:
+                    worker.actor_optimizer.state[parameter]['step'] = step.to(device)
+    # Direct assignments preserve mixed child modes instead of recursively
+    # overwriting children through a parent train() call.
+    for name, child in module.named_modules():
+        child.training = metadata['module_modes'][name]
+
+
 class ActorRolloutRefWorker(Worker):
     """
     This worker can be instantiated as a standalone actor or a standalone rollout or a standalone reference policy
@@ -390,7 +603,35 @@ class ActorRolloutRefWorker(Worker):
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
             # perform training
             with Timer(name='update_policy', logger=None) as timer:
-                metrics = self.actor.update_policy(data=data)
+                from search_r1.baselines.policy_safety import PolicySafetyRejected
+                try:
+                    metrics = self.actor.update_policy(data=data)
+                except PolicySafetyRejected as rejection:
+                    if self.config.actor.get('preserve_partial_policy_safety_state', False):
+                        from search_r1.baselines.partial_update import preserve_worker
+                        try:
+                            preserve_worker(self, data, rejection)
+                        except BaseException as preservation_error:
+                            # Retain the refusal and explicitly report a failed snapshot.
+                            # Unknown unsynchronized failures never enter a new FSDP collective.
+                            rejection.record['partial_state_preservation_error'] = repr(preservation_error)
+                            try:
+                                from search_r1.baselines.recovery import atomic_json_save
+                                from pathlib import Path
+                                outer = data.meta_info['baseline_outer_step']
+                                folder = Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR']) / 'partial-updates' / f'outer_{outer:06d}'
+                                folder.mkdir(parents=True, exist_ok=True)
+                                atomic_json_save(dict(status='PARTIAL_WORKER_STATE_SAVE_FAILED', rank=self.rank,
+                                    pid=os.getpid(), outer_step=outer,
+                                    job_id=os.environ.get('SLURM_JOB_ID'),
+                                    run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                                    source_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                                    config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+                                    rejection=rejection.record, preservation_error=repr(preservation_error)),
+                                    folder / f'rank_{self.rank}-save-failed.json')
+                            except BaseException as diagnostic_error:
+                                rejection.record['partial_state_failure_diagnostic_write_error'] = repr(diagnostic_error)
+                    raise
             delta_time = timer.last
             global_num_tokens = data.meta_info['global_token_num']
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
@@ -528,6 +769,38 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def fresh_initialization_identity(self):
+        """Read actual initialized actor/reference metadata before first validation."""
+        import json
+        from pathlib import Path
+        from search_r1.baselines.fresh200 import REVISION
+        from search_r1.baselines.recovery import tensor_digest
+        actor = self._is_actor
+        path = self.config.model.path if actor else self.config.ref.get('model_path', self.config.model.path)
+        inventory = json.loads((Path(path) / 'VERIFIED-MODEL-MANIFEST.json').read_text())
+        if inventory['repo'] != 'Qwen/Qwen2.5-3B-Instruct' or inventory['revision'] != REVISION:
+            raise RuntimeError('Actual worker did not load the pinned official Instruct model')
+        module = self.actor_module_fsdp if actor else self.ref_module_fsdp
+        result = dict(rank=self.rank, pid=os.getpid(),
+            start_ticks=int(Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]),
+            role='actor' if actor else 'reference', origin_kind='OFFICIAL_MODEL_INITIALIZATION',
+            official_revision=REVISION, model_path=path,
+            model_shards_sha256=tensor_digest(module.named_parameters()),
+            official_bf16_parameter_sha256=tensor_digest((name, parameter.detach().to('cpu', dtype=torch.bfloat16))
+                for name, parameter in module.named_parameters()),
+            buffers_sha256=tensor_digest(module.named_buffers()))
+        if actor:
+            result.update(optimizer_state_entries=len(self.actor_optimizer.state),
+                optimizer_populated_slots=sum(bool(slot) for slot in self.actor_optimizer.state.values()),
+                scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                scheduler_step_count=self.actor_lr_scheduler._step_count,
+                learning_rates=self.actor_lr_scheduler.get_last_lr(),
+                local_mini_batch_size=self.config.actor.ppo_mini_batch_size,
+                local_micro_batch_size=self.config.actor.ppo_micro_batch_size,
+                reference_kl_coefficient=self.config.actor.kl_loss_coef)
+        return result
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def checkpoint_pause_identity(self):
         assert self._is_actor
         from search_r1.baselines.recovery import checkpoint_pause_identity
@@ -537,73 +810,195 @@ class ActorRolloutRefWorker(Worker):
                                          self.config.actor.get("complete_internal_state", False))
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def checkpoint_runtime_metadata(self):
+        """Read complete small state, including RNG absent from tensor digests."""
+        assert self._is_actor
+        from search_r1.baselines.recovery import cpu_snapshot, rng_state
+        module = self.actor_module_fsdp
+        placement = lambda values: {name: dict(device=str(value.device), dtype=str(value.dtype),
+                                               shape=list(value.shape)) for name, value in values}
+        return dict(rank=self.rank, rng=cpu_snapshot(rng_state()),
+            scheduler=cpu_snapshot(self.actor_lr_scheduler.state_dict()),
+            module_modes={name: child.training for name, child in module.named_modules()},
+            parameters=placement(module.named_parameters()), buffers=placement(module.named_buffers()),
+            local_shards=placement((name, parameter._local_shard) for name, parameter in module.named_parameters()
+                                   if hasattr(parameter, '_local_shard')),
+            optimizer_tensors=placement((str(index) + '/' + key, value)
+                for index, parameter in enumerate(module.parameters())
+                for key, value in sorted(self.actor_optimizer.state.get(parameter, {}).items())
+                if isinstance(value, torch.Tensor)),
+            sharding_rng={key: cpu_snapshot(getattr(self.rollout_sharding_manager, key, None))
+                          for key in ('gen_random_states', 'torch_random_states')})
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_training_state(self, local_path, expected_rank_shas, expected_logical_step=None, expected_optimizer_steps=None):
         assert self._is_actor
         from search_r1.baselines.recovery import file_sha256, load_worker_training_state
         path = os.path.join(local_path, 'training_state', f'rank_{self.rank}.pt')
-        if file_sha256(path) != expected_rank_shas[str(self.rank)]:
-            raise RuntimeError('Training-state SHA differs from frozen checkpoint manifest')
-        state = torch.load(path, map_location='cpu', weights_only=False)
-        if expected_logical_step is not None and state['logical_step'] != expected_logical_step:
-            raise RuntimeError('Saved worker logical step differs from explicit restore source')
-        if expected_optimizer_steps is not None:
-            slots = state['optimizer']['state']
-            if not slots or any(float(value['step']) != expected_optimizer_steps for value in slots.values()):
-                raise RuntimeError('Saved actual Adam update count differs from restore source')
-        if self.config.actor.get('complete_internal_state', False) and not state.get('complete_internal', False):
-            raise RuntimeError('Fresh Instruct requires complete internal FSDP state')
+        state, error = None, None
+        try:
+            if file_sha256(path) != expected_rank_shas[str(self.rank)]:
+                raise RuntimeError('Training-state SHA differs from frozen checkpoint manifest')
+            state = torch.load(path, map_location='cpu', weights_only=False)
+            _validate_checkpoint_state(state, self.actor_module_fsdp, self.actor_optimizer,
+                self.actor_lr_scheduler, self.rank, self.world_size, self.rollout_sharding_manager,
+                expected_logical_step, expected_optimizer_steps,
+                self.config.actor.get('complete_internal_state', False))
+            if self.config.actor.get('fresh200_protocol', False) and 'runtime_metadata' not in state:
+                raise ValueError('Fresh200 state lacks complete live runtime metadata')
+            if 'runtime_metadata' in state:
+                _validate_checkpoint_runtime_placement(self, state['runtime_metadata'])
+            if state.get('complete_internal', False):
+                from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+                module = self.actor_module_fsdp
+                if not isinstance(module, FSDP) or module._is_root is False:
+                    raise ValueError('Full restore requires the actual FSDP root')
+                if module._is_root is None:
+                    if torch.__version__.split('+')[0].split('.')[:2] != ['2', '4']:
+                        raise ValueError('Constructor FSDP initialization requires reviewed Torch 2.4')
+                    if any(p.device != torch.device('cuda', torch.cuda.current_device())
+                           for p in module.parameters()):
+                        raise ValueError('Constructor FSDP root is not on its original CUDA device')
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('load/local_read_and_validate', error)
         initialization = None
         if state.get('complete_internal', False):
             from verl.utils.fsdp_utils import initialize_fsdp_before_full_restore
+            # PyTorch initialization is outside local-error handling: an unknown
+            # collective failure must terminate the job, not start a new reduce.
             initialization = initialize_fsdp_before_full_restore(self.actor_module_fsdp)
-        step = load_worker_training_state(
-            state, self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
-            self.rank, self.world_size, self.rollout_sharding_manager)
+        error = None
+        try:
+            _validate_checkpoint_state(state, self.actor_module_fsdp, self.actor_optimizer,
+                self.actor_lr_scheduler, self.rank, self.world_size, self.rollout_sharding_manager,
+                expected_logical_step, expected_optimizer_steps,
+                self.config.actor.get('complete_internal_state', False))
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('load/initialized_local_validation', error)
+        error, step = None, None
+        try:
+            # This loader only copies local shards/buffers and restores local
+            # Adam/scheduler/RNG. It performs no FSDP/distributed collective.
+            step = load_worker_training_state(
+                state, self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
+                self.rank, self.world_size, self.rollout_sharding_manager)
+            if 'runtime_metadata' in state:
+                _restore_checkpoint_runtime_metadata(self, state['runtime_metadata'])
+            from search_r1.baselines.instruct300 import equal_state
+            actual_runtime = self.checkpoint_runtime_metadata()
+            if (not equal_state(actual_runtime['rng'], state['rng'])
+                    or not equal_state(actual_runtime['scheduler'], state['scheduler'])
+                    or not equal_state(actual_runtime['sharding_rng'], state['sharding_rng'])
+                    or ('runtime_metadata' in state
+                        and not equal_state(actual_runtime, state['runtime_metadata']))):
+                raise RuntimeError('Actual worker RNG/scheduler/modes/placement readback differs from saved state')
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('load/local_state_copy', error)
         del state
         torch.distributed.barrier()
-        return dict(rank=self.rank, logical_step=step, fsdp_initialization=initialization)
+        return dict(rank=self.rank, logical_step=step, fsdp_initialization=initialization,
+                    actual_rank_pt_reload=True, matched_local_stages=True,
+                    actual_complete_runtime_readback=True,
+                    automatic_rollback=False, collective_failure_recovery=False)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
         assert self._is_actor
         import torch
-        if self._is_offload_param:
-            load_fsdp_param_and_grad(module=self.actor_module_fsdp,
-                                     device_id=torch.cuda.current_device(),
-                                     load_grad=self._is_offload_grad)
+        error, before_save, staged_runtime = None, None, None
+        try:
+            if self.config.actor.get('fresh200_protocol', False):
+                before_save = (self.checkpoint_runtime_metadata(), self.checkpoint_pause_identity())
+            if self._is_offload_param:
+                load_fsdp_param_and_grad(module=self.actor_module_fsdp,
+                                         device_id=torch.cuda.current_device(),
+                                         load_grad=self._is_offload_grad)
+            if self.config.actor.get('fresh200_protocol', False):
+                staged_runtime = self.checkpoint_runtime_metadata()
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('save/local_parameter_staging', error)
 
         # TODO: support DCP and save sharded checkpoints
         import torch.distributed
         from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, StateDictType, FullStateDictConfig
         cfg = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
+        # Unknown full-state collective errors propagate directly. Only phases
+        # below that are known local IO/computation enter matched error reduces.
         with FSDP.state_dict_type(self.actor.actor_module, StateDictType.FULL_STATE_DICT, cfg):
             state_dict = self.actor.actor_module.state_dict()
-        if self.rank == 0:
-            print(f'Saving actor checkpoint to {local_path}')
-            os.makedirs(local_path, exist_ok=True)
-            self.actor_module.save_pretrained(local_path, state_dict=state_dict)
-            self.tokenizer.save_pretrained(local_path)
-            if hdfs_path is not None:
-                print(f'Uploading actor checkpoint to {hdfs_path}')
-                hdfs_io.makedirs(hdfs_path, exist_ok=True)
-                hdfs_io.copy(src=local_path, dst=hdfs_path)
-
+        error, hf_receipt = None, None
+        try:
+            if self.rank == 0:
+                print(f'Saving actor checkpoint to {local_path}')
+                os.makedirs(local_path, exist_ok=True)
+                self.actor_module.save_pretrained(local_path, state_dict=state_dict)
+                self.tokenizer.save_pretrained(local_path)
+                if self.config.actor.get('fresh200_protocol', False):
+                    from search_r1.baselines.instruct300 import hf_export_identity, reload_hf_checkpoint_cpu
+                    exported = hf_export_identity(state_dict, self.actor_module.config, self.tokenizer)
+                    # The child holds the FP32 HF model; release the ~12 GB
+                    # full export first instead of holding two full CPU models.
+                    del state_dict
+                    hf_receipt = reload_hf_checkpoint_cpu(local_path, exported)
+                if hdfs_path is not None:
+                    print(f'Uploading actor checkpoint to {hdfs_path}')
+                    hdfs_io.makedirs(hdfs_path, exist_ok=True)
+                    hdfs_io.copy(src=local_path, dst=hdfs_path)
+        except Exception as local_error:
+            error = local_error
+        # Every rank releases its export even when rank0's local write failed.
+        if 'state_dict' in locals():
+            del state_dict
+        _checkpoint_matched_stage('save/rank0_hf_write_and_cpu_reload', error)
         torch.distributed.barrier()
-        receipt = None
-        if self.config.actor.optim.get('save_training_state', False):
-            from search_r1.baselines.recovery import atomic_torch_save, worker_training_state
-            logical_step = int(os.path.basename(local_path).removeprefix('global_step_'))
-            state = worker_training_state(
-                self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
-                self.rank, self.world_size, logical_step, self.rollout_sharding_manager,
-                self.config.actor.get("complete_internal_state", False))
-            receipt = atomic_torch_save(state, os.path.join(local_path, 'training_state',
-                                                           f'rank_{self.rank}.pt'))
-            receipt['pause_identity'] = state['pause_identity']
-            del state
+        receipt, error = None, None
+        try:
+            if self.config.actor.optim.get('save_training_state', False):
+                from search_r1.baselines.recovery import atomic_torch_save, worker_training_state
+                if before_save is not None:
+                    from search_r1.baselines.instruct300 import equal_state
+                    if (not equal_state(staged_runtime, self.checkpoint_runtime_metadata())
+                            or before_save[1] != self.checkpoint_pause_identity()):
+                        raise RuntimeError('HF save/reload changed live model/Adam/scheduler/buffers/RNG/PID')
+                logical_step = int(os.path.basename(local_path).removeprefix('global_step_'))
+                state = worker_training_state(
+                    self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler,
+                    self.rank, self.world_size, logical_step, self.rollout_sharding_manager,
+                    self.config.actor.get("complete_internal_state", False))
+                if self.config.actor.get('fresh200_protocol', False):
+                    # Normal save temporarily stages offloaded parameters on
+                    # GPU. Bind the placement returned to the caller, not that
+                    # temporary export placement, while retaining all real RNG.
+                    state['runtime_metadata'] = before_save[0]
+                    _validate_checkpoint_state(state, self.actor_module_fsdp, self.actor_optimizer,
+                        self.actor_lr_scheduler, self.rank, self.world_size, self.rollout_sharding_manager,
+                        logical_step, logical_step * 20, require_complete=True)
+                receipt = atomic_torch_save(state, os.path.join(local_path, 'training_state',
+                                                               f'rank_{self.rank}.pt'))
+                receipt['pause_identity'] = state['pause_identity']
+                if hf_receipt is not None:
+                    receipt['hf_loader_roundtrip'] = hf_receipt
+                del state
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('save/all_rank_training_state_write', error)
         torch.distributed.barrier()
-        if self._is_offload_param:
-            offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+        error = None
+        try:
+            if self._is_offload_param:
+                offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+            if before_save is not None:
+                from search_r1.baselines.instruct300 import equal_state
+                if (not equal_state(before_save[0], self.checkpoint_runtime_metadata())
+                        or before_save[1] != self.checkpoint_pause_identity()):
+                    raise RuntimeError('Completed checkpoint save changed original worker runtime state')
+        except Exception as local_error:
+            error = local_error
+        _checkpoint_matched_stage('save/local_parameter_offload', error)
         return receipt
 
 

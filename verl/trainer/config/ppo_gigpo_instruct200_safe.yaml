@@ -1,0 +1,83 @@
+defaults:
+  - ppo_gigpo_instruct300
+  - _self_
+
+# Shared immutable artifacts are reused directly, never regenerated or restored as training state.
+data:
+  train_files: ${oc.env:GIGPO_E1_COMMON_ROOT}/common-data/train.parquet
+  val_files: ${oc.env:GIGPO_E1_COMMON_ROOT}/common-data/validation.parquet
+  final_val_files: ${oc.env:GIGPO_E1_COMMON_ROOT}/common-data/final.parquet
+actor_token_identity: sampled_action_prefix_v1
+actor_rollout_ref:
+  model:
+    path: ${oc.env:GIGPO_E1_COMMON_ROOT}/assets/qwen2.5-3b-instruct-aa8e725
+  actor:
+    actor_token_identity: sampled_action_prefix_v1
+    fresh200_protocol: true
+    preserve_partial_policy_safety_state: true
+    joint_loss_scaling: true
+    ppo_mini_batch_size: 128
+    ppo_micro_batch_size: 16
+    use_kl_loss: true
+    kl_loss_coef: 0.0
+    kl_loss_type: low_var_kl
+    optim:
+      total_training_steps: 200
+      lr: 1.0e-6
+      lr_warmup_steps: 57
+      lr_warmup_steps_ratio: 0.0
+    policy_safety:
+      enabled: true
+      mode: production
+      calibration_scope: GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_first_global_rows: 256
+      target_old_policy_kl: null
+      negative_tail_limit: null
+      candidate_old_policy_kl: null
+      calibration_evidence_sha256: null
+      calibration_evidence_path: null
+  rollout:
+    actor_token_identity: sampled_action_prefix_v1
+  ref:
+    actor_token_identity: sampled_action_prefix_v1
+    model_path: ${actor_rollout_ref.model.path}
+algorithm:
+  kl_penalty: low_var_kl
+  kl_ctrl:
+    kl_coef: 0.0
+baselines:
+  holdout:
+    manifest_path: ${oc.env:GIGPO_E1_COMMON_ROOT}/common-data/manifest.json
+    data_root: ${oc.env:GIGPO_E1_COMMON_ROOT}/common-data
+    output_dir: ${oc.env:GIGPO_E1_RUN}/common-data
+trainer:
+  total_training_steps: 200
+  acceptance_step: 5
+  save_freq: 50
+  test_freq: 50
+  val_before_train: true
+  trajectory_logging: true
+  experiment_name: gigpo-e1-official-instruct200-safe-20261006
+  n_gpus_per_node: 8
+  nnodes: 1
+  resume:
+    enabled: false
+    source: null
+  quality_resume:
+    enabled: false
+  instruct300:
+    enabled: true
+    restore_checkpoint: null
+    restore_manifest_sha256: null
+    approval_path: ${oc.env:GIGPO_E1_RUN}/instruct5-approval.json
+  fresh200:
+    enabled: true
+    goal_updated_at: 1791275767
+    initial_outer_step: 0
+    initial_adam_steps: 0
+    initial_scheduler_step: 0
+    initial_data_cursor: 0
+    checkpoint_steps: [5, 50, 100, 150, 200]
+    preserve_partial_updates: true

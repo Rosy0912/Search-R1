@@ -13,6 +13,26 @@ import torch.distributed as dist
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 
 
+class MatchedGradientRejected(ValueError):
+    """Emitted only after the FSDP all-rank MAX has already refused this step."""
+    def __init__(self, message, diagnostic_error=None):
+        super().__init__(message)
+        self.diagnostic_error = diagnostic_error
+
+    def __reduce__(self):
+        return (type(self), (str(self), self.diagnostic_error))
+
+
+def _matched_gradient_rejection(grads, norm):
+    diagnostic_error = None
+    try:
+        _failure(grads, norm)
+    except Exception as error:
+        diagnostic_error = repr(error)
+    raise MatchedGradientRejected(
+        'Nonfinite actor gradient elements; optimizer step refused on all ranks', diagnostic_error)
+
+
 def _norm64(params, device, chunk_size=262144, uniform=True):
     grads = [p.grad for p in params if p.grad is not None]
     if uniform and len({g.dtype for g in grads}) > 1:
@@ -105,8 +125,7 @@ def clip_grad_norm64(module, max_norm, loss_scale=1.):
         bad = (~(torch.isfinite(sharded_norm) & torch.isfinite(nonsharded_norm))).to(torch.int32)
         dist.all_reduce(bad, op=dist.ReduceOp.MAX, group=module.process_group)
         if bool(bad):
-            _failure(grads, torch.full((), float('nan'), dtype=torch.float64, device=device))
-            raise ValueError('Nonfinite actor gradient elements; optimizer step refused on all ranks')
+            _matched_gradient_rejection(grads, torch.full((), float('nan'), dtype=torch.float64, device=device))
         if sharded:
             norm = sharded_norm.square()
             dist.all_reduce(norm, group=module.process_group)

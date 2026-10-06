@@ -5,6 +5,34 @@ import torch
 import torch.distributed as dist
 
 
+class PolicySafetyRejected(RuntimeError):
+    """Only emitted after the original matched all-rank refusal boundary."""
+    def __init__(self, reason, record):
+        self.reason = reason
+        super().__init__('POLICY_SAFETY_REJECTED: ' + reason)
+        self.record = record
+
+    def __reduce__(self):
+        return type(self), (self.reason, self.record)
+
+
+def matched_policy_rejection(error):
+    """Find the actual typed cause through Ray wrapping; do not trust a message substring."""
+    pending, seen = [error], set()
+    while pending:
+        value = pending.pop()
+        if id(value) in seen:
+            continue
+        seen.add(id(value))
+        if isinstance(value, PolicySafetyRejected):
+            return value
+        for key in ('cause', '__cause__', '__context__'):
+            cause = getattr(value, key, None)
+            if isinstance(cause, BaseException):
+                pending.append(cause)
+    return None
+
+
 def validate_config(config, require_thresholds=True):
     if not config.get('enabled', False):
         return
@@ -27,6 +55,20 @@ def validate_config(config, require_thresholds=True):
             raise ValueError('Missing independently reviewed isolated-test authorization')
         raw = Path(path).read_bytes()
         proof = json.loads(raw)
+        from .fresh200 import CALIBRATION_SCOPE, validate_calibration_initialization
+        if mode == 'calibration' and config.get('calibration_scope') == CALIBRATION_SCOPE:
+            if (hashlib.sha256(raw).hexdigest() != expected_sha
+                    or proof.get('status') != 'REVIEWED_FOR_CALIBRATION_ONLY'
+                    or proof.get('validation_scope') != CALIBRATION_SCOPE
+                    or proof.get('code_commit') != os.environ.get('SEARCH_R1_BASELINE_COMMIT')
+                    or re.fullmatch(r'[0-9a-f]{40}', str(proof.get('code_commit'))) is None
+                    or proof.get('allowed_safety_modes') != ['calibration']
+                    or proof.get('calibration_actual_outer_budget') != 2
+                    or proof.get('candidate_old_policy_kl') != config.get('candidate_old_policy_kl')
+                    or config.get('candidate_old_policy_kl') != .01):
+                raise ValueError('Fresh official calibration authorization differs')
+            validate_calibration_initialization(proof)
+            return
         if (hashlib.sha256(raw).hexdigest() != expected_sha
                 or proof.get('status') != 'REVIEWED_FOR_NATIVE_ONLY'
                 or proof.get('validation_scope') != 'GIGPO_POLICY_SAFETY_NATIVE_ONLY'
@@ -59,15 +101,37 @@ def validate_config(config, require_thresholds=True):
         if hashlib.sha256(raw).hexdigest() != config['calibration_evidence_sha256']:
             raise ValueError('Calibration acceptance SHA mismatch')
         proof = json.loads(raw)
-        if (proof.get('status') != 'PASS' or proof.get('scope') != 'GIGPO_POLICY_SAFETY_HEALTHY25_CALIBRATION'
+        from .fresh200 import CALIBRATION_SCOPE, validate_calibration_initialization
+        fresh = config.get('calibration_scope') == CALIBRATION_SCOPE
+        scope = CALIBRATION_SCOPE if fresh else 'GIGPO_POLICY_SAFETY_HEALTHY25_CALIBRATION'
+        if fresh:
+            validate_calibration_initialization(proof)
+            if (proof.get('calibration_actual_outer_budget') != 2
+                    or proof.get('actual_optimizer_steps_per_rank') != 40
+                    or proof.get('actual_gradient_micro_per_rank') != 320
+                    or proof.get('retained_training_updates_contributed') != 0):
+                raise ValueError('Fresh calibration actual diagnostic budget differs')
+        if (proof.get('status') != 'PASS' or proof.get('scope') != scope
                 or proof.get('rank_count') != 8
-                or proof.get('restore_manifest_sha256') != '3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4'
+                or (not fresh and proof.get('restore_manifest_sha256') != '3a073aba77147db7d581cd514ee5c4ae34965e5ff9c163716bd25b47aeb478e4')
                 or proof.get('target_old_policy_kl') != kl or proof.get('negative_tail_limit') != tail
                 or proof.get('dual_clip') != c or proof.get('kl_log_bound') != bound):
             raise ValueError('Calibration acceptance scope/threshold identity mismatch')
         actual_source = os.environ.get('SEARCH_R1_BASELINE_COMMIT')
         if actual_source and proof.get('source_commit') != actual_source:
             raise ValueError('Calibration source differs from actual deployed actor')
+
+
+def calibrated_or_candidate_rejection(stats, config):
+    """Keep the original production statistic/formula, adding explicit diagnostic admission."""
+    reason = rejection_reason(stats, config)
+    if reason is not None:
+        return reason
+    from .fresh200 import CALIBRATION_SCOPE
+    if (config.get('mode') == 'calibration' and config.get('calibration_scope') == CALIBRATION_SCOPE
+            and stats['sampled_old_policy_kl'] > config['candidate_old_policy_kl']):
+        return 'CALIBRATION_CANDIDATE_OLD_POLICY_TOKEN_KL'
+    return None
 
 
 def dual_clip_terms(delta, advantages, mask, epsilon, c):
