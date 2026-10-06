@@ -89,7 +89,19 @@ def _semantic_config(config):
     result.pop('_name_or_path', None)
     for key in ('_attn_implementation', '_attn_implementation_internal', '_attn_implementation_autoset'):
         result.pop(key, None)
-    return result
+
+    def unique_object(pairs):
+        normalized = {}
+        for key, value in pairs:
+            if key in normalized:
+                raise ValueError('HF config has colliding JSON object keys: ' + key)
+            normalized[key] = value
+        return normalized
+
+    # The independent process receives JSON. HF's id2label uses integer keys
+    # in memory and string keys in JSON; bind the same lossless representation
+    # on both sides. Keep every semantic value and reject key collisions.
+    return json.loads(json.dumps(result, allow_nan=False), object_pairs_hook=unique_object)
 
 
 def _tokenizer_identity(tokenizer):

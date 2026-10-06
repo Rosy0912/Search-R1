@@ -349,6 +349,8 @@ def test_offline_tiny_actual_hf_subprocess_binds_tensor_config_tokenizer_and_byt
         pad_token_id=tokenizer.pad_token_id, attention_dropout=0.))
     model.save_pretrained(directory, max_shard_size='1KB')
     expected = hf_export_identity(model.state_dict(), model.config, tokenizer)
+    assert expected['config']['id2label'] == {'0': 'LABEL_0', '1': 'LABEL_1'}
+    assert json.loads(json.dumps(expected, allow_nan=False)) == expected
     parent_rng = cpu_snapshot(rng_state())
     receipt = reload_hf_checkpoint_cpu(directory, expected)
     identity = json.loads(Path(receipt['path']).read_text())
@@ -366,3 +368,31 @@ def test_offline_tiny_actual_hf_subprocess_binds_tensor_config_tokenizer_and_byt
     with pytest.raises(RuntimeError, match='CPU HF loader failed'):
         reload_hf_checkpoint_cpu(directory, wrong)
     assert equal_state(rng_state(), parent_rng)
+    wrong_config = copy.deepcopy(expected)
+    wrong_config['config']['hidden_size'] += 1
+    with pytest.raises(RuntimeError, match='Actual HF config loader differs'):
+        reload_hf_checkpoint_cpu(directory, wrong_config)
+    wrong_dtype = copy.deepcopy(expected)
+    wrong_dtype['config']['torch_dtype'] = 'bfloat16'
+    with pytest.raises(RuntimeError, match='Actual HF config loader differs'):
+        reload_hf_checkpoint_cpu(directory, wrong_dtype)
+    wrong_tokenizer = copy.deepcopy(expected)
+    wrong_tokenizer['tokenizer']['chat_template'] += ' changed'
+    with pytest.raises(RuntimeError, match='Actual HF tokenizer loader differs'):
+        reload_hf_checkpoint_cpu(directory, wrong_tokenizer)
+    assert equal_state(rng_state(), parent_rng)
+
+
+def test_hf_semantic_config_json_transport_keeps_values_and_rejects_collisions():
+    from search_r1.baselines.instruct300 import _semantic_config
+    original = {'hidden_size': 8, 'torch_dtype': 'float32',
+                'id2label': {0: 'LABEL_0', 1: 'LABEL_1'},
+                'nested': {'ids': (1, 2), 'enabled': True}}
+    config = SimpleNamespace(to_dict=lambda: copy.deepcopy(original))
+    actual = _semantic_config(config)
+    assert actual == json.loads(json.dumps(original, allow_nan=False))
+    assert json.loads(json.dumps(actual, allow_nan=False)) == actual
+    assert original['id2label'] == {0: 'LABEL_0', 1: 'LABEL_1'}
+    colliding = SimpleNamespace(to_dict=lambda: {'id2label': {0: 'original', '0': 'replacement'}})
+    with pytest.raises(ValueError, match='colliding JSON object keys'):
+        _semantic_config(colliding)
