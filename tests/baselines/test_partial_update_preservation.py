@@ -35,8 +35,13 @@ class PartialPreservation(unittest.TestCase):
         before_weights = [v.detach().clone() for v in model.parameters()]
         before_steps = [int(v['step']) for v in optimizer.state.values()]
         before_rng = torch.get_rng_state().clone()
-        worker = SimpleNamespace(actor_module_fsdp=model, actor_optimizer=optimizer,
+        worker = SimpleNamespace(_is_actor=True, config=SimpleNamespace(actor={}),
+            actor_module_fsdp=model, actor_optimizer=optimizer,
             actor_lr_scheduler=scheduler, rank=0, world_size=1, rollout_sharding_manager=None)
+        # Execute the exact metadata method AST without importing worker startup.
+        from tests.baselines.test_fresh200_checkpoint_controls import source_function
+        metadata = source_function('checkpoint_runtime_metadata')
+        worker.checkpoint_runtime_metadata = lambda: metadata(worker)
         # This is one CPU worker fixture; it never asserts real eight-rank coverage.
         data = SimpleNamespace(meta_info={'baseline_outer_step': 1})
         refusal = PolicySafetyRejected('matched test fixture', dict(outer_step=1, mini_index=6,
@@ -49,7 +54,10 @@ class PartialPreservation(unittest.TestCase):
             state = torch.load(result['state_receipt']['path'], map_location='cpu', weights_only=False)
             self.assertEqual(state['partial_update']['actual_adam_total'], 7)
             self.assertEqual(state['partial_update']['completed_outer_updates'], 0)
-            self.assertEqual(state['partial_update']['actual_extra_adam_beyond_complete_outers'], 7)
+            self.assertEqual(state['partial_update']['actual_partial_adam_steps'], 7)
+            self.assertEqual(state['partial_update']['prior_actual_adam_total'], 0)
+            self.assertIn('runtime_metadata', state)
+            self.assertTrue(torch.equal(state['runtime_metadata']['rng']['torch'], before_rng))
             self.assertEqual(state['partial_update']['scheduler_step'], 0)
             self.assertFalse(state['partial_update']['automatic_rollback'])
             self.assertFalse(state['partial_update']['exact_resume_accepted'])

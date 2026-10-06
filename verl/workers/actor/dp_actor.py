@@ -743,21 +743,19 @@ class DataParallelPPOActor(BasePPOActor):
                         ref_logp=ref_log_prob if self.config.use_kl_loss else None,
                         dual_clip=safety['dual_clip'] if safety_enabled else None,
                         mini_index=batch_idx, micro_index_in_mini=micro_index)
-                if scaled_joint or safety_enabled:
+                if safety_enabled:
+                    # Unknown errors from this original admission MAX propagate
+                    # directly. Only its completed common invalid decision may
+                    # become a typed refusal with synchronized diagnostic IO.
+                    self._safety_sync_invalid(not bool(torch.isfinite(loss)), log_prob.device,
+                        dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
+                             micro_index_in_mini=micro_index),
+                        f'gradient_micro{micro_index}_loss', updates, tensors=data,
+                        current=log_prob.detach(), details='NONFINITE_TRAINING_LOSS')
+                elif scaled_joint:
                     from search_r1.baselines.loss_scaling import coordinated_badflag
-                    try:
-                        coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
-                                            getattr(self.actor_module, 'process_group', None))
-                    except ValueError as matched_error:
-                        if safety_enabled:
-                            from search_r1.baselines.policy_safety import PolicySafetyRejected
-                            raise PolicySafetyRejected(str(matched_error), dict(
-                                outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx,
-                                attempt_id=getattr(self, '_fresh200_attempt_id', None),
-                                micro_index_in_mini=micro_index,
-                                phase=f'gradient_micro{micro_index}_loss', actual_optimizer_writes=updates,
-                                matched_guard='ORIGINAL_ALL_REDUCE_MAX_LOSS_REFUSAL')) from matched_error
-                        raise
+                    coordinated_badflag(not bool(torch.isfinite(loss)), log_prob.device,
+                                        getattr(self.actor_module, 'process_group', None))
                 (loss * loss_scale if scaled_joint else loss).backward()
                 if audit is not None:
                     audit.gradient_micro_batches += 1

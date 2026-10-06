@@ -172,7 +172,8 @@ def tiny_worker():
             parameter.grad = torch.ones_like(parameter)
         optimizer.step()
     scheduler.step()  # exactly one completed outer, twenty real tiny Adam calls
-    worker = SimpleNamespace(_is_actor=True, rank=0, actor_module_fsdp=module,
+    worker = SimpleNamespace(_is_actor=True, config=SimpleNamespace(actor={}),
+        rank=0, actor_module_fsdp=module,
         actor_optimizer=optimizer, actor_lr_scheduler=scheduler,
         rollout_sharding_manager=SimpleNamespace(gen_random_states=None, torch_random_states=None))
     metadata = source_function('checkpoint_runtime_metadata')

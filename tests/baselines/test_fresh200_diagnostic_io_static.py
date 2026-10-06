@@ -9,7 +9,7 @@ import copy
 import json
 import os
 from pathlib import Path
-from types import SimpleNamespace
+from types import MethodType, SimpleNamespace
 
 import pytest
 import torch
@@ -165,3 +165,152 @@ def test_unknown_original_optimizer_error_never_enters_diagnostic_max(tmp_path):
         handler(SimpleNamespace(actor_module=worker.actor_module_fsdp),
                 OSError('original optimizer/collective'),True,False,2,2,dict(baseline_outer_step=1))
     assert calls==[]
+
+
+def finite_loss_fixture(worker,rank,decisions,*,local_io_failure=False,unknown=None):
+    """Actual admission plus immediately following backward/counter AST bodies."""
+    source=(ROOT/'verl/workers/actor/dp_actor.py').read_text()
+    function=next(node for node in ast.walk(ast.parse(source))
+                  if isinstance(node,ast.FunctionDef) and node.name=='update_policy')
+    body=None
+    for parent in ast.walk(function):
+        statements=getattr(parent,'body',None)
+        if not isinstance(statements,list): continue
+        for index,node in enumerate(statements):
+            if (isinstance(node,ast.If) and isinstance(node.test,ast.Name)
+                    and node.test.id=='safety_enabled'
+                    and 'NONFINITE_TRAINING_LOSS' in ast.get_source_segment(source,node)):
+                body=copy.deepcopy(statements[index:index+4])
+                break
+        if body is not None: break
+    assert body is not None and len(body)==4
+    skeleton=ast.parse('def admit(self,loss,log_prob,outer_identity,batch_idx,micro_index,updates,data,'
+        'safety_enabled=True,scaled_joint=False,loss_scale=1.,audit=None,fresh_attempt=True):\n    pass\n').body[0]
+    skeleton.body=body
+    class FixtureImports(ast.NodeTransformer):
+        def visit_Import(self,node): return ast.copy_location(ast.Pass(),node)
+        def visit_ImportFrom(self,node): return ast.copy_location(ast.Pass(),node)
+    skeleton=FixtureImports().visit(skeleton)
+    proxy,reductions=common_transport(rank,decisions)
+    proxy.isfinite=torch.isfinite
+    if unknown is not None:
+        def original_collective_failure(flag,op,group):
+            reductions.append(int(flag))
+            raise unknown
+        proxy.distributed.all_reduce=original_collective_failure
+    diagnostics=[]
+    def diagnostic_save(state,path):
+        diagnostics.append(copy.deepcopy(state))
+        if local_io_failure: raise OSError('one rank finite-loss diagnostic disk failure')
+    namespace=dict(torch=proxy,dist=proxy.distributed,os=os,json=json,Path=Path,
+        PolicySafetyRejected=IORefusal,atomic_torch_save=diagnostic_save,cpu_snapshot=lambda value:value)
+    sync=source_function('verl/workers/actor/dp_actor.py','_safety_sync_invalid',namespace)
+    namespace['coordinated_badflag']=source_function('search_r1/baselines/loss_scaling.py',
+                                                   'coordinated_badflag',namespace)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[skeleton],type_ignores=[])),
+                 'actual_finite_loss_admission_and_backward_cpu_fixture','exec'),namespace)
+    actor=worker.actor
+    actor.actor_module=worker.actor_module_fsdp
+    actor._fresh200_attempt_id=1
+    actor._fresh200_attempt_adam_writes=0
+    actor._fresh200_attempt_gradient_micros=0
+    actor._safety_sync_invalid=MethodType(sync,actor)
+    return actor,namespace['admit'],reductions,diagnostics
+
+
+@pytest.mark.parametrize('safety_enabled,scaled_joint',[(True,False),(False,True)])
+@pytest.mark.parametrize('error_type',[ValueError,RuntimeError,OSError])
+def test_unknown_finite_loss_collective_error_is_unchanged_no_new_max_or_save(
+        tmp_path,safety_enabled,scaled_joint,error_type):
+    worker,data,method,calls,stages,saved=worker_fixture(tmp_path,{})
+    original=error_type('unknown original finite-loss all_reduce failure')
+    actor,admit,reductions,diagnostics=finite_loss_fixture(worker,0,[],unknown=original)
+    pending=data.meta_info.copy()
+    def update(data):
+        for mini in range(2):
+            calls.append(mini)
+            worker.actor_optimizer.zero_grad(set_to_none=True)
+            worker.actor_module_fsdp.weight.grad=torch.ones_like(worker.actor_module_fsdp.weight)
+            worker.actor_optimizer.step()
+            actor._fresh200_attempt_adam_writes+=1
+            actor._fresh200_attempt_gradient_micros+=8
+        calls.append(2)
+        admit(actor,worker.actor_module_fsdp.weight.square().sum(),torch.zeros(1),
+              dict(baseline_outer_step=1),2,0,2,dict(pending=pending),
+              safety_enabled=safety_enabled,scaled_joint=scaled_joint)
+    actor.update_policy=update
+    with pytest.raises(error_type) as caught: method(worker,data)
+    assert caught.value is original and not isinstance(caught.value,KnownRefusal)
+    assert reductions==[0] and diagnostics==[] and saved=={}
+    assert calls==[0,1,2] and stages==['attempt/entry_actual_counters']
+    assert actor._fresh200_attempt_adam_writes==2 and actor._fresh200_attempt_gradient_micros==16
+    assert _adam_steps({'optimizer':worker.actor_optimizer.state_dict()})==2
+    assert torch.equal(worker.actor_module_fsdp.weight.grad,torch.ones_like(worker.actor_module_fsdp.weight))
+    assert data.meta_info['fresh200_processed_opportunities']==0
+    assert worker.actor_lr_scheduler.last_epoch==0 and not hasattr(worker,'fresh200_worker_ledger')
+    assert pending['fresh200_adam_total_before']==0
+
+
+def test_healthy_finite_loss_keeps_one_max_original_backward_and_no_adam(tmp_path):
+    worker,_,_,_,_,_=worker_fixture(tmp_path,{})
+    actor,admit,reductions,diagnostics=finite_loss_fixture(worker,0,[0])
+    audit=SimpleNamespace(gradient_micro_batches=0)
+    weight=worker.actor_module_fsdp.weight.detach().clone()
+    admit(actor,worker.actor_module_fsdp.weight.square().sum(),torch.zeros(1),
+          dict(baseline_outer_step=1),2,0,0,{},audit=audit)
+    assert reductions==[0] and diagnostics==[]
+    assert torch.equal(worker.actor_module_fsdp.weight.grad,2*weight)
+    assert actor._fresh200_attempt_gradient_micros==audit.gradient_micro_batches==1
+    assert _adam_steps({'optimizer':worker.actor_optimizer.state_dict()})==0
+
+
+@pytest.mark.parametrize('global_io_failure',[False,True])
+def test_known_finite_loss_refusal_matches_all_ranks_and_io_failure_is_terminal(
+        tmp_path,monkeypatch,global_io_failure):
+    monkeypatch.setenv('SEARCH_R1_BASELINE_AUDIT_DIR',str(tmp_path/'loss-diagnostics'))
+    records=[]
+    for rank in range(8):
+        worker,data,method,calls,stages,saved=worker_fixture(tmp_path/str(rank),{})
+        normal_update=worker.actor.update_policy
+        actor,admit,reductions,diagnostics=finite_loss_fixture(worker,rank,
+            [1,int(global_io_failure)],local_io_failure=global_io_failure and rank==3)
+        def update(data):
+            if data.meta_info['fresh200_processed_opportunities']:
+                return normal_update(data)  # Actual worker re-entry resumes at mini3.
+            for mini in range(2):
+                calls.append(mini)
+                worker.actor_optimizer.zero_grad(set_to_none=True)
+                worker.actor_module_fsdp.weight.grad=torch.ones_like(worker.actor_module_fsdp.weight)
+                worker.actor_optimizer.step()
+                actor._fresh200_attempt_adam_writes+=1
+                actor._fresh200_attempt_gradient_micros+=8
+            calls.append(2)
+            loss=worker.actor_module_fsdp.weight.square().sum()
+            if rank==3: loss=loss*float('nan')
+            try:
+                admit(actor,loss,torch.zeros(1),dict(baseline_outer_step=1),2,0,2,
+                      dict(real_batch=data))
+            except IORefusal as refusal:
+                records.append(refusal.record)
+                assert actor._fresh200_attempt_gradient_micros==16
+                raise
+        actor.update_policy=update
+        if global_io_failure:
+            with pytest.raises(IORefusal): method(worker,data)
+            assert calls==[0,1,2] and stages==['attempt/entry_actual_counters']
+            assert saved=={} and worker.actor_lr_scheduler.last_epoch==0
+            assert _adam_steps({'optimizer':worker.actor_optimizer.state_dict()})==2
+        else:
+            _,receipt=method(worker,data)
+            assert calls==list(range(20))
+            assert receipt['counted_complete'] is True and receipt['actual_successful_adam_writes']==19
+            assert receipt['gradient_micro_batches']==152
+            assert len(receipt['refusals'])==1
+            assert _adam_steps({'optimizer':worker.actor_optimizer.state_dict()})==19
+        assert len(reductions)==2 and len(diagnostics)==1
+        assert records[-1]['local_invalid']==(rank==3)
+        assert records[-1]['micro_index_in_mini']==0
+        assert records[-1]['global_diagnostic_io_failed'] is global_io_failure
+        assert (records[-1]['local_diagnostic_io_error'] is not None)==(global_io_failure and rank==3)
+    assert {rejection_disposition(record) for record in records}=={
+        'fail_closed' if global_io_failure else 'skip_opportunity'}
