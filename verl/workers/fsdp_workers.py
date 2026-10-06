@@ -370,6 +370,9 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
         data = data.to('cuda')
+        if data.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1':
+            data.meta_info.update(pad_token_id=self.tokenizer.pad_token_id,
+                                  eos_token_id=self.tokenizer.eos_token_id)
 
         assert self._is_actor
         if self._is_offload_param:
@@ -497,6 +500,9 @@ class ActorRolloutRefWorker(Worker):
         assert self._is_ref
 
         data = data.to('cuda')
+        if data.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1':
+            data.meta_info.update(pad_token_id=self.tokenizer.pad_token_id,
+                                  eos_token_id=self.tokenizer.eos_token_id)
 
         if self._is_offload_param:
             load_fsdp_param_and_grad(module=self.ref_module_fsdp,

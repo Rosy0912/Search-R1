@@ -78,6 +78,13 @@ class RolloutTrace:
             for key in ('prompts', 'responses', 'attention_mask', 'info_mask', 'position_ids'):
                 if key in output.batch:
                     row[key] = output.batch[key][i].detach().cpu().tolist()
+            from .reward_view import CANONICAL_KEYS
+            for key in CANONICAL_KEYS:
+                if key in output.batch:
+                    row[key] = output.batch[key][i].detach().cpu().tolist()
+            if 'action_prefix_records' in output.non_tensor_batch:
+                row['actor_token_identity'] = 'sampled_action_prefix_v1'
+                row['action_prefix_records'] = output.non_tensor_batch['action_prefix_records'][i]
             row['prompt_text'] = tokenizer.decode(row['prompts'], skip_special_tokens=False)
             row['response_with_observations_text'] = tokenizer.decode(row['responses'], skip_special_tokens=False)
             rows.append(row)
@@ -111,11 +118,10 @@ def record_scored_batch(root, logical_step, batch, tokenizer=None):
 def decoded_answer(batch, row, tokenizer):
     from verl.trainer.main_ppo import decode_model_response_spans
     from .bapo import answer_from_spans
-    width = batch.batch['responses'].shape[-1]
-    mask = batch.batch['attention_mask'][row, -width:].bool()
-    if 'info_mask' in batch.batch:
-        mask = mask & batch.batch['info_mask'][row, -width:].bool()
-    spans = decode_model_response_spans(tokenizer, batch.batch['responses'][row], mask)
+    from .reward_view import reward_response_view
+    responses, attention, model_mask = reward_response_view(batch.batch)
+    mask = attention[row].bool() & model_mask[row].bool()
+    spans = decode_model_response_spans(tokenizer, responses[row], mask)
     return answer_from_spans(spans)
 
 

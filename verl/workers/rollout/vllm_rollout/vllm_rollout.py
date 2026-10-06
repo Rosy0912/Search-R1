@@ -171,6 +171,9 @@ class vLLMRollout(BaseRollout):
             }
 
         # users can customize different sampling_params at different run
+        raw_identity = self.config.get('actor_token_identity', 'legacy_canonical') == 'sampled_action_prefix_v1'
+        if raw_identity:
+            self.inference_engine.last_completion_token_lengths = None
         with self.update_sampling_params(**kwargs):
             output = self.inference_engine.generate(
                 prompts=None,  # because we have already convert it to prompt token id
@@ -182,6 +185,19 @@ class vLLMRollout(BaseRollout):
         # if n = 1: (bs, response_length) ; if n > 1: (bs * n, response_length)
         response = output[0].to(idx.device)
         log_probs = output[1].to(idx.device)
+        sampled_lengths = None
+        if raw_identity:
+            sampled_lengths = self.inference_engine.last_completion_token_lengths
+            invalid_lengths = (not torch.is_tensor(sampled_lengths) or sampled_lengths.dtype != torch.long
+                    or sampled_lengths.shape != (response.shape[0],)
+                    or bool((sampled_lengths <= 0).any())
+                    or bool((sampled_lengths > response.shape[1]).any()))
+            rejection = torch.tensor(int(invalid_lengths), device=response.device, dtype=torch.int32)
+            if torch.distributed.is_initialized():
+                torch.distributed.all_reduce(rejection, op=torch.distributed.ReduceOp.MAX)
+            if bool(rejection):
+                raise ValueError('Actual vLLM completion token lengths missing or invalid')
+            sampled_lengths = sampled_lengths.to(idx.device)
 
         if response.shape[1] < self.config.response_length:
             response = pad_sequence_to_length(response, self.config.response_length, self.pad_token_id)
@@ -204,7 +220,12 @@ class vLLMRollout(BaseRollout):
         # position_ids:   [0,0,0,0,0,1,2,3, | 4,5,6,7,8,9,10,11]
         response_position_ids = position_ids[:, -1:] + delta_position_id
         position_ids = torch.cat([position_ids, response_position_ids], dim=-1)
-        response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
+        if raw_identity:
+            response_attention_mask = (
+                torch.arange(response_length, device=response.device)[None, :] < sampled_lengths[:, None]
+            ).to(attention_mask.dtype)
+        else:
+            response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
         attention_mask = torch.cat((attention_mask, response_attention_mask), dim=-1)
 
         # all the tp ranks should contain the same data here. data in all ranks are valid
@@ -218,9 +239,15 @@ class vLLMRollout(BaseRollout):
                 'position_ids': position_ids
             },
             batch_size=batch_size)
+        if raw_identity:
+            batch['response_sampled_lengths'] = sampled_lengths
+            batch['response_sample_mask'] = response_attention_mask.long()
 
         # free vllm cache engine
         if self.config.free_cache_engine:
             self.inference_engine.free_cache_engine()
 
-        return DataProto(batch=batch)
+        result = DataProto(batch=batch)
+        if raw_identity:
+            result.meta_info['generation_actor_token_identity'] = 'sampled_completion_v1'
+        return result

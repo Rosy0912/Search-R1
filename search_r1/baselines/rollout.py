@@ -36,6 +36,10 @@ class State:
     response: list = field(default_factory=list)
     model_mask: list = field(default_factory=list)
     steps: list = field(default_factory=list)
+    raw_actor_response: list = field(default_factory=list)
+    raw_mask: list = field(default_factory=list)
+    raw_steps: list = field(default_factory=list)
+    action_prefix_records: list = field(default_factory=list)
     anchors: list = field(default_factory=list)
     records: list = field(default_factory=list)
     observation: list = field(default_factory=list)
@@ -65,7 +69,7 @@ def padded(rows, pad, left=False):
 
 
 class SearchRollout:
-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report'):
+    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', method=None):
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -75,6 +79,18 @@ class SearchRollout:
         if context_alignment not in ('report', 'error'):
             raise ValueError('context_alignment must be report or error')
         self.context_alignment = context_alignment
+        from .action_identity import IDENTITY_MODE, LEGACY_MODE
+        self.actor_token_identity = getattr(self.config, 'actor_token_identity', LEGACY_MODE)
+        if self.actor_token_identity not in (LEGACY_MODE, IDENTITY_MODE):
+            raise ValueError('Unknown actor token identity mode')
+        self.sampled_action_identity = self.actor_token_identity == IDENTITY_MODE
+        if self.sampled_action_identity:
+            if (method != 'gigpo' or anchor_mode != 'observation' or ranker is not None
+                    or self.config.max_turns != 4 or self.config.force_final_answer
+                    or self.config.max_response_length != 500 or self.config.max_obs_length != 500
+                    or self.config.max_prompt_length != 4096 or self.config.max_start_length != 2048
+                    or self.config.num_gpus != 8 or self.config.no_think_rl):
+                raise ValueError('Sampled action identity requires the reviewed GiGPO observation/4-turn budget')
         self.ranker = ranker
         self.rng = random.Random(seed)
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
@@ -117,9 +133,26 @@ class SearchRollout:
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
-        self.cost['generated_tokens'] += int((generated != pad).sum())
+        if not self.sampled_action_identity:
+            self.cost['generated_tokens'] += int((generated != pad).sum())
         raw = generated[:len(states)]
         tokens, text = self.manager._postprocess_responses(raw)
+        action_identities = None
+        if self.sampled_action_identity:
+            from .action_identity import retain_sampled_action, sampled_ids_with_evidence
+            if ('response_sampled_lengths' not in output.batch
+                    or 'response_sample_mask' not in output.batch):
+                raise ValueError('Raw action mode requires original engine sampled lengths and masks')
+            lengths, sample_masks = output.batch['response_sampled_lengths'], output.batch['response_sample_mask']
+            if (lengths.shape != (len(output),) or lengths.dtype != torch.int64
+                    or sample_masks.shape != generated.shape or sample_masks.dtype not in (torch.bool, torch.int64)):
+                raise ValueError('Invalid engine sampled length/mask tensor identity')
+            for index in range(len(output)):
+                sampled_ids_with_evidence(generated[index].tolist(), int(lengths[index]), sample_masks[index].tolist())
+            self.cost['generated_tokens'] += int(lengths.sum())
+            action_identities = [retain_sampled_action(self.tokenizer, raw[i].tolist(), int(lengths[i]),
+                                                       sample_masks[i].tolist(), text[i])
+                                 for i in range(len(states))]
         # A batch can contain normal and final-only steps. Never search for the latter.
         normal = [s.turns < self.config.max_turns for s in states]
         observations, dones, valid, searches = [''] * len(states), [0] * len(states), [0] * len(states), [0] * len(states)
@@ -149,6 +182,28 @@ class SearchRollout:
             key_tokens = s.rolling if self.anchor_mode == 'context' else s.observation
             anchor = hashlib.sha256(np.asarray(key_tokens, dtype=np.int64).tobytes()).hexdigest()
             step = len(s.anchors)
+            if self.sampled_action_identity:
+                from .action_identity import MAX_ACTIONS, MAX_PREFIX
+                identity = action_identities[i]
+                if step >= MAX_ACTIONS or len(s.rolling) > MAX_PREFIX or not s.rolling:
+                    raise ValueError('Actual action/prefix exceeds the fixed sampled-action layout')
+                raw_action = list(identity.actor_ids)
+                offset = len(s.raw_actor_response)
+                if offset + len(raw_action) + len(obs) > self.config.max_prompt_length:
+                    raise ValueError('Raw actor timeline would truncate an action or observation')
+                record = identity.metadata()
+                record.update(step_id=step, generation_prefix=list(s.rolling),
+                              prefix_position_ids=list(range(len(s.rolling))),
+                              action_position_ids=list(range(len(s.rolling), len(s.rolling) + len(raw_action))),
+                              prefix_attention_mask=[1] * len(s.rolling), action_attention_mask=[1] * len(raw_action),
+                              actor_action_tokens=raw_action, actor_output_offset=offset,
+                              canonical_text=text[i], canonical_action_tokens=list(action),
+                              canonical_output_offset=len(s.response),
+                              position_evidence_scope='DERIVED_NATURAL_POSITION_EXPECTATION')
+                s.action_prefix_records.append(record)
+                s.raw_actor_response.extend(raw_action + obs)
+                s.raw_mask.extend([1] * len(raw_action) + [0] * len(obs))
+                s.raw_steps.extend([step] * len(raw_action) + [-1] * len(obs))
             s.anchors.append(anchor)
             s.records.append(dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
                                   scoring_context_matches_generation=matches[i]))
@@ -205,9 +260,74 @@ class SearchRollout:
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],
                                      valid_search_stats=[s.valid_searches for s in states]))
+        if self.sampled_action_identity:
+            return self._compose_sampled_actions(states, result), np.asarray([s.source for s in states], dtype=np.int64)
         return result, np.asarray([s.source for s in states], dtype=np.int64)
 
+    def _compose_sampled_actions(self, states, canonical):
+        """Raw loss targets and independent exact canonical prefixes per action.
+
+        input_ids/position_ids are the row layout only: workers must dispatch
+        actor_action_* to score each action at its own sampled canonical prefix.
+        They cannot use the raw row concatenation as a replacement prefix.
+        """
+        from verl import DataProto
+        from .action_identity import IDENTITY_MODE, MAX_ACTIONS, MAX_PREFIX, MAX_ACTION
+        pad = self.tokenizer.pad_token_id
+        count = len(states)
+        prompts = canonical.batch['prompts']
+        response = padded([s.raw_actor_response for s in states], pad)
+        mask = padded([s.raw_mask for s in states], 0)
+        steps = padded([s.raw_steps for s in states], -1)
+        lengths = torch.tensor([len(s.raw_actor_response) for s in states], dtype=torch.long)
+        response_attention = (torch.arange(response.shape[1])[None, :] < lengths[:, None]).long()
+        prompt_attention = torch.zeros_like(prompts)
+        for index, state in enumerate(states):
+            prompt_attention[index, prompts.shape[1] - len(state.prompt):] = 1
+        input_ids = torch.cat((prompts, response), 1)
+        attention = torch.cat((prompt_attention, response_attention), 1)
+        prefix_ids = torch.full((count, MAX_ACTIONS, MAX_PREFIX), pad, dtype=torch.long)
+        action_ids = torch.full((count, MAX_ACTIONS, MAX_ACTION), pad, dtype=torch.long)
+        action_lengths = torch.zeros((count, MAX_ACTIONS), dtype=torch.long)
+        prefix_lengths = torch.zeros_like(action_lengths)
+        offsets = torch.full_like(action_lengths, -1)
+        for index, state in enumerate(states):
+            if len(state.action_prefix_records) != len(state.anchors):
+                raise ValueError('Missing complete sampled action provenance')
+            for step, record in enumerate(state.action_prefix_records):
+                prefix, action = record['generation_prefix'], record['actor_action_tokens']
+                offset = record['actor_output_offset']
+                if (record['step_id'] != step or not 0 < len(prefix) <= MAX_PREFIX or len(action) > MAX_ACTION
+                        or not 0 <= offset <= len(state.raw_actor_response) - len(action)
+                        or state.raw_actor_response[offset:offset + len(action)] != action
+                        or state.raw_steps[offset:offset + len(action)] != [step] * len(action)
+                        or state.raw_mask[offset:offset + len(action)] != [1] * len(action)):
+                    raise ValueError('Sampled action output mapping changed')
+                prefix_ids[index, step, :len(prefix)] = torch.tensor(prefix, dtype=torch.long)
+                action_ids[index, step, :len(action)] = torch.tensor(action, dtype=torch.long)
+                action_lengths[index, step], prefix_lengths[index, step], offsets[index, step] = len(action), len(prefix), offset
+        tensors = dict(prompts=prompts, responses=response,
+                       responses_with_info_mask=torch.where(mask.bool(), response, pad),
+                       input_ids=input_ids, attention_mask=attention, info_mask=torch.cat((prompt_attention, mask), 1),
+                       position_ids=self.manager.tensor_fn.create_position_ids(attention), step_ids=steps,
+                       actor_action_prefix_ids=prefix_ids, actor_action_tokens=action_ids,
+                       actor_action_lengths=action_lengths, actor_action_prefix_lengths=prefix_lengths,
+                       actor_action_output_offsets=offsets,
+                       actor_action_count=torch.tensor([len(s.action_prefix_records) for s in states], dtype=torch.long),
+                       canonical_reward_responses=canonical.batch['responses'],
+                       canonical_reward_attention_mask=canonical.batch['attention_mask'],
+                       canonical_reward_info_mask=canonical.batch['info_mask'],
+                       canonical_reward_step_ids=canonical.batch['step_ids'])
+        non_tensors = dict(canonical.non_tensor_batch)
+        non_tensors['action_prefix_records'] = object_array([s.action_prefix_records for s in states])
+        result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors,
+                                     meta_info=copy.deepcopy(canonical.meta_info))
+        result.meta_info['actor_token_identity'] = IDENTITY_MODE
+        return result
+
     def run(self, gen_batch, tree=None):
+        if self.sampled_action_identity and tree is not None:
+            raise ValueError('Sampled action identity is restricted to GiGPO without tree expansion')
         self.cost = dict.fromkeys(self.cost, 0)
         states = self.initial_states(gen_batch)
         self.tree_candidate_counts = []

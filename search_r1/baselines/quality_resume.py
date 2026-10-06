@@ -92,6 +92,11 @@ def migration_diff(saved, current):
         elif key == 'actor_rollout_ref.actor.joint_loss_scaling':
             if left is not missing or right is not True:
                 raise ValueError('Unexpected numeric representation migration')
+        elif key in {'actor_token_identity', 'actor_rollout_ref.actor.actor_token_identity',
+                     'actor_rollout_ref.ref.actor_token_identity', 'actor_rollout_ref.rollout.actor_token_identity'}:
+            if (left is not missing or right != 'sampled_action_prefix_v1'
+                    or new.get('baselines.method') != 'gigpo'):
+                raise ValueError('Only the explicit GiGPO sampled-action probability identity repair is allowed')
         elif key.startswith('actor_rollout_ref.actor.policy_safety.'):
             if left is not missing or new.get('baselines.method') != 'gigpo':
                 raise ValueError('Only newly authorized GiGPO policy protections may be added')
@@ -114,6 +119,11 @@ def migration_diff(saved, current):
             or new.get('trainer.quality_resume.enabled') is not True
             or new.get('trainer.trajectory_logging') is not True):
         raise ValueError('Missing ten-optimizer/trajectory controls')
+    raw_controls = ('actor_token_identity', 'actor_rollout_ref.actor.actor_token_identity',
+                    'actor_rollout_ref.ref.actor_token_identity', 'actor_rollout_ref.rollout.actor_token_identity')
+    if (any(new.get(key) == 'sampled_action_prefix_v1' for key in raw_controls)
+            and not all(new.get(key) == 'sampled_action_prefix_v1' for key in raw_controls)):
+        raise ValueError('Sampled-action probability identity must agree across rollout/actor/reference')
     if any(key.startswith('actor_rollout_ref.actor.policy_safety.') for key in changes):
         from .policy_safety import validate_config
         validate_config(current['actor_rollout_ref']['actor']['policy_safety'], require_thresholds=False)

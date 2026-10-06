@@ -10,11 +10,10 @@ def batch_answer_metrics(data, tokenizer):
     output = []
     for i in range(len(data)):
         item = data[i]
-        width = item.batch['responses'].shape[-1]
-        mask = item.batch['attention_mask'][-width:].bool()
-        if 'info_mask' in item.batch:
-            mask = mask & item.batch['info_mask'][-width:].bool()
-        spans = decode_model_response_spans(tokenizer, item.batch['responses'], mask)
+        from .reward_view import reward_response_view
+        responses, attention, model_mask = reward_response_view(item.batch)
+        mask = attention.bool() & model_mask.bool()
+        spans = decode_model_response_spans(tokenizer, responses, mask)
         answer = answer_from_spans(spans)
         targets = item.non_tensor_batch['reward_model']['ground_truth']['target']
         if isinstance(targets, str):

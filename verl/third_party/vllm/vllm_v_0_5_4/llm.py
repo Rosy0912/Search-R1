@@ -214,10 +214,12 @@ class LLM(LLM):
     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
         output_token_ids = []
         logprobs = []
+        sampled_lengths = []
         for request_output in request_outputs:  # List[RequestOutput]
             outputs = request_output.outputs
             for output in outputs:  # List[CompletionOutput], usually len == 1
                 output_token_ids.append(torch.tensor(output.token_ids))
+                sampled_lengths.append(len(output.token_ids))
                 # TODO(shengguangming): can be optimzied by rewrite the Sampler._get_logprobs() logits
                 logprobs_dicts = output.logprobs
                 if logprobs_dicts is not None:
@@ -230,6 +232,9 @@ class LLM(LLM):
         output_token_ids = pad_sequence(output_token_ids, batch_first=True, padding_value=pad_token_id)
         if len(logprobs) > 0:
             logprobs = pad_sequence(logprobs, batch_first=True, padding_value=pad_token_id)
+        # CompletionOutput lengths distinguish real sampled special tokens from
+        # transport padding without changing the engine's return API or samples.
+        self.last_completion_token_lengths = torch.tensor(sampled_lengths, dtype=torch.long)
         return output_token_ids, logprobs
 
     def sync_model_weights(self, actor_weights: Dict[str, torch.Tensor], load_format: str) -> None:

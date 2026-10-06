@@ -16,6 +16,8 @@ Single Process Actor
 """
 
 import itertools
+import math
+import numbers
 from typing import Iterable, Tuple
 
 import torch
@@ -33,6 +35,9 @@ import verl.utils.torch_functional as verl_F
 
 
 __all__ = ['DataParallelPPOActor']
+ACTION_PREFIX_KEYS = ('actor_action_prefix_ids', 'actor_action_tokens',
+                      'actor_action_lengths', 'actor_action_prefix_lengths',
+                      'actor_action_output_offsets', 'actor_action_count')
 
 
 class DataParallelPPOActor(BasePPOActor):
@@ -55,6 +60,73 @@ class DataParallelPPOActor(BasePPOActor):
         self.compute_entropy_from_logits = torch.compile(verl_F.entropy_from_logits, dynamic=True)
 
     def _forward_micro_batch(self, micro_batch, temperature) -> Tuple[torch.Tensor, torch.Tensor]:
+        if not (getattr(self, '_action_prefix_batch_active', False)
+                or any(key in micro_batch for key in ACTION_PREFIX_KEYS)):
+            return self._forward_flat_micro_batch(micro_batch, temperature)
+        from search_r1.baselines.action_prefix_forward import (
+            prepare_action_prefix_micro, forward_prepared_action_prefix)
+        prepared = None
+        error = None
+        try:
+            if (isinstance(temperature, bool) or not isinstance(temperature, numbers.Real)
+                    or not math.isfinite(temperature) or temperature <= 0):
+                raise ValueError('Invalid probability temperature')
+            pad_id, eos_id = self._action_prefix_token_ids
+            prepared = prepare_action_prefix_micro(micro_batch, pad_id, eos_id)
+        except Exception as exc:
+            error = repr(exc)
+        context = getattr(self, '_action_prefix_forward_context', {})
+        device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
+        self._safety_sync_invalid(error is not None, device,
+            dict(outer_step=context.get('outer_step'), mini_index=context.get('mini_index', -1)),
+            context.get('phase', 'action_prefix') + '_schema', context.get('writes', 0),
+            tensors=micro_batch, details=error)
+        result = None
+        error = None
+        try:
+            result = forward_prepared_action_prefix(prepared, temperature, self._forward_flat_micro_batch)
+        except Exception as exc:
+            error = repr(exc)
+        # Structural post-forward failures meet a common boundary before any
+        # rank enters another model forward, monitor reduction, or backward.
+        self._safety_sync_invalid(error is not None, device,
+            dict(outer_step=context.get('outer_step'), mini_index=context.get('mini_index', -1)),
+            context.get('phase', 'action_prefix') + '_outputs', context.get('writes', 0),
+            tensors=micro_batch, details=error)
+        return result
+
+    def _action_prefix_batch_keys(self, data):
+        generation_probe = (data.meta_info.get('generation_actor_token_identity') == 'sampled_completion_v1'
+                            and 'step_ids' not in data.batch and 'info_mask' not in data.batch)
+        requested = (data.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1'
+                     or any(key in data.batch for key in ACTION_PREFIX_KEYS)
+                     or (self.config.get('actor_token_identity', 'legacy_canonical') == 'sampled_action_prefix_v1'
+                         and not generation_probe))
+        self._action_prefix_batch_active = requested
+        if not requested:
+            return []
+        error = None
+        try:
+            if (data.meta_info.get('actor_token_identity') != 'sampled_action_prefix_v1'
+                    or not all(key in data.batch for key in ACTION_PREFIX_KEYS)):
+                raise ValueError('Sampled-action training provenance missing')
+            ids = (data.meta_info.get('pad_token_id'), data.meta_info.get('eos_token_id'))
+            if any(type(value) is not int or value < 0 for value in ids):
+                raise ValueError('Actual tokenizer PAD/EOS identity missing')
+            self._action_prefix_token_ids = ids
+            if data.meta_info.get('use_dynamic_bsz', False):
+                raise ValueError('Sampled-action prefixes require fixed trajectory micro-batches')
+        except Exception as exc:
+            error = repr(exc)
+        context = getattr(self, '_action_prefix_forward_context', {})
+        device = self.actor_module.compute_device if isinstance(self.actor_module, FSDP) else next(self.actor_module.parameters()).device
+        self._safety_sync_invalid(error is not None, device,
+            dict(outer_step=context.get('outer_step'), mini_index=context.get('mini_index', -1)),
+            context.get('phase', 'action_prefix') + '_batch_schema', context.get('writes', 0),
+            tensors=data.batch, details=error)
+        return list(ACTION_PREFIX_KEYS)
+
+    def _forward_flat_micro_batch(self, micro_batch, temperature) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Returns: 
             entropy: # (bs, response_len)
@@ -216,6 +288,8 @@ class DataParallelPPOActor(BasePPOActor):
                 device, identity, phase+'_probe_entry', writes, monitor, details=entry_error)
             with torch.no_grad():
                 for micro_index, micro in enumerate(monitor.split(self.config.ppo_micro_batch_size)):
+                    self._action_prefix_forward_context = dict(identity, writes=writes,
+                        phase=phase + f'_action_prefix_micro{micro_index}')
                     schema_error = None
                     try:
                         expected = micro['old_log_probs'].shape
@@ -314,8 +388,15 @@ class DataParallelPPOActor(BasePPOActor):
         micro_batch_size = data.meta_info['micro_batch_size']
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
         use_dynamic_bsz = data.meta_info['use_dynamic_bsz']
+        self._action_prefix_forward_context = dict(outer_step=data.meta_info.get('baseline_outer_step'),
+            mini_index=-1, writes=0, phase='log_prob_action_prefix')
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids']
+        select_keys += self._action_prefix_batch_keys(data)
+        if any(key in data.batch for key in ACTION_PREFIX_KEYS):
+            for key in ('loss_mask', 'info_mask', 'step_ids'):
+                if key in data.batch:
+                    select_keys.append(key)
         batch = data.select(batch_keys=select_keys).batch
 
         if use_dynamic_bsz:
@@ -344,6 +425,8 @@ class DataParallelPPOActor(BasePPOActor):
         # make sure we are in training mode
         self.actor_module.train()
         outer_identity = dict(data.meta_info)
+        self._action_prefix_forward_context = dict(outer_step=outer_identity.get('baseline_outer_step'),
+            mini_index=-1, writes=0, phase='update_action_prefix')
         safety = self.config.get('policy_safety', {})
         safety_enabled = safety.get('enabled', False)
         if safety_enabled:
@@ -367,6 +450,7 @@ class DataParallelPPOActor(BasePPOActor):
             temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
             select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
+            select_keys += self._action_prefix_batch_keys(data)
             if self.config.state_masking:
                 select_keys.append('loss_mask')
             if self.config.use_kl_loss:
@@ -453,6 +537,8 @@ class DataParallelPPOActor(BasePPOActor):
             if safety_enabled:
                 self._policy_safety_guard(monitor, temperature, safety,
                     dict(outer_step=outer_identity.get('baseline_outer_step'), mini_index=batch_idx), 'before', updates)
+            self._action_prefix_forward_context = dict(outer_step=outer_identity.get('baseline_outer_step'),
+                mini_index=batch_idx, writes=updates, phase='gradient_action_prefix')
             self.actor_optimizer.zero_grad()
             mini_metrics = {}
 

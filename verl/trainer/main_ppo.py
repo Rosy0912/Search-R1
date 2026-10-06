@@ -68,23 +68,21 @@ class RewardManager():
 
         for i in range(len(data)):
             data_item = data[i]  # DataProtoItem
+            from search_r1.baselines.reward_view import reward_response_view
 
             prompt_ids = data_item.batch['prompts']
 
             prompt_length = prompt_ids.shape[-1]
 
-            response_ids = data_item.batch['responses']
-            valid_response_length = int(data_item.batch['attention_mask'][prompt_length:].sum().item())
+            response_ids, response_attention, response_model_mask = reward_response_view(data_item.batch)
+            valid_response_length = int(response_attention.sum().item())
             if valid_response_length == 0:
                 continue
             valid_response_ids = response_ids[:valid_response_length]
 
             # The prompt example and external observations are not model actions.
             # Keep generated spans separate, so tags cannot straddle observations.
-            if 'info_mask' in data_item.batch:
-                model_mask = data_item.batch['info_mask'][prompt_length:prompt_length + valid_response_length]
-            else:
-                model_mask = torch.ones_like(valid_response_ids, dtype=torch.bool)
+            model_mask = response_model_mask[:valid_response_length]
             model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
 
             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
@@ -95,7 +93,13 @@ class RewardManager():
 
             score = compute_score_fn(model_spans=model_spans, ground_truth=ground_truth, format_score=self.format_score)
 
-            reward_tensor[i, valid_response_length - 1] = score
+            raw_response_width = data_item.batch['responses'].shape[-1]
+            raw_attention = (data_item.batch['attention_mask'][-raw_response_width:] if raw_response_width
+                             else data_item.batch['attention_mask'][:0])
+            raw_valid_length = int(raw_attention.sum().item())
+            if raw_valid_length == 0:
+                raise ValueError('Canonical reward has no corresponding actor trajectory')
+            reward_tensor[i, raw_valid_length - 1] = score
             # all_scores.append(score)
 
             if data_source not in already_print_data_sources:

@@ -172,8 +172,9 @@ class Controller:
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
 
     def generate(self, manager, gen_batch, qa_batch, metrics):
+        manager.config.actor_token_identity = self.trainer.config.get('actor_token_identity', 'legacy_canonical')
         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
-                               self.config.context_alignment)
+                               self.config.context_alignment, method=self.method)
         if self.ranker:
             self.ranker.question_uids = qa_batch.non_tensor_batch['index'].tolist()
             self.ranker.validation = False
@@ -315,6 +316,10 @@ class Controller:
             state['loss_reduction'] = self.config.loss_reduction
             state['groups'] = 'stateless_per_rollout_with_step_ids_and_advantage_broadcast'
             state['resume_supported'] = True
+            if self.trainer.config.get('actor_token_identity') == 'sampled_action_prefix_v1':
+                state['actor_token_identity'] = 'sampled_action_prefix_v1'
+                state['reward_token_identity'] = 'legacy_canonical'
+                state['action_probability_context'] = 'original_sampler_prefix_each_action'
         temporary = os.path.join(directory, 'state.json.tmp')
         with open(temporary, 'w') as handle:
             json.dump(state, handle, indent=2, allow_nan=False)
