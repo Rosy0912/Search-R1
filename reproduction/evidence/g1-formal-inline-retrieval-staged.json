@@ -1,0 +1,39 @@
+{
+  "actual_formal_write_evidence_observed": false,
+  "checked_unix": 1791295160.0924292,
+  "completed_unix": 1791294979.8949332,
+  "file_sha256": {
+    "e5_Flat.index": {
+      "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+      "size": 64559075373
+    },
+    "wiki-18.jsonl": {
+      "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+      "size": 14393579520
+    }
+  },
+  "final200_accepted": false,
+  "formal_completeouter_at_observation": 0,
+  "formal_five_accepted": false,
+  "input_bytes": 78952654893,
+  "job_id": "3309",
+  "role": "actual_same_cluster_original_retrieval_staged",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "schema_version": 1,
+  "scope": "Actual original retrieval bytes/hash transfer and only new tiny source service cleanup; not trainer/update/GPU health or accuracy acceptance.",
+  "source_cleanup_checked_unix": 1791295218.039262,
+  "source_cleanup_identity": {
+    "pid": 1308589,
+    "sid": 1308589,
+    "source_sha256": "fe56aec5c9c5cd46b4ff9d6edf79b3637631430a590a01f2bc53d9feac6224fd",
+    "start_ticks": 1558311910,
+    "uid": 0
+  },
+  "source_cleanup_proof_sha256": "a8e600009315ed4c6a520cf215b3149c4e97e69419bf5f3152b1b95af1f438a1",
+  "source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+  "source_hashes_match": true,
+  "source_node": "h100-9",
+  "staging_accepted": true,
+  "target_node": "h100-8",
+  "tiny_source_service_cleaned": true
+}
