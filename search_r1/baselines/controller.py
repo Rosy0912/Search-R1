@@ -64,11 +64,16 @@ def validate_behavior_mu_config(config):
             or option(preservation, 'protocol') != 'tree_sampled_prefix_legacy_semantics_v1'
             or option(rollout, 'tree_raw_emission', False) is not True):
         raise ValueError('Behavior-mu requires explicit guarded Tree raw-token/native-emission protocol')
+    fresh = option(config.baselines, 'training_protocol') == 'tree_fresh200_five_leaf_v1'
+    batch, mini = (512, 128) if fresh else (640, 384)
+    if fresh:
+        from .tree_fresh200 import validate_fresh200_config
+        validate_fresh200_config(config)
     if (config.max_turns != 4 or config.force_final_answer is not False
             or (config.data.max_start_length, config.data.max_prompt_length,
                 config.data.max_response_length, config.data.max_obs_length) != (2048, 4096, 500, 500)
             or (tree.roots, tree.leaves) != (2, 3)
-            or config.data.train_batch_size != 640 or actor.ppo_mini_batch_size != 384
+            or config.data.train_batch_size != batch or actor.ppo_mini_batch_size != mini
             or actor.ppo_micro_batch_size != 16 or actor.ppo_epochs != 1
             or actor.optim.lr != 1e-6
             or (config.trainer.n_gpus_per_node, config.trainer.nnodes) != (8, 1)):
@@ -127,6 +132,8 @@ def validate_config(config):
             raise ValueError('Distillation chunk_size must be positive')
     if method == 'tree_grpo':
         tree = config.baselines.tree
+        from .tree_fresh200 import leaf_quotas
+        quotas = leaf_quotas(tree)
         preservation=option(tree,'token_preservation', {})
         enabled=option(preservation,'enabled', False)
         if enabled:
@@ -141,7 +148,7 @@ def validate_config(config):
             raise ValueError('Tree roots must equal rollout.n_agent')
         if min(tree.roots, tree.leaves, tree.expansions, tree.rounds) < 1:
             raise ValueError('Tree budgets must be positive')
-        if tree.leaves > 1 + tree.expansions * tree.rounds:
+        if max(quotas) > 1 + tree.expansions * tree.rounds:
             raise ValueError('Insufficient expansions for selected leaves')
     if config.actor_rollout_ref.rollout.get('tree_raw_emission', False) and not (
             method == 'tree_grpo' and option(option(config.baselines.tree,'token_preservation',{}),'enabled',False)):

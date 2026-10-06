@@ -837,6 +837,34 @@ class RayPPOTrainer(object):
 
         logger = self.logger
         self.global_steps = 0
+        from search_r1.baselines.tree_fresh200 import is_fresh200
+        fresh200 = self.config.get('baselines') is not None and is_fresh200(self.config)
+        if fresh200:
+            from search_r1.baselines.tree_fresh200 import (validate_fresh200_config, refuse_recovery_environment,
+                                                          validate_fresh_sampler)
+            from search_r1.baselines.training_state import atomic_save
+            validate_fresh200_config(self.config)
+            refuse_recovery_environment()
+            validate_fresh_sampler(self.checkpoint_sampler)
+            if getattr(self, 'actual_outer_updates', 0) != 0:
+                raise RuntimeError('Fresh200 driver is not in a new initialization state')
+            receipts = self.actor_rollout_wg.inspect_fresh_initialization(self.config.actor_rollout_ref.model.path)
+            if (len(receipts) != 8 or {r['rank'] for r in receipts} != set(range(8))
+                    or any(r['optimizer_state_entries'] != 0 or r['scheduler_step'] != 0 for r in receipts)):
+                raise RuntimeError('Fresh200 actual worker initialization proof incomplete')
+            self.actual_outer_updates = 0
+            self.fresh_initialization_provenance = dict(status='FRESH_OFFICIAL_INITIAL_STATE_OBSERVED',
+                calibration_profile='fresh_base_zero_v1', training_protocol='tree_fresh200_five_leaf_v1',
+                initialized_global_steps=self.global_steps, driver_completed_outer=self.actual_outer_updates,
+                parent_completed_step=self.actual_outer_updates, parent_cursor=self.checkpoint_sampler.cursor,
+                checkpoint_loaded=False, workers=receipts,
+                code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
+                data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
+                model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
+                job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+            atomic_save(self.fresh_initialization_provenance,
+                os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'fresh-initialization.json'), json_format=True)
         if os.environ.get('TREE_RECOVERY_MANIFEST'):
             from search_r1.baselines.training_state import recovery_manifest,restore_recovery_driver,atomic_save
             manifest=recovery_manifest()
@@ -1065,6 +1093,9 @@ class RayPPOTrainer(object):
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo', 'tree_grpo'):
                         if metrics.get('actor/optimizer_steps', 0) <= 0:
                             raise RuntimeError('Outer iteration performed no actor update; budget cannot advance')
+                        if fresh200:
+                            from search_r1.baselines.tree_fresh200 import validate_completed_outer
+                            validate_completed_outer(metrics, self.global_steps)
                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
                         if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:

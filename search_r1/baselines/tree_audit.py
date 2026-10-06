@@ -55,17 +55,21 @@ class TreeAudit:
 
     def finish(self, states, output, sources, roots, tree, pad):
         start = time.perf_counter(), time.process_time()
-        self.require(tree.leaves == 3, 'three_leaves_config')
+        from .tree_fresh200 import leaf_quotas
+        quotas = leaf_quotas(tree)
         self.require(len(roots) == len(self.question_hashes), 'question_mapping_length')
         root_identity = {i: s.tree for i, s in enumerate(roots)}
         counts = Counter(s.source for s in states)
-        self.require(counts == Counter({i: 3 for i in root_identity}), 'three_leaves_per_source')
+        self.require(counts == Counter({i: quotas[i % tree.roots] for i in root_identity}), 'configured_leaves_per_source')
         self.require(len({s.trajectory for s in states}) == len(states), 'unique_leaf_trajectories')
         self.require(len(set(root_identity.values())) == len(roots), 'unique_root_trees')
         groups = {}
         for i, question in enumerate(self.question_hashes):
             groups.setdefault(question, []).append(i)
-        self.require(all(len(v) == 2 for v in groups.values()), 'two_roots_per_question')
+        self.require(all(len(v) == tree.roots for v in groups.values()), 'configured_roots_per_question')
+        self.report.update(root_leaf_quotas=list(quotas), leaves_per_question=sum(quotas),
+                           objective_weighting='Original equal leaf mass; each effective leaf token has 1/T weight',
+                           relative_root_masses=[q / sum(quotas) for q in quotas])
         self.require(sources.tolist() == [s.source for s in states], 'compose_sources')
         width = output.batch['responses'].shape[1]
         self.require(output.batch['input_ids'].shape == output.batch['attention_mask'].shape == output.batch['info_mask'].shape, 'compose_input_shapes')
@@ -96,6 +100,8 @@ class TreeAudit:
                          output.non_tensor_batch['trajectory_uid'][i] == state.trajectory, 'compose_uid')
             self.report['leaves'].append(dict(source=state.source, question_hash=self.question_hashes[state.source],
                 tree_hash=fingerprint(state.tree), trajectory_hash=fingerprint(state.trajectory),
+                root_ordinal=state.source % tree.roots, root_leaf_quota=quotas[state.source % tree.roots],
+                relative_leaf_mass=1 / sum(quotas),
                 response_mask_hash=fingerprint(mask.tolist()), response_hash=fingerprint(response.tolist()),
                 step_ids_hash=fingerprint(steps.tolist()), attention_response_hash=fingerprint(output.batch['attention_mask'][i, -width:].tolist()),
                 response_length=n, action_count=sum(state.model_mask), observation_count=n-sum(state.model_mask),

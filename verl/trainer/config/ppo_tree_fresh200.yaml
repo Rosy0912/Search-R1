@@ -1,0 +1,59 @@
+defaults:
+  - ppo_tree_instruct300
+  - _self_
+
+actor_rollout_ref:
+  ref:
+    model_path: ${oc.env:TREE_INSTRUCT_MODEL}
+  actor:
+    fresh200_protocol: tree_fresh200_five_leaf_v1
+    use_kl_loss: true
+    kl_loss_coef: 0.0
+    kl_loss_type: low_var_kl
+    optim:
+      total_training_steps: 200
+    policy_safety:
+      enabled: true
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_rows_per_rank: 32
+      target_old_policy_kl: ???
+      negative_tail_limit: ???
+      initial_old_logprob_max_abs_delta: ???
+      sampling_probability_correction:
+        enabled: false
+        protocol: tree_behavior_mu_centered_ppo_v1
+        initial_actor_repeat_max_abs_delta: null
+  rollout:
+    tree_raw_emission: false
+    sampling_consistency:
+      enabled: false
+      enforce: true
+      max_abs_delta: ???
+
+algorithm:
+  kl_ctrl:
+    kl_coef: 0.0
+
+baselines:
+  training_protocol: tree_fresh200_five_leaf_v1
+  model_repository: Qwen/Qwen2.5-3B-Instruct
+  model_revision: aa8e72537993ba99e69dfaafa59ed015b17504d1
+  context_alignment: error
+  tree:
+    leaf_quotas: [3, 2]
+    token_preservation:
+      enabled: false
+      protocol: tree_sampled_prefix_legacy_semantics_v1
+      tokenizer_sha256: null
+    behavior_mu:
+      enabled: false
+      protocol: tree_behavior_mu_centered_ppo_v1
+
+trainer:
+  total_training_steps: 201
+  actual_update_limit: 200
+  save_freq: 50
+  acceptance_step: 5
+  test_freq: 5
+  experiment_name: tree-fresh200

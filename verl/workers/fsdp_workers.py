@@ -44,6 +44,153 @@ logger = logging.getLogger(__file__)
 logger.setLevel(os.getenv('VERL_PPO_LOGGING_LEVEL', 'WARN'))
 
 
+def inspect_fresh_worker_state(worker, expected_model_path):
+    """Observe empty Adam/scheduler before fresh fit; not a model-byte audit."""
+    from pathlib import Path
+    from search_r1.baselines.sampling_consistency import collective_device, sync_prepare, check_signature
+    from search_r1.baselines.tree_fresh200 import refuse_recovery_environment
+    device = collective_device()
+    error = None
+    try:
+        if not worker._is_actor or worker.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1':
+            raise ValueError('Fresh initialization inspection requires the explicit fresh200 actor profile')
+        refuse_recovery_environment()
+        configured = Path(worker.config.model.path)
+        expected = Path(expected_model_path)
+        if (not configured.is_absolute() or not expected.is_absolute()
+                or configured.resolve() != expected.resolve()):
+            raise ValueError('Fresh configured model path differs from the driver-bound official path')
+        if len(worker.actor_optimizer.state) != 0:
+            raise ValueError('Fresh Adam requires the entire state mapping to be empty, not merely step zero')
+        scheduler = worker.actor_lr_scheduler.last_epoch
+        if type(scheduler) is not int or scheduler != 0:
+            raise ValueError('Fresh scheduler must be at actual initial step zero')
+        record = dict(rank=torch.distributed.get_rank(), world_size=torch.distributed.get_world_size(),
+                      training_protocol='tree_fresh200_five_leaf_v1', calibration_profile='fresh_base_zero_v1',
+                      configured_model_path=str(configured.resolve()), expected_model_path=str(expected.resolve()),
+                      optimizer_state_entries=len(worker.actor_optimizer.state), optimizer_step_values=[],
+                      scheduler_step=scheduler, optimizer_committed=0, scheduler_advanced=False,
+                      checkpoint_recovery_environment_absent=True,
+                      complete_model_parameter_bytes_verified=False,
+                      scope='Actual empty worker Adam and scheduler; configured load path bound to driver official source, no complete model value comparison',
+                      code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                      config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
+                      data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
+                      model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
+                      job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+    except Exception as exc:
+        error = repr(exc)
+    sync_prepare(error, device)
+    check_signature([record['optimizer_state_entries'], record['scheduler_step']], device)
+    return record
+
+
+def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer, lr_before_outer):
+    """Admit each rank's actual 20 writes, advance once and retain direct evidence.
+
+    An incomplete outer retains its real optimizer writes. No rollback or mean
+    metric can turn partial progress into completed outer credit.
+    """
+    import math
+    from pathlib import Path
+    from search_r1.baselines.sampling_consistency import collective_device
+    from search_r1.baselines.training_state import atomic_save
+    device = collective_device()
+    dist = torch.distributed
+    rank = dist.get_rank() if dist.is_initialized() else 0
+    world = dist.get_world_size() if dist.is_initialized() else 1
+    def global_invalid(error):
+        flag = torch.tensor(int(error is not None), device=device)
+        if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
+        return bool(flag.item())
+    outer = data.meta_info.get('baseline_outer_step')
+    writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
+    error = None
+    before_lrs = None
+    try:
+        before_lrs = [float(value) for value in worker.actor_lr_scheduler.get_last_lr()]
+        if worker.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1':
+            raise ValueError('Fresh scheduler admission requires the explicit fresh200 profile')
+        if type(outer) is not int or outer < 1:
+            raise ValueError('Fresh outer must be a positive direct driver counter')
+        if type(writes) is not int or writes != 20 or type(skips) is not int or skips != 0:
+            raise ValueError('Fresh outer requires each rank to commit 20 optimizer calls and skip zero')
+        if (type(scheduler_before_outer) is not int or scheduler_before_outer != outer - 1
+                or worker.actor_lr_scheduler.last_epoch != scheduler_before_outer):
+            raise ValueError('Fresh actual scheduler-before must equal observed outer minus one')
+        if (not before_lrs or not all(math.isfinite(value) and value >= 0 for value in before_lrs)
+                or not math.isfinite(float(lr_before_outer)) or before_lrs[0] != lr_before_outer):
+            raise ValueError('Fresh actual learning rate changed during actor update or is invalid')
+    except Exception as exc:
+        error = repr(exc)
+    # A valid counter on each rank must also identify the same outer globally.
+    signature = torch.tensor(outer if type(outer) is int and 0 < outer < 2**53 else -1,
+                             dtype=torch.float64, device=device)
+    lo, hi = signature.clone(), signature.clone()
+    if dist.is_initialized():
+        dist.all_reduce(lo, op=dist.ReduceOp.MIN); dist.all_reduce(hi, op=dist.ReduceOp.MAX)
+    if not torch.equal(lo, hi): error = error or 'Fresh observed outer differs across ranks'
+    global_before_invalid = global_invalid(error)
+    step_error = None
+    scheduler_step_invoked = False
+    if not global_before_invalid:
+        scheduler_step_invoked = True
+        try:
+            worker.actor_lr_scheduler.step()
+        except Exception as exc:
+            step_error = repr(exc)
+    after = worker.actor_lr_scheduler.last_epoch
+    after_lrs = None
+    try:
+        after_lrs = [float(value) for value in worker.actor_lr_scheduler.get_last_lr()]
+        if not after_lrs or not all(math.isfinite(value) and value >= 0 for value in after_lrs):
+            raise ValueError('Fresh scheduler-after learning rate invalid')
+        if not global_before_invalid and (type(after) is not int or after != outer):
+            raise ValueError('Fresh scheduler-after must equal the completed observed outer')
+        if global_before_invalid and after != scheduler_before_outer:
+            raise ValueError('Refused fresh scheduler advanced before admission')
+    except Exception as exc:
+        step_error = step_error or repr(exc)
+    global_after_invalid = global_invalid(step_error)
+    record = dict(rank=rank, world_size=world, training_protocol='tree_fresh200_five_leaf_v1',
+                  observed_outer=outer if type(outer) is int else None,
+                  actual_optimizer_calls=writes if type(writes) is int else None,
+                  skipped_empty_minibatches=skips if type(skips) is int else None,
+                  direct_count_source='actor.update_policy local return before any rank reduction',
+                  scheduler_step_before=scheduler_before_outer, scheduler_step_after=after,
+                  scheduler_step_invoked=scheduler_step_invoked,
+                  learning_rates_before=before_lrs, learning_rates_after=after_lrs,
+                  first_outer_lr_zero=(outer == 1 and lr_before_outer == 0),
+                  zero_lr_optimizer_calls_are_real=True, parameter_delta_verified_by_this_record=False,
+                  all_rank_before_admitted=not global_before_invalid,
+                  all_rank_scheduler_after_valid=not global_after_invalid,
+                  local_before_error=error, local_scheduler_error=step_error,
+                  status=('REFUSED_BEFORE_SCHEDULER_WRITES_RETAINED' if global_before_invalid
+                          else 'SCHEDULER_AFTER_REFUSAL_WRITES_RETAINED' if global_after_invalid
+                          else 'DIRECT_RANK_COMPLETE_OUTER_OBSERVED'),
+                  code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                  config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+                  data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'),
+                  model_identity=os.environ.get('SEARCH_R1_MODEL_IDENTITY'),
+                  job_id=os.environ.get('SLURM_JOB_ID'), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                  scope='Direct rank optimizer/scheduler accounting, no probability or quality acceptance')
+    io_error = None
+    try:
+        if any(record[key] is None for key in ('code_commit','config_sha256','data_identity','model_identity','job_id','run_id')):
+            raise ValueError('Missing fresh rank source/run identity')
+        path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/f'outer-{outer:06d}-rank{rank:02d}.json'
+        record_sha = atomic_save(record, path, json_format=True)
+    except Exception as exc:
+        io_error = repr(exc)
+    global_io_invalid = global_invalid(io_error)
+    if global_before_invalid or global_after_invalid or global_io_invalid:
+        raise RuntimeError('Global fresh outer scheduler/accounting refusal; actual optimizer writes retained; local: '
+                           +str(error or step_error or io_error))
+    metrics['actor/fresh_direct_rank_outer_admitted'] = 1
+    return dict(path=str(path), sha256=record_sha, rank=rank, actual_optimizer_calls=writes,
+                scheduler_step_before=scheduler_before_outer, scheduler_step_after=after)
+
+
 class ActorRolloutRefWorker(Worker):
     """
     This worker can be instantiated as a standalone actor or a standalone rollout or a standalone reference policy
@@ -360,6 +507,10 @@ class ActorRolloutRefWorker(Worker):
 
         torch.cuda.empty_cache()
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def inspect_fresh_initialization(self, expected_model_path):
+        return inspect_fresh_worker_state(self, expected_model_path)
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def calibrate_policy_safety(self, data: DataProto):
         """Dedicated healthy-checkpoint observation; never calls update_policy."""
@@ -402,7 +553,9 @@ class ActorRolloutRefWorker(Worker):
             estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
             metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
 
-            if metrics.get('actor/optimizer_steps', 0) > 0:
+            if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+                fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
+            elif metrics.get('actor/optimizer_steps', 0) > 0:
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr

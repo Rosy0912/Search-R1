@@ -323,6 +323,11 @@ class SearchRollout:
         roots = states[:]
         snapshots = self.complete(states, gen_batch.meta_info)
         if tree is not None:
+            from .tree_fresh200 import leaf_quotas
+            quotas = leaf_quotas(tree)
+            exact_quota = getattr(tree, 'get', lambda k, d=None: d)('leaf_quotas') is not None
+            if len(states) % tree.roots:
+                raise ValueError('Tree root rows do not contain complete question groups')
             leaves_by_root = [[root] for root in states]
             counts_by_root = [[] for _ in states]
             # Select from each root's existing candidates before this round's
@@ -332,13 +337,16 @@ class SearchRollout:
                 children, owners = [], []
                 for root_index, nodes in enumerate(snapshots):
                     if nodes:
-                        for _ in range(tree.expansions):
+                        count = tree.expansions
+                        if exact_quota:
+                            count = min(count, quotas[root_index % tree.roots] - len(leaves_by_root[root_index]))
+                        for _ in range(count):
                             parent = self.rng.choice(nodes)
                             child = parent.branch()
                             if self.audit is not None:
                                 self.audit.branch(parent, child)
                             children.append(child)
-                        owners.extend([root_index] * tree.expansions)
+                        owners.extend([root_index] * count)
                 if not children:
                     break
                 new_nodes = self.complete(children, gen_batch.meta_info)
@@ -355,10 +363,13 @@ class SearchRollout:
             # Keep diagnostic order root-major as in the original engine.
             self.tree_candidate_counts = [count for counts in counts_by_root for count in counts]
             selected = []
-            for leaves in leaves_by_root:
-                if len(leaves) < tree.leaves:
+            for root_index, leaves in enumerate(leaves_by_root):
+                quota = quotas[root_index % tree.roots]
+                if len(leaves) < quota:
                     raise ValueError('Tree-GRPO has fewer sampled leaves than K; increase expansion budget')
-                selected.extend(self.rng.sample(leaves, tree.leaves))
+                if exact_quota and len(leaves) != quota:
+                    raise ValueError('Exact-quota Tree generated extra leaves')
+                selected.extend(self.rng.sample(leaves, quota))
             states = selected
         self.last_states = states
         output, sources = self.compose(states)
