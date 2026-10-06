@@ -1,0 +1,72 @@
+{
+  "role": "actual_common8_special_token_repair_native_start",
+  "runtime_source_commit": "f0445f4edf0dbea916ff63bedafe356d6d9ebcdb",
+  "runtime_source_count": 354,
+  "source_map_sha256": "0caacf25e7eae533760b52139ee86b009a11b0c3ce1fa191834f362b94c9da3e",
+  "actual_native_job": "3298",
+  "checked_unix": 1791274383.9051423,
+  "run_id": "0873410ce2f146499a581314184214f9",
+  "parent_run_id": "ce621248da274ca3bcf130261f8bcc9d",
+  "original_zero_observation_sha256": "d4c06e3f5146dbd453abfccac611d37f64bb8cef71ceb9957941f3981e1a6ece",
+  "launch_sha256": "4d28b864d5fc9eeafdff3a3a1cf14b55d8add6be4f9c5a657d6fa51bc7c2ae49",
+  "preregistration_sha256": "6e77dafe7677571c846ae47b609e61bba302132c5eac8b25875cace4349974da",
+  "method_sha256": "03d204397238e65552cd71d33a3ebde32281c95189d4c870753ebb1949ad6367",
+  "method_freeze_receipt_sha256": "1552375e30a6a5279a842b2d0cac1e33fe58f5e398fd42559f675873b403d4fd",
+  "prospective_identity_binding_complete": true,
+  "actual_current_zero_write_verified": true,
+  "source_hashes_match": true,
+  "initial_greedy_model_gate": {
+    "accepted": true,
+    "run_id": "0873410ce2f146499a581314184214f9",
+    "slurm_job_id": "3298",
+    "phase": "initial",
+    "proof_sha256": "4a6f9cb8ca899a16cf2a2a0fa4cf1af0a99aa7772ab846b5f9a900765482bfb7",
+    "rank_count": 8,
+    "actual_grpo_updates": 0,
+    "max_actor_reference_error": 0.0,
+    "max_actor_vllm_error": 0.00055694580078125,
+    "tolerances": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05
+    ]
+  },
+  "gpu_sampling": {
+    "sample_count": 52,
+    "first_unix": 1791274261.5235484,
+    "last_unix": 1791274382.3958936,
+    "max_gap_seconds": 7.959716081619263,
+    "cumulative_peak_mib": {
+      "0": 41927,
+      "1": 41902,
+      "2": 41904,
+      "3": 41905,
+      "4": 41895,
+      "5": 41904,
+      "6": 41903,
+      "7": 41736
+    },
+    "total_mib": {
+      "0": 81559,
+      "1": 81559,
+      "2": 81559,
+      "3": 81559,
+      "4": 81559,
+      "5": 81559,
+      "6": 81559,
+      "7": 81559
+    },
+    "scope": "This discovery pipeline including model gates and probe calibration; not production training peak"
+  },
+  "child_completed_outer_updates": 0,
+  "actual_production_updates": 0,
+  "behavior_gate_accepted": false,
+  "healthy_checkpoint_accepted": false,
+  "production_admission": false,
+  "scope": "Actual RUNNING native identity, greedy initial8rank gate and prospective source/metadata freeze. No completed outer/20writes/full2560 gate/checkpoint health or production acceptance."
+}
