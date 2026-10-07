@@ -1,0 +1,264 @@
+{
+  "role": "Second formal hourly progress report; scalar/hash evidence only",
+  "native_job_id": "3324",
+  "run_id": "c0f329fb6282460a9fea8811aa8f47f2",
+  "training_source_commit": "19fdfc32cc1c62d9723a02bf658ad8e4c2b332aa",
+  "observed_unix": 1791363666.257592,
+  "prior_anchor_sha256": "19043831240d33740ce752c52082a09b3fc28e26213fba6682c755fc864af961",
+  "actual_observation_window": {
+    "start_unix": 1791360018.9493804,
+    "end_unix": 1791363666.257592,
+    "duration_seconds": 3647.3082115650177
+  },
+  "prior_formal_report_unix": 1791360132.21942,
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T15:01:24",
+      "ExitCode": "0:0",
+      "JobId": "3324",
+      "JobName": "search-g1-formal-inline-ef7a5a0c",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "01:59:42",
+      "StartTime": "2026-10-07T15:01:24",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "1f2eb7a3a9ab267823c6af55a65e7ee2d26da676c8a079db693efc18b5d270b4",
+    "terminal_purge_is_not_success": true
+  },
+  "trainer": {
+    "actual_proc": {
+      "pid": 3940545,
+      "sid": 3940545,
+      "start_ticks": 2230222988,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791357563.4740117,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 3940545,
+      "sid": 3940545,
+      "start_ticks": 2230222988,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  },
+  "counts": {
+    "completed_outer_before": 0,
+    "completed_outer_now": 2,
+    "new_completed_outer": 2,
+    "goal_complete_outer": 200,
+    "returned_cumulative_adam_writes_per_rank": 40,
+    "returned_cumulative_opportunities_per_rank": 40,
+    "returned_skipped_opportunities_per_rank": 0,
+    "warmup_advances": 2,
+    "observed_inflight_opportunities_after_driver_return_per_rank": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "rank_replicas_count_once": true,
+    "exact_atomic_live_total_writes_proven": false,
+    "write_window_scope": "40 is cumulative at returned complete outer boundary, not 40 additional calls during wallclock hour; prior observation already saw13 prefix writes."
+  },
+  "reward": {
+    "actual_completed_rows": [
+      {
+        "step": 1,
+        "reward_mean": 0.21256741881370544
+      },
+      {
+        "step": 2,
+        "reward_mean": 0.1688261777162552
+      }
+    ],
+    "new_window_mean": 0.19069679826498032,
+    "new_window_range": [
+      0.1688261777162552,
+      0.21256741881370544
+    ],
+    "recent": 0.1688261777162552,
+    "previous_nonempty_window_mean": null,
+    "window_mean_change": null,
+    "step2_minus_step1": -0.043741241097450256,
+    "precision": "Full precision actual completed-update scalar records; console separately rounds to3 decimals",
+    "interpretation": "Two different stochastic training batches; reward change is not paired EM change. Previous report had no completed reward, missing is not zero."
+  },
+  "latest_complete_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": 2,
+    "latest": {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "4920c8ae8a3f425e9b0cd094bae497b6",
+      "metrics": {
+        "actor/entropy_loss": 0.9413577934727073,
+        "actor/grad_norm": 1.92524042468293,
+        "actor/kl_loss": 0.0,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/pg_loss": 0.09328052438575177,
+        "actor/ppo_kl": 0.00039753425255302234,
+        "actor/skipped_update_opportunities": 0.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "critic/rewards/mean": 0.1688261777162552
+      },
+      "step": 2
+    },
+    "matched_row_count": 2,
+    "source_available": true
+  },
+  "latest_dev512": [
+    {
+      "checked_unix": 1791358269.6016228,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    }
+  ],
+  "latest_stage64": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "evaluation_change": "No new evaluation; latest dev512 and stage64 remain step0. No extra evaluation triggered.",
+  "gpu_current": {
+    "queried_unix": 1791363666.7137911,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 11704,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 11045,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 11046,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 11045,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 11047,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 11046,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 11046,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 25487,
+        "util_percent": 92
+      }
+    ]
+  },
+  "gpu_cumulative_sampling": {
+    "first_sample_unix": 1791356513.6798,
+    "last_sample_unix": 1791363665.7055836,
+    "maximum_adjacent_sample_end_interval_seconds": 11.174412727355957,
+    "maximum_query_duration_seconds": 9.173644065856934,
+    "maximum_query_end_to_next_query_start_idle_seconds": 2.0113296508789062,
+    "maximum_sampled_used_fraction": 0.9812405743081696,
+    "peak_used_mib_per_gpu": {
+      "0": 66248,
+      "1": 65589,
+      "2": 65590,
+      "3": 65591,
+      "4": 65591,
+      "5": 65590,
+      "6": 66482,
+      "7": 80029
+    },
+    "sample_count": 3253
+  },
+  "gpu_hour_window_peak": {
+    "sampled_used_fraction": 0.9812405743081696,
+    "gpu_index": 7,
+    "used_mib": 80029,
+    "total_mib": 81559,
+    "in_window_peak_witness_unix": 1791361776.2713938,
+    "in_window_peak_witness_sha256": "2d0ae8188281adaa5b544c2f00a4a392a5a7c8892be7247091c7347742f5139f",
+    "proof_scope": "In-window observed peak equals run cumulative upperbound through this report; hence sampled hour-window peak matches98.124%. Not continuous physical absolute peak."
+  },
+  "bounded_console_observation": {
+    "latest_epoch_step": {
+      "epoch": 0,
+      "step": 3
+    },
+    "failure_marker_counts": {},
+    "last_error_classes": [],
+    "scope": "Existing bounded log projection, no blanket proof of all model values finite or outcome health"
+  },
+  "third_loop_scope": "Same process loop3; no third policyBEGIN/opportunity/write yet in observed prefix.",
+  "read_errors": {},
+  "private_snapshot_sha256": "c4f2ede1175845fb2bf27699ac9ebee2c8d4a684a093986497891421fff27719",
+  "goal_status": "active/incomplete",
+  "fresh_five_accepted": false,
+  "final200_51713_checkpoint_cleanup_complete": false,
+  "ordinary_observations_did_not_advance_anchor": true,
+  "publication_scope": "Source/scalar/hash only; no credentials/models/data/rawQA/tokenjournal/full training log; evidence commit does not modify loaded training source."
+}
