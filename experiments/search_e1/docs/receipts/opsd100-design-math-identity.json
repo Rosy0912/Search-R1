@@ -1,0 +1,28 @@
+{
+  "time": 1791347062.5992484,
+  "pair_loss_unchanged": true,
+  "encoded_pair_unchanged": true,
+  "pair_loss_sha256": "f6766aff6cf847bab19a02875f254f69d4a64e239259b810439f6a292822e808",
+  "scientific_settings": {
+    "model": "archive_grpo_checkpoint100",
+    "loss": "per-trajectory valid-token mean then global trajectory mean",
+    "lr": 1e-05,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "clip": 10,
+    "chunk": 32,
+    "epochs": 1,
+    "global_pair_batch": 32,
+    "accumulation": 4,
+    "world": 8,
+    "max_context": 8192,
+    "seed": 42,
+    "full_train_questions": 169103,
+    "fresh_rollouts_per_question": 5,
+    "validation_questions": 512
+  },
+  "grpo_optimizer_restored": false,
+  "extra_grpo_updates": false,
+  "acceptance": "GRPO source100 plus 5 real OPSD updates; not continuous GRPO or Adam from100",
+  "applicability": "GRPO entropy, mini/micro, KL coefficient and schedule are not OPSD knobs; preserve original OPSD settings; no auxiliary entropy introduced"
+}

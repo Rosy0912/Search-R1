@@ -1,0 +1,45 @@
+--- frozen-original/opsd.py
++++ new-opsd/opsd.py
+@@ -116,6 +116,10 @@
+         model.save_pretrained(out/'best_adapter')  # Include baseline to avoid selecting a harmful adapter.
+     barrier()
+     history = [{'epoch': 0, 'validation_em': best}]
++    opsd_updates = 0
++    tracked = next(p for name,p in model.named_parameters() if "lora_B" in name)
++    audit_initial = tracked.detach().cpu().clone()
++    torch.cuda.reset_peak_memory_stats()
+     for epoch in range(a.epochs):
+         random.shuffle(examples)
+         total = 0.
+@@ -147,6 +151,31 @@
+                 p.grad is not None and not torch.isfinite(p.grad).all().item() for p in trainable)
+             _opsd_collective_reject(invalid_grad, world, 'Nonfinite OPSD gradient; all ranks refuse update')
+             optimizer.step()
++            opsd_updates += 1
++            torch.cuda.synchronize()
++            audit_finite = all(torch.isfinite(p).all().item() for p in trainable)
++            audit_changed = not torch.equal(audit_initial, tracked.detach().cpu())
++            audit_steps = sorted(set(float(state['step']) for state in optimizer.state.values() if 'step' in state))
++            _opsd_collective_reject(not audit_finite or not audit_changed or audit_steps != [float(opsd_updates)], world, 'OPSD real-update audit failed')
++            free_bytes,total_bytes = torch.cuda.mem_get_info()
++            evidence = dict(rank=rank, updates=opsd_updates, source_grpo_step=100, display_step=100+opsd_updates,
++                finite=audit_finite, changed_from_initial=audit_changed, adam_steps=audit_steps, grad_norm=float(grad_norm),
++                max_reserved_bytes=torch.cuda.max_memory_reserved(), free_bytes=free_bytes, total_bytes=total_bytes)
++            all_evidence=[None]*world
++            if world > 1: dist.all_gather_object(all_evidence,evidence)
++            else: all_evidence=[evidence]
++            if opsd_updates in (1,5):
++                if rank == 0: model.save_pretrained(out/f'adapter_update_{opsd_updates}')
++                torch.save(dict(optimizer=optimizer.state_dict(),torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state(),updates=opsd_updates,rank=rank),out/f'update_{opsd_updates}_rank_{rank}_state.pt')
++                barrier()
++            if rank == 0:
++                report=dict(status='RUNNING',world_size=world,opsd_updates=opsd_updates,source_grpo_step=100,display_step=100+opsd_updates,
++                    ranks=all_evidence,five_real_updates_accepted=opsd_updates>=5,
++                    reduction='Mean over valid response tokens per trajectory, then mean over global trajectory batch',
++                    source_model=a.model)
++                write_json(out/'live-update.json',report)
++                if opsd_updates == 5: write_json(out/'five-update-acceptance.json',report)
++                print('REAL_OPSD_UPDATE',report,flush=True)
+             if rank == 0:
+                 print({'epoch': epoch+1, 'pairs': start+len(batch), 'local_loss_sum': total}, flush=True)
+         barrier()
