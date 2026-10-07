@@ -107,8 +107,8 @@ class SearchRollout:
             ids = gen_batch.batch['input_ids'][i][gen_batch.batch['attention_mask'][i].bool()].tolist()
             if self.token_preservation is not None:
                 from .tree_raw_tokens import require
-                require(self.tokenizer.pad_token_id not in ids and len(ids) <= self.config.max_start_length,
-                        'Initial prompt PAD/left truncation is unsupported')
+                require(len(ids) <= self.config.max_start_length,
+                        'Initial prompt left truncation is unsupported')
             states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
         return states
 
@@ -147,7 +147,8 @@ class SearchRollout:
             raise ValueError('Actual rollout prefix differs from full-trajectory scoring prefix')
         pad = self.tokenizer.pad_token_id
         ids = padded([s.rolling for s in states], pad, left=True)
-        attention = (ids != pad).long()
+        attention = (padded([[1] * len(s.rolling) for s in states], 0, left=True)
+                     if self.token_preservation is not None else (ids != pad).long())
         positions = self.manager.tensor_fn.create_position_ids(attention)
         batch = DataProto.from_dict(dict(input_ids=ids, attention_mask=attention,
                                         position_ids=positions), meta_info=meta.copy())
@@ -162,9 +163,20 @@ class SearchRollout:
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
-        self.cost['generated_tokens'] += int((generated != pad).sum())
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import require
+            emitted_attention = output.batch.get('response_mask')
+            require(emitted_attention is not None and emitted_attention.shape == generated.shape,
+                    'Actual emitted-prefix response mask missing')
+            self.cost['generated_tokens'] += int(emitted_attention.sum())
+        else:
+            self.cost['generated_tokens'] += int((generated != pad).sum())
         raw = generated[:len(states)]
-        tokens, text = self.manager._postprocess_responses(raw)
+        if self.token_preservation is not None:
+            tokens, text, semantic_attention = self.manager._postprocess_responses(
+                raw, return_attention_mask=True)
+        else:
+            tokens, text = self.manager._postprocess_responses(raw)
         prepared_actions = None
         if self.token_preservation is not None:
             from .tree_raw_tokens import EMISSION, sampled_action, require
@@ -181,7 +193,8 @@ class SearchRollout:
                 require(record['sample_id'] not in self.seen_sampling_ids,'Duplicate physical sampling identity')
                 self.seen_sampling_ids.add(record['sample_id'])
                 action,ledger=sampled_action(self.tokenizer,record,raw[i].tolist(),
-                    tokens[i][tokens[i] != pad].tolist(),text[i],self.tokenizer_identity)
+                    tokens[i][semantic_attention[i].bool()].tolist(),text[i],self.tokenizer_identity,
+                    response_mask=emitted_attention[i].tolist())
                 prepared_actions.append((action,ledger))
                 self.cost['raw_retained_tokens'] += len(action)
                 self.cost['raw_discarded_tail_tokens'] += record['true_emitted_length']-len(action)
@@ -203,10 +216,15 @@ class SearchRollout:
                 result = self.ranker.execute(self.manager, predictions, [states[i] for i in indices], do_search)
             for j, i in enumerate(indices):
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
-        obs_tokens = self.manager._process_next_obs(observations)
+        if self.token_preservation is not None:
+            obs_tokens, obs_attention = self.manager._process_next_obs(
+                observations, return_attention_mask=True)
+        else:
+            obs_tokens = self.manager._process_next_obs(observations)
         for i, s in enumerate(states):
             action = tokens[i][tokens[i] != pad].tolist() if prepared_actions is None else prepared_actions[i][0]
-            obs = obs_tokens[i][obs_tokens[i] != pad].tolist()
+            obs = (obs_tokens[i][obs_attention[i].bool()].tolist() if prepared_actions is not None
+                   else obs_tokens[i][obs_tokens[i] != pad].tolist())
             if prepared_actions is not None:
                 from .tree_raw_tokens import require
                 ledger=prepared_actions[i][1]
@@ -268,13 +286,21 @@ class SearchRollout:
         mask = padded([s.model_mask for s in states], 0)
         step_ids = padded([s.steps for s in states], -1)
         input_ids = torch.cat((prompts, response), 1)
-        attention = (input_ids != pad).long()
-        info = torch.cat(((prompts != pad).long(), mask), 1)
+        if self.token_preservation is not None:
+            prompt_attention = padded([[1] * len(s.prompt) for s in states], 0, left=True)
+            response_attention = padded([[1] * len(s.response) for s in states], 0)
+            attention = torch.cat((prompt_attention, response_attention), 1)
+        else:
+            prompt_attention = (prompts != pad).long()
+            attention = (input_ids != pad).long()
+        info = torch.cat((prompt_attention, mask), 1)
         tensors = dict(prompts=prompts, responses=response,
                        responses_with_info_mask=torch.where(mask.bool(), response, pad),
                        input_ids=input_ids, attention_mask=attention, info_mask=info,
                        position_ids=self.manager.tensor_fn.create_position_ids(attention),
                        step_ids=step_ids)
+        if self.token_preservation is not None:
+            tensors['response_mask'] = response_attention
         non_tensors = dict(anchors=object_array([s.anchors for s in states]),
                            action_records=object_array([s.records for s in states]),
                            trajectory_uid=object_array([s.trajectory for s in states]),

@@ -43,16 +43,18 @@ class LLMGenerationManager:
             max_start_length=config.max_start_length
         ))
 
-    def _batch_tokenize(self, responses: List[str]) -> torch.Tensor:
+    def _batch_tokenize(self, responses: List[str], return_attention_mask=False) -> torch.Tensor:
         """Tokenize a batch of responses."""
-        return self.tokenizer(
+        encoded = self.tokenizer(
             responses, 
             add_special_tokens=False, 
             return_tensors='pt', 
             padding="longest"
-        )['input_ids'].long()
+        )
+        ids = encoded['input_ids'].long()
+        return (ids, encoded['attention_mask'].long()) if return_attention_mask else ids
 
-    def _postprocess_responses(self, responses: torch.Tensor) -> torch.Tensor:
+    def _postprocess_responses(self, responses: torch.Tensor, return_attention_mask=False) -> torch.Tensor:
         """Process responses to stop at search operation or answer operation."""
         responses_str = self.tokenizer.batch_decode(
             responses, 
@@ -72,24 +74,31 @@ class LLMGenerationManager:
             actions, _ = self.env.postprocess_predictions(responses_str)
             responses_str=[f"<answer>{envs[idx].ACTION_LOOKUP[action]}</answer>" for idx, action in enumerate(actions)]
             print("RESPONSES:", responses_str)
+        if return_attention_mask:
+            responses, attention = self._batch_tokenize(responses_str, return_attention_mask=True)
+            return responses, responses_str, attention
         responses = self._batch_tokenize(responses_str)
         return responses, responses_str
 
-    def _process_next_obs(self, next_obs: List[str]) -> torch.Tensor:
+    def _process_next_obs(self, next_obs: List[str], return_attention_mask=False) -> torch.Tensor:
         """Process next observations from environment."""
         
-        next_obs_ids = self.tokenizer(
+        encoded = self.tokenizer(
             next_obs, 
             padding='longest',
             return_tensors='pt',
             add_special_tokens=False,  # Prevents adding special tokens
-        )['input_ids'].long()
+        )
+        next_obs_ids = encoded['input_ids'].long()
+        attention = encoded['attention_mask'].long() if return_attention_mask else None
 
         if next_obs_ids.shape[1] > self.config.max_obs_length:
             print(f"[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, {next_obs_ids.shape[1]} & {self.config.max_obs_length}")            
             next_obs_ids = next_obs_ids[:, :self.config.max_obs_length]
+            if return_attention_mask:
+                attention = attention[:, :self.config.max_obs_length]
 
-        return next_obs_ids
+        return (next_obs_ids, attention) if return_attention_mask else next_obs_ids
 
     def _update_rolling_state(self, rollings: DataProto, cur_responses: torch.Tensor, 
                             next_obs_ids: torch.Tensor) -> Dict:

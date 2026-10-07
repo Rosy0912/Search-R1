@@ -11,7 +11,7 @@ from types import SimpleNamespace
 import torch
 
 from .tree_raw_tokens import (FIELD as RAW_FIELD, PROTOCOL as RAW_PROTOCOL,
-                             fingerprint, trajectory_projection)
+                             fingerprint, trajectory_projection, validate_native_emission)
 
 
 PROTOCOL = 'tree_behavior_mu_centered_ppo_v1'
@@ -96,8 +96,7 @@ def _emission(action, context, expected_provenance):
     require(validate_provenance(identity['runtime_provenance']) == expected_provenance and
             emission['sample_id'] == fingerprint(identity), 'Sampling runtime identity changed')
     require(emission['prompt_token_ids'] == context and emission['finished'] is True and
-            emission['finish_reason'] in ('stop', 'length') and
-            emission['stop_reason'] in (None, 151645), 'Native prefix/finish/stop changed')
+            emission['finish_reason'] in ('stop', 'length'), 'Native prefix/finish changed')
     settings = emission['sampling_params']
     required = set(PLAIN_DISTRIBUTION)
     required |= {'min_tokens', 'max_tokens', 'ignore_eos', 'stop', 'stop_token_ids',
@@ -112,17 +111,9 @@ def _emission(action, context, expected_provenance):
             type(settings['logprobs']) is int and
             settings['prompt_logprobs'] is None and settings['seed'] is None,
             'Unsupported stop/length/logprob/seed settings')
-    ids = emission['raw_emitted_token_ids']
-    values = emission['raw_selected_logprobs']
-    n = emission['true_emitted_length']
-    require(type(n) is int and 0 < n <= 500 and len(ids) == len(values) == n and
-            all(type(token) is int and token >= 0 and token != 151643 for token in ids),
-            'Native true length/IDs/scalar coverage invalid')
+    ids, n, values = validate_native_emission(emission, 151643, 151645)
     for value in values:
         scalar32(value)
-    require(151645 not in ids[:-1], 'Emission continued after EOS')
-    require((emission['finish_reason'] == 'stop') == (ids[-1] == 151645),
-            'Stop finish is not the bound EOS-only stopping rule')
     require(type(action['cut']) is int and 0 < action['cut'] <= n and
             action['action_token_ids'] == ids[:action['cut']] and
             action['selected_logprobs'] == values[:action['cut']],
@@ -145,9 +136,9 @@ def _row(projection, expected_provenance):
                             raw_ledger=projection['raw_ledger'])
     require(trajectory_projection(state, 4096) == projection,
             'Raw/semantic projection did not reconstruct')
-    require(state.prompt and len(state.prompt) <= 2048 and 151643 not in state.prompt and
+    require(state.prompt and len(state.prompt) <= 2048 and
             len(state.prompt) + len(state.response) <= 4096,
-            'Original prompt/rolling crop/PAD protocol unsupported')
+            'Original prompt/rolling crop protocol unsupported')
     values, actions, steps = [], [], []
     offset = 0
     for turn in state.raw_ledger:
@@ -167,7 +158,7 @@ def _row(projection, expected_provenance):
         values.extend(action['selected_logprobs'])
         steps.extend([turn['turn']] * len(action['action_token_ids']))
         obs = turn['observation_token_ids']
-        require(151643 not in obs and len(obs) <= 500, 'Unsupported observation PAD/cap')
+        require(len(obs) <= 500, 'Unsupported observation cap')
         values.extend([0.] * len(obs)); steps.extend([-1] * len(obs))
         offset = len(values)
     require(len(values) == len(state.response) and actions,
@@ -242,9 +233,12 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
         response = data.batch['responses'][row].detach().cpu().tolist()
         actual_mu = data.batch[TENSOR][row].detach().cpu().tolist()
         n = len(projection['policy_response_token_ids'])
-        want_prompt = [151643] * (len(prompt)-len(projection['prompt_token_ids'])) + projection['prompt_token_ids']
+        prompt_count = len(projection['prompt_token_ids'])
+        want_prompt = [151643] * (len(prompt)-prompt_count) + projection['prompt_token_ids']
         want_response = projection['policy_response_token_ids'] + [151643] * (width-n)
-        attention = [int(token != 151643) for token in want_prompt+want_response]
+        prompt_attention = [0] * (len(prompt)-prompt_count) + [1] * prompt_count
+        response_attention = [1] * n + [0] * (width-n)
+        attention = prompt_attention + response_attention
         positions = []; index = 0
         for valid in attention:
             positions.append(index if valid else 0); index += valid
@@ -258,6 +252,11 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
                 data.batch['position_ids'][row].detach().cpu().tolist() == positions and
                 data.batch['step_ids'][row].detach().cpu().tolist() == want_steps,
                 'Policy prefix/token/position/attention/loss-mask/turn input changed')
+        if 'response_mask' in data.batch:
+            response_mask = data.batch['response_mask']
+            require(response_mask.shape == (rows, width) and
+                    response_mask[row].detach().cpu().tolist() == response_attention,
+                    'Added response mask differs from explicit retained row length')
         if 'loss_mask' in data.batch:
             loss_mask = data.batch['loss_mask']
             require(loss_mask.shape == (rows, width) and

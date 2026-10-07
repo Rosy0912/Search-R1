@@ -46,7 +46,23 @@ from vllm import SamplingParams
 
 
 # NOTE(sgm): add for verl. We can optimize it by making the dataloader yield List[int] without padding.
-def _pre_process_inputs(pad_token_id, prompt_token_ids: torch.Tensor) -> List[int]:
+def _pre_process_inputs(pad_token_id, prompt_token_ids: torch.Tensor, prompt_attention=None) -> List[int]:
+    if prompt_attention is not None:
+        from search_r1.baselines.tree_raw_tokens import _native_require
+        ids=prompt_token_ids.tolist();marks=prompt_attention.tolist()
+        diagnostic=dict(prompt_tensor_width=len(ids),prompt_mask_width=len(marks))
+        _native_require(len(marks)==len(ids) and
+            all(type(mark) in (int,bool) and mark in (0,1) for mark in marks),
+            'Native prompt attention boundary is invalid',diagnostic)
+        n=sum(marks);start=len(ids)-n
+        diagnostic['true_prompt_length']=n
+        diagnostic['prompt_mask_is_left_padding']=marks==[0]*start+[1]*n
+        _native_require(n>0 and diagnostic['prompt_mask_is_left_padding'],
+            'Native prompt attention is not a nonempty left-padded context',diagnostic)
+        diagnostic['prompt_padding_prefix_all_pad']=all(token==pad_token_id for token in ids[:start])
+        _native_require(diagnostic['prompt_padding_prefix_all_pad'],
+            'Native prompt masked prefix contains non-PAD',diagnostic)
+        return ids[start:]
     # remove the left padding in the prompt token_id
     # pad_token_id = self.llm_engine.tokenizer.pad_token_id if self.llm_engine.tokenizer.pad_token_id is not None else self.llm_engine.tokenizer.eos_token_id
     non_pad_index = torch.nonzero(prompt_token_ids != pad_token_id, as_tuple=False)[0][0]
@@ -157,7 +173,8 @@ class vLLMRollout(BaseRollout):
         idx_list = []
         # parse idx from torch.Tensor to List[List[str]]
         for i in range(batch_size):
-            idx_list.append(_pre_process_inputs(self.pad_token_id, idx[i]))
+            idx_list.append(_pre_process_inputs(self.pad_token_id, idx[i],
+                attention_mask[i] if self.config.get('tree_raw_emission',False) else None))
 
         do_sample = prompts.meta_info.get('do_sample', True)
         if not do_sample:
@@ -209,7 +226,23 @@ class vLLMRollout(BaseRollout):
         # position_ids:   [0,0,0,0,0,1,2,3, | 4,5,6,7,8,9,10,11]
         response_position_ids = position_ids[:, -1:] + delta_position_id
         position_ids = torch.cat([position_ids, response_position_ids], dim=-1)
-        response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
+        native_emissions=None
+        if self.config.get('tree_raw_emission',False):
+            from search_r1.baselines.tree_raw_tokens import native_response_mask,require,_native_require
+            require(len(output)==3 and len(output[2])==len(response),'Complete native emission rows missing')
+            native_emissions=output[2]
+            response_attention_mask=torch.zeros_like(response,dtype=attention_mask.dtype)
+            for row,record in enumerate(native_emissions):
+                mask=native_response_mask(record,response[row].tolist(),self.pad_token_id,eos_token_id)
+                prompt_matches=record['prompt_token_ids']==idx_list[row]
+                _native_require(prompt_matches,
+                    'Native prompt IDs differ from the explicit context mask',
+                    dict(native_prompt_ids_equal=prompt_matches,
+                        native_prompt_length=len(record['prompt_token_ids']),
+                        explicit_prompt_length=len(idx_list[row])))
+                response_attention_mask[row]=torch.tensor(mask,device=response.device,dtype=attention_mask.dtype)
+        else:
+            response_attention_mask = get_eos_mask(response_id=response, eos_token=eos_token_id, dtype=attention_mask.dtype)
         attention_mask = torch.cat((attention_mask, response_attention_mask), dim=-1)
 
         # all the tp ranks should contain the same data here. data in all ranks are valid
@@ -223,23 +256,16 @@ class vLLMRollout(BaseRollout):
                 'position_ids': position_ids
             },
             batch_size=batch_size)
+        if native_emissions is not None:
+            batch['response_mask']=response_attention_mask
 
         consistency = self.config.get('sampling_consistency', {})
         metadata = {}
         non_tensors = {}
-        if self.config.get('tree_raw_emission', False):
-            from search_r1.baselines.tree_raw_tokens import EMISSION, require
+        if native_emissions is not None:
+            from search_r1.baselines.tree_raw_tokens import EMISSION
             from search_r1.baselines.rollout import object_array
-            require(len(output) == 3 and len(output[2]) == len(response), 'Complete native emission rows missing')
-            require(self.pad_token_id != eos_token_id, 'PAD==EOS unsupported by Tree token preservation')
-            emitted = torch.zeros_like(response_attention_mask)
-            for row, record in enumerate(output[2]):
-                n = record['true_emitted_length']
-                require(response[row,:n].tolist() == record['raw_emitted_token_ids'] and
-                        self.pad_token_id not in record['raw_emitted_token_ids'], 'Native raw token IDs/PAD unsupported')
-                emitted[row,:n] = 1
-            require(torch.equal(emitted, response_attention_mask), 'Native finish/true emitted length disagrees with original EOS mask')
-            non_tensors[EMISSION] = object_array(output[2])
+            non_tensors[EMISSION] = object_array(native_emissions)
         if consistency.get('enabled', False) and do_sample:
             batch['__sampling_log_probs'] = log_probs
             metadata['__sampling_distribution'] = sampling_distribution

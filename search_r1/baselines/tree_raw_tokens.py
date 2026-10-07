@@ -11,6 +11,7 @@ import math
 import os
 from pathlib import Path
 import re
+import sys
 import time
 
 
@@ -26,6 +27,104 @@ _ENCODER_SEMANTICS_CACHE = None
 
 def require(value,message):
     if not value:raise ValueError('Tree raw-token protocol: '+message)
+
+
+def _native_require(value,message,diagnostics):
+    if not value:
+        # Fixed messages and only numeric/boolean facts may reach the log.
+        # Never expose sampled IDs, text, contexts or selected probabilities.
+        print('TREE_NATIVE_EMISSION_DIAGNOSTIC='+json.dumps(diagnostics,sort_keys=True,
+            allow_nan=False),file=sys.stderr,flush=True)
+        require(False,message)
+
+
+def validate_native_emission(emission,pad,eos):
+    """Validate the native token timeline; genuine PAD is an emitted token."""
+    n=emission.get('true_emitted_length');ids=emission.get('raw_emitted_token_ids')
+    values=emission.get('raw_selected_logprobs')
+    diagnostic=dict(emitted_length_is_integer=type(n) is int,
+        metadata_id_count=len(ids) if type(ids) is list else -1,
+        metadata_logprob_count=len(values) if type(values) is list else -1)
+    if type(n) is int:diagnostic['reported_emitted_length']=n
+    _native_require(type(pad) is int and type(eos) is int and pad!=eos,
+        'Native PAD/EOS identity is unsupported',diagnostic)
+    _native_require(type(n) is int and 0<n<=500,
+        'Native true emitted length is outside the supported boundary',diagnostic)
+    _native_require(type(ids) is list and len(ids)==n and
+        all(type(token) is int and token>=0 for token in ids),
+        'Native emitted token IDs do not cover the true length',diagnostic)
+    _native_require(type(values) is list and len(values)==n and
+        all(type(value) in (int,float) and math.isfinite(value) for value in values),
+        'Native selected scalars do not cover the true length',diagnostic)
+    stopping=emission.get('native_stopping')
+    _native_require(type(stopping) is dict and
+        stopping.get('protocol')=='vllm_native_eos_and_stop_set_v1' and
+        stopping.get('source')=='detached_sampling_params_clone_native_update_from_generation_config_v0_6_3' and
+        stopping.get('primary_eos_source')=='native_input_preprocessor_get_eos_token_id_no_lora' and
+        isinstance(stopping.get('generation_config_sha256'),str) and
+        re.fullmatch('[0-9a-f]{64}',stopping['generation_config_sha256']) is not None,
+        'Native effective EOS/stop metadata is missing',diagnostic)
+    fields=('generation_config_eos_token_ids','sampling_stop_token_ids',
+        'sampling_all_stop_token_ids','effective_stop_token_ids')
+    _native_require(stopping.get('primary_eos_token_id')==eos and
+        all(type(stopping.get(key)) is list and
+            all(type(token) is int and token>=0 for token in stopping[key]) and
+            stopping[key]==sorted(set(stopping[key])) for key in fields),
+        'Native effective EOS/stop metadata is invalid',diagnostic)
+    expected_stops={eos}
+    for key in fields[:-1]:expected_stops.update(stopping[key])
+    stop_ids=set(stopping['effective_stop_token_ids'])
+    _native_require(stop_ids==expected_stops,
+        'Native effective EOS/stop set binding changed',diagnostic)
+    positions=[index for index,token in enumerate(ids) if token in stop_ids]
+    diagnostic.update(true_emitted_pad_count=sum(token==pad for token in ids),
+        emitted_native_stop_count=len(positions),last_emitted_token_is_native_stop=ids[-1] in stop_ids,
+        early_emitted_native_stop_present=any(index!=n-1 for index in positions),
+        finish_is_stop=emission.get('finish_reason')=='stop',
+        finish_is_length=emission.get('finish_reason')=='length',
+        stop_reason_matches_native_stop_or_none=(emission.get('stop_reason') is None or
+            type(emission.get('stop_reason')) is int and emission['stop_reason'] in stop_ids))
+    _native_require(emission.get('finished') is True and
+        emission.get('finish_reason') in ('stop','length'),
+        'Native finish status is unsupported',diagnostic)
+    _native_require(diagnostic['stop_reason_matches_native_stop_or_none'],
+        'Native stop reason differs from the bound native EOS/stop set',diagnostic)
+    _native_require(not diagnostic['early_emitted_native_stop_present'],
+        'Native emission continued after a native EOS/stop token',diagnostic)
+    _native_require((emission['finish_reason']=='stop')==(ids[-1] in stop_ids),
+        'Native finish reason disagrees with the emitted native EOS/stop boundary',diagnostic)
+    if emission['finish_reason']=='stop':
+        _native_require((emission['stop_reason'] is None and ids[-1]==eos) or
+            (type(emission['stop_reason']) is int and emission['stop_reason']==ids[-1]),
+            'Native finish stop reason disagrees with the last emitted token',diagnostic)
+    _native_require(emission['finish_reason']!='length' or emission.get('stop_reason') is None,
+        'Native length finish has an EOS stop reason',diagnostic)
+    return ids,n,values
+
+
+def native_response_mask(emission,raw_padded,pad,eos,response_mask=None):
+    """Bind exactly the emitted prefix and its separate right-padding suffix."""
+    ids,n,_=validate_native_emission(emission,pad,eos)
+    diagnostic=dict(reported_emitted_length=n,tensor_width=len(raw_padded),
+        metadata_id_count=len(ids),true_emitted_pad_count=sum(token==pad for token in ids))
+    _native_require(len(raw_padded)==500 and n<=len(raw_padded),
+        'Native returned tensor width disagrees with the supported boundary',diagnostic)
+    _native_require(all(type(token) is int for token in raw_padded),
+        'Native returned tensor token IDs are invalid',diagnostic)
+    diagnostic['prefix_ids_equal']=raw_padded[:n]==ids
+    _native_require(diagnostic['prefix_ids_equal'],
+        'Native raw token IDs differ from the returned tensor prefix',diagnostic)
+    diagnostic['padding_suffix_all_pad']=all(token==pad for token in raw_padded[n:])
+    _native_require(diagnostic['padding_suffix_all_pad'],
+        'Native returned tensor padding suffix contains non-PAD',diagnostic)
+    mask=[1]*n+[0]*(len(raw_padded)-n)
+    if response_mask is not None:
+        diagnostic['response_mask_matches_true_length']=(len(response_mask)==len(mask)
+            and all(type(mark) in (int,bool) and mark in (0,1) for mark in response_mask)
+            and response_mask==mask)
+        _native_require(diagnostic['response_mask_matches_true_length'],
+            'Native response mask disagrees with the true emitted length',diagnostic)
+    return mask
 
 
 def fingerprint(value):
@@ -271,9 +370,37 @@ def capture_native_sampling_settings(sampling_params):
     return settings
 
 
-def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
+def capture_native_stopping(sampling_params,primary_eos_token_id,generation_config):
+    """Expand only a detached copy with the native engine's own update method."""
+    require(type(primary_eos_token_id) is int and primary_eos_token_id>=0 and
+        type(generation_config) is dict,'Actual native tokenizer/engine stopping inputs required')
+    configured=generation_config.get('eos_token_id')
+    generation_eos=[] if configured is None else [configured] if type(configured) is int else configured
+    native_params=sampling_params.clone()
+    require(native_params is not sampling_params,'Native stopping clone is not detached')
+    native_params.update_from_generation_config(copy.deepcopy(generation_config),primary_eos_token_id)
+    explicit=native_params.stop_token_ids
+    native_all=getattr(native_params,'all_stop_token_ids',None)
+    require(type(generation_eos) in (list,tuple) and
+        type(explicit) in (list,tuple) and type(native_all) in (set,frozenset) and
+        all(type(token) is int and token>=0 for tokens in (generation_eos,explicit,native_all) for token in tokens),
+        'Actual native EOS/stop collections are invalid')
+    effective={primary_eos_token_id,*explicit}
+    require(set(native_all)=={primary_eos_token_id,*generation_eos,*explicit},
+        'Native engine EOS/stop expansion differs from its recorded inputs')
+    return dict(protocol='vllm_native_eos_and_stop_set_v1',primary_eos_token_id=primary_eos_token_id,
+        source='detached_sampling_params_clone_native_update_from_generation_config_v0_6_3',
+        primary_eos_source='native_input_preprocessor_get_eos_token_id_no_lora',
+        generation_config_sha256=fingerprint(generation_config),
+        generation_config_eos_token_ids=sorted(set(generation_eos)),
+        sampling_stop_token_ids=sorted(set(explicit)),sampling_all_stop_token_ids=sorted(native_all),
+        effective_stop_token_ids=sorted(effective))
+
+
+def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,native_stopping=None):
     """Called before facade padding, retaining real request IDs and scalar values."""
     settings=capture_native_sampling_settings(sampling_params)
+    require(type(native_stopping) is dict,'Actual native effective EOS/stop capture required')
     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
         'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
     require(all(isinstance(value,str) and value for value in provenance.values()),
@@ -295,24 +422,19 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
             sample_id=fingerprint(identity),prompt_token_ids=[int(x) for x in request.prompt_token_ids],
             raw_emitted_token_ids=ids,raw_selected_logprobs=logps,true_emitted_length=len(ids),
             finish_reason=out.finish_reason,stop_reason=out.stop_reason,finished=True,
-            sampling_params=copy.deepcopy(settings)))
+            sampling_params=copy.deepcopy(settings),native_stopping=copy.deepcopy(native_stopping)))
     return rows
 
 
-def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity):
+def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity,response_mask=None):
     """Scan stable native prefixes; never encode a policy token or split one."""
     started=time.perf_counter(),time.process_time()
     require(emission.get('protocol')==PROTOCOL and emission.get('schema_version')==1,
             'Native emission metadata missing')
     pad,eos=tokenizer.pad_token_id,tokenizer.eos_token_id
     require(type(pad) is int and type(eos) is int and pad!=eos,'PAD==EOS unsupported')
-    ids=emission['raw_emitted_token_ids'];n=emission['true_emitted_length'];values=emission['raw_selected_logprobs']
-    require(type(n) is int and 0<n<=500 and len(ids)==len(values)==n and
-            all(type(x) is int for x in ids) and all(math.isfinite(x) for x in values),
-            'Actual emitted length/IDs/scalars invalid')
-    require(pad not in ids,'Genuinely emitted PAD requires a separately reviewed explicit-mask protocol')
-    require(len(raw_padded)==500 and raw_padded[:n]==ids and all(x==pad for x in raw_padded[n:]),
-            'Raw returned row changed or invalid padded suffix')
+    ids,n,values=validate_native_emission(emission,pad,eos)
+    native_response_mask(emission,raw_padded,pad,eos,response_mask)
     require(emission['sample_id']==fingerprint(emission['sampling_identity']), 'Sampling identity mutated')
     utf8_started=time.process_time()
     context=_TokenizerValidationContext(tokenizer,identity)
@@ -355,7 +477,8 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
 
 def validate_action_utf8_proof(action,tokenizer,_context=None):
     """Reconstruct native replacement proof and actual full/cut decode, without resampling."""
-    emission=action['native_emission'];ids=emission['raw_emitted_token_ids'];cut=action['cut']
+    emission=action['native_emission'];cut=action['cut']
+    ids,_,_=validate_native_emission(emission,tokenizer.pad_token_id,tokenizer.eos_token_id)
     decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
     require(proof==action.get('utf8_boundary_proof'),'Bound original-token native replacement proof differs')
     require(type(cut) is int and 0<cut<=len(ids) and complete[cut-1],
@@ -428,7 +551,12 @@ def semantic_spans(item,tokenizer):
     width=item.batch['responses'].shape[-1]
     valid=item.batch['attention_mask'][-width:].bool();ids=item.batch['responses'][valid].tolist()
     mask=item.batch['info_mask'][-width:][valid].tolist()
-    prompt=item.batch['prompts'];prompt=prompt[prompt!=tokenizer.pad_token_id].tolist()
+    prompt_tensor=item.batch['prompts'];prompt_width=prompt_tensor.shape[-1]
+    prompt_attention=item.batch['attention_mask'][:prompt_width]
+    require(len(prompt_attention)==prompt_width and
+            all(mark in (0,1) for mark in prompt_attention.tolist()),
+            'Semantic prompt attention boundary is invalid')
+    prompt=prompt_tensor[prompt_attention.bool()].tolist()
     require(ids==value['policy_response_token_ids'] and mask==value['policy_model_mask'] and
             prompt==value['prompt_token_ids'],'Semantic projection attached to different policy inputs/mask')
     state=type('ProjectionState',(),{})()

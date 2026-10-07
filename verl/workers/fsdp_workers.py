@@ -814,6 +814,11 @@ class ActorRolloutRefWorker(Worker):
             parent_sha256=record['sha256'],scope='Cold state migration; not executor/vLLM equivalence')
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_current_chain_training_state(self):
+        from search_r1.baselines.tree_current_chain_resume import load_worker
+        return load_worker(self)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_training_state(self, local_path, identity, verify=False):
         if not self._is_actor or not self.config.actor.get('training_state_enabled', False):
             raise ValueError('Complete actor training state is not enabled')

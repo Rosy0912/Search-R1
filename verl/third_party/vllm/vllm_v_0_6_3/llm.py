@@ -189,12 +189,16 @@ class LLM(LLM):
     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
         metadata = None
         if getattr(self, '_tree_emission_call', None) is not None:
-            from search_r1.baselines.tree_raw_tokens import capture_native_emissions, capture_native_sampling_settings
+            from search_r1.baselines.tree_raw_tokens import (capture_native_emissions,
+                capture_native_sampling_settings,capture_native_stopping)
             actual_settings = capture_native_sampling_settings(self._tree_emission_params)
             if actual_settings != self._tree_emission_before_settings:
                 raise ValueError('Actual Tree native sampling controls changed during engine generation')
             metadata = capture_native_emissions(request_outputs, self._tree_emission_params,
-                self._tree_emission_call, torch.distributed.get_rank())
+                self._tree_emission_call, torch.distributed.get_rank(),
+                native_stopping=capture_native_stopping(self._tree_emission_params,
+                    self.llm_engine.input_preprocessor.get_eos_token_id(None),
+                    self.llm_engine.generation_config_fields))
         output_token_ids = []
         logprobs = []
         for request_output in request_outputs:  # List[RequestOutput]
