@@ -37,12 +37,15 @@ class ActualGPUCoverageTests(unittest.TestCase):
         rows, run, claim, allocation, scheduler = self.fixture() if item is None else item
         return gpu._coverage(rows, run, claim, allocation, scheduler, entered=120.)
 
-    def test_real_first_five_window_counts_device_peaks_gaps_and_exact_existing_limit(self):
+    def test_first_five_window_reports_device_peaks_and_monitor_only_policy(self):
         item = self.fixture(); item[0][15]['gpus'][7]['used_mib'] = 980
         proof = self.verify(item)
         self.assertTrue(proof['accepted'])
         self.assertEqual(proof['sampled_peak_fraction']['7'], .98)
-        self.assertEqual(proof['existing_sampled_peak_fraction_limit'], .98)
+        self.assertEqual(proof['occupancy_policy'], 'monitor_only')
+        self.assertIsNone(proof['sampled_peak_fraction_stop_limit'])
+        self.assertEqual(proof['historical_sampled_peak_fraction_limit'], .98)
+        self.assertFalse(proof['historical_limit_exceeded'])
         self.assertEqual(proof['maximum_sampling_gap_seconds'], 2.)
         self.assertEqual(proof['maximum_query_duration_seconds'], .25)
         self.assertEqual(len(proof['actual_device_inventory']), 8)
@@ -60,7 +63,7 @@ class ActualGPUCoverageTests(unittest.TestCase):
             lambda r: r['gpus'][0].update(total_mib=2000),
             lambda r: r['gpus'].pop(),
             lambda r: r['gpus'][0].update(index=1),
-            lambda r: r['gpus'][0].update(used_mib=981),
+            lambda r: r['gpus'][0].update(used_mib=1001),
             lambda r: r['gpus'][0].update(used_mib=True),
             lambda r: r.update(query_started_unix=float('nan')),
         )
@@ -104,7 +107,10 @@ class ActualGPUCoverageTests(unittest.TestCase):
         self.assertEqual(proof['actual_optimizer_windows'][0]['begin_unix'],15.)
         self.assertEqual(proof['sampled_peak_fraction']['7'],.98)
         item[0][2]['gpus'][7]['used_mib']=981
-        with self.assertRaisesRegex(AssertionError,'existing admission limit'):self.verify(item)
+        proof=self.verify(item)
+        self.assertTrue(proof['accepted'])
+        self.assertEqual(proof['sampled_peak_fraction']['7'],.981)
+        self.assertTrue(proof['historical_limit_exceeded'])
 
     def test_reader_waits_for_new_sample_after_gate_entry_and_checks_live_producer(self):
         rows, run, claim, *_ = self.fixture()
