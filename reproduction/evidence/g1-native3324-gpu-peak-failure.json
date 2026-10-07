@@ -1,0 +1,119 @@
+{
+  "role": "Actual native3324 failure and paired512 result; memory percentage is monitoring evidence",
+  "native_job_id": "3324",
+  "run_id": "c0f329fb6282460a9fea8811aa8f47f2",
+  "failed_training_source_commit": "19fdfc32cc1c62d9723a02bf658ad8e4c2b332aa",
+  "failure_observed_unix": 1791369839.5752757,
+  "failure_pipeline": {
+    "sampling_error_reported": false,
+    "stage": "FAILED",
+    "unix": 1791369826.8053179
+  },
+  "trainer": {
+    "actual_proc": {
+      "exists": false,
+      "pid": 3940545
+    },
+    "birth_matches_recorded": false,
+    "claimed_unix": 1791357563.4740117,
+    "ledger_state": "STOPPED",
+    "recorded_leader": {
+      "pid": 3940545,
+      "sid": 3940545,
+      "start_ticks": 2230222988,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  },
+  "completed_outer": 5,
+  "returned_opportunities_per_rank": 100,
+  "returned_successful_adam_per_rank": 100,
+  "warmup_advances": 5,
+  "skipped_opportunities": 0,
+  "sixth_begin_observed": false,
+  "development512": [
+    {
+      "checked_unix": 1791358269.6016228,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    },
+    {
+      "checked_unix": 1791369804.7631361,
+      "executed_search_call_count": 563,
+      "executed_search_question_count": 508,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 5,
+      "valid_action_rate": 0.956989247311828,
+      "weighted_em": 0.205078125,
+      "weighted_f1": 0.28090888831727095
+    }
+  ],
+  "paired_em_gain": 0.02734375,
+  "paired_f1_gain": 0.03972587809549352,
+  "stage64_step5": {
+    "question_count": 64,
+    "nq_count": 32,
+    "hotpotqa_count": 32,
+    "correct": 15,
+    "weighted_em": 0.234375,
+    "weighted_f1": 0.2976655332369043
+  },
+  "checkpoint5_producer_finite_tensor_count": 435,
+  "fresh_five_acceptance_exists": false,
+  "exact_failure": {
+    "module": "reproduction/common8/gpu_training_admission.py",
+    "line_in_running_source": 143,
+    "assertion": "gpu['used_mib'] / gpu['total_mib'] <= .98",
+    "message": "Measured first-five GPU peak exceeds existing admission limit",
+    "actual_run_sampled_peak_fraction": 0.9812405743081696,
+    "actual_peak_mib": 80029,
+    "total_mib": 81559,
+    "failure_phase": "accept_five_updates/verify_training_gpu_samples/_coverage after five updates and paired evaluation",
+    "no_oom_marker_in_captured_training_tail": true,
+    "no_claim_that_no_oom_ever_occurred_outside_capture": true
+  },
+  "native_terminal": {
+    "fields": {
+      "EndTime": "2026-10-07T18:44:07",
+      "ExitCode": "1:0",
+      "JobId": "3324",
+      "JobName": "search-g1-formal-inline-ef7a5a0c",
+      "JobState": "FAILED",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "NonZeroExitCode",
+      "Restarts": "0",
+      "RunTime": "03:42:43",
+      "StartTime": "2026-10-07T15:01:24",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "0badc47f2fa8bbc626a9d77ae647e4674bf3ee71042a2dd5c91d41a3b66840c5",
+    "terminal_purge_is_not_success": true
+  },
+  "owned_residue_scope": "Independent existing ledger birth projection:9jobs STOPPED,508 distinct recorded births absent. Old cleanup-status receipt absent; independent absence is not rewritten as old cleanup success. Namespace and resource absence must be rechecked before retry.",
+  "private_failure_snapshot_sha256": "a1d1b6f14417668a099bce0aa61f4c833ded72587d0ac91ccd3794f8771688d9",
+  "private_terminal_snapshot_sha256": "b20beb095bcbc06b9f08a1e771bfede2e7807deda47279cbf5d3aefb7433f922",
+  "private_traceback_sha256": "708591cfd42546eacce2f2a270abff611ab88180d05821be7bfb4bcfcf43a818",
+  "repair_scope": "Remove both setup/first-five occupancy-percentage stop assertions; retain inventory/sample validity/actual numerical and OOM failures, report measured peak and historical98% exceedance. Give asynchronous owned CUDA context release a bounded30second wait before cleanup failure.",
+  "retry_semantics": "Existing saved model5 is not full Adam/scheduler/RNG state. New authorized direct retry starts official fresh0 in independent namespace toward200; prior5 remain historical and are not added to new count. No fake fullstate resume, no repeat CPU/GPU tests or review claimed.",
+  "goal_status": "active/incomplete",
+  "publication_scope": "Scalars/hashes only; no auth/model/data/rawQA/fulltraininglog. Immutable failed3324 source/records retained; code fix is for new run only."
+}

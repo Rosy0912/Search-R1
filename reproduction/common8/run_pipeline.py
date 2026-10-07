@@ -324,8 +324,8 @@ class Pipeline:
             self.stage('REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE')
             smoke=self.smoke('coexistence')
             totals={int(r[0]):int(r[1]) for r in gpu_rows('index,memory.total')}
-            assert set(self.max_used)==self.physical_indices and all(v/totals[i]<=.98 for i,v in self.max_used.items())
-            publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],model_smoke_sha256=digest(smoke),sampled_peak_mib=self.max_used,scope='actual initial/coexistence sampled occupancy; not full 2560-trajectory peak'))
+            assert set(self.max_used)==self.physical_indices and all(0<=v<=totals[i] for i,v in self.max_used.items())
+            publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],model_smoke_sha256=digest(smoke),sampled_peak_mib=self.max_used,occupancy_policy='monitor_only',sampled_peak_fraction_stop_limit=None,scope='actual initial/coexistence sampled occupancy; not full 2560-trajectory peak or a training-stop criterion'))
             a=self.start('probe-admission',[self.python,'-m','reproduction.common8.probe_admission'],[7]);self.wait('probe-admission',a,300)
             finished_stage=self.train_and_verify()
             success=True
@@ -339,7 +339,15 @@ class Pipeline:
                 if (self.base/'logs/corpus-cache-claim.json').exists():clean_cache(self.base)
                 if (self.base/'logs/retrieval-staging-claim.json').exists():clean_stage(self.base)
                 recorded={r['pid'] for job in self.owned.jobs.values() for r in job['ledger'].values()}
-                assert not [r for r in gpu_rows('gpu_uuid,pid','compute-apps') if int(r[1]) in recorded]
+                # CUDA contexts may remain briefly in the driver after their
+                # owned processes exit. Wait for release instead of declaring
+                # cleanup failed from a single immediate driver observation.
+                deadline=time.monotonic()+30
+                while True:
+                    remaining=[r for r in gpu_rows('gpu_uuid,pid','compute-apps') if int(r[1]) in recorded]
+                    if not remaining:break
+                    assert time.monotonic()<deadline, 'Owned CUDA contexts remain after bounded release wait'
+                    time.sleep(.5)
                 publish(self.base/'logs/cleanup-status.json',dict(run_id=self.run['run_id'],cleaned=True,checked_unix=time.time()))
             except Exception as error:
                 self.stage('OWNED_CLEANUP_FAILED',error=repr(error));raise

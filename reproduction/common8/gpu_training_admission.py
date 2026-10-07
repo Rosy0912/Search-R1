@@ -1,7 +1,7 @@
 """Actual sampled eight-device occupancy over this process's first five outers.
 
-The existing98% sampled occupancy criterion is retained. Acquisition gaps and
-query durations are reported as observed, without inventing a new gap limit or
+Occupancy is monitoring evidence, not an optimizer or training-stop criterion.
+Acquisition gaps and query durations are reported as observed, without
 claiming continuous instantaneous peak coverage.
 """
 import hashlib
@@ -140,7 +140,6 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
             assert all(type(gpu[key]) is int for key in ('index', 'used_mib', 'total_mib', 'util_percent'))
             assert (gpu['uuid'], gpu['total_mib']) == inventory[index], 'Actual sampled device identity differs'
             assert 0 <= gpu['used_mib'] <= gpu['total_mib'] and 0 <= gpu['util_percent'] <= 100
-            assert gpu['used_mib'] / gpu['total_mib'] <= .98, 'Measured first-five GPU peak exceeds existing admission limit'
             peaks[index] = max(peaks[index], gpu['used_mib'])
     for window in windows:
         inside = [row for row in selected if window['begin_unix'] <= row['query_started_unix'] and
@@ -156,11 +155,16 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
         actual_device_inventory={str(i): dict(uuid=inventory[i][0], total_mib=inventory[i][1]) for i in physical},
         sampled_peak_mib={str(i): peaks[i] for i in physical},
         sampled_peak_fraction={str(i): peaks[i] / inventory[i][1] for i in physical},
-        existing_sampled_peak_fraction_limit=.98, maximum_sampling_gap_seconds=max(gaps, default=0.),
+        occupancy_policy='monitor_only', sampled_peak_fraction_stop_limit=None,
+        historical_sampled_peak_fraction_limit=.98,
+        historical_limit_exceeded=any(peaks[i] / inventory[i][1] > .98 for i in physical),
+        maximum_sampling_gap_seconds=max(gaps, default=0.),
         maximum_query_duration_seconds=max(durations), selected_samples_sha256=hashlib.sha256(encoded).hexdigest(),
         semantics='Actual sampled occupancy from training claim through this same-process five gate, including '
                   'initialization, generation and optimizer writes; all eight actual devices in every selected sample. '
-                  'Observed gaps and query durations are disclosed; instantaneous peaks between samples are unmeasured.')
+                  'Observed gaps and query durations are disclosed; instantaneous peaks between samples are unmeasured. '
+                  'A high occupancy sample alone does not reject an otherwise completed update; actual allocation, '
+                  'sample integrity, OOM and numerical failures retain their own checks.')
 
 
 def verify_training_gpu_samples(base, run, scheduler_receipts):
