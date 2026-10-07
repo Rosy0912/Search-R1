@@ -1,0 +1,353 @@
+{
+  "actual_completed_outer_receipts": 0,
+  "actual_returned_driver_attempt_receipts": 0,
+  "actual_total_adam_writes_unknown": true,
+  "birth_observation_sha256": "996deb2762c6c55a37cb702585e1ba88e6e2f26f28716d505c5e25040ff6e291",
+  "bounded_training_tail_failure_marker_counts": {},
+  "completed_training_reward": null,
+  "current_update_counts_scope": "Actual driver and worker receipts absent in the observed prefix:0completed receipts; actual in-flight Adam total unknown. Frozen manifest0 never used as current progress.",
+  "development512": [
+    {
+      "checked_unix": 1791358269.6016228,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    }
+  ],
+  "fresh200_incomplete": true,
+  "gpu_current": {
+    "error_type": null,
+    "queried_unix": 1791358350.824404,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 9200,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 8541,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 8543,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 8543,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 15159,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "run_prefix": {
+      "first_sample_unix": 1791356513.6798,
+      "last_sample_unix": 1791358349.2652326,
+      "maximum_adjacent_sample_end_interval_seconds": 11.174412727355957,
+      "maximum_query_duration_seconds": 9.173644065856934,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.004645586013794,
+      "maximum_sampled_used_fraction": 0.6279257960494856,
+      "peak_used_mib_per_gpu": {
+        "0": 46868,
+        "1": 46429,
+        "2": 46500,
+        "3": 46501,
+        "4": 47151,
+        "5": 47192,
+        "6": 46434,
+        "7": 51213
+      },
+      "sample_count": 831
+    },
+    "scope": "Sampled occupancy peaks only; setup/run peaks and claimed trainer window are separated; gaps are observed prefix statistics",
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791357564.831718,
+      "last_sample_unix": 1791358349.2652326,
+      "maximum_adjacent_sample_end_interval_seconds": 2.7655839920043945,
+      "maximum_query_duration_seconds": 0.7649331092834473,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.004645586013794,
+      "maximum_sampled_used_fraction": 0.6279257960494856,
+      "peak_used_mib_per_gpu": {
+        "0": 46868,
+        "1": 46429,
+        "2": 46500,
+        "3": 46501,
+        "4": 47151,
+        "5": 47192,
+        "6": 46434,
+        "7": 51213
+      },
+      "sample_count": 358
+    },
+    "trainer_window_start_claim_unix": 1791357563.4740117
+  },
+  "inventory": {
+    "h100-10": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358104.255567,
+      "compute_process_count": 16,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        9855,
+        9263,
+        9261,
+        9225,
+        9261,
+        9307,
+        9445,
+        9165
+      ],
+      "utilization_percent_by_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "h100-11": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358103.710751,
+      "compute_process_count": 24,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        65931,
+        71915,
+        66347,
+        58083,
+        81039,
+        67129,
+        72688,
+        80023
+      ],
+      "utilization_percent_by_index": [
+        51,
+        96,
+        43,
+        100,
+        95,
+        100,
+        95,
+        100
+      ]
+    },
+    "h100-16": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358103.4004533,
+      "compute_process_count": 24,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        34266,
+        33676,
+        33674,
+        33436,
+        20844,
+        20890,
+        20872,
+        20630
+      ],
+      "utilization_percent_by_index": [
+        57,
+        60,
+        56,
+        38,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "h100-4": {
+      "actual_reachability": "unresolved_host_key_change",
+      "gpu_state_known": false
+    },
+    "h100-5": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358103.5715444,
+      "compute_process_count": 24,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        10599,
+        10015,
+        10015,
+        10013,
+        10013,
+        10015,
+        10013,
+        9773
+      ],
+      "utilization_percent_by_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "h100-7": {
+      "actual_reachability": "unresolved_host_key_change",
+      "gpu_state_known": false
+    },
+    "h100-8": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358103.708555,
+      "compute_process_count": 17,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        9198,
+        45679,
+        45694,
+        45687,
+        8543,
+        8542,
+        8538,
+        15159
+      ],
+      "utilization_percent_by_index": [
+        0,
+        61,
+        65,
+        65,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "h100-9": {
+      "actual_reachability": "observed",
+      "checked_unix": 1791358103.5713625,
+      "compute_process_count": 8,
+      "foreign_ltx2_processes_present": true,
+      "full_eight_gpu_allocation_proven": false,
+      "gpu_count": 8,
+      "gpu_state_known": true,
+      "memory_used_mib_by_index": [
+        1131,
+        1131,
+        1131,
+        1131,
+        1131,
+        1131,
+        1131,
+        1131
+      ],
+      "utilization_percent_by_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "inventory_source_sha256": "86276349d842eee66ea198d4bf9ca2d8086a23ae2c3b7473abd1832ad791df93",
+  "job_id": "3324",
+  "latest_console_epoch_step": {
+    "epoch": 0,
+    "step": 1
+  },
+  "latest_stage64_console_metrics": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "live_progress_observation_unix": 1791358350.6050742,
+  "logged_adam_write_lower_bound_per_rank": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0
+  },
+  "matching_owned_pid_births": 469,
+  "native_start_time": "2026-10-07T15:01:24",
+  "native_state": "RUNNING",
+  "new_tests_or_reviews": 0,
+  "node": "h100-8",
+  "observation_unix": 1791358129.3843033,
+  "progress_snapshot_sha256": "62a3394ff391457d82d0af52e9b60e410b3564be4f4510dce7843721ee460439",
+  "recorded_unix": 1791358293.765965,
+  "role": "expanded_h100_actual_inventory_and_native3324_live",
+  "run_id": "c0f329fb6282460a9fea8811aa8f47f2",
+  "scope": "Hardware discovery was expanded after human steering; Slurm CPU allocation/down alone never proves actual GPU occupancy. Running3324 is preserved; no migration, duplicate trainer, foreign stop or key change.",
+  "source_commit": "19fdfc32cc1c62d9723a02bf658ad8e4c2b332aa",
+  "source_hashes_match": true,
+  "stage": "GRPO_1_TO_200",
+  "trainer_pid_birth_matches": true
+}
