@@ -1,0 +1,390 @@
+{
+  "schema": "search-g1-native-initial-calibration-and-recorder-v1",
+  "job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "observed_unix": 1791372395.6538932,
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "00:16:09",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "dba4a14ef42277a28452a1fa0b4ec1a02b7208a7bfc7eda5b9a2bc988b81787e",
+    "terminal_purge_is_not_success": true
+  },
+  "pipeline": {
+    "sampling_error_reported": false,
+    "stage": "REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE",
+    "unix": 1791372286.3096302
+  },
+  "phase_job_births": {
+    "gpu-preflight": {
+      "actual": {
+        "exists": false,
+        "pid": 29540
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 29540,
+        "sid": 29540,
+        "start_ticks": 2231613749,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "initial-calibration": {
+      "actual": {
+        "exists": false,
+        "pid": 44979
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 44979,
+        "sid": 44979,
+        "start_ticks": 2231671952,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "model-coexistence": {
+      "actual": {
+        "pid": 49457,
+        "sid": 49457,
+        "start_ticks": 2231697337,
+        "state": "R",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "ledger_state": "STARTED",
+      "recorded_leader": {
+        "pid": 49457,
+        "sid": 49457,
+        "start_ticks": 2231697337,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "model-initial": {
+      "actual": {
+        "exists": false,
+        "pid": 31075
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 31075,
+        "sid": 31075,
+        "start_ticks": 2231615840,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "probe-server": {
+      "actual": {
+        "pid": 49167,
+        "sid": 49167,
+        "start_ticks": 2231695309,
+        "state": "S",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "ledger_state": "STARTED",
+      "recorded_leader": {
+        "pid": 49167,
+        "sid": 49167,
+        "start_ticks": 2231695309,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "retrieval-stage": {
+      "actual": {
+        "exists": false,
+        "pid": 36011
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 36011,
+        "sid": 36011,
+        "start_ticks": 2231625261,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "retriever": {
+      "actual": {
+        "pid": 39117,
+        "sid": 39117,
+        "start_ticks": 2231645639,
+        "state": "S",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "ledger_state": "STARTED",
+      "recorded_leader": {
+        "pid": 39117,
+        "sid": 39117,
+        "start_ticks": 2231645639,
+        "state": "R",
+        "uid": 0
+      }
+    }
+  },
+  "calibration_existing_progress": {
+    "calibration_job_present": true,
+    "directly_located_file_count": 1,
+    "files": {
+      "/mnt/data/shaoshitong/g1f-ef498ac3/logs/initial-calibration.log": {
+        "captured_complete_newline_count": 1,
+        "complete_file_captured": true,
+        "error_classes": [],
+        "exists": true,
+        "fatal_marker_counts": {},
+        "first_ledger_location": "initial-calibration.log",
+        "latest_structured_progress_scalars": [],
+        "mtime_unix": 1791372265.44628,
+        "size_bytes": 97
+      }
+    },
+    "ledger_job_keys": [
+      "leader",
+      "ledger",
+      "log",
+      "state",
+      "arguments",
+      "exit_code"
+    ],
+    "manifest_initial_probe_version": null,
+    "recorded_exit_code": 0,
+    "scope": "Only directly ledger-located existing calibration files; no generation or validation"
+  },
+  "formal_trainer": {
+    "actual_proc": null,
+    "birth_matches_recorded": false,
+    "claimed_unix": null,
+    "ledger_state": null,
+    "recorded_leader": {},
+    "same_previous_birth": false
+  },
+  "completed_update_source_available": false,
+  "completed_update_metrics_source_available": false,
+  "visible_completed_receipts": 0,
+  "actual_atomic_total_writes_unknown": true,
+  "current_reward": null,
+  "current_dev512_score": null,
+  "current_stage64_score": null,
+  "current_gpu": {
+    "queried_unix": 1791372401.9561698,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 6711,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 6003,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 6004,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 6004,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 12668,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 2.3234615325927734,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791372393.3970444,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.002333641052246,
+      "maximum_sampled_used_fraction": 0.6050956975931534,
+      "peak_used_mib_per_gpu": {
+        "0": 45888,
+        "1": 45445,
+        "2": 45456,
+        "3": 45457,
+        "4": 45447,
+        "5": 45456,
+        "6": 45438,
+        "7": 49351
+      },
+      "sample_count": 430
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791372297.2915108,
+      "last_sample_unix": 1791372393.3970444,
+      "maximum_adjacent_sample_end_interval_seconds": 3.041738986968994,
+      "maximum_query_duration_seconds": 1.0407049655914307,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.0011024475097656,
+      "maximum_sampled_used_fraction": 0.6050956975931534,
+      "peak_used_mib_per_gpu": {
+        "0": 45888,
+        "1": 45445,
+        "2": 45456,
+        "3": 45457,
+        "4": 45447,
+        "5": 45456,
+        "6": 45438,
+        "7": 49351
+      },
+      "sample_count": 44
+    },
+    "trainer_boundary_unix": null,
+    "trainer_window_prefix": {
+      "sample_count": 0
+    }
+  },
+  "gpu_scope": "Setup/coexistence phase sampling only; formal trainer boundary absent. Old-run samples excluded.",
+  "native_external_recorder": {
+    "checked_unix": 1791372249.9912865,
+    "host": "h100-8",
+    "job_id": "3329",
+    "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+    "observer_status": "LIVE",
+    "process_status": "MATCH",
+    "process_identity": {
+      "boot_id": "3f356eae-7f73-49ad-8467-d7c12e98057c",
+      "pid": 16743,
+      "sid": 16743,
+      "start_ticks": 2231529824,
+      "uid": 0
+    },
+    "process_identity_matches": true,
+    "claim_identity_matches": true,
+    "actual_source_sha256": "d04df341394a0e30751e8d1f54718c09849c117c8acb609779b979b98dd40eb9",
+    "source_sha_matches": true,
+    "initial_running_birth": {
+      "fields": {
+        "Command": "/mnt/data/shaoshitong/g1f-ef498ac3/repo/reproduction/common8/launch_native.sh",
+        "EndTime": "2026-10-15T19:10:26",
+        "ExitCode": "0:0",
+        "JobId": "3329",
+        "JobName": "search-g1-formal-inline-ef498ac3",
+        "JobState": "RUNNING",
+        "NodeList": "h100-8",
+        "Restarts": "0",
+        "RunTime": "00:00:25",
+        "StartTime": "2026-10-07T19:10:26",
+        "SubmitTime": "2026-10-07T18:55:36",
+        "TimeLimit": "8-00:00:00",
+        "WorkDir": "/mnt/data/shaoshitong/g1f-ef498ac3/repo"
+      },
+      "observed_at": "2026-10-07T11:10:51+00:00",
+      "query_error": null,
+      "returncode": 0
+    },
+    "running_birth_matches": true,
+    "latest_native": {
+      "fields": {
+        "Command": "/mnt/data/shaoshitong/g1f-ef498ac3/repo/reproduction/common8/launch_native.sh",
+        "EndTime": "2026-10-15T19:10:26",
+        "ExitCode": "0:0",
+        "JobId": "3329",
+        "JobName": "search-g1-formal-inline-ef498ac3",
+        "JobState": "RUNNING",
+        "NodeList": "h100-8",
+        "Restarts": "0",
+        "RunTime": "00:13:26",
+        "StartTime": "2026-10-07T19:10:26",
+        "SubmitTime": "2026-10-07T18:55:36",
+        "TimeLimit": "8-00:00:00",
+        "WorkDir": "/mnt/data/shaoshitong/g1f-ef498ac3/repo"
+      },
+      "observed_at": "2026-10-07T11:23:52+00:00",
+      "query_error": null,
+      "returncode": 0
+    },
+    "terminal_native_state": null,
+    "purged_unknown_outcome": null,
+    "scope": "One bounded read-only health and RUNNING-birth observation of the same3329 external recorder; no process/training/anchor mutation",
+    "artifact_metadata": {
+      "birth.json": {
+        "exists": true,
+        "sha256": "e6b5df2b2f1bf2723c6fbc2caa80a7d8c93c4b7c8a894d5d0537ab2cf59e4102"
+      },
+      "claim.json": {
+        "exists": true,
+        "sha256": "2b816b3659907b5591bcd8a60f75bb256768362d1b0a29ab1f0b17dd66bd3f73"
+      },
+      "latest-observation.json": {
+        "exists": true,
+        "sha256": "6bf665c033f671e38aa528910f791814335d805af2d53650a49410f1d734dfac"
+      },
+      "purged-unknown.json": {
+        "exists": false
+      },
+      "terminal.json": {
+        "exists": false
+      }
+    }
+  },
+  "progress_observation_sha256": "7ad51bf87da1845277acafec6415d8dfe54a4158bb72b0ebaa238fa523d47a85",
+  "recorder_observation_sha256": "8283c95dba855cac720933c0cd354f2eb8c774ca1cf27fd1a62f61ab80fb1ccf",
+  "source_snapshot_scope": "Declared disk-source hash identity, not loaded-module proof; no new current-source tests or review.",
+  "goal_status": "active",
+  "goal_complete": false,
+  "target_fresh_outer": 200,
+  "fresh_five_accepted": false,
+  "previous_goal_turn_classification": "actual_start_retrieval_acceptance_and_owned_export_cleanup_progress",
+  "current_goal_turn_classification": "real_initial_calibration_exit0_and_coexistence_phase_progress; specific live processes re-observed",
+  "same_blocker_consecutive_turns": 0,
+  "formal_hourly_anchor_advanced": false,
+  "actions": "Same saved job/namespace observed; current recorder birth read once; no tests/review/evaluation/submission/restart/source change."
+}
