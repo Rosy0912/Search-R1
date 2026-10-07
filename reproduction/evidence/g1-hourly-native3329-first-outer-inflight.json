@@ -1,0 +1,696 @@
+{
+  "actual_atomic_total_writes_unknown": true,
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "complete_outer_scope": "First actual attempt still in progress at14/20 opportunities. No driver complete source/receipt yet; no current atomic total is inferred.",
+  "completed_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": null,
+    "latest": null,
+    "matched_row_count": 0,
+    "source_available": false
+  },
+  "current_snapshot_sha256": "7ed0e195f1f8b8d93ebbe8b80016971fb9719e749c28b64e232ca60ed6d95227",
+  "declared_source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "development512": [
+    {
+      "checked_unix": 1791373184.34943,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    }
+  ],
+  "development512_receipt_sha256": "46203e1d5ec2eec81f7c0df1a89224ad6f656458aea7064a34198a371a6fca7f",
+  "driver": {
+    "agreed_adam_writes_at_last_driver_return_per_rank": 0,
+    "attempt_count": 0,
+    "fully_skipped_attempt_count": 0,
+    "latest_attempt": null,
+    "observed_completed_outer": 0,
+    "processed_opportunities_at_last_driver_return_per_rank": 0,
+    "source_available": false,
+    "target_outer": 200,
+    "valid_visible_prefix": true,
+    "warmup_advances": 0
+  },
+  "errors": {
+    "console_failure_marker_counts": {},
+    "native_failure_projection": {
+      "StdErr": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      },
+      "StdOut": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      }
+    },
+    "read_errors": {}
+  },
+  "existing_first_behavior_receipt_original_sha256": "5f9e4a704ecafadb43b8ccafea786b28a3e9d26a8fbcd2a01d51caa6514da694",
+  "existing_first_behavior_receipt_scalars": {
+    "accepted": true,
+    "actor_rows_sha256": "9b8d0a8ee6af643fa55b4231213e84124fb4f0ae10a0e52ec315f37ed4e19d83",
+    "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+    "audit_sha256": "e54312c3b0120127e51c2d0f68cac89492b453c7fb9093f55bafc8a47f3ae756",
+    "healthy_checkpoint_accepted": false,
+    "included_actor_token_count": 432499,
+    "logical_update": 1,
+    "max_abs_discrepancy": 0.0011139512062072754,
+    "private_trace_sha256": "785577ba006c891214d687884486eeaa54e16370f84ef0ea3006c404e0e9133a",
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "sampling.temperature": 1,
+    "sampling.top_p": 1.0,
+    "schema_version": 1,
+    "tolerance": 0.05,
+    "trace_sha256": "785577ba006c891214d687884486eeaa54e16370f84ef0ea3006c404e0e9133a",
+    "trajectory_count": 2560
+  },
+  "existing_first_behavior_scope": "Actual2560/432499-token probability producer accepted maxerror0.0011139512<0.05, read without rerun; healthy_checkpoint_accepted false.",
+  "external_recorder": {
+    "actual_source_sha256": "d04df341394a0e30751e8d1f54718c09849c117c8acb609779b979b98dd40eb9",
+    "artifacts": {
+      "birth.json": {
+        "bytes": 3050,
+        "exists": true,
+        "sha256": "e6b5df2b2f1bf2723c6fbc2caa80a7d8c93c4b7c8a894d5d0537ab2cf59e4102"
+      },
+      "claim.json": {
+        "bytes": 663,
+        "exists": true,
+        "sha256": "2b816b3659907b5591bcd8a60f75bb256768362d1b0a29ab1f0b17dd66bd3f73"
+      },
+      "latest-observation.json": {
+        "bytes": 2234,
+        "exists": true,
+        "sha256": "66c9c18ea5ec9da680098877de548ee6ff968d9c238ce0794b202f619e861fe6"
+      },
+      "purged-unknown.json": {
+        "exists": false
+      },
+      "terminal.json": {
+        "exists": false
+      }
+    },
+    "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+    "checked_unix": 1791374900.9108977,
+    "claim_identity_matches": true,
+    "host": "h100-8",
+    "job_id": "3329",
+    "latest_native": {
+      "exit_code": "0:0",
+      "identity_matches": true,
+      "job_id": "3329",
+      "native_state": "RUNNING",
+      "observed_at": "2026-10-07T12:07:55+00:00",
+      "query_error": null,
+      "restarts": "0",
+      "returncode": 0,
+      "runtime": "00:57:29",
+      "start_time": "2026-10-07T19:10:26"
+    },
+    "observer_status": "LIVE",
+    "process_identity": {
+      "boot_id": "3f356eae-7f73-49ad-8467-d7c12e98057c",
+      "pid": 16743,
+      "sid": 16743,
+      "start_ticks": 2231529824,
+      "uid": 0
+    },
+    "process_identity_matches": true,
+    "purged_unknown_outcome": null,
+    "running_birth": {
+      "identity_matches": true,
+      "native_state": "RUNNING",
+      "observed_at": "2026-10-07T11:10:51+00:00",
+      "restarts": "0",
+      "start_time": "2026-10-07T19:10:26"
+    },
+    "scope": "One bounded read-only health observation; no shared/training/process/anchor mutation",
+    "source_sha_matches": true,
+    "terminal_native_state": null,
+    "terminal_observed_at": null
+  },
+  "external_recorder_snapshot_sha256": "c49ad48abbdb693ccd9a1300e6b252d3d71fcf9c7ad6b47ef0c921cc58d82080",
+  "final51713_accepted": false,
+  "fresh_five_accepted": false,
+  "full_goal_target_complete_outer": 200,
+  "goal_complete": false,
+  "gpu_current": {
+    "queried_unix": 1791374983.5891647,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 59560,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 58009,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 58010,
+        "util_percent": 93
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 58011,
+        "util_percent": 97
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 58011,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 58010,
+        "util_percent": 100
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 58010,
+        "util_percent": 100
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 67989,
+        "util_percent": 93
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 1.9931464195251465,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791374981.320081,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 58372,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 1607
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791374981.320081,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 58372,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 1607
+    },
+    "trainer_boundary_unix": 1791372460.9051704,
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791372462.0104868,
+      "last_sample_unix": 1791374981.320081,
+      "maximum_adjacent_sample_end_interval_seconds": 2.913508415222168,
+      "maximum_query_duration_seconds": 0.9128203392028809,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 58372,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 1149
+    }
+  },
+  "gpu_start_gap_scope": "Pending job had no GPU sampling; collection starts at actual19:10:50.590. Internal max8.985s startup query, trainer window max2.914s. Sampled peaks do not prove no unobserved transient.",
+  "gpu_window_start_to_first_sample_gap_seconds": 330.3354723453522,
+  "job_id": "3329",
+  "latest_stage64_console_metrics": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "main_task_births": [
+    {
+      "actual": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "state": "S",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "first_ledger_location": "jobs.trainer.ledger.66605",
+      "matched_labels": [
+        "ray::main_task"
+      ],
+      "recorded": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "uid": 0
+      }
+    }
+  ],
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "00:59:17",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "796adcc97b87135386bb033863c22c333e0b3deb2148098f5bca34cdcf036c07",
+    "terminal_purge_is_not_success": true
+  },
+  "new_validation_evaluation_review_test_or_trainer_started_for_report": false,
+  "new_visible_complete_outer_receipts_since_previous_report": 0,
+  "observation_window_duration_seconds": 3862.869115829468,
+  "observation_window_end_unix": 1791374983.1235788,
+  "observation_window_start_unix": 1791371120.254463,
+  "observed_unix": 1791374983.1235788,
+  "owned_cleanup_complete": false,
+  "pipeline": {
+    "execution_role": "production",
+    "sampling_error_reported": false,
+    "stage": "GRPO_1_TO_200",
+    "unix": 1791372440.3484912
+  },
+  "previous_formal_report_unix": 1791371368.39784,
+  "prior_anchor_sha256": "5eee4901377348f78d1543650fd024bc9e19a076c57f21e5bf110bf15f8291e6",
+  "rank_nonatomic_journal_prefixes": {
+    "0": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "1": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "2": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "3": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "4": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "5": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "6": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "7": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 14,
+      "inflight_logged_write_lower_bound_after_driver_return": 14,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 13,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 14,
+        "optimizer_writes_before": 13,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 0,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "BEGIN",
+        "logical_update": 1,
+        "next_learning_rates": [
+          0.0
+        ],
+        "opportunities_processed": 0,
+        "scheduler_advances": 0,
+        "writes_after": 0
+      },
+      "latest_worker_terminal": null,
+      "logged_adam_write_prefix_lower_bound": 14,
+      "logged_processed_opportunities": 14,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    }
+  },
+  "reward_window": {
+    "delta_from_previous_nonempty_mean": null,
+    "mean": null,
+    "range": null,
+    "recent": null,
+    "sample_count": 0,
+    "scope": "No completed-update reward sample yet. Null mean is not zero reward; rollout-only TRUST is excluded."
+  },
+  "role": "formal_hourly_native3329_first_outer_inflight",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "schema_version": 1,
+  "score_scope": "Both are this actual run step0 baselines, no post-update evaluation yet. Producer scalars/hash, not an independent ordered-ID/binary-EM audit.",
+  "source_scope": "Declared saved source/disk map, not loaded module proof. This is scalar/hash publication; running source is unchanged.",
+  "stage64_exact_existing_identity": {
+    "checked_unix": 1791372593.8641367,
+    "correct": 14.0,
+    "counts": {
+      "hotpotqa": 32,
+      "nq": 32
+    },
+    "final": false,
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "split": "stage",
+    "step": 0,
+    "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "weighted_em": 0.21875,
+    "weighted_f1": 0.30167993505026125
+  },
+  "stage64_identity_receipt_sha256": "c3cc50f0fb767114c1a4cec5866db616582463b12c26b1bad7a4b4105ce73140",
+  "trainer": {
+    "actual_proc": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791372460.9051704,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": false
+  },
+  "visible_completed_outer_receipts": 0,
+  "warmup_scope": "BEGIN first attempt consumes LR0. No complete-outer scheduler advance captured. Writes are not parameter-change acceptance.",
+  "window_scope": "Current native3329 only, from previous pending-job observation; no old3324 updates/reward/GPU/evaluation inherited."
+}
