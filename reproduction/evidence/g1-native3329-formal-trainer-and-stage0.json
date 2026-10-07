@@ -1,0 +1,265 @@
+{
+  "schema": "search-g1-actual-formal-trainer-and-stage0-v1",
+  "job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "observed_unix": 1791372896.735634,
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "00:24:30",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "6873f8cd087d0f12ca24e943427e3e6676b14cf519cfc9c758583127e925f4f1",
+    "terminal_purge_is_not_success": true
+  },
+  "pipeline": {
+    "execution_role": "production",
+    "sampling_error_reported": false,
+    "stage": "GRPO_1_TO_200",
+    "unix": 1791372440.3484912
+  },
+  "trainer": {
+    "actual_proc": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791372460.9051704,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  },
+  "driver": {
+    "agreed_adam_writes_at_last_driver_return_per_rank": 0,
+    "attempt_count": 0,
+    "fully_skipped_attempt_count": 0,
+    "latest_attempt": null,
+    "observed_completed_outer": 0,
+    "processed_opportunities_at_last_driver_return_per_rank": 0,
+    "source_available": false,
+    "target_outer": 200,
+    "valid_visible_prefix": true,
+    "warmup_advances": 0
+  },
+  "actual_atomic_total_writes_unknown": true,
+  "completed_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": null,
+    "latest": null,
+    "matched_row_count": 0,
+    "source_available": false
+  },
+  "stage64_existing_producer_identity": {
+    "exists": true,
+    "reader_performed_new_evaluation": false,
+    "run_identity_matches_expected": true,
+    "scalar_projection": {
+      "checked_unix": 1791372593.8641367,
+      "correct": 14.0,
+      "counts": {
+        "hotpotqa": 32,
+        "nq": 32
+      },
+      "final": false,
+      "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+      "split": "stage",
+      "step": 0,
+      "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "weighted_em": 0.21875,
+      "weighted_f1": 0.30167993505026125
+    }
+  },
+  "stage64_identity_capture": {
+    "captured_bytes": 6047,
+    "captured_sha256": "c3cc50f0fb767114c1a4cec5866db616582463b12c26b1bad7a4b4105ce73140",
+    "exists": true,
+    "observed_unix": 1791372825.2855508,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/latest-stage-identity.json",
+    "size_bytes": 6047
+  },
+  "stage64_console_metrics": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "stage64_score_scope": "Current fresh run step0 training-before baseline; producer exact scalar counts, not an independent orderedIDs/binaryEM audit. No new evaluation triggered.",
+  "development512_before_capture": {
+    "exists": false,
+    "observed_unix": 1791372896.769038,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/formal-inline-development-before.json"
+  },
+  "gpu_current": {
+    "queried_unix": 1791372897.0870218,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 9198,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 8539,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 8540,
+        "util_percent": 82
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 8541,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 8541,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 8540,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 8540,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 15159,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 1.9537348747253418,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791372894.8911338,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.005596399307251,
+      "maximum_sampled_used_fraction": 0.6121825917434005,
+      "peak_used_mib_per_gpu": {
+        "0": 46424,
+        "1": 45885,
+        "2": 45894,
+        "3": 45815,
+        "4": 45897,
+        "5": 45900,
+        "6": 46152,
+        "7": 49929
+      },
+      "sample_count": 656
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791372826.9224136,
+      "last_sample_unix": 1791372894.8911338,
+      "maximum_adjacent_sample_end_interval_seconds": 2.248708963394165,
+      "maximum_query_duration_seconds": 0.24803543090820312,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.0029988288879395,
+      "maximum_sampled_used_fraction": 0.6110790961144693,
+      "peak_used_mib_per_gpu": {
+        "0": 46256,
+        "1": 45885,
+        "2": 45804,
+        "3": 45803,
+        "4": 45803,
+        "5": 45894,
+        "6": 45452,
+        "7": 49839
+      },
+      "sample_count": 32
+    },
+    "trainer_boundary_unix": 1791372460.9051704,
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791372462.0104868,
+      "last_sample_unix": 1791372894.8911338,
+      "maximum_adjacent_sample_end_interval_seconds": 2.913508415222168,
+      "maximum_query_duration_seconds": 0.9128203392028809,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.005596399307251,
+      "maximum_sampled_used_fraction": 0.6121825917434005,
+      "peak_used_mib_per_gpu": {
+        "0": 46424,
+        "1": 45885,
+        "2": 45894,
+        "3": 45815,
+        "4": 45897,
+        "5": 45900,
+        "6": 46152,
+        "7": 49929
+      },
+      "sample_count": 198
+    }
+  },
+  "gpu_scope": "Current run setup/initial evaluation and since trainer-launch samples; no first actual optimizer write demonstrated yet. Old run peaks excluded.",
+  "read_errors": {},
+  "training_log_failure_marker_counts": {},
+  "current_progress_sha256": "d1a4b84641391b0378619f892c4366d88e1ac653dc682c6cdce6a8ad8997bbd1",
+  "stage_identity_progress_sha256": "6ed7433c0fd760b77e79f145b91c9505b15466be46c81a99fb7be9095c17974a",
+  "formal_trainer_first_claim_observation_sha256": "979455dcc6352d91c0a5c29bc38c09f59e9c5de3085c0373828f2e683341eb01",
+  "goal_status": "active",
+  "goal_complete": false,
+  "target_fresh_outer": 200,
+  "fresh_five_accepted": false,
+  "previous_goal_turn_classification": "real_initial_calibration_exit0_coexistence_progress_and_actual_native_birth_proof",
+  "current_goal_turn_classification": "actualformaltrainerbirth_and_freshstage0_baseline_progress; verified wait for first existingupdate receipt",
+  "same_blocker_consecutive_turns": 0,
+  "formal_hourly_anchor_advanced": false,
+  "actions_scope": "Same saved native job and actual trainer birth read; no extra tests/review/evaluation/generation/restart/submission/cleanup/source change. Declared disk source is not loaded-module proof."
+}
