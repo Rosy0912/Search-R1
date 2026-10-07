@@ -1,0 +1,1420 @@
+{
+  "active_child_receipt": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "-m",
+      "search_e1.rollout",
+      "--model",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+      "--data",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "--output",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+      "--k",
+      "5",
+      "--backend",
+      "vllm",
+      "--workers",
+      "8",
+      "--retriever-url",
+      "http://10.120.17.101:18004/retrieve"
+    ],
+    "child_pgid": 2460237,
+    "child_pid": 2460237,
+    "controller_pid": 2459676,
+    "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/preparation-3-rollouts.log",
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "scope": "Only this new preparation-3 stage and E1_RUN_ID descendants; never another job",
+    "time": 1791361883.9665382,
+    "uid": 1005
+  },
+  "base": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+  "checks": {
+    "controller_live": true,
+    "failed_ten_pids_absent": true,
+    "five_update_not_accepted": true,
+    "observer_v2_live": true,
+    "opsd_unstarted": true,
+    "rollout_parent_owned_live": true,
+    "static_exact_science": true,
+    "watcher_v3_live": true,
+    "workers_all_checks": true
+  },
+  "controller": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py"
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "E1_BASE": null,
+      "E1_INFERENCE_UTIL": null,
+      "E1_PROFILE": null,
+      "E1_RUN_ID": null,
+      "PYTHONPATH": null,
+      "VLLM_ATTENTION_BACKEND": null
+    },
+    "live": true,
+    "pgid": 2459674,
+    "pid": 2459676,
+    "ppid": 2459674,
+    "start_ticks": 915357855,
+    "state": "S",
+    "uid": 1005
+  },
+  "expected_run_id": "914bfff786c84ede8d82414dff65f60e",
+  "five_update_receipt_exists": false,
+  "memory_all8_v2": {
+    "actual_free_minima_by_gpu_mib": {
+      "0": 3718,
+      "1": 3718,
+      "2": 3714,
+      "3": 3756,
+      "4": 3756,
+      "5": 3714,
+      "6": 3714,
+      "7": 3099
+    },
+    "actual_free_source": "nvidia-smi memory.free; directly measured, no total-used substitution",
+    "computed_fields_note": "peaks_mib and minimum_reserve_mib cover this V2 interval; minimum_reserve_mib is legacy COMPUTED total-used, not the admission metric",
+    "current": [
+      {
+        "actual_free_mib": 3718,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4071,
+        "gpu": 0,
+        "reserve_mib": 4071,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20493,
+        "utilization": 100,
+        "uuid": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe"
+      },
+      {
+        "actual_free_mib": 3718,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4071,
+        "gpu": 1,
+        "reserve_mib": 4071,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20493,
+        "utilization": 96,
+        "uuid": "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7"
+      },
+      {
+        "actual_free_mib": 3714,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4067,
+        "gpu": 2,
+        "reserve_mib": 4067,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20497,
+        "utilization": 0,
+        "uuid": "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c"
+      },
+      {
+        "actual_free_mib": 3756,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4109,
+        "gpu": 3,
+        "reserve_mib": 4109,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20455,
+        "utilization": 0,
+        "uuid": "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b"
+      },
+      {
+        "actual_free_mib": 3756,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4109,
+        "gpu": 4,
+        "reserve_mib": 4109,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20455,
+        "utilization": 0,
+        "uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6"
+      },
+      {
+        "actual_free_mib": 3714,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4067,
+        "gpu": 5,
+        "reserve_mib": 4067,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20497,
+        "utilization": 0,
+        "uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf"
+      },
+      {
+        "actual_free_mib": 3714,
+        "computed_minus_actual_free_mib": 353,
+        "computed_reserve_mib": 4067,
+        "gpu": 6,
+        "reserve_mib": 4067,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 20497,
+        "utilization": 0,
+        "uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45"
+      },
+      {
+        "actual_free_mib": 3179,
+        "computed_minus_actual_free_mib": 352,
+        "computed_reserve_mib": 3531,
+        "gpu": 7,
+        "reserve_mib": 3531,
+        "reserved_mib": 354,
+        "total_mib": 24564,
+        "used_mib": 21033,
+        "utilization": 52,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+      }
+    ],
+    "free_measurement": "nvidia-smi memory.free",
+    "historical_v1_computed_evidence": {
+      "captured_at_unix": 1791355957.0243328,
+      "content_sha256": "e59ad06e67d2f9e774a493af6faf974aee08ec7c030dd45765cdb3a0991f14b5",
+      "metric": "COMPUTED total_mib - peak(memory.used); includes driver-reserved memory; not actual free",
+      "minimum_reserve_mib": 3509,
+      "original_scope": "HKUST1 allocated8 cards; total sampled usage, keep stage identity; old-GRPO pre-release samples excluded",
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous.json",
+      "peaks_mib": {
+        "0": 20493,
+        "1": 20493,
+        "2": 20497,
+        "3": 20455,
+        "4": 20455,
+        "5": 20497,
+        "6": 20497,
+        "7": 21055
+      },
+      "phase": {
+        "controller_pid": 2196101,
+        "phase": "OPSD100_FULL_FRESH_TRAJECTORIES",
+        "time": 1791347537.116323
+      },
+      "samples": 4026,
+      "time": 1791355956.9539247
+    },
+    "minimum_actual_free_mib": 3099,
+    "minimum_reserve_mib": 3451,
+    "observer": {
+      "pid": 2272620,
+      "source_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/memory_observer_v2.py",
+      "source_sha256": "40aff306fc84619da629db54f8efe7d2f132dafd7b9ab39ef00372d75ac4ad60",
+      "started_at_unix": 1791355956.9531648
+    },
+    "peaks_mib": {
+      "0": 20493,
+      "1": 20493,
+      "2": 20497,
+      "3": 20455,
+      "4": 20455,
+      "5": 20497,
+      "6": 20497,
+      "7": 21113
+    },
+    "phase": {
+      "controller_pid": 2459676,
+      "generation": 3,
+      "phase": "OPSD100_PREPARATION3_FULL_FRESH_TRAJECTORIES",
+      "run_id": "914bfff786c84ede8d82414dff65f60e",
+      "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof",
+      "time": 1791361883.9649546
+    },
+    "reserved_maxima_by_gpu_mib": {
+      "0": 354,
+      "1": 354,
+      "2": 354,
+      "3": 354,
+      "4": 354,
+      "5": 354,
+      "6": 354,
+      "7": 354
+    },
+    "sample_end_unix": 1791362120.2429593,
+    "sample_start_unix": 1791355956.9532697,
+    "samples": 2969,
+    "schema_version": 2,
+    "scope": "HKUST1 allocated eight physical GPUs; actual sampled memory.free includes all processes and driver reservations; V1 files remain separate and untouched",
+    "time": 1791362120.2429593,
+    "updated_at_unix": 1791362120.2430646
+  },
+  "memory_candidate_v2": {
+    "candidate_pid": 2239529,
+    "current": {
+      "candidate_pid": 2239529,
+      "candidate_process_mib": 574,
+      "computed_total_minus_used_mib": 3531,
+      "free_mib": 3179,
+      "gpu": 7,
+      "reserved_mib": 354,
+      "time": 1791362120.7923026,
+      "total_mib": 24564,
+      "used_mib": 21033,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+    },
+    "free_measurement": "nvidia-smi memory.free",
+    "free_minimum_mib": 1024,
+    "gpu": 7,
+    "limits_met": true,
+    "max_process_mib": 654,
+    "min_free_mib": 3099,
+    "process_limit_mib": 1024,
+    "sample_end_unix": 1791362120.7923026,
+    "sample_start_unix": 1791355802.515925,
+    "samples": 19106,
+    "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately",
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "updated_at_unix": 1791362120.7923903,
+    "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+  },
+  "numerical_boundary": "XFORMERS is a physical backend workaround. Same 305 source files, science, full169103x5, seeds42..49 and original cache are retained. Bitwise sampled trajectory equivalence with FLASH_ATTN prep2 is not asserted; preserved prep2 prefix is not skipped or mixed.",
+  "observed_at_unix": 1791362121.0294166,
+  "observer": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/memory_observer_v2.py"
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "E1_BASE": null,
+      "E1_INFERENCE_UTIL": null,
+      "E1_PROFILE": null,
+      "E1_RUN_ID": null,
+      "PYTHONPATH": null,
+      "VLLM_ATTENTION_BACKEND": null
+    },
+    "live": true,
+    "pgid": 2272620,
+    "pid": 2272620,
+    "ppid": 2373025,
+    "start_ticks": 914766583,
+    "state": "S",
+    "uid": 1005
+  },
+  "opsd_exists": false,
+  "opsd_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+  "retriever_health": {
+    "read_error": "<urlopen error [Errno 111] Connection refused>"
+  },
+  "review_result": "STARTUP_AND_STATIC_REVIEW_PASSED",
+  "rollout_parent": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "-m",
+      "search_e1.rollout",
+      "--model",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+      "--data",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "--output",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+      "--k",
+      "5",
+      "--backend",
+      "vllm",
+      "--workers",
+      "8",
+      "--retriever-url",
+      "http://10.120.17.101:18004/retrieve"
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "0,1,2,3,4,5,6,7",
+      "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+      "E1_INFERENCE_UTIL": ".85",
+      "E1_PROFILE": "opsd100-preparation3-xformers",
+      "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+      "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+      "VLLM_ATTENTION_BACKEND": "XFORMERS"
+    },
+    "live": true,
+    "pgid": 2460237,
+    "pid": 2460237,
+    "ppid": 2459676,
+    "start_ticks": 915359287,
+    "state": "S",
+    "uid": 1005
+  },
+  "run_receipt": {
+    "actual_opsd_updates_at_start": 0,
+    "additional_grpo": false,
+    "attention_backend": "XFORMERS",
+    "candidate": {
+      "candidate_health": {
+        "activation_error": null,
+        "actual_threads_after_cpu_load": {
+          "faiss": 32,
+          "torch": 16,
+          "torch_interop": 72
+        },
+        "collection_seconds": 0.025,
+        "cpu_ready": true,
+        "d": 768,
+        "encoder": "original CPU FP32 E5",
+        "encoder_batch_size": 128,
+        "gpu_ready": true,
+        "index": "full FP32 segmented streaming FlatIP",
+        "max_queries_per_scan": 20480,
+        "max_requests": 8,
+        "ntotal": 21015324,
+        "pending_requests": 0,
+        "pid": 2239529,
+        "query_micro": 64,
+        "ready": true,
+        "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+        "tf32": false,
+        "vector_rows": 32768
+      },
+      "candidate_pid": 2239529,
+      "gate_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/full-gpu-http-gate-v2.json",
+      "gate_sha256": "1308429fe03dfa3fbdf53488612ab6385747429914e4691d82af80c96c2ee454",
+      "memory": {
+        "candidate_pid": 2239529,
+        "current": {
+          "candidate_pid": 2239529,
+          "candidate_process_mib": 574,
+          "computed_total_minus_used_mib": 23981,
+          "free_mib": 23628,
+          "gpu": 7,
+          "reserved_mib": 354,
+          "time": 1791361870.0558202,
+          "total_mib": 24564,
+          "used_mib": 583,
+          "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+        },
+        "free_measurement": "nvidia-smi memory.free",
+        "free_minimum_mib": 1024,
+        "gpu": 7,
+        "limits_met": true,
+        "max_process_mib": 654,
+        "min_free_mib": 3099,
+        "process_limit_mib": 1024,
+        "sample_end_unix": 1791361870.0558202,
+        "sample_start_unix": 1791355802.515925,
+        "samples": 18355,
+        "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately",
+        "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+        "updated_at_unix": 1791361870.0558689,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+      },
+      "memory_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614"
+    },
+    "config_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-config.json",
+    "config_sha256": "3ac56bfa4455ecc93175172db6353bbc4a7cae95aee24781797428e50abeeb5b",
+    "controller_pgid": 2459674,
+    "controller_pid": 2459676,
+    "fresh_full_generation": true,
+    "owner_fault_and_gpu_release": {
+      "actual_cards": [
+        [
+          "0",
+          "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "24208"
+        ],
+        [
+          "1",
+          "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "24208"
+        ],
+        [
+          "2",
+          "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "24208"
+        ],
+        [
+          "3",
+          "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "24208"
+        ],
+        [
+          "4",
+          "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "24208"
+        ],
+        [
+          "5",
+          "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "24208"
+        ],
+        [
+          "6",
+          "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "24208"
+        ],
+        [
+          "7",
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "23628"
+        ]
+      ],
+      "actual_compute_apps": [
+        [
+          "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "2239529",
+          "574"
+        ]
+      ],
+      "failed_run_id": "d588a1450f8343edbed9c1e1901ac836",
+      "failure_proof_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-failure-preserved-20261007.json",
+      "failure_proof_sha256": "b3ab7529d001280155f7b08e95c889c48e59c80e06b1e5ba08849e7aeb409738",
+      "no_signals_sent": true,
+      "old_cpu_observer_state": "ABSENT",
+      "old_owned_pids_terminal": {
+        "2308665": "ABSENT",
+        "2308989": "ABSENT",
+        "2309103": "ABSENT",
+        "2309105": "ABSENT",
+        "2309109": "ABSENT",
+        "2309113": "ABSENT",
+        "2309114": "ABSENT",
+        "2309115": "ABSENT",
+        "2309183": "ABSENT",
+        "2309271": "ABSENT"
+      },
+      "preserved_failed_stage": {
+        "bytes": 876,
+        "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/pipeline-stage.json",
+        "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/pipeline-stage.json",
+        "sha256": "17f5b17495934497f9b18bd27904524339a6b0d7226e4d684dc86deb12436028"
+      }
+    },
+    "process_uid": 1005,
+    "restore_grpo_adam": false,
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+    "scope": "Generation3 fresh full preparation after zeroOPSD fault; first scientific OPSD run remains runs/opsd; not Adam restoration or bitwise continuation",
+    "source_grpo_step": 100,
+    "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "time": 1791361883.9643693
+  },
+  "schema": "independent-readonly-preparation3-controller-startup-audit-v1",
+  "scope": "Static controller/helper/config review plus actual startup only; no OPSD updates or five-update acceptance certified. No process, runtime, scientific setting, or route was modified; no GPU request was sent.",
+  "stable_stage": {
+    "controller_pid": 2459676,
+    "generation": 3,
+    "phase": "OPSD100_PREPARATION3_FULL_FRESH_TRAJECTORIES",
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof",
+    "time": 1791361883.9649546
+  },
+  "stage": {
+    "controller_pid": 2459676,
+    "generation": 3,
+    "phase": "OPSD100_PREPARATION3_FULL_FRESH_TRAJECTORIES",
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof",
+    "time": 1791361883.9649546
+  },
+  "static_audit": {
+    "GPU_process_inventory": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 2460348, 6468\nGPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 2460354, 6468\nGPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 2460355, 6468\nGPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 2460356, 6468\nGPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 2460360, 6468\nGPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 2460429, 384\nGPU-6f04d45c-a34d-6617-030d-0635365f5395, 2239529, 574\nGPU-6f04d45c-a34d-6617-030d-0635365f5395, 2460498, 12",
+    "all_305_byte_equal_and_sha_match": true,
+    "config_original_fields_equal": {
+      "datasets": true,
+      "execution_change": true,
+      "retrievers": true,
+      "source_grpo_step": true,
+      "source_model_transfer_receipt_sha256": true,
+      "unchanged_scientific_function_proofs": true,
+      "unchanged_scientific_settings": true
+    },
+    "config_sha256": "3ac56bfa4455ecc93175172db6353bbc4a7cae95aee24781797428e50abeeb5b",
+    "controller_sha256": "85c09c3bd5a58a59509b63e7fcc70aeb0cc1b6c139cc11e4ab6a039f4fe48bb4",
+    "expected_paths_exist": {
+      "final_output": false,
+      "opsd_output": false,
+      "pair_output": false,
+      "rollout_output": true
+    },
+    "failure_bindings": {
+      "actual_opsd_updates": 0,
+      "controller_pid": 2308665,
+      "failure_preserved": true,
+      "old_owned_pids_terminal": {
+        "2308665": "ABSENT",
+        "2308989": "ABSENT",
+        "2309103": "ABSENT",
+        "2309105": "ABSENT",
+        "2309109": "ABSENT",
+        "2309113": "ABSENT",
+        "2309114": "ABSENT",
+        "2309115": "ABSENT",
+        "2309183": "ABSENT",
+        "2309271": "ABSENT"
+      },
+      "opsd_output_absent": true,
+      "run_id": "d588a1450f8343edbed9c1e1901ac836",
+      "scope": "Fault exit of preparation-2 only; not human pause, not OPSD updates"
+    },
+    "failure_sha256": "b3ab7529d001280155f7b08e95c889c48e59c80e06b1e5ba08849e7aeb409738",
+    "files": 305,
+    "helper_sha256": "bbb2a6bdc7c65e3c070a1ba1dcb1c7e370848b8d118188ad5ad08e1fa09618ea",
+    "manifest_equal": true,
+    "observer_v2": {
+      "actual_free_minima_by_gpu_mib": {
+        "0": 3718,
+        "1": 3718,
+        "2": 3714,
+        "3": 3756,
+        "4": 3756,
+        "5": 3714,
+        "6": 3714,
+        "7": 3099
+      },
+      "actual_free_source": "nvidia-smi memory.free; directly measured, no total-used substitution",
+      "computed_fields_note": "peaks_mib and minimum_reserve_mib cover this V2 interval; minimum_reserve_mib is legacy COMPUTED total-used, not the admission metric",
+      "current": [
+        {
+          "actual_free_mib": 17736,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 18089,
+          "gpu": 0,
+          "reserve_mib": 18089,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 6475,
+          "utilization": 12,
+          "uuid": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe"
+        },
+        {
+          "actual_free_mib": 17736,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 18089,
+          "gpu": 1,
+          "reserve_mib": 18089,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 6475,
+          "utilization": 3,
+          "uuid": "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7"
+        },
+        {
+          "actual_free_mib": 18916,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 19269,
+          "gpu": 2,
+          "reserve_mib": 19269,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 5295,
+          "utilization": 4,
+          "uuid": "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c"
+        },
+        {
+          "actual_free_mib": 20116,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 20469,
+          "gpu": 3,
+          "reserve_mib": 20469,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 4095,
+          "utilization": 2,
+          "uuid": "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b"
+        },
+        {
+          "actual_free_mib": 17736,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 18089,
+          "gpu": 4,
+          "reserve_mib": 18089,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 6475,
+          "utilization": 19,
+          "uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6"
+        },
+        {
+          "actual_free_mib": 24208,
+          "computed_minus_actual_free_mib": 352,
+          "computed_reserve_mib": 24560,
+          "gpu": 5,
+          "reserve_mib": 24560,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 4,
+          "utilization": 0,
+          "uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf"
+        },
+        {
+          "actual_free_mib": 24208,
+          "computed_minus_actual_free_mib": 352,
+          "computed_reserve_mib": 24560,
+          "gpu": 6,
+          "reserve_mib": 24560,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 4,
+          "utilization": 0,
+          "uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45"
+        },
+        {
+          "actual_free_mib": 23628,
+          "computed_minus_actual_free_mib": 353,
+          "computed_reserve_mib": 23981,
+          "gpu": 7,
+          "reserve_mib": 23981,
+          "reserved_mib": 354,
+          "total_mib": 24564,
+          "used_mib": 583,
+          "utilization": 0,
+          "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+        }
+      ],
+      "free_measurement": "nvidia-smi memory.free",
+      "historical_v1_computed_evidence": {
+        "captured_at_unix": 1791355957.0243328,
+        "content_sha256": "e59ad06e67d2f9e774a493af6faf974aee08ec7c030dd45765cdb3a0991f14b5",
+        "metric": "COMPUTED total_mib - peak(memory.used); includes driver-reserved memory; not actual free",
+        "minimum_reserve_mib": 3509,
+        "original_scope": "HKUST1 allocated8 cards; total sampled usage, keep stage identity; old-GRPO pre-release samples excluded",
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous.json",
+        "peaks_mib": {
+          "0": 20493,
+          "1": 20493,
+          "2": 20497,
+          "3": 20455,
+          "4": 20455,
+          "5": 20497,
+          "6": 20497,
+          "7": 21055
+        },
+        "phase": {
+          "controller_pid": 2196101,
+          "phase": "OPSD100_FULL_FRESH_TRAJECTORIES",
+          "time": 1791347537.116323
+        },
+        "samples": 4026,
+        "time": 1791355956.9539247
+      },
+      "minimum_actual_free_mib": 3099,
+      "minimum_reserve_mib": 3451,
+      "observer": {
+        "pid": 2272620,
+        "source_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/memory_observer_v2.py",
+        "source_sha256": "40aff306fc84619da629db54f8efe7d2f132dafd7b9ab39ef00372d75ac4ad60",
+        "started_at_unix": 1791355956.9531648
+      },
+      "peaks_mib": {
+        "0": 20493,
+        "1": 20493,
+        "2": 20497,
+        "3": 20455,
+        "4": 20455,
+        "5": 20497,
+        "6": 20497,
+        "7": 21113
+      },
+      "phase": {
+        "controller_pid": 2459676,
+        "generation": 3,
+        "phase": "OPSD100_PREPARATION3_FULL_FRESH_TRAJECTORIES",
+        "run_id": "914bfff786c84ede8d82414dff65f60e",
+        "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof",
+        "time": 1791361883.9649546
+      },
+      "reserved_maxima_by_gpu_mib": {
+        "0": 354,
+        "1": 354,
+        "2": 354,
+        "3": 354,
+        "4": 354,
+        "5": 354,
+        "6": 354,
+        "7": 354
+      },
+      "sample_end_unix": 1791361895.760175,
+      "sample_start_unix": 1791355956.9532697,
+      "samples": 2861,
+      "schema_version": 2,
+      "scope": "HKUST1 allocated eight physical GPUs; actual sampled memory.free includes all processes and driver reservations; V1 files remain separate and untouched",
+      "time": 1791361895.760175,
+      "updated_at_unix": 1791361895.7602904
+    },
+    "old_pids_present": [],
+    "same_external_opsd_path": true,
+    "source_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+    "target_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+    "time": 1791361896.0129726,
+    "watcher_v3_command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py ",
+    "watcher_v3_live": true
+  },
+  "watcher": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py"
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "E1_BASE": null,
+      "E1_INFERENCE_UTIL": null,
+      "E1_PROFILE": null,
+      "E1_RUN_ID": null,
+      "PYTHONPATH": null,
+      "VLLM_ATTENTION_BACKEND": null
+    },
+    "live": true,
+    "pgid": 2273914,
+    "pid": 2273914,
+    "ppid": 2373025,
+    "start_ticks": 914769897,
+    "state": "S",
+    "uid": 1005
+  },
+  "workers": [
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-0.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-0.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "42",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "0",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460348,
+        "ppid": 2460237,
+        "start_ticks": 915359515,
+        "state": "R",
+        "uid": 1005
+      },
+      "rank": 0
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-1.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-1.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "43",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "1",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460354,
+        "ppid": 2460237,
+        "start_ticks": 915359525,
+        "state": "R",
+        "uid": 1005
+      },
+      "rank": 1
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-2.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-2.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "44",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "2",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460355,
+        "ppid": 2460237,
+        "start_ticks": 915359534,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 2
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-3.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-3.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "45",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "3",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460356,
+        "ppid": 2460237,
+        "start_ticks": 915359543,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 3
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-4.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-4.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "46",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "4",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460360,
+        "ppid": 2460237,
+        "start_ticks": 915359552,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 4
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-5.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-5.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "47",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "5",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460364,
+        "ppid": 2460237,
+        "start_ticks": 915359561,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 5
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-6.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-6.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "48",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "6",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460429,
+        "ppid": 2460237,
+        "start_ticks": 915359571,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 6
+    },
+    {
+      "backend": [
+        "XFormers",
+        "XFormers"
+      ],
+      "cache_blocks": [
+        [
+          "22671",
+          "7281"
+        ]
+      ],
+      "checks": {
+        "actual_xformers": true,
+        "budgets": true,
+        "complete_lines_valid": true,
+        "eager_context": true,
+        "frozen_runtime_path": true,
+        "independent_io": true,
+        "live_owned": true,
+        "native_seed_log": true,
+        "no_failure_log": true,
+        "original_cache": true,
+        "physical_card_util": true,
+        "retrieval_unchanged": true,
+        "run_identity": true,
+        "source100": true
+      },
+      "complete_rows": 320,
+      "incomplete_tail_bytes": 0,
+      "invalid_lines": 0,
+      "overrides": [
+        [
+          "22671",
+          "22671"
+        ]
+      ],
+      "process": {
+        "argv": [
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+          "-m",
+          "search_e1.rollout",
+          "--model",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+          "--data",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/questions-7.jsonl",
+          "--output",
+          "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-7.jsonl",
+          "--backend",
+          "vllm",
+          "--workers",
+          "1",
+          "--k",
+          "5",
+          "--temperature",
+          "1.0",
+          "--batch-size",
+          "64",
+          "--seed",
+          "49",
+          "--retriever-url",
+          "http://10.120.17.101:18004/retrieve"
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": "7",
+          "E1_BASE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+          "E1_INFERENCE_UTIL": ".85",
+          "E1_PROFILE": "opsd100-preparation3-xformers",
+          "E1_RUN_ID": "914bfff786c84ede8d82414dff65f60e",
+          "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+          "VLLM_ATTENTION_BACKEND": "XFORMERS"
+        },
+        "live": true,
+        "pgid": 2460237,
+        "pid": 2460498,
+        "ppid": 2460237,
+        "start_ticks": 915359586,
+        "state": "S",
+        "uid": 1005
+      },
+      "rank": 7
+    }
+  ]
+}

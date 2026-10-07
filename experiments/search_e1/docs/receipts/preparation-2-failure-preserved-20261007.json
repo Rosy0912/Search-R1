@@ -1,0 +1,213 @@
+{
+  "time": 1791361483.7748055,
+  "failure_preserved": true,
+  "scope": "Fault exit of preparation-2 only; not human pause, not OPSD updates",
+  "run_id": "d588a1450f8343edbed9c1e1901ac836",
+  "controller_pid": 2308665,
+  "actual_opsd_updates": 0,
+  "opsd_output_absent": true,
+  "fault": "GPU3 CUDA illegal memory access; not OOM in logs; Xid31 MMU fault corroborated",
+  "fault_root_cause_unconfirmed": true,
+  "old_owned_pids_terminal": {
+    "2308665": "ABSENT",
+    "2308989": "ABSENT",
+    "2309103": "ABSENT",
+    "2309105": "ABSENT",
+    "2309109": "ABSENT",
+    "2309113": "ABSENT",
+    "2309114": "ABSENT",
+    "2309115": "ABSENT",
+    "2309183": "ABSENT",
+    "2309271": "ABSENT"
+  },
+  "actual_gpu_compute_apps": [
+    "2239529, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 574"
+  ],
+  "preserved_directory": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836",
+  "files": {
+    "receipts/pipeline-stage.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/pipeline-stage.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/pipeline-stage.json",
+      "bytes": 876,
+      "sha256": "17f5b17495934497f9b18bd27904524339a6b0d7226e4d684dc86deb12436028"
+    },
+    "receipts/preparation-2-pipeline-stage.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-pipeline-stage.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-pipeline-stage.json",
+      "bytes": 876,
+      "sha256": "17f5b17495934497f9b18bd27904524339a6b0d7226e4d684dc86deb12436028"
+    },
+    "receipts/preparation-2-run.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-run.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-run.json",
+      "bytes": 17411,
+      "sha256": "94a7b8b4455ec4d4179901411804cfa49dc9b831bd47a6aea280da3845fdbf5e"
+    },
+    "receipts/preparation-2-active-child.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-active-child.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-active-child.json",
+      "bytes": 978,
+      "sha256": "20df1a0890b11ba0b424aabb7905781fa866d044b2e2d2e9e7b9a0f1d7204d93"
+    },
+    "receipts/preparation-2-child-history.jsonl": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-child-history.jsonl",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-child-history.jsonl",
+      "bytes": 1808,
+      "sha256": "3f123c8f26a93e319befe1e2b6e89db6ac7dcc6bf44d0660a69dde9bfd3f91f0"
+    },
+    "receipts/preparation-2-config-v2.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-config-v2.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-config-v2.json",
+      "bytes": 8183,
+      "sha256": "7ee152cb0b4ea1f68a7786dfe37704502fdb21f4dcf9f8bdd134353e29090648"
+    },
+    "receipts/preparation-2-runtime.sha256.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-runtime.sha256.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-runtime.sha256.json",
+      "bytes": 37563,
+      "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+    },
+    "receipts/preparation-2-progress-20261007-summary.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-progress-20261007-summary.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/preparation-2-progress-20261007-summary.json",
+      "bytes": 339,
+      "sha256": "5ccc60ce69552a3adf312b190918c9e6e7decee3ec6fb2bf42cc9c283ff0f8d5"
+    },
+    "analysis/preparation-2-worker-liveness-1791361252.json": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/analysis/preparation-2-worker-liveness-1791361252.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/analysis/preparation-2-worker-liveness-1791361252.json",
+      "bytes": 20575,
+      "sha256": "c9099c48e078eea43f1c83913f3cb1cb9e149ec4a9904c455f8539c391e6ea51"
+    },
+    "logs/preparation-2-pipeline-v2.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/preparation-2-pipeline-v2.log",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/logs/preparation-2-pipeline-v2.log",
+      "bytes": 1357,
+      "sha256": "adeed663bd09b6b19e1366d7ee5d699312523bbea0ff1f3c5a1a5137d54da336"
+    },
+    "logs/preparation-2-rollouts.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/preparation-2-rollouts.log",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/logs/preparation-2-rollouts.log",
+      "bytes": 1119,
+      "sha256": "69e0c02c1a36b19e53028d3e58a86cbb4bc45a2f88f40dec65fe7f65e3a97917"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-0.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-0.log",
+      "retained_in_place": true,
+      "bytes": 477643,
+      "sha256": "0ef382d4e1073064fec789e3590f3cc2fd04c369d1c45dc4fc76962d2a533f41"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-1.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-1.log",
+      "retained_in_place": true,
+      "bytes": 492848,
+      "sha256": "119995e272080584bf22d30e07a982e2a598cbc31b7ff97918b0967873a858f5"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-2.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-2.log",
+      "retained_in_place": true,
+      "bytes": 492698,
+      "sha256": "7f2570028afbfb3cf236afb93d3d95133d16d747403b05d769b9ee1dd3a1b5a0"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-3.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-3.log",
+      "retained_in_place": true,
+      "bytes": 499166,
+      "sha256": "03582aa96720333a018190b36394d176bf5a0a092f2d91cc43c350108997916d"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-4.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-4.log",
+      "retained_in_place": true,
+      "bytes": 477613,
+      "sha256": "98ae496a23b2796b5d81cc07f382e65f9d492388f9d7072b13a0b2d964547dae"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-5.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-5.log",
+      "retained_in_place": true,
+      "bytes": 477518,
+      "sha256": "c94a06af4253940eb20803c427e63a38f5945463cbb6f3d0de0ffc3728042fc5"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-6.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-6.log",
+      "retained_in_place": true,
+      "bytes": 477598,
+      "sha256": "bda2a68ccd91d1f20988208b3e8002b1f428baad86466641d13772b31f9e22c1"
+    },
+    "runs/preparation-2-rollouts.jsonl.parts/worker-7.log": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/worker-7.log",
+      "retained_in_place": true,
+      "bytes": 477468,
+      "sha256": "d03f67a7e79b0c94a43213e554b66d699d5e5afd87c9e4de989f7d23dc4d75dd"
+    }
+  },
+  "shards": [
+    {
+      "rank": 0,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-0.jsonl",
+      "rows": 9920,
+      "bytes": 37692214,
+      "sha256": "f24d257481cfeee34188a926f80dab3558404bf7f61a9c98ca8facb28491cb29",
+      "mtime": 1791361140.3348134
+    },
+    {
+      "rank": 1,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-1.jsonl",
+      "rows": 10240,
+      "bytes": 38877665,
+      "sha256": "fce97fc13e5d1e7b147f1319cf9c536e2f8a22fdf662a3d9a96561d2b5eb2fe0",
+      "mtime": 1791361214.8067963
+    },
+    {
+      "rank": 2,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-2.jsonl",
+      "rows": 10240,
+      "bytes": 38629770,
+      "sha256": "9a5210204ac8c25d38956e6bd5e995a5e52a362ee721bd24168a8675f3189fc9",
+      "mtime": 1791361215.2787962
+    },
+    {
+      "rank": 3,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-3.jsonl",
+      "rows": 10240,
+      "bytes": 38553452,
+      "sha256": "88f7088cd650c3453955ffd1eefe6acaf6f18daf91b1277f63cfa0cdc9eb7d16",
+      "mtime": 1791361228.4547932
+    },
+    {
+      "rank": 4,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-4.jsonl",
+      "rows": 9920,
+      "bytes": 37125633,
+      "sha256": "f2b1bdd4a8f110d3f856319bb0edd2759001a5e9ce8373823bf5d22ec4e5ae3a",
+      "mtime": 1791361139.6668136
+    },
+    {
+      "rank": 5,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-5.jsonl",
+      "rows": 9920,
+      "bytes": 37449729,
+      "sha256": "4d5733994506d195a98e26a828dcd899c45c2e46ad4da7f7d77233da262c0883",
+      "mtime": 1791361151.3468108
+    },
+    {
+      "rank": 6,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-6.jsonl",
+      "rows": 9920,
+      "bytes": 37941901,
+      "sha256": "276ae55081ebbfcb0143909a6e73ec58ae01b67c61a68ff4ad34a124a0795a54",
+      "mtime": 1791361122.5388174
+    },
+    {
+      "rank": 7,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-7.jsonl",
+      "rows": 9920,
+      "bytes": 37779327,
+      "sha256": "f1fb6a53bd6636936e9cfc391b482ae277d351c3eeb6c74011c110ca7a5613e3",
+      "mtime": 1791361137.266814
+    }
+  ],
+  "total_rows": 80320,
+  "no_signals_sent_by_recovery": true,
+  "old_outputs_kept_in_place": true,
+  "source100_unchanged_intent": true
+}

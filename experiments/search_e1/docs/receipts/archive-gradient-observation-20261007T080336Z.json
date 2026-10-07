@@ -1,0 +1,114 @@
+{
+  "observed_unix": 1791360216.0052216,
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "stage": "archive GRPO only",
+  "log": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/train.log",
+  "observed_updates": 131,
+  "gradients_over10": [
+    {
+      "step": 60,
+      "grad_norm_direct_rounded_log": 10.193,
+      "reward_direct_rounded_log": 0.405
+    },
+    {
+      "step": 131,
+      "grad_norm_direct_rounded_log": 2469.559,
+      "reward_direct_rounded_log": 0.471
+    }
+  ],
+  "largest10": [
+    {
+      "step": 131,
+      "grad_norm_direct_rounded_log": 2469.559,
+      "reward_direct_rounded_log": 0.471
+    },
+    {
+      "step": 60,
+      "grad_norm_direct_rounded_log": 10.193,
+      "reward_direct_rounded_log": 0.405
+    },
+    {
+      "step": 127,
+      "grad_norm_direct_rounded_log": 7.005,
+      "reward_direct_rounded_log": 0.405
+    },
+    {
+      "step": 50,
+      "grad_norm_direct_rounded_log": 6.298,
+      "reward_direct_rounded_log": 0.338
+    },
+    {
+      "step": 101,
+      "grad_norm_direct_rounded_log": 5.501,
+      "reward_direct_rounded_log": 0.482
+    },
+    {
+      "step": 41,
+      "grad_norm_direct_rounded_log": 5.336,
+      "reward_direct_rounded_log": 0.25
+    },
+    {
+      "step": 49,
+      "grad_norm_direct_rounded_log": 4.444,
+      "reward_direct_rounded_log": 0.319
+    },
+    {
+      "step": 70,
+      "grad_norm_direct_rounded_log": 4.412,
+      "reward_direct_rounded_log": 0.43
+    },
+    {
+      "step": 52,
+      "grad_norm_direct_rounded_log": 4.191,
+      "reward_direct_rounded_log": 0.333
+    },
+    {
+      "step": 34,
+      "grad_norm_direct_rounded_log": 2.783,
+      "reward_direct_rounded_log": 0.252
+    }
+  ],
+  "actual_run_config_grad_clip_lines": [
+    "\u001b[36m(main_task pid=1437474)\u001b[0m                                  'grad_clip': 1.0,",
+    "\u001b[36m(main_task pid=1437474)\u001b[0m             'grad_clip': 1.0,"
+  ],
+  "optimizer_source": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1/verl/workers/actor/dp_actor.py",
+  "optimizer_source_actual_sha256": "f19e0962768ef77a9dee48687776dc6cd7055a4d9b8caa602ce45c7ef52f1998",
+  "source_lines_144_154": [
+    {
+      "144": "    def _optimizer_step(self):"
+    },
+    {
+      "145": "        assert self.config.grad_clip is not None"
+    },
+    {
+      "146": ""
+    },
+    {
+      "147": "        if isinstance(self.actor_module, FSDP):"
+    },
+    {
+      "148": "            grad_norm = self.actor_module.clip_grad_norm_(max_norm=self.config.grad_clip)"
+    },
+    {
+      "149": "        else:"
+    },
+    {
+      "150": "            grad_norm = torch.nn.utils.clip_grad_norm_(self.actor_module.parameters(), max_norm=self.config.grad_clip)"
+    },
+    {
+      "151": "        if not torch.isfinite(grad_norm).all():"
+    },
+    {
+      "152": "            raise FloatingPointError('Nonfinite actor gradient; optimizer update refused')"
+    },
+    {
+      "153": "        self.actor_optimizer.step()"
+    },
+    {
+      "154": "        return grad_norm"
+    }
+  ],
+  "interpretation": "actor/grad_norm is the finite norm returned by clip_grad_norm_ before optimizer.step; the actual logged config grad_clip is 1.0. Step131 is the first exceptionally large logged norm. This does not establish post-clipping norm, nonfinite weights, or a training crash. No live changes or process stops.",
+  "receipt_path": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-gradient-observation-20261007T080336Z.json"
+}

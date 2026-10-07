@@ -1,0 +1,1099 @@
+{
+  "schema": "archive-grpo-followup-observation-v1",
+  "started_unix": 1791360355.5742269,
+  "host": "xielab5",
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+  "log": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/train.log",
+  "scope": "Read-only archive GRPO; never counted toward K1 source100 OPSD101-105 acceptance. No changes to code/job/affinity/router/GPU computation.",
+  "baseline_latest": {
+    "step": 131,
+    "rounded_native_metrics": {
+      "step": 131.0,
+      "critic/rewards/mean": 0.471,
+      "audit/strict_em": 0.471,
+      "audit/legacy_em": 0.473,
+      "audit/score_disagreement": 0.002,
+      "actor/grad_norm": 2469.559,
+      "actor/kl_loss": 0.504,
+      "response_length/mean": 1252.838,
+      "env/finish_ratio": 0.972,
+      "timing_s/gen": 985.959,
+      "timing_s/update_actor": 948.817,
+      "timing_s/step": 2376.624
+    },
+    "nonfinite_metrics": {},
+    "native_line_sha256": "f16a13c71fdf0b0f7076a21727c42409049063ee742ec2ab13e2a79336ea30b6"
+  },
+  "original131_evidence": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-gradient-observation-20261007T080336Z.json",
+  "interval_seconds": 55,
+  "maximum_observation_seconds": 1200,
+  "receipt_path": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-watch-20261007T080555Z.json",
+  "events_path": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-watch-20261007T080555Z.json.events.jsonl",
+  "complete_unix": 1791361555.6745253,
+  "observations": [
+    {
+      "observed_unix": 1791360355.5945308,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360410.6444454,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360465.7454617,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360520.8465629,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360575.912853,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360631.0096273,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30450571,
+      "log_mtime_unix": 1791360245.0245795,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360686.1104205,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360741.1769495,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360796.2306361,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360851.3255928,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360906.4263256,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791360961.5255675,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361016.626591,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361071.699107,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361126.7524667,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361181.7649393,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361236.865577,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361291.9664311,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361347.0535707,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361402.1337245,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361457.2335684,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361512.3335655,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    },
+    {
+      "observed_unix": 1791361555.6735644,
+      "latest_completed_grpo_step": 131,
+      "latest_reward": 0.471,
+      "latest_preclip_grad_norm": 2469.559,
+      "log_size": 30721082,
+      "log_mtime_unix": 1791360685.4403937,
+      "processes": [
+        {
+          "pid": 1434645,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437474,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1437900,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438381,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438382,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        },
+        {
+          "pid": 1438383,
+          "alive": true,
+          "run_matches": true,
+          "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive"
+        }
+      ]
+    }
+  ],
+  "updates": [],
+  "errors": [],
+  "end_reason": "observation_deadline",
+  "latest_completed_grpo_step": 131,
+  "original131_preserved": true
+}

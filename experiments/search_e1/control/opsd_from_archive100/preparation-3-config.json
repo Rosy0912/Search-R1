@@ -1,0 +1,275 @@
+{
+  "prepared": true,
+  "time": 1791361759.69128,
+  "preparation_only": true,
+  "live_processes_stopped": false,
+  "source_runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation2",
+  "source_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+  "runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+  "files": 305,
+  "changed_files": [],
+  "new_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+  "delta_sha256": null,
+  "controls": {
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/prepare_preparation3_xformers.py": "bbb2a6bdc7c65e3c070a1ba1dcb1c7e370848b8d118188ad5ad08e1fa09618ea",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py": "85c09c3bd5a58a59509b63e7fcc70aeb0cc1b6c139cc11e4ab6a039f4fe48bb4"
+  },
+  "gate": {
+    "gate_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/full-gpu-http-gate-v2.json",
+    "gate_sha256": "1308429fe03dfa3fbdf53488612ab6385747429914e4691d82af80c96c2ee454",
+    "memory_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+    "candidate_pid": 2239529,
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "candidate_health": {
+      "ready": true,
+      "cpu_ready": true,
+      "gpu_ready": true,
+      "pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "ntotal": 21015324,
+      "d": 768,
+      "index": "full FP32 segmented streaming FlatIP",
+      "encoder": "original CPU FP32 E5",
+      "encoder_batch_size": 128,
+      "query_micro": 64,
+      "vector_rows": 32768,
+      "tf32": false,
+      "max_requests": 8,
+      "max_queries_per_scan": 20480,
+      "collection_seconds": 0.025,
+      "actual_threads_after_cpu_load": {
+        "torch": 16,
+        "torch_interop": 72,
+        "faiss": 32
+      },
+      "pending_requests": 0,
+      "activation_error": null
+    },
+    "memory": {
+      "candidate_pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "gpu": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "sample_start_unix": 1791355802.515925,
+      "sample_end_unix": 1791361758.7151048,
+      "updated_at_unix": 1791361758.7151706,
+      "samples": 18020,
+      "max_process_mib": 654,
+      "min_free_mib": 3099,
+      "current": {
+        "time": 1791361758.7151048,
+        "candidate_pid": 2239529,
+        "gpu": 7,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "total_mib": 24564,
+        "used_mib": 583,
+        "free_mib": 23628,
+        "reserved_mib": 354,
+        "computed_total_minus_used_mib": 23981,
+        "candidate_process_mib": 574
+      },
+      "free_measurement": "nvidia-smi memory.free",
+      "process_limit_mib": 1024,
+      "free_minimum_mib": 1024,
+      "limits_met": true,
+      "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately"
+    }
+  },
+  "opsd_zero_evidence": {
+    "actual_opsd_updates": 0,
+    "output_absent": true,
+    "live_opsd_process_absent": true
+  },
+  "datasets": {
+    "train": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+      "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f",
+      "rows": 169103,
+      "bytes": 31766631
+    },
+    "validation": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/validation.jsonl",
+      "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+      "rows": 512,
+      "bytes": 93609
+    },
+    "test": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/test.jsonl",
+      "sha256": "f1ade9239143d53636ae66b9c90ac083a195a1bc2492e6a8bd9dd56111cfdcab",
+      "rows": 51713,
+      "bytes": 13324924
+    }
+  },
+  "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+  "source_grpo_step": 100,
+  "source_model_transfer_receipt_sha256": "08b005d8788fbbbc6c57cf40af4c08202b59c0d89160a6f030fad8d555fc007d",
+  "rollout_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+  "pair_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+  "opsd_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+  "final_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl",
+  "retrievers": {
+    "preparation": "http://10.120.17.101:18004/retrieve",
+    "opsd_baseline_validation": "http://10.120.17.101:18004/retrieve",
+    "final_eight_gpu_vllm": "http://10.120.17.101:18004/retrieve"
+  },
+  "execution_change": {
+    "num_gpu_blocks_override": 22671,
+    "inference_utilization": 0.85,
+    "cpu_blocks_expected_unchanged": 7281,
+    "eager": true,
+    "communication_timeout_hours": 24,
+    "communication_timeout_changed": true,
+    "communication_timeout_reason": "Tolerance for unequal per-rank validation/search latency; frozen global validation is eight ranks, validation[rank::world], 64 each for the unchanged 512 questions",
+    "description": "GPU KV allocation and NCCL communication tolerance only; 24h is not training steps/epochs/budget; CPU swap/default and generation budgets unchanged"
+  },
+  "unchanged_scientific_function_proofs": {
+    "encoded_pair": {
+      "source_bytes_equal": true,
+      "ast_equal": true,
+      "source_sha256": "c64188956a7ecc82a18f03a8a71020b3463b842eaecd39cf474e555d69295692",
+      "ast_sha256": "233fa286392d330d16d34a77019c100845509509e5c8481ef425dda458293afc"
+    },
+    "pair_loss": {
+      "source_bytes_equal": true,
+      "ast_equal": true,
+      "source_sha256": "ccff42a99b0667e8bd3960df2a179d9e288482ae9c2c0d4d5750cf4a4b9e5dcf",
+      "ast_sha256": "9bbcc3e4df9a470ec9d0f0b89eda046907b84c9bf4cbc777183c153be2732f4d"
+    }
+  },
+  "unchanged_scientific_settings": {
+    "questions": 169103,
+    "siblings": 5,
+    "workers": 8,
+    "batch_questions": 64,
+    "seed": 42,
+    "worker_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "max_tokens": 500,
+    "context": 8192,
+    "turns": 5,
+    "search_calls": 4,
+    "topk": 3,
+    "observation_tokens": 480,
+    "mining": "unchanged original mine_pairs",
+    "opsd_epochs": 1,
+    "opsd_lr": 1e-05,
+    "rank": 16,
+    "alpha": 32,
+    "clip": 10,
+    "chunk": 32,
+    "accumulation": 4,
+    "global_trajectory_batch": 32,
+    "validation_questions": 512,
+    "loss": "per-trajectory valid-token mean, then global-trajectory mean",
+    "additional_grpo": false,
+    "restore_grpo_adam": false
+  },
+  "scope": "Fresh full generation3 after preserved zeroOPSD preparation2 CUDA fault; no GRPO or existing OPSD optimizer restarted; no live process stopped",
+  "environment_additions": {
+    "VLLM_ATTENTION_BACKEND": "XFORMERS"
+  },
+  "identity_path_only_environment_changes": [
+    "E1_PROFILE",
+    "E1_RUN_ID",
+    "PYTHONPATH"
+  ],
+  "required_failure_proof": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-failure-preserved-20261007.json",
+  "required_failure_sha256": "b3ab7529d001280155f7b08e95c889c48e59c80e06b1e5ba08849e7aeb409738",
+  "owner_fault_and_gpu_release": {
+    "failure_proof_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-failure-preserved-20261007.json",
+    "failure_proof_sha256": "b3ab7529d001280155f7b08e95c889c48e59c80e06b1e5ba08849e7aeb409738",
+    "failed_run_id": "d588a1450f8343edbed9c1e1901ac836",
+    "old_owned_pids_terminal": {
+      "2308665": "ABSENT",
+      "2308989": "ABSENT",
+      "2309103": "ABSENT",
+      "2309105": "ABSENT",
+      "2309109": "ABSENT",
+      "2309113": "ABSENT",
+      "2309114": "ABSENT",
+      "2309115": "ABSENT",
+      "2309183": "ABSENT",
+      "2309271": "ABSENT"
+    },
+    "old_cpu_observer_state": "ABSENT",
+    "preserved_failed_stage": {
+      "original": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/pipeline-stage.json",
+      "preserved": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/preparation-2-cuda-failure-d588a1450f8343edbed9c1e1901ac836/receipts/pipeline-stage.json",
+      "bytes": 876,
+      "sha256": "17f5b17495934497f9b18bd27904524339a6b0d7226e4d684dc86deb12436028"
+    },
+    "actual_compute_apps": [
+      [
+        "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "2239529",
+        "574"
+      ]
+    ],
+    "actual_cards": [
+      [
+        "0",
+        "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+        "24208"
+      ],
+      [
+        "1",
+        "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+        "24208"
+      ],
+      [
+        "2",
+        "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+        "24208"
+      ],
+      [
+        "3",
+        "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+        "24208"
+      ],
+      [
+        "4",
+        "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+        "24208"
+      ],
+      [
+        "5",
+        "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+        "24208"
+      ],
+      [
+        "6",
+        "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+        "24208"
+      ],
+      [
+        "7",
+        "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "23628"
+      ]
+    ],
+    "no_signals_sent": true
+  },
+  "source_preparation2_config_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-2-config-v2.json",
+  "source_preparation2_config_sha256": "7ee152cb0b4ea1f68a7786dfe37704502fdb21f4dcf9f8bdd134353e29090648",
+  "original_manifest_sha256": "3c8c4cd1b00a3b79f88e5d0cf074d5881232a843d66c7ea94d0c37d8e608813f",
+  "runtime_byte_identity": {
+    "files": 305,
+    "all_source_bytes_equal": true,
+    "changed_files": [],
+    "same_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+  },
+  "numerical_scope": "XFORMERS kernel arithmetic may change BF16 logits and sampled trajectories. Fresh full generation3, not bitwise continuation or Adam restoration."
+}
