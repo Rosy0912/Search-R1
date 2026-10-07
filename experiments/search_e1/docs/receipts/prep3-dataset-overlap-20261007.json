@@ -1,0 +1,480 @@
+{
+  "schema": "prep3-readonly-overlap-v1",
+  "scope": "CPU read-only local dataset content; no generation, HTTP, GPU, or data edits",
+  "config_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-config.json",
+  "config_sha256": "3ac56bfa4455ecc93175172db6353bbc4a7cae95aee24781797428e50abeeb5b",
+  "identity": {
+    "train": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+      "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f",
+      "bytes": 31766631,
+      "rows": 169103,
+      "config_identity_matches": true,
+      "benchmark_rows": {
+        "nq": 78912,
+        "hotpotqa": 90191
+      },
+      "unique_question_ids": 169103
+    },
+    "validation": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/validation.jsonl",
+      "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+      "bytes": 93609,
+      "rows": 512,
+      "config_identity_matches": true,
+      "benchmark_rows": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "unique_question_ids": 512
+    },
+    "test": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/test.jsonl",
+      "sha256": "f1ade9239143d53636ae66b9c90ac083a195a1bc2492e6a8bd9dd56111cfdcab",
+      "bytes": 13324924,
+      "rows": 51713,
+      "config_identity_matches": true,
+      "benchmark_rows": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "unique_question_ids": 51713
+    }
+  },
+  "question_id_prefix_patterns": {
+    "train": {
+      "nq:train": 78912,
+      "hotpotqa:train": 90191
+    },
+    "validation": {
+      "nq:train": 256,
+      "hotpotqa:train": 256
+    },
+    "test": {
+      "nq:test": 3610,
+      "triviaqa:test": 11313,
+      "popqa:test": 14267,
+      "hotpotqa:dev": 7405,
+      "2wikimultihopqa:dev": 12576,
+      "musique:dev": 2417,
+      "bamboogle:test": 125
+    }
+  },
+  "exact_question_id_intersections": {
+    "train__validation": 0,
+    "train__test": 0,
+    "validation__test": 0
+  },
+  "exact_definition": "(data_source, SHA256(UTF8 question as stored)); no text or answers emitted",
+  "normalized_definition": "NFKC, Unicode casefold, collapse Unicode whitespace; punctuation preserved; equality only, not semantic or edit-distance matching",
+  "exact": {
+    "pairs": {
+      "train__validation": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      },
+      "train__test": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      },
+      "validation__test": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      }
+    },
+    "within_split_duplicate_question_rows": {
+      "train": 7,
+      "validation": 0,
+      "test": 1204
+    },
+    "selection_exclusion_sensitivity": {
+      "nq": {
+        "original_rows": 3610,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 3610
+      },
+      "triviaqa": {
+        "original_rows": 11313,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 11313
+      },
+      "popqa": {
+        "original_rows": 14267,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 14267
+      },
+      "hotpotqa": {
+        "original_rows": 7405,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 7405
+      },
+      "2wikimultihopqa": {
+        "original_rows": 12576,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 12576
+      },
+      "musique": {
+        "original_rows": 2417,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 2417
+      },
+      "bamboogle": {
+        "original_rows": 125,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 125
+      }
+    },
+    "selection_keys_absent_from_test": 512,
+    "all_selection_keys_in_test": false
+  },
+  "normalized": {
+    "pairs": {
+      "train__validation": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      },
+      "train__test": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      },
+      "validation__test": {
+        "unique_question_keys": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "by_source": {
+          "2wikimultihopqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "bamboogle": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "hotpotqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "musique": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "nq": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "popqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          },
+          "triviaqa": {
+            "unique_question_keys": 0,
+            "left_rows": 0,
+            "right_rows": 0
+          }
+        },
+        "intersection_key_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "digest_examples": []
+      }
+    },
+    "within_split_duplicate_question_rows": {
+      "train": 8,
+      "validation": 0,
+      "test": 1207
+    },
+    "selection_exclusion_sensitivity": {
+      "nq": {
+        "original_rows": 3610,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 3610
+      },
+      "triviaqa": {
+        "original_rows": 11313,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 11313
+      },
+      "popqa": {
+        "original_rows": 14267,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 14267
+      },
+      "hotpotqa": {
+        "original_rows": 7405,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 7405
+      },
+      "2wikimultihopqa": {
+        "original_rows": 12576,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 12576
+      },
+      "musique": {
+        "original_rows": 2417,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 2417
+      },
+      "bamboogle": {
+        "original_rows": 125,
+        "selection_overlap_rows": 0,
+        "remaining_rows": 125
+      }
+    },
+    "selection_keys_absent_from_test": 512,
+    "all_selection_keys_in_test": false
+  },
+  "cross_source_supplement": {
+    "exact": {
+      "train__validation": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      },
+      "train__test": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      },
+      "validation__test": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      }
+    },
+    "normalized": {
+      "train__validation": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      },
+      "train__test": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      },
+      "validation__test": {
+        "unique_question_text_hashes": 0,
+        "left_rows": 0,
+        "right_rows": 0,
+        "source_pair_unique_question_counts": {}
+      }
+    }
+  }
+}
