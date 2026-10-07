@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "goal_target": "Official fresh Search-G1 200 complete outer updates, finite5/50/100/150/200, final51713, own cleanup",
+  "actual_complete_outer": 0,
+  "actual_returned_adam_writes": 0,
+  "consecutive_same_resource_blocker_goal_turns": 3,
+  "turn_observations": [
+    {
+      "goal_turn": 1,
+      "job_id": "3324",
+      "observed_unix": 1791355495.2337754,
+      "state": "PENDING",
+      "reason": "Resources",
+      "observation_sha256": "04f02a6e426c0ad5db06935a040861a1854c9ab3899b46f87477e1d157890245"
+    },
+    {
+      "goal_turn": 2,
+      "job_id": "3324",
+      "observed_unix": 1791356000.234707,
+      "state": "PENDING",
+      "reason": "Resources",
+      "observation_sha256": "c377046fc28136e601df960b3936143da7abea4c50a1410f3b31ef61470f0c41"
+    },
+    {
+      "goal_turn": 3,
+      "job_id": "3324",
+      "observed_unix": 1791356221.6282284,
+      "state": "PENDING",
+      "reason": "Resources",
+      "observation_sha256": "48ac8d9ba3a64999b33ea8da83928a5480e00a9343c8d3fc9cab8319d12e5a76"
+    }
+  ],
+  "fresh_resource_observation_sha256": "d864cd2e245435205947005c5331b223b6be94b0c185c36688dacf29e1348787",
+  "fresh_resource_observation_path": "/Users/shaoshitong/Documents/Search-G1/preparation/actual-stop-retry-3320/goal-third-resource-observation.json",
+  "impasse": "No complete eight-GPU scheduler slot in allowed existing cluster; h100-8 allocated to GiGPO3323, h100-11 eightGPU allocatedTOP-D3228, other nodes full or down. Cannot proceed training without resource release or explicitly authorized coordination. Requests pending, no authorization inferred.",
+  "native_job_3324_preserved": true,
+  "native_job_cancelled": false,
+  "training_recipe_changed": false,
+  "foreign_job_stopped": false,
+  "cross_thread_message_sent": false,
+  "same_handle_only": true,
+  "hourly_automation_actual_status": "PAUSED, unresolved provenance; restoration question pending, no mutation",
+  "goal_complete": false,
+  "checked_unix": 1791356322.48273,
+  "goal_status_returned": "blocked"
+}
