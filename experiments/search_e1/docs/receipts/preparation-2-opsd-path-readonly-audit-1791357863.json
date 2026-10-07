@@ -1,0 +1,923 @@
+{
+  "status": "READONLY_FROZEN_OPSD_PATH_AUDIT",
+  "time": 1791357848.4043307,
+  "run_id": "d588a1450f8343edbed9c1e1901ac836",
+  "controller_pid": 2308665,
+  "source_grpo_step": 100,
+  "actual_opsd_updates": 0,
+  "scope": "Source/configuration/math and external observation coverage; not actual five OPSD updates or effect reproduction",
+  "issues": [],
+  "source100_identity": {
+    "source": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+    "target": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "transfer_receipt_sha256": "08b005d8788fbbbc6c57cf40af4c08202b59c0d89160a6f030fad8d555fc007d",
+    "fresh_target_files": [
+      {
+        "name": "model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "sha256": "9f4d0ab0a9b6215f3ff8549b312c575096908e7ee48c5419525b673943056352"
+      },
+      {
+        "name": "config.json",
+        "bytes": 770,
+        "sha256": "5177b12444b69891bdb8e1cf8e6a037b25c293306ae283b8f5ac3886ef3ce903"
+      },
+      {
+        "name": "added_tokens.json",
+        "bytes": 605,
+        "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+      },
+      {
+        "name": "tokenizer_config.json",
+        "bytes": 7306,
+        "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+      },
+      {
+        "name": "model.safetensors.index.json",
+        "bytes": 35640,
+        "sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d"
+      },
+      {
+        "name": "tokenizer.json",
+        "bytes": 11421896,
+        "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+      },
+      {
+        "name": "model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "sha256": "ee507499ed5cc6e833d5263fedebaaaf9e476069204c5308ee8c6280c96cf0b7"
+      },
+      {
+        "name": "generation_config.json",
+        "bytes": 243,
+        "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+      },
+      {
+        "name": "vocab.json",
+        "bytes": 2776833,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      {
+        "name": "model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "sha256": "9a3f926206041dd4d89e94f4a355f50c7d5b800b2af445cc5c511c67d6527a4e"
+      },
+      {
+        "name": "special_tokens_map.json",
+        "bytes": 613,
+        "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+      },
+      {
+        "name": "merges.txt",
+        "bytes": 1671853,
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      }
+    ],
+    "file_count": 12,
+    "reference_k4_manifest_sha256": "55413106f29bda97d0981a7d296601c7089fb43abb058fa8e0732aed2e30a55c"
+  },
+  "runtime_manifests_verified_files_each": 305,
+  "controller_source_sha256": "5c4c8836d3571aa7224467b3878a884e4bc20abd41a81bc833fe248550e4a91a",
+  "config_sha256": "7ee152cb0b4ea1f68a7786dfe37704502fdb21f4dcf9f8bdd134353e29090648",
+  "scientific_function_identity": {
+    "encoded_pair": {
+      "unchanged_bytes": true,
+      "sha256": "c64188956a7ecc82a18f03a8a71020b3463b842eaecd39cf474e555d69295692"
+    },
+    "pair_loss": {
+      "unchanged_bytes": true,
+      "sha256": "ccff42a99b0667e8bd3960df2a179d9e288482ae9c2c0d4d5750cf4a4b9e5dcf"
+    },
+    "_opsd_global_validation": {
+      "unchanged_bytes": true,
+      "sha256": "7e70caa8d6a8e6300c8286e68c79ea8f816e1336948824d99b53566f2c1ebc66"
+    },
+    "mine_pairs": {
+      "unchanged_bytes": true,
+      "sha256": "b415b01e09682f05fb3972dd5cd325498c69feab9c9325fd886ed2b94f3805d9"
+    },
+    "response_encoding": {
+      "unchanged_bytes": true,
+      "sha256": "c6d25bae73cf697f561c8b6f9a26b20f1a6da7508519a31fdce1e63eccd83e1d"
+    },
+    "clipped_forward_kl": {
+      "unchanged_bytes": true,
+      "sha256": "ff51e50aede34f1bf05c096f410dbf64a381621fa442bfd91be27b0bd47d9a68"
+    },
+    "reward": {
+      "unchanged_bytes": true,
+      "sha256": "51510313c0ee981e426cdeec8e9692699407eeef9d2d53211c8bc8cba18372c9"
+    }
+  },
+  "loss_math": {
+    "per_trajectory": "L_i=(1/valid_policy_tokens_i) sum_t clipped_forward_KL_t; information/non-policy spans excluded",
+    "global_mean": "SUM_rank SUM_i_in_rank grad(L_i)/M=grad((1/M)SUM_i L_i), M=len(actual batch)<=32",
+    "configured_batch": 32,
+    "world_size": 8,
+    "accumulation": 4,
+    "tail_partitions_arithmetic_verified": [
+      {
+        "actual_trajectories": 1,
+        "rank_counts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 2,
+        "rank_counts": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 3,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 4,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 5,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 6,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 7,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 8,
+        "rank_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 9,
+        "rank_counts": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 10,
+        "rank_counts": [
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 11,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 12,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 13,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 14,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 15,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 16,
+        "rank_counts": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 17,
+        "rank_counts": [
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 18,
+        "rank_counts": [
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 19,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 20,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 21,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 22,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 23,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 24,
+        "rank_counts": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 25,
+        "rank_counts": [
+          4,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 26,
+        "rank_counts": [
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 27,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 28,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 29,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 30,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 31,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          3
+        ],
+        "total_coefficient": "1"
+      },
+      {
+        "actual_trajectories": 32,
+        "rank_counts": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "total_coefficient": "1"
+      }
+    ],
+    "zero_example_rank": "missing gradients become zeros before SUM; every rank executes same optimizer update",
+    "teacher": "source100 frozen base, adapters disabled, no_grad; same aligned student response under expert-reference prefix",
+    "kl_vocabulary_contribution_upper_clip": 10,
+    "gradient_norm_clip": 1,
+    "zero_grpo_optimizer_resume": true
+  },
+  "dataset_identity": {
+    "train": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+      "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f",
+      "count": 169103,
+      "unique_question_ids": 169103,
+      "by_dataset": {
+        "nq": 78912,
+        "hotpotqa": 90191
+      }
+    },
+    "validation": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/validation.jsonl",
+      "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+      "count": 512,
+      "unique_question_ids": 512,
+      "by_dataset": {
+        "nq": 256,
+        "hotpotqa": 256
+      }
+    },
+    "test": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/test.jsonl",
+      "sha256": "f1ade9239143d53636ae66b9c90ac083a195a1bc2492e6a8bd9dd56111cfdcab",
+      "count": 51713,
+      "unique_question_ids": 51713,
+      "by_dataset": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      }
+    }
+  },
+  "heldout_separation": {
+    "train_validation": {
+      "question_ids": 0,
+      "casefold_trimmed_question_text": 0
+    },
+    "validation_test": {
+      "question_ids": 0,
+      "casefold_trimmed_question_text": 0
+    }
+  },
+  "native_validation": {
+    "same_bytes_as_archive4": true,
+    "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+    "questions": 512,
+    "rank_sizes": [
+      64,
+      64,
+      64,
+      64,
+      64,
+      64,
+      64,
+      64
+    ],
+    "rank_dataset_counts": [
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      {
+        "nq": 32,
+        "hotpotqa": 32
+      }
+    ],
+    "reduction": "sum correct counts across ranks /512",
+    "timing": "baseline before first update, then epoch end; no extra five-update score"
+  },
+  "future_native_opsd_command": [
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nproc_per_node=8",
+    "-m",
+    "search_e1.opsd",
+    "--model",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "--pairs",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-pairs.jsonl",
+    "--validation",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+    "--accumulation",
+    "4",
+    "--output",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+    "--retriever-url",
+    "http://10.120.17.101:18004/retrieve"
+  ],
+  "five_update_instrumentation": {
+    "actual_counter_after_optimizer_step": true,
+    "all_rank_finite_trainable_params": true,
+    "all_rank_tracked_LoRA_B_changed_from_initial": true,
+    "all_rank_actual_Adam_counter": true,
+    "saved_rank0_adapter_updates": [
+      1,
+      5
+    ],
+    "saved_optimizer_and_rng_all8_updates": [
+      1,
+      5
+    ],
+    "same_run_continues_after5": true,
+    "display_step_semantics": "GRPO source checkpoint100 plus OPSD updates1..5; not GRPO Adam steps101..105"
+  },
+  "external_v3": {
+    "watcher_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py",
+    "watcher_source_sha256": "24aabe7d628ad9e87e97df78b7c801157c0ccf3fda2d549fe3cd9c79f8454595",
+    "watcher_pid": 2273914,
+    "live_watcher_command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py ",
+    "output_paths_consistent": true,
+    "model_config_world8_accum4": true,
+    "adapter1_and5_all_finite_and_changed": true,
+    "all_rank_optimizer_state_and_param_group_exact_comparison": true,
+    "memory_receipt": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous-v2.json",
+    "memory_schema_matches": true,
+    "actual_free_gate_mib": 1024,
+    "sampling_started_before_any_opsd_config_or_update": true,
+    "current_memory_snapshot": {
+      "schema_version": 2,
+      "observer": {
+        "pid": 2272620,
+        "started_at_unix": 1791355956.9531648,
+        "source_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/memory_observer_v2.py",
+        "source_sha256": "40aff306fc84619da629db54f8efe7d2f132dafd7b9ab39ef00372d75ac4ad60"
+      },
+      "time": 1791357862.7253208,
+      "samples": 918,
+      "phase": {
+        "phase": "OPSD100_PREPARATION2_FULL_FRESH_TRAJECTORIES",
+        "time": 1791357044.9223413,
+        "controller_pid": 2308665,
+        "run_id": "d588a1450f8343edbed9c1e1901ac836",
+        "generation": 2,
+        "status_scope": "Latest active pipeline pointer; preparation-1 final stage preserved separately"
+      },
+      "sample_start_unix": 1791355956.9532697,
+      "sample_end_unix": 1791357862.7253208,
+      "updated_at_unix": 1791357862.7254546,
+      "current": [
+        {
+          "gpu": 0,
+          "uuid": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+          "used_mib": 20493,
+          "total_mib": 24564,
+          "actual_free_mib": 3718,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4071,
+          "computed_reserve_mib": 4071,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 1,
+          "uuid": "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+          "used_mib": 20493,
+          "total_mib": 24564,
+          "actual_free_mib": 3718,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4071,
+          "computed_reserve_mib": 4071,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 2,
+          "uuid": "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+          "used_mib": 20497,
+          "total_mib": 24564,
+          "actual_free_mib": 3714,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4067,
+          "computed_reserve_mib": 4067,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 3,
+          "uuid": "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+          "used_mib": 20455,
+          "total_mib": 24564,
+          "actual_free_mib": 3756,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4109,
+          "computed_reserve_mib": 4109,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 4,
+          "uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+          "used_mib": 20455,
+          "total_mib": 24564,
+          "actual_free_mib": 3756,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4109,
+          "computed_reserve_mib": 4109,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 5,
+          "uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+          "used_mib": 20497,
+          "total_mib": 24564,
+          "actual_free_mib": 3714,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4067,
+          "computed_reserve_mib": 4067,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 6,
+          "uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+          "used_mib": 20497,
+          "total_mib": 24564,
+          "actual_free_mib": 3714,
+          "reserved_mib": 354,
+          "utilization": 0,
+          "reserve_mib": 4067,
+          "computed_reserve_mib": 4067,
+          "computed_minus_actual_free_mib": 353
+        },
+        {
+          "gpu": 7,
+          "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+          "used_mib": 21033,
+          "total_mib": 24564,
+          "actual_free_mib": 3179,
+          "reserved_mib": 354,
+          "utilization": 8,
+          "reserve_mib": 3531,
+          "computed_reserve_mib": 3531,
+          "computed_minus_actual_free_mib": 352
+        }
+      ],
+      "actual_free_source": "nvidia-smi memory.free; directly measured, no total-used substitution",
+      "free_measurement": "nvidia-smi memory.free",
+      "minimum_actual_free_mib": 3099,
+      "actual_free_minima_by_gpu_mib": {
+        "0": 3718,
+        "1": 3718,
+        "2": 3714,
+        "3": 3756,
+        "4": 3756,
+        "5": 3714,
+        "6": 3714,
+        "7": 3099
+      },
+      "reserved_maxima_by_gpu_mib": {
+        "0": 354,
+        "1": 354,
+        "2": 354,
+        "3": 354,
+        "4": 354,
+        "5": 354,
+        "6": 354,
+        "7": 354
+      },
+      "peaks_mib": {
+        "0": 20493,
+        "1": 20493,
+        "2": 20497,
+        "3": 20455,
+        "4": 20455,
+        "5": 20497,
+        "6": 20497,
+        "7": 21113
+      },
+      "minimum_reserve_mib": 3451,
+      "computed_fields_note": "peaks_mib and minimum_reserve_mib cover this V2 interval; minimum_reserve_mib is legacy COMPUTED total-used, not the admission metric",
+      "historical_v1_computed_evidence": {
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous.json",
+        "captured_at_unix": 1791355957.0243328,
+        "content_sha256": "e59ad06e67d2f9e774a493af6faf974aee08ec7c030dd45765cdb3a0991f14b5",
+        "metric": "COMPUTED total_mib - peak(memory.used); includes driver-reserved memory; not actual free",
+        "time": 1791355956.9539247,
+        "samples": 4026,
+        "peaks_mib": {
+          "0": 20493,
+          "1": 20493,
+          "2": 20497,
+          "3": 20455,
+          "4": 20455,
+          "5": 20497,
+          "6": 20497,
+          "7": 21055
+        },
+        "minimum_reserve_mib": 3509,
+        "phase": {
+          "phase": "OPSD100_FULL_FRESH_TRAJECTORIES",
+          "time": 1791347537.116323,
+          "controller_pid": 2196101
+        },
+        "original_scope": "HKUST1 allocated8 cards; total sampled usage, keep stage identity; old-GRPO pre-release samples excluded"
+      },
+      "scope": "HKUST1 allocated eight physical GPUs; actual sampled memory.free includes all processes and driver reservations; V1 files remain separate and untouched"
+    },
+    "post5_fresh_sample_required": true
+  },
+  "original_native_mining": {
+    "mine_module_sha256": "d87885a2bde61fdd994bdf3b811830be29e2ac30afb3fae889b8064d94cbebfc",
+    "pair_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-pairs.jsonl",
+    "input_full_preparation2_rollouts": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl",
+    "required_coverage_before_mining": 845515,
+    "reference_selection": "correct sibling minimizing search_calls then token_count",
+    "student_selection": "farthest normalized character Levenshtein candidate, prioritize incorrect siblings; unchanged original",
+    "context_filter": "skip whole pair if aligned response exceeds teacher or student context8192; no independent truncation"
+  },
+  "limitations": [
+    "Actual OPSD output remains absent; five real updates are unproven until native execution and V3 receipts.",
+    "Numerical acceptance does not establish heldout improvement; final merge may select baseline if adapter is worse.",
+    "Runtime reports all-rank weight finite/change; adapter matrices saved rank0; optimizer moments saved and compared on all8 ranks."
+  ],
+  "audit_finished_at": 1791357863.0108857
+}

@@ -1,0 +1,733 @@
+{
+  "schema": "search-e1-readonly-archive-audit-v1",
+  "started_unix": 1791357505.9898524,
+  "host": "xielab5",
+  "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+  "scope": "READ ONLY live code/processes/services; writes this independent analysis receipt only. All train and validation metrics below are archive GRPO, not OPSD.",
+  "train": {
+    "log": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/train.log",
+    "bytes": 30161579,
+    "mtime_unix": 1791357189.869033,
+    "metric_rows": 130,
+    "unique_steps": 130,
+    "completed_grpo_updates": 130,
+    "target_grpo_updates": 200,
+    "current_started_step": 131,
+    "latest_metrics": [
+      {
+        "step": 128,
+        "global_seqlen/min": 762645.0,
+        "global_seqlen/max": 795600.0,
+        "global_seqlen/minmax_diff": 32955.0,
+        "global_seqlen/balanced_min": 779939.0,
+        "global_seqlen/balanced_max": 779939.0,
+        "global_seqlen/mean": 779939.0,
+        "audit/legacy_em": 0.419,
+        "audit/strict_em": 0.406,
+        "audit/score_disagreement": 0.013,
+        "state_tokens/total": 1129728.0,
+        "state_tokens/coverage": 0.408,
+        "actor/kl_coef": 0.001,
+        "actor/entropy_loss": 0.458,
+        "actor/pg_loss": 0.012,
+        "actor/pg_clipfrac": 0.009,
+        "actor/ppo_kl": 0.011,
+        "actor/kl_loss": 0.692,
+        "actor/grad_norm": 1.467,
+        "mfu/actor": 0.0,
+        "actor/lr": 0.0,
+        "critic/score/mean": 0.406,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.406,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0,
+        "critic/advantages/mean": 0.025,
+        "critic/advantages/max": 1.789,
+        "critic/advantages/min": -1.789,
+        "critic/returns/mean": 0.025,
+        "critic/returns/max": 1.789,
+        "critic/returns/min": -1.789,
+        "response_length/mean": 1080.366,
+        "response_length/max": 3064.0,
+        "response_length/min": 223.0,
+        "response_length/clip_ratio": 0.0,
+        "prompt_length/mean": 138.289,
+        "prompt_length/max": 261.0,
+        "prompt_length/min": 126.0,
+        "prompt_length/clip_ratio": 0.0,
+        "env/number_of_actions/mean": 2.56,
+        "env/number_of_actions/max": 5.0,
+        "env/number_of_actions/min": 1.0,
+        "env/finish_ratio": 0.987,
+        "env/number_of_valid_action": 2.311,
+        "env/ratio_of_valid_action": 0.92,
+        "env/number_of_valid_search": 1.324,
+        "timing_s/gen": 1214.292,
+        "timing_s/ref": 248.465,
+        "timing_s/adv": 8.907,
+        "timing_s/update_actor": 1120.742,
+        "timing_s/step": 2843.719,
+        "timing_per_token_ms/update_actor": 0.359,
+        "timing_per_token_ms/ref": 0.08,
+        "timing_per_token_ms/adv": 0.003,
+        "timing_per_token_ms/gen": 0.439
+      },
+      {
+        "step": 129,
+        "global_seqlen/min": 805216.0,
+        "global_seqlen/max": 835518.0,
+        "global_seqlen/minmax_diff": 30302.0,
+        "global_seqlen/balanced_min": 823705.0,
+        "global_seqlen/balanced_max": 823705.0,
+        "global_seqlen/mean": 823705.0,
+        "audit/legacy_em": 0.454,
+        "audit/strict_em": 0.441,
+        "audit/score_disagreement": 0.013,
+        "state_tokens/total": 1157463.0,
+        "state_tokens/coverage": 0.393,
+        "actor/kl_coef": 0.001,
+        "actor/entropy_loss": 0.449,
+        "actor/pg_loss": -0.009,
+        "actor/pg_clipfrac": 0.008,
+        "actor/ppo_kl": 0.007,
+        "actor/kl_loss": 0.434,
+        "actor/grad_norm": 0.957,
+        "mfu/actor": 0.0,
+        "actor/lr": 0.0,
+        "critic/score/mean": 0.441,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.441,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0,
+        "critic/advantages/mean": 0.008,
+        "critic/advantages/max": 1.789,
+        "critic/advantages/min": -1.789,
+        "critic/returns/mean": 0.008,
+        "critic/returns/max": 1.789,
+        "critic/returns/min": -1.789,
+        "response_length/mean": 1150.32,
+        "response_length/max": 3209.0,
+        "response_length/min": 249.0,
+        "response_length/clip_ratio": 0.0,
+        "prompt_length/mean": 136.719,
+        "prompt_length/max": 210.0,
+        "prompt_length/min": 127.0,
+        "prompt_length/clip_ratio": 0.0,
+        "env/number_of_actions/mean": 2.741,
+        "env/number_of_actions/max": 5.0,
+        "env/number_of_actions/min": 1.0,
+        "env/finish_ratio": 0.98,
+        "env/number_of_valid_action": 2.434,
+        "env/ratio_of_valid_action": 0.901,
+        "env/number_of_valid_search": 1.454,
+        "timing_s/gen": 1309.672,
+        "timing_s/ref": 253.524,
+        "timing_s/adv": 9.165,
+        "timing_s/update_actor": 1124.923,
+        "timing_s/step": 2953.155,
+        "timing_per_token_ms/update_actor": 0.341,
+        "timing_per_token_ms/ref": 0.077,
+        "timing_per_token_ms/adv": 0.003,
+        "timing_per_token_ms/gen": 0.445
+      },
+      {
+        "step": 130,
+        "global_seqlen/min": 847741.0,
+        "global_seqlen/max": 917370.0,
+        "global_seqlen/minmax_diff": 69629.0,
+        "global_seqlen/balanced_min": 888433.0,
+        "global_seqlen/balanced_max": 888433.0,
+        "global_seqlen/mean": 888433.0,
+        "audit/legacy_em": 0.451,
+        "audit/strict_em": 0.448,
+        "audit/score_disagreement": 0.003,
+        "state_tokens/total": 1203624.0,
+        "state_tokens/coverage": 0.376,
+        "actor/kl_coef": 0.001,
+        "actor/entropy_loss": 0.458,
+        "actor/pg_loss": 0.001,
+        "actor/pg_clipfrac": 0.006,
+        "actor/ppo_kl": 0.008,
+        "actor/kl_loss": 0.368,
+        "actor/grad_norm": 0.813,
+        "mfu/actor": 0.0,
+        "actor/lr": 0.0,
+        "critic/score/mean": 0.448,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.448,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0,
+        "critic/advantages/mean": -0.006,
+        "critic/advantages/max": 1.789,
+        "critic/advantages/min": -1.789,
+        "critic/returns/mean": -0.006,
+        "critic/returns/max": 1.789,
+        "critic/returns/min": -1.789,
+        "response_length/mean": 1250.534,
+        "response_length/max": 3345.0,
+        "response_length/min": 302.0,
+        "response_length/clip_ratio": 0.0,
+        "prompt_length/mean": 137.643,
+        "prompt_length/max": 208.0,
+        "prompt_length/min": 128.0,
+        "prompt_length/clip_ratio": 0.0,
+        "env/number_of_actions/mean": 2.931,
+        "env/number_of_actions/max": 5.0,
+        "env/number_of_actions/min": 1.0,
+        "env/finish_ratio": 0.973,
+        "env/number_of_valid_action": 2.595,
+        "env/ratio_of_valid_action": 0.893,
+        "env/number_of_valid_search": 1.623,
+        "timing_s/gen": 1366.198,
+        "timing_s/ref": 252.141,
+        "timing_s/adv": 9.503,
+        "timing_s/update_actor": 1115.744,
+        "timing_s/step": 3003.381,
+        "timing_per_token_ms/update_actor": 0.314,
+        "timing_per_token_ms/ref": 0.071,
+        "timing_per_token_ms/adv": 0.003,
+        "timing_per_token_ms/gen": 0.427
+      }
+    ],
+    "last10_reward_mean_of_logged_rounded_values": 0.3893,
+    "terminal_errors": [],
+    "recent_warning_lines": [
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 1105 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 1420 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 3712 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 738 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 874 & 500"
+    ]
+  },
+  "validation": {
+    "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.parquet",
+    "sha256": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71",
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "evaluations": [
+      {
+        "step": 0,
+        "logged_rounded_scores": {
+          "nq": 0.176,
+          "hotpotqa": 0.203
+        },
+        "total_questions": 512,
+        "unique_counts_inferred_from_logged_rounding_and_dataset_sizes": {
+          "nq": {
+            "correct": 45,
+            "count": 256,
+            "em": 0.17578125
+          },
+          "hotpotqa": {
+            "correct": 52,
+            "count": 256,
+            "em": 0.203125
+          }
+        },
+        "aggregate_em_from_unique_count_inference": 0.189453125,
+        "inference_note": "Counts are uniquely inferred from 3-decimal logger values and exact validation dataset sizes; no new evaluation run was executed."
+      },
+      {
+        "step": 50,
+        "logged_rounded_scores": {
+          "nq": 0.309,
+          "hotpotqa": 0.324
+        },
+        "total_questions": 512,
+        "unique_counts_inferred_from_logged_rounding_and_dataset_sizes": {
+          "nq": {
+            "correct": 79,
+            "count": 256,
+            "em": 0.30859375
+          },
+          "hotpotqa": {
+            "correct": 83,
+            "count": 256,
+            "em": 0.32421875
+          }
+        },
+        "aggregate_em_from_unique_count_inference": 0.31640625,
+        "inference_note": "Counts are uniquely inferred from 3-decimal logger values and exact validation dataset sizes; no new evaluation run was executed."
+      },
+      {
+        "step": 100,
+        "logged_rounded_scores": {
+          "nq": 0.422,
+          "hotpotqa": 0.473
+        },
+        "total_questions": 512,
+        "unique_counts_inferred_from_logged_rounding_and_dataset_sizes": {
+          "nq": {
+            "correct": 108,
+            "count": 256,
+            "em": 0.421875
+          },
+          "hotpotqa": {
+            "correct": 121,
+            "count": 256,
+            "em": 0.47265625
+          }
+        },
+        "aggregate_em_from_unique_count_inference": 0.447265625,
+        "inference_note": "Counts are uniquely inferred from 3-decimal logger values and exact validation dataset sizes; no new evaluation run was executed."
+      }
+    ]
+  },
+  "checkpoints": [
+    {
+      "step": 50,
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50",
+      "files": [
+        {
+          "name": "added_tokens.json",
+          "bytes": 605
+        },
+        {
+          "name": "config.json",
+          "bytes": 770
+        },
+        {
+          "name": "generation_config.json",
+          "bytes": 243
+        },
+        {
+          "name": "merges.txt",
+          "bytes": 1671853
+        },
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4982131536
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4932949336
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3673383040
+        },
+        {
+          "name": "model.safetensors.index.json",
+          "bytes": 35640
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 613
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 11421896
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 7306
+        },
+        {
+          "name": "vocab.json",
+          "bytes": 2776833
+        }
+      ]
+    },
+    {
+      "step": 100,
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+      "files": [
+        {
+          "name": "added_tokens.json",
+          "bytes": 605
+        },
+        {
+          "name": "config.json",
+          "bytes": 770
+        },
+        {
+          "name": "generation_config.json",
+          "bytes": 243
+        },
+        {
+          "name": "merges.txt",
+          "bytes": 1671853
+        },
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4982131536
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4932949336
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3673383040
+        },
+        {
+          "name": "model.safetensors.index.json",
+          "bytes": 35640
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 613
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 11421896
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 7306
+        },
+        {
+          "name": "vocab.json",
+          "bytes": 2776833
+        }
+      ]
+    }
+  ],
+  "checkpoint100_weight_acceptance": {
+    "checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+    "tensor_count": 435,
+    "initial_tensor_count": 434,
+    "verified_aliases": {
+      "lm_head.weight": "model.embed_tokens.weight"
+    },
+    "nonfinite": [],
+    "changed": [
+      {
+        "key": "model.layers.29.self_attn.q_proj.weight",
+        "max_abs_delta": 0.00018637627363204956
+      },
+      {
+        "key": "model.layers.30.self_attn.q_proj.weight",
+        "max_abs_delta": 0.00020995363593101501
+      },
+      {
+        "key": "model.layers.31.self_attn.q_proj.weight",
+        "max_abs_delta": 0.00023754173889756203
+      },
+      {
+        "key": "model.layers.32.self_attn.q_proj.weight",
+        "max_abs_delta": 0.0002170829102396965
+      }
+    ],
+    "accepted": true
+  },
+  "runtime_integrity": [
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-runtime.sha256.json",
+      "manifest_sha256": "a31e3a0edf40c6cfbfb87f48c92d22d64048a66d8c7ed3e765c50bcd40a9e85c",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "d6f2fc3b61fb0afb3188186c3a168a50c9103cecf4158e1bf0df00cbba59816a"
+    },
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-jit-runtime.sha256.json",
+      "manifest_sha256": "da9601d929d85636f3a5484564fa68cbc4bc7cab6cae0ab95b367d86eab36ee3",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "6736283a00240f84505e60c44154f4299da0aed3a763579b22f96e4eabd671a5"
+    },
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-jit-env-v2-runtime.sha256.json",
+      "manifest_sha256": "8264a8b2283133d5767461fc16194aec6d2850d1c5f946995a2ce2530d322dc9",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "251d9c93d74c9501a391033aff1703cdc5eaa54be058c856e3c84bab6294c6ff"
+    }
+  ],
+  "pipeline_stage": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1",
+  "run_receipt": {
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "admission": {
+      "devices": [
+        [
+          "4",
+          "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "5",
+          "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "6",
+          "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+          "49140",
+          "12",
+          "0"
+        ],
+        [
+          "7",
+          "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+          "49140",
+          "12",
+          "0"
+        ]
+      ],
+      "compute_apps": [
+        [
+          "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a",
+          "1164838",
+          "VLLM::EngineCore",
+          "33248"
+        ],
+        [
+          "GPU-52bc599a-9665-83a5-351b-69cfc6a0b667",
+          "840849",
+          "envs/image2spine/bin/python",
+          "5648"
+        ],
+        [
+          "GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234",
+          "3065521",
+          "VLLM::EngineCore",
+          "29070"
+        ],
+        [
+          "GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab",
+          "3295494",
+          "/home/louzhenye/image2spine/envs/image2spine/bin/python",
+          "5910"
+        ]
+      ]
+    },
+    "started_unix": 1791082326.4122124,
+    "status": "RUNNING",
+    "utilization": 0.35,
+    "peaks_mib": {
+      "4": 47824,
+      "5": 44662,
+      "6": 42836,
+      "7": 43643
+    },
+    "sample_count": 131341,
+    "execution_caps": {
+      "E1_PHYSICAL_MICRO": "1",
+      "E1_PHYSICAL_SCORE": "2",
+      "E1_JIT_OPTIMIZER": null,
+      "E1_LOGIT_CHUNK": null
+    },
+    "pid": 1434645,
+    "updated_unix": 1791357484.0743334
+  },
+  "archive_continuous_memory": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "continuous_observer_started": 1791156535.2196116,
+    "initial_source": "archive-post-jit-memory.json",
+    "initial_source_samples": 1726,
+    "peaks_mib": {
+      "4": 31292,
+      "5": 35388,
+      "6": 30606,
+      "7": 33779
+    },
+    "samples": 96316,
+    "minimum_reserve_mib": {
+      "4": 17848,
+      "5": 13752,
+      "6": 18534,
+      "7": 15361
+    },
+    "shared_gpu_margin_met": true,
+    "updated": 1791357488.196176,
+    "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "source_run_status": "RUNNING",
+    "source_run_matches": true
+  },
+  "shared_retriever_receipt": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "own_processes": [
+    {
+      "pid": 1434645,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "bash /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/train_profile.sh",
+      "identity_env": [
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo",
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016"
+      ]
+    },
+    {
+      "pid": 1437474,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "ray::main_task",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo"
+      ]
+    },
+    {
+      "pid": 1437900,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "ray::WorkerDict",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo"
+      ]
+    },
+    {
+      "pid": 1438381,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "ray::WorkerDict",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo"
+      ]
+    },
+    {
+      "pid": 1438382,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "ray::WorkerDict",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo"
+      ]
+    },
+    {
+      "pid": 1438383,
+      "alive": true,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "command": "ray::WorkerDict",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1:/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+        "E1_STAGE=round-1-grpo"
+      ]
+    },
+    {
+      "pid": 1749337,
+      "alive": true,
+      "cwd": "/home/shaoshitong",
+      "command": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/env/bin/python /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source/retriever_stream.py",
+      "identity_env": [
+        "E1_BASE=/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+        "CUDA_VISIBLE_DEVICES=7",
+        "PYTHONPATH=/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/runtime/upstream/Search-R1:/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/runtime:/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source"
+      ]
+    }
+  ],
+  "gpu_direct_sample": [
+    {
+      "index": 4,
+      "uuid": "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+      "total_mib": 49140,
+      "used_mib": 3552,
+      "free_mib": 45209,
+      "utilization_percent": 0
+    },
+    {
+      "index": 5,
+      "uuid": "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+      "total_mib": 49140,
+      "used_mib": 3552,
+      "free_mib": 45209,
+      "utilization_percent": 0
+    },
+    {
+      "index": 6,
+      "uuid": "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+      "total_mib": 49140,
+      "used_mib": 3626,
+      "free_mib": 45135,
+      "utilization_percent": 0
+    },
+    {
+      "index": 7,
+      "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+      "total_mib": 49140,
+      "used_mib": 4293,
+      "free_mib": 44467,
+      "utilization_percent": 55
+    }
+  ],
+  "own_gpu_compute_apps": [
+    "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 1437900, ray::WorkerDict, 3476",
+    "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 1438381, ray::WorkerDict, 3476",
+    "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 1438382, ray::WorkerDict, 3550",
+    "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1438383, ray::WorkerDict, 3476",
+    "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1749337, /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/env/bin/python, 738"
+  ],
+  "tmux": [
+    "e1-archive-jit-continuous-memory-20261005 2062792 bash CUDA_VISIBLE_DEVICES= python3 /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/monitor_archive_jit_memory.py > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/archive-jit-memory-continuous.log 2>&1",
+    "e1-peer-20261004 1103296 bash /home/shaoshitong/miniconda3/envs/EditVerse/bin/python -m http.server 18281 --bind 10.123.4.11 --directory /weka_3/shaoshitong/search-e1-config-study-20261004/relay > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/peer.log 2>&1",
+    "e1-priority-5iter-archive-20261004 1405390 bash env E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004 E1_PROFILE=archive CUDA_VISIBLE_DEVICES=4,5,6,7 E1_PHYSICAL_MICRO=1 E1_PHYSICAL_SCORE=2 E1_GATE_STAGE=smoke-035 E1_TUNER_PID=1394861 E1_OLD_PIPELINE_SESSION=e1-resumed-pipeline-archive-20261004 E1_GATE_RUN_ID=442bccde5f484eee8f2fd620d9c4e68b /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/prioritize_formal_training.py > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/formal-priority.log 2>&1",
+    "e1-retriever-20261004 1524419 bash env E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004 CUDA_VISIBLE_DEVICES=4,5,6,7 bash /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/retriever_service.sh >> /weka_3/shaoshitong/search-e1-config-study-20261004/logs/retriever.log 2>&1",
+    "e1-stream-batched-memory-20261004 1751711 bash python3 -u /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source/memory_monitor.py > /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/logs/memory-monitor.log 2>&1",
+    "e1-stream-batched-oracle-20261004 1749335 bash bash /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/start.sh > /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/logs/server.log 2>&1"
+  ],
+  "shared_retriever_health": {
+    "http_status": 200,
+    "body": {
+      "ready": true,
+      "ntotal": 21015324,
+      "d": 768,
+      "encoder": "CPU FP32 E5",
+      "index": "full FP32 streaming FlatIP joined scan",
+      "query_micro": 64,
+      "serialized": true,
+      "tf32": false,
+      "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+      "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+    }
+  },
+  "complete_unix": 1791357507.5868,
+  "receipt_path": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-audit-20261007T071827Z.json"
+}

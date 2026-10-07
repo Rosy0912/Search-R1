@@ -1,0 +1,12 @@
+{
+  "time": 1791358546.7259092,
+  "torch": "2.4.0+cu121",
+  "transformers": "4.46.3",
+  "peft": "0.13.2",
+  "accelerate": "1.10.1",
+  "opsd_source": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation2/search_e1/opsd.py",
+  "opsd_source_sha256": "61df9cc630bca7466f3edfb06da18ad92ddff1c713bf7c6c4a104ba88672c037",
+  "cuda_initialized": false,
+  "actual_opsd_updates": 0,
+  "scope": "CPU-only dependency/module import preflight; no model/data/GPU request, optimizer update or acceptance"
+}

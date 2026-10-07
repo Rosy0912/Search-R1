@@ -1,0 +1,1764 @@
+{
+  "schema": 1,
+  "time": 1791357794.1869586,
+  "accepted": true,
+  "full_proof": {
+    "host": "HKUST1",
+    "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/full-gpu-http-gate-v2.json",
+    "sha256": "1308429fe03dfa3fbdf53488612ab6385747429914e4691d82af80c96c2ee454",
+    "bytes": 43410428,
+    "scope": "full GPU and HTTP oracle equality",
+    "gate_start_unix": 1791355844.4360745,
+    "gate_end_unix": 1791356509.3878267
+  },
+  "candidate_pid": 2239529,
+  "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+  "same_gpu_operator_checks": [
+    {
+      "queries": 1,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "48f46c7e3f4610789e68d675636c4176b287bf34ebc5899ac9b9d014e0073159",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 0,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "714a5af308895ae0b23f0c3924bd2f1757627f2f7ff67337d2aa50438f4dec07",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 63,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "513d5c38a855381cafd08d92a173f7b3b1fa4bf0feb82eb83d636fcc538ef6fe",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 1,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "cc4017d11a33daf822da792675beab262e508168ee18a1c23f88aac095f5c60c",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              63,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              63,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 64,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "70150b7b1ae102f0c101a47360b487453f6ac236ae1bdede9407745d1953ca60",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 2,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "9b10f6a06c1cb2dc94e2122408cd76289d74bd160823ee38dcd60e4cedcbfc38",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 65,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "625080c4130a743101a925634732dc45785c77c24fbb185665471d32aa2a66cb",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 3,
+      "actual_gemm_trace_count": 1284,
+      "actual_gemm_trace_sha256": "687a32ff00bacee7d940c1d43657708e4f1ccfbd1bafb51145b49ef52edb3636",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 128,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "d9c4f17aa1731a08da65bd2b4cfad5214d1e03dc975c7499648d9d97fda86117",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 4,
+      "actual_gemm_trace_count": 1284,
+      "actual_gemm_trace_sha256": "bbe2a3f7c6f7750dc208e82567a72dc9142aef4412149f3f432e1c51eb2c6582",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 1282
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 2
+        }
+      ]
+    },
+    {
+      "queries": 129,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "d7bc1ae911689295731c4a1737cbe0ca4192a97c641ebc8f16b36142b579524e",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 5,
+      "actual_gemm_trace_count": 1926,
+      "actual_gemm_trace_sha256": "0c708909ea55c8729ed2b08ab15a5f0938b969bf9a85c0adf7e23db1256a596a",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 1282
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 2
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 320,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "e24fbc75e9f28db3fff667810ff42955301466f26c0d9b32dd2543082e641f10",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 6,
+      "actual_gemm_trace_count": 3210,
+      "actual_gemm_trace_sha256": "4482e72fb0c1afcc472fa22a0f7f1e0595739ea3ee92fdbd8c28d96262366b6e",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 3205
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 5
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "e24e8436f21946c8c026d8827c6a8f174f71b2b6cb00b0814a1114d0725213a9",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 7,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 1,
+      "topk": 3,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "48f46c7e3f4610789e68d675636c4176b287bf34ebc5899ac9b9d014e0073159",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 8,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "714a5af308895ae0b23f0c3924bd2f1757627f2f7ff67337d2aa50438f4dec07",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 63,
+      "topk": 4,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "513d5c38a855381cafd08d92a173f7b3b1fa4bf0feb82eb83d636fcc538ef6fe",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 9,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "cc4017d11a33daf822da792675beab262e508168ee18a1c23f88aac095f5c60c",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              63,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              63,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 64,
+      "topk": 3,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "70150b7b1ae102f0c101a47360b487453f6ac236ae1bdede9407745d1953ca60",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 10,
+      "actual_gemm_trace_count": 642,
+      "actual_gemm_trace_sha256": "9b10f6a06c1cb2dc94e2122408cd76289d74bd160823ee38dcd60e4cedcbfc38",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 65,
+      "topk": 4,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "625080c4130a743101a925634732dc45785c77c24fbb185665471d32aa2a66cb",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 11,
+      "actual_gemm_trace_count": 1284,
+      "actual_gemm_trace_sha256": "687a32ff00bacee7d940c1d43657708e4f1ccfbd1bafb51145b49ef52edb3636",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 128,
+      "topk": 3,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "d9c4f17aa1731a08da65bd2b4cfad5214d1e03dc975c7499648d9d97fda86117",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 12,
+      "actual_gemm_trace_count": 1284,
+      "actual_gemm_trace_sha256": "bbe2a3f7c6f7750dc208e82567a72dc9142aef4412149f3f432e1c51eb2c6582",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 1282
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 2
+        }
+      ]
+    },
+    {
+      "queries": 129,
+      "topk": 4,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "d7bc1ae911689295731c4a1737cbe0ca4192a97c641ebc8f16b36142b579524e",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 13,
+      "actual_gemm_trace_count": 1926,
+      "actual_gemm_trace_sha256": "0c708909ea55c8729ed2b08ab15a5f0938b969bf9a85c0adf7e23db1256a596a",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 1282
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 641
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 2
+        },
+        {
+          "shape": [
+            [
+              1,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 1
+        }
+      ]
+    },
+    {
+      "queries": 320,
+      "topk": 3,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "e24fbc75e9f28db3fff667810ff42955301466f26c0d9b32dd2543082e641f10",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 14,
+      "actual_gemm_trace_count": 3210,
+      "actual_gemm_trace_sha256": "4482e72fb0c1afcc472fa22a0f7f1e0595739ea3ee92fdbd8c28d96262366b6e",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 3205
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 5
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": false,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "e24e8436f21946c8c026d8827c6a8f174f71b2b6cb00b0814a1114d0725213a9",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 15,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "943f423f49351a30a5b663897184c5fdf992884b5a2d02810b01049bf153f886",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 16,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "f01dda8cbb3d6754cc89914355773e1af74265a51a200750e1c8d66f6b970bdf",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 17,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "7f8cb47c23c62f423955dcdc6da0e7ec44f8895af3d2b5db25994953107c6143",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 18,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "fa859b2036bc2f1d7e33a4d1147e64730ca4f99d0695f87acd1b0c72b87c6216",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 19,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "50c0d865692b4690a44ccdbc515a19184e415bbd44e73098e5fe46b6e55178d9",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 20,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "49fc24d87f5fb1b5e7b5e3e504fb6f27196f98b85973489285f8cc8e2e8e5d0a",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 21,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "309ffd9b647e7e8c82498ffad2975c9237414951d87e3ea06c50795197708fe8",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 22,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scope": "same-embedding original versus segmented full GPU scanner on candidate only",
+      "k4_http_compared": false,
+      "query_sha256": "e24e8436f21946c8c026d8827c6a8f174f71b2b6cb00b0814a1114d0725213a9",
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "vector_tiles": 642,
+      "batch_requests": 8,
+      "batch_queries": 20480,
+      "full_ntotal": 21015324,
+      "candidate_pid": 2239529,
+      "original_scan_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "check_index": 23,
+      "actual_gemm_trace_count": 25680,
+      "actual_gemm_trace_sha256": "444eef4cb8cf04a778c05fac5702bf96912ae768f18ce31e48720bbbb39d894d",
+      "actual_gemm_shape_counts": [
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              32768
+            ]
+          ],
+          "count": 25640
+        },
+        {
+          "shape": [
+            [
+              64,
+              768
+            ],
+            [
+              768,
+              11036
+            ]
+          ],
+          "count": 40
+        }
+      ]
+    }
+  ],
+  "k4_http_integration": {
+    "queries": 320,
+    "topk": 3,
+    "return_scores": true,
+    "requests_to_k4": 1,
+    "sequential": true,
+    "complete_json_exact": true,
+    "query_sha256": "871f800f4a8881f191b7181dfedf096f12c8bf8ec46aa8225e132a8c8170fc76"
+  },
+  "memory": {
+    "candidate_pid": 2239529,
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "gpu": 7,
+    "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+    "sample_start_unix": 1791355802.515925,
+    "sample_end_unix": 1791356511.2988036,
+    "updated_at_unix": 1791356511.2988958,
+    "samples": 2149,
+    "max_process_mib": 654,
+    "min_free_mib": 3099,
+    "current": {
+      "time": 1791356511.2988036,
+      "candidate_pid": 2239529,
+      "gpu": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "total_mib": 24564,
+      "used_mib": 21113,
+      "free_mib": 3099,
+      "reserved_mib": 354,
+      "computed_total_minus_used_mib": 3451,
+      "candidate_process_mib": 654
+    },
+    "free_measurement": "nvidia-smi memory.free",
+    "process_limit_mib": 1024,
+    "free_minimum_mib": 1024,
+    "limits_met": true,
+    "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately"
+  },
+  "evidence_files": [
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/source-identity.json",
+      "gate_recorded_sha256": "84100b6c957d1bbbb93b0f130edeadffc4a065e5a1affd1d70587d32d73ad50f",
+      "current_file_sha256": "84100b6c957d1bbbb93b0f130edeadffc4a065e5a1affd1d70587d32d73ad50f",
+      "current_matches_gate_record": true,
+      "scope": "Frozen evidence file"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/asset-identity-evidence.json",
+      "gate_recorded_sha256": "a63c6d194ecd98788c4686fbea4c8b6c1f345413daebe01e2961c6152c33ed4c",
+      "current_file_sha256": "a63c6d194ecd98788c4686fbea4c8b6c1f345413daebe01e2961c6152c33ed4c",
+      "current_matches_gate_record": true,
+      "scope": "Frozen evidence file"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/cpu-fixture-results.json",
+      "gate_recorded_sha256": "c94b0e9ee8c244c4afb0efd07cd4e1229ed8b4d8feffde61ef16f63d9f961741",
+      "current_file_sha256": "c94b0e9ee8c244c4afb0efd07cd4e1229ed8b4d8feffde61ef16f63d9f961741",
+      "current_matches_gate_record": true,
+      "scope": "Frozen evidence file"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+      "gate_recorded_sha256": "c5bf83a553ee334296fe41046b50282328bbbd9dbea3610d1a1b5822cd05880c",
+      "current_file_sha256": "116b595223341561281cfa2600f69b898390d008bd30f5bcbefc51dcfbb1017a",
+      "current_matches_gate_record": false,
+      "scope": "Continuous memory file changes after gate; embedded gate snapshot is frozen"
+    }
+  ],
+  "source_identity": {
+    "pid": 2239529,
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "identity": {
+      "assets_manifest": {
+        "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/assets/manifest.json",
+        "sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508"
+      },
+      "sources": {
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/cpu_fixture.py": "641365a7183cff8fbf79bfb7f1d8f88cf6817a79957e8f7bf2febd1b75b7bb22",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/full_live_gate.py": "e5599aaa510817fc39c11a7735586f55c24799b68d6e2ce49995f1b023138848",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/operator_trace.py": "78668aa2e19cabe72e27e227e8e72419bf1d64ccb1aa472edcb68c7230ccec79",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/request_queue.py": "8253466108fab13b5827d55b1b5598bb74ddedc3bc4805a7f22013c5122e8cc6",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/segmented_scan.py": "3ccc65757ec8ece09e77f040224cee7e1c07ba200110f61c826eed9f26c52fd2",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/server.py": "0626a1108c6b38dacad5fa677f89d2ad0283c067a78d5ab869bd75a9710374cc",
+        "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/torch_streaming_flat.py": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca"
+      },
+      "original_scan": {
+        "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/torch_streaming_flat.py",
+        "sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca"
+      },
+      "original_encoder": {
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd/upstream/Search-R1/search_r1/search/retrieval_server.py",
+        "sha256": "fc528a2df9d2927f7dbf21a92d4671405259cba90e8e02dca661a4ad784c1a97"
+      },
+      "ntotal": 21015324,
+      "d": 768,
+      "encoder": "original CPU FP32 E5",
+      "encoder_batch_size": 128,
+      "encoder_threads": 16,
+      "vector_rows": 32768,
+      "query_micro": 64,
+      "configured_threads": {
+        "torch": 16,
+        "faiss": 32
+      },
+      "actual_threads_after_cpu_load": {
+        "torch": 16,
+        "torch_interop": 72,
+        "faiss": 32
+      },
+      "max_requests": 8,
+      "max_queries_per_request": 2560,
+      "max_queries_per_scan": 20480,
+      "tf32": false,
+      "collection_seconds": 0.025,
+      "index_file": {
+        "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/assets/index/e5_Flat.index",
+        "realpath": "/data/shaoshitong/search-e1-retriever-gpu-20261004/assets/index/e5_Flat.index",
+        "size": 64559075373,
+        "mtime_ns": 1791059105118425760,
+        "inode": 466237713,
+        "device": 2065
+      },
+      "corpus_file": {
+        "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/assets/corpus/wiki-18.jsonl",
+        "realpath": "/data/shaoshitong/search-e1-retriever-gpu-20261004/assets/corpus/wiki-18.jsonl",
+        "size": 14393579520,
+        "mtime_ns": 1791059238663125666,
+        "inode": 466237716,
+        "device": 2065
+      }
+    },
+    "cuda_initialized": false,
+    "cpu_loaded_unadmitted": true
+  },
+  "source_files_rechecked": [
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/cpu_fixture.py",
+      "sha256": "641365a7183cff8fbf79bfb7f1d8f88cf6817a79957e8f7bf2febd1b75b7bb22",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/full_live_gate.py",
+      "sha256": "e5599aaa510817fc39c11a7735586f55c24799b68d6e2ce49995f1b023138848",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/operator_trace.py",
+      "sha256": "78668aa2e19cabe72e27e227e8e72419bf1d64ccb1aa472edcb68c7230ccec79",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/request_queue.py",
+      "sha256": "8253466108fab13b5827d55b1b5598bb74ddedc3bc4805a7f22013c5122e8cc6",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/segmented_scan.py",
+      "sha256": "3ccc65757ec8ece09e77f040224cee7e1c07ba200110f61c826eed9f26c52fd2",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/server.py",
+      "sha256": "0626a1108c6b38dacad5fa677f89d2ad0283c067a78d5ab869bd75a9710374cc",
+      "still_matches_gate": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/source/torch_streaming_flat.py",
+      "sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+      "still_matches_gate": true
+    }
+  ],
+  "asset_identity_evidence": {
+    "accepted": true,
+    "time": 1791355440.0213811,
+    "comparisons": [
+      {
+        "kind": "index",
+        "path": "/data/shaoshitong/search-e1-retriever-gpu-20261004/assets/index/e5_Flat.index",
+        "k4_path": "/weka_3/shaoshitong/search-e1-retriever-stream-20261004/assets/index/e5_Flat.index",
+        "bytes": 64559075373,
+        "k1_sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "k4_sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "k1_measurement_time": 1791354116.877514,
+        "k4_measurement_time": 1791355364.6204247,
+        "k1_evidence": "Fresh streaming SHA256, full file, tool output in this subagent turn; 58.176883697509766 seconds, no GPU.",
+        "k4_evidence": "Fresh streaming SHA256 from index-k4-fresh.json.",
+        "k4_full_hash_receipt": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/cpu-encoder-identity/index-k4-fresh.json"
+      },
+      {
+        "kind": "corpus",
+        "path": "/data/shaoshitong/search-e1-retriever-gpu-20261004/assets/corpus/wiki-18.jsonl",
+        "k4_path": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/assets/corpus/wiki-18.jsonl",
+        "bytes": 14393579520,
+        "k1_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "k4_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "k1_measurement_time": 1791354185.5714042,
+        "k4_measurement_time": 1791354168.6666956,
+        "evidence": "Both full decompressed files independently streaming-hashed in this subagent turn, captured tool outputs, no GPU."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/.gitattributes",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/.gitattributes",
+        "bytes": 1477,
+        "k1_sha256": "db7c0371f46f0840b8f25794c1e3321c9b5820a8cb6ba9694a46fc64b8fae5a6",
+        "k4_sha256": "db7c0371f46f0840b8f25794c1e3321c9b5820a8cb6ba9694a46fc64b8fae5a6",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/1_Pooling/config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/1_Pooling/config.json",
+        "bytes": 200,
+        "k1_sha256": "f586ab6c734af7b8d14d898bfa7faa886f23b46f86dd1730514309893af13d75",
+        "k4_sha256": "f586ab6c734af7b8d14d898bfa7faa886f23b46f86dd1730514309893af13d75",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/README.md",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/README.md",
+        "bytes": 67561,
+        "k1_sha256": "127d92b493963c5e7f74fcad5190546e19e404e5ff5b5c0c606dbcda57ca530e",
+        "k4_sha256": "127d92b493963c5e7f74fcad5190546e19e404e5ff5b5c0c606dbcda57ca530e",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/config.json",
+        "bytes": 650,
+        "k1_sha256": "01cc39aa39538a8179aa131c8a16adc03b506c92009f091502e4eb0c702f5f78",
+        "k4_sha256": "01cc39aa39538a8179aa131c8a16adc03b506c92009f091502e4eb0c702f5f78",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/model.safetensors",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/model.safetensors",
+        "bytes": 437955512,
+        "k1_sha256": "d0d559c47d5f71b1d280b13b62a2657f3e3bc70c0786f9ab91a36545e6a8f693",
+        "k4_sha256": "d0d559c47d5f71b1d280b13b62a2657f3e3bc70c0786f9ab91a36545e6a8f693",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/modules.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/modules.json",
+        "bytes": 387,
+        "k1_sha256": "c6e29747481e8b5dd2b58401966aeac910de39092f90cda9a704b1545f902b04",
+        "k4_sha256": "c6e29747481e8b5dd2b58401966aeac910de39092f90cda9a704b1545f902b04",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/config.json",
+        "bytes": 632,
+        "k1_sha256": "eedcf6117fdeb234759a2d2ee684feaef6cb4891a5c54eb4504c61538e029fa4",
+        "k4_sha256": "eedcf6117fdeb234759a2d2ee684feaef6cb4891a5c54eb4504c61538e029fa4",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/special_tokens_map.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/special_tokens_map.json",
+        "bytes": 125,
+        "k1_sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "k4_sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/tokenizer.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/tokenizer.json",
+        "bytes": 711396,
+        "k1_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "k4_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/tokenizer_config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/tokenizer_config.json",
+        "bytes": 314,
+        "k1_sha256": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+        "k4_sha256": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/vocab.txt",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/onnx/vocab.txt",
+        "bytes": 231508,
+        "k1_sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "k4_sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/openvino/openvino_model.xml",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/openvino/openvino_model.xml",
+        "bytes": 363139,
+        "k1_sha256": "16705018270fc1b17d2d0463e3c36e621e9075ec4c0e7f6b6da47265e85f80cb",
+        "k4_sha256": "16705018270fc1b17d2d0463e3c36e621e9075ec4c0e7f6b6da47265e85f80cb",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/openvino/openvino_model_qint8_quantized.xml",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/openvino/openvino_model_qint8_quantized.xml",
+        "bytes": 663839,
+        "k1_sha256": "adb412cba9e0d45e35ae92f3d1cb29c4cb9bee691f4809f519a2c6c68ba5ee48",
+        "k4_sha256": "adb412cba9e0d45e35ae92f3d1cb29c4cb9bee691f4809f519a2c6c68ba5ee48",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/sentence_bert_config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/sentence_bert_config.json",
+        "bytes": 57,
+        "k1_sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529",
+        "k4_sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/special_tokens_map.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/special_tokens_map.json",
+        "bytes": 125,
+        "k1_sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "k4_sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/tokenizer.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/tokenizer.json",
+        "bytes": 711396,
+        "k1_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "k4_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/tokenizer_config.json",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/tokenizer_config.json",
+        "bytes": 314,
+        "k1_sha256": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+        "k4_sha256": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder",
+        "path": "/data/shaoshitong/search-e1-config-study-20261004/assets/encoder/vocab.txt",
+        "k4_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/encoder/vocab.txt",
+        "bytes": 231508,
+        "k1_sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "k4_sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "CPU encoder proof timestamps immediately following file SHA checks and model load; exact per-file hash instants were not recorded.",
+        "k1_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes.",
+        "k4_evidence": "outputs/identity.json encoder_sha256, all fresh file hashes."
+      },
+      {
+        "kind": "encoder_source",
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd/upstream/Search-R1/search_r1/search/retrieval_server.py",
+        "k4_path": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/runtime/upstream/Search-R1/search_r1/search/retrieval_server.py",
+        "k1_sha256": "fc528a2df9d2927f7dbf21a92d4671405259cba90e8e02dca661a4ad784c1a97",
+        "k4_sha256": "fc528a2df9d2927f7dbf21a92d4671405259cba90e8e02dca661a4ad784c1a97",
+        "k1_measurement_time": 1791354462.1043177,
+        "k4_measurement_time": 1791354462.1888678,
+        "measurement_time_scope": "Original module hashed in CPU identity proof construction.",
+        "evidence": "Both original CPU encoder identity.json receipts."
+      },
+      {
+        "kind": "scanner_source",
+        "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/source/experiments/search_e1/control/torch_streaming_flat.py",
+        "k4_path": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source/torch_streaming_flat.py",
+        "k1_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+        "k4_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+        "k1_measurement_time": 1791355057.285379,
+        "k4_measurement_time": 1791355057.2559173,
+        "evidence": "Parent reported matching fresh hashes; this subagent then independently read and SHA256-hashed both exact scanner source files, confirming the same value."
+      }
+    ],
+    "scope": "Source file identity only. Does not prove candidate GPU scanner, memory, speed, or future trajectory determinism.",
+    "k4_index_fresh_complete": true,
+    "encoder_comparison": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/comparison.json",
+    "k1_encoder_receipt": "/data/shaoshitong/search-e1-retriever-analysis-20261007/cpu-encoder-identity/outputs/identity.json",
+    "k4_encoder_receipt": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/cpu-encoder-identity/outputs/identity.json"
+  },
+  "cpu_fixture": {
+    "accepted_cpu_fixture": true,
+    "full_gpu_accepted": false,
+    "case_count": 28,
+    "query_sizes": [
+      1,
+      63,
+      64,
+      65,
+      128,
+      129,
+      320
+    ],
+    "topks": [
+      3,
+      4
+    ],
+    "vector_rows": 32768,
+    "tail_rows": 3,
+    "scope": "CPU fixture operator/shapes/IDs/ties only; no live acceptance"
+  },
+  "evidence_scopes": {
+    "same_gpu": "all listed sizes/topks/tails/stress exact on complete index",
+    "k4_http": "one real 320-query topk3 return_scores=true complete JSON exact; no other sizes",
+    "stress": "candidate-only 8 x 2560; actual worker requests <=320; not a training budget"
+  },
+  "stress_scope": "8 simultaneous candidate requests x 2560 query stress gate; actual worker request budget <=320, not a training speed measurement",
+  "speed_claim": false,
+  "retained_trace": "All original per-GEMM traces remain in full proof; only exact trace SHA/count/unique actual shapes copied here"
+}
