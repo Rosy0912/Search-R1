@@ -47,18 +47,23 @@
     "foreign_jobs_untouched": true
   },
   "terminal_recorder": {
-    "pid": 3890315,
-    "start_ticks": 2230000684,
-    "sid": 3890315,
-    "script_sha256": "cc4b190906e7e7e27f88f69de36e6f14b409fa8a3aad08b79eda65fbd60cef9d",
-    "deployed_unix": 1791355319.7773921,
-    "scope": "Read-only exact3324 native status; records pending/running/terminal, no training action; launch receipt only, live claim observed separately"
+    "pid": 3902673,
+    "start_ticks": 2230041223,
+    "sid": 3902673,
+    "script_sha256": "d04df341394a0e30751e8d1f54718c09849c117c8acb609779b979b98dd40eb9",
+    "actual_live_checked_unix": 1791355878.8558571,
+    "record_directory": "/mnt/data/shaoshitong/g1f-ef7a5a0c/preparation/native-state-recorder/3324-external-v2",
+    "old_observer_stopped_only": true,
+    "outside_training_process_namespace": true,
+    "same_spawn_recovered_from_claim": true,
+    "scope": "Read-only exact3324 PENDING/RUNNING/terminal recorder; source/actualPID birth bound; no Slurm/training change"
   },
   "proofs": {
     "formal-inline-native-submit-receipt.json": "79689092ef4211dda46cc2bc86d07139de6d117ee13bd5338c7f584084725922",
     "pending-observation.json": "04f02a6e426c0ad5db06935a040861a1854c9ab3899b46f87477e1d157890245",
     "native-state-recorder-deploy-receipt.json": "41c756f77b137b948d544c4bc064dddf95b4886759b81db50f750a9bb7dd55de",
-    "resource-wait-readonly.json": "ae7b4c25029e593801d47e0733894c2a7ca6580ec877fbb194df651884133195"
+    "resource-wait-readonly.json": "ae7b4c25029e593801d47e0733894c2a7ca6580ec877fbb194df651884133195",
+    "external-recorder-live-recovered.json": "fad69a6fb1428478e44bf56797b1d7b883b63f943389296c9dd08576588b5150"
   },
   "goal_complete": false,
   "publication_scope": "Sanitized scalars/hash only; no rawQA,tokenjournal,credentials,model,data or full logs"
