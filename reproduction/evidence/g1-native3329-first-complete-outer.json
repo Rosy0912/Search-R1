@@ -1,0 +1,722 @@
+{
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "completed_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": 1,
+    "latest": {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+      "metrics": {
+        "actor/entropy_loss": 0.884575137682259,
+        "actor/grad_norm": 1.9455393646585777,
+        "actor/kl_loss": 0.0,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/pg_loss": 0.1008952646578473,
+        "actor/ppo_kl": -2.7299376710587797e-08,
+        "actor/skipped_update_opportunities": 0.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "critic/rewards/mean": 0.19370177388191223
+      },
+      "step": 1
+    },
+    "matched_row_count": 1,
+    "source_available": true
+  },
+  "console_step1_rounded_metrics": {
+    "metrics": {
+      "actor/completed_outer": 1.0,
+      "actor/entropy_loss": 0.885,
+      "actor/grad_norm": 1.946,
+      "actor/kl_coef": 0.0,
+      "actor/kl_loss": 0.0,
+      "actor/lr": 0.0,
+      "actor/lr_consumed": 0.0,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_clipfrac": 0.0,
+      "actor/pg_loss": 0.101,
+      "actor/ppo_kl": -0.0,
+      "actor/scheduler_advances_this_outer": 1.0,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/max": 1.599,
+      "critic/rewards/mean": 0.194,
+      "critic/rewards/min": -0.1,
+      "env/actual_retrieval_calls/mean": 1.093,
+      "env/actual_retrieval_calls/total": 2799.0,
+      "env/finish_ratio": 0.979,
+      "env/number_of_actions/max": 5.0,
+      "env/number_of_actions/mean": 2.148,
+      "env/number_of_actions/min": 1.0,
+      "env/number_of_valid_action": 2.092,
+      "env/number_of_valid_search": 1.113,
+      "env/ratio_of_valid_action": 0.987,
+      "timing_s/adv": 86.841,
+      "timing_s/gen": 279.551,
+      "timing_s/ref": 260.513,
+      "timing_s/step": 2137.528,
+      "timing_s/update_actor": 1165.391
+    },
+    "precision": "console_three_decimals",
+    "step": 1
+  },
+  "console_timing_scope": "Console3-decimal seconds; existing runtime timing fields, not inferred profile. Step1 total2137.528s, update_actor1165.391s.",
+  "counting_scope": "All8ranks same attempt complete20 opportunities/20 successfulAdamwrites/0skip; driver1 complete outer/1 warmup advance. Counts are per rank, not multiplied by8. Current atomic total remains separate from last driver agreement.",
+  "development512": [
+    {
+      "checked_unix": 1791373184.34943,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    }
+  ],
+  "driver": {
+    "agreed_adam_writes_at_last_driver_return_per_rank": 20,
+    "attempt_count": 1,
+    "fully_skipped_attempt_count": 0,
+    "latest_attempt": {
+      "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+      "attempt_index": 1,
+      "complete_outer": true,
+      "completed_outer": 1,
+      "logical_update": 1,
+      "opportunities_processed": 20,
+      "optimizer_writes_after": 20,
+      "optimizer_writes_before": 0,
+      "optimizer_writes_this_attempt": 20,
+      "scheduler_advances": 1
+    },
+    "observed_completed_outer": 1,
+    "processed_opportunities_at_last_driver_return_per_rank": 20,
+    "source_available": true,
+    "target_outer": 200,
+    "valid_visible_prefix": true,
+    "warmup_advances": 1
+  },
+  "errors": {
+    "console_failure_counts": {},
+    "native": {
+      "StdErr": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      },
+      "StdOut": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      }
+    },
+    "read": {}
+  },
+  "final51713_accepted": false,
+  "first_behavior_receipt_original_sha256": "5f9e4a704ecafadb43b8ccafea786b28a3e9d26a8fbcd2a01d51caa6514da694",
+  "first_behavior_scope": "Existing full2560/token432499 probability receipt accepted/error.0011139512062072754<.05; no rerun, not healthy-checkpoint acceptance.",
+  "first_consumed_learning_rates": [
+    0.0
+  ],
+  "first_lr_zero_scope": "Scheduled first warmup iteration; actual Adam state writes do not imply nonzero parameter delta.",
+  "fresh_checkpoint1_requested_or_verified": false,
+  "fresh_five_accepted": false,
+  "goal_complete": false,
+  "gpu_current": {
+    "queried_unix": 1791375347.162551,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 49358,
+        "util_percent": 84
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 48845,
+        "util_percent": 70
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 48910,
+        "util_percent": 83
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 48851,
+        "util_percent": 70
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 49287,
+        "util_percent": 70
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 48912,
+        "util_percent": 76
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 48850,
+        "util_percent": 82
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 55411,
+        "util_percent": 71
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 0.3902590274810791,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791375346.5968711,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 59560,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 1773
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791375280.1302817,
+      "last_sample_unix": 1791375346.5968711,
+      "maximum_adjacent_sample_end_interval_seconds": 2.7106740474700928,
+      "maximum_query_duration_seconds": 0.7099161148071289,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.0015830993652344,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 59560,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 31
+    },
+    "trainer_boundary_unix": 1791372460.9051704,
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791372462.0104868,
+      "last_sample_unix": 1791375346.5968711,
+      "maximum_adjacent_sample_end_interval_seconds": 2.913508415222168,
+      "maximum_query_duration_seconds": 0.9128203392028809,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.8336173812822619,
+      "peak_used_mib_per_gpu": {
+        "0": 59560,
+        "1": 58009,
+        "2": 58010,
+        "3": 58011,
+        "4": 58011,
+        "5": 58010,
+        "6": 58010,
+        "7": 67989
+      },
+      "sample_count": 1315
+    }
+  },
+  "grad_norm_semantics": "Recorded pre-clipping globalL2, averaged over successful mini/rank metrics; step1 has20 successfulmini. Not peak/post-clipping bound or weight/Adam health proof.",
+  "hourly_anchor_advanced": false,
+  "interpretation_source_scope": "Read existing unchanged local code; no additional test/review/remote execution.",
+  "job_id": "3329",
+  "latest_stage64_console_metrics": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "main_task_births": [
+    {
+      "actual": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "state": "S",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "first_ledger_location": "jobs.trainer.ledger.66605",
+      "matched_labels": [
+        "ray::main_task"
+      ],
+      "recorded": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "uid": 0
+      }
+    }
+  ],
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "01:05:20",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "85433a7759381253ddff5ed5fdc0593109b05de68a2aed356c1c0d114cdfa892",
+    "terminal_purge_is_not_success": true
+  },
+  "new_tests_review_generation_evaluation_or_trainer_start": false,
+  "next_epoch_step": {
+    "epoch": 0,
+    "step": 2
+  },
+  "next_learning_rates": [
+    1.7543859649122805e-08
+  ],
+  "observed_unix": 1791375346.7635887,
+  "only_owned_cleanup_complete": false,
+  "pipeline": {
+    "execution_role": "production",
+    "sampling_error_reported": false,
+    "stage": "GRPO_1_TO_200",
+    "unix": 1791372440.3484912
+  },
+  "rank_journal_observations": {
+    "0": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "1": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "2": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "3": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "4": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "5": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "6": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "7": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "logical_update": 1,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 19,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "completed_outer_after": 1,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "next_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 20
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "962305a29650420fbefb99fdfa4083ca",
+        "attempt_index": 1,
+        "cumulative_writes": 20,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 20,
+      "logged_processed_opportunities": 20,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    }
+  },
+  "reward_scope": "Actual G1 shaped reward mean for completed update1, not EM/pass rate or PPL. One sample does not establish a trend.",
+  "role": "native3329_first_complete_outer_actual_evidence",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "schema_version": 1,
+  "score_scope": "Both current run step0 baselines; no new after-training score captured.",
+  "snapshot_sha256": "121842822ffa2aa39cc295c1e704ab4c3473114ef86dd299db7b5ae3cb4bf2ec",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "source_scope": "Declared saved source; disk hash does not prove already loaded module",
+  "target_outer": 200,
+  "timing_actor_update_semantics": "Driver call includes loss-mask preparation, worker loading and20mini updates/monitoring/scheduler commit; not isolatedGPUkernel profile.",
+  "timing_step_semantics": "Outer timed region contains rollout/retrieval, recomputation/receipt/reference, reward/advantage, update_actor andattemptsummary. Includes eval/save only if triggered; excludes earlierinitialization/calibration andsubsequentmetricpublish.",
+  "trainer": {
+    "actual_proc": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791372460.9051704,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  }
+}
