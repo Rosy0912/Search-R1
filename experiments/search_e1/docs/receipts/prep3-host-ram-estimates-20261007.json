@@ -1,0 +1,21 @@
+{
+  "max_mined_pairs": 169103,
+  "world": 8,
+  "encoded_mean_bytes_per_rank": 12850027053.050001,
+  "encoded_sample_max_bytes_per_rank": 33855097012,
+  "generic_context_only_encoded_upper_bytes": 842950045696,
+  "dataset_prompt_tightened_encoded_upper_bytes": 596801013248,
+  "strict_pair_bytes": 441152,
+  "planning_components": {
+    "encoded_4x_sample_mean": 411200865697.60004,
+    "pairs_4x_two_sample_rows": 88263953441.4,
+    "model_load_private_fp32_plus_bf16_allowance": 163061566944.0,
+    "metadata_and_tokenizer_allowance": 4294967296,
+    "simultaneous_adam_cpu_serialization_allowance": 1915748352
+  },
+  "planning_peak_additional_bytes": 668737101731.0,
+  "mem_available_snapshot_bytes": 951124340736,
+  "mine_sample_mean_decoded_rows_bytes": 6895621362.609375,
+  "mine_4x_sample_mean_allowance": 27582485450.4375,
+  "scope": "Estimated additions, not measured future stage RSS; tokenizer sample pairs are length geometry only; strict encoded envelope excludes raw pair strings/model transient allocations"
+}

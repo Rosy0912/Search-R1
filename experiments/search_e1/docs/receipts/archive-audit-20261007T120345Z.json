@@ -1,0 +1,519 @@
+{
+  "schema": "search-e1-readonly-archive-audit-v4",
+  "started_unix": 1791374623.8599694,
+  "host": "xielab5",
+  "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+  "scope": "HKUST4 original archive GRPO only. Not K1 preparation3 or source100 OPSD101-105 acceptance. Read-only runtime/processes/services; independent audit receipt writes only. No changes to publisher.",
+  "train": {
+    "log": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/train.log",
+    "bytes": 32425524,
+    "mtime_unix": 1791374535.9051769,
+    "metric_rows": 137,
+    "unique_steps": 137,
+    "completed_grpo_updates": 137,
+    "target_grpo_updates": 200,
+    "current_started_step": 138,
+    "latest5_metrics": [
+      {
+        "step": 133,
+        "critic/rewards/mean": 0.468,
+        "audit/strict_em": 0.468,
+        "audit/legacy_em": 0.47,
+        "audit/score_disagreement": 0.002,
+        "actor/grad_norm": 0.748,
+        "actor/kl_loss": 0.406,
+        "actor/pg_loss": -0.011,
+        "actor/pg_clipfrac": 0.004,
+        "actor/ppo_kl": 0.004,
+        "response_length/mean": 1178.086,
+        "env/finish_ratio": 0.977,
+        "timing_s/gen": 938.234,
+        "timing_s/ref": 213.296,
+        "timing_s/update_actor": 936.823,
+        "timing_s/step": 2313.667
+      },
+      {
+        "step": 134,
+        "critic/rewards/mean": 0.483,
+        "audit/strict_em": 0.483,
+        "audit/legacy_em": 0.484,
+        "audit/score_disagreement": 0.0,
+        "actor/grad_norm": 0.677,
+        "actor/kl_loss": 0.417,
+        "actor/pg_loss": 0.007,
+        "actor/pg_clipfrac": 0.004,
+        "actor/ppo_kl": 0.011,
+        "response_length/mean": 1156.605,
+        "env/finish_ratio": 0.982,
+        "timing_s/gen": 930.641,
+        "timing_s/ref": 212.049,
+        "timing_s/update_actor": 943.78,
+        "timing_s/step": 2310.617
+      },
+      {
+        "step": 135,
+        "critic/rewards/mean": 0.48,
+        "audit/strict_em": 0.48,
+        "audit/legacy_em": 0.48,
+        "audit/score_disagreement": 0.0,
+        "actor/grad_norm": 0.813,
+        "actor/kl_loss": 0.372,
+        "actor/pg_loss": -0.007,
+        "actor/pg_clipfrac": 0.005,
+        "actor/ppo_kl": 0.008,
+        "response_length/mean": 1171.617,
+        "env/finish_ratio": 0.981,
+        "timing_s/gen": 937.746,
+        "timing_s/ref": 212.694,
+        "timing_s/update_actor": 943.704,
+        "timing_s/step": 2319.196
+      },
+      {
+        "step": 136,
+        "critic/rewards/mean": 0.495,
+        "audit/strict_em": 0.495,
+        "audit/legacy_em": 0.495,
+        "audit/score_disagreement": 0.0,
+        "actor/grad_norm": 0.738,
+        "actor/kl_loss": 0.436,
+        "actor/pg_loss": 0.016,
+        "actor/pg_clipfrac": 0.004,
+        "actor/ppo_kl": 0.005,
+        "response_length/mean": 1157.013,
+        "env/finish_ratio": 0.983,
+        "timing_s/gen": 927.759,
+        "timing_s/ref": 212.655,
+        "timing_s/update_actor": 942.763,
+        "timing_s/step": 2308.102
+      },
+      {
+        "step": 137,
+        "critic/rewards/mean": 0.443,
+        "audit/strict_em": 0.443,
+        "audit/legacy_em": 0.445,
+        "audit/score_disagreement": 0.002,
+        "actor/grad_norm": 0.778,
+        "actor/kl_loss": 0.55,
+        "actor/pg_loss": 0.002,
+        "actor/pg_clipfrac": 0.004,
+        "actor/ppo_kl": 0.002,
+        "response_length/mean": 1205.024,
+        "env/finish_ratio": 0.972,
+        "timing_s/gen": 928.336,
+        "timing_s/ref": 213.991,
+        "timing_s/update_actor": 946.323,
+        "timing_s/step": 2314.806
+      }
+    ],
+    "new_metrics_after136": [
+      {
+        "step": 137,
+        "critic/rewards/mean": 0.443,
+        "audit/strict_em": 0.443,
+        "audit/legacy_em": 0.445,
+        "audit/score_disagreement": 0.002,
+        "actor/grad_norm": 0.778,
+        "actor/kl_loss": 0.55,
+        "actor/pg_loss": 0.002,
+        "actor/pg_clipfrac": 0.004,
+        "actor/ppo_kl": 0.002,
+        "response_length/mean": 1205.024,
+        "env/finish_ratio": 0.972,
+        "timing_s/gen": 928.336,
+        "timing_s/ref": 213.991,
+        "timing_s/update_actor": 946.323,
+        "timing_s/step": 2314.806
+      }
+    ],
+    "nonfinite_latest_metrics": {},
+    "metrics_note": "Values read directly from native log, normally printed to 3 decimal places; no exact training means inferred. actor/grad_norm is preclip; config grad_clip1.0 and finite guard previously verified. No weight-finiteness claim based solely on scalar metrics.",
+    "last10_reward_mean_of_logged_rounded_values": 0.4569,
+    "terminal_errors": [],
+    "recent_warnings": [
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 866 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 708 & 500",
+      "\u001b[36m(main_task pid=1437474)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 717 & 500"
+    ]
+  },
+  "validation": {
+    "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.parquet",
+    "actual_sha256": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71",
+    "n": 512,
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "evaluations": [
+      {
+        "step": 0,
+        "scores_direct_from_rounded_log": {
+          "nq": 0.176,
+          "hotpotqa": 0.203
+        },
+        "unique_count_inference": {
+          "nq": {
+            "correct": 45,
+            "n": 256,
+            "em": 0.17578125
+          },
+          "hotpotqa": {
+            "correct": 52,
+            "n": 256,
+            "em": 0.203125
+          }
+        },
+        "aggregate_em_inferred": 0.189453125
+      },
+      {
+        "step": 50,
+        "scores_direct_from_rounded_log": {
+          "nq": 0.309,
+          "hotpotqa": 0.324
+        },
+        "unique_count_inference": {
+          "nq": {
+            "correct": 79,
+            "n": 256,
+            "em": 0.30859375
+          },
+          "hotpotqa": {
+            "correct": 83,
+            "n": 256,
+            "em": 0.32421875
+          }
+        },
+        "aggregate_em_inferred": 0.31640625
+      },
+      {
+        "step": 100,
+        "scores_direct_from_rounded_log": {
+          "nq": 0.422,
+          "hotpotqa": 0.473
+        },
+        "unique_count_inference": {
+          "nq": {
+            "correct": 108,
+            "n": 256,
+            "em": 0.421875
+          },
+          "hotpotqa": {
+            "correct": 121,
+            "n": 256,
+            "em": 0.47265625
+          }
+        },
+        "aggregate_em_inferred": 0.447265625
+      }
+    ],
+    "inference_note": "Correct counts and aggregate EM uniquely inferred from rounded native logs and exact dataset counts, not a new evaluation."
+  },
+  "stage": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1",
+  "run": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "profile": "archive",
+    "stage": "round-1-grpo",
+    "pid": 1434645,
+    "status": "RUNNING",
+    "started_unix": 1791082326.4122124,
+    "updated_unix": 1791374606.693186
+  },
+  "checkpoints": [
+    {
+      "step": 50,
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_50",
+      "model_files": [
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4982131536
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4932949336
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3673383040
+        }
+      ],
+      "config_actual_sha256": "5177b12444b69891bdb8e1cf8e6a037b25c293306ae283b8f5ac3886ef3ce903",
+      "index_actual_sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d"
+    },
+    {
+      "step": 100,
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+      "model_files": [
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4982131536
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4932949336
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3673383040
+        }
+      ],
+      "config_actual_sha256": "5177b12444b69891bdb8e1cf8e6a037b25c293306ae283b8f5ac3886ef3ce903",
+      "index_actual_sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d"
+    }
+  ],
+  "runtime_integrity": [
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-runtime.sha256.json",
+      "manifest_actual_sha256": "a31e3a0edf40c6cfbfb87f48c92d22d64048a66d8c7ed3e765c50bcd40a9e85c",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "d6f2fc3b61fb0afb3188186c3a168a50c9103cecf4158e1bf0df00cbba59816a"
+    },
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-jit-runtime.sha256.json",
+      "manifest_actual_sha256": "da9601d929d85636f3a5484564fa68cbc4bc7cab6cae0ab95b367d86eab36ee3",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "6736283a00240f84505e60c44154f4299da0aed3a763579b22f96e4eabd671a5"
+    },
+    {
+      "runtime": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-jit-env-v2-runtime.sha256.json",
+      "manifest_actual_sha256": "8264a8b2283133d5767461fc16194aec6d2850d1c5f946995a2ce2530d322dc9",
+      "expected_files": 669,
+      "checked_files": 669,
+      "missing": [],
+      "mismatches": [],
+      "accepted": true,
+      "actual_mapping_sha256": "251d9c93d74c9501a391033aff1703cdc5eaa54be058c856e3c84bab6294c6ff"
+    }
+  ],
+  "observer_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-jit-memory-continuous.json",
+  "observer": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "continuous_observer_started": 1791156535.2196116,
+    "initial_source": "archive-post-jit-memory.json",
+    "initial_source_samples": 1726,
+    "peaks_mib": {
+      "4": 31292,
+      "5": 35388,
+      "6": 31460,
+      "7": 33779
+    },
+    "samples": 104521,
+    "minimum_reserve_mib": {
+      "4": 17848,
+      "5": 13752,
+      "6": 17680,
+      "7": 15361
+    },
+    "shared_gpu_margin_met": true,
+    "updated": 1791374608.875086,
+    "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "source_run_status": "RUNNING",
+    "source_run_matches": true
+  },
+  "observer_age_seconds_at_read": 16.13863515853882,
+  "observer_note": "minimum_reserve_mib retained as source observer field (historical estimated reserve, not direct memory.free). gpu_direct_sample is a fresh direct memory.free measurement. Historical preJIT failed records retained and not overwritten.",
+  "shared_retriever_receipt": {
+    "accepted": true,
+    "pid": 1749337,
+    "base": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+    "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+    "max_process_mib": 1024,
+    "health_url": "http://10.123.4.11:18003/health",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "own_processes": [
+    {
+      "pid": 1434645,
+      "alive": true,
+      "expected_starttick": 637850668,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637850668,
+      "state": "S",
+      "command": "bash /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/train_profile.sh",
+      "identity_env": [
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo",
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1437474,
+      "alive": true,
+      "expected_starttick": 637851512,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637851512,
+      "state": "S",
+      "command": "ray::main_task",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1437900,
+      "alive": true,
+      "expected_starttick": 637852269,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637852269,
+      "state": "S",
+      "command": "ray::WorkerDict.actor_rollout_update_actor",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1438381,
+      "alive": true,
+      "expected_starttick": 637852857,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637852857,
+      "state": "S",
+      "command": "ray::WorkerDict.actor_rollout_update_actor",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1438382,
+      "alive": true,
+      "expected_starttick": 637852858,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637852858,
+      "state": "S",
+      "command": "ray::WorkerDict.actor_rollout_update_actor",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1438383,
+      "alive": true,
+      "expected_starttick": 637852859,
+      "cwd": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "starttick": 637852859,
+      "state": "S",
+      "command": "ray::WorkerDict.actor_rollout_update_actor",
+      "identity_env": [
+        "E1_RUN_ID=f04fe593830c4831918ede872812c016",
+        "E1_PROFILE=archive",
+        "E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004",
+        "CUDA_VISIBLE_DEVICES=4,5,6,7",
+        "E1_STAGE=round-1-grpo"
+      ],
+      "starttick_matches": true
+    },
+    {
+      "pid": 1749337,
+      "alive": true,
+      "expected_starttick": 641133475,
+      "cwd": "/home/shaoshitong",
+      "starttick": 641133475,
+      "state": "S",
+      "command": "/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/env/bin/python /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source/retriever_stream.py",
+      "identity_env": [
+        "E1_BASE=/weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004",
+        "CUDA_VISIBLE_DEVICES=7"
+      ],
+      "starttick_matches": true
+    }
+  ],
+  "gpu_sample_unix": 1791374625.0151346,
+  "gpu_direct_sample": [
+    {
+      "index": 4,
+      "uuid": "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+      "total_mib": 49140,
+      "used_mib": 17780,
+      "free_mib": 30981,
+      "utilization_percent": 99
+    },
+    {
+      "index": 5,
+      "uuid": "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+      "total_mib": 49140,
+      "used_mib": 22052,
+      "free_mib": 26709,
+      "utilization_percent": 100
+    },
+    {
+      "index": 6,
+      "uuid": "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+      "total_mib": 49140,
+      "used_mib": 17356,
+      "free_mib": 31405,
+      "utilization_percent": 100
+    },
+    {
+      "index": 7,
+      "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3",
+      "total_mib": 49140,
+      "used_mib": 19309,
+      "free_mib": 29451,
+      "utilization_percent": 97
+    }
+  ],
+  "own_gpu_apps": [
+    "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 1437900, ray::WorkerDict.actor_rollout_update_actor, 17704",
+    "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 1438381, ray::WorkerDict.actor_rollout_update_actor, 21976",
+    "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 1438382, ray::WorkerDict.actor_rollout_update_actor, 17280",
+    "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1438383, ray::WorkerDict.actor_rollout_update_actor, 18512",
+    "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1749337, /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/env/bin/python, 718"
+  ],
+  "tmux": [
+    "e1-archive-jit-continuous-memory-20261005 2062792 bash CUDA_VISIBLE_DEVICES= python3 /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/monitor_archive_jit_memory.py > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/archive-jit-memory-continuous.log 2>&1",
+    "e1-peer-20261004 1103296 bash /home/shaoshitong/miniconda3/envs/EditVerse/bin/python -m http.server 18281 --bind 10.123.4.11 --directory /weka_3/shaoshitong/search-e1-config-study-20261004/relay > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/peer.log 2>&1",
+    "e1-priority-5iter-archive-20261004 1405390 bash env E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004 E1_PROFILE=archive CUDA_VISIBLE_DEVICES=4,5,6,7 E1_PHYSICAL_MICRO=1 E1_PHYSICAL_SCORE=2 E1_GATE_STAGE=smoke-035 E1_TUNER_PID=1394861 E1_OLD_PIPELINE_SESSION=e1-resumed-pipeline-archive-20261004 E1_GATE_RUN_ID=442bccde5f484eee8f2fd620d9c4e68b /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/prioritize_formal_training.py > /weka_3/shaoshitong/search-e1-config-study-20261004/logs/formal-priority.log 2>&1",
+    "e1-retriever-20261004 1524419 bash env E1_BASE=/weka_3/shaoshitong/search-e1-config-study-20261004 CUDA_VISIBLE_DEVICES=4,5,6,7 bash /weka_3/shaoshitong/search-e1-config-study-20261004/source/experiments/search_e1/control/retriever_service.sh >> /weka_3/shaoshitong/search-e1-config-study-20261004/logs/retriever.log 2>&1",
+    "e1-stream-batched-memory-20261004 1751711 bash python3 -u /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/source/memory_monitor.py > /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/logs/memory-monitor.log 2>&1",
+    "e1-stream-batched-oracle-20261004 1749335 bash bash /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/start.sh > /weka_3/shaoshitong/search-e1-retriever-stream-batched-20261004/logs/server.log 2>&1"
+  ],
+  "retriever_health": {
+    "http_status": 200,
+    "body": {
+      "ready": true,
+      "ntotal": 21015324,
+      "d": 768,
+      "encoder": "CPU FP32 E5",
+      "index": "full FP32 streaming FlatIP joined scan",
+      "query_micro": 64,
+      "serialized": true,
+      "tf32": false,
+      "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+      "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+    }
+  },
+  "complete_unix": 1791374625.2703354,
+  "receipt_path": "/weka_3/shaoshitong/search-e1-retriever-analysis-20261007/archive-audit/archive-audit-20261007T120345Z.json"
+}

@@ -1,0 +1,21 @@
+{
+  "observed_bytes_per_trajectory": 3785.0107323232323,
+  "linear_full_training_parts_bytes": 3200283349.3402777,
+  "linear_parts_plus_merged_bytes": 6400566698.680555,
+  "response_size_safety_factor": 4.0,
+  "components_additional_bytes": {
+    "remaining_training_parts": 11961769417.36111,
+    "training_merged_copy": 12801133397.36111,
+    "mined_pairs_allowance": 12801133397.36111,
+    "eight_rank_adam_two_snapshots": 3831496704,
+    "four_adapter_directories": 478937088,
+    "merged_model_conservative_allowance": 13588463912,
+    "final_seven_parts_and_merged": 1565874080.0050504,
+    "logs_metadata_allowance": 1073741824
+  },
+  "total_additional_bytes": 58102549820.08838,
+  "available_snapshot_bytes": 1752703729664,
+  "remaining_after_allowances_bytes": 1694601179843.9116,
+  "peak_encoded_ram_upper_envelope_bytes": 797928062976,
+  "scope": "Estimates, not generated outputs or proved hard file-size maxima; existing retained outputs already reflected in filesystem available bytes"
+}

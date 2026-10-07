@@ -1,0 +1,40 @@
+{
+  "pid": 2459676,
+  "cmdline": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py ",
+  "cgroup": "0::/user.slice/user-1005.slice/session-39995.scope\n",
+  "rss_pss": {
+    "Rss": 40878080,
+    "Pss": 31191040,
+    "Swap": 0
+  },
+  "cgroup_limits": [
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1005.slice/session-39995.scope",
+      "values": {
+        "memory.max": "max",
+        "memory.high": "max",
+        "memory.current": "556891127808"
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1005.slice",
+      "values": {
+        "memory.max": "max",
+        "memory.high": "max",
+        "memory.current": "571734360064"
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice",
+      "values": {
+        "memory.max": "max",
+        "memory.high": "max",
+        "memory.current": "966526558208"
+      }
+    },
+    {
+      "path": "/sys/fs/cgroup",
+      "values": {}
+    }
+  ]
+}

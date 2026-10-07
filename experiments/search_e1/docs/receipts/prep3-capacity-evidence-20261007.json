@@ -1,0 +1,276 @@
+{
+  "start_unix": 1791372412.771624,
+  "end_unix": 1791372413.4823115,
+  "base": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+  "run_id": "914bfff786c84ede8d82414dff65f60e",
+  "controller_pid": 2459676,
+  "generation_parent_pid": 2460237,
+  "process_identity": {
+    "2459676": {
+      "exists": true,
+      "cmdline": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py "
+    },
+    "2460237": {
+      "exists": true,
+      "cmdline": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl --k 5 --backend vllm --workers 8 --retriever-url http://10.120.17.101:18004/retrieve "
+    }
+  },
+  "config_sha256": "3ac56bfa4455ecc93175172db6353bbc4a7cae95aee24781797428e50abeeb5b",
+  "filesystem": {
+    "total_bytes": 31872299847680,
+    "free_bytes": 3352756830208,
+    "available_bytes": 1752703729664,
+    "total_inodes": 488292352,
+    "available_inodes": 456259335
+  },
+  "mount": [
+    "/dev/sdb1 /data ext4 rw,relatime,stripe=64 0 0"
+  ],
+  "quota_command_available": false,
+  "parts": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-0.jsonl",
+      "bytes": 106069473,
+      "allocated_bytes": 106074112,
+      "mtime_unix": 1791372317.1213026,
+      "rank": 0,
+      "completed_rows_from_worker_log": 27840,
+      "worker_log_bytes": 1336152,
+      "observed_bytes_per_row": 3809.966702586207
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-1.jsonl",
+      "bytes": 104732321,
+      "allocated_bytes": 104738816,
+      "mtime_unix": 1791372359.6321876,
+      "rank": 1,
+      "completed_rows_from_worker_log": 27520,
+      "worker_log_bytes": 1320902,
+      "observed_bytes_per_row": 3805.680268895349
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-2.jsonl",
+      "bytes": 103727822,
+      "allocated_bytes": 103735296,
+      "mtime_unix": 1791372345.4351583,
+      "rank": 2,
+      "completed_rows_from_worker_log": 27520,
+      "worker_log_bytes": 1320602,
+      "observed_bytes_per_row": 3769.179578488372
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-3.jsonl",
+      "bytes": 105420087,
+      "allocated_bytes": 105426944,
+      "mtime_unix": 1791372382.107629,
+      "rank": 3,
+      "completed_rows_from_worker_log": 27840,
+      "worker_log_bytes": 1335982,
+      "observed_bytes_per_row": 3786.641056034483
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-4.jsonl",
+      "bytes": 103961459,
+      "allocated_bytes": 103968768,
+      "mtime_unix": 1791372404.4712625,
+      "rank": 4,
+      "completed_rows_from_worker_log": 27520,
+      "worker_log_bytes": 1320702,
+      "observed_bytes_per_row": 3777.6692950581396
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-5.jsonl",
+      "bytes": 106224220,
+      "allocated_bytes": 106229760,
+      "mtime_unix": 1791372314.8138168,
+      "rank": 5,
+      "completed_rows_from_worker_log": 28160,
+      "worker_log_bytes": 1351452,
+      "observed_bytes_per_row": 3772.166903409091
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-6.jsonl",
+      "bytes": 104574277,
+      "allocated_bytes": 104579072,
+      "mtime_unix": 1791372322.2121756,
+      "rank": 6,
+      "completed_rows_from_worker_log": 27520,
+      "worker_log_bytes": 1320802,
+      "observed_bytes_per_row": 3799.937390988372
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-7.jsonl",
+      "bytes": 104654321,
+      "allocated_bytes": 104660992,
+      "mtime_unix": 1791372315.1497416,
+      "rank": 7,
+      "completed_rows_from_worker_log": 27840,
+      "worker_log_bytes": 1335972,
+      "observed_bytes_per_row": 3759.1350933908047
+    }
+  ],
+  "total_part_bytes": 839363980,
+  "completed_rows_from_logs": 221760,
+  "expected_rows": 845515,
+  "merged": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+    "bytes": 0,
+    "allocated_bytes": 0,
+    "mtime_unix": 1791361886.1546433
+  },
+  "retained_tree_file_bytes": 1570368452,
+  "largest_retained_files": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-5.jsonl",
+      "bytes": 106224220,
+      "allocated_bytes": 106229760,
+      "mtime_unix": 1791372314.8138168
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-0.jsonl",
+      "bytes": 106069473,
+      "allocated_bytes": 106074112,
+      "mtime_unix": 1791372317.1213026
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-3.jsonl",
+      "bytes": 105420087,
+      "allocated_bytes": 105426944,
+      "mtime_unix": 1791372382.107629
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-1.jsonl",
+      "bytes": 104732321,
+      "allocated_bytes": 104738816,
+      "mtime_unix": 1791372359.6321876
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-7.jsonl",
+      "bytes": 104654321,
+      "allocated_bytes": 104660992,
+      "mtime_unix": 1791372315.1497416
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-6.jsonl",
+      "bytes": 104574277,
+      "allocated_bytes": 104579072,
+      "mtime_unix": 1791372322.2121756
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-4.jsonl",
+      "bytes": 103961459,
+      "allocated_bytes": 103968768,
+      "mtime_unix": 1791372404.4712625
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl.parts/rollouts-2.jsonl",
+      "bytes": 103727822,
+      "allocated_bytes": 103735296,
+      "mtime_unix": 1791372345.4351583
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-1.jsonl",
+      "bytes": 38877665,
+      "allocated_bytes": 38883328,
+      "mtime_unix": 1791361214.8067963
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-2.jsonl",
+      "bytes": 38629770,
+      "allocated_bytes": 38637568,
+      "mtime_unix": 1791361215.2787962
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-3.jsonl",
+      "bytes": 38553452,
+      "allocated_bytes": 38559744,
+      "mtime_unix": 1791361228.4547932
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-6.jsonl",
+      "bytes": 37941901,
+      "allocated_bytes": 37949440,
+      "mtime_unix": 1791361122.5388174
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-7.jsonl",
+      "bytes": 37779327,
+      "allocated_bytes": 37785600,
+      "mtime_unix": 1791361137.266814
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-0.jsonl",
+      "bytes": 37692214,
+      "allocated_bytes": 37699584,
+      "mtime_unix": 1791361140.3348134
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-5.jsonl",
+      "bytes": 37449729,
+      "allocated_bytes": 37457920,
+      "mtime_unix": 1791361151.3468108
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl.parts/rollouts-4.jsonl",
+      "bytes": 37125633,
+      "allocated_bytes": 37130240,
+      "mtime_unix": 1791361139.6668136
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/memory-v2-samples.jsonl",
+      "bytes": 35600173,
+      "allocated_bytes": 35606528,
+      "mtime_unix": 1791372412.4097517
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-1.jsonl",
+      "bytes": 35264096,
+      "allocated_bytes": 35270656,
+      "mtime_unix": 1791356596.7798495
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-2.jsonl",
+      "bytes": 34892464,
+      "allocated_bytes": 34897920,
+      "mtime_unix": 1791356570.1678557
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-3.jsonl",
+      "bytes": 34866583,
+      "allocated_bytes": 34873344,
+      "mtime_unix": 1791356554.5678592
+    }
+  ],
+  "source_model_safetensors": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100/model-00001-of-00003.safetensors",
+      "bytes": 4982131536,
+      "allocated_bytes": 4982136832,
+      "mtime_unix": 1791347001.1654954
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100/model-00003-of-00003.safetensors",
+      "bytes": 3673383040,
+      "allocated_bytes": 3673391104,
+      "mtime_unix": 1791346906.6493893
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100/model-00002-of-00003.safetensors",
+      "bytes": 4932949336,
+      "allocated_bytes": 4932956160,
+      "mtime_unix": 1791346952.963483
+    }
+  ],
+  "source_model_bytes": 13588463912,
+  "lora_parameter_estimate": 29933568,
+  "lora_fp32_bytes": 119734272,
+  "adam_two_fp32_moments_bytes_per_rank": 239468544,
+  "per_rank_rng_and_adam_metadata_extra": "small, not counted in analytic parameter-byte estimate",
+  "meminfo": [
+    "MemTotal:       1056477352 kB",
+    "MemAvailable:   928986908 kB",
+    "SwapFree:        8352764 kB"
+  ],
+  "opsd_output_exists": false,
+  "snapshot_scope": "Part stats/logs sampled sequentially during writes; not an atomic generation checkpoint. No question/answer texts emitted."
+}

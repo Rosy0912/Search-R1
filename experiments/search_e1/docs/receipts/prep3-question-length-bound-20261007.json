@@ -1,0 +1,10 @@
+{
+  "rows": 169103,
+  "max_question_utf8_bytes": 655,
+  "max_question_chars": 654,
+  "fixed_student_prompt_utf8_bytes": 593,
+  "student_prefix_utf8_byte_upper": 1248,
+  "tokenizer_class": "Qwen2TokenizerFast",
+  "tokenizer_backend_pre_tokenizer": "Sequence(pretokenizers=[Split(pattern=Regex(\"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+...\"), behavior=Isolated, invert=False), ByteLevel(add_prefix_space=False, trim_offsets=False, use_regex=False)])",
+  "scope": "Only streaming question length metadata, no split/overlap tests or outputs"
+}
