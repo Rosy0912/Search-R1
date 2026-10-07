@@ -1,0 +1,149 @@
+{
+  "time": 1791354518.083827,
+  "scope": "Original CPU FP32 E5 embeddings for seven actual-query shape fixtures; no GPU allocation or full-index scan; not a future trajectory determinism guarantee",
+  "sources": {
+    "hkust1_identity": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/hkust1/identity.json",
+    "hkust4_identity": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/hkust4/identity.json",
+    "queries": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/queries.json"
+  },
+  "queries_sha256_equal": true,
+  "original_module_sha256_equal": true,
+  "encoder_sha256_equal": true,
+  "runtime_equal": true,
+  "config_equal": true,
+  "cuda_initialized": [
+    false,
+    false
+  ],
+  "rss_kib": [
+    1304532,
+    1278764
+  ],
+  "cases": [
+    {
+      "id": "n1",
+      "n": 1,
+      "encoder_boundaries": [
+        1
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "c89bfdddb48c87be51427d05049be1fe741a889f6a4eca9dae17a84d3fd87fe2",
+      "npy_sha256": "f891d2163ffab5de14b8337d273cf6dd128bbe486369f530d0c08e6b91087945"
+    },
+    {
+      "id": "n63",
+      "n": 63,
+      "encoder_boundaries": [
+        63
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "af57cd47be51b8852a260c3f5cd4d7689d1e69016eb627a593b9b2aee58c95e2",
+      "npy_sha256": "2c1106a8f3cc8290bd7f5a635db01d8e25da210b7130672f4425c936d33cd57c"
+    },
+    {
+      "id": "n64",
+      "n": 64,
+      "encoder_boundaries": [
+        64
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "4de788a068b0ff3f5dfeb250e3ffbc233a5d05aac91fff185a7e0c22b3f4e840",
+      "npy_sha256": "b47cde572dfcbc05fcaa82b2dd79e25284eff5ba4b59b539533780db5369f652"
+    },
+    {
+      "id": "n65",
+      "n": 65,
+      "encoder_boundaries": [
+        65
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "5ec492c0b8689cb4de80b108551ced3c4ecd4b89e7e7431ebfb33b4b6eff5316",
+      "npy_sha256": "77686d62d87bf4ddbf0e289516240c56480af0cca2a6c8fe160d004d3592091f"
+    },
+    {
+      "id": "n128",
+      "n": 128,
+      "encoder_boundaries": [
+        128
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "ca232006ef5285d7a695bff026cf954f3084d0d59c310a243fe058e43b790192",
+      "npy_sha256": "622cb0365241d7e38cc41be490631bea30fa473feb1b2a579bc55465b1729f50"
+    },
+    {
+      "id": "n129",
+      "n": 129,
+      "encoder_boundaries": [
+        128,
+        1
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "958b4a4d049872cd8a945e14c1d1b1992d0c0bb557bfdaf767b92b8d1eb608a1",
+      "npy_sha256": "e4fae64df107126c8e299569c42a911a556e4b24dada855d40f6bb03542821ba"
+    },
+    {
+      "id": "n320",
+      "n": 320,
+      "encoder_boundaries": [
+        128,
+        128,
+        64
+      ],
+      "shape_equal": true,
+      "dtype_equal": true,
+      "finite": true,
+      "elementwise_identical": true,
+      "bytes_identical": true,
+      "max_abs_delta": 0.0,
+      "differing_elements": 0,
+      "embedding_bytes_sha256": "b8d937b50a61f016f067f1ddd2137735ee1ad29490f1d136aceb861923f6c704",
+      "npy_sha256": "9f4650c2a4e6a18fbdcc264c7d3e6a0e02068a82dc7b26ad5462a07d6187ddb9"
+    }
+  ],
+  "same_query_different_fixture_shape_probe": {
+    "n1": 0.0,
+    "n63": 1.2293457984924316e-07,
+    "n64": 1.2293457984924316e-07,
+    "n65": 1.2293457984924316e-07,
+    "n128": 1.2293457984924316e-07,
+    "n129": 1.2293457984924316e-07,
+    "n320": 1.2293457984924316e-07
+  },
+  "accepted": true
+}

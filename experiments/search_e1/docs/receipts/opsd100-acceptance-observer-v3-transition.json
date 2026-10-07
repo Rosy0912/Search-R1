@@ -1,0 +1,12 @@
+{
+  "time": 1791355969.0537794,
+  "old_observer_pid": 2231928,
+  "old_source_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v2.py",
+  "new_source_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py",
+  "new_source_sha256": "24aabe7d628ad9e87e97df78b7c801157c0ccf3fda2d549fe3cd9c79f8454595",
+  "actual_free_memory_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous-v2.json",
+  "minimum_actual_free_mib": 3157,
+  "old_training_stopped": false,
+  "old_memory_evidence_preserved": true,
+  "reason": "Use directly sampled actual memory.free and full training interval; computed total-used includes reserved memory"
+}

@@ -1,0 +1,1472 @@
+{
+  "accepted_cpu_fixture": true,
+  "full_gpu_accepted": false,
+  "scope": "CPU fixture operator/shapes/IDs/ties only; no live acceptance",
+  "original_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+  "candidate_sha256": "3ccc65757ec8ece09e77f040224cee7e1c07ba200110f61c826eed9f26c52fd2",
+  "torch": "2.8.0",
+  "numpy": "2.0.2",
+  "faiss_pointer_fixture": true,
+  "ntotal": 32771,
+  "d": 16,
+  "checks": [
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 1,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 63,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 64,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 65,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 128,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 129,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 320,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 1,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 63,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 64,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 65,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 128,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 129,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "random_with_duplicate_vectors",
+      "queries": 320,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 1,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 63,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 64,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 65,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 128,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 129,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 320,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 1,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 63,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            63,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 64,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 65,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 128,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 129,
+      "topk": 3,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            1,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "scenario": "all_scores_tied",
+      "queries": 320,
+      "topk": 4,
+      "scores_exact": true,
+      "ids_exact": true,
+      "actual_gemm_shapes": [
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            32768
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ],
+        [
+          [
+            64,
+            16
+          ],
+          [
+            16,
+            3
+          ]
+        ]
+      ]
+    }
+  ],
+  "queue_fifo": true,
+  "max_requests": 8,
+  "max_queries": 20480,
+  "empty_request": true,
+  "queued_failure_future_completed": true,
+  "closed_queue_rejects": true
+}

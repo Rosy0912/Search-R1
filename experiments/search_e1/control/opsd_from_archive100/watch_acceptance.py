@@ -111,13 +111,16 @@ def main():
     # A healthy generation-stage sample cannot prove OPSD memory headroom.
     deadline = time.monotonic() + 120
     while True:
-        memory = read_json_ready(b / 'receipts/memory-continuous.json')
-        if memory['time'] >= acceptance_path.stat().st_mtime and 0 <= time.time() - memory['time'] <= 60:
+        memory = read_json_ready(b / 'receipts/memory-continuous-v2.json')
+        if memory['sample_end_unix'] >= acceptance_path.stat().st_mtime and 0 <= time.time() - memory['updated_at_unix'] <= 60:
             break
         assert time.monotonic() < deadline, 'No fresh GPU memory observation after actual update 5'
         time.sleep(2)
     assert sorted(r['gpu'] for r in memory['current']) == list(range(8)), 'Memory observer does not cover all eight GPUs'
-    assert memory['minimum_reserve_mib'] >= 1024, 'Less than 1 GiB sampled total-card reserve; do not certify GPU headroom'
+    assert memory['schema_version'] == 2 and memory['free_measurement'] == 'nvidia-smi memory.free', 'Require directly sampled actual free GPU memory'
+    assert memory['sample_start_unix'] <= (out / 'config.json').stat().st_mtime, 'Actual free memory sampling did not cover OPSD from initialization'
+    assert memory['sample_end_unix'] <= memory['updated_at_unix'] <= time.time() + 2, 'Invalid actual memory sampling timestamps'
+    assert memory['minimum_actual_free_mib'] >= 1024, 'Less than 1 GiB actual sampled free memory; do not certify GPU headroom'
     report = dict(status='ACCEPTED', time=time.time(), source_grpo_step=100,
         actual_opsd_updates=5, display_step=105, continuous_run=True,
         source_model=a['source_model'], global_trajectory_batch=32, world=8,
