@@ -1,0 +1,215 @@
+{
+  "schema": "search-g1-actual-native-start-v1",
+  "native_job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "observed_unix": 1791371581.466062,
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "00:02:35",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "cab3983e299169c958026307c1d57f1bd63df74a7d005325363729eca217a0ab",
+    "terminal_purge_is_not_success": true
+  },
+  "pipeline": {
+    "sampling_error_reported": false,
+    "stage": "STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL",
+    "unix": 1791371565.5529304
+  },
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "declared_source_map_sha256": "16e3a0a202a9255a7be0f7b8da82144d1d713a6e281e5c0d99c5b6f1c6fab74c",
+  "source_scope": "Declared disk-source identity only; not loaded-module proof. No new tests or review performed.",
+  "formal_trainer": {
+    "actual_proc": null,
+    "birth_matches_recorded": false,
+    "claimed_unix": null,
+    "ledger_state": null,
+    "recorded_leader": {},
+    "same_previous_birth": false
+  },
+  "formal_completed_update_source_available": false,
+  "formal_completed_updates_visible": 0,
+  "actual_adam_total_unknown": true,
+  "phase_job_births": {
+    "gpu-preflight": {
+      "actual": {
+        "exists": false,
+        "pid": 29540
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 29540,
+        "sid": 29540,
+        "start_ticks": 2231613749,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "model-initial": {
+      "actual": {
+        "exists": false,
+        "pid": 31075
+      },
+      "birth_matches_recorded": false,
+      "ledger_state": "STOPPED",
+      "recorded_leader": {
+        "pid": 31075,
+        "sid": 31075,
+        "start_ticks": 2231615840,
+        "state": "R",
+        "uid": 0
+      }
+    },
+    "retrieval-stage": {
+      "actual": {
+        "pid": 36011,
+        "sid": 36011,
+        "start_ticks": 2231625261,
+        "state": "R",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "ledger_state": "STARTED",
+      "recorded_leader": {
+        "pid": 36011,
+        "sid": 36011,
+        "start_ticks": 2231625261,
+        "state": "R",
+        "uid": 0
+      }
+    }
+  },
+  "gpu_current": {
+    "queried_unix": 1791371581.6782126,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 77,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 6,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 6,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 5,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 5,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 4,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 1.5121612548828125,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791371579.9948661,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.002333641052246,
+      "maximum_sampled_used_fraction": 0.5140695692688728,
+      "peak_used_mib_per_gpu": {
+        "0": 41927,
+        "1": 41902,
+        "2": 41902,
+        "3": 41895,
+        "4": 41903,
+        "5": 41904,
+        "6": 41905,
+        "7": 41734
+      },
+      "sample_count": 55
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791371467.6780593,
+      "last_sample_unix": 1791371579.9948661,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.002333641052246,
+      "maximum_sampled_used_fraction": 0.5140695692688728,
+      "peak_used_mib_per_gpu": {
+        "0": 41927,
+        "1": 41902,
+        "2": 41902,
+        "3": 41895,
+        "4": 41903,
+        "5": 41904,
+        "6": 41905,
+        "7": 41734
+      },
+      "sample_count": 48
+    },
+    "trainer_boundary_unix": null,
+    "trainer_window_prefix": {
+      "sample_count": 0
+    }
+  },
+  "gpu_scope": "New-run setup samples only; no formal training samples yet. Old3324 peaks excluded.",
+  "original_observation_sha256": "04525b5d9d4a61a01466e28bb730bf848651e152518441a72e59161880175b45",
+  "initial_start_observation_sha256": "81b58fbfefa8c73bc66a6631c2c9de26f9990d146095c6d0f81f76e8f5036912",
+  "manifest_capture": {
+    "captured_bytes": 69382,
+    "captured_sha256": "100c42e557e652620cb1b5f0315118f0c0d846373d7cbab30ae86e854819ae87",
+    "exists": true,
+    "observed_unix": 1791371581.4778836,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/run-manifest.json",
+    "size_bytes": 69382
+  },
+  "read_errors": {},
+  "goal_active": true,
+  "target_fresh_outer": 200,
+  "fresh_five_accepted": false,
+  "hourly_anchor_timestamp_advanced": false,
+  "actions": "Same saved handle read-only observation; no duplicate submission, tests, reviews, evaluation, source mutation, or foreign-process changes."
+}
