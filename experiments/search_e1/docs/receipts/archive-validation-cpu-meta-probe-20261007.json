@@ -1,0 +1,50 @@
+{
+  "status": "PASS_METADATA_LOSS_CONFIRMED",
+  "cases": [
+    {
+      "active_creation_line": 243,
+      "active_count": 32,
+      "validation_input_meta": {
+        "do_sample": false,
+        "validate": true,
+        "recompute_log_prob": false
+      },
+      "worker_input_meta": {},
+      "effective_do_sample": true
+    },
+    {
+      "active_creation_line": 243,
+      "active_count": 31,
+      "validation_input_meta": {
+        "do_sample": false,
+        "validate": true,
+        "recompute_log_prob": false
+      },
+      "worker_input_meta": {},
+      "effective_do_sample": true
+    },
+    {
+      "active_creation_line": 286,
+      "active_count": 32,
+      "validation_input_meta": {
+        "do_sample": false,
+        "validate": true,
+        "recompute_log_prob": false
+      },
+      "worker_input_meta": {},
+      "effective_do_sample": true
+    },
+    {
+      "active_creation_line": 286,
+      "active_count": 31,
+      "validation_input_meta": {
+        "do_sample": false,
+        "validate": true,
+        "recompute_log_prob": false
+      },
+      "worker_input_meta": {},
+      "effective_do_sample": true
+    }
+  ],
+  "scope": "No generation or CUDA operations; actual frozen AST, CPU DataProto"
+}

@@ -1,0 +1,87 @@
+{
+  "base": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+  "external_accepted_exists": false,
+  "external_failed_exists": false,
+  "observed_at_unix": 1791367941.0902784,
+  "opsd_exists": false,
+  "opsd_files": [],
+  "pairs": {
+    "exists": false,
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl"
+  },
+  "run_id": "914bfff786c84ede8d82414dff65f60e",
+  "science": {
+    "accumulation": 4,
+    "additional_grpo": false,
+    "alpha": 32,
+    "batch_questions": 64,
+    "chunk": 32,
+    "clip": 10,
+    "context": 8192,
+    "global_trajectory_batch": 32,
+    "loss": "per-trajectory valid-token mean, then global-trajectory mean",
+    "max_tokens": 500,
+    "mining": "unchanged original mine_pairs",
+    "observation_tokens": 480,
+    "opsd_epochs": 1,
+    "opsd_lr": 1e-05,
+    "questions": 169103,
+    "rank": 16,
+    "restore_grpo_adam": false,
+    "search_calls": 4,
+    "seed": 42,
+    "siblings": 5,
+    "temperature": 1,
+    "top_p": 1,
+    "topk": 3,
+    "turns": 5,
+    "validation_questions": 512,
+    "worker_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "workers": 8
+  },
+  "scope": "Read-only design/provenance snapshot, not a saved-state loading test, actual resume or five-update acceptance.",
+  "source100": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "source_grpo_step": 100,
+    "transfer_receipt_sha256": "08b005d8788fbbbc6c57cf40af4c08202b59c0d89160a6f030fad8d555fc007d"
+  },
+  "source_files": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/opsd.py",
+      "sha256": "61df9cc630bca7466f3edfb06da18ad92ddff1c713bf7c6c4a104ba88672c037"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/io.py",
+      "sha256": "97e58faa829f5300e4d8cc2e79bf636d2d60c7806d4bf755a1df1cffd458a6ce"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/rollout.py",
+      "sha256": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py",
+      "sha256": "85c09c3bd5a58a59509b63e7fcc70aeb0cc1b6c139cc11e4ab6a039f4fe48bb4"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance_v3.py",
+      "sha256": "24aabe7d628ad9e87e97df78b7c801157c0ccf3fda2d549fe3cd9c79f8454595"
+    }
+  ],
+  "stage": {
+    "controller_pid": 2459676,
+    "generation": 3,
+    "phase": "OPSD100_PREPARATION3_FULL_FRESH_TRAJECTORIES",
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof",
+    "time": 1791361883.9649546
+  }
+}

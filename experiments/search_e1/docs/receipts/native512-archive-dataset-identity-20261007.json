@@ -1,0 +1,10 @@
+{
+  "rows": 512,
+  "all_ids_answers_sources_questions_match": true,
+  "counts": {
+    "nq": 256,
+    "hotpotqa": 256
+  },
+  "jsonl_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+  "parquet_sha256": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71"
+}
