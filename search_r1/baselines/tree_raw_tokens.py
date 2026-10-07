@@ -17,7 +17,7 @@ import time
 PROTOCOL = 'tree_sampled_prefix_legacy_semantics_v1'
 FIELD = 'tree_raw_semantics'
 EMISSION = '__tree_native_emission'
-UTF8_BOUNDARY_PROTOCOL = 'tree_original_bytelevel_utf8_prefix_v1'
+UTF8_BOUNDARY_PROTOCOL = 'tree_original_bytelevel_native_replacement_prefix_v2'
 BYTELEVEL_DECODER_STATE = dict(type='ByteLevel',add_prefix_space=False,trim_offsets=False,use_regex=False)
 _VALIDATION_TOKENIZERS = {}
 _TOKENIZER_FILE_SHA_CACHE = {}
@@ -67,9 +67,24 @@ def _decoder_binding(tokenizer):
             len(set(special))==len(special),'Explicit native special-token IDs required')
     require(callable(getattr(tokenizer,'convert_ids_to_tokens',None)),
             'Native original token pieces required for UTF8 proof')
-    return dict(protocol=UTF8_BOUNDARY_PROTOCOL,decoder_state=copy.deepcopy(state),
+    return dict(protocol=UTF8_BOUNDARY_PROTOCOL,utf8_errors='replace',decoder_state=copy.deepcopy(state),
         decoder_state_sha256=fingerprint(state),bytelevel_alphabet_sha256=BYTELEVEL_ALPHABET_SHA256,
         skip_special_token_ids=sorted(special))
+
+
+def _invalid_utf8_events(data,byte_start,token_prefix_length,phase):
+    """Identify replacement-producing original bytes, distinct from literal U+FFFD."""
+    events=[]
+    while data:
+        try:
+            data.decode('utf-8',errors='strict')
+            break
+        except UnicodeDecodeError as error:
+            events.append(dict(token_prefix_length=token_prefix_length,phase=phase,
+                original_byte_start=byte_start+error.start,original_byte_end=byte_start+error.end,
+                original_bytes_hex=data[error.start:error.end].hex(),reason=error.reason))
+            byte_start+=error.end;data=data[error.end:]
+    return events
 
 
 def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_context=None):
@@ -85,8 +100,8 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
             identity.get('eos_token_id')==tokenizer.eos_token_id and
             identity.get('bos_token_id')==tokenizer.bos_token_id,
             'Frozen decoder/tokenizer/special-token identity differs')
-    special=set(binding['skip_special_token_ids']);decoder=codecs.getincrementaldecoder('utf-8')('strict')
-    raw=bytearray();stable='';decoded=[];complete=[];pending_events=[];prefix_hashes=[]
+    special=set(binding['skip_special_token_ids']);decoder=codecs.getincrementaldecoder('utf-8')('replace')
+    raw=bytearray();stable='';decoded=[];complete=[];pending_events=[];prefix_hashes=[];invalid_events=[]
     for stop,token in enumerate(ids,1):
         piece=b''
         if token not in special:
@@ -94,35 +109,47 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
             require(isinstance(spelling,str) and spelling and all(x in BYTELEVEL_INVERSE for x in spelling),
                     'Original token piece is not a provable ByteLevel byte sequence')
             piece=bytes(BYTELEVEL_INVERSE[x] for x in spelling)
-        raw.extend(piece)
-        try:current=stable+decoder.decode(piece,final=False)
-        except UnicodeDecodeError as error:
-            raise ValueError('Tree raw-token protocol: Illegal original UTF8 byte sequence') from error
-        # Strict decoding rejects invalid bytes but permits literal EF BF BD (U+FFFD).
-        require(current.startswith(stable),'Nonmonotonic completed UTF8 prefix unsupported')
+        pending_before=decoder.getstate()[0];raw.extend(piece)
+        current=stable+decoder.decode(piece,final=False)
+        # Native ByteLevel uses replacement decoding. Only the unfinished suffix
+        # may change with later tokens; replacements already emitted are stable.
+        require(current.startswith(stable),'Nonmonotonic stable native replacement prefix unsupported')
         stable=current;pending=decoder.getstate()[0]
+        resolved=pending_before+piece
+        if pending:resolved=resolved[:-len(pending)]
+        invalid_events.extend(_invalid_utf8_events(resolved,len(raw)-len(piece)-len(pending_before),
+            stop,'stable_incremental'))
         expected=bytes(raw).decode('utf-8',errors='replace')
         require(expected==stable+pending.decode('utf-8',errors='replace'),
                 'Pending UTF8 bytes do not explain native replacement')
         if check_native_prefixes:
             native=tokenizer.decode(ids[:stop],skip_special_tokens=True)
             require(isinstance(native,str) and native==expected,
-                    'Native prefix decode differs from proven ByteLevel UTF8/cleanup')
+                    'Native prefix decode differs from proven ByteLevel replacement/cleanup')
         prefix_hashes.append(fingerprint(expected))
         decoded.append(stable);complete.append(not pending)
         if pending:
             pending_events.append(dict(token_prefix_length=stop,pending_utf8_hex=pending.hex(),
-                native_prefix_sha256=fingerprint(expected),completed_prefix_sha256=fingerprint(stable)))
-    try:decoder.decode(b'',final=True)
-    except UnicodeDecodeError as error:
-        raise ValueError('Tree raw-token protocol: Final original UTF8 sequence is incomplete') from error
-    require(complete and complete[-1],'Final complete original-token UTF8 boundary required')
+                native_prefix_sha256=fingerprint(expected),stable_prefix_sha256=fingerprint(stable)))
+    require(complete,'Nonempty original-token emission required')
+    final_pending=decoder.getstate()[0]
+    invalid_events.extend(_invalid_utf8_events(final_pending,len(raw)-len(final_pending),
+        len(ids),'native_finalization'))
+    final=stable+decoder.decode(b'',final=True)
+    require(final==bytes(raw).decode('utf-8',errors='replace'),
+            'Final native replacement decode differs from original bytes')
+    # A finished emission cannot acquire more bytes. Its native final replacement
+    # is stable even when the original byte suffix was incomplete UTF8.
+    decoded[-1]=final;complete[-1]=True
     proof=dict(protocol=UTF8_BOUNDARY_PROTOCOL,decoder_binding_sha256=fingerprint(binding),
         original_emitted_byte_sha256=hashlib.sha256(raw).hexdigest(),
-        complete_original_token_boundaries=[i+1 for i,valid in enumerate(complete) if valid],
-        pending_prefix_events=pending_events,native_prefix_agreement_count=len(ids),
+        stable_original_token_boundaries=[i+1 for i,valid in enumerate(complete) if valid],
+        pending_prefix_events=pending_events,invalid_original_utf8_events=invalid_events,
+        native_prefix_agreement_count=len(ids),
         native_prefix_agreement_sha256=fingerprint(prefix_hashes),
-        final_utf8_complete=True,final_native_text_sha256=fingerprint(decoded[-1]))
+        final_original_utf8_complete=not final_pending,final_original_utf8_valid=not invalid_events,
+        final_pending_utf8_hex=final_pending.hex(),final_native_decode_finalized=True,
+        final_native_text_sha256=fingerprint(decoded[-1]))
     return decoded,complete,proof
 
 
@@ -273,7 +300,7 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
 
 
 def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity):
-    """Scan complete original prefixes; never encode a policy token or split one."""
+    """Scan stable native prefixes; never encode a policy token or split one."""
     started=time.perf_counter(),time.process_time()
     require(emission.get('protocol')==PROTOCOL and emission.get('schema_version')==1,
             'Native emission metadata missing')
@@ -301,7 +328,7 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
     tagged='</search>' in full or '</answer>' in full
     if tagged:
         choices=[i+1 for i,prefix in enumerate(decoded) if complete[i] and prefix.startswith(text)]
-        require(choices,'Canonical boundary not covered by a complete original token')
+        require(choices,'Canonical boundary not covered by a stable original-token prefix')
         cut=choices[0]
     else:cut=n
     action=ids[:cut];projection=decoded[cut-1]
@@ -327,12 +354,12 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
 
 
 def validate_action_utf8_proof(action,tokenizer,_context=None):
-    """Reconstruct byte proof and check actual full/cut decode, without resampling."""
+    """Reconstruct native replacement proof and actual full/cut decode, without resampling."""
     emission=action['native_emission'];ids=emission['raw_emitted_token_ids'];cut=action['cut']
     decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
-    require(proof==action.get('utf8_boundary_proof'),'Bound original-token UTF8 proof differs')
+    require(proof==action.get('utf8_boundary_proof'),'Bound original-token native replacement proof differs')
     require(type(cut) is int and 0<cut<=len(ids) and complete[cut-1],
-            'Retained boundary has incomplete UTF8 bytes')
+            'Retained boundary has an unfinished native replacement prefix')
     full=tokenizer.decode(ids,skip_special_tokens=True)
     projection=tokenizer.decode(ids[:cut],skip_special_tokens=True)
     text=canonical_text(full)
@@ -345,7 +372,7 @@ def validate_action_utf8_proof(action,tokenizer,_context=None):
             'Legacy IDs/reward text differ from actual original canonical tokenizer encode/decode')
     tagged='</search>' in full or '</answer>' in full
     choices=[i+1 for i,prefix in enumerate(decoded) if complete[i] and prefix.startswith(text)]
-    require(not tagged or choices,'Canonical tag has no proven complete original-token boundary')
+    require(not tagged or choices,'Canonical tag has no proven stable original-token boundary')
     require(full==decoded[-1] and projection==decoded[cut-1] and action['canonical_text']==text and
             action['canonical_text_sha256']==fingerprint(text) and
             action['whole_prefix_decode']==projection and cut==(choices[0] if tagged else len(ids)) and
@@ -353,7 +380,7 @@ def validate_action_utf8_proof(action,tokenizer,_context=None):
             action['action_token_ids']==ids[:cut] and action['selected_logprobs']==emission['raw_selected_logprobs'][:cut] and
             action['indivisible_extra_text']==projection[len(text):] and
             action['indivisible_extra_utf8_hex']==projection[len(text):].encode('utf-8').hex(),
-            'Native/canonical complete-token UTF8 boundary differs')
+            'Native/canonical stable original-token boundary differs')
 
 
 def trajectory_projection(state,cap,_contexts=None):
