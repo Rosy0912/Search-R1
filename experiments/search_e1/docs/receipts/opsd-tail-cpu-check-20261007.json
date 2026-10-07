@@ -1,0 +1,1135 @@
+{
+  "status": "PASS",
+  "world": 8,
+  "accumulation": 4,
+  "global_batch": 32,
+  "cases": [
+    {
+      "remainder": 0,
+      "usable_examples": 32,
+      "backward_counts": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "collective_counts": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 1,
+      "usable_examples": 33,
+      "backward_counts": [
+        5,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 2,
+      "usable_examples": 34,
+      "backward_counts": [
+        5,
+        5,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 3,
+      "usable_examples": 35,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 4,
+      "usable_examples": 36,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 5,
+      "usable_examples": 37,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 6,
+      "usable_examples": 38,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        4,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 7,
+      "usable_examples": 39,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        4
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 8,
+      "usable_examples": 40,
+      "backward_counts": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 9,
+      "usable_examples": 41,
+      "backward_counts": [
+        6,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 10,
+      "usable_examples": 42,
+      "backward_counts": [
+        6,
+        6,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 11,
+      "usable_examples": 43,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 12,
+      "usable_examples": 44,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        6,
+        5,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 13,
+      "usable_examples": 45,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        5,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 14,
+      "usable_examples": 46,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        5,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 15,
+      "usable_examples": 47,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        5
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 16,
+      "usable_examples": 48,
+      "backward_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 17,
+      "usable_examples": 49,
+      "backward_counts": [
+        7,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 18,
+      "usable_examples": 50,
+      "backward_counts": [
+        7,
+        7,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 19,
+      "usable_examples": 51,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 20,
+      "usable_examples": 52,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        7,
+        6,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 21,
+      "usable_examples": 53,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 22,
+      "usable_examples": 54,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 23,
+      "usable_examples": 55,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        6
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 24,
+      "usable_examples": 56,
+      "backward_counts": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 25,
+      "usable_examples": 57,
+      "backward_counts": [
+        8,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 26,
+      "usable_examples": 58,
+      "backward_counts": [
+        8,
+        8,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 27,
+      "usable_examples": 59,
+      "backward_counts": [
+        8,
+        8,
+        8,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 28,
+      "usable_examples": 60,
+      "backward_counts": [
+        8,
+        8,
+        8,
+        8,
+        7,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 29,
+      "usable_examples": 61,
+      "backward_counts": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        7,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 30,
+      "usable_examples": 62,
+      "backward_counts": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    },
+    {
+      "remainder": 31,
+      "usable_examples": 63,
+      "backward_counts": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7
+      ],
+      "optimizer_steps": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collective_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "max_weight_delta": 0.0
+    }
+  ],
+  "frozen_source_sha256": "61df9cc630bca7466f3edfb06da18ad92ddff1c713bf7c6c4a104ba88672c037",
+  "archive_source_sha256": "91d726c7e666b2dd41cfbc8e30a05af0cbdadb0080768d78f6677cf4cb00eabf",
+  "byte_identity": {
+    "encoded_pair": true,
+    "pair_loss": true
+  },
+  "scope": "CPU toy pair losses, actual frozen update AST, actual AdamW; blocking collective simulator, not GPU/NCCL validation"
+}
