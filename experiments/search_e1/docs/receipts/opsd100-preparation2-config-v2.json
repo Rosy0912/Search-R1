@@ -1,0 +1,193 @@
+{
+  "prepared": true,
+  "time": 1791356644.0879254,
+  "preparation_only": true,
+  "live_processes_stopped": false,
+  "source_runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd",
+  "source_manifest_sha256": "3c8c4cd1b00a3b79f88e5d0cf074d5881232a843d66c7ea94d0c37d8e608813f",
+  "runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation2",
+  "files": 305,
+  "changed_files": [
+    "search_e1/opsd.py",
+    "search_e1/vllm_rollout.py"
+  ],
+  "new_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+  "delta_sha256": "7cf6e9180adebe8f5df359fdacf54261c9889502b8cef83efc9c2d809972f3c5",
+  "controls": {
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-2-v2/prepare_preparation2.py": "7c65675ad8b1087af30f0922d91d163f518c971923d9ee6e8d57e302083fd282",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-2-v2/pipeline_preparation2.py": "5c4c8836d3571aa7224467b3878a884e4bc20abd41a81bc833fe248550e4a91a"
+  },
+  "gate": {
+    "gate_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/full-gpu-http-gate-v2.json",
+    "gate_sha256": "1308429fe03dfa3fbdf53488612ab6385747429914e4691d82af80c96c2ee454",
+    "memory_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+    "candidate_pid": 2239529,
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "candidate_health": {
+      "ready": false,
+      "cpu_ready": true,
+      "gpu_ready": true,
+      "pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "ntotal": 21015324,
+      "d": 768,
+      "index": "full FP32 segmented streaming FlatIP",
+      "encoder": "original CPU FP32 E5",
+      "encoder_batch_size": 128,
+      "query_micro": 64,
+      "vector_rows": 32768,
+      "tf32": false,
+      "max_requests": 8,
+      "max_queries_per_scan": 20480,
+      "collection_seconds": 0.025,
+      "actual_threads_after_cpu_load": {
+        "torch": 16,
+        "torch_interop": 72,
+        "faiss": 32
+      },
+      "pending_requests": 0,
+      "activation_error": null
+    },
+    "memory": {
+      "candidate_pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "gpu": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "sample_start_unix": 1791355802.515925,
+      "sample_end_unix": 1791356643.7746809,
+      "updated_at_unix": 1791356643.7747543,
+      "samples": 2551,
+      "max_process_mib": 654,
+      "min_free_mib": 3099,
+      "current": {
+        "time": 1791356643.7746809,
+        "candidate_pid": 2239529,
+        "gpu": 7,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "total_mib": 24564,
+        "used_mib": 21113,
+        "free_mib": 3099,
+        "reserved_mib": 354,
+        "computed_total_minus_used_mib": 3451,
+        "candidate_process_mib": 654
+      },
+      "free_measurement": "nvidia-smi memory.free",
+      "process_limit_mib": 1024,
+      "free_minimum_mib": 1024,
+      "limits_met": true,
+      "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately"
+    }
+  },
+  "opsd_zero_evidence": {
+    "actual_opsd_updates": 0,
+    "output_absent": true,
+    "live_opsd_process_absent": true
+  },
+  "datasets": {
+    "train": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+      "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f",
+      "rows": 169103,
+      "bytes": 31766631
+    },
+    "validation": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/validation.jsonl",
+      "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+      "rows": 512,
+      "bytes": 93609
+    },
+    "test": {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl",
+      "realpath": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/test.jsonl",
+      "sha256": "f1ade9239143d53636ae66b9c90ac083a195a1bc2492e6a8bd9dd56111cfdcab",
+      "rows": 51713,
+      "bytes": 13324924
+    }
+  },
+  "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+  "source_grpo_step": 100,
+  "source_model_transfer_receipt_sha256": "08b005d8788fbbbc6c57cf40af4c08202b59c0d89160a6f030fad8d555fc007d",
+  "rollout_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-rollouts.jsonl",
+  "pair_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-pairs.jsonl",
+  "opsd_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+  "final_output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-2-final-test.jsonl",
+  "retrievers": {
+    "preparation": "http://10.120.17.101:18004/retrieve",
+    "opsd_baseline_validation": "http://10.120.17.101:18004/retrieve",
+    "final_eight_gpu_vllm": "http://10.120.17.101:18004/retrieve"
+  },
+  "execution_change": {
+    "num_gpu_blocks_override": 22671,
+    "inference_utilization": 0.85,
+    "cpu_blocks_expected_unchanged": 7281,
+    "eager": true,
+    "communication_timeout_hours": 24,
+    "communication_timeout_changed": true,
+    "communication_timeout_reason": "Tolerance for unequal per-rank validation/search latency; frozen global validation is eight ranks, validation[rank::world], 64 each for the unchanged 512 questions",
+    "description": "GPU KV allocation and NCCL communication tolerance only; 24h is not training steps/epochs/budget; CPU swap/default and generation budgets unchanged"
+  },
+  "unchanged_scientific_function_proofs": {
+    "encoded_pair": {
+      "source_bytes_equal": true,
+      "ast_equal": true,
+      "source_sha256": "c64188956a7ecc82a18f03a8a71020b3463b842eaecd39cf474e555d69295692",
+      "ast_sha256": "233fa286392d330d16d34a77019c100845509509e5c8481ef425dda458293afc"
+    },
+    "pair_loss": {
+      "source_bytes_equal": true,
+      "ast_equal": true,
+      "source_sha256": "ccff42a99b0667e8bd3960df2a179d9e288482ae9c2c0d4d5750cf4a4b9e5dcf",
+      "ast_sha256": "9bbcc3e4df9a470ec9d0f0b89eda046907b84c9bf4cbc777183c153be2732f4d"
+    }
+  },
+  "unchanged_scientific_settings": {
+    "questions": 169103,
+    "siblings": 5,
+    "workers": 8,
+    "batch_questions": 64,
+    "seed": 42,
+    "worker_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "max_tokens": 500,
+    "context": 8192,
+    "turns": 5,
+    "search_calls": 4,
+    "topk": 3,
+    "observation_tokens": 480,
+    "mining": "unchanged original mine_pairs",
+    "opsd_epochs": 1,
+    "opsd_lr": 1e-05,
+    "rank": 16,
+    "alpha": 32,
+    "clip": 10,
+    "chunk": 32,
+    "accumulation": 4,
+    "global_trajectory_batch": 32,
+    "validation_questions": 512,
+    "loss": "per-trajectory valid-token mean, then global-trajectory mean",
+    "additional_grpo": false,
+    "restore_grpo_adam": false
+  },
+  "required_stop_proof": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-1-stopped-for-preparation-2.json",
+  "scope": "Fresh full preparation only; no scientific OPSD optimizer update is restarted; owner must separately stop preparation-1 after scope review",
+  "controller_correction": {
+    "time": 1791356998.9286702,
+    "reason": "Reviewed all-three admitted18004 endpoints matched in new controller whitelist; preserve failed initial controller2301865 and config",
+    "old_config_sha256": "97c7d72af38d13aec503497b804650491e0cab93593700318ab67e1a536f349f",
+    "scientific_runtime_unchanged": true,
+    "real_optimizer_updates": 0,
+    "generation_started": false
+  }
+}

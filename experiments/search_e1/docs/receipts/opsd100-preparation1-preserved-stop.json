@@ -1,0 +1,248 @@
+{
+  "time": 1791356709.414571,
+  "stopped": true,
+  "controller_pid": 2196101,
+  "controller_pgid": 2196099,
+  "run_id": "8f0bb94e2bad41c4bfaf893acc244803",
+  "opsd_updates": 0,
+  "scope": "preparation-1 only; OPSD updates 0",
+  "owned_pids": [
+    2196099,
+    2196101,
+    2206063,
+    2206130,
+    2206131,
+    2206132,
+    2206133,
+    2206134,
+    2206136,
+    2206202,
+    2206266
+  ],
+  "process_identity": [
+    {
+      "pid": 2196099,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2373025,
+      "pgid": 2196099,
+      "start_ticks": 913869325,
+      "command": "bash -c python3 /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/pipeline.py > /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/pipeline.log 2>&1 "
+    },
+    {
+      "pid": 2196101,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2196099,
+      "pgid": 2196099,
+      "start_ticks": 913869326,
+      "command": "python3 /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/pipeline.py "
+    },
+    {
+      "pid": 2206063,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2196101,
+      "pgid": 2196099,
+      "start_ticks": 913924602,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl --k 5 --backend vllm --workers 8 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206130,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924891,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-0.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-0.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 42 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206131,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924900,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-1.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-1.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 43 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206132,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924909,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-2.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-2.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 44 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206133,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924918,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-3.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-3.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 45 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206134,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924927,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-4.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-4.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 46 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206136,
+      "uid": 1005,
+      "state": "R",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924936,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-5.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-5.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 47 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206202,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924946,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-6.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-6.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 48 --retriever-url http://10.120.17.101:18001/retrieve "
+    },
+    {
+      "pid": 2206266,
+      "uid": 1005,
+      "state": "S",
+      "ppid": 2206063,
+      "pgid": 2196099,
+      "start_ticks": 913924966,
+      "command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100 --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/questions-7.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-7.jsonl --backend vllm --workers 1 --k 5 --temperature 1.0 --batch-size 64 --seed 49 --retriever-url http://10.120.17.101:18001/retrieve "
+    }
+  ],
+  "partial_rows_before_stop": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-0.jsonl",
+      "rows": 8960,
+      "bytes": 33934675
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-1.jsonl",
+      "rows": 9280,
+      "bytes": 35264096
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-2.jsonl",
+      "rows": 9280,
+      "bytes": 34892464
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-3.jsonl",
+      "rows": 9280,
+      "bytes": 34866583
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-4.jsonl",
+      "rows": 8960,
+      "bytes": 33647344
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-5.jsonl",
+      "rows": 8960,
+      "bytes": 33893559
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-6.jsonl",
+      "rows": 8960,
+      "bytes": 34205511
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/rollouts.jsonl.parts/rollouts-7.jsonl",
+      "rows": 8960,
+      "bytes": 34190384
+    }
+  ],
+  "source_runtime_unchanged": true,
+  "old_trajectory_artifacts_preserved_in_place": true,
+  "scientific_optimizer_restarted": false,
+  "candidate": {
+    "gate_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/full-gpu-http-gate-v2.json",
+    "gate_sha256": "1308429fe03dfa3fbdf53488612ab6385747429914e4691d82af80c96c2ee454",
+    "memory_path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+    "candidate_pid": 2239529,
+    "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+    "candidate_health": {
+      "ready": true,
+      "cpu_ready": true,
+      "gpu_ready": true,
+      "pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "ntotal": 21015324,
+      "d": 768,
+      "index": "full FP32 segmented streaming FlatIP",
+      "encoder": "original CPU FP32 E5",
+      "encoder_batch_size": 128,
+      "query_micro": 64,
+      "vector_rows": 32768,
+      "tf32": false,
+      "max_requests": 8,
+      "max_queries_per_scan": 20480,
+      "collection_seconds": 0.025,
+      "actual_threads_after_cpu_load": {
+        "torch": 16,
+        "torch_interop": 72,
+        "faiss": 32
+      },
+      "pending_requests": 0,
+      "activation_error": null
+    },
+    "memory": {
+      "candidate_pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "gpu": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "sample_start_unix": 1791355802.515925,
+      "sample_end_unix": 1791356707.7168102,
+      "updated_at_unix": 1791356707.7168784,
+      "samples": 2745,
+      "max_process_mib": 654,
+      "min_free_mib": 3099,
+      "current": {
+        "time": 1791356707.7168102,
+        "candidate_pid": 2239529,
+        "gpu": 7,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "total_mib": 24564,
+        "used_mib": 21113,
+        "free_mib": 3099,
+        "reserved_mib": 354,
+        "computed_total_minus_used_mib": 3451,
+        "candidate_process_mib": 654
+      },
+      "free_measurement": "nvidia-smi memory.free",
+      "process_limit_mib": 1024,
+      "free_minimum_mib": 1024,
+      "limits_met": true,
+      "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately"
+    }
+  },
+  "zero": {
+    "actual_opsd_updates": 0,
+    "output_absent": true,
+    "live_opsd_process_absent": true
+  },
+  "reason": "Use fully verified exact segmented retrieval for new complete preparation with original seeds and cache; never merge interrupted partials",
+  "finished_at": 1791356810.5347111,
+  "actual_gpu_pids_after": [
+    2239529
+  ],
+  "remaining_owned_zombies": [],
+  "escalated_owned_pids": [],
+  "final_pipeline_stage_sha256": "f4bf2cf3e3ef82cd417d55a24243599b3b6f6bb3b338c7a7fe6cffff23a18ced",
+  "preserved_stage_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-1-final-pipeline-stage.json",
+  "stop_recovery": {
+    "reason": "Initial stop observer hit PermissionError reading environment while a signalled process exited; no additional signal required; all11 verified original processes now absent and GPU memory released",
+    "reverified_actual_all_pids_absent": true,
+    "old_failure_preserved": true
+  }
+}
