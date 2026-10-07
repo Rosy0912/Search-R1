@@ -1,0 +1,132 @@
+{
+  "role": "read_actual_first_complete_outer_intrinsic_policy_monitors",
+  "native_job_id": "3324",
+  "run_id": "c0f329fb6282460a9fea8811aa8f47f2",
+  "attempt_id": "d298c1124aff4dc68c3a3f2ef49f333f",
+  "training_source_commit": "19fdfc32cc1c62d9723a02bf658ad8e4c2b332aa",
+  "monitor_read_unix": 1791360824.9598532,
+  "completed_outer_at_latest_actual_observation": 1,
+  "per_rank": {
+    "0": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "601bd9f18ae6aadb435be6b2ebec355c0cc9da3c84c5b375bde3f0ee662778ea"
+    },
+    "1": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "f57cb66f41c951b4361efb87bbbde7a39d4af23f095f7dd560fb846d97cc1fd4"
+    },
+    "2": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "110464bc7e14df839ed27a96232c9bd0b3fb216f3844f3ada494c1702d9aa3dd"
+    },
+    "3": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "c039545701f6e9917daffbb71fb73c8576525a43b16fc0a402ffd05e1fe8d620"
+    },
+    "4": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "961ff3c827cb1c304e9a310ff03b757ef3584318ac4c014b183e784ade2da9be"
+    },
+    "5": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "3a4e5460dcceb5fcface94d2c02399bf117ee947d67c2a9a2adacfb3083a7f8d"
+    },
+    "6": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "ce7cf88ea4be4625813f278a0223eb4a2d62519db9691ff0b1f98eef61d2620c"
+    },
+    "7": {
+      "monitor_count": 40,
+      "ordered20_prepost_pairs": true,
+      "all_allowed": true,
+      "all_estimates_complete": true,
+      "selected_trajectories": 4,
+      "stable_identity_hash_count": 1,
+      "calibration_sha256": [
+        "7fcb95a1395beca038bcd915a38e770c8018462b7aa2d0aef9dd16a6c4ca1fc1"
+      ],
+      "journal_prefix_sha256": "004c3394348555d73c0cdecf201cc5452dc42d8acf1d497bb39ccb291c1b24f3"
+    }
+  },
+  "unique_global_prepost_count": 40,
+  "all8_rank_global_statistics_agree": true,
+  "sampled_k3_min": 5.397678959595676e-10,
+  "sampled_k3_max": 5.397678959595676e-10,
+  "sampled_k3_all_finite": true,
+  "negative_tail_weight_fraction_max": 0.0,
+  "rejected_check_count": 0,
+  "invalid_count_max": 0,
+  "overflow_count_max": 0,
+  "scope": "40 global checks; each is replicated across8rank journals. Fixed4trajectories/rank=32global; not full2560 rollout nor full-vocabulary KL. First consumedLR0, so no later-policy health claim. Only existing runtime journals were read, no extra GPUtest/admission blocking/review/rerun/source change.",
+  "declared_candidate_safeguards_from_saved_method": {
+    "dual_clip": 3.0,
+    "epsilon": 0.2,
+    "kl_log_bound": 30.0,
+    "negative_tail_limit": 0.01,
+    "target_old_policy_kl": 0.2
+  },
+  "method_config_scope": "Declared frozen method; monitor scalar logs reference actual calibrationSHA separately. No threshold recalibration performed.",
+  "private_monitor_projection_sha256": "9ae2e8041c0be591b543c6800e9a78d64850f525324c3e4f4907eeac74db9dc3",
+  "private_live_snapshot_sha256": "65d396f215fdc3f6ab0acb6788dee943bc23fd7e780a74138810a5d2c6f34dca",
+  "first_reader_failure": "ObservedKeyError1 from premature rank comparison; read-only observer failed, corrected after reading all8; no training mutation. Original failure receipt retained.",
+  "first_completed_reward": 0.21256741881370544,
+  "no_new_completed_reward_or_em_at_16_11": true,
+  "goal_status": "active",
+  "full_goal_complete": false
+}
