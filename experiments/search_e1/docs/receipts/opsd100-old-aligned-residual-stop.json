@@ -1,0 +1,12 @@
+{
+  "time": 1791347529.4104385,
+  "verified_own_residual_gpu_pids": [
+    143287,
+    143289,
+    143290
+  ],
+  "run_id": "b8b93546fb314915b3e72f355f22f291",
+  "full_state_preserved": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-complete.json",
+  "reason": "SIGTERM left owned NCCL workers alive; latest human explicitly replaced this job; terminate only reverified residual own workers",
+  "signal": "SIGKILL"
+}

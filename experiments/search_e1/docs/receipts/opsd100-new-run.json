@@ -1,0 +1,18 @@
+{
+  "run_id": "8f0bb94e2bad41c4bfaf893acc244803",
+  "pid": 2196101,
+  "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+  "stage": "OPSD_FROM_ARCHIVE100",
+  "trajectory_batch": 32,
+  "world": 8,
+  "accumulation": 4,
+  "epochs": 1,
+  "lr": 1e-05,
+  "rank": 16,
+  "alpha": 32,
+  "clip": 10,
+  "chunk": 32,
+  "seed": 42,
+  "reset_grpo_optimizer": true,
+  "additional_grpo": false
+}

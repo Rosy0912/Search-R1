@@ -1,0 +1,96 @@
+{
+  "run_id": "b8b93546fb314915b3e72f355f22f291",
+  "world_size": 8,
+  "global_step": 80,
+  "ranks": [
+    {
+      "rank": 7,
+      "pid": 143291,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-7.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.3430166
+    },
+    {
+      "rank": 1,
+      "pid": 143285,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-1.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.5871732
+    },
+    {
+      "rank": 2,
+      "pid": 143286,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-2.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.4798753
+    },
+    {
+      "rank": 4,
+      "pid": 143288,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-4.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.4505887
+    },
+    {
+      "rank": 5,
+      "pid": 143289,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-5.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.3042107
+    },
+    {
+      "rank": 3,
+      "pid": 143287,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-3.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.2639744
+    },
+    {
+      "rank": 6,
+      "pid": 143290,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-6.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.4111803
+    },
+    {
+      "rank": 0,
+      "pid": 142966,
+      "scheduler_step": 80,
+      "optimizer_steps": [
+        1600.0
+      ],
+      "path": "/data/shaoshitong/search-e1-config-study-r1-aligned-8gpu-20261005/preserved/replacement-state-b8b93546fb314915b3e72f355f22f291/full-rank-0.pt",
+      "bytes": 4628970258,
+      "time": 1791347401.2798095
+    }
+  ],
+  "time": 1791347401.642764
+}
