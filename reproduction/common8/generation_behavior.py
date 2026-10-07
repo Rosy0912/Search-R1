@@ -166,7 +166,7 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
                      'missing_actual_group_stop_provenance')
             proof = record['effective_stop_provenance']
             try:
-                stop_ids, _ = validate_effective_stop_provenance(proof,
+                stop_ids, seq_eos = validate_effective_stop_provenance(proof,
                     request_id=record['request_id'], actual_request_token_ids=requests[local],
                     sampling=current, eos_token_id=eos, pad_token_id=pad)
             except (ValueError, TypeError, KeyError) as error:
@@ -184,11 +184,17 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
                 executor_decode=lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
                                                 clean_up_tokenization_spaces=False),
                 effective_stop_token_ids=sorted(stop_ids))
-            # A trailing EOS exclusion is allowed only for a genuine native stop,
-            # never because EOS shares the tensor's padding ID.
+            # Keep primary EOS termination semantics. An alternate configured
+            # terminal requires a matching native reason, or actual sequence EOS.
             if cut['trailing_eos_excluded']:
                 _require(record['finish_reason'] == 'stop' and
                          record['stop_reason'] in (None, eos), 'unproven_actual_EOS_stop')
+            elif cut.get('trailing_actual_stop_excluded', False):
+                terminal = record['raw_generated_token_ids'][-1]
+                _require(record['finish_reason'] == 'stop' and
+                         (type(record['stop_reason']) is int and record['stop_reason'] == terminal or
+                          record['stop_reason'] is None and seq_eos == terminal),
+                         'unproven_actual_terminal_stop')
             cuts.append(cut)
             texts[index] = cut['execution_text']
         next_obs, dones, valid_action, is_search = manager.execute_predictions(

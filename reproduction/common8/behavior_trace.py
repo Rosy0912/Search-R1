@@ -43,6 +43,8 @@ _DUAL_CUT_FIELDS = frozenset(('kept_token_count', 'kept_token_ids', 'closing_tag
     'decoded_executor_previous_prefix', 'executor_full_decode_replacement_count',
     'executor_retained_decode_replacement_count', 'included_nonterminal_special_positions',
     'effective_stop_token_ids_sha256'))
+_DUAL_ACTUAL_STOP_CUT_FIELDS = _DUAL_CUT_FIELDS | frozenset((
+    'trailing_actual_stop_excluded', 'excluded_trailing_stop_token_id'))
 _TRACE_FIELDS = frozenset(('schema_version', 'role', 'run_id', 'source_sha256', 'slurm_job_id',
     'logical_update', 'policy_snapshot_id', 'sampling', 'parent_group_ids', 'trajectories', 'actor_rows'))
 
@@ -120,8 +122,9 @@ def raw_prefix_to_first_closing_tag(raw_generated_token_ids, decode, *, eos_toke
     closing tag inside a token retains that complete sampled token, including
     any suffix. Only the executor receives the original character projection;
     context, loss masks and reward decoding keep the full authored token.
-    With no tag only one genuine trailing EOS is removed. Internal special
-    tokens are never silently removed. Actual raw length comes from vLLM before
+    With no tag only one genuine trailing terminal token is removed; alternate
+    configured stops require the dual decoder and authenticated stop provenance.
+    Internal special tokens are never silently removed. Actual raw length comes from vLLM before
     padding; this function never guesses that length from EOS/pad IDs.
     Deterministic decode may be lossy. Replacement characters remain verbatim,
     with an explicit census; full decoded text must contain the selected prefix
@@ -179,11 +182,14 @@ def _dual_raw_prefix(raw_generated_token_ids, decode, executor_decode, *, eos_to
                      pad_token_id, special_token_ids, effective_stop_token_ids):
     """Only the upstream executor projection skips special symbols.
 
-    The complete original sampled-token prefix, its LP and all loss/context
-    masks remain intact. Reward decodes that full authored prefix with special
-    symbols visible. Stop provenance is authenticated separately before this
-    function is called and again when the completed trace is audited. This is
-    not equivalence to the old retokenized future context or cleaned reward.
+    One trailing configured terminal token is excluded from the eligible actor
+    and executor prefix, including an actual stop that shares the padding ID.
+    The raw tokens and selected LP journal remain intact; all other retained
+    tokens, LP and loss/context masks stay unchanged. Reward decodes that
+    authored prefix with nonterminal special symbols visible. Stop provenance
+    is authenticated before this call, termination before action execution,
+    and both again in the completed trace audit. This is not equivalence to the
+    old retokenized future context or cleaned reward.
     """
     raw = _tokens(raw_generated_token_ids, 'raw_generated_token_ids')
     _require(type(eos_token_id) is int and type(pad_token_id) is int, 'missing_actual_eos_pad_identity')
@@ -192,7 +198,8 @@ def _dual_raw_prefix(raw_generated_token_ids, decode, executor_decode, *, eos_to
     stops = sorted(set(_tokens(effective_stop_token_ids, 'effective_stop_token_ids')))
     _require(eos_token_id in stops, 'tokenizer_eos_not_actual_stop')
     trailing = bool(raw and raw[-1] == eos_token_id)
-    eligible = raw[:-1] if trailing else raw
+    trailing_actual_stop = bool(raw and raw[-1] != eos_token_id and raw[-1] in stops)
+    eligible = raw[:-1] if trailing or trailing_actual_stop else raw
     visible, projected = decode(eligible), executor_decode(eligible)
     _require(isinstance(visible, str) and isinstance(projected, str), 'invalid_decoder_result')
     closing = '</search>' if '</search>' in projected else '</answer>' if '</answer>' in projected else None
@@ -218,7 +225,7 @@ def _dual_raw_prefix(raw_generated_token_ids, decode, executor_decode, *, eos_to
     classification = 'none' if not suffix else 'whitespace' if suffix.isspace() else 'nonwhitespace'
     previous = executor_decode(eligible[:max(0, count - 1)])
     _require(isinstance(previous, str), 'invalid_decoder_result')
-    return dict(kept_token_count=count, kept_token_ids=kept, closing_tag=closing, execution_text=execution,
+    cut = dict(kept_token_count=count, kept_token_ids=kept, closing_tag=closing, execution_text=execution,
         decoded_retained_prefix=retained_visible, retained_token_boundary_suffix=suffix,
         token_boundary_suffix_classification=classification,
         retained_trailing_whitespace=suffix if classification == 'whitespace' else '',
@@ -235,6 +242,9 @@ def _dual_raw_prefix(raw_generated_token_ids, decode, executor_decode, *, eos_to
         executor_retained_decode_replacement_count=retained_projected.count('\ufffd'),
         included_nonterminal_special_positions=positions,
         effective_stop_token_ids_sha256=document_sha256(stops))
+    if trailing_actual_stop:
+        cut.update(trailing_actual_stop_excluded=True, excluded_trailing_stop_token_id=raw[-1])
+    return cut
 
 
 def _verified_effective_stops(turn):
@@ -252,7 +262,7 @@ def _verified_effective_stops(turn):
 
 
 def _verify_dual_cut(cut, raw, count, special, eos, pad, stops):
-    _require(type(cut) is dict and set(cut) == _DUAL_CUT_FIELDS and
+    _require(type(cut) is dict and set(cut) in (_DUAL_CUT_FIELDS, _DUAL_ACTUAL_STOP_CUT_FIELDS) and
              cut['dual_decode_projection_role'] == DUAL_PROJECTION_ROLE and
              cut['decode_projection_role'] == DECODE_PROJECTION_ROLE,
              'dual_decode_proof_schema_changed')
@@ -268,6 +278,13 @@ def _verify_dual_cut(cut, raw, count, special, eos, pad, stops):
              'included_nonterminal_special_proof_changed')
     _require(type(cut['trailing_eos_excluded']) is bool and
              cut['trailing_eos_excluded'] == bool(raw and raw[-1] == eos), 'trailing_eos_proof_changed')
+    trailing_actual_stop = set(cut) == _DUAL_ACTUAL_STOP_CUT_FIELDS
+    if trailing_actual_stop:
+        _require(type(cut['trailing_actual_stop_excluded']) is bool and
+                 cut['trailing_actual_stop_excluded'] is True and
+                 type(cut['excluded_trailing_stop_token_id']) is int and
+                 bool(raw) and cut['excluded_trailing_stop_token_id'] == raw[-1] and
+                 raw[-1] != eos and raw[-1] in stops, 'trailing_actual_stop_proof_changed')
     for full_key, retained_key, full_count, retained_count in (
         ('decoded_full_generation', 'decoded_retained_prefix', 'full_decode_replacement_count', 'retained_decode_replacement_count'),
         ('decoded_executor_full_generation', 'decoded_executor_retained_prefix',
@@ -296,7 +313,7 @@ def _verify_dual_cut(cut, raw, count, special, eos, pad, stops):
                  cut['execution_text'] == retained[:retained.find(closing) + len(closing)] and
                  cut['execution_text'].endswith(closing), 'execution_is_not_original_character_projection')
     else:
-        _require(count == len(raw) - int(cut['trailing_eos_excluded']) and not suffix and
+        _require(count == len(raw) - int(cut['trailing_eos_excluded'] or trailing_actual_stop) and not suffix and
                  retained == projected and cut['decoded_retained_prefix'] == cut['decoded_full_generation'],
                  'unproven_no_tag_truncation')
 
@@ -358,7 +375,7 @@ def _verify_turn(turn):
     dual = isinstance(cut, dict) and cut.get('dual_decode_projection_role') == DUAL_PROJECTION_ROLE
     _require(dual == (set(turn) == _TURN_STOP_FIELDS), 'dual_decode_without_actual_stop_provenance')
     if dual:
-        stops, _ = _verified_effective_stops(turn)
+        stops, seq_eos = _verified_effective_stops(turn)
         _verify_dual_cut(cut, raw, count, special, turn['eos_token_id'], turn['pad_token_id'], stops)
     else:
         _require(not special.intersection(raw[:count]), 'included_special_or_pad_token')
@@ -434,6 +451,12 @@ def _verify_turn(turn):
     _require(not turn['final_turn'] or not (observation or correction), 'environment_after_final_turn')
     sampling = _sampling(turn['sampling'])
     _require(len(raw) <= sampling['max_tokens'], 'actual_raw_generation_exceeds_bound500')
+    if dual and cut.get('trailing_actual_stop_excluded', False):
+        terminal = raw[-1]
+        _require(sampling['ignore_eos'] is False and turn['finish_reason'] == 'stop' and
+                 (type(turn['stop_reason']) is int and turn['stop_reason'] == terminal or
+                  turn['stop_reason'] is None and seq_eos == terminal),
+                 'unproven_native_actual_stop_termination')
     if raw and raw[-1] == turn['eos_token_id'] and count < len(raw):
         _require(sampling['ignore_eos'] is False and turn['finish_reason'] == 'stop' and
                  turn['stop_reason'] in (None, turn['eos_token_id']), 'unproven_native_eos_termination')
