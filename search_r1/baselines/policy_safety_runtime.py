@@ -4,6 +4,7 @@ import math
 import os
 import time
 from pathlib import Path
+from omegaconf import OmegaConf
 import torch
 import torch.distributed as dist
 from .policy_safety import update_statistics, admission, global_negative_quantiles
@@ -218,7 +219,7 @@ class PolicySafetyRuntime:
                       committed_optimizer_calls=self.committed, micro=self.micro,
                       outer_completed=False, scheduler_advanced=False, automatic_rollback=False,
                       monitor_local_row_indices=self.indices.tolist(), monitor_rows=len(self.monitor),
-                      local_outer_rows=len(self.batch), config=dict(self.config), decision=decision,
+                      local_outer_rows=len(self.batch), config=self.config, decision=decision,
                       scope='Fixed length-stratified local-outer subset; not all rollout tokens')
         record['probability_denominator'] = 'actual_behavior_mu' if self.corrected_profile else 'actor_recomputed_beta'
         record['original_sampler_actor_consistency_accepted'] = False if self.corrected_profile else None
@@ -229,15 +230,21 @@ class PolicySafetyRuntime:
         record['measured_gradient_preclip'] = getattr(self, 'last_grad_preclip', None)
         record['measured_gradient_postclip'] = getattr(self, 'last_grad_postclip', None)
         failed = False
+        error = None
         try:
+            record['config'] = (OmegaConf.to_container(self.config, resolve=True, throw_on_missing=True)
+                                if OmegaConf.is_config(self.config) else dict(self.config))
+            payload = json.dumps(record, allow_nan=False)
             with path.open('x') as stream:
-                json.dump(record, stream, allow_nan=False)
-        except Exception:
+                stream.write(payload)
+        except Exception as exc:
             failed = True
+            error = f'{type(exc).__name__}: {exc}'[:2048]
         flag = torch.tensor(int(failed), device=self.device)
         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
         if flag.item():
-            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes', matched_all_ranks=True)
+            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes; '
+                                      f'local diagnosis: {error}', matched_all_ranks=True)
         if not decision['allowed']:
             reasons = decision.get('reasons', [])
             faults = {'initial_actor_same_partition_repeat_inconsistency',
