@@ -1,0 +1,777 @@
+{
+  "actual_atomic_total_writes_unknown": true,
+  "actual_probe_version": "840f82d338ee4d3b97b41372e64e08f1:0:498192f06afc42f3a0285f23120d1de8",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "behavior_scope": "Production intrinsic gate remains active; no additional behavior/probe re-read, rerun, test or review in this turn.",
+  "completed_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": 3,
+    "latest": {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+      "metrics": {
+        "actor/entropy_loss": 0.9234017698094249,
+        "actor/grad_norm": 1.9317931333685259,
+        "actor/kl_loss": 0.0,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/pg_loss": 0.0739652179662557,
+        "actor/ppo_kl": 2.8276100859658815e-05,
+        "actor/skipped_update_opportunities": 0.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "critic/rewards/mean": 0.20620942115783691
+      },
+      "probe_version": "840f82d338ee4d3b97b41372e64e08f1:0:498192f06afc42f3a0285f23120d1de8",
+      "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+      "step": 3
+    },
+    "matched_row_count": 3,
+    "source_available": true
+  },
+  "counter_scope": "Third complete driver return agrees with all eight ranks: 20 processed opportunities and 20 successful Adam writes, zero skips; returned cumulative 60 per rank, not multiplied by eight. No inference of a fourth complete outer.",
+  "development512_before_producer_scalars": [
+    {
+      "checked_unix": 1791373184.34943,
+      "executed_search_call_count": 593,
+      "executed_search_question_count": 501,
+      "question_count": 512,
+      "source_counts": {
+        "hotpotqa": 256,
+        "nq": 256
+      },
+      "step": 0,
+      "valid_action_rate": 0.9459227467811159,
+      "weighted_em": 0.177734375,
+      "weighted_f1": 0.24118301022177743
+    }
+  ],
+  "driver": {
+    "agreed_adam_writes_at_last_driver_return_per_rank": 60,
+    "attempt_count": 3,
+    "fully_skipped_attempt_count": 0,
+    "latest_attempt": {
+      "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+      "attempt_index": 3,
+      "complete_outer": true,
+      "completed_outer": 3,
+      "logical_update": 3,
+      "opportunities_processed": 20,
+      "optimizer_writes_after": 60,
+      "optimizer_writes_before": 40,
+      "optimizer_writes_this_attempt": 20,
+      "scheduler_advances": 1
+    },
+    "observed_completed_outer": 3,
+    "processed_opportunities_at_last_driver_return_per_rank": 60,
+    "source_available": true,
+    "target_outer": 200,
+    "valid_visible_prefix": true,
+    "warmup_advances": 3
+  },
+  "evaluation_scope": "Both scores remain step0 training-before baselines; no new evaluation, and no fresh independent ordered-ID/binary-EM audit in this progress observation.",
+  "failure_projection": {
+    "native": {
+      "StdErr": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      },
+      "StdOut": {
+        "failure_marker_counts": {},
+        "last_error_classes": [],
+        "last_scalar_rows": [],
+        "latest_epoch_step": null,
+        "scope": "Bounded tail projection; no raw QA/token arrays or log lines exported"
+      }
+    },
+    "read_errors": {},
+    "training_tail": {}
+  },
+  "fresh_five_accepted": false,
+  "full200_final51713_and_owned_cleanup_incomplete": true,
+  "goal_complete": false,
+  "gpu_current": {
+    "queried_unix": 1791379957.0162642,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 49430,
+        "util_percent": 82
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 49299,
+        "util_percent": 81
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 48992,
+        "util_percent": 85
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 48919,
+        "util_percent": 82
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 48989,
+        "util_percent": 79
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 48924,
+        "util_percent": 76
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 49308,
+        "util_percent": 84
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 57453,
+        "util_percent": 80
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 0.6503043174743652,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791379956.1326344,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.011582612991333,
+      "maximum_sampled_used_fraction": 0.9638053433710565,
+      "peak_used_mib_per_gpu": {
+        "0": 69378,
+        "1": 68717,
+        "2": 67828,
+        "3": 67829,
+        "4": 67829,
+        "5": 67828,
+        "6": 67828,
+        "7": 78607
+      },
+      "sample_count": 3870
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791379871.7870202,
+      "last_sample_unix": 1791379956.1326344,
+      "maximum_adjacent_sample_end_interval_seconds": 2.880939245223999,
+      "maximum_query_duration_seconds": 0.8801164627075195,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.0021567344665527,
+      "maximum_sampled_used_fraction": 0.9251094299832023,
+      "peak_used_mib_per_gpu": {
+        "0": 64436,
+        "1": 63777,
+        "2": 63778,
+        "3": 64671,
+        "4": 63779,
+        "5": 63778,
+        "6": 63778,
+        "7": 75451
+      },
+      "sample_count": 39
+    },
+    "trainer_boundary_unix": 1791372460.9051704,
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791372462.0104868,
+      "last_sample_unix": 1791379956.1326344,
+      "maximum_adjacent_sample_end_interval_seconds": 2.913508415222168,
+      "maximum_query_duration_seconds": 0.9128203392028809,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.011582612991333,
+      "maximum_sampled_used_fraction": 0.9638053433710565,
+      "peak_used_mib_per_gpu": {
+        "0": 69378,
+        "1": 68717,
+        "2": 67828,
+        "3": 67829,
+        "4": 67829,
+        "5": 67828,
+        "6": 67828,
+        "7": 78607
+      },
+      "sample_count": 3412
+    }
+  },
+  "gradient_scope": "actor/grad_norm is preclip global L2 aggregate mean over minibatches/ranks, not a peak or postclip norm. Global gradient clipping remains 1.",
+  "latest_console_scalar_metrics": {
+    "metrics": {
+      "actor/completed_outer": 3.0,
+      "actor/entropy_loss": 0.923,
+      "actor/grad_norm": 1.932,
+      "actor/kl_coef": 0.0,
+      "actor/kl_loss": 0.0,
+      "actor/lr": 0.0,
+      "actor/lr_consumed": 0.0,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_clipfrac": 0.001,
+      "actor/pg_loss": 0.074,
+      "actor/ppo_kl": 0.0,
+      "actor/scheduler_advances_this_outer": 1.0,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/max": 1.6,
+      "critic/rewards/mean": 0.206,
+      "critic/rewards/min": -0.1,
+      "env/actual_retrieval_calls/mean": 1.083,
+      "env/actual_retrieval_calls/total": 2773.0,
+      "env/finish_ratio": 0.985,
+      "env/number_of_actions/max": 5.0,
+      "env/number_of_actions/mean": 2.126,
+      "env/number_of_actions/min": 1.0,
+      "env/number_of_valid_action": 2.082,
+      "env/number_of_valid_search": 1.098,
+      "env/ratio_of_valid_action": 0.99,
+      "timing_s/adv": 85.722,
+      "timing_s/gen": 266.526,
+      "timing_s/ref": 270.206,
+      "timing_s/step": 2207.876,
+      "timing_s/update_actor": 1225.109
+    },
+    "precision": "console_three_decimals",
+    "step": 3
+  },
+  "latest_epoch_step": {
+    "epoch": 0,
+    "step": 4
+  },
+  "latest_stage64_console_metrics": {
+    "metrics": {
+      "val/cost/nosearch_rate": 0.047,
+      "val/cost/oversearch_rate": 0.125,
+      "val/cost/search_per_query": 1.156,
+      "val/evaluated_count/hotpotqa": 32.0,
+      "val/evaluated_count/nq": 32.0,
+      "val/f1/hotpotqa": 0.292,
+      "val/f1/nq": 0.312,
+      "val/perf/em": 0.219,
+      "val/test_score/hotpotqa": 0.188,
+      "val/test_score/nq": 0.25,
+      "val/trust/cf_amb": 0.0,
+      "val/trust/cf_hall": 0.0,
+      "val/trust/cf_true": 0.0,
+      "val/trust/hall_rate": 0.0,
+      "val/trust/trust_all_mean": 0.153,
+      "val/trust/trust_at_correct": 0.7,
+      "val/trust/trust_at_searched_correct": 0.7,
+      "val/weighted_f1": 0.302
+    },
+    "precision": "console_three_decimals",
+    "step": 0
+  },
+  "learning_rate_scope": "All eight COMPLETE receipts consumed 3.508771929824561e-08 and schedule 5.2631578947368416e-08 next; the fourth consumed LR is not yet observed. Warmup has advanced three times.",
+  "main_task_births": [
+    {
+      "actual": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "state": "S",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "first_ledger_location": "jobs.trainer.ledger.66605",
+      "matched_labels": [
+        "ray::main_task"
+      ],
+      "recorded": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "uid": 0
+      }
+    }
+  ],
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "02:22:10",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "b2f3427bfca7154e03d2471250fcba2ca35171fe678e981d9a6c494e29809af8",
+    "terminal_purge_is_not_success": true
+  },
+  "native_job_id": "3329",
+  "native_terminal_success": false,
+  "next_planned_checkpoint": 5,
+  "no_hot_edit_restart_extra_eval_tests_or_review": true,
+  "observed_unix": 1791379956.4793942,
+  "ordinary_observation_hourly_anchor_advanced": false,
+  "original_actual_attempts_capture": {
+    "captured_bytes": 2471,
+    "captured_sha256": "b9b9680012e71e4a38b4cf059e8472cb12aa8b8280e792f7643dd52854b95f11",
+    "exists": true,
+    "observed_unix": 1791379956.5271168,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/actual-attempts.jsonl",
+    "size_bytes": 2471,
+    "trailing_incomplete_bytes": 0
+  },
+  "original_actual_updates_capture": {
+    "captured_bytes": 2723,
+    "captured_sha256": "a54ec532f758a4cb5e41bbff2548645f6fa93fa5b830d22ac69371e0bd7d344c",
+    "exists": true,
+    "observed_unix": 1791379956.5279434,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/actual-updates.jsonl",
+    "size_bytes": 2723,
+    "trailing_incomplete_bytes": 0
+  },
+  "original_gpu_sampling_capture": {
+    "captured_bytes": 5497018,
+    "captured_sha256": "c04dc3a0e790a19c95e911278d62ccab408ce50306a3eb8d93e212e4f3b6640d",
+    "exists": true,
+    "observed_unix": 1791379956.6480846,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/gpu-samples-840f82d338ee4d3b97b41372e64e08f1.jsonl",
+    "size_bytes": 5497018,
+    "trailing_incomplete_bytes": 0
+  },
+  "original_snapshot_basename": "goal-native3329-live-progress-1791379957512525000.json",
+  "original_snapshot_sha256": "8bbde23d3ee450f6e0fd1f1b4a14b58ed09452730f84f59e14f793f3161ad309",
+  "pipeline": {
+    "execution_role": "production",
+    "sampling_error_reported": false,
+    "stage": "GRPO_1_TO_200",
+    "unix": 1791372440.3484912
+  },
+  "previous_completed_update": {
+    "actual_optimizer_writes": 20,
+    "attempt_id": "18d4c48735344b2594420461816a8f06",
+    "metrics": {
+      "actor/entropy_loss": 0.9166228456422687,
+      "actor/grad_norm": 2.028557995404179,
+      "actor/kl_loss": 0.0,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_loss": 0.07828279655716205,
+      "actor/ppo_kl": 0.00020823833034589178,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/mean": 0.20791535079479218
+    },
+    "probe_version": "840f82d338ee4d3b97b41372e64e08f1:0:498192f06afc42f3a0285f23120d1de8",
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "step": 2
+  },
+  "ranks_complete_scalars": {
+    "0": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "1": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "2": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "3": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "4": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "5": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "6": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    },
+    "7": {
+      "fatal_scheduler_kinds": [],
+      "inflight_logged_opportunities_after_driver_return": 0,
+      "inflight_logged_write_lower_bound_after_driver_return": 0,
+      "latest_opportunity": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "logical_update": 3,
+        "opportunity_index": 19,
+        "optimizer_write_succeeded": true,
+        "optimizer_writes_after": 60,
+        "optimizer_writes_before": 59,
+        "status": "written"
+      },
+      "latest_scheduler_receipt": {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "completed_outer_after": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "kind": "COMPLETE",
+        "logical_update": 3,
+        "next_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "opportunities_processed": 20,
+        "scheduler_advances": 1,
+        "writes_after": 60
+      },
+      "latest_worker_terminal": {
+        "attempt_id": "fd4c923db6404d0788ea47fd5e074616",
+        "attempt_index": 3,
+        "cumulative_writes": 60,
+        "kind": "OUTER_BUDGET",
+        "logical_update": 3,
+        "opportunities_processed": 20,
+        "optimizer_writes": 20
+      },
+      "logged_adam_write_prefix_lower_bound": 60,
+      "logged_processed_opportunities": 60,
+      "logged_skipped_opportunities": 0,
+      "source_available": true
+    }
+  },
+  "reward_delta_from_previous_complete": -0.0017059296369552612,
+  "reward_scope": "Three sampled training batches with the same initial probe UUID; rewards are not EM and do not establish a long-term trend.",
+  "role": "sanitized_actual_third_complete_outer_progress",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "source_map_sha256": "16e3a0a202a9255a7be0f7b8da82144d1d713a6e281e5c0d99c5b6f1c6fab74c",
+  "source_scope": "Declared unchanged runtime source; disk hash is not loaded-module proof.",
+  "stage64_step0_producer_identity": {
+    "checked_unix": 1791372593.8641367,
+    "correct": 14.0,
+    "counts": {
+      "hotpotqa": 32,
+      "nq": 32
+    },
+    "final": false,
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "split": "stage",
+    "step": 0,
+    "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "weighted_em": 0.21875,
+    "weighted_f1": 0.30167993505026125
+  },
+  "timing_scope": "Existing runtime console fields rounded to three decimals; not an independent GPU profile or root-cause attribution.",
+  "trainer": {
+    "actual_proc": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791372460.9051704,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  }
+}
