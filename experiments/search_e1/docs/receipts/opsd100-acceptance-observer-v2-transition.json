@@ -1,0 +1,13 @@
+{
+  "time": 1791354206.1735277,
+  "old_pid": 2204061,
+  "old_command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/watch_acceptance.py ",
+  "old_sha256": "a1753c2deee5b9a104535b05bab37255bddc2b111c40ce63a34495524ce04598",
+  "new_sha256": "42fdcffcc709016dd8b7f66ed19ab75a72defe581ef5c28060cd2615a994e32a",
+  "scope": "Replace only CPU external acceptance observer; training and frozen runtime remain unchanged",
+  "stage": {
+    "phase": "OPSD100_FULL_FRESH_TRAJECTORIES",
+    "time": 1791347537.116323,
+    "controller_pid": 2196101
+  }
+}
