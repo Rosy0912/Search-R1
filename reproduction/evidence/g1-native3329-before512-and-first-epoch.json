@@ -1,0 +1,256 @@
+{
+  "schema": "search-g1-fresh-development-before-and-first-epoch-v1",
+  "job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "observed_unix": 1791373495.0668635,
+  "native": {
+    "fields": {
+      "EndTime": "2026-10-15T19:10:26",
+      "ExitCode": "0:0",
+      "JobId": "3329",
+      "JobName": "search-g1-formal-inline-ef498ac3",
+      "JobState": "RUNNING",
+      "NodeList": "h100-8",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "Reason": "None",
+      "Restarts": "0",
+      "RunTime": "00:34:29",
+      "StartTime": "2026-10-07T19:10:26",
+      "TimeLimit": "8-00:00:00"
+    },
+    "identity_matches_saved_job": true,
+    "returncode": 0,
+    "state_known": true,
+    "stdout_sha256": "1fb3bbde69cbd0a20655de82693b587232da2f40d23865ffb370b55b8c51a32d",
+    "terminal_purge_is_not_success": true
+  },
+  "pipeline": {
+    "execution_role": "production",
+    "sampling_error_reported": false,
+    "stage": "GRPO_1_TO_200",
+    "unix": 1791372440.3484912
+  },
+  "trainer": {
+    "actual_proc": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "S",
+      "uid": 0
+    },
+    "birth_matches_recorded": true,
+    "claimed_unix": 1791372460.9051704,
+    "ledger_state": "STARTED",
+    "recorded_leader": {
+      "pid": 55084,
+      "sid": 55084,
+      "start_ticks": 2231712741,
+      "state": "R",
+      "uid": 0
+    },
+    "same_previous_birth": true
+  },
+  "owned_main_task_births": [
+    {
+      "actual": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "state": "R",
+        "uid": 0
+      },
+      "birth_matches_recorded": true,
+      "first_ledger_location": "jobs.trainer.ledger.66605",
+      "matched_labels": [
+        "ray::main_task"
+      ],
+      "recorded": {
+        "pid": 66605,
+        "sid": 55084,
+        "start_ticks": 2231715585,
+        "uid": 0
+      }
+    }
+  ],
+  "development512_before": {
+    "checked_unix": 1791373184.34943,
+    "executed_search_call_count": 593,
+    "executed_search_question_count": 501,
+    "question_count": 512,
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "step": 0,
+    "valid_action_rate": 0.9459227467811159,
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743
+  },
+  "development512_before_capture": {
+    "captured_bytes": 249497,
+    "captured_sha256": "46203e1d5ec2eec81f7c0df1a89224ad6f656458aea7064a34198a371a6fca7f",
+    "exists": true,
+    "observed_unix": 1791373185.202486,
+    "path": "/mnt/data/shaoshitong/g1f-ef498ac3/logs/formal-inline-development-before.json",
+    "size_bytes": 249497
+  },
+  "development512_scope": "Actual current-run producer step0 aggregate, NQ256+Hotpot256. Weighted EM .177734375 is equivalent to91/512; this scalar reader did not independently audit ordered IDs/binary item scores. Same numbers as oldrun do not establish reuse.",
+  "epoch_step": {
+    "epoch": 0,
+    "step": 1
+  },
+  "driver": {
+    "agreed_adam_writes_at_last_driver_return_per_rank": 0,
+    "attempt_count": 0,
+    "fully_skipped_attempt_count": 0,
+    "latest_attempt": null,
+    "observed_completed_outer": 0,
+    "processed_opportunities_at_last_driver_return_per_rank": 0,
+    "source_available": false,
+    "target_outer": 200,
+    "valid_visible_prefix": true,
+    "warmup_advances": 0
+  },
+  "completed_update_metrics": {
+    "lag_behind_driver_complete_outer": 0,
+    "last_step": null,
+    "latest": null,
+    "matched_row_count": 0,
+    "source_available": false
+  },
+  "actual_atomic_total_writes_unknown": true,
+  "current_reward": null,
+  "fresh_five_accepted": false,
+  "gpu_current": {
+    "queried_unix": 1791373495.402876,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 9200,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 8541,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 8543,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 8543,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 8542,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 15159,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 1.5597548484802246,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791373493.6426022,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.6353805220760431,
+      "peak_used_mib_per_gpu": {
+        "0": 48222,
+        "1": 47899,
+        "2": 47354,
+        "3": 47601,
+        "4": 48957,
+        "5": 47708,
+        "6": 47316,
+        "7": 51821
+      },
+      "sample_count": 929
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791373430.2533243,
+      "last_sample_unix": 1791373493.6426022,
+      "maximum_adjacent_sample_end_interval_seconds": 2.252337694168091,
+      "maximum_query_duration_seconds": 0.2517547607421875,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.6226535391557032,
+      "peak_used_mib_per_gpu": {
+        "0": 46368,
+        "1": 47389,
+        "2": 46298,
+        "3": 47601,
+        "4": 46645,
+        "5": 47708,
+        "6": 46826,
+        "7": 50783
+      },
+      "sample_count": 30
+    },
+    "trainer_boundary_unix": 1791372460.9051704,
+    "trainer_window_prefix": {
+      "first_sample_unix": 1791372462.0104868,
+      "last_sample_unix": 1791373493.6426022,
+      "maximum_adjacent_sample_end_interval_seconds": 2.913508415222168,
+      "maximum_query_duration_seconds": 0.9128203392028809,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.007258653640747,
+      "maximum_sampled_used_fraction": 0.6353805220760431,
+      "peak_used_mib_per_gpu": {
+        "0": 48222,
+        "1": 47899,
+        "2": 47354,
+        "3": 47601,
+        "4": 48957,
+        "5": 47708,
+        "6": 47316,
+        "7": 51821
+      },
+      "sample_count": 471
+    }
+  },
+  "gpu_scope": "Same newrun setup/evaluation/first-epoch process samples. No actual optimizer-write window or complete update yet proven; historical oldrun excluded.",
+  "read_errors": {},
+  "failure_marker_counts": {},
+  "current_progress_sha256": "16a1c3ed2be56d4cc0ef0e1b76ce0c1d2765218d3f155e9664564a2061944b9b",
+  "new_development_before_observation_sha256": "40194a0f6e4f6b84aeda4d3f6e7e20e18dccc4d34d44b80401beaa5c8412dec5",
+  "goal_status": "active",
+  "goal_complete": false,
+  "target_fresh_outer": 200,
+  "previous_goal_turn_classification": "actualformaltrainer_and_fresh_stage0_baseline_progress",
+  "current_goal_turn_classification": "newfresh512_baseline_and_epoch0step1_progress; subsequent same live trainer/mainTask verified wait",
+  "same_blocker_consecutive_turns": 0,
+  "ordinary_observation_hourly_anchor_advanced": false,
+  "actions_scope": "Same saved job/process read-only observations and existing producer score read; no new tests/review/evaluation/generation/restart/submission/cleanup/source changes. Disk source is not loaded-module proof."
+}
