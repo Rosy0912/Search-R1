@@ -1,0 +1,194 @@
+{
+  "schema": "search-g1-existing-production-retrieval-and-source-cleanup-v1",
+  "job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "source_disk_hashes_match": true,
+  "native_state": "RUNNING",
+  "native_restarts": 0,
+  "native_actual_start": "2026-10-07T19:10:26",
+  "actual_allocated_node": "h100-8",
+  "observed_unix": 1791371969.2890015,
+  "pipeline": {
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "stage": "STARTING_ORIGINAL_EIGHT_SHARD_FAISS",
+    "unix": 1791371769.326516
+  },
+  "production_retrieval_receipt": {
+    "exists": true,
+    "native_identity_matches_expected": true,
+    "reader_performed_new_asset_validation": false,
+    "run_identity_matches_expected": true,
+    "scalar_projection": {
+      "accepted": true,
+      "completed_unix": 1791371768.1106117,
+      "files": {
+        "e5_Flat.index": {
+          "path": "/dev/shm/search-g1-common8-840f82d338ee4d3b97b41372e64e08f1-3329/e5_Flat.index",
+          "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+          "size": 64559075373
+        },
+        "wiki-18.jsonl": {
+          "path": "/dev/shm/search-g1-common8-840f82d338ee4d3b97b41372e64e08f1-3329/wiki-18.jsonl",
+          "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+          "size": 14393579520
+        }
+      },
+      "resources": {
+        "actual_allocation_bytes": 549755813888,
+        "actual_available_bytes": 2091696238592,
+        "actual_shm_free_bytes": 1066558070784,
+        "input_bytes": 78952654893,
+        "required_memory_floor_bytes": 349670160474,
+        "scope": "launch floor; actual model/coexistence peak remains unverified"
+      },
+      "root": "/dev/shm/search-g1-common8-840f82d338ee4d3b97b41372e64e08f1-3329",
+      "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+      "slurm_job_id": "3329",
+      "source_node": "h100-9",
+      "stage": "COMPLETE",
+      "target_node": "h100-8"
+    }
+  },
+  "retrieval_receipt_sha256": "f94d71417dcfef0a4553e63f28d0d0f0b54fd9964408bf4b91c16436d475f41e",
+  "read_only_progress_sha256": "5e0baa6be2cfdfd4df0ef2cd50416b8693a267bc897bde3284a9e44b35a08bf7",
+  "native_observation_sha256": "db4ec27473cfdbf744ee4ccaa2ec4758236e8be1afd305671a5aead78f142aae",
+  "source_cleanup": {
+    "cleaned": true,
+    "handle": {
+      "export": "/dataset/shaoshitong/g1-formal-inline-export-ef498ac3",
+      "files": {
+        "assets-root/assets/wiki/e5_Flat.index": 64559075373,
+        "assets-root/assets/wiki/wiki-18.jsonl": 14393579520
+      },
+      "pid": 1765951,
+      "port": 19881,
+      "scope": "tiny bounded same-cluster stream server; not GPU work or target transfer acceptance",
+      "sid": 1765951,
+      "source_sha256": "97c3b28e85494b9b968078ae6b3013aaec86d450de02bdef832e808f01eda118",
+      "start_ticks": 1565902997,
+      "started_unix": 1791370515.1865218,
+      "uid": 0
+    },
+    "checked_unix": 1791371976.636769,
+    "scope": "Only this new source SHA/PIDbirth/SID/UID service; no foreign or old process"
+  },
+  "source_cleanup_sha256": "bc4dcfd9347a8af00c2a0da7e4fdc650c925a9cea42b77b80da043dc3c8e74a3",
+  "formal_trainer_claim_at_progress_observation": {
+    "actual_proc": null,
+    "birth_matches_recorded": false,
+    "claimed_unix": null,
+    "ledger_state": null,
+    "recorded_leader": {},
+    "same_previous_birth": false
+  },
+  "completed_receipts_source_available": false,
+  "visible_completed_outer_receipts": 0,
+  "actual_atomic_adam_total_unknown": true,
+  "gpu_current": {
+    "queried_unix": 1791371936.6045299,
+    "returncode": 0,
+    "rows": [
+      {
+        "index": 0,
+        "total_mib": 81559,
+        "used_mib": 6077,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81559,
+        "used_mib": 6003,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81559,
+        "used_mib": 6004,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 4,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81559,
+        "used_mib": 6004,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81559,
+        "used_mib": 6005,
+        "util_percent": 0
+      },
+      {
+        "index": 7,
+        "total_mib": 81559,
+        "used_mib": 6004,
+        "util_percent": 0
+      }
+    ]
+  },
+  "gpu_sampling": {
+    "last_sample_age_at_read_seconds": 0.1361072063446045,
+    "run_prefix": {
+      "first_sample_unix": 1791371450.5899353,
+      "last_sample_unix": 1791371936.308048,
+      "maximum_adjacent_sample_end_interval_seconds": 8.984735012054443,
+      "maximum_query_duration_seconds": 6.984015464782715,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.002333641052246,
+      "maximum_sampled_used_fraction": 0.5140695692688728,
+      "peak_used_mib_per_gpu": {
+        "0": 41927,
+        "1": 41902,
+        "2": 41902,
+        "3": 41895,
+        "4": 41903,
+        "5": 41904,
+        "6": 41905,
+        "7": 41734
+      },
+      "sample_count": 219
+    },
+    "scope": "Sampled cumulative and previous snapshot window peaks; no inference of stop from gaps",
+    "since_previous_snapshot_window": {
+      "first_sample_unix": 1791371815.1571157,
+      "last_sample_unix": 1791371936.308048,
+      "maximum_adjacent_sample_end_interval_seconds": 2.222727060317993,
+      "maximum_query_duration_seconds": 0.22186994552612305,
+      "maximum_query_end_to_next_query_start_idle_seconds": 2.0010814666748047,
+      "maximum_sampled_used_fraction": 0.07451047707794357,
+      "peak_used_mib_per_gpu": {
+        "0": 6077,
+        "1": 6003,
+        "2": 6004,
+        "3": 6005,
+        "4": 6005,
+        "5": 6004,
+        "6": 6005,
+        "7": 6008
+      },
+      "sample_count": 57
+    },
+    "trainer_boundary_unix": null,
+    "trainer_window_prefix": {
+      "sample_count": 0
+    }
+  },
+  "actions_scope": "Only existing production receipt read; owned tiny exporter cleanup once after accepted transfer. No new validation/test/review/evaluation/source changes or other jobs stopped.",
+  "goal_status": "active",
+  "goal_complete": false,
+  "fresh_five_accepted": false,
+  "hourly_anchor_report_time_advanced": false
+}
