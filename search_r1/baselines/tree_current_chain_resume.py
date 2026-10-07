@@ -1,4 +1,4 @@
-"""Explicit migration of job3328's completed rolling2 boundary, never generic recovery.
+"""Explicit migration of job3331's completed rolling4 boundary, never generic recovery.
 
 Only native state of this current Fresh200 chain is accepted. File hashes and
 loaded/live state comparisons execute at training startup; no executor/vLLM
@@ -16,17 +16,21 @@ from .training_state import (atomic_save, cpu_copy, digest, driver_snapshot,
     worker_snapshot)
 
 PROTOCOL = 'current_fresh200_chain_fault_repair_continuation_v1'
-PARENT_JOB = '3328'
-PARENT_RUN = 'tree-fresh200-train-3328'
-PARENT_COMMIT = '4a65e9a3ab87e84e1e9dd283b664cdef3a224c8a'
-PARENT_CONFIG_SHA256 = '6715a4276599724aaaae1511d973f3dff3d6994c3f41074506d17a016e7ef644'
-PARENT_MANIFEST_SHA256 = '067d71ee3c7fa0e00da471bebbd9e8913ec7e5de0b1c98bdb7598d7a022565a4'
+PARENT_JOB = '3331'
+PARENT_RUN = 'tree-current200-continue-3331'
+PARENT_COMMIT = '9693f0c846fab483a03e1d70ce1109aeddc5e118'
+PARENT_CONFIG_SHA256 = 'f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7'
+PARENT_MANIFEST_SHA256 = '84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73'
+PARENT_COMPLETED_STEP = 4
+PARENT_OPTIMIZER_CALLS = 80
+PARENT_CURSOR = 2048
+PARENT_NEXT_STEP = PARENT_COMPLETED_STEP + 1
 PARENT_MANIFEST = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/PARENT_RUN/\
-    'checkpoints/training_state/rolling-completed/global_step_2/manifest.json'
+    'checkpoints/training_state/rolling-completed/global_step_4/manifest.json'
 OFFICIAL_MODEL = '/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725'
 ENV_PREFIX = 'TREE_CURRENT_CHAIN_RESUME_'
 ENV_FIELDS = {'MANIFEST', 'MANIFEST_SHA256', 'AUTHORITY'}
-COUNTS = {str(rank): 40 for rank in range(8)}
+COUNTS = {str(rank): PARENT_OPTIMIZER_CALLS for rank in range(8)}
 
 
 def enabled(environ=None):
@@ -36,7 +40,7 @@ def enabled(environ=None):
 
 def require(condition, message):
     if not condition:
-        raise ValueError('Current-chain3328 migration: ' + message)
+        raise ValueError('Current-chain3331 migration: ' + message)
 
 
 def validate_entry(config=None, environ=None):
@@ -49,9 +53,9 @@ def validate_entry(config=None, environ=None):
     require(supplied == ENV_FIELDS, 'all three explicit entry fields are required')
     require(environ[ENV_PREFIX+'AUTHORITY'] == PROTOCOL, 'continuation scope differs')
     require(environ[ENV_PREFIX+'MANIFEST_SHA256'] == PARENT_MANIFEST_SHA256,
-            'parent manifest SHA differs from the pinned rolling2 boundary')
+            'parent manifest SHA differs from the pinned rolling4 boundary')
     require(Path(environ[ENV_PREFIX+'MANIFEST']) == PARENT_MANIFEST,
-            'only the existing same-host3328 rolling2 manifest is permitted')
+            'only the existing same-host3331 rolling4 manifest is permitted')
     require(socket.gethostname().split('.')[0] == 'h100-9', 'parent state must stay on h100-9')
     if config is not None:
         from .tree_fresh200 import validate_fresh200_config
@@ -82,7 +86,8 @@ def parent_manifest():
     manifest = json.loads(raw)
     identity = manifest['identity']
     expected = dict(job_id=PARENT_JOB, run_id=PARENT_RUN, code_commit=PARENT_COMMIT,
-        config_sha256=PARENT_CONFIG_SHA256, completed_step=2, actual_update_limit=200)
+        config_sha256=PARENT_CONFIG_SHA256, completed_step=PARENT_COMPLETED_STEP,
+        actual_update_limit=200)
     require(manifest['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED'
             and all(identity.get(k) == v for k, v in expected.items()),
             'parent status/source/config/completed boundary differs')
@@ -90,8 +95,8 @@ def parent_manifest():
                           ('model_identity', 'SEARCH_R1_MODEL_IDENTITY')]:
         require(identity.get(key) == os.environ[variable], 'parent ' + key + ' differs')
     from .tree_guard_continue import PROTOCOL as GUARD_PROTOCOL
-    expected_guard = dict(protocol=GUARD_PROTOCOL, training_attempts=2,
-        completed_outer_updates=2, refused_attempts=0, guard_refused_attempts=0,
+    expected_guard = dict(protocol=GUARD_PROTOCOL, training_attempts=PARENT_COMPLETED_STEP,
+        completed_outer_updates=PARENT_COMPLETED_STEP, refused_attempts=0, guard_refused_attempts=0,
         partial_optimizer_calls_per_rank={}, completed_optimizer_calls_per_rank=COUNTS,
         total_optimizer_calls_per_rank=COUNTS, partial_evidence=[])
     require(identity.get('guard_continue_accounting') == expected_guard,
@@ -105,11 +110,11 @@ def parent_manifest():
                     cuda_visible_devices=rank_identity.get('cuda_visible_devices'))
                 and isinstance(rank_identity.get('cuda_visible_devices'), str)
                 and bool(rank_identity['cuda_visible_devices'])
-                and record['actual_total_optimizer_calls'] == 40
-                and record['scheduler_last_epoch'] == 2
+                and record['actual_total_optimizer_calls'] == PARENT_OPTIMIZER_CALLS
+                and record['scheduler_last_epoch'] == PARENT_COMPLETED_STEP
                 and record['full_worker_state_finite'] is True,
                 'parent native worker identity/counters differ')
-    require(manifest['driver']['next_step'] == 3, 'parent driver next outer differs')
+    require(manifest['driver']['next_step'] == PARENT_NEXT_STEP, 'parent driver next outer differs')
     return manifest
 
 
@@ -144,8 +149,9 @@ def load_worker(worker):
     require(logical == record['logical_state_sha256'] and saved['identity'] == record['identity'],
             'actual serialized worker state or identity changed')
     require(saved['optimizer']['state']
-            and all(int(value['step']) == 40 for value in saved['optimizer']['state'].values())
-            and saved['scheduler']['last_epoch'] == 2,
+            and all(int(value['step']) == PARENT_OPTIMIZER_CALLS
+                    for value in saved['optimizer']['state'].values())
+            and saved['scheduler']['last_epoch'] == PARENT_COMPLETED_STEP,
             'actual serialized Adam/scheduler counters differ')
     model_hash = digest(model_section(saved))
     model_bytes = sum(t.numel()*t.element_size() for values in model_section(saved).values()
@@ -154,7 +160,7 @@ def load_worker(worker):
     restore_worker(worker.actor_module_fsdp, worker.actor_optimizer, worker.actor_lr_scheduler,
                    saved, record['identity'], cold=True)
     del saved
-    worker.actor._fresh_total_committed_optimizer_calls = 40
+    worker.actor._fresh_total_committed_optimizer_calls = PARENT_OPTIMIZER_CALLS
     actual = worker_snapshot(worker.actor_module_fsdp, worker.actor_optimizer,
                              worker.actor_lr_scheduler, record['identity'], cuda=True)
     live_logical = digest(actual)
@@ -163,7 +169,8 @@ def load_worker(worker):
             'actual cold-loaded model/Adam/scheduler/RNG differs from saved parent')
     del actual
     adam_steps = sorted({int(value['step']) for value in worker.actor_optimizer.state.values()})
-    require(adam_steps == [40] and worker.actor_lr_scheduler.last_epoch == 2,
+    require(adam_steps == [PARENT_OPTIMIZER_CALLS]
+            and worker.actor_lr_scheduler.last_epoch == PARENT_COMPLETED_STEP,
             'actual cold-loaded Adam/scheduler counters differ')
     return dict(status='COLD_CURRENT_CHAIN_WORKER_STATE_MIGRATED', protocol=PROTOCOL,
         rank=worker.rank, world_size=worker.world_size, parent_identity=record['identity'],
@@ -174,7 +181,8 @@ def load_worker(worker):
         loaded_model_section_sha256=live_model_hash, loaded_model_tensor_bytes=model_bytes,
         model_tensor_byte_scope='Stored local_shards+parameters+buffers; sections may duplicate storage, not unique allocation bytes',
         actual_cold_native_state_equal=True, adam_steps=adam_steps,
-        scheduler_step=worker.actor_lr_scheduler.last_epoch, actual_total_optimizer_calls=40,
+        scheduler_step=worker.actor_lr_scheduler.last_epoch,
+        actual_total_optimizer_calls=PARENT_OPTIMIZER_CALLS,
         child_code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
         child_cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
         executor_equivalence=False, automatic_resume_supported=False)
@@ -186,35 +194,49 @@ def migrate_trainer(trainer):
             'fixed training/dev split sizes differ')
     child_commit = os.environ['SEARCH_R1_BASELINE_COMMIT']
     require(re.fullmatch('[0-9a-f]{40}', child_commit) is not None
-            and child_commit != PARENT_COMMIT, 'new source commit must identify the actual fault repair')
+            and child_commit != PARENT_COMMIT, 'new source commit must identify the current continuation binding')
     manifest = parent_manifest()
     workers = trainer.actor_rollout_wg.load_current_chain_training_state()
     require(len(workers) == 8 and {r['rank'] for r in workers} == set(range(8))
             and all(r['status'] == 'COLD_CURRENT_CHAIN_WORKER_STATE_MIGRATED'
                 and r['actual_cold_native_state_equal'] is True and r['actual_file_sha256_verified'] is True
                 and r['parent_manifest_sha256'] == PARENT_MANIFEST_SHA256
-                and r['scheduler_step'] == 2 and r['adam_steps'] == [40]
-                and r['actual_total_optimizer_calls'] == 40 and r['child_code_commit'] == child_commit
+                and r['scheduler_step'] == PARENT_COMPLETED_STEP
+                and r['adam_steps'] == [PARENT_OPTIMIZER_CALLS]
+                and r['actual_total_optimizer_calls'] == PARENT_OPTIMIZER_CALLS
+                and r['child_code_commit'] == child_commit
                 for r in workers), 'actual cold worker receipts are incomplete')
     record = state_record(manifest['driver'], 'driver.pt')
     saved = verified_state_file(record)
     require(digest(saved) == record['logical_state_sha256'] and saved['identity'] == manifest['identity'],
             'actual serialized driver state or identity changed')
-    require(saved['completed_step'] == saved['actual_outer_updates'] == 2 and saved['next_step'] == 3
-            and saved['sampler']['batch_size'] == 512 and saved['sampler']['cursor'] == 1024
+    require(saved['completed_step'] == saved['actual_outer_updates'] == PARENT_COMPLETED_STEP
+            and saved['next_step'] == PARENT_NEXT_STEP
+            and saved['sampler']['batch_size'] == 512 and saved['sampler']['cursor'] == PARENT_CURSOR
             and saved['sampler']['epoch'] == 0, 'actual saved counters/cursor differ')
     restore_driver(trainer, saved, manifest['identity'])
     require(digest(driver_snapshot(trainer, manifest['identity'])) == record['logical_state_sha256'],
             'actual cold-loaded driver/sampler/Tree RNG differs from parent')
+    saved_parent_provenance = cpu_copy(saved.get('recovery_provenance'))
+    require(isinstance(saved_parent_provenance, dict)
+            and saved_parent_provenance.get('protocol') == PROTOCOL
+            and saved_parent_provenance.get('same_fresh200_chain') is True
+            and saved_parent_provenance.get('child_job_id') == PARENT_JOB
+            and saved_parent_provenance.get('child_run_id') == PARENT_RUN
+            and saved_parent_provenance.get('child_code_commit') == PARENT_COMMIT
+            and saved_parent_provenance.get('child_config_sha256') == PARENT_CONFIG_SHA256,
+            'saved parent continuation provenance differs')
     provenance = dict(protocol=PROTOCOL, parent_identity=manifest['identity'],
         parent_manifest_path=str(PARENT_MANIFEST), parent_manifest_sha256=PARENT_MANIFEST_SHA256,
-        parent_completed_step=2, parent_cursor=1024, parent_epoch=0, new_batch_size=512,
+        parent_completed_step=PARENT_COMPLETED_STEP, parent_cursor=PARENT_CURSOR,
+        parent_epoch=0, new_batch_size=512, saved_parent_provenance=saved_parent_provenance,
         same_fresh200_chain=True, child_code_commit=child_commit,
         child_config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
         child_job_id=os.environ['SLURM_JOB_ID'], child_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
-        parent_failed_attempt=dict(attempt_id=3, completed_outer_credit=0,
-            optimizer_writes=None, published_rank_optimizer_record=False,
-            scope='Failed generation is separate historical evidence; no write count inferred'),
+        parent_failed_attempt=dict(attempt_id=PARENT_NEXT_STEP, completed_outer_credit=0,
+            optimizer_writes=None, published_rank_optimizer_record=None,
+            error_type='FileNotFoundError', failure_component='supervisor_contract_proc_stat',
+            scope='Parent supervisor failed reading a vanished proc stat; per-rank partial writes are unknown; only completed rolling4 is migrated'),
         automatic_resume_supported=False, executor_equivalence=False, exact_executor_resume=False)
     # The existing snapshot format preserves this provenance without old env,
     # sampler migration, old300 protocol or a ten-write restriction.
