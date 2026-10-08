@@ -1,0 +1,29 @@
+{
+  "schema": "search-e1-closed-native512-backup-entry-v1",
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/C0/runs",
+  "run_id": "eeb2a0a84aa94763bfaf7b5d9a80f5a9",
+  "primary_slots": 512,
+  "strict_hits": 227,
+  "inventory_sha256": "d6e86c16d32f6efa4f1c1d155922de57841e8004460cac05c9872f4c5b5c4395",
+  "files": 585,
+  "bytes": 28055269,
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c0-native512-closed-backup-20261009/files",
+  "argv": [
+    "/usr/bin/rsync",
+    "-a",
+    "--partial",
+    "--progress",
+    "-e",
+    "/usr/bin/ssh -B en0 -oProxyCommand=none -oProxyJump=none -oControlMaster=no -S none -oBatchMode=yes -oConnectTimeout=10",
+    "hkust1:/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/C0/runs/",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c0-native512-closed-backup-20261009/files/"
+  ],
+  "source_endpoint_full_closed": true,
+  "actual_c0_evaluation_wait_returncode": 0,
+  "do_not_delete": true,
+  "no_node_writes": true,
+  "no_gpu": true,
+  "not_training_dependency": true,
+  "actual_started": false,
+  "require_actual_transfer_exit0_and_all_member_local_SHA_before_complete": true
+}
