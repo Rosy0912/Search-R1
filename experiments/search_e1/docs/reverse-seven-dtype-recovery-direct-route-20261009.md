@@ -151,3 +151,13 @@ C0十轮已提交的记录曲线和CSV产出，数据逐行核对100次Adam、30
 随后独立354源入口在第二次整archive及全部6547解压成员SHA确认、精确inode/metadata再次核对和durable计划后，仅回收相同本机重复文本；77037真实rc0，complete SHA2b2f0d4762e33a97d752e328ba91d325aec4dbf49bd28954dba410af03a6fb2e。56个原NPY共16,795,620,352字节、Node所有原件、标准archive及历史proof均保留。当前持久布局是6547文本在archive＋56原NPY，6603内容全可精确恢复；不能再说原目录有6603裸文件或重新rsync全目录把重复文本还原。净减18,402,917,541字节，05:41实际本机available55,268,700,160字节。只核NPY当前数/字节/metadata，没有重算17GB NPY内容或语义。所有归档和收尾只在Mac，不改Node/GPU/HTTP，不获取训练锁，备份完成不作为训练条件。
 
 同一driver1894801继续已有自动七组计划，05:36:35共同BF16零adapter正式465/512，八worker均运行，FP16/C1尚未启动。部分基线不计算最终EM；C0正式结果仍227/512，只有同协议完整基线后再给配对差值。其余六组不重新要求人工启动、不等待传输或本机分析。
+
+## 共同 BF16 基线完成：第一个同题比较已验收
+
+05:52:04 CST独立CPU实读确认BF16zero已完整512，8个worker实际rc均0、各64 accepted、512原生trace freshSHA，并使用冻结QA/core原函数重新严格评分全部一致。阶段SHA09d430b301fdf453cdb9ac9a0e5d371a40640bbb85a1261cddcc2520025bc94f，紧凑私有proof SHA3e7f707c8fc0ccb4d30bce4843eddd898b9b0a56460ed998f4976e8697824663；最少53个原生身份/结果文件3,233,947字节已私有Mac逐SHA接受，不冒称整阶段全部debug均已备份。
+
+BF16zero严格239/512（46.6796875%），NQ110/256、Hotpot129/256；C0 raw10严格227/512（44.3359375%），NQ109/256、Hotpot118/256。同题lost32/gained20/preserved207/stillwrong253，净少12题／2.34375pp。NQ丢失13/新增12，Hotpot丢失19/新增8。32个丢失均是有效最终答案但gold不匹配，C0最终无效0；基线无效4。平均实际搜索次数1.63086→1.37891，仅描述行为变化，不是搜索减少的因果证明。
+
+复用已发布summary.py按问题配对bootstrap10000次、seed42，95%差值区间[-5.078125,+0.390625]pp跨0；本批净下降事实不能升格为总体统计确定下降或单机制归因。当前新基线实际复现239，不拿历史数字凑结果。公开summary及中文说明在reports/c0-vs-common-bf16-zero-20261009，实际只读stdin源码持久备份在control/bf16_zero_phase_readonly_20261009，无问题或token正文。
+
+该验收只覆盖闭合BF16阶段。FP16目录已建立，整个common controller-complete尚未出现，不称整体exit0；同一自动driver继续FP16基线和后六组fresh10→即时512，备份不作启动条件。完整goal仍70outer/5632及中文比较/debug持久资产，不因首个比较完成而终止。

@@ -1,0 +1,175 @@
+{
+  "schema": "C0-raw10-vs-common-BF16zero-same-512-v1",
+  "accepted": true,
+  "observed_cst": "2026-10-09T05:52:04.940547+08:00",
+  "scope": "Two complete 512-model predictions only; common FP16 phase and full seven-group study pending. No training changes.",
+  "private_compact_proof_sha256": "3e7f707c8fc0ccb4d30bce4843eddd898b9b0a56460ed998f4976e8697824663",
+  "source_phase_sha256": "09d430b301fdf453cdb9ac9a0e5d371a40640bbb85a1261cddcc2520025bc94f",
+  "source_C0_summary_sha256": "6e07ca2c9e60c201ae4f956ad4eae4f2be638f0579f98250c91d95bb434f7c02",
+  "data512_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+  "actual_worker_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "closed_trace_count": 512,
+  "native_strict_CPU_rescoring_passed": true,
+  "models": {
+    "C0": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.4609375,
+          "final_invalid": 0,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 106,
+            "2": 136,
+            "3": 14
+          },
+          "strict_hits": 118,
+          "termination": {
+            "answer": 256
+          },
+          "valid_gold_mismatch": 138
+        },
+        "nq": {
+          "em": 0.42578125,
+          "final_invalid": 0,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 229,
+            "2": 24,
+            "3": 3
+          },
+          "strict_hits": 109,
+          "termination": {
+            "answer": 256
+          },
+          "valid_gold_mismatch": 147
+        }
+      },
+      "overall": {
+        "em": 0.443359375,
+        "final_invalid": 0,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 335,
+          "2": 160,
+          "3": 17
+        },
+        "strict_hits": 227,
+        "termination": {
+          "answer": 512
+        },
+        "valid_gold_mismatch": 285
+      }
+    },
+    "bf16_zero": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.50390625,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 61,
+            "2": 156,
+            "3": 31,
+            "4": 8
+          },
+          "strict_hits": 129,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 126
+        },
+        "nq": {
+          "em": 0.4296875,
+          "final_invalid": 3,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 192,
+            "2": 49,
+            "3": 13,
+            "4": 2
+          },
+          "strict_hits": 110,
+          "termination": {
+            "answer": 253,
+            "invalid_or_budget": 3
+          },
+          "valid_gold_mismatch": 143
+        }
+      },
+      "overall": {
+        "em": 0.466796875,
+        "final_invalid": 4,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 253,
+          "2": 205,
+          "3": 44,
+          "4": 10
+        },
+        "strict_hits": 239,
+        "termination": {
+          "answer": 508,
+          "invalid_or_budget": 4
+        },
+        "valid_gold_mismatch": 269
+      }
+    }
+  },
+  "paired": {
+    "bf16_zero->C0": {
+      "bootstrap": {
+        "confidence": 0.95,
+        "em_difference": -0.0234375,
+        "lower": -0.05078125,
+        "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+        "question_units": 512,
+        "replicates": 10000,
+        "seed": 42,
+        "upper": 0.00390625
+      },
+      "gained_no_search": 0,
+      "lost_final_invalid": 0,
+      "lost_hits": 32,
+      "lost_no_search": 0,
+      "lost_valid_gold_mismatch": 32,
+      "net_hits": -12,
+      "net_percentage_points": -2.34375,
+      "new_hits": 20,
+      "preserved_hits": 207,
+      "questions": 512,
+      "still_wrong": 253
+    }
+  },
+  "paired_by_dataset": {
+    "hotpotqa": {
+      "gained": 8,
+      "lost": 19,
+      "preserved": 110,
+      "still_wrong": 119
+    },
+    "nq": {
+      "gained": 12,
+      "lost": 13,
+      "preserved": 97,
+      "still_wrong": 134
+    }
+  },
+  "FP16_or_overall_controller_terminal_accepted": false,
+  "raw_questions_tokens_private_paths_not_published": true
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "actual-BF16-phase-CPU-readonly-source-manifest-v1",
+  "file": "bf16_phase_closure_cpu.stdin.py",
+  "bytes": 12456,
+  "sha256": "8453f087022a75ee9e180b9777c3f5ec9430805f6fc7b5998e74d8c353b5e8b5",
+  "actual_original_stdin_execution_exit0": true,
+  "execution_proof_sha256": "48e941cc45a52d49dedf7f22f4984de11c9a23d4c5ca1bc18ca2f10168c2aee9",
+  "Node_outputs_GPU_models_training_signals": false,
+  "frozen_functions_reused": "native QA/core plus published summary.py",
+  "privacy": "No raw question/answer/token literals; original private copies not Git"
+}
