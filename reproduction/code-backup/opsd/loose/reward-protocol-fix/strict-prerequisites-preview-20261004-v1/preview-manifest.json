@@ -1,0 +1,25 @@
+{
+  "scope": "BLOCKED LOCAL PREVIEW; NOT DEPLOYABLE; NO FUTURE COMPLETION CLAIM",
+  "upstream_hf_preview_sha256": "ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850",
+  "formal_job": "3007",
+  "training_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "hf500_job": "UNFILLED",
+  "actual500_receipt": "UNFILLED",
+  "file_sources": {
+    "CONTRACT.md": "bc42de955109fa5667e9bb3622c35a8a235aecf9940de957bfd6020c5f883d67",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "cpu-tests.txt": "c607557ac5ca5d880b1c6e5443431820dea9afa5308c9bfbd4822d1e968cc88f",
+    "formal_completion_check.py": "944081e1eea819ac590352fcd0842e0e0ec7d786f7888f3f3e5fa2a7744a9d42",
+    "layered-receipt.UNFILLED.json": "ed96e7a0fc98654847b3ada8a42f165cd55f0199b96c69e3f21cd9e234a21d5b",
+    "periodic_validation.py": "d57b46f8b99d9b186b6853fa93a0c7932c2802acaf241fc4503a53fe1f82b8bd",
+    "pilot_reload_prerequisites.py": "4b68f27a23b5e1db53992cd45500eb812bd2b3485c57494d761bbccdb672c6e3",
+    "reload_job.sh": "b46c3c4d575d2184cbed55719f2b755700a7eabc067e716714eba177aaf6931d",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "source-manifest.json": "ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850",
+    "source_bundle_check.py": "86cb7c260bb8cbdde0c1b2c8b12b657b6be6d04fb5c4e6966697ad22b5f293ed",
+    "strict_metric_parser.py": "6a7d064e544716ce6981f6c02a15e94ac46b8dd4e3e5c39bc203b85763e3b95a",
+    "strict_stage_prerequisites.py": "a70f1d89b37a626a5c4803b73bc6aa58d366cf3208b873465636652a2ff49b26",
+    "test_strict_stage_prerequisites.py": "30a116841dd964fd7f27cba7b8de610dac631dc521d304eea421795ed3e0479a",
+    "training_evidence.py": "cbdac9210624b19ed678d2b0fe8b94393c450befd2b219747d9bc9689e420d87"
+  }
+}

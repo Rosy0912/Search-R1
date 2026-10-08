@@ -1,0 +1,92 @@
+--- v1/inspect_payloads.py
++++ v2/inspect_payloads.py
+@@ -136,6 +136,22 @@
+                     fp32=torch.frombuffer(bytearray(raw),dtype=torch.bfloat16).to(torch.float32);h.update(memoryview(fp32.view(torch.uint8).numpy()).cast('B'))
+         return h.hexdigest()
+ 
++def base_asset_inventory(directory, expected_names, manifest_path, pins):
++    """Known metadata remains hashed identity, never a marker acceptance signal."""
++    directory=P(directory);manifest_path=P(manifest_path)
++    allowed=set(expected_names)|{'VERIFIED'}
++    if manifest_path.parent==directory:
++        require(manifest_path.name=='VERIFIED-MODEL-MANIFEST.json' and sha(manifest_path)==MODEL_SHA,'metadata manifest identity differs')
++        allowed.add(manifest_path.name)
++    files={}
++    for path in sorted(directory.iterdir()):
++        require(not path.is_symlink(),'base inventory symlink')
++        if path.is_file():
++            require(path.name in allowed,'unknown base asset or metadata')
++            files[path.name]=sha(path);pins[str(path)]=files[path.name]
++    require(set(expected_names)<=set(files),'original model asset missing')
++    return files
++
+ def inspect(args):
+     require(os.environ.get('CUDA_VISIBLE_DEVICES')=='' and not torch.cuda.is_initialized(),'CPU-only visibility required')
+     inspector_source_sha=sha(P(__file__).resolve())
+@@ -149,8 +165,7 @@
+     resolved=unique(paths['resolved_config'].read_bytes());actual_config_digest=hashlib.sha256(json.dumps(resolved,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode('utf-8')).hexdigest()
+     require(actual_config_digest==m['config_sha256'],'actual resolved global config digest differs')
+     base_manifest=P(args.base_manifest);require(args.base_manifest_sha256==MODEL_SHA and sha(base_manifest)==MODEL_SHA,'external official manifest differs');pins[str(base_manifest)]=MODEL_SHA
+-    base=Base(P(args.base_model),unique(base_manifest.read_bytes()),pins);base_digest=base.named_parameter_digest();base_assets={p.name:sha(p) for p in sorted(base.directory.iterdir()) if p.is_file()}
+-    require(set(base_assets)=={r['file'] for r in unique(base_manifest.read_bytes())['files']},'extra base assets')
++    base=Base(P(args.base_model),unique(base_manifest.read_bytes()),pins);base_digest=base.named_parameter_digest();base_assets=base_asset_inventory(base.directory,{r['file'] for r in unique(base_manifest.read_bytes())['files']},base_manifest,pins)
+     helper=repo/'search_r1/baselines/full_state.py';module=types.ModuleType('independent_actual_full_state');module.__file__=str(helper);exec(compile(helper.read_bytes(),str(helper),'exec'),module.__dict__);digest=module.state_digest
+     expected_source_files={str(p.relative_to(repo)):sha(p) for namespace in ('search_r1','verl') for p in sorted((repo/namespace).rglob('*.py'))}
+     ranks=[];actor_configs=set(); teacher_digests=set()
+--- v1/test_inspector.py
++++ v2/test_inspector.py
+@@ -97,6 +97,38 @@
+             alias=root/'alias';alias.symlink_to(p)
+             with self.assertRaises(ValueError):m.sha(alias)
+             with self.assertRaises(ValueError):m.record({'path':str(p),'sha256':pin},root/'child',{})
++    def inventory_fixture(self,d):
++        root=P(d).resolve();(root/'model.bin').write_bytes(b'unit inventory only')
++        original=P(os.environ.get('FIRST5_TEST_BASE_MANIFEST',str(ROOT/'official-model-manifest-original.json')))
++        manifest=root/'VERIFIED-MODEL-MANIFEST.json';manifest.write_bytes(original.read_bytes())
++        return root,manifest
++    def test_known_metadata_hashed_not_trusted_as_pass(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d);(root/'VERIFIED').write_bytes(b'not evidence of PASS')
++            pins={};files=m.base_asset_inventory(root,{'model.bin'},manifest,pins)
++            self.assertEqual(set(files),{'model.bin','VERIFIED','VERIFIED-MODEL-MANIFEST.json'})
++            self.assertEqual(files['VERIFIED'],m.sha(root/'VERIFIED'))
++            self.assertEqual(files[manifest.name],m.MODEL_SHA);self.assertEqual(set(pins),{str(root/n) for n in files})
++    def test_unknown_metadata_rejected(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d);(root/'OTHER-VERIFIED.json').write_text('{}')
++            with self.assertRaisesRegex(ValueError,'unknown'):m.base_asset_inventory(root,{'model.bin'},manifest,{})
++    def test_metadata_symlink_rejected(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d);(root/'VERIFIED').symlink_to(root/'model.bin')
++            with self.assertRaisesRegex(ValueError,'symlink'):m.base_asset_inventory(root,{'model.bin'},manifest,{})
++    def test_metadata_manifest_sha_rejected(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d);manifest.write_text('{}')
++            with self.assertRaisesRegex(ValueError,'metadata manifest identity'):m.base_asset_inventory(root,{'model.bin'},manifest,{})
++    def test_metadata_must_be_exact_name(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d);wrong=root/'different-manifest.json';manifest.rename(wrong)
++            with self.assertRaisesRegex(ValueError,'metadata manifest identity'):m.base_asset_inventory(root,{'model.bin'},wrong,{})
++    def test_manifest_outside_directory_does_not_allow_metadata_copy(self):
++        with tempfile.TemporaryDirectory() as d:
++            root,manifest=self.inventory_fixture(d)
++            with self.assertRaisesRegex(ValueError,'unknown'):m.base_asset_inventory(root,{'model.bin'},ROOT/'official-model-manifest-original.json',{})
+     def test_streamed_base_digest_matches_frozen_native_format_and_local_slice(self):
+         values={'a':torch.arange(16).reshape(8,2).to(torch.bfloat16),'b':torch.ones(8,dtype=torch.bfloat16)}
+         with tempfile.TemporaryDirectory() as d:
+--- v1/README.md
++++ v2/README.md
+@@ -1,4 +1,4 @@
+-# Native CPU first-five stored-state inspector — software candidate
++# V2 Native CPU first-five stored-state inspector — software candidate
+ 
+ This external tool reads externally SHA-pinned, owned, physical checkpoint files. It cannot start a GPU job, restore an actor, sign a receipt, or release a training pause. No actual production first-five checkpoint has been inspected by this candidate. Failed entry job3196 completed zero updates and is not an acceptance input.
+ 
+@@ -18,4 +18,6 @@
+ 
+ CPU tests use the actual old3190 tiny stored rank0 DTensor only to exercise CPU unpickling/topology preservation and native schema. Adam step is explicitly changed in a unit fixture from 20 to 100; this is not claimed as actual production Adam100 evidence. Tests cover wrong rank/world/flattening, missing/duplicate state binding, wrong Adam clock/LR/numel, missing/NaN/negative moments, scheduler clock confusion, missing/invalid/NaN RNG components, duplicate/nonfinite JSON, symlink/path/SHA rejection, and streamed digest equality against the frozen helper on a tiny BF16 safeheader fixture. No synthetic top-level production PASS is generated.
+ 
+-Native tests can override FIRST5_TEST_FIXTURE and FIRST5_TEST_REPO to point to the existing actual3190 tiny fixture and actual frozen checkout. Native implementation compatibility and actual production first-five inspection remain pending independent review and actual inputs.
++Native tests can override FIRST5_TEST_FIXTURE, FIRST5_TEST_REPO and FIRST5_TEST_BASE_MANIFEST to point to the existing actual3190 tiny fixture and actual frozen checkout. Native implementation compatibility and actual production first-five inspection remain pending independent review and actual inputs.
++
++V2 corrects the independently identified legitimate-metadata inventory blocker in immutable V1 f81b. Only VERIFIED and the exact physically colocated VERIFIED-MODEL-MANIFEST.json argument with original 7f53 SHA are allowed beyond the eleven official files. Both metadata bytes are included in the actual teacher asset inventory, final all_files rehash, and exact saved-teacher comparison; VERIFIED content is never treated as a PASS. Unknown extra files, symlinks, wrong manifest names/SHA, and outside-directory manifest used to allow a local copy are rejected. Original V1 source/review/tests are preserved.

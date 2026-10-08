@@ -1,0 +1,362 @@
+diff --git a/search_r1/baselines/bapo.py b/search_r1/baselines/bapo.py
+index 0ed63c2..02337ff 100644
+--- a/search_r1/baselines/bapo.py
++++ b/search_r1/baselines/bapo.py
+@@ -4,6 +4,7 @@ from dataclasses import dataclass, asdict
+ import re
+ import string
+ import torch
++from search_r1.qa_protocol import extract_final_answer, parse_model_action
+ 
+ 
+ def normalize(text):
+@@ -20,12 +21,7 @@ def token_f1(prediction, target):
+ 
+ 
+ def answer_from_spans(spans):
+-    answer = None
+-    for span in spans:
+-        matches = list(re.finditer(r'<answer>(.*?)</answer>', span, re.DOTALL))
+-        if matches:
+-            answer = matches[-1].group(1).strip()
+-    return answer
++    return extract_final_answer(spans)
+ 
+ 
+ def is_idk(answer):
+@@ -124,23 +120,15 @@ def resample_rows(answers, targets, uids, stage):
+ def legal_action_records(records):
+     if not records:
+         return False
++    final_kind = None
+     for i, record in enumerate(records):
+-        text = record['text']
+-        actions = list(re.finditer(r'<(search|answer)>(.*?)</\1>', text, re.DOTALL))
+-        if len(actions) != 1:
++        action = parse_model_action(record['text'], strict_prefix=True)
++        if action is None:
+             return False
+-        action = actions[0]
+-        prefix = text[:action.start()].strip()
+-        if prefix and (not re.fullmatch(r'<think>.*?</think>', prefix, re.DOTALL)
+-                       or prefix.count('<think>') != 1 or prefix.count('</think>') != 1):
++        final_kind = action[0]
++        if final_kind == 'answer' and i != len(records) - 1:
+             return False
+-        if action.group(1) == 'answer' and i != len(records) - 1:
+-            return False
+-        if not action.group(2).strip():
+-            return False
+-        if text[action.end():].strip():
+-            return False
+-    return actions[0].group(1) == 'answer'
++    return final_kind == 'answer'
+ 
+ 
+ def decode_answers(data, tokenizer, require_legal=False):
+diff --git a/search_r1/qa_protocol.py b/search_r1/qa_protocol.py
+new file mode 100644
+index 0000000..548c2a9
+--- /dev/null
++++ b/search_r1/qa_protocol.py
+@@ -0,0 +1,79 @@
++"""Dependency-free extraction of terminal, non-nested QA actions."""
++import re
++
++_RESERVED = re.compile(r"</?(?:think|search|answer|information)\b")
++_ACTION = re.compile(r"<(search|answer)>(.*?)</\1>", re.DOTALL)
++_EOS = re.compile(r"(?:\s*(?:<\|im_end\|>|<\|endoftext\|>|</s>))+$")
++
++
++def parse_model_action(text, strict_prefix=False):
++    """Return (kind, payload) only for a complete standalone protocol action.
++
++    Free-text reasoning prefixes remain compatible with the executor. Structured
++    reasoning must be one closed think block, with no nested protocol tags.
++    """
++    text = _EOS.sub('', text.strip()).strip()
++    actions = list(_ACTION.finditer(text))
++    if len(actions) != 1:
++        return None
++    action = actions[0]
++    payload = action.group(2).strip()
++    if not payload or _RESERVED.search(payload) or text[action.end():].strip():
++        return None
++    prefix = text[:action.start()].strip()
++    if _RESERVED.search(prefix) or (strict_prefix and prefix):
++        thought = re.fullmatch(r'<think>(.*?)</think>', prefix, re.DOTALL)
++        if thought is None or _RESERVED.search(thought.group(1)):
++            return None
++    return action.group(1), payload
++
++
++def extract_final_answer(model_spans):
++    """Never join authored spans across observations or reuse an earlier answer."""
++    spans = list(model_spans)
++    if not spans:
++        return None
++    action = parse_model_action(spans[-1])
++    return action[1] if action is not None and action[0] == 'answer' else None
++
++
++def extract_legacy_final_answer(text):
++    """Preserve the legacy prompt-example convention while rejecting nesting.
++
++    Full-transcript callers cannot establish authorship; masked model spans are
++    preferred. The last answer must nevertheless be top-level and terminal.
++    """
++    answers = list(re.finditer(r'<answer>(.*?)</answer>', text, re.DOTALL))
++    if len(answers) <= 1:
++        return None
++    candidate = answers[-1]
++    stack = []
++    for tag in re.finditer(r'<(/?)(think|search|answer|information)>', text[:candidate.start()]):
++        closing, kind = tag.groups()
++        if closing:
++            if not stack or stack[-1] != kind:
++                return None
++            stack.pop()
++        else:
++            stack.append(kind)
++    if stack:
++        return None
++    return extract_final_answer([text[candidate.start():]])
++
++
++def decode_model_spans(tokenizer, ids, mask):
++    """Decode contiguous policy tokens separately from environment observations."""
++    ids = ids.tolist() if hasattr(ids, 'tolist') else list(ids)
++    mask = mask.tolist() if hasattr(mask, 'tolist') else list(mask)
++    if len(ids) != len(mask):
++        raise ValueError('Response/mask length mismatch')
++    spans = []
++    start = 0
++    while start < len(ids):
++        end = start + 1
++        while end < len(ids) and bool(mask[end]) == bool(mask[start]):
++            end += 1
++        if mask[start]:
++            spans.append(tokenizer.decode(ids[start:end]))
++        start = end
++    return spans
+diff --git a/tests/reproduction/test_terminal_answer_protocol.py b/tests/reproduction/test_terminal_answer_protocol.py
+new file mode 100644
+index 0000000..de0cd6f
+--- /dev/null
++++ b/tests/reproduction/test_terminal_answer_protocol.py
+@@ -0,0 +1,70 @@
++"""Regression checks for reward without an executed terminal answer."""
++import ast
++import pathlib
++import runpy
++import unittest
++from search_r1.qa_protocol import extract_final_answer, extract_legacy_final_answer, parse_model_action
++
++ROOT = pathlib.Path(__file__).resolve().parents[2]
++QA = runpy.run_path(str(ROOT / 'verl/utils/reward_score/qa_em.py'))
++
++class TerminalAnswerTests(unittest.TestCase):
++    def test_exploits_receive_no_em_even_with_format_reward(self):
++        cases = [
++            ['<search><answer>Paris</answer></search>'],
++            ['<answer><answer>Paris</answer>'],
++            ['<answer>Paris</answer><search>next</search>'],
++            ['<answer>Paris</answer>', '<search>next</search>'],
++            ['<answer>Paris</answer>', ''],
++            ['<think><answer>Paris</answer></think>'],
++            ['<answer>Paris</answer> trailing'],
++            ['<answer>Paris</answer><answer>Paris</answer>'],
++            ['<answer>Par', 'is</answer>'],
++            ['<information><answer>Paris</answer></information>'],
++            ['<answer>Paris</answer><search>unfinished'],
++        ]
++        for spans in cases:
++            with self.subTest(spans=spans):
++                self.assertIsNone(extract_final_answer(spans))
++                self.assertEqual(QA['compute_score_generated_em'](spans, {'target':['Paris']}, format_score=.5), 0)
++
++    def test_valid_terminal_answers(self):
++        for spans in [ ['<answer>The PARIS!</answer>'],
++                       ['<search>France capital</search>', '<think>Found it.</think><answer>The PARIS!</answer>'],
++                       ['Reasoning. <answer>The PARIS!</answer><|im_end|>'] ]:
++            self.assertEqual(QA['compute_score_generated_em'](spans, {'target':['Paris']}), 1)
++        self.assertEqual(QA['compute_score_generated_em'](['<answer>London</answer>'], {'target':['Paris']}, format_score=.1), .1)
++
++    def test_format_scorer_uses_model_spans(self):
++        scorer = runpy.run_path(str(ROOT / 'verl/utils/reward_score/qa_em_format.py'))['compute_score_em']
++        prompt = '<answer>example</answer><|im_start|>assistant\n'
++        for spans in [['<search><answer>Paris</answer></search>'], ['<search>q</search>']]:
++            transcript = prompt + '<information><answer>Paris</answer></information>'
++            self.assertEqual(scorer(transcript, {'target':['Paris']}, model_spans=spans), 0)
++        self.assertEqual(scorer(prompt + '<answer>Paris</answer>', {'target':['Paris']}, model_spans=['<answer>Paris</answer>']), 1)
++
++    def test_legacy_api_and_nested_actions(self):
++        prompt = '<answer>example</answer> '
++        self.assertIsNone(extract_legacy_final_answer('<answer>Paris</answer>'))
++        self.assertEqual(extract_legacy_final_answer(prompt + '<answer>Paris</answer>'), 'Paris')
++        for response in ['<search><answer>Paris</answer></search>', '<answer><answer>Paris</answer>',
++                         '<answer>Paris</answer><search>next</search>']:
++            self.assertIsNone(extract_legacy_final_answer(prompt + response))
++
++    def test_f1_and_legal_actions_share_protocol(self):
++        path = ROOT / 'search_r1/baselines/bapo.py'
++        if not path.exists():
++            self.skipTest('No baseline F1 scorer on this branch')
++        tree = ast.parse(path.read_text())
++        names = {'answer_from_spans', 'legal_action_records'}
++        nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in names]
++        namespace = dict(extract_final_answer=extract_final_answer, parse_model_action=parse_model_action)
++        exec(compile(ast.Module(body=nodes, type_ignores=[]), str(path), 'exec'), namespace)
++        for text in ['<search><answer>Paris</answer></search>', '<answer><answer>Paris</answer>']:
++            self.assertIsNone(namespace['answer_from_spans']([text]))
++            self.assertFalse(namespace['legal_action_records']([{'text':text}]))
++        self.assertEqual(namespace['answer_from_spans'](['<answer>Paris</answer>']), 'Paris')
++        self.assertTrue(namespace['legal_action_records']([{'text':'<search>capital</search>'}, {'text':'<answer>Paris</answer>'}]))
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/verl/trainer/main_ppo_format.py b/verl/trainer/main_ppo_format.py
+index 6620b8e..e1ea510 100644
+--- a/verl/trainer/main_ppo_format.py
++++ b/verl/trainer/main_ppo_format.py
+@@ -17,6 +17,7 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
+ 
+ from verl import DataProto
+ import torch
++from search_r1.qa_protocol import decode_model_spans
+ from verl.utils.reward_score import qa_em, qa_em_format
+ from verl.trainer.ppo.ray_trainer import RayPPOTrainer
+ import re
+@@ -66,7 +67,12 @@ class RewardManager():
+ 
+             response_ids = data_item.batch['responses']
+             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
++            if int(valid_response_length) == 0:
++                continue
+             valid_response_ids = response_ids[:valid_response_length]
++            model_mask = (data_item.batch['info_mask'][prompt_length:prompt_length + int(valid_response_length)]
++                          if 'info_mask' in data_item.batch else torch.ones_like(valid_response_ids))
++            model_spans = decode_model_spans(self.tokenizer, valid_response_ids, model_mask)
+ 
+             # decode
+             sequences = torch.cat((valid_prompt_ids, valid_response_ids))
+@@ -78,7 +84,7 @@ class RewardManager():
+             data_source = data_item.non_tensor_batch['data_source']
+             compute_score_fn = _select_rm_score_fn(data_source)
+ 
+-            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, 
++            score = compute_score_fn(solution_str=sequences_str, ground_truth=ground_truth, model_spans=model_spans,
+                                      structure_format_score=self.structure_format_score, 
+                                      final_format_score=self.final_format_score, 
+                                      retrieval_score=self.retrieval_score,
+diff --git a/verl/utils/reward_score/qa_em.py b/verl/utils/reward_score/qa_em.py
+index b29a27c..9d699c9 100644
+--- a/verl/utils/reward_score/qa_em.py
++++ b/verl/utils/reward_score/qa_em.py
+@@ -15,6 +15,7 @@
+ import re
+ import string
+ import random
++from search_r1.qa_protocol import extract_final_answer, extract_legacy_final_answer
+ 
+ def normalize_answer(s):
+     def remove_articles(text):
+@@ -60,26 +61,7 @@ def subem_check(prediction, golden_answers):
+ 
+ 
+ def extract_solution(solution_str):
+-    """Extract the equation from the solution string."""
+-    # Remove everything before the first "Assistant:"
+-    # if "Assistant:" in solution_str:
+-    #     solution_str = solution_str.split("Assistant:", 1)[1]
+-    # elif "<|im_start|>assistant" in solution_str:
+-    #     solution_str = solution_str.split("<|im_start|>assistant", 1)[1]
+-    # else:
+-    #     return None
+-    # solution_str = solution_str.split('\n')[-1]
+-
+-    answer_pattern = r'<answer>(.*?)</answer>'
+-    match = re.finditer(answer_pattern, solution_str, re.DOTALL)
+-    matches = list(match)
+-    
+-    # If there are 0 or exactly 1 matches, return None
+-    if len(matches) <= 1:
+-        return None
+-    
+-    # If there are 2 or more matches, return the last one
+-    return matches[-1].group(1).strip()
++    return extract_legacy_final_answer(solution_str)
+ 
+ 
+ def compute_score_em(solution_str, ground_truth, method='strict', format_score=0., score=1.):
+@@ -111,17 +93,8 @@ def compute_score_em(solution_str, ground_truth, method='strict', format_score=0
+ 
+ 
+ def compute_score_generated_em(model_spans, ground_truth, format_score=0., score=1.):
+-    """Score the last complete answer wholly contained in model-authored text.
+-
+-    Spans must remain separate across observations: joining them could create
+-    an answer tag that the model never generated as one continuous action.
+-    This API intentionally does not change the legacy full-prompt scorer.
+-    """
+-    answer = None
+-    for span in model_spans:
+-        matches = list(re.finditer(r'<answer>(.*?)</answer>', span, re.DOTALL))
+-        if matches:
+-            answer = matches[-1].group(1).strip()
++    """Score only a legal terminal answer in the final model-authored span."""
++    answer = extract_final_answer(model_spans)
+     if answer is None:
+         return 0.
+     return score if em_check(answer, ground_truth['target']) else format_score
+diff --git a/verl/utils/reward_score/qa_em_format.py b/verl/utils/reward_score/qa_em_format.py
+index a95f70e..54d24fc 100644
+--- a/verl/utils/reward_score/qa_em_format.py
++++ b/verl/utils/reward_score/qa_em_format.py
+@@ -15,6 +15,7 @@
+ import re
+ import string
+ import random
++from search_r1.qa_protocol import extract_final_answer, extract_legacy_final_answer
+ 
+ def normalize_answer(s):
+     def remove_articles(text):
+@@ -122,18 +123,7 @@ def is_valid_sequence(text):
+ 
+ 
+ def extract_solution(solution_str):
+-    """Extract the equation from the solution string."""
+-
+-    answer_pattern = r'<answer>(.*?)</answer>'
+-    match = re.finditer(answer_pattern, solution_str, re.DOTALL)
+-    matches = list(match)
+-    
+-    # If there are 0 or exactly 1 matches, return None
+-    if len(matches) <= 1:
+-        return None
+-    
+-    # If there are 2 or more matches, return the last one
+-    return matches[-1].group(1).strip()
++    return extract_legacy_final_answer(solution_str)
+ 
+ 
+ def extract_information_blocks(text: str) -> list[str]:
+@@ -151,7 +141,7 @@ def is_retrieval_correct(text: str, golden_answers: list[str]) -> list[str]:
+     return False
+ 
+ 
+-def compute_score_em(solution_str, ground_truth, method='strict', structure_format_score=0, final_format_score=0, retrieval_score=0, format_score=0, score=1.):
++def compute_score_em(solution_str, ground_truth, method='strict', structure_format_score=0, final_format_score=0, retrieval_score=0, format_score=0, score=1., model_spans=None):
+     """The scoring function for exact match (EM).
+ 
+     Args:
+@@ -165,7 +155,8 @@ def compute_score_em(solution_str, ground_truth, method='strict', structure_form
+     retrieval_correct = False
+     if is_valid_format:
+         retrieval_correct = is_retrieval_correct(solution_str, ground_truth['target'])
+-    answer = extract_solution(solution_str=solution_str)
++    answer = (extract_final_answer(model_spans) if model_spans is not None
++              else extract_solution(solution_str=solution_str))
+     do_print = random.randint(1, 64) == 1
+     
+     if do_print:

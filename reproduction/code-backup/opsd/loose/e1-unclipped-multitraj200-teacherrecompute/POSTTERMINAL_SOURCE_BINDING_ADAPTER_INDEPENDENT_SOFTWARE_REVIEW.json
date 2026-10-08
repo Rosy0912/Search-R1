@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "role": "INDEPENDENT_REVIEWER",
+  "status": "PASS_INDEPENDENT_POSTTERMINAL_SOURCE_BINDING_ADAPTER_SOFTWARE_REVIEW",
+  "scope": "EXACT_BYTE_LATE_SOURCE_BINDING_READ_ONLY_ADAPTER_SOFTWARE_ONLY_NOT_ACTUAL_TERMINAL_NATIVE_OR_200_ACCEPTANCE",
+  "runtime_sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe",
+  "readiness_sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc",
+  "inputs": {
+    "collect_postterminal_source_bindings.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/collect_postterminal_source_bindings.py",
+      "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe",
+      "bytes": 14782
+    },
+    "test_postterminal_source_bindings.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/test_postterminal_source_bindings.py",
+      "sha256": "f8bab74716506788b7142ddff0a4f54e1902d09af04df2b2ec59d40c5e21d4d8",
+      "bytes": 11869
+    },
+    "SOFTWARE_READINESS.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/SOFTWARE_READINESS.json",
+      "sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc",
+      "bytes": 2604
+    },
+    "DESIGN.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/DESIGN.md",
+      "sha256": "f1d002b6d1511b40d9a15a8528042c427965b5bdd79fa85321bc0141a5f8dc90",
+      "bytes": 7635
+    }
+  },
+  "stored_training_job_id": "3304",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "reuse": {
+    "binding_function": "formal_supervisor.verify_binding(run,ready)",
+    "common_sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581",
+    "formal_manifest_sha256": "71d2501d45120c546d5a94cc9add1a60fb7afbf70dd4ed7a5333e51955ab1028",
+    "scope": "Existing211 physical file/current manifest-byte binding; no native import/model/index/data content revalidation",
+    "sources_function": "formal_supervisor.sources(tools)"
+  },
+  "actual_existing_helper_pins": {
+    "common": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-runtime-bundle-f11580b6a7bc/common.py",
+      "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581",
+      "bytes": 21507
+    },
+    "logs_terminal": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-runtime-bundle-f11580b6a7bc/consume_final200_logs_terminal.py",
+      "sha256": "509df9332effd1196c6cb07a6a9d67612d9efdd75498f39a2bdb36726dcd7306",
+      "bytes": 27746
+    },
+    "formal_supervisor": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/formal-71d2501d4512/formal_supervisor.py",
+      "sha256": "ffb3bdc64f91c4a60905cd15994132c63c6494952c4ca0818c0cf7eee119d017",
+      "bytes": 37245
+    },
+    "owned_runtime": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/formal-71d2501d4512/owned_runtime.py",
+      "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd",
+      "bytes": 4004
+    }
+  },
+  "author20_originals": {
+    "directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/cpu-originals/20261007T070949047508Z",
+    "records": {
+      "argv.original.json": {
+        "bytes": 563,
+        "sha256": "6140e4e1a775790fa58ab0250fc171125fa894323258fe0098a03badb615f866"
+      },
+      "stderr.original": {
+        "bytes": 1457,
+        "sha256": "9f3e60d69029a27fbc27e540ddbed9160e5eee8724396f955b5745e5be09b48f"
+      },
+      "stdout.original": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "wait.original.json": {
+        "bytes": 20006,
+        "sha256": "40742531246b3ff054b68f6e2862192c1bfe6e520dff0c1968ff33da36e07cc7"
+      }
+    },
+    "tests": 20,
+    "waited": true,
+    "returncode": 0,
+    "stable_before_after_dependencies": 32,
+    "rerun_entire20_by_independent_reviewer": false
+  },
+  "independent_two_local_fixture_replays": {
+    "inspection_source.original.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/postterminal-sourcebindings-limited-20261007T071711786863Z/inspection_source.original.py",
+      "sha256": "8f13e6afcd55eb48c87cffb42bc16d5011b806e6cbde8511495015d2d85de76d",
+      "bytes": 2251
+    },
+    "command.original.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/postterminal-sourcebindings-limited-20261007T071711786863Z/command.original.json",
+      "sha256": "dac524ad6bc376190d5b7c7948e6df3c38bf7b264119df8f5601eadf7af1e326",
+      "bytes": 463
+    },
+    "stdout.original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/postterminal-sourcebindings-limited-20261007T071711786863Z/stdout.original",
+      "sha256": "f6f6fa60107ec1ccf0091642a365f090c76f2a8d46cafafbd12f7eef9b8c1612",
+      "bytes": 355
+    },
+    "stderr.original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/postterminal-sourcebindings-limited-20261007T071711786863Z/stderr.original",
+      "sha256": "4a1a8f2c3545d8f5e979581455103bbdb00eae4cbdc67d8e7a8d36cbe29caf48",
+      "bytes": 302
+    },
+    "exit.original.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/postterminal-sourcebindings-limited-20261007T071711786863Z/exit.original.json",
+      "sha256": "79dcf9ffa945207cdaa6594d8035589aeaa53ba9f84a872072aae6a59de4ea60",
+      "bytes": 94
+    }
+  },
+  "independent_exit": {
+    "gpu": false,
+    "main": false,
+    "pid": 65376,
+    "remote": false,
+    "returncode": 0,
+    "waited": true
+  },
+  "checks": [
+    {
+      "name": "verified_physical_common_and_helper_compilation",
+      "result": "PASS_SOFTWARE",
+      "basis": "Common same opened bytes/fullSHA/stable stat compiled at true physical __file__; exact original formal/owned/logs modules loaded through e00 same-byte helper. No pyc rewriting or source substitution."
+    },
+    {
+      "name": "terminal_first_literal_preservation",
+      "result": "PASS_SOFTWARE_AND_TWO_LOCAL_FIXTURES",
+      "basis": "Three pinned originals under stored RUN copied before context/source functions; fixed child/wrapper paths, typed literal child and wrapper exits, genuine scheduler-text parser. Nonzero wrapper/FAILED literal preserved; no overall-success conversion."
+    },
+    {
+      "name": "independent_cpu_execution_identity",
+      "result": "PASS_SOFTWARE",
+      "basis": "Fixed unoptimized nativePython3.10, empty CUDA and exact helper execution PID/start/cgroup/UID/node binding; new CPU execution ID differs from stored3304. Historical signed5 identities are not required to be live or impersonated."
+    },
+    {
+      "name": "late_current_source_context",
+      "result": "PASS_SOFTWARE",
+      "basis": "Unchanged e00 accepted_context before/after verifies signed5/header/config/launch/source/formal context and current211 physical import-file SHA. Unchanged71d sources()/verify_binding() use original function implementations, commands and physical __file__, with reported adapter-only validation environment."
+    },
+    {
+      "name": "bounded_original_copies_and_current_graph",
+      "result": "PASS_SOFTWARE",
+      "basis": "Existing record bytes and mtime/ctime/inode retained exactly. Small selected originals use2MiB/member and32MiB total; every not-copied current record named. Final source/context and copy graph rechecked. No model/index/Parquet/corpus revalidation or current native import."
+    },
+    {
+      "name": "git_raw_and_unchanged_frozen_commands",
+      "result": "PASS_SOFTWARE",
+      "basis": "Additional before/after HEAD/status calls preserve argv/stdout/stderr/wait/return, including failure. They do not monkeypatch or replace frozen helper commands. Final output reports each raw physical record."
+    },
+    {
+      "name": "exclusive_once_and_failure_durability",
+      "result": "PASS_SOFTWARE_AND_LOCAL_FIXTURE",
+      "basis": "Fresh fixed output mkdir refuses previous/unknown attempts; file and directory fsync. Synthetic late source error leaves request and terminal copies plus failure and marker, never source qualification report or auto-retry."
+    }
+  ],
+  "blocking_findings": [],
+  "known_limits": [
+    "Literal scheduler parsing does not establish freshness of the remote query, resolve watcher contradictions or prove old writers/processes exited. Independent actual terminal input review remains required.",
+    "CPU execution identity checks process environment/cgroup; actual separate zero-GPU allocation/request and real external wait originals remain future scheduler/caller qualifications.",
+    "Current211 file SHA/stats and manifest bytes are not current837-code native import qualification, full official model/common dataset/index asset bytes, checkpoint load or original process-memory evidence.",
+    "bad66 remains unmodified and independently failed whole-resource scope; this adapter neither consumes nor reclassifies that resource row.",
+    "No production main, remote publication/invocation, GPU, CPU allocation, scheduler submission, signature, training or canonical edit occurred."
+  ],
+  "future_actual": {
+    "actual200_qualification": null,
+    "deployment": null,
+    "execution_job_id": null,
+    "execution_step_id": null,
+    "paired_eval_eligibility": null,
+    "request": null,
+    "resource_release": null,
+    "source_binding_report": null,
+    "terminal": null
+  },
+  "actual200": null,
+  "literal_actual_terminal": null,
+  "actual_source_binding_report": null,
+  "execution_job_id": null,
+  "execution_step_id": null,
+  "native_import_acceptance": null,
+  "resource_release": null,
+  "paired_eval_eligibility": null,
+  "production_main": false,
+  "remote": false,
+  "gpu": false,
+  "signature": false,
+  "candidate_or_frozen_source_modified": false
+}

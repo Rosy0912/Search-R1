@@ -1,0 +1,13 @@
+{
+  "scope": "CPU-only v2 narrow UTC/resource-read-race correction; GPU pending",
+  "files": {
+    "capacity-tools-60cbea-candidate-v2/capacity_entry.py": "0d887ca721cd4d3d6d7a0b53a637f45bdcb4571cf11442e002d25b5d52a97c98",
+    "capacity-tools-60cbea-candidate-v2/capacity_job.sh": "5e0e9736e69278da762bc945b3b982e3df7bfedf519ba2f9c4e31600579d6b80",
+    "capacity-tools-60cbea-candidate-v2/manifest.json": "495f3320314c6078ef0a25b7ca306a74cbc91bd7e333e9aef18172ec39a27d4d",
+    "capacity-tools-60cbea-candidate-v2/rank_entry.py": "6763a399f7ef5b709d7026b3d3a20ff40c4b91e46f83923bdd5c2abef1208812",
+    "capacity-tools-60cbea-candidate-v2/resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "capacity-tools-60cbea-candidate-v2/retriever_entry.py": "c78a213b770f2adc0139d2613779e9981ec363bc8d6d3f4a52154378dcb1da97",
+    "test_capacity_wrapper.py": "2b0898708326c77f767b9ca6c75ae94211cbb50cfb16a6d9eab7d95376daf475",
+    "capacity-wrapper-cpu-tests-v2.txt": "782c3e83fb9f85e8a02e0ed951cedd94cdc3acb7f424d1ca52fc52d9d7923a56"
+  }
+}

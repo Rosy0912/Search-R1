@@ -1,0 +1,19 @@
+{
+  "source_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "production_math_sources": {
+    "search_r1/baselines/actor.py": "a393ff543739aa086ecde07ed797daf2ad3c85df40927fa2e8a7eac86c8d89a7",
+    "search_r1/baselines/distillation.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf"
+  },
+  "directory_name": "hf-runtime-8e60976d364a-pilot-2994",
+  "stage": "hf_only_actual_pilot_no_future_reload",
+  "preview_blocked": true,
+  "file_sources": {
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "source_bundle_check.py": "55c92759365cc0404b9f166c9f491738196f247fb8d7f219b00b1bc2ffd32477",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "reload_job.sh": "573b8e2dd9a3a94838bb7919a1ba139f04fd01c83761f7336e2856ac5a50f08e"
+  },
+  "pilot_job": "2994",
+  "pilot_runtime_manifest_sha256": "3af62ed7f4c30a18a53c7f6b81335be3b75511cf7f0028caf8849c38bc4061af",
+  "pilot_runtime_directory_name": "pilot-runtime-8e60976d364a-reviewed-4246006a5605"
+}

@@ -1,0 +1,30 @@
+{
+  "execution_requirement": "After actual originaldriver exit only, own h10010 CPU. SameFD verified exact runtime compile, actual argv/sourcepin/stdout/stderr/exit originals; payload passed alone insufficient.",
+  "kind": "POST_TRAINING_INTEGRITY_SOFTWARE_ONLY_IMMUTABLE_BUNDLE",
+  "members": {
+    "FINAL_COMPLETION_CONDITIONS_INDEPENDENT_REVIEW.json": {
+      "bytes": 11450,
+      "sha256": "1d7da46d5bdf60b582e7b261333e5b7e9896ddd4a8dded7cbccbca1416ed5006"
+    },
+    "POST_TERMINAL_INTEGRITY_INDEPENDENT_SOFTWARE_REVIEW.json": {
+      "bytes": 9752,
+      "sha256": "ea1450711eb0734bb4b6f8efd7ae0bedcb24082570c05165665156b5fa12f80e"
+    },
+    "POST_TERMINAL_SOURCE_BINDING_REUSE_READ_ONLY_PLAN.json": {
+      "bytes": 8585,
+      "sha256": "40f8608305c63cfb2597925b0489ff55d5edd2ae63b5daa9b3c7a3e3a73ec8b5"
+    },
+    "SOFTWARE_CANDIDATE_READINESS.json": {
+      "bytes": 4362,
+      "sha256": "e523bc3c1bedf9ea844ad1151a99cd1d6e515c77cb6f11a4f44ff9f4db90a3a4"
+    },
+    "post_terminal_integrity.py": {
+      "bytes": 23894,
+      "sha256": "90f7b3e9a8d7942fa2e44b5f8c76d8cd0104952f6718d5eea23acbbed4da69f4"
+    }
+  },
+  "runtime": "post_terminal_integrity.py",
+  "scope": "Fixed newCPU code qualification, no deployment/production or original271/final/HF/resource pass",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "version": 1
+}

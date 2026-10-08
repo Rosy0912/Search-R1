@@ -1,0 +1,15 @@
+{
+  "scope": "local CPU state software; not native GPU or complete restart authorization acceptance",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/full_state.py": "6726cd0bd9611e276da5f531c6e04bba5551b87e04dc127a47a669f9e91fc906",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/verl/workers/fsdp_workers.py": "043c6f2ec62c4147da7001138a7355d9ca2b207454468014e456ebf502e23055",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/tests/baselines/test_opsd_e1_full_state.py": "64674bc4f256dabf68a14ce1e028d1cff87d44004b1e48039cead2e6bea44949",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/reproduction/baselines/e1-300/native_opsd_state_fixture.py": "c41a8e19b39151a09fa4c79f650c6b67bfec61df8c52cf52215a17d7c0d55da6"
+  },
+  "cpu_tests": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/state-recovery-cpu-tests.txt",
+    "sha256": "09df98a04fb5c855a17066ab98c6f6e1462ebb875f36e1592bf9a91443fa2b57",
+    "passed": 37
+  },
+  "report_sha256": "854ce8b637fabb9206d7b11a0eed5557c6d3cd79a3d67b9e73062fa0c4a94ae1"
+}

@@ -1,0 +1,144 @@
+{
+  "additional_asset_record_counts": {
+    "exclusion_audit_files": 1,
+    "official_initial_and_fixed_teacher_files": 11,
+    "raw_provenance_files": 9,
+    "shared_split_files": 4,
+    "tool_e5_files": 8,
+    "tool_wiki_gzip_index_corpus_files": 3
+  },
+  "additional_readonly_functions": [
+    "e1_profile.validate_profile(OmegaConf.create(context.config))",
+    "e1_profile.verify_official_assets(config.actor_model_path, exact bound official manifest)",
+    "sharedholdout._validate_prebuilt(independent cfg copy)",
+    "owned_runtime.verify_tool_assets(exact bound tool manifest)",
+    "cpu_import_check.py / bootstrap.verify_imports / checkpoint_gate.verify_import_closure, separate actual CPU execution scope"
+  ],
+  "direct_postterminal_reuse": {
+    "context_function": "author200_observation.load_accepted_context(args)",
+    "context_has_no_live_driver_allocation_proc_dependency": true,
+    "coverage": [
+      "accepted5 RSA and identity/reference map",
+      "all launch seven bound roles and config73f full SHA",
+      "GitHEAD188/clean",
+      "16 source files full SHA",
+      "8 formal tools full SHA",
+      "210 native module files full SHA",
+      "extra FSDP sourceca839 full SHA and warning literal"
+    ],
+    "dataset_function": "author200_observation.verify_dataset_files(context)",
+    "durable_driver_copy_requirement": "Whole copied driver log in actual RUN with original identity/full SHA provenance, paired actual aggregate; no future bytes filled",
+    "existing_final_entry": "check_author200_evaluations.inspect(args), require_final=True, CUDA_VISIBLE_DEVICES empty"
+  },
+  "late_gate": {
+    "conditional_failure": "Known original c738 parse of owned outer74 FSDP689 frame can throw before sources/verify_binding. This is a prospective source implication, not a new terminal observation.",
+    "formal_line": 271,
+    "order": [
+      "check_training_log",
+      "first5_receipt_exists",
+      "sources",
+      "verify_binding"
+    ]
+  },
+  "limitations": [
+    "New90 context covers manifest JSON but does not hash official model/tool asset content; separate real full-content checks required.",
+    "Stored module file SHA and new CPU live-code imports are different scopes and do not retroactively inspect exited training memory.",
+    "Actual CPU observer identity must be recorded separately from stored training3261; do not forge old SLURM/PID environment.",
+    "Original sources/verify_binding use separate path reads and do not by themselves give same-FD JSON parsing proof; exact-byte loading and stable existing IO needed.",
+    "Current plan provides no actual terminal PASS and cannot rewrite real FAILED or skipped original gates."
+  ],
+  "not_reused_after_terminal": [
+    "check_approval",
+    "formal main/prepare/run_training",
+    "allocation-dependent checkpoint_cpu_pipeline scheduler entry",
+    "preflight/locks",
+    "bootstrap mode run/preflight",
+    "recovery functions"
+  ],
+  "observed_at_utc": "2026-10-06T03:37:29.672455+00:00",
+  "performed": {
+    "actual_terminal_logic_executed": false,
+    "broad_software_tests_repeated": false,
+    "future_terminal_values_filled": false,
+    "gpu_work": false,
+    "new_checker_written": false,
+    "remote_executed": false,
+    "source_runtime_tools_changed": false,
+    "static_source_reads_only": true
+  },
+  "reviewed_inputs": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/FINAL_COMPLETION_CONDITIONS_INDEPENDENT_REVIEW.json": {
+      "bytes": 11450,
+      "sha256": "1d7da46d5bdf60b582e7b261333e5b7e9896ddd4a8dded7cbccbca1416ed5006"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/POST_TERMINAL_SOURCE_BINDING_REUSE_READ_ONLY_PLAN.md": {
+      "bytes": 7098,
+      "sha256": "0a09015ff576f54ff51af2117ed017f287310359e59800125115d2e17c3b9bdc"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/SOURCE_FORMAL_LOG_FRAMING_TERMINAL_IMPACT_REVIEW_V2.json": {
+      "bytes": 9135,
+      "sha256": "d16d79903b41ab43f95315d6eceb3e84d5da5dacb4e42350631e140a5b52233e"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/actual-snapshots/3261-20261006T005604410916Z/original-files/bindings/data_manifest.json": {
+      "bytes": 5585,
+      "sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/actual-snapshots/3261-20261006T005604410916Z/original-files/bindings/model_manifest.json": {
+      "bytes": 3745,
+      "sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/actual-snapshots/3261-20261006T005604410916Z/original-files/bindings/tool_manifest.json": {
+      "bytes": 11144,
+      "sha256": "87b5e85df12cbf4635cb787b08161950ddc23e2e5b850e68fb7249668573cc87"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/actual-snapshots/3261-20261006T005604410916Z/original-files/full_state/global_step_5/manifest.json": {
+      "bytes": 27613,
+      "sha256": "8c6e17b2af0026b1267a2422c1437aa00461da46e0a1911caea3633bfef473d3"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-acceptance-90c2695a7f46/author200_observation.py": {
+      "bytes": 44256,
+      "sha256": "9360f3e80b8525a7291c649fe60f38a4e283b087db4baa482276447915055b5e"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-acceptance-90c2695a7f46/check_author200_evaluations.py": {
+      "bytes": 3613,
+      "sha256": "10483cf0140718f3755ac98de7c0424ac4e593463a63378e8a7ea5073fb69b41"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-acceptance-90c2695a7f46/manifest.json": {
+      "bytes": 59256,
+      "sha256": "90c2695a7f46d6cabed19661fae77b5b9734b008e3093b622555807c63dfbfc4"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/formal-bb5f4872142f/cpu_import_check.py": {
+      "bytes": 1796,
+      "sha256": "17a1408a6a7494e2cb7d0ba224cfdb2b617485c36c6959018bc8a75d0aa7b30d"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/formal-bb5f4872142f/formal_supervisor.py": {
+      "bytes": 29058,
+      "sha256": "6e3849fcff8ec967ec6dd927d96518dac5526b5044c7d0af2c2e0e02f91b5870"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/formal-bb5f4872142f/owned_runtime.py": {
+      "bytes": 4004,
+      "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/reproduction/baselines/e1_import_bootstrap.py": {
+      "bytes": 11939,
+      "sha256": "1f90b19de0af445af00aef3d5bede99ef49ee8f1aac37297e2e13feab79a0dbb"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/checkpoint_gate.py": {
+      "bytes": 35964,
+      "sha256": "c738911559a56780555de219306075b810074a7b0287fc4b271edece6ae73cbb"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/e1_profile.py": {
+      "bytes": 9130,
+      "sha256": "e800af165343dc40d874fd8a4c3b2c39f7277ee81fa262d1997b2d4cda6d4c43"
+    },
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/sharedholdout.py": {
+      "bytes": 14323,
+      "sha256": "4c255433939e4f6b09804d48fb99e3ae31c8747f8d56d7418d06d21474cef002"
+    }
+  },
+  "scope": "STATIC_LOCAL_READ_ONLY_REUSE_PLAN_NOT_CHECKER_EXECUTION_TERMINAL_PASS_OR_FROZEN_GATE_REPLAY",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "status": "PLAN_READY_FOR_ROOT_REVIEW_NO_NEW_CHECKER_WRITTEN",
+  "training_job_id": "3261",
+  "version": 1
+}

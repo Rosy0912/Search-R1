@@ -1,0 +1,11 @@
+{
+  "scope": "LOCAL CANDIDATE / NOT DEPLOYABLE / NO FUTURE500 ACCEPTANCE",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/corrected_evaluation.py": "8d7b7fcfb5ee984878a712d112e69a813c7af1a2907f5703656ea4116a36643e",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/search_r1/baselines/main.py": "8bd9233f63fdb3ce9be36c65fbc9db4132e7d51a53674581dadafcea287b8045",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/verl/trainer/ppo/ray_trainer.py": "247583d565401ab6798e655829ca4ac5bcd7cfadf328fbb4259c1e0c743c4eaa",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd/tests/reproduction/test_corrected_evaluation.py": "74b7cd2cc5cfc6d18c59b3073f9fce15c59d54f3a95e1a648ed0a8d4b535268f",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/reward-protocol-fix/CORRECTED_EVALUATION_CANDIDATE.md": "c2d082a22428f63db26a4be7a2a1f7aa48e55072222a6791fe9c45390569784f",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/reward-protocol-fix/corrected-eval-candidate-cpu-tests.txt": "048026cc236443968d3870ed444b484462e74a9ef36950aa965a107a50897283"
+  }
+}

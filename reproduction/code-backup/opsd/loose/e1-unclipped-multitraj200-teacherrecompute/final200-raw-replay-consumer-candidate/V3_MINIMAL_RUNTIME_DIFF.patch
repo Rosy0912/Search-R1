@@ -1,0 +1,36 @@
+--- retained-705-v2/replay_final200_raw.py
++++ replay_final200_raw.py
+@@ -508,13 +508,32 @@
+ 
+ def verify_model(reader, provenance):
+     directory = Path(provenance['model_directory']); pins = provenance['model_files']
++    require(provenance['model_role'] in ROLES and directory.is_absolute() and directory.resolve(strict=True) == directory and
++            stat.S_ISDIR(directory.lstat().st_mode) and directory.lstat().st_uid == reader.uid, 'Owned physical model directory required')
++    directory_before = identity(directory.lstat()); files, directories = set(), {}
++    for path in directory.iterdir():
++        value = path.lstat()
++        require(not stat.S_ISLNK(value.st_mode) and path.resolve(strict=True) == path and value.st_uid == reader.uid,
++                'Model member must be owned and physical')
++        if stat.S_ISREG(value.st_mode):
++            files.add(path.name)
++        elif stat.S_ISDIR(value.st_mode):
++            directories[path.name] = identity(value)
++        else:
++            raise ValueError('Unknown non-regular model entry')
++    expected_directories = {'training_state'} if provenance['model_role'] == 'actual_hf200' else set()
++    require(set(directories) == expected_directories, 'Unexpected/absent model subdirectory')
+     if provenance['model_role'] == 'official_base':
+         require(pins.get('VERIFIED-MODEL-MANIFEST.json') == OFFICIAL_MANIFEST, 'Official pinned model manifest missing')
+-    require(set(p.name for p in directory.iterdir()) == set(pins) and {'config.json', 'tokenizer.json', 'tokenizer_config.json'} <= set(pins), 'Actual complete model membership differs')
++    require(files == set(pins) and {'config.json', 'tokenizer.json', 'tokenizer_config.json'} <= set(pins), 'Actual complete immediate model file membership differs')
+     require(any(n.endswith('.safetensors') for n in pins), 'Actual model weights missing')
+     for name, sha in pins.items():
+         with reader.opened(member(directory, name), sha, 32 * 1024**3):
+             pass
++    require(identity(directory.lstat()) == directory_before and set(p.name for p in directory.iterdir()) == files | expected_directories,
++            'Model directory changed during full file hashing')
++    for name, before in directories.items():
++        require(identity((directory / name).lstat()) == before, 'Retained training_state directory changed')
+ 
+ 
+ def write_once(path, raw):

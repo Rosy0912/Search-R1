@@ -1,0 +1,60 @@
+--- sealed61368/collect_checkpoints50_100_v2.py
++++ periodic150/collect_checkpoints50_100_150.py
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+-"""Fixed read-only snapshots of training3304 checkpoints50/100, not native reload.
+-
+-Only a future actual same-node invocation after each requested completed OUTER50/100 may call main.
++"""Fixed read-only snapshots of training3304 checkpoints50/100/150, not native reload.
++
++Only a future actual same-node invocation after each requested completed OUTER50/100/150 may call main.
+ The script creates no remote files, submits no job and imports no model/Torch.
+ Stdout preserves small originals plus full hashes/physical metadata of large PT/HF.
+ """
+@@ -161,7 +161,7 @@
+          and value.get('status')=='FULL_STATE_SERIALIZED_OK','Typed periodic serialized report required')
+     rank=value.get('rank');pid=value.get('pid');step=value.get('step')
+     need(type(rank) is int and rank in WORKERS and type(pid) is int and pid==WORKERS[rank][0]
+-         and pid==int(transport.group(1)) and type(step) is int and step in (50,100)
++         and pid==int(transport.group(1)) and type(step) is int and step in (50,100,150)
+          and type(value.get('world_size')) is int and value['world_size']==8,'Native repeat rank/PID/world/step differs')
+     boundary=body_start+end;suffix=raw[boundary:]
+     repeat=re.match(r'\x1b\[32m \[repeated ([1-8])x across cluster\]\x1b\[0m',suffix)
+@@ -204,7 +204,7 @@
+ 
+ 
+ def progress(events,gate,step):
+-    need(type(step) is int and step in (50,100),'Exact stored observation step50 or100 required')
++    need(type(step) is int and step in (50,100,150),'Exact stored observation step50 or100 or150 required')
+     rows=[e for e in events if e['marker']=='OPSD_E1_OUTER_JSON='];need(len(rows)>=step,'Requested completed OUTER absent')
+     need(len(rows)<=200,'Unexpected outer budget');sums=[0]*8
+     for i,event in enumerate(rows,1):
+@@ -246,7 +246,7 @@
+ 
+ 
+ def saved_members(files,step):
+-    need(type(step) is int and step in (50,100),'Exact saved step50 or100 required')
++    need(type(step) is int and step in (50,100,150),'Exact saved step50 or100 or150 required')
+     actor=RUN/('checkpoints/actor/global_step_'+str(step));need(actor.resolve(strict=True)==actor and actor.is_dir(),'Actual HF50 directory absent')
+     entries=list(actor.iterdir());regular=set();directories=set()
+     for entry in entries:
+@@ -283,7 +283,7 @@
+ 
+ 
+ def collect(result,steps):
+-    need(type(steps) is list and steps and all(type(s) is int and s in (50,100) for s in steps) and steps==sorted(set(steps)),'Exact ordered unique steps50/100 required')
++    need(type(steps) is list and steps and all(type(s) is int and s in (50,100,150) for s in steps) and steps==sorted(set(steps)),'Exact ordered unique steps50/100/150 required')
+     need(sys.platform=='linux' and os.getuid()==0 and socket.gethostname().split('.')[0]=='h100-10','Actual same-node UID0 collector only')
+     result['driver_before']=proc_identity(*DRIVER);result['workers_before']={str(r):proc_identity(*v) for r,v in WORKERS.items()}
+     need(Path(os.readlink(f'/proc/{DRIVER[0]}/fd/1'))==DRIVER_PATH,'Actual own driver stdout origin differs')
+@@ -329,8 +329,8 @@
+ 
+ 
+ def main():
+-    parser=argparse.ArgumentParser();parser.add_argument('--steps',nargs='+',type=int,choices=(50,100),required=True);args=parser.parse_args()
+-    result=dict(version=1,kind='TRAINING3304_CHECKPOINT50_100_READONLY_ORIGINALS',status='COLLECTION_INCOMPLETE',
++    parser=argparse.ArgumentParser();parser.add_argument('--steps',nargs='+',type=int,choices=(50,100,150),required=True);args=parser.parse_args()
++    result=dict(version=1,kind='TRAINING3304_CHECKPOINT50_100_150_READONLY_ORIGINALS',status='COLLECTION_INCOMPLETE',
+         observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source_commit=SOURCE,job_id='3304',requested_steps=args.steps,
+         files={},source_files={},commands={},limits=['Full file SHA and serialized reports do not prove native reload, tensor/sampler/RNG contents or HF model forward.',
+         'Driver/train are fixed captured prefixes with append allowed; they are not closed terminal logs.','Dev512 and stage64 are separate cohorts; comparisons stay within each.',

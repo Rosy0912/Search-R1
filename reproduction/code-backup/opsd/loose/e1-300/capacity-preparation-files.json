@@ -1,0 +1,20 @@
+{
+  "scope": "local CPU capacity software preparation only; actualGPU pending",
+  "files": {
+    "capacity-tools/capacity_entry.py": "6324420f4e1bb7ebb94874d6fa34bc1e8e14c05f8e1fc1382d8c14d51584b637",
+    "capacity-tools/capacity_job.sh": "5e0e9736e69278da762bc945b3b982e3df7bfedf519ba2f9c4e31600579d6b80",
+    "capacity-tools/rank_entry.py": "6763a399f7ef5b709d7026b3d3a20ff40c4b91e46f83923bdd5c2abef1208812",
+    "capacity-tools/resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "capacity-tools/retriever_entry.py": "c78a213b770f2adc0139d2613779e9981ec363bc8d6d3f4a52154378dcb1da97",
+    "render_capacity_tools.py": "6a29fb0a46f924a4f41f8cf32d85a619a76640bba711f938b38aaca163b533b4",
+    "test_capacity_wrapper.py": "f06a7eae5c004324f301781793bbe0e77489e94ccd849ee58e8d6c13e4a80b17",
+    "CAPACITY_WRAPPER_PREPARATION.md": "2318aed5326bb1c10094c8dea9a2e4c96e1b5e70888f8964e4c9888e576bf59b",
+    "capacity-wrapper-cpu-tests.txt": "26ca6812d0ab770786368b6f0d55349a5cbf0c995e0041de3f37831f3f0f9cdb",
+    "capacity-tools-60cbea-reviewed-candidate/capacity_entry.py": "6324420f4e1bb7ebb94874d6fa34bc1e8e14c05f8e1fc1382d8c14d51584b637",
+    "capacity-tools-60cbea-reviewed-candidate/capacity_job.sh": "5e0e9736e69278da762bc945b3b982e3df7bfedf519ba2f9c4e31600579d6b80",
+    "capacity-tools-60cbea-reviewed-candidate/manifest.json": "728c92b954a8c61306ac525d40c3dfa90ab34ab5adf5f6898f29058feb03eeec",
+    "capacity-tools-60cbea-reviewed-candidate/rank_entry.py": "6763a399f7ef5b709d7026b3d3a20ff40c4b91e46f83923bdd5c2abef1208812",
+    "capacity-tools-60cbea-reviewed-candidate/resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "capacity-tools-60cbea-reviewed-candidate/retriever_entry.py": "c78a213b770f2adc0139d2613779e9981ec363bc8d6d3f4a52154378dcb1da97"
+  }
+}

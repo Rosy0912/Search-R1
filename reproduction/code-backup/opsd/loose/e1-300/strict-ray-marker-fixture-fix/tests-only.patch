@@ -1,0 +1,41 @@
+--- a/tests/baselines/test_opsd_e1_checkpoint_gate.py
++++ b/tests/baselines/test_opsd_e1_checkpoint_gate.py
+@@ -65,6 +65,16 @@
+     monkeypatch.setenv('SLURM_JOB_ID',g.job)
+     g.receipt=root/'release.json';g.settings=SimpleNamespace(train_log_path=str(root/'train.log'))
+     files={'checkpoint':record('native-fixture.pt')}
++    # Eight externally pinned native-writer identities are required by the
++    # transport parser. These are explicit CPU schema blobs, never native state.
++    for rank in range(8):
++        pt = record(f'rank_{rank}.pt', b'CPU_SIGNATURE_FIXTURE_NOT_NATIVE_STATE')
++        files[f'actor/training_state/rank_{rank}.pt'] = pt
++        report = dict(version=3, algorithm='pure_opsd', status='EXACT_FULL_STATE_RELOAD_OK',
++            model_state_dict_type='SHARDED_STATE_DICT', model_dtensor_entries=1,
++            rank=rank, world_size=8, step=5, pid=1000+rank,
++            path=pt['path'], sha256=pt['sha256'], state_sha256=pt['sha256'])
++        files[f'actor/training_state/rank_{rank}.json'] = record(f'rank_{rank}.json', gate.canonical(report))
+     m={'version':1,'method':'pure_opsd','run_root':str(root),'source_commit':g.source,
+        'config_sha256':g.config_sha,'global_step':5,'actual_outer_updates':5,'next_global_step':6,
+        'horizon':300,'warmup_steps':57,'world_size':8,'driver_pid':g.pid,'uid':g.uid,
+@@ -308,3 +318,21 @@
+         create_resource_pool=lambda:seen.append(OmegaConf.to_container(cfg.actor_rollout_ref.actor.e1_import_checker))))
+     namespace['init_workers'](obj)
+     assert seen==[pins]
++
++
++@pytest.mark.parametrize('field,value', [('rank',1),('pid',1001),('sha256','0'*64),('status','FULL_STATE_SERIALIZED_OK')])
++def test_signed_native_writer_identity_and_raw_pt_binding_rejected(signed_gate,field,value):
++    g,path,m,payload,sign=signed_gate
++    record=m['files']['actor/training_state/rank_0.json']
++    report=json.loads(Path(record['path']).read_text());report[field]=value
++    Path(record['path']).write_bytes(gate.canonical(report));record['sha256']=gate.sha256(record['path'])
++    path.write_bytes(gate.canonical(m));payload['checkpoint_manifest_sha256']=gate.sha256(path)
++    g.receipt.write_bytes(gate.canonical(sign(payload)))
++    with pytest.raises(ValueError):g.verify_receipt(g.receipt,path,m)
++
++
++def test_signed_raw_native_pt_drift_rejected(signed_gate):
++    g,path,m,payload,sign=signed_gate
++    g.receipt.write_bytes(gate.canonical(sign(payload)))
++    Path(m['files']['actor/training_state/rank_0.pt']['path']).write_bytes(b'changed actual raw state')
++    with pytest.raises(ValueError):g.verify_receipt(g.receipt,path,m)

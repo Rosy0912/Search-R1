@@ -1,0 +1,62 @@
+--- a/receipt_payload.py
++++ b/receipt_payload.py
+@@ -61,13 +61,26 @@
+  fail(live_state(observed.get('state')) and live_state(bound.get('state')),'Service stopped or unknown observed state')
+  return True
+ 
++RANK_DEDUP_SUFFIX=re.compile(r'\x1b\[32m \[repeated ([1-7])x across cluster\]\x1b\[0m\Z')
++
++def parse_observed_rank_console(line,manifest,gate,workers):
++ # Only this writer marker accepts the exact observed Ray suppression suffix.
++ # The suppression count never creates inferred rank records.
++ fail('FULL_STATE_RANK_JSON=' in line,'Not a native writer marker')
++ suffix=RANK_DEDUP_SUFFIX.search(line)
++ original=line[:suffix.start()] if suffix else line
++ report=gate.parse_log_marker(original,'FULL_STATE_RANK_JSON=',driver_pid=manifest['driver_pid'],job_id=manifest['job_id'],worker_pids=workers)
++ fail(type(report.get('rank')) is int and 0<=report['rank']<8,'Invalid observed writer rank')
++ return report
++
++
+ def check_log(snapshot,manifest,manifest_sha,gate):
+  rows=[];pauses=[];state_reports=[];releases=[];evaluations=[]
+  workers=gate.manifest_worker_pids(manifest,Path(manifest['run_root']))
+  for line in snapshot.read_text().splitlines():
+   for marker,items in [('OPSD_E1_OUTER_JSON=',rows),('OPSD_E1_STEP5_PAUSED_JSON=',pauses),('FULL_STATE_RANK_JSON=',state_reports),('OPSD_E1_STEP5_RELEASED_JSON=',releases),('BASELINE_EVALUATION_METRICS_JSON=',evaluations)]:
+    if marker in line:
+-    items.append(gate.parse_log_marker(line,marker,driver_pid=manifest['driver_pid'],job_id=manifest['job_id'],worker_pids=workers))
++    items.append(parse_observed_rank_console(line,manifest,gate,workers) if marker=='FULL_STATE_RANK_JSON=' else gate.parse_log_marker(line,marker,driver_pid=manifest['driver_pid'],job_id=manifest['job_id'],worker_pids=workers))
+  fail(not releases,'Training was already released')
+  fail(len(evaluations)==2,'Require actual initial512 and step5 stage64 evaluation records')
+  gate.validate_evaluation(evaluations[0],512);gate.validate_evaluation(evaluations[1],64)
+@@ -93,13 +106,19 @@
+ 
+ def check_reports(manifest,root,state_reports):
+  reports=[];files=manifest['files']
++ fail(1<=len(state_reports)<=8,'Missing observed native writer console')
++ observed={}
++ for row in state_reports:
++  fail(type(row.get('rank')) is int and 0<=row['rank']<8 and row['rank'] not in observed,'Duplicate/invalid observed native writer rank')
++  observed[row['rank']]=row
+  for rank in range(8):
+   rec=files['actor/training_state/rank_'+str(rank)+'.json'];path=file(rec,root);r=read(path);pt=file(files['actor/training_state/rank_'+str(rank)+'.pt'],root)
+   fail(r['version']==3 and r['algorithm']=='pure_opsd' and r['status']=='EXACT_FULL_STATE_RELOAD_OK' and (r['rank'],r['world_size'],r['step'])==(rank,8,5) and r['model_state_dict_type']=='SHARDED_STATE_DICT' and r['model_dtensor_entries']>0 and r['optimizer_state_entries']>0 and r['scheduler_last_epoch']==5,'Rank actual full state incomplete')
+   fail(r['path']==str(pt) and r['sha256']==r['state_sha256']==sha(pt) and set(r['object_ids'])=={'model','optimizer','scheduler','teacher'} and all(type(v) is int and v>0 for v in r['object_ids'].values()),'Rank file/object identity differs')
+-  # Actual report must appear as one complete original writer record, not a
+-  # supplied status boolean. Original tee may need time to flush before snapshot.
+-  fail(sum(s==r for s in state_reports)==1,'Missing/duplicate original rank writer record')
++  # Eight authoritative proofs are original manifest-pinned reports + raw PT,
++  # joined below to the actual native full-content inspection. Ray console
++  # suppression is retained as transport evidence, never expanded to eight.
++  if rank in observed:fail(canonical(observed[rank])==canonical(r),'Observed writer body differs from exact saved report')
+   fail(r['teacher']['parameter_count']==COUNT and r['teacher']['execution_device']=='cuda' and r['teacher']['storage_device']=='cpu' and r['teacher']['counters']['cuda_update_entries']==5,'Teacher fixed identity/update clock differs')
+   reports.append(r)
+  fail(len({r['pid'] for r in reports})==8,'Rank worker PID alias')
+@@ -203,7 +222,7 @@
+  review_bindings={k:v for k,v in spec.items()}
+  independent=review_record(Path(a.independent_review),a.independent_review_sha256,root,m,a.manifest_sha256,'INDEPENDENT_REVIEWER',review_bindings)
+  root_review=review_record(Path(a.root_review),a.root_review_sha256,root,m,a.manifest_sha256,'ROOT_AUDITOR',review_bindings)
+- auditpath=output.parent/'receipt-preparation-audit.json';audit={'version':1,'source_commit':SOURCE,'job_id':m['job_id'],'manifest_sha256':a.manifest_sha256,'root_review':root_review,'independent_review':independent,'resource_native_join':join,'actual_live_driver':live_driver,'actual_live_workers':live_workers,'actual_live_service':live_service,'scope':'CPU unsigned payload preparation after actual external PASS reviews; not signing/release/300/effect proof'}
++ auditpath=output.parent/'receipt-preparation-audit.json';audit={'version':1,'source_commit':SOURCE,'job_id':m['job_id'],'manifest_sha256':a.manifest_sha256,'root_review':root_review,'independent_review':independent,'resource_native_join':join,'actual_live_driver':live_driver,'actual_live_workers':live_workers,'actual_live_service':live_service,'native_console_observation':{'observed_count':len(state_reports),'observed_ranks':[v['rank'] for v in state_reports],'authoritative_saved_report_count':len(reports),'ray_repeat_tags':[int(match.group(1)) for line in Path(prefix['snapshot_path']).read_text().splitlines() if 'FULL_STATE_RANK_JSON=' in line for match in [RANK_DEDUP_SUFFIX.search(line)] if match],'scope':'Actual observed console subset only; repeat count does not infer hidden rank records'},'scope':'CPU unsigned payload preparation after actual external PASS reviews; not signing/release/300/effect proof'}
+  with auditpath.open('x') as f:json.dump(audit,f,sort_keys=True,indent=2,allow_nan=False)
+  payload={k:m[k] for k in IDENTITY};payload.update(status='PASS_INDEPENDENT_OPSD_E1_STEP5_REVIEW',checkpoint_manifest_sha256=a.manifest_sha256,checkpoint_files=m['files'],independent_review=independent,evidence={**spec,'root_review':root_review,'preparation_audit':{'path':str(auditpath),'sha256':sha(auditpath)}},train_log_prefix=prefix)
+  # Recheck immutable inputs after the full read/join; no stale review/input drift.

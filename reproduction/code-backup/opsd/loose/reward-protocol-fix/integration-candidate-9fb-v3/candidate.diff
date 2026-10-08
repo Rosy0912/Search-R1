@@ -1,0 +1,321 @@
+diff --git a/search_r1/baselines/corrected_evaluation.py b/search_r1/baselines/corrected_evaluation.py
+index 4e42c91..ca22220 100644
+--- a/search_r1/baselines/corrected_evaluation.py
++++ b/search_r1/baselines/corrected_evaluation.py
+@@ -118,7 +118,7 @@ def load_stage(s):
+ 
+ class ZeroUpdateGuard:
+  def __init__(self,trainer):
+-  self.attempted_dispatches=0;self.guarded=[];self.groups=[];self.original_dispatches=[]
++  self.attempted_dispatches=0;self.guarded=[];self.groups=[];self.original_dispatches=[];self.runtime_guard=None
+   for name,method in (('actor_rollout_wg','update_actor'),('critic_wg','update_critic')):
+    group=getattr(trainer,name,None)
+    if group is not None and callable(getattr(group,method,None)):
+@@ -132,7 +132,9 @@ class ZeroUpdateGuard:
+  def record(self):
+   if self.attempted_dispatches:raise RuntimeError('An optimizer update was attempted')
+   if any(getattr(group,method)!=self.reject for group,method in self.groups):raise RuntimeError('Actual update guard was replaced')
+-  return dict(attempted_update_dispatches=0,guarded_dispatches=self.guarded,original_dispatches=self.original_dispatches,guard_source_sha256=digest(__file__))
++  result=dict(attempted_update_dispatches=0,guarded_dispatches=self.guarded,original_dispatches=self.original_dispatches,guard_source_sha256=digest(__file__))
++  if self.runtime_guard is not None:result['corrected_runtime']=self.runtime_guard.record()
++  return result
+ 
+ def validate_arrays(arrays):
+  required={'responses','prompts','attention_mask','info_mask'}
+@@ -231,6 +233,9 @@ def replay(directory,expected_sha,input_manifest_path,input_manifest_sha256,toke
+    all_rewards.append(reward)
+   all_rows.extend(scores);cursor+=entry['count']
+  audit=m['zero_update_guard']
++ if full_final:
++  from .corrected_runtime_capture import validate_completed_runtime
++  validate_completed_runtime(audit['corrected_runtime'],m['provenance'])
+  if audit.get('guard_source_sha256')!=digest(__file__) or 'actor_rollout_wg.update_actor' not in audit.get('guarded_dispatches',[]) or not audit.get('original_dispatches'):raise ValueError('Actual dispatch guard/source audit missing')
+  if cursor!=m['count'] or cursor!=len(input_manifest['records']) or m['zero_update_guard']['attempted_update_dispatches']!=0:raise ValueError('Incomplete/updated evaluation')
+  result=aggregate_with_rewards(all_rows,all_rewards)
+@@ -259,7 +264,9 @@ def start_capture(trainer):
+  model=Path(trainer.config.actor_rollout_ref.model.path).resolve()
+  if str(model)!=provenance['model_directory']:raise ValueError('Student model role/path mismatch')
+  verify_model(provenance)
+- guard=ZeroUpdateGuard(trainer)
++ from .corrected_runtime_capture import capture_workers,GenerationCallGuard
++ worker_audit=capture_workers(trainer,provenance)
++ guard=ZeroUpdateGuard(trainer);guard.runtime_guard=GenerationCallGuard(trainer.actor_rollout_wg,worker_audit)
+  return ScoringViewWriter(settings.output_dir,manifest,trainer.tokenizer,provenance),guard
+ 
+ 
+@@ -310,7 +317,7 @@ def verify_stage_prerequisites(provenance):
+  if not prerequisite or not Path(prerequisite['path']).is_file() or digest(prerequisite['path'])!=prerequisite['sha256']:raise ValueError('Blocked: strict actual training3007/HF500 verifier is not supplied')
+  subprocess.run(['git','-C',str(Path(__file__).resolve().parents[2]),'diff','--quiet','HEAD'],check=True)
+  # The externally pinned tool must run existing complete actual500+HF checks, not accept a self-reported flag.
+- result=subprocess.run([sys.executable,prerequisite['path'],'--receipt',provenance['training_hf_receipt_path'],'--receipt-sha256',provenance['training_hf_receipt_sha256'],'--model-role',provenance['model_role'],'--model-directory',provenance['model_directory']],check=True,capture_output=True,text=True)
++ result=subprocess.run([sys.executable,prerequisite['path'],'--receipt',provenance['training_hf_receipt_path'],'--receipt-sha256',provenance['training_hf_receipt_sha256'],'--model-role',provenance['model_role'],'--model-directory',provenance['model_directory'],'--stage',str(stage),'--stage-sha256',provenance['reviewed_stage_sha256']],check=True,capture_output=True,text=True)
+  proof=loads(result.stdout)
+  expected=dict(kind='strict_actual_training3007_hf500_prerequisites',training_commit='8e60976d364ab7d7ae51714415813c1359dafe9a',formal_job='3007',actual_outer_updates=500,final_questions=51713,receipt_sha256=provenance['training_hf_receipt_sha256'],model_role=provenance['model_role'],model_directory=provenance['model_directory'])
+  if proof!=expected:raise ValueError('Strict external training/HF verifier did not return exact bound proof')
+@@ -318,7 +325,7 @@ def verify_stage_prerequisites(provenance):
+ 
+ def verify_generation_sources(provenance):
+  # Worker-only GPU modules are byte-pinned, never imported into CPU driver/replay.
+- needed={'search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py'}
++ needed={'search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py','search_r1/baselines/corrected_runtime_capture.py','verl/workers/fsdp_workers.py','verl/single_controller/base/worker.py','verl/single_controller/base/decorator.py','verl/single_controller/ray/base.py'}
+  if not needed<=set(provenance['source_files']):raise ValueError('Incomplete native generation/dataset/runtime source pins')
+ 
+ if __name__=='__main__':
+diff --git a/search_r1/baselines/main.py b/search_r1/baselines/main.py
+index 3817734..563326d 100644
+--- a/search_r1/baselines/main.py
++++ b/search_r1/baselines/main.py
+@@ -52,6 +52,7 @@ def main(config):
+     if enabled(config):
+         import os
+         audit_env['OPSD_CORRECTED_EVAL_STAGE_SHA256'] = os.environ['OPSD_CORRECTED_EVAL_STAGE_SHA256']
++        audit_env['SLURM_JOB_ID'] = os.environ['SLURM_JOB_ID']
+     task = main_task.options(runtime_env={'env_vars': audit_env}) if audit_env else main_task
+     result = ray.get(task.remote(config))
+     if config.baselines.holdout_eval_only:
+diff --git a/tests/reproduction/test_corrected_evaluation.py b/tests/reproduction/test_corrected_evaluation.py
+index 389ee60..970ea97 100644
+--- a/tests/reproduction/test_corrected_evaluation.py
++++ b/tests/reproduction/test_corrected_evaluation.py
+@@ -15,7 +15,7 @@ from search_r1.baselines.evaluation import batch_answer_metrics
+ from search_r1.baselines import corrected_evaluation as ce
+ 
+ STRICT_STAGE_CHECK=ce.verify_stage_prerequisites
+-SOURCE_FILES=('search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py')
++SOURCE_FILES=('search_r1/baselines/corrected_evaluation.py','search_r1/baselines/evaluation.py','search_r1/baselines/bapo.py','search_r1/qa_protocol.py','verl/trainer/main_ppo.py','verl/utils/reward_score/qa_em.py','search_r1/baselines/main.py','verl/trainer/ppo/ray_trainer.py','search_r1/llm_agent/generation.py','search_r1/baselines/actor.py','search_r1/baselines/distillation.py','verl/workers/rollout/vllm_rollout/vllm_rollout.py','verl/utils/dataset/rl_dataset.py','search_r1/baselines/corrected_runtime_capture.py','verl/workers/fsdp_workers.py','verl/single_controller/base/worker.py','verl/single_controller/base/decorator.py','verl/single_controller/ray/base.py')
+ 
+ @pytest.fixture(autouse=True)
+ def cpu_raw_view_scope(monkeypatch):
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/search_r1/baselines/corrected_runtime_capture.py b/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/search_r1/baselines/corrected_runtime_capture.py
+new file mode 100644
+index 0000000..5c56099
+--- /dev/null
++++ b/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/search_r1/baselines/corrected_runtime_capture.py
+@@ -0,0 +1,109 @@
++"""Opt-in read-only corrected evaluation worker/source and call evidence.
++No model forward, optimizer dispatch, parameter gather or collective.
++"""
++import os,re,socket,sys
++from pathlib import Path
++
++WORKER_MODULES=('verl.workers.fsdp_workers','verl.workers.rollout.vllm_rollout.vllm_rollout','search_r1.baselines.actor','search_r1.baselines.distillation','search_r1.baselines.corrected_runtime_capture','verl.single_controller.base.worker','verl.single_controller.base.decorator')
++
++def process_identity(pid,proc=Path('/proc')):
++ root=proc/str(pid);raw_stat=(root/'stat').read_text();fields=raw_stat.rsplit(')',1)[1].split();status=(root/'status').read_text();ids=dict(line.split(':',1) for line in status.splitlines() if ':' in line)
++ uids=ids['Uid'].split()
++ if len(uids)!=4 or not all(value.isdigit() for value in uids):raise ValueError('Invalid actual process UID status')
++ cgroup=(root/'cgroup').read_text();cmdline=(root/'cmdline').read_bytes()
++ return dict(pid=pid,ppid=int(fields[1]),process_start_ticks=fields[19],uid=int(uids[0]),uids=[int(value) for value in uids],cgroup=cgroup,cmdline=[part.decode() for part in cmdline.split(b'\0') if part],raw_stat=raw_stat,raw_status=status,raw_cgroup=cgroup,raw_cmdline_hex=cmdline.hex())
++
++def imported_source_records(names,repo,modules=None):
++ from .corrected_evaluation import digest
++ modules=sys.modules if modules is None else modules;repo=Path(repo).resolve();result={}
++ for name in names:
++  module=modules.get(name)
++  if module is None or not getattr(module,'__file__',None):raise ValueError('Required worker module not actually imported')
++  path=Path(module.__file__).resolve()
++  if not path.is_relative_to(repo):raise ValueError('Worker import outside corrected source')
++  result[name]=dict(path=str(path),sha256=digest(path))
++ return result
++
++def worker_import_callback(worker,probe):
++ import numpy as np,torch
++ from verl import DataProto
++ from .corrected_evaluation import digest
++ if len(probe)!=1:raise ValueError('Exactly one audit probe per worker required')
++ spec=probe.meta_info['corrected_audit_spec'];repo=Path(spec['eval_repo']).resolve();job=os.environ['SLURM_JOB_ID'];stage=os.environ['OPSD_CORRECTED_EVAL_STAGE_SHA256']
++ if stage!=spec['stage_sha256'] or job!=spec['job_id']:raise ValueError('Worker actual job/stage env mismatch')
++ own=process_identity(os.getpid());imports=imported_source_records(WORKER_MODULES,repo)
++ if not re.search(r'(?:^|/)job_'+re.escape(job)+r'(?:/|$)',own['cgroup']):raise ValueError('Worker outside own Slurm cgroup')
++ device=torch.cuda.current_device();properties=torch.cuda.get_device_properties(device);uuid=getattr(properties,'uuid',None)
++ if uuid is None:raise ValueError('Actual CUDA device UUID unavailable; independent native mapping required')
++ record=dict(rank=worker.rank,world_size=worker.world_size,pid=os.getpid(),uid=os.getuid(),node=socket.gethostname(),job_id=job,stage_sha256=stage,source_imports=imports,process=own,worker_type=type(worker).__module__+'.'+type(worker).__qualname__,rollout_type=type(worker.rollout).__module__+'.'+type(worker.rollout).__qualname__,device_index=device,cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],gpu_uuid=str(uuid),callback_sha256=digest(__file__))
++ return DataProto.from_dict(tensors={'audit_probe':torch.zeros((1,1),dtype=torch.int64)},non_tensors={'worker_import_audit':np.array([record],dtype=object)})
++
++def validate_worker_rows(rows,spec):
++ from .corrected_evaluation import digest
++ if len(rows)!=8 or {row['rank'] for row in rows}!=set(range(8)):raise ValueError('Exactly8 unique actual worker ranks required')
++ repo=Path(spec['eval_repo']).resolve();pids=set();uuids=set()
++ for row in rows:
++  if row['world_size']!=8 or row['node'].split('.')[0]!='h100-10' or row['job_id']!=spec['job_id'] or row['stage_sha256']!=spec['stage_sha256']:raise ValueError('Worker rank/node/job/stage mismatch')
++  process=row['process']
++  if row['pid'] in pids or row['pid']!=process['pid'] or row['uid']!=spec['uid'] or process['uid']!=row['uid'] or not str(process['process_start_ticks']).isdigit():raise ValueError('Actual worker PID/start/UID mismatch')
++  pids.add(row['pid'])
++  if not re.search(r'(?:^|/)job_'+re.escape(spec['job_id'])+r'(?:/|$)',process['cgroup']):raise ValueError('Worker ownership cgroup mismatch')
++  if process['cgroup']!=process['raw_cgroup']:raise ValueError('Worker cgroup not actual raw capture')
++  fields=process['raw_stat'].rsplit(')',1)[1].split()
++  if fields[19]!=process['process_start_ticks'] or int(fields[1])!=process['ppid'] or not process['raw_stat'].startswith(str(row['pid'])+' '):raise ValueError('Worker stat raw identity mismatch')
++  status=dict(line.split(':',1) for line in process['raw_status'].splitlines() if ':' in line)
++  if [int(x) for x in status['Uid'].split()]!=process['uids'] or process['uids'][0]!=row['uid']:raise ValueError('Worker UID not actual raw status')
++  if [p.decode() for p in bytes.fromhex(process['raw_cmdline_hex']).split(b'\0') if p]!=process['cmdline'] or not process['cmdline']:raise ValueError('Worker command not actual raw capture')
++  if row['worker_type']!='verl.workers.fsdp_workers.ActorRolloutRefWorker' or row['rollout_type']!='verl.workers.rollout.vllm_rollout.vllm_rollout.vLLMRollout':raise ValueError('Unexpected actual worker/rollout class')
++  if row['device_index']<0 or not row['cuda_visible_devices'] or not row['gpu_uuid']:raise ValueError('Missing CUDA identity')
++  uuids.add(row['gpu_uuid'])
++  if row['callback_sha256']!=spec['source_files']['search_r1/baselines/corrected_runtime_capture.py']:raise ValueError('Worker callback source differs')
++  if set(row['source_imports'])!=set(WORKER_MODULES):raise ValueError('Actual worker imports incomplete')
++  for module,record in row['source_imports'].items():
++   relative=module.replace('.','/')+'.py';wanted=repo/relative
++   if Path(record['path']).resolve()!=wanted or record['sha256']!=spec['source_files'][relative] or digest(wanted)!=record['sha256']:raise ValueError('Actual worker source path/SHA mismatch')
++ if len(uuids)!=8:raise ValueError('Actual worker GPU UUIDs not eight unique devices')
++ return rows
++
++def capture_workers(trainer,provenance):
++ import numpy as np,torch
++ from verl import DataProto
++ from .corrected_evaluation import canonical
++ job=os.environ.get('SLURM_JOB_ID','')
++ if not re.fullmatch('[0-9]+',job):raise ValueError('Corrected capture requires actual own Slurm job')
++ if trainer.actor_rollout_wg.world_size!=8:raise ValueError('Corrected eval requires eight workers')
++ spec=dict(eval_repo=str(Path(__file__).resolve().parents[2]),source_files=provenance['source_files'],job_id=job,stage_sha256=provenance['reviewed_stage_sha256'],uid=os.getuid())
++ probe=DataProto.from_dict(tensors={'audit_probe':torch.zeros((8,1),dtype=torch.int64)},meta_info={'corrected_audit_spec':spec})
++ output=trainer.actor_rollout_wg.execute_with_func_generator(worker_import_callback,probe)
++ if not isinstance(output,DataProto) or len(output)!=8:raise ValueError('Worker RPC result is not eight native DataProto rows')
++ rows=canonical(output.non_tensor_batch['worker_import_audit']);validate_worker_rows(rows,spec)
++ return dict(spec=spec,rows=rows)
++
++class GenerationCallGuard:
++ def __init__(self,group,worker_audit):
++  self.group=group;self.original=group.generate_sequences;self.calls=[];self.rejected_calls=0;self.worker_audit=worker_audit
++  group.generate_sequences=self.generate
++ def generate(self,probe,*args,**kwargs):
++  meta=probe.meta_info
++  if meta.get('do_sample') is not False or meta.get('validate') is not True:
++   self.rejected_calls+=1;raise RuntimeError('Corrected generation requires actual greedy validation calls')
++  if not 8<=len(probe)<=64 or len(probe)%8:
++   self.rejected_calls+=1;raise RuntimeError('Corrected generation actual padded batch budget invalid')
++  output=self.original(probe,*args,**kwargs)
++  from verl import DataProto
++  if not isinstance(output,DataProto) or len(output)!=len(probe):
++   self.rejected_calls+=1;raise RuntimeError('Corrected greedy generation output row budget invalid')
++  self.calls.append(dict(sequence=len(self.calls)+1,rows=len(probe),do_sample=False,validate=True))
++  return output
++ def record(self):
++  from .corrected_evaluation import digest
++  if self.group.generate_sequences!=self.generate or self.rejected_calls or not self.calls:raise ValueError('Generation guard replaced/rejected/unused')
++  return dict(source_sha256=digest(__file__),worker_audit=self.worker_audit,generation_calls=self.calls,rejected_calls=0)
++
++def validate_completed_runtime(audit,provenance):
++ if audit.get('source_sha256')!=provenance['source_files']['search_r1/baselines/corrected_runtime_capture.py'] or audit.get('rejected_calls')!=0:raise ValueError('Completed runtime source/call audit invalid')
++ spec=audit['worker_audit']['spec']
++ if spec['source_files']!=provenance['source_files'] or spec['stage_sha256']!=provenance['reviewed_stage_sha256']:raise ValueError('Runtime differs from externally reviewed stage/source')
++ validate_worker_rows(audit['worker_audit']['rows'],spec)
++ calls=audit['generation_calls']
++ if not calls or [row['sequence'] for row in calls]!=list(range(1,len(calls)+1)) or any(type(row['rows']) is not int or not 8<=row['rows']<=64 or row['rows']%8 or row['do_sample'] is not False or row['validate'] is not True for row in calls):raise ValueError('Actual generation call sequence/budget invalid')
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/tests/reproduction/test_corrected_runtime_capture.py b/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/tests/reproduction/test_corrected_runtime_capture.py
+new file mode 100644
+index 0000000..ade3973
+--- /dev/null
++++ b/work/reward-protocol-fix/integration-candidate-9fb-v3/repo/tests/reproduction/test_corrected_runtime_capture.py
+@@ -0,0 +1,112 @@
++"""Real DataProto + explicitly simulated CPU workers. No real Slurm/GPU proof."""
++import copy,os
++from pathlib import Path
++from types import SimpleNamespace
++import numpy as np
++import pytest,torch
++from verl import DataProto
++from search_r1.baselines import corrected_runtime_capture as capture
++from search_r1.baselines import corrected_evaluation as ce
++SIMULATED_JOB='101' # CPU fixture, never submitted or reported as an actual/future job.
++
++@pytest.fixture
++def spec():
++ repo=Path(capture.__file__).resolve().parents[2]
++ names=set(module.replace('.','/')+'.py' for module in capture.WORKER_MODULES)
++ return dict(eval_repo=str(repo),source_files={name:ce.digest(repo/name) for name in names},job_id=SIMULATED_JOB,stage_sha256='a'*64,uid=os.getuid())
++
++def process(pid,job=SIMULATED_JOB):
++ fields=['S','1']+['0']*18;fields[19]='123';raw_stat=f'{pid} (python) '+' '.join(fields);cmd=['python','actual_worker.py'];uid=os.getuid();cg=f'0::/slurm/job_{job}/step_batch\n'
++ return dict(pid=pid,ppid=1,process_start_ticks='123',uid=uid,uids=[uid]*4,cgroup=cg,cmdline=cmd,raw_stat=raw_stat,raw_status='Uid:\t'+'\t'.join([str(uid)]*4)+'\n',raw_cgroup=cg,raw_cmdline_hex=(b'\0'.join(x.encode() for x in cmd)+b'\0').hex())
++
++def records(spec):
++ repo=Path(spec['eval_repo']);imports={module:dict(path=str(repo/(module.replace('.','/')+'.py')),sha256=spec['source_files'][module.replace('.','/')+'.py']) for module in capture.WORKER_MODULES}
++ return [dict(rank=rank,world_size=8,pid=200+rank,uid=os.getuid(),node='h100-10',job_id=SIMULATED_JOB,stage_sha256=spec['stage_sha256'],source_imports=copy.deepcopy(imports),process=process(200+rank),worker_type='verl.workers.fsdp_workers.ActorRolloutRefWorker',rollout_type='verl.workers.rollout.vllm_rollout.vllm_rollout.vLLMRollout',device_index=0,cuda_visible_devices=str(rank),gpu_uuid=f'GPU-CPU-fixture-{rank}',callback_sha256=ce.digest(capture.__file__)) for rank in range(8)]
++
++def test_cpu_eight_rank_schema_only(spec):capture.validate_worker_rows(records(spec),spec)
++
++@pytest.mark.parametrize('mutation',['missing','duplicate','world','node','job','stage','uid','pid','start','rawstat','rawuid','rawcmd','cgroup','class','rollout','uuid','callback','import','foreignimport'])
++def test_worker_identity_source_ownership_rejections(spec,mutation):
++ rows=records(spec);r=rows[0]
++ if mutation=='missing':rows.pop()
++ if mutation=='duplicate':r['rank']=1
++ if mutation=='world':r['world_size']=7
++ if mutation=='node':r['node']='other-node'
++ if mutation=='job':r['job_id']='other'
++ if mutation=='stage':r['stage_sha256']='0'*64
++ if mutation=='uid':r['uid']+=1
++ if mutation=='pid':r['pid']=201
++ if mutation=='start':r['process']['process_start_ticks']='124'
++ if mutation=='rawstat':r['process']['raw_stat']='fake raw stat'
++ if mutation=='rawuid':r['process']['raw_status']='Uid: 999 999 999 999'
++ if mutation=='rawcmd':r['process']['raw_cmdline_hex']='00'
++ if mutation=='cgroup':r['process']['cgroup']='0::/slurm/job_other/step_batch'
++ if mutation=='class':r['worker_type']='fake.Worker'
++ if mutation=='rollout':r['rollout_type']='fake.Rollout'
++ if mutation=='uuid':r['gpu_uuid']=rows[1]['gpu_uuid']
++ if mutation=='callback':r['callback_sha256']='0'*64
++ if mutation=='import':r['source_imports'].pop(capture.WORKER_MODULES[0])
++ if mutation=='foreignimport':r['source_imports'][capture.WORKER_MODULES[0]]['path']='/tmp/fake.py'
++ with pytest.raises((ValueError,IndexError)):capture.validate_worker_rows(rows,spec)
++
++def test_real_dataproto_fake_dispatch_chunks_and_collects(spec,monkeypatch):
++ class FakeGroup:
++  world_size=8
++  def execute_with_func_generator(self,func,probe):
++   assert func is capture.worker_import_callback
++   parts=probe.chunk(8);self.seen=[len(p) for p in parts]
++   rows=records(spec)
++   return DataProto.concat([DataProto.from_dict(tensors={'audit_probe':part.batch['audit_probe'].clone()},non_tensors={'worker_import_audit':np.array([rows[i]],dtype=object)}) for i,part in enumerate(parts)])
++ trainer=SimpleNamespace(actor_rollout_wg=FakeGroup());monkeypatch.setenv('SLURM_JOB_ID',SIMULATED_JOB)
++ result=capture.capture_workers(trainer,dict(source_files=spec['source_files'],reviewed_stage_sha256=spec['stage_sha256']))
++ assert trainer.actor_rollout_wg.seen==[1]*8 and len(result['rows'])==8
++
++def test_capture_entry_rejects_missing_actual_job(spec,monkeypatch):
++ monkeypatch.delenv('SLURM_JOB_ID',raising=False)
++ with pytest.raises(ValueError,match='own Slurm'):capture.capture_workers(SimpleNamespace(),{})
++
++class Group:
++ def generate_sequences(self,probe):return probe
++
++def test_actual_greedy_generation_guard_readonly(spec):
++ group=Group();audit=dict(spec=spec,rows=records(spec));guard=capture.GenerationCallGuard(group,audit)
++ probe=DataProto.from_dict(tensors={'input_ids':torch.ones((8,1),dtype=torch.long)},meta_info={'do_sample':False,'validate':True})
++ assert group.generate_sequences(probe) is probe and torch.equal(probe.batch['input_ids'],torch.ones((8,1),dtype=torch.long))
++ record=guard.record();capture.validate_completed_runtime(record,dict(source_files=spec['source_files'],reviewed_stage_sha256=spec['stage_sha256']))
++ assert record['generation_calls']==[dict(sequence=1,rows=8,do_sample=False,validate=True)]
++
++@pytest.mark.parametrize('meta',[{}, {'do_sample':True,'validate':True},{'do_sample':False,'validate':False},{'do_sample':0,'validate':1}])
++def test_generate_guard_rejects_actual_sampling_or_missing_flag(meta,spec):
++ group=Group();guard=capture.GenerationCallGuard(group,dict(spec=spec,rows=records(spec)))
++ probe=DataProto.from_dict(tensors={'input_ids':torch.ones((8,1),dtype=torch.long)},meta_info=meta)
++ with pytest.raises(RuntimeError):group.generate_sequences(probe)
++ with pytest.raises(ValueError):guard.record()
++
++def test_generation_guard_replaced_or_unused_rejected(spec):
++ group=Group();guard=capture.GenerationCallGuard(group,dict(spec=spec,rows=records(spec)))
++ with pytest.raises(ValueError):guard.record()
++ group.generate_sequences=lambda probe:probe
++ with pytest.raises(ValueError):guard.record()
++
++def test_stage_path_arguments_are_explicit():
++ source=Path(ce.__file__).read_text();assert "'--stage',str(stage),'--stage-sha256',provenance['reviewed_stage_sha256']" in source
++
++def test_actual_callback_real_dataproto_cpu_mocked_device_only(spec,monkeypatch):
++ import sys
++ from types import SimpleNamespace
++ for name in capture.WORKER_MODULES:
++  monkeypatch.setitem(sys.modules,name,SimpleNamespace(__file__=str(Path(spec['eval_repo'])/(name.replace('.','/')+'.py'))))
++ monkeypatch.setenv('SLURM_JOB_ID',SIMULATED_JOB);monkeypatch.setenv('OPSD_CORRECTED_EVAL_STAGE_SHA256',spec['stage_sha256']);monkeypatch.setenv('CUDA_VISIBLE_DEVICES','0')
++ monkeypatch.setattr(capture,'process_identity',lambda pid:process(pid));monkeypatch.setattr(capture.socket,'gethostname',lambda:'h100-10')
++ monkeypatch.setattr(torch.cuda,'current_device',lambda:0);monkeypatch.setattr(torch.cuda,'get_device_properties',lambda device:SimpleNamespace(uuid='GPU-CPU-fixture-0'))
++ Rollout=type('vLLMRollout',(),{'__module__':'verl.workers.rollout.vllm_rollout.vllm_rollout'})
++ Worker=type('ActorRolloutRefWorker',(),{'__module__':'verl.workers.fsdp_workers','rank':0,'world_size':8,'rollout':Rollout()})
++ probe=DataProto.from_dict(tensors={'audit_probe':torch.zeros((1,1),dtype=torch.int64)},meta_info={'corrected_audit_spec':spec})
++ output=capture.worker_import_callback(Worker(),probe)
++ assert isinstance(output,DataProto) and len(output)==1 and output.non_tensor_batch['worker_import_audit'][0]['gpu_uuid']=='GPU-CPU-fixture-0'
++
++@pytest.mark.parametrize('rows',[1,7,65,72])
++def test_generate_padded_batch_budget_rejected(spec,rows):
++ group=Group();capture.GenerationCallGuard(group,dict(spec=spec,rows=records(spec)))
++ probe=DataProto.from_dict(tensors={'input_ids':torch.ones((rows,1),dtype=torch.long)},meta_info={'do_sample':False,'validate':True})
++ with pytest.raises(RuntimeError,match='batch budget'):group.generate_sequences(probe)

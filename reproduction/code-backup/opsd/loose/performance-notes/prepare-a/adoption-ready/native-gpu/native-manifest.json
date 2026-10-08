@@ -1,0 +1,11 @@
+{
+  "status": "UNRUN_ADOPTED_SOURCE_CAPACITY_DRAFT",
+  "source_distillation_sha256": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf",
+  "requires_main_agent_actual_adopted_commit_env": true,
+  "sha256": {
+    "microbatch_probe.py": "11172ac3a29f23884a94fb5e3bfe57bab75b095a0e363a9e038f91befcf26d00",
+    "native_supervisor.py": "eb2ee7253e8f945f5068703cf6caa3a60ae6f656d3758c8343faf98fbddaea1a",
+    "native_job.sh": "f93dfd2f1b6050c46024fd5b6277377c6e3c16c665084d91c7fd004c872609fb",
+    "native_job_entry.sh": "ab04df44a7152d65c2f6ad9a7963ff43b007a76b25687b65b20031498b2988ec"
+  }
+}

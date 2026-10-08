@@ -1,0 +1,28 @@
+{
+  "actual_rank0_diagnostic_sha256": "64e1bc9489f643e438e5b8d2116e3725a5a89edcdefa2c18bf206e65e2bc0721",
+  "files": {
+    "README.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v4-json-candidate/README.md",
+      "sha256": "abb8cc4c4ad4ec4337053ae8fd7838668b43667106abeb0de278b053811467b4"
+    },
+    "cpu-tests.txt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v4-json-candidate/cpu-tests.txt",
+      "sha256": "36848ad88e176ac2cd94853d1fed21540f0ee87041fba4eb6d03cb7dc41699b5"
+    },
+    "inspect_payloads.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v4-json-candidate/inspect_payloads.py",
+      "sha256": "74c0ff6affc1d2acf6d8e46024459b6d4add03786549ac2cf3982f469dd95e7a"
+    },
+    "test_inspector.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v4-json-candidate/test_inspector.py",
+      "sha256": "00d9a8562ffef9883ef03749b6c1801613d0b4f34ceabee42b134fae1d772623"
+    },
+    "v3-to-v4.patch": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v4-json-candidate/v3-to-v4.patch",
+      "sha256": "d04c43bf533c50734aae956adfabcec517977a1f000980e81e7d651571fc65b0"
+    }
+  },
+  "prior_candidate_sha256": "96fe900ce618bce4b8a11eee42015cd32fe8b29db3fb676a957b841fbbe6048d",
+  "scope": "CPU_SOFTWARE_CANDIDATE_NOT_ACTUAL_FIRST5_ACCEPTANCE",
+  "version": 4
+}

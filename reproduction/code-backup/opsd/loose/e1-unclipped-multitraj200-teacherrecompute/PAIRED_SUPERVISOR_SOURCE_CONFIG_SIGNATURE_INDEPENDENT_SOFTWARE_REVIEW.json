@@ -1,0 +1,194 @@
+{
+  "author_cpu_execution": {
+    "bytes": 6661,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/cpu-originals/20261006T183849816151Z/execution.original.json",
+    "sha256": "2a9edc19cc35041e11212bafd6a9cbf87ef49fc41b1ee8781dd7acb357c2ec70"
+  },
+  "candidate_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate",
+  "candidate_members": {
+    "BLOCKED_EXECUTION.json": {
+      "bytes": 1286,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/BLOCKED_EXECUTION.json",
+      "sha256": "5d92c7dbbcabc89cdc03ddca8d6137b8c30666e339aabe31e8d106bf4427dd3b"
+    },
+    "DESIGN.md": {
+      "bytes": 8455,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/DESIGN.md",
+      "sha256": "351415d26fa8ae55110b6f263ff47cd848c1ebd7df37b2f7e5f8700ed49c36ee"
+    },
+    "SOFTWARE_READINESS.json": {
+      "bytes": 3604,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/SOFTWARE_READINESS.json",
+      "sha256": "b58a916277c4563f491079b26d4f66968d57a029592a003cf7adb972d07614be"
+    },
+    "common.py": {
+      "bytes": 21507,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/common.py",
+      "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581"
+    },
+    "inspect_eval_native_cpu.py": {
+      "bytes": 16011,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/inspect_eval_native_cpu.py",
+      "sha256": "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f"
+    },
+    "paired_cpu_prepare.py": {
+      "bytes": 12455,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/paired_cpu_prepare.py",
+      "sha256": "4a5d9837f29bc94646c31a6fe1179d0bbf39ea32abb42db0132b0d770f298422"
+    },
+    "paired_eval_contract.py": {
+      "bytes": 15584,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/paired_eval_contract.py",
+      "sha256": "a12edf342425c4f0279142f9366f4aaa98219313a434de687acc8a3b4407c496"
+    },
+    "paired_service_entry.py": {
+      "bytes": 6420,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/paired_service_entry.py",
+      "sha256": "904de38e1fd701efd248ea5e73deff1387d847aba0da7e1dc59d849a22b39b48"
+    },
+    "paired_supervisor.py": {
+      "bytes": 62123,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/paired_supervisor.py",
+      "sha256": "398bda1421709a89956a7e23ccb9aef2efc6aa30f002b12dec1887866588ef94"
+    },
+    "test_paired_supervisor.py": {
+      "bytes": 15795,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-candidate/test_paired_supervisor.py",
+      "sha256": "824ae8af735a8de2adcf3409c5fd5a88dccb24ef51eb42a8397c777ee09cc260"
+    }
+  },
+  "checks": [
+    {
+      "evidence": "paired_supervisor.py:148-162,259-293,779-819; paired_cpu_prepare.py:45-63,117-147",
+      "result": "Actual signed root request binds stored fcec3304/c5bf eval source, actual200 layered receipt, root and peer eligibility, six control-tool fullSHAs, original31 checkpoint members, source857/native94 closure378/common0b/tool assets. Historical strict85 publisher UNKNOWN remains literal; current content is separately rechecked.",
+      "scope": "source/control"
+    },
+    {
+      "evidence": "paired_supervisor.py:259-293,466-506; independent cases3/4",
+      "result": "Actual old first5 RSA envelope verifies against ff53 public and exact frozen095 gate, then cannot enter load_request as200. Payload alteration fails RSA. Explicit approval-schema fixtures reject bool version, wrong ready/nonce/parent PID-start/leases/role stages/configs; those fixtures are not real future signed approval.",
+      "scope": "signature/first5"
+    },
+    {
+      "evidence": "paired_supervisor.py:466-506,809-830",
+      "result": "New builder avoids old a12 circular review hash dependency. Stage strings/proposed null review do not authorize GPU. External signed sidecar binds ready/request/parent/start/nonce/UUID/lease/stage/config fullSHA plus root/peer originals. No stage rewrite; large inputs rehashed after waiting.",
+      "scope": "stage compatibility"
+    },
+    {
+      "evidence": "paired_cpu_prepare.py:66-92; paired_eval_contract.py:108-132; independent cases1/6",
+      "result": "Actual local c5bf Hydra compose for both fixed model roles has val_only true, total_training_steps0, E1 disabled/profileNone/seven inactive fieldsNull, n_agent1, PG/referenceKL/entropy0 and equal tool budget. Typed drift rejects. Native validation is greedy T0/n1/seed42.",
+      "scope": "paired config"
+    },
+    {
+      "evidence": "frozen final200_evaluation.py:232-255; main.py:9-47; verl/trainer/main_ppo.py:131-140",
+      "result": "Ready resolved config is PRE-MAIN composition. Actual source configure validates final single physical parquet/seven source cohorts51713 then changes val_files from validation512 to final_val_files. Isolated direct configure fixture reproduces this mutation. main_task pprint occurs after configure. No BASELINE_CONFIG marker exists; optional runtime_audit.config_boundary is disabled in cleaned env. Future output/provenance and actual pprint/Final validation dataset size51713 must identify postconfigure run.",
+      "scope": "premain versus postconfigure"
+    },
+    {
+      "evidence": "paired_cpu_prepare.py:45-63,150-173; paired_supervisor.py:668-708; frozen preflight.py:50-90",
+      "result": "Eval child hides CUDA and uses actual94 native APIs before restoring parent assigned8 visibility immediately before unchanged main. Independent explicit stubs prove visibility/control interface only. Strict verifier supports actual new GPU allocation without initializing CUDA. This does not prove real native/GPU execution.",
+      "scope": "CPU to GPU"
+    },
+    {
+      "evidence": "paired_service_entry.py:45-105; paired_supervisor.py:718-776; frozen be0 entry / retrieval_server.py:397-415",
+      "result": "New hook reads already-created shard/E5 device metadata before original uvicorn.run; no added construction/forward/query in this hook. Native count/at/downcast/getDevice actual compatibility stays pending. Loopback/top3/assets/FAISS origins/own process/all8 GPU observations are required.",
+      "scope": "retriever interface"
+    },
+    {
+      "evidence": "frozen ray_trainer.py:579-610,780-800; final200_evaluation.py:270-280,531-550,612-654; main_ppo.py:183-188; paired_supervisor.py:628-665",
+      "result": "Only three input tensors enter generation, generator non-tensor gold forbidden, gold retained driver-side. Pure OPSD removes reference worker. Validation-only return and independent driver/8worker optimizer/scheduler attempted-update guards remain. 809 batches51713 output completeness is explicitly not scientific raw replay, terminal or release acceptance.",
+      "scope": "gold/zero updates/raw scope"
+    },
+    {
+      "evidence": "paired_cpu_prepare.py:94-114; independent case2",
+      "result": "Only actual_hf200 owned physical training_state directory is allowed; base allows no subdirectories. Unknown/symlink/FIFO rejected. Immediate files and original31 state separately pinned; metadata inspection is not state reload.",
+      "scope": "HF model directory"
+    }
+  ],
+  "created_utc": "2026-10-07T04:16:11.295931+00:00",
+  "delta_configure_execution": {
+    "bytes": 1267967,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/paired-supervisor-source-config-cpu/20261007T041121806852Z-execution.original.json",
+    "sha256": "b54e6290ba8ca43731b598d4082c1a8d01fdb6da4b79801bbfe45c098f56be8a"
+  },
+  "findings": [],
+  "future_actual": {
+    "actual200": null,
+    "actual_approval": null,
+    "actual_eval_job": null,
+    "actual_gpu_faiss": null,
+    "actual_hf200": null,
+    "actual_ready": null,
+    "actual_release": null,
+    "actual_role_outputs": null,
+    "actual_terminal": null
+  },
+  "independent_cpu": {
+    "elapsed_seconds": 1.0324068750000002,
+    "exact_compilation": "Project Python from unchanged source bytes; pyc bypassed",
+    "git_after": {
+      "opsd-final200-paired-eval-source": {
+        "head": "c5bf4c8db33562a259fa227a940dc69543901b98",
+        "status": ""
+      },
+      "opsd-unclipped-multitraj200-teacherrecompute": {
+        "head": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+        "status": ""
+      }
+    },
+    "git_before": {
+      "opsd-final200-paired-eval-source": {
+        "head": "c5bf4c8db33562a259fa227a940dc69543901b98",
+        "status": ""
+      },
+      "opsd-unclipped-multitraj200-teacherrecompute": {
+        "head": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+        "status": ""
+      }
+    },
+    "input_count": 1723,
+    "inputs_stable": true,
+    "returncode": 0,
+    "test_count": 6,
+    "waited": true
+  },
+  "independent_cpu_execution": {
+    "bytes": 1267990,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/paired-supervisor-source-config-cpu/20261007T041258325317Z-execution.original.json",
+    "sha256": "f0db8c627623475ac725fdaa555858cf3980da24871bc782b05c1db5bb306eb1"
+  },
+  "independent_test_source": {
+    "bytes": 10264,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/paired-supervisor-source-config-cpu/test_independent_source_config.py",
+    "sha256": "c28b50d6f4eebef26b1f4ab43a47cdbad0294a3ad0f787dfa96da4f6f0147bed"
+  },
+  "kind": "PAIRED_FINAL200_SUPERVISOR_SOURCE_CONFIG_SIGNATURE_INDEPENDENT_SOFTWARE_REVIEW",
+  "limitations": [
+    "Tools reviewer owns separate lifecycle/wait/cleanup/lease composition; this report does not replace their independent review.",
+    "Own E5/FAISS service occupancy counts toward subsequent frozen15% GPU idle threshold. Actual native GPU gate, FAISS API and8FD inheritance remain unproven.",
+    "Native94/source857 validation APIs composed here are not a newly performed native h10010 import proof.",
+    "Field/visibility tests use explicit fixtures except historical first5 RSA verification. Future200 receipt/job/ready/approval absent.",
+    "No actual main, prepare_inputs, service/query, training, GPU, Slurm, remote, signature issuance, STATUS edit, final result or resource release.",
+    "Actual512 init/training archives/aggregate final cannot substitute fair same51713 base/HF200 raw comparison."
+  ],
+  "retained_failures": [
+    {
+      "cause": "Independent fixture incorrectly iterated scalar final_val_files as characters; repaired using frozen holdout.paths. Production unchanged.",
+      "execution": {
+        "bytes": 1267990,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/paired-supervisor-source-config-cpu/20261007T040530384904Z-execution.original.json",
+        "sha256": "7345931c3cc327304f2d925fe4b53684e091623a097ea5a3cf2c04ae7a7ebf21"
+      }
+    },
+    {
+      "cause": "Independent stage fixture omitted generation_budget_sha256; added canonical fullSHA. Production unchanged.",
+      "execution": {
+        "bytes": 1267983,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/paired-supervisor-source-config-cpu/20261007T041020301354Z-execution.original.json",
+        "sha256": "e37e1d04d81289754bc952b756ff42adf4c36905515b75a4520f87ecc59ceeae"
+      }
+    }
+  ],
+  "reviewer": "author200_source; not author of paired supervisor",
+  "status": "PASS_SOFTWARE_SOURCE_CONFIG_SIGNATURE_SCOPE_ONLY",
+  "version": 1
+}

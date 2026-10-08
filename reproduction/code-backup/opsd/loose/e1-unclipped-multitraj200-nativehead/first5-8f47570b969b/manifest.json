@@ -1,0 +1,33 @@
+{
+  "native_payload_inspector_sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b",
+  "native_payload_tools_manifest_sha256": "048de6e9779c755008ebdbc9f91ccea3877fe9cbb828a0a1c7e3b73ce55d74d8",
+  "scope": "SOURCE_BOUND_SOFTWARE_NO_ACTUAL_FIRST5_ACCEPTANCE_NO_SIGNING_OR_RELEASE",
+  "source_commit": "b611864d3f6ad048189b11b9b9613854e789da5d",
+  "source_files": {
+    "reproduction/baselines/e1-multitraj200/microbatch_probe.py": "b1525cc661ef9e6fd3619841cff13b51fdc914cc2fbed2f919a231342bf9558f",
+    "reproduction/baselines/e1_import_bootstrap.py": "49e8b145748876c1ce4efd408f9206bb09e0d886ff2d77e7c364e662fb80718f",
+    "reproduction/baselines/run_opsd_e1_multitraj200.sh": "7112bbf83608be1c0b3c3ebf4dcd4753c2f0f4a19ebbfad419658949fbfdabd5",
+    "reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "search_r1/baselines/actor.py": "bbf16e04df0ce5d887d674311be3875220bbffe21cbfa2188b3f9833366c1222",
+    "search_r1/baselines/checkpoint_gate.py": "09561719673a7c273ad39b3c9363b1a250eab0a94c20c80f40dd1dfc05589e16",
+    "search_r1/baselines/controller.py": "64791f58629bf654e3fd7bff13883c57a0c20fc05eac4a052b1cb055cff89b00",
+    "search_r1/baselines/distillation.py": "1913427b4f27f936531c4f0d00abeff2b5ef3f0de3d5b7e1fad50febc7b850d2",
+    "search_r1/baselines/e1_profile.py": "589eb8cdaa306736b89fb16149f2f282a47b7749ac2fb18634232c4a543b418b",
+    "search_r1/baselines/full_state.py": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6",
+    "search_r1/baselines/main.py": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/baselines/rollout.py": "4b3501a1eafc10ed4ae7abd76c5a8f8bc9b90c839ab748b6d522295c934a4e5a",
+    "search_r1/baselines/trajectory_archive.py": "88277e24453058e8e62ae2e13b2df94dc1b35110618ac44381a4b5f579f17455",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+    "verl/trainer/config/ppo_opsd_e1_multitraj200.yaml": "4abe9236314f87c2eccb29c6791632c193a9ebcb51848c663107ac2a6671bf79",
+    "verl/trainer/ppo/ray_trainer.py": "f78dc2bebdf6b42b94d6845cd77cd1d723c2b6e33446f25295baf01f7e8d159d",
+    "verl/utils/torch_functional.py": "d46ab49f849b2be950e3e20a844a7747294b842cde0ad0abe49ae4ea31ab1635",
+    "verl/workers/fsdp_workers.py": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7"
+  },
+  "tools": {
+    "hf_cpu_reload.py": "d2fc49f62018e4eb0888b541ee7cab119be9ccba85428efcd07bd71686a51a39",
+    "inspect_first5_cpu.py": "c9058de84fecb72e21c85050ebc3223bfedb8ab5505d6dddeca8874bfbfe6ed3",
+    "receipt_payload.py": "dc0f3a6eb1dfb755f3240650852767b32df61e5b802e4dc728368bbd6ec4f150"
+  },
+  "version": 1
+}

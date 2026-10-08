@@ -1,0 +1,1 @@
+import sys,hashlib; b=sys.stdin.buffer.read(); assert hashlib.sha256(b).hexdigest()=='e459fb4961183b48226e20ebe7ae4595a92ec27ac8b569a76eb5befc58bc2b9f'; sys.argv=["collect_checkpoints50_100.py","--steps","50","100"]; exec(compile(b,"<root_fixed_readonly_collector>","exec"),{"__name__":"__main__"})

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "phase": "post-evaluation-external-binding",
+  "job_id": "UNFILLED",
+  "uid": "UNFILLED",
+  "eval_repo": "UNFILLED",
+  "eval_commit": "e3f78f13b58898f7ab2f5a99cac2b76055d47a5a",
+  "stage_sha256": "UNFILLED",
+  "input_manifest_sha256": "UNFILLED",
+  "model_role": "UNFILLED",
+  "selected_gpu_uuids": "UNFILLED",
+  "post_verifier_sha256": "UNFILLED",
+  "launcher_bundle_sha256": "UNFILLED",
+  "canonical_template_manifest": "UNFILLED"
+}

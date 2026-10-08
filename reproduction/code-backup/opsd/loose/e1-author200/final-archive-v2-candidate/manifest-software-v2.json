@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "status": "CPU_SOFTWARE_FIXTURES_PASS_READY_FOR_INDEPENDENT_REVIEW_ONLY",
+  "scope": "PREPARED_CURRENT_JOB3261_RAW_ORIGINAL_ARCHIVE_COLLECTOR_NOT_DEPLOYED_OR_EXECUTED_ON_REMOTE",
+  "prepared_utc": "2026-10-06T00:30:39.733486+00:00",
+  "expected_training_job_id": "3261",
+  "expected_source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "files": {
+    "collect_actual3261_final_originals.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-v2-candidate/collect_actual3261_final_originals.py",
+      "bytes": 40395,
+      "sha256": "d83ef9dcbc950978a96b280789574917b0c8a81148c52d73ea1109a22f828406"
+    },
+    "test_collect_actual3261_final_originals.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-v2-candidate/test_collect_actual3261_final_originals.py",
+      "bytes": 25727,
+      "sha256": "0b292bd74293ab23140971a16644922343ad43fd6908f25dcd3b26ba7ccf97b8"
+    },
+    "FINAL_ARCHIVE_COLLECTOR_SCOPE.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-v2-candidate/FINAL_ARCHIVE_COLLECTOR_SCOPE.md",
+      "bytes": 7095,
+      "sha256": "bb92376ea95f64761cdaf0f920f80b4ad273005e40adbcf145bc0f1dea70e37e"
+    },
+    "cpu-tests-v2-original.stdout": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-v2-candidate/cpu-tests-v2-original.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-tests-v2-original.stderr": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-v2-candidate/cpu-tests-v2-original.stderr",
+      "bytes": 6318,
+      "sha256": "552a591e539137a55d7204584a43d1a86c43315d3f5c3245a8bb090bf3ad0a90"
+    }
+  },
+  "design_anchors": {
+    "AUTHOR200_FINAL_ACCEPTANCE_EVIDENCE_PLAN.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/AUTHOR200_FINAL_ACCEPTANCE_EVIDENCE_PLAN.md",
+      "sha256": "82d1b2ef5fdb54ab4bfb29fabaa6679073aee481f2b496dbd575125e2cedf4a6"
+    },
+    "AUTHOR200_FINAL_ACCEPTANCE_INDEPENDENT_DESIGN_REVIEW.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/AUTHOR200_FINAL_ACCEPTANCE_INDEPENDENT_DESIGN_REVIEW.json",
+      "sha256": "8ab24df20d4ca2d824b4c33a8461b68305c9271d396b8c637c2be9bdee3b9c2f"
+    },
+    "AUTHOR200_FINAL_LOGS_TERMINAL_READ_ONLY_REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/AUTHOR200_FINAL_LOGS_TERMINAL_READ_ONLY_REVIEW.md",
+      "sha256": "479a32781c4fe231c361499fd6baf7e615a80b2371b05731d8d7dfc9321f1b25"
+    },
+    "ACTUAL3261_INFLIGHT_STDERR_SLURM_PREFIX_INDEPENDENT_REVIEW.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/ACTUAL3261_INFLIGHT_STDERR_SLURM_PREFIX_INDEPENDENT_REVIEW.json",
+      "sha256": "e47ebd3b3a9e73619b5bdd0ec700760ed6aa0ea045266854baff76cab73b83c6"
+    },
+    "SOURCE_FORMAL_LOG_FRAMING_TERMINAL_IMPACT_REVIEW_V2.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/SOURCE_FORMAL_LOG_FRAMING_TERMINAL_IMPACT_REVIEW_V2.json",
+      "sha256": "d16d79903b41ab43f95315d6eceb3e84d5da5dacb4e42350631e140a5b52233e"
+    },
+    "AUTHOR200_FINAL_EVIDENCE_PLAN_INDEPENDENT_REVIEW.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/AUTHOR200_FINAL_EVIDENCE_PLAN_INDEPENDENT_REVIEW.json",
+      "sha256": "2082a72bb9177c665ef1e9ea64397edd16c483017009e81b5ab9e93e3b63b964"
+    }
+  },
+  "cpu_tests": {
+    "python": "/Users/shaoshitong/Documents/Search-R1-RL-Baselines/.venv-cpu/bin/python",
+    "python_version": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+    "current_run_exit_code": 0,
+    "current_run_tests": 51,
+    "remote_main_executed": false,
+    "gpu_or_training_or_lock_or_signal_executed": false,
+    "prior_v5_exit_code": 1,
+    "prior_v5_failure": "New test placement left foreign-UID fixture statements in wrong test, resulting in NameError base; original stderr preserved. Test statements moved back, new code unchanged by that repair except adding query-status rejection."
+  },
+  "software_properties": [
+    "Exact pinned e47 reviewed nine actual FD bindings; 18 Ray streams, 2 Slurm streams and 11 run members",
+    "No byte limit truncation: streamed complete259MiB fixture passes old32/256MiB boundaries",
+    "O_NOFOLLOW parent traversal, openedFD before/after and sameFD double wholeSHA, full pathname recheck",
+    "No replace/retry: new exclusive archive/raw files, fsync, manifest last",
+    "Stable file bytes do not prove closure; actual double terminal+oldPID/start exit+UID/cgroup+all/proc writerFD double absence required",
+    "Unfiltered NVML/listeners and raw proc locks separate; PID/start/UID/cgroup observations exclude env/cmdline; no lock probes/signals/network/training entry",
+    "Actual child0+wrapper1/future schedulerFAILED preserved separately; missing finish marker retained; no recreated receipt",
+    "Watcher absent remains pending; only actual uploaded terminal bytes with actual pin may fallback for unavailable scontrol",
+    "No checkpoint/HF/optimizer/effect/resource-release PASS claim"
+  ],
+  "prohibited_actions_performed": [],
+  "prior_software_manifest_v1_sha256": "af35a9be43fa0d6af34b685d68d727ca4f17de85d41c4ee238c0e40dfb1128cc",
+  "current_collector_plan_sha256": "479a32781c4fe231c361499fd6baf7e615a80b2371b05731d8d7dfc9321f1b25",
+  "current_collector_plan_independent_review_sha256": "2082a72bb9177c665ef1e9ea64397edd16c483017009e81b5ab9e93e3b63b964",
+  "original_native_hf_design_context_only_sha256": "82d1b2ef5fdb54ab4bfb29fabaa6679073aee481f2b496dbd575125e2cedf4a6",
+  "previous_candidate_original": {
+    "directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-author200/final-archive-candidate",
+    "source_sha256": "dab35fe77f91fb2ca86c97335486e9f6d5cbd886565117a1fad17b1166d5f9f4",
+    "tests": 50,
+    "software_manifest_sha256": "759069255afac2c1bb20bef26d69d178977b394b67d7a179a841adec61b02916"
+  },
+  "current_candidate_difference": "Only strict exact-int read-only command status guards and an alias-negative test added; old dab candidate bytes and historical CPU logs unchanged."
+}

@@ -1,0 +1,194 @@
+"""Proposal-only CPU comparisons against frozen e43, never imported by production."""
+import importlib.util
+import json
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+import pytest
+import torch
+from transformers import Qwen2ForCausalLM
+from tests.baselines import test_models_and_driver as fixtures
+from search_r1.baselines.distillation import teacher_inputs
+
+HERE = Path(__file__).resolve().parent
+
+def load(name, filename):
+    spec = importlib.util.spec_from_file_location('search_r1.baselines.' + name, HERE / filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+BASE = load('proposal_baseline_e43', 'baseline_distillation_e43.py')
+A = load('proposal_only_a', 'proposal_distillation_a.py')
+RESULTS = []
+
+@pytest.fixture(scope='module', autouse=True)
+def models_and_record():
+    fixtures.TinyModels.setUpClass()
+    yield
+    fixtures.TinyModels.tearDownClass()
+    (HERE / 'cpu-results.json').write_text(json.dumps(dict(
+        scope='CPU real tiny Qwen2/FP32 all parameters, train mode with non-reentrant decoder checkpoint; proposal only, not 3B/CUDA/FSDP/production acceptance',
+        tests=RESULTS), indent=2))
+
+
+def inputs(kind):
+    tok = fixtures.TinyModels.tokenizer
+    prompt = torch.tensor([tok.encode('Question capital?')]).repeat(2, 1)
+    response = torch.tensor([tok.encode('<answer>Paris</answer>')]).repeat(2, 1)
+    ids = torch.cat((prompt, response), 1)
+    mask = torch.ones_like(response)
+    if kind == 'internal_and_trailing_empty':
+        mask[:, 3:6] = 0
+        mask[:, -6:] = 0
+    elif kind == 'mixed_rows':
+        mask[0, :] = 0
+        mask[1, 3:6] = 0
+        mask[:, -6:] = 0
+    elif kind == 'full_zero':
+        mask.zero_()
+    elif kind == 'all_valid':
+        pass
+    else:
+        raise AssertionError(kind)
+    return dict(prompts=prompt, responses=response, input_ids=ids, attention_mask=torch.ones_like(ids),
+                position_ids=torch.arange(ids.shape[1])[None].repeat(2, 1), loss_mask=mask)
+
+
+def active_chunks(tensors, width):
+    return sum(bool(tensors['loss_mask'][:, start:start+width].bool().any())
+               for start in range(0, tensors['responses'].shape[1], width))
+
+
+@pytest.mark.parametrize('kind', ['all_valid', 'internal_and_trailing_empty', 'mixed_rows', 'full_zero'])
+@pytest.mark.parametrize('checkpointed', [False, True])
+def test_real_hf_all_parameter_gradients_loss_and_teacher_context_exact(kind, checkpointed):
+    tok = fixtures.TinyModels.tokenizer
+    tensors = inputs(kind)
+    settings = SimpleNamespace(chunk_size=3, beta=0., temperature=1., component_clip=.05,
+                               loss_checkpointing=checkpointed)
+    records = []
+    teacher_reference_inputs = teacher_inputs(tok, tensors['prompts'], tensors['responses'],
+                                              tensors['attention_mask'][:, -tensors['responses'].shape[1]:],
+                                              [['Paris'], ['Rome']], 1024)
+    for module in (BASE, A):
+        teacher = module.FrozenTeacher(fixtures.TinyModels.tmp.name, tok)
+        student = Qwen2ForCausalLM.from_pretrained(fixtures.TinyModels.tmp.name)
+        student.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
+        student.train()
+        for child in student.modules():
+            if isinstance(child, torch.nn.Dropout): child.eval()
+        head_calls, base_calls = [], []
+        hooks = [teacher.model.get_output_embeddings().register_forward_hook(lambda *args: head_calls.append(1)),
+                 teacher.model.base_model.register_forward_hook(lambda *args: base_calls.append(1))]
+        try:
+            loss = module.opsd_loss(student, teacher, tensors, tok, [['Paris'], ['Rome']], settings,
+                                   tensors['loss_mask'].sum().clamp_min(1))
+            head_before_backward = len(head_calls)
+            loss.backward()
+            assert len(head_calls) == head_before_backward and len(base_calls) == 1
+            grads = {name: param.grad.detach().clone() for name, param in student.named_parameters()}
+            assert len(grads) == len(list(student.parameters()))
+            assert all(torch.isfinite(grad).all() for grad in grads.values())
+            assert all(param.grad is None and not param.requires_grad for param in teacher.model.parameters())
+            records.append(dict(loss=loss.detach(), grads=grads, heads=len(head_calls),
+                                scored_tokens=teacher.scored_tokens))
+        finally:
+            for hook in hooks: hook.remove()
+    torch.testing.assert_close(records[0]['loss'], records[1]['loss'], atol=0, rtol=0)
+    max_abs = max(float((records[1]['grads'][name]-grad).abs().max()) for name, grad in records[0]['grads'].items())
+    diff_l2 = sum(float((records[1]['grads'][name].double()-grad.double()).square().sum()) for name, grad in records[0]['grads'].items()) ** .5
+    ref_l2 = sum(float(grad.double().square().sum()) for grad in records[0]['grads'].values()) ** .5
+    for name, grad in records[0]['grads'].items():
+        torch.testing.assert_close(grad, records[1]['grads'][name], atol=0, rtol=0)
+    assert records[1]['heads'] == active_chunks(tensors, settings.chunk_size)
+    assert records[0]['scored_tokens'] == records[1]['scored_tokens'] == int(teacher_reference_inputs[1].sum())
+    if kind == 'full_zero':
+        assert records[1]['loss'] == 0 and ref_l2 == 0 and records[1]['heads'] == 0
+    RESULTS.append(dict(case=kind, loss_checkpointing=checkpointed, baseline_loss=float(records[0]['loss']),
+        proposal_loss=float(records[1]['loss']), loss_abs_difference=0., all_parameter_tensors_compared=len(records[0]['grads']),
+        all_parameter_elements_compared=sum(grad.numel() for grad in records[0]['grads'].values()),
+        gradient_max_abs=max_abs, gradient_l2_difference=diff_l2, gradient_relative_l2=diff_l2/max(ref_l2,1e-30),
+        baseline_teacher_head_calls=records[0]['heads'], proposal_teacher_head_calls=records[1]['heads'],
+        teacher_base_calls_per_variant=1, teacher_scored_tokens_each=records[1]['scored_tokens'], passed=True))
+
+
+@pytest.mark.parametrize('supervised', [False, True])
+def test_nonfinite_first_last_columns_empty_chunks_preserve_valid_token_rule(supervised):
+    tok = fixtures.TinyModels.tokenizer
+    tensors = inputs('internal_and_trailing_empty')
+    settings = SimpleNamespace(chunk_size=3, beta=0., temperature=1., component_clip=.05, loss_checkpointing=True)
+    width = tensors['responses'].shape[1]
+    response_start = tensors['input_ids'].shape[1]-width-1
+    values = torch.randn((*tensors['input_ids'].shape, len(tok)))
+    if supervised:
+        row, column = 0, response_start
+    else:
+        row, column = 0, response_start+3
+    values[row, column, 0] = float('nan')
+    values[row, column, -1] = float('inf')
+    records = []
+    class DirectLogits(torch.nn.Module):
+        def __init__(self):
+            super().__init__(); self.values = torch.nn.Parameter(values.clone())
+        def forward(self, **kwargs): return SimpleNamespace(logits=self.values)
+    for module in (BASE, A):
+        teacher = module.FrozenTeacher(fixtures.TinyModels.tmp.name, tok)
+        student = DirectLogits()
+        if supervised:
+            with pytest.raises(ValueError, match='Nonfinite OPSD logits'):
+                module.opsd_loss(student, teacher, tensors, tok, [['Paris'], ['Rome']], settings,
+                                 tensors['loss_mask'].sum())
+            assert student.values.grad is None
+        else:
+            loss = module.opsd_loss(student, teacher, tensors, tok, [['Paris'], ['Rome']], settings,
+                                   tensors['loss_mask'].sum())
+            loss.backward()
+            assert torch.isfinite(loss) and torch.isfinite(student.values.grad).all()
+            records.append((loss.detach(), student.values.grad.clone()))
+    if not supervised:
+        torch.testing.assert_close(records[0][0], records[1][0], atol=0, rtol=0)
+        torch.testing.assert_close(records[0][1], records[1][1], atol=0, rtol=0)
+    RESULTS.append(dict(case='nonfinite_supervised' if supervised else 'nonfinite_empty_chunk',
+                        exception_preserved=supervised, finite_unsupervised_loss_and_gradient=not supervised,
+                        passed=True))
+
+
+def test_nonfinite_teacher_projection_in_empty_chunk_does_not_create_new_failure():
+    tok = fixtures.TinyModels.tokenizer
+    tensors = inputs('internal_and_trailing_empty')
+    settings = SimpleNamespace(chunk_size=3, beta=0., temperature=1., component_clip=.05, loss_checkpointing=True)
+    records = []
+    for module in (BASE, A):
+        teacher = module.FrozenTeacher(fixtures.TinyModels.tmp.name, tok)
+        student = Qwen2ForCausalLM.from_pretrained(fixtures.TinyModels.tmp.name).eval()
+        _, _, positions = teacher_inputs(tok, tensors['prompts'], tensors['responses'],
+                                         tensors['attention_mask'][:, -tensors['responses'].shape[1]:],
+                                         [['Paris'], ['Rome']], 1024)
+        with torch.no_grad():
+            tid, mask, _ = teacher_inputs(tok, tensors['prompts'], tensors['responses'],
+                                         tensors['attention_mask'][:, -tensors['responses'].shape[1]:],
+                                         [['Paris'], ['Rome']], 1024)
+            hidden = teacher.model.base_model(input_ids=tid, attention_mask=mask, use_cache=False).last_hidden_state
+            empty_features = hidden.gather(1, positions[:,3:6,None].expand(-1,-1,hidden.shape[-1]))
+        head = teacher.model.get_output_embeddings()
+        original_forward = head.forward
+        invalid_projection_calls = []
+        def projected(features):
+            result = original_forward(features)
+            if torch.equal(features, empty_features):
+                invalid_projection_calls.append(1)
+                result = torch.full_like(result, float('nan'))
+            return result
+        with patch.object(head, 'forward', side_effect=projected):
+            loss = module.opsd_loss(student, teacher, tensors, tok, [['Paris'], ['Rome']], settings,
+                                   tensors['loss_mask'].sum())
+            loss.backward()
+        assert torch.isfinite(loss)
+        assert len(invalid_projection_calls) == (1 if module is BASE else 0)
+        records.append((loss.detach(), {name:param.grad.clone() for name,param in student.named_parameters()}))
+    torch.testing.assert_close(records[0][0], records[1][0], atol=0, rtol=0)
+    for name in records[0][1]:
+        torch.testing.assert_close(records[0][1][name], records[1][1][name], atol=0, rtol=0)
+    RESULTS.append(dict(case='teacher_nonfinite_empty_projection', loss_abs_difference=0.,
+                        gradient_max_abs=0., all_parameter_tensors_compared=len(records[0][1]), passed=True))

@@ -1,0 +1,274 @@
+{
+  "version": 1,
+  "kind": "ACTUAL_C5BF_NATIVE_CPU_IMPORT_PARTIAL_CONFIG_INDEPENDENT_REVIEW",
+  "status": "PASS_ACTUAL_NATIVE_CPU_IMPORT_PARTIAL_CONFIG_PREPARATION_ONLY",
+  "created_utc": "2026-10-06T16:48:57.870915+00:00",
+  "eval_source_commit": "c5bf4c8db33562a259fa227a940dc69543901b98",
+  "parent_training_source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "stored_training_job_id": "3304",
+  "actual_cpu_execution_job_id": "3304",
+  "actual_cpu_execution_step_id": "2",
+  "actual_controller": {
+    "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_2\n0::/system.slice/slurmd.service\n",
+    "execution_job_id": "3304",
+    "execution_step_id": "2",
+    "node": "h100-10",
+    "pid": 2752194,
+    "python": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/python",
+    "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+    "start_ticks": 1836550760,
+    "stored_training_job_id": "3304",
+    "uid": 0,
+    "uids": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "actual_checker": {
+    "actual_process_argv": [
+      "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/python",
+      "-B",
+      "-c",
+      "\nimport hashlib, os, pathlib, re, stat, sys\np=pathlib.Path(sys.argv[1]); expected=sys.argv[2]\nif not p.is_absolute() or p.resolve(strict=True)!=p: raise ValueError('Physical child source required')\nbefore=p.lstat()\nif not stat.S_ISREG(before.st_mode) or before.st_uid!=os.getuid() or before.st_size>32*1024**2: raise ValueError('Owned child source required')\nfd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW)\ntry:\n    opened=os.fstat(fd); chunks=[]\n    while True:\n        chunk=os.read(fd,1024**2)\n        if not chunk: break\n        chunks.append(chunk)\n    ended=os.fstat(fd)\nfinally: os.close(fd)\nafter=p.lstat(); keys=('st_dev','st_ino','st_size','st_uid','st_mode','st_mtime_ns','st_ctime_ns')\nif any(getattr(before,k)!=getattr(s,k) for s in (opened,ended,after) for k in keys): raise ValueError('Child source changed during read')\nraw=b''.join(chunks)\nif re.fullmatch('[0-9a-f]{64}',expected) is None or hashlib.sha256(raw).hexdigest()!=expected: raise ValueError('Child bytes differ before execution')\nsys.argv=[str(p)]+sys.argv[3:]\nscope={'__name__':'__main__','__file__':str(p),'__package__':None,'__builtins__':__builtins__}\nexec(compile(raw,str(p),'exec',dont_inherit=True,optimize=0),scope)\n",
+      "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/inspect_eval_native_cpu.py",
+      "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f",
+      "--source-inventory",
+      "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-source-publication-v1/source-inventory.actual.json",
+      "--source-inventory-sha256",
+      "fd8fa25d8321a4cd11b9faa5d8fdbd5f1692172a9e51ea5eba447c3565b8cc0d",
+      "--self-sha256",
+      "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f",
+      "--execution-job-id",
+      "3304",
+      "--execution-step-id",
+      "2",
+      "--output",
+      "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/evidence/c5bf-native-cpu-preparation-once-v1/native-cpu-preparation.json"
+    ],
+    "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_2\n0::/system.slice/slurmd.service\n",
+    "execution_job_id": "3304",
+    "execution_step_id": "2",
+    "node": "h100-10",
+    "pid": 2752196,
+    "python": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/python",
+    "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+    "start_ticks": 1836550772,
+    "stored_training_job_id": "3304",
+    "uid": 0,
+    "uids": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "actual_srun_pid": 2752181,
+  "actual_remote_launcher_pid": 2752176,
+  "actual_local_ssh_pid": 90856,
+  "blocking_findings": [],
+  "actual_counts": {
+    "original_member_files": 20,
+    "original_member_bytes": 479115,
+    "source_tree_members": 857,
+    "imported_modules": 94,
+    "project_imported_modules": 90,
+    "verified_live_function_code_count": 837
+  },
+  "runtime": {
+    "cuda_is_initialized": false,
+    "interpreter_binary": {
+      "bytes": 5941864,
+      "ctime_ns": 1788994756380740146,
+      "device": 64769,
+      "inode": 4195968,
+      "mtime_ns": 1788171497000000000,
+      "physical_path": "/usr/bin/python3.10",
+      "sha256": "a2f33a6e006989270f4340528eb61f8f97366e00a5d1b602ac8672ea44fc56ae",
+      "uid": 0
+    },
+    "python": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/python",
+    "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+    "torch_module_source": {
+      "bytes": 89184,
+      "ctime_ns": 1790968554988235901,
+      "device": 64768,
+      "inode": 138495434,
+      "mtime_ns": 1790968553636277616,
+      "physical_path": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/torch/__init__.py",
+      "sha256": "34fd26c3046775a70a6a654df60afb362b2f2e98b2f9b8e713c8763b7a80ff83",
+      "uid": 0
+    },
+    "torch_version": "2.4.0+cu121"
+  },
+  "bindings": {
+    "launcher_sha256": "7731a24dcadf631b899003ba66b8b7f2cfb0e7fcc39b34e1cfab8869174b0196",
+    "native_bundle_manifest_sha256": "ee31da65570318227ad6b037187cffa14e4dc489bac2a504d2bc54010c95da05",
+    "controller_sha256": "176ade36207d1ddf13ffdcf1faf859d0f1604464909a5336e8ba751993ccd507",
+    "checker_sha256": "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f",
+    "common_sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581",
+    "source_inventory_sha256": "fd8fa25d8321a4cd11b9faa5d8fdbd5f1692172a9e51ea5eba447c3565b8cc0d",
+    "original_train_driver_pid": 2548319,
+    "original_train_driver_start_ticks": "1834784786"
+  },
+  "checks": [
+    "Actual20 original members fully hash/size/base64/physical path match retained raw bytes; UID0/nlink1/unique sampled inodes,479115B; collection exact stable sameFD source code+true0 retained",
+    "Actual launcher source7731 and recorded local stdin-SHA compile route; local Popen PID90856 exactargv/truewait0, original stdout exactly equals retained remote result",
+    "Actual srun command pins original3304/fourCPUs/overlap/gresnone/h10010; original bootstrap matches reviewed7731 raw; controller receives real3304.step2 supplied by actual Slurm environment",
+    "Controller2752194/start1836550760 and checker2752196/start1836550772 both UID0/uids[0,0,0,0]/h10010/same-path3304.step2; actual child Popen/invocation/start/wait/report/procargv mutually exact",
+    "Checker child-wait0, controller completion original+stdoutSHA, srun-wait0 and local SSH-wait0 form actual execution exit chain; no process identity error and both CPU processes absent at subsequent collection; no training resource release claim",
+    "Actual fd8 seven-key source inventory reconstructed exactly from retained publication payload, source c5bf parentfcec/member857; all857 actual source physical records have expected absolute paths/UID0/unique sampled inode/fullSHA+size matching inventory",
+    "All90 project modules among actual94 closure records point to newc5bf repo and matching857 source SHA; required modules cover final200 optin reader/generation/scoring hooks; actual837 live-code count reported by pinned bootstrap verification before/after partial config, not guessed from old733/734",
+    "Actual Python3.10.12/Torch2.4.0+cu121/CUDA_is_initializedfalse; exact interpreter and torch source digest retained; child invocation explicitly CUDAempty/-B/dontbytecode",
+    "Actual partial resolve=False config checked-fields equal retained config bytes: val_only/steps0/final200enabled/E1profileNone, no referenceKL declarations, authored T1/P1/K-1/top3/lengths4turns; five future env interpolations exactly preserved and values null; no model or runtime retrieval budget inferred",
+    "Original training driver2548319/start1834784786/uids0/job3304step0 remains before/after launcher; readonly exactfcec HEAD/clean, original RUNNING/Restarts0/eightH100 allocation and all22 native bundle SHA/modes retained; subsequent collection both trainfcec and isolatedc5bf Git HEAD/clean true0"
+  ],
+  "actual_report": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/native-cpu-preparation.json",
+    "sha256": "2b42362994a7f51f11044cd305b01d11e143a45b57beae9cafc9ef6d49250d14",
+    "bytes": 11365
+  },
+  "actual_closure": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/native-cpu-preparation.json.closure.json",
+    "sha256": "378277254a4b7d92236dfc4a8618a9de5fc49cf3ed16664ac41f21b918d1b20e",
+    "bytes": 23950
+  },
+  "actual_partial_config": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/native-cpu-preparation.json.partial-config.json",
+    "sha256": "38ca61dc3839990d24c9e7ee5a83297f0e4021363be298c16983bcc8664d5ad7",
+    "bytes": 7365
+  },
+  "actual_source_physical_records": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/native-cpu-preparation.json.source-physical-records.json",
+    "sha256": "3c8d0282567d3c27e20ba38a5695b4cf64458f2547d85535072fe244caf6a764",
+    "bytes": 383983
+  },
+  "actual_waited_originals": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-launch-execution-v1-original/exit.original.json",
+      "sha256": "f2146f97885ad201334c48653fe3bc91b16e3d16212e59ab0bee0d845a3dd62b",
+      "bytes": 91
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-launch-once-v1/srun-wait.original.json",
+      "sha256": "6c5ea3d38dcd23c927401785cefcb13dd55b8c5ff5c07e8bc39da2c906a052c8",
+      "bytes": 2771
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/child-wait.original.json",
+      "sha256": "98b1c0018090c0069d83827b519df554a844734c323e7d160580a980bfd89b1d",
+      "bytes": 2184
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/controller-complete.original.json",
+      "sha256": "8ffe93aad12bbbf1372e55ba5c9e6c2b1bd41e907eb745742bc161d5f3065898",
+      "bytes": 4021
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/transport.wait.original.json",
+      "sha256": "4936a027571f7400aa485910a14de541133e63d146d27380fdb6c8c47e8fe23c",
+      "bytes": 892
+    }
+  ],
+  "raw_collection_wire": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/transport.stdout.original",
+    "sha256": "62ad5cc69dac9d2d07a2e312d0ef864c081dfc68f0f6623274ce298094bb6278",
+    "bytes": 650590
+  },
+  "raw_collector_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/collector-source.original.py",
+    "sha256": "ae9c5edc24ae3cb5b3647bf234032a5c6141876693385b33b0e764111ee32a5e",
+    "bytes": 3424
+  },
+  "raw_launch_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-launch-execution-v1-original/launcher-source.original.py",
+    "sha256": "7731a24dcadf631b899003ba66b8b7f2cfb0e7fcc39b34e1cfab8869174b0196",
+    "bytes": 10512
+  },
+  "future_interpolations": {
+    "actor_rollout_ref.model.path": "${oc.env:OPSD_FINAL200_ACTUAL_MODEL_DIRECTORY}",
+    "baselines.final200_evaluation.input_manifest_path": "${oc.env:OPSD_FINAL200_INPUT_MANIFEST}",
+    "baselines.final200_evaluation.input_manifest_sha256": "${oc.env:OPSD_FINAL200_INPUT_MANIFEST_SHA256}",
+    "baselines.final200_evaluation.output_dir": "${oc.env:OPSD_FINAL200_ACTUAL_FRESH_OUTPUT_DIRECTORY}",
+    "baselines.final200_evaluation.reviewed_stage_manifest": "${oc.env:OPSD_FINAL200_ACTUAL_REVIEWED_STAGE}"
+  },
+  "future_values": {
+    "actor_rollout_ref.model.path": null,
+    "baselines.final200_evaluation.input_manifest_path": null,
+    "baselines.final200_evaluation.input_manifest_sha256": null,
+    "baselines.final200_evaluation.output_dir": null,
+    "baselines.final200_evaluation.reviewed_stage_manifest": null
+  },
+  "actual_stderr": {
+    "record": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/c5bf-native-cpu-actual-originals-v1/raw/c5bf-native-cpu-preparation-once-v1/child.stderr.original",
+      "sha256": "a100588394b202eee99125638254d87335c0703526ed43c2ce11292d86e51c0b",
+      "bytes": 470
+    },
+    "nonempty": true,
+    "observed": [
+      "Transformers TRANSFORMERS_CACHE deprecation FutureWarning",
+      "vllm._version unavailable RuntimeWarning"
+    ],
+    "scope": "Both original warnings retained; actual import/checker true0 and pinned project closure still verified; no vLLM commit/version provenance, model or GPU evaluation success inferred"
+  },
+  "independent_local_audit": {
+    "execution": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local-v2/execution.original.json",
+      "sha256": "a15fd462d06d89bb97aaf7ce46c4e2b95e0ce76eea2b9d902baf3020350c7382",
+      "bytes": 690
+    },
+    "audit_source": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local-v2/audit_actual_native_cpu_originals.py",
+      "sha256": "f1affb1bc57f94434a1473443b0917c9b7c6f7ca8d5a96d932a00d6e66362089",
+      "bytes": 14578
+    },
+    "audit": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local-v2/actual-byte-graph-audit.original.json",
+      "sha256": "d4d8301bc8b0b599a439f39dcc07f93a601d3c090bd00c8e02c26dfee2d074df",
+      "bytes": 20473
+    },
+    "stdout": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local-v2/stdout.original",
+      "sha256": "73fe31b1df3325c644275d292f798aadd647528ca1367571778ef98638bcc163",
+      "bytes": 4861
+    },
+    "stderr": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local-v2/stderr.original",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "returncode": 0,
+    "waited": true
+  },
+  "audit_harness_correction": {
+    "initial_execution": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local/execution.original.json",
+      "sha256": "aa5fc73102886c403997a6e291cebadce32e2507cf1cabb355bb6c2ce8427f1f",
+      "bytes": 687
+    },
+    "initial_stderr": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual-c5bf-native-cpu-20261007-local/stderr.original",
+      "sha256": "0ae486454ca2329f0bcf4392945aaec1327295e1279777de20a9f9f42ba65e77",
+      "bytes": 425
+    },
+    "reason": "Reviewer initially treated srun stdout as report envelope; actual schema is controller-completion physical SHA record. V2 only corrects this join; original actual execution and bytes unchanged. Initial local KeyError preserved and is not a production failure."
+  },
+  "limitations": [
+    "Reviewer only reads retained local actual originals; no new SSH, checker/helper main, CPU job, GPU, deployment, training change or signature performed",
+    "Native857 actual files and837 live-function equality are verified by exact already-reviewed executed checker/bootstrap; local review independently checks original SHA/physical/source graphs and does not reexecute imported native functions",
+    "Physical UID/inode/times are collection/preparation-time records; CPU process absence applies only controller/checker and not all training descendants, GPU/resource release or lifetime source immutability",
+    "Partial configuration resolveFalse with authored fallback/defaults is preparation only; actual model path/input manifest/reviewed stage/output and evaluated budget/service are not resolved or qualified",
+    "This scope does not qualify final200 checkpoint/wholeHF/state/4000 archives, paired51713/base evaluation, actual GPU evaluation, terminal Slurm state, final release or effect improvement"
+  ],
+  "actual_model_directory": null,
+  "actual_stage_manifest": null,
+  "actual_input_manifest": null,
+  "actual_evaluation_output_directory": null,
+  "actual_eval_job_id": null,
+  "actual_gpu_evaluation": null,
+  "actual200": null,
+  "actual_effect": null,
+  "evaluation_eligibility": "BLOCKED_ACTUAL200_AND_REVIEWED_STAGE_REQUIRED"
+}

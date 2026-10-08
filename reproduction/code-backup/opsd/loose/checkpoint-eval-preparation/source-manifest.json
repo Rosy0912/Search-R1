@@ -1,0 +1,18 @@
+{
+  "source_commit": "e43fbfa73088ed70ed3efef79ba561507c0afc33",
+  "prepared_only_not_submitted": true,
+  "runtime_sources": {
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "model_preflight.py": "4205e53d6a4c2dc03f18fe424b117cf5bfc795ad04221052aa817be914adf986",
+    "http_retrieval_check.py": "0544e2799d68991350e80fc334e79a3a543b05dcfdf81ec5a8459def63b71da8",
+    "gpu_retrieval_bulk.py": "159ff4dd912bc348b4863f523892e3fc91b7d18aa016d1668cdd330b8c21be51",
+    "retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1"
+  },
+  "eval_sources": {
+    "eval_entry.sh": "a4449105d43cab67fa6e0dad7e4055acf1d1cd029e12c3f8359d2ee7af39fee8",
+    "eval_job.sh": "9a31f63ae79c958403ac12be997876594557941c22ff2df3df8cd80c9926c2e3",
+    "eval_supervisor.py": "12e63f77013c2e3dbdce4bc734f222650169a0250e34ce62ad029fa5b849c5b9",
+    "cleanup.py": "fa7ece8529da45a2fc5ef5512b942e720a7b538de9026d6c57332c469c880968",
+    "verify_sources.py": "76603afc2c9c2fab0809648e85597a2b31b21bfa9bf850cbfec9eaa94fff8e60"
+  }
+}

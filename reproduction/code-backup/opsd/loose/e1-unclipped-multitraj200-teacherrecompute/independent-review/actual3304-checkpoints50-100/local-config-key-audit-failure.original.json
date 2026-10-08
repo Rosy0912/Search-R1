@@ -1,0 +1,10 @@
+{
+  "scope": "Local independent audit attempt only; not remote collector or training failure",
+  "observed_exit_code": 1,
+  "observed_error": "KeyError: 'clip_coef'",
+  "failing_expression": "config['baselines']['distillation']['clip_coef']",
+  "source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/actual3304-checkpoints50-100/inspect_originals-config-key-failure.original.py",
+  "source_sha256": "790a5d9f37e6264fdb88228a64914665c0b895184ab7fe59904e3474c6ebf240",
+  "tool_trace_retained_in_conversation": true,
+  "raw_subprocess_stderr_file": null
+}

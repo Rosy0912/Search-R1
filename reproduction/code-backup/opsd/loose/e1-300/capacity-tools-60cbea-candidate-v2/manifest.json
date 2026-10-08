@@ -1,0 +1,19 @@
+{
+  "retrieval_asset_manifest_sha256": "87b5e85df12cbf4635cb787b08161950ddc23e2e5b850e68fb7249668573cc87",
+  "scope": "CPU-prepared capacity wrapper only; no actual GPU acceptance",
+  "source_commit": "60cbea97d61ff95a8f7dfa58de7b79962e79bd10",
+  "source_files": {
+    "reproduction/baselines/e1-300/microbatch_probe_e1.py": "bbe157e70f959fb654f0d10836d91f32a1c6af0919eacdec8b2caf5c446e9b2b",
+    "reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "search_r1/baselines/e1_profile.py": "ce3771fe999a11140b3b46835f80ec680074d44a11946d9c9d8aee69bb704951",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052"
+  },
+  "tools": {
+    "capacity_entry.py": "0d887ca721cd4d3d6d7a0b53a637f45bdcb4571cf11442e002d25b5d52a97c98",
+    "capacity_job.sh": "5e0e9736e69278da762bc945b3b982e3df7bfedf519ba2f9c4e31600579d6b80",
+    "rank_entry.py": "6763a399f7ef5b709d7026b3d3a20ff40c4b91e46f83923bdd5c2abef1208812",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "retriever_entry.py": "c78a213b770f2adc0139d2613779e9981ec363bc8d6d3f4a52154378dcb1da97"
+  }
+}

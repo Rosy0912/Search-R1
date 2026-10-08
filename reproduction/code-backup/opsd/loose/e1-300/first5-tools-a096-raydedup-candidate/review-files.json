@@ -1,0 +1,10 @@
+{
+  "files": {
+    "README.md": "7c473110117739ed1efea9dec2d6ec106acdcaed0e2bb6224cd84c5ebff2c26c",
+    "cpu-tests-final.txt": "93fe8098d7fff4fc8c9643270e5a3638fd0796c3283c359b731802ff3d756185",
+    "manifest.json": "e4d8bd9e088e49fc92f335abfaa47737830d1ba9320cbe206d1bd130876518f7",
+    "test_first5_tools.py": "285151c57ec5aeaf507979636dde7847a1a219a5cd5ae9c1f848fa530ecf049d",
+    "v2-rebound-to-raydedup.patch": "a915d420ad5eb62dea6f88da683ebb8c006dc5f6c323a93d4385b5d31da17d2e"
+  },
+  "runtime_manifest_sha256": "e4d8bd9e088e49fc92f335abfaa47737830d1ba9320cbe206d1bd130876518f7"
+}

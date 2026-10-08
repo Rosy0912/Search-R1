@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "status": "PASS_INDEPENDENT_LOCAL_FROZEN_TOOL_BINDING_NOT_REMOTE_EXECUTION",
+  "frozen_manifest_sha256": "8441e10fa4565bf53f7baf24a57a60ddbe9844dc979a2c9a0c97250219df7019",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "tool_count": 7,
+  "review_record_count": 6,
+  "dependency_count": 254,
+  "exact_dependency_union_matches": true,
+  "accepted5_signature_verified": true,
+  "signed_native_audit_dependency_added": true,
+  "actual_native_manifest_basename": "candidate-manifest.json",
+  "remote_dependency_full_byte_verification_performed": false,
+  "no_future_checkpoint_pass_or_nonce": true,
+  "limitations": [
+    "No upload/remote CPU/GPU or Slurm command executed",
+    "Root must verify all254 remote files before manifest-last publication",
+    "No actual25 PT/HF/native2.4 or terminal acceptance"
+  ]
+}

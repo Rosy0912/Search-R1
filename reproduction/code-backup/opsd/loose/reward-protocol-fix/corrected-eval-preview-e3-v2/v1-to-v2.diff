@@ -1,0 +1,534 @@
+--- v1/eval_entry.sh
++++ v2/eval_entry.sh
+@@ -7,6 +7,7 @@
+ : "${CORRECTED_EVAL_REPO:?Separate e3 checkout required}"
+ : "${OPSD_CORRECTED_EVAL_STAGE_SHA256:?External reviewed stage SHA required}"
+ : "${CORRECTED_EVAL_CONFIG:?Externally pinned resolved config required}"
++: "${CORRECTED_EVAL_CONFIG_SHA256:?External original resolved config SHA required}"
+ : "${CORRECTED_EVAL_STAGE:?Externally pinned stage path required}"
+ : "${CORRECTED_EVAL_BUNDLE:?New reviewed activated tool directory required}"
+ export SEARCH_R1_BASE=/mnt/data/shaoshitong/search-r1-rl/opsd
+@@ -17,7 +18,7 @@
+ : "${CORRECTED_ACTIVATED_BUNDLE_MANIFEST:?Reviewed activated source manifest required}"
+ : "${CORRECTED_ACTIVATED_BUNDLE_SHA256:?External source manifest SHA required}"
+ : "${CORRECTED_CANONICAL_TEMPLATE:?Frozen canonical template required}"
+-python "$CORRECTED_EVAL_BUNDLE/source_bundle_check.py" --bundle "$CORRECTED_ACTIVATED_BUNDLE_MANIFEST" --sha256 "$CORRECTED_ACTIVATED_BUNDLE_SHA256" --canonical "$CORRECTED_CANONICAL_TEMPLATE"
++python "$CORRECTED_EVAL_BUNDLE/source_bundle_check.py" --bundle "$CORRECTED_ACTIVATED_BUNDLE_MANIFEST" --sha256 "$CORRECTED_ACTIVATED_BUNDLE_SHA256" --canonical "$CORRECTED_CANONICAL_TEMPLATE" --executing-file "$0" --bundle-dir "$CORRECTED_EVAL_BUNDLE" --config "$CORRECTED_EVAL_CONFIG" --config-sha256 "$CORRECTED_EVAL_CONFIG_SHA256"
+ [[ "$SEARCH_R1_REPO" != "$SEARCH_R1_BASE/repo" && "$(git rev-parse HEAD)" == "$OPSD_EXPECTED_COMMIT" ]]
+ git diff --quiet HEAD
+ exec 9>"$SEARCH_R1_BASE/gpu-job.lock"
+--- v1/eval_job.py
++++ v2/eval_job.py
+@@ -7,6 +7,8 @@
+ from hf_launcher import stop_own_child
+ 
+ def run(config,stage,stage_sha):
++ from runtime_binding import load_runtime
++ bundle,binding=load_runtime(__file__,config)
+  from eval_supervisor import run as evaluate,validate_config
+  from omegaconf import OmegaConf
+  from search_r1.baselines import corrected_evaluation as ce
+@@ -26,7 +28,15 @@
+   with socket.socket() as probe:probe.bind(('127.0.0.1',port))
+  # Child environment receives only existing own open file descriptions.
+  fds=tuple({9,*[int(r['fd']) for r in json.loads(os.environ['SEARCH_R1_GPU_LEASES'])]})
+- def child(command,env=None,**kwargs):return subprocess.run(command,cwd=repo,env=dict(os.environ) if env is None else env,check=True,pass_fds=fds,**kwargs)
++ from owned_children import run_owned
++ def child(command,env=None,**kwargs):return run_owned(command,cwd=repo,env=dict(os.environ) if env is None else env,check=True,pass_fds=fds,**kwargs)
++ # Exact native idle15% proof BEFORE sampler/Ray/retrieval/model/index work.
++ from search_r1.baselines import preflight
++ from owned_runtime import reassert_owned
++ preflight.validate_inherited_gpu_leases(8)
++ inventory,processes=preflight.gpu_snapshot();idle=preflight.check_selected_gpus(os.environ['CUDA_VISIBLE_DEVICES'].split(','),inventory,processes)
++ launch=reassert_owned(preflight,8);launch.pop('selected_gpu_inventory');launch['selected_gpu_preflight']=idle;launch['runtime_binding']=binding
++ (evidence/'launch-capture.json').write_text(json.dumps(launch,sort_keys=True))
+  (evidence/'slurm-start.txt').write_text(subprocess.check_output(['scontrol','show','job',job],text=True))
+  sampler=subprocess.Popen([sys.executable,'-u',str(HERE/'upstream-pilot/resource_sample.py'),str(evidence/'resources.ndjson'),str(os.getpid())],pass_fds=fds)
+  retriever=None
+@@ -46,8 +56,15 @@
+   (evidence/'retriever-capture.json').write_text(json.dumps(capture,sort_keys=True))
+   evaluate(config,stage,stage_sha,run/'evaluation')
+  finally:
+-  if retriever is not None:stop_own_child(retriever)
+-  stop_own_child(sampler)
++  # Attempt every own-child cleanup even if another cleanup fails. No foreign PID is signalled.
++  failures=[]
++  for child_process in (retriever,sampler):
++   if child_process is not None:
++    try:stop_own_child(child_process,timeout=5)
++    except Exception as error:failures.append({'type':type(error).__name__,'error':str(error)})
++  if failures:
++   (evidence/'cleanup-failure.json').write_text(json.dumps(failures,sort_keys=True))
++   if sys.exc_info()[0] is None:raise RuntimeError('Own child bounded cleanup failed')
+  # Slurm final terminal + afterjob PID/port cleanup are collected/reviewed externally,
+  # never created by a still-running job or substituted with local "passed" flags.
+ 
+--- v1/eval_supervisor.py
++++ v2/eval_supervisor.py
+@@ -30,6 +30,8 @@
+  return inputs
+ 
+ def run(config_path,stage_path,stage_sha,output):
++ from runtime_binding import load_runtime
++ bundle,binding=load_runtime(__file__,config_path)
+  from omegaconf import OmegaConf
+  from search_r1.baselines import corrected_evaluation as ce,preflight
+  job=os.environ.get('SLURM_JOB_ID','');repo=Path(ce.__file__).resolve().parents[2]
+@@ -40,18 +42,17 @@
+  cfg=OmegaConf.load(config_path);stage=ce.load_stage(cfg.baselines.corrected_evaluation);validate_config(cfg,stage)
+  if out.exists() or not out.is_relative_to(OWN):raise ValueError('New own immutable eval evidence directory required')
+  out.mkdir(parents=True)
+- preflight.validate_inherited_gpu_leases(8)
+- inventory,processes=preflight.gpu_snapshot();selected=preflight.check_selected_gpus(os.environ['CUDA_VISIBLE_DEVICES'].split(','),inventory,processes)
+- if len(selected)!=8:raise ValueError('Actual selected8 GPU preflight differs')
++ from owned_runtime import reassert_owned
+  leases=loads(os.environ['SEARCH_R1_GPU_LEASES']);fds=tuple([9]+[int(r['fd']) for r in leases])
+- capture={'job_id':job,'stage_sha256':stage_sha,'process':process_identity(os.getpid()),'selected_gpu_preflight':selected,'global_lease':capture_lease(9,OWN/'gpu-job.lock'),'gpu_leases':[capture_lease(int(r['fd']),Path('/tmp')/f'search-r1-gpu-leases-{os.getuid()}'/(r['uuid']+'.lock')) for r in leases]}
+- (out/'launch-capture.json').write_text(json.dumps(capture,sort_keys=True))
++ capture=reassert_owned(preflight,8);capture['runtime_binding']=binding
++ (out/'late-lease-capture.json').write_text(json.dumps(capture,sort_keys=True))
+  (out/'model-before.json').write_text(json.dumps(model_record(stage),sort_keys=True))
+  # The reviewed job script has already launched/verified the actual local GPU retrieval
+  # and resource sampler. Main's actual8-worker RPC and guards run before generation.
+- command=[sys.executable,'-u','-m','search_r1.baselines.main','--config-path',str(config_path.parent),'--config-name',config_path.stem]
++ command=[sys.executable,'-u',str(HERE/'native_main_adapter.py'),'--config',str(config_path),'--record',str(out/'main-lease-adapter.json')]
+  with (out/'eval.log').open('xb') as log:
+-  result=subprocess.run(command,cwd=repo,env=dict(os.environ),stdout=log,stderr=subprocess.STDOUT,pass_fds=fds)
++  from owned_children import run_owned
++  result=run_owned(command,cwd=repo,env=dict(os.environ),stdout=log,stderr=subprocess.STDOUT,pass_fds=fds)
+  (out/'exit.txt').write_text(str(result.returncode)+'\n')
+  if result.returncode:raise RuntimeError('Corrected native eval child exited nonzero')
+  (out/'model-after.json').write_text(json.dumps(model_record(stage),sort_keys=True))
+--- v1/native_main_adapter.py
++++ v2/native_main_adapter.py
+@@ -0,0 +1,71 @@
++"""Explicit launch-only replacement window for post-start native lease validation.
++No model/data/generation/optimizer function is replaced. Main config is untouched.
++"""
++import argparse,hashlib,inspect,json,marshal,os,runpy,sys,types
++from pathlib import Path
++HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE/'strict-tools'))
++from training_evidence import digest
++from runtime_binding import load_runtime
++from owned_runtime import reassert_owned
++
++def compiled_function_code(path,name):
++ module=compile(Path(path).read_text(),str(Path(path).resolve()),'exec',dont_inherit=True,optimize=sys.flags.optimize)
++ def find(code):
++  for value in code.co_consts:
++   if isinstance(value,types.CodeType):
++    if value.co_name==name:return value
++    nested=find(value)
++    if nested is not None:return nested
++  return None
++ result=find(module)
++ if result is None:raise ValueError('Expected frozen function code missing')
++ return hashlib.sha256(marshal.dumps(result)).hexdigest()
++
++def actual_code_sha(function):return hashlib.sha256(marshal.dumps(function.__code__)).hexdigest()
++
++class MainLeaseWindow:
++ def __init__(self,preflight,record_path,expected_source_sha,binding):
++  self.preflight=preflight;self.path=Path(record_path);self.original=preflight.validate_inherited_gpu_leases;self.calls=[];self.binding=binding
++  source=Path(inspect.getsourcefile(self.original)).resolve()
++  if source!=Path(preflight.__file__).resolve() or digest(source)!=expected_source_sha:raise ValueError('Actual original native lease function source differs')
++  code=self.original.__code__
++  if Path(code.co_filename).resolve()!=source or self.original.__qualname__!='validate_inherited_gpu_leases':raise ValueError('Actual original native function/code identity differs')
++  if actual_code_sha(self.original)!=compiled_function_code(source,'validate_inherited_gpu_leases'):raise ValueError('Actual original function code differs from compiled frozen source')
++  self.original_source={'code_sha256':actual_code_sha(self.original),'path':str(source),'sha256':digest(source),'qualname':self.original.__qualname__,'code_filename':str(Path(code.co_filename).resolve()),'function_source_sha256':hashlib.sha256(inspect.getsource(self.original).encode()).hexdigest()}
++ def replacement(self,expected_count=None):
++  result=reassert_owned(self.preflight,expected_count)
++  self.calls.append(result)
++ def __enter__(self):
++  self.preflight.validate_inherited_gpu_leases=self.replacement
++  return self
++ def __exit__(self,kind,error,trace):
++  intact=self.preflight.validate_inherited_gpu_leases==self.replacement
++  self.preflight.validate_inherited_gpu_leases=self.original
++  replacement={'code_sha256':actual_code_sha(self.replacement),'path':str(Path(self.replacement.__code__.co_filename).resolve()),'sha256':digest(Path(__file__)),'qualname':self.replacement.__qualname__,'code_filename':str(Path(self.replacement.__code__.co_filename).resolve()),'function_source_sha256':hashlib.sha256(inspect.getsource(self.replacement).encode()).hexdigest()}
++  record={'schema':'actual-corrected-main-lease-adapter-v1','original':self.original_source,'replacement':replacement,'runtime_binding':self.binding,'calls':self.calls,'restored_original':self.preflight.validate_inherited_gpu_leases is self.original,'replacement_intact':intact,'main_exception':None if error is None else type(error).__name__}
++  with self.path.open('x') as handle:json.dump(record,handle,sort_keys=True)
++  if not intact:raise RuntimeError('Native lease adapter replaced during its window')
++  if error is None and not self.calls:raise RuntimeError('Native main did not invoke actual lease adapter')
++  return False
++
++def run(config_path,record_path):
++ bundle,binding=load_runtime(__file__,config_path)
++ from search_r1.baselines import corrected_evaluation as ce,preflight
++ from omegaconf import OmegaConf
++ cfg=OmegaConf.load(config_path);stage=ce.load_stage(cfg.baselines.corrected_evaluation)
++ from eval_supervisor import validate_config
++ validate_config(cfg,stage)
++ repo=Path(ce.__file__).resolve().parents[2]
++ if Path(preflight.__file__).resolve()!=repo/'search_r1/baselines/preflight.py':raise ValueError('Actual preflight import source outside pinned corrected repo')
++ old_argv=list(sys.argv)
++ try:
++  sys.argv=['search_r1.baselines.main','--config-path',str(Path(config_path).resolve().parent),'--config-name',Path(config_path).stem]
++  with MainLeaseWindow(preflight,record_path,stage['source_files']['search_r1/baselines/preflight.py'],binding):
++   runpy.run_module('search_r1.baselines.main',run_name='__main__')
++ finally:sys.argv=old_argv
++
++if __name__=='__main__':
++ print('BLOCKED launch-only lease adapter preview',file=sys.stderr)
++ raise SystemExit(78)
++ parser=argparse.ArgumentParser();parser.add_argument('--config',required=True);parser.add_argument('--record',required=True)
++ args=parser.parse_args();run(args.config,args.record)
+--- v1/owned_children.py
++++ v2/owned_children.py
+@@ -0,0 +1,21 @@
++"""Normal work may run to completion; every exceptional own-child cleanup is bounded."""
++import json,subprocess,sys
++from pathlib import Path
++HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE/'strict-tools'))
++from hf_launcher import stop_own_child
++
++def run_owned(command,**kwargs):
++ check=kwargs.pop('check',True);process=subprocess.Popen(command,**kwargs)
++ primary=None
++ try:
++  code=process.wait()
++  if check and code:raise subprocess.CalledProcessError(code,command)
++  return subprocess.CompletedProcess(command,code)
++ except BaseException as error:
++  primary=error;raise
++ finally:
++  if process.poll() is None:
++   try:stop_own_child(process,timeout=5)
++   except Exception as cleanup:
++    print('OWN_CHILD_BOUNDED_CLEANUP_ERROR='+json.dumps({'type':type(cleanup).__name__,'error':str(cleanup),'primary_type':None if primary is None else type(primary).__name__}),file=sys.stderr,flush=True)
++    if primary is None:raise
+--- v1/owned_runtime.py
++++ v2/owned_runtime.py
+@@ -0,0 +1,43 @@
++"""Post-start ownership/lease proof; it deliberately does not apply idle thresholds."""
++import json,math,os,re,subprocess,sys
++from pathlib import Path
++HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE/'strict-tools'))
++from hf_activation_capture import capture_lease
++from runtime_capture import process_identity
++from training_evidence import OWN
++
++def resolve_selected(selected,inventory):
++ records=[]
++ for device in selected:
++  matches=[v for index,v in inventory.items() if device in (index,v['uuid'])]
++  if len(matches)!=1:raise ValueError('Actual selected GPU mapping unavailable')
++  records.append(matches[0])
++ if len(records)!=8 or len({r['uuid'] for r in records})!=8:raise ValueError('Actual selected8 UUID mapping differs')
++ return records
++
++def assert_owned(process,job,uid):
++ if process['uid']!=uid or process['uids']!=[uid]*4 or not re.search(r'(?:^|/)job_'+re.escape(job)+r'(?:/|$)',process['cgroup']):raise ValueError('Current actual GPU process outside own UID/job')
++ return process
++
++def reassert_owned(preflight,expected_count=8):
++ if expected_count not in (None,8):raise ValueError('Corrected post-start resource budget requires8')
++ job=os.environ['SLURM_JOB_ID'];uid=os.getuid();selected=os.environ['CUDA_VISIBLE_DEVICES'].split(',')
++ inventory,_=preflight.gpu_snapshot();gpu=resolve_selected(selected,inventory);uuids={g['uuid'] for g in gpu}
++ for g in gpu:
++  values=[float(g[k]) for k in ('utilization','memory_used','memory_total')]
++  if any(not math.isfinite(v) for v in values) or not 0<=values[0]<=100 or values[1]<0 or values[2]<=0 or values[1]>values[2]:raise ValueError('Actual post-start GPU inventory invalid')
++ leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES'])
++ if os.environ.get('SEARCH_R1_GPU_PREFLIGHT')!='1' or len(leases)!=8 or {r['uuid'] for r in leases}!=uuids:raise ValueError('Post-start inherited selected8 lease differs')
++ global_lease=capture_lease(9,OWN/'gpu-job.lock');records=[]
++ for lease in leases:
++  records.append(capture_lease(int(lease['fd']),Path('/tmp')/f'search-r1-gpu-leases-{uid}'/(lease['uuid']+'.lock')))
++ raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=8)
++ active=[]
++ for line in raw_apps.splitlines():
++  fields=[v.strip() for v in line.split(',')]
++  if len(fields)!=2 or not fields[1].isdigit():raise ValueError('Unreadable actual GPU process list')
++  if fields[0] in uuids:
++   identity=assert_owned(process_identity(int(fields[1])),job,uid)
++   if process_identity(int(fields[1]))['process_start_ticks']!=identity['process_start_ticks']:raise ValueError('Actual GPU process PID reused during capture')
++   active.append(dict(identity,gpu_uuid=fields[0]))
++ return {'job_id':job,'stage_sha256':os.environ['OPSD_CORRECTED_EVAL_STAGE_SHA256'],'process':assert_owned(process_identity(os.getpid()),job,uid),'selected_gpu_inventory':gpu,'global_lease':global_lease,'gpu_leases':records,'active_gpu_processes':active,'raw_compute_apps':raw_apps}
+--- v1/post_eval_check.py
++++ v2/post_eval_check.py
+@@ -9,8 +9,8 @@
+ from strict_stage_prerequisites import bound_file,verify_model_files
+ EVAL_COMMIT='e3f78f13b58898f7ab2f5a99cac2b76055d47a5a'
+ UUID_PATTERN=r'GPU-[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+-POST_FIELDS={'schema','job_id','uid','eval_repo','stage','input_manifest','transcript','model_before','model_after','slurm_terminal','resources','launch_capture','retriever_capture','runtime_log','exit','finished','cleanup','source_bundle','retrieval_http','retrieval_bulk','retrieval_comparison','independent_review'}
+-EXTERNAL_FIELDS={'version','phase','job_id','uid','eval_repo','eval_commit','stage_sha256','input_manifest_sha256','model_role','selected_gpu_uuids','post_verifier_sha256','launcher_bundle_sha256','canonical_template_manifest'}
++POST_FIELDS={'schema','job_id','uid','eval_repo','stage','input_manifest','transcript','model_before','model_after','slurm_terminal','resources','main_adapter','late_lease_capture','launch_capture','retriever_capture','runtime_log','exit','finished','cleanup','source_bundle','retrieval_http','retrieval_bulk','retrieval_comparison','independent_review'}
++EXTERNAL_FIELDS={'version','phase','job_id','uid','eval_repo','eval_commit','stage_sha256','input_manifest_sha256','model_role','selected_gpu_uuids','post_verifier_sha256','launcher_bundle_sha256','canonical_template_manifest','bundle_directory','config_binding'}
+ 
+ def exact_external(record):
+  if set(record)!=EXTERNAL_FIELDS or record['version']!=1 or record['phase']!='post-evaluation-external-binding':raise ValueError('Exact externally reviewed post binding required')
+@@ -18,6 +18,7 @@
+  if record['eval_commit']!=EVAL_COMMIT or record['model_role'] not in ('base','hf500'):raise ValueError('Corrected source/model role differs')
+  uuids=record['selected_gpu_uuids']
+  if not isinstance(uuids,list) or len(uuids)!=8 or len(set(uuids))!=8 or any(not re.fullmatch(UUID_PATTERN,u) for u in uuids):raise ValueError('Eight external actual GPU UUIDs required')
++ if not Path(record['bundle_directory']).is_absolute() or set(record['config_binding'])!={'path','sha256'} or not Path(record['config_binding']['path']).is_absolute() or not re.fullmatch('[a-f0-9]{64}',record['config_binding']['sha256']):raise ValueError('External original bundle/config path and SHA binding required')
+  canonical=record['canonical_template_manifest']
+  if set(canonical)!={'path','sha256'} or not Path(canonical['path']).is_absolute() or not re.fullmatch('[a-f0-9]{64}',canonical['sha256']):raise ValueError('External frozen canonical template binding required')
+  for name in ('stage_sha256','input_manifest_sha256','post_verifier_sha256','launcher_bundle_sha256'):
+@@ -55,8 +56,11 @@
+ 
+ def verify_launch_capture(capture,external):
+  from activation_verification import verify_lease
+- if set(capture)!={'job_id','stage_sha256','process','selected_gpu_preflight','global_lease','gpu_leases'} or capture['job_id']!=external['job_id'] or capture['stage_sha256']!=external['stage_sha256']:raise ValueError('Actual own launch capture differs')
++ if set(capture)!={'job_id','stage_sha256','process','selected_gpu_preflight','global_lease','gpu_leases','active_gpu_processes','raw_compute_apps','runtime_binding'} or capture['job_id']!=external['job_id'] or capture['stage_sha256']!=external['stage_sha256']:raise ValueError('Actual own launch capture differs')
+  process_raw(capture['process'],external['job_id'],external['uid'])
++ verify_tool_binding(capture['runtime_binding'],external,'eval_job.py')
++ command=capture['process']['cmdline']
++ if str(Path(external['bundle_directory'])/'eval_job.py') not in command or '--config' not in command or command[command.index('--config')+1]!=external['config_binding']['path']:raise ValueError('Actual launch command not external bundle eval_job/config argv')
+  verify_lease(capture['global_lease'],OWN/'gpu-job.lock',9)
+  inventory=capture['selected_gpu_preflight']
+  if len(inventory)!=8 or {g['uuid'] for g in inventory}!=set(external['selected_gpu_uuids']):raise ValueError('Actual preflight selected8 inventory differs')
+@@ -69,13 +73,59 @@
+   if type(lease['fd']) is not int or lease['fd']<3 or lease['fd']==9:raise ValueError('Actual GPU descriptor differs')
+   verify_lease(lease,Path('/tmp')/f"search-r1-gpu-leases-{external['uid']}"/Path(lease['lock_path']).name,lease['fd'])
+ 
++def verify_tool_binding(binding,external,filename):
++ expected=Path(external['bundle_directory'])/filename
++ if binding['directory']!=external['bundle_directory'] or binding['config_binding']!=external['config_binding'] or binding['executing_file']!={'path':str(expected),'sha256':digest(expected)}:raise ValueError('Actual helper path/SHA/config not externally pinned runtime')
++ if digest(Path(external['config_binding']['path']))!=external['config_binding']['sha256']:raise ValueError('Original actual config changed')
++
++def verify_late_capture(capture,external,helper):
++ from activation_verification import verify_lease
++ if capture['job_id']!=external['job_id'] or capture['stage_sha256']!=external['stage_sha256']:raise ValueError('Late own job/stage lease capture differs')
++ process_raw(capture['process'],external['job_id'],external['uid'])
++ if 'runtime_binding' in capture:verify_tool_binding(capture['runtime_binding'],external,helper)
++ selected=set(external['selected_gpu_uuids'])
++ if len(capture['selected_gpu_inventory'])!=8 or {r['uuid'] for r in capture['selected_gpu_inventory']}!=selected:raise ValueError('Post-start selected8 actual UUID differs')
++ verify_lease(capture['global_lease'],OWN/'gpu-job.lock',9)
++ leases=capture['gpu_leases']
++ if len(leases)!=8 or len({r['fd'] for r in leases})!=8 or {Path(r['lock_path']).stem for r in leases}!=selected:raise ValueError('Late selected8 inherited descriptor set differs')
++ for record in leases:
++  if type(record['fd']) is not int or record['fd']<3 or record['fd']==9:raise ValueError('Late actual GPU descriptor differs')
++  verify_lease(record,Path('/tmp')/f"search-r1-gpu-leases-{external['uid']}"/Path(record['lock_path']).name,record['fd'])
++ actual=[]
++ for line in capture['raw_compute_apps'].splitlines():
++  fields=[v.strip() for v in line.split(',')]
++  if len(fields)!=2 or not fields[1].isdigit():raise ValueError('Late GPU PID inventory unreadable')
++  if fields[0] in selected:actual.append((int(fields[1]),fields[0]))
++ rows=capture['active_gpu_processes']
++ if [(r['pid'],r['gpu_uuid']) for r in rows]!=actual:raise ValueError('Late GPU process capture differs from raw NVML PID/UUID inventory')
++ for row in rows:process_raw(row,external['job_id'],external['uid'])
++
++def verify_main_adapter(record,stage,external,bundle):
++ import inspect
++ from native_main_adapter import MainLeaseWindow,compiled_function_code
++ root=Path(external['eval_repo']);original=root/'search_r1/baselines/preflight.py';replacement=Path(external['bundle_directory'])/'native_main_adapter.py'
++ if record['schema']!='actual-corrected-main-lease-adapter-v1' or record['restored_original'] is not True or record['replacement_intact'] is not True or record['main_exception'] is not None or not record['calls']:raise ValueError('Actual native main adapter window/restoration differs')
++ verify_tool_binding(record['runtime_binding'],external,'native_main_adapter.py')
++ for role,path,qualname in [('original',original,'validate_inherited_gpu_leases'),('replacement',replacement,'MainLeaseWindow.replacement')]:
++  row=record[role]
++  if row['code_sha256']!=compiled_function_code(path,qualname.split('.')[-1]):raise ValueError('Actual runtime original/replacement bytecode differs from frozen source')
++  if row['path']!=str(path) or row['code_filename']!=str(path) or row['qualname']!=qualname or row['sha256']!=digest(path):raise ValueError('Actual adapter original/replacement function/code source differs')
++ if record['original']['sha256']!=stage['source_files']['search_r1/baselines/preflight.py'] or record['replacement']['sha256']!=bundle['file_sources']['native_main_adapter.py']['sha256']:raise ValueError('Adapter runtime source is not actual independently reviewed byte pin')
++ if record['replacement']['function_source_sha256']!=hashlib.sha256(inspect.getsource(MainLeaseWindow.replacement).encode()).hexdigest():raise ValueError('Actual adapter replacement function text differs')
++ # Extract original function text from the externally pinned file without importing GPU code.
++ import ast
++ tree=ast.parse(original.read_text());function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='validate_inherited_gpu_leases')
++ lines=original.read_text().splitlines(keepends=True);raw=''.join(lines[function.lineno-1:function.end_lineno])
++ if record['original']['function_source_sha256']!=hashlib.sha256(raw.encode()).hexdigest():raise ValueError('Actual original lease function text differs')
++ for capture in record['calls']:verify_late_capture(capture,external,'native_main_adapter.py')
++
+ def resources_crossbinding(rows,workers,retriever,external):
+  job=external['job_id'];selected=set(external['selected_gpu_uuids']);identities={r['pid']:str(r['process']['process_start_ticks']) for r in workers};identities[retriever['process']['pid']]=str(retriever['process']['process_start_ticks']);seen=set();previous=None
+  if not rows:raise ValueError('No actual resource samples')
+  for row in rows:
+   try:stamp=datetime.datetime.fromisoformat(row['time'])
+   except (TypeError,ValueError):raise ValueError('Actual resource timestamp differs')
+-  if str(row['job_id'])!=job or stamp.tzinfo is None or (previous is not None and stamp<previous):raise ValueError('Actual resource job/time differs')
++  if 'query_error' in row or str(row['job_id'])!=job or stamp.tzinfo is None or stamp.utcoffset()!=datetime.timedelta(0) or (previous is not None and stamp<=previous):raise ValueError('Actual resource job/time differs')
+   previous=stamp;gpus=row['gpus']
+   if len(gpus)!=8 or {g['uuid'] for g in gpus}!=selected:raise ValueError('Resource selected8 UUID inventory differs')
+   for g in gpus:
+@@ -138,7 +188,12 @@
+  if digest(evidence['source_bundle'])!=external['launcher_bundle_sha256']:raise ValueError('Launcher source bundle external pin differs')
+  from source_bundle_check import verify_bundle
+  canonical=bound_file(external['canonical_template_manifest'],base)
++ if bundle['directory']!=external['bundle_directory'] or bundle['config_binding']!=external['config_binding']:raise ValueError('Actual bundle/config differ from external runtime binding')
+  verify_bundle(bundle,canonical.parent)
++ from runtime_binding import verify_runtime
++ verify_runtime(bundle,__file__,external['config_binding']['path'])
++ verify_main_adapter(loads(evidence['main_adapter'].read_text()),stage,external,bundle)
++ verify_late_capture(loads(evidence['late_lease_capture'].read_text()),external,'eval_supervisor.py')
+  for name,pin in bundle['file_sources'].items():bound_file(pin,base)
+  cleanup=loads(evidence['cleanup'].read_text())
+  if cleanup!={'job_id':external['job_id'],'node':'h100-10','retained_pids':[], 'listening_ports':[]}:raise ValueError('Actual post own-process/port cleanup incomplete')
+@@ -154,11 +209,12 @@
+  return {'kind':'actual-corrected-final-evaluation','job_id':external['job_id'],'model_role':stage['model_role'],'stage_sha256':external['stage_sha256'],'input_manifest_sha256':external['input_manifest_sha256'],'generation_budget_sha256':stage['generation_budget_sha256'],'source_files':stage['source_files'],'eval_commit':stage['eval_commit'],'metrics':metrics,'receipt_sha256':sha,'questions':51713,'batches':809}
+ 
+ def verify_retriever(capture,external,stage):
+- required={'job_id','node','url','process','listeners','source_frames','http_sha256','bulk_sha256','comparison_sha256'}
++ required={'job_id','node','url','process','listeners','source_frames','runtime_binding','http_sha256','bulk_sha256','comparison_sha256'}
+  if set(capture)!=required or capture['job_id']!=external['job_id'] or capture['node']!='h100-10' or capture['url']!='http://127.0.0.1:18084/retrieve':raise ValueError('Actual retriever locality/job schema differs')
+  process_raw(capture['process'],external['job_id'],external['uid'])
++ verify_tool_binding(capture['runtime_binding'],external,'retrieval_audit_entry.py')
+  command=capture['process']['cmdline'];joined=' '.join(command)
+- if '--device cuda' not in joined or '--faiss_gpu' not in command or '--host 127.0.0.1' not in joined or '--port 18084' not in joined or str(Path(external['eval_repo'])/'reproduction/h20/retriever_local.py') not in command:raise ValueError('Actual same-node native CUDA+FAISS retriever command differs')
++ if '--device cuda' not in joined or '--faiss_gpu' not in command or '--host 127.0.0.1' not in joined or '--port 18084' not in joined or str(Path(external['eval_repo'])/'reproduction/h20/retriever_local.py') not in command or str(Path(external['bundle_directory'])/'retrieval_audit_entry.py') not in command:raise ValueError('Actual same-node native CUDA+FAISS retriever command differs')
+  if f"pid={capture['process']['pid']}," not in capture['listeners'] or '127.0.0.1:18084' not in capture['listeners'] or re.search(r'(?:0\.0\.0\.0|\[::\]|\*):18084',capture['listeners']):raise ValueError('Actual local port not owned by retriever')
+  required_modules={'search_r1.search.retrieval_server','reproduction.h20.retriever_local'}
+  if set(capture['source_frames'])!=required_modules:raise ValueError('Actual retriever source identity incomplete')
+--- v1/retrieval_audit_entry.py
++++ v2/retrieval_audit_entry.py
+@@ -7,6 +7,8 @@
+ from training_evidence import digest
+ 
+ def run(target,frame_output,args):
++ from runtime_binding import load_runtime
++ bundle,binding=load_runtime(__file__)
+  import uvicorn
+  original=uvicorn.run;target=Path(target).resolve();repo=Path(os.environ['SEARCH_R1_REPO']).resolve()
+  if target!=repo/'reproduction/h20/retriever_local.py':raise ValueError('Exact source-pinned native local retriever required')
+@@ -20,7 +22,7 @@
+     if path==repo/relative:found[module]={'path':str(path),'sha256':digest(path)}
+    frame=frame.f_back
+   if len(found)!=2:raise ValueError('Actual executed native retrieval frames missing')
+-  record={'job_id':os.environ['SLURM_JOB_ID'],'node':__import__('socket').gethostname().split('.')[0],'url':'http://127.0.0.1:18084/retrieve','process':process_identity(os.getpid()),'source_frames':found}
++  record={'job_id':os.environ['SLURM_JOB_ID'],'node':__import__('socket').gethostname().split('.')[0],'url':'http://127.0.0.1:18084/retrieve','process':process_identity(os.getpid()),'source_frames':found,'runtime_binding':binding}
+   with Path(frame_output).open('x') as handle:json.dump(record,handle,sort_keys=True)
+   return original(app,**kwargs)
+  uvicorn.run=capture;sys.argv=[str(target)]+args
+--- v1/runtime_binding.py
++++ v2/runtime_binding.py
+@@ -0,0 +1,35 @@
++"""Actual runtime helper/import/config binding; no GPU/model work."""
++import hashlib,json,os,sys
++from pathlib import Path
++
++def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++
++def verify_runtime(bundle,current_file,config_path=None,modules=None):
++ root=Path(bundle['directory']).resolve();current=Path(current_file).resolve()
++ if not current.is_relative_to(root):raise ValueError('Actual executing file outside reviewed bundle directory')
++ relative=str(current.relative_to(root));record=bundle['file_sources'].get(relative)
++ if record!={'path':str(current),'sha256':digest(current)}:raise ValueError('Actual executing file path/SHA differs from reviewed bundle')
++ modules=sys.modules if modules is None else modules
++ module_roles={}
++ for name in sorted(bundle['file_sources'],key=lambda n:(n.count('/'),n)):
++  if name.endswith('.py'):module_roles.setdefault(Path(name).stem,name)
++ for name,pin in bundle['file_sources'].items():
++  expected=root/name
++  if Path(pin['path']).resolve()!=expected or digest(expected)!=pin['sha256']:raise ValueError('Actual helper path/SHA outside exact bundle directory')
++  if expected.suffix=='.py' and module_roles[expected.stem]==name:
++   module=modules.get(expected.stem)
++   if module is not None and (not getattr(module,'__file__',None) or Path(module.__file__).resolve()!=expected):raise ValueError('Actual imported helper outside reviewed bundle')
++ cfg=bundle['config_binding']
++ if set(cfg)!={'path','sha256'} or not Path(cfg['path']).is_absolute() or digest(cfg['path'])!=cfg['sha256']:raise ValueError('Actual externally pinned resolved config differs')
++ if config_path is not None and Path(config_path).resolve()!=Path(cfg['path']).resolve():raise ValueError('Actual config argv path outside external binding')
++ return {'directory':str(root),'executing_file':record,'config_binding':cfg}
++
++def load_runtime(current_file,config_path=None):
++ from source_bundle_check import verify_bundle
++ path=Path(os.environ['CORRECTED_ACTIVATED_BUNDLE_MANIFEST'])
++ if digest(path)!=os.environ['CORRECTED_ACTIVATED_BUNDLE_SHA256']:raise ValueError('External launcher bundle SHA differs')
++ bundle=json.loads(path.read_text());root=Path(os.environ['CORRECTED_EVAL_BUNDLE']).resolve()
++ if root!=Path(bundle['directory']).resolve():raise ValueError('Actual CORRECTED_EVAL_BUNDLE differs from verified source directory')
++ verify_bundle(bundle,Path(os.environ['CORRECTED_CANONICAL_TEMPLATE']))
++ if os.environ.get('CORRECTED_EVAL_CONFIG_SHA256')!=bundle['config_binding']['sha256']:raise ValueError('Actual external config environment SHA differs')
++ return bundle,verify_runtime(bundle,current_file,config_path)
+--- v1/source_bundle_check.py
++++ v2/source_bundle_check.py
+@@ -2,7 +2,7 @@
+ import hashlib,json,sys
+ from pathlib import Path
+ HERE=Path(__file__).resolve().parent
+-ACTIVATED={'eval_entry.sh','eval_job.py','eval_supervisor.py','retrieval_audit_entry.py','post_eval_check.py','source_bundle_check.py','strict-tools/strict_stage_prerequisites.py'}
++ACTIVATED={'eval_entry.sh','eval_job.py','eval_supervisor.py','retrieval_audit_entry.py','post_eval_check.py','source_bundle_check.py','strict-tools/strict_stage_prerequisites.py','native_main_adapter.py'}
+ 
+ def activated_bytes(name,raw):
+  lines=raw.splitlines(keepends=True)
+@@ -15,21 +15,26 @@
+ 
+ def verify_bundle(bundle,canonical=HERE):
+  expected=json.loads((canonical/'source-manifest.json').read_text())
+- if set(bundle)!={'schema','eval_commit','template_manifest_sha256','file_sources'} or bundle['schema']!='corrected-eval-activated-tool-bundle-v1' or bundle['eval_commit']!=expected['eval_commit']:raise ValueError('Exact reviewed activated bundle schema required')
++ if set(bundle)!={'schema','eval_commit','template_manifest_sha256','directory','config_binding','file_sources'} or bundle['schema']!='corrected-eval-activated-tool-bundle-v1' or bundle['eval_commit']!=expected['eval_commit']:raise ValueError('Exact reviewed activated bundle schema required')
+  if bundle['template_manifest_sha256']!=hashlib.sha256((canonical/'source-manifest.json').read_bytes()).hexdigest() or set(bundle['file_sources'])!=set(expected['file_sources']):raise ValueError('Actual launcher bundle ancestry/file closure differs')
++ root=Path(bundle['directory']).resolve()
++ if not Path(bundle['directory']).is_absolute():raise ValueError('Actual bundle directory must be absolute')
+  for name,record in bundle['file_sources'].items():
+   if set(record)!={'path','sha256'}:raise ValueError('Actual launcher file binding required')
+   original=canonical/name
+   if hashlib.sha256(original.read_bytes()).hexdigest()!=expected['file_sources'][name]:raise ValueError('Canonical source template mutated')
+   actual=Path(record['path'])
+-  if not actual.is_absolute() or actual.read_bytes()!=activated_bytes(name,original.read_bytes()) or hashlib.sha256(actual.read_bytes()).hexdigest()!=record['sha256']:raise ValueError('Actual launcher bytes differ from exact reviewed activation')
++  if not actual.is_absolute() or actual.resolve()!=root/name or actual.read_bytes()!=activated_bytes(name,original.read_bytes()) or hashlib.sha256(actual.read_bytes()).hexdigest()!=record['sha256']:raise ValueError('Actual launcher bytes differ from exact reviewed activation')
+  return bundle
+ 
+ if __name__=='__main__':
+  print('BLOCKED source bundle preview: reviewed activated bundle unavailable',file=sys.stderr)
+  raise SystemExit(78)
+  import argparse
+- parser=argparse.ArgumentParser();parser.add_argument('--bundle',required=True);parser.add_argument('--sha256',required=True);parser.add_argument('--canonical',required=True)
++ parser=argparse.ArgumentParser();parser.add_argument('--bundle',required=True);parser.add_argument('--sha256',required=True);parser.add_argument('--canonical',required=True);parser.add_argument('--executing-file',required=True);parser.add_argument('--bundle-dir',required=True);parser.add_argument('--config',required=True);parser.add_argument('--config-sha256',required=True)
+  args=parser.parse_args();path=Path(args.bundle)
+  if hashlib.sha256(path.read_bytes()).hexdigest()!=args.sha256:raise ValueError('External activated bundle SHA differs')
+- verify_bundle(json.loads(path.read_text()),Path(args.canonical))
++ bundle=verify_bundle(json.loads(path.read_text()),Path(args.canonical))
++ if Path(args.bundle_dir).resolve()!=Path(bundle['directory']).resolve() or args.config_sha256!=bundle['config_binding']['sha256']:raise ValueError('Actual shell directory/config SHA differs from verified binding')
++ from runtime_binding import verify_runtime
++ verify_runtime(bundle,args.executing_file,args.config);verify_runtime(bundle,__file__,args.config)
+--- v1/strict-tools/hf_activation_capture.py
++++ v2/strict-tools/hf_activation_capture.py
+@@ -39,7 +39,7 @@
+   if record['uid']!=os.getuid() or any(uid!=os.getuid() for uid in record['uids']) or not re.search(r'(?:^|/)job_'+re.escape(job)+r'(?:/|$)',record['cgroup']):raise ValueError('Launcher/checker/capture actual UID/cgroup mismatch')
+  if not selected_uuid or not selected_uuid.startswith('GPU-'):raise ValueError('Actual selected UUID missing')
+  lease=capture_lease(fd,lock_path,proc)
+- return dict(schema='actual-hf500-activation-v1',job_id=job,node=socket.gethostname().split('.')[0],uid=os.getuid(),gpu_uuid=selected_uuid,checker_pid=identity['checker']['pid'],checker_start_ticks=identity['checker']['process_start_ticks'],own_cgroup=own['cgroup'],capture_process=own,launcher=identity['launcher'],checker=identity['checker'],checker_sha256=identity['checker_sha256'],lease=lease,capture_source_sha256=digest(__file__))
++ return dict(schema='actual-hf500-activation-v1',job_id=job,node=socket.gethostname().split('.')[0],uid=os.getuid(),gpu_uuid=selected_uuid,checker_pid=identity['checker']['pid'],checker_start_ticks=identity['checker']['process_start_ticks'],own_cgroup=own['cgroup'],capture_process=own,launcher=identity['launcher'],checker=identity['checker'],checker_sha256=identity['checker_sha256'],lease=lease,capture_source_sha256=digest(Path(__file__)))
+ 
+ def validate_process_raw(record,job,uid):
+  fields=record['raw_stat'].rsplit(')',1)[1].split();status=dict(line.split(':',1) for line in record['raw_status'].splitlines() if ':' in line)
+--- v1/strict-tools/hf_launcher.py
++++ v2/strict-tools/hf_launcher.py
+@@ -77,7 +77,7 @@
+    except (FileNotFoundError,ValueError):time.sleep(.05)
+   if audit is None:raise ValueError('Actual immutable checker process capture unavailable')
+   gpu_records=[dict(record,index=next(index for index,value in inventory.items() if value['uuid']==record['uuid'])) for record in gpu]
+-  audit.update(launch_argv=launch,selected_gpu_preflight=gpu_records,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
++  audit.update(launch_argv=launch,selected_gpu_preflight=gpu_records,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(Path(preflight.__file__))),launcher_source_sha256=digest(Path(__file__)))
+   emit_activation(audit,evidence)
+   code=wait_child(child,failed,errors);reader.join(5)
+   if reader.is_alive():raise RuntimeError('Own checker reader did not exit within timeout')
+--- v1/strict-tools/reload_job.sh
++++ v2/strict-tools/reload_job.sh
+@@ -15,11 +15,11 @@
+ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
+ source "$root/env/bin/activate"
+ cd "$root/repo"
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/source_bundle_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v6/source_bundle_check.py"
+ exec 9>"$root/gpu-job.lock"
+ flock -n 9
+ [[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/formal_completion_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v6/formal_completion_check.py"
+ [[ -d "$OPSD_CHECKPOINT" ]]
+ sha256sum "$0" > "$run/reload-job-script.sha256"
+ python - <<'PY'
+@@ -56,5 +56,5 @@
+ assert len(records)==1,records
+ print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
+ PY
+-python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/resource_sample.py" "$run/resources.ndjson" $$ &
+-python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v5/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb
++python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v6/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v6/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v6/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb
+--- v1/strict-tools/runtime_capture.py
++++ v2/strict-tools/runtime_capture.py
+@@ -60,5 +60,5 @@
+  own=process_identity(os.getpid())
+  if not re.search(r'(?:^|/)job_'+re.escape(job)+r'(?:/|$)',own['cgroup']):raise ValueError('Actual worker outside own Slurm job')
+  rollout=worker.rollout
+- record=dict(rank=worker.rank,world_size=worker.world_size,pid=os.getpid(),uid=os.getuid(),node=socket.gethostname(),job_id=job,stage_sha256=stage,source_imports=source,process=own,worker_type=type(worker).__module__+'.'+type(worker).__qualname__,rollout_type=type(rollout).__module__+'.'+type(rollout).__qualname__,device_index=torch.cuda.current_device(),cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],callback_sha256=digest(__file__))
++ record=dict(rank=worker.rank,world_size=worker.world_size,pid=os.getpid(),uid=os.getuid(),node=socket.gethostname(),job_id=job,stage_sha256=stage,source_imports=source,process=own,worker_type=type(worker).__module__+'.'+type(worker).__qualname__,rollout_type=type(rollout).__module__+'.'+type(rollout).__qualname__,device_index=torch.cuda.current_device(),cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],callback_sha256=digest(Path(__file__)))
+  return DataProto.from_dict(tensors={'audit_probe':torch.zeros((1,1),dtype=torch.int64)},non_tensors={'worker_import_audit':np.array([record],dtype=object)})
+--- v1/strict-tools/strict_stage_prerequisites.py
++++ v2/strict-tools/strict_stage_prerequisites.py
+@@ -9,7 +9,7 @@
+ import formal_completion_check as formal
+ from pilot_reload_prerequisites import verify_reload
+ 
+-EXPECTED_DEPENDENCY_BUNDLE_SHA='54ab3aeb63f672a9db9ee2b791f8d574020d1f8e57fa008fad2b8c5bdcb82172'
++EXPECTED_DEPENDENCY_BUNDLE_SHA='4745c75b0cdfa3d4f1733397eacf9d24d675cdc080e7f962cc3d0f99ba54bb84'
+ def verify_dependency_bundle():
+  import sys
+  directory=Path(__file__).resolve().parent;manifest=directory/'verifier-dependencies.json'

@@ -1,0 +1,71 @@
+--- retained-c5a-v1/replay_final200_raw.py
++++ replay_final200_raw.py
+@@ -154,6 +154,29 @@
+             names = z.namelist()
+             require(len(names) == len(set(names)) and set(names) == {k + '.npy' for k in SCORING_KEYS}, 'Unexpected/duplicate NPZ members')
+             require(sum(e.file_size for e in z.infolist()) <= MAX_BATCH_RAW, 'NPZ exceeds expanded bound')
++            shapes, body_total = {}, 0
++            for entry in z.infolist():
++                key = entry.filename[:-4]
++                with z.open(entry) as member_stream:
++                    version = np.lib.format.read_magic(member_stream)
++                    require(version in ((1, 0), (2, 0)), 'Frozen scoring NPY header version differs')
++                    header_reader = { (1, 0):np.lib.format.read_array_header_1_0,
++                                      (2, 0):np.lib.format.read_array_header_2_0 }[version]
++                    shape, fortran, dtype = header_reader(member_stream, max_header_size=10000)
++                    require(type(shape) is tuple and len(shape) == 2 and
++                            all(type(x) is int and x > 0 for x in shape) and shape[0] <= 64 and
++                            type(fortran) is bool and dtype.kind in 'iu' and not dtype.hasobject and
++                            dtype.itemsize in (1, 2, 4, 8), 'Bounded 2D non-object integer NPY required')
++                    width_limit = 2048 if key == 'prompts' else (4096 if key == 'responses' else 6144)
++                    require(shape[1] <= width_limit, 'NPY shape exceeds real scoring tensor budget')
++                    body_bytes = shape[0] * shape[1] * dtype.itemsize
++                    require(member_stream.tell() + body_bytes == entry.file_size,
++                            'NPY header shape/body differs from actual ZIP member length')
++                    body_total += body_bytes; require(body_total <= MAX_BATCH_RAW, 'NPY body total exceeds expanded bound')
++                    shapes[key] = shape
++            n, prompt_width = shapes['prompts']; response_width = shapes['responses'][1]
++            require(shapes['responses'][0] == n and all(shapes[key] == (n, prompt_width + response_width)
++                    for key in ('attention_mask', 'info_mask', 'position_ids')), 'NPY declared row/offset shapes differ')
+         stream.seek(0)
+         with np.load(stream, allow_pickle=False) as archive:
+             return {name: archive[name].copy() for name in archive.files}
+@@ -500,6 +523,21 @@
+     fd = os.open(Path(path).parent, os.O_RDONLY); os.fsync(fd); os.close(fd)
+ 
+ 
++@contextmanager
++def derived_stream(path):
++    """Persist even an incomplete derived prefix before propagating its failure."""
++    with Path(path).open('xb') as stream:
++        try:
++            yield stream
++        finally:
++            stream.flush(); os.fsync(stream.fileno())
++            fd = os.open(Path(path).parent, os.O_RDONLY)
++            try:
++                os.fsync(fd)
++            finally:
++                os.close(fd)
++
++
+ def run(request, reader, helpers, output):
+     require(request['kind'] == 'EXTERNALLY_PINNED_PAIRED_FINAL200_CPU_REPLAY_INPUTS' and request['source_commit'] == EVAL and
+             type(request['roles']) is dict and set(request['roles']) == set(ROLES), 'Actual externally qualified paired inputs required')
+@@ -537,7 +575,7 @@
+     fd = os.open(out.parent, os.O_RDONLY); os.fsync(fd); os.close(fd)
+     counts, effects, done = {}, {}, {role:0 for role in ROLES}
+     try:
+-        with (out / 'paired-derived-question-scores.jsonl').open('xb') as stream:
++        with derived_stream(out / 'paired-derived-question-scores.jsonl') as stream:
+             generators = [role.walk(tok) for role, tok in zip(roles, tokenizers)]
+             for index, pair in enumerate(itertools.zip_longest(*generators)):
+                 a, b = pair; require(a is not None and b is not None and index < 51713, 'Paired row drop/overrun')
+@@ -552,7 +590,6 @@
+                     effects.setdefault(source, {}).setdefault(key, 0)
+                     effects[source][key] += value
+                 stream.write(encoded(dict(identity={k:a[k] for k in ('question_uid','question_id','ordinal','source')}, official_base=a, actual_hf200=b, paired_delta=delta)) + b'\n')
+-            stream.flush(); os.fsync(stream.fileno())
+         require(counts == COUNTS and len(roles[0].scores) == len(roles[1].scores) == 51713, 'Full paired seven-source coverage differs')
+         import torch
+         require(not torch.cuda.is_initialized(), 'CPU replay initialized CUDA')

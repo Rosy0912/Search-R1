@@ -1,0 +1,47 @@
+--- a/formal_supervisor.py
++++ b/formal_supervisor.py
+@@ -164,15 +164,41 @@
+  except subprocess.TimeoutExpired:
+   fail(same_process(owner),'Refusing to kill stale/foreign PID');proc.kill();proc.wait(timeout=10)
+ 
++def training_log_context(run,job):
++ # Context is an independently signed actual step5 checkpoint, not inferred
++ # from a transport prefix or a guessed future worker list.
++ from search_r1.baselines import checkpoint_gate as gate
++ manifest_path=under(run/'full_state/global_step_5/manifest.json',run)
++ manifest=gate.load_json(manifest_path)
++ receipt=gate.load_json(under(run/'acceptance-5-receipt.json',run))
++ fail(set(receipt)=={'payload','signature_hex'},'Wrong first5 signed envelope')
++ ready=unique(under(run/'approval-ready.json',run).read_bytes())
++ ready['ready_sha256']=sha(run/'approval-ready.json')
++ check_approval(run,ready);verify_binding(run,ready)
++ key=pinned(run/'bindings/public.json',ready['public_key_sha256'])
++ gate.verify_rsa_signature(receipt['payload'],receipt['signature_hex'],key)
++ payload=receipt['payload']
++ fail(payload['checkpoint_manifest_sha256']==sha(manifest_path),'Signed first5 manifest changed')
++ fail(payload['status']=='PASS_INDEPENDENT_OPSD_E1_STEP5_REVIEW','Wrong first5 authorization')
++ for key in ('method','run_root','source_commit','config_sha256','global_step','actual_outer_updates','next_global_step','horizon','warmup_steps','world_size','driver_pid','uid','job_id','pause_nonce'):
++  fail(payload[key]==manifest[key],'First5 signed identity changed: '+key)
++ fail(manifest['method']=='pure_opsd' and manifest['source_commit']==SOURCE and manifest['job_id']==job and manifest['run_root']==str(run) and manifest['uid']==os.getuid(),'First5 checkpoint is foreign')
++ fail((manifest['global_step'],manifest['actual_outer_updates'],manifest['next_global_step'],manifest['horizon'],manifest['warmup_steps'],manifest['world_size'])==(5,5,6,300,57,8),'First5 budget differs')
++ fail(payload['checkpoint_files']==manifest['files'],'Signed checkpoint files differ')
++ for record in manifest['files'].values():gate.verify_file(record,run)
++ workers=gate.manifest_worker_pids(manifest,run)
++ return gate,manifest,workers
++
+ def check_training_log(path,job):
++ gate,manifest,workers=training_log_context(Path(path).parent,job)
+  rows=[];final=[]
+  for line in Path(path).read_text().splitlines():
+   # Ray adds PID prefixes; the immutable marker still starts the JSON payload.
+   for marker,target in [('OPSD_E1_OUTER_JSON=',rows),('SEARCH_R1_FINAL_METRICS_JSON=',final)]:
+-   if marker in line:target.append(unique(line.split(marker,1)[1]))
++   if marker in line:target.append(gate.parse_log_marker(line,marker,driver_pid=manifest['driver_pid'],job_id=job,worker_pids=workers))
+  fail(len(rows)==300 and [v['actual_outer_updates'] for v in rows]==list(range(1,301)),'Missing/duplicate actual300 outer records')
+- fail(len({v['driver_pid'] for v in rows})==1 and len({v['config_sha256'] for v in rows})==1,'Driver/config changed')
+- from search_r1.baselines.checkpoint_gate import validate_outer,validate_evaluation
++ fail(len({v['driver_pid'] for v in rows})==1 and {v['config_sha256'] for v in rows}=={manifest['config_sha256']},'Driver/config changed')
++ validate_outer=gate.validate_outer;validate_evaluation=gate.validate_evaluation
+  for i,row in enumerate(rows,1):
+   fail(row['source_commit']==SOURCE and row['job_id']==job and row['global_step']==i,'Wrong actual training source/job/step');validate_outer(row['metrics'])
+   if i%50==0:validate_evaluation(row['metrics'],512)

@@ -1,0 +1,29 @@
+{
+  "source_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "production_math_sources": {
+    "search_r1/baselines/actor.py": "a393ff543739aa086ecde07ed797daf2ad3c85df40927fa2e8a7eac86c8d89a7",
+    "search_r1/baselines/distillation.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf"
+  },
+  "directory_name": "hf500-runtime-8e60976d364a-formal-UNFILLED-strict-raywarning",
+  "stage": "hf500_only_actual_formal_no_future_reload",
+  "formal_job": null,
+  "checkpoint_experiment": "opsd-gpu-formal500",
+  "checkpoint_step": 500,
+  "preview_blocked": true,
+  "file_sources": {
+    "training_evidence.py": "4b68f27a23b5e1db53992cd45500eb812bd2b3485c57494d761bbccdb672c6e3",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "periodic_validation.py": "d57b46f8b99d9b186b6853fa93a0c7932c2802acaf241fc4503a53fe1f82b8bd",
+    "source_bundle_check.py": "86cb7c260bb8cbdde0c1b2c8b12b657b6be6d04fb5c4e6966697ad22b5f293ed",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "strict_metric_parser.py": "131edc3a9f5c31905c6fe29f7dc1a1c57b761e4d75b4a84b083cbfa31d89dd56",
+    "formal_completion_check.py": "ac39923579cb7da632dc108eda2cf34173fc31ec207cb45fbe97f90bd5b9f9b6",
+    "reload_job.sh": "3f06bbf0dccf17131297b820865071b68f8a6c131e0cd3500d9f7396b3a1bdef"
+  },
+  "original_hf_manifest_sha256": "f4c656c214c62fc1e16f8f0a0747cd5fae25fc01169a89c67502f80082577ce8",
+  "formal_manifest_sha256": null,
+  "actual_formal_completion_receipt_required": true,
+  "future_reload_job_id": null,
+  "actual_formal_job_id_unfilled": true,
+  "prior_formal_preview_manifest_sha256": "8b5eeaf1694a59c056e1e20a4fe40e1018b615f6a549f093dff511687923250a"
+}

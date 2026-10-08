@@ -1,0 +1,19 @@
+{
+  "actual_first5_accepted": false,
+  "output_manifests": {
+    "first5": "b4d0cc217253bccaf3aa53c467ed6103ee2ee9375935b84c81a96d9814dede66",
+    "formal": "2f268e1eeb630e2e91ef39a7e1d27aaef352e944d17e90836a1c53fdf52618c6"
+  },
+  "pending": [
+    "formal shared-parser delta + independent review",
+    "native actual new source inventory external SHA",
+    "new owned allocation/preGPU ready review",
+    "fresh actual five state/HF/driver evidence and independently signed receipt"
+  ],
+  "repo": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300",
+  "source_commit": "a0968c2d24beeaa0400f60e4e34677fe6deef9c9",
+  "templates": {
+    "first5_v2": "74856b5f245cd7186ca7b40bcf2f949e3cfe26c59875ac279df46a43d5fffb58",
+    "formal": "209513e681cd5814a1aa7c1952e28a1e95038da5e724127e248275bfe54e4653"
+  }
+}

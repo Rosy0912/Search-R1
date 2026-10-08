@@ -1,0 +1,940 @@
+{
+  "actual_boundary": {
+    "capacity_exit": {
+      "after": {
+        "bytes": 46,
+        "ctime_ns": 1791287249512480847,
+        "device": 64768,
+        "inode": 138684042,
+        "mtime_ns": 1791287249512480847,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 46,
+        "ctime_ns": 1791287249512480847,
+        "device": 64768,
+        "inode": 138684042,
+        "mtime_ns": 1791287249512480847,
+        "uid": 0
+      },
+      "bytes": 46,
+      "opened": {
+        "bytes": 46,
+        "ctime_ns": 1791287249512480847,
+        "device": 64768,
+        "inode": 138684042,
+        "mtime_ns": 1791287249512480847,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/evidence/capacity-micro4/exit.json",
+      "path_after": {
+        "bytes": 46,
+        "ctime_ns": 1791287249512480847,
+        "device": 64768,
+        "inode": 138684042,
+        "mtime_ns": 1791287249512480847,
+        "uid": 0
+      },
+      "sha256": "6561cf2efc968809cb5df3a911ec07a7cb465120a6dfdec86593c4fa38abca39",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "environment": {
+      "after": {
+        "bytes": 2090,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684044,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 2090,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684044,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "bytes": 2090,
+      "opened": {
+        "bytes": 2090,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684044,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/evidence/actual-training-wrapper-environment.json",
+      "path_after": {
+        "bytes": 2090,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684044,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "sha256": "b8f6264c59c88cd0efd89eb830da0ccc72d2115541c46d52a1a0890809ed16b2",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "post_capacity_idle": {
+      "after": {
+        "bytes": 9260,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684043,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 9260,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684043,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "bytes": 9260,
+      "opened": {
+        "bytes": 9260,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684043,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/evidence/pre-training-double15-after-capacity.json",
+      "path_after": {
+        "bytes": 9260,
+        "ctime_ns": 1791287254032340562,
+        "device": 64768,
+        "inode": 138684043,
+        "mtime_ns": 1791287254032340562,
+        "uid": 0
+      },
+      "sha256": "cf42d42a54ba9940113a053db263639ab1683a910a5c182d10ac469f056f245b",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "after_context": {
+    "controller": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 2533919,
+      "start": "1834728058",
+      "uid": 0
+    },
+    "driver": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 2548319,
+      "start": "1834784786",
+      "uid": 0
+    },
+    "log_prefix": {
+      "after": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "bytes": 465499,
+      "opened": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/train.log",
+      "path_after": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "sha256": "2f4c6a110b76e83215a64bdf5561c9c71eeed3a1d079c516c5c39e1f3bb5fd26",
+      "unclosed_tail_bytes": 8538,
+      "unclosed_tail_sha256": "f99453c974503b45a11693f816bb2faf43913a188781f7a51110049794e165da"
+    },
+    "manifest": {
+      "after": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "bytes": 60506,
+      "opened": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/full_state/global_step_5/manifest.json",
+      "path_after": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "paused": {
+      "driver_pid": 2548319,
+      "job_id": "3304",
+      "manifest_path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/full_state/global_step_5/manifest.json",
+      "manifest_sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+      "pause_nonce": "20bf4e0dddc9ac6eed8b0d1a9da656ad60d99e8d8bbf07f93ef8356abdfd5764"
+    },
+    "ready": {
+      "after": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "bytes": 1216,
+      "opened": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/approval-ready.json",
+      "path_after": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "sha256": "43f8ab8ac817e3cc7c5a635216d08d5ac6d84322c9aafea3ea9401e7ded9fca9",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "workers": [
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2548974,
+        "start": "1834785562",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549227,
+        "start": "1834786108",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549228,
+        "start": "1834786110",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549229,
+        "start": "1834786111",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549231,
+        "start": "1834786113",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549232,
+        "start": "1834786114",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549230,
+        "start": "1834786112",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549233,
+        "start": "1834786115",
+        "uid": 0
+      }
+    ]
+  },
+  "before_context": {
+    "controller": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 2533919,
+      "start": "1834728058",
+      "uid": 0
+    },
+    "driver": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 2548319,
+      "start": "1834784786",
+      "uid": 0
+    },
+    "log_prefix": {
+      "after": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "bytes": 465499,
+      "opened": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/train.log",
+      "path_after": {
+        "bytes": 474037,
+        "ctime_ns": 1791290152090358242,
+        "device": 64768,
+        "inode": 138684046,
+        "mtime_ns": 1791290152090358242,
+        "uid": 0
+      },
+      "sha256": "2f4c6a110b76e83215a64bdf5561c9c71eeed3a1d079c516c5c39e1f3bb5fd26",
+      "unclosed_tail_bytes": 8538,
+      "unclosed_tail_sha256": "f99453c974503b45a11693f816bb2faf43913a188781f7a51110049794e165da"
+    },
+    "manifest": {
+      "after": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "bytes": 60506,
+      "opened": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/full_state/global_step_5/manifest.json",
+      "path_after": {
+        "bytes": 60506,
+        "ctime_ns": 1791290151874365216,
+        "device": 64768,
+        "inode": 138684230,
+        "mtime_ns": 1791290151874365216,
+        "uid": 0
+      },
+      "sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "paused": {
+      "driver_pid": 2548319,
+      "job_id": "3304",
+      "manifest_path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/full_state/global_step_5/manifest.json",
+      "manifest_sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+      "pause_nonce": "20bf4e0dddc9ac6eed8b0d1a9da656ad60d99e8d8bbf07f93ef8356abdfd5764"
+    },
+    "ready": {
+      "after": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "bytes": 1216,
+      "opened": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/approval-ready.json",
+      "path_after": {
+        "bytes": 1216,
+        "ctime_ns": 1791286825446286740,
+        "device": 64768,
+        "inode": 138683988,
+        "mtime_ns": 1791286825446286740,
+        "uid": 0
+      },
+      "sha256": "43f8ab8ac817e3cc7c5a635216d08d5ac6d84322c9aafea3ea9401e7ded9fca9",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "workers": [
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2548974,
+        "start": "1834785562",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549227,
+        "start": "1834786108",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549228,
+        "start": "1834786110",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549229,
+        "start": "1834786111",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549231,
+        "start": "1834786113",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549232,
+        "start": "1834786114",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549230,
+        "start": "1834786112",
+        "uid": 0
+      },
+      {
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3304/step_0\n0::/system.slice/slurmd.service\n",
+        "pid": 2549233,
+        "start": "1834786115",
+        "uid": 0
+      }
+    ]
+  },
+  "caller_provenance": {
+    "actual_environment_job_id": null,
+    "actual_environment_step_id": null,
+    "argv": [
+      "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/resource-phase-ebd52ef36f64/snapshot_training_resources_once.py",
+      "--manifest",
+      "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/full_state/global_step_5/manifest.json",
+      "--manifest-sha256",
+      "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+      "--pause-nonce",
+      "20bf4e0dddc9ac6eed8b0d1a9da656ad60d99e8d8bbf07f93ef8356abdfd5764",
+      "--driver-start",
+      "1834784786"
+    ],
+    "execution_pid": 2605227,
+    "execution_uid": 0,
+    "runtime": {
+      "after": {
+        "bytes": 18914,
+        "ctime_ns": 1791291923014428508,
+        "device": 64768,
+        "inode": 138684266,
+        "mtime_ns": 1791291923014428508,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 18914,
+        "ctime_ns": 1791291923014428508,
+        "device": 64768,
+        "inode": 138684266,
+        "mtime_ns": 1791291923014428508,
+        "uid": 0
+      },
+      "bytes": 18914,
+      "opened": {
+        "bytes": 18914,
+        "ctime_ns": 1791291923014428508,
+        "device": 64768,
+        "inode": 138684266,
+        "mtime_ns": 1791291923014428508,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/resource-phase-ebd52ef36f64/snapshot_training_resources_once.py",
+      "path_after": {
+        "bytes": 18914,
+        "ctime_ns": 1791291923014428508,
+        "device": 64768,
+        "inode": 138684266,
+        "mtime_ns": 1791291923014428508,
+        "uid": 0
+      },
+      "sha256": "ebd52ef36f644ce3d49b4e966f88314c0ddf40dc93e31c1b02308e38e281433e",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "scope": "Actual current caller observation; external approved exact-byte bootstrap and raw stdout/stderr/real exit must additionally be retained"
+  },
+  "dependencies": {
+    "formal": {
+      "after": {
+        "bytes": 37245,
+        "ctime_ns": 1791286544299481674,
+        "device": 64768,
+        "inode": 138683852,
+        "mtime_ns": 1791286544299481674,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 37245,
+        "ctime_ns": 1791286544299481674,
+        "device": 64768,
+        "inode": 138683852,
+        "mtime_ns": 1791286544299481674,
+        "uid": 0
+      },
+      "bytes": 37245,
+      "opened": {
+        "bytes": 37245,
+        "ctime_ns": 1791286544299481674,
+        "device": 64768,
+        "inode": 138683852,
+        "mtime_ns": 1791286544299481674,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/formal_supervisor.py",
+      "path_after": {
+        "bytes": 37245,
+        "ctime_ns": 1791286544299481674,
+        "device": 64768,
+        "inode": 138683852,
+        "mtime_ns": 1791286544299481674,
+        "uid": 0
+      },
+      "sha256": "ffb3bdc64f91c4a60905cd15994132c63c6494952c4ca0818c0cf7eee119d017",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "gate": {
+      "after": {
+        "bytes": 40567,
+        "ctime_ns": 1791286459626280193,
+        "device": 64768,
+        "inode": 138683526,
+        "mtime_ns": 1791286459626280193,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 40567,
+        "ctime_ns": 1791286459626280193,
+        "device": 64768,
+        "inode": 138683526,
+        "mtime_ns": 1791286459626280193,
+        "uid": 0
+      },
+      "bytes": 40567,
+      "opened": {
+        "bytes": 40567,
+        "ctime_ns": 1791286459626280193,
+        "device": 64768,
+        "inode": 138683526,
+        "mtime_ns": 1791286459626280193,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-fcecbea5d939/search_r1/baselines/checkpoint_gate.py",
+      "path_after": {
+        "bytes": 40567,
+        "ctime_ns": 1791286459626280193,
+        "device": 64768,
+        "inode": 138683526,
+        "mtime_ns": 1791286459626280193,
+        "uid": 0
+      },
+      "sha256": "09561719673a7c273ad39b3c9363b1a250eab0a94c20c80f40dd1dfc05589e16",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "receipt": {
+      "after": {
+        "bytes": 26097,
+        "ctime_ns": 1791286674775247721,
+        "device": 64768,
+        "inode": 138683866,
+        "mtime_ns": 1791286674775247721,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 26097,
+        "ctime_ns": 1791286674775247721,
+        "device": 64768,
+        "inode": 138683866,
+        "mtime_ns": 1791286674775247721,
+        "uid": 0
+      },
+      "bytes": 26097,
+      "opened": {
+        "bytes": 26097,
+        "ctime_ns": 1791286674775247721,
+        "device": 64768,
+        "inode": 138683866,
+        "mtime_ns": 1791286674775247721,
+        "uid": 0
+      },
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/receipt_payload.py",
+      "path_after": {
+        "bytes": 26097,
+        "ctime_ns": 1791286674775247721,
+        "device": 64768,
+        "inode": 138683866,
+        "mtime_ns": 1791286674775247721,
+        "uid": 0
+      },
+      "sha256": "7042f5a93158541e9ff0044bf4c21849d8de16eed159c9787fdd7ae8406c564e",
+      "unclosed_tail_bytes": 0,
+      "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "driver_pid": 2548319,
+  "files": {
+    "all-resources.ndjson": {
+      "bytes": 176887890,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/first5-resource-training-phase-v1/all-resources.ndjson",
+      "sha256": "98698d798c7c13c0bf6a8879a6335cca2b8387afd0c456e496187c4d2100caba"
+    },
+    "all-resources.ndjson.gz": {
+      "bytes": 10673837,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/first5-resource-training-phase-v1/all-resources.ndjson.gz",
+      "sha256": "70e9fce7436da56d254dac7ece1caeb987fcc21f097562af1b3122f0d265fcde"
+    },
+    "training-resources.ndjson": {
+      "bytes": 173853405,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/first5-resource-training-phase-v1/training-resources.ndjson",
+      "sha256": "fae51fc7dd605f213c1c6051d012b17a3f556911487dba0aaca0d3b90a0b276d"
+    },
+    "training-resources.ndjson.gz": {
+      "bytes": 10543588,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/first5-resource-training-phase-v1/training-resources.ndjson.gz",
+      "sha256": "ca3a7f9677f6e881bc50b5ea8db99bf9e3ce6819ea0bcf18816f855c711f7ddb"
+    }
+  },
+  "job_id": "3304",
+  "kind": "IMMUTABLE_FIRST5_RESOURCE_TRAINING_CONTIGUOUS_RANGE_WITH_UNFILTERED_ALL",
+  "manifest_sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+  "original_sampler": {
+    "after": {
+      "bytes": 176887890,
+      "ctime_ns": 1791292014195463335,
+      "device": 64768,
+      "inode": 138683997,
+      "mtime_ns": 1791292014195463335,
+      "uid": 0
+    },
+    "before": {
+      "bytes": 176887890,
+      "ctime_ns": 1791292014195463335,
+      "device": 64768,
+      "inode": 138683997,
+      "mtime_ns": 1791292014195463335,
+      "uid": 0
+    },
+    "bytes": 176887890,
+    "opened": {
+      "bytes": 176887890,
+      "ctime_ns": 1791292014195463335,
+      "device": 64768,
+      "inode": 138683997,
+      "mtime_ns": 1791292014195463335,
+      "uid": 0
+    },
+    "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/resources.ndjson",
+    "path_after": {
+      "bytes": 176887890,
+      "ctime_ns": 1791292014195463335,
+      "device": 64768,
+      "inode": 138683997,
+      "mtime_ns": 1791292014195463335,
+      "uid": 0
+    },
+    "sha256": "98698d798c7c13c0bf6a8879a6335cca2b8387afd0c456e496187c4d2100caba",
+    "unclosed_tail_bytes": 0,
+    "unclosed_tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "pause_nonce": "20bf4e0dddc9ac6eed8b0d1a9da656ad60d99e8d8bbf07f93ef8356abdfd5764",
+  "peer_frozen_resource_join": {
+    "native_rank_pids": {
+      "2548974": 0,
+      "2549227": 1,
+      "2549228": 2,
+      "2549229": 3,
+      "2549230": 6,
+      "2549231": 4,
+      "2549232": 5,
+      "2549233": 7
+    },
+    "samples": [
+      {
+        "identity": {
+          "2543106": {
+            "start": "1834765439",
+            "uuids": [
+              "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+              "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+              "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+              "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+              "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+              "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+              "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+              "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+            ]
+          },
+          "2548974": {
+            "start": "1834785562",
+            "uuids": [
+              "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"
+            ]
+          },
+          "2549227": {
+            "start": "1834786108",
+            "uuids": [
+              "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"
+            ]
+          },
+          "2549228": {
+            "start": "1834786110",
+            "uuids": [
+              "GPU-db94211b-42d5-88d0-f626-60e777af3be6"
+            ]
+          },
+          "2549229": {
+            "start": "1834786111",
+            "uuids": [
+              "GPU-308b13c1-44ea-47b7-7b33-01a928099618"
+            ]
+          },
+          "2549230": {
+            "start": "1834786112",
+            "uuids": [
+              "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"
+            ]
+          },
+          "2549231": {
+            "start": "1834786113",
+            "uuids": [
+              "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"
+            ]
+          },
+          "2549232": {
+            "start": "1834786114",
+            "uuids": [
+              "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"
+            ]
+          },
+          "2549233": {
+            "start": "1834786115",
+            "uuids": [
+              "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+            ]
+          }
+        },
+        "time": "2026-10-06T11:48:37.814388+00:00"
+      },
+      {
+        "identity": {
+          "2543106": {
+            "start": "1834765439",
+            "uuids": [
+              "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+              "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+              "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+              "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+              "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+              "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+              "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+              "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+            ]
+          },
+          "2548974": {
+            "start": "1834785562",
+            "uuids": [
+              "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"
+            ]
+          },
+          "2549227": {
+            "start": "1834786108",
+            "uuids": [
+              "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"
+            ]
+          },
+          "2549228": {
+            "start": "1834786110",
+            "uuids": [
+              "GPU-db94211b-42d5-88d0-f626-60e777af3be6"
+            ]
+          },
+          "2549229": {
+            "start": "1834786111",
+            "uuids": [
+              "GPU-308b13c1-44ea-47b7-7b33-01a928099618"
+            ]
+          },
+          "2549230": {
+            "start": "1834786112",
+            "uuids": [
+              "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"
+            ]
+          },
+          "2549231": {
+            "start": "1834786113",
+            "uuids": [
+              "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"
+            ]
+          },
+          "2549232": {
+            "start": "1834786114",
+            "uuids": [
+              "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"
+            ]
+          },
+          "2549233": {
+            "start": "1834786115",
+            "uuids": [
+              "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+            ]
+          }
+        },
+        "time": "2026-10-06T11:48:40.866192+00:00"
+      }
+    ],
+    "scope": "Actual saved rank PID + sampled start/UUID join; NVML sampling not continuous peak, RSS shared pages/cgroup caveats remain",
+    "uuid_inventory": [
+      "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+      "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+      "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+      "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+      "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+      "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+      "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+    ]
+  },
+  "plan": {
+    "all_bytes": 176887890,
+    "all_lines": 1970,
+    "all_problem_rows": [
+      {
+        "applications": [
+          {
+            "in_slurm_job": false,
+            "pid": 2544824,
+            "process_start_ticks": "1834772278",
+            "uid": "0",
+            "unavailable": null,
+            "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"
+          }
+        ],
+        "inventory_errors": [],
+        "line_number": 66,
+        "offset": 2869512,
+        "query_error": null,
+        "time": "2026-10-06T11:47:26.494869+00:00"
+      }
+    ],
+    "all_sha256": "98698d798c7c13c0bf6a8879a6335cca2b8387afd0c456e496187c4d2100caba",
+    "boundary_ns": 1791287254032340562,
+    "historical_prefix": {
+      "bytes": 100995983,
+      "sha256": "c0a6dccaec7502045c468278e05c6f0de1a69038188d35e5b7b986a75b86f0fb"
+    },
+    "maximum_all_gap_seconds": 5.756452,
+    "maximum_training_gap_seconds": 3.566539,
+    "scope": "Exact continuous original byte range from first sample time>=actual pre-Popen marker physical mtime; no filtering or normalization; whole-preflight raw failures retained",
+    "slice_bytes": 173853405,
+    "slice_end_offset": 176887890,
+    "slice_first_line": 70,
+    "slice_first_time": "2026-10-06T11:47:36.279862+00:00",
+    "slice_last_line": 1970,
+    "slice_last_time": "2026-10-06T13:06:53.741286+00:00",
+    "slice_lines": 1901,
+    "slice_sha256": "fae51fc7dd605f213c1c6051d012b17a3f556911487dba0aaca0d3b90a0b276d",
+    "slice_start_offset": 3034485
+  },
+  "scope": "Training-range first5 resource join only; unfiltered preflight/all byte originals retained; frozen whole-run formal audit may still fail on historical pretraining cgroupFalse; not final terminal/release/effect PASS",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "version": 1
+}

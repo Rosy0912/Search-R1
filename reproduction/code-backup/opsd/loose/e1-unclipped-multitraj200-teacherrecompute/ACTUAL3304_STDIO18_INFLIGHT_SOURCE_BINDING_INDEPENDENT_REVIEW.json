@@ -1,0 +1,782 @@
+{
+  "version": 1,
+  "role": "INDEPENDENT_REVIEWER",
+  "status": "PASS_ACTUAL_INFLIGHT_STDIO18_SOURCE_BINDING_INDEPENDENT_REVIEW",
+  "scope": "ACTUAL_RUNNING_PROCESS_FD_PATH_INODE_IDENTITY_ONLY_NOT_BODY_HASH_OR_CLOSED200_OR_RESOURCE_RELEASE",
+  "observed_utc": "2026-10-07T07:08:15.735800+00:00",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "original_training_job_id": "3304",
+  "originals": {
+    "reader-source.original.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/reader-source.original.py",
+      "sha256": "d6b217cbc66a6b8c3b12416f2f420b9ee7ed8f74a3a25681c8e507bc1723168b",
+      "bytes": 3349
+    },
+    "intent.original.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/intent.original.json",
+      "sha256": "e6a4b1496fb8e0720d5a5cd674c3c102aad863696100d1e07c7876c567f2dabe",
+      "bytes": 5884
+    },
+    "popen.original.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/popen.original.json",
+      "sha256": "f482c80b299de3ddcb4f509ba8aa82bba217823e2a5c876234a24a03cb57d32b",
+      "bytes": 15
+    },
+    "stdout.original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/stdout.original",
+      "sha256": "bfa3827c1cb39addc554f0f6e4ce239e5fcb13730aa19f3da250d1606a6241da",
+      "bytes": 54774
+    },
+    "stderr.original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/stderr.original",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wait.original.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-live-stdio18-binding-originals-v1/wait.original.json",
+      "sha256": "8a81fe51783a790e3a8d1856d8a59b23ff01278ddfe77ce786773a80a45955e1",
+      "bytes": 98
+    }
+  },
+  "actual_ssh_wait": {
+    "returncode": 0,
+    "waited": true,
+    "pid": 55424,
+    "scope": "Own SSH wait, unknown neverkill/retry"
+  },
+  "processes": 9,
+  "stdio_count": 18,
+  "distinct_physical_paths": 18,
+  "distinct_device_inode_pairs": 18,
+  "bindings": [
+    {
+      "pid": 2548319,
+      "start_ticks": "1834784786",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-0cdc9d8698e23448dcc06d212bbfba65513b4b4f2dfc726c2144806d-02000000-2548319.out",
+      "physical_before": {
+        "bytes": 5968103,
+        "ctime_ns": 1791356557430433592,
+        "device": 64769,
+        "inode": 7379778,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791356557430433592,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 5968103,
+        "ctime_ns": 1791356557430433592,
+        "device": 64769,
+        "inode": 7379778,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791356557430433592,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 5968103,
+        "ctime_ns": 1791356557430433592,
+        "device": 64769,
+        "inode": 7379778,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791356557430433592,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2548319,
+      "start_ticks": "1834784786",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-0cdc9d8698e23448dcc06d212bbfba65513b4b4f2dfc726c2144806d-02000000-2548319.err",
+      "physical_before": {
+        "bytes": 508,
+        "ctime_ns": 1791287297922959708,
+        "device": 64769,
+        "inode": 7379779,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791287297922959708,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 508,
+        "ctime_ns": 1791287297922959708,
+        "device": 64769,
+        "inode": 7379779,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791287297922959708,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 508,
+        "ctime_ns": 1791287297922959708,
+        "device": 64769,
+        "inode": 7379779,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791287297922959708,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2548974,
+      "start_ticks": "1834785562",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-42efe58bca2a6fe2b9ce912995601f4fdf01269ee56c2e74745a1d8d-02000000-2548974.out",
+      "physical_before": {
+        "bytes": 139270,
+        "ctime_ns": 1791340693136553358,
+        "device": 64769,
+        "inode": 7379794,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340693136553358,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 139270,
+        "ctime_ns": 1791340693136553358,
+        "device": 64769,
+        "inode": 7379794,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340693136553358,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 139270,
+        "ctime_ns": 1791340693136553358,
+        "device": 64769,
+        "inode": 7379794,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340693136553358,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2548974,
+      "start_ticks": "1834785562",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-42efe58bca2a6fe2b9ce912995601f4fdf01269ee56c2e74745a1d8d-02000000-2548974.err",
+      "physical_before": {
+        "bytes": 8464,
+        "ctime_ns": 1791340961379170727,
+        "device": 64769,
+        "inode": 7379795,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961379170727,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 8464,
+        "ctime_ns": 1791340961379170727,
+        "device": 64769,
+        "inode": 7379795,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961379170727,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 8464,
+        "ctime_ns": 1791340961379170727,
+        "device": 64769,
+        "inode": 7379795,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961379170727,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549227,
+      "start_ticks": "1834786108",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-79c94186c43823ae532050a2fe3c3629eb61eddd9440ddf6187960c6-02000000-2549227.out",
+      "physical_before": {
+        "bytes": 134570,
+        "ctime_ns": 1791340697428403045,
+        "device": 64769,
+        "inode": 7380282,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697428403045,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134570,
+        "ctime_ns": 1791340697428403045,
+        "device": 64769,
+        "inode": 7380282,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697428403045,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134570,
+        "ctime_ns": 1791340697428403045,
+        "device": 64769,
+        "inode": 7380282,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697428403045,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549227,
+      "start_ticks": "1834786108",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-79c94186c43823ae532050a2fe3c3629eb61eddd9440ddf6187960c6-02000000-2549227.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961375170866,
+        "device": 64769,
+        "inode": 7380283,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961375170866,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961375170866,
+        "device": 64769,
+        "inode": 7380283,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961375170866,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961375170866,
+        "device": 64769,
+        "inode": 7380283,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961375170866,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549228,
+      "start_ticks": "1834786110",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-9937a8a21e7977213694cd955db4651ad30a62444359d6622418a8fa-02000000-2549228.out",
+      "physical_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340697140413131,
+        "device": 64769,
+        "inode": 7380289,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697140413131,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134588,
+        "ctime_ns": 1791340697140413131,
+        "device": 64769,
+        "inode": 7380289,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697140413131,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340697140413131,
+        "device": 64769,
+        "inode": 7380289,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340697140413131,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549228,
+      "start_ticks": "1834786110",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-9937a8a21e7977213694cd955db4651ad30a62444359d6622418a8fa-02000000-2549228.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961363171286,
+        "device": 64769,
+        "inode": 7380292,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961363171286,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961363171286,
+        "device": 64769,
+        "inode": 7380292,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961363171286,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961363171286,
+        "device": 64769,
+        "inode": 7380292,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961363171286,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549229,
+      "start_ticks": "1834786111",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-f8b23f35416ddb631cd943feda929865d12eed450c138b1a95b1527c-02000000-2549229.out",
+      "physical_before": {
+        "bytes": 134583,
+        "ctime_ns": 1791340698400369004,
+        "device": 64769,
+        "inode": 7380311,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698400369004,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134583,
+        "ctime_ns": 1791340698400369004,
+        "device": 64769,
+        "inode": 7380311,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698400369004,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134583,
+        "ctime_ns": 1791340698400369004,
+        "device": 64769,
+        "inode": 7380311,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698400369004,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549229,
+      "start_ticks": "1834786111",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-f8b23f35416ddb631cd943feda929865d12eed450c138b1a95b1527c-02000000-2549229.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961351171706,
+        "device": 64769,
+        "inode": 7380312,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961351171706,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961351171706,
+        "device": 64769,
+        "inode": 7380312,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961351171706,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961351171706,
+        "device": 64769,
+        "inode": 7380312,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961351171706,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549231,
+      "start_ticks": "1834786113",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-c72f0b40d012378d86c5c90c9d72f24f6150d334b08118291aa3a317-02000000-2549231.out",
+      "physical_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340698792355276,
+        "device": 64769,
+        "inode": 7380317,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698792355276,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134588,
+        "ctime_ns": 1791340698792355276,
+        "device": 64769,
+        "inode": 7380317,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698792355276,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340698792355276,
+        "device": 64769,
+        "inode": 7380317,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340698792355276,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549231,
+      "start_ticks": "1834786113",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-c72f0b40d012378d86c5c90c9d72f24f6150d334b08118291aa3a317-02000000-2549231.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961355171566,
+        "device": 64769,
+        "inode": 7380318,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961355171566,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961355171566,
+        "device": 64769,
+        "inode": 7380318,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961355171566,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961355171566,
+        "device": 64769,
+        "inode": 7380318,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961355171566,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549232,
+      "start_ticks": "1834786114",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-58fc8efd4d9eadbdda8f18e3f59d15188b64e4851e4d147e3989e84e-02000000-2549232.out",
+      "physical_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340696456437086,
+        "device": 64769,
+        "inode": 7380302,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340696456437086,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134588,
+        "ctime_ns": 1791340696456437086,
+        "device": 64769,
+        "inode": 7380302,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340696456437086,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134588,
+        "ctime_ns": 1791340696456437086,
+        "device": 64769,
+        "inode": 7380302,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340696456437086,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549232,
+      "start_ticks": "1834786114",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-58fc8efd4d9eadbdda8f18e3f59d15188b64e4851e4d147e3989e84e-02000000-2549232.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961387170447,
+        "device": 64769,
+        "inode": 7380303,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961387170447,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961387170447,
+        "device": 64769,
+        "inode": 7380303,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961387170447,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961387170447,
+        "device": 64769,
+        "inode": 7380303,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961387170447,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549230,
+      "start_ticks": "1834786112",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-b3332f2c3cafb690ea0f0b3bc6694fb8dd5a922bfcaf161f75c541b7-02000000-2549230.out",
+      "physical_before": {
+        "bytes": 134563,
+        "ctime_ns": 1791340695900456558,
+        "device": 64769,
+        "inode": 7380296,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340695900456558,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134563,
+        "ctime_ns": 1791340695900456558,
+        "device": 64769,
+        "inode": 7380296,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340695900456558,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134563,
+        "ctime_ns": 1791340695900456558,
+        "device": 64769,
+        "inode": 7380296,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340695900456558,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549230,
+      "start_ticks": "1834786112",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-b3332f2c3cafb690ea0f0b3bc6694fb8dd5a922bfcaf161f75c541b7-02000000-2549230.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961447168348,
+        "device": 64769,
+        "inode": 7380297,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961447168348,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961447168348,
+        "device": 64769,
+        "inode": 7380297,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961447168348,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961447168348,
+        "device": 64769,
+        "inode": 7380297,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961447168348,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549233,
+      "start_ticks": "1834786115",
+      "fd": 1,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-4076aded8f8cbb88180b27aefa7efc40c7c5ce99be436326b5e53fb9-02000000-2549233.out",
+      "physical_before": {
+        "bytes": 134566,
+        "ctime_ns": 1791340699476331321,
+        "device": 64769,
+        "inode": 7380306,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340699476331321,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 134566,
+        "ctime_ns": 1791340699476331321,
+        "device": 64769,
+        "inode": 7380306,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340699476331321,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 134566,
+        "ctime_ns": 1791340699476331321,
+        "device": 64769,
+        "inode": 7380306,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340699476331321,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    },
+    {
+      "pid": 2549233,
+      "start_ticks": "1834786115",
+      "fd": 2,
+      "path": "/tmp/o4e-3304/ray/session_2026-10-06_19-44-37_985734_2537562/logs/worker-4076aded8f8cbb88180b27aefa7efc40c7c5ce99be436326b5e53fb9-02000000-2549233.err",
+      "physical_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961435168767,
+        "device": 64769,
+        "inode": 7380307,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961435168767,
+        "uid": 0
+      },
+      "physical_after": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961435168767,
+        "device": 64769,
+        "inode": 7380307,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961435168767,
+        "uid": 0
+      },
+      "fd_stat_before": {
+        "bytes": 6763,
+        "ctime_ns": 1791340961435168767,
+        "device": 64769,
+        "inode": 7380307,
+        "link_count": 1,
+        "mode": 33188,
+        "mtime_ns": 1791340961435168767,
+        "uid": 0
+      },
+      "writable_flags_once": 33793,
+      "writable_access_mode": 1
+    }
+  ],
+  "prior_stderr_paths_join": {
+    "original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-stderr-live-originals-v1/stdout.original",
+      "sha256": "a814c338677226c8ce729f45731546d5e8d2f89a434252be27383f7c5b3727bf",
+      "bytes": 65640
+    },
+    "observed_utc": "2026-10-06T14:52:29.607443+00:00",
+    "count": 9,
+    "all_exact_physical_paths_and_pid_starts_match": true,
+    "old_file_bodies_reparsed": false
+  },
+  "prior_v19_driver_path_join": {
+    "original": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-release-live-originals-v19/transport.stdout.original",
+      "sha256": "5adf120236df3effbc257e869227bfb7ea4417d709028c2ff08bea4f1b3fdab2",
+      "bytes": 16350538
+    },
+    "same_driver_pid_start_and_physical_stdout_path": true,
+    "driver_body_decoded_or_rescored": false
+  },
+  "read_only_reader_source_review": "Only proc/status/cgroup/readlink/fdinfo/physical-stat and readonly git/scontrol commands; no body read, signal, retry, modification or scheduler submission.",
+  "context_checks": {
+    "fixed9_pid_start_before_after": true,
+    "raw_uid0_all4_ids": true,
+    "adjacent_same_job3304_step0_cgroup": true,
+    "all_regular_owned_single_link_before_fd_after": true,
+    "write_access_flags_once_per_fd": true,
+    "fd_target_inodes_distinct_and_before_after_stable": true,
+    "fcec_git_clean": true,
+    "literal_slurm3304_RUNNING_Restarts0_h10010": true
+  },
+  "limits": [
+    "Only one fdinfo/writable-flags observation per descriptor is saved. Post observation repeats PID/start/UID/cgroup and FD target/inode/UID/link/size, but not second raw fdinfo; no two-flags observation claim.",
+    "File bodies and full content SHA for these18 endpoints were not read by this capture. Recorded metadata is an in-flight source map, not immutable or closed-lifetime archive.",
+    "No actual200 checkpoint/evaluation, child/wrapper/Slurm terminal outcome, post-exit writer closure or resource release claim.",
+    "Known resourcebad66 and literal future exits remain independent; this map does not override them."
+  ],
+  "blocking_findings": [],
+  "actual200": null,
+  "terminal": null,
+  "closed_lifetime": null,
+  "resource_release": null,
+  "remote_reexecuted": false,
+  "gpu": false,
+  "source_or_canonical_changed": false
+}

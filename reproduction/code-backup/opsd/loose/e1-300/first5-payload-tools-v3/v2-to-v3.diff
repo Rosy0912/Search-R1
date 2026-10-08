@@ -1,0 +1,149 @@
+--- v2/inspect_payloads.py
++++ v3/inspect_payloads.py
+@@ -136,6 +136,40 @@
+                     fp32=torch.frombuffer(bytearray(raw),dtype=torch.bfloat16).to(torch.float32);h.update(memoryview(fp32.view(torch.uint8).numpy()).cast('B'))
+         return h.hexdigest()
+ 
++class Export:
++    """Read only actual externally manifest-pinned HF tensor slices, not a model."""
++    def __init__(self,paths,expected_keys):
++        self.index_path=paths['actor/model.safetensors.index.json']
++        index=unique(self.index_path.read_bytes())
++        self.index=index['weight_map'];require(isinstance(self.index,dict) and set(self.index)==set(expected_keys),'HF index complete key inventory differs')
++        self.headers={};self.starts={};self.shards={}
++        for name in sorted(set(self.index.values())):
++            require(isinstance(name,str) and P(name).name==name and name.endswith('.safetensors'),'HF unsafe shard path')
++            path=paths['actor/'+name];require(path.parent==self.index_path.parent,'HF shard directory differs');self.shards[name]=path
++            with path.open('rb') as f:
++                length=f.read(8);require(len(length)==8,'HF header length missing');n=struct.unpack('<Q',length)[0]
++                require(0<n<64*1024**2 and n+8<=path.stat().st_size,'HF header invalid');header=unique(f.read(n));self.starts[name]=8+n
++            for key,v in header.items():
++                if key=='__metadata__':continue
++                require(key not in self.headers and self.index.get(key)==name,'HF duplicate or wrongly assigned tensor')
++                require(isinstance(v,dict) and set(v)=={'dtype','shape','data_offsets'} and v['dtype']=='F32','HF native master dtype/schema differs')
++                shape=v['shape'];offset=v['data_offsets']
++                require(isinstance(shape,list) and shape and all(type(x) is int and x>0 for x in shape),'HF shape invalid')
++                require(isinstance(offset,list) and len(offset)==2 and all(type(x) is int for x in offset) and 0<=offset[0]<=offset[1] and offset[1]-offset[0]==math.prod(shape)*4 and self.starts[name]+offset[1]<=path.stat().st_size,'HF tensor byte extent differs')
++                self.headers[key]=v
++        require(set(self.headers)==set(expected_keys),'HF header complete key inventory differs')
++    def local(self,key,rank,world=8):
++        v=self.headers[key];shape=v['shape'];require(shape[0]%world==0 and type(rank) is int and 0<=rank<world,'HF slice topology differs')
++        count=shape[0]//world;row_bytes=math.prod(shape[1:])*4;start=v['data_offsets'][0]+rank*count*row_bytes;size=count*row_bytes
++        with self.shards[self.index[key]].open('rb') as f:
++            f.seek(self.starts[self.index[key]]+start);raw=f.read(size)
++        require(len(raw)==size,'HF local slice truncated')
++        return torch.frombuffer(bytearray(raw),dtype=torch.float32).reshape([count]+shape[1:])
++    def equal_slice(self,key,rank,local):
++        exported=self.local(key,rank)
++        require(exported.shape==local.shape and exported.dtype==local.dtype and torch.equal(exported,local),'native model/HF exact slice differs: '+key)
++        return True
++
+ def base_asset_inventory(directory, expected_names, manifest_path, pins):
+     """Known metadata remains hashed identity, never a marker acceptance signal."""
+     directory=P(directory);manifest_path=P(manifest_path)
+@@ -168,6 +202,7 @@
+     base=Base(P(args.base_model),unique(base_manifest.read_bytes()),pins);base_digest=base.named_parameter_digest();base_assets=base_asset_inventory(base.directory,{r['file'] for r in unique(base_manifest.read_bytes())['files']},base_manifest,pins)
+     helper=repo/'search_r1/baselines/full_state.py';module=types.ModuleType('independent_actual_full_state');module.__file__=str(helper);exec(compile(helper.read_bytes(),str(helper),'exec'),module.__dict__);digest=module.state_digest
+     expected_source_files={str(p.relative_to(repo)):sha(p) for namespace in ('search_r1','verl') for p in sorted((repo/namespace).rglob('*.py'))}
++    hf=Export(paths,set(base.headers)|{'lm_head.weight'});hf_files={str(path):pins[str(path)] for path in [hf.index_path,*hf.shards.values()]}
+     ranks=[];actor_configs=set(); teacher_digests=set()
+     for rank in range(8):
+         pt=paths[f'actor/training_state/rank_{rank}.pt'];report=unique(paths[f'actor/training_state/rank_{rank}.json'].read_bytes())
+@@ -183,6 +218,8 @@
+         for key,t in model.items():
+             layouts[key]=layout(t,rank);target=base.local(key,rank);local=t.to_local();require(local.shape==target.shape,'base/local tensor shape mismatch')
+             require(tuple(t.shape)==tuple(base.headers['model.embed_tokens.weight' if key=='lm_head.weight' else key]['shape']),'global tensor shape mismatch')
++            require(hf.headers[key]['shape']==list(t.shape),'HF/global native tensor shape differs')
++            hf.equal_slice(key,rank,local)
+             diff=int(torch.count_nonzero(local!=target));changes[key]=diff
+             if key!='lm_head.weight':unique_local_numel+=local.numel()
+         require(torch.equal(model['lm_head.weight'].to_local(),model['model.embed_tokens.weight'].to_local()),'tied weights no longer equal')
+@@ -199,7 +236,7 @@
+         require(digest(teacher['buffers'])==teacher['buffer_content_digest'],'teacher buffer raw bytes differ')
+         require(teacher['model_bytes']==NUMEL*4+sum(t.numel()*t.element_size() for t in teacher['buffers'].values()),'teacher actual model+buffer byte count differs')
+         teacher_digests.add(teacher['model_content_digest'])
+-        ranks.append(dict(rank=rank,pid=raw['pid'],object_ids=raw['object_ids'],state_sha256=pins[str(pt)],state_digest=report['state_digest'],actor_config_digest=identity['actor_config_digest'],component_digests={k:digest(raw[k]) for k in ('model','optimizer','scheduler','rng','teacher')},model_dtensor_entries=len(model),model_layouts=layouts,unique_local_model_numel=unique_local_numel,changed_elements_vs_original_fp32=changes,optimizer_state_entries=len(opt['entries']),optimizer_step_values=opt['steps'],optimizer_moments=opt['entries'],scheduler_last_epoch=5,scheduler_last_lr=sched['last_lr'],rng_verified=True,rng_content=rng_report,teacher_content_digest=base_digest,teacher_cuda_update_entries=5,teacher_counters=teacher['counters'],teacher_buffer_digest=teacher['buffer_content_digest']))
++        ranks.append(dict(rank=rank,pid=raw['pid'],object_ids=raw['object_ids'],state_sha256=pins[str(pt)],state_digest=report['state_digest'],actor_config_digest=identity['actor_config_digest'],component_digests={k:digest(raw[k]) for k in ('model','optimizer','scheduler','rng','teacher')},model_dtensor_entries=len(model),model_hf_slice_exact=True,model_hf_slice_keys=sorted(model),model_layouts=layouts,unique_local_model_numel=unique_local_numel,changed_elements_vs_original_fp32=changes,optimizer_state_entries=len(opt['entries']),optimizer_step_values=opt['steps'],optimizer_moments=opt['entries'],scheduler_last_epoch=5,scheduler_last_lr=sched['last_lr'],rng_verified=True,rng_content=rng_report,teacher_content_digest=base_digest,teacher_cuda_update_entries=5,teacher_counters=teacher['counters'],teacher_buffer_digest=teacher['buffer_content_digest']))
+         del raw,model
+     require(len({r['pid'] for r in ranks})==8 and len(actor_configs)==len(teacher_digests)==1,'rank processes/configs/teacher alias or drift')
+     driver_path=paths['driver/driver.pt'];dr=unique(paths['driver/driver.json'].read_bytes());driver=torch.load(driver_path,map_location='cpu',weights_only=False)
+@@ -212,7 +249,7 @@
+     for path,pin in pins.items():require(sha(P(path))==pin,'input drifted during audit')
+     require(expected_source_files=={str(p.relative_to(repo)):sha(p) for namespace in ('search_r1','verl') for p in sorted((repo/namespace).rglob('*.py'))},'source drifted during audit')
+     require(sha(P(__file__).resolve())==inspector_source_sha and subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()==args.expected_source and not subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],text=True).strip(),'inspector/repo drifted during audit')
+-    return dict(version=1,scope='NATIVE_CPU_FIRST5_STORED_STATE_INSPECTION_NOT_LIVE_RESTORE',inspector_source_sha256=inspector_source_sha,cpu_runtime=dict(python_executable=sys.executable,python_version=sys.version,torch_version=torch.__version__,torch_file=str(P(torch.__file__).resolve()),torch_file_sha256=sha(P(torch.__file__).resolve()),numpy_file=str(P(np.__file__).resolve()),numpy_file_sha256=sha(P(np.__file__).resolve())),source_commit=args.expected_source,job_id=str(m['job_id']),run_root=str(root),checkpoint_manifest_sha256=args.manifest_sha256,driver=dict(pid=driver['pid'],state_sha256=pins[str(driver_path)],state_digest=dr['digest'],sampler_cursor=2560,consumed_cursor=2560,size=169028,epoch=0,sampler_digest=digest(sampler),rng_verified=True,rng_content=driver_rng),ranks=ranks,base_named_parameter_digest=base_digest,all_files=pins,cuda_is_initialized=False,passed=True,limitations=['Stored content inspection is not re-execution of native same-object restore or approval','No live worker PID/UUID/resource/lease witness is produced','Native Adam ID/group/local-flat shapes are checked; named-to-flat FSDP handle reconstruction is not performed','Teacher buffers are actual saved history-dependent bytes, not forced equal to initial RoPE caches','No signatures or training continuation; actual runtime reports/source/first5 logs must be independently joined'])
++    return dict(version=1,scope='NATIVE_CPU_FIRST5_STORED_STATE_INSPECTION_NOT_LIVE_RESTORE',inspector_source_sha256=inspector_source_sha,cpu_runtime=dict(python_executable=sys.executable,python_version=sys.version,torch_version=torch.__version__,torch_file=str(P(torch.__file__).resolve()),torch_file_sha256=sha(P(torch.__file__).resolve()),numpy_file=str(P(np.__file__).resolve()),numpy_file_sha256=sha(P(np.__file__).resolve())),source_commit=args.expected_source,job_id=str(m['job_id']),run_root=str(root),checkpoint_manifest_sha256=args.manifest_sha256,driver=dict(pid=driver['pid'],state_sha256=pins[str(driver_path)],state_digest=dr['digest'],sampler_cursor=2560,consumed_cursor=2560,size=169028,epoch=0,sampler_digest=digest(sampler),rng_verified=True,rng_content=driver_rng),ranks=ranks,base_named_parameter_digest=base_digest,hf_all_rank_slices_exact=True,hf_files=hf_files,all_files=pins,cuda_is_initialized=False,passed=True,limitations=['Stored content inspection is not re-execution of native same-object restore or approval','No live worker PID/UUID/resource/lease witness is produced','Native Adam ID/group/local-flat shapes are checked; named-to-flat FSDP handle reconstruction is not performed','Teacher buffers are actual saved history-dependent bytes, not forced equal to initial RoPE caches','No signatures or training continuation; actual runtime reports/source/first5 logs must be independently joined'])
+ 
+ def main():
+     p=argparse.ArgumentParser();p.add_argument('--manifest',required=True);p.add_argument('--manifest-sha256',required=True);p.add_argument('--expected-source',required=True);p.add_argument('--repo',required=True);p.add_argument('--base-model',required=True);p.add_argument('--base-manifest',required=True);p.add_argument('--base-manifest-sha256',required=True);p.add_argument('--output',required=True);a=p.parse_args()
+--- v2/test_inspector.py
++++ v3/test_inspector.py
+@@ -97,6 +97,54 @@
+             alias=root/'alias';alias.symlink_to(p)
+             with self.assertRaises(ValueError):m.sha(alias)
+             with self.assertRaises(ValueError):m.record({'path':str(p),'sha256':pin},root/'child',{})
++    def hf_fixture(self,d,values):
++        root=P(d).resolve();headers={};raw=b''
++        for key,t in values.items():
++            b=t.contiguous().view(torch.uint8).numpy().tobytes();headers[key]={'dtype':'F32','shape':list(t.shape),'data_offsets':[len(raw),len(raw)+len(b)]};raw+=b
++        header=json.dumps(headers).encode();shard=root/'model-00001.safetensors';shard.write_bytes(struct.pack('<Q',len(header))+header+raw)
++        index=root/'model.safetensors.index.json';index.write_text(json.dumps({'weight_map':{k:shard.name for k in values}}))
++        return {'actor/'+index.name:index,'actor/'+shard.name:shard}
++    def test_hf_all_rank_slices_exact(self):
++        values={'embed':torch.arange(16,dtype=torch.float32).reshape(8,2),'head':torch.arange(16,dtype=torch.float32).reshape(8,2),'norm':torch.arange(8,dtype=torch.float32)}
++        with tempfile.TemporaryDirectory() as d:
++            hf=m.Export(self.hf_fixture(d,values),set(values))
++            for rank in range(8):
++                for key,t in values.items():self.assertTrue(hf.equal_slice(key,rank,t[rank:rank+1]))
++    def test_hf_changed_slice_even_with_new_hash_rejected(self):
++        original=torch.arange(16,dtype=torch.float32).reshape(8,2);changed=original.clone();changed[3,0]+=1
++        with tempfile.TemporaryDirectory() as d:
++            paths=self.hf_fixture(d,{'embed':changed});pins={str(p):m.sha(p) for p in paths.values()}
++            self.assertTrue(pins);hf=m.Export(paths,{'embed'})
++            with self.assertRaisesRegex(ValueError,'exact slice'):hf.equal_slice('embed',3,original[3:4])
++    def test_hf_norm_no_tolerance(self):
++        original=torch.ones(8,dtype=torch.float32);changed=original.clone();changed[4]+=torch.finfo(torch.float32).eps
++        with tempfile.TemporaryDirectory() as d:
++            hf=m.Export(self.hf_fixture(d,{'norm':changed}),{'norm'})
++            with self.assertRaisesRegex(ValueError,'exact slice'):hf.equal_slice('norm',4,original[4:5])
++    def test_hf_missing_index_key(self):
++        with tempfile.TemporaryDirectory() as d:
++            paths=self.hf_fixture(d,{'embed':torch.ones(8)})
++            with self.assertRaisesRegex(ValueError,'key inventory'):m.Export(paths,{'embed','head'})
++    def test_hf_duplicate_index_key(self):
++        with tempfile.TemporaryDirectory() as d:
++            paths=self.hf_fixture(d,{'embed':torch.ones(8)});paths['actor/model.safetensors.index.json'].write_text('{"weight_map":{"embed":"model-00001.safetensors","embed":"model-00001.safetensors"}}')
++            with self.assertRaisesRegex(ValueError,'duplicate JSON'):m.Export(paths,{'embed'})
++    def test_hf_tied_head_alias_difference(self):
++        embed=torch.ones(8);head=embed.clone();head[1]+=1
++        with tempfile.TemporaryDirectory() as d:
++            hf=m.Export(self.hf_fixture(d,{'embed':embed,'head':head}),{'embed','head'})
++            self.assertTrue(hf.equal_slice('embed',1,embed[1:2]))
++            with self.assertRaisesRegex(ValueError,'exact slice'):hf.equal_slice('head',1,embed[1:2])
++    def test_hf_header_unindexed_extra_key(self):
++        with tempfile.TemporaryDirectory() as d:
++            paths=self.hf_fixture(d,{'embed':torch.ones(8),'extra':torch.ones(8)})
++            paths['actor/model.safetensors.index.json'].write_text(json.dumps({'weight_map':{'embed':'model-00001.safetensors'}}))
++            with self.assertRaisesRegex(ValueError,'wrongly assigned'):m.Export(paths,{'embed'})
++    def test_hf_path_escape(self):
++        with tempfile.TemporaryDirectory() as d:
++            paths=self.hf_fixture(d,{'embed':torch.ones(8)})
++            paths['actor/model.safetensors.index.json'].write_text(json.dumps({'weight_map':{'embed':'../model-00001.safetensors'}}))
++            with self.assertRaisesRegex(ValueError,'unsafe'):m.Export(paths,{'embed'})
+     def inventory_fixture(self,d):
+         root=P(d).resolve();(root/'model.bin').write_bytes(b'unit inventory only')
+         original=P(os.environ.get('FIRST5_TEST_BASE_MANIFEST',str(ROOT/'official-model-manifest-original.json')))
+--- v2/README.md
++++ v3/README.md
+@@ -1,4 +1,4 @@
+-# V2 Native CPU first-five stored-state inspector — software candidate
++# V3 Native CPU first-five stored-state inspector — software candidate
+ 
+ This external tool reads externally SHA-pinned, owned, physical checkpoint files. It cannot start a GPU job, restore an actor, sign a receipt, or release a training pause. No actual production first-five checkpoint has been inspected by this candidate. Failed entry job3196 completed zero updates and is not an acceptance input.
+ 
+@@ -21,3 +21,5 @@
+ Native tests can override FIRST5_TEST_FIXTURE, FIRST5_TEST_REPO and FIRST5_TEST_BASE_MANIFEST to point to the existing actual3190 tiny fixture and actual frozen checkout. Native implementation compatibility and actual production first-five inspection remain pending independent review and actual inputs.
+ 
+ V2 corrects the independently identified legitimate-metadata inventory blocker in immutable V1 f81b. Only VERIFIED and the exact physically colocated VERIFIED-MODEL-MANIFEST.json argument with original 7f53 SHA are allowed beyond the eleven official files. Both metadata bytes are included in the actual teacher asset inventory, final all_files rehash, and exact saved-teacher comparison; VERIFIED content is never treated as a PASS. Unknown extra files, symlinks, wrong manifest names/SHA, and outside-directory manifest used to allow a local copy are rejected. Original V1 source/review/tests are preserved.
++
++V3 additionally joins the actual native SHARDED payload to its actual externally manifest-pinned HF index and all referenced shard full SHA. It checks complete index/header key inventory, FP32 safeheader extents/global shapes, then exact torch.equal for every rank-local Shard(0) slice of every tensor, including tied lm_head and norms, with no tolerance. Output adds hf_all_rank_slices_exact=true, hf_files (actual index/shard path to SHA map), and each rank model_hf_slice_exact=true / model_hf_slice_keys (all actual 435 keys). A changed-positive comparison to the original base alone is no longer accepted as cross-format identity. Old V1/V2 evidence remains immutable. CPU fixtures explicitly include a changed HF slice with fresh file hashes, near-identical norm difference, missing/duplicate/extra keys, tied-head mismatch, and path escape rejection. No actual first-five data has been inspected.

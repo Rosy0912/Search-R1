@@ -1,0 +1,22 @@
+{
+  "baseline_external_manifest_sha256": "6e7566aba7ace602b2f11385ebda43f4b682303a5193f411190f7ca07d7534bc",
+  "baseline_source_commit": "89beac273f783d8e48d7d3e34da040f753514d90",
+  "external_files": {
+    "work/e1-300/first5-tools-service-marker-candidate/hf_cpu_reload.py": "b78a0df6414ccc86d2f7c2a8f8749be4dbd25f5e5918064432085a21309e3e2d",
+    "work/e1-300/first5-tools-service-marker-candidate/receipt_payload.py": "fcf00bf4488c2d923c4270b27336d3c52e96433687ac79cea372e834466b0e09",
+    "work/e1-300/first5-tools-service-marker-candidate/test_first5_tools.py": "43d4508af8dde4905eb4dd5dc620bb3b4edb4459a1770996329dc98691cb8eb7"
+  },
+  "files": {
+    "README.md": "09e8c7a588d972464014fdc0eb87532ed2bfd5dde409b204846ba75466a95c3c",
+    "checkpoint_gate_89be_original.py": "e1ba71ec34b3889dcd6964f3c07d0bd266f5847f3039226191f8b87a38a910cf",
+    "checkpoint_gate_candidate.py": "74c3c13929c4f5cb784b90b7fd568ee80dfe1d37c8efaa28f97aae60b3492632",
+    "cpu-tests-combined.txt": "a7e45bedf2fcb929205fa0a6906c9c02da0858b31b38f746449184ea8cd4ed11",
+    "external-producer.patch": "aae05a74f1ecd7f13ec3c1f1bb015072102fdbd540b4669bae043a8a1d626319",
+    "native_marker_replay.py": "ebd7ac5869c8deb71695f22862a2e1aea754dd424f6dbe5e7ba172836ef61445",
+    "parser_fragment.py": "900443cc282062f96f984f975fa0380f5345f3f771ba13cd4a57c6a8a0414f8a",
+    "source-only.patch": "862973b13dcbed333a83f65b27a089d586c24229b836f4c0b2cd9812e9564de8",
+    "test_strict_ray_marker.py": "2329482ec9232937e84398af9d9fb81054e88c7f3a42571facb3e2171ff2f8ca"
+  },
+  "scope": "ISOLATED_STRICT_TRANSPORT_AND_EXTERNAL_OWNER_IDENTITY_CPU_CANDIDATE_NOT_ADOPTED",
+  "version": 1
+}

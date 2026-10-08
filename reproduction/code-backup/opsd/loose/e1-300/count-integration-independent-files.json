@@ -1,0 +1,6 @@
+{
+  "search_r1/baselines/distillation.py": "0e77c0eca02bd4996dcbfb471ad2496f7d668b1f7829541c816b30c636873791",
+  "tests/baselines/test_opsd_count_backend.py": "3e416f9b05d0bf5c8fd6fbbf0e06ba92d3bd3c9cd9d456f6d1f50aa2acead6f3",
+  "reproduction/baselines/e1_import_bootstrap.py": "a6266012e5f741101de8aec26f0e00d7b3502396279a03c2cb90efb9fc315337",
+  "search_r1/baselines/full_state.py": "86193344e4fcefabd8bf0cac4445d5c21ffa7252f65ac6bb6dca51ad231fbfb0"
+}

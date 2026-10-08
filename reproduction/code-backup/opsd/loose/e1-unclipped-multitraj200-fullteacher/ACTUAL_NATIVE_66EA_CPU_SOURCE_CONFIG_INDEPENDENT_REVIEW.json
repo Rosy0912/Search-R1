@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "status": "PASS_ACTUAL_NATIVE_CPU_SOURCE_CONFIG_INDEPENDENT_REVIEW_ONLY",
+  "utc": "2026-10-06T11:01:12.876201+00:00",
+  "source_commit": "66ea4c9093697c80657d8c57a2058ebb7c9b078f",
+  "original_files_sha256": {
+    "native-cpu-original.stdout": "f779b8a896641bd68f4b83c7776bac8de912311db9a0e82fe45fd71ecbab5185",
+    "native-cpu-original.stderr": "defd240d0e6db1de5e17a1f11c7f0628595ea1fd64ae24ed5923d02fc534b4e4",
+    "native-source-inventory-66ea4c909369-ACTUAL.json": "024ef8e762d14753aeec706a8c201f0f03d838afebfe8ce7b06d12f997d57605",
+    "native-cpu-actual.json": "601145a19a3129967175ab036c525babd19157e61d22a8fae8f890c1eb92fe20",
+    "source-deployment-original.json": "b06c239d3a41edcf2f8cf9fd6ae98a428d2d441aec642ecea40399ad2c2924ce"
+  },
+  "native_inventory_records": 211,
+  "actual_loaded_modules": 84,
+  "actual_function_code_count": 733,
+  "committed_project_module_pins_verified": 207,
+  "cuda_is_initialized": false,
+  "actual_remote_repo": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-66ea4c909369",
+  "deployment_uid": 0,
+  "native_fullteacher_profile_matches_review": true,
+  "configuration_scope": "Unlaunched cfg-only placeholder is explicit; not actual new job binding, model load, data Arrow/tool largeasset full reread, GPU or first5 acceptance.",
+  "producer_flow_scope": "Four original stdout JSON values join inventory→actual imports→resolved cfg→successful finalsummary. Frozen deploy caller asserts child returncodes0 before finalsummary; no separate raw native-exit file was captured here, so no invented exit record.",
+  "environment_scope": "Python3.10 actual module/install paths. Torch/Transformers package versions not explicitly included in this stdout; require actual newjob package proof.",
+  "no_remote_gpu_job_signing_or_deployment_performed": true
+}

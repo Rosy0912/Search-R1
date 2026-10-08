@@ -1,0 +1,12 @@
+{
+  "first5_manifest_sha256": "12424d01025e9759d495500eef87de37712a29e1dfe989d3772d05cfa3bfe330",
+  "overlap_manifest_sha256": "1cfb9379063254ae242c7fdcfa4a57fb9927cc9d5fe00b97a49455aa4f652fea",
+  "overlap_script_sha256": "7ec32fbc071bcdb10de8824efa26d845588eb0431e14eaed834f4f5aaa4f98b2",
+  "producer_sha256": "79f29673f4dee991f295e9915ff163ada5073776638a330529571dabf007a64d",
+  "scope": "UNSIGNED_FIRST5_PAYLOAD_PREPARATION_ONLY_NO_REVIEW_SIGNATURE_RELEASE_OR_GPU",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "tools": {
+    "unsigned_receipt_overlap.py": "4ca065ea1c8ac49f510c8a8a45225b4cce09075c84aff96d8659382045380d59"
+  },
+  "version": 1
+}

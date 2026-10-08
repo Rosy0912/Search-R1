@@ -1,0 +1,30 @@
+{
+  "native_payload_inspector_sha256": "e949ebab98a49b12ac67fd6531089ef34513e276f169d9fd240c6aaccf623db4",
+  "native_payload_tools_manifest_sha256": "1f209cab7e025439584a938b4aab7d71358db66ee3f7d63ab348285247ebbd65",
+  "scope": "SOURCE_BOUND_SOFTWARE_NO_ACTUAL_FIRST5_ACCEPTANCE_NO_SIGNING_OR_RELEASE",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "source_files": {
+    "reproduction/baselines/e1_import_bootstrap.py": "1f90b19de0af445af00aef3d5bede99ef49ee8f1aac37297e2e13feab79a0dbb",
+    "reproduction/baselines/run_opsd_e1_author200.sh": "5152d85ef4665ad770689f73fdc7d8447e76704526eb221fd8c8fa3d8006d3f8",
+    "reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "search_r1/baselines/actor.py": "a9e5005f9d5e48f2cba652ee88b2ff2f3b0bb671dde8ce70ea7653eeb82c5ed9",
+    "search_r1/baselines/checkpoint_gate.py": "c738911559a56780555de219306075b810074a7b0287fc4b271edece6ae73cbb",
+    "search_r1/baselines/controller.py": "4c60f33c280b2299f090e572d18178ca5b878d77619e2e0265a931534a764229",
+    "search_r1/baselines/distillation.py": "0e77c0eca02bd4996dcbfb471ad2496f7d668b1f7829541c816b30c636873791",
+    "search_r1/baselines/e1_profile.py": "e800af165343dc40d874fd8a4c3b2c39f7277ee81fa262d1997b2d4cda6d4c43",
+    "search_r1/baselines/full_state.py": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6",
+    "search_r1/baselines/main.py": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+    "verl/trainer/config/ppo_opsd_e1_author200.yaml": "a7f54a395457d8032c30e9300bbb40b875fed5733f8404814da21f27aeeb626b",
+    "verl/trainer/ppo/ray_trainer.py": "0557c48cefe25ef3f766e8dc83a75a22ac2070698aef3932f6b4010c89b8dade",
+    "verl/utils/torch_functional.py": "d46ab49f849b2be950e3e20a844a7747294b842cde0ad0abe49ae4ea31ab1635",
+    "verl/workers/fsdp_workers.py": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7"
+  },
+  "tools": {
+    "hf_cpu_reload.py": "dfc8ac3e4c9c539756c823ad4ba93c4de3ba7ca6ff8ef18dcd2772abdbcd1525",
+    "inspect_first5_cpu.py": "b2c728d5dcbc5c4f7278563bb19b8545880dc0a133aa8d397da26b02281f47bc",
+    "receipt_payload.py": "79f29673f4dee991f295e9915ff163ada5073776638a330529571dabf007a64d"
+  },
+  "version": 1
+}

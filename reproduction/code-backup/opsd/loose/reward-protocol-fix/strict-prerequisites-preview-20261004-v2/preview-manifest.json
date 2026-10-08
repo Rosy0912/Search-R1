@@ -1,0 +1,29 @@
+{
+  "scope": "V2 BLOCKED CPU PARTIAL VERIFIER/CAPTURE PREVIEW; NO GPU/ACTUAL500 ACCEPTANCE",
+  "prior_preview_sha256": "eb6639461064831a51d4a4d2883f54dda83ee8de35da190144af36e850eded68",
+  "upstream_hf_preview_sha256": "ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850",
+  "formal_job": "3007",
+  "hf500_reload_job": "UNFILLED",
+  "actual500_receipt": "UNFILLED",
+  "file_sources": {
+    "CONTRACT.md": "2822b162f83d4aca5df34fe7370352c608ad199de660943df84a33f8d5891dd9",
+    "INTEGRATION.md": "823b6c7a41769ff8880e464070a06c4f686cd57b3146d67061d1a90ab9b3b5a8",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "cpu-tests.txt": "93cbd6af997ab18295dc6e0af3358051220edbb2e4c2423f1d15f20d62c8ecbd",
+    "formal_completion_check.py": "944081e1eea819ac590352fcd0842e0e0ec7d786f7888f3f3e5fa2a7744a9d42",
+    "layered-receipt.UNFILLED.json": "ed96e7a0fc98654847b3ada8a42f165cd55f0199b96c69e3f21cd9e234a21d5b",
+    "periodic_validation.py": "d57b46f8b99d9b186b6853fa93a0c7932c2802acaf241fc4503a53fe1f82b8bd",
+    "pilot_reload_prerequisites.py": "4b68f27a23b5e1db53992cd45500eb812bd2b3485c57494d761bbccdb672c6e3",
+    "pre_stage_runtime.py": "7eef0610bbc9358ce59f7b5196042e05ed41791c69f053a43b5ce0831260fbce",
+    "reload_job.sh": "b46c3c4d575d2184cbed55719f2b755700a7eabc067e716714eba177aaf6931d",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "runtime_capture.py": "4a7689fdd12ba91ba495c09369759560bc63f323744d8c33b4e8457d132cc4d5",
+    "source-manifest.json": "ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850",
+    "source_bundle_check.py": "86cb7c260bb8cbdde0c1b2c8b12b657b6be6d04fb5c4e6966697ad22b5f293ed",
+    "strict_metric_parser.py": "6a7d064e544716ce6981f6c02a15e94ac46b8dd4e3e5c39bc203b85763e3b95a",
+    "strict_stage_prerequisites.py": "3b550e7dd0fb9941f5534122d97bdb0c03dc159f9503e6627d1f1bffa50d764b",
+    "test_pre_stage_runtime.py": "42877664a7277f3f3742da5b1f9851cbdc977c2a6488626754f45005830df88c",
+    "test_strict_stage_prerequisites.py": "a8acffe5d3f8743c5b1464742223e37b1e7005fe3d7cf98fd0199b70dbb64e02",
+    "training_evidence.py": "cbdac9210624b19ed678d2b0fe8b94393c450befd2b219747d9bc9689e420d87"
+  }
+}

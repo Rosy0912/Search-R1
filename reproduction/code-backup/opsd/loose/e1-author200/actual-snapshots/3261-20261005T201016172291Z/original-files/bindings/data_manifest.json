@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "protocol": "search-e1-common-300",
+  "seed": 42,
+  "prompt_key": "prompt",
+  "preparation": {
+    "dataset_id": "RUC-NLPIR/FlashRAG_datasets",
+    "dataset_revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "prepare_sha256": "0af20daae4eae60261b0a3e45df8baa19f66427d0513e8bef93661fdbf3b5d46",
+    "core_sha256": "da48acb849e7e03b95316b5cf2137d997cb54032b49ea932a8d9e4d4207dc9d1",
+    "selection": "source-order-seed42-first256-dev-next32-stage",
+    "source_order": [
+      "nq",
+      "triviaqa",
+      "popqa",
+      "hotpotqa",
+      "2wikimultihopqa",
+      "musique",
+      "bamboogle"
+    ],
+    "raw_sources": [
+      {
+        "source": "nq",
+        "split": "train",
+        "path": "raw/nq/train.jsonl",
+        "sha256": "572685d3f384d9c37479b1fb14232984c85ff13b58923c0c9442232bd5d5647b",
+        "rows": 79168
+      },
+      {
+        "source": "nq",
+        "split": "test",
+        "path": "raw/nq/test.jsonl",
+        "sha256": "843bebb083064abb6eb23751f2c8c187e5c448c23900b42ca92f91502a9b7488",
+        "rows": 3610
+      },
+      {
+        "source": "triviaqa",
+        "split": "test",
+        "path": "raw/triviaqa/test.jsonl",
+        "sha256": "8f0891dece17a6a6472c87bf0e8c555c80673853d8dc7780be4d47158ec85290",
+        "rows": 11313
+      },
+      {
+        "source": "popqa",
+        "split": "test",
+        "path": "raw/popqa/test.jsonl",
+        "sha256": "f976372fce3d7fe01b070357040391f10bd2710eeaa7c40d21c6574ffcad6cb8",
+        "rows": 14267
+      },
+      {
+        "source": "hotpotqa",
+        "split": "train",
+        "path": "raw/hotpotqa/train.jsonl",
+        "sha256": "a81274abafa899ec0ee073102edbe6bb694a8a1174201b4e43e2bc6c98964d1a",
+        "rows": 90447
+      },
+      {
+        "source": "hotpotqa",
+        "split": "dev",
+        "path": "raw/hotpotqa/dev.jsonl",
+        "sha256": "434ec155867019396312f3d466ce3406c71fe8a2917f49f63bb646ec5ad2ff52",
+        "rows": 7405
+      },
+      {
+        "source": "2wikimultihopqa",
+        "split": "dev",
+        "path": "raw/2wikimultihopqa/dev.jsonl",
+        "sha256": "b4d74d73d1cb3c0632c665a85e1e5060e3411968b807721618cfd2464fc905e3",
+        "rows": 12576
+      },
+      {
+        "source": "musique",
+        "split": "dev",
+        "path": "raw/musique/dev.jsonl",
+        "sha256": "d1cc08bcc91b060ba67c1e12881789e1315fb9f85d46f03a3413dd5e0f2ed02c",
+        "rows": 2417
+      },
+      {
+        "source": "bamboogle",
+        "split": "test",
+        "path": "raw/bamboogle/test.jsonl",
+        "sha256": "c9703dae6bb1ceb9e2df77be45da28cb12aa040d2f471507890a461296968f3f",
+        "rows": 125
+      }
+    ]
+  },
+  "splits": {
+    "train": {
+      "path": "train.parquet",
+      "sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+      "rows": 169028,
+      "source_counts": {
+        "nq": 78871,
+        "hotpotqa": 90157
+      },
+      "question_ids_sha256": "afa45c1fe6fde2247dc2874ca83911b3bd1647ce8f3c955777502da18828700b",
+      "content_identity": {
+        "questions_sha256": "17d5b5f44288224e45f760e870c2e13f7be873856cd43c7a0e2ad8f13f832612",
+        "rows_sha256": "0e44d1c00a209b9e5dec8c5dba1772f133f8418126d60c86213afd5af36f27f8"
+      },
+      "canonical_questions_sha256": "a03dfb1ac2d504e98f6fc18a88c8124cf7603a5b71cb458ed8a069663cb7df8e"
+    },
+    "validation": {
+      "path": "validation.parquet",
+      "sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "rows": 512,
+      "source_counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "question_ids_sha256": "78af4f86a6fea8374f9666c5f6fe5ae0dc7b4f96c09010d37be0f201a6b0d1cf",
+      "content_identity": {
+        "questions_sha256": "a2d033aba3a15b6329e40087dde17f1b4e4f2efc73c89769afb2045fa7183d2d",
+        "rows_sha256": "a3d8681d1c6366cf4f9fe4296c72c95dc8a59c86556baf6c13ba566fa38bc9ab"
+      },
+      "canonical_questions_sha256": "325b9e5a645115153886739ba0ca1dbecfc452f307f99ff4a10d214136e6dbe0"
+    },
+    "stage": {
+      "path": "stage.parquet",
+      "sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "rows": 64,
+      "source_counts": {
+        "nq": 32,
+        "hotpotqa": 32
+      },
+      "question_ids_sha256": "fb4c92624a04e51a6b9199a45d5a661a834e3b6fe0973690bc677211dc7c8731",
+      "content_identity": {
+        "questions_sha256": "eb3aa9f3456f49c741e0b139ae8c84b5417e4b5e2686d00fd42d29465052b6ed",
+        "rows_sha256": "cc145cf380774d411ab86e12e56e4c562f20c35c4e1f02bf10f2cde84070eb4f"
+      },
+      "canonical_questions_sha256": "c881c4ac3d6ba55967980ace9c6df45deb24a6ba24bf249e3e055d2aa127f235"
+    },
+    "final": {
+      "path": "final.parquet",
+      "sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+      "rows": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "question_ids_sha256": "4e9df91a75beba40c3316576f6da049851e736df4a1e5c873f4f0cdb883fd4b1",
+      "content_identity": {
+        "questions_sha256": "0ccd0c94630c81795c71a36d3fa9c035f84afe385299ec0f5737d5a1b89a025e",
+        "rows_sha256": "2586b36b118452d382ff8334e2271cad0ba8a4540874c917cca45e8f7c277cbe"
+      },
+      "canonical_questions_sha256": "58d69ca57dd66b2514d3782f306724720e49669061c6514e03135f94f7aaf44a"
+    }
+  },
+  "exclusion_audit": {
+    "path": "exclusions-audit.json",
+    "sha256": "bf22b531d9aef49a3f66ee7f3f89b795821d104807ebf9bfd5f845bd1c7ba65e"
+  }
+}

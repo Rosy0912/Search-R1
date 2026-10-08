@@ -1,0 +1,38 @@
+--- a/inspect_payloads.py
++++ b/inspect_payloads.py
+@@ -20,6 +20,26 @@
+             require(k not in out,'duplicate JSON key'); out[k]=v
+         return out
+     return json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda _:(_ for _ in ()).throw(ValueError('nonfinite JSON')))
++
++def teacher_report_projection(value):
++    """Exact writer JSON semantics; reject key collisions and nonfinite values."""
++    def convert(item):
++        if type(item) is dict:
++            out={}
++            for key,child in item.items():
++                require(type(key) in (str,int),'unsupported teacher report key type')
++                canonical_key=str(key)
++                require(canonical_key not in out,'teacher report JSON key collision')
++                out[canonical_key]=convert(child)
++            return out
++        if type(item) in (tuple,list):return [convert(child) for child in item]
++        require(item is None or type(item) in (str,int,float,bool),'unsupported teacher report value type')
++        if type(item) is float:require(math.isfinite(item),'nonfinite teacher report value')
++        return item
++    # The explicit projection checks collisions BEFORE JSON could overwrite a
++    # distinct Python key. Every field/value is retained; buffers remain covered
++    # independently by the full native state digest and buffer checks.
++    return unique(json.dumps(convert(value),sort_keys=True,allow_nan=False))
+ 
+ def sha(path):
+     path=P(path); require(path.is_absolute() and path.resolve(strict=True)==path and path.is_file(),'nonphysical file')
+@@ -226,7 +246,7 @@
+         require(unique_local_numel==NUMEL//8 and sum(v for k,v in changes.items() if k!='lm_head.weight')>0,'student has no actual same-dtype parameter change')
+         opt=adam(raw['optimizer'],NUMEL//8);sched=scheduler(raw['scheduler']);rng_report=rng(raw['rng'],True)
+         require(report['scheduler_last_epoch']==5 and report['optimizer_state_entries']==len(opt['entries']) and report['model_dtensor_entries']==len(model),'rank report component count differs')
+-        teacher=raw['teacher'];require(report['teacher']=={k:v for k,v in teacher.items() if k!='buffers'},'teacher raw/report differs')
++        teacher=raw['teacher'];require(report['teacher']==teacher_report_projection({k:v for k,v in teacher.items() if k!='buffers'}),'teacher raw/report differs')
+         require(teacher['version']==1 and teacher['parameter_count']==NUMEL and teacher['storage_device']=='cpu' and re.fullmatch(r'cuda(?::[0-9]+)?',teacher['execution_device']) and teacher['model_content_digest']==base_digest,'teacher fixed actual content/role differs')
+         require(P(teacher['asset_directory'])==base.directory and teacher['asset_files']==base_assets,'teacher full asset identity differs')
+         require(set(teacher['counters'])==set(COUNTERS) and all(type(v) in (int,float) and math.isfinite(v) and v>=0 for v in teacher['counters'].values()) and teacher['counters']['cuda_update_entries']==5 and teacher['counters']['scored_tokens']>0,'teacher actual counters differ')

@@ -1,0 +1,15 @@
+{
+  "scope": "CPU-only state/source closure primitives; no GPU or complete restart acceptance",
+  "files": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/search_r1/baselines/full_state.py": "86193344e4fcefabd8bf0cac4445d5c21ffa7252f65ac6bb6dca51ad231fbfb0",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/verl/workers/fsdp_workers.py": "a4db1ff0fbc06830e3e5de89a29b02bf06a862899b3f5ff95ae4703c31609397",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/tests/baselines/test_opsd_e1_full_state.py": "2d1893ad97eeaefee4e28eaf873c91971fa4f808632b0a67f49567ec0fd4ed81",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-e1-300/reproduction/baselines/e1-300/native_opsd_state_fixture.py": "c41a8e19b39151a09fa4c79f650c6b67bfec61df8c52cf52215a17d7c0d55da6"
+  },
+  "cpu_tests": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/state-source-closure-cpu-tests.txt",
+    "sha256": "ca8ea952e0717e5df77d5f1424555df9c47429a831189122691679aad089d7d4",
+    "passed": 40
+  },
+  "report_sha256": "98632e6dbfb9505cd30270cb941f912d4b3cf2f4f5359a7fbfe3026ef538c583"
+}

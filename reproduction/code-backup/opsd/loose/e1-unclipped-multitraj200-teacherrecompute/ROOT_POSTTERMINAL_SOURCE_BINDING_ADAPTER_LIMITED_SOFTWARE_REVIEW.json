@@ -1,0 +1,27 @@
+{
+  "actual_job": null,
+  "actual_main": null,
+  "actual_receipt": null,
+  "qualification_boundaries": "Software-only. ActualCPUjob/terminals/argv/waits/current211source report future. Manifest-byte assetscope notwholemodel/index/data/nativeimports/closedlog/Slurmrelease/200/effect. Mustconsumeactualindependentreviewedterminal inputs before newCPUjob. No newlauncher/PG/guard or trainingchange.",
+  "refs": {
+    "independent": {
+      "bytes": 11372,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/POSTTERMINAL_SOURCE_BINDING_ADAPTER_INDEPENDENT_SOFTWARE_REVIEW.json",
+      "sha256": "a06592e0a8a73b5119d9f25e9442a6fc5d1f9f1942b54af58f3b9ff20f75f4f2"
+    },
+    "readiness": {
+      "bytes": 2604,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/SOFTWARE_READINESS.json",
+      "sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc"
+    },
+    "runtime": {
+      "bytes": 14782,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/collect_postterminal_source_bindings.py",
+      "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe"
+    }
+  },
+  "reviewed": "Fullsealed2cbcb source, bootstrap exactFD/compile/noPyc; exactterminal first/explicitliteralnonzero preserved, physicalreadrecordcopy and211beforeafter context, genuineformal__file__ direct frozenfunctions, distinctnewCPUjob/CUDAempty/requestpin/oncefailedoutputs retained. ExtraGitcapture doesnot monkeypatchformal command; validationenv explicitlyconstructed nothistoricalenv.",
+  "status": "PASS_ROOT_LIMITED_POSTTERMINAL_SOURCE_BINDING_ADAPTER_SOFTWARE_STATIC_SCOPE",
+  "utc": "2026-10-07T07:23:28.034584+00:00",
+  "version": 1
+}

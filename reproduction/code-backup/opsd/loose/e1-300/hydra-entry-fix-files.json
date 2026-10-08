@@ -1,0 +1,15 @@
+{
+  "scope": "Minimal imported-main Hydra config path fix; CPU2PASS/ASTbodyexact; actualnative proof pending",
+  "files": {
+    "search_r1/baselines/main.py": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1",
+    "reproduction/baselines/e1-300/cpu_hydra_entry_regression.py": "570057df2399eac712e81117298fe0000a9f728aacb95055ffe514c799c411d9",
+    "tests/baselines/test_e1_hydra_entry.py": "e8a532a872845c945c1b474f94487a90f790a40c3760d7c7b1f87eae1ea7df1c"
+  },
+  "records": {
+    "hydra-entry-independent-path-cpu-tests.txt": "ab603f5d78d87570ea00aec60345acc7f1b4062c8fdc05e128a25c24c8784a99",
+    "hydra-entry-imported-main-cpu-original.json": "6f352bdffd39e537e297a60ff2a5b88a357410d148dde6f45ab04d170e2f4fad",
+    "hydra-entry-imported-main-cpu-stderr.txt": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721",
+    "hydra-entry-task-body-ast-proof.json": "0378865d587ab32be4d2ae3a083c534b38aec21cfea6c557af982fb978878fa0",
+    "HYDRA_ENTRY_FIX_IMPLEMENTATION.md": "b9be29600b2d6a6504dbfe102c865c3d601fdf2516e72ff45d0ee0a31e8749b3"
+  }
+}

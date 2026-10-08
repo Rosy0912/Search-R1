@@ -1,0 +1,32 @@
+--- a/external/receipt_payload.py
++++ b/external/receipt_payload.py
+@@ -52,12 +52,19 @@
+  return {'live_path':str(live),'snapshot_path':str(snapshot),'sha256':h.hexdigest(),'bytes':size}
+ 
+ 
++def same_service_identity(observed, bound):
++ keys=('pid','start','uid','cgroup')
++ fail(all(key in observed and key in bound and observed[key]==bound[key] for key in keys),'Retrieval service identity changed')
++ fail(observed.get('state') not in (None,'Z','X') and bound.get('state') not in (None,'Z','X'),'Service stopped or missing observed state')
++ return True
++
+ def check_log(snapshot,manifest,manifest_sha,gate):
+  rows=[];pauses=[];state_reports=[];releases=[];evaluations=[]
++ workers=gate.manifest_worker_pids(manifest,Path(manifest['run_root']))
+  for line in snapshot.read_text().splitlines():
+   for marker,items in [('OPSD_E1_OUTER_JSON=',rows),('OPSD_E1_STEP5_PAUSED_JSON=',pauses),('FULL_STATE_RANK_JSON=',state_reports),('OPSD_E1_STEP5_RELEASED_JSON=',releases),('BASELINE_EVALUATION_METRICS_JSON=',evaluations)]:
+    if marker in line:
+-    raw=line.split(marker,1)[1];items.append(json.loads(raw,object_pairs_hook=lambda pairs:strict_pairs(pairs),parse_constant=lambda _:(_ for _ in ()).throw(ValueError('Nonfinite row'))))
++    items.append(gate.parse_log_marker(line,marker,driver_pid=manifest['driver_pid'],job_id=manifest['job_id'],worker_pids=workers))
+  fail(not releases,'Training was already released')
+  fail(len(evaluations)==2,'Require actual initial512 and step5 stage64 evaluation records')
+  gate.validate_evaluation(evaluations[0],512);gate.validate_evaluation(evaluations[1],64)
+@@ -178,7 +185,7 @@
+  for rec in spec.values():file(rec,root)
+  fail(Path(spec['resources']['path'])!=root/'resources.ndjson','Use an immutable resource prefix, not growing sampler file')
+  native=read(Path(spec['rank_audit']['path']));hf=read(Path(spec['hf_reload']['path']));fail(hf['inspector_source_sha256']==tm['tools']['hf_cpu_reload.py'] and native['inspector_source_sha256']==tm['native_payload_inspector_sha256'],'CPU evidence was not produced by reviewed pinned inspectors');service=read(Path(spec['service']['path']))['owner']
+- retrieval=read(Path(spec['retrieval']['path']));fail(retrieval['job_id']==m['job_id'] and retrieval['service']==service and len(retrieval['queries'])==24 and len(retrieval['response']['result'])==24,'Retrieval current own service differs')
++ retrieval=read(Path(spec['retrieval']['path']));fail(retrieval['job_id']==m['job_id'] and same_service_identity(retrieval['service'],service) and len(retrieval['queries'])==24 and len(retrieval['response']['result'])==24,'Retrieval current own service differs')
+  for row in retrieval['response']['result']:
+   fail(len(row)==3,'Retrieval top3 count differs')
+   for item in row:fail(bool(item['document']['contents']) and math.isfinite(float(item['score'])),'Retrieval content/score invalid')

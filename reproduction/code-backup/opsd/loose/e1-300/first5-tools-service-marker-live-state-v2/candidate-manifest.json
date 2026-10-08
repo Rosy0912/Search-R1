@@ -1,0 +1,10 @@
+{
+  "files": {
+    "cpu-tests.txt": "d282ebef65e1c66a493d6983d3f43db967fa8c95ecd4a52da752d9307807ccd9",
+    "hf_cpu_reload.py": "b78a0df6414ccc86d2f7c2a8f8749be4dbd25f5e5918064432085a21309e3e2d",
+    "receipt_payload.py": "6b0f43ad3a5942724224960d9d56db4c670ac7a8874cffeb62a2e62a4a1caa42",
+    "test_first5_tools.py": "43be393c4ed36a1840d691ad890e00898817db36c0810f690c266c425e9c3505"
+  },
+  "scope": "CPU_SOFTWARE_CANDIDATE_NO_ACTUAL_FIRST5_ACCEPTANCE",
+  "version": 1
+}

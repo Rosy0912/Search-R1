@@ -1,0 +1,29 @@
+--- /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/native-cpu-bundle-publication-preparation-v1/publisher.py
++++ /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/strict200-bundle-publication-preparation-v1/publisher.py
+@@ -4,16 +4,16 @@
+ assert parent.resolve(strict=True)==parent and parent.is_dir() and parent.stat().st_uid==0
+ assert subprocess.check_output(['git','--no-optional-locks','-C',str(repo),'rev-parse','HEAD'],text=True).strip()=='fcecbea5d939e41dcfb3b118a26ef049a9bda3d6'
+ assert not subprocess.check_output(['git','--no-optional-locks','-C',str(repo),'status','--porcelain'],text=True).strip()
+-payload=json.loads(sys.stdin.buffer.read());raw=base64.b64decode(payload['manifest_base64'],validate=True);sha=hashlib.sha256(raw).hexdigest();assert sha==payload['manifest_sha256']=='ee31da65570318227ad6b037187cffa14e4dc489bac2a504d2bc54010c95da05'
+-m=json.loads(raw);assert set(m)=={'version','kind','source_commit','tools'} and m['version']==1 and m['kind']=='IMMUTABLE_C5BF_NATIVE_CPU_PREPARATION_SOFTWARE_BUNDLE' and m['source_commit']=='c5bf4c8db33562a259fa227a940dc69543901b98'
+-assert set(payload['files'])==set(m['tools']) and len(m['tools'])==22
++payload=json.loads(sys.stdin.buffer.read());raw=base64.b64decode(payload['manifest_base64'],validate=True);sha=hashlib.sha256(raw).hexdigest();assert sha==payload['manifest_sha256']=='85f014e167c8ca0fbb0ea4cf74bf2065e012d8efa1ec89c38b1f7240b09a62eb'
++m=json.loads(raw);assert set(m)=={'version','kind','source_commit','tools'} and m['version']==1 and m['kind']=='STRICT_FINAL200_PREREQUISITES_READ_ONLY_RUNTIME_BUNDLE' and m['source_commit']=='fcecbea5d939e41dcfb3b118a26ef049a9bda3d6'
++assert set(payload['files'])==set(m['tools']) and len(m['tools'])==40
+ files={n:base64.b64decode(payload['files'][n],validate=True) for n in m['tools']}
+ assert all(pathlib.PurePosixPath(n).name==n and n!='manifest.json' and hashlib.sha256(v).hexdigest()==m['tools'][n] for n,v in files.items())
+ def syncdir(p):
+  fd=os.open(p,os.O_RDONLY|os.O_DIRECTORY)
+  try:os.fsync(fd)
+  finally:os.close(fd)
+-out=parent/('final200-eval-native-cpu-'+sha[:12]);out.mkdir(mode=0o700);syncdir(parent);syncdir(out);order=[]
++out=parent/('final200-prerequisites-'+sha[:12]);out.mkdir(mode=0o700);syncdir(parent);syncdir(out);order=[]
+ for name,value in sorted(files.items()):
+  fd=os.open(out/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+  with os.fdopen(fd,'wb') as f:f.write(value);f.flush();os.fsync(f.fileno());os.fchmod(f.fileno(),0o444);os.fsync(f.fileno())
+@@ -28,4 +28,4 @@
+  records[name]={'sha256':want,'bytes':len(value),'inode':s.st_ino,'device':s.st_dev,'uid':s.st_uid,'mode':stat.S_IMODE(s.st_mode),'nlink':s.st_nlink}
+ assert set(x.name for x in out.iterdir())==set(records)
+ assert not subprocess.check_output(['git','--no-optional-locks','-C',str(repo),'status','--porcelain'],text=True).strip()
+-print(json.dumps({'version':1,'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'node':socket.gethostname(),'pid':os.getpid(),'uid':os.getuid(),'directory':str(out),'manifest_sha256':sha,'member_files':records,'actual_exclusive_write_order':order,'manifest_written_last':order[-1]=='manifest.json','all_files_and_directories_fsynced':True,'directory_mode':stat.S_IMODE(out.stat().st_mode),'source_clean_after':True,'scope':'Actual isolated c5bf CPU-preparation tool publication only; no native tool execution, actual200/model/GPU/eval/training/receipt/newallocation'},sort_keys=True))
++print(json.dumps({'version':1,'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'node':socket.gethostname(),'pid':os.getpid(),'uid':os.getuid(),'directory':str(out),'manifest_sha256':sha,'member_files':records,'actual_exclusive_write_order':order,'manifest_written_last':order[-1]=='manifest.json','all_files_and_directories_fsynced':True,'directory_mode':stat.S_IMODE(out.stat().st_mode),'source_clean_after':True,'scope':'Actual isolated strict200 prerequisites tool publication only; no verifier/common execution, signature/receipt/scheduler/GPU/eval/training/actual200 acceptance'},sort_keys=True))

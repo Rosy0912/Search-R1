@@ -1,0 +1,42 @@
+{
+  "actual_execution": null,
+  "actual_terminal": null,
+  "files": {
+    "DESIGN.md": {
+      "bytes": 9390,
+      "sha256": "f7c73a02f73f612fa435dd52e9fcc1496ef1a16792afc55eb719d959328ac548"
+    },
+    "INDEPENDENT_DOCUMENTATION_DELTA_REVIEW.json": {
+      "bytes": 3370,
+      "sha256": "4559d5c08ab50795823c88bd000e27a8e8bdf441fb38db2ba6d5b9aa7865dd63"
+    },
+    "INDEPENDENT_SOFTWARE_REVIEW.json": {
+      "bytes": 12139,
+      "sha256": "c4fa0c33f60d2d803782ea307b15f76ef834f9fce5fa8240432857fbe78ce532"
+    },
+    "INDEPENDENT_STDIO18_SOURCE_REVIEW.json": {
+      "bytes": 25037,
+      "sha256": "7196523951b53e44d08bcd907857e35c5e378872c9a08c6b42ba124ce9a34c8e"
+    },
+    "ROOT_SOFTWARE_REVIEW.json": {
+      "bytes": 2842,
+      "sha256": "b51672bceab45ef799180ae7894f95e26cd466559e31736f69d3dde24b25cc0e"
+    },
+    "SOFTWARE_READINESS.json": {
+      "bytes": 6027,
+      "sha256": "1d1a486d800b1a466a855352872fcb6516cd14fb99d72b805ad74d855dd32203"
+    },
+    "collect_actual3304_final_originals.py": {
+      "bytes": 54568,
+      "sha256": "00934aab798f1abac7bdf8529603023722c5e3e812b25197894fed9536b4b0b7"
+    },
+    "historical-stdio18-map.original.json": {
+      "bytes": 54774,
+      "sha256": "bfa3827c1cb39addc554f0f6e4ce239e5fcb13730aa19f3da250d1606a6241da"
+    }
+  },
+  "kind": "IMMUTABLE_TERMINAL3304_RAW_ORIGINALS_COLLECTOR_SOFTWARE_AND_HISTORICAL_SOURCE_BUNDLE",
+  "scope": "Software plus alreadyqualified in-flight18 source inputs only. No production execution/terminal/closed31/resource release/200/effect acceptance.",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "version": 1
+}

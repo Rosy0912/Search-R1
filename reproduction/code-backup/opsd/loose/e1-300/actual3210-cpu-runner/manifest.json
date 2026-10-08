@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "2a488c38d1f33dc3fcb81eaf854760af28203a23126a4fcc64c6f475f679a2b2",
+    "deploy_and_check.py": "f7db494359177688963c497b45a653e50c75c0cc8b96d8e5ee48cdfff630b932",
+    "inspect_first5_cpu.py": "6a998cdd62011e9dbe005e211fccb7055db8ef413535c17a5c19343bc576ddf7",
+    "start_once.py": "71f8e334fbb7f1216d6568a6172d415af789067b7128db744d82adfde030595b"
+  },
+  "job_id": "3210",
+  "scope": "PREPARED_ONLY_PAUSED_ABSENT_NO_CPU_STEP_YET_NO_SIGNING_OR_RELEASE",
+  "source_commit": "a0968c2d24beeaa0400f60e4e34677fe6deef9c9"
+}

@@ -1,0 +1,77 @@
+--- sealed-e459/collect_checkpoints50_100.py
++++ V2/collect_checkpoints50_100_v2.py
+@@ -143,18 +143,62 @@
+     exec(compile(code,str(REPO/'search_r1/baselines/checkpoint_gate.py'),'exec',dont_inherit=True,optimize=0),m.__dict__);return m
+ 
+ 
++def native_repeat_frame(line,marker,gate,warnings,original_error):
++    """Remove only one typed native Ray tag; the frozen gate checks all remainder.
++
++    This external transport adapter does not alter original bytes, expand repeated
++    tags into ranks, or accept a warning that the original gate rejects.
++    Live collect() independently checks each fixed worker's original start and UID0.
++    """
++    need(marker=='FULL_STATE_RANK_JSON=' and str(original_error)=='Unrecognized/unowned interleaved warning suffix',
++         'Only the known native repeat boundary may use the external adapter')
++    prefix,raw=line.split(marker,1)
++    transport=re.fullmatch(r'\x1b\[36m\(WorkerDict pid=([1-9][0-9]*)\)\x1b\[0m ',prefix)
++    need(transport is not None,'Exact coloured native worker prefix required')
++    body_start=len(raw)-len(raw.lstrip());value,end=json.JSONDecoder().raw_decode(raw.lstrip())
++    need(type(value) is dict,'Native repeat object required')
++    need(type(value.get('version')) is int and value['version']==3 and value.get('algorithm')=='pure_opsd'
++         and value.get('status')=='FULL_STATE_SERIALIZED_OK','Typed periodic serialized report required')
++    rank=value.get('rank');pid=value.get('pid');step=value.get('step')
++    need(type(rank) is int and rank in WORKERS and type(pid) is int and pid==WORKERS[rank][0]
++         and pid==int(transport.group(1)) and type(step) is int and step in (50,100)
++         and type(value.get('world_size')) is int and value['world_size']==8,'Native repeat rank/PID/world/step differs')
++    boundary=body_start+end;suffix=raw[boundary:]
++    repeat=re.match(r'\x1b\[32m \[repeated ([1-8])x across cluster\]\x1b\[0m',suffix)
++    need(repeat is not None,'Exact coloured Ray repeat1..8 tag required')
++    tag=repeat.group(0);remainder=suffix[repeat.end():]
++    clean=prefix+marker+raw[:boundary]+remainder
++    checked=gate.parse_log_marker(clean,marker,driver_pid=DRIVER[0],job_id='3304',worker_pids=tuple(x[0] for x in WORKERS.values()),
++        checkpoint_warning_path=TORCH_ROOT/'utils/checkpoint.py',fsdp_warning_source_bytes=warnings)
++    # Validate the same original body with the original strict JSON decoder.
++    same(checked,value,'Delegated native body differs')
++    proof=dict(kind='EXACT_TYPED_NATIVE_RAY_REPEAT_FRAME',repeated_count=int(repeat.group(1)),rank=rank,pid=pid,step=step,
++        tag_offset_in_line=len((prefix+marker+raw[:boundary]).encode()),tag_bytes=len(tag.encode()),tag_sha256=sha(tag.encode()),
++        tag_base64=base64.b64encode(tag.encode()).decode(),remaining_suffix_bytes=len(remainder.encode()),remaining_suffix_sha256=sha(remainder.encode()),
++        delegated_parser_sha256=GATE_SHA,original_parser_error=str(original_error),
++        scope='ONE_VISIBLE_ORIGINAL_RANK_ONLY_NO_HIDDEN_RANK_EXPANSION_REMAINDER_CHECKED_BY_UNCHANGED_GATE')
++    return checked,proof
++
++
+ def parse_events(raw,gate,warnings):
+     events=[];partial=[];offset=0
+     markers=('OPSD_E1_OUTER_JSON=','BASELINE_EVALUATION_METRICS_JSON=','FULL_STATE_RANK_JSON=','OPSD_E1_STEP5_RELEASED_JSON=')
+     for line in raw.splitlines(keepends=True):
+         for marker in markers:
+             if marker.encode() not in line:continue
+-            try:v=gate.parse_log_marker(line.decode(),marker,driver_pid=DRIVER[0],job_id='3304',worker_pids=tuple(x[0] for x in WORKERS.values()),
+-                checkpoint_warning_path=TORCH_ROOT/'utils/checkpoint.py',fsdp_warning_source_bytes=warnings)
++            frame=None
++            try:
++                try:v=gate.parse_log_marker(line.decode(),marker,driver_pid=DRIVER[0],job_id='3304',worker_pids=tuple(x[0] for x in WORKERS.values()),
++                    checkpoint_warning_path=TORCH_ROOT/'utils/checkpoint.py',fsdp_warning_source_bytes=warnings)
++                except ValueError as exc:
++                    if marker!='FULL_STATE_RANK_JSON=' or str(exc)!='Unrecognized/unowned interleaved warning suffix':raise
++                    v,frame=native_repeat_frame(line.decode(),marker,gate,warnings,exc)
+             except json.JSONDecodeError:
+                 need(not line.endswith(b'\n') and offset+len(line)==len(raw),'Malformed complete structured record')
+                 partial.append(dict(marker=marker,offset=offset,bytes=len(line),sha256=sha(line)));continue
+-            events.append(dict(marker=marker,value=v,offset=offset,bytes=len(line),sha256=sha(line),raw_base64=base64.b64encode(line).decode()))
++            event=dict(marker=marker,value=v,offset=offset,bytes=len(line),sha256=sha(line),raw_base64=base64.b64encode(line).decode())
++            if frame is not None:event['native_repeat_transport']=frame
++            events.append(event)
+         offset+=len(line)
+     return events,partial
+ 
+@@ -257,6 +301,8 @@
+         metrics,rows=progress(events,gate,step);snapshots[str(step)]=dict(metrics=metrics,evaluations=evaluations_and_console(raw,events,rows,gate,step))
+     result['snapshots']=snapshots;result['driver_prefix_complete_outer']=len(rows);result['driver_incomplete_eof']=partial
+     te,tp=parse_events(train,gate,warnings);aggregate=[x for x in te if x['marker']=='OPSD_E1_OUTER_JSON=']
++    result['native_repeat_transport_frames']=[dict(log_origin=origin,event=x) for origin,items in [('driver',events),('aggregate',te)]
++        for x in items if 'native_repeat_transport' in x]
+     need(len(aggregate)<=len(rows),'Aggregate is ahead of captured driver prefix')
+     same([x['value'] for x in aggregate],[x['value'] for x in rows[:len(aggregate)]],'Aggregate completed prefix differs from driver')
+     result['aggregate_prefix_complete_outer']=len(aggregate);result['aggregate_incomplete_eof']=tp;result['aggregate_lag_is_not_training_failure']=len(rows)-len(aggregate)

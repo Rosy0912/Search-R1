@@ -1,0 +1,13 @@
+{
+  "horizon": 200,
+  "saved_adam_steps": 80,
+  "saved_lr": 5e-06,
+  "scope": "AUTHOR200_CPU_STORED_STATE_SOFTWARE_NO_ACTUAL_ACCEPTANCE",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "tools": {
+    "inspect_payloads.py": "e949ebab98a49b12ac67fd6531089ef34513e276f169d9fd240c6aaccf623db4",
+    "test_inspector.py": "0e194e6e5b34555950cdf7cc999b0305ef656c4e09b6e9f5328c4d8ab1c34a5c"
+  },
+  "version": 1,
+  "warmup_steps": 0
+}

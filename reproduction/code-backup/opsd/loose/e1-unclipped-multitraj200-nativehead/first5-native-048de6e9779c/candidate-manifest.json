@@ -1,0 +1,14 @@
+{
+  "horizon": 200,
+  "profile": "multitraj200",
+  "saved_adam_steps": 50,
+  "saved_lr": 8.771929824561403e-08,
+  "scope": "MULTITRAJ200_CPU_STORED_STATE_SOFTWARE_NO_ACTUAL_ACCEPTANCE",
+  "source_commit": "b611864d3f6ad048189b11b9b9613854e789da5d",
+  "tools": {
+    "inspect_payloads.py": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b",
+    "test_inspector.py": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+  },
+  "version": 1,
+  "warmup_steps": 57
+}

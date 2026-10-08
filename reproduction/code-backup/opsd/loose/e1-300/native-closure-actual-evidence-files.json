@@ -1,0 +1,11 @@
+{
+  "scope": "actual native CPU inventory only; zero GPU acceptance",
+  "files": {
+    "native-closure-native-precheck.json": "35ffdc86c0b8e73facb55a1e6afb39a4ea70905cded9bb98efd4da526314cf47",
+    "native-closure-native-producer-stdout.txt": "d00aa184e14ef24fe64ff7009fe7ab182d26792fd48ddeb756e1524c72dad00e",
+    "native-closure-native-producer-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-source-inventory-04f8cc5a777f-ACTUAL.json": "e863d128385442af9a11fa63e7f4b1d9ea558ad0ae7fd358c7cf78badd387d59",
+    "deploy_native_closure_cpu.py": "9f6016a59cb44be53eba1904c88c98927cb7344b61c136c078629a06581e1894",
+    "native_import_closure_producer.py": "1f9012d41c33f1caed1f231cf2a811bce35547fcd54ff7501eaa25d3924893e1"
+  }
+}

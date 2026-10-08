@@ -1,0 +1,13 @@
+{
+  "baseline_commit": "e43fbfa73088ed70ed3efef79ba561507c0afc33",
+  "applied": false,
+  "production_gpu_acceptance": false,
+  "sha256": {
+    "baseline_distillation_e43.py": "449211e53360c4842baedd2d29c2a3eed625524c7e956212f4983e57251ea25f",
+    "proposal_distillation_a.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf",
+    "proposal-a.patch": "0685725eacff83bc6890cdbf473ee1c16aee7d7350694fe8f8d4e3710c860f64",
+    "test_proposal_a.py": "1aac45856d8095b8f6e9a5ea16e70c56b267a4e1eceaf1b0bb583b155bd0a556",
+    "cpu-results.json": "cf5a80ca5fbf620d5078ea2c5921a22e682c8d705c43118115a90ecd71724be4",
+    "README.md": "77a8b7f91b028c74a84fef34924c51c2f1f6c6fc3ffd4a2c729a247ea4dc1904"
+  }
+}

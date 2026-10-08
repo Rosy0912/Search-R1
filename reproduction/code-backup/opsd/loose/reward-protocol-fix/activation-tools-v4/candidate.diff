@@ -1,0 +1,294 @@
+diff --git a/work/reward-protocol-fix/activation-tools-v4/activation_verification.py b/work/reward-protocol-fix/activation-tools-v4/activation_verification.py
+new file mode 100644
+index 0000000..0f60a25
+--- /dev/null
++++ b/work/reward-protocol-fix/activation-tools-v4/activation_verification.py
+@@ -0,0 +1,51 @@
++"""Strict retained activation/source/lease/process/resources verification; CPU only."""
++import hashlib,re,subprocess
++from pathlib import Path
++from training_evidence import loads,digest,COMMIT
++from hf_activation_capture import validate_activation_audit,lock_records,validate_process_raw
++from pre_stage_runtime import verify_resource_rows
++
++def verify_lease(record,path,fd):
++ p=Path(path).resolve();stat=p.stat()
++ if set(record)!={'lock_path','fd','device','inode','raw_locks_before','raw_locks_after','matched_locks','reasserted_same_descriptor'}:raise ValueError('Exact lease raw schema required')
++ if record['lock_path']!=str(p) or record['fd']!=fd or record['device']!=stat.st_dev or record['inode']!=stat.st_ino or record['reasserted_same_descriptor'] is not True:raise ValueError('Lease descriptor/inode mismatch')
++ lock_records(record['raw_locks_before'],stat)
++ if lock_records(record['raw_locks_after'],stat)!=record['matched_locks']:raise ValueError('Lease raw kernel lock record mismatch')
++
++def verify_activation_evidence(paths,job,base):
++ folder=paths['checker_manifest'].parent;manifest=loads(paths['checker_manifest'].read_text());audit=loads(paths['activation_result'].read_text())
++ raw=paths['activation_raw'].read_text();marker='ACTUAL_HF500_ACTIVATION_AUDIT_JSON='
++ lines=raw.splitlines()
++ if len(lines)!=1 or not lines[0].startswith(marker) or loads(lines[0][len(marker):])!=audit:raise ValueError('Exact activation raw marker/file equality missing')
++ uid_tokens=re.findall(r'\bUserId=[^\s(]+\(([0-9]+)\)',paths['slurm_terminal'].read_text())
++ if uid_tokens!=[str(audit['uid'])]:raise ValueError('Activation UID does not match external Slurm user')
++ capture=folder/'hf_activation_capture.py';launcher=folder/'hf_launcher.py';checker=paths['checker'];lock=base/'gpu-job.lock'
++ validate_activation_audit(audit,job,checker,lock,manifest['file_sources']['hf_activation_capture.py'])
++ if audit['launcher_source_sha256']!=manifest['file_sources']['hf_launcher.py']:raise ValueError('Actual launcher source differs from completed HF bundle')
++ argv=audit['launch_argv']
++ if len(argv)!=3 or argv[1:]!=['-u',str(checker.resolve())] or audit['checker']['cmdline']!=argv:raise ValueError('Immutable checker actual argv mismatch')
++ if str(launcher.resolve()) not in audit['launcher']['cmdline']:raise ValueError('Actual launcher process is not pinned helper')
++ ancestry=audit['checker'].get('ancestry',[])
++ if not ancestry:raise ValueError('Checker actual ancestry capture missing')
++ parent=audit['checker']['ppid'];visited=set()
++ for record in ancestry:
++  validate_process_raw(record,job,audit['uid'])
++  if record['pid']!=parent or record['pid'] in visited:raise ValueError('Checker ancestry raw parent chain mismatch')
++  visited.add(record['pid']);parent=record['ppid']
++ if ancestry[-1]['pid']!=audit['launcher']['pid'] or ancestry[-1]['process_start_ticks']!=audit['launcher']['process_start_ticks']:raise ValueError('Actual checker is not descendant of pinned launcher')
++ verify_lease(audit['global_lease_before_launch'],lock,9)
++ selected=audit['selected_gpu_preflight'];devices=audit['selected_cuda_devices']
++ if len(selected)!=1 or len(devices)!=1 or selected[0]['uuid']!=audit['gpu_uuid'] or devices[0] not in {str(selected[0]['index']),selected[0]['uuid']}:raise ValueError('Selected native preflight inventory identity mismatch')
++ from math import isfinite
++ for field in ('utilization','memory_used','memory_total'):
++  if not isinstance(selected[0][field],(int,float)) or not isfinite(selected[0][field]):raise ValueError('Nonfinite native preflight occupancy')
++ gpu=selected[0]
++ if gpu['memory_total']<=0 or gpu['memory_used']<0 or not 0<=gpu['utilization']<=15 or 100*gpu['memory_used']/gpu['memory_total']>15:raise ValueError('Native preflight threshold exceeded')
++ lease=audit['selected_gpu_lease'];pergpu=Path('/tmp')/f"search-r1-gpu-leases-{audit['uid']}"/(audit['gpu_uuid']+'.lock')
++ if type(lease['fd']) is not int or lease['fd']<3 or lease['fd']==9:raise ValueError('Invalid single GPU inherited lease fd')
++ verify_lease(lease,pergpu,lease['fd'])
++ repo=base/'repo';preflight=repo/'search_r1/baselines/preflight.py';source=audit['preflight_source']
++ if Path(source['path']).resolve()!=preflight.resolve() or digest(preflight)!=source['sha256']:raise ValueError('Actual preflight imported source path/SHA mismatch')
++ original=subprocess.check_output(['git','-C',str(repo),'show',COMMIT+':search_r1/baselines/preflight.py'])
++ if hashlib.sha256(original).hexdigest()!=source['sha256']:raise ValueError('Preflight differs from frozen training8e source')
++ return verify_resource_rows([loads(line) for line in paths['resources'].read_text().splitlines()],job,audit['gpu_uuid'],str(audit['uid']),audit['checker_pid'],audit['checker_start_ticks'])
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/hf_launcher.py b/work/reward-protocol-fix/activation-tools-v4/hf_launcher.py
+index 6602aee..dce26c4 100644
+--- a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/hf_launcher.py
++++ b/work/reward-protocol-fix/activation-tools-v4/hf_launcher.py
+@@ -44,7 +44,8 @@ def run(checker,evidence,root,expected_checker_sha):
+    try:audit=capture_hf_activation(os.getpid(),checker,job,gpu[0]['uuid'],root/'gpu-job.lock');break
+    except (FileNotFoundError,ValueError):time.sleep(.05)
+   if audit is None:raise ValueError('Actual immutable checker process capture unavailable')
+-  audit.update(launch_argv=launch,selected_gpu_preflight=gpu,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
++  gpu_records=[dict(record,index=next(index for index,value in inventory.items() if value['uuid']==record['uuid'])) for record in gpu]
++  audit.update(launch_argv=launch,selected_gpu_preflight=gpu_records,selected_gpu_processes=processes,selected_cuda_devices=selected,selected_gpu_lease=per_gpu_lease,global_lease_before_launch=global_lease,preflight_source=dict(path=preflight.__file__,sha256=digest(preflight.__file__)),launcher_source_sha256=digest(__file__))
+   emit_activation(audit,evidence)
+   code=child.wait();reader.join()
+   if errors:raise errors[0]
+@@ -53,6 +54,13 @@ def run(checker,evidence,root,expected_checker_sha):
+  finally:
+   if child.poll() is None:child.terminate();child.wait();reader.join()
+ 
+-if __name__=='__main__':
++def main():
++ import argparse
++ parser=argparse.ArgumentParser(description=__doc__)
++ parser.add_argument('--checker',required=True);parser.add_argument('--evidence',required=True);parser.add_argument('--root',required=True);parser.add_argument('--checker-sha256',required=True)
++ args=parser.parse_args()
+  print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)
+- raise SystemExit(78)
++ return 78
++ run(args.checker,args.evidence,args.root,args.checker_sha256)
++ return 0
++if __name__=='__main__':raise SystemExit(main())
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/pre_stage_runtime.py b/work/reward-protocol-fix/activation-tools-v4/pre_stage_runtime.py
+index b0256e0..3ee9dc4 100644
+--- a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/pre_stage_runtime.py
++++ b/work/reward-protocol-fix/activation-tools-v4/pre_stage_runtime.py
+@@ -7,23 +7,30 @@ PRESCRIPTION_FIELDS={'version','phase','training_commit','eval_commit','source_f
+ HF_TEMPLATE_SHA='ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850'
+ 
+ def verify_hf_activation(manifest_path,script_path,checker_path,external_sha):
+- """Verify reviewed actual-final bundle ancestry, not equality with blocked preview."""
+- folder=Path(manifest_path).parent
++ """NEW reviewed final bundle derived only from exact v4 template activation."""
++ folder=Path(manifest_path).parent;directory=Path(__file__).parent
+  if digest(manifest_path)!=external_sha:raise ValueError('Actual HF final manifest external pin mismatch')
+- actual=loads(Path(manifest_path).read_text());original=loads((Path(__file__).parent/'source-manifest.json').read_text())
+- if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA:raise ValueError('Actual HF manifest lacks exact template ancestry')
++ actual=loads(Path(manifest_path).read_text());template=loads((directory/'source-manifest.json').read_text())
++ if actual.get('prior_hf_preview_manifest_sha256')!=HF_TEMPLATE_SHA or actual.get('activation_template_manifest_sha256')!=digest(directory/'source-manifest.json'):raise ValueError('Actual HF manifest lacks exact v4/upstream ancestry')
+  if actual.get('preview_blocked') is not False or actual.get('source_commit')!=COMMIT or actual.get('formal_job')!='3007':raise ValueError('HF final source/job/activation mismatch')
+  if actual.get('directory_name')!=folder.name or not re.fullmatch('[a-z0-9-]+',folder.name):raise ValueError('HF actual final directory mismatch')
+- if set(actual['file_sources'])!=set(original['file_sources']):raise ValueError('Actual HF final helper set differs')
++ for name in ('production_math_sources','stage','formal_manifest_sha256','original_hf_manifest_sha256'):
++  if actual.get(name)!=template[name]:raise ValueError('HF final immutable protocol identity mismatch')
++ if set(actual['file_sources'])!=set(template['file_sources']):raise ValueError('Actual HF final sidecar/helper set differs')
+  for name,sha in actual['file_sources'].items():
+-  if digest(folder/name)!=sha:raise ValueError('Actual HF final helper bytes unbound')
+-  if name!='reload_job.sh' and sha!=original['file_sources'][name]:raise ValueError('HF helper changed from fixed upstream checker/source gate')
+- if Path(checker_path).resolve()!=(folder/'checkpoint_reload.py').resolve() or digest(checker_path)!=original['file_sources']['checkpoint_reload.py']:raise ValueError('HF actual checker is not immutable5586 source')
+- if Path(script_path).resolve()!=(folder/'reload_job.sh').resolve():raise ValueError('HF activated script role is outside exact bundle')
+- script=(Path(__file__).parent/'reload_job.sh').read_text();guard='echo "STAGED PREVIEW: independent review required" >&2\nexit 78\n'
+- if script.count(guard)!=1:raise ValueError('Unknown original preview guard')
+- expected=script.replace(guard,'').replace(original['directory_name'],folder.name)
+- if Path(script_path).read_text()!=expected:raise ValueError('HF activated script not exact guard removal and directory substitution')
++  if Path(name).name!=name or digest(folder/name)!=sha:raise ValueError('Actual HF final helper bytes unbound')
++  source=(directory/name).read_text()
++  if name=='reload_job.sh':
++   guard='echo "STAGED PREVIEW: independent review required" >&2\nexit 78\n'
++   if source.count(guard)!=1:raise ValueError('Unknown HF template script guard')
++   source=source.replace(guard,'').replace(template['directory_name'],folder.name)
++  elif name=='hf_launcher.py':
++   guard=" print('BLOCKED HF LAUNCHER CANDIDATE: requires independently reviewed NEW activated HF bundle',file=sys.stderr)\n return 78\n"
++   if source.count(guard)!=1:raise ValueError('Unknown HF launcher template guard')
++   source=source.replace(guard,'')
++  if (folder/name).read_text()!=source:raise ValueError('Actual HF helper/script differs from exact v4 reviewed activation')
++ if Path(checker_path).resolve()!=(folder/'checkpoint_reload.py').resolve() or digest(checker_path)!=template['file_sources']['checkpoint_reload.py']:raise ValueError('HF checker is not immutable5586 source')
++ if Path(script_path).resolve()!=(folder/'reload_job.sh').resolve():raise ValueError('HF activated script role outside bundle')
+  return actual
+ 
+ def utc(value):
+@@ -80,7 +87,7 @@ def verify_isolated_sources(repo,stage_path):
+  code="from search_r1.baselines import corrected_evaluation as ce; import json,sys,pathlib; assert pathlib.Path(ce.__file__).resolve()==pathlib.Path(sys.argv[2])/'search_r1/baselines/corrected_evaluation.py'; ce.verify_runtime_sources(json.load(open(sys.argv[1])))"
+  subprocess.run([sys.executable,'-c',code,str(stage_path),str(repo)],cwd=repo,env=dict(os.environ,PYTHONPATH=str(repo)),check=True,capture_output=True,text=True)
+ 
+-def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_stage_sha=None):
++def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_stage_sha=None,model_role=None,receipt_path=None,receipt_sha=None):
+  from strict_stage_prerequisites import bound_file
+  required={'version','phase','eval_repo','eval_commit','model_role','stage_prescription','resolved_config','input_manifest','source_files','hf_activation_audit'}
+  if set(supplement)!=required or supplement['version']!=1 or supplement['phase']!='pre-generation':raise ValueError('Exact pre-generation supplement schema required')
+@@ -95,7 +102,9 @@ def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_s
+  if not actual_stage_path or not actual_stage_sha:raise ValueError('BLOCKED: actual final stage path/SHA integration not supplied')
+  final_path=bound_file(dict(path=str(actual_stage_path),sha256=actual_stage_sha),base);final=loads(final_path.read_text())
+  verify_prescription(stage,final)
++ if not receipt_path or final.get('training_hf_receipt_path')!=str(Path(receipt_path).resolve()) or final.get('training_hf_receipt_sha256')!=receipt_sha:raise ValueError('Actual final stage is not bound to this exact layered receipt')
+  role=supplement['model_role']
++ if role!=model_role:raise ValueError('Requested model role differs from prescribed/actual stage')
+  if role not in receipt['model_roles'] or stage['model_role']!=role or stage['model_directory']!=receipt['model_roles'][role]['directory'] or stage['model_files']!=receipt['model_roles'][role]['files']:raise ValueError('Pre-stage actual model role/content mismatch')
+  if stage['eval_commit']!=commit or stage['training_commit']!=COMMIT or stage['source_files']!=supplement['source_files']:raise ValueError('Pre-stage source identity mismatch')
+  inputs=bound_file(supplement['input_manifest'],base)
+@@ -105,9 +114,7 @@ def verify_pre_stage(supplement,receipt,base=OWN,actual_stage_path=None,actual_s
+  code="from search_r1.baselines import corrected_evaluation as ce; from omegaconf import OmegaConf; import json,sys,pathlib; stage=json.load(open(sys.argv[4])); assert pathlib.Path(ce.__file__).resolve()==pathlib.Path(sys.argv[5])/'search_r1/baselines/corrected_evaluation.py'; ce.verify_runtime_sources(stage); ce.load_inputs(sys.argv[1],sys.argv[2]); ce.verify_budget(OmegaConf.load(sys.argv[3]),stage)"
+  import os,sys
+  subprocess.run([sys.executable,'-c',code,str(inputs),digest(inputs),str(config),str(stage_path),str(repo)],cwd=repo,env=dict(os.environ,PYTHONPATH=str(repo)),check=True,capture_output=True,text=True)
+- # Only HF historical audit is allowed here. Future corrected-job runtime is a separate layer.
+- audit_path=bound_file(supplement['hf_activation_audit'],base);audit=loads(audit_path.read_text())
+- if audit['schema']!='actual-hf500-activation-v1' or audit['job_id']!=receipt['hf500_reload_job'] or audit['node']!='h100-10':raise ValueError('HF activation audit identity mismatch')
+- if not re.search(r'(?:^|/)job_'+re.escape(audit['job_id'])+r'(?:/|$)',audit['own_cgroup']):raise ValueError('HF own cgroup missing')
+- resources=bound_file(receipt['hf500_evidence']['resources'],base)
+- return verify_resource_rows([loads(line) for line in resources.read_text().splitlines()],audit['job_id'],audit['gpu_uuid'],audit['uid'],audit['checker_pid'],audit['checker_start_ticks'])
++ # HF historical proof was fully cross-checked before this pre-stage layer.
++ audit_path=bound_file(supplement['hf_activation_audit'],base)
++ if digest(audit_path)!=receipt['hf500_evidence']['activation_result']['sha256']:raise ValueError('Pre-stage HF audit does not match completed HF receipt')
++ return {'pre_generation_prescription_verified':True}
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/source_bundle_check.py b/work/reward-protocol-fix/activation-tools-v4/source_bundle_check.py
+index e42a436..55038a8 100644
+--- a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/source_bundle_check.py
++++ b/work/reward-protocol-fix/activation-tools-v4/source_bundle_check.py
+@@ -18,7 +18,7 @@ def check_sources(root,directory,manifest):
+   assert set(manifest['file_sources'])==set(manifest['runtime_sources'])|{'pilot_audit.py','prior_cleanup.py','source_bundle_check.py'}
+  else:
+   assert manifest['stage']=='hf500_only_actual_formal_no_future_reload'
+-  assert set(manifest['file_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py','formal_completion_check.py','training_evidence.py','periodic_validation.py','strict_metric_parser.py'}
++  assert set(manifest['file_sources'])=={'reload_job.sh','checkpoint_reload.py','resource_sample.py','source_bundle_check.py','formal_completion_check.py','training_evidence.py','periodic_validation.py','strict_metric_parser.py','hf_launcher.py','hf_activation_capture.py','runtime_capture.py'}
+  assert directory.name==manifest['directory_name']
+  assert subprocess.check_output(['git','-C',str(root/'repo'),'rev-parse','HEAD'],text=True).strip()==manifest['source_commit']
+  subprocess.run(['git','-C',str(root/'repo'),'diff','--quiet','HEAD'],check=True)
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/strict_stage_prerequisites.py b/work/reward-protocol-fix/activation-tools-v4/strict_stage_prerequisites.py
+index de86abb..675e7da 100644
+--- a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/strict_stage_prerequisites.py
++++ b/work/reward-protocol-fix/activation-tools-v4/strict_stage_prerequisites.py
+@@ -9,6 +9,20 @@ from training_evidence import loads,digest,own_file,verify_slurm,COMMIT,OWN
+ import formal_completion_check as formal
+ from pilot_reload_prerequisites import verify_reload
+ 
++EXPECTED_DEPENDENCY_BUNDLE_SHA='54457d326b42fba199ea60c7251f81451849e52d41d17b9859dc1447b894a2b3'
++def verify_dependency_bundle():
++ import sys
++ directory=Path(__file__).resolve().parent;manifest=directory/'verifier-dependencies.json'
++ if digest(manifest)!=EXPECTED_DEPENDENCY_BUNDLE_SHA:raise ValueError('Strict verifier dependency manifest differs from pinned source')
++ records=loads(manifest.read_text())
++ for name,sha in records.items():
++  path=(directory/name).resolve()
++  if not path.is_relative_to(directory) or digest(path)!=sha:raise ValueError('Strict verifier helper dependency bytes changed')
++  if name.endswith('.py') and '/' not in name:
++   module=sys.modules.get(name[:-3])
++   if module is not None and Path(module.__file__).resolve()!=path:raise ValueError('Strict verifier actual imported helper outside reviewed bundle')
++ return records
++
+ PREVIEW_BLOCKED=True
+ MODEL_ROLES={'base':OWN/'assets-root/assets/qwen2.5-3b','hf500':OWN/'runs/opsd-formal-3007/output/checkpoints/opsd-gpu-formal500/actor/global_step_500'}
+ 
+@@ -45,7 +59,7 @@ def verify_model_files(record):
+   bound_file(dict(path=str(directory/name),sha256=sha),directory)
+ 
+ def verify_upstream_sources():
+- directory=Path(__file__).parent;manifest=loads((directory/'source-manifest.json').read_text())
++ directory=Path(__file__).parent/'upstream';manifest=loads((directory/'source-manifest.json').read_text())
+  for name,sha in manifest['file_sources'].items():
+   if digest(directory/name)!=sha:raise ValueError('Frozen upstream helper bytes changed')
+ 
+@@ -81,7 +95,7 @@ def verify_hf500(r,base=OWN):
+  job=r['hf500_reload_job']
+  if not isinstance(job,str) or not re.fullmatch('[0-9]+',job) or job in {'2994','2996','2999','3007'}:raise ValueError('Real new HF500 reload job missing or old job substituted')
+  run=base/('runs/opsd-formal-hf-reload-'+job);checkpoint=base/MODEL_ROLES['hf500'].relative_to(OWN)
+- roles={'raw_log','result','source_commit','slurm_terminal','exit','cleanup','checker','checker_manifest','job_script','resources','independent_review'}
++ roles={'raw_log','result','source_commit','slurm_terminal','exit','cleanup','checker','checker_manifest','job_script','resources','activation_result','activation_raw','independent_review'}
+  if not isinstance(r['hf500_evidence'],dict) or set(r['hf500_evidence'])!=roles:raise ValueError('Missing complete HF500 evidence roles')
+  paths={name:bound_file(record,base if name in {'checker','checker_manifest','job_script','independent_review'} else run) for name,record in r['hf500_evidence'].items()}
+  if paths['source_commit'].read_text().strip()!=COMMIT or paths['exit'].read_text().strip()!='0':raise ValueError('HF source/exit mismatch')
+@@ -93,6 +107,8 @@ def verify_hf500(r,base=OWN):
+  template_manifest=loads((Path(__file__).parent/'source-manifest.json').read_text())
+  from pre_stage_runtime import verify_hf_activation
+  verify_hf_activation(paths['checker_manifest'],paths['job_script'],paths['checker'],r['hf500_evidence']['checker_manifest']['sha256'])
++ from activation_verification import verify_activation_evidence
++ verify_activation_evidence(paths,job,base)
+  # Job script activation removes guard, so future script must be reviewed separately.
+  # Do not pretend the blocked original script was executed unchanged.
+  result=loads(paths['result'].read_text());verify_reload(result,checkpoint,job)
+@@ -108,24 +124,27 @@ def verify_hf500(r,base=OWN):
+  if review.get('source_commit')!=COMMIT or review.get('formal_job')!='3007' or review.get('reload_job')!=job or review.get('bound_evidence_sha256')!=expected or review.get('accepted') is not True or not review.get('reviewer') or not review.get('report'):raise ValueError('Independent HF500 review not bound to all actual evidence')
+  return result
+ 
+-def verify_runtime_supplement(r,base=OWN,actual_stage_path=None,actual_stage_sha=None):
++def verify_runtime_supplement(r,base=OWN,actual_stage_path=None,actual_stage_sha=None,model_role=None,receipt_path=None,receipt_sha=None):
+  from pre_stage_runtime import verify_pre_stage
+  supplement=bound_file(r['runtime_supplement'],base)
+- verify_pre_stage(loads(supplement.read_text()),r,base,actual_stage_path,actual_stage_sha)
+- raise ValueError('BLOCKED: actual stage argument integration and HF lease/raw-source capture verifier unfinished')
++ verify_pre_stage(loads(supplement.read_text()),r,base,actual_stage_path,actual_stage_sha,model_role,receipt_path,receipt_sha)
++ return True
+ 
+ def verify(path,expected,role,model,base=OWN,actual_stage_path=None,actual_stage_sha=None):
+- verify_upstream_sources()
++ verify_dependency_bundle();verify_upstream_sources()
+  r,p=read_receipt(path,expected,role,model,base)
+- verify_training(r,base);verify_hf500(r,base);verify_runtime_supplement(r,base,actual_stage_path,actual_stage_sha)
+- # Deliberately unreachable until reviewed full runtime supplement implementation.
++ verify_training(r,base);verify_hf500(r,base);verify_runtime_supplement(r,base,actual_stage_path,actual_stage_sha,role,p,expected)
++ # Called only after every actual strict gate; no caller-provided passing flags.
+  return dict(kind='strict_actual_training3007_hf500_prerequisites',training_commit=COMMIT,formal_job='3007',actual_outer_updates=500,final_questions=51713,receipt_sha256=digest(p),model_role=role,model_directory=str(model))
+ 
+ def main():
+  parser=argparse.ArgumentParser(description=__doc__)
+  parser.add_argument('--receipt',required=True);parser.add_argument('--receipt-sha256',required=True);parser.add_argument('--model-role',choices=('base','hf500'),required=True);parser.add_argument('--model-directory',required=True)
+  parser.add_argument('--stage',default='UNFILLED');parser.add_argument('--stage-sha256',default='UNFILLED')
+- parser.parse_args()
++ args=parser.parse_args()
+  print('BLOCKED PREVIEW: actual500/HF500/runtime supplements UNFILLED; not deployable',file=sys.stderr)
+  return 78
++ proof=verify(args.receipt,args.receipt_sha256,args.model_role,args.model_directory,actual_stage_path=args.stage,actual_stage_sha=args.stage_sha256)
++ print(json.dumps(proof,sort_keys=True,allow_nan=False))
++ return 0
+ if __name__=='__main__':raise SystemExit(main())
+diff --git a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/reload_job.sh b/work/reward-protocol-fix/activation-tools-v4/reload_job.sh
+index ced3a05..88b1d7e 100644
+--- a/work/reward-protocol-fix/integration-candidate-9fb-v3/tools/reload_job.sh
++++ b/work/reward-protocol-fix/activation-tools-v4/reload_job.sh
+@@ -15,11 +15,11 @@ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TOKENIZERS_PARALLELISM=false OMP_N
+ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
+ source "$root/env/bin/activate"
+ cd "$root/repo"
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/source_bundle_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/source_bundle_check.py"
+ exec 9>"$root/gpu-job.lock"
+ flock -n 9
+ [[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
+-python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/formal_completion_check.py"
++python "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/formal_completion_check.py"
+ [[ -d "$OPSD_CHECKPOINT" ]]
+ sha256sum "$0" > "$run/reload-job-script.sha256"
+ python - <<'PY'
+@@ -56,5 +56,5 @@ records=check_selected_gpus(os.environ['CUDA_VISIBLE_DEVICES'].split(','),inv,pr
+ assert len(records)==1,records
+ print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
+ PY
+-python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/resource_sample.py" "$run/resources.ndjson" $$ &
+-python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-strict-two-raywarnings/checkpoint_reload.py" 2>&1 | tee "$run/reload.log"
++python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/hf_launcher.py" --checker "$root/tools/hf500-runtime-8e60976d364a-formal-3007-activation-v4/checkpoint_reload.py" --evidence "$run" --root "$root" --checker-sha256 5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb

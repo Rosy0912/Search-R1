@@ -1,0 +1,56 @@
+--- actual2962/reload_job-2960.sh
++++ preview2994/reload_job.sh
+@@ -1,22 +1,25 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
++echo "STAGED PREVIEW: independent review required" >&2
++exit 78
+ : "${SLURM_JOB_ID:?Must run in own allocation}"
+ root=/mnt/data/shaoshitong/search-r1-rl/opsd
+-run="$root/runs/opsd-hf-reload-$SLURM_JOB_ID"
++run="$root/runs/opsd-new-hf-reload-$SLURM_JOB_ID"
+ [[ ! -e "$run" && ! -L "$run" ]]
+ mkdir "$run"
+ trap 'rc=$?; printf "%s\n" "$rc" > "$run/exit.txt"' EXIT
+ export OPSD_EVIDENCE="$run" OPSD_TEACHER="$root/assets-root/assets/qwen2.5-3b"
+-export OPSD_CHECKPOINT="$root/runs/opsd-acceptance-2960/output/checkpoints/opsd-gpu-acceptance-5/actor/global_step_5"
++export OPSD_CHECKPOINT="$root/runs/opsd-new-acceptance-2994/output/checkpoints/opsd-new-gpu-acceptance-5/actor/global_step_5"
+ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=8
+ unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy
+ source "$root/env/bin/activate"
+ cd "$root/repo"
++python "$root/tools/hf-runtime-8e60976d364a-pilot-2994/source_bundle_check.py"
+ exec 9>"$root/gpu-job.lock"
+ flock -n 9
+-[[ $(git rev-parse HEAD) == e43fbfa73088ed70ed3efef79ba561507c0afc33 ]]
+-[[ -f "$root/runs/opsd-acceptance-2960/training-finished.txt" ]]
+-[[ $(cat "$root/runs/opsd-acceptance-2960/exit.txt") == 0 ]]
++[[ $(git rev-parse HEAD) == 8e60976d364ab7d7ae51714415813c1359dafe9a ]]
++[[ -f "$root/runs/opsd-new-acceptance-2994/training-finished.txt" ]]
++[[ $(cat "$root/runs/opsd-new-acceptance-2994/exit.txt") == 0 ]]
+ [[ -d "$OPSD_CHECKPOINT" ]]
+ sha256sum "$0" > "$run/reload-job-script.sha256"
+ python - <<'PY'
+@@ -31,12 +34,12 @@
+     if not path.name.isdigit(): continue
+     try: cgroup=(path/'cgroup').read_text()
+     except OSError: continue
+-    if re.search(r'(?:^|/)job_2960(?:/|$)',cgroup,re.M): remaining.append(int(path.name))
++    if re.search(r'(?:^|/)job_2994(?:/|$)',cgroup,re.M): remaining.append(int(path.name))
+ assert not remaining,('Previous training job still has processes',remaining)
+ listeners=subprocess.check_output(['ss','-H','-ltnp'],text=True)
+ blocked=[line for line in listeners.splitlines() if len(line.split())>=4 and line.split()[3].rsplit(':',1)[-1] in ('16384','18084')]
+ assert not blocked,'Previous Ray/retrieval ports still listening'
+-result=dict(job_id=job,node_scope=node,previous_training_job='2960',previous_job_processes=remaining,previous_ports_listening=False,
++result=dict(job_id=job,node_scope=node,previous_training_job='2994',previous_job_processes=remaining,previous_ports_listening=False,
+             sample_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
+ Path(os.environ['OPSD_EVIDENCE'],'previous-job-cleanup.json').write_text(json.dumps(result,indent=2)+'\n')
+ print('PREVIOUS_TRAINING_JOB_CLEANUP_VERIFIED',result,flush=True)
+@@ -53,5 +56,5 @@
+ assert len(records)==1,records
+ print('FRESH_RELOAD_GPU_THRESHOLD_OK',records,flush=True)
+ PY
+-python -u "$root/tools/runtime/resource_sample.py" "$run/resources.ndjson" $$ &
+-python -m search_r1.baselines.preflight -- python -u "$root/tools/runtime/checkpoint_reload.py" 2>&1 | tee "$run/reload.log"
++python -u "$root/tools/hf-runtime-8e60976d364a-pilot-2994/resource_sample.py" "$run/resources.ndjson" $$ &
++python -m search_r1.baselines.preflight -- python -u "$root/tools/hf-runtime-8e60976d364a-pilot-2994/checkpoint_reload.py" 2>&1 | tee "$run/reload.log"

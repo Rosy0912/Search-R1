@@ -1,0 +1,101 @@
+{
+  "actual_config": {
+    "actor_global_micro": 32,
+    "actor_local_micro": 4,
+    "component_clip": null,
+    "entropy_coef": 0,
+    "expected_optimizer_calls_per_rank": 10,
+    "grad_l2_clip": 1,
+    "horizon": 200,
+    "lp_global_micro": 64,
+    "lp_local_micro": 8,
+    "lr": 1e-06,
+    "mini_batch": 256,
+    "no_pg_no_reference_kl_configuration": true,
+    "profile": "multitraj200",
+    "questions_per_outer": 512,
+    "responses_per_question": 5,
+    "sampling": [
+      1,
+      1,
+      -1
+    ],
+    "state_source_scope": "cfg-only unlaunched binding intentionally unresolved; not a running model",
+    "trajectories_per_outer": 2560,
+    "warmup_outer57": 57
+  },
+  "created_utc": "2026-10-06T09:39:50.873447+00:00",
+  "external_first5_reader_blocker": {
+    "counterexample_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/sampler-config-key-counterexample-originals/counterexample.original.json",
+    "counterexample_sha256": "65311caadc1ea0c81f835a34c50a4bdb0f67165564b15296b3809963576b4110",
+    "frozen_training_source_change_required": false,
+    "old_native_sha256": "25d5ef8659fbf22c466ed7da92881b5cde276523726875f7a64f1925376a88e5",
+    "problem": "sampler reader uses data.shuffle but native config and frozen source use data.shuffle_train_dataloader"
+  },
+  "limitations": [
+    "Actual revision/model/data/index bytes are not read by cfg-only native import proof",
+    "No actual Adam or RNG continuity claim before training",
+    "Native library source bytes/code were verified by recorded native verifier; this local reader checks their recorded closure membership",
+    "No separate subprocess exit JSON is provided by this native wrapper; its final summary is emitted after the pinned caller has asserted each subprocess return code zero"
+  ],
+  "native_import_proof": {
+    "bootstrap": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-667c68e0f91b/reproduction/baselines/e1_import_bootstrap.py",
+      "sha256": "49e8b145748876c1ce4efd408f9206bb09e0d886ff2d77e7c364e662fb80718f"
+    },
+    "cuda_is_initialized": false,
+    "loaded_module_count": 84,
+    "required_modules_present": [
+      "search_r1.baselines.main",
+      "search_r1.baselines.holdout",
+      "search_r1.baselines.sharedholdout",
+      "search_r1.baselines.e1_profile",
+      "search_r1.baselines.preflight",
+      "search_r1.baselines.controller",
+      "search_r1.baselines.actor",
+      "search_r1.baselines.distillation",
+      "search_r1.baselines.full_state",
+      "search_r1.baselines.checkpoint_gate",
+      "search_r1.baselines.trajectory_archive",
+      "verl.workers.fsdp_workers",
+      "verl.trainer.ppo.ray_trainer",
+      "reproduction.baselines.e1_import_bootstrap",
+      "search_r1.baselines.rollout"
+    ],
+    "trajectory_archive": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-667c68e0f91b/search_r1/baselines/trajectory_archive.py",
+      "sha256": "88277e24453058e8e62ae2e13b2df94dc1b35110618ac44381a4b5f579f17455"
+    },
+    "verified_live_function_code_count": 733
+  },
+  "native_inventory": {
+    "full_project_and_checker_records_matching_local_committed_source": 207,
+    "library_records": 4,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/native-source-inventory-667c68e0f91b-ACTUAL.json",
+    "records": 211,
+    "sha256": "a184d0ca793aea072d6ab8c7753ba9f944cabb150b2c0adcd526ee9ef9cb94a3"
+  },
+  "originals": {
+    "native-cpu-actual.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/native-cpu-actual.json",
+      "sha256": "1097fcde69efaefe5d2f5cd5f90f24e0d9bea442f48d5bcaa48295f9bb97c04f"
+    },
+    "native-cpu-original.stderr": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/native-cpu-original.stderr",
+      "sha256": "defd240d0e6db1de5e17a1f11c7f0628595ea1fd64ae24ed5923d02fc534b4e4"
+    },
+    "native-cpu-original.stdout": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/native-cpu-original.stdout",
+      "sha256": "c9fc2759d05e0805181b4ce7dce56b259692a934831e350ee599a1edc33d4fa5"
+    }
+  },
+  "scope": "Actual native CPU closure/config evidence plus local cross-check of committed source; no GPU model load, retrieval call, job, first5 or asset file acceptance",
+  "source_clean_local": true,
+  "source_commit": "667c68e0f91b4bc439324d0e095ce13df10da559",
+  "status": "ACTUAL_NATIVE_CPU_SOURCE_IMPORT_AND_COMPOSED_CONFIG_REVIEW_PASSED_WITH_SEPARATE_EXTERNAL_READER_BUG",
+  "stderr_findings": [
+    "Transformers TRANSFORMERS_CACHE deprecation",
+    "vLLM optional commit-hash import warning; native import proof still completed"
+  ],
+  "version": 1
+}

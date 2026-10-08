@@ -1,0 +1,11 @@
+{
+  "scope": "external CPU native inventory preparation only; no native or GPU acceptance",
+  "files": {
+    "native_import_closure_producer.py": "1f9012d41c33f1caed1f231cf2a811bce35547fcd54ff7501eaa25d3924893e1",
+    "test_native_import_closure_producer.py": "fc2603ccfcdf7c5ed81181948d194806093ea6ec5c6850cd6745e2f401f9b96e",
+    "NATIVE_IMPORT_CLOSURE_PREPARATION.md": "23a9de0d8927fb32ad6dce96fe0c5486361255cce25d4fe64273802e0c4152e5",
+    "native-closure-producer-cpu-tests.txt": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+    "native-closure-PREVIEW-CPU-all-source.json": "1ade760bf996e11374c594a4f9cc3c3acf1d5d11ce349f186bbfb1c98a7137c3",
+    "native-closure-runtime-subset-cpu.txt": "ffac28aa1aaaf4b8868265663d65e38f9e1308d7fb592894315b281795014350"
+  }
+}

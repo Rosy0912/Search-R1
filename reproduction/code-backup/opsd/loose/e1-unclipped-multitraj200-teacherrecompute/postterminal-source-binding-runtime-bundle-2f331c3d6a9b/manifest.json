@@ -1,0 +1,32 @@
+{
+  "actual_job": null,
+  "actual_main": null,
+  "actual_request": null,
+  "files": {
+    "DESIGN.md": {
+      "bytes": 7635,
+      "sha256": "f1d002b6d1511b40d9a15a8528042c427965b5bdd79fa85321bc0141a5f8dc90"
+    },
+    "INDEPENDENT_SOFTWARE_REVIEW.json": {
+      "bytes": 11372,
+      "sha256": "a06592e0a8a73b5119d9f25e9442a6fc5d1f9f1942b54af58f3b9ff20f75f4f2"
+    },
+    "ROOT_SOFTWARE_REVIEW.json": {
+      "bytes": 2051,
+      "sha256": "1b2a70d6971ad1db7bef3dc249979dd858a867cd1c495b422066e7cd59a771c4"
+    },
+    "SOFTWARE_READINESS.json": {
+      "bytes": 2604,
+      "sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc"
+    },
+    "collect_postterminal_source_bindings.py": {
+      "bytes": 14782,
+      "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe"
+    }
+  },
+  "kind": "FIXED_POSTTERMINAL_SOURCE_BINDING_SOFTWARE_RUNTIME_BUNDLE_NOT_ACTUAL_TERMINAL_OR_200",
+  "runtime_entry": "collect_postterminal_source_bindings.py",
+  "scope": "Immutablesoftware only; requires genuinepostterminal newCPUjob/exactrequest/inputphysicalrecords. Publishedexistingf115/71d dependencies unchanged. Actualexecution/results/200qualification absent.",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "version": 1
+}

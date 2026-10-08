@@ -1,0 +1,35 @@
+{
+  "files": {
+    "allocation": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/allocation.json",
+      "sha256": "5d02db84eea0ed0da5894b5e638eee906e80ea7f5d3e4799bdfba815f1018a9a"
+    },
+    "data_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/data_manifest.json",
+      "sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+    },
+    "environment": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/environment.json",
+      "sha256": "68fa0ce4d60610249c9d31eed62886d1dc8355b897b459b33d22252bc6b899d9"
+    },
+    "import_closure": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/import_closure.json",
+      "sha256": "a184d0ca793aea072d6ab8c7753ba9f944cabb150b2c0adcd526ee9ef9cb94a3"
+    },
+    "model_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/model_manifest.json",
+      "sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44"
+    },
+    "source": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/source.json",
+      "sha256": "73b6ff4de20f8121cbf3ef17c5730c718fbe52400b273ab844162b09c60a3b81"
+    },
+    "tool_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/bindings/tool_manifest.json",
+      "sha256": "87b5e85df12cbf4635cb787b08161950ddc23e2e5b850e68fb7249668573cc87"
+    }
+  },
+  "run_root": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299",
+  "source_commit": "667c68e0f91b4bc439324d0e095ce13df10da559",
+  "version": 1
+}

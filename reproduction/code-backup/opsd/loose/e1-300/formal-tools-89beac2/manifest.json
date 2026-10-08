@@ -1,0 +1,37 @@
+{
+  "common_data_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "native_import_closure_sha256": "EXTERNAL_ENV_REQUIRED_NOT_GUESSED",
+  "official_model_manifest_sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44",
+  "public_key_sha256": "EXTERNAL_ENV_REQUIRED_NOT_GUESSED",
+  "retrieval_asset_manifest_sha256": "87b5e85df12cbf4635cb787b08161950ddc23e2e5b850e68fb7249668573cc87",
+  "scope": "LOCAL_PREPARATION_ONLY_UNRUN_NO_SUBMISSION_NO_GPU",
+  "source_commit": "89beac273f783d8e48d7d3e34da040f753514d90",
+  "source_files": {
+    "reproduction/baselines/e1_import_bootstrap.py": "82433ba203fa8b8ed02cc3c4d0be4d0d0ceb7de096ebe657561f1fd726194164",
+    "reproduction/baselines/run_opsd_e1_300.sh": "4213bc6563e994a720efc24e6f80c4680be9e46f46cc8d1b455c8a8e7b350b9e",
+    "reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "search_r1/baselines/actor.py": "92cb9237170260c1d625007dc006db86ba82b66a7e264e004901147c502a99e3",
+    "search_r1/baselines/checkpoint_gate.py": "e1ba71ec34b3889dcd6964f3c07d0bd266f5847f3039226191f8b87a38a910cf",
+    "search_r1/baselines/controller.py": "4c60f33c280b2299f090e572d18178ca5b878d77619e2e0265a931534a764229",
+    "search_r1/baselines/distillation.py": "0e77c0eca02bd4996dcbfb471ad2496f7d668b1f7829541c816b30c636873791",
+    "search_r1/baselines/e1_profile.py": "ce3771fe999a11140b3b46835f80ec680074d44a11946d9c9d8aee69bb704951",
+    "search_r1/baselines/full_state.py": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6",
+    "search_r1/baselines/main.py": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+    "verl/trainer/config/ppo_opsd_e1_300.yaml": "88f3e19691539fd634e5ccc7370853f564f1acc1e1f3b4b5fc68110f09990072",
+    "verl/trainer/ppo/ray_trainer.py": "32cbbae68f7b76adb94c34a307ae95e892d4443b781df9bbf940ef2841c213a8",
+    "verl/workers/fsdp_workers.py": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7"
+  },
+  "tools": {
+    "cpu_import_check.py": "59ab3b120cf929b4cb8b66716a7af972ba45c77582bc8e5495650f19c7d6ea08",
+    "formal_job.sh": "8d4fa4609d45d40738bd608c79d817455247cc0c5470aa983e5bd72accea2761",
+    "formal_supervisor.py": "0fe5d8e5698cf91b93727d6e19cf4fedd368acec2c0110c223daddfe4f317700",
+    "hardware_rank.py": "ba08301853998c363ad81e2d4a6115aa2de6f645bd431bdcd9c54279af3468a4",
+    "owned_runtime.py": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd",
+    "ray_cpu_check.py": "93da8834fce757a338e2907a55ca9820758f21ba1fb4b1323f1f3b3e194be233",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "retriever_entry.py": "be0a6228de6affa84b6cb0f2106ea8309d159991c0c37aefe31941bbdf548d60"
+  },
+  "version": 1
+}

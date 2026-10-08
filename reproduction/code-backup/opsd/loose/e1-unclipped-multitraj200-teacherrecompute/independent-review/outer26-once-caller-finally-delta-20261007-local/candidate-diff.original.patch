@@ -1,0 +1,88 @@
+--- collect_outer26_once-v1-eddcf9a11702.original.py
++++ collect_outer26_once.py
+@@ -43,6 +43,41 @@
+         os.fsync(f.fileno())
+ 
+ 
++def transfer(argv, authority, out, err, start_path):
++    process, waited, returncode, local_pid, input_complete = None, False, None, None, False
++    errors = []
++    try:
++        process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=out, stderr=err)
++        local_pid = process.pid
++        save(start_path, (json.dumps(dict(local_ssh_pid=local_pid,
++             popen_returned_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())) + '\n').encode())
++        process.stdin.write(authority)
++        process.stdin.close()
++        input_complete = True
++    except Exception as error:
++        errors.append(dict(stage='start_or_send', type=type(error).__name__, detail=str(error)))
++    finally:
++        if process is not None:
++            try:
++                if not process.stdin.closed:
++                    process.stdin.close()
++            except Exception as error:
++                errors.append(dict(stage='close_stdin', type=type(error).__name__, detail=str(error)))
++            deadline = time.monotonic() + 600
++            while time.monotonic() < deadline:
++                try:
++                    returncode = process.wait(timeout=min(30, max(.001, deadline - time.monotonic())))
++                    waited = True
++                    break
++                except subprocess.TimeoutExpired:
++                    pass
++                except Exception as error:
++                    errors.append(dict(stage='wait', type=type(error).__name__, detail=str(error)))
++                    break
++    return dict(waited=waited, returncode=returncode, local_ssh_pid=local_pid,
++                authority_input_complete=input_complete, local_errors=errors)
++
++
+ def main():
+     source = read_pin(C / 'collect_outer26.py', PINS['collect_outer26.py'])
+     authority = read_pin(C / 'AUTHORITY-v2.original.json', PINS['AUTHORITY-v2.original.json'])
+@@ -70,20 +105,8 @@
+                   runtime_sha256=sha(source), authority_sha256=sha(authority), transport_sha256=sha(transport),
+                   remote_host='h100-10', scope='STDOUT_COPY_ONLY_NO_REMOTE_WRITES_GPU_OR_JOB')
+     save(directory / 'command.original.json', (json.dumps(intent, sort_keys=True) + '\n').encode())
+-    waited, returncode, local_pid = False, None, None
+     with (directory / 'stdout.original.gz').open('xb') as out, (directory / 'stderr.original').open('xb') as err:
+-        process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=out, stderr=err)
+-        local_pid = process.pid
+-        process.stdin.write(authority)
+-        process.stdin.close()
+-        deadline = time.monotonic() + 600
+-        while time.monotonic() < deadline:
+-            try:
+-                returncode = process.wait(timeout=min(30, max(.001, deadline - time.monotonic())))
+-                waited = True
+-                break
+-            except subprocess.TimeoutExpired:
+-                pass
++        execution = transfer(argv, authority, out, err, directory / 'start.original.json')
+         out.flush()
+         err.flush()
+         os.fsync(out.fileno())
+@@ -92,16 +115,17 @@
+     with (directory / 'stdout.original.gz').open('rb') as f:
+         for block in iter(lambda: f.read(8 * 1024 ** 2), b''):
+             digest.update(block)
+-    result = dict(kind='ACTUAL_READ_ONLY_OUTER26_COLLECTION_WAIT', waited=waited, returncode=returncode,
++    result = dict(kind='ACTUAL_READ_ONLY_OUTER26_COLLECTION_WAIT', **execution,
+                   runtime_sha256=sha(source), authority_sha256=sha(authority), transport_sha256=sha(transport),
+-                  caller_sha256=sha(Path(__file__).read_bytes()), remote_host='h100-10', local_ssh_pid=local_pid,
++                  caller_sha256=sha(Path(__file__).read_bytes()), remote_host='h100-10',
+                   start_utc=start, end_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                   compressed_stdout_sha256=digest.hexdigest(), compressed_bytes=(directory / 'stdout.original.gz').stat().st_size,
+                   unknown_policy='Preserve originals; never retry same once or infer remote success')
+     save(directory / 'wait.original.json', (json.dumps(result, sort_keys=True) + '\n').encode())
+-    print(json.dumps(dict(directory=str(directory), waited=waited, returncode=returncode,
++    print(json.dumps(dict(directory=str(directory), **execution,
+                           compressed_bytes=result['compressed_bytes'], wait_sha256=sha((directory / 'wait.original.json').read_bytes()))))
+-    if not waited or returncode != 0:
++    if (not execution['waited'] or execution['returncode'] != 0 or
++            not execution['authority_input_complete'] or execution['local_errors']):
+         raise SystemExit(1)
+ 
+ 

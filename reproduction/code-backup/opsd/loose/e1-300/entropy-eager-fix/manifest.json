@@ -1,0 +1,14 @@
+{
+  "baseline_source_commit": "89beac273f783d8e48d7d3e34da040f753514d90",
+  "files": {
+    "README.md": "28fb16d9cb7c497806f51b2b3973edd622be9fe7445339f06423192ab93babbe",
+    "actor_89be_original.py": "92cb9237170260c1d625007dc006db86ba82b66a7e264e004901147c502a99e3",
+    "actor_candidate.py": "a9e5005f9d5e48f2cba652ee88b2ff2f3b0bb671dde8ce70ea7653eeb82c5ed9",
+    "cpu-tests.txt": "afd09d7fe4198ee2c0def5b0a6a92498670d0b1b13fc2b6740c87dfe202ac44a",
+    "cpu_entropy_probe.py": "7cee42810c981450dfb492589ab439cfe482ca8d4adb95430d3fbbfd4dff2e86",
+    "source-only.patch": "c93cbb965e56da1fbf1308788dbb54d6b3b2d4536a9689fae3c540d739e15f82",
+    "test_entropy_eager_fix.py": "de5b102cc7dccbc3a35f39981e3032a424e005091a25ae510b779fef21e3f4d0"
+  },
+  "scope": "ISOLATED_CPU_ENTROPY_SELECTOR_CANDIDATE_NOT_ADOPTED_NOT_FIRST5_ACCEPTANCE",
+  "version": 1
+}

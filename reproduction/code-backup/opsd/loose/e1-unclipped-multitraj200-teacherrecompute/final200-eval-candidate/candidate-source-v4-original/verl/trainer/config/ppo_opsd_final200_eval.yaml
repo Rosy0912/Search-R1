@@ -1,0 +1,39 @@
+# Local candidate only. Required stage/model/output env is intentionally absent.
+defaults:
+  - ppo_opsd_e1_multitraj200
+  - _self_
+
+data:
+  val_batch_size: 64
+  val_data_num: null
+  return_raw_chat: true
+actor_rollout_ref:
+  model:
+    path: ${oc.env:OPSD_FINAL200_ACTUAL_MODEL_DIRECTORY}
+  rollout:
+    n_agent: 1
+    n: 1
+    temperature: 1
+    top_p: 1
+    top_k: -1
+trainer:
+  val_only: true
+  val_before_train: true
+  total_training_steps: 0
+  smoke_only: false
+  experiment_name: opsd-final200-paired-eval-only
+baselines:
+  distillation:
+    teacher_path: ${oc.env:OPSD_E1_OFFICIAL_MODEL}
+  opsd_e1:
+    enabled: false
+    gate_required: false
+    profile: null
+  corrected_evaluation:
+    enabled: false
+  final200_evaluation:
+    enabled: true
+    reviewed_stage_manifest: ${oc.env:OPSD_FINAL200_ACTUAL_REVIEWED_STAGE}
+    input_manifest_path: ${oc.env:OPSD_FINAL200_INPUT_MANIFEST}
+    input_manifest_sha256: ${oc.env:OPSD_FINAL200_INPUT_MANIFEST_SHA256}
+    output_dir: ${oc.env:OPSD_FINAL200_ACTUAL_FRESH_OUTPUT_DIRECTORY}

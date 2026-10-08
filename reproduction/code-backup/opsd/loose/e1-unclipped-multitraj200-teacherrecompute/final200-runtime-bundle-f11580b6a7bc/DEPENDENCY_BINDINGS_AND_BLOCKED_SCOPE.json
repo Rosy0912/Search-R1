@@ -1,0 +1,42 @@
+{
+  "actual200_HF_report": null,
+  "actual200_archive_report": null,
+  "actual200_inventory": null,
+  "actual200_logs_terminal_report": null,
+  "actual200_native_report": null,
+  "actual201_writer_lifetime_qualification": null,
+  "actual_cpu_execution_job_id": null,
+  "actual_cpu_execution_step_id": null,
+  "actual_deployment": null,
+  "actual_gpu_eval_or_resource_release": null,
+  "config_sha256": "0f0fc3a6aff4648ce0d2c8ec28eb104e27678315ad09824c90da043956a0b990",
+  "fixed_external_runtime_dependencies": {
+    "historical_accepted5_manifest_sha256": "30b38d6d96abd56ff956baf8a4ba954319c62049aff8263e0c9700037e2c8577",
+    "historical_signed5_receipt_sha256": "d1db79938fd1a3b3520e4d1da673525dd260302d2402e063fd7734fcb11721fc",
+    "installed_torch_fsdp_framing_source_sha256": "ca839d30fda12e0b12dea934e1f1bf998bd80ed716e8e4c88927691a9bb1c6a3",
+    "math_helper": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-dc1905562f2f/inspect_payloads.py",
+      "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+    },
+    "native_computation_import_closure_sha256": "e4fb0f6c4b2dcf62837e2276ba58e29f5e198a1a0252975b7578debb6209cc4c",
+    "public_key_sha256": "ff53cfde6dd4bf96142b23364ae72da1d9610e1a834663ba70e750f604cee41c",
+    "wholeHF_helper": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/hf_cpu_reload.py",
+      "sha256": "b2e02be33d04d925af04a6a8f4efea4ba93997146197d54729d0a9715754c419"
+    }
+  },
+  "limits": [
+    "No saved-training manifest or signed200 receipt invented",
+    "No private key included or read",
+    "No SSH/deploy/GPU/training/newjob/live-source modification",
+    "Literal whole-resource bad66 must remain, original wrapper may fail independently of content",
+    "Controller v1 requires alive3304; new CPU-only postterminal design remains blocked",
+    "Later actual evidence must bind these full bytes and real execution IDs; a software result never stands for actual200"
+  ],
+  "logs_original_readiness_common_scope": "Preserved originalV4 references old293 common; bundle runtime uses repaired e00 common audited a153. Original readiness is historical and not retroactively edited or native approval. Joint immutable composition independently reviewed next.",
+  "scope": "LOCAL_IMMUTABLE_READ_ONLY_RUNTIME_BUNDLE_SOFTWARE_PREPARATION_ONLY",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "status": "LOCAL_SOFTWARE_ONLY_ALL_ACTUAL200_FIELDS_BLOCKED",
+  "stored_training_job_id": "3304",
+  "version": 1
+}

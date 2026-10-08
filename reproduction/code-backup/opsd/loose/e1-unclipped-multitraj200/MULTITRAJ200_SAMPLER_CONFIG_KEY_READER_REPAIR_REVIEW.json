@@ -1,0 +1,94 @@
+{
+  "actual_config_key_audit": {
+    "frozen_archive_reader": [
+      "baselines.opsd_e1.profile",
+      "actor_rollout_ref.model.path"
+    ],
+    "native_reader": [
+      "data.shuffle_train_dataloader",
+      "baselines.opsd_e1.profile"
+    ],
+    "receipt_and_hf_readers": [
+      "baselines.opsd_e1.profile",
+      "actor_rollout_ref.model.path"
+    ],
+    "scope": "Current actual native composed-config direct fields, not future checkpoints or algorithm results"
+  },
+  "actual_native_cpu_source_review": {
+    "bytes": 5074,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/ACTUAL_NATIVE667C_CPU_SOURCE_AND_CONFIG_REVIEW.json",
+    "sha256": "f020b4e1be534f21be0231676cc9c89ddb5d15ab0786f6253f451ca339e4f916"
+  },
+  "cpu_execution": {
+    "actual_local_runtime": "Python3.9/Torch2.8 CPU; not production nativeTorch2.4 or GPU checkpoint execution",
+    "exit_code": 0,
+    "pinned_dependencies_before_after_equal": true,
+    "status": {
+      "bytes": 6464,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T093813417719Z-status.json",
+      "sha256": "5655b94e95d0d6664eec0b61d9922f4484642b8d953014df9f538f39d8b92535"
+    },
+    "stderr": {
+      "bytes": 0,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T093813417719Z-stderr.original",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 760,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T093813417719Z-stdout.original",
+      "sha256": "3252d022868dd5a59ede561a19e6d9ca8012b2693246b9b0f252e1388bcdce08"
+    },
+    "tests_passed": 102
+  },
+  "created_utc": "2026-10-06T09:42:54.776636+00:00",
+  "defect": {
+    "actual_field": "data.shuffle_train_dataloader",
+    "actual_production_constructor": "StatefulSampler(self.train_dataset, shuffle=self.config.data.shuffle_train_dataloader)",
+    "counterexample": {
+      "bytes": 1263,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/sampler-config-key-counterexample-originals/counterexample.original.json",
+      "sha256": "65311caadc1ea0c81f835a34c50a4bdb0f67165564b15296b3809963576b4110"
+    },
+    "incorrect_field": "data.shuffle",
+    "old_actual_config_join_result": "KeyError('shuffle')",
+    "old_reader_sha256": "25d5ef8659fbf22c466ed7da92881b5cde276523726875f7a64f1925376a88e5"
+  },
+  "frozen_training_source_changed": false,
+  "history_preserved": {
+    "actual_gpu_job": "No new GPU job was submitted at defect discovery per parent actual state.",
+    "old_v1_runtime_bundles": "dc8 native and8f4 first5 kept as originals and must not be deployed or accepted; root preparing new v2 binding.",
+    "prior_328_cpu_and_139_bound_tests": "Their fixture coverage omitted the actual composed data field; they do not prove this integration and are not rewritten."
+  },
+  "not_claimed": [
+    "GPU model loading",
+    "GPU retrieval",
+    "actual fresh5 training",
+    "actual Adam or checkpoint restore",
+    "signed gate acceptance",
+    "effect improvement",
+    "production native sampler content inspection"
+  ],
+  "passed": true,
+  "repair": {
+    "change": "Only replace the external sampler reader lookup with the actual frozen constructor field; do not alter sampler, training source or schema clocks.",
+    "direct_production_join": "Actual native composed config plus frozen StatefulSampler169028 constructor and actual state_dict after consuming and committing2560 questions; exact None seed, full typed permutation, generator and cursor checks; reader reconstruction leaves CPU RNG unchanged.",
+    "negative_cases": [
+      "Missing actual field/legacy shuffle-only raises KeyError",
+      "Non-bool actual shuffle field is rejected",
+      "Existing strict archive scope, clocks, rank layout and sampler mutation tests remain active"
+    ],
+    "reader": {
+      "bytes": 33390,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-native-candidate/inspect_payloads.py",
+      "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+    },
+    "tests": {
+      "bytes": 22092,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-native-candidate/test_inspector.py",
+      "sha256": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+    }
+  },
+  "scope": "LOCAL_CPU_ACTUAL_COMPOSED_CONFIG_PRODUCTION_SAMPLER_WRITER_EXTERNAL_READER_REPAIR_NOT_GPU_FIRST5",
+  "source_commit": "667c68e0f91b4bc439324d0e095ce13df10da559",
+  "version": 1
+}

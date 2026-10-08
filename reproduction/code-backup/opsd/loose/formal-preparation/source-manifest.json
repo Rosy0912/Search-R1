@@ -1,0 +1,26 @@
+{
+  "source_commit": "e43fbfa73088ed70ed3efef79ba561507c0afc33",
+  "status": "prepared_only_not_deployed",
+  "runtime_sources": {
+    "job.sh": "3565a6d3e34a035b5578a5723bda355cb494436184d5b6e3a7f01a233239c0dc",
+    "gpu_job_entry.sh": "76e992b7c9369bec03b5498fa60a00ee0ff308f0ad968ac7dd77a40cf0e8e25e",
+    "train_supervisor.py": "fa86a09a69b3c3e156e6d39ee98fe93d2790c8a8c789725153c7867ec69019cc",
+    "semantic_device_gate.py": "0f94dff26f9e2023d6880fce0221c72eb2a42bb2651c8c3a13874ffa2de2782c",
+    "gpu_teacher_probe-factor-dtype.py": "e98dbb92850d4e5b89a17209e209f1c7bcbc9dcf3712981d2b1b6e98ddf044dc",
+    "gpu_loss_checkpoint_equivalence.py": "ccf526845017f78c169a7f15d3b2eeb18b251c32108ec864c5f189f72c00c743",
+    "capacity_supervisor.py": "a5af6446153db5d82ee48e6a3a514de86522d12725f0d6c36dee313d8bf30889",
+    "microbatch_probe.py": "11172ac3a29f23884a94fb5e3bfe57bab75b095a0e363a9e038f91befcf26d00",
+    "gpu_retrieval_bulk.py": "159ff4dd912bc348b4863f523892e3fc91b7d18aa016d1668cdd330b8c21be51",
+    "http_retrieval_check.py": "0544e2799d68991350e80fc334e79a3a543b05dcfdf81ec5a8459def63b71da8",
+    "retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "model_preflight.py": "4205e53d6a4c2dc03f18fe424b117cf5bfc795ad04221052aa817be914adf986",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb"
+  },
+  "formal_sources": {
+    "formal_entry.sh": "121a7b767e382dcdc3ad1d794c6615a206fe7a3f41d126f0814c33d4e8fb5601",
+    "formal_job.sh": "9c1cb9b2f31e21aab6a47158cd787c26bb7ae920905b154f48b6454e50374258",
+    "formal_supervisor.py": "694e68752cb3b555b1cdab1a59b7215d0da8e039cae8931be33eb3cad3647821",
+    "verify_formal_prerequisites.py": "54b3f042bc6ead3f73b35c7bdfe2c237b6493ac053fa4ad9420fe5123cd51a04"
+  }
+}

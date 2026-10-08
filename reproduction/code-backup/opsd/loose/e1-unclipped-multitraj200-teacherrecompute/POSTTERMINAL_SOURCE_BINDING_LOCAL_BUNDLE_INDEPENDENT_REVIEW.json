@@ -1,0 +1,224 @@
+{
+  "actual": {
+    "execution_job": null,
+    "final200_qualification": null,
+    "publication": null,
+    "request": null,
+    "source_binding_report": null,
+    "terminal": null
+  },
+  "boundaries": [
+    "New genuine CPU-only execution allocation and actual independently reviewed literal terminal inputs are still required before adapter execution.",
+    "This bundle does not deploy a CPU job or validate actual current211/native imports, complete large model/index/data content, closed writers, resource release, checkpoint200 or eval eligibility.",
+    "Four successful future scopes do not authorize duplicate fallback execution or overwrite a previous unknown output.",
+    "Unchanged semantic common/formal dependencies remain externally pinned by runtime/readiness/original software review; no native ee31 common substitution or source relocation was introduced."
+  ],
+  "bundle_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b",
+  "checks": {
+    "actual_fields_and_all_readiness_future_fields_null": true,
+    "all_full_sha256_and_bytes": true,
+    "all_members_readonly_0444_directory_0555": true,
+    "exact_five_manifest_members_plus_manifest": true,
+    "exact_original_copy_bytes": true,
+    "original_software_scopes_preserved": true,
+    "preview_exclusive_mkdir_nofollow_excl_fsync_manifest_last_and_source_clean_before_after_unchanged": true,
+    "publication_preview_exactly_four_literal_substitutions": true,
+    "same_fd_stat_before_open_after_and_physical_single_link": true,
+    "six_distinct_member_inodes": true
+  },
+  "directory_mode": "0o555",
+  "durability_scope": {
+    "current_physical_content_and_modes_independently_verified": true,
+    "future_remote_publication_order": "Exact reviewed preview explicitly writes five manifest members then manifest.json, fsyncs each file/directories, closes full-read records and preserves source-before/source-after; preview not executed by this reviewer.",
+    "historical_local_fsync_and_manifest_last": "Root-described packaging procedure; current stat/hash alone is not a write-order or fsync witness. No separate local freeze command/receipt was included among these six members."
+  },
+  "manifest_sha256": "2f331c3d6a9b28c44e2a65424be2da8310485eb82429ec4529aedfa1c17fcf02",
+  "member_count": 6,
+  "members": {
+    "DESIGN.md": {
+      "bytes": 7635,
+      "ctime_ns": 1791357808035879286,
+      "device": 16777230,
+      "inode": 68578610,
+      "mode": "0o444",
+      "mtime_ns": 1791357808035849368,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/DESIGN.md",
+      "sha256": "f1d002b6d1511b40d9a15a8528042c427965b5bdd79fa85321bc0141a5f8dc90",
+      "uid": 501
+    },
+    "INDEPENDENT_SOFTWARE_REVIEW.json": {
+      "bytes": 11372,
+      "ctime_ns": 1791357808035989081,
+      "device": 16777230,
+      "inode": 68578611,
+      "mode": "0o444",
+      "mtime_ns": 1791357808035952621,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/INDEPENDENT_SOFTWARE_REVIEW.json",
+      "sha256": "a06592e0a8a73b5119d9f25e9442a6fc5d1f9f1942b54af58f3b9ff20f75f4f2",
+      "uid": 501
+    },
+    "ROOT_SOFTWARE_REVIEW.json": {
+      "bytes": 2051,
+      "ctime_ns": 1791357808036081334,
+      "device": 16777230,
+      "inode": 68578612,
+      "mode": "0o444",
+      "mtime_ns": 1791357808036046708,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/ROOT_SOFTWARE_REVIEW.json",
+      "sha256": "1b2a70d6971ad1db7bef3dc249979dd858a867cd1c495b422066e7cd59a771c4",
+      "uid": 501
+    },
+    "SOFTWARE_READINESS.json": {
+      "bytes": 2604,
+      "ctime_ns": 1791357808035780116,
+      "device": 16777230,
+      "inode": 68578609,
+      "mode": "0o444",
+      "mtime_ns": 1791357808035747074,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/SOFTWARE_READINESS.json",
+      "sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc",
+      "uid": 501
+    },
+    "collect_postterminal_source_bindings.py": {
+      "bytes": 14782,
+      "ctime_ns": 1791357808035667488,
+      "device": 16777230,
+      "inode": 68578608,
+      "mode": "0o444",
+      "mtime_ns": 1791357808035620736,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/collect_postterminal_source_bindings.py",
+      "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe",
+      "uid": 501
+    },
+    "manifest.json": {
+      "bytes": 1276,
+      "ctime_ns": 1791357808036172045,
+      "device": 16777230,
+      "inode": 68578613,
+      "mode": "0o444",
+      "mtime_ns": 1791357808036138627,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-runtime-bundle-2f331c3d6a9b/manifest.json",
+      "sha256": "2f331c3d6a9b28c44e2a65424be2da8310485eb82429ec4529aedfa1c17fcf02",
+      "uid": 501
+    }
+  },
+  "original_mapping": {
+    "DESIGN.md": {
+      "bytes": 7635,
+      "ctime_ns": 1791357200686140105,
+      "device": 16777230,
+      "inode": 68563408,
+      "mode": "0o444",
+      "mtime_ns": 1791357200650641582,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/DESIGN.md",
+      "sha256": "f1d002b6d1511b40d9a15a8528042c427965b5bdd79fa85321bc0141a5f8dc90",
+      "uid": 501
+    },
+    "INDEPENDENT_SOFTWARE_REVIEW.json": {
+      "bytes": 11372,
+      "ctime_ns": 1791357523199978459,
+      "device": 16777230,
+      "inode": 68570516,
+      "mode": "0o444",
+      "mtime_ns": 1791357523199978459,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/POSTTERMINAL_SOURCE_BINDING_ADAPTER_INDEPENDENT_SOFTWARE_REVIEW.json",
+      "sha256": "a06592e0a8a73b5119d9f25e9442a6fc5d1f9f1942b54af58f3b9ff20f75f4f2",
+      "uid": 501
+    },
+    "ROOT_SOFTWARE_REVIEW.json": {
+      "bytes": 2051,
+      "ctime_ns": 1791357808035118388,
+      "device": 16777230,
+      "inode": 68578606,
+      "mode": "0o644",
+      "mtime_ns": 1791357808035118388,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/ROOT_POSTTERMINAL_SOURCE_BINDING_ADAPTER_LIMITED_SOFTWARE_REVIEW.json",
+      "sha256": "1b2a70d6971ad1db7bef3dc249979dd858a867cd1c495b422066e7cd59a771c4",
+      "uid": 501
+    },
+    "SOFTWARE_READINESS.json": {
+      "bytes": 2604,
+      "ctime_ns": 1791357200686087479,
+      "device": 16777230,
+      "inode": 68563410,
+      "mode": "0o444",
+      "mtime_ns": 1791357200686001143,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/SOFTWARE_READINESS.json",
+      "sha256": "b9f27f0dceb7f80ef9f91142d9ce3d4f90cb5207628e7129bb8e1dcebc25c1dc",
+      "uid": 501
+    },
+    "collect_postterminal_source_bindings.py": {
+      "bytes": 14782,
+      "ctime_ns": 1791357200686123813,
+      "device": 16777230,
+      "inode": 68551709,
+      "mode": "0o444",
+      "mtime_ns": 1791356798268836581,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-binding-candidate/collect_postterminal_source_bindings.py",
+      "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe",
+      "uid": 501
+    }
+  },
+  "publisher_preview": {
+    "baseline": {
+      "bytes": 2852,
+      "ctime_ns": 1791347136505447133,
+      "device": 16777230,
+      "inode": 68517316,
+      "mode": "0o600",
+      "mtime_ns": 1791347136505447133,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/paired-supervisor-6d9-publication-once-v1-original/publisher-source.original.py",
+      "sha256": "c81cf7df020f165c3f683ffb04a70d2af909a99f5581b9023dfd4c0a0bf0ee80",
+      "uid": 501
+    },
+    "current": {
+      "bytes": 2874,
+      "ctime_ns": 1791357930910493997,
+      "device": 16777230,
+      "inode": 68581516,
+      "mode": "0o644",
+      "mtime_ns": 1791357930910493997,
+      "nlink": 1,
+      "physical_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/postterminal-source-2f331-publication-once-v1-original/publisher-source.original.py",
+      "sha256": "c33a5e87fee8a8e00aaa84afa656ca96e0a214b488b2fcee8f988fa12f4ee825",
+      "uid": 501
+    },
+    "production_invoked": false,
+    "replacements": [
+      [
+        "6d9fede30d82644f37b125c6a631ef3d7becad23b9504a25d18dc99c122f169e",
+        "2f331c3d6a9b28c44e2a65424be2da8310485eb82429ec4529aedfa1c17fcf02"
+      ],
+      [
+        "tools/final200-paired-supervisor-6d9fede30d82",
+        "tools/postterminal-source-bindings-2f331c3d6a9b"
+      ],
+      [
+        "ACTUAL_EXCLUSIVE_PAIRED_SUPERVISOR_SOFTWARE_PACKAGE_PUBLICATION_NOT_EVAL",
+        "ACTUAL_EXCLUSIVE_POSTTERMINAL_SOURCE_BINDING_SOFTWARE_PACKAGE_PUBLICATION_NOT_TERMINAL_OR_200"
+      ],
+      [
+        "'actual_eval_job':None",
+        "'actual_cpu_job':None"
+      ]
+    ]
+  },
+  "runtime_sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe",
+  "scope": "Independent local current-content/package and static four-literal publication-preview review only. No new CPU tests, production main, remote, publication, job, GPU, signing or final200 acceptance.",
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "status": "PASS_INDEPENDENT_POSTTERMINAL_SOURCE_BINDING_LOCAL_IMMUTABLE_BUNDLE_AND_PUBLICATION_PREVIEW_REVIEW",
+  "utc": "2026-10-07T07:29:00.602521+00:00",
+  "version": 1
+}

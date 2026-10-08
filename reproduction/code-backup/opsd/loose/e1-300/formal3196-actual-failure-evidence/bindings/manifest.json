@@ -1,0 +1,35 @@
+{
+  "files": {
+    "allocation": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/allocation.json",
+      "sha256": "12aac7f84d89ad4d8e2fcf781cbe1c0a8b2a31d974d10d20ec52eb65768b3be1"
+    },
+    "data_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/data_manifest.json",
+      "sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+    },
+    "environment": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/environment.json",
+      "sha256": "ff6d3adee338dd0d5e04cd631df70c97bf4494dfac1b583fcd413fb78b8d2406"
+    },
+    "import_closure": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/import_closure.json",
+      "sha256": "020369593d82cbf77997787366daf4cb55cf1e4f694ac449021454103d8288c4"
+    },
+    "model_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/model_manifest.json",
+      "sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44"
+    },
+    "source": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/source.json",
+      "sha256": "c82873369b075dcb5d66908224d12619532333899047ceff2dc6422bb15a88e3"
+    },
+    "tool_manifest": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196/bindings/tool_manifest.json",
+      "sha256": "87b5e85df12cbf4635cb787b08161950ddc23e2e5b850e68fb7249668573cc87"
+    }
+  },
+  "run_root": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/runs/formal-3196",
+  "source_commit": "60cbea97d61ff95a8f7dfa58de7b79962e79bd10",
+  "version": 1
+}

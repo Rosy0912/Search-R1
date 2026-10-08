@@ -1,0 +1,102 @@
+{
+  "base_source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "contract": {
+    "actor_global_micro": 32,
+    "actor_local_micro": 4,
+    "checkpoint5_saved_lr": 8.771929824561403e-08,
+    "component_clip": null,
+    "first5_adam_steps": 50,
+    "gradient_l2_clip": 1.0,
+    "horizon": 200,
+    "learning_rate": 1e-06,
+    "log_prob_global_micro": 64,
+    "log_prob_local_micro": 8,
+    "mini_batch": 256,
+    "optimizer_calls_per_rank_per_outer": 10,
+    "outer1_used_lr": 0.0,
+    "outer5_used_lr": 7.017543859649122e-08,
+    "outer_warmup": 57,
+    "questions_per_outer": 512,
+    "response_only_logits": true,
+    "responses_per_question": 5,
+    "samples_per_rank_per_outer": 320,
+    "sampling_temperature": 1.0,
+    "saved_steps": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "teacher_forward_micro_batch": 2,
+    "top_k": -1,
+    "top_p": 1.0,
+    "trajectories_per_outer": 2560
+  },
+  "cpu_tests": {
+    "exit_code": 0,
+    "source_stable": true,
+    "status_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T091713973489Z-status.json",
+    "status_sha256": "463b54c917293b0880bbcdcefaf3fe7a23c57af2097a77fb416c8929d7077954",
+    "stderr_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T091713973489Z-stderr.original",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/profile-gate-cpu-originals/20261006T091713973489Z-stdout.original",
+    "stdout_sha256": "c6b4e5e696aa3551918ef0958bcdbf7027ed0ec26a45e760548825b174b84114",
+    "test_count": 327
+  },
+  "created_utc": "2026-10-06T09:18:36.443134+00:00",
+  "first5_content": {
+    "full_typed_permutation_and_generator_restore": true,
+    "official_tokenizer_replay_required": true,
+    "same_source_live_full_restore_still_required": true,
+    "sampler_default_seed": null,
+    "sampler_questions_consumed": 2560,
+    "signed_raw_trajectory_members": 100,
+    "student_count": 12800,
+    "teacher_privileged_short_answer_diagnostic_count": 2560
+  },
+  "native_framing": {
+    "actual_native_amp_combined_frame_replayed": true,
+    "actual_old_outer74_raw_frame_sha256": "2653535246fd9c4d4fe193fbc58c4f5502822c1cf7b189f0d40021f6cafb92a2",
+    "arbitrary_suffixes_rejected": true,
+    "fsdp_source_sha256": "ca839d30fda12e0b12dea934e1f1bf998bd80ed716e8e4c88927691a9bb1c6a3"
+  },
+  "owned_source_and_tool_pins": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/finalize_runtime_tools.py": "91688ebdf420ea1061762d98ea4f9ed9306cb7e7f83a68fc41a179f3a7703351",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-native-candidate/inspect_payloads.py": "111586eeca3fdae3c666292891754607811fa8be2c348bec2128bf3b762ec4a6",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-native-candidate/test_inspector.py": "d1bee73269bd097872ac11eeeb8f9ed5e728915e50877a5e57ea9a9d3cde64b4",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-receipt-candidate/hf_cpu_reload.py": "8438077d5f230b076789b2aa82d9db23ba7120031ed1a19ad67928e47ed8a475",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-receipt-candidate/inspect_first5_cpu.py": "7c017e08b8dc21651103e8f0129b771644cb554af480b8258bb1078c296e6001",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-receipt-candidate/receipt_payload.py": "e216d69d923808289ca12ab95b09ab31d90cf6496c2e3b0963e20ef028e16431",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/first5-receipt-candidate/test_first5_tools.py": "9ed870d6025bf92398d5c2736c82fb753cf4531ff499d48f8113cce400538852",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200/test_finalize_runtime_tools.py": "64d15e7ddae781b38dd8b65f03f5e50aff13ee0f66f12b23b1067c31aa759956",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/reproduction/baselines/e1_import_bootstrap.py": "49e8b145748876c1ce4efd408f9206bb09e0d886ff2d77e7c364e662fb80718f",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/reproduction/baselines/run_opsd_e1_multitraj200.sh": "7112bbf83608be1c0b3c3ebf4dcd4753c2f0f4a19ebbfad419658949fbfdabd5",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/search_r1/baselines/checkpoint_gate.py": "09561719673a7c273ad39b3c9363b1a250eab0a94c20c80f40dd1dfc05589e16",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/search_r1/baselines/e1_profile.py": "4da6f1c4b4a76a940918b04eb3072be28a8c7c91afe692e96c1981cefe8b2cc1",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/tests/baselines/test_opsd_multitraj200_profile.py": "f7baad56c579fbdd5f038b7ed94dcb1041d5987e92aa7c112d0f0179909dcee6",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/tests/baselines/test_opsd_owned_log_framing.py": "e935114fee0c7d48f45454db41572caa205eebb8a22a5aa8112fd0aee0253bce",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200/verl/trainer/config/ppo_opsd_e1_multitraj200.yaml": "670ed1856cffbb306e5ec749450ca23be6d5a2ee5b6d8ebbfaa0dbb719bfac92"
+  },
+  "preserved_originals": [
+    "profile-gate-cpu-originals/20261006T085132227536Z-status.json",
+    "profile-gate-cpu-originals/20261006T091305144579Z-status.json",
+    "profile-gate-cpu-originals/20261006T091527415189Z-status.json"
+  ],
+  "profile": "multitraj200",
+  "remaining": [
+    "Peer independently audits these exact candidate bytes",
+    "Root freezes clean reviewed source and binds tools to its actual source SHA",
+    "Actual owned same-node GPU microbatch and eight-rank execution check",
+    "Actual fresh1..5 and HF/full-state/native CPU inspections",
+    "Actual root+peer reviews and signed gate release before taking outer6"
+  ],
+  "restrictions": [
+    "No old source/candidate overwritten",
+    "No commit/push/SSH/GPU/sign/release performed",
+    "Official privileged teacher short answers are diagnostics and are not full teacher search trajectories or unbiased effect proof"
+  ],
+  "scope": "No actual fresh training job, GPU execution, acceptance receipt, signature or continuation; source remains unfrozen/dirty",
+  "status": "LOCAL_CANDIDATE_CONFIGURATION_AND_FIRST5_TOOL_SOFTWARE_READY_FOR_INDEPENDENT_REVIEW",
+  "version": 1
+}

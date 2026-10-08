@@ -1,0 +1,55 @@
+{
+  "source_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "status": "review_enabled_final_requires_new_manifest_review",
+  "formal_directory_name": "formal-8e60976d364a-pilot-2994-hf-2996-reviewed-8b5eeaf1694a",
+  "pilot_runtime_directory_name": "pilot-runtime-8e60976d364a-reviewed-4246006a5605",
+  "hf_runtime_directory_name": "hf-runtime-8e60976d364a-pilot-2994-reviewed-47cab4b02661",
+  "picked_local_micro": 2,
+  "picked_global_micro": 16,
+  "production_math_sources": {
+    "search_r1/baselines/actor.py": "a393ff543739aa086ecde07ed797daf2ad3c85df40927fa2e8a7eac86c8d89a7",
+    "search_r1/baselines/distillation.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf"
+  },
+  "runtime_sources": {
+    "train_supervisor.py": "54bef4411a321b497e2c4c011a9270ada6d79f79ef684ebde15cf19695d5cd77",
+    "gpu_job_entry.sh": "58d3275999210f1702de40cabd2aa1283c16945d65202588550fde956e1e6b5e",
+    "model_preflight.py": "4205e53d6a4c2dc03f18fe424b117cf5bfc795ad04221052aa817be914adf986",
+    "gpu_teacher_probe-factor-dtype.py": "e98dbb92850d4e5b89a17209e209f1c7bcbc9dcf3712981d2b1b6e98ddf044dc",
+    "http_retrieval_check.py": "0544e2799d68991350e80fc334e79a3a543b05dcfdf81ec5a8459def63b71da8",
+    "retrieval_compare.py": "2cb9fb594c0b24273373eefd8971604c740a84914a7773b8fde6362b3a4824c1",
+    "gpu_retrieval_bulk.py": "159ff4dd912bc348b4863f523892e3fc91b7d18aa016d1668cdd330b8c21be51",
+    "job.sh": "110e71b82f88fddac548bc5b272a1049c5b763e4d17bb5cfba6724464fd112c8",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "capacity_supervisor.py": "57d9be98cb21b574d273406d8ddf05239ae0e08c3c92c2260e4daa7345a6265e",
+    "microbatch_probe.py": "11172ac3a29f23884a94fb5e3bfe57bab75b095a0e363a9e038f91befcf26d00",
+    "semantic_device_gate.py": "0f94dff26f9e2023d6880fce0221c72eb2a42bb2651c8c3a13874ffa2de2782c",
+    "gpu_loss_checkpoint_equivalence.py": "ccf526845017f78c169a7f15d3b2eeb18b251c32108ec864c5f189f72c00c743"
+  },
+  "pilot_additional_sources": {
+    "pilot_audit.py": "ea8c8dd3a0d7ea36732f75844060f4b1103e48b9d5edb7f495ad2118470884d7",
+    "source_bundle_check.py": "55c92759365cc0404b9f166c9f491738196f247fb8d7f219b00b1bc2ffd32477",
+    "prior_cleanup.py": "f7cab2c0171cae7874eb76120223b1bd639e8f0eba31e8cebbcd16f0d42e9004"
+  },
+  "hf_sources": {
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "source_bundle_check.py": "55c92759365cc0404b9f166c9f491738196f247fb8d7f219b00b1bc2ffd32477",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "reload_job.sh": "d55fadc9b41651b67acbf4441a005b31c1fe158241ec769b3cf9bbc51419bce9"
+  },
+  "pilot_manifest_sha256": "3af62ed7f4c30a18a53c7f6b81335be3b75511cf7f0028caf8849c38bc4061af",
+  "hf_manifest_sha256": "f4c656c214c62fc1e16f8f0a0747cd5fae25fc01169a89c67502f80082577ce8",
+  "formal_sources": {
+    "formal_entry.sh": "7ac4a8224d527af61ab9d3c713da0c37a43b1a0ebd520c9e6f8b83e8393b21db",
+    "formal_job.sh": "cab1a25b368ddf7ebf875cfd77c4d45af2a9ada1c3bfdf6e854e3d4c92da9334",
+    "formal_supervisor.py": "1fdc8b0d77ce18f85c6ba21de091d4a0a8096f559dfc90e23ac3b8e4cbabf56e",
+    "verify_formal_prerequisites.py": "cb896246de2b89a80d06a201bd2e038d9495ea3b500839a1665f412180daef32",
+    "micro_evidence.py": "efe084173e3ea81d42c618ed05b6f4c818020d529012e47ff30df1fcf91c0625",
+    "collect_receipt.py": "0c76a3585063edf6c85585e99acbd6200c1f1d857f2b97e7d993aa45e3550462",
+    "controller_exit_evidence.py": "2f116fedd27b15fcbe2f6e841060922293e8037bb53a0d46b4f35674e69788bf",
+    "submit_formal.sh": "e6eb4c4c6c7fc8b08bdf4d705267e725679f75ed4a79804e4aa387673490ad38",
+    "strict_metric_parser.py": "131edc3a9f5c31905c6fe29f7dc1a1c57b761e4d75b4a84b083cbfa31d89dd56"
+  },
+  "preview_blocked": false,
+  "reviewed_preview_manifest_sha256": "8b5eeaf1694a59c056e1e20a4fe40e1018b615f6a549f093dff511687923250a"
+}

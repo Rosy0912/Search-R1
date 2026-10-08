@@ -1,0 +1,12 @@
+{
+  "fixture": {
+    "path": "reproduction/baselines/e1-300/native_opsd_state_fixture.py",
+    "sha256": "c41a8e19b39151a09fa4c79f650c6b67bfec61df8c52cf52215a17d7c0d55da6"
+  },
+  "scope": "state/toy8GPU; no RL outer or official3B capacity acceptance",
+  "source_commit": "04f8cc5a777f8dfafbb9e48f877673c2c5751f33",
+  "tools": {
+    "state_entry.sh": "49b5832fbd9ea3daac46a4be4637b845c53d9456444e34d9ddaa52ab4943482c",
+    "state_job.sh": "1d50cf4ed5e1c95cf5f96ea1a88036c4c06a2428dd0d155c303e0af92942cac1"
+  }
+}

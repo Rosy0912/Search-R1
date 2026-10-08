@@ -1,0 +1,68 @@
+{
+  "created_utc": "2026-10-07T06:52:34.093392+00:00",
+  "evaluation_source": "c5bf4c8db33562a259fa227a940dc69543901b98",
+  "future_fields": {
+    "actual_cpu_job_id": null,
+    "actual_cpu_step_id": null,
+    "actual_outer200": null,
+    "evaluation_job_id": null,
+    "final_effect_completion": null,
+    "layered_receipt_sha256": null,
+    "pre_main_approval_sha256": null,
+    "raw_replay_output": null,
+    "stage_sha256": null
+  },
+  "kind": "LOCAL_STATIC_POST200_ROOT_EXECUTION_SEQUENCE_NOT_ACTION_OR_QUALIFICATION",
+  "production_actions_performed": [],
+  "read_only_local_source_records": {
+    "fallback_local_candidate": {
+      "bytes": 30823,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-postterminal-candidate/final200_postterminal_cpu.py",
+      "sha256": "b9e3fb25f0a9c0ca4ba6c62723d579d39cd82d2da6bc30357252a74406e35e7d"
+    },
+    "frozen_formal": {
+      "bytes": 37234,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/formal-tools-candidate/formal_supervisor.py",
+      "sha256": "6b00d0dfcb2ca86abf319d605adbbca4c96b5a9711d444c7a642a94c0269ba1b"
+    },
+    "frozen_training": {
+      "bytes": 55003,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/opsd-unclipped-multitraj200-teacherrecompute/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "f78dc2bebdf6b42b94d6845cd77cd1d723c2b6e33446f25295baf01f7e8d159d"
+    },
+    "live_cpu_once": {
+      "bytes": 31434,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-runtime-bundle-f11580b6a7bc/final200_cpu_once.py",
+      "sha256": "cd0062891f64100e46f01f2d9e1e7ef1a402cb926f39a20c4cdddc7d8f8f6f1d"
+    },
+    "logs_terminal": {
+      "bytes": 27746,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-runtime-bundle-f11580b6a7bc/consume_final200_logs_terminal.py",
+      "sha256": "509df9332effd1196c6cb07a6a9d67612d9efdd75498f39a2bdb36726dcd7306"
+    },
+    "paired_cpu_adapter": {
+      "bytes": 12455,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-runtime-bundle-6d9fede30d82/paired_cpu_prepare.py",
+      "sha256": "4a5d9837f29bc94646c31a6fe1179d0bbf39ea32abb42db0132b0d770f298422"
+    },
+    "paired_supervisor": {
+      "bytes": 62123,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-paired-supervisor-runtime-bundle-6d9fede30d82/paired_supervisor.py",
+      "sha256": "398bda1421709a89956a7e23ccb9aef2efc6aa30f002b12dec1887866588ef94"
+    },
+    "raw_replay": {
+      "bytes": 42262,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-raw-replay-runtime-bundle-045cf31cc2a1/replay_final200_raw.py",
+      "sha256": "1f6fac7e829d5918a5d15d44ff144acd15a360b4361edbcfcf1a6091688501d2"
+    },
+    "strict200": {
+      "bytes": 32856,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/final200-prerequisites-runtime-bundle-85f014e167c8/verify_actual200_prerequisites.py",
+      "sha256": "7dff811b01b302f45c729ee12ae9ee22bb561b359f24fcd0d37352192db2d075"
+    }
+  },
+  "stored_training_job_id": "3304",
+  "tests_executed": false,
+  "training_source": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "version": 1
+}

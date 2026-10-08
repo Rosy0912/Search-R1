@@ -1,0 +1,11 @@
+{
+  "files": {
+    "cpu-tests-final.txt": "548be4be13f47d6b9093c6f2e53308cf13b79fc5390a2286df60b101a9fb0d12",
+    "test_gate_candidate.py": "98023add807a0988adcedaafd8c74e07fc720653bcf25700f276904f2222366f",
+    "test_gate_original.py": "0e5e357555f8fced179e85b44e115f1b6f5643ea45777b0379380a55a3592011",
+    "test_isolated_candidate_gate.py": "8c3d1722f34f7ead741ba56c43227a24700176fc9d9596040ac5ac0f2d9f36b3",
+    "tests-only.patch": "72ad75df00a19924c3cfd6403ebf89ba8b7df3e9ff17f09c08d67b2c79239971"
+  },
+  "scope": "CPU_SOFTWARE_CANDIDATE_NO_ACTUAL_FIRST5_ACCEPTANCE",
+  "version": 1
+}

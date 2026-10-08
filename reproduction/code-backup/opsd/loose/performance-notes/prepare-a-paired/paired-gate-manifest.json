@@ -1,0 +1,14 @@
+{
+  "source_commit": "e43fbfa73088ed70ed3efef79ba561507c0afc33",
+  "status": "UNRUN_LOCAL_DRAFT",
+  "previous_job2987_status": "FAILED_PRESERVED",
+  "sha256": {
+    "baseline_distillation_e43.py": "449211e53360c4842baedd2d29c2a3eed625524c7e956212f4983e57251ea25f",
+    "proposal_distillation_a.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf",
+    "microbatch_probe_support.py": "11172ac3a29f23884a94fb5e3bfe57bab75b095a0e363a9e038f91befcf26d00",
+    "paired_gate.py": "193cb37adcf96e07e85277b4a013e2b91fcb14ca52790198626319fc1b3fadee",
+    "paired_supervisor.py": "7d7123fc8d24395916988178917c2c663a4db628d349f1f93b76be97beeed8a8",
+    "paired_job.sh": "54cc5687ae9dc941c974d10e0d47e3dfb3d5c79709b2d8140498d61bab1c4e71",
+    "paired_job_entry.sh": "87b12f7ee303f9454a73a1b2552f831ccff4ea63a1aeb60c640e28581628b0c1"
+  }
+}

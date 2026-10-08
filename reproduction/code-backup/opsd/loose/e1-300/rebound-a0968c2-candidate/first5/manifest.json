@@ -1,0 +1,28 @@
+{
+  "native_payload_inspector_sha256": "ea1105d91b98a74551d681a02bc0b413047c832400fe29a472050aeb093df8dc",
+  "native_payload_tools_manifest_sha256": "96fe900ce618bce4b8a11eee42015cd32fe8b29db3fb676a957b841fbbe6048d",
+  "scope": "REBOUND_CANDIDATE_NOT_REVIEWED_NOT_DEPLOYED_NO_ACCEPTANCE",
+  "source_commit": "a0968c2d24beeaa0400f60e4e34677fe6deef9c9",
+  "source_files": {
+    "reproduction/baselines/e1_import_bootstrap.py": "82433ba203fa8b8ed02cc3c4d0be4d0d0ceb7de096ebe657561f1fd726194164",
+    "reproduction/baselines/run_opsd_e1_300.sh": "4213bc6563e994a720efc24e6f80c4680be9e46f46cc8d1b455c8a8e7b350b9e",
+    "reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "search_r1/baselines/actor.py": "a9e5005f9d5e48f2cba652ee88b2ff2f3b0bb671dde8ce70ea7653eeb82c5ed9",
+    "search_r1/baselines/checkpoint_gate.py": "74c3c13929c4f5cb784b90b7fd568ee80dfe1d37c8efaa28f97aae60b3492632",
+    "search_r1/baselines/controller.py": "4c60f33c280b2299f090e572d18178ca5b878d77619e2e0265a931534a764229",
+    "search_r1/baselines/distillation.py": "0e77c0eca02bd4996dcbfb471ad2496f7d668b1f7829541c816b30c636873791",
+    "search_r1/baselines/e1_profile.py": "ce3771fe999a11140b3b46835f80ec680074d44a11946d9c9d8aee69bb704951",
+    "search_r1/baselines/full_state.py": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6",
+    "search_r1/baselines/main.py": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+    "verl/trainer/config/ppo_opsd_e1_300.yaml": "88f3e19691539fd634e5ccc7370853f564f1acc1e1f3b4b5fc68110f09990072",
+    "verl/trainer/ppo/ray_trainer.py": "32cbbae68f7b76adb94c34a307ae95e892d4443b781df9bbf940ef2841c213a8",
+    "verl/workers/fsdp_workers.py": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7"
+  },
+  "tools": {
+    "hf_cpu_reload.py": "38bc089be3e35f193d6192e200beb4155f02583fc1993996bf85ff2198d98aec",
+    "receipt_payload.py": "7122b42647873d4047310f969e0c7133d13ea767bbdbea1b862087bea0a7057e"
+  },
+  "version": 1
+}

@@ -1,0 +1,35 @@
+# Fresh multi-response pure OPSD. The old profiles retain their exact contracts.
+defaults:
+  - ppo_opsd_e1_300
+  - _self_
+
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 256
+    ppo_micro_batch_size: 32
+  rollout:
+    # Explicit five-response question groups; vLLM n remains one.
+    n_agent: 5
+    n: 1
+    log_prob_micro_batch_size: 64
+    temperature: 1
+    top_p: 1
+    top_k: -1
+  ref:
+    log_prob_micro_batch_size: 64
+trainer:
+  total_training_steps: 200
+  save_freq: 50
+  experiment_name: opsd-search-e1-unclipped-multitraj-200
+baselines:
+  distillation:
+    # Full forward KL, no vocabulary-component clamp or replacement clipping.
+    component_clip: null
+    # Native full-position/full-vocabulary FSDP head; causal response loss unchanged.
+    response_only_logits: false
+    # Full native FP32 teacher batch matches student actor micro global32/local4.
+    teacher_forward_micro_batch: 4
+    # Recompute frozen FP32 target projection inside the nonreentrant loss checkpoint.
+    teacher_logits_recompute: true
+  opsd_e1:
+    profile: multitraj200

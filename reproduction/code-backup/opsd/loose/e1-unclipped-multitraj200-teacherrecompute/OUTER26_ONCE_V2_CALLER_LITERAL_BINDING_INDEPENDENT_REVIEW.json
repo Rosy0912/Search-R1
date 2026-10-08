@@ -1,0 +1,62 @@
+{
+  "actual_once_v2_wait": null,
+  "actual_outer26_analysis": null,
+  "actual_outer26_collection": null,
+  "changes": {
+    "18eaf20db1432f4e55504d8393cbb042f0ad529272af873f202cfd498fc6f45a": "20ac3f12398fcf2ada5212819441aa21f1309bbbfc394f6ad9c5fcb210ec1c69",
+    "OBSERVED_OUTER26_COLLECTION_ANALYSIS_INDEPENDENT_SOFTWARE_REVIEW.json": "OUTER26_JSON_DOCUMENT_EOF_REPAIR_INDEPENDENT_SOFTWARE_REVIEW.json",
+    "b097bc410bd6be4cfe5f4203feef8f1cd5bfe233977f54aa1e267597a99906f5": "15e37516e98ac06d7fe03ec507c6805be56d8f8b20fcf2d1f92a39e95231580e",
+    "outer26-collection-once-v1-original": "outer26-collection-once-v2-original"
+  },
+  "created_at_utc": "2026-10-06T17:51:00.606118+00:00",
+  "exact_diff": {
+    "bytes": 1819,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/independent-review/outer26-once-v2-caller-literal-binding-20261007-local/exact-diff.original.txt",
+    "sha256": "3f4a274aaf5566d092c5819b98ae94004b0ddb774f76ad3fe6b95d51c00baec9"
+  },
+  "kind": "FOUR_LITERAL_BINDING_DELTA_REVIEW",
+  "new_caller": {
+    "bytes": 6478,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/collect_outer26_once_v2.py",
+    "sha256": "b83ec638e6d40834168d19b23077c74976ef2cfac5781db3800088da2dae64da"
+  },
+  "new_output_absent_at_review": true,
+  "old_caller": {
+    "bytes": 6482,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/collect_outer26_once.py",
+    "sha256": "1482ca369aa65ccdc39ce2c2a962bd9d5c14ad90ee524fb035f05c81484d47d1"
+  },
+  "prior_failure_preserved": true,
+  "resolved_pins": {
+    "authority": {
+      "bytes": 33013,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/paired-outer26-candidate/AUTHORITY-v2.original.json",
+      "sha256": "b64e39864be651423dee39b423191a3d87a6c401d496356330c37d186e6b0fd9"
+    },
+    "collector": {
+      "bytes": 12185,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/paired-outer26-candidate/collect_outer26.py",
+      "sha256": "15e37516e98ac06d7fe03ec507c6805be56d8f8b20fcf2d1f92a39e95231580e"
+    },
+    "review": {
+      "bytes": 10064,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/OUTER26_JSON_DOCUMENT_EOF_REPAIR_INDEPENDENT_SOFTWARE_REVIEW.json",
+      "sha256": "20ac3f12398fcf2ada5212819441aa21f1309bbbfc394f6ad9c5fcb210ec1c69"
+    },
+    "route": {
+      "bytes": 1673,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/transport.py",
+      "sha256": "a64bf52a97cbef6e3b0cc7948e095546687c8f1690094469c4937180f9449a85"
+    }
+  },
+  "scope": "Static exact-byte four-literal binding change only; original transfer tests not repeated. No remote/helper main/actual collection executed.",
+  "status": "PASS_INDEPENDENT_OUTER26_ONCE_V2_LITERAL_BINDING_SOFTWARE_ONLY",
+  "unchanged_logic": [
+    "Popen/start/send/finally close/real waited result and send error ledger",
+    "Deadline600 and per-wait<=30 seconds",
+    "No retry on failed or unknown transfer",
+    "Exact remote stdout-copy source compilation and authority",
+    "Exclusive new output reserve/fsync and full streams/wait record"
+  ],
+  "version": 1
+}

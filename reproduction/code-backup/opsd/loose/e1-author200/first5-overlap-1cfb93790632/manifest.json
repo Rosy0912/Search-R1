@@ -1,0 +1,18 @@
+{
+  "contract": {
+    "adam_steps_per_rank_per_outer": 16,
+    "global_mini_batch": 32,
+    "horizon": 200,
+    "learning_rate": 5e-06,
+    "saved_adam_steps": 80,
+    "warmup_steps": 0
+  },
+  "first5_manifest_sha256": "12424d01025e9759d495500eef87de37712a29e1dfe989d3772d05cfa3bfe330",
+  "native_manifest_sha256": "1f209cab7e025439584a938b4aab7d71358db66ee3f7d63ab348285247ebbd65",
+  "scope": "CPU_FIRST5_INSPECTION_ONLY_NO_ACCEPTANCE_SIGNATURE_RELEASE_OR_GPU",
+  "source_commit": "188f4e5e7b63cf479290d0888a4a075499886750",
+  "tools": {
+    "first5_overlap.py": "7ec32fbc071bcdb10de8824efa26d845588eb0431e14eaed834f4f5aaa4f98b2"
+  },
+  "version": 1
+}

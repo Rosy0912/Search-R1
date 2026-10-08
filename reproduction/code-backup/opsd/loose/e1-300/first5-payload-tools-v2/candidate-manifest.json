@@ -1,0 +1,31 @@
+{
+  "files": {
+    "README.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/README.md",
+      "sha256": "43026dc0f86a6bb421f86a1085c1e638e0d9d1863b57598ca986c5b62ba3f41c"
+    },
+    "cpu-tests-final.txt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/cpu-tests-final.txt",
+      "sha256": "7beae537e4528e79bb210673a13a4970c6f83d1215fa2b948ea1b13d541a77df"
+    },
+    "cpu-tests.txt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/cpu-tests.txt",
+      "sha256": "c904f7621e7a25d988fbfc4aac7c11f784092325158236d8098df88c0929e9a2"
+    },
+    "inspect_payloads.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/inspect_payloads.py",
+      "sha256": "4404c7591f2d701ffc57dd8b690ee09d7280e2c96c36ff1b0d2e47df581241da"
+    },
+    "test_inspector.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/test_inspector.py",
+      "sha256": "107f89250bf718351794567bcec93dcdd9e7826d95987cab13e00acb1109f824"
+    },
+    "v1-to-v2.diff": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-300/first5-payload-tools-v2/v1-to-v2.diff",
+      "sha256": "4857033d0a183d5aeda2bf1f357dd1bb5d2d28d21305626b07736ee74dc74371"
+    }
+  },
+  "prior_candidate_sha256": "516aea7e795e1e90bb1dce22f3ae2d7842c29d6bffa41dfcd4a82496971e2edd",
+  "scope": "CPU_SOFTWARE_CANDIDATE_NOT_ACTUAL_FIRST5_ACCEPTANCE",
+  "version": 2
+}

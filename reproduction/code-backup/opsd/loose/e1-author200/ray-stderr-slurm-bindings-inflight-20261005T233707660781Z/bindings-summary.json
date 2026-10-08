@@ -1,0 +1,621 @@
+{
+  "errors": [],
+  "files": {
+    "ray-stderr-pid-1533312.err": {
+      "after": {
+        "bytes": 508,
+        "ctime_ns": 1791230303225155115,
+        "device": 64769,
+        "inode": 7356336,
+        "mode": 420,
+        "mtime_ns": 1791230303225155115,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 508,
+        "ctime_ns": 1791230303225155115,
+        "device": 64769,
+        "inode": 7356336,
+        "mode": 420,
+        "mtime_ns": 1791230303225155115,
+        "uid": 0
+      },
+      "bytes": 508,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8350026ae4bc8387c3d3b6880792734dd21e46ad5a9c09e08669a24e-02000000-1533312.err",
+      "sha256": "067bf304e38a0d0f0a4577ce4eb7c5769e9eaa3431460906ec768c313937c8b5",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1533910.err": {
+      "after": {
+        "bytes": 7897,
+        "ctime_ns": 1791240696197949772,
+        "device": 64769,
+        "inode": 7356350,
+        "mode": 420,
+        "mtime_ns": 1791240696197949772,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 7897,
+        "ctime_ns": 1791240696197949772,
+        "device": 64769,
+        "inode": 7356350,
+        "mode": 420,
+        "mtime_ns": 1791240696197949772,
+        "uid": 0
+      },
+      "bytes": 7897,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-29c1f19308dadf572ed2b91a1792df098eeda628db2a448cfbe0b11c-02000000-1533910.err",
+      "sha256": "c2e2288a652ae7c0c846919a8514e282a1d59fd3c7737750f8629e3b08907116",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534229.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696313945721,
+        "device": 64769,
+        "inode": 7356365,
+        "mode": 420,
+        "mtime_ns": 1791240696313945721,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696313945721,
+        "device": 64769,
+        "inode": 7356365,
+        "mode": 420,
+        "mtime_ns": 1791240696313945721,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-cdf5291397084014536684595ad8aa13d96a9ab29489f317c40f23ad-02000000-1534229.err",
+      "sha256": "18924f26e63a75454a1c819648b9ec610bb271a6bcf175d04d37361fd70b0fde",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534230.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696429941672,
+        "device": 64769,
+        "inode": 7356369,
+        "mode": 420,
+        "mtime_ns": 1791240696429941672,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696429941672,
+        "device": 64769,
+        "inode": 7356369,
+        "mode": 420,
+        "mtime_ns": 1791240696429941672,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-bd449d4f08caea91153a584d1f1f8f60835126cb5cad09e189f67a33-02000000-1534230.err",
+      "sha256": "9e9b958525b26afcf6bce174e3b1d613b952e43e54dfb35c49ea4f3d70a130c3",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534231.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696217949073,
+        "device": 64769,
+        "inode": 7356374,
+        "mode": 420,
+        "mtime_ns": 1791240696217949073,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696217949073,
+        "device": 64769,
+        "inode": 7356374,
+        "mode": 420,
+        "mtime_ns": 1791240696217949073,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-61fd9986380ffc812d9a409257287b1cfb6ccc121e1097ef1426b6f3-02000000-1534231.err",
+      "sha256": "3fbfacd7b9ad396656373592cd76ec50a69936e805f6ca49facf0f06e9e3728d",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534232.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696257947677,
+        "device": 64769,
+        "inode": 7356380,
+        "mode": 420,
+        "mtime_ns": 1791240696257947677,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696257947677,
+        "device": 64769,
+        "inode": 7356380,
+        "mode": 420,
+        "mtime_ns": 1791240696257947677,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-d6373931557bb2845c7093fcca34f0291f79a73413b2da38e5864c35-02000000-1534232.err",
+      "sha256": "59b657049c5954b79b6bf05f4580ef2279b61342b01000d212a8041ae81f5eed",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534233.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696261947538,
+        "device": 64769,
+        "inode": 7356394,
+        "mode": 420,
+        "mtime_ns": 1791240696261947538,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696261947538,
+        "device": 64769,
+        "inode": 7356394,
+        "mode": 420,
+        "mtime_ns": 1791240696261947538,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-306ae17389e9387b1ed0f5b2ebae458e3a8c43eb70fce98e6bd22ffc-02000000-1534233.err",
+      "sha256": "37ab88c03195644b021815b3fcbc1d1f151e6255b8d6512b70866734ccc45f9b",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534234.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696297946280,
+        "device": 64769,
+        "inode": 7356384,
+        "mode": 420,
+        "mtime_ns": 1791240696297946280,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696297946280,
+        "device": 64769,
+        "inode": 7356384,
+        "mode": 420,
+        "mtime_ns": 1791240696297946280,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-4806f8a6b39290499d3d307f830b04abb0fd6d71d2a30979c0783aa9-02000000-1534234.err",
+      "sha256": "f42e516c3bee302671e2a199603bd7af6e545ae14affc5c1ed64e22ffc8ebee6",
+      "source_offset": 0
+    },
+    "ray-stderr-pid-1534235.err": {
+      "after": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696305946001,
+        "device": 64769,
+        "inode": 7356390,
+        "mode": 420,
+        "mtime_ns": 1791240696305946001,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 6196,
+        "ctime_ns": 1791240696305946001,
+        "device": 64769,
+        "inode": 7356390,
+        "mode": 420,
+        "mtime_ns": 1791240696305946001,
+        "uid": 0
+      },
+      "bytes": 6196,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8e647b685e950f2af7dda89994d1694503aa674b628aeb1c3df842c4-02000000-1534235.err",
+      "sha256": "53f7106aee932b52abb3690f2cadecdab8422048a0f8f66080998389f77452d3",
+      "source_offset": 0
+    },
+    "slurm-formal-3261.err": {
+      "after": {
+        "bytes": 0,
+        "ctime_ns": 1791229410268946998,
+        "device": 64768,
+        "inode": 138678188,
+        "mode": 420,
+        "mtime_ns": 1791229410268946998,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 0,
+        "ctime_ns": 1791229410268946998,
+        "device": 64768,
+        "inode": 138678188,
+        "mode": 420,
+        "mtime_ns": 1791229410268946998,
+        "uid": 0
+      },
+      "bytes": 0,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct200-author-20261006/logs/formal-3261.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_offset": 0
+    },
+    "slurm-formal-3261.out": {
+      "after": {
+        "bytes": 2861923,
+        "ctime_ns": 1791243343713410138,
+        "device": 64768,
+        "inode": 138678187,
+        "mode": 420,
+        "mtime_ns": 1791243343713410138,
+        "uid": 0
+      },
+      "before": {
+        "bytes": 2861923,
+        "ctime_ns": 1791243343713410138,
+        "device": 64768,
+        "inode": 138678187,
+        "mode": 420,
+        "mtime_ns": 1791243343713410138,
+        "uid": 0
+      },
+      "bytes": 2861923,
+      "closed_lifetime": false,
+      "complete_prefix_at_start": true,
+      "physical_path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct200-author-20261006/logs/formal-3261.out",
+      "sha256": "d1fdfecc6da1352107055cc2c7be25fb35a757fddfdf3ecf3bda5a1e4730fbdc",
+      "source_offset": 0
+    }
+  },
+  "finished_utc": "2026-10-05T23:37:18.348714+00:00",
+  "processes": {
+    "1533312": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1533312,
+      "start_ticks": "1829085316",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8350026ae4bc8387c3d3b6880792734dd21e46ad5a9c09e08669a24e-02000000-1533312.err",
+      "stderr_key": "ray-stderr-pid-1533312.err",
+      "stdout": {
+        "after": {
+          "bytes": 2450798,
+          "ctime_ns": 1791243390787765946,
+          "device": 64769,
+          "inode": 7356335,
+          "mode": 420,
+          "mtime_ns": 1791243390787765946,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 2450798,
+          "ctime_ns": 1791243390787765946,
+          "device": 64769,
+          "inode": 7356335,
+          "mode": 420,
+          "mtime_ns": 1791243390787765946,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8350026ae4bc8387c3d3b6880792734dd21e46ad5a9c09e08669a24e-02000000-1533312.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8350026ae4bc8387c3d3b6880792734dd21e46ad5a9c09e08669a24e-02000000-1533312.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1533910": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1533910,
+      "start_ticks": "1829086072",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-29c1f19308dadf572ed2b91a1792df098eeda628db2a448cfbe0b11c-02000000-1533910.err",
+      "stderr_key": "ray-stderr-pid-1533910.err",
+      "stdout": {
+        "after": {
+          "bytes": 136251,
+          "ctime_ns": 1791240620868579772,
+          "device": 64769,
+          "inode": 7356349,
+          "mode": 420,
+          "mtime_ns": 1791240620868579772,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 136251,
+          "ctime_ns": 1791240620868579772,
+          "device": 64769,
+          "inode": 7356349,
+          "mode": 420,
+          "mtime_ns": 1791240620868579772,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-29c1f19308dadf572ed2b91a1792df098eeda628db2a448cfbe0b11c-02000000-1533910.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-29c1f19308dadf572ed2b91a1792df098eeda628db2a448cfbe0b11c-02000000-1533910.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534229": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534229,
+      "start_ticks": "1829086582",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-cdf5291397084014536684595ad8aa13d96a9ab29489f317c40f23ad-02000000-1534229.err",
+      "stderr_key": "ray-stderr-pid-1534229.err",
+      "stdout": {
+        "after": {
+          "bytes": 131617,
+          "ctime_ns": 1791240620212602674,
+          "device": 64769,
+          "inode": 7356364,
+          "mode": 420,
+          "mtime_ns": 1791240620212602674,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131617,
+          "ctime_ns": 1791240620212602674,
+          "device": 64769,
+          "inode": 7356364,
+          "mode": 420,
+          "mtime_ns": 1791240620212602674,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-cdf5291397084014536684595ad8aa13d96a9ab29489f317c40f23ad-02000000-1534229.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-cdf5291397084014536684595ad8aa13d96a9ab29489f317c40f23ad-02000000-1534229.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534230": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534230,
+      "start_ticks": "1829086583",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-bd449d4f08caea91153a584d1f1f8f60835126cb5cad09e189f67a33-02000000-1534230.err",
+      "stderr_key": "ray-stderr-pid-1534230.err",
+      "stdout": {
+        "after": {
+          "bytes": 131616,
+          "ctime_ns": 1791240618360667332,
+          "device": 64769,
+          "inode": 7356368,
+          "mode": 420,
+          "mtime_ns": 1791240618360667332,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131616,
+          "ctime_ns": 1791240618360667332,
+          "device": 64769,
+          "inode": 7356368,
+          "mode": 420,
+          "mtime_ns": 1791240618360667332,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-bd449d4f08caea91153a584d1f1f8f60835126cb5cad09e189f67a33-02000000-1534230.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-bd449d4f08caea91153a584d1f1f8f60835126cb5cad09e189f67a33-02000000-1534230.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534231": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534231,
+      "start_ticks": "1829086584",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-61fd9986380ffc812d9a409257287b1cfb6ccc121e1097ef1426b6f3-02000000-1534231.err",
+      "stderr_key": "ray-stderr-pid-1534231.err",
+      "stdout": {
+        "after": {
+          "bytes": 131615,
+          "ctime_ns": 1791240617100711321,
+          "device": 64769,
+          "inode": 7356373,
+          "mode": 420,
+          "mtime_ns": 1791240617100711321,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131615,
+          "ctime_ns": 1791240617100711321,
+          "device": 64769,
+          "inode": 7356373,
+          "mode": 420,
+          "mtime_ns": 1791240617100711321,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-61fd9986380ffc812d9a409257287b1cfb6ccc121e1097ef1426b6f3-02000000-1534231.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-61fd9986380ffc812d9a409257287b1cfb6ccc121e1097ef1426b6f3-02000000-1534231.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534232": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534232,
+      "start_ticks": "1829086585",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-d6373931557bb2845c7093fcca34f0291f79a73413b2da38e5864c35-02000000-1534232.err",
+      "stderr_key": "ray-stderr-pid-1534232.err",
+      "stdout": {
+        "after": {
+          "bytes": 131602,
+          "ctime_ns": 1791240620836580890,
+          "device": 64769,
+          "inode": 7356378,
+          "mode": 420,
+          "mtime_ns": 1791240620836580890,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131602,
+          "ctime_ns": 1791240620836580890,
+          "device": 64769,
+          "inode": 7356378,
+          "mode": 420,
+          "mtime_ns": 1791240620836580890,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-d6373931557bb2845c7093fcca34f0291f79a73413b2da38e5864c35-02000000-1534232.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-d6373931557bb2845c7093fcca34f0291f79a73413b2da38e5864c35-02000000-1534232.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534233": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534233,
+      "start_ticks": "1829086586",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-306ae17389e9387b1ed0f5b2ebae458e3a8c43eb70fce98e6bd22ffc-02000000-1534233.err",
+      "stderr_key": "ray-stderr-pid-1534233.err",
+      "stdout": {
+        "after": {
+          "bytes": 131620,
+          "ctime_ns": 1791240619212637586,
+          "device": 64769,
+          "inode": 7356393,
+          "mode": 420,
+          "mtime_ns": 1791240619212637586,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131620,
+          "ctime_ns": 1791240619212637586,
+          "device": 64769,
+          "inode": 7356393,
+          "mode": 420,
+          "mtime_ns": 1791240619212637586,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-306ae17389e9387b1ed0f5b2ebae458e3a8c43eb70fce98e6bd22ffc-02000000-1534233.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-306ae17389e9387b1ed0f5b2ebae458e3a8c43eb70fce98e6bd22ffc-02000000-1534233.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534234": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534234,
+      "start_ticks": "1829086587",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-4806f8a6b39290499d3d307f830b04abb0fd6d71d2a30979c0783aa9-02000000-1534234.err",
+      "stderr_key": "ray-stderr-pid-1534234.err",
+      "stdout": {
+        "after": {
+          "bytes": 131613,
+          "ctime_ns": 1791240619328633537,
+          "device": 64769,
+          "inode": 7356383,
+          "mode": 420,
+          "mtime_ns": 1791240619328633537,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131613,
+          "ctime_ns": 1791240619328633537,
+          "device": 64769,
+          "inode": 7356383,
+          "mode": 420,
+          "mtime_ns": 1791240619328633537,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-4806f8a6b39290499d3d307f830b04abb0fd6d71d2a30979c0783aa9-02000000-1534234.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-4806f8a6b39290499d3d307f830b04abb0fd6d71d2a30979c0783aa9-02000000-1534234.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "1534235": {
+      "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3261/step_0\n0::/system.slice/slurmd.service\n",
+      "pid": 1534235,
+      "start_ticks": "1829086588",
+      "stderr_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8e647b685e950f2af7dda89994d1694503aa674b628aeb1c3df842c4-02000000-1534235.err",
+      "stderr_key": "ray-stderr-pid-1534235.err",
+      "stdout": {
+        "after": {
+          "bytes": 131617,
+          "ctime_ns": 1791240620472593598,
+          "device": 64769,
+          "inode": 7356389,
+          "mode": 420,
+          "mtime_ns": 1791240620472593598,
+          "uid": 0
+        },
+        "before": {
+          "bytes": 131617,
+          "ctime_ns": 1791240620472593598,
+          "device": 64769,
+          "inode": 7356389,
+          "mode": 420,
+          "mtime_ns": 1791240620472593598,
+          "uid": 0
+        },
+        "closed_lifetime": false,
+        "physical_path": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8e647b685e950f2af7dda89994d1694503aa674b628aeb1c3df842c4-02000000-1534235.out"
+      },
+      "stdout_fd_target": "/tmp/o4e-3261/ray/session_2026-10-06_03-56-08_188781_1526172/logs/worker-8e647b685e950f2af7dda89994d1694503aa674b628aeb1c3df842c4-02000000-1534235.out",
+      "uids": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "scope": "READ_ONLY_INFLIGHT_RAY_STDERR_SLURM_BINDING_NOT_CLOSED_LIFETIME_OR_RELEASE",
+  "started_utc": "2026-10-05T23:37:18.322761+00:00",
+  "transport_original_sha256": "cd305416a4a11fb54f72793b481f4ff9a7c4096bbb6a668fec760f05e14df080"
+}

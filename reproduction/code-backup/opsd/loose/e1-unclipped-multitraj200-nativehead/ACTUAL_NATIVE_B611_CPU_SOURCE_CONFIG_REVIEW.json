@@ -1,0 +1,268 @@
+{
+  "actual_config": {
+    "Adam_calls_expected_per_rank_outer": 10,
+    "LP_global_micro": 64,
+    "LP_local_micro_expected": 8,
+    "PG_enabled": false,
+    "actor_global_micro": 32,
+    "actor_local_micro_expected": 4,
+    "actual_data_paths": {
+      "final_val_files": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/common-data/final.parquet",
+      "train_files": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/common-data/train.parquet",
+      "val_files": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/common-data/validation.parquet"
+    },
+    "canonical_sha256": "e113d57685fa3246d8e3c7834eeaa5fae03bdc4bd99d6b6561e9c7d7e0188cda",
+    "cfg_only_binding": "UNLAUNCHED_CFG_ONLY_NO_BINDING",
+    "cfg_only_run_root": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/unlaunched-native-cfg-only",
+    "common_manifest_SHA": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "component_clip": null,
+    "entropy_coeff": 0,
+    "final_count_expected": 51713,
+    "gradient_clip": 1,
+    "horizon": 200,
+    "learning_rate": 1e-06,
+    "lengths": [
+      4096,
+      2048,
+      500,
+      500
+    ],
+    "mini_batch": 256,
+    "profile": "multitraj200",
+    "pure_opsd": true,
+    "questions_per_outer": 512,
+    "reference_KL_coeff": 0,
+    "reference_KL_enabled": false,
+    "response_only_logits": false,
+    "responses_per_question": 5,
+    "samples_expected_per_rank_outer": 320,
+    "sampling_temperature": 1,
+    "stage_count": 64,
+    "teacher_and_initial_actor_path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+    "teacher_forward_micro_batch": 2,
+    "teacher_prompt_mode": "user_context",
+    "teacher_revision_expected": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "top_k": -1,
+    "top_p": 1,
+    "trajectories_per_outer": 2560,
+    "turns": 4,
+    "validation_count_expected": 512,
+    "warmup_outer_updates": 57
+  },
+  "actual_exit_scope": "Root reported successfultransport exit0; pinnedcaller finalsummary follows assertedzero producer/import/cfg subprocess returncodes. These artifacts contain no separate exitJSON, so none is invented.",
+  "actual_imports": {
+    "actual_loaded_modules": 84,
+    "bootstrap": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-b611864d3f6a/reproduction/baselines/e1_import_bootstrap.py",
+      "sha256": "49e8b145748876c1ce4efd408f9206bb09e0d886ff2d77e7c364e662fb80718f"
+    },
+    "cuda_is_initialized": false,
+    "inventory_records": 211,
+    "library_records": [
+      "contextlib",
+      "dataclasses",
+      "hydra.main",
+      "torch.utils._contextlib"
+    ],
+    "loaded_records_equal_inventory": true,
+    "local_HEAD_clean": true,
+    "new_profile": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-b611864d3f6a/search_r1/baselines/e1_profile.py",
+      "sha256": "589eb8cdaa306736b89fb16149f2f282a47b7749ac2fb18634232c4a543b418b"
+    },
+    "project_full_sha_matches_local_committed_source": 207,
+    "remote_repo": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-b611864d3f6a",
+    "trajectory_archive": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/repo-b611864d3f6a/search_r1/baselines/trajectory_archive.py",
+      "sha256": "88277e24453058e8e62ae2e13b2df94dc1b35110618ac44381a4b5f579f17455"
+    },
+    "verified_live_functions": 733
+  },
+  "created_utc": "2026-10-06T10:26:58.532433+00:00",
+  "files_or_jobs_changed": false,
+  "inputs": [
+    {
+      "bytes": 31205,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/native-cpu-original.stdout",
+      "sha256": "fd725f694f2ce4de4e004ba8af08838a1859946d966cf4cd69ed83a8b164319d"
+    },
+    {
+      "bytes": 473,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/native-cpu-original.stderr",
+      "sha256": "defd240d0e6db1de5e17a1f11c7f0628595ea1fd64ae24ed5923d02fc534b4e4"
+    },
+    {
+      "bytes": 388,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/native-cpu-actual.json",
+      "sha256": "7a0911b94fba8d9bc2437f4c398dd74cb101888b462aebf5d343c8b7bf330863"
+    },
+    {
+      "bytes": 59369,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/native-source-inventory-b611864d3f6a-ACTUAL.json",
+      "sha256": "ed7b1413a1dc38f77d4aa62999c9363139a6c92ef6c2358ed5455db169be398f"
+    },
+    {
+      "bytes": 5238,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/runtime-tools-bound-b611864d3f6a-v3.json",
+      "sha256": "9fad6a86a0739e3b4c7b216ab02bc53176bfc84e8f8543941072b40b8cb08b4f"
+    },
+    {
+      "bytes": 4556,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-nativehead/deploy_native_cpu-bound-b611864d3f6a-v3.py",
+      "sha256": "826aa2a6998b2ee7511a461f5000664fb31d77c2f54df4eaf04bcd0385691758"
+    }
+  ],
+  "not_claimed": [
+    "GPUmodel loading",
+    "ActualBF16/FSDP nativeequivalence",
+    "GPUretriever orHTTP",
+    "Actualinputdata/modelassetbytesread",
+    "Adamorwarmup actualclock",
+    "Fresh5 trainingorindependentacceptance",
+    "Finalcheckpointorrecovery",
+    "Effectimprovement"
+  ],
+  "passed": true,
+  "runtime_version_scope": {
+    "actual_native_python": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/bin/python",
+    "actual_python_installation_paths": "/usr/lib/python3.10 + env/lib/python3.10/site-packages",
+    "direct_version_observation_in_current_stdout": false,
+    "followup": "UpcomingactualpreGPU package-versionoriginal records supply direct currentTorch2.4 version evidence.",
+    "known_environment": "NativeTorch2.4 environment used by the frozen job line; this CPUstdout does not print torch.__version__, so no new explicitversion observation is fabricated.",
+    "native_torch_contextlib": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/opsd/env/lib/python3.10/site-packages/torch/utils/_contextlib.py",
+      "sha256": "cf7aa5b08f44974ba8c1d08cd71ef70ffd13d1c48a4931576eb235306bfa46b5"
+    }
+  },
+  "scope": "ACTUAL_NATIVE_CPU_SOURCE_IMPORT_AND_COMPOSED_CONFIG_ONLY_NO_GPU_NO_FIRST5",
+  "source19": {
+    "reproduction/baselines/e1-multitraj200/microbatch_probe.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [],
+      "sha256": "b1525cc661ef9e6fd3619841cff13b51fdc914cc2fbed2f919a231342bf9558f"
+    },
+    "reproduction/baselines/e1_import_bootstrap.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "reproduction.baselines.e1_import_bootstrap"
+      ],
+      "sha256": "49e8b145748876c1ce4efd408f9206bb09e0d886ff2d77e7c364e662fb80718f"
+    },
+    "reproduction/baselines/run_opsd_e1_multitraj200.sh": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [],
+      "sha256": "7112bbf83608be1c0b3c3ebf4dcd4753c2f0f4a19ebbfad419658949fbfdabd5"
+    },
+    "reproduction/h20/retriever_local.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [],
+      "sha256": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459"
+    },
+    "search_r1/baselines/actor.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.actor"
+      ],
+      "sha256": "bbf16e04df0ce5d887d674311be3875220bbffe21cbfa2188b3f9833366c1222"
+    },
+    "search_r1/baselines/checkpoint_gate.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.checkpoint_gate"
+      ],
+      "sha256": "09561719673a7c273ad39b3c9363b1a250eab0a94c20c80f40dd1dfc05589e16"
+    },
+    "search_r1/baselines/controller.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.controller"
+      ],
+      "sha256": "64791f58629bf654e3fd7bff13883c57a0c20fc05eac4a052b1cb055cff89b00"
+    },
+    "search_r1/baselines/distillation.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.distillation"
+      ],
+      "sha256": "1913427b4f27f936531c4f0d00abeff2b5ef3f0de3d5b7e1fad50febc7b850d2"
+    },
+    "search_r1/baselines/e1_profile.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.e1_profile"
+      ],
+      "sha256": "589eb8cdaa306736b89fb16149f2f282a47b7749ac2fb18634232c4a543b418b"
+    },
+    "search_r1/baselines/full_state.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.full_state"
+      ],
+      "sha256": "b7239eca041d317c1c19738c74ff7659fff4bde61df3267d25ea5dcddda6ffe6"
+    },
+    "search_r1/baselines/main.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.main"
+      ],
+      "sha256": "2d4b8eb0fcc307c0ea74713505d53c673d55ac8b7e72a74e03ee21e6abd802c1"
+    },
+    "search_r1/baselines/preflight.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.preflight"
+      ],
+      "sha256": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605"
+    },
+    "search_r1/baselines/rollout.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.rollout"
+      ],
+      "sha256": "4b3501a1eafc10ed4ae7abd76c5a8f8bc9b90c839ab748b6d522295c934a4e5a"
+    },
+    "search_r1/baselines/trajectory_archive.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.baselines.trajectory_archive"
+      ],
+      "sha256": "88277e24453058e8e62ae2e13b2df94dc1b35110618ac44381a4b5f579f17455"
+    },
+    "search_r1/search/retrieval_server.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "search_r1.search.retrieval_server"
+      ],
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052"
+    },
+    "verl/trainer/config/ppo_opsd_e1_multitraj200.yaml": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [],
+      "sha256": "4abe9236314f87c2eccb29c6791632c193a9ebcb51848c663107ac2a6671bf79"
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "verl.trainer.ppo.ray_trainer"
+      ],
+      "sha256": "f78dc2bebdf6b42b94d6845cd77cd1d723c2b6e33446f25295baf01f7e8d159d"
+    },
+    "verl/utils/torch_functional.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "verl.utils.torch_functional"
+      ],
+      "sha256": "d46ab49f849b2be950e3e20a844a7747294b842cde0ad0abe49ae4ea31ab1635"
+    },
+    "verl/workers/fsdp_workers.py": {
+      "local_committed_and_working_bytes_equal": true,
+      "native_inventory_module_names": [
+        "verl.workers.fsdp_workers"
+      ],
+      "sha256": "aeb49c89d968fbd0f186e61efb151d6525ae1018000a63e4860b6e81b57356f7"
+    }
+  },
+  "source_commit": "b611864d3f6ad048189b11b9b9613854e789da5d",
+  "stderr_scope": "473bytes: Transformerscache deprecation andoptionalvLLM commit-hash warning; no traceback/failedmarker.",
+  "version": 1
+}

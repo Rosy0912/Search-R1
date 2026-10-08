@@ -1,0 +1,36 @@
+{
+  "source_commit": "8e60976d364ab7d7ae51714415813c1359dafe9a",
+  "production_math_sources": {
+    "search_r1/baselines/actor.py": "a393ff543739aa086ecde07ed797daf2ad3c85df40927fa2e8a7eac86c8d89a7",
+    "search_r1/baselines/distillation.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf"
+  },
+  "directory_name": "hf500-runtime-8e60976d364a-formal-3007-activation-v5",
+  "stage": "hf500_only_actual_formal_no_future_reload",
+  "formal_job": "3007",
+  "checkpoint_experiment": "opsd-gpu-formal500",
+  "checkpoint_step": 500,
+  "preview_blocked": true,
+  "file_sources": {
+    "reload_job.sh": "722fc2d61c942474213b50302c90f2fbf1c40bc15cda20a00e5e9509389e8716",
+    "checkpoint_reload.py": "5586dc36635d333bc2379de689b1128e38e498924649fcfcb00edbde960ff8fb",
+    "resource_sample.py": "0f7f23ff556f9ef59f4fbee1a81f79bffa25ff7e98f4d2c207f8009b2d2eda36",
+    "source_bundle_check.py": "8b5c95537ebb53ec090ef06c86b9dda01dea0972dcfb17e6988f31509f67880b",
+    "formal_completion_check.py": "944081e1eea819ac590352fcd0842e0e0ec7d786f7888f3f3e5fa2a7744a9d42",
+    "training_evidence.py": "cbdac9210624b19ed678d2b0fe8b94393c450befd2b219747d9bc9689e420d87",
+    "periodic_validation.py": "d57b46f8b99d9b186b6853fa93a0c7932c2802acaf241fc4503a53fe1f82b8bd",
+    "strict_metric_parser.py": "6a7d064e544716ce6981f6c02a15e94ac46b8dd4e3e5c39bc203b85763e3b95a",
+    "hf_launcher.py": "5b7b114d348648d4530333d0e663647cb38fd19e66eb8f68876d065b4c73643c",
+    "hf_activation_capture.py": "5b156eab940ca2db5147119c7ea6023bf7954d0d3edcd0eae6616c7717c83639",
+    "runtime_capture.py": "469c18b6e0cbdb94199028e3799e51f1156fbf6d9a79c0dbc0e40fb55c5778b4"
+  },
+  "original_hf_manifest_sha256": "f4c656c214c62fc1e16f8f0a0747cd5fae25fc01169a89c67502f80082577ce8",
+  "formal_manifest_sha256": "eb13b32b6dbcd608c237805bc950023a627ea4bdd4e98596a1afd5c9417d7051",
+  "actual_formal_completion_receipt_required": true,
+  "future_reload_job_id": null,
+  "actual_formal_job_id_unfilled": false,
+  "prior_formal_preview_manifest_sha256": "c85d38bd29f6c86da1519714dffde8c3367b37e83048071f6d1ae7437795edb5",
+  "formal_directory_name": "formal-8e60976d364a-pilot-2994-hf-2996-reviewed-c85d38bd29f6",
+  "formal_completion_evidence_present": false,
+  "prior_hf_preview_manifest_sha256": "ff617647f4e986920c6c27867fdf60e70ae7b43b8f7adf8fda62441abfae5850",
+  "activation_protocol": "canonical_preflight_launcher_capture_v5"
+}

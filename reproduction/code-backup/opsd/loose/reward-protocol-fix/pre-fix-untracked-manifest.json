@@ -1,0 +1,966 @@
+[
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/FORMAL_PREPARATION_REVIEW.md",
+    "sha256": "8b6f3d8a632cd499983ad3728a0507715977711f30e0a62718e828bbc121c285"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/FRESH_HF5_EVALUATION_STATIC_REVIEW.md",
+    "sha256": "490cecb7d61ecceea96bbfb86d6cf2c547a0de130b6d8070899cd66cdb6be751"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/GPU_PERFORMANCE_REPAIR_REVIEW.md",
+    "sha256": "d9a027c913512ab8dc2694b4978614ace4f093c2447a142ff6507758e4c8f259"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/PERFORMANCE_PADDING_PATH_REVIEW.md",
+    "sha256": "97254385259d61ddfaba678fde4ba04a8ff584102e4a7f417cf7af50d225de0d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/PRODUCTION_A_ADOPTION_REVIEW.md",
+    "sha256": "e0a7dd692f2d2008a9c14fbcaa30fb108210afc4817cd0965f537d79452b2bf3"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/PROPOSAL_A_STATIC_REVIEW.md",
+    "sha256": "30d51716041b79cd3c87d8225dc67110096f3816d0bca8cde8acc237c3cb5471"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/RAY_PORT_REPAIR_REVIEW.md",
+    "sha256": "638ac0489e83ac585629924b02d3a646a0eb507aeb234e0c9085845e5e4aa88f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2875_REVIEW.md",
+    "sha256": "bacac681e90c5eb254d6dd9b6e5cf2de2b5ba4a13789c35f1663c6ac66681e3b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2916_REVIEW.md",
+    "sha256": "f3c3fdc97f109bad49be53046a312f89158ea1e2c8b89df7ddf082ee5dbc7136"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2920_DIAGNOSTIC_REVIEW.md",
+    "sha256": "e75998f959182e1e737994db382da5bbff73dab677a6a152a799a3cbfa543691"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2933_FACTOR_REVIEW.md",
+    "sha256": "6a431f5f0d07e50197d91dd2b8f170670ec7cc64a0170762f808d2e8ab0bbe7b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2958_CAPACITY_REVIEW.md",
+    "sha256": "6a93e514898025535ddbc4f585704ccc341e34ec955051f532faa1a5d6af1208"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2960_REVIEW.md",
+    "sha256": "dda00995d587129dd4e14ccd8908e00138b5c4972718595d8701aaa0958c1931"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2984_FRESH64_REVIEW.md",
+    "sha256": "6b65ba471c938b1eb5a97de04be9e9b7ad99b2dacebf1f0fa15830ebf7ba22c1"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2987_PROPOSAL_A_REVIEW.md",
+    "sha256": "b7a0a25ee3864048e0af014f5927186f981fd1e48a12d3cbb0c8d2dfb8691b4b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2994_REVIEW.md",
+    "sha256": "38f7fc42151fafff72ee55dc84f508380f74c7fff5d014d259e76277d3e38406"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB2999_REVIEW.md",
+    "sha256": "cb0f3c911c5ce3ba5190f7baefea25d9d322b5ba1b77cf61ca739e8537467bae"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/REAL_JOB3007_REVIEW.md",
+    "sha256": "b697ebcf7737f2843bf4107f7c9350f37698a2b06524a24a3c9a881e17e9ed7d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/RESOURCE_SUMMARY_REVIEW.md",
+    "sha256": "ac7d613fccb35e0eec7922575cee0437b600c1eddf9b6124a50f299bf4995a69"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/SEMANTIC_DEVICE_GATE_IMPLEMENTATION.md",
+    "sha256": "11ef6cb80bf93864bb5bce05ed2f927b9f912564ad3922f363af61d04ad81ecb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/TEACHER_PRECISION_PROBE_REVIEW.md",
+    "sha256": "09758a54a88b1694174b2c6001f592623a63d21013232aa038f4f98d2bde0322"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/actual_receipt_2994_2996_independent_revalidation.json",
+    "sha256": "345e4b439f16fd77ed985f809326802028f2385088934f50549aa1c8d416726e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/actual_receipt_new55124_independent_revalidation.json",
+    "sha256": "0ab168d8717683f99d0bc2cc95009e0ebc3a61e18c3811d6607c68587dc7cfe3"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/actual_receipt_neweb13_independent_revalidation.json",
+    "sha256": "72a25130355c799f01e0fba4fd33cc48a740f950d7d821e3e6ec875ed8041806"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/budget_warmup_schedule_independent_probe.json",
+    "sha256": "9e996e59647b3f387e1df9393cd858f05a54208d9c99a691193a5f81082bdf2a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/capacity_checkpoint_mode_independent_cpu_gate.txt",
+    "sha256": "a12ece108ec90290cb16d3bdf839cd3caa0d5c52ec490fbc3d28bc52cbbb66df"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/capacity_checkpoint_mode_reviewed_hashes.json",
+    "sha256": "9c260f49ac43700f3a86fc58e78749bcd6fce501e8ef6232c3cc4785f1491a2a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/capacity_only_reviewed_hashes.json",
+    "sha256": "fafc4dad4183fff6db5523d74b89d0fa3ca7e77dfea83db086503c8750024593"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/capacity_training_mode_counterexample.json",
+    "sha256": "e0c854498378ff3b12b3f426db1e543950066e0eeaaec826f5feefedadedbfe0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-0.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-1.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-2.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-3.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-4.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-5.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-6.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/gpu-7.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/fd_inheritance_fixture/task.lock",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/formal_2994_2996_final_independent_review.json",
+    "sha256": "249b33bea4101f180c1e9bf4bb8b0382f91c1bef00b4f3f6886442487d87ddc6"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/formal_2994_2996_preview_independent_review.json",
+    "sha256": "5b93b7dd33d34f19123e478b393ec5e7e168a6bd333da09baf231ef9136ee236"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/formal_500_epoch_budget_independent_check.json",
+    "sha256": "54caddf45a180f8ee96bf0a8ab5bca07ee1cea548aa6dad12562b169cd9f51af"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/formal_preparation_initial_static_checks.json",
+    "sha256": "32290ab57425a9bfd7418397865b9ee528f6eafe717670f6662ccb60777969ce"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/formal_raywarning_final_independent_review.json",
+    "sha256": "0b85697153a6e6fdba22c24bcf33bc2264b8762fed035b6bbc9310faab9a3446"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_lease_fd_dynamic_linux_regression.json",
+    "sha256": "3ed548f4895881f8b09a817787fec3e468b7dae95efc60f0080e295ea623c10b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_loss_checkpoint_equivalence_reviewed.py",
+    "sha256": "ccf526845017f78c169a7f15d3b2eeb18b251c32108ec864c5f189f72c00c743"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_loss_checkpoint_gate_independent_cpu_tests.txt",
+    "sha256": "2f4168c91d5fa59222eee23d952b692459ecaf1c4af01d5fa43f0cd19fb9f9d4"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_repair_prelaunch_runtime_hashes.json",
+    "sha256": "3afd1e831d9f42f230a800a9d52593dd5cb42a3570794acc9991fb48e0fafb6a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_teacher_cpu_math_equivalence.json",
+    "sha256": "f5ff3fd0112db97fd382ee0d0a4e4af90d6b77d2e0f1e406653ce15f77595443"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_teacher_cpu_math_equivalence_stderr.txt",
+    "sha256": "17cafade345fd7573a79f9da8ea8f8a3c37b80ff6841aec745816912b5023721"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_teacher_execution_audit_cpu_gate.txt",
+    "sha256": "03e751a608d9db3b89027c299ea4f5f9ece7b9f016228600d7a56e8462a18c27"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_teacher_placement_cpu_gate.txt",
+    "sha256": "a278f7f61f0df0c88c1ce0db644c3ca3ce9cdcfb558752496c606c1a4be4b7da"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/gpu_teacher_placement_reviewed_hashes.json",
+    "sha256": "26fc967e72b66d7f3a35c848d0f166309c67f785e204e3d5c4bee2ea0bd49c83"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/hf500_current3007_preview_independent_review.json",
+    "sha256": "3b90d3a9206413042084c67d09c916bc687eff7ff5c8ac0c49e34b15701beeaa"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/hf500_periodic64_preview_independent_review.json",
+    "sha256": "7293c28b4ca6b7ba0a33e8015680bb5a4dfe7bfe5cee2db2e2c97105e09b5d68"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_actual_faiss_libraries_threads.txt",
+    "sha256": "45259c2d3880a1b3a159dcc6c3af7f26fe6ce0e996dd47b09d3aeb2a6ffc2256"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_all_worker_intermediate_progress.json",
+    "sha256": "9bed3e7fc9feed7ccb4d70c5f62c6be2bc2afe24e088285efc112aa099f683a4"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_all_worker_intermediate_progress_0800.json",
+    "sha256": "3b4ab54c08518d45cb26d93766ccbcadff1e90caeadeede0c53e56b6d9f248a6"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_bulk24_independent_analysis.json",
+    "sha256": "b952f58c6799ea598a255d35d0cdc0002baef4184429f6725108ffaf2ee9ab47"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_cpu_retrieval_activity_delta.json",
+    "sha256": "3e6a6befd78ec5453f5f111dbc6ef8ecf91ee2edb69b8f4096103a910e550c09"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_cpu_retrieval_resource_snapshot.json",
+    "sha256": "603bd957e15ce69af80953c1ee95c03b7ddacb54299aea25c2dd86a8e33694ad"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_current_launch_snapshot.txt",
+    "sha256": "1e71da4b8f7db8753975898fe950f343ff1e0ee001d7d89e2dbeafeaa336590a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_early_ray_snapshot.txt",
+    "sha256": "fc205d4115327a519768da67f20b1ddf4c9e3fe8a0f173f02d2ce10cb20e3864"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_faiss_blas_thread_disassembly.txt",
+    "sha256": "df2441d0fa1f90ca23c7f09c09bf9c255d93d28999ff26f7d2bc5b2d29784cf7"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_faiss_environment_snapshot.txt",
+    "sha256": "d28f3fe62e0df26dc7114448daa82351fb55a32ba52269c387ccab4cc5b47495"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_faiss_static_blas_inspection.txt",
+    "sha256": "58c0e6bfc56fa4e6766e69e46d025d93af38243e22685467bc2c55bf266b29eb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_faiss_static_symbol_evidence.txt",
+    "sha256": "bd1e7bc8fc8863871022c9397e90ed510bd7b204687a3ead6c861291485f3fe6"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_first_outer_current_raw.txt",
+    "sha256": "d67aa4a1a3213a9f9463224562e13d0f554955368d68fc4171bfaf4d8c33c190"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_first_outer_retrieval_cost_raw.txt",
+    "sha256": "09e4d825c4e619949a43d46f6248d456495bfe5b07c7b5dbee608466c91e2d11"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_first_retrieval_progress_latest.txt",
+    "sha256": "17112ae85fcfc344c7dd4749667030bfae53c8b051c1e90c5e0c73fbf360ddb8"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_first_update_rank0_readonly_stack.txt",
+    "sha256": "2d02fe5e2e2e0776a20ff38e19edab73f8d38957f0c018eef05b7a6e97873014"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_http_bulk24_reviewer_raw.json",
+    "sha256": "1132ad34975d8a3d895bb4cd1226ca1b3f4f37a27462b38098d48774ac247981"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_http_independent_analysis.json",
+    "sha256": "09244f3c548ecf0494df3445ad1d2155295e5372a8e6ff90e9abbea0d34f265d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_initial_validation_metrics.json",
+    "sha256": "2e0da36b2ccff86e55f10727d5e5478beafa11f7361e4503514083d408eef72c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_initialization_process_snapshot.txt",
+    "sha256": "e2acee444b18c4899253e1e9b03996ac11fd66eec5676ac86b41daad6d067f53"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_latest_outer_progress.txt",
+    "sha256": "a62b6ad892d3e4cabbd76dbe073ac23328a872dee6f64e40fe5089e847015dad"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_locality_independent_runtime.json",
+    "sha256": "db4c32d724c90da3efd69e20064df82d2328370e157ce6040fabc8646310354d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_outer_start_progress.txt",
+    "sha256": "5d2e99a058f32f6caad7cc5ff01135a39c647c9ea3af9d3936173402789512fc"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_post_comparison_snapshot.txt",
+    "sha256": "57c5ab74f4fdacfcfa2c7e8fd4efc7fb0b9c02eb5843866ce41980ba30383b3b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_post_initial_val_progress.txt",
+    "sha256": "28b9ad6761aaaa5af72e40db2564f7cf3dc610b460ff79c49e3c51a69083e0dc"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_post_rollout_resource_snapshot.json",
+    "sha256": "5447d0a25859fe3ab1a1cd1177fa4df606d63648dfc04da01f63b0ffb761ae70"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_raw_driver_worker_progress.txt",
+    "sha256": "f8fd78988eea10858170cb62b0ca0479374da221797106d6350d9a4f49c0e2ef"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_raw_outer_metric_extract.json",
+    "sha256": "dce43a752f09514474bdcc99e2c4b1d190f17c5ae5bdfabe1ae9d9b8dc3e1751"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_readonly_progress_helper.py",
+    "sha256": "ef63141a01e654afc3c33433dab62f7f07be6aab9f3dd226b16f11ec5e4b10b9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_resources_independent_recompute.json",
+    "sha256": "9761b0120d6d3bde6dd16e6ace473e2292dd39752b877d3b9b541f3487b0d23d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retrieval_comparison.json",
+    "sha256": "bca9d694d88322860fa152f5ebb9c8a5e19b340bfa3d776324ebcd4a85fe3978"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retrieval_http.json",
+    "sha256": "b14024ee9fbf6907fdde0c3e40a6bd86dbcf2097db647d7fb66806ed7c022345"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retrieval_http_bulk24.json",
+    "sha256": "1132ad34975d8a3d895bb4cd1226ca1b3f4f37a27462b38098d48774ac247981"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retrieval_independent_analysis.json",
+    "sha256": "121bcc58eeadd7dd407707e77692ef6f6eb055fbb1b321f6969e3ea4e901e247"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retriever_large_request_snapshot.txt",
+    "sha256": "3c84089fa8e08581dfb0df12848b103161c4c0471772b7c3e5692263a61437e1"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retriever_readonly_native_stack.txt",
+    "sha256": "9cd729f6beb41b5a9c0a7d2c9f8682d12ccc0bcc6f6161928a92a601375aa2aa"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_retriever_readonly_stack.txt",
+    "sha256": "f1bae95a2dd94a43b9100a111e49d63db23517be95e22c1e2709c28079dc55ac"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T013717.546724_0000.json",
+    "sha256": "53028c6f2d0121c62fe619ffe25f42ddbd1e54756ec0cc69e362cd9a59c5711f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T014331.536240_0000.json",
+    "sha256": "2aafab8360cca5fc1be76c2906f13195daaf4324807cfb288fa1e8fd554a0381"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T014914.619938_0000.json",
+    "sha256": "4ac45cc9f61def4b8cebcf896cbbfd4cad2770312ef86e0273740f5cbd413ccf"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T015507.304025_0000.json",
+    "sha256": "d0b133f0026ce6246e62ff1ef77e95a6a4a0e3acd36a6b22b2e0d7b46d513a73"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T020230.184215_0000.json",
+    "sha256": "bce29ee5e1b24672d2d2ccc9dce10c982ffcb3f4647865c78ebbdbac6cc1ec67"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T020814.244743_0000.json",
+    "sha256": "752cdcc2febcc17d24f2287b7119b0c49dacbb7365d9c78fbc19431509ae142c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T021401.405218_0000.json",
+    "sha256": "42a5bbd510fb2aca542d0a5203e31186ad447594c4a2ee02bbdd755722f35fd9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T021957.798231_0000.json",
+    "sha256": "8f0b690417a3474ccec8fab478e361c4d28e88675dcd2a732bfcb3ad9f7435ea"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T022551.337352_0000.json",
+    "sha256": "ece4175462ee9185160b5c801f6d52f7fb59436728d9faee76d7b436da99e7ef"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T023212.161990_0000.json",
+    "sha256": "8e153f8fa15b33c938947077ab0f116469213838ea397468c79700a183701763"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T023813.674269_0000.json",
+    "sha256": "39111f4c944559a724d34d8762ac0d31bb18d0617cd24b4f002fcaada70272a5"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T024117.216142_0000.json",
+    "sha256": "3a9293b4f395568a905dda1c3597a5e065b4eb2069aee0296cf61f0419eb0963"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T025536.409334_0000.json",
+    "sha256": "ab76c9841259e3b2ade654242ab00802e2799f92a9ef0c0751c241c0d887017b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T030601.689377_0000.json",
+    "sha256": "209153a734725a8bd96cc28c413db0222143db32203952bcee9730961bdc7577"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T031158.232810_0000.json",
+    "sha256": "59935e7c92bd1cd5bf35b06574e54080b4040b493eda601a426c16b925f4d75b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T031746.738143_0000.json",
+    "sha256": "1642990b32debca3215c52fcd6d25e8e5cc0901b539f124dde5ade32c8744697"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T032352.229365_0000.json",
+    "sha256": "c9a94fc198c43836732850dbc80d72fe2dcb93d70ef87a5ffb2a082bf053e112"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T032953.903109_0000.json",
+    "sha256": "90b871e409dd530eea7a7a2dc94ab51a046e406eb572dacfca2a5b1bbd80bd81"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T033537.096003_0000.json",
+    "sha256": "0273033a0fd5bc04da472967017b5f04c8d3877b59488978945e0216a934bfed"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T033827.849608_0000.json",
+    "sha256": "802317b70ac1d8830b41adee2ce9dfe602d717162e5c526427b281f33819356f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T034408.554481_0000.json",
+    "sha256": "21525dbd43046514f7238bfec9147e8f8c1d86a5a108478550075da4fc132a3b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_status_2026-10-03T034512.380928_0000.json",
+    "sha256": "dce43a752f09514474bdcc99e2c4b1d190f17c5ae5bdfabe1ae9d9b8dc3e1751"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_step1_independent_audit.json",
+    "sha256": "f4e02da63fa2dcc09298cc3fbaee47353c363514c148544cb49248c20bcfc4a4"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_step1_raw_metric_line.txt",
+    "sha256": "c8d762f45071e38fd3e8fcee965ddb18a20d13aad7f0a26c5c14ba0706e559bb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_step1_resource_snapshot.json",
+    "sha256": "082c8f306e21dac1b27e1eb7e40a474b1bd6fdd83337b70f37c4739185bd4931"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_teacher_cpu_precision_execution_raw.txt",
+    "sha256": "37a14a9154a9bbddfaa6cd1ef18f32e292e989fe2d50bf8ac21bbc57b9cc02e3"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_teacher_cpu_precision_reviewer_raw.json",
+    "sha256": "f0c42e89b55352339ed23999a7191e059a802af71436832064a96f605485fea0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_teacher_precision_probe_reviewed.py",
+    "sha256": "bacaabf9ffea76988a6cfc1549511aed7e4c1ba022b7f60ddb2c1a90d83d052c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_training_init_snapshot.txt",
+    "sha256": "cb3d6bc38eac3557bfe2529ef409b24e54bc49cc4a0bdc60293e9ee59b4976c8"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_training_initial_full.txt",
+    "sha256": "a19a27220a0d65a31db7cc376ed84eb15c4f5dcd8cb01f615c47391d1d97c015"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_update_progress_latest.txt",
+    "sha256": "af995a7acae25af336509967e2df82cb03bf9b463926a15a97c58e57074923cb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2875_worker_init_progress.txt",
+    "sha256": "bfe5a81ba50526ac0f7c57734334eaff6e30178fc3eb7ca798d431182ce3ada3"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2884_pending_allocation_raw.txt",
+    "sha256": "31f924f2bddfb0adf57f59dd469323f44eb822444216e665667d2814672c9852"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2916_numeric_failure_reviewer_raw.json",
+    "sha256": "6c48f391624aab145df618895e6d6cef25c6d723b0faf2389aceeccb725c1671"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2916_retrieval_comparison_reviewer_raw.json",
+    "sha256": "7d76ac364d3bff82fe5b30f383b24c4dc50c849641da629a5a76fd521bbc66b0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2916_retrieval_independent_analysis.json",
+    "sha256": "641f3a63eecb77ed8156be54b86dfec6ec2f8b1bb07a32d651be5c877dfddc04"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2920_diagnostic_reviewer_raw.json",
+    "sha256": "6bba7007719c041f016568a5ea65632668a57f83db84d7ebb0819d660716de18"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2933_corrected_factor_helper_reviewed.py",
+    "sha256": "e98dbb92850d4e5b89a17209e209f1c7bcbc9dcf3712981d2b1b6e98ddf044dc"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2933_factor_reviewer_raw.json",
+    "sha256": "c33180c2e8fb8bcb58ad9b4db6b1586fdaf70f68959518934b8103a95d061195"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2958_capacity_independent_analysis.json",
+    "sha256": "ce32596fb50e279f918740b91556ac73d86cc2da0368cbead8035e4f4dd15fac"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2958_capacity_reviewer_snapshot.json",
+    "sha256": "2298258e932a430bad515a61b44bd4eade9ba24198fa07ad6296bf71052fa942"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2958_capacity_reviewer_snapshot2.json",
+    "sha256": "c491f85fb3ed1123286582c6441dc82ff2112a9561f8ee5beba34869aac2ce41"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_final_reviewer_raw.json",
+    "sha256": "de85ce8d964c1493b46fa8a1de2be456950140271f93c56c42f62fd057939ac2"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_minimum_acceptance_independent_analysis.json",
+    "sha256": "4d96fc1aa5d89d7270faa72fcd49f12a6964c51ae93bb1746b4efb9412616c0e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_slurm_140057.txt",
+    "sha256": "f1ccfac4e630a5b956eb6ea6b081d7c5f3cdbee6ae4c61076e80d1147b68a41d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_slurm_141016.txt",
+    "sha256": "debb880a7d50a2af6896c1d1912fd48241dc24e55b9b36a1ec0ae3a5d8b16a1d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_slurm_142320.txt",
+    "sha256": "db858fcc9f72564e6d21dc09f0a0ff6aab0e71f0fde63e6d794ea0aaec42e342"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_slurm_143423.txt",
+    "sha256": "6d5a4f076962c2a9da83d23325c5d032bd3646aa0d757f153bfcc0425f797241"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_slurm_144021.txt",
+    "sha256": "895826f88f36d0e7aa0fea00f5a6bf8bad0762608da1ae6bf1255a1c4bfa2899"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_2962_ten_roles_reviewer_actual.json",
+    "sha256": "24efa47be54c468809c1dd6e4042723b0f5e843420bafff25f11e2965b381fdb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_checkpoint_capacity_reviewer_raw.json",
+    "sha256": "fbea23b6a9b8010e9625826077b60e9c32a13db3e4562a3595686ade0caaaed0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_full_five_validation_independent_analysis.json",
+    "sha256": "630eb77ad7c9ee1544e749bd859aeecd09dd80325bb969b47d4e11aa7ecec4d9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_initial_gates_reviewer_raw.json",
+    "sha256": "36c692635e40cf3c7010227ac327c4f2b5520aceba378ff3fa9624516a32dbea"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_retrieval_comparison_independent_analysis.json",
+    "sha256": "c7276e1969868af47998449d697ed8a6b37f0976c589977c39a5caa72361b04a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_retrieval_comparison_reviewer_raw.json",
+    "sha256": "5519b5090358eef12f42fab138bd114a9ebfdcdd039d97fb352111eb26a8806f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step1_independent_analysis.json",
+    "sha256": "6cb8b0103b5a2359522761f50640678759a3fdfb8a89de6cf467928fd9846b4c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step1_reviewer_raw.json",
+    "sha256": "b829c388d2ecd7e0c19f44ea01c1d52ed433290a725217c7a65f97cbaf5ef242"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step2_reviewer_raw.json",
+    "sha256": "30a225145abe4784cd9d9621a66df5a78f79400e54d2df28e2f51cffb946a3c6"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step3_independent_analysis.json",
+    "sha256": "bf0e260c7ec13be9fff191840fe2e7e77395d331e53fb991f76f19574631d421"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step3_reviewer_raw.json",
+    "sha256": "abee04cc6e36d182cbbcebd17dec9b2861845745a16b9c617d1e8bf131687425"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step4_independent_analysis.json",
+    "sha256": "48fb8839176e1f4727b516c48ace1bc6a38dfe695a270746a0292345e339f6f5"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2960_step4_reviewer_raw.json",
+    "sha256": "cf2108666f45bb693d1498474646ed4297cc892810ce10451e84ff9f8ef9712c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2962_actual_reload_script_reviewer.json",
+    "sha256": "b3abab2eac732195bda2dcb0dae8be968473f7e3c501890c8a2693f321c62d01"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2962_checkpoint_fullsha_reviewer.json",
+    "sha256": "7f4ee916e594c0a6751935fcf5c38aae5771b037948c8ec29750f252bb57455d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2984_fresh64_independent_analysis.json",
+    "sha256": "b12e2131c9949fda2f66b8331ba8d446e44c292724f1143b7298fc998b1c5a7f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2984_fresh64_reviewer_actual.json",
+    "sha256": "8dfd42b5356efa95b2c30e9682c51dc78a94eec92616954337f419c9f93ed77c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2984_slurm_log_reviewer.out",
+    "sha256": "4b629dca5531b9322573831aa3e7604b5ab1efa9848a5d85a1b99ee68bb1a931"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2987_proposal_A_independent_failure_analysis.json",
+    "sha256": "f03de9f050a2ea49a3356c466a82dfb6106b6385e4e27feb93a2a9ed9a40e11a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2987_proposal_A_reviewer_raw.json",
+    "sha256": "fdb4bf61ced720ee32b61178e0ff671c50b2bd4ad2618583d60eef1ffae1867c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_bulk24_reviewer.json",
+    "sha256": "6d03c971a519b76fd88b49b2fe9b2003f48faea1d7cd5d4bd761b171cd629a77"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_control_reviewer.json",
+    "sha256": "650c5575ef772bbe15a2e349091ea6c1ac784df2179a3201134821a6cfd133d5"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_final_reviewer_raw.json",
+    "sha256": "44c9b831e81d67ba1d07033da56c9ce72d9cbd5208bf58f958fcc4cab4d81c8d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_initial_reviewer.txt",
+    "sha256": "71babbe81b7a109acf68fd38bbe328da5993bdd1167bce1a577c4c7890965674"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_nonempty_reviewer.json",
+    "sha256": "7a8b48a5da73a11675d68f6fae6f20850c90a179eeb25b22d4db621ad85bf16a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_paired_independent_analysis.json",
+    "sha256": "558ff50c3344cbdbb97cffa9ce1374b32bc84d2f8cd2811ae496b97264860f0e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2990_rank0-empty_reviewer.json",
+    "sha256": "7204f0441c402083f623f53f397694d3a60c9d5fb5ea148bc38e900eeafc5e8e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_capacity_independent_analysis.json",
+    "sha256": "a66737b7fcf0e643d6a19e94826c55e8806f2c852f2f3c9d6104e917270a5f5e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_capacity_reviewer_raw.json",
+    "sha256": "53f86d862590a72d86710b246f0c71c20fe46e5f176c992e63cd111e5ed1299d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_controller_reviewer_raw.json",
+    "sha256": "2ea0f9327c1653a1c055bd3d581db86841829b84b6f4998f67ccc2d7b2dcade7"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_final_full_raw_reviewer.json",
+    "sha256": "f8152cc4cacb3e764015982b8604be7062c139c42b2b2161a86e2552650fb163"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_five_independent_analysis.json",
+    "sha256": "fa3a5fa88f2fd2dd5e19c3e22107b932202b57e451b0ca397d17c4684c83b29c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_five_raw_reviewer.json",
+    "sha256": "91aaf5ad28f288e5c80b096ea9e5249ec6c1def28ec9ae88d1baf88ed9584f3b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_head_config_reviewer_actual.txt",
+    "sha256": "0aca980a0a697a9e169294dd2bfcafafe6c5ed381324247138739ce724454ae9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_hf_final_review.json",
+    "sha256": "032cb1f71412fbb6d3095b3eb7c974acae8a89f6a40494e70fe70eebcacff9bb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_hf_preview_review.json",
+    "sha256": "6863d2df91958d96f785c3bea9711b2b6e1073493f9ba7e9ad028779679b987a"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_http_independent_analysis.json",
+    "sha256": "5ebbfc56675c52f4c07fa969cc3ca6befeb6dbb6fce2e552cb4b1c62abd0643b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_http_reviewer_raw.json",
+    "sha256": "c764d58ec4fe6a9833236d80fccc972f1f69b2c910a6f49d53ca882e5b938474"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_initial_validation_reviewer_raw.json",
+    "sha256": "c75806e9c51e94b1fae410805a0e6ed1c7f0b6b03770316921cf3fe47243e3d1"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_marker_write_reviewer.txt",
+    "sha256": "4a092e33273856265254c6efd81636a82498a27bc97242d3b53fdbeb2058daf2"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_numeric_gates_independent_analysis.json",
+    "sha256": "3e6aa6b9f8ad4db86967e2f8b4206234bcff64b3461419ad7ee39f5ae51eaa18"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_numeric_gates_reviewer_raw.json",
+    "sha256": "a7a97ffeec6520ef90de1cf6691df6886e04034be80be1a1b3f19f2110cc3382"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_raw_byte_vs_text_sha.json",
+    "sha256": "23f6077e471cc341b08a5f4f8a93243e5657a31b5ad7abcd338600dfe1a50151"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_retrieval_comparison_independent_analysis.json",
+    "sha256": "dbcdb43b4ebf60dc22ff080980de3cd5ebb6e68abf808445a0c8cbd7acfdb598"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2994_retrieval_comparison_reviewer_raw.json",
+    "sha256": "7c3f9af497d152186beb3aad47a57f25278f885e1558c191c21870b21a3de098"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2996_hf_independent_analysis.json",
+    "sha256": "6027946daa95cbec95ac507aa5090befb1a44a829afbe19bd642f05e10597612"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2996_hf_reviewer_raw.json",
+    "sha256": "2a6158a60a74e129e759cb55af620112b806e9ae91318bbc5cb6e47b36c7a641"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_actual5_HF_structure_sha_reviewer.json",
+    "sha256": "9fa52ddaad74387e2d70baa9af76fee5646a13ed94489b2a95d264cc269f3353"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_actual5_warning_frame_recovery_independent_analysis.json",
+    "sha256": "a7111b3c2cdcae7891562b18b19f608faacb4b19b031a957caad530f0d4f761d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_actual_extended_warning_frames_raw.json",
+    "sha256": "77c189ddd295225d3e2565a5fa5a525a4cf9ad0549f0d98918ad18fcdeca1a5d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_bulk24_independent_analysis.json",
+    "sha256": "481a67edb15457413337f55cf2c7eb924ef23dfd493ddaac992cf9953cf35577"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_bulk24_reviewer_raw.json",
+    "sha256": "295e20a03324ceed274b0c28e0d73fd332d929c01f6976951cf26745276e5dd0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_current_retrieval_marker_write.txt",
+    "sha256": "3c55105f6544f6a842a12f008bdd60b45db651ffe2fae9b443bd206ecef3333e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_final_cancelled9_independent_revalidation.json",
+    "sha256": "d36504df97ddb0b67bd16bb2c6c39de2a5af5a5e15093261adc948f14ca12a4d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_gates_epochs_independent_analysis.json",
+    "sha256": "f8d13a6506e4c2d7ad8fcbe2f206aff0259e2b2281fb00c223bec9b5665fd6fa"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_http_independent_analysis.json",
+    "sha256": "3a62fc92537da12d33647d2110ce961d6ed47a78667ef3cf8d9e3022e1407788"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_http_reviewer_raw.json",
+    "sha256": "ad5d54e3ea1427cd52e14a689d1b384cf4d1c371bb9780d0c1c17c7c3efd60e5"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_numeric_capacity_yaml_reviewer_raw.json",
+    "sha256": "91162a44f2f72915fd654ee29aa89e76c1b331cddb1cbfa186126de18b075a41"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_partial_outer_independent_analysis.json",
+    "sha256": "40adce997701f1a45596ae2f4610c12901dd7c25b3da704ed59f22006cee54b3"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_partial_outer_raw_reviewer.json",
+    "sha256": "f2cd7958cbafa34e6e8c7b4a9a3dec95b0eac7113a63fb4fe12a3dd9ebbe2019"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_retrieval_current_independent_analysis.json",
+    "sha256": "09ee153791cea92d16e83c1d1d8f548cbc463434bc0541c161a0d09b6727bc39"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job2999_retrieval_current_reviewer_fetch.json",
+    "sha256": "39dd19c8ff9d24a4d0b58c9bf3daeaf534e05f89172fe3270a805632d9ba680d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_actual5_HF_structure_sha_reviewer.json",
+    "sha256": "a8a9accbb48f2fe29768e6992bec93af14b4d1b18e41738e81f2ce5e7b3be950"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_actual5_independent_analysis.json",
+    "sha256": "2fab0d1a980b08a5b3cb63cb7f37e913b2a09409cd049f6ed1c1dfe5e33b3666"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_actual5_reviewer_raw.json",
+    "sha256": "3bf370ca5867f13edac5ebca5146506638e61a66986b60d7957b86cf42923355"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_current_retrieval_marker_write.txt",
+    "sha256": "6bb527f3d959b4aac0df24e8291848b090e81c5a87054f23a50197fe136eae98"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_gates_epochs_independent_analysis.json",
+    "sha256": "11943b1ace0c8998d10c14924636755c65aea2030bac0310a34300cb2e4194e1"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_http_bulk_independent_analysis.json",
+    "sha256": "fabdf868cc96e19637c0247ace83b6812b788973bc9b32c0b1a3b103309a6e32"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_http_bulk_reviewer_raw.json",
+    "sha256": "0fb55013a4194982d21b1d6c4e8c9851107c37660c07287e10d4c74eff36b358"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_initial_complete_reviewer_raw.json",
+    "sha256": "d9e05391cda3d68c46e097b208055a4661c43215d3fc5c40e1b51e02ad276182"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_numeric_capacity_yaml_reviewer_raw.json",
+    "sha256": "1f61c240d231c9b29525111822c5029ef4e3488bd4c295b46984e4c19647c2f4"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_partial_actual_outer_independent_analysis.json",
+    "sha256": "2fab0d1a980b08a5b3cb63cb7f37e913b2a09409cd049f6ed1c1dfe5e33b3666"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_partial_actual_outer_reviewer_raw.json",
+    "sha256": "3bf370ca5867f13edac5ebca5146506638e61a66986b60d7957b86cf42923355"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_retrieval_current_independent_analysis.json",
+    "sha256": "f8889424e89c58f727700b85e82bbb386b737cd8bd0524629d2670ccd210d9a2"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/job3007_retrieval_current_reviewer_fetch.json",
+    "sha256": "e489e67d5815f76b7e91cbc3431527997712a8c734e90a3c2396168b9c5b49dd"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/new_formal_raywarning_preview_independent_review.json",
+    "sha256": "37f3c46931610704a4587a1b0c3ba24508e026b7ae56aa451478d2827d0126da"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/neweb13_actual_latest2999_raw_independent_revalidation.json",
+    "sha256": "b002f0e230dbb73a4bfad196d01c819558be0ae37af6e2aad8087608ce7faf97"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/opsd_jsd_checkpoint_independent_cpu_gate.txt",
+    "sha256": "e9e43939e030a691f84b4e98cf6135b2917fcf3ad0e30e065ff729f6ac162569"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/opsd_zero_initialization_independent_cpu_gate.txt",
+    "sha256": "d7052a60005f72ab6b472689d76b11ec1f563165220960e7d8e6ad02726227d0"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/production_a_adoption_initial_review.json",
+    "sha256": "d11c920e2fe52bd8536da835201ced32b8262746dc8dad8023706e2c8a71dd3d"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/production_a_final_pilot_bundle_review.json",
+    "sha256": "7ae877761411afaa60c4b3cd01a995bd8d3a2a2e1193e9d45fd58c8be32f7d66"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/production_a_pilot_preview_review.json",
+    "sha256": "ffcaed660a1688a58f7cd7cdfb0b3ba581c34f9f8d3714d04d4cce3a6984df2e"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/proposal_a_paired_static_review.json",
+    "sha256": "8cde6740d372b91fe5649e057943f1245166841a92c67775c075aa6d3bf5b5f9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/ray_port_actual_parameter_probe.json",
+    "sha256": "949fe350626a336a8521bf2d8535f9069de40818dc7f3bce77af0c96a0cd56a9"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/ray_port_repair_review_manifest.json",
+    "sha256": "09e6344b995b6749ffab3b14874b984579472cc762eaba2372b2dd48d79e6444"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/reload_job_cleanup_reviewed.sh",
+    "sha256": "5aeb8752bd15e971fd84f93652b6ca34b7d3a2aed8e080bfa42c608caf832a2c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_gap_pidreuse_fixture.jsonl",
+    "sha256": "625da6c7e345b99909b447f9a0c146cbab40b6abc23d72d373ca8737f3a66243"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_gap_pidreuse_result.json",
+    "sha256": "1167d432b9e4021efba5686cb4440dcd86547551f009e20914efdc2a648c4652"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_gap_pidreuse_result_v2.json",
+    "sha256": "06d4d8308e23fc90db94c97d57be1cbeb66283c266ea3c232441bfa6ec4d3f42"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_reject_duplicate_uuid.jsonl",
+    "sha256": "64b5fd1be9d780392c49b3e8a6a476f93b775da9abda6c0f44be4be8dff2f7e7"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_reject_nan_util.jsonl",
+    "sha256": "ef1b25b93fca3de8b2a6c49d1fe41c5bc450bed9954ad0705982f733b4b7801f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_reject_over_100_util.jsonl",
+    "sha256": "f3bfc3eca626ef0beab99d17b5a2341d07580d4964efd0634234938c3ebf103c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/resource_summary_v2_rejection_results.json",
+    "sha256": "b152134f055cbde9b57a6c607ba870b3b7be8dc0f13896c8eb084037ae35908b"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/retrieval_comparison_job2875.json",
+    "sha256": "bca9d694d88322860fa152f5ebb9c8a5e19b340bfa3d776324ebcd4a85fe3978"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/reviewer_readonly_status.py",
+    "sha256": "a1a344325b3a13bdac0d608313311d0f0aa88e10359d584d3aad5a8eb9577ff5"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/semantic_device_gate_independent_cpu_tests.txt",
+    "sha256": "56064bd35b8b5b212acf7d72c7a8c2e8f8a15498cb878a3f44734087398eaa70"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/semantic_device_gate_reviewed.py",
+    "sha256": "0f94dff26f9e2023d6880fce0221c72eb2a42bb2651c8c3a13874ffa2de2782c"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/summarize_resources_reviewed.py",
+    "sha256": "c71808a4270b0fb286c769c3c68f6626506bd9aa6f308370e4dab0e233a58d12"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/two_typed_frames_formal_final_independent_review.json",
+    "sha256": "6a2c7a7e39f4dd65af9af218affb3ca7a9d6b33a0f09802c3edd43e88962b39f"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/evidence/two_typed_frames_formal_preview_independent_review.json",
+    "sha256": "73e9d009d4b894e8481946221671b95c6596b28a3d6027f158bb25399e4b82bb"
+  },
+  {
+    "path": "reproduction/baselines/opsd-validation-20261003/job2960-2962-independent-acceptance.json",
+    "sha256": "681351609db83b806fa627389184daa14f1d7b973ff8b01f330ffcb912cf8ed6"
+  }
+]

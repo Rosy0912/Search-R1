@@ -1,0 +1,13 @@
+{
+  "source_commit": "e43fbfa73088ed70ed3efef79ba561507c0afc33",
+  "status": "UNRUN_LOCAL_DRAFT",
+  "sha256": {
+    "baseline_distillation_e43.py": "449211e53360c4842baedd2d29c2a3eed625524c7e956212f4983e57251ea25f",
+    "proposal_distillation_a.py": "2131315b6770779f0c7579bf2a6139e742cf75de03b7ee9f44662f8c32a870cf",
+    "microbatch_probe_support.py": "11172ac3a29f23884a94fb5e3bfe57bab75b095a0e363a9e038f91befcf26d00",
+    "proposal_a_fsdp_gate.py": "f1305bc433f37f890d813ce1a6768dfce4c332a0db94d6adaf56b0a18d2315bd",
+    "proposal_a_supervisor.py": "092a2b1194a55f20cce6c273612f793fdbfa8f726dd3bf55e96dbbf2806b9097",
+    "proposal_a_job.sh": "201d7ec414c7e56e53bfaca7453614cf91d4ee678a8d8c3ca8c45f29087e4ba0",
+    "proposal_a_job_entry.sh": "ef053887b0373b94fb6495f59a991823526d2c6e3bfa18b62c42d605c56c3db5"
+  }
+}

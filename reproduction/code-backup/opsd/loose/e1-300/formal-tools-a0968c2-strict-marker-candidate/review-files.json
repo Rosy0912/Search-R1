@@ -1,0 +1,11 @@
+{
+  "files": {
+    "REVIEW_SCOPE.md": "ea81b2e9a1fcb27cb6c1c887070c0c3d2f967b191b558244514b7ef5e3f45bd7",
+    "cpu-tests-final.txt": "d336dfffa11f4fd792bba26974dbae8fa021a5ae6cdba3602be564146d4b46d6",
+    "manifest.json": "7dfaeb6ef51cca4d928b028c52bedd0d64bde91dfc4a9b86c360183c13b07601",
+    "source-only-wrapper.patch": "1ac2d7455858da38669682653f17f6a58c9afe7900e52b435a5212e4b2047f19",
+    "test_formal_tools.py": "f55e33b0a483ea208f4e030a7d0d9e37e10b6bf3254608ac4005d3a10749b7f1"
+  },
+  "runtime_manifest_sha256": "7dfaeb6ef51cca4d928b028c52bedd0d64bde91dfc4a9b86c360183c13b07601",
+  "scope": "SOFTWARE_REVIEW_ONLY_NO_ACCEPTANCE"
+}
