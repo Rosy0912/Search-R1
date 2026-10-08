@@ -1,0 +1,283 @@
+{
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "runtime_source": "fe59dc164490098054879141d5421e0b418b4056",
+  "observed_unix": 1791500043.135056,
+  "previous_delivery_unix": 1791494724.710198,
+  "window_seconds": 5318.424858093262,
+  "completed_outers": 34,
+  "new_complete_outers": 4,
+  "processed_opportunities": 680,
+  "returned_adam_writes": 680,
+  "new_writes_since_previous_counter_snapshot": 78,
+  "skipped": 0,
+  "reward": {
+    "latest": 0.5245226621627808,
+    "mean": 0.4665502458810806,
+    "min": 0.3951760232448578,
+    "max": 0.5245226621627808,
+    "change_from_previous_window_mean": 0.13125935941934586
+  },
+  "actual_update_records": [
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 31,
+      "metrics": {
+        "critic/rewards/mean": 0.3951760232448578,
+        "actor/pg_loss": 0.044384052124442006,
+        "actor/entropy_loss": 0.7318385105580092,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0018128700820270183,
+        "actor/grad_norm": 1.8070660897217548,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "099cbdbac54b74559de9f0349c22edef0c555c872b46193b07d7ddeb275ec612",
+      "behavior_trace_sha256": "0f1fb0e58678b8df96575c73299f13f0e249f53201c54748d3916b71864c1c69",
+      "attempt_id": "b2933522c49f4d7dac2093fe1f6f0388",
+      "attempt_index": 31,
+      "optimizer_writes_before": 600,
+      "optimizer_writes_after": 620,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 32,
+      "metrics": {
+        "critic/rewards/mean": 0.4846186637878418,
+        "actor/pg_loss": 0.13425708538613618,
+        "actor/entropy_loss": 0.7085361609235405,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0021602956407321015,
+        "actor/grad_norm": 1.8114306985939563,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "66221c57ad131ac3a7695186cb14d2996762df0d7b8b1e46374a668a939c868b",
+      "behavior_trace_sha256": "c0218e349a37279ceb9f4c4fe1ae68a205b97a822cfa9852739bd2d2156e3533",
+      "attempt_id": "100e0205fec9469d96f9db3e54323fca",
+      "attempt_index": 32,
+      "optimizer_writes_before": 620,
+      "optimizer_writes_after": 640,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 33,
+      "metrics": {
+        "critic/rewards/mean": 0.46188363432884216,
+        "actor/pg_loss": 0.009186262816500014,
+        "actor/entropy_loss": 0.6924602228216827,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0023896161585867048,
+        "actor/grad_norm": 1.7898411010256026,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "8d1ebf3d713f69f27bb92aa0a7c6b3ab03baa797285d03cf348996e202ba1866",
+      "behavior_trace_sha256": "4810bf023675267bd6fe7f8d761bdaae640f1a9d810503dd1eeb83d7be0461c9",
+      "attempt_id": "b29d248e74ed4f569b9d3ea3028cd03e",
+      "attempt_index": 33,
+      "optimizer_writes_before": 640,
+      "optimizer_writes_after": 660,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 34,
+      "metrics": {
+        "critic/rewards/mean": 0.5245226621627808,
+        "actor/pg_loss": -0.020594172912267172,
+        "actor/entropy_loss": 0.6813696624711156,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0022152815832441773,
+        "actor/grad_norm": 1.6625161356113995,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "b80b14f35550b7a7890ce3668c6fd8c1c48c1fe57ccdb54a4edcb78124ffa4da",
+      "behavior_trace_sha256": "50d4c99566dab9993cab7a07f8708bfd80f0886c220d95afd97df18967b3096a",
+      "attempt_id": "caa0beb8bc88449fa32832b53c033392",
+      "attempt_index": 34,
+      "optimizer_writes_before": 660,
+      "optimizer_writes_after": 680,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    }
+  ],
+  "console_timing_records": [
+    {
+      "step": 31,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.395,
+        "timing_s/gen": 245.873,
+        "timing_s/ref": 194.563,
+        "timing_s/adv": 136.86,
+        "timing_s/update_actor": 963.557,
+        "timing_s/step": 1638.666
+      },
+      "line_sha256": "26c31f5847cec801dc77be46fc4132049520861474e3483bebcf5c3f79c9a626",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 32,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.485,
+        "timing_s/gen": 231.455,
+        "timing_s/ref": 190.373,
+        "timing_s/adv": 129.654,
+        "timing_s/update_actor": 964.542,
+        "timing_s/step": 1607.752
+      },
+      "line_sha256": "5eb828d9e80bfed3db1b28ef6b035ae73fe6f056b26f2b66dda8b54276f0dc5f",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 33,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.462,
+        "timing_s/gen": 218.925,
+        "timing_s/ref": 158.737,
+        "timing_s/adv": 129.117,
+        "timing_s/update_actor": 765.964,
+        "timing_s/step": 1356.781
+      },
+      "line_sha256": "0ec63bd83fff38925f50ebfe5ad83046df4b935a16481dc5e0e1a3056f939048",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 34,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.525,
+        "timing_s/gen": 216.58,
+        "timing_s/ref": 162.881,
+        "timing_s/adv": 123.475,
+        "timing_s/update_actor": 782.991,
+        "timing_s/step": 1367.602
+      },
+      "line_sha256": "d7bab912c2a0339c3e3a144479da530ab61604c025635dcf9b6cfed083e44ccc",
+      "precision": "three decimal console formatting"
+    }
+  ],
+  "latest_stage64": {
+    "step": 5,
+    "em": 0.203125,
+    "f1": 0.2706333740454399
+  },
+  "latest_dev512": {
+    "step": 5,
+    "em": 0.17578125,
+    "f1": 0.24091333577987706
+  },
+  "new_validation": false,
+  "gpu": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/gpu-samples-db474b6abf654ad9892b02ae67ab6f86.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 38387445,
+    "scan_from_start": false,
+    "scan_start_byte": 4833013,
+    "matching_sample_count": 22948,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": null,
+    "first_scanned_sample_unix": 1791451051.330552,
+    "latest_sample_unix": 1791500042.2080605,
+    "latest_sample_age_seconds": 1.6320221424102783,
+    "maximum_scanned_sampling_gap_seconds": 2.895707607269287,
+    "sampled_run_peak_mib": null,
+    "sampled_scanned_peak_mib": {
+      "0": 61995,
+      "1": 62429,
+      "2": 62423,
+      "3": 62763,
+      "5": 73825,
+      "6": 72504
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "birth_matches": true,
+      "state": "S",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 11469,
+        "total_mib": 81920,
+        "util_percent": 24,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 11565,
+        "total_mib": 81920,
+        "util_percent": 30,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 11695,
+        "total_mib": 81920,
+        "util_percent": 36,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 11469,
+        "total_mib": 81920,
+        "util_percent": 41,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 31043,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      }
+    ]
+  },
+  "window_peak_mib": null,
+  "window_peak_scope": "Bounded-tail scanned peak only;whole-run and exact-window peaks not recomputed",
+  "observation_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791500043795427000.json",
+  "observation_sha256": "161c940e2589395ce7d9432bf0353702c372eaeec43ed82f39946dd97e10a266",
+  "metrics_receipt_sha256": "c6533fe3790283ff82a21c16532b947a2f9d48b57aad3fb630e2bb238ba59dbb",
+  "trainer_pid": 1337905,
+  "trainer_start_ticks": 552404529,
+  "trainer_birth_verified_alive": true,
+  "exceptions": [],
+  "goal_complete": false
+}
