@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "g1_a800_historical_baseline_skip_single_launch",
+  "created_at_utc": "2026-10-08T04:47:21.621758+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "deployment_id": "ade2ab6b1f654c0f95ff1039a2326b37",
+  "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+  "snapshot_observed_unix": 1791434647.0379927,
+  "snapshot_scope": "Actual launch and retrieval-preparation observation at the stated time. This evidence does not assert later process liveness or later training progress.",
+  "source_publication": {
+    "repository": "shaoshitong/Search-R1",
+    "branch": "search-g1",
+    "checked_unix": 1791434609.013015,
+    "source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "remote_branch_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "remote_sha_matches_source": true,
+    "verified_file_count": 8,
+    "all_remote_blobs_match": true,
+    "verified_files": [
+      {
+        "path": "reproduction/a800_common/adopt_initial_probes.py",
+        "bytes": 19796,
+        "sha256": "8786a8fa1fe25b2e6976136f94202d2c158be4e42be207aad515931ab3de69da",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/a800_common/prepare_run.py",
+        "bytes": 8354,
+        "sha256": "f6d791f012bd596c690c0c2eca73ff1e120deff1826462f6b4c3b52d91a1fc12",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/common8/configuration.py",
+        "bytes": 5997,
+        "sha256": "5f311f68719a3495a5ba79edf339d779122d4a11b433bed7e2506d71f5dba30a",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/common8/formal_contract.py",
+        "bytes": 8601,
+        "sha256": "62e55469c97ebeceb1812247ded3b6fa0d5d5bb6585ddf3c393db8ff159cff7f",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/common8/formal_inline_evaluation.py",
+        "bytes": 12332,
+        "sha256": "8b6fc5670f6cd6fb8f2aa5afb96925111ecdcd0f6f1945cc9630d39e32a6f3c3",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/common8/verify_full.py",
+        "bytes": 19553,
+        "sha256": "d52ccadc42b1bc091fb986cac97191a73105431240f1a62ab39d7dfb403c0adc",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-baseline-oom-and-user-approved-skip.json",
+        "bytes": 7781,
+        "sha256": "bf216aef0737d978c6d3d9f105797efec1d14e4c087d7131cb041288a3ba8bf0",
+        "remote_blob_equal": true
+      },
+      {
+        "path": "reproduction/evidence/g1-historical-official-dev512-baseline.json",
+        "bytes": 1579,
+        "sha256": "acbfc88f029fd8a2ce9d9e5e1da660f85deab2fe0f2ebd3b38ee042e8deb8164",
+        "remote_blob_equal": true
+      }
+    ],
+    "source_bundle_sha256": "031646a875bc57c22511d11ea1b460d75e67c67b0e70ca891cf6135f4c135a62",
+    "source_commit_recorded_by_run_manifest": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "source_transport": "published_git_bundle_relay",
+    "source_hash_scope": "Published Git and source snapshot identity; file hashes alone are not proof of bytes loaded by a live process."
+  },
+  "actual_single_launch_snapshot": {
+    "execute_count_for_new_namespace": 1,
+    "observed_unix": 1791434647.0379927,
+    "pipeline_pid": 1117834,
+    "pipeline_start_ticks": 551422807,
+    "pipeline_alive": true,
+    "pipeline_birth_matches": true,
+    "pipeline_process_state": "S",
+    "pipeline_claimed": true,
+    "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "retrieval_preparation": {
+      "pid": 1118174,
+      "start_ticks": 551423613,
+      "alive": true,
+      "birth_matches": true,
+      "state": "R",
+      "ledger_state": "STARTED",
+      "exit_code": null,
+      "live_registered_count": 1
+    },
+    "trainer_claimed": false,
+    "actual_training_started": false,
+    "run_manifest_run_id_matches": true,
+    "run_manifest_execution_id_matches": true
+  },
+  "recorded_progress_at_snapshot": {
+    "completed_outer_updates": 0,
+    "adam_writes_per_rank": 0,
+    "run_manifest_completed_updates": 0,
+    "actual_updates_ledger_exists": false,
+    "matching_complete_update_rows": 0,
+    "opportunity_ledger_count": 0,
+    "last_recorded_outer": null,
+    "recorded_completed_outers": null,
+    "new_training_reward": null,
+    "new_current_run_validation": null,
+    "prior_attempt_updates_counted": false,
+    "scope": "New official fresh-0 run. No completed outer or opportunity ledger at the snapshot; prior attempts and historical scores are not new run progress."
+  },
+  "pretraining_baseline_policy": {
+    "policy": "reuse_historical",
+    "pretraining_generation_skipped": true,
+    "scope": "Skip all generation before training and use the published historical official dev512 scalar comparison. Training rollout generation and training mathematics are not changed by this policy.",
+    "training_mathematics_changed": false,
+    "historical_reference": {
+      "correct": 91,
+      "count": 512,
+      "em": 0.177734375,
+      "em_percent": 17.7734375,
+      "f1": 0.24118301022177743,
+      "source_run_id": "840f82d338ee4d3b97b41372e64e08f1",
+      "source_native_job_id": 3329,
+      "paired_same_run": false,
+      "current_run_evaluation_performed": false,
+      "published_evidence_path": "reproduction/evidence/g1-historical-official-dev512-baseline.json",
+      "published_evidence_sha256": "acbfc88f029fd8a2ce9d9e5e1da660f85deab2fe0f2ebd3b38ee042e8deb8164",
+      "publication_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+      "scope": "Historical scalar reference only; no claim of a new current-run score or paired same-run gain."
+    }
+  },
+  "previous_attempt_failure_provenance": {
+    "published_evidence_path": "reproduction/evidence/g1-a800-baseline-oom-and-user-approved-skip.json",
+    "published_evidence_sha256": "bf216aef0737d978c6d3d9f105797efec1d14e4c087d7131cb041288a3ba8bf0",
+    "publication_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "previous_attempt_actual_cuda_oom_and_cleanup_recorded": true,
+    "scope": "The previous attempt CUDA OOM and cleanup are recorded in the separately published evidence. They are not observations of a failure in this new namespace."
+  },
+  "runtime_configuration_targets": {
+    "vllm_gpu_memory_utilization": 0.25,
+    "ray_cpu_cap": 16,
+    "ray_object_store_cap_gib": 8,
+    "ray_object_store_cap_bytes": 8589934592,
+    "actor_local_micro": 2,
+    "actor_actual_global_micro": 8,
+    "gradient_accumulations_per_mini": 16,
+    "old_ref_global_micro": 32,
+    "old_ref_local_micro": 8,
+    "global_mini": 128,
+    "opportunities_per_outer": 20,
+    "same_trainer_fresh0_to200_required": true,
+    "save_interval_outer_updates": 5,
+    "scope": "Configured runtime bounds and training targets; the trainer has not started at this snapshot."
+  },
+  "gpu_placement_policy_and_assignment": {
+    "training_world_size": 4,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "retrieval_auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "excluded_physical_indices": [
+      4,
+      7
+    ],
+    "retrieval_shares_training_gpus_at_snapshot": false,
+    "user_intent": "Use extra idle GPUs when available. Share the four training GPUs with retrieval only when no extra GPU is free and memory permits.",
+    "scope": "Assigned roles for the launch snapshot; this records the placement policy and does not create a new sharing authorization."
+  },
+  "goal_and_acceptance": {
+    "goal_status": "active",
+    "goal_complete": false,
+    "target_complete_outer_updates": 200,
+    "recorded_complete_outer_updates": 0,
+    "first_five_outer_update_acceptance_completed": false,
+    "training_effect_acceptance_completed": false,
+    "startup_is_completed_update": false
+  },
+  "sources": {
+    "source_publication": {
+      "receipt_basename": "a800-skip-baseline-cache-publication.json",
+      "sha256": "c73f43675892b1f11c1ab6de45ced44a34cecf2a4fbdc1c90c1e6a84d2095b90"
+    },
+    "current_deployment_authority": {
+      "receipt_basename": "a800-common-current-deployment.json",
+      "sha256": "07ff5c7e38d650443ac3daeda4ebe54711619ac416aa15f9fcd547ceacf92b75",
+      "authority_observed_unix": 1791434647.0379927
+    },
+    "actual_launch_observation": {
+      "receipt_basename": "a800-common-deployment-ade2ab6b1f654c0f95ff1039a2326b37.observe-1791434646954950000.json",
+      "sha256": "965ee48cc22442cc0a90a47696bfeb18d8d7fa07645e5b71d74d7298b47336f4",
+      "observed_unix": 1791434647.0379927
+    }
+  },
+  "published_field_scope": "Source commit, remote SHA and blob hashes; run/execution/process birth scalars; selected active retrieval-stage identity; absent update ledger counts; historical baseline scalars and provenance; configuration targets, placement policy and incomplete acceptance status. No raw logs or content payloads are copied."
+}
