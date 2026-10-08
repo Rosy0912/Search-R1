@@ -672,7 +672,7 @@ def main(config):
     from pathlib import Path
     from reproduction.common8.topology import _bound_run,validate_base
     assert not ray.is_initialized(), 'Search-G1 requires its private fresh local Ray'
-    ray_tmp_dir=os.environ['RAY_TMPDIR'];run=_bound_run()
+    ray_tmp_dir=os.environ['RAY_TMPDIR'];run=_bound_run();local_resources={}
     if run is not None and run.get('execution_backend')=='ssh_local':
         validate_base(Path(os.environ['SEARCH_G1_BASE']),run)
         assert run['profile']=='common8' and run['training_world_size']==4
@@ -686,8 +686,13 @@ def main(config):
             uid=current.st_uid,mode=stat.S_IMODE(current.st_mode)), 'Private Ray root identity changed'
         assert len(os.fsencode(str(path/'session_0000-00-00_00-00-00_000000_2147483647'/'sockets/plasma_store')))<107
         ray_tmp_dir=str(path)
+        resources=run['ray_local_resources']
+        assert resources['num_cpus']==16 and resources['object_store_memory_bytes']==8*1024**3
+        local_resources=dict(num_cpus=resources['num_cpus'],
+                             object_store_memory=resources['object_store_memory_bytes'])
     ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=ray_tmp_dir,
-             runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+             runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}},
+             **local_resources)
     try:
         ray.get(main_task.remote(config))
     finally:

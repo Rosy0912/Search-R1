@@ -76,6 +76,8 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
     result=dict(identity,run_id=uuid.uuid4().hex,started_unix=time.time(),
         execution_host=socket.gethostname(),completed_updates=0,
         ray_tmp_dir=str(ray_tmp_dir),ray_tmp_dir_identity=ray_identity,
+        ray_local_resources=dict(num_cpus=16,object_store_memory_bytes=8*1024**3,
+            scope='local scheduling and shared-object storage; training batches and precision unchanged'),
         policy_safety_required=True,initial_model=str(model),reference_model=str(model),
         initial_model_sha256=model_hashes,model_revision=REVISION,budget=budget,
         source_commit=commit,source_sha256=source,
