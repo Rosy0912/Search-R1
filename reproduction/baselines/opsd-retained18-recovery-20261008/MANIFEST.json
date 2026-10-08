@@ -1,0 +1,105 @@
+{
+  "session": "01a0fcbd-c50e-7cf1-8073-256a13ac9f7e",
+  "original_training_source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "parent_latest_full_backup_commit": "3ef489d09be6112e97f461469a6390b86057370f",
+  "backup_branch": "codex/backup-opsd-retained18-20261008t0307z",
+  "utc": "2026-10-08T03:10:35.297010+00:00",
+  "files": [
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-state-once-20261008T025658557408Z/reader-source.original.py",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-state-once-20261008T025658557408Z/reader-source.original.py",
+      "bytes": 2035,
+      "sha256": "2805fd911764f0b7273fc6882e008b0b45b14f896b96aec28c5c6172702236e9",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-state-once-20261008T025658557408Z/management-source.original.py",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-state-once-20261008T025658557408Z/management-source.original.py",
+      "bytes": 5874,
+      "sha256": "187c7dd9dbb11feed815c3dce4b28aba62a0886d612d8886351a35048f7bdfdc",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-state-once-20261008T025658557408Z/argv.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-state-once-20261008T025658557408Z/argv.original.json",
+      "bytes": 10770,
+      "sha256": "f845397a275d8f249a2b3022f83983ff7ccaf5e37b98cae4fff9d524e617d889",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-state-once-20261008T025658557408Z/intent.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-state-once-20261008T025658557408Z/intent.original.json",
+      "bytes": 317,
+      "sha256": "d7b9709d66e3795d90dda5757f3bed23f93327470d0f37d622ec7e4cd66ebbc7",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-state-once-20261008T025658557408Z/exit.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-state-once-20261008T025658557408Z/exit.original.json",
+      "bytes": 101,
+      "sha256": "cf492d172326d43fd3c2519a1e2fc8f0247271e01835aef55d839b2dcff362f2",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-logs-once-20261008T025859815608Z/reader-source.original.py",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-logs-once-20261008T025859815608Z/reader-source.original.py",
+      "bytes": 1880,
+      "sha256": "753d90463043156c82f9a2edc9a9af5eadd023787976332d682b3832291b60ed",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-logs-once-20261008T025859815608Z/management-source.original.py",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-logs-once-20261008T025859815608Z/management-source.original.py",
+      "bytes": 5527,
+      "sha256": "fec88466e531c40621b51da9d8706c2dd1fc63e8018ca3cabe84a6e16b4476f4",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-logs-once-20261008T025859815608Z/argv.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-logs-once-20261008T025859815608Z/argv.original.json",
+      "bytes": 10083,
+      "sha256": "8b55e36c61ada60277660e31886f008a7778cca6b685715aaffecd5d12a2f6bd",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-logs-once-20261008T025859815608Z/intent.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-logs-once-20261008T025859815608Z/intent.original.json",
+      "bytes": 167,
+      "sha256": "a5722a7e56e93eaa16f98dfe958ec46944a01c9479ce9a0ea8a2400412b333fa",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/job3304-retained18-actual-logs-once-20261008T025859815608Z/exit.original.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/job3304-retained18-actual-logs-once-20261008T025859815608Z/exit.original.json",
+      "bytes": 101,
+      "sha256": "f398715d11c34e161c8ccfa46fa61a701b60393fd8c354fbc95c4c0a5ee03b5d",
+      "scope": "actual read-only recovery code/entry/true wait; not a training or evaluation rerun authorization"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/remote_codex_control/memories/h100-retained18-connection-20261008.md",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/h100-retained18-connection-20261008.md",
+      "bytes": 4548,
+      "sha256": "5451133866dee7b1ead516fd0e79bbe0d6ea0d45a54fe5711acab3f899a606f6",
+      "scope": "non-secret route/reference or limited actual200 log-scope report"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/remote_codex_control/memories/reference_h100_retained18_route_20261008.public.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/reference_h100_retained18_route_20261008.public.json",
+      "bytes": 1951,
+      "sha256": "eb0fcf69fe338f3a7e825a889b0013c72f272bff26aa05c821a0f4f702fbda91",
+      "scope": "non-secret route/reference or limited actual200 log-scope report"
+    },
+    {
+      "original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-4/work/e1-unclipped-multitraj200-teacherrecompute/ROOT_ACTUAL3304_RETAINED18_RECOVERY_200_LOG_SCOPE_20261008.json",
+      "repository_path": "reproduction/baselines/opsd-retained18-recovery-20261008/ROOT_ACTUAL3304_RETAINED18_RECOVERY_200_LOG_SCOPE_20261008.json",
+      "bytes": 16529,
+      "sha256": "4eaa3320783c8f0b0a61cf8adcae725bb6c3db149c936b4ffd470e3834b3e5c2",
+      "scope": "non-secret route/reference or limited actual200 log-scope report"
+    }
+  ],
+  "limitations": [
+    "Training source and deployed runtime unchanged; backup adds read-only connection-recovery operations.",
+    "No credentials, private-key contents, environment, model weights or dataset bytes included.",
+    "HF200/full-state/archive/terminal/matched final evaluation acceptance not asserted."
+  ]
+}
