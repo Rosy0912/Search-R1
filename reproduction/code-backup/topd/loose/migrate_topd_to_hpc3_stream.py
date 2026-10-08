@@ -145,7 +145,7 @@ def main():
             if scan['plan']:
                 order = [r['name'] for r in scan['plan']['groups']]
                 ready = {r['group']:r for r in scan['ready'] if r.get('status')=='PACKED_SOURCE_SHA256'}
-                pending = [name for name in order if name in ready and name not in completed]
+                pending = [name for name in order if name in ready and name not in completed][:4]
                 # Four independent package streams share no destination files.
                 # On restart each stream resumes its own physical partial.
                 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
@@ -192,7 +192,7 @@ print(json.dumps({'status':'FINAL_SHARED_FILES_FRESH_SHA256_PASS','files':len(fi
             print(json.dumps({'status':'RETRY_PRESERVING_SOURCE_AND_DESTINATION_PARTIAL','error':str(error),'consecutive':failures}),flush=True)
             if failures>=5:
                 raise
-            time.sleep(15)
+            time.sleep(min(180, 30 * failures))
 
 
 if __name__ == '__main__':
