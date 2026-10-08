@@ -1,0 +1,114 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 12913,
+      "sha256": "8f10252f5ecfa7502d1c48a1a9d3fcb8c906abd3e5260869e3bbbbb2c56b923f"
+    },
+    "acceptance.py": {
+      "bytes": 15118,
+      "sha256": "21496151d807dc1fe7fd0d2ae063f2525709f618971ff6ea6fcf1e56bf36036a"
+    },
+    "candidate-config-template.json": {
+      "bytes": 4278,
+      "sha256": "f05c657c66bbcf4e1b48ffc45df5273c8767047ff636a619ae9a6d59312c6e75"
+    },
+    "checkpoint.py": {
+      "bytes": 13252,
+      "sha256": "23c8c9c78d2e0bfb535b4d713bc4f50b8718efb84e7ff1be8102cd5b812c5a45"
+    },
+    "configschema.json": {
+      "bytes": 4561,
+      "sha256": "4fc2656ad577899f70b8a1c8c26fbb4f2cc873699a24cd9a7f0faddd630937c3"
+    },
+    "controller-source-manifest.json": {
+      "bytes": 1919,
+      "sha256": "53fdb34b96737fdb51c435eb11fdb765bad4fea236c57de98f42a1d9973c5cea"
+    },
+    "controller.py": {
+      "bytes": 23704,
+      "sha256": "b4ec9f41ed5e78169e32f258a5e29a9a1d006312371010008fd6ad27942f7c94"
+    },
+    "cpu_preflight.py": {
+      "bytes": 3328,
+      "sha256": "447046ee42e21a6cb80f7326d84c178027284c57e16715f845b1e7fc1231aa7c"
+    },
+    "memory_observer.py": {
+      "bytes": 4853,
+      "sha256": "5535352bbf01ddea91bf1ee9031081a561ce8725f167198b6ee9b716a3441eed"
+    },
+    "objective.py": {
+      "bytes": 9061,
+      "sha256": "7e96e62f2f49633650d31726b9715616f4db7f3e04f07e6d0c8548d19f260d7c"
+    },
+    "owned_process_audit.py": {
+      "bytes": 13495,
+      "sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26"
+    },
+    "prepare.py": {
+      "bytes": 9824,
+      "sha256": "4e7279814dcb41eac323b28cb5bbe64a6c27b94420549ad4c2220a1181b751bc"
+    },
+    "sampling.py": {
+      "bytes": 18788,
+      "sha256": "4e9b0ea3d4a88130b536538c2f0f39d756b3f8c10175f9382b3572ae0c339347"
+    },
+    "scoring.py": {
+      "bytes": 1936,
+      "sha256": "2c5bf2d13c4fcd12e6831605e70f6b75680d56a7a896127f065071d18921ec20"
+    },
+    "test_acceptance.py": {
+      "bytes": 6435,
+      "sha256": "667e988de8fdebab2627d947d38a533271979819110800c423294c3e3903be8e"
+    },
+    "test_controller.py": {
+      "bytes": 24585,
+      "sha256": "59c0e3ff09c53d0af424a1b693e87ce6290c2398d86fcc4bb778bd4c82170c5d"
+    },
+    "test_independent_review.py": {
+      "bytes": 5375,
+      "sha256": "39aa607a97105d2a46432fc960d67614ae8b10d30f5d89a6e6f5e91b757f9563"
+    },
+    "test_memory_acceptance.py": {
+      "bytes": 4166,
+      "sha256": "71db4d9f02d7d28c05755dbe35d306b63913e23aef7a04d676dfa04f640aec7f"
+    },
+    "test_objective.py": {
+      "bytes": 9147,
+      "sha256": "34110c8758177c0049aeae69aaa99d05e45b4bb4202447152db55bbb14729cd9"
+    },
+    "test_scoring.py": {
+      "bytes": 3254,
+      "sha256": "3d5a632c0be5ab52bbf1ab58cd10eb2d0d352c87954222bca1b213079c070e20"
+    },
+    "test_trainer.py": {
+      "bytes": 15986,
+      "sha256": "86a46ee3d54dab5fbb3522bdb4c130160252c718593fc2e43100c07ecae3e9aa"
+    },
+    "trainer.py": {
+      "bytes": 39021,
+      "sha256": "be46c9f3a090b927f42f9ffea732e33a4dbf6abe49f3c5a761ffe3d1de508342"
+    },
+    "verify_five_updates.py": {
+      "bytes": 11373,
+      "sha256": "7ed76504a7fd18e164b3481971bc40d6e56400dbb522805c68fb1a902da730e2"
+    }
+  },
+  "frozen_runtime_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+  "local_cpu_tests": {
+    "cuda_initialized": false,
+    "passed": 71,
+    "python": "3.9.6",
+    "skipped": 0,
+    "tests": 71,
+    "torch": "2.8.0"
+  },
+  "pending_human_inputs": [
+    "KL component clip decision",
+    "new online outer-iteration budget",
+    "verified HKUST shared output root or explicit HKUST local exception"
+  ],
+  "recorded_at_utc": "2026-10-08T08:22:15.373341+00:00",
+  "schema": "opsd-online-helper-source-v1",
+  "scope": "Final local source tree; no GPU launch. Five real updates are a separate live acceptance.",
+  "specification_sha256": "c8cd882670173d47df03091b98e6aee0be8689d054fd48680ea887aedec61a28"
+}

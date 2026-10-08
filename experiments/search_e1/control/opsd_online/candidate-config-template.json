@@ -1,0 +1,145 @@
+{
+  "authorization": {
+    "clip_decision": null,
+    "eight_gpu_execution": null,
+    "outer_iterations_decision": null
+  },
+  "gates": {
+    "publication": null,
+    "resource_transition": null,
+    "retriever_admission": null,
+    "storage": null
+  },
+  "helper_source_manifest": null,
+  "logging": {
+    "all_valid_token_losses": true,
+    "topk": 32,
+    "topk_max_tokens_per_outer": 8192
+  },
+  "owner": {
+    "gpu_uuids": [
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+      "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+    ],
+    "physical_gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "uid": 1005
+  },
+  "paths": {
+    "base": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008",
+    "helper_root": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/source/opsd_online",
+    "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "output_root": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runs",
+    "python": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "receipts": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts",
+    "retriever_url": "http://10.120.17.101:18004/retrieve",
+    "runtime": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runtime/frozen-305",
+    "train": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+    "validation": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl"
+  },
+  "resources": {
+    "minimum_disk_bytes": 107374182400,
+    "shared_gpu_lease_paths": [
+      "/data/shaoshitong/search-e1-opsd-debug-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-native512-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-teacher-counterfactual-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/experiment.lock"
+    ],
+    "startup_minimum_free_mib": 20480,
+    "training_minimum_free_mib": 1024
+  },
+  "retention": {
+    "authorized": false,
+    "latest_complete": 2,
+    "merged_cache_keep": 2,
+    "mode": "rolling",
+    "preserve_outer_end": true,
+    "protected_updates": [
+      0,
+      1,
+      5
+    ]
+  },
+  "run_id": null,
+  "runtime_manifest": null,
+  "sampling": {
+    "attention_backend": "XFORMERS",
+    "backend": "vllm",
+    "batch_questions": 64,
+    "cpu_blocks_expected": 7281,
+    "dtype": "bfloat16",
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.85,
+    "max_model_len": 8192,
+    "max_search_calls": 4,
+    "max_tokens": 500,
+    "model_merge": "original_PEFT_CPU_BF16_latest_adapter_no_best_selection",
+    "num_gpu_blocks_override": 22671,
+    "observation_tokens": 480,
+    "question_order": "seed42_permuted_train_stream_skip_boundary_duplicate_with_recorded_cursor",
+    "questions": 512,
+    "seed": 42,
+    "siblings": 5,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "topk": 3,
+    "turns": 5,
+    "workers": 8
+  },
+  "schema": "opsd-online-config-v1",
+  "scientific": {
+    "chunk": 32,
+    "component_clip": "UNRESOLVED",
+    "epochs_per_outer": 1,
+    "global_batch": 32,
+    "grad_norm_clip": 1.0,
+    "learning_rate": 5e-06,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "lora_rank": 16,
+    "loss_reduction": "trajectory_mean",
+    "max_context": 8192,
+    "micro_batch": 1,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "kind": "AdamW",
+      "weight_decay": 0.01
+    },
+    "outer_iterations": null,
+    "scheduler": "none",
+    "seed": 42,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "teacher_frozen": true,
+    "warmup_updates": 0
+  },
+  "source_commit": null,
+  "source_model_manifest": null,
+  "train_identity": null,
+  "validation_identity": null
+}

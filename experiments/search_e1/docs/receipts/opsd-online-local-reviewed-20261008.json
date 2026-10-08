@@ -1,0 +1,17 @@
+{
+  "schema": "opsd-online-local-source-review-v1",
+  "manifest_sha256": "1687dfc3a76e6732ea4dc7b9838ecfa1f3c2ba83dc2b110db08e722b224c0408",
+  "files_verified": 23,
+  "python_ast_verified": 19,
+  "local_cpu_tests": {"passed": 71, "failures": 0, "errors": 0, "skipped": 0, "seconds": 1.088, "torch": "2.8.0", "cuda_initialized": false},
+  "independent_review": {"decision": "APPROVE", "passed": 71, "skipped": 0, "seconds": 1.053, "remaining_must_fix": [], "scope": "Scientific implementation, mathematics and CPU fixtures"},
+  "source_checkpoint": {"kind": "HKUST4 archive GRPO100 weights only", "source_files": 12, "fresh_sha_accepted": true, "restore_grpo_adam": false},
+  "frozen_runtime_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+  "actual_strict_scorer_sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+  "target_environment_cpu_readback": {"python": "3.10.19", "torch": "2.4.0+cu121", "transformers": "4.46.3", "peft": "0.13.2", "vllm": "0.6.3", "xformers": "0.0.27.post2", "cuda_initialized": false},
+  "implementation": {"learning_rate": 0.000005, "loss_reduction": "trajectory_mean", "online_questions_per_outer": 512, "siblings": 5, "global_actual_pair_batch": 32, "physical_micro": 1, "frozen_teacher": true, "latest_raw_student_sampling": true, "all_valid_token_losses": true, "private_http_full_response_log": true, "top32_valid_token_cap_per_outer": 8192},
+  "launch_allowed": false,
+  "production_training_started": false,
+  "pending_human_inputs": ["KL component clipping", "Online outer-round budget", "Verified HKUST shared output storage or explicit local exception"],
+  "not_yet_accepted": ["Target environment full node CPU suite", "Eight actual GPUs loaded", "Five synchronized finite weight-changing OPSD Adam updates", "Learning benefit"]
+}

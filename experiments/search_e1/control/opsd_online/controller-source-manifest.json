@@ -1,0 +1,49 @@
+{
+  "ast_passed": true,
+  "cpu_tests": {
+    "combined_count": 71,
+    "combined_passed": 71,
+    "combined_runtime_seconds": 1.048,
+    "own_count": 26,
+    "own_passed": 26,
+    "skipped": 0
+  },
+  "files": {
+    "README.md": {
+      "bytes": 12913,
+      "sha256": "8f10252f5ecfa7502d1c48a1a9d3fcb8c906abd3e5260869e3bbbbb2c56b923f"
+    },
+    "candidate-config-template.json": {
+      "bytes": 4278,
+      "sha256": "f05c657c66bbcf4e1b48ffc45df5273c8767047ff636a619ae9a6d59312c6e75"
+    },
+    "checkpoint.py": {
+      "bytes": 13252,
+      "sha256": "23c8c9c78d2e0bfb535b4d713bc4f50b8718efb84e7ff1be8102cd5b812c5a45"
+    },
+    "configschema.json": {
+      "bytes": 4561,
+      "sha256": "4fc2656ad577899f70b8a1c8c26fbb4f2cc873699a24cd9a7f0faddd630937c3"
+    },
+    "controller.py": {
+      "bytes": 23704,
+      "sha256": "b4ec9f41ed5e78169e32f258a5e29a9a1d006312371010008fd6ad27942f7c94"
+    },
+    "prepare.py": {
+      "bytes": 9824,
+      "sha256": "4e7279814dcb41eac323b28cb5bbe64a6c27b94420549ad4c2220a1181b751bc"
+    },
+    "sampling.py": {
+      "bytes": 18788,
+      "sha256": "4e9b0ea3d4a88130b536538c2f0f39d756b3f8c10175f9382b3572ae0c339347"
+    },
+    "test_controller.py": {
+      "bytes": 24585,
+      "sha256": "59c0e3ff09c53d0af424a1b693e87ce6290c2398d86fcc4bb778bd4c82170c5d"
+    }
+  },
+  "integration_scope": "Actual frozen native rollout HTTP null-effect fixture; request objects/Response/exceptions preserved; private full JSON and protocol diagnostics only; original305 nested QA verified before imports; top32 logging first8192 validpositions per outer only",
+  "recorded_at_utc": "2026-10-08T08:21:21.078906+00:00",
+  "schema": "opsd-online-controller-source-candidate-v2",
+  "scope": "Local reviewed candidate subset only, supersedes prior candidate manifest; root full helper manifest required. No Git/deployment/CUDA. Missing human clip/outer/storage/transition approvals remain HOLD."
+}

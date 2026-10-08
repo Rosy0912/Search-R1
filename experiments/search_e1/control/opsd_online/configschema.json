@@ -1,0 +1,120 @@
+{
+  "approval": "No missing human answer is defaulted; HOLD before CUDA",
+  "checkpoint_schema": "opsd-online-checkpoint-v1",
+  "checkpoint_state": "complete eight-rank Adam/all-RNG + adapter; committed manifest last with actual hashes and cursor",
+  "completion_schema": "opsd-online-outer-complete-v1",
+  "config_schema": "opsd-online-config-v1",
+  "fileproof": "{path,sha256,bytes?,device?,inode?,mtime_ns?,ctime_ns?}; checks fresh actual bytes where required",
+  "gates": {
+    "process_exclusions": "optional [] or bound CPU provenance receipts; never arbitrary PID allowlist",
+    "publication": "{path,sha256} accepted source push/readback proof",
+    "resource_transition": "{path,sha256} this new run and all8 UUIDs; previous resident safely retired",
+    "retriever_admission": "{path,sha256} exact live 18004 oracle PID/UID/starttick/source/full gate",
+    "storage": "{path,sha256} actual same-cluster storage or explicit human exception"
+  },
+  "identity_references": [
+    "source_model_manifest",
+    "runtime_manifest",
+    "helper_source_manifest",
+    "train_identity",
+    "validation_identity"
+  ],
+  "logging": {
+    "all_valid_token_losses": true,
+    "private_http": "Full actual queries/response JSON and document ID/score/content, separate per-worker trace bound in completion",
+    "protocol_diagnostics": "Last authored action validity/reward/native termination/executed searches; tag balance diagnostic only, per outer",
+    "topk": 32,
+    "topk_max_tokens_per_outer": 8192,
+    "topk_scope": "First valid positions in native order; explicit nonnegative cap, zero disables only top32"
+  },
+  "outer_manifest_fields": [
+    "run_id",
+    "config_sha256",
+    "runtime_identity",
+    "source_model_identity",
+    "outer_index",
+    "outer_dir",
+    "questions",
+    "train_cursor",
+    "rollouts",
+    "pairs",
+    "P",
+    "sampling_stats",
+    "sampling_model_identity",
+    "previous_complete_checkpoint",
+    "explicit_fresh",
+    "cumulative_optimizer_updates_before"
+  ],
+  "outer_manifest_schema": "opsd-online-outer-manifest-v1",
+  "paths": [
+    "base",
+    "output_root",
+    "runtime",
+    "python",
+    "model",
+    "train",
+    "validation",
+    "receipts",
+    "helper_root",
+    "retriever_url"
+  ],
+  "raw_data": "Private retained trajectory/token/loss files never copied to Git",
+  "retention": "explicitly authorized rolling latest2 + initial/update1/update5 + every outer-end; merge cache keep2; SHA tombstones; no pending/foreign/old deletion",
+  "run_id": "fixed 32 lowercase hex; same across fault resume",
+  "sampling_model_identity": {
+    "adapter_tensor_sha256": "previous checkpoint's all-rank tensor SHA | ZERO_EFFECT_FRESH_LORA",
+    "checkpoint": "exact previous complete checkpoint fileproof; null only first raw round",
+    "files": "fresh CPU byte-hashed model fileproofs and load metadata continuity",
+    "kind": "raw-source100 | original-PEFT-CPU-BF16-merge-latest",
+    "optimizer_updates": "original outer-start cumulative update count, not fault-resumed intermediate count",
+    "path": "actual loaded model directory",
+    "sha256": "bound model-file identity",
+    "source_model_identity": "source100 manifest SHA"
+  },
+  "schema": "opsd-online-config-schema-v1",
+  "scientific": {
+    "chunk": 32,
+    "component_clip": "UNRESOLVED until explicit null or positive finite number",
+    "epochs_per_outer": 1,
+    "global_batch": 32,
+    "grad_norm_clip": 1,
+    "learning_rate": 5e-06,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "lora_rank": 16,
+    "loss_reduction": "trajectory_mean",
+    "max_context": 8192,
+    "micro_batch": 1,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "kind": "AdamW",
+      "weight_decay": 0.01
+    },
+    "outer_iterations": "UNRESOLVED positive integer",
+    "scheduler": "none",
+    "seed": 42,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "teacher_frozen": true,
+    "warmup_updates": 0
+  },
+  "scoring_dependency": {
+    "pythonpath": "runtime/upstream/Search-R1:runtime",
+    "runtime_relative_path": "upstream/Search-R1/search_r1/qa_protocol.py",
+    "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+    "verification": "Root helper verifies existing runtime manifest, empty package init and actual imported path"
+  },
+  "source_commit": "actual 40hex pushed/readback commit",
+  "update_count": "ceil(K/32); K0 has0 calls; cumulative separate from outer_index"
+}

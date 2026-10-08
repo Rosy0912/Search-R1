@@ -1,0 +1,57 @@
+{
+  "schema": "opsd-online-authorized-design-20261008-v1",
+  "human_instruction": "根据这个去修复：/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-key-settings-and-online-sampling-20261008.md，然后重新启动八卡OPSD，从100iter的search-r1继续训练。",
+  "authorization_observed_unix": 1791446002.209105,
+  "thread_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
+  "spec_sha256": "c8cd882670173d47df03091b98e6aee0be8689d054fd48680ea887aedec61a28",
+  "precedence": "New explicit eight-GPU OPSD authorization follows and supersedes the earlier K1 old-job stop for this new run only; K4 and foreign processes remain protected.",
+  "known_scientific_settings": {
+    "source_grpo_step": 100,
+    "fresh_optimizer": true,
+    "additional_grpo": false,
+    "learning_rate": 5e-06,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "teacher_frozen": true,
+    "reference": "same-question successful full trajectory",
+    "loss_reduction": "trajectory_mean",
+    "physical_world": 8,
+    "micro_per_gpu": 1,
+    "global_trajectory_batch": 32,
+    "gradient_norm_clip": 1,
+    "scheduler": "none",
+    "warmup_updates": 0
+  },
+  "online_flow": [
+    "take512trainingquestions_excluding_validation",
+    "latest_student_fresh5_siblings_each",
+    "score_all2560_with_original_strict_QA_and_policy_provenance",
+    "unchanged_E1_mine_one_pair_per_eligible_question",
+    "joint_context_and_mask_check",
+    "one_pass_over_K_pairs_without_padding_or_dropping_tail",
+    "checkpoint_Adam_adapter_allRNG_exact_cursor",
+    "next_outer_uses_latest_raw_student_not_selected_best"
+  ],
+  "pending_required_inputs": {
+    "component_clip": "explicit human null or positive decision",
+    "outer_iterations": "explicit positive number replacing old fixed-data epoch",
+    "output_storage": "verified HKUST same-cluster share or explicit human HKUST local-disk exception"
+  },
+  "acceptance": "At least five real synchronized OPSD updates, independent finite/changed adapter and identical8rankAdam proof, directGPUfree; continue same run without a test/restart.",
+  "preserve": [
+    "all old weights/runtime/logs/debug results",
+    "raw teacher/student trajectories and HTTP documents",
+    "every valid token online pre/postclip fullKL and clipping counts",
+    "sampling weight manifest and P/K/exclusion/order/cursor",
+    "complete protected u0/u1/u5 and outer-end plus last2 rolling checkpoints"
+  ],
+  "implementation_ownership": {
+    "trainer_objective": "audit_opsd_acceptance",
+    "controller_sampling_checkpoint": "prepare_segmented_retriever",
+    "external_resource_storage_publication_acceptance": "root",
+    "independent_review": "review_e1_spec"
+  },
+  "launch_allowed": false,
+  "reason": "Required scientific/storage choices pending; source implementation and CPU tests continue."
+}
