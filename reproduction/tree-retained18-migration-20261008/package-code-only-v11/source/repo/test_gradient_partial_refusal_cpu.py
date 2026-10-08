@@ -1,0 +1,272 @@
+"""Actual clip/actor/worker methods; tiny CPU Adam, real two-rank Gloo.
+
+Synthetic FSDP layout with lazy-init bypass is explicit. These fixtures verify
+refusal control flow and raw partial-state persistence, not FSDP/NCCL/GPU math.
+"""
+import ast
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import tempfile
+from types import SimpleNamespace as N
+import unittest
+from unittest.mock import patch
+
+import torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+
+from search_r1.baselines import gradient_norm
+from search_r1.baselines import partial_worker_state
+from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+
+ROOT = Path(__file__).resolve().parent
+
+
+class Config(dict):
+    __getattr__ = dict.__getitem__
+
+
+class SyntheticFSDP(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.weight = torch.nn.Parameter(torch.tensor([1.]))
+        self._is_root = True
+        self._all_handles = []
+        self.compute_device = torch.device('cpu')
+        self.process_group = dist.group.WORLD
+        self.cpu_offload = N(offload_params=False)
+
+    def _assert_state(self, state): pass
+
+
+class TinyBatch:
+    def cuda(self): return self
+
+
+class Timer:
+    def __init__(self, *args, **kwargs): self.last = 1.
+    def __enter__(self): return self
+    def __exit__(self, *args): return False
+
+
+class Sharding:
+    def __enter__(self): return self
+    def __exit__(self, *args): return False
+    def preprocess_data(self, data): return data
+    def postprocess_data(self, data): return data
+
+
+class WorkerProto:
+    def __init__(self, meta_info): self.meta_info = meta_info
+    def to(self, device): return self
+
+
+def actual_method(relative, klass, name, scope):
+    path = ROOT / relative
+    tree = ast.parse(path.read_bytes())
+    body = next(n.body for n in tree.body if isinstance(n, ast.ClassDef) and n.name == klass)
+    node = copy.deepcopy(next(n for n in body if isinstance(n, ast.FunctionDef) and n.name == name))
+    node.decorator_list = []
+    exec(compile(ast.Module(body=[node], type_ignores=[]), str(path), 'exec'), scope)
+    return scope[name]
+
+
+def build_worker(rank, run, *, safety_enabled=True):
+    model = SyntheticFSDP()
+    optimizer = torch.optim.Adam(model.parameters(), lr=.01)
+    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda step: 1.)
+    sync_calls = []
+    safety = N(committed=0, sync_valid=lambda *a: sync_calls.append(a), publish=lambda *a: None)
+    actor = N(actor_module=model, actor_optimizer=optimizer, config=Config(grad_clip=1),
+              _policy_safety=safety if safety_enabled else None)
+    worker = N(actor=actor, actor_optimizer=optimizer, actor_lr_scheduler=scheduler,
+        config=Config(actor=Config(fresh200_protocol='tree_fresh200_five_leaf_v1')),
+        _is_actor=True, _is_offload_param=False, _is_offload_optimizer=False,
+        ulysses_sharding_manager=Sharding())
+    identity = {key: os.environ[name] for key, name in partial_worker_state.ENV_KEYS.items()}
+    identity.update(training_protocol='tree_fresh200_five_leaf_v1', attempted_outer=1, completed_outer=0)
+    data = N(batch=TinyBatch(), meta_info=dict(baseline_outer_step=1,
+        tree_partial_context=dict(protocol='tree_partial_state_v1', identity=identity,
+            directory=str(run / 'training_state/partial_outer_000001'))))
+    data.to = lambda device: data
+    return worker, data, sync_calls
+
+
+def load_worker_method():
+    return actual_method('verl/workers/fsdp_workers.py', 'ActorRolloutRefWorker', 'update_actor',
+        dict(torch=torch, os=os, DataProto=WorkerProto, Timer=Timer, logger=None,
+             log_gpu_memory_usage=lambda *a, **k: None))
+
+
+def rank_main(rank, rendezvous, run_path, mode):
+    dist.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
+    try:
+        run = Path(run_path)
+        env = dict(SLURM_JOB_ID='cpu-owned-f04', SEARCH_R1_BASELINE_RUN_ID='f04-repair',
+            SEARCH_R1_BASELINE_COMMIT='cpu-source-bound-in-owner-receipt',
+            SEARCH_R1_BASELINE_CONFIG_SHA256='cpu-config', SEARCH_R1_BASELINE_DATA_IDENTITY='cpu-data',
+            SEARCH_R1_MODEL_IDENTITY='tiny-cpu-model', SEARCH_R1_BASELINE_OUTPUT=str(run/'output'))
+        with patch.dict(os.environ, env):
+            worker, data, sync_calls = build_worker(rank, run, safety_enabled=mode != 'legacy')
+            actor, model = worker.actor, worker.actor.actor_module
+            step = actual_method('verl/workers/actor/dp_actor.py', 'DataParallelPPOActor', '_optimizer_step', dict(torch=torch))
+            clip_calls = 0
+            original_clip = gradient_norm.clip_grad_norm64
+
+            def clip(module, maximum):
+                nonlocal clip_calls
+                clip_calls += 1
+                if mode == 'postclip' and clip_calls == 4 and rank == 1:
+                    module.weight.grad.fill_(float('nan'))
+                return original_clip(module, maximum)
+
+            def update_policy(data):
+                model.weight.grad = torch.ones_like(model.weight)
+                step(actor)
+                model.weight.grad = torch.full_like(model.weight,
+                    float('nan') if rank == 1 and mode in ('preclip', 'legacy') else 1.)
+                step(actor)
+                raise AssertionError('Second optimizer call must refuse')
+
+            actor.update_policy = update_policy
+            output, caught = None, None
+            with patch.object(gradient_norm, 'FSDP', SyntheticFSDP), \
+                 patch('torch.distributed.fsdp._runtime_utils._lazy_init', lambda *a: None), \
+                 patch.object(gradient_norm, 'clip_grad_norm64', clip), \
+                 patch.object(torch.cuda, 'empty_cache', lambda: None):
+                try: output = load_worker_method()(worker, data)
+                except Exception as error: caught = error
+            assert actor._actual_committed_optimizer_calls == 1
+            adam_step = int(next(iter(worker.actor_optimizer.state.values()))['step'].item())
+            assert adam_step == 1 and model.weight.item() != 1.
+            assert worker.actor_lr_scheduler.last_epoch == 0
+            record = dict(rank=rank, mode=mode, actual_optimizer_returns=actor._actual_committed_optimizer_calls,
+                actual_adam_step=adam_step, actual_weight=model.weight.item(), scheduler_last_epoch=0,
+                clip_calls=clip_calls, safety_sync_calls=len(sync_calls))
+            if mode == 'legacy':
+                assert isinstance(caught, ValueError) and not isinstance(caught, PolicySafetyRefusal)
+                assert output is None and list(run.rglob('worker-*.pt')) == []
+                record.update(exception_type=type(caught).__name__, value_error_compatible=True,
+                              worker_snapshots=[], partial_envelope=None)
+            else:
+                assert caught is None, f'{type(caught).__name__}: {caught}'
+                envelope = output.meta_info['tree_partial_state']
+                assert envelope['status'] == 'PARTIAL_WORKER_STATE_SAVED'
+                assert envelope['outer_completed'] is False and envelope['automatic_rollback'] is False
+                assert envelope['resume_permitted'] is False and envelope['scheduler_advanced_actual'] == [False, False]
+                assert output.meta_info['metrics']['actor/optimizer_steps'] == 1
+                own = envelope['worker_states'][rank]
+                path = Path(own['path'])
+                assert hashlib.sha256(path.read_bytes()).hexdigest() == own['sha256']
+                # Only the fixture's tiny synthetic state, never a model asset.
+                saved = torch.load(path, map_location='cpu', weights_only=False)
+                assert torch.equal(saved['parameters']['weight'], model.weight.detach())
+                torch.testing.assert_close(saved['gradients']['weight'], model.weight.grad, rtol=0, atol=0, equal_nan=True)
+                assert saved['committed_optimizer_calls'] == 1 and saved['scheduler']['last_epoch'] == 0
+                assert [int(state['step'].item()) for state in saved['optimizer']['state'].values()] == [1]
+                assert own['state_finite'] is (rank == 0)
+                assert saved['state_finite'] is (rank == 0)
+                assert own['matched_all_ranks'] is True
+                assert not saved['automatic_rollback'] and not saved['outer_completed'] and not saved['resume_permitted']
+                record.update(partial_envelope=envelope, saved_weight=saved['parameters']['weight'].item(),
+                    saved_gradient_has_nan=bool(torch.isnan(saved['gradients']['weight']).any()),
+                    state_finite=saved['state_finite'], snapshot_sha256=own['sha256'])
+            (run/f'rank-{rank}.json').write_text(json.dumps(record, sort_keys=True, allow_nan=False))
+    finally:
+        dist.destroy_process_group()
+
+
+class Tests(unittest.TestCase):
+    def test_real_two_rank_gloo_second_preclip_retains_actual_partial_state(self):
+        self.check_mode('preclip')
+
+    def test_real_two_rank_gloo_second_postclip_retains_actual_partial_state(self):
+        self.check_mode('postclip')
+
+    def test_safety_disabled_remains_valueerror_without_worker_partial_collectives(self):
+        self.check_mode('legacy')
+
+    def check_mode(self, mode):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp) / mode; run.mkdir()
+            mp.spawn(rank_main, args=(str(run/'gloo-init'), str(run), mode), nprocs=2, join=True)
+            records = [json.loads((run/f'rank-{rank}.json').read_text()) for rank in range(2)]
+            self.assertEqual(records[0]['partial_envelope'], records[1]['partial_envelope'])
+            proof = os.environ.get('TREE_GRADIENT_CPU_PROOF_DIRECTORY')
+            if proof:
+                directory = Path(proof); directory.mkdir(parents=True, exist_ok=True)
+                (directory/f'{mode}.json').write_text(json.dumps(dict(
+                    scope='Actual clip/actor/worker source methods, real Gloo, tiny CPU Adam, synthetic FSDP layout/lazy-init bypass; no GPU/NCCL/FSDP training claim',
+                    envelopes_identical=True, records=records, temporary_fixture_pt_removed=True), sort_keys=True, allow_nan=False))
+
+    def test_ordinary_local_errors_never_trigger_worker_partial_persistence(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, dict(
+            SLURM_JOB_ID='cpu-owned', SEARCH_R1_BASELINE_RUN_ID='local', SEARCH_R1_BASELINE_COMMIT='cpu',
+            SEARCH_R1_BASELINE_CONFIG_SHA256='cpu', SEARCH_R1_BASELINE_DATA_IDENTITY='cpu',
+            SEARCH_R1_MODEL_IDENTITY='cpu', SEARCH_R1_BASELINE_OUTPUT=str(Path(tmp)/'output'))):
+            worker, data, sync_calls = build_worker(0, Path(tmp))
+            step = actual_method('verl/workers/actor/dp_actor.py', 'DataParallelPPOActor', '_optimizer_step', dict(torch=torch))
+            errors = (ValueError('local setup'), ValueError('uniform dtype'), RuntimeError('unfinished collective'))
+            for error in errors:
+                # A generic attribute is insufficient to claim a completed reduction.
+                error.matched_all_ranks = True
+                worker.actor.update_policy = lambda data, error=error: step(worker.actor)
+                with patch.object(gradient_norm, 'clip_grad_norm64', side_effect=error), \
+                     patch.object(partial_worker_state, 'persist_matched_partial_worker', side_effect=AssertionError('must not persist')) as persist, \
+                     patch.object(partial_worker_state, '_gather', wraps=partial_worker_state._gather) as gather:
+                    with self.assertRaises(type(error)) as caught: load_worker_method()(worker, data)
+                    self.assertIs(caught.exception, error)
+                    self.assertNotIsInstance(caught.exception, PolicySafetyRefusal)
+                    persist.assert_not_called()
+                    # Real existing startup preparation gathers once; refusal
+                    # must not enter any additional partial-save collective.
+                    self.assertEqual(gather.call_count, 1)
+                self.assertEqual(sync_calls, [])
+                self.assertEqual(worker.actor._actual_committed_optimizer_calls, 0)
+                self.assertEqual(len(worker.actor_optimizer.state), 0)
+
+    def test_subgroup_marker_and_failed_actual_reduction_remain_unmatched(self):
+        step = actual_method('verl/workers/actor/dp_actor.py', 'DataParallelPPOActor', '_optimizer_step', dict(torch=torch))
+        model = SyntheticFSDP()
+        model.weight.grad = torch.full_like(model.weight, float('nan'))
+        actor = N(actor_module=model, actor_optimizer=torch.optim.Adam(model.parameters()),
+                  config=Config(grad_clip=1), _policy_safety=N(sync_valid=lambda *a: None))
+        with patch.object(gradient_norm, 'FSDP', SyntheticFSDP), \
+             patch('torch.distributed.fsdp._runtime_utils._lazy_init', lambda *a: None):
+            # Actual clip reaches the bad MAX call. A collective exception has
+            # no completed-reduction proof and is never converted by actor.
+            failure = RuntimeError('incomplete bad MAX collective')
+            with patch.object(gradient_norm.dist, 'all_reduce', side_effect=failure):
+                with self.assertRaises(RuntimeError) as caught: step(actor)
+                self.assertIs(caught.exception, failure)
+                self.assertFalse(hasattr(caught.exception, 'matched_all_ranks'))
+            # Synthetic completed reduction and group sizes isolate marker
+            # scope; these are not a real subgroup distributed test.
+            with patch.object(gradient_norm.dist, 'all_reduce'), \
+                 patch.object(gradient_norm.dist, 'get_world_size', side_effect=[1, 2]):
+                with self.assertRaises(gradient_norm.SynchronizedGradientNormRefusal) as caught: step(actor)
+                self.assertIs(caught.exception.matched_all_ranks, False)
+                self.assertNotIsInstance(caught.exception, PolicySafetyRefusal)
+            self.assertEqual(len(actor.actor_optimizer.state), 0)
+            self.assertFalse(hasattr(actor, '_actual_committed_optimizer_calls'))
+
+    def test_local_nonfinite_and_dtype_setup_errors_remain_ordinary_valueerrors(self):
+        model = torch.nn.Linear(2, 1, bias=False)
+        model.weight.grad = torch.full_like(model.weight, float('nan'))
+        for maximum in (1., -1.):
+            with self.subTest(maximum=maximum), self.assertRaises(ValueError) as caught:
+                gradient_norm.clip_grad_norm64(model, maximum)
+            self.assertNotIsInstance(caught.exception, gradient_norm.SynchronizedGradientNormRefusal)
+            self.assertFalse(hasattr(caught.exception, 'matched_all_ranks'))
+        first = torch.nn.Parameter(torch.ones(1, dtype=torch.float32))
+        second = torch.nn.Parameter(torch.ones(1, dtype=torch.float64))
+        first.grad = torch.ones_like(first); second.grad = torch.ones_like(second)
+        with self.assertRaises(ValueError) as caught: gradient_norm._norm64([first, second], 'cpu')
+        self.assertNotIsInstance(caught.exception, gradient_norm.SynchronizedGradientNormRefusal)
+        self.assertFalse(hasattr(caught.exception, 'matched_all_ranks'))
+
+
+if __name__ == '__main__': unittest.main(verbosity=2)

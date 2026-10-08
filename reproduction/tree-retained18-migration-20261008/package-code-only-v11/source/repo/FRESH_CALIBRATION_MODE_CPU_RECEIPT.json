@@ -1,0 +1,95 @@
+{
+  "actual_executed_worker_test_copy_sha256": "a56036e5d5f4868825e2429ca462d030cc3b3d3c0d587d4b6ba15f2a88513e98",
+  "actual_fresh_training_accepted": false,
+  "base_commit": "e08e1896ce13655aa3f2b934212d2caea25e949c",
+  "calibrated_thresholds_supplied": false,
+  "calibration_profiles": {
+    "fresh": "fresh_base_zero_v1",
+    "legacy": "healthy_checkpoint_parent_v1"
+  },
+  "cpu_proofs": [
+    {
+      "name": "MODE_CPU_ACTUAL",
+      "outcome": "PASS",
+      "stderr_sha256": "241e211326cc3a204211d8397cd27134797b55fcee816f6be95e01713a6c142f",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests": 8
+    },
+    {
+      "name": "FRESH_CPU_ACTUAL",
+      "outcome": "PASS",
+      "stderr_sha256": "bbfc491cf62bb66011bf1be49abcd2e16bbbebce344227fc772b3339aa88d801",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests": 14
+    },
+    {
+      "name": "FRESH_DRIVER_CPU_ACTUAL",
+      "outcome": "FAIL_TOY_DEEPCOPY_KEYERROR",
+      "stderr_sha256": "712b2e67e4aaef957143f381b6f4dbbcd9e8486baf0ee3e320ac5f7f38466169",
+      "stdout_sha256": "4f0eb21edba7f3bd619d29ee3b25e29c83bebd4e28b5935db63b135225fec68c",
+      "tests": 2
+    },
+    {
+      "name": "FRESH_DRIVER_CPU_REPAIRED_ACTUAL",
+      "outcome": "PASS",
+      "stderr_sha256": "0e82f7056b6f32b1831e6e92466ba87815c092999183eedcfae7fe6bff81c0e1",
+      "stdout_sha256": "4f0eb21edba7f3bd619d29ee3b25e29c83bebd4e28b5935db63b135225fec68c",
+      "tests": 2
+    },
+    {
+      "name": "LEGACY_MODE_AFFECTED_CPU_ACTUAL",
+      "outcome": "PASS",
+      "stderr_sha256": "df4f2d375a6fec6f0d704e44fb1662d8d20b52925f29e27948804aa0c5b7e8f7",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests": 2
+    }
+  ],
+  "fresh_actual_boundary": {
+    "actual_completed_outer": 0,
+    "entire_adam_state_entries": 0,
+    "initialized_driver_global_steps": 0,
+    "observed_logical_outer": 1,
+    "sampler_cursor_after": 512,
+    "sampler_cursor_before": 0,
+    "scheduler_step": 0
+  },
+  "fresh_scheduler": {
+    "direct_rank_path": "fresh-state/outer-xxxxxx-rankXX.json",
+    "first_outer_zero_lr_real_adam20_and_parameter_delta_zero_allowed": true,
+    "io_failure_globally_refuses": true,
+    "maximum_error_flag_all_reduce": true,
+    "metric_average_is_not_direct_rank_proof": true,
+    "partial_optimizer_writes_retained": true,
+    "raw_per_rank_optimizer_calls_required": 20,
+    "scheduler_after": "observed outer",
+    "scheduler_before": "observed outer - 1",
+    "scheduler_formula_changed": false,
+    "skips_required": 0
+  },
+  "initialization_rpc": "Dispatch.ONE_TO_ALL inspect_fresh_initialization(expected_model_path)",
+  "legacy_affected_repeated_cases": 2,
+  "mode": {
+    "actual_monitor_train_all_modules": true,
+    "immutable_rank_mode_json_sha_validated_by_driver": true,
+    "restore_original_each_module_flag_on_success_and_failure": true,
+    "torch_cpu_and_selected_cuda_rng_fork_preserved": true
+  },
+  "model_scope": "Configured original model load path bound to driver-validated official path; complete model value bytes not verified by this RPC",
+  "no_actual_assets": true,
+  "no_commit": true,
+  "no_gpu": true,
+  "no_production_deployment": true,
+  "no_remote": true,
+  "original_sampler_actor_probability_gate_accepted": false,
+  "scope": "Local source and synthetic CPU only: real Torch modules/RNG/tiny AdamW/LambdaLR, real two-rank Gloo; extracted actual worker helper functions and original calibrate/finalize entrypoints with fake monitor/model and synthetic eight-record driver. No real FSDP/HF/Ray/probability/quality acceptance.",
+  "source_files": {
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "test_calibration_actor_mode_cpu.py": "1c5fed5b2abab50c103ffec46d67504152387d5c73f20224e9bba7e4437a5fa6",
+    "test_fresh_calibration_driver_cpu.py": "23bc6f0cac58c4959271be9c48d27c331f7d090ac9e599d01e8891ec019c2980",
+    "test_fresh_calibration_worker_cpu.py": "bb8ea5f8e603226420555fa886a39b4f96441c89e9ef281649bfad182b6d9086",
+    "verl/workers/fsdp_workers.py": "25aecb06088298d4094675c3669b529b2c3cddf1cefd613577ae1843fda03719"
+  },
+  "status": "FRESH_CALIBRATION_MODE_AND_DIRECT_RANK_SCHEDULER_SOURCE_CPU_IMPLEMENTED",
+  "unique_new_cpu_cases": 24,
+  "worker_test_post_execution_change": "Equivalent removal of unreachable conditional expression in fixture environment cleanup; production helper bytes unchanged after the 14-case run"
+}

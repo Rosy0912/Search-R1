@@ -1,0 +1,21 @@
+{
+  "status": "ACTOR_ENTROPY_COMPILE_CAPABILITY_OK",
+  "scope": "small GPU0 Torch compile/gradient capability; not real policy update acceptance",
+  "results": [
+    {
+      "dtype": "torch.float32",
+      "max_abs_delta": 2.384185791015625e-07,
+      "grad_norm": 0.5745293498039246,
+      "output_finite": true,
+      "gradient_finite": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "max_abs_delta": 0.015625,
+      "grad_norm": 0.4524190425872803,
+      "output_finite": true,
+      "gradient_finite": true
+    }
+  ],
+  "wall_seconds": 5.342798406258225
+}

@@ -1,0 +1,72 @@
+{
+  "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/.node-migration/FORMAL3334_FAILURE_RETAINED18_20261008.json",
+  "sha256": "be3aa8e2def01bca3398b8384b021cdaf32fd4f7380514a53faf367b142206d0",
+  "value": {
+    "status": "FORMAL3334_ACTUAL_STARTUP_FAILED_BEFORE_NATIVE_RESTORE",
+    "observed_epoch": 1791432997.5578501,
+    "job_id": 3334,
+    "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+    "manifest_sha256": "13268301b6718d77e1159a60526c67d9e139f6d05310438ac3f5b2b10f642cf9",
+    "scheduler_state": "FAILED",
+    "scheduler_stdout": "JobId=3334 JobName=tree-fresh200-train\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\n   Priority=4294898732 Nice=0 Account=(null) QOS=(null)\n   JobState=FAILED Reason=NonZeroExitCode Dependency=(null)\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0\n   RunTime=00:03:10 TimeLimit=7-00:00:00 TimeMin=N/A\n   SubmitTime=2026-10-08T11:33:24 EligibleTime=2026-10-08T11:33:24\n   AccrueTime=2026-10-08T11:33:24\n   StartTime=2026-10-08T12:10:36 EndTime=2026-10-08T12:13:46 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T12:10:36 Scheduler=Main\n   Partition=gpu AllocNode:Sid=h100-10:54984\n   ReqNodeList=h100-10 ExcNodeList=(null)\n   NodeList=h100-10\n   BatchHost=h100-10\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:*\n   TRES=cpu=192,mem=256G,node=1,billing=192\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\n   Command=(null)\n   WorkDir=/root\n   StdErr=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3334.err\n   StdIn=/dev/null\n   StdOut=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3334.out\n   Power=\n   TresPerNode=gres:gpu:8\n   \n\n",
+    "scheduler_returncode": 0,
+    "files": {
+      "run-result.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/run-result.json",
+        "sha256": "b1d4df3d93d3988a784aea6009874192ffe9615148fa3e5636b717520634b4f7",
+        "bytes": 11246
+      },
+      "cost.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/cost.json",
+        "sha256": "9d4cbb31d1baac3fa008f1192db3614db060b868ead3a86c6d8d97f67291fb0d",
+        "bytes": 705
+      },
+      "termination-cost.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/termination-cost.json",
+        "sha256": "a67911e51ee02cd15967ba751a5ce62d82fc1946391028e56700a6115a2e1125",
+        "bytes": 233
+      },
+      "launch-manifest.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/launch-manifest.json",
+        "sha256": "2b6335e5980bf2478f38188f32f16c28ea5536e1b13911f10fc2a86f9ecf9d8c",
+        "bytes": 3383
+      },
+      "stage.log": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/stage.log",
+        "sha256": "3d118381ae8f9a79aaaf0cf1d9b0508892324f71947bcf0faa0d3ab4bd984399",
+        "bytes": 18458
+      },
+      "guard.log": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/guard.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "resource-samples.jsonl": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/resource-samples.jsonl",
+        "sha256": "3ce3fb479eec4537dbf49b1547634877ef30377e2700cf6f91b6a9d93f30bc09",
+        "bytes": 80209
+      },
+      "retriever.log": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/retriever.log",
+        "sha256": "d93006b6a7871559c52a112e3363b88c63dc10cbc9e96beab46bdb9c8fb42f73",
+        "bytes": 19905
+      },
+      "ray.log": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3334/ray.log",
+        "sha256": "e62966fb93ee80d9dde6d95d6ccdf669bc83ff3b3ba6e1b61d850460781f6dd3",
+        "bytes": 1328
+      }
+    },
+    "own_cgroup_live_residual_empty": true,
+    "native_parent_loaded": false,
+    "new_rank_records": 0,
+    "new_training_credited_outers": 0,
+    "new_training_adam_writes": 0,
+    "preserved_parent_completed_outer": 4,
+    "error": "validation observer compared resolved output path to unresolved compatibility symlink path",
+    "wall_seconds": 188.3716402053833,
+    "allocated_gpu_hours": 0.4186036449008518,
+    "allocated_cpu_hours": 10.046487477620444,
+    "no_protocol_change": true
+  }
+}

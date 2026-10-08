@@ -1,0 +1,12 @@
+{
+  "scope": "V6 read-only local preparation snapshot; not inherited acceptance; V6 owner freeze pending",
+  "source_commit": "4ff6f9dddce24572778124717ce73dfc7b655541",
+  "files": {
+    "supervisor.py": "b7e89bc77a48ac92620052d556aeb494d72915ee8b8f059ead8085b51b6d4a14",
+    "calibration_contract.py": "fd881ce773b59ec3ca429f2dc9c79437e44dd36a97902d820726e2e0178174e3",
+    "run_tree.sh": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "validation_cost_entry.py": "51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a",
+    "validation_cost_hooks_instruct300.py": "251f6c861de4ad457661cd9b164962af12307396c6b0ac99ca8908b313649d82"
+  }
+}

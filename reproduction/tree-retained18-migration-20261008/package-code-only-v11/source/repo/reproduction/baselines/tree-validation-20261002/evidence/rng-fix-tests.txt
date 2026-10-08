@@ -1,0 +1,123 @@
+......F                                                                  [100%]
+=================================== FAILURES ===================================
+____________ Driver.test_real_fit_driver_gigpo_tree_bapo_topd_opsd _____________
+
+self = <test_models_and_driver.Driver testMethod=test_real_fit_driver_gigpo_tree_bapo_topd_opsd>
+
+    def test_real_fit_driver_gigpo_tree_bapo_topd_opsd(self):
+        # Actual fit(), with only GPU transport/model replaced. Checks unions,
+        # repeated source rows, scoring metadata, hooks, balancing and final tail.
+        for method in ('gigpo', 'tree_grpo', 'bapo', 'topd', 'opsd', 'cosearch'):
+            with self.subTest(method=method):
+                c = config(method)
+                c.actor_rollout_ref.rollout.n_agent = 2
+                c.baselines.tree.roots = 2
+                c.trainer.total_epochs = 1
+                c.trainer.test_freq = -1
+                c.trainer.save_freq = -1
+                c.trainer.critic_warmup = 0
+                c.actor_rollout_ref.actor.use_kl_loss = True
+                t = RayPPOTrainer.__new__(RayPPOTrainer)
+                t.config, t.tokenizer = c, CharTokenizer()
+                t.logger = SimpleNamespace(log=lambda **kwargs: None)
+                worker = Worker(t.tokenizer)
+                worker.world_size = 1
+                updates = []
+                def update_actor(data):
+                    self.assertIsInstance(data, DataProto)
+                    self.assertEqual(data.batch['advantages'].dtype, torch.float32)
+                    self.assertEqual(data.meta_info['temperature'], 1.)
+                    self.assertEqual(data.batch['loss_mask'].shape, data.batch['responses'].shape)
+                    updates.append(data)
+                    return DataProto(meta_info={'metrics': {'actor/fake_gpu_update': 1., 'actor/optimizer_steps': 1.}})
+                worker.update_actor = update_actor
+                t.actor_rollout_wg = worker
+                ids = padded([t.tokenizer.encode('Question: capital?')], 0, True)
+                t.train_dataloader = [dict(input_ids=ids, attention_mask=(ids != 0).long(),
+                    position_ids=torch.arange(ids.shape[1])[None, :], index=np.array(['q'], dtype=object),
+                    reward_model=np.array([{'ground_truth': {'target': ['Paris']}}], dtype=object),
+                    data_source=np.array(['nq'], dtype=object))]
+                t.use_reference_policy = t.use_rm = t.use_critic = False
+                t.total_training_steps = 2
+                t.val_reward_fn = None
+                t.reward_fn = RewardManager(t.tokenizer, 0)
+                t.kl_ctrl = SimpleNamespace(value=0.)
+                controller = Controller.__new__(Controller)
+                controller.trainer, controller.config, controller.method = t, c.baselines, method
+                controller.stage = BoundaryStage()
+                controller.ranker = controller.teacher = None
+                if method == 'bapo':
+                    t.val_dataloader = ['final']
+                    t.val_dataset = 'final'
+                    controller.stage_loader = ['holdout']
+                    controller.stage_dataset = 'holdout'
+                    t._validate = lambda: {'val/test_score/nq': 0.2, 'val/evaluated_count/nq': 1}
+                    t.reward_fn = BoundaryReward(t.tokenizer, controller.stage)
+                elif method == 'topd':
+                    class Scorer:
+                        parameter_count = 1
+                        scored_tokens = 0
+                        def log_probs(self, prompts, responses, attention, *args):
+                            return torch.ones_like(responses, dtype=torch.float32)
+                    controller.teacher = Scorer()
+                elif method == 'cosearch':
+                    class RankerTransport:
+                        validation = False
+                        events = []
+                        def execute(self, manager, predictions, states, do_search):
+                            return manager.execute_predictions(predictions, manager.tokenizer.pad_token,
+                                        torch.ones(len(states), dtype=torch.bool), do_search)
+                        def update(self, rewards):
+                            assert len(rewards) == 2
+                            return {'ranker/transport_update': 1}
+                    controller.ranker = RankerTransport()
+                    t.reward_fn = controller.main_f1_reward
+                t.baseline_controller = controller
+                with patch('search_r1.llm_agent.generation.LLMGenerationManager.batch_search',
+                           lambda self, queries: ['Paris'] * len(queries)):
+>                   t.fit()
+
+tests/baselines/test_models_and_driver.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+verl/trainer/ppo/ray_trainer.py:786: in fit
+    final_gen_batch_output, sources = self.baseline_controller.generate(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <search_r1.baselines.controller.Controller object at 0x178f94cd0>
+manager = <search_r1.llm_agent.generation.LLMGenerationManager object at 0x178804fd0>
+gen_batch = DataProto(batch=TensorDict(
+    fields={
+        attention_mask: Tensor(shape=torch.Size([2, 18]), device=cpu, dtype=t...ared=False)},
+    batch_size=torch.Size([2]),
+    device=None,
+    is_shared=False), non_tensor_batch={}, meta_info={})
+qa_batch = DataProto(batch=TensorDict(
+    fields={
+    },
+    batch_size=torch.Size([2]),
+    device=None,
+    is_shared=False),...ground_truth': {'target': ['Paris']}}], dtype=object), 'data_source': array(['nq', 'nq'], dtype=object)}, meta_info={})
+metrics = {}
+
+    def generate(self, manager, gen_batch, qa_batch, metrics):
+        engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
+                               self.config.context_alignment)
+>       if self.tree_rng is not None:
+E       AttributeError: 'Controller' object has no attribute 'tree_rng'
+
+search_r1/baselines/controller.py:166: AttributeError
+----------------------------- Captured stdout call -----------------------------
+epoch 0, step 1
+=============================== warnings summary ===============================
+../../../../../../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
+  /Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+../../../../../Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/ray/util/state/util.py:54
+  /Users/shaoshitong/Documents/Search-R1-RL-Baselines/.venv-cpu/lib/python3.9/site-packages/ray/util/state/util.py:54: DeprecationWarning: Ray state API is no longer experimental. Please import from `ray.util.state`. instead. Importing from `ray.experimental` will be deprecated in future releases. 
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/baselines/test_models_and_driver.py::Driver::test_real_fit_driver_gigpo_tree_bapo_topd_opsd
+1 failed, 6 passed, 2 warnings in 3.31s

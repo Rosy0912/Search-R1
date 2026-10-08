@@ -1,0 +1,1 @@
+{"pid": 3773512, "start_time_ticks": "32166731", "epoch": 1790996497.3166943, "action": "TERM_EXACT_OWN_INDEX_FORWARD_CLIENT", "args": ["ssh", "-T", "-N", "-o", "BatchMode=yes", "-o", "ExitOnForwardFailure=yes", "-o", "ConnectTimeout=15", "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=3", "-R", "127.0.0.1:18083:127.0.0.1:38082", "root@h100-9"]}

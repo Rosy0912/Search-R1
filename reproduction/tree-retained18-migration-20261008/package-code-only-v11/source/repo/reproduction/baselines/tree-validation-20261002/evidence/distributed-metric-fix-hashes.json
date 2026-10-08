@@ -1,0 +1,22 @@
+{
+  "base_sha": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "reviewed_sha256": {
+    "search_r1/baselines/objectives.py": "9f3215198a65450ebafec8bc1e84c8234e2d71979bf8c22dedaeae76efe9db6a",
+    "verl/workers/actor/dp_actor.py": "ea8763f2bf77f5a8bfe3be31b0dda84003b4286968e47f39d9ef162dc5f92a97",
+    "tests/baselines/test_distributed_paper_metrics.py": "55fc65755fb9ba99fa0d126430bc7bba45b1e5613d68ffeddeb4975b20d07045"
+  },
+  "test": "actual two-process Gloo/DDP actor + DataProto.concat",
+  "cases": [
+    "unequal leaf lengths",
+    "empty leaf",
+    "rank zero entirely unsupervised"
+  ],
+  "micros": [
+    1,
+    2
+  ],
+  "log_reduce_on_off_grad_parameters": "bitwise unchanged per rank",
+  "reference": "real non-distributed four-leaf actor minibatch",
+  "gpu": false,
+  "final_committed_sha": "c7091e792d930c6e2488c395a1dbd324ce0eec73"
+}

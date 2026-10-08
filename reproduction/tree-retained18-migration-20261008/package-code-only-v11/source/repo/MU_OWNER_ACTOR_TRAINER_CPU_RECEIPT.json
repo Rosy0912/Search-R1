@@ -1,0 +1,194 @@
+{
+  "status": "SOURCE_IMPLEMENTED_AFFECTED_SYNTHETIC_CPU_ACCEPTED_NOT_FSDP_OR_TRAINING_ACCEPTED",
+  "created_at_utc": "2026-10-06T07:59:32.035168+00:00",
+  "candidate_root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-behavior-mu-ppo",
+  "base_commit": "927ab58fdd8240d61aa52745700b2469f5406027",
+  "protocol": "tree_behavior_mu_centered_ppo_v1",
+  "owner": "context_helper_review",
+  "no_commit": true,
+  "source_files": [
+    {
+      "path": "verl/workers/actor/dp_actor.py",
+      "sha256": "8a645d01d8fe744a737d37d199e8b7d10c26879ffb0c3038dbb2bb4bd04cb125"
+    },
+    {
+      "path": "search_r1/baselines/policy_safety_runtime.py",
+      "sha256": "f0d74bfc080add2adbd98b588ef312fe96be4500fdd7f2a66e5b688e991f9fac"
+    },
+    {
+      "path": "verl/trainer/ppo/ray_trainer.py",
+      "sha256": "da9c4f7ece1b2a00b9df31ea37a8cb7cd252c7d0f5430393428fc62b0802a0e1"
+    },
+    {
+      "path": "test_tree_behavior_mu_actor_cpu.py",
+      "sha256": "7f6e095468e9bc78548c94edabfbb2c7da8c2dc9c3e6d1e6a1e18fb380d76793"
+    }
+  ],
+  "ast_compile": [
+    "verl/workers/actor/dp_actor.py",
+    "search_r1/baselines/policy_safety_runtime.py",
+    "verl/trainer/ppo/ray_trainer.py",
+    "test_tree_behavior_mu_actor_cpu.py"
+  ],
+  "collector_interface": {
+    "module": "search_r1.baselines.tree_behavior_mu",
+    "module_sha256": "809fa84287adce3c7a9f5840bde5d0dd85957951937a8988c272fd5c4f4a69a6",
+    "validator": "validate_behavior_mu_batch(data, *, expected_provenance, required=True)",
+    "trusted_provenance": "runtime_provenance(os.environ): original six literal environment keys",
+    "tensor": "sampled_old_log_probs",
+    "dtype": "torch.float32",
+    "row_non_tensor": "tree_behavior_mu_binding",
+    "metadata": [
+      "tree_behavior_mu_protocol",
+      "tree_behavior_mu_runtime_provenance",
+      "tree_behavior_mu_corrected_profile"
+    ],
+    "full_proto_checked_before_actor_select": true,
+    "source_data_full_proto_required_in_runtime": true
+  },
+  "tests": {
+    "unique_affected_test_methods": 21,
+    "methods": [
+      "test_legacy_first_and_final_casts_exact_original_and_corrected_preserves_every_float",
+      "test_original_beta_is_independent_clone_and_mu_denominator_exact_after_joint_balance",
+      "test_real_binding_mutations_refuse_actor_before_forward",
+      "test_wrong_or_empty_protocol_and_missing_repeat_limit_refuse",
+      "test_corrected_startup_without_full_provenance_proto_refuses",
+      "test_initial_mu_kl_is_nonzero_not_subtracted_repeat_zero_fullbeta_vsmonitor_logged",
+      "test_initial_mu_kl_and_negative_tail_can_refuse_zero_writes",
+      "test_repeat_drift_or_nonfinite_refuses_zero_writes",
+      "test_beta_nan_observation_padding_remains_invalid_not_a_policy_input",
+      "test_initial_repeat_monitor_fork_restores_rng_and_keeps_input_fields",
+      "test_mu_dualclip_gradient_preserves_tree_weights_and_global_row_denominator",
+      "test_beta_reward_kl_source_unchanged_and_missing_beta_never_uses_mu",
+      "test_true_ten_inner_optimizer_calls_without_budget_or_scheduler_change",
+      "test_finite_postwrite_behavior_kl_refusal_counts_real_write",
+      "test_full_source_data_does_not_allow_beta_as_mu_runtime_denominator",
+      "test_refusal_after_one_real_write_retains_committed_count_and_no_outer_credit",
+      "test_legacy_profile_keeps_old_initial_consistency_refusal",
+      "test_disabled_profile_refuses_orphan_mu_metadata_and_null_config",
+      "test_legacy_success_keeps_gradient_parameter_rng_and_forward_budget",
+      "test_source_fit_installs_after_beta_compute_validates_after_balance_and_finalmask",
+      "test_real_two_rank_gloo_missing_mu_wrong_profile_and_repeat_drift_all_refuse"
+    ],
+    "passed_commands": [
+      {
+        "name": "OWNER_CPU_RUN3",
+        "actual_tests": 16,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "92a0a6337607716368de48417235cca2cc3a90700f4a23eca25ac1e49b467793"
+      },
+      {
+        "name": "OWNER_CPU_FINAL_DELTA",
+        "actual_tests": 6,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "a07b5b45e0478e6cd0092a678a012075b184b5c7c43601a43285661d6c4b0024"
+      },
+      {
+        "name": "OWNER_CPU_STARTUP_FINAL",
+        "actual_tests": 5,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "0ff6082ca49b4d0ed5b6f6ba7ed818cc0307f2c57cc44c680f048c8aeef268f4"
+      },
+      {
+        "name": "OWNER_CPU_EFFECTIVE_MASK_FINAL",
+        "actual_tests": 4,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "2ea5d6531bdc2cd7e32723c2bdb3f16e75e6a51a076f87a91cede9b1b5eb5706"
+      }
+    ],
+    "final_scope": "16 initial affected + 6 changed-delta + 5 changed-startup + 4 effective-mask/finite-postwrite; overlapping methods counted once. No claim that all 21 ran in one command.",
+    "actual_real_cpu_tensors": true,
+    "actual_tiny_cpu_adam_sgd": true,
+    "actual_gloo_world_size": 2,
+    "gloo_cases": [
+      "one_rank_missing_mu",
+      "one_rank_wrong_profile",
+      "one_rank_same_partition_repeat_drift"
+    ],
+    "tests_do_not_import_full_HF_actor": "Actual update_policy/_optimizer_step AST with TinyBatch/Proto and one-parameter forward; actual policy_safety/gradient_norm and mu/raw validator modules.",
+    "original_math_source_unchanged": [
+      {
+        "path": "search_r1/baselines/policy_safety.py",
+        "sha256": "078b17afa0b836487c37b3c14f80aedc51dd65b29e7e7f067289e647ea6b4cdb",
+        "same_as_base": true
+      },
+      {
+        "path": "search_r1/baselines/objectives.py",
+        "sha256": "c74a40bfd835b17b6a43d752a27a68f00d75cf3bf4794687723947ed2dacbabb",
+        "same_as_base": true
+      },
+      {
+        "path": "search_r1/baselines/advantages.py",
+        "sha256": "d8cb2eea41021f7a6a5752f60abb4f1c316ecf88fbf959fec87346ba01254a82",
+        "same_as_base": true
+      }
+    ]
+  },
+  "preserved": {
+    "tree_equal_leaf_weights": true,
+    "global_mini_row_denominator": true,
+    "advantages": true,
+    "dual_clip_formula": true,
+    "actual_ten_inner_optimizer_calls_synthetic_verified": true,
+    "original_beta_reward_kl": true,
+    "current_actor_reference_kl_unchanged": true,
+    "partial_write_counter_true": true,
+    "partial_outer_credit": false,
+    "partial_scheduler_advance": false,
+    "initial_mu_k3_subtracted": false,
+    "legacy_casts_exact": true,
+    "legacy_initial_consistency_gate": true,
+    "same_monitor_partition_repeat": true,
+    "allrank_missing_profile_refusal_before_forward": true
+  },
+  "original_failed_fixture_evidence": [
+    {
+      "path": "OWNER_FIRST_IMPORT_FAILURE.stderr",
+      "sha256": "43e54d2dc4035784610fc857148ec35fd4a031086267bed6d57db3aefc55a52a"
+    },
+    {
+      "path": "OWNER_FIRST_IMPORT_FAILURE.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OWNER_CPU_RUN1.stderr",
+      "sha256": "8affb176f4587433d5406c9ff95493482466e29a7356a12a40494cf02befeea1"
+    },
+    {
+      "path": "OWNER_CPU_RUN1.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OWNER_CPU_RUN2.stderr",
+      "sha256": "8936888baa17d3b1fc05b4ebb1cd4fff66658debac02e88bb215eac863594f46"
+    },
+    {
+      "path": "OWNER_CPU_RUN2.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "failure_scope": "First attempt 0 cases: annotation stub. RUN1 accidentally discovered 11 imported collector tests plus 16 affected, failed 11 errors (audit stub). RUN2 16 affected, failed 3 errors (Torch 2.8 lazy Dynamo import under temporary verl stub). All failed files preserved and excluded from PASS. RUN3 preloads unmodified Torch Dynamo before fixture stubs; final suites select only affected methods.",
+  "pending": [
+    "actual DataProto/Ray/FSDP/NCCL zero-write corrected calibration",
+    "production repeat/KL/tail calibration",
+    "real healthy110 short update acceptance/fullHF/fixed512",
+    "300-step effect validation"
+  ],
+  "original_sampler_actor_consistency_accepted": false,
+  "actual_gpu_accepted": false,
+  "actual_production_optimizer_writes": 0,
+  "synthetic_optimizer_writes_exercised": true,
+  "training_accepted": false,
+  "ready_to_freeze_source_candidate": true,
+  "release_for_dispatch": false,
+  "evidence_cost_scope": "New native calls and extra initial-repeat count are recorded separately. Host-native-call interval does not include every asynchronous CUDA completion or collective wait.",
+  "no_remote_connection": true,
+  "no_real_model_or_pt_assets_loaded": true,
+  "no_source_edits_outside_owned_files": true,
+  "review_sha256": "c7e27b589e3863346dcfab022b615ae4d3bddf0b0cf53fbc0c188cc548b5031a"
+}

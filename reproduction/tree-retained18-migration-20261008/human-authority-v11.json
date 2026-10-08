@@ -1,0 +1,91 @@
+{
+  "status": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "packet_revision": 11,
+  "code_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "current_chain_resume": {
+    "protocol": "current_fresh200_chain_fault_repair_continuation_v1",
+    "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+    "parent_job_id": "3331",
+    "parent_run_id": "tree-current200-continue-3331",
+    "parent_code_commit": "9693f0c846fab483a03e1d70ce1109aeddc5e118",
+    "parent_config_sha256": "f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json",
+      "sha256": "84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73"
+    },
+    "parent_completed_outer": 4,
+    "parent_training_attempts": 4,
+    "parent_optimizer_calls_per_rank": {
+      "0": 80,
+      "1": 80,
+      "2": 80,
+      "3": 80,
+      "4": 80,
+      "5": 80,
+      "6": 80,
+      "7": 80
+    },
+    "parent_scheduler_step": 4,
+    "parent_sampler_cursor": 2048,
+    "parent_sampler_epoch": 0,
+    "next_outer_update": 5,
+    "completed_outer_goal": 200,
+    "planned_new_completed_outer": 196,
+    "environment": {
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json",
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256": "84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73",
+      "TREE_CURRENT_CHAIN_RESUME_AUTHORITY": "current_fresh200_chain_fault_repair_continuation_v1"
+    },
+    "automatic_resume_supported": false,
+    "exact_executor_resume": false,
+    "executor_equivalence": false,
+    "actual_migration_executed": false,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "parent_failed_attempt": {
+      "attempt_id": 5,
+      "completed_outer_credit": 0,
+      "optimizer_writes": null,
+      "published_rank_optimizer_record": null,
+      "error_type": "FileNotFoundError",
+      "failure_component": "supervisor_contract_proc_stat"
+    }
+  },
+  "same_instance_continuation": true,
+  "completed_outer_goal": 200,
+  "final_evaluation_rows": 51713,
+  "production_thresholds_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "original_sampler_actor_gate_accepted": false,
+  "configured_prospective_thresholds": {
+    "target_old_policy_kl": 0.2,
+    "negative_tail_limit": 0.01,
+    "initial_actor_repeat_max_abs_delta": 0.0
+  },
+  "human_instruction": "2026-10-08\u7528\u6237\u660e\u786e\uff1a\u539f\u8282\u70b9\u5c5e\u4e8e\u9000\u5f79\u8282\u70b9\u5219\u6362\u5230\u4fdd\u755910.33.0.18\uff1b\u540cH100\u5171\u4eab\u76d8\u53ef\u7528\u3002\u7ee7\u7eed\u6709\u6548fresh200\u76ee\u6807\uff0c\u4ece\u540c\u4e00\u94fe\u5b9e\u9645\u4fdd\u5b58\u7684rolling4\u7ee7\u7eed\uff0c\u65e0\u65b0\u589e0-5\u9636\u6bb5\u3002\u6700\u65b0\u4eba\u5de5\u660e\u786e\u53d6\u6d88OPSD3304\u5e76\u7ee7\u7eedTree\uff1b3334\u56e0\u8fc1\u79fb\u8def\u5f84\u6bd4\u8f83\u9519\u8bef\u5728\u66f4\u65b0\u524d\u5931\u8d25\uff0c\u4fdd\u7559\u5b9e\u9645\u5931\u8d25\u51ed\u8bc1\u540e\u4fee\u590d\u5e76\u4ece\u540c\u4e00rolling4\u7ee7\u7eed\u3002",
+  "human_instruction_original_time": "2026-10-08 Asia/Shanghai; exact message timestamp unavailable",
+  "retained18_migration": {
+    "original_node": "h100-9",
+    "original_ip": "10.33.0.13",
+    "retirement_date": "2026-10-08",
+    "destination_node": "h100-10",
+    "destination_ip": "10.33.0.18",
+    "destination_retained": true,
+    "preserved_parent_completed_outer": 4,
+    "unpreserved3333_progress_unknown": true,
+    "original3333_terminal_state": null,
+    "original3333_cleanup_verified": false,
+    "same_cluster_assets": true,
+    "assets_local_on_destination": true,
+    "output_server": "10.33.0.18",
+    "output_server_retained": true,
+    "storage_receipt_sha256": "04093db4cc3fae79b780b5213d2c53324ba1515b5dac9c3155c2fec0c4818b5e",
+    "asset_copy_required_status": "LOCAL_ASSETS_AND_PARENT_FILES_COPIED_VERIFIED",
+    "exact_executor_resume": false,
+    "foreign_job3304_must_be_scheduled_around": false,
+    "foreign_job3304_cancelled_by_latest_human": true,
+    "extra_short_training_added": false
+  }
+}

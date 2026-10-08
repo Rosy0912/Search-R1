@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "ranks": [
+    {
+      "rank": 0,
+      "device": "NVIDIA A800-SXM4-80GB",
+      "methods": {
+        "gigpo": {
+          "parameter_delta_l1": 59.06998062133789,
+          "optimizer_steps": 2
+        },
+        "tree_grpo": {
+          "parameter_delta_l1": 60.02796173095703,
+          "optimizer_steps": 2
+        },
+        "bapo": {
+          "parameter_delta_l1": 58.56454849243164,
+          "optimizer_steps": 2
+        },
+        "topd": {
+          "parameter_delta_l1": 58.76219940185547,
+          "optimizer_steps": 2
+        },
+        "opsd": {
+          "parameter_delta_l1": 47.727149963378906,
+          "optimizer_steps": 2
+        },
+        "cosearch_ranker": {
+          "parameter_delta_l1": 0.46593302488327026,
+          "optimizer_steps": 1
+        }
+      },
+      "peak_allocated_mib": 20.35693359375
+    },
+    {
+      "rank": 1,
+      "device": "NVIDIA A800-SXM4-80GB",
+      "methods": {
+        "gigpo": {
+          "parameter_delta_l1": 94.75428771972656,
+          "optimizer_steps": 2
+        },
+        "tree_grpo": {
+          "parameter_delta_l1": 95.79580688476562,
+          "optimizer_steps": 2
+        },
+        "bapo": {
+          "parameter_delta_l1": 94.15206146240234,
+          "optimizer_steps": 2
+        },
+        "topd": {
+          "parameter_delta_l1": 88.04635620117188,
+          "optimizer_steps": 2
+        },
+        "opsd": {
+          "parameter_delta_l1": 79.32002258300781,
+          "optimizer_steps": 2
+        }
+      },
+      "peak_allocated_mib": 20.35693359375
+    }
+  ],
+  "scope": "tiny CUDA/FSDP actor and ranker optimizer/checkpoint; no vLLM or production benchmark"
+}

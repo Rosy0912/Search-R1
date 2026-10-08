@@ -1,0 +1,19 @@
+{
+  "source_sha256": "8354ddfba5325aafb27eb084fa06a5caf73c6ebb78021a2745b3d0eea32cc54e",
+  "scope": "static CPU validator helper review plus real bash noclobber redirection fixture; no Slurm/HF/GPU acceptance",
+  "log_preservation_cases": [
+    {
+      "case": "fresh_log",
+      "exit_code": 0,
+      "preserved_text": "original-evidence",
+      "stderr": ""
+    },
+    {
+      "case": "retry_refuses_existing_log",
+      "exit_code": 1,
+      "preserved_text": "original-evidence",
+      "stderr": "bash: /var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/tmpmwwj3k16/stage-validation-9001.log: cannot overwrite existing file"
+    }
+  ],
+  "audit_validator_cases": 14
+}

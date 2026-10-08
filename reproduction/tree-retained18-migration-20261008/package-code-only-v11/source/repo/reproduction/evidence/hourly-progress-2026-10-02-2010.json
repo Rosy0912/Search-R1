@@ -1,0 +1,268 @@
+{
+  "checked_at_utc": "2026-10-02T12:10:09.619668+00:00",
+  "updates": [
+    {
+      "step": 1,
+      "reward": 0.036,
+      "step_seconds": 411.827,
+      "grad_norm": 0.148
+    },
+    {
+      "step": 2,
+      "reward": 0.036,
+      "step_seconds": 390.666,
+      "grad_norm": 0.153
+    },
+    {
+      "step": 3,
+      "reward": 0.049,
+      "step_seconds": 401.12,
+      "grad_norm": 0.192
+    },
+    {
+      "step": 4,
+      "reward": 0.041,
+      "step_seconds": 395.059,
+      "grad_norm": 0.144
+    },
+    {
+      "step": 5,
+      "reward": 0.038,
+      "step_seconds": 406.237,
+      "grad_norm": 0.154
+    },
+    {
+      "step": 6,
+      "reward": 0.045,
+      "step_seconds": 397.078,
+      "grad_norm": 0.154
+    },
+    {
+      "step": 7,
+      "reward": 0.041,
+      "step_seconds": 399.373,
+      "grad_norm": 0.159
+    },
+    {
+      "step": 8,
+      "reward": 0.04,
+      "step_seconds": 383.617,
+      "grad_norm": 0.162
+    },
+    {
+      "step": 9,
+      "reward": 0.042,
+      "step_seconds": 393.703,
+      "grad_norm": 0.156
+    },
+    {
+      "step": 10,
+      "reward": 0.035,
+      "step_seconds": 396.547,
+      "grad_norm": 0.156
+    },
+    {
+      "step": 11,
+      "reward": 0.039,
+      "step_seconds": 400.826,
+      "grad_norm": 0.158
+    },
+    {
+      "step": 12,
+      "reward": 0.039,
+      "step_seconds": 395.155,
+      "grad_norm": 0.143
+    },
+    {
+      "step": 13,
+      "reward": 0.037,
+      "step_seconds": 391.377,
+      "grad_norm": 0.148
+    },
+    {
+      "step": 14,
+      "reward": 0.038,
+      "step_seconds": 381.554,
+      "grad_norm": 0.164
+    },
+    {
+      "step": 15,
+      "reward": 0.048,
+      "step_seconds": 373.296,
+      "grad_norm": 0.185
+    },
+    {
+      "step": 16,
+      "reward": 0.055,
+      "step_seconds": 374.461,
+      "grad_norm": 0.199
+    },
+    {
+      "step": 17,
+      "reward": 0.045,
+      "step_seconds": 369.994,
+      "grad_norm": 0.172
+    },
+    {
+      "step": 18,
+      "reward": 0.053,
+      "step_seconds": 361.808,
+      "grad_norm": 0.232
+    },
+    {
+      "step": 19,
+      "reward": 0.058,
+      "step_seconds": 356.616,
+      "grad_norm": 0.21
+    },
+    {
+      "step": 20,
+      "reward": 0.058,
+      "step_seconds": 337.117,
+      "grad_norm": 0.231
+    },
+    {
+      "step": 21,
+      "reward": 0.062,
+      "step_seconds": 329.703,
+      "grad_norm": 0.227
+    },
+    {
+      "step": 22,
+      "reward": 0.075,
+      "step_seconds": 331.768,
+      "grad_norm": 0.289
+    },
+    {
+      "step": 23,
+      "reward": 0.079,
+      "step_seconds": 309.055,
+      "grad_norm": 0.311
+    },
+    {
+      "step": 24,
+      "reward": 0.095,
+      "step_seconds": 298.495,
+      "grad_norm": 0.365
+    },
+    {
+      "step": 25,
+      "reward": 0.092,
+      "step_seconds": 291.754,
+      "grad_norm": 0.361
+    },
+    {
+      "step": 26,
+      "reward": 0.089,
+      "step_seconds": 282.65,
+      "grad_norm": 0.371
+    },
+    {
+      "step": 27,
+      "reward": 0.096,
+      "step_seconds": 274.759,
+      "grad_norm": 0.405
+    },
+    {
+      "step": 28,
+      "reward": 0.107,
+      "step_seconds": 262.731,
+      "grad_norm": 0.46
+    },
+    {
+      "step": 29,
+      "reward": 0.113,
+      "step_seconds": 258.593,
+      "grad_norm": 0.471
+    },
+    {
+      "step": 30,
+      "reward": 0.112,
+      "step_seconds": 251.702,
+      "grad_norm": 0.51
+    },
+    {
+      "step": 31,
+      "reward": 0.126,
+      "step_seconds": 249.524,
+      "grad_norm": 0.521
+    }
+  ],
+  "validations": [
+    {
+      "step": 0,
+      "metrics": {
+        "val/test_score/nq": 0,
+        "val/evaluated_count/nq": 10,
+        "val/test_score/triviaqa": 0.444,
+        "val/evaluated_count/triviaqa": 9,
+        "val/test_score/popqa": 0.111,
+        "val/evaluated_count/popqa": 9,
+        "val/test_score/hotpotqa": 0.111,
+        "val/evaluated_count/hotpotqa": 9,
+        "val/test_score/2wikimultihopqa": 0,
+        "val/evaluated_count/2wikimultihopqa": 9,
+        "val/test_score/musique": 0,
+        "val/evaluated_count/musique": 9,
+        "val/test_score/bamboogle": 0.111,
+        "val/evaluated_count/bamboogle": 9
+      }
+    }
+  ],
+  "active_step": [
+    "epoch 0, step 32"
+  ],
+  "stage": "2026-10-02T09:05:18Z TRAINING_64_VALIDATION_500_UPDATES",
+  "log_modified_unix": 1790942980.7517388,
+  "gpu_csv": "0, 98 %, 32289 MiB, 143771 MiB\n1, 98 %, 24065 MiB, 143771 MiB\n2, 97 %, 21125 MiB, 143771 MiB\n3, 98 %, 20641 MiB, 143771 MiB\n4, 98 %, 29233 MiB, 143771 MiB\n5, 98 %, 22017 MiB, 143771 MiB\n6, 98 %, 21289 MiB, 143771 MiB\n7, 99 %, 21867 MiB, 143771 MiB\n",
+  "sampling": {
+    "training-gpu-samples.csv": {
+      "first": "2026/10/02 17:09:34.079",
+      "last": "2026/10/02 17:39:24.304",
+      "rows": 1440,
+      "peak_memory_mib": {
+        "0": 104313,
+        "1": 112347,
+        "2": 109057,
+        "3": 100087,
+        "4": 94559,
+        "5": 141877,
+        "6": 95923,
+        "7": 94967
+      }
+    },
+    "training-gpu-continuous.csv": {
+      "first": "2026/10/02 19:02:15.585",
+      "last": "2026/10/02 20:09:45.747",
+      "rows": 1088,
+      "peak_memory_mib": {
+        "0": 119925,
+        "1": 101723,
+        "2": 94155,
+        "3": 94269,
+        "4": 116877,
+        "5": 94155,
+        "6": 114475,
+        "7": 105047
+      }
+    }
+  },
+  "recent_errors": [],
+  "tmux": "0 bash\n",
+  "five_accepted": 5,
+  "final_acceptance_exists": false,
+  "summary": {
+    "completed_updates": 31,
+    "percent_complete": 6.2,
+    "new_updates_since_last_success": 14,
+    "latest_reward": 0.126,
+    "latest_delta": 0.081,
+    "interval_mean": 0.08678571428571427,
+    "interval_range": [
+      0.053,
+      0.126
+    ],
+    "previous_interval_mean": 0.041727272727272724,
+    "last10_mean": 0.09839999999999999
+  }
+}
