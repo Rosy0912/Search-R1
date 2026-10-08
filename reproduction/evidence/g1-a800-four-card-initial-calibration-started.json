@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "role": "actual_A800_four_card_pipeline_startup_observation",
+  "observed_unix": 1791428479.3347692,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "host": "baai-a800",
+  "source_commit": "f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c",
+  "local_published_observer_commit": "2f956ae2b9f86735af8d16ddaa35567d6bce17eb",
+  "run_id": "6de29bcb7be741cfa1bfacdf9e34efc9",
+  "execution_id": "565795550d8e4adf978db54159283f2d",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef",
+  "pipeline_pid": 899364,
+  "pipeline_start_ticks": 550768997,
+  "pipeline_birth_matches": true,
+  "pipeline_alive": true,
+  "pipeline_claimed": true,
+  "trainer_claimed": false,
+  "pipeline_stage": "REAL_INITIAL_300_QUESTION_CALIBRATION",
+  "recorded_completed_outers": 0,
+  "training_update_started": false,
+  "latest_reward": null,
+  "latest_dev512_score": null,
+  "latest_stage64_score": null,
+  "source_transport": "published_git_bundle_relay",
+  "runtime_source_is_published": true,
+  "training_physical_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "retriever_physical_indices": [
+    5,
+    6
+  ],
+  "excluded_foreign_gpu_indices": [
+    4,
+    7
+  ],
+  "batch": {
+    "outer_questions": 512,
+    "responses_per_question": 5,
+    "trajectories": 2560,
+    "mini_global": 128,
+    "actor_micro_per_rank": 2,
+    "actual_actor_global_micro": 8,
+    "accumulation_per_mini": 16,
+    "old_ref_global_micro": 32,
+    "old_ref_per_rank": 8,
+    "opportunities_per_outer": 20,
+    "actual_Adam_writes_reported_separately": true
+  },
+  "target_complete_outers": 200,
+  "same_trainer_after_five": true,
+  "old_failed_deployment_id": "5faf22ef973a4da6b30eee41cef49143",
+  "old_failure_scope": "pre-training CUDA runtime path; no completed outer; preserved immutable",
+  "original_receipt_sha256": "3078152aa6fbbb05a7d13c1c1d84d209e747d21b49cfb3d85c590c3f6e3a497b",
+  "publication_receipt_sha256": "d8857f3eeecd39b20ad39448e57bac1e7c47d2fbe4795d86f6c36cc9bfbfc3a0",
+  "limitations": [
+    "Pipeline startup and required initial probes are not completed GRPO updates or five-step acceptance.",
+    "Actual runtime source hashes are disk identity evidence, not proof of every loaded module.",
+    "Old H100 current state remains unknown; no old learned weights, counters, or scores copied."
+  ]
+}
