@@ -1,0 +1,7 @@
+# 已闭合 full192 文本的本机无损归档
+
+仅打包已经逐文件SHA验收的6547个JSON/JSONL，原56个NPY保持原样。标准PAX tar＋gzip level1；不改JSON、float、token或NPY，不使用模型、GPU、HTTP或Node通信。绑定原6603文件完整备份proof和不可变启动entry。
+
+写入时逐成员重新核原SHA和metadata，关闭后独立流式解压逐成员SHA，核唯一完整覆盖和gzip footer，再保存durable成品和完整票据。不产生22GB临时解包副本。保留所有原文本，不自动删除或回收；运行中断保留partial和原件。后续如回收已验收冗余Mac文本，必须另按准确完成票据和原文件metadata审计，不能删除Node或NPY。
+
+此归档为未来七组完整raw/debug备份预留本机空间；不取训练锁，也不作为GPU启动/评测条件。成品不是新生成诊断、逐词表算术重建或训练验收。全部6547文本在archive中按原相对路径精确恢复，其余56 NPY继续原目录，原完整inventory仍是6603文件的内容权威。

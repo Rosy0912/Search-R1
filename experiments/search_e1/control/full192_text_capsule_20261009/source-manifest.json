@@ -1,0 +1,16 @@
+{
+  "schema": "full192-text-capsule-source-v1",
+  "files": [
+    {
+      "relative_path": "README.md",
+      "bytes": 1056,
+      "sha256": "0bf96df2e3120bac84437863c285e566ca208f540b51f90db8437b31a4b63f70"
+    },
+    {
+      "relative_path": "archive.py",
+      "bytes": 8550,
+      "sha256": "90fccf2e118a0c9ee2ee0e4872be65c77d6d037775982f4401b224991bf3906a"
+    }
+  ],
+  "scope": "Maconly closedaccepted textarchive; no deletion/model/GPU/Node/HTTP"
+}
