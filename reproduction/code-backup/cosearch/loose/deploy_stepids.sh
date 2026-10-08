@@ -1,0 +1,12 @@
+set -euo pipefail
+R=/dataset/shaoshitong/search-r1-rl/cosearch
+base64 -d > "$R/tools/stepids.bundle" <<'BUNDLE'
+IyB2MiBnaXQgYnVuZGxlCi04ZjlhMGExZWIzZjRhNzY4YjkyOWIxMTdjY2Q4Njk2MDUzMjYxYmJhIEVuc3VyZSBsb2NhbCBDUFUgZ2F0ZSBpbXBvcnRzIGl0cyBvd24gdGVzdHMgcGFja2FnZSBvbiBMaW51eApjZGE1MzBlYzU1OGJmNDliNzQwN2IwNWM4MGVjM2I5MzY4MWYwYzIyIEhFQUQKClBBQ0sAAAACAAAABp8QeJydjMtqwzAQAO/6ir0XguSHpIUSWjCB3HLoD6ykNRHYkrA3j/59c8oH9DYww8jGDOSS0UPQY4cxcY/Gs50Hduyc9fblYuc8xkE12rgI+BlJk+HQzwO9koAdBmNcjMlbtHrsO2tCIEU3udYNqNTyu9bbDp9v/OInrW3hQy53WnI6gnGo0frR9/ChvdYq1nXNIvzvgTrlJ9QmuRZaYBducJ52eGS5QsulcIIfLnvdphwFvi9n9QeBPFYh/AGsxyL0R7EodnBmY8B7Zo5bnulZm3ice8X6inXDNSYRFdFUp7K1Cls/GK8sPSB48J9g+ONIAK/YDMj8AadOCSVKDfxKZo3J0cK+IVsSRB4IeJwBHADj/8cCxwKwMwEUDRfSpnfDr6Fm7wWhS6LFTM+5h9Krew2L/gEcDvtXYVce5ambrMyeUPQ4vDdPi3ic28a0jWmCschZpfx9ueu/h10ONWboaZRWevbw/cWJ7u8BzhUOwP4BHKWa8mnMzBlSeg1GR5Gjgbc4S1p4nJvHOI9xQqzIlIOHJXbP6WzpTGNfUbn/xb9zXlLVEwt1AdbPDmz1AfYCZbr6pz8NwoAwu6HzzzsidbhSeJz72cP4v4dxwyoLNh0Fv/y81M2rLM7zAgBovwj4bg6EmKEr+ysY3s5YYZo5Xr7aAGA=
+BUNDLE
+cd "$R/repo"
+git fetch "$R/tools/stepids.bundle" reproduce/cosearch
+git merge --ff-only FETCH_HEAD
+export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8
+export PYTHONPATH="$R/tools/test-lib:$R/repo"
+"$R/env/bin/python" -m pytest tests/baselines tests/reproduction -q > "$R/logs/linux-cpu-gate-fixed.log" 2>&1
+tail -8 "$R/logs/linux-cpu-gate-fixed.log"

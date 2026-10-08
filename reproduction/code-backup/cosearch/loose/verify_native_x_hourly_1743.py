@@ -1,0 +1,29 @@
+import json,math,pathlib,os
+base=pathlib.Path('outputs/evidence');p=base/'native-x-hourly-1743-attempt.json';x=json.loads(p.read_text());s=json.loads((base/'native-x-saved13-15-hourly-1743.json').read_text())
+assert x['run']=='author-native-continue-300-x' and str(x['job'])=='3211' and x['queue_query']['returncode']==0 and 'RUNNING' in x['queue']
+assert not any('exit' in k or 'failure' in k for k in x['files'])
+assert len(x['resource_snapshot']['live_training_pids'])==8 and all(v['current_start_ticks_match'] and v['current_cgroup_match'] for v in x['resource_snapshot']['live_training_pids'])
+assert len(x['loaded_states'])==8 and all(v['full_model_optimizer_scheduler_equal'] for v in x['loaded_states'])
+proof=[]
+for step in [13,14,15]:
+ o=next(v for v in x['outers'] if v['step']==step);assert all(math.isfinite(v) for v in o['metrics'].values())
+ roles=['main','reranker'] if step!=15 else ['main'];ups=[v for v in x['worker_updates'] if v['outer_step']==step]
+ assert {(v['role'],v['rank']) for v in ups}=={(r,i) for r in roles for i in range(4)}
+ for v in ups:
+  assert v['actual_adam_delta']==(4 if v['role']=='main' else 1) and v['lr_before']>0 and all(math.isfinite(g) for g in v['original_gradient_norms'])
+ for role in roles:assert any(v['kind']=='global_update_completed' and v.get('step')==step and v.get('role')==role for v in x['controller_events'])
+ if step==15:assert any(v['kind']=='ranker_update_skipped_no_rows' and v.get('step')==step and v['Adam_steps']==v['scheduler_steps']==0 for v in x['controller_events'])
+ save=next(v for v in s['steps'] if v['step']==step);assert save['saved_records']==8
+ start=next(v for v in x['controller_events'] if v['kind']=='generation_start' and v['step']==step)
+ proof.append(dict(step=step,joint=step!=15,actual_worker_updates=len(ups),full_saved_records=8,gen_to_outer_seconds=(o['monotonic_ns']-start['monotonic_ns'])/1e9,original_step_seconds=o['metrics']['timing_s/step'],save_seconds=o['metrics']['timing_s/save_checkpoint'],qualified_ranker_learning=False))
+a,b=s['steps'][1:];ra={(v['role'],v['rank']):v for v in a['full_states']};rb={(v['role'],v['rank']):v for v in b['full_states']};assert all(ra['reranker',i]['state']==rb['reranker',i]['state'] for i in range(4))
+result=dict(run=x['run'],job=3211,checked_at=x['checked_at'],steps=proof,completed_joint_steps=[13,14],main_only_steps=[15],ranker15_full_model_optimizer_scheduler_equal_to14=True,retained_checkpoint_steps=[14,15],retained24_file_sizes_and_all8_sidecar_states_verified=True,independent_full_file_rehash=False,new_pureload_verified=False,operational_joint_five_completed_count=2,strict_accepted=False)
+(base/'native-x-iterations13-15-verified.json').write_text(json.dumps(result,indent=2)+'\n')
+t=base/'native-continue-300-x-live-latest.json';tmp=t.with_suffix('.tmp');tmp.write_text(p.read_text());os.replace(tmp,t)
+for f in ['outputs/STATE.json','outputs/source-identity.json']:
+ q=pathlib.Path(f);d=json.loads(q.read_text());d['last_verified_snapshot_epoch']=x['checked_at'];d['active_run_status']='X16_main_update_running_ranker_intentionally_skipped_no_rows';v=d['active_continuation'];v.update(status=d['active_run_status'],last_verified_epoch=x['checked_at'],current_step=16,completed_outer_steps=[13,14,15],completed_joint_steps=[13,14],main_only_steps=[15],operational_five_completed_count=2,ranker_worker_updates_current=0,ranker_update_skipped_no_rows=True,disk_free_bytes=x['resource_snapshot']['disk_free_bytes']);d['operational_new_five']['completed_joint_iterations']=[13,14];d['latest_checkpoint_inventory']=result;q.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+note='\n\nHourly X3211 snapshot1791135847.2254286 RUNNING/noexit: completed finite outers13,14 are joint/all8 Adam main+4/ranker+1/bothRPC/full8 saves;15 is main-only with explicit globallyempty ranker skip/zeroAdam+scheduler, main4+4/full8 saves. Ranker15 full model/Adam/scheduler digests exactlyequal14. Gen→outer including save13/14/15='+ '/'.join(f"{v['gen_to_outer_seconds']:.3f}" for v in proof)+'s; save='+ '/'.join(f"{v['save_seconds']:.3f}" for v in proof)+'s,600failed. Current16 terminalqualified0/canonicalempty ranker skipped/mainupdate in progress; eight identities/resources good/disk6.614TB. Historical13 checkpoint deleted by retention2; retained14,15 all8 sidecars/full24 file sizes/data checked, no independent fullfile rehash/newpureload yet. Operational joint count2/5; main-only15 does not count, strictfalse. Evidence native-x-iterations13-15-verified.json/native-x-saved13-15-hourly-1743.json. Continuous300 unchanged/no pause or code edits.\n'
+r=pathlib.Path('REPORT.md');r.write_text(r.read_text()+note)
+for dest in ['outputs/REPORT.md','/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/cosearch/REPORT.md']:pathlib.Path(dest).write_text(r.read_text())
+p=pathlib.Path('work/automation-cosearch-x-hourly-current.json');d=json.loads(p.read_text());d['prompt']='LATEST VERIFIED hourly X3211 epoch1791135847.2254286 RUNNING/noexit: finite outers13,14 joint/all8 actual mainAdam+4/ranker+1/bothRPC/full8saves;15 intentional main-only/globalemptyranker skip0Adam0scheduler/main4+4/full8saves and ranker fullmodelAdamScheduler exactequal14. Retained14,15 all8sidecar states/full24file sizes/data verified, no independent fullfile rehash/newpureload yet;13 retention2 removed. Operationaljoint2/5, main-only15 nevercounted/strictfalse. Current16 bothattemptsqualified0/canonicalemptyranker skipped/mainupdate running; eightlivePIDticks/cgroups/resourcesgood/disk6.614TB. Currentlive/native-x-iterations13-15-verified.json/native-x-saved13-15-hourly-1743.json. Preserve activeX/nohotedit/resubmit/pause/SFT. FIRST nextcurrentX same-route snapshot. This supersedes older13pending text below. Normalprogressquiet.\n\n'+d['prompt'];p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps(result))
