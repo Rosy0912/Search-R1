@@ -4,6 +4,7 @@ Create: python -m reproduction.a800_common.deploy --source-commit FULL_SHA
 Launch: python -m reproduction.a800_common.deploy --handle INTENT --execute
 Read:   python -m reproduction.a800_common.deploy --handle INTENT --observe
 Prepared only: add --launch-prepared to the original handle after explicit recovery authorization.
+Unclaimed GPU-occupancy failure only: --retry-unclaimed permits one explicit retry of that same prepared run.
 
 Only the existing controller's baai-a800 SSH route is used. Credentials and SSH
 configuration are never copied or changed. An uncertain launch is observed, not
@@ -218,6 +219,7 @@ REMOTE_LAUNCH_PREPARED = r'''
 import hashlib,json,os,re,socket,subprocess,sys,time
 from pathlib import Path
 payload=json.load(sys.stdin);intent=payload['intent'];base=Path(intent['base']);repo=base/'repo'
+preclaim_retry=payload.get('preclaim_retry',False);assert type(preclaim_retry) is bool
 assert intent['host']=='baai-a800' and re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
 assert str(base)=='/data/shaoshitong/Search-G1-a800-fresh200-'+intent['deployment_id'] and base.resolve()==base
 def read(name):
@@ -256,31 +258,69 @@ from reproduction.common8.formal_inline_safety import verify_method
 from reproduction.common8.formal_contract import assert_formal_run
 assert_formal_run(run)
 verify_method(method,run)
-for name in ('logs/deployment-launch-receipt.json','logs/pipeline-launch-claim.json','logs/training-launch-claim.json','logs/process-ledger.json','logs/deployment-pipeline.log'):
-    assert not (base/name).exists(), 'Existing launch evidence requires observation, never another launch'
+original=None;retry_provenance={}
+if preclaim_retry:
+    for name in ('logs/preclaim-retry-claim.json','logs/deployment-retry-receipt.json','logs/deployment-preclaim-retry.log',
+                 'logs/pipeline-launch-claim.json','logs/training-launch-claim.json','logs/process-ledger.json',
+                 'logs/pipeline-status.json','logs/native-allocation-admission.json','logs/actual-updates.jsonl'):
+        path=base/name;assert not path.exists() and not path.is_symlink(), 'Preclaim retry requires an untouched, unclaimed runtime'
+    assert not any((base/'logs').glob('optimizer-rank-*.jsonl')) and not any((base/'logs').glob('scheduler-rank-*.jsonl'))
+    checkpoints=base/'checkpoints'
+    assert not checkpoints.is_symlink() and (not checkpoints.exists() or not any(checkpoints.iterdir())), 'Any checkpoint evidence forbids this retry'
+    assert not Path(run['checkpoint_dir']).exists() and not Path(run['checkpoint_dir']).is_symlink()
+    assert not Path(run['train_log']).exists() and not Path(run['train_log']).is_symlink(), 'An existing trainer log forbids preclaim retry'
+    original=read('logs/deployment-launch-receipt.json')
+    assert all(original[k]==value for k,value in dict(deployment_id=intent['deployment_id'],
+        run_id=run['run_id'],execution_id=run['execution_id'],source_commit=run['source_commit'],
+        execution_backend='ssh_local',slurm_job_id=None,hostname=socket.gethostname()).items())
+    assert type(original['pid']) is int and original['pid']>0 and type(original['start_ticks']) is int and original['start_ticks']>0
+    old_proc=Path('/proc')/str(original['pid']);birth_matches=False;old_state=None
+    try:
+        text=(old_proc/'stat').read_text();fields=text[text.rfind(')')+2:].split()
+        birth_matches=int(fields[19])==original['start_ticks'] and int(fields[3])==original['sid'] and old_proc.stat().st_uid==os.getuid()
+        old_state=fields[0] if birth_matches else None
+    except (FileNotFoundError,ProcessLookupError):pass
+    assert not birth_matches or old_state in ('Z','X'), 'Original pipeline process is still alive'
+    old_log=base/'logs/deployment-pipeline.log'
+    assert original['stdout_log']==str(old_log) and old_log.is_file() and old_log.resolve()==old_log and old_log.stat().st_uid==os.getuid()
+    assert old_log.stat().st_size<=1024*1024, 'Unexpectedly large preclaim failure log requires observation'
+    with old_log.open('rb') as f:failure_log=f.read(1024*1024+1)
+    assert any(line.startswith(b'AssertionError: Authorized local GPUs are occupied:') for line in failure_log.splitlines()), 'Only the actual native GPU-occupancy failure permits this retry'
+    assert b'reproduction/common8/native_allocation.py' in failure_log and b'in admit_local' in failure_log
+    retry_provenance=dict(preclaim_retry=True,original_launch_receipt=str(base/'logs/deployment-launch-receipt.json'),
+        original_launch_receipt_sha256=digest(base/'logs/deployment-launch-receipt.json'),
+        original_stdout_log=str(old_log),original_stdout_log_sha256=digest(old_log),
+        original_pid=original['pid'],original_start_ticks=original['start_ticks'],
+        original_pipeline_birth_matches=birth_matches,original_pipeline_process_state=old_state,
+        retry_reason='actual native GPU occupancy failure before any pipeline claim or training',same_prepared_run=True)
+else:
+    for name in ('logs/deployment-launch-receipt.json','logs/pipeline-launch-claim.json','logs/training-launch-claim.json','logs/process-ledger.json','logs/deployment-pipeline.log'):
+        assert not (base/name).exists(), 'Existing launch evidence requires observation, never another launch'
 for proc in Path('/proc').iterdir():
     if proc.name.isdigit():
-        try:assert not (proc.stat().st_uid==os.getuid() and (proc/'cwd').resolve()==repo), 'Existing live process in the prepared runtime'
+        try:
+            cwd=(proc/'cwd').resolve()
+            assert not (proc.stat().st_uid==os.getuid() and (cwd==repo or preclaim_retry and (cwd==base or base in cwd.parents))), 'Existing live process in the prepared runtime'
         except (FileNotFoundError,PermissionError,ProcessLookupError):pass
 for key in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256'):
     assert re.fullmatch('[0-9a-f]{40}' if key=='launcher_source_commit' else '[0-9a-f]{64}',payload[key])
 claim=dict(deployment_id=intent['deployment_id'],run_id=run['run_id'],execution_id=run['execution_id'],
     runtime_source_commit=run['source_commit'],claimed_unix=time.time(),no_automatic_retry=True,
-    **{k:payload[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256')})
-write_once(base/'logs/prepared-launch-claim.json',claim)
+    **{k:payload[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256')},**retry_provenance)
+write_once(base/'logs'/('preclaim-retry-claim.json' if preclaim_retry else 'prepared-launch-claim.json'),claim)
 env=dict(os.environ)
 for key in tuple(env):
     if key.startswith('SLURM_') or key in ('PYTHONHOME','RAY_ADDRESS','LD_LIBRARY_PATH','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(key,None)
 env.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+env.get('PATH','/usr/bin:/bin'),C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
 env.update({name:str(base/path) for name,path in dict(TMPDIR='tmp',HF_HOME='cache/hf',XDG_CACHE_HOME='cache',TRITON_CACHE_DIR='cache/triton',TORCHINDUCTOR_CACHE_DIR='cache/inductor').items()})
 env['RAY_TMPDIR']=run.get('ray_tmp_dir',str(base/'ray'))
-log=base/'logs/deployment-pipeline.log'
+log=base/'logs'/('deployment-preclaim-retry.log' if preclaim_retry else 'deployment-pipeline.log')
 with log.open('xb') as out:
     p=subprocess.Popen(['/data/search-g1/env/bin/python','-m','reproduction.a800_common.run_pipeline','--base',str(base)],cwd=repo,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=subprocess.STDOUT,start_new_session=True)
     text=(Path('/proc')/str(p.pid)/'stat').read_text();fields=text[text.rfind(')')+2:].split();ticks=int(fields[19]);sid=int(fields[3]);assert ticks>0 and sid==p.pid
     receipt=dict(claim,execution_backend='ssh_local',slurm_job_id=None,hostname=socket.gethostname(),pid=p.pid,start_ticks=ticks,sid=sid,stdout_log=str(log),source_commit=run['source_commit'],source_transport=source['source_transport'],launched_unix=time.time(),training_world_size=4,training_physical_indices=[0,1,2,3],same_process_after_five=True)
-    write_once(base/'logs/deployment-launch-receipt.json',receipt)
-try:print('DEPLOYMENT_JSON:'+json.dumps(dict(stage='PREPARED_PIPELINE_LAUNCHED',**receipt)),flush=True)
+    write_once(base/'logs'/('deployment-retry-receipt.json' if preclaim_retry else 'deployment-launch-receipt.json'),receipt)
+try:print('DEPLOYMENT_JSON:'+json.dumps(dict(stage='UNCLAIMED_PIPELINE_RETRY_LAUNCHED' if preclaim_retry else 'PREPARED_PIPELINE_LAUNCHED',**receipt)),flush=True)
 except BrokenPipeError:sys.stdout=open(os.devnull,'w')
 '''
 
@@ -377,13 +417,22 @@ if owned is not None:
         result['deployment_status_unix']=status.get('observed_unix')
         if status['stage']=='DEPLOYMENT_FAILED_OR_UNCERTAIN' and status.get('last_command')=='prepare-run':
             result['failure_diagnostic']=diagnostic(base/'preparation/prepare-run.log')
-    receipt=read('logs/deployment-launch-receipt.json')
+    original_receipt=read('logs/deployment-launch-receipt.json')
+    retry_receipt=read('logs/deployment-retry-receipt.json')
+    if retry_receipt:
+        assert original_receipt is not None and retry_receipt.get('preclaim_retry') is True
+        assert all(retry_receipt[k]==original_receipt[k] for k in ('deployment_id','run_id','execution_id','source_commit'))
+        assert retry_receipt['stdout_log']==str(base/'logs/deployment-preclaim-retry.log')
+    receipt=retry_receipt or original_receipt
+    result['preclaim_retry_claimed']=(base/'logs/preclaim-retry-claim.json').is_file()
+    result['using_preclaim_retry_receipt']=retry_receipt is not None
     if receipt:
         result.update({k:receipt[k] for k in ('run_id','execution_id','pid','start_ticks','stdout_log','source_commit','source_transport')})
         result.update({k:receipt[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256') if k in receipt})
         identity=process(receipt)
         result.update(pipeline_birth_matches=identity['birth_matches'],pipeline_process_state=identity['state'],
                       pipeline_alive=identity['alive'])
+        if not identity['alive']:result['startup_diagnostic']=diagnostic(Path(receipt['stdout_log']))
     run=read('logs/run-manifest.json')
     if run:
         assert run['source_commit']==intent['source_commit']
@@ -421,7 +470,7 @@ if owned is not None:
         result['pipeline_stage']=pipeline['stage']
         result['pipeline_status_unix']=pipeline.get('unix')
         if pipeline['stage'] in ('FAILED','OWNED_CLEANUP_FAILED'):
-            result['failure_diagnostic']=diagnostic(base/'logs/deployment-pipeline.log')
+            result['failure_diagnostic']=diagnostic(Path(receipt['stdout_log']) if receipt else base/'logs/deployment-pipeline.log')
     if run:
         updates={};count=0;latest=None;foreign=0
         for row in complete_rows(base/'logs/actual-updates.jsonl',updates):
@@ -495,7 +544,7 @@ if owned is not None:
                 used_mib=d['used_mib'],total_mib=d['total_mib'],util_percent=d['util_percent'],
                 sampled_run_peak_mib=peaks[d['index']] if exact else None) for d in latest['gpus']]
         result['gpu_samples']=gpu
-    log=base/'logs/deployment-pipeline.log'
+    log=Path(receipt['stdout_log']) if receipt else base/'logs/deployment-pipeline.log'
     if log.is_file():result.update(stdout_log_bytes=log.stat().st_size,stdout_log_modified_unix=log.stat().st_mtime)
 if read_limits:result['oversized_json_documents_skipped']=read_limits
 print('DEPLOYMENT_JSON:'+json.dumps(result),flush=True)
@@ -624,20 +673,21 @@ def perform(args):
                     member = tarfile.TarInfo(row['target']); member.size = row['bytes']; member.mode = 0o600
                     archive.addfile(member, original)
         payload = data.getvalue(); code = REMOTE_EXECUTE; timeout = 1000
-    elif args.launch_prepared:
+    elif args.launch_prepared or args.retry_unclaimed:
         repo = Path(__file__).resolve().parents[2]
         launcher_commit = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
         launcher_bytes = subprocess.check_output(['git', '-C', str(repo), 'show', launcher_commit + ':reproduction/a800_common/deploy.py'])
         assert hashlib.sha256(launcher_bytes).hexdigest() == digest(Path(__file__).resolve()), 'Prepared launcher must be the published committed tool'
-        write_once(handle.with_name(handle.stem + '.launch-prepared-once.json'),
+        write_once(handle.with_name(handle.stem + ('.retry-unclaimed-once.json' if args.retry_unclaimed else '.launch-prepared-once.json')),
                    dict(deployment_id=intent['deployment_id'], claimed_unix=time.time(), launcher_source_commit=launcher_commit, no_automatic_retry=True))
         payload = json.dumps(dict(intent=intent, launcher_source_commit=launcher_commit,
             launcher_source_sha256=hashlib.sha256(launcher_bytes).hexdigest(),
-            embedded_launcher_sha256=hashlib.sha256(REMOTE_LAUNCH_PREPARED.encode()).hexdigest()), sort_keys=True, allow_nan=False).encode()
+            embedded_launcher_sha256=hashlib.sha256(REMOTE_LAUNCH_PREPARED.encode()).hexdigest(),
+            preclaim_retry=args.retry_unclaimed), sort_keys=True, allow_nan=False).encode()
         code = REMOTE_LAUNCH_PREPARED; timeout = 60
     else:
         payload = json.dumps(intent, sort_keys=True, allow_nan=False).encode(); code = REMOTE_OBSERVE; timeout = 60
-    action = 'execute' if args.execute else 'launch-prepared' if args.launch_prepared else 'observe'
+    action = 'execute' if args.execute else 'retry-unclaimed' if args.retry_unclaimed else 'launch-prepared' if args.launch_prepared else 'observe'
     stderr_path = handle.with_name(handle.stem + '.' + action + '-' + str(time.time_ns()) + '.stderr')
     output = b''; exit_code = None; failure_type = None
     with stderr_path.open('xb') as errors:
@@ -664,6 +714,7 @@ def main():
     actions = parser.add_mutually_exclusive_group()
     actions.add_argument('--execute', action='store_true'); actions.add_argument('--observe', action='store_true')
     actions.add_argument('--launch-prepared', action='store_true')
+    actions.add_argument('--retry-unclaimed', action='store_true')
     parser.add_argument('--source-commit')
     parser.add_argument('--shared-data', type=Path, default=PROJECT / 'shared-data')
     parser.add_argument('--official-manifest', type=Path, default=OFFICIAL)
@@ -672,7 +723,7 @@ def main():
     parser.add_argument('--initial-probes-source-base')
     parser.add_argument('--reuse-published-bundle', action='store_true')
     args = parser.parse_args()
-    if args.execute or args.observe or args.launch_prepared:
+    if args.execute or args.observe or args.launch_prepared or args.retry_unclaimed:
         assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
