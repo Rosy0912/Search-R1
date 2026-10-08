@@ -1,0 +1,100 @@
+{
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "current_adam_writes": null,
+  "current_completed_outer": null,
+  "current_evaluation_scores": null,
+  "current_gpu_state": null,
+  "current_native_state": null,
+  "current_observation_status": "UNKNOWN_SSH_AUTHENTICATION_DENIED",
+  "current_reward": null,
+  "current_reward_window_mean": null,
+  "current_trainer_alive": null,
+  "declared_runtime_source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "fresh_five_current_status": "UNKNOWN; not locally verified in this observation",
+  "fullfresh200_final51713_checkpoints_and_only_owned_cleanup_unproven": true,
+  "goal_complete": false,
+  "goal_status": "active",
+  "hourly_actual_anchor_advanced": false,
+  "job_id": "3329",
+  "last_successful_formal_actual_observation_unix": 1791378799.3523192,
+  "last_successful_formal_completed_outer": 2,
+  "last_successful_formal_report_unix": 1791379058.783437,
+  "last_verified_actual_state": {
+    "completed_outer": 3,
+    "current_epoch_step": {
+      "epoch": 0,
+      "step": 4
+    },
+    "current_pg_loss": 0.0739652179662557,
+    "current_progress_snapshot_sha256": "66c388a993282386c8a6601a2288804e23bc1480073c4fca1804b8d58c31a5e5",
+    "current_reward": 0.20620942115783691,
+    "last_actual_observed_unix": 1791380488.0233138,
+    "state": "RUNNING"
+  },
+  "last_verified_counter_scope": "Historical 2026-10-07 21:41:28 actual native/trainer/mainTask live; complete3/200 and returned60 opportunities/60 Adam per rank, zero skips/warmup3. Not current state.",
+  "native_terminal_success": false,
+  "new_completed_outer_since_last_formal_report": null,
+  "no_new_training_job_no_restart_no_credential_sync_no_config_or_knownhost_change": true,
+  "original_evidence_refs": [
+    {
+      "basename": "goal-native3329-observer-diagnostic-1791423129737937000.json",
+      "sha256": "37c306a8e54b3efddaccae64873ea5129cd49ed6f59d259e0432e5e2a57a7867"
+    },
+    {
+      "basename": "external-recorder-hourly-once-1791423152136225000.json",
+      "sha256": "0e62b0fb9d0f70f8d21767fa05df7378531855226d5dc65b7c81a22b4cf71860"
+    },
+    {
+      "basename": "readonly-original-h10016-tailscale-path-1791423216036430000-760eef6dc81c4be9af0cd755b5cb0969.json",
+      "sha256": "7f6965e029fb7f478bca4e56cff54edb88190576ac47bed4b4c5cbb27ba17ebd"
+    },
+    {
+      "basename": "readonly-direct-h1008-observation-path-1791423305800860000-fc4caebd2f9440488a1a47c8f9fb24e7.json",
+      "sha256": "9ec1f914b10e823e7dead102294490080e1ef81480cdf1976c48fa773cd4a950"
+    },
+    {
+      "basename": "readonly-same-h1008-tailscale-existing-trust-1791423399506411000-0706755c460a42dd853fa937fe801a8b.json",
+      "sha256": "c453ce72102db3f07346e437e94c27a66fd16d8224621019024cf76a99cd740b"
+    },
+    {
+      "basename": "readonly-existing-h1008-login-disambiguation-1791423942419014000-23035c21e38c4f70b6e9a9f2797840e9.json",
+      "sha256": "50cd5da606deaa7d4384bad491a6c1ddf2531d76f0af17e4acb1bc1f1aa6dcab"
+    }
+  ],
+  "pending_missing_information": "Current working SSH entry or authentication method after the user-reported connection repair; already requested asynchronously.",
+  "recorded_unix": 1791424022.44067,
+  "role": "sanitized_observer_authentication_failure_after_user_connection_repair",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "same_cluster_observation_attempt_results": [
+    {
+      "path": "mgmt-host -> original strict LAN h100-16 -> h100-8",
+      "result": "SSH authentication rejected at root@10.33.0.16; both training and recorder reads unavailable"
+    },
+    {
+      "path": "mgmt-host -> original h100-16 Tailscale alias",
+      "peer_online": false,
+      "result": "connection timed out; nested h100-8 not attempted"
+    },
+    {
+      "host_identity_check": "passed",
+      "path": "mgmt-host -> trusted LAN h100-8",
+      "result": "configured existing SSH key authentication rejected"
+    },
+    {
+      "host_identity_check": "passed",
+      "path": "mgmt-host -> online Tailscale h100-8 with existing LAN HostKeyAlias",
+      "peer_online": true,
+      "result": "configured existing SSH key authentication rejected"
+    },
+    {
+      "credential_attempt_count": 1,
+      "credential_exported_or_persisted": false,
+      "host_identity_check": "strict existing trust retained",
+      "path": "same trusted Tailscale h100-8; exact existing node-specific admin login",
+      "result": "existing password authentication rejected"
+    }
+  ],
+  "same_resource_blocker_consecutive_goal_turns": 1,
+  "source_scope": "Declared original source; current disk/load status not observed, no runtime edit or restart.",
+  "unknown_counter_scope": "Observation failed before entering the target namespace. Unknown new updates are not zero; peer online is not trainer liveness; auth rejection is not job terminal."
+}
