@@ -122,10 +122,21 @@ try:
             github=candidate
     git_env=dict(os.environ,GIT_TERMINAL_PROMPT='0')
     repo=base/'repo';direct=False
-    try:
-        direct=command(['git','clone','--branch','search-g1','--single-branch',github,str(repo)],'github-clone',90,git_env)==0
-        if direct:direct=command(['git','-C',str(repo),'checkout','--detach',intent['source_commit']],'github-checkout',30,git_env)==0
-    except subprocess.TimeoutExpired:direct=False
+    previous=intent.get('prior_git_direct_failure_base')
+    if previous is not None:
+        prior=Path(previous)
+        assert re.fullmatch('/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',str(prior)) and prior.resolve()==prior
+        receipt=prior/'logs/deployment-source-receipt.json'
+        assert receipt.is_file() and not receipt.is_symlink() and receipt.stat().st_uid==os.getuid()
+        original=json.loads(receipt.read_text())
+        assert original['source_transport']=='published_git_bundle_relay' and original['source_is_exact_published_commit'] is True
+        assert (prior/'preparation/github-clone.log').is_file()
+        state('USING_PUBLISHED_BUNDLE_AFTER_ACTUAL_PRIOR_DIRECT_FAILURE',prior_source_receipt_sha256=digest(receipt))
+    else:
+        try:
+            direct=command(['git','clone','--branch','search-g1','--single-branch',github,str(repo)],'github-clone',90,git_env)==0
+            if direct:direct=command(['git','-C',str(repo),'checkout','--detach',intent['source_commit']],'github-checkout',30,git_env)==0
+        except subprocess.TimeoutExpired:direct=False
     transport='github_direct'
     if not direct:
         bundle=base/'preparation/published-source.bundle'
@@ -572,6 +583,9 @@ def create_intent(args):
         assert re.fullmatch('/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',source_base)
         assert source_base != value['base']
         value['initial_probes_source_base']=source_base
+    if args.reuse_published_bundle:
+        assert args.bundle is not None and args.initial_probes_source_base is not None, 'Prior real source receipt and a published bundle are required'
+        value['prior_git_direct_failure_base']=args.initial_probes_source_base
     handle = args.handle.resolve() if args.handle is not None else PROJECT / 'preparation' / ('a800-common-deployment-' + identifier + '.json')
     write_once(handle, value)
     print(json.dumps(dict(handle=str(handle), base=value['base'], source_commit=value['source_commit'], intent_created=True)))
@@ -656,9 +670,10 @@ def main():
     parser.add_argument('--method', type=Path, default=PROJECT / 'preparation/formal-inline-method.json')
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--initial-probes-source-base')
+    parser.add_argument('--reuse-published-bundle', action='store_true')
     args = parser.parse_args()
     if args.execute or args.observe or args.launch_prepared:
-        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None, 'Use the persisted intent without replacement inputs'
+        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
     return 0
