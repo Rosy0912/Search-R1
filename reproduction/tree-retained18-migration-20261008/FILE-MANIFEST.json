@@ -14,8 +14,8 @@
       "sha256": "da7b3b5f05bf656c5ec15e7d393ebc8ebc61303125e4eecfa1a82cedbe1fd017"
     },
     "deployment.json": {
-      "bytes": 1244,
-      "sha256": "e26745f61c4d7f9fa5e5a42cc68a77186e7916c3222a535fe390f6fe70b9620c"
+      "bytes": 1350,
+      "sha256": "fda4557f3158693d073082fec118105ac9a5ba4f7be7f2ccb2ae0a1f93426b1d"
     },
     "direct-release-v10.json": {
       "bytes": 3931,
@@ -3160,6 +3160,10 @@
     "submit_retained18.py": {
       "bytes": 7939,
       "sha256": "332481a27e9e7d73c023519c92d74d5f475b8bb1b3e000390f249f28790673ea"
+    },
+    "poll_retained18.py": {
+      "bytes": 4301,
+      "sha256": "12ef31a8e1fa1fab4564ebe0752fd90db90510043107725a12e738099fe4cb3a"
     }
   },
   "scope": "Code/runtime/config only; excludes models,data,environments,credentials; deployment execution remains independent"
