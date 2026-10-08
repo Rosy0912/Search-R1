@@ -1,10 +1,10 @@
 # Tree-GRPO 性能修复独立审查
 
-初审时间：2026-10-08 06:19:42 UTC。审查基线 `6efb60466a233f70bf8f50de26df32012f49b4bc`，初审冻结源码 `0150ee6891e6deb7ff616fd9bf416de42526e029`，最终补修源码 `48a59da5f30a6368e296137281fff1d620149d04`。独立静态审查覆盖 7 个生产文件及新增 driver CPU fixture；补修只核对 F1 的29行增/1行删和最终本地包身份。只读取源码、diff 和已有材料并校验本地文件 hash，没有执行测试、SSH、GPU、checkpoint 加载、提交、训练管理或其他 agent 联系。报告写在源码仓库之外。训练启动与审查并行，本报告不授权取消、重启或热改已启动作业。
+初审时间：2026-10-08 06:19:42 UTC。审查基线 `6efb60466a233f70bf8f50de26df32012f49b4bc`，初审冻结源码 `0150ee6891e6deb7ff616fd9bf416de42526e029`，μ缓存补修源码 `48a59da5f30a6368e296137281fff1d620149d04`，最终 V13 native schema 修正源码 `62271081ba1bb74d8fc3f4958d623758efa74fa5`。独立静态审查覆盖 7 个生产文件及新增 driver CPU fixture；后续只核对 F1/F2 的最小补修、native5实际schema、活动入口调用链和最终本地包身份。只读取源码、diff 和已有材料并校验本地文件 hash，没有执行测试、SSH、GPU、checkpoint 加载、提交、训练管理或其他 agent 联系。报告写在源码仓库之外。训练启动与审查并行，本报告不授权取消、重启或热改已启动作业。本次保存只记录已经完成的审查，没有增加任何测试或检查。
 
 ## 结论
 
-初审发现 1 项 P2 安全证明缓存缺陷 F1；已在最终源码 `48a59da` 静态核对关闭。最终源码没有本审查确认的未关闭新增 actionable bug。未发现本次 diff 改动 Tree/PPO objective、5leaf 继承/权重、三项 guards、实际写入/skip/credit 或 scheduler 契约。性能优化有静态依据，但普通完整 outer ≤420s 仍须用新作业实际阶段 wall time 证明。最终本地 V12 packet manifest 和全部762个登记文件 hash 已核对，7个核心生产文件与 clean `48a59da` checkout逐字节一致；实际远端启动/迁移仍由 root 观察，独立审查未冒充观察到启动成功。
+初审发现 P2 μ证明缓存缺陷 F1，已在 `48a59da` 静态核对关闭；后续实际失败暴露 native5 缺少 `run_id` 的 P1 schema机械问题 F2，已在最终核心 `6227108` 和 V13外部包装关闭。最终活动路径没有本审查确认的未关闭 actionable bug。未发现本次 diff 改动 Tree/PPO objective、5leaf 继承/权重、三项 guards、实际写入/skip/credit 或 scheduler 契约。最终 V13 manifest `cbca5e1…`、全部762个登记文件 hash、7个核心文件、release/authority/dispatch script身份均核对一致。root最新报告作业3339实际已RUNNING；这是root的运行观察，独立审查没有执行SSH核验。native5实际冷加载成功和普通完整outer≤420s仍等待训练证据，不能以RUNNING或本地包一致性替代证明。
 
 ## 发现 F1 — P2，最终48a59da已静态关闭：同对象嵌套变造仍命中 μ 验证缓存
 
@@ -46,3 +46,15 @@
 已只读检查 `build_speed_packet.py`、`submit_speed_once.py`、`runtime-template/current_chain_runtime.py` 和最终 `package-code-only-v12`：build 强制实际 clean HEAD 与 supplied child SHA相同；模板 pin native5，next6，planned195，源码映射显式parent→child；submit使用独占intent、已验证字节、unknown不重试；metadata validator不冒充 PT重开，只有核心启动产生实际 cold equality receipt 后才记录 migrated。
 
 最终本地身份核验：manifest SHA `6b061fd4d0aa7cc6ad6f48c13a671014e5dbfee6f630a1ca80d94785cccdbe5e` 与 `deployment.json` 一致；762个manifest登记文件全数hash一致；7个核心生产文件和当前clean源码逐字节一致；`production_contract.SOURCE` 为48a59da完整SHA，dispatch script SHA `abc94d4df6ac1902864bdde343f0bd6d63ff6d645ce357ed9442cca99e1e9dad` 与deployment一致。release为`cdd3fa016c6c024c68fdcc88a57af402621127341af7e3a0b66afa2e77e9ed13`，authority为`04ff97a35f71435c13541d40d1f176c311854697fd59196bb696e9712561fbc3`（后两项来自deployment，未单独重算）。最终实际child job启动身份/实际冷迁移receipt与normal outer速度尚未观察，本报告不把本地包一致性写成远端启动通过证明。
+
+## V13最终补充：native5 schema机械问题已关闭
+
+F2（P1，已关闭）：实际native `global_step_5/manifest.json` 的 `identity` 没有 `run_id`，该字段只存在于rolling snapshot身份。V12外部 `current_chain_runtime.parent_metadata` 和核心 `tree_current_chain_resume.parent_manifest` 都曾额外要求它；只修外部包装仍会在核心实际恢复前拒绝。核心最小修已提交为 `62271081ba1bb74d8fc3f4958d623758efa74fa5`，移除不存在的字段，保留parent job/source/config、native manifest exact path/SHA、8rank counters和PT状态绑定。V13外部包装同样移除该字段，额外核对exact driver/rank PT路径以及byte-bound3335祖先receipt（`07c19b89…`）中的child job/run/source/config身份；没有放松run归属或声称executor精准复播。
+
+已对照实际native5 schema材料检查：worker身份、finite/reload/counters字段、driver next6和logical/file hashes符合消费者；核心 cold worker/driver恢复receipt字段和包装逐项一致。`fresh-initialization.json`及其worker记录的schema由当前核心实际生成，包含run_id，因此其冷初始化消费者不受native manifest缺少run_id影响。原始远端PT未在审查中重新加载；本地parent5 JSON是schema材料，不能代替远端byte-pinned原件的实际加载证明。
+
+当前活动direct路径已核对：`verify_direct_terminal` 调用chain-aware `direct_training_evidence` 和 `_direct_checkpoint_json`，从completed5、每rank100writes、attempt6起累计；保存50/100/150/200的计数包含继承历史，allskip不获outer/scheduler credit。generic fresh0 `attempt_results/checkpoint_manifest` 是其他API，当前direct主路径不调用；此前关于其会必然阻断当前保存/终验的推断已撤回，不要求为非活动API改包或停止作业。
+
+最终V13本地身份：clean HEAD `62271081ba1bb74d8fc3f4958d623758efa74fa5`；manifest `cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63`；762个登记文件hash全一致，7个核心生产文件逐字节等于clean checkout；release `17a85334b491a73541d733ae676065b91dda456851d4558aa92a879e181d84a0`、authority `fc283828cd1d478d647314e5dcecc52054734dc4b593c98e0676434ca7790592`、dispatch script `fb5b8c0851bf86715d74458ae48ec53ec741b99af007d3184b0af3f1bfd7c31d`均已独立重算，与deployment身份一致。V12失败包保留作历史材料，当前结论绑定V13。
+
+审查与实际启动并行完成，无新增确认的活动路径bug；root报告3339已RUNNING。该状态不证明native5实际恢复完成，也不证明420s性能达标。二者继续等待真实训练证据，评测/保存成本另列。本次追加没有额外测试、SSH、源码/包修改或作业操作。

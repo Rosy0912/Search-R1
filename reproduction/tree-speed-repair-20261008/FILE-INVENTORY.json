@@ -30,16 +30,16 @@
       "original_workspace_path": "work/tree-speed-repair-20261008/INDEPENDENT_REVIEW.json",
       "original_runtime_path": null,
       "category": "loose_configuration_or_metadata",
-      "bytes": 4942,
-      "sha256": "08f3e536e8eafbae42086ebc38318c7be8f2c48fdd2b5ee02d4fdce114ee1cc5"
+      "bytes": 6992,
+      "sha256": "77ccb7dae1a3e2cd6d7863637f55148473fae88c5da0137bc46db5e6efa5af5d"
     },
     {
       "backup_path": "reproduction/tree-speed-repair-20261008/INDEPENDENT_REVIEW.md",
       "original_workspace_path": "work/tree-speed-repair-20261008/INDEPENDENT_REVIEW.md",
       "original_runtime_path": null,
       "category": "loose_configuration_or_metadata",
-      "bytes": 10981,
-      "sha256": "031a2999400f0c393d34350969bf3069152c298c06548ea593c3d77000b5d18e"
+      "bytes": 14096,
+      "sha256": "f3f43f3e43696169e026d94acc05295da4acbb994311ab4d992ffd4cd6e0254d"
     },
     {
       "backup_path": "reproduction/tree-speed-repair-20261008/build_speed_packet.py",
@@ -6825,5 +6825,7 @@
     "immutable_archive_existing_whitespace_warnings": 400,
     "immutable_archive_bytes_normalized": false,
     "reason": "Preserve exact declared deployment/source bytes and their hashes."
-  }
+  },
+  "metadata_revision_utc": "2026-10-08T06:35:58.127204+00:00",
+  "metadata_revision_scope": "Updated final independent source/runtime review; all code, template, immutable package and deployment bytes unchanged."
 }
