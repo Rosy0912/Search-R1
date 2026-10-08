@@ -1,0 +1,8 @@
+{
+  "experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md": "adb2b9627be10fa351863c4846beb76c732b9bf533618c189469112eb82ed896",
+  "experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json": "490c0a9dccbee1fc426702110267361640530a17c34cb57aff6a299e619dcfbf",
+  "experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json": "5ca19588e84ec80be14207c307905d82789fe185df17e375d8908ca1aa8494d5",
+  "experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json": "4e304733bcb6731af658eda7ec4afbcc81695ec76c3bb482a922d6eb4d6f22fb",
+  "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json": "8fa68d970490e9487b23e9d2ba2cac6bfdc8b75c3753110072870d74c4a83d85",
+  "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py": "6cc688cd89ca5fb8253118f143a0a2782801ef64878d46fe339258b56f2645aa"
+}

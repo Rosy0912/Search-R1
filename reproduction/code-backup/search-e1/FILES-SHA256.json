@@ -1888,7 +1888,45 @@
       "bytes": 3943,
       "sha256": "da74eab082794c407526587191f04f41c9513cb015ea881d497180e0a86e3d2b",
       "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-mechanism-publication-manifest-20261008.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/opsd-mechanism-publication-manifest-20261008.json",
+      "bytes": 904,
+      "sha256": "2a3282937ce132854b9b8518ccd70da5427bed1735d9e9d6a5327520f0cc7493",
+      "role": "latest_loose_source_final_sweep"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/code-publication-20261008T023352Z/publish_code.py",
+      "destination": "reproduction/code-backup/publication-tools/publish_code.py",
+      "bytes": 14103,
+      "sha256": "b554a64409ebd11dcefbefec92369210978214070c93f1a2fbb9bf06e60d000c",
+      "role": "publication_and_verification_tool"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/code-publication-20261008T023352Z/verify_remote.py",
+      "destination": "reproduction/code-backup/publication-tools/verify_remote.py",
+      "bytes": 3683,
+      "sha256": "326198356369340b2aa04b6a38a0f58d5ef9ee2e85ff3627214da40224d0141b",
+      "role": "publication_and_verification_tool"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/code-publication-20261008T023352Z/supplement_backups.py",
+      "destination": "reproduction/code-backup/publication-tools/supplement_backups.py",
+      "bytes": 6319,
+      "sha256": "003ff9eb664cf64a9b8e6193c66bcbc4d1289d1bfa56fdec4e87d2f3f9d359fb",
+      "role": "publication_and_verification_tool"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/remote_codex_control/memories/code-publication-before-node-release.md",
+      "destination": "reproduction/code-backup/publication-tools/code-publication-before-node-release.md",
+      "bytes": 3005,
+      "sha256": "2352254792dfd1741881f01d67546b37b6a0d75a397ee3d23c747eb14c6d3437",
+      "role": "user_required_persistent_backup_rule"
     }
   ],
-  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization."
+  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization.",
+  "session_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
+  "final_source_sweep_utc": "2026-10-08T02:42:31.222529+00:00",
+  "original_head_at_final_sweep": "00a64f62e42140d7e5cad6110be08b0c804b35b2"
 }
