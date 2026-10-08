@@ -95,21 +95,27 @@ def validate_live_initialization(value):
 def validate_live_binding(proof, actual_source):
     """An old isolated-two READY can never admit this five-to200 session."""
     from .fresh200 import CALIBRATION_SCOPE, TOKEN_KL_LIMIT
+    nonblocking = proof.get('human_nonblocking_diagnostics') is True
+    if nonblocking:
+        require(proof.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1'
+                and proof.get('external_diagnostic_review_blocks_training') is False
+                and proof.get('actual_probability_acceptance') is None,
+                'Unbound human nonblocking diagnostic authorization')
     expected = dict(status='REVIEWED_FOR_FRESH200_LIVE_TRAINING_ONLY',
         validation_scope=LIVE_SCOPE, calibration_scope=CALIBRATION_SCOPE,
         live_goal_updated_at=LIVE_GOAL_UPDATED_AT, live_authorization_goal_updated_at=LIVE_AUTHORIZATION_GOAL_UPDATED_AT,
         official_training_outer_target=200,
-        initial_calibration_counted_outer_limit=5, first_full_acceptance_step=5,
+        initial_calibration_counted_outer_limit=200 if nonblocking else 5, first_full_acceptance_step=5,
         first5_count_toward_goal=True, restart_after_calibration=False,
         first5_known_token_kl_enforced=True, first5_tail_observation_only=True,
-        production_tail_required_before_outer6=True, retained_training_updates_contributed=0,
+        production_tail_required_before_outer6=not nonblocking, retained_training_updates_contributed=0,
         target_old_policy_kl=TOKEN_KL_LIMIT, candidate_old_policy_kl=TOKEN_KL_LIMIT,
         token_kl_threshold_source='human', token_kl_human_goal_updated_at=1791282908,
         outer_counting_authorization_source='human', outer_counting_human_goal_updated_at=1791283983)
     for key, value in expected.items():
         require(key in proof and type(proof[key]) is type(value) and proof[key] == value,
                 'Different live human goal binding: ' + key)
-    require(proof.get('allowed_safety_modes') == ['calibration', 'production']
+    require(proof.get('allowed_safety_modes') == (['calibration'] if nonblocking else ['calibration', 'production'])
             and proof.get('code_commit') == proof.get('source_commit') == actual_source
             and type(actual_source) is str and re.fullmatch(r'[0-9a-f]{40}', actual_source)
             and proof.get('source_native_acceptance') is None
@@ -130,11 +136,14 @@ def _initial_payload():
                              os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'])
     resolved = read_bound_json(config)
     policy = resolved['actor_rollout_ref']['actor']['policy_safety']
+    require(policy.get('human_nonblocking_diagnostics', False) is proof.get('human_nonblocking_diagnostics', False),
+            'Actual safety config differs from the bound diagnostic authorization')
     require(policy['mode'] == 'calibration' and policy['negative_tail_limit'] is None
             and policy['first5_known_token_kl_enforced'] is True and policy['first5_tail_observation_only'] is True
             and policy['candidate_old_policy_kl'] == policy['target_old_policy_kl'] == TOKEN_KL_LIMIT,
             'Initial realized calibration policy differs')
     return dict(schema=ADMISSION_SCHEMA, phase='C0_CALIBRATION', config_epoch=0,
+        human_nonblocking_diagnostics=proof.get('human_nonblocking_diagnostics') is True,
         job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
         source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'], live_goal_updated_at=LIVE_GOAL_UPDATED_AT,
         live_authorization_goal_updated_at=LIVE_AUTHORIZATION_GOAL_UPDATED_AT,
@@ -158,6 +167,8 @@ def validate_admission(payload):
             and payload['c0_config_record']['path'] == str(root / 'resolved-config-C0.json'),
             'Actual launcher/config byte identities differ')
     initial = read_bound_json(payload['initial_binding_record'])
+    require(payload.get('human_nonblocking_diagnostics', False) is initial.get('human_nonblocking_diagnostics', False),
+            'Live payload differs from bound diagnostic authorization')
     validate_live_binding(initial, payload['source_commit'])
     resolved = read_bound_json(payload['config_record'])
     require(resolved['actor_rollout_ref']['actor']['policy_safety'] == payload['policy'],
@@ -448,6 +459,8 @@ def validate_live_update_boundary(worker, data):
             and data.meta_info['fresh200_config_epoch'] == payload['config_epoch']
             and data.meta_info['fresh200_config_sha256'] == payload['config_record']['sha256'],
             'Actual update boundary/config epoch differs')
-    require((payload['config_epoch'] == 0 and before < 5)
+    initial = read_bound_json(payload['initial_binding_record'])
+    nonblocking = initial.get('human_nonblocking_diagnostics') is True
+    require((payload['config_epoch'] == 0 and (before < 5 or nonblocking))
             or (payload['config_epoch'] == 1 and before >= 5),
             'Sixth update requires actual same-job first5 production admission')

@@ -302,7 +302,8 @@ def save_complete(trainer, checkpoint, worker_receipts, checkpoint_root=None):
     receipt = atomic_torch_save(driver, Path(checkpoint) / 'training_state/driver.pt')
     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
     extras = [extra]
-    if fresh200_enabled(trainer.config):
+    if (fresh200_enabled(trainer.config)
+            and trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is not True):
         hf_records = [value['hf_loader_roundtrip'] for value in worker_receipts
                       if value is not None and 'hf_loader_roundtrip' in value]
         if len(hf_records) != 1:
@@ -338,7 +339,8 @@ def roundtrip_and_wait(trainer, final=False, timing_observer=None):
     check_manifest(manifest)
     hf_roundtrip = None
     from .fresh200 import enabled as fresh200_enabled
-    if fresh200_enabled(trainer.config):
+    if (fresh200_enabled(trainer.config)
+            and trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is not True):
         checkpoint_path = Path(manifest['path']).parent.parent
         hf_records = [record for record in manifest['identity']['files']
                       if Path(record['path']).resolve() == (checkpoint_path / 'training_state/hf-loader-roundtrip.json').resolve()]
@@ -499,6 +501,24 @@ def roundtrip_and_wait(trainer, final=False, timing_observer=None):
                      approval_path.with_name(f'resume{gate}-ready.json' if origin else 'instruct5-ready.json'))
     if timing_observer is not None:
         timing_observer('source_full_state_reload_before_first5_wait', time.monotonic() - timing_started)
+    if trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is True:
+        # The actual full state has been reloaded above. Semantic CPU tests and
+        # external review are background observations under the newer human scope.
+        from .fresh200_live import driver_admission_state
+        admission = driver_admission_state(trainer)
+        proof = json.loads(Path(admission['payload']['initial_binding_record']['path']).read_text())
+        if proof.get('human_nonblocking_diagnostics') is not True:
+            raise RuntimeError('Unbound nonblocking diagnostic continuation')
+        atomic_json_save(dict(status='ACTUAL_FULL_STATE_RELOADED_DIAGNOSTICS_PENDING',
+            diagnostic_authorization_scope='HUMAN_NONBLOCKING_DIAGNOSTICS_V1',
+            independent_review_status='PENDING_BACKGROUND', hf_semantic_test_status='PENDING_BACKGROUND',
+            independent_review_passed=False, actual_probability_accepted=False,
+            manifest=manifest, actual_state_roundtrip=loaded,
+            actual_driver_state_roundtrip=driver_roundtrip,
+            actual_worker_runtime_roundtrip=worker_runtime_roundtrip,
+            checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
+            approval_path.with_name('human-nonblocking-step5-state-roundtrip.json'))
+        return
     timing_wait_started = time.monotonic() if timing_observer is not None else None
     deadline = time.monotonic() + trainer.config.trainer.instruct300.wait_seconds
     expected_binding = dict(job_id=os.environ['SLURM_JOB_ID'], source=manifest['identity']['source'],

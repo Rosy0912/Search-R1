@@ -1078,7 +1078,8 @@ class ActorRolloutRefWorker(Worker):
                 os.makedirs(local_path, exist_ok=True)
                 self.actor_module.save_pretrained(local_path, state_dict=state_dict)
                 self.tokenizer.save_pretrained(local_path)
-                if self.config.actor.get('fresh200_protocol', False):
+                if (self.config.actor.get('fresh200_protocol', False)
+                        and self.config.actor.get('human_nonblocking_diagnostics') is not True):
                     from search_r1.baselines.instruct300 import hf_export_identity, reload_hf_checkpoint_cpu
                     exported = hf_export_identity(state_dict, self.actor_module.config, self.tokenizer)
                     # The child holds the FP32 HF model; release the ~12 GB
