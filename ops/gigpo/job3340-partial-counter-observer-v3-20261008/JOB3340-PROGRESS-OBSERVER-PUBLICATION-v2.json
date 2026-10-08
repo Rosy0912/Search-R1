@@ -1,0 +1,63 @@
+{
+  "status": "PUSHED_AND_INDEPENDENT_GIT_DOWNLOAD_VERIFIED",
+  "new_commit": "27ece27057ad198f9db11f679c40a2d2500a6f13",
+  "remote_sha": "27ece27057ad198f9db11f679c40a2d2500a6f13",
+  "branch": "codex/gigpo-legacy3329-completion-20261008",
+  "utc": "2026-10-08T07:01:53.001567+00:00",
+  "manifest": [
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/publish_job3340_progress_observer_v2.py",
+      "bytes": 2996,
+      "sha256": "488cd552358a1334217942bfa4728c4aa50bd0051bd19485355858ee912ae182",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/publish_job3340_progress_observer_v2.py",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/read_gigpo_job3340_retained18_actual_template.sh",
+      "bytes": 7431,
+      "sha256": "9107d83f91729bc64a8f5124cf09b2f293cafbf40185bc9ae48fea4eeb6da8b0",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/read_gigpo_job3340_retained18_actual_template.sh",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/record_job3340_actual_observation_v1.py",
+      "bytes": 4045,
+      "sha256": "56817fe22850d13b0d274b55addf639cd7e7d0f7d322ba64d781e233dc84f8b6",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/record_job3340_actual_observation_v1.py",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/JOB3340-FIRST-COMPLETED-ITERATION-ACTUAL-FACTS-v1.json",
+      "bytes": 5125,
+      "sha256": "6ebb590fa378a69409f33817287b4f3464fbce1780b07b74604ad81f5c15c0d5",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/JOB3340-FIRST-COMPLETED-ITERATION-ACTUAL-FACTS-v1.json",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/JOB3340-FIRST-ITERATION-METRICS-v1.json",
+      "bytes": 4978,
+      "sha256": "495a225dd4604e9987ae3f82f40be3758db03373d5a5a9f6d535797601593c09",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/JOB3340-FIRST-ITERATION-METRICS-v1.json",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/RETAINED18-JOB3340-ACTUAL-STATUS-v10-first-outer-completion-check.json",
+      "bytes": 278796,
+      "sha256": "7a17133c46dee792bd89442b69d18adebb56c7885cc92272121d38eff19399cb",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v10-first-outer-completion-check.json",
+      "downloaded_bytes_match": true
+    },
+    {
+      "path": "ops/gigpo/job3340-progress-observer-v2-20261008/RETAINED18-JOB3340-ACTUAL-STATUS-v11-first-iteration-metrics.json",
+      "bytes": 284300,
+      "sha256": "214a9ef8a6cf7d1f53d690f0630fc405745d98661c2dff16d9bed93824f24b86",
+      "original_source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v11-first-iteration-metrics.json",
+      "downloaded_bytes_match": true
+    }
+  ],
+  "execution": false,
+  "verification": {
+    "all_file_sha256_and_bytes_match": true,
+    "independent_bare_repository": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/xformers-v20-independent-git-readback.git"
+  }
+}
