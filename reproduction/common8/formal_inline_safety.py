@@ -188,8 +188,12 @@ def archive_initial_probe(base, run):
     assert live['version'] == run['initial_probe_version'] and live['version'].startswith(run['run_id'] + ':0:')
     assert live['encoder'] == run['initial_model']
     round_dir = Path(live['commit']).parent.parent
-    assert round_dir.parent == base / 'artifacts' and round_dir.name.startswith('round_0-attempt-')
     archive = round_dir / 'version-manifest.json'
+    if 'adoption_origin' in live:
+        from reproduction.common8.verify_full import verify_a800_adopted_initial_probe
+        verify_a800_adopted_initial_probe(base, run, live, archive)
+    else:
+        assert round_dir.parent == base / 'artifacts' and round_dir.name.startswith('round_0-attempt-')
     assert read(archive) == live
     receipt = dict(schema_version=1, role='fresh200_actual_initial_probe', run_id=run['run_id'],
         source_map_sha256=document_sha256(run['source_sha256']),

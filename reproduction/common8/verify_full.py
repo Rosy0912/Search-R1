@@ -2,6 +2,7 @@
 import argparse
 import json
 import math
+import re
 import time
 from pathlib import Path
 from collections import Counter
@@ -24,6 +25,99 @@ def verify_five_scheduler_prefix(five, full):
     assert all(row['opportunities_processed']==20 and 1<=row['actual_optimizer_writes']<=20 for row in completed)
     assert five['selected_rows']==selected, 'Five scheduler evidence differs from the final actual interval'
     return selected
+
+
+def verify_a800_adopted_initial_probe(base, run, live, archive_path):
+    """Read the genuine official initial0 adoption chain after this run trains."""
+    from reproduction.a800_common import adopt_initial_probes as adoption
+    from reproduction.common8.policy_calibration_plan import canonical_bytes
+    base=adoption._namespace(base)
+    assert re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',str(base))
+    source=adoption._namespace(run['initial_probe_adoption_source_base'])
+    assert source!=base and re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',str(source))
+    receipt=adoption._read(base/'logs/initial-probe-adoption.json',base)
+    claim=adoption._read(base/'logs/initial-probe-adoption-claim.json',base)
+    assert receipt['schema_version']==1 and receipt['role']=='a800_initial_probe_adoption'
+    assert receipt['run_id']==run['run_id'] and receipt['execution_id']==run['execution_id']
+    assert receipt['source_commit']==run['source_commit'] and receipt['version']==live['version']
+    for key,value in dict(adopted=True,finite_artifacts_revalidated=True,new_calibration_generated=False,
+        new_discovery_performed=False,inherited_training_state=False,production_admission=False,
+        child_http_admission_required=True).items():assert receipt[key] is value
+    assert type(receipt['actual_original_calibration_exit_code']) is int and receipt['actual_original_calibration_exit_code']==0
+    origin=receipt['origin'];assert canonical_bytes(live['adoption_origin'])==canonical_bytes(origin)
+    assert origin['base']==str(source)
+    old_path=adoption.artifacts._owned_file(source/'logs/run-manifest.json',source)
+    old=adoption.artifacts._read(old_path)
+    assert digest(old_path)==origin['run_manifest_sha256']
+    for candidate in (run,old):
+        assert_formal_run(candidate)
+        assert candidate['execution_backend']=='ssh_local' and candidate['training_world_size']==4
+        assert all(candidate.get(k) is None for k in ('actor_checkpoint','reference_checkpoint','resume_path',
+            'inherited_policy_run_id','inherited_optimizer_run_id','inherited_scheduler_run_id'))
+    assert run['run_id']!=old['run_id'] and run['execution_id']!=old['execution_id']
+    for key in ('initial_model','reference_model','initial_model_sha256','model_revision','input_sha256',
+        'calibration_question_ids','budget','retrieval_asset_paths','retrieval_encoder'):
+        assert canonical_bytes(run[key])==canonical_bytes(old[key]), 'Adopted initial0 scientific identity changed: '+key
+    model=Path(run['initial_model']);assert model==model.resolve()==Path('/data/search-g1/assets/qwen2.5-3b-instruct')
+    official=adoption.artifacts._owned_file(base/'preparation/official-model-manifest-original.json',base)
+    assert adoption.verify_model(model,official)==run['initial_model_sha256']
+    for root,candidate in ((base,run),(source,old)):
+        for name,sha in candidate['input_sha256'].items():
+            assert digest(adoption.artifacts._owned_file(root/'data'/name,root))==sha
+    original_source_proof={}
+    previous=adoption._source_map(source,old,original_source_proof)
+    assert original_source_proof==origin['source_fingerprint_validation']
+    # Target Hydra outputs are actual run products. Recheck every frozen source
+    # byte without rebuilding its pre-training snapshot from those new products.
+    current=run['source_sha256']
+    for name,sha in current.items():assert digest(adoption.artifacts._owned_file(base/'repo'/name,base))==sha
+    changes=[]
+    for name in sorted(set(previous)|set(current)):
+        if previous.get(name)==current.get(name):continue
+        if name==adoption.RAY_ENTRY:
+            before=adoption.artifacts._owned_file(source/'repo'/name,source).read_bytes()
+            after=adoption.artifacts._owned_file(base/'repo'/name,base).read_bytes()
+            assert adoption._outside_ray_bootstrap(before)==adoption._outside_ray_bootstrap(after)
+        else:assert name in adoption.LOCAL_HELPERS, 'Adopted scientific source changed: '+name
+        changes.append(name)
+    assert receipt['allowed_startup_source_changes']==changes
+    original,original_archive,heads,dump,files,job,calibration_log=adoption._original_artifacts(source,old)
+    expected_origin=dict(run_id=old['run_id'],source_commit=old['source_commit'],execution_id=old['execution_id'],
+        base=str(source),version=original['version'],run_manifest_sha256=digest(old_path),
+        archive_sha256=digest(original_archive),calibration_job=adoption._calibration_job_projection(job),calibration_job_sha256=document_sha256(job),
+        calibration_log_sha256=digest(calibration_log),head_sha256=original['head_sha256'],
+        dump_sha256=original['dump_sha256'],encoder_sha256=original['encoder_sha256'],
+        calibration_report_sha256=original['calibration_report_sha256'],source_fingerprint_validation=original_source_proof)
+    assert canonical_bytes(origin)==canonical_bytes(expected_origin)
+    version=re.fullmatch(re.escape(run['run_id'])+r':0:([0-9a-f]{32})',live['version']);assert version
+    directory=base/'artifacts'/('round_0-adopted-'+version.group(1))
+    archive_path=adoption.artifacts._owned_file(archive_path,base)
+    assert archive_path==directory/'version-manifest.json'
+    assert receipt['target_archive']==str(archive_path) and receipt['target_archive_sha256']==digest(archive_path)
+    assert claim['schema_version']==1 and claim['role']=='a800_initial_probe_adoption_claim'
+    assert claim['run_id']==run['run_id'] and claim['source_run_id']==old['run_id']
+    assert claim['source_base']==str(source) and claim['target_round_dir']==str(directory)
+    expected=dict(original,run_id=run['run_id'],version=live['version'],encoder=run['initial_model'],
+        commit=str(directory/'heads/commit_probe.pkl'),boundary=str(directory/'heads/boundary_probe.pkl'),
+        published_unix=live['published_unix'],adoption_origin=origin,target_source_commit=run['source_commit'],
+        target_source_sha256=current,new_calibration_generated=False)
+    assert canonical_bytes(live)==canonical_bytes(expected)
+    adoption.calibrated_version(run,live)
+    provenance=directory/'provenance'
+    for name,sha in {'original-version-manifest.json':origin['archive_sha256'],
+        'original-run-manifest.json':origin['run_manifest_sha256'],
+        'original-calibration-job.json':document_sha256(adoption._calibration_job_projection(job)),
+        'original-calibration.log':origin['calibration_log_sha256']}.items():
+        assert digest(adoption.artifacts._owned_file(provenance/name,base))==sha
+    for name,hashes in (('heads',dict(original['head_sha256'],**{'calibration-report.json':original['calibration_report_sha256']})),
+                        ('dumps',original['dump_sha256'])):
+        adoption.artifacts._files(directory/name,hashes)
+    adoption.artifacts._calibration_arrays(directory/'dumps',live['calibration_report'],live['label_proof'])
+    adoption.artifacts._fitted_heads(directory/'heads',live['calibration_report'])
+    return dict(role='verified_a800_official_initial0_adoption',version=live['version'],
+        source_run_id=old['run_id'],source_commit=old['source_commit'],
+        adoption_receipt_sha256=digest(base/'logs/initial-probe-adoption.json'),
+        new_calibration_generated=False,inherited_training_state=False)
 
 
 def verify_full(base):
@@ -92,6 +186,7 @@ def verify_full(base):
         assert len(adopted)==1
         live=archived[adopted.pop()];assert live['round']==round_id
         versions[round_id]=live
+    initial_probe_adoption=None
     for round_id,live in versions.items():
         encoder=Path(live['encoder'])
         if round_id==0:
@@ -99,7 +194,11 @@ def verify_full(base):
                               if n not in ('vocab.json','merges.txt','generation_config.json')}
             assert encoder.resolve()==Path(run['initial_model']).resolve()
             archive_path=archived_paths[live['version']]
-            assert archive_path.parent.name.startswith('round_0-attempt-'), 'Formal initial0 is freshly fitted in this namespace'
+            adopted_initial='adoption_origin' in live
+            if adopted_initial:
+                initial_probe_adoption=verify_a800_adopted_initial_probe(base,run,live,archive_path)
+            else:
+                assert archive_path.parent.name.startswith('round_0-attempt-'), 'Formal initial0 is freshly fitted in this namespace'
             initial_probe=json.loads((base/'logs/formal-inline-initial-probe.json').read_text())
             assert initial_probe['schema_version']==1 and initial_probe['role']=='fresh200_actual_initial_probe'
             assert initial_probe['run_id']==run['run_id'] and initial_probe['source_map_sha256']==document_sha256(run['source_sha256'])
@@ -107,7 +206,6 @@ def verify_full(base):
             assert initial_probe['model_revision']==run['model_revision'] and initial_probe['initial_model_sha256']==run['initial_model_sha256']
             assert initial_probe['input_sha256']==run['input_sha256']
             assert initial_probe['archive']==str(archive_path.relative_to(base)) and initial_probe['archive_sha256']==digest(archive_path)
-            assert 'adoption_origin' not in live, 'Failed old diagnostic state must not be inherited'
         else:
             snapshot=snapshots[str(round_id)]
             expected_encoder=dict(snapshot['files_sha256'])
@@ -161,6 +259,7 @@ def verify_full(base):
         final_weighted_f1=evaluation['weighted_f1'],
         semantics='full training/data/numerical structure verified; accuracy is the measured result, not automatically reproduction success',
         checked_unix=time.time())
+    if initial_probe_adoption is not None:proof['initial_probe_adoption']=initial_probe_adoption
     from reproduction.common8.calibration_runtime import write_once
     write_once(base/'logs/full-run-acceptance.json',proof)
     return proof

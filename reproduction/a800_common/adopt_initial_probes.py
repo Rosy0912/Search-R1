@@ -28,6 +28,7 @@ LOCAL_HELPERS = frozenset((
     'reproduction/a800_common/run_pipeline.py',
     'reproduction/a800_common/train.sh',
     'reproduction/common8/verify_full.py',
+    'reproduction/common8/formal_inline_safety.py',
 ))
 RAY_ENTRY = 'verl/trainer/main_ppo_eco.py'
 ORIGINAL_HYDRA_OUTPUTS = {
