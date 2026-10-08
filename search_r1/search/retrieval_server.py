@@ -209,12 +209,18 @@ class BM25Retriever(BaseRetriever):
 class DenseRetriever(BaseRetriever):
     def __init__(self, config):
         super().__init__(config)
+        if os.environ.get('SEARCH_R1_RETRIEVER_IDENTITY') == '1':
+            from search_r1.baselines.baseline_alignment_retrieval import asset_paths, file_identity
+            self.alignment_loaded_assets = {name: file_identity(path)
+                for name, path in asset_paths(config, __file__).items()}
         self.index = faiss.read_index(self.index_path)
         if config.faiss_gpu:
             co = faiss.GpuMultipleClonerOptions()
             co.useFloat16 = True
             co.shard = True
             self.index = faiss.index_cpu_to_all_gpus(self.index, co=co)
+            self.alignment_gpu_clone_fp16 = bool(co.useFloat16)
+            self.alignment_gpu_clone_shard = bool(co.shard)
 
         self.corpus = load_corpus(self.corpus_path)
         self.encoder = Encoder(
@@ -410,6 +416,9 @@ if __name__ == "__main__":
 
     # 2) Instantiate a global retriever so it is loaded once and reused.
     retriever = get_retriever(config)
+    if os.environ.get('SEARCH_R1_RETRIEVER_IDENTITY') == '1':
+        from search_r1.baselines.baseline_alignment_retrieval import attach_identity_endpoint
+        attach_identity_endpoint(app, config, retriever, __file__)
     
     # 3) Launch the server. By default, it listens on http://127.0.0.1:8000
     uvicorn.run(app, host=args.host, port=args.port)

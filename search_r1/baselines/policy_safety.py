@@ -21,6 +21,14 @@ class SkipOptimizerOpportunity(ValueError):
     pass
 
 
+class BaselineAlignedUpdateFault(RuntimeError):
+    """Fatal aligned update; previous Adam writes remain live for native recovery."""
+    def __init__(self, event, reports=None):
+        self.event = event
+        self.reports = reports or []
+        super().__init__('Baseline aligned actor fault: '+json.dumps(event, sort_keys=True, default=str))
+
+
 class PartialPolicyUpdate(RuntimeError):
     def __init__(self, event):
         self.event = event
@@ -168,12 +176,21 @@ def bind_config(config, layout, group=None):
     try:
         document = OmegaConf.to_container(config, resolve=True)
         safety = document.get('policy_safety') or {'enabled': False}
+        aligned = document.get('baseline_aligned', False)
         enabled = safety.get('enabled', False)
-        ok = type(enabled) is bool
+        if aligned:
+            safety = dict(safety, enabled=True, dual_clip=3., kl_log_bound=30.,
+                          target_old_policy_kl=safety.get('target_old_policy_kl', .2),
+                          negative_tail_limit=safety.get('negative_tail_limit', None))
+            enabled = True
+        ok = type(enabled) is bool and type(aligned) is bool
         if enabled:
-            ok = ok and document.get('baseline_method') == 'bapo' and document.get('loss_reduction') == 'sequence_mean'
+            ok = ok and document.get('baseline_method') == 'bapo' and document.get('loss_reduction') == ('token_mean' if aligned else 'sequence_mean')
             ok = ok and document.get('state_masking') is True and not document.get('use_dynamic_bsz') and document.get('ppo_epochs') == 1
             ok = ok and safety['dual_clip'] == 3 and document['clip_ratio'] == .2
+            if aligned:
+                ok = ok and document.get('use_kl_loss') is True
+                ok = ok and document.get('kl_loss_coef') == .001 and document.get('kl_loss_type') == 'low_var_kl'
             ok = ok and 0 < float(safety['kl_log_bound']) <= 30 and 0 < float(safety['target_old_policy_kl'])
             ok = ok and all(math.isfinite(float(safety[k])) for k in ('kl_log_bound','target_old_policy_kl'))
         source_sha256 = {}

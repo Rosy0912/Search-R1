@@ -5,17 +5,20 @@ PROTOCOL = 'BAPO_FRESH200_V1'
 SAVE_OUTERS = (5, 50, 100, 150, 200)
 
 
-def outer_contract(actual_outer):
+def outer_contract(actual_outer, baseline_aligned=False):
     if type(actual_outer) is not int or not 1 <= actual_outer <= 200:
         raise ValueError('Fresh200 actual_outer must be integer 1..200')
-    mini = 128 if actual_outer < 50 else 256
-    return dict(protocol=PROTOCOL, actual_outer=actual_outer,
+    mini = 128 if baseline_aligned or actual_outer < 50 else 256
+    return dict(protocol=PROTOCOL, baseline_aligned=baseline_aligned, actual_outer=actual_outer,
                 global_mini_batch_size=mini, rank_mini_batch_size=mini // 8,
                 expected_optimizer_steps=2560 // mini, world_size=8,
                 global_micro_batch_size=16, rank_micro_batch_size=2)
 
 
 def validate_fresh_config(config):
+    if config.get('baseline_aligned', False):
+        from .baseline_alignment import validate_aligned_config
+        return validate_aligned_config(config)
     trainer=config['trainer']; ar=config['actor_rollout_ref']; actor=ar['actor']; optim=actor['optim']
     required=[trainer.get('fresh200_enabled') is True, trainer.get('fresh200_gate_enabled') is True,
               trainer.get('e1_gate_enabled') is False, trainer.get('total_training_steps') == 201,
@@ -103,7 +106,8 @@ def scheduler_may_step(event):
 
 
 def validate_rank_updates(events, actual_outer):
-    contract=outer_contract(actual_outer);expected=contract['expected_optimizer_steps']
+    aligned = bool(events and events[0].get('baseline_aligned', False))
+    contract=outer_contract(actual_outer, aligned);expected=contract['expected_optimizer_steps']
     if (len(events) != 8 or any(type(e.get('rank')) is not int for e in events)
             or {e.get('rank') for e in events} != set(range(8))):
         raise ValueError('Fresh200 all-rank write ledger missing/duplicate/invalid rank type')
@@ -112,7 +116,9 @@ def validate_rank_updates(events, actual_outer):
                    'unprocessed_opportunities','attempt_complete','update_complete','postabort')
     first={key:events[0].get(key) for key in decision_keys}
     for event in events:
-        if (not _valid_skip_event(event) or event['actual_outer'] != actual_outer
+        if (event.get('baseline_aligned', False) != aligned
+                or (aligned and (event.get('status') != 'COMPLETE' or event.get('skipped_opportunities') != 0))
+                or not _valid_skip_event(event) or event['actual_outer'] != actual_outer
                 or event['expected_optimizer_steps'] != expected):
             raise ValueError('Fresh200 invalid opportunity/write/completion identity')
         if {key:event.get(key) for key in decision_keys} != first:
@@ -308,7 +314,9 @@ def verify_official_model_assets(model_path):
 def critical_source_hashes():
     import hashlib
     root=Path(__file__).resolve().parents[2]
-    names=('search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
+    names=('search_r1/baselines/aligned_startup.py','search_r1/baselines/baseline_alignment.py','search_r1/baselines/baseline_alignment_data.py',
+        'search_r1/baselines/baseline_alignment_retrieval.py','search_r1/baselines/raw_sampler_diagnostic.py',
+        'verl/trainer/config/ppo_bapo_baseline_aligned.yaml','search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
         'search_r1/baselines/fresh200_contract.py','search_r1/baselines/fresh200_native_evidence.py',
         'search_r1/baselines/fresh200_driver.py',
         'search_r1/baselines/behavior_policy.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/main.py',

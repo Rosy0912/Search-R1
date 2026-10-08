@@ -232,6 +232,7 @@ class DataParallelPPOActor(BasePPOActor):
         training = self.actor_module.training
         self.actor_module.eval()
         current, masks, advantages, weights, old, hf0 = [], [], [], [], [], []
+        sampled, sampling_masks = [], []
         try:
             with torch.no_grad():
                 for micro in (frozen if monitor_batch is None else monitor_batch).split(self.config.ppo_micro_batch_size):
@@ -240,8 +241,12 @@ class DataParallelPPOActor(BasePPOActor):
                     mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
                     current.append(new); masks.append(mask); advantages.append(micro['advantages'])
                     old.append(micro['old_log_probs'])
-                    hf0.append(micro['frozen_hf_log_probs'])
-                    weights.append(mask.double() / mask.sum(-1, keepdim=True).clamp_min(1).double())
+                    hf0.append(micro['old_log_probs'] if self._baseline_aligned else micro['frozen_hf_log_probs'])
+                    weights.append(mask.double() if self._baseline_aligned else
+                                   mask.double() / mask.sum(-1, keepdim=True).clamp_min(1).double())
+                    if self._baseline_aligned and 'sampling_log_probs' in micro.keys():
+                        sampled.append(micro['sampling_log_probs'])
+                        sampling_masks.append(mask * micro['sampling_mask'])
         finally:
             self.actor_module.train(training)
         report = monitor(torch.cat(old), torch.cat(current), torch.cat(advantages), torch.cat(masks), torch.cat(weights),
@@ -257,6 +262,24 @@ class DataParallelPPOActor(BasePPOActor):
                       objective_weight_definition='sequence_mean reciprocal supervised row length; global weight mass',
                       rollout_identity=self._safety_rollout_identity, tensor_sha256=self._safety_monitor_identity,
                       threshold_origin='user_fixed',fixed_threshold_artifact_sha256=self._safety_calibration_sha, monitor_seconds=time.monotonic()-started)
+        if self._baseline_aligned:
+            numerical_reasons = {'nonfinite_or_negative_effective_input', 'nonfinite_subtraction'}
+            if numerical_reasons.intersection(report['reasons']):
+                from search_r1.baselines.policy_safety import SkipOptimizerOpportunity
+                raise SkipOptimizerOpportunity('nonfinite_policy_monitor_input')
+            report.update(diagnostic_only=True, allowed=True,
+                          frozen_hf_old_policy_kl=report.pop('sampled_old_policy_kl'),
+                          sampling_policy_kl=None,
+                          sampling_policy_kl_status='unavailable_on_retokenized_training_actions',
+                          objective_weight_definition='full-scope token mean diagnostic; actor uses microbatch token mean / accumulation',
+                          denominator_role='frozen_hf_old_policy', threshold_origin='diagnostic_only')
+            report['hf_diagnostic_drift']['role'] = 'frozen_hf_old_policy_denominator_drift'
+            if sampled:
+                report['raw_sampler_token_transport_diagnostic'] = dict(
+                    diagnostic_only=True, probability_alignment='unverified_raw_sampler_only',
+                    selected_logprobs_finite=bool(torch.isfinite(torch.cat(sampled)).all()))
+            from search_r1.baselines.raw_sampler_diagnostic import evaluate_raw_diagnostic
+            report['raw_sampler_diagnostic'] = evaluate_raw_diagnostic(self, self._raw_sampler_diagnostic_cache)
         capture_ok = True
         capture_error = None
         sink = getattr(self, '_safety_evidence_sink', None)
@@ -280,12 +303,13 @@ class DataParallelPPOActor(BasePPOActor):
         from search_r1.baselines.policy_safety import PartialPolicyUpdate
         from search_r1.baselines.optimizer_transaction import OptimizerCommitFault
         from search_r1.baselines.gradient_norm import GradientStructureFault
+        self._baseline_aligned = self.config.get('baseline_aligned', False)
         self._safety_writes = 0
         self._safety_processed = 0
         self._safety_skips = []
         self._safety_attempt_id = data.meta_info.get('attempt_id')
         outer = data.meta_info.get('actual_outer')
-        self._safety_expected_writes = (20 if outer <= 49 else 10) if type(outer) is int and 1 <= outer <= 200 else None
+        self._safety_expected_writes = (20 if self._baseline_aligned or outer <= 49 else 10) if type(outer) is int and 1 <= outer <= 200 else None
         self._safety_reports = []
         try:
             return DataParallelPPOActor._update_policy_impl(self, data)
@@ -307,6 +331,9 @@ class DataParallelPPOActor(BasePPOActor):
         event.update(status='INFRASTRUCTURE_FAULT',update_complete=False,attempt_complete=False,postabort=True,
             optimizer_steps=actual,confirmed_previous_optimizer_steps=previous,failed_commit_progress=progress,
             current_state_requires_native_save=True,failed_opportunities=1,fatal=True)
+        if getattr(self, '_baseline_aligned', False):
+            from search_r1.baselines.policy_safety import BaselineAlignedUpdateFault
+            raise BaselineAlignedUpdateFault(event, self._safety_reports)
         return {'actor/optimizer_steps':actual,'fresh200_update_state':event,'fresh200_policy_monitor':self._safety_reports}
 
     def _skip_event(self, reason=None, complete=False, postabort=False):
@@ -319,7 +346,8 @@ class DataParallelPPOActor(BasePPOActor):
             unprocessed_opportunities=None if total is None else total-self._safety_processed,
             skipped_indices=[x['index'] for x in self._safety_skips],skipped_reasons=self._safety_skips,
             reason=reason,postabort=bool(postabort or (writes>0 and not complete)),actual_outer=getattr(self,'_safety_actual_outer',None),
-            attempt_id=self._safety_attempt_id,rollout_identity=getattr(self,'_safety_rollout_identity',None))
+            attempt_id=self._safety_attempt_id,rollout_identity=getattr(self,'_safety_rollout_identity',None),
+            baseline_aligned=getattr(self,'_baseline_aligned',False))
 
     def _reject_safety(self, reason, report=None):
         from search_r1.baselines.policy_safety import PartialPolicyUpdate
@@ -353,48 +381,59 @@ class DataParallelPPOActor(BasePPOActor):
             layout_ok = type(outer) is int and 1 <= outer <= 200 and bool(self._safety_rollout_identity)
             layout_ok = layout_ok and type(self._safety_attempt_id) is int and self._safety_attempt_id>0
             layout_ok = layout_ok and world == 8 and self.config.ppo_micro_batch_size == 2 and len(data) == 320
+            if self._baseline_aligned:
+                layout_ok = layout_ok and self.config.ppo_mini_batch_size == 16
             if not consensus(layout_ok, self._safety_group):
                 raise RuntimeError('Invalid fresh200 layout; not a recoverable skip')
-            mini_size = 16 if outer <= 49 else 32
-            self._safety_expected_writes = 20 if outer <= 49 else 10
-            from search_r1.baselines.policy_safety import NonfiniteSamplingPolicy, PartialPolicyUpdate
-            from search_r1.baselines.fresh200_contract import verify_fixed_policy_safety_artifact, verify_sampling_policy_binding
-            try:
-                tail, sha = verify_fixed_policy_safety_artifact(safety)
-                artifact_ok, admission_error = True, None
-            except Exception as error:
-                tail, sha, artifact_ok, admission_error = None, None, False, str(error)
-            if not agree_document({'fixed_threshold_artifact_sha256': sha, 'tail_limit': tail}, artifact_ok, self._safety_group):
-                raise RuntimeError('Fixed-threshold admission rejected: '+str(admission_error))
-            self._safety_tail_limit, self._safety_calibration_sha = tail, sha
-            sampling_sha, numerical_error, structural_error = None, None, None
-            try:
-                sampling_sha = verify_sampling_policy_binding(data, safety)
-            except NonfiniteSamplingPolicy as error:
-                numerical_error = str(error)
-            except Exception as error:
-                structural_error = str(error)
-            # Identity/context/transport errors remain fatal even if another rank
-            # has numerical rejection. Every rank enters these reductions.
-            if not consensus(structural_error is None, self._safety_group):
-                raise RuntimeError('Sampling structural admission rejected: '+str(structural_error))
-            # Even a locally numerical-rejected row must bind the same actual
-            # sampled snapshot as every other rank before numerical skipping.
-            import hashlib
-            snapshot_sha = hashlib.sha256(data.meta_info['policy_snapshot_id'].encode()).hexdigest()
-            if not agree_document({'sampling_policy_binding': snapshot_sha}, True, self._safety_group):
-                raise RuntimeError('Sampling policy identity differs across ranks')
-            if not consensus(numerical_error is None, self._safety_group):
-                event = DataParallelPPOActor._skip_event(self, 'nonfinite_sampling_policy')
-                event['report'] = dict(status='NUMERIC_REJECTED', local_error=numerical_error)
-                raise PartialPolicyUpdate(event)
+            mini_size = 16 if self._baseline_aligned or outer <= 49 else 32
+            self._safety_expected_writes = 20 if self._baseline_aligned or outer <= 49 else 10
+            if self._baseline_aligned:
+                self._safety_tail_limit = safety.get('negative_tail_limit')
+                self._safety_calibration_sha = None
+            else:
+                from search_r1.baselines.policy_safety import NonfiniteSamplingPolicy, PartialPolicyUpdate
+                from search_r1.baselines.fresh200_contract import verify_fixed_policy_safety_artifact, verify_sampling_policy_binding
+                try:
+                    tail, sha = verify_fixed_policy_safety_artifact(safety)
+                    artifact_ok, admission_error = True, None
+                except Exception as error:
+                    tail, sha, artifact_ok, admission_error = None, None, False, str(error)
+                if not agree_document({'fixed_threshold_artifact_sha256': sha, 'tail_limit': tail}, artifact_ok, self._safety_group):
+                    raise RuntimeError('Fixed-threshold admission rejected: '+str(admission_error))
+                self._safety_tail_limit, self._safety_calibration_sha = tail, sha
+                sampling_sha, numerical_error, structural_error = None, None, None
+                try:
+                    sampling_sha = verify_sampling_policy_binding(data, safety)
+                except NonfiniteSamplingPolicy as error:
+                    numerical_error = str(error)
+                except Exception as error:
+                    structural_error = str(error)
+                # Identity/context/transport errors remain fatal even if another rank
+                # has numerical rejection. Every rank enters these reductions.
+                if not consensus(structural_error is None, self._safety_group):
+                    raise RuntimeError('Sampling structural admission rejected: '+str(structural_error))
+                # Even a locally numerical-rejected row must bind the same actual
+                # sampled snapshot as every other rank before numerical skipping.
+                import hashlib
+                snapshot_sha = hashlib.sha256(data.meta_info['policy_snapshot_id'].encode()).hexdigest()
+                if not agree_document({'sampling_policy_binding': snapshot_sha}, True, self._safety_group):
+                    raise RuntimeError('Sampling policy identity differs across ranks')
+                if not consensus(numerical_error is None, self._safety_group):
+                    event = DataParallelPPOActor._skip_event(self, 'nonfinite_sampling_policy')
+                    event['report'] = dict(status='NUMERIC_REJECTED', local_error=numerical_error)
+                    raise PartialPolicyUpdate(event)
+        if self._baseline_aligned:
+            from search_r1.baselines.raw_sampler_diagnostic import prepare_raw_diagnostic
+            self._raw_sampler_diagnostic_cache = prepare_raw_diagnostic(data, self.config)
         assert mini_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = mini_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
-        if safety:
+        if safety and not self._baseline_aligned:
             select_keys.append('frozen_hf_log_probs')
+        if self._baseline_aligned and 'sampling_log_probs' in data.batch.keys():
+            select_keys.extend(['sampling_log_probs', 'sampling_mask'])
         if self.config.state_masking:
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:
@@ -427,17 +466,22 @@ class DataParallelPPOActor(BasePPOActor):
                 # split batch into micro_batches
                 mini_batch = data
                 if safety:
-                    report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam')
-                    if 'frozen_rollout_identity_changed' in report.get('reasons',[]): raise RuntimeError('Frozen rollout identity changed')
-                    if not report['allowed']:
-                        DataParallelPPOActor._reject_safety(self, 'policy_monitor', report)
-                    report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam_full_minibatch', mini_batch)
-                    if not report['allowed']:
-                        raise SkipOptimizerOpportunity('policy_monitor_full_minibatch')
+                    # Aligned KL/tail diagnostics scan the frozen rollout only
+                    # at outer boundaries. Each write still checks actual forward
+                    # inputs, loss, gradients and the transactional Adam candidate.
+                    if not self._baseline_aligned or batch_idx == 0:
+                        report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam')
+                        if 'frozen_rollout_identity_changed' in report.get('reasons',[]): raise RuntimeError('Frozen rollout identity changed')
+                        if not report['allowed']:
+                            DataParallelPPOActor._reject_safety(self, 'policy_monitor', report)
+                    if not self._baseline_aligned:
+                        report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'before_adam_full_minibatch', mini_batch)
+                        if not report['allowed']:
+                            raise SkipOptimizerOpportunity('policy_monitor_full_minibatch')
                 from search_r1.baselines.distillation import global_token_count
                 count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
                 total, world = global_token_count(count_mask)
-                if total.item() == 0 and not sequence_mean:
+                if total.item() == 0 and not sequence_mean and not self._baseline_aligned:
                     skipped += 1
                     continue
                 if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
@@ -490,12 +534,22 @@ class DataParallelPPOActor(BasePPOActor):
                             (~torch.isfinite(old_log_prob) & valid).sum(),
                             (~torch.isfinite(log_prob) & valid).sum(), valid.sum())).detach())
 
-                    if sequence_mean or paper_objective:
+                    if self._baseline_aligned:
+                        # Archive computes a masked token mean separately in each
+                        # fixed microbatch, then divides by accumulation count.
+                        from search_r1.baselines.objectives import weighted_policy_loss
+                        micro_denominator = response_mask.sum().clamp_min(1).to(log_prob.device)
+                        pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
+                            old_log_prob, log_prob, advantages, response_mask, response_mask,
+                            clip_ratio, micro_denominator, safety_group=self._safety_group,
+                            baseline_aligned=True)
+                    elif sequence_mean or paper_objective:
                         pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                             old_log_prob, log_prob, advantages, response_mask, policy_weights,
                             clip_ratio, denominator, None if sequence_mean else data.get('step_ids', None),
-                            log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None,
-                            dual_clip=float(safety['dual_clip']) if safety else None, safety_group=self._safety_group)
+                            log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' and not self._baseline_aligned else None,
+                            dual_clip=float(safety['dual_clip']) if safety and not self._baseline_aligned else None,
+                            safety_group=self._safety_group, baseline_aligned=self._baseline_aligned)
                         if sequence_mean:
                             pg_clipfrac = pg_clipfrac * policy_weights.sum() / denominator
                             ppo_kl = ppo_kl * policy_weights.sum() / denominator
@@ -510,24 +564,36 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                       cliprange=clip_ratio,
                                                                                       log_ratio_clip=20.0 if self.config.get('baseline_method') == 'bapo' else None)
                     # compute entropy loss from entropy
-                    entropy_loss = (verl_F.masked_sum(torch.where(response_mask.bool(), entropy, 0.), policy_weights) / denominator
+                    entropy_loss = ((torch.where(response_mask.bool(), entropy, 0.) * response_mask).sum() / micro_denominator
+                                    if self._baseline_aligned else
+                                    verl_F.masked_sum(torch.where(response_mask.bool(), entropy, 0.), policy_weights) / denominator
                                     if sequence_mean or paper_objective else verl_F.masked_mean(torch.where(response_mask.bool(), entropy, 0.), response_mask))
 
                     # compute policy loss
                     policy_loss = pg_loss - entropy_loss * entropy_coeff
 
                     if self.config.use_kl_loss and (not safety or self.config.kl_loss_coef != 0):
+                        if self._baseline_aligned and not consensus(
+                                bool(torch.isfinite(data['ref_log_prob'][response_mask.bool()]).all()), self._safety_group):
+                            raise SkipOptimizerOpportunity('nonfinite_reference_log_probability')
                         ref_log_prob = data['ref_log_prob']
+                        # Check the reference subtraction collectively before its local kernel guard.
+                        if self._baseline_aligned and not consensus(bool(torch.isfinite(
+                                (ref_log_prob.double() - log_prob.double())[response_mask.bool()]).all()), self._safety_group):
+                            raise SkipOptimizerOpportunity('nonfinite_reference_difference')
                         # compute kl loss
                         kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
-                                                    ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
+                                                    ref_logprob=torch.where(response_mask.bool(), ref_log_prob.double() if self._baseline_aligned else ref_log_prob, 0.),
                                                     kl_penalty=self.config.kl_loss_type)
-                        kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
+                        kl_loss = ((kld * response_mask).sum() / micro_denominator if self._baseline_aligned else
+                                   verl_F.masked_sum(kld, policy_weights) / denominator
                                    if sequence_mean or paper_objective else masked_mean(kld, response_mask))
 
                         policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
                         if sequence_mean:
                             mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
+                        elif self._baseline_aligned:
+                            append_to_dict(metrics, {'actor/kl_loss': kl_loss.detach().item()})
                         else:
                             metrics['actor/kl_loss'] = kl_loss.detach().item()
                         metrics['actor/kl_coef'] = self.config.kl_loss_coef
@@ -566,16 +632,21 @@ class DataParallelPPOActor(BasePPOActor):
                         from search_r1.baselines.optimizer_transaction import OptimizerCommitFault
                         raise OptimizerCommitFault(dict(stage='post_commit_state_nonfinite',
                             local_commit_complete=True,count_already_recorded=True))
-                    report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam')
-                    if not report['allowed']:
-                        DataParallelPPOActor._reject_safety(self, 'post_policy_monitor', report)
-                    report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam_full_minibatch', mini_batch)
-                    if not report['allowed']:
-                        DataParallelPPOActor._reject_safety(self, 'post_policy_monitor_full_minibatch', report)
+                    if not self._baseline_aligned or batch_idx + 1 == self._safety_expected_writes:
+                        report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam')
+                        if not report['allowed']:
+                            DataParallelPPOActor._reject_safety(self, 'post_policy_monitor', report)
+                    if not self._baseline_aligned:
+                        report = DataParallelPPOActor._monitor_frozen_policy(self, frozen, safety, 'after_adam_full_minibatch', mini_batch)
+                        if not report['allowed']:
+                            DataParallelPPOActor._reject_safety(self, 'post_policy_monitor_full_minibatch', report)
                 data = {'actor/grad_norm': grad_norm.detach().item()}
                 append_to_dict(metrics, data)
             except SkipOptimizerOpportunity as failure:
                 if not safety: raise
+                if self._baseline_aligned:
+                    return DataParallelPPOActor._fatal_update(self, str(failure), dict(
+                        stage='numeric_admission', local_commit_complete=False))
                 self.actor_optimizer.zero_grad()
                 self._safety_skips.append(dict(index=batch_idx,reason=str(failure)))
                 skipped += 1
@@ -593,6 +664,10 @@ class DataParallelPPOActor(BasePPOActor):
         if safety:
             if not consensus(self._safety_processed == self._safety_expected_writes, self._safety_group):
                 raise RuntimeError('Optimizer opportunity count mismatch')
+            if self._baseline_aligned and not consensus(
+                    self._safety_writes == 20 and not self._safety_skips, self._safety_group):
+                return DataParallelPPOActor._fatal_update(self, 'incomplete_aligned_adam_writes', dict(
+                    stage='completion', local_commit_complete=False))
             metrics['fresh200_update_state'] = DataParallelPPOActor._skip_event(self,complete=True)
             metrics['fresh200_policy_monitor'] = self._safety_reports
         return metrics

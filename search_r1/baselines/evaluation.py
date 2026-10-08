@@ -23,7 +23,7 @@ def batch_answer_metrics(data, tokenizer):
             f1=max((token_f1(answer, t) for t in targets), default=0.) if answer is not None else 0.,
             em=float(em_check(answer, targets)) if answer is not None else 0.,
             answer_format=float(answer is not None),
-            format_rate=float(answer is not None and legal_action_records([dict(text=s) for s in spans])),
+            format_rate=float(answer is not None and (data.meta_info.get('baseline_aligned', False) or legal_action_records([dict(text=s) for s in spans]))),
             generated_tokens=int(mask.sum()),
             search_calls=sum(len(re.findall(r'<search>.*?</search>', s, re.DOTALL)) for s in spans)))
     return output

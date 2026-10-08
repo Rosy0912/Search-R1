@@ -464,7 +464,7 @@ class ActorRolloutRefWorker(Worker):
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
             # Validate reporting topology before any optimizer update.
             aggregate_bapo_metrics = (self.config.actor.get('baseline_method') == 'bapo'
-                                      and self.config.actor.get('loss_reduction') == 'sequence_mean')
+                                      and (self.config.actor.get('loss_reduction') == 'sequence_mean' or self.config.actor.get('baseline_aligned', False)))
             if aggregate_bapo_metrics:
                 from search_r1.baselines.actor_metrics import validate_actor_metric_topology
                 validate_actor_metric_topology(self.ulysses_sequence_parallel_size,
@@ -485,7 +485,8 @@ class ActorRolloutRefWorker(Worker):
                             (fault / ('rank_%d-outer_%d.raw.log' % (self.rank, data.meta_info['actual_outer']))).write_text(traceback.format_exc())
                         raise
                     metrics = {'fresh200_update_state': error.event,
-                               'actor/optimizer_steps': error.event['optimizer_steps']}
+                               'actor/optimizer_steps': error.event['optimizer_steps'],
+                               'fresh200_policy_monitor': getattr(error, 'reports', [])}
                 rank_updates = None
                 if fresh200:
                     from search_r1.baselines.fresh200_contract import validate_rank_updates
@@ -573,7 +574,7 @@ class ActorRolloutRefWorker(Worker):
         data.batch = data.batch.cuda(device=torch.cuda.current_device())
         meta_info = {'eos_token_id': self.tokenizer.eos_token_id, 'pad_token_id': self.tokenizer.pad_token_id}
         data.meta_info.update(meta_info)
-        fresh200=self.config.actor.get('fresh200_enabled',False)
+        fresh200=getattr(self.config, 'actor', {}).get('fresh200_enabled',False)
         old_policy_meta={}
         if fresh200:
             old_policy_meta=dict(micro_batch_size=self.config.rollout.log_prob_micro_batch_size,

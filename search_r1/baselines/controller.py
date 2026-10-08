@@ -126,6 +126,7 @@ class Controller:
     def __init__(self, trainer):
         self.trainer = trainer
         self.config = trainer.config.baselines
+        self.reward_profile = 'baseline_aligned' if trainer.config.get('baseline_aligned', False) else 'legacy'
         torch.manual_seed(self.config.seed)
         self.method = self.config.method
         # Zero completed outers is meaningful before the first attempt or fault backup.
@@ -134,7 +135,7 @@ class Controller:
         self.ranker = self.teacher = None
         if self.method == 'bapo':
             trainer.reward_fn = BoundaryReward(trainer.tokenizer, self.stage, self.config.bapo.alpha,
-                                               self.config.bapo.bonus)
+                                               self.config.bapo.bonus, profile=self.reward_profile)
             from torch.utils.data import DataLoader
             from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
             dataset = RLHFDataset(self.config.bapo.stage_validation_files, trainer.tokenizer,
@@ -146,7 +147,12 @@ class Controller:
             size = self.config.bapo.get('stage_validation_size')
             if size is not None and (len(dataset) != size or len(keys) != size):
                 raise ValueError('BAPO stage validation must retain exactly the configured distinct questions after filtering')
-            if keys & (question_keys(trainer.val_dataset, prompt_key) | question_keys(trainer.train_dataset, prompt_key)):
+            aligned = trainer.config.get('baseline_aligned', False)
+            allow_train_overlap = False
+            if aligned:
+                from .baseline_alignment import prepare_aligned_inputs
+                allow_train_overlap = prepare_aligned_inputs(trainer.config)['stage']['training_derived']
+            if keys & question_keys(trainer.val_dataset, prompt_key) or (not allow_train_overlap and keys & question_keys(trainer.train_dataset, prompt_key)):
                 raise ValueError('BAPO stage holdout overlaps training or final-test questions')
             final_files = trainer.config.data.get('final_val_files')
             if final_files:
@@ -181,7 +187,7 @@ class Controller:
             targets = [r['ground_truth']['target'] for r in qa_batch.non_tensor_batch['reward_model']]
             uids = qa_batch.non_tensor_batch['index']
             for _ in range(self.config.bapo.resample_attempts):
-                rows = resample_rows(decode_answers(output, self.trainer.tokenizer, require_legal=True), targets, uids, self.stage)
+                rows = resample_rows(decode_answers(output, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile), targets, uids, self.stage)
                 if not rows:
                     break
                 engine.run(select_rows(gen_batch, rows))
@@ -195,7 +201,7 @@ class Controller:
         return output, sources
 
     def main_f1_reward(self, data):
-        answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
+        answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
         result = torch.zeros_like(data.batch['responses'], dtype=torch.float32)
         width = result.shape[1]
         mask = data.batch['info_mask'][:, -width:] * data.batch['attention_mask'][:, -width:]
@@ -254,7 +260,7 @@ class Controller:
             returns = adv.clone()
             if self.method == 'bapo':
                 from .bapo import is_idk
-                answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
+                answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
                 idk_count = sum(map(is_idk, answers))
                 metrics['bapo/idk_ratio'] = idk_count / max(1, len(answers))
                 metrics['bapo/answered_coverage'] = sum(a is not None and not is_idk(a) for a in answers) / max(1, len(answers))
@@ -274,7 +280,7 @@ class Controller:
             self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
             metrics['bapo/actual_outer_updates'] = self.actual_outer_updates
         if self.ranker:
-            answers = decode_answers(data, self.trainer.tokenizer, require_legal=True)
+            answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
             outcomes = {}
             for i, uid in enumerate(data.non_tensor_batch['trajectory_uid']):
                 targets = data.non_tensor_batch['reward_model'][i]['ground_truth']['target']

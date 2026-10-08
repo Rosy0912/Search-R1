@@ -4,6 +4,7 @@ from dataclasses import dataclass, field, asdict
 
 @dataclass
 class Fresh200Progress:
+    baseline_aligned: bool = False
     attempts: int = 0
     completed_outers: int = 0
     actual_adam_writes_per_rank: list = field(default_factory=lambda: [0] * 8)
@@ -22,9 +23,11 @@ class Fresh200Progress:
     def record(self, events, actual_outer):
         from .fresh200_contract import validate_rank_updates
         validate_rank_updates(events,actual_outer)
+        if any(e.get('baseline_aligned', False) != self.baseline_aligned for e in events):
+            raise ValueError('Progress profile differs from worker update profile')
         if self.attempts != self.recorded_attempts + 1 or actual_outer != self.completed_outers + 1:
             raise ValueError('Attempt outcome is duplicate or out of order')
-        expected = 20 if actual_outer < 50 else 10
+        expected = 20 if self.baseline_aligned or actual_outer < 50 else 10
         if (len(events) != 8 or any(type(e.get('rank')) is not int for e in events)
                 or {e.get('rank') for e in events} != set(range(8))):
             raise ValueError('Attempt ledger requires all eight unique ranks')
@@ -76,7 +79,7 @@ class Fresh200Progress:
         return complete
 
     def state_dict(self):
-        return dict(asdict(self), no_skip_expected_writes_per_rank=2490,
+        return dict(asdict(self), no_skip_expected_writes_per_rank=4000 if self.baseline_aligned else 2490,
                     actual_adam_writes_all_ranks=sum(self.actual_adam_writes_per_rank))
 
 

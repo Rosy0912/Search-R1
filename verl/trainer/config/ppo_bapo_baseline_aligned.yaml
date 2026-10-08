@@ -1,0 +1,33 @@
+# Separate candidate profile. Never apply this config to an existing run.
+defaults:
+  - ppo_bapo_fresh200
+  - _self_
+
+baseline_aligned: true
+force_final_answer: true
+actor_rollout_ref:
+  actor:
+    baseline_aligned: true
+    raw_sampler_diagnostic_rows_per_rank: 4
+    loss_reduction: token_mean
+    use_kl_loss: true
+    kl_loss_coef: 0.001
+    kl_loss_type: low_var_kl
+    ppo_mini_batch_size: 128
+    policy_safety:
+      dual_clip: null
+      skip_on_policy_guard: false
+retriever:
+  identity_manifest: ${oc.env:BAPO_ALIGNED_RETRIEVAL_MANIFEST}
+  identity_manifest_sha256: ${oc.env:BAPO_ALIGNED_RETRIEVAL_SHA256}
+trainer:
+  fresh200_gate_enabled: false
+  experiment_name: bapo-baseline-aligned-instruct200
+baselines:
+  holdout:
+    input_mode: baseline_aligned_manifest
+    manifest_path: ${oc.env:BAPO_ALIGNED_DATA_MANIFEST}
+    manifest_sha256: ${oc.env:BAPO_ALIGNED_DATA_SHA256}
+  alignment:
+    order_manifest: ${oc.env:BAPO_ALIGNED_ORDER_MANIFEST}
+    order_sha256: ${oc.env:BAPO_ALIGNED_ORDER_SHA256}

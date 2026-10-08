@@ -416,6 +416,16 @@ class RayPPOTrainer(object):
             from search_r1.baselines.full_state import StatefulSampler
             self.e1_sampler = StatefulSampler(self.train_dataset, None,
                                                self.config.data.shuffle_train_dataloader)
+        if self.config.get('baseline_aligned', False):
+            from search_r1.baselines.baseline_alignment import read_bound_json
+            from search_r1.baselines.baseline_alignment_data import semantic_rows, RecordedOrderSampler
+            settings = self.config.baselines.alignment
+            self.aligned_order_manifest = read_bound_json(settings.order_manifest, settings.order_sha256)
+            ids = [row['question_id'] for row in semantic_rows(self.train_dataset.dataframe)]
+            self.e1_sampler = RecordedOrderSampler(ids, self.config.data.train_batch_size, self.aligned_order_manifest)
+            if sum(map(len, self.aligned_order_manifest['epochs'])) < 200 * self.config.data.train_batch_size:
+                raise ValueError('Pinned baseline order does not cover all200 complete outer batches')
+            e1 = True
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
                                            shuffle=self.config.data.shuffle_train_dataloader if not e1 else False,
@@ -525,15 +535,17 @@ class RayPPOTrainer(object):
             search_url = self.config.retriever.url,
             topk = self.config.retriever.topk,
             force_final_answer=self.config.get('force_final_answer', True),
+            baseline_aligned=self.config.get('baseline_aligned', False),
+            capture_raw_sampling=self.config.get('baseline_aligned', False),
         )
 
         if self.config.trainer.get('fresh200_enabled',False):
-            gen_config.preserve_sampling_tokens=True
+            gen_config.preserve_sampling_tokens=not self.config.get('baseline_aligned', False)
         validation_snapshot=f'{os.environ.get("BAPO_RUN_ID","validation")}:eval:{uuid.uuid4().hex}:outer_{getattr(self,"global_steps",0)}'
 
         def bind_fresh200_eval(gen_batch):
             if self.config.trainer.get('fresh200_enabled',False):
-                gen_batch.meta_info.update(preserve_sampling_tokens=True,fresh200_evaluation=True,
+                gen_batch.meta_info.update(preserve_sampling_tokens=not self.config.get('baseline_aligned', False),fresh200_evaluation=True,
                     probability_role='greedy_model_logprob_not_sampling_policy',policy_snapshot_id=validation_snapshot)
                 gen_batch.non_tensor_batch['fresh200_row_id']=np.array([str(uuid.uuid4()) for _ in range(len(gen_batch))],dtype=object)
 
@@ -661,10 +673,14 @@ class RayPPOTrainer(object):
         """Init resource pool and worker group"""
         self.resume_manifest = None
         if self.config.trainer.get('fresh200_enabled', False):
-            from search_r1.baselines.fresh200_native_evidence import bind_shared_inputs
-            self.fresh200_shared_input_bindings=bind_shared_inputs(self.config.baselines.holdout.manifest_path,
-                dict(train=self.config.data.train_files,validation=self.config.data.val_files,
-                     final=self.config.data.final_val_files,stage=self.config.baselines.bapo.stage_validation_files))
+            if self.config.get('baseline_aligned', False):
+                from search_r1.baselines.baseline_alignment import prepare_aligned_inputs
+                self.fresh200_shared_input_bindings = prepare_aligned_inputs(self.config)
+            else:
+                from search_r1.baselines.fresh200_native_evidence import bind_shared_inputs
+                self.fresh200_shared_input_bindings=bind_shared_inputs(self.config.baselines.holdout.manifest_path,
+                    dict(train=self.config.data.train_files,validation=self.config.data.val_files,
+                         final=self.config.data.final_val_files,stage=self.config.baselines.bapo.stage_validation_files))
             from search_r1.baselines.fresh200_contract import validate_fresh_config
             validate_fresh_config(OmegaConf.to_container(self.config, resolve=True))
         if self.config.trainer.get('resume_full_state'):
@@ -813,7 +829,7 @@ class RayPPOTrainer(object):
             global_step=step, next_global_step=step + (status == 'COMPLETE'), epoch=self.e1_epoch,
             sampler=self.e1_sampler.state_dict(), rng=rng_state(), bapo=controller.stage.state_dict(),
             actual_outer_updates=controller.actual_outer_updates, rank_write_ledger=rank_updates,
-            outer_contract=outer_contract(step), progress=self.fresh200_progress.state_dict(),
+            outer_contract=outer_contract(step, self.config.get('baseline_aligned', False)), progress=self.fresh200_progress.state_dict(),
             attempted_outer=step, previous_completed_outer=(step-1 if status=='COMPLETE' else controller.actual_outer_updates),
             infrastructure_fault=getattr(self,'fresh200_infrastructure_fault',False))
         if payload['infrastructure_fault']:
@@ -1032,7 +1048,7 @@ class RayPPOTrainer(object):
         fresh200=self.config.trainer.get('fresh200_enabled',False)
         if fresh200:
             from search_r1.baselines.fresh200_driver import Fresh200Progress
-            self.fresh200_progress=Fresh200Progress()
+            self.fresh200_progress=Fresh200Progress(baseline_aligned=self.config.get('baseline_aligned', False))
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if getattr(self,'resume_manifest',None) is None and self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -1057,10 +1073,12 @@ class RayPPOTrainer(object):
             search_url = self.config.retriever.url,
             topk = self.config.retriever.topk,
             force_final_answer=self.config.get('force_final_answer', True),
+            baseline_aligned=self.config.get('baseline_aligned', False),
+            capture_raw_sampling=self.config.get('baseline_aligned', False),
         )
 
         if self.config.trainer.get('fresh200_enabled', False):
-            gen_config.preserve_sampling_tokens = True
+            gen_config.preserve_sampling_tokens = not self.config.get('baseline_aligned', False)
 
         generation_manager = LLMGenerationManager(
             tokenizer=self.tokenizer,
@@ -1117,13 +1135,20 @@ class RayPPOTrainer(object):
                 if fresh200:
                     attempt_id=self.fresh200_progress.begin_attempt(self.global_steps)
 
+                if self.config.get('baseline_aligned', False):
+                    from search_r1.baselines.baseline_alignment_data import validate_emitted_batch
+                    sampler = self.e1_sampler
+                    order_audit = validate_emitted_batch(
+                        self.aligned_order_manifest, sampler.epoch,
+                        sampler.cursor // self.config.data.train_batch_size - 1, batch_dict['index'])
+                    print('BASELINE_ALIGNED_BATCH_ORDER_JSON=' + json.dumps(order_audit, sort_keys=True), flush=True)
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
 
                 # pop those keys for generation
                 gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
                 if self.config.trainer.get('fresh200_enabled', False):
-                    gen_batch.meta_info.update(preserve_sampling_tokens=True,recompute_log_prob=False,
+                    gen_batch.meta_info.update(preserve_sampling_tokens=not self.config.get('baseline_aligned', False),recompute_log_prob=False,
                         policy_snapshot_id=f'{os.environ["BAPO_RUN_ID"]}:attempt_{attempt_id}:before_outer_{self.global_steps}')
                     gen_batch.non_tensor_batch['fresh200_row_id'] = np.array([str(uuid.uuid4()) for _ in range(len(gen_batch))],dtype=object)
 
@@ -1166,15 +1191,19 @@ class RayPPOTrainer(object):
                             if key != 'sampling_log_probs':
                                 final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
 
-                        if self.config.trainer.get('fresh200_enabled', False):
+                        if self.config.trainer.get('fresh200_enabled', False) and not self.config.get('baseline_aligned', False):
                             from search_r1.llm_agent.sampling_tokens import audit_batch
                             final_gen_batch_output.meta_info['sampling_context_audit'] = audit_batch(final_gen_batch_output)
                         with torch.no_grad():
                             output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                             final_gen_batch_output = final_gen_batch_output.union(output)
                             if self.config.trainer.get('fresh200_enabled', False):
-                                from search_r1.baselines.behavior_policy import bind_actual_behavior
-                                bind_actual_behavior(final_gen_batch_output)
+                                if self.config.get('baseline_aligned', False):
+                                    from search_r1.baselines.baseline_alignment import bind_frozen_hf
+                                    bind_frozen_hf(final_gen_batch_output)
+                                else:
+                                    from search_r1.baselines.behavior_policy import bind_actual_behavior
+                                    bind_actual_behavior(final_gen_batch_output)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)
@@ -1296,12 +1325,12 @@ class RayPPOTrainer(object):
                                 batch, metrics = self._create_loss_mask(batch, metrics)
                             if self.config.trainer.get('fresh200_enabled', False):
                                 from search_r1.baselines.fresh200_contract import outer_contract
-                                batch.meta_info.update(outer_contract(self.global_steps))
+                                batch.meta_info.update(outer_contract(self.global_steps, self.config.get('baseline_aligned', False)))
                                 batch.meta_info['attempt_id']=attempt_id
                                 from search_r1.baselines.policy_safety import tensor_identity
                                 batch.meta_info['rollout_identity'] = tensor_identity(batch.batch)
                                 batch.meta_info['fresh200_shared_input_bindings']=self.fresh200_shared_input_bindings
-                                if not getattr(self,'fresh200_first_sampling_proof',None):
+                                if not self.config.get('baseline_aligned', False) and not getattr(self,'fresh200_first_sampling_proof',None):
                                     from pathlib import Path
                                     import subprocess
                                     from search_r1.baselines.fresh200_driver import persist_first_sampling_batch
@@ -1371,7 +1400,7 @@ class RayPPOTrainer(object):
                         'fresh200/completed_outers':self.fresh200_progress.completed_outers,
                         'fresh200/accepted_complete_outer':1,
                         'fresh200/retained_adam_writes_per_rank':self.fresh200_progress.actual_adam_writes_per_rank[0],
-                        'fresh200/no_skip_expected_adam_writes_per_rank':2490})
+                        'fresh200/no_skip_expected_adam_writes_per_rank':4000 if self.config.get('baseline_aligned', False) else 2490})
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
@@ -1382,7 +1411,7 @@ class RayPPOTrainer(object):
                              accepted_complete_outer=True), sort_keys=True,
                         default=lambda value: value.item(), allow_nan=False), flush=True)
 
-                if self.config.trainer.get('fresh200_enabled', False) and self.global_steps == 5:
+                if self.config.trainer.get('fresh200_enabled', False) and self.global_steps == 5 and self.config.trainer.get('fresh200_gate_enabled', False):
                     self._fresh200_pause_after_five()
                 if getattr(self.config.trainer, 'e1_gate_enabled', False) and self.global_steps == 5:
                     self._e1_pause_after_five()

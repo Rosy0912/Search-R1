@@ -131,24 +131,35 @@ def legal_action_records(records):
     return final_kind == 'answer'
 
 
-def decode_answers(data, tokenizer, require_legal=False):
+def decode_answers(data, tokenizer, require_legal=False, profile='legacy'):
+    """Use shared terminal-answer grading; legacy additionally grades the chain.
+
+    The baseline scores the last model-authored span, independently of earlier
+    malformed actions. Its executor still grades every action with the shared
+    parser. BAPO's legacy strict whole-chain reward is a distinct extra penalty.
+    """
+    if profile not in ('legacy', 'baseline_aligned'):
+        raise ValueError('Unknown BAPO protocol profile: ' + str(profile))
     from verl.trainer.main_ppo import decode_model_response_spans
     response_len = data.batch['responses'].shape[1]
     mask = data.batch['info_mask'][:, -response_len:] * data.batch['attention_mask'][:, -response_len:]
     answers = [answer_from_spans(decode_model_response_spans(tokenizer, ids, m))
                for ids, m in zip(data.batch['responses'], mask)]
-    if require_legal:
+    if require_legal and profile == 'legacy':
         records = data.non_tensor_batch['action_records']
         answers = [answer if legal_action_records(record) else None for answer, record in zip(answers, records)]
     return answers
 
 
 class BoundaryReward:
-    def __init__(self, tokenizer, stage, alpha=.05, bonus=.5):
+    def __init__(self, tokenizer, stage, alpha=.05, bonus=.5, profile='legacy'):
+        if profile not in ('legacy', 'baseline_aligned'):
+            raise ValueError('Unknown BAPO protocol profile: ' + str(profile))
         self.tokenizer, self.stage, self.alpha, self.bonus = tokenizer, stage, alpha, bonus
+        self.profile = profile
 
     def __call__(self, data):
-        answers = decode_answers(data, self.tokenizer, require_legal=True)
+        answers = decode_answers(data, self.tokenizer, require_legal=True, profile=self.profile)
         targets = [r['ground_truth']['target'] for r in data.non_tensor_batch['reward_model']]
         scores = boundary_scores(answers, targets, data.non_tensor_batch['uid'], self.stage, self.alpha, self.bonus)
         result = torch.zeros_like(data.batch['responses'], dtype=torch.float32)

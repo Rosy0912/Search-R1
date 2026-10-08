@@ -110,6 +110,9 @@ def content_identity(specification, train, holdout):
 def prepare_common_holdout(config):
     settings = config.baselines.holdout
     mode = settings.get('input_mode', 'generated')
+    if mode == 'baseline_aligned_manifest':
+        from .baseline_alignment import prepare_aligned_inputs
+        return prepare_aligned_inputs(config)
     if mode == 'prebuilt_manifest':
         return prepare_prebuilt_holdout(config)
     if mode != 'generated':
@@ -405,6 +408,11 @@ def prepare_prebuilt_holdout(config):
 
 
 def assert_prebuilt_unchanged(config, previous):
+    if previous.get('input_mode') == 'baseline_aligned_manifest':
+        from .baseline_alignment import prepare_aligned_inputs
+        if prepare_aligned_inputs(config) != previous:
+            raise ValueError('Aligned shared inputs changed during execution')
+        return
     if previous.get('input_mode') != 'prebuilt_manifest': return
     expected = previous['effective_paths']
     actual = {'train':paths(config.data.train_files), 'validation':paths(config.data.val_files),

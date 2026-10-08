@@ -4,7 +4,9 @@ from search_r1.llm_agent.generation import LLMGenerationManager
 from .bapo import answer_from_spans, is_idk, legal_action_records
 
 
-def validation_answer_counts(output, tokenizer):
+def validation_answer_counts(output, tokenizer, profile='legacy'):
+    if profile not in ('legacy', 'baseline_aligned'):
+        raise ValueError('Unknown BAPO validation profile: ' + str(profile))
     from verl.trainer.main_ppo import decode_model_response_spans
     width = output.batch['responses'].shape[1]
     mask = output.batch['attention_mask'][:, -width:].bool() & output.batch['info_mask'][:, -width:].bool()
@@ -12,7 +14,7 @@ def validation_answer_counts(output, tokenizer):
     for ids, row_mask in zip(output.batch['responses'], mask):
         spans = decode_model_response_spans(tokenizer, ids, row_mask)
         answer = answer_from_spans(spans)
-        if answer is None or not legal_action_records([dict(text=s) for s in spans]):
+        if answer is None or (profile == 'legacy' and not legal_action_records([dict(text=s) for s in spans])):
             counts['invalid_count'] += 1
         elif is_idk(answer):
             counts['idk_count'] += 1
@@ -38,6 +40,9 @@ class CountedRollout:
             records = output.non_tensor_batch.get('fresh200_sampling')
             if records is None: raise ValueError('Fresh200 evaluation missing native token records')
             self.cost['generated_tokens'] += sum(len(r['raw_generated_token_ids']) for r in records)
+        elif batch.meta_info.get('capture_raw_sampling') is True and 'fresh200_sampling' in output.non_tensor_batch:
+            self.cost['generated_tokens'] += sum(len(r['raw_generated_token_ids'])
+                                                 for r in output.non_tensor_batch['fresh200_sampling'])
         else:
             self.cost['generated_tokens'] += int((output.batch['responses'] != self.pad_id).sum())
         return output
@@ -54,11 +59,21 @@ class BapoValidationManager(LLMGenerationManager):
 
     def run_llm_loop(self, gen_batch, initial_input_ids):
         self.cost['trajectories'] += len(gen_batch)
+        aligned = getattr(self.config, 'baseline_aligned', False)
         if getattr(self.config, 'preserve_sampling_tokens', False):
             if gen_batch.meta_info.get('fresh200_evaluation') is not True or gen_batch.meta_info.get('do_sample') is not False:
                 raise ValueError('Fresh200 evaluation requires explicitly labeled greedy role')
-        output = super().run_llm_loop(gen_batch, initial_input_ids)
-        for key, value in validation_answer_counts(output, self.tokenizer).items():
+        if aligned:
+            from .rollout import SearchRollout
+            if gen_batch.meta_info.get('do_sample') is not False:
+                raise ValueError('Baseline-aligned validation requires do_sample=False')
+            if getattr(self.config, 'capture_raw_sampling', False) and not gen_batch.meta_info.get('policy_snapshot_id'):
+                raise ValueError('Baseline-aligned raw evaluation capture requires policy_snapshot_id')
+            output, _ = SearchRollout(self).run(gen_batch)
+        else:
+            output = super().run_llm_loop(gen_batch, initial_input_ids)
+        for key, value in validation_answer_counts(output, self.tokenizer,
+                profile='baseline_aligned' if aligned else 'legacy').items():
             self.answer_counts[key] += value
         return output
 

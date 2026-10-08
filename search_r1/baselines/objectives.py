@@ -46,10 +46,10 @@ def row_denominator(rows, device):
     return count.clamp_min(1) / world
 
 
-def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, log_ratio_clip=None, dual_clip=None, safety_group=None):
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, log_ratio_clip=None, dual_clip=None, safety_group=None, baseline_aligned=False):
     """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
     valid = mask.bool()
-    if dual_clip is not None:
+    if dual_clip is not None or baseline_aligned:
         from .policy_safety import finite_inputs
         checked_delta = finite_inputs(old, current, advantages, mask, weights, safety_group)
     for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
@@ -59,7 +59,7 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
     current = torch.where(valid, current, 0.)
     advantages = torch.where(valid, advantages, 0.)
     weights = torch.where(valid, weights, 0.)
-    delta = checked_delta if dual_clip is not None else current - old
+    delta = checked_delta if dual_clip is not None or baseline_aligned else current - old
     if step_ids is not None:
         action_deltas = []
         for i in range(len(delta)):
@@ -79,8 +79,19 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
             raise ValueError("log_ratio_clip must be finite and positive")
         # Author BAPO token-PPO stability guard, before exponentiation.
         delta = delta.clamp_max(log_ratio_clip) if dual_clip is not None else delta.clamp(-log_ratio_clip, log_ratio_clip)
+    if baseline_aligned:
+        from .policy_safety import consensus, SkipOptimizerOpportunity
+        import math
+        # Refuse an unrepresentable exponent collectively BEFORE exp. This is
+        # an admission test, never a finite-ratio clamp or gradient modification.
+        exponent_ok = bool((delta[valid] <= math.log(torch.finfo(delta.dtype).max)).all())
+        if not consensus(exponent_ok, safety_group):
+            raise SkipOptimizerOpportunity('policy_ratio_exponent_overflow')
     ratio = delta.exp()
-    if not torch.isfinite(ratio[valid]).all():
+    if baseline_aligned:
+        if not consensus(bool(torch.isfinite(ratio[valid]).all()), safety_group):
+            raise SkipOptimizerOpportunity('nonfinite_policy_ratio')
+    elif not torch.isfinite(ratio[valid]).all():
         raise ValueError('Policy ratio overflow on a supervised action/token')
     loss1 = -advantages * ratio
     loss2 = -advantages * ratio.clamp(1 - cliprange, 1 + cliprange)
@@ -89,6 +100,8 @@ def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, den
         from .policy_safety import dual_clip_surrogate
         surrogate = dual_clip_surrogate(delta, advantages, mask, cliprange, dual_clip,
                                         log_ratio_clip or 20.)
+    if baseline_aligned and not consensus(bool(torch.isfinite(surrogate[valid]).all()), safety_group):
+        raise SkipOptimizerOpportunity('nonfinite_policy_surrogate')
     loss = F.masked_sum(surrogate, weights) / denominator
     mass = weights.sum()
     safe_mass = torch.where(mass > 0, mass, torch.ones_like(mass))

@@ -188,6 +188,11 @@ def validate_assets_and_retriever(config):
     for value in dataset_paths:
         if not Path(value).expanduser().is_file():
             raise ValueError(f'Missing dataset: {value}')
+    if config.get('baseline_aligned', False):
+        from .baseline_alignment_retrieval import validate_retriever_identity
+        actor_tokenizer = AutoTokenizer.from_pretrained(config.actor_rollout_ref.model.path, local_files_only=True)
+        receipt = validate_retriever_identity(config, actor_tokenizer)
+        print('BASELINE_ALIGNED_RETRIEVER_IDENTITY_JSON=' + json.dumps(receipt, sort_keys=True), flush=True)
     count = config.baselines.ranker.candidates if method == 'cosearch' else config.retriever.topk
     response = requests.post(config.retriever.url,
                              json={'queries': ['What is the capital of France?'], 'topk': count,

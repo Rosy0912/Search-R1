@@ -55,6 +55,80 @@ def _pre_process_inputs(pad_token_id, prompt_token_ids: torch.Tensor) -> List[in
     return token_ids
 
 
+def _diagnostic_sampling_value(value):
+    """JSON-safe actual sampler values; opaque transforms remain non-neutral."""
+    if value is None or isinstance(value, (str, bool, int, float)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_diagnostic_sampling_value(item) for item in value]
+    if isinstance(value, dict):
+        return {str(key): _diagnostic_sampling_value(item) for key, item in value.items()}
+    return {'python_type': type(value).__module__ + '.' + type(value).__qualname__,
+            'representation': repr(value)}
+
+
+def _diagnostic_sampling_metadata(params):
+    fields = ('n', 'temperature', 'top_p', 'top_k', 'min_p', 'max_tokens',
+              'min_tokens', 'stop', 'stop_token_ids', 'logprobs', 'seed', 'best_of',
+              'frequency_penalty', 'presence_penalty', 'repetition_penalty',
+              'logits_processors', 'logit_bias', 'allowed_token_ids',
+              'guided_decoding', 'truncate_prompt_tokens', 'ignore_eos')
+    return {name: _diagnostic_sampling_value(getattr(params, name))
+            if hasattr(params, name) else {'field_unavailable': True} for name in fields}
+
+
+@contextmanager
+def _observe_diagnostic_groups(engine, requests):
+    """Observe actual enqueued groups; optional evidence never changes generation."""
+    from search_r1.llm_agent.sampling_trace import sha
+    records, errors = {}, []
+    original = getattr(engine, 'add_request', None)
+    if not callable(original) or not hasattr(engine, 'scheduler'):
+        yield records, ['native group inspection API unavailable']
+        return
+    had_instance_method = 'add_request' in vars(engine)
+    def observed_add_request(*args, **kwargs):
+        # Propagate actual engine failures just as the unwrapped method does.
+        result = original(*args, **kwargs)
+        try:
+            request_id = kwargs.get('request_id', args[0] if args else None)
+            if not isinstance(request_id, str) or request_id in records:
+                raise ValueError('missing or duplicate actual request ID')
+            schedulers = engine.scheduler if isinstance(engine.scheduler, (list, tuple)) else [engine.scheduler]
+            groups = [group for scheduler in schedulers for group in getattr(scheduler, 'waiting', [])
+                      if group.request_id == request_id]
+            if len(groups) != 1:
+                raise ValueError('actual enqueued sequence group unavailable')
+            group = groups[0]
+            actual = list(group.prompt_token_ids)
+            if actual not in requests or len(group.get_seqs()) != 1:
+                raise ValueError('actual group context or sequence count differs')
+            sampling = _diagnostic_sampling_metadata(group.sampling_params)
+            sampling['logprob_semantics'] = 'native_request_output_only'
+            proof = dict(source='native_enqueued_sequence_group',
+                observed_stage='after_actual_add_request_before_scheduling',
+                request_id=request_id, actual_request_token_ids=actual, sampling=sampling)
+            proof['sha256'] = sha(proof)
+            records[request_id] = proof
+        except Exception as error:
+            # Inspection and serialization are diagnostic only. Preserve the
+            # already enqueued request and expose unavailability downstream.
+            errors.append(type(error).__name__ + ': ' + str(error))
+        return result
+    try:
+        engine.add_request = observed_add_request
+    except Exception as error:
+        yield records, ['native group observer installation unavailable: ' + str(error)]
+        return
+    try:
+        yield records, errors
+    finally:
+        if had_instance_method:
+            engine.add_request = original
+        else:
+            del engine.add_request
+
+
 class vLLMRollout(BaseRollout):
 
     def __init__(self, actor_module: nn.Module, config: DictConfig, tokenizer, model_hf_config, **kwargs):
@@ -157,6 +231,7 @@ class vLLMRollout(BaseRollout):
         batch_size = idx.size(0)
 
         preserve = prompts.meta_info.get("preserve_sampling_tokens") is True
+        capture_raw = prompts.meta_info.get('capture_raw_sampling') is True
         if preserve:
             from search_r1.llm_agent.sampling_trace import require, capture_requests
             require(self.config.n == 1, "fresh200 requires one completion per request")
@@ -188,6 +263,8 @@ class vLLMRollout(BaseRollout):
         with self.update_sampling_params(**kwargs):
             native_records = []
             original_postprocess = None
+            diagnostic_hook = False
+            capture_provenance = 'wrapped_output_tensor_only'
             if preserve:
                 # Capture actual RequestOutput bytes before the wrapper pads tensors.
                 original_postprocess = self.inference_engine._post_process_outputs
@@ -226,8 +303,50 @@ class vLLMRollout(BaseRollout):
                         record['native_sha256'] = sha({k:v for k,v in record.items() if k != 'native_sha256'})
                     return original_postprocess(request_outputs)
                 self.inference_engine._post_process_outputs = captured
+            elif capture_raw and callable(getattr(self.inference_engine, '_post_process_outputs', None)):
+                # Diagnostic capture must leave the archived input preparation,
+                # sampler transformations, EOS mask and tensor padding unchanged.
+                from search_r1.llm_agent.sampling_trace import capture_requests
+                original_postprocess = self.inference_engine._post_process_outputs
+                had_instance_method = '_post_process_outputs' in vars(self.inference_engine)
+                diagnostic_hook = True
+                try:
+                    sampling = _diagnostic_sampling_metadata(self.sampling_params)
+                except Exception as error:
+                    sampling = {'sampler_metadata_unavailable': type(error).__name__ + ': ' + str(error)}
+                sampling['probability_role'] = 'raw_sampler_diagnostic'
+                sampling['logprob_semantics'] = 'native_request_output_only'
+                def captured_diagnostic(request_outputs):
+                    nonlocal capture_provenance
+                    try:
+                        native_records.extend(capture_requests(request_outputs, idx_list,
+                            prompts.non_tensor_batch['fresh200_row_id'].tolist(),
+                            prompts.meta_info.get('policy_snapshot_id'), prompts.meta_info['fresh200_call_id'],
+                            prompts.meta_info['fresh200_turn_index'], sampling, eos_token_id, self.pad_token_id))
+                        from search_r1.llm_agent.sampling_trace import sha
+                        for record in native_records:
+                            proof = group_records.get(record['request_id']) if group_records is not None else None
+                            if proof is not None:
+                                record['effective_sampler_provenance'] = proof
+                            else:
+                                record['effective_sampler_unavailable_reason'] = '; '.join(caller_values or []) or 'actual enqueued group not observed'
+                            record['native_sha256'] = sha({key: value for key, value in record.items() if key != 'native_sha256'})
+                        capture_provenance = 'native_request_output_only'
+                    except Exception as error:
+                        # Missing native APIs/probabilities do not justify a
+                        # probability claim or changing archived generation.
+                        native_records.clear()
+                        capture_provenance = 'wrapped_output_tensor_only: ' + str(error)
+                    return original_postprocess(request_outputs)
+                try:
+                    self.inference_engine._post_process_outputs = captured_diagnostic
+                except Exception as error:
+                    diagnostic_hook = False
+                    capture_provenance = 'wrapped_output_tensor_only: native hook installation unavailable: ' + str(error)
             try:
-                scope = capture_groups(self.inference_engine.llm_engine, self.sampling_params, idx_list, tokenizer=self.tokenizer, evaluation=evaluation) if preserve else nullcontext((None,None))
+                scope = (capture_groups(self.inference_engine.llm_engine, self.sampling_params, idx_list, tokenizer=self.tokenizer, evaluation=evaluation)
+                         if preserve else _observe_diagnostic_groups(getattr(self.inference_engine, 'llm_engine', None), idx_list)
+                         if capture_raw else nullcontext((None,None)))
                 with scope as captured_groups:
                     group_records, caller_values = captured_groups
                     output = self.inference_engine.generate(
@@ -236,7 +355,7 @@ class vLLMRollout(BaseRollout):
                     if preserve:
                         require(len(group_records) == len(native_records), 'actual group/completion count differs')
             finally:
-                if preserve:
+                if preserve or diagnostic_hook:
                     if had_instance_method:
                         self.inference_engine._post_process_outputs = original_postprocess
                     else:
@@ -305,4 +424,14 @@ class vLLMRollout(BaseRollout):
             records[:] = native_records
             return DataProto(batch=batch, non_tensor_batch={'fresh200_sampling': records},
                              meta_info={'preserve_sampling_tokens': True})
+        if capture_raw:
+            # Actual wrapper log-probability tensor, including its padding, is
+            # diagnostic only; it is never bound to retokenized training actions.
+            batch['raw_sampling_log_probs'] = log_probs
+            records = np.empty(len(native_records), dtype=object)
+            records[:] = native_records
+            non_tensors = {'fresh200_sampling': records} if len(native_records) == batch_size else {}
+            return DataProto(batch=batch, non_tensor_batch=non_tensors,
+                             meta_info={'capture_raw_sampling': True,
+                                        'raw_sampling_capture_provenance': capture_provenance})
         return DataProto(batch=batch)

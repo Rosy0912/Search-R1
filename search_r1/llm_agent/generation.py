@@ -23,6 +23,16 @@ class GenerationConfig:
     topk: int = 3
     force_final_answer: bool = True
     preserve_sampling_tokens: bool = False
+    baseline_aligned: bool = False
+    capture_raw_sampling: bool = False
+
+    def __post_init__(self):
+        # This profile uses the frozen Search-E1 action loop and token handling.
+        # Refuse contradictory settings rather than silently run a different budget.
+        if self.baseline_aligned and (self.max_turns != 4 or self.topk != 3
+                or not self.force_final_answer or self.preserve_sampling_tokens):
+            raise ValueError('baseline_aligned requires four search turns, topk=3, '
+                             'force_final_answer=True and preserve_sampling_tokens=False')
 
 class LLMGenerationManager:
     def __init__(

@@ -51,6 +51,8 @@ class State:
     sampling_row_id: str = ""
     sampling_turns: list = field(default_factory=list)
     sampling_logprobs: list = field(default_factory=list)
+    rolling_position_offset: int = 0
+    raw_sampling_diagnostics: list = field(default_factory=list)
 
     def branch(self):
         child = copy.deepcopy(self)
@@ -86,6 +88,10 @@ class SearchRollout:
                          trajectories=0, padded_rows=0, context_mismatches=0)
 
     def initial_states(self, gen_batch):
+        # The frozen manager retains the original padded prompt width, even
+        # though generation removes its left padding before the first call.
+        self.initial_prompt_width = min(gen_batch.batch['input_ids'].shape[1],
+                                        self.config.max_start_length)
         states = []
         for i in range(len(gen_batch)):
             ids = gen_batch.batch['input_ids'][i][gen_batch.batch['attention_mask'][i].bool()].tolist()
@@ -97,6 +103,8 @@ class SearchRollout:
                 states.append(State(i, ids, ids, observation=ids, sampling_row_id=str(row_ids[i])))
             else:
                 states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
+                row_ids = gen_batch.non_tensor_batch.get('fresh200_row_id')
+                states[-1].sampling_row_id = str(row_ids[i]) if row_ids is not None else uuid.uuid4().hex
         return states
 
     def pending(self, state):
@@ -116,6 +124,9 @@ class SearchRollout:
         ids = padded([s.rolling for s in states], pad, left=True)
         attention = (ids != pad).long()
         positions = self.manager.tensor_fn.create_position_ids(attention)
+        if getattr(self.config, 'baseline_aligned', False):
+            offsets = torch.tensor([s.rolling_position_offset for s in states], dtype=positions.dtype)
+            positions = positions + offsets[:, None] * attention
         batch = DataProto.from_dict(dict(input_ids=ids, attention_mask=attention,
                                         position_ids=positions), meta_info=meta.copy())
         self.cost['prefill_tokens'] += int(attention.sum())
@@ -125,12 +136,38 @@ class SearchRollout:
             self.cost['prefill_tokens'] += extra * len(states[0].rolling)
             tensors = {k: torch.cat((v, v[:1].repeat(extra, 1)), 0) for k, v in batch.batch.items()}
             batch = DataProto.from_dict(tensors, meta_info=meta.copy())
+        if getattr(self.config, 'capture_raw_sampling', False):
+            batch.non_tensor_batch['fresh200_row_id'] = object_array(
+                [s.sampling_row_id for s in states] + ['padding-' + uuid.uuid4().hex for _ in range(extra)])
+            batch.meta_info.update(capture_raw_sampling=True, fresh200_call_id=uuid.uuid4().hex,
+                                   fresh200_turn_index=max(len(s.raw_sampling_diagnostics) for s in states),
+                                   fresh200_evaluation=not meta.get('do_sample', True))
         output = self.manager.actor_rollout_wg.generate_sequences(batch)
         self.output_meta = output.meta_info.copy()
+        if getattr(self.config, 'baseline_aligned', False):
+            self.output_meta = meta.copy()
+            self.output_meta.update(output.meta_info)
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
         self.cost['generated_tokens'] += int((generated != pad).sum())
         raw = generated[:len(states)]
+        if getattr(self.config, 'baseline_aligned', False):
+            # Native traces describe the raw sampler output. Retokenized policy
+            # actions cannot inherit those selected-token probabilities.
+            native = output.non_tensor_batch.get('fresh200_sampling')
+            selected = output.batch.get('raw_sampling_log_probs', output.batch.get('sampling_log_probs'))
+            for i, state in enumerate(states):
+                diagnostic = dict(raw_generated_token_ids=raw[i].tolist(),
+                                  probability_alignment='raw_sampler_only',
+                                  capture_provenance=output.meta_info.get('raw_sampling_capture_provenance', 'tensor_fixture_or_uncaptured'),
+                                  policy_snapshot_id=batch.meta_info.get('policy_snapshot_id'),
+                                  row_id=state.sampling_row_id,
+                                  actual_request_token_ids=state.rolling.copy())
+                if native is not None:
+                    diagnostic['native_trace'] = copy.deepcopy(native[i])
+                if selected is not None:
+                    diagnostic['raw_selected_logprobs'] = selected[i].tolist()
+                state.raw_sampling_diagnostics.append(diagnostic)
         tokens, text = self.manager._postprocess_responses(raw)
         # A batch can contain normal and final-only steps. Never search for the latter.
         normal = [s.turns < self.config.max_turns for s in states]
@@ -147,6 +184,10 @@ class SearchRollout:
                 result = self.ranker.execute(self.manager, predictions, [states[i] for i in indices], do_search)
             for j, i in enumerate(indices):
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
+        if getattr(self.config, 'baseline_aligned', False):
+            # Archive final generation executes only for action statistics. Its
+            # no-search observation (including invalid-action feedback) is discarded.
+            observations = [obs if normal[i] else '' for i, obs in enumerate(observations)]
         obs_tokens = self.manager._process_next_obs(observations)
         for i, s in enumerate(states):
             action = tokens[i][tokens[i] != pad].tolist()
@@ -162,6 +203,10 @@ class SearchRollout:
             s.steps.extend([step] * len(action) + [-1] * len(obs))
             # Match base rolling and right-side caps exactly, including discarded tails.
             cap = self.config.max_prompt_length
+            if getattr(self.config, 'baseline_aligned', False):
+                # Archive assigns positions over the concatenation before its
+                # tail crop; each new concatenation starts from position zero.
+                s.rolling_position_offset = max(0, len(s.rolling) + len(action) + len(obs) - cap)
             s.rolling = (s.rolling + action + obs)[-cap:]
             s.response, s.model_mask, s.steps = s.response[:cap], s.model_mask[:cap], s.steps[:cap]
             s.observation = obs
@@ -247,6 +292,9 @@ class SearchRollout:
         from verl import DataProto
         pad = self.tokenizer.pad_token_id
         prompts = padded([s.prompt for s in states], pad, left=True)
+        if getattr(self.config, 'baseline_aligned', False) and prompts.shape[1] < self.initial_prompt_width:
+            prompts = torch.cat((torch.full((len(states), self.initial_prompt_width - prompts.shape[1]),
+                                           pad, dtype=prompts.dtype), prompts), dim=1)
         response = padded([s.response for s in states], pad)
         mask = padded([s.model_mask for s in states], 0)
         step_ids = padded([s.steps for s in states], -1)
@@ -270,6 +318,8 @@ class SearchRollout:
                            action_records=object_array([s.records for s in states]),
                            trajectory_uid=object_array([s.trajectory for s in states]),
                            tree_uid=object_array([s.tree for s in states]))
+        if getattr(self.config, 'baseline_aligned', False):
+            non_tensors['raw_sampling_diagnostics'] = object_array([s.raw_sampling_diagnostics for s in states])
         if self.preserve_sampling_tokens:
             # padded() is integer-only upstream; transport selected probabilities explicitly.
             tensors['sampling_log_probs'] = torch.zeros(response.shape,dtype=torch.float32)
@@ -280,6 +330,9 @@ class SearchRollout:
                                fresh200_turns=object_array([s.sampling_turns for s in states]))
         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
         result.meta_info.update(self.output_meta)
+        if getattr(self.config, 'baseline_aligned', False):
+            result.meta_info['baseline_aligned'] = True
+            result.meta_info['raw_sampling_probability_alignment'] = 'raw_sampler_only'
         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],
