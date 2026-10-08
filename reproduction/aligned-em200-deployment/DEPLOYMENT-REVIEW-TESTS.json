@@ -1,0 +1,256 @@
+{
+  "deploy_sha256": "c9578326bcd37e7b615a9583ccd8d8456ff3906681298763a389cb54d3ac7430",
+  "passed": 25,
+  "cases": [
+    {
+      "case": "same_hash_replay",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "same_hash_upload",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "different_hash_upload",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "unknown_root",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "root_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "ancestor_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "incoming_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "logs_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "marker_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "bundle_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "record_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "upload_part_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "setup_part_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "missing_part",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "partial_setup",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "missing_env",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "repo_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "changed_dependency",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "changed_model",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "changed_python",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "changed_pyvenv",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "changed_asset_json",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "wrong_task",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "wrong_record_root",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "wrong_scope",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_HOST_MOCK_GIT_NO_REMOTE"
+    }
+  ],
+  "final_deploy_sha256": "134f2cb125d6489aeb6cf5b84f124e6c632931d29c3e80c92984d95960669e40",
+  "prior_25_case_code_reconstruction_sha256": "c9578326bcd37e7b615a9583ccd8d8456ff3906681298763a389cb54d3ac7430",
+  "tool_install_passed": 16,
+  "tool_install_cases": [
+    {
+      "case": "tools_install",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_same_hash_replay",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_changed_existing",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_invalid_digest",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_absolute",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_traversal",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_too_deep",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_file_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_parent_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_deployment_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_record_symlink",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_record_missing",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_record_wrong_identity",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_record_empty",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_repo_changed",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    },
+    {
+      "case": "tools_repo_dirty",
+      "result": "PASS",
+      "scope": "LOCAL_TEMP_FILES_MOCK_PREVIOUSLY_TESTED_HOST_TOPOLOGY_MOCK_GIT_NO_REMOTE"
+    }
+  ],
+  "total_local_checks": 48,
+  "transfer_source_sha256": "223b8b39a6d31bbfc2e95e6d2b43a9a3f51b6b6b1df9a31d9c927e8f40a918bd",
+  "transfer_passed": 7,
+  "transfer_cases": [
+    {
+      "case": "transfer_none",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_remote.py",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_actual.json",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_actual.json.transport.stdout",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_actual.json.transport.stderr",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_actual.json.record.json",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    },
+    {
+      "case": "transfer_timeout_then_repeat",
+      "result": "PASS",
+      "scope": "ACTUAL_CLIENT_CALL_FUNCTION_LOCAL_TEMP_MOCK_TRANSPORT_NO_REMOTE"
+    }
+  ]
+}
