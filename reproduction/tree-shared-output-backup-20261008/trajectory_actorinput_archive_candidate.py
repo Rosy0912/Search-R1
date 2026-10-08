@@ -40,44 +40,130 @@ def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def safe(path, root):
-    require(path.is_relative_to(root) and not path.is_symlink() and path.resolve(strict=True) == path, 'Path escaped exact own namespace')
-    return path
+class OwnPaths:
+    """Pin literal ROOT/RUN once; resolve every child via no-follow directory FDs."""
+    def __init__(self):
+        self.root_fd = self.run_fd = None
+        current = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            for name in ROOT.parts[1:]:
+                following = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=current)
+                os.close(current); current = following
+            self.root_fd = current; current = None
+            self.device = os.fstat(self.root_fd).st_dev
+            self.run_fd = self._walk(self.root_fd, RUN.relative_to(ROOT).parts)
+        except BaseException:
+            if current is not None:
+                os.close(current)
+            self.close()
+            raise
+
+    def __enter__(self):
+        return self
+
+    def close(self):
+        for name in ('run_fd', 'root_fd'):
+            fd = getattr(self, name, None)
+            if fd is not None:
+                os.close(fd); setattr(self, name, None)
+
+    def __exit__(self, *_):
+        self.close()
+
+    def _walk(self, base, parts):
+        current = os.dup(base)
+        try:
+            for name in parts:
+                require(name not in ('', '.', '..'), 'Invalid own path component')
+                following = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=current)
+                try:
+                    require(os.fstat(following).st_dev == self.device, 'Own directory changed device')
+                except BaseException:
+                    os.close(following); raise
+                os.close(current); current = following
+            return current
+        except BaseException:
+            os.close(current); raise
+
+    def parts(self, path):
+        require(path.is_absolute() and path.is_relative_to(RUN), 'Path escaped exact own RUN namespace')
+        parts = path.relative_to(RUN).parts
+        require(all(x not in ('', '.', '..') for x in parts), 'Invalid own path component')
+        return parts
+
+    @contextmanager
+    def parent(self, path):
+        parts = self.parts(path)
+        require(bool(parts), 'Leaf path required')
+        fd = self._walk(self.run_fd, parts[:-1])
+        try:
+            yield fd, parts[-1]
+        finally:
+            os.close(fd)
+
+    def open(self, path, flags, mode=0o600):
+        with self.parent(path) as (parent, leaf):
+            fd = os.open(leaf, flags | os.O_NOFOLLOW, mode, dir_fd=parent)
+        try:
+            s = os.fstat(fd)
+            require(stat.S_ISREG(s.st_mode) and s.st_dev == self.device, 'Expected regular own-device file')
+            return fd
+        except BaseException:
+            os.close(fd); raise
+
+    def signature(self, path):
+        fd = self.open(path, os.O_RDONLY)
+        try:
+            return signature_fd(fd)
+        finally:
+            os.close(fd)
+
+    def mkdir(self, path, exist_ok=False):
+        with self.parent(path) as (parent, leaf):
+            try:
+                os.mkdir(leaf, 0o700, dir_fd=parent)
+            except FileExistsError:
+                require(exist_ok, 'Existing archive/intent: inspect, never overwrite or duplicate')
+            fd = os.open(leaf, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+            try:
+                require(os.fstat(fd).st_dev == self.device, 'Own directory changed device')
+            finally:
+                os.close(fd)
+            os.fsync(parent)
+
+    def write_json_new(self, path, value):
+        with self.parent(path) as (parent, leaf):
+            pending = '.' + leaf + '.pending-%d-%d' % (os.getpid(), time.time_ns())
+            fd = os.open(pending, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent)
+            with os.fdopen(fd, 'w') as f:
+                json.dump(value, f, sort_keys=True, indent=2); f.write('\n'); f.flush(); os.fsync(f.fileno())
+            os.link(pending, leaf, src_dir_fd=parent, dst_dir_fd=parent, follow_symlinks=False)
+            os.unlink(pending, dir_fd=parent)
+            os.fsync(parent)
+
+    def publish_archive(self, partial, final):
+        require(partial.parent == final.parent, 'Archive publication must stay in one directory')
+        with self.parent(partial) as (parent, leaf):
+            s = os.stat(leaf, dir_fd=parent, follow_symlinks=False)
+            require(stat.S_ISREG(s.st_mode) and s.st_dev == self.device, 'Archive must be a regular own file')
+            os.link(leaf, final.name, src_dir_fd=parent, dst_dir_fd=parent, follow_symlinks=False)
+            os.unlink(leaf, dir_fd=parent); os.fsync(parent)
 
 
-def read_json(path):
-    safe(path, RUN)
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+def signature_fd(fd):
+    s = os.fstat(fd)
+    return dict(inode=s.st_ino, device=s.st_dev, bytes=s.st_size, mtime_ns=s.st_mtime_ns)
+
+
+def read_json(path, paths):
+    fd = paths.open(path, os.O_RDONLY)
     with os.fdopen(fd, 'rb') as f:
         before = os.fstat(f.fileno())
-        require(stat.S_ISREG(before.st_mode) and before.st_size < 1024*1024 and before.st_dev == RUN.stat().st_dev, 'Bounded own-device metadata required')
+        require(before.st_size < 1024*1024, 'Bounded metadata required')
         raw = f.read(before.st_size+1)
         after = os.fstat(f.fileno())
         require(len(raw) == before.st_size and (after.st_size, after.st_mtime_ns, after.st_ino) == (before.st_size, before.st_mtime_ns, before.st_ino), 'Metadata changed during read')
     return json.loads(raw), raw
-
-
-def sync_dir(path):
-    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    try:
-        os.fsync(fd)
-    finally:
-        os.close(fd)
-
-
-def write_json_new(path, value):
-    pending = path.with_name('.' + path.name + '.pending-%d-%d' % (os.getpid(), time.time_ns()))
-    with pending.open('x') as f:
-        json.dump(value, f, sort_keys=True, indent=2); f.write('\n'); f.flush(); os.fsync(f.fileno())
-    os.link(pending, path)
-    pending.unlink()
-    sync_dir(path.parent)
-
-
-def file_signature(path):
-    s = safe(path, RUN).stat()
-    require(stat.S_ISREG(s.st_mode) and s.st_dev == RUN.stat().st_dev, 'Expected regular own-device actor evidence')
-    return dict(inode=s.st_ino, device=s.st_dev, bytes=s.st_size, mtime_ns=s.st_mtime_ns)
 
 
 class LimitedReader:
@@ -96,9 +182,8 @@ class LimitedReader:
         return block
 
 
-def hash_file(path):
-    safe(path, RUN)
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+def hash_file(path, paths):
+    fd = paths.open(path, os.O_RDONLY)
     with os.fdopen(fd, 'rb') as f:
         reader = LimitedReader(f)
         while reader.read():
@@ -106,19 +191,19 @@ def hash_file(path):
     return reader.sha.hexdigest(), reader.bytes
 
 
-def completed_directory(name):
+def completed_directory(name, paths):
     match = re.fullmatch(r'outer-(\d{6})-attempt-(\d{6})', name)
     require(match is not None, 'Only exact existing outer/attempt trajectory names')
     outer, attempt = map(int, match.groups())
-    directory = safe(TRAJECTORIES / name, TRAJECTORIES)
-    manifest, raw = read_json(directory / 'manifest.json')
+    directory = TRAJECTORIES / name
+    manifest, raw = read_json(directory / 'manifest.json', paths)
     identity = manifest['identity']
     require(manifest['status'] == 'ALL_ROLLOUTS_AND_ACTOR_INPUTS_PUBLISHED', 'Trajectory payload publication incomplete')
     require(manifest['rows'] == 2560, 'Frozen five-leaf trajectory row count differs')
     require(identity == dict(outer_step=outer, attempt_id=attempt, job_id='3341', source=CODE, config=CONFIG, data=DATA), 'Trajectory identity mismatch')
     require(set(manifest['payloads']) == {'actor-inputs.pt', 'trajectories.jsonl.gz'}, 'Frozen trajectory format differs')
     require(all(re.fullmatch('[a-f0-9]{64}', v) for v in manifest['payloads'].values()), 'Original payload SHA missing')
-    result, proof_raw = read_json(RUN / 'checkpoints/training_state/attempt-results' / ('attempt-%06d.json' % attempt))
+    result, proof_raw = read_json(RUN / 'checkpoints/training_state/attempt-results' / ('attempt-%06d.json' % attempt), paths)
     require(result['status'] == 'COMPLETED_OPPORTUNITIES_OUTER_CREDITED' and result['accepted_outer'] == outer and result['attempt_id'] == attempt,
             'No credited completed attempt proof')
     ranks = result['all_rank_result']['ranks']
@@ -142,13 +227,13 @@ def completed_directory(name):
         if described.is_relative_to(alias):
             described = ROOT / described.relative_to(alias)
         require(described == direct_path, 'Direct-rank path differs from own exact outer')
-        physical, direct_raw = read_json(direct_path)
+        physical, direct_raw = read_json(direct_path, paths)
         require(digest(direct_raw) == descriptor['sha256'] and all(physical.get(k) == v for k, v in expected_identity.items()), 'Direct-rank SHA/source identity differs')
         require(physical['rank'] == row['rank'] and physical['world_size'] == 8 and physical['attempt_id'] == attempt
                 and physical['observed_outer'] == outer and physical['scheduler_step_before'] == outer-1 and physical['scheduler_step_after'] == outer,
                 'Physical direct-rank completion differs')
         direct_proofs[str(direct_path)] = digest(direct_raw)
-    latest, latest_raw = read_json(RUN / 'checkpoints/training_state/rolling-completed/latest.json')
+    latest, latest_raw = read_json(RUN / 'checkpoints/training_state/rolling-completed/latest.json', paths)
     i = latest['identity']
     require(latest['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED' and i['job_id'] == '3341' and i['code_commit'] == CODE and i['config_sha256'] == CONFIG and i['data_identity'] == DATA,
             'Latest complete native identity differs')
@@ -156,7 +241,7 @@ def completed_directory(name):
     alias = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
     if native_path.is_relative_to(alias):
         native_path = ROOT / native_path.relative_to(alias)
-    native, native_raw = read_json(native_path)
+    native, native_raw = read_json(native_path, paths)
     require(digest(native_raw) == latest['manifest_sha256'] and native['identity'] == i and native['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED',
             'Latest pointer does not bind a complete native manifest')
     require(native_path == RUN / 'checkpoints/training_state/rolling-completed' / ('global_step_' + str(i['completed_step'])) / 'manifest.json', 'Latest complete native path differs')
@@ -174,39 +259,36 @@ def completed_directory(name):
 @contextmanager
 def own_lock():
     require(socket.gethostname() == 'h100-10', 'Candidate can execute only on h100-10 after approval')
-    safe(RUN, ROOT)
-    require(not ARCHIVES.is_symlink(), 'Archive root cannot be a symlink')
-    ARCHIVES.mkdir(mode=0o700, exist_ok=True)
-    safe(ARCHIVES, RUN)
-    require(ARCHIVES.stat().st_dev == RUN.stat().st_dev, 'Archive directory must stay on source device')
-    mount = subprocess.check_output(['findmnt', '-n', '-T', str(ARCHIVES), '-o', 'SOURCE,FSTYPE'], text=True, timeout=5).strip()
-    require(mount.split() == ['/dev/mapper/data-data', 'ext4'], 'Only the original same-machine ext4 is allowed')
-    fd = os.open(ARCHIVES / '.single-instance.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
-    with os.fdopen(fd, 'a+') as lock:
-        require(stat.S_ISREG(os.fstat(lock.fileno()).st_mode), 'Own lock must be regular')
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        os.nice(max(0, 19 - os.getpriority(os.PRIO_PROCESS, 0)))
-        subprocess.check_call(['ionice', '-c', '3', '-p', str(os.getpid())], timeout=10)
-        yield
+    with OwnPaths() as paths:
+        # The path supplied to findmnt is our held RUN FD, never an untrusted
+        # string ancestor. pass_fds keeps that FD alive in the child process.
+        mount = subprocess.check_output(['findmnt', '-n', '-T', '/proc/self/fd/%d' % paths.run_fd,
+                                         '-o', 'SOURCE,FSTYPE'], text=True, timeout=5, pass_fds=(paths.run_fd,)).strip()
+        require(mount.split() == ['/dev/mapper/data-data', 'ext4'], 'Only the original same-machine ext4 is allowed')
+        paths.mkdir(ARCHIVES, exist_ok=True)
+        fd = paths.open(ARCHIVES / '.single-instance.lock', os.O_RDWR | os.O_CREAT)
+        with os.fdopen(fd, 'a+') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            os.nice(max(0, 19 - os.getpriority(os.PRIO_PROCESS, 0)))
+            subprocess.check_call(['ionice', '-c', '3', '-p', str(os.getpid())], timeout=10)
+            yield paths
 
 
 def archive_preserve(name, request, approval_reference):
-    with own_lock():
-        directory, manifest, proof = completed_directory(name)
+    with own_lock() as paths:
+        directory, manifest, proof = completed_directory(name, paths)
         source = directory / 'actor-inputs.pt'
-        before = file_signature(source)
-        require(os.statvfs(ARCHIVES).f_bavail * os.statvfs(ARCHIVES).f_frsize > before['bytes'] + 64 * 1024**3,
+        before = paths.signature(source)
+        capacity = os.fstatvfs(paths.run_fd)
+        require(capacity.f_bavail * capacity.f_frsize > before['bytes'] + 64 * 1024**3,
                 'Keep 64GiB plus one worst-case source-sized archive reserve')
         target = ARCHIVES / name
-        require(not target.exists(), 'Existing archive/intent: inspect, never overwrite or duplicate')
-        target.mkdir(mode=0o700)
-        sync_dir(ARCHIVES)
-        write_json_new(target / 'intent.json', dict(request_id=request, approval_reference=approval_reference,
+        paths.mkdir(target)
+        paths.write_json_new(target / 'intent.json', dict(request_id=request, approval_reference=approval_reference,
                        source=str(source), source_signature=before, scope='APPROVED_ARCHIVE_PRESERVE_ONLY', **proof))
         compressed = target / 'actor-inputs.pt.gz.partial'
-        fd = os.open(source, os.O_RDONLY | os.O_NOFOLLOW)
-        with os.fdopen(fd, 'rb') as raw, compressed.open('xb') as dest:
-            require(os.fstat(raw.fileno()).st_ino == before['inode'], 'Source inode changed')
+        with os.fdopen(paths.open(source, os.O_RDONLY), 'rb') as raw, os.fdopen(paths.open(compressed, os.O_WRONLY | os.O_CREAT | os.O_EXCL), 'wb') as dest:
+            require(signature_fd(raw.fileno()) == before, 'Source identity changed')
             reader = LimitedReader(raw)
             with gzip.GzipFile(filename='', fileobj=dest, mode='wb', compresslevel=1, mtime=0) as output:
                 while True:
@@ -215,18 +297,18 @@ def archive_preserve(name, request, approval_reference):
                         break
                     output.write(block)
             dest.flush(); os.fsync(dest.fileno())
-        require(file_signature(source) == before, 'Source changed during archive; preserve all originals')
+        require(paths.signature(source) == before, 'Source changed during archive; preserve all originals')
         require(reader.bytes == before['bytes'] and reader.sha.hexdigest() == manifest['payloads']['actor-inputs.pt'], 'Original source full SHA differs')
-        compressed_sha, compressed_bytes = hash_file(compressed)
+        compressed_sha, compressed_bytes = hash_file(compressed, paths)
         require(compressed_bytes < before['bytes'], 'Archive provides no savings; source and own partial retained')
-        with gzip.open(compressed, 'rb') as f:
+        with os.fdopen(paths.open(compressed, os.O_RDONLY), 'rb') as compressed_stream, gzip.GzipFile(fileobj=compressed_stream, mode='rb') as f:
             restored = LimitedReader(f)
             while restored.read():
                 require(restored.bytes <= before['bytes'], 'Decoded content exceeds source size')
         require(restored.bytes == before['bytes'] and restored.sha.hexdigest() == reader.sha.hexdigest(), 'Full decompression SHA mismatch')
-        require(file_signature(source) == before, 'Source changed before completion')
+        require(paths.signature(source) == before, 'Source changed before completion')
         final = target / 'actor-inputs.pt.gz'
-        os.link(compressed, final); compressed.unlink(); sync_dir(target)
+        paths.publish_archive(compressed, final)
         receipt = dict(request_id=request, approval_reference=approval_reference, status='COMPLETE_LOSSLESS_ARCHIVE_ORIGINAL_RETAINED',
                        original_path=str(source), original_bytes=before['bytes'], original_sha256=reader.sha.hexdigest(),
                        archive_path=str(final), archive_bytes=compressed_bytes, archive_sha256=compressed_sha,
@@ -234,57 +316,108 @@ def archive_preserve(name, request, approval_reference):
                        original_retained=True, reclaimed_source_bytes=0, saved_bytes_if_separately_approved_replacement=before['bytes']-compressed_bytes,
                        manifest_and_existing_jsonl_gzip_unchanged=True, future_exact_original_path_restore_supported=True,
                        training_unchanged=True, **proof)
-        write_json_new(target / '.complete.json', receipt)
+        paths.write_json_new(target / '.complete.json', receipt)
         return receipt
+
+
+class VerifiedActorInput:
+    """Future audit consumes read_path while its original verified file FD lives."""
+    def __init__(self, paths, fd, original, temp_parent=None, temp_leaf=None):
+        self.read_path = Path('/proc/self/fd/%d' % fd)
+        self.original_present = temp_parent is None
+        self._paths, self._fd, self._original = paths, fd, original
+        self._temp_parent, self._temp_leaf = temp_parent, temp_leaf
+
+    def restore_preserve(self):
+        if self.original_present:
+            return False
+        held = os.fstat(self._fd)
+        s = os.stat(self._temp_leaf, dir_fd=self._temp_parent, follow_symlinks=False)
+        require(stat.S_ISREG(s.st_mode) and (s.st_dev, s.st_ino) == (held.st_dev, held.st_ino), 'Own verified temp replaced; refuse restore')
+        with self._paths.parent(self._original) as (parent, leaf):
+            os.link(self._temp_leaf, leaf, src_dir_fd=self._temp_parent, dst_dir_fd=parent, follow_symlinks=False)
+            restored = os.open(leaf, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=parent)
+            try:
+                s = os.fstat(restored)
+                require((s.st_dev, s.st_ino) == (held.st_dev, held.st_ino), 'Restored inode differs')
+                os.fchmod(restored, 0o600)
+                os.fsync(restored); os.fsync(parent)
+            finally:
+                os.close(restored)
+        return True
 
 
 @contextmanager
 def verified_actor_input(name, request):
-    """Future separately approved CPU audit: one verified temp, finally own cleanup.
+    """Future approved CPU audit: one verified FD path, finally own temp cleanup.
 
-No caller is allowed to change the frozen trainer/checker on the running node.
-An independent archive-aware audit may use this path after human approval.
+Use handle.read_path only during this context. This pinned descriptor protects
+the consumer from a swapped ancestor; no caller may hot-change frozen training.
 """
     require(re.fullmatch('[a-z0-9-]{8,80}', request), 'Safe unique request required')
-    with own_lock():
-        directory, manifest, proof = completed_directory(name)
+    with own_lock() as paths:
+        directory, manifest, proof = completed_directory(name, paths)
         source = directory / 'actor-inputs.pt'
-        if source.exists():
-            actual, _ = hash_file(source)
-            require(actual == manifest['payloads']['actor-inputs.pt'], 'Existing source SHA differs')
-            yield source
+        try:
+            source_fd = paths.open(source, os.O_RDONLY)
+        except FileNotFoundError:
+            source_fd = None
+        if source_fd is not None:
+            with os.fdopen(source_fd, 'rb') as original:
+                before = signature_fd(original.fileno())
+                reader = LimitedReader(original)
+                while reader.read():
+                    pass
+                require(signature_fd(original.fileno()) == before and reader.bytes == before['bytes']
+                        and reader.sha.hexdigest() == manifest['payloads']['actor-inputs.pt'], 'Existing source SHA or identity differs')
+                original.seek(0)
+                yield VerifiedActorInput(paths, original.fileno(), source)
             return
-        target = safe(ARCHIVES / name, ARCHIVES)
-        receipt, _ = read_json(target / '.complete.json')
+        target = ARCHIVES / name
+        receipt, _ = read_json(target / '.complete.json', paths)
         require(receipt['identity'] == proof['identity'] and receipt['original_manifest_sha256'] == proof['original_manifest_sha256'], 'Archive metadata binding changed')
         require(receipt['original_sha256'] == receipt['full_decompression_sha256'] == manifest['payloads']['actor-inputs.pt'], 'Archive original SHA binding differs')
-        compressed = safe(target / 'actor-inputs.pt.gz', ARCHIVES)
-        actual, size = hash_file(compressed)
-        require(actual == receipt['archive_sha256'] and size == receipt['archive_bytes'], 'Compressed archive SHA differs')
-        tmp = target / ('audit-temp-' + request + '.actor-inputs.pt')
-        require(not tmp.exists(), 'Own temp request exists: inspect, never overwrite')
-        owned_temp = None
-        try:
-            with gzip.open(compressed, 'rb') as raw, tmp.open('xb') as out:
-                st = os.fstat(out.fileno())
-                owned_temp = (st.st_dev, st.st_ino)
-                reader = LimitedReader(raw)
-                while True:
-                    block = reader.read()
-                    if not block:
-                        break
-                    require(reader.bytes <= receipt['original_bytes'], 'Decompression exceeds recorded original size')
-                    out.write(block)
-                out.flush(); os.fsync(out.fileno())
-            require(reader.bytes == receipt['original_bytes'] and reader.sha.hexdigest() == receipt['original_sha256'], 'Temporary original full SHA differs')
-            os.chmod(tmp, 0o400)
-            yield tmp
-        finally:
-            # Only the unique temp this context created; never a source/archive file.
-            if owned_temp is not None and tmp.exists():
-                st = tmp.lstat()
-                require(stat.S_ISREG(st.st_mode) and (st.st_dev, st.st_ino) == owned_temp, 'Own temp path replaced; refuse cleanup')
-                tmp.unlink(); sync_dir(target)
+        compressed = target / 'actor-inputs.pt.gz'
+        with os.fdopen(paths.open(compressed, os.O_RDONLY), 'rb') as compressed_stream:
+            compressed_before = signature_fd(compressed_stream.fileno())
+            reader = LimitedReader(compressed_stream)
+            while reader.read():
+                pass
+            require(signature_fd(compressed_stream.fileno()) == compressed_before and reader.sha.hexdigest() == receipt['archive_sha256']
+                    and reader.bytes == receipt['archive_bytes'], 'Compressed archive SHA or identity differs')
+            compressed_stream.seek(0)
+            tmp = target / ('audit-temp-' + request + '.actor-inputs.pt')
+            # Keep this actual parent FD through creation, consumption and cleanup.
+            with paths.parent(tmp) as (parent, leaf):
+                owned_temp = None
+                try:
+                    fd = os.open(leaf, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent)
+                    with os.fdopen(fd, 'wb') as out, gzip.GzipFile(fileobj=compressed_stream, mode='rb') as raw:
+                        s = os.fstat(out.fileno()); owned_temp = (s.st_dev, s.st_ino)
+                        require(s.st_dev == paths.device, 'Own temp changed device')
+                        reader = LimitedReader(raw)
+                        while True:
+                            block = reader.read()
+                            if not block:
+                                break
+                            require(reader.bytes <= receipt['original_bytes'], 'Decompression exceeds recorded original size')
+                            out.write(block)
+                        out.flush(); os.fsync(out.fileno()); os.fchmod(out.fileno(), 0o400)
+                    require(reader.bytes == receipt['original_bytes'] and reader.sha.hexdigest() == receipt['original_sha256'], 'Temporary original full SHA differs')
+                    held = os.open(leaf, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=parent)
+                    with os.fdopen(held, 'rb') as verified:
+                        s = os.fstat(verified.fileno())
+                        require(stat.S_ISREG(s.st_mode) and (s.st_dev, s.st_ino) == owned_temp, 'Verified temp inode replaced')
+                        yield VerifiedActorInput(paths, verified.fileno(), source, parent, leaf)
+                finally:
+                    if owned_temp is not None:
+                        try:
+                            s = os.stat(leaf, dir_fd=parent, follow_symlinks=False)
+                        except FileNotFoundError:
+                            s = None
+                        if s is not None:
+                            require(stat.S_ISREG(s.st_mode) and (s.st_dev, s.st_ino) == owned_temp, 'Own temp path replaced; refuse cleanup')
+                            os.unlink(leaf, dir_fd=parent); os.fsync(parent)
 
 
 def main():
@@ -297,7 +430,8 @@ def main():
     args = p.parse_args()
     require(socket.gethostname() == 'h100-10', 'No local model/data read; candidate not deployed')
     if args.action == 'plan':
-        directory, manifest, proof = completed_directory(args.directory)
+        with OwnPaths() as paths:
+            directory, manifest, proof = completed_directory(args.directory, paths)
         print(json.dumps(dict(status='PLAN_ONLY_ORIGINALS_UNCHANGED', source=str(directory/'actor-inputs.pt'),
                               original_sha256=manifest['payloads']['actor-inputs.pt'], **proof), indent=2))
         return
@@ -307,13 +441,11 @@ def main():
         result = archive_preserve(args.directory, args.request_id, args.approval_reference)
         print(json.dumps(result, indent=2))
     else:
-        with verified_actor_input(args.directory, args.request_id) as path:
-            original = TRAJECTORIES / args.directory / 'actor-inputs.pt'
-            if path == original:
+        with verified_actor_input(args.directory, args.request_id) as handle:
+            if handle.original_present:
                 print('Verified original already present; unchanged')
             else:
-                # Same ext4 hardlink publishes the verified bytes without overwriting.
-                os.link(path, original); os.chmod(original, 0o600); sync_dir(original.parent)
+                handle.restore_preserve()
                 print('Verified original path restored; archive retained')
 
 
