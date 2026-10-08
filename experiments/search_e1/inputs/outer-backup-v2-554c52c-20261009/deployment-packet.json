@@ -1,0 +1,67 @@
+{
+  "actual_backup": false,
+  "deployed": false,
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/seven-group-outer-checkpoint-backups-v2-554c52c-20261009",
+  "files": [
+    {
+      "bytes": 8544,
+      "kind": "helper",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_outer_backup_v2/README.md",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/README.md",
+      "sha256": "9497b673abf98904efebf125e1fc701d98f142fbc49bd58a44af1a9c7567df9a"
+    },
+    {
+      "bytes": 39037,
+      "kind": "helper",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_outer_backup_v2/backup.py",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/backup.py",
+      "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+    },
+    {
+      "bytes": 13625,
+      "kind": "helper",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_outer_backup_v2/queue.py",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/queue.py",
+      "sha256": "370c378994a8b4e1f4c9aaf803d782de4488aa8b10a015518689346ed7239290"
+    },
+    {
+      "bytes": 599,
+      "kind": "helper",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_outer_backup_v2/source-manifest.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/source-manifest.json",
+      "sha256": "4f9ee158ec1c326498898d26ee5b6a1d3212e94d5ecbbd24c8ef7864fa079b69"
+    },
+    {
+      "bytes": 16360,
+      "kind": "helper",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_outer_backup_v2/test_backup.py",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/test_backup.py",
+      "sha256": "8038bef65082b4eb14fde38e312944d643a40a74f178fd2c83bbdba39470cbab"
+    },
+    {
+      "bytes": 3690,
+      "kind": "input",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/outer-backup-v2-554c52c-20261009/goal.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/outer-backup-v2-554c52c-20261009/goal.json",
+      "sha256": "c65bea46dbb4ef6451ed56b2c4e26adafde5fd247e6b67fb5bea593b8689c94f"
+    },
+    {
+      "bytes": 2314,
+      "kind": "input",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/outer-backup-v2-554c52c-20261009/publication.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/outer-backup-v2-554c52c-20261009/publication.json",
+      "sha256": "782fa0285167b9449e1c2db999bc3822817591bc7b807106503fac674377e9ac"
+    }
+  ],
+  "goal_sha256": "c65bea46dbb4ef6451ed56b2c4e26adafde5fd247e6b67fb5bea593b8689c94f",
+  "helper_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2",
+  "host": "hkust1",
+  "no_training_or_gpu_lock": true,
+  "node_base": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+  "old_v1_retained": true,
+  "publication_sha256": "782fa0285167b9449e1c2db999bc3822817591bc7b807106503fac674377e9ac",
+  "receipts_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/outer-backup-v2-554c52c-20261009",
+  "schema": "opsd-ablation-outer-backup-v2-deployment-packet-v1",
+  "source_commit": "554c52c845561bcab00ec56d469c945878689890",
+  "source_manifest_sha256": "4f9ee158ec1c326498898d26ee5b6a1d3212e94d5ecbbd24c8ef7864fa079b69"
+}

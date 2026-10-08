@@ -1,0 +1,55 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 8544,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_outer_backup_v2/README.md",
+      "sha256": "9497b673abf98904efebf125e1fc701d98f142fbc49bd58a44af1a9c7567df9a"
+    },
+    {
+      "bytes": 39037,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_outer_backup_v2/backup.py",
+      "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+    },
+    {
+      "bytes": 13625,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_outer_backup_v2/queue.py",
+      "sha256": "370c378994a8b4e1f4c9aaf803d782de4488aa8b10a015518689346ed7239290"
+    },
+    {
+      "bytes": 599,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_outer_backup_v2/source-manifest.json",
+      "sha256": "4f9ee158ec1c326498898d26ee5b6a1d3212e94d5ecbbd24c8ef7864fa079b69"
+    },
+    {
+      "bytes": 16360,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_outer_backup_v2/test_backup.py",
+      "sha256": "8038bef65082b4eb14fde38e312944d643a40a74f178fd2c83bbdba39470cbab"
+    }
+  ],
+  "remote_readback_sha": "554c52c845561bcab00ec56d469c945878689890",
+  "run_ids": {
+    "C0": "bfc195746b6d41aaa74db5ac4d7a8be7",
+    "C1": "a1a56efd32e5456d8c6813454975e38f",
+    "J": "f40bcfd2693a4c36a154de5fd81a475d",
+    "M": "b255c1eb72e84ca0bd6315e57e3527d0",
+    "P": "c0a425974d2142b1955429c85a4fb9f3",
+    "R": "779e853e37b540e8847336c142129377",
+    "W": "dc8a4e85822547548c0f79be4c87e13e"
+  },
+  "scope": "Actual published source/FETCH_HEAD byte identity only; no Node deployment, backup transfer, or training acceptance inferred.",
+  "source_commit": "554c52c845561bcab00ec56d469c945878689890",
+  "source_manifest_sha256": "4f9ee158ec1c326498898d26ee5b6a1d3212e94d5ecbbd24c8ef7864fa079b69",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+  "verification_receipt": {
+    "bytes": 1463,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/outer-backup-v2-preparation-554c52c-20261009/source-publication-verified.json",
+    "sha256": "7fad0c5b828a6670e5ac827202eb4910d63c4add3cb48120f416a62607ba3ad1"
+  }
+}

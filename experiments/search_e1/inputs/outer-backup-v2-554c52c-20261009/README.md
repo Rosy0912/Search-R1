@@ -1,0 +1,11 @@
+# V2 independent backup deployment and queue
+
+This bundle preserves the original seven-group goal byte for byte (SHA256 c65bea46dbb4ef6451ed56b2c4e26adafde5fd247e6b67fb5bea593b8689c94f). The original seven training configs and existing V1 queue/source/failed directories are unchanged. V1's observed inventory error was a common-initial closure declaration mismatch, not a network or training failure.
+
+V2 helper publication is the actual five-file FETCH_HEAD byte readback at commit `554c52c845561bcab00ec56d469c945878689890`; helper manifest SHA256 is `4f9ee158ec1c326498898d26ee5b6a1d3212e94d5ecbbd24c8ef7864fa079b69`. These new inputs and bootstrap entry still require Root publication before use. No Node deployment, archive or completed backup is claimed by preparation.
+
+Root runs `python3 -B deploy_bootstrap.py` for local checks only. After publishing this entry, `deploy.command` explicitly applies the seven pinned files to the new Node namespace and prints fresh exact SHA/stat readback. It writes only five V2 helper files and goal/publication JSON in the new directories specified by deployment-packet.json; different existing bytes or extra files are rejected, never overwritten. The bootstrap checks the seven original config SHA pins before any independent Node writes. Direct SSH is bound to en0 with ProxyCommand/ProxyJump disabled and ControlMaster=no/-S none.
+
+After accepted actual Node readback, Root separately launches `run-queue.command`. It prepends the already published direct-transport shim and uses the new V2 destination. The Mac queue takes only its own backup lock, never a training/GPU lock. The old V1 process is neither signalled nor reused by this bundle. CP374/full192 partials and previously complete historical checkpoints are retained. Network, schema, or disk failures remain a nonblocking BACKLOG.
+
+Node helper: `/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2`. Inputs: same base `/receipts/outer-backup-v2-554c52c-20261009`. New Mac queue output is the exact packet destination `seven-group-outer-checkpoint-backups-v2-554c52c-20261009`. The queue and deploy entries are separate; deployment never launches the queue or GPU work.
