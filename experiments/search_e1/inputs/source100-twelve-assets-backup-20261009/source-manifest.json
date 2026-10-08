@@ -1,0 +1,23 @@
+{
+  "backup_is_training_dependency": false,
+  "files": {
+    "README.md": {
+      "bytes": 1529,
+      "sha256": "da974e68b44991dec4121bffcc94c4e44ae6e6fd6ac4626b8cd2bc993464ea48"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 2749,
+      "sha256": "83829df04fad7c450a6cf6dd0dd4b34ca5801e8576fae3bedba6779a3a7e3e58"
+    },
+    "transfer-gzip.py": {
+      "bytes": 2701,
+      "sha256": "64f1db4e0192b43b99b44c87c1970d6707a8fd4e4a01f9c79d31a362130bb167"
+    },
+    "verify-archive.py": {
+      "bytes": 5456,
+      "sha256": "ec18ee222435f9b714c5de75ffe4cafeb50c2042710240997b7e738d7222824b"
+    }
+  },
+  "schema": "fixed-source100-backup-operational-inputs-v1",
+  "scientific_training_or_eval_changed": false
+}

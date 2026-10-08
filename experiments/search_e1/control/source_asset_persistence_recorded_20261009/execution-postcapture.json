@@ -1,0 +1,41 @@
+{
+  "schema": "local-r02-ad-hoc-execution-postcapture-v1",
+  "capture_is_after_execution": true,
+  "publication_before_original_execution": false,
+  "reexecuted_for_capture": false,
+  "source": {
+    "path": "r02_local_persistence_audit.executed.py",
+    "sha256": "bbad9b83d4405f2346b4c5c7f185f7e584f07fc208b82fe4c53d64a530cd4063",
+    "origin": "Exact Python stdin body copied from original tools.exec_command tool-call literal after execution; not a recovered /proc argv or pre-run frozen source."
+  },
+  "cwd": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia",
+  "invocation_argv": ["python3", "-B", "-"],
+  "shell_command_shape": "python3 -B - <<'PY'\n<exact source file bytes>PY",
+  "shell_explicit_override": null,
+  "interpreter_resolved_exe_path": "NOT_CAPTURED",
+  "actual_tool_result": {
+    "exit_code": 0,
+    "chunk_id": "5cba57",
+    "wall_time_seconds": 0.116875417
+  },
+  "outputs": [
+    {"path": "source-asset-persistence-audit.json", "bytes": 238144, "sha256": "02746b0e6ebdb9fb3c8bac0cf82df78cd59a831fc1c6de6c76d15f5f8bf307c8"},
+    {"path": "notes.zh.md", "bytes": 1544, "sha256": "150ef55d59cd3d984384ccd9e7d695e5786e6ffabc516127826be947400d3d01"},
+    {"path": "derived-manifest.json", "bytes": 863, "sha256": "da1aa2d9e3031008205155d471015e791844574012b0b3143b500701960e491d"}
+  ],
+  "known_preliminary_local_reader_failure": {
+    "exit_code": 1,
+    "chunk_id": "1d4fa9",
+    "cause": "Printing receipt preview called len on integer files=39; the already-written accepted backup was unchanged. This is not a production or backup transfer failure."
+  },
+  "postcapture_hash_command": {
+    "argv": ["shasum", "-a", "256", "r02_local_persistence_audit.executed.py", "execution-postcapture-notes.md"],
+    "environment_override": {"LC_ALL": "C"},
+    "exit_code": 0,
+    "chunk_id": "273a08",
+    "prior_default_locale_attempt": {"exit_code": 9, "chunk_id": "80c6e5", "cause": "Local Perl locale initialization C.UTF-8 unavailable; source/audit not reexecuted or changed."}
+  },
+  "no_node_or_git_mutation": true,
+  "no_gpu_or_model_or_signal": true,
+  "contains_credentials_or_raw_QA_or_tokens_or_weight_bytes": false
+}
