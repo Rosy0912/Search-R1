@@ -39,9 +39,16 @@ def cuda_uuids(count=8):
     if type(count) is not int or count < 1:
         raise ValueError('CUDA UUID count must be a positive integer')
     import ctypes
+    import importlib.util
     import sysconfig
     import uuid
     path=Path(sysconfig.get_paths()['purelib'])/'nvidia/cuda_runtime/lib/libcudart.so.12'
+    if not path.is_file():
+        spec=importlib.util.find_spec('nvidia.cuda_runtime')
+        assert spec is not None and spec.submodule_search_locations, 'Installed CUDA runtime package is unavailable'
+        path=next((Path(root)/'lib/libcudart.so.12' for root in spec.submodule_search_locations
+                   if (Path(root)/'lib/libcudart.so.12').is_file()),None)
+        assert path is not None, 'Installed CUDA12 runtime shared library is unavailable'
     lib=ctypes.CDLL(str(path))
     # CUDA 12 exports properties_v2, not cudaDeviceGetUuid. Verify the
     # installed header's ABI prefix before reading its UUID field.

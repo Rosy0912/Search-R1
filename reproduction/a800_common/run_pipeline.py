@@ -6,6 +6,7 @@ smoke tests, export H100 assets, or claim that those tests ran.
 """
 import argparse
 import fcntl
+import importlib.util
 import json
 import os
 import signal
@@ -30,9 +31,12 @@ class LocalPipeline(Pipeline):
             stage=self.start('retrieval-stage',[self.python,'-m','reproduction.common8.stage_retrieval','--base',str(self.base)],[])
             self.wait('retrieval-stage',stage)
             self.stage('STARTING_ORIGINAL_FLAT_FP16_TWO_SHARD_RETRIEVER')
-            environment=Path(self.python).parent.parent
-            sites=environment/'lib/python3.10/site-packages'
-            libs=list((sites/'nvidia').glob('*/lib'))+[sites/'torch/lib']
+            nvidia_spec=importlib.util.find_spec('nvidia');torch_spec=importlib.util.find_spec('torch')
+            assert nvidia_spec is not None and nvidia_spec.submodule_search_locations, 'Installed NVIDIA library namespace is unavailable'
+            assert torch_spec is not None and torch_spec.origin, 'Installed Torch package is unavailable'
+            torch_lib=Path(torch_spec.origin).parent/'lib';assert torch_lib.is_dir()
+            libs=list(dict.fromkeys(path for root in nvidia_spec.submodule_search_locations
+                for path in sorted(Path(root).glob('*/lib')) if path.is_dir()))+[torch_lib]
             retriever=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],self.retriever_gpus,
                 {'PYTHONPATH':self.run['retriever_gpu_lib']+':'+str(self.repo),
                  'LD_LIBRARY_PATH':':'.join(map(str,libs))})
