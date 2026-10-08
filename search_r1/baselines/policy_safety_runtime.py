@@ -44,16 +44,44 @@ class _ActorProbabilityValidation:
         self.source_data = source_data
         self.meta = source_data.meta_info
         self.non_tensor = source_data.non_tensor_batch
+        self.metadata_fingerprint = self._metadata_fingerprint(source_data)
         self.tensors = tuple((key, value, value._version)
                              for key, value in source_data.batch.items())
 
+    @staticmethod
+    def _metadata_fingerprint(source_data):
+        from .tree_behavior_mu import FIELD, META, PROVENANCE_META, PROVENANCE_KEYS
+        from .tree_raw_tokens import FIELD as RAW_FIELD, fingerprint
+        meta_keys = (META, PROVENANCE_META, 'tree_behavior_mu_corrected_profile',
+                     'tree_raw_token_protocol', 'temperature',
+                     'baseline_outer_step', 'baseline_attempt_id')
+        meta = [(key, key in source_data.meta_info, source_data.meta_info.get(key))
+                for key in meta_keys]
+        rows = []
+        for key in (FIELD, RAW_FIELD, 'tree_uid', 'trajectory_uid'):
+            value = source_data.non_tensor_batch.get(key)
+            rows.append((key, key in source_data.non_tensor_batch,
+                         value.tolist() if hasattr(value, 'tolist') else value))
+        # Hash actual nested contents, not their caller-supplied binding hashes
+        # or container identities. This is two batch JSON scans, never another
+        # tokenizer/prefix proof scan. Environment provenance is equally bound.
+        return fingerprint(dict(meta=meta, rows=rows,
+                                runtime={key: os.environ.get(key) for key in PROVENANCE_KEYS}))
+
     def matches(self, source_data):
-        return (source_data is self.source_data
+        tensors_match = (source_data is self.source_data
                 and source_data.meta_info is self.meta
                 and source_data.non_tensor_batch is self.non_tensor
                 and len(source_data.batch.keys()) == len(self.tensors)
                 and all(source_data.batch.get(key) is value and value._version == version
                         for key, value, version in self.tensors))
+        if not tensors_match:
+            return False
+        try:
+            return self._metadata_fingerprint(source_data) == self.metadata_fingerprint
+        except (TypeError, ValueError):
+            # Malformed nested metadata must re-enter the full validator too.
+            return False
 
 
 def validate_actor_probability_profile(actor, data, config, *, return_context=False):
