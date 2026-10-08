@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "role": "persistent_a800_bf16_switch_control_backup",
+  "created_at_utc": "2026-10-08T06:34:21.131998+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "runtime_excluded": true,
+  "runtime_exclusion_scope": "Evidence archive only. Helper bytes use .py.source.txt rather than importable/executable .py names and are stored without execute permission. This directory is not a deployment or recovery entrypoint.",
+  "publication_provenance": {
+    "source_receipt_basename": "a800-bf16-source-publication.json",
+    "source_receipt_sha256": "7077b4fb2967a9d8c363b03b4931d5b6726433e3b60c53602d13de8930ab5574",
+    "checked_unix": 1791440721.065387,
+    "branch": "search-g1",
+    "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "remote_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true,
+    "verified_source_file_count": 15,
+    "all_published_blobs_match": true
+  },
+  "control_authority_provenance": {
+    "source_receipt_basename": "a800-bf16-transition-authority.json",
+    "source_receipt_sha256": "3976ab049cf21f3af830b822ae31efa5109aacbbb4665dc02584cc2edb6d4e0f",
+    "old_run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+    "old_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "manual_authorization_original_timestamps": [
+      "2026-10-08T06:10:36.836Z",
+      "2026-10-08T06:14:22.420Z"
+    ],
+    "manual_authorization_scopes": [
+      "Correct current A800 training performance; no unrelated test repetition",
+      "Align Search-G1 policy compute with Search-E1 BF16; supersedes the prior all-FP32/full-HF-discrepancy admission choice"
+    ]
+  },
+  "preserved_outcomes": {
+    "system_python_signal_sent": false,
+    "system_python_returncode": 1,
+    "project_python_signal_sent": true,
+    "project_python_returncode": 0,
+    "actual_sigterm_unix": 1791440893.0698338
+  },
+  "files": [
+    {
+      "path": "a800-bf16-controlled-stop-command.py.source.txt",
+      "kind": "one_time_control_helper_source_snapshot",
+      "original_source_basename": "a800-bf16-controlled-stop-command.py",
+      "original_relative_directory": "preparation",
+      "bytes": 2809,
+      "sha256": "f532f1d4d72b97e28f8b62801a3f5123990c55ecc9970c11bb345e0862bb4426",
+      "backup_byte_identical": true,
+      "credential_literal_pattern_counts": {
+        "private_key": 0,
+        "service_token": 0,
+        "credential_literal": 0
+      },
+      "runtime_excluded": true,
+      "executable": false
+    },
+    {
+      "path": "a800-bf16-controlled-stop-project-python-command.py.source.txt",
+      "kind": "one_time_control_helper_source_snapshot",
+      "original_source_basename": "a800-bf16-controlled-stop-project-python-command.py",
+      "original_relative_directory": "preparation",
+      "bytes": 1647,
+      "sha256": "ed21f1e731fcc71029058d37973502e9c1213246dac23b2a3363d1035d447a06",
+      "backup_byte_identical": true,
+      "credential_literal_pattern_counts": {
+        "private_key": 0,
+        "service_token": 0,
+        "credential_literal": 0
+      },
+      "runtime_excluded": true,
+      "executable": false
+    },
+    {
+      "path": "system-python-stop.sanitized.json",
+      "kind": "sanitized_stop_receipt",
+      "bytes": 1193,
+      "sha256": "f1f725026e25927adf69443b48afc62b0737ea30354cc4dc12bd28caa2c3571c",
+      "runtime_excluded": true,
+      "raw_stdout_stderr_included": false
+    },
+    {
+      "path": "project-python-stop.sanitized.json",
+      "kind": "sanitized_stop_receipt",
+      "bytes": 1761,
+      "sha256": "e904c906ec2a68f4d7d853fda4d428dfc4a58a163a8a627dbd39c7de91e7ce5b",
+      "runtime_excluded": true,
+      "raw_stdout_stderr_included": false
+    },
+    {
+      "path": "cleanup-and-bf16-launch.sanitized.json",
+      "kind": "sanitized_final_old_cleanup_and_actual_new_launch",
+      "bytes": 4435,
+      "sha256": "f005f103a2325a67e281ef432bbcfb2368a9d0a5ff7b36eb34ccc7c6e984b86a",
+      "runtime_excluded": true,
+      "raw_stdout_stderr_included": false
+    }
+  ],
+  "backup_scope": "Both one-time helper scripts are byte-identical snapshots. Both actual attempt outcomes are retained as sanitized receipts. Original local files are retained; no credentials, raw content or full logs are copied into receipts.",
+  "commit_or_push_performed_by_this_task": false,
+  "final_old_partial_opportunities_and_returned_writes_per_rank": 7,
+  "final_old_complete_outers": 0,
+  "actual_new_launch_evidence": "cleanup-and-bf16-launch.sanitized.json"
+}

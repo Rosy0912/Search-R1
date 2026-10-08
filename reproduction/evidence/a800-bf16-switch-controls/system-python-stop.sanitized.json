@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "Selected actual scalar outcome and source hashes; raw stdout/stderr are retained only in the original preparation receipt.",
+  "runtime_excluded": true,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "old_run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "old_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+  "switch_source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+  "attempt": "system_python",
+  "checked_unix": 1791440851.355165,
+  "returncode": 1,
+  "signal_sent": false,
+  "outcome": "Failed before sending a signal.",
+  "short_error_type": "AttributeError",
+  "short_error_message": "AttributeError: module 'os' has no attribute 'pidfd_open'",
+  "cause_in_report": "System Python does not provide os.pidfd_open.",
+  "source_receipt_basename": "a800-bf16-controlled-stop-result.json",
+  "source_receipt_sha256": "54268b4974486fa4daef01e7216acd29bc080a5f5fc896247539d95f4b406173",
+  "control_helper_basename": "a800-bf16-controlled-stop-command.py",
+  "control_helper_sha256": "f532f1d4d72b97e28f8b62801a3f5123990c55ecc9970c11bb345e0862bb4426",
+  "failed_attempt_must_not_be_recorded_as_success": true
+}

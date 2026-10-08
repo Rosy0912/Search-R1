@@ -1,0 +1,21 @@
+
+import json,os,sys,signal,time
+from pathlib import Path
+base=Path('/data/shaoshitong/Search-G1-a800-fresh200-ade2ab6b1f654c0f95ff1039a2326b37');sys.path.insert(0,str(base/'repo'))
+from reproduction.a800.owned_processes import identity,same,signal_owned
+claim=base/'logs/user-authorized-bf16-performance-switch-stop.json';old=json.loads(claim.read_text())
+record=old['pipeline'];assert old['run_id']=='e3aaceec997b4afab30bbce3f9f2afff' and old['signal_sent'] is False
+assert record==dict(pid=1117834,start_ticks=551422807,sid=1117834,uid=os.getuid())
+resume=base/'logs/user-authorized-bf16-performance-switch-stop-project-python.json';assert not resume.exists()
+receipt=dict(run_id=old['run_id'],execution_id=old['execution_id'],original_stop_claim=str(claim),checked_unix=time.time(),pipeline=record,interpreter=sys.executable,recovery_reason='System Python lacked os.pidfd_open before any signal; use the original project environment',signal_sent=False)
+if same(record):
+ actual=identity(record['pid']);assert '-m reproduction.a800_common.run_pipeline --base '+str(base) in actual['command']
+ assert hasattr(os,'pidfd_open') and hasattr(signal,'pidfd_send_signal')
+ fd=os.open(resume,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+ with os.fdopen(fd,'w') as f:json.dump(receipt,f);f.flush();os.fsync(f.fileno())
+ signal_owned(record,signal.SIGTERM);receipt.update(signal_sent=True,signal_unix=time.time())
+ temp=resume.with_suffix('.tmp');temp.write_text(json.dumps(receipt)+'\n');temp.replace(resume)
+else:
+ receipt['pipeline_already_not_live']=True
+ with resume.open('x') as f:json.dump(receipt,f)
+print(json.dumps(receipt),flush=True)

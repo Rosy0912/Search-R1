@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "role": "actual_owned_precision_switch_cleanup_and_new_launch",
+  "created_unix": 1791441380.013985,
+  "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+  "old_run": {
+    "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+    "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+    "source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "observed_unix": 1791441058.6279998,
+    "manual_precision_correction": true,
+    "pipeline_alive": false,
+    "pipeline_stage": "FAILED",
+    "cleanup_status": {
+      "cleaned": true,
+      "checked_unix": 1791440922.659736,
+      "scope": "only recorded project PID births and private local corpus cache"
+    },
+    "owned_jobs": [
+      {
+        "name": "retrieval-stage",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      },
+      {
+        "name": "retriever",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      },
+      {
+        "name": "initial-probe-adoption",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      },
+      {
+        "name": "probe-server",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      },
+      {
+        "name": "probe-admission",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      },
+      {
+        "name": "trainer",
+        "ledger_state": "STOPPED",
+        "live_registered_count": 0,
+        "leader_birth_matches": false
+      }
+    ],
+    "complete_outers": 0,
+    "opportunity_ledgers": [
+      {
+        "rank": 0,
+        "processed_opportunities_per_rank": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7,
+        "malformed_complete_lines": 0,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 1,
+        "processed_opportunities_per_rank": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7,
+        "malformed_complete_lines": 0,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 2,
+        "processed_opportunities_per_rank": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7,
+        "malformed_complete_lines": 0,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 3,
+        "processed_opportunities_per_rank": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7,
+        "malformed_complete_lines": 0,
+        "identity_rejected_rows": 0
+      }
+    ],
+    "rank_replica_counts_counted_once": true,
+    "partial_writes_not_inherited": true,
+    "receipt": {
+      "basename": "a800-common-deployment-ade2ab6b1f654c0f95ff1039a2326b37.observe-1791441058717679000.json",
+      "sha256": "7eca8ed8c37ca6f8ac0a0cef269f0d3e7e8ec1d9fcbcf68198dd31b83c1316e2"
+    }
+  },
+  "new_run": {
+    "deployment_id": "ddc07f5fc0bb470ab9596b8a66a4049d",
+    "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+    "execution_id": "107ede2e32274842a8fb6cd1bb9eeb22",
+    "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "pipeline_pid": 1276417,
+    "pipeline_start_ticks": 552073585,
+    "pipeline_alive": true,
+    "stage_at_observation": "STARTING_ORIGINAL_FLAT_FP16_TWO_SHARD_RETRIEVER",
+    "observed_unix": 1791441322.2266788,
+    "complete_outers_at_observation": 0,
+    "precision_profile": "bf16_policy_fp32_master",
+    "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "fresh_official_weights": true,
+    "inherited_adam_or_scheduler": false,
+    "training_world_size": 4,
+    "execute_invocations": 1,
+    "launch_receipt": {
+      "basename": "a800-common-deployment-ddc07f5fc0bb470ab9596b8a66a4049d.execute-1791441144576550000.json",
+      "sha256": "4b57c925fd150f2fd098e8db0d86a0fc9840cc4ae531334c0b4740c0cccda86b"
+    },
+    "observation_receipt": {
+      "basename": "a800-common-deployment-ddc07f5fc0bb470ab9596b8a66a4049d.observe-1791441322179544000.json",
+      "sha256": "2af3b8d7bdf2a452100bd9e5594af0da268dfe9d7517b577268d751d1b1212ca"
+    },
+    "training_speed_measured": false
+  },
+  "scope": "Scalar/hash/PID-birth evidence only; no model/data/raw trajectory/full log publication; launch and service staging do not prove an optimizer write."
+}

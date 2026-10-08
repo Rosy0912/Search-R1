@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "Selected actual scalar outcome and source hashes; raw stdout/stderr are retained only in the original preparation receipt.",
+  "runtime_excluded": true,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "old_run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "old_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+  "switch_source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+  "attempt": "project_python",
+  "checked_unix": 1791440893.000617,
+  "actual_control_checked_unix": 1791440893.0685613,
+  "returncode": 0,
+  "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+  "pipeline_identity_at_control": {
+    "pid": 1117834,
+    "start_ticks": 551422807,
+    "sid": 1117834,
+    "uid": 0
+  },
+  "interpreter": "/data/search-g1/env/bin/python",
+  "signal_sent": true,
+  "signal": "SIGTERM",
+  "signal_unix": 1791440893.0698338,
+  "outcome": "The project Python control helper successfully sent SIGTERM to the recorded old pipeline identity.",
+  "original_stop_claim_basename": "user-authorized-bf16-performance-switch-stop.json",
+  "recovery_reason": "System Python lacked os.pidfd_open before any signal; use the original project environment",
+  "source_receipt_basename": "a800-bf16-controlled-stop-project-python-result.json",
+  "source_receipt_sha256": "c55b6dfef999d21d870585157024dfcb4d9ddd7118e052be2fc71e31696b7e90",
+  "control_helper_basename": "a800-bf16-controlled-stop-project-python-command.py",
+  "control_helper_sha256": "ed21f1e731fcc71029058d37973502e9c1213246dac23b2a3363d1035d447a06",
+  "scope": "Signal-send outcome only; this receipt alone does not assert later cleanup completion or the new BF16 trainer startup."
+}

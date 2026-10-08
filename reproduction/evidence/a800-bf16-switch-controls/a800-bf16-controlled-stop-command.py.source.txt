@@ -1,0 +1,36 @@
+
+import json,os,sys,signal,time
+from pathlib import Path
+base=Path('/data/shaoshitong/Search-G1-a800-fresh200-ade2ab6b1f654c0f95ff1039a2326b37');assert base==base.resolve()
+sys.path.insert(0,str(base/'repo'))
+from reproduction.a800.owned_processes import identity,same,signal_owned
+run=json.loads((base/'logs/run-manifest.json').read_text());launch=json.loads((base/'logs/deployment-launch-receipt.json').read_text())
+assert run['run_id']=='e3aaceec997b4afab30bbce3f9f2afff' and run['source_commit']=='96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc'
+assert launch['pid']==1117834 and launch['start_ticks']==551422807 and launch['sid']==1117834
+record=dict(pid=1117834,start_ticks=551422807,sid=1117834,uid=os.getuid())
+claim=base/'logs/user-authorized-bf16-performance-switch-stop.json'
+assert not claim.exists(), 'Already claimed; observe the same process instead of signaling again'
+row=dict(run_id=run['run_id'],execution_id=run['execution_id'],old_source_commit=run['source_commit'],checked_unix=time.time(),manual_fix_instruction_timestamp='2026-10-08T06:10:36.836Z',manual_bf16_instruction_timestamp='2026-10-08T06:14:22.420Z',scope='Only the recorded current pipeline PID birth and its own registered children; performance correction, not a goal pause',replacement_source_commit='7dcbc695be205e5d61db10f946efb6a3dbbf9524',goal_target_complete_outers=200,no_inherited_checkpoint_optimizer_scheduler=True,original_logs_kept=True,pipeline=record,signal_sent=False)
+updates=base/'logs/actual-updates.jsonl';row['actual_updates_ledger_exists']=updates.exists()
+row['actual_update_complete_lines']=sum(1 for line in updates.read_bytes().splitlines() if line) if updates.exists() else 0
+rows=[]
+for rank in range(4):
+ f=base/'logs'/('optimizer-rank-'+str(rank)+'.jsonl');write=[]
+ if f.exists():
+  raw=f.read_bytes();lines=raw.splitlines()
+  if not raw.endswith(b'\n'):lines=lines[:-1]
+  for line in lines:
+   z=json.loads(line)
+   if z.get('kind')=='OPTIMIZER_WRITE':write.append(z)
+ rows.append(dict(rank=rank,returned_write_records=len(write),learning_rates=[z.get('learning_rates') for z in write],logical_updates=[z.get('context',{}).get('logical_update') for z in write]))
+row['actual_returned_writes_snapshot']=rows
+if same(record):
+ current=identity(record['pid']);assert '-m reproduction.a800_common.run_pipeline --base '+str(base) in current['command']
+ fd=os.open(claim,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+ with os.fdopen(fd,'w') as f:json.dump(row,f);f.flush();os.fsync(f.fileno())
+ signal_owned(record,signal.SIGTERM);row.update(signal_sent=True,signal_unix=time.time())
+ temp=claim.with_suffix('.tmp');temp.write_text(json.dumps(row)+'\n');temp.replace(claim)
+else:
+ row['pipeline_already_not_live']=True
+ with claim.open('x') as f:json.dump(row,f)
+print(json.dumps(row),flush=True)
