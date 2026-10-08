@@ -1,67 +1,105 @@
-"""Upload only frozen code/configs; H100 assets are never relayed by this client."""
+"""Clone verified own v10 code on18 and deliver only v11 code deltas.
+
+Inline compressed code avoids the stalled nested-SSH stdin stream. No model,
+data, index, environment or tensor checkpoint crosses this client.
+"""
+import base64
 import hashlib
+import io
 import json
 from pathlib import Path
 import shlex
-import subprocess
 import tarfile
-from datetime import datetime,timezone
+from datetime import datetime, timezone
 import ssh_retained18 as ssh
 
-HERE=Path(__file__).resolve().parent
-ROOT='/dataset/shaoshitong/search-r1-rl/tree-grpo'
+HERE = Path(__file__).resolve().parent
+ROOT = '/dataset/shaoshitong/search-r1-rl/tree-grpo'
+
 
 def main():
-    spec=json.loads((HERE/'deployment.json').read_text())
-    package=Path(spec['local_package'])
-    archive=HERE/'retained18-code-only-v11.tar.gz'
-    with tarfile.open(archive,'w:gz') as stream:
-        def code_only(item):
-            return None if '__pycache__' in Path(item.name).parts or item.name.endswith('.pyc') else item
-        stream.add(package,arcname='instruct300/candidates/'+Path(spec['package']).name,filter=code_only)
-        for file,target in [('human-authority-v11.json',spec['authority_path']),
-                ('direct-release-v11.json',spec['release_path']),
-                ('formal-retained18-v11.sbatch',spec['script_path']),
-                ('output-storage-verified.json',ROOT+'/.node-migration/output-storage-verified.json')]:
-            stream.add(HERE/file,arcname=target[len(ROOT)+1:])
-    digest=hashlib.sha256(archive.read_bytes()).hexdigest()
-    code='''import sys,io,hashlib,json,tarfile,subprocess
-from pathlib import Path
-root=Path(ROOT);destination=Path('/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008')
-copy=json.loads((destination/'.node-migration/result.json').read_text())
-assert copy['status']=='LOCAL_ASSETS_AND_PARENT_FILES_COPIED_VERIFIED'
-assert root.resolve()==destination and not Path(PACKAGE).exists()
-raw=sys.stdin.buffer.read(ARCHIVE_BYTES);assert len(raw)==ARCHIVE_BYTES and hashlib.sha256(raw).hexdigest()==ARCHIVE_SHA
+    spec = json.loads((HERE/'deployment.json').read_text())
+    previous = json.loads((HERE/'deployment-v10-submitted3334.json').read_text())
+    package = Path(spec['local_package'])
+    old_manifest = json.loads((Path(previous['local_package'])/'manifest.json').read_text())
+    manifest = json.loads((package/'manifest.json').read_text())
+    changed = [name for name, digest in manifest['files'].items()
+               if old_manifest['files'].get(name) != digest] + ['manifest.json']
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode='w:gz') as stream:
+        for name in changed:
+            stream.add(package/name, arcname='instruct300/candidates/'+Path(spec['package']).name+'/'+name)
+        for local, key in [('human-authority-v11.json', 'authority_path'),
+                           ('direct-release-v11.json', 'release_path'),
+                           ('formal-retained18-v11.sbatch', 'script_path')]:
+            stream.add(HERE/local, arcname=spec[key][len(ROOT)+1:])
+    raw = buffer.getvalue()
+    if len(raw) > 1000000:
+        raise RuntimeError('Unexpectedly large code-only delta')
+    digest = hashlib.sha256(raw).hexdigest()
+    shared = ROOT+'/.node-migration/v11-code-delta-'+digest[:16]
+    parts = []
+    for index, offset in enumerate(range(0, len(raw), 16384)):
+        part = raw[offset:offset+16384]
+        path = shared+'/part-'+str(index)
+        source = "from pathlib import Path\nimport base64,hashlib,json\n"
+        source += 'p=Path('+repr(path)+');raw=base64.b64decode('+repr(base64.b64encode(part).decode())+')\n'
+        source += "p.parent.mkdir(parents=True,exist_ok=True)\nif p.exists():\n assert p.read_bytes()==raw\nelse:\n with p.open('xb') as stream:stream.write(raw)\n"
+        source += "print(json.dumps({'path':str(p),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}))\n"
+        result = ssh.run('python3 -c '+shlex.quote(source), timeout=60)
+        if result.returncode:
+            raise RuntimeError('Code delta part outcome requires readback: '+result.stderr)
+        receipt = json.loads(result.stdout)
+        if receipt['sha256'] != hashlib.sha256(part).hexdigest():
+            raise RuntimeError('Shared code part readback differs')
+        parts.append(path)
+    payload = dict(spec=spec, previous=previous, archive_parts=parts,
+                   archive_sha256=digest)
+    source = '''from pathlib import Path
+import json,hashlib,base64,tarfile,io,shutil,time
+payload=PAYLOAD
+spec=payload['spec'];previous=payload['previous'];root=Path(ROOT)
+source=Path(previous['package']);target=Path(spec['package'])
+assert not target.exists() and not Path(spec['once_intent']).exists()
+old=(source/'manifest.json').read_bytes()
+assert hashlib.sha256(old).hexdigest()==previous['manifest_sha']
+manifest=json.loads(old)
+for name,digest in manifest['files'].items():
+ p=Path(name);assert not p.is_absolute() and '..' not in p.parts
+ src=source/p;assert src.is_file() and not src.is_symlink()
+ assert hashlib.sha256(src.read_bytes()).hexdigest()==digest,name
+shutil.copytree(source,target,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+raw=b''.join(Path(p).read_bytes() for p in payload['archive_parts']);archive_nbytes=len(raw)
+assert hashlib.sha256(raw).hexdigest()==payload['archive_sha256']
 with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz') as archive:
  for item in archive.getmembers():
-  p=Path(item.name)
-  assert not p.is_absolute() and '..' not in p.parts and not item.issym() and not item.islnk()
+  p=Path(item.name);assert not p.is_absolute() and '..' not in p.parts
+  assert item.isfile() and not item.issym() and not item.islnk()
  archive.extractall(root)
-package=Path(PACKAGE);m=json.loads((package/'manifest.json').read_text())
-assert hashlib.sha256((package/'manifest.json').read_bytes()).hexdigest()==MANIFEST_SHA
-for name,expected in m['files'].items():assert hashlib.sha256((package/name).read_bytes()).hexdigest()==expected,name
-for name,expected in m['external_files'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==expected,name
+raw=(target/'manifest.json').read_bytes()
+assert hashlib.sha256(raw).hexdigest()==spec['manifest_sha']
+manifest=json.loads(raw)
+for name,digest in manifest['files'].items():assert hashlib.sha256((target/name).read_bytes()).hexdigest()==digest,name
+for name,digest in manifest['external_files'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+for path,sha in [('authority_path','authority_sha'),('release_path','release_sha'),('script_path','script_sha')]:
+ assert hashlib.sha256(Path(spec[path]).read_bytes()).hexdigest()==spec[sha],path
 assert (root/'python-dev/usr/include/python3.10/Python.h').is_file()
-(root/'instruct300/node-move-logs').mkdir(exist_ok=True)
-print(json.dumps({'status':'FROZEN_CODE_ONLY_PACKET_DEPLOYED','manifest_sha256':MANIFEST_SHA,'files_verified':len(m['files']),
- 'external_files_verified':len(m['external_files']),'archive_sha256':ARCHIVE_SHA,'native_parent_loaded':False,
- 'gpu_work_executed':False,'training_submitted':False,'assets_transferred_via_client':False,'existing_local_python_headers_verified':True}))
+print(json.dumps({'status':'FROZEN_V11_CODE_DELTA_DEPLOYED','observed_epoch':time.time(),
+ 'manifest_sha256':spec['manifest_sha'],'files_verified':len(manifest['files']),
+ 'archive_bytes':archive_nbytes,'training_submitted':False,'assets_transferred_via_client':False}))
 '''
-    for name,value in [('ROOT',ROOT),('PACKAGE',spec['package']),('ARCHIVE_SHA',digest),('ARCHIVE_BYTES',archive.stat().st_size),('MANIFEST_SHA',spec['manifest_sha'])]:
-        code=code.replace(name,repr(value))
-    try:
-        with archive.open('rb') as stream:
-            result=subprocess.run(ssh.route('python3 -c '+shlex.quote(code)),stdin=stream,capture_output=True,text=True,timeout=180)
-    except subprocess.TimeoutExpired:
-        record=dict(observed_at=datetime.now(timezone.utc).isoformat(),status='CODE_UPLOAD_RESPONSE_UNKNOWN_TIMEOUT',
-                    timeout_seconds=180,archive_sha256=digest,archive_bytes=archive.stat().st_size,
-                    training_submitted=False,follow_up='Read actual own remote package/process state before any retry')
-        (HERE.parents[1]/'outputs/tree-fresh200/RETAINED18_PACKET_V11_DEPLOYMENT_20261008.json').write_text(json.dumps(record,indent=2)+'\n')
-        print(json.dumps(record));raise SystemExit(1)
-    record=dict(observed_at=datetime.now(timezone.utc).isoformat(),returncode=result.returncode,
-                stdout=result.stdout,stderr=result.stderr,archive_sha256=digest,archive_bytes=archive.stat().st_size)
-    (HERE.parents[1]/'outputs/tree-fresh200/RETAINED18_PACKET_V11_DEPLOYMENT_20261008.json').write_text(json.dumps(record,indent=2)+'\n')
-    print(json.dumps(record))
-    if result.returncode:raise SystemExit(result.returncode)
+    source = source.replace('payload=PAYLOAD', 'payload='+repr(payload), 1)
+    source = source.replace('root=Path(ROOT)', 'root=Path('+repr(ROOT)+')', 1)
+    result = ssh.run('python3 -c '+shlex.quote(source), timeout=100)
+    receipt = dict(observed_at=datetime.now(timezone.utc).isoformat(),
+                   returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                   changed_code_files=len(changed), inline_archive_bytes=len(raw),
+                   archive_sha256=payload['archive_sha256'])
+    (HERE.parents[1]/'outputs/tree-fresh200/RETAINED18_PACKET_V11_DEPLOYMENT_20261008.json').write_text(json.dumps(receipt,indent=2)+'\n')
+    print(json.dumps(receipt))
+    if result.returncode:
+        raise SystemExit(result.returncode)
 
-if __name__=='__main__':main()
+
+if __name__ == '__main__':
+    main()
