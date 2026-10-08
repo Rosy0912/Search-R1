@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/python3 -B /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/full192_text_reclaim_20261009/reclaim.py --entry /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/full192-text-reclaim-354de4e-20261009/entry.json --entry-sha256 f71fe726a83a207822830517afb49b01dd893bab20cd2a2ad0d7fa4c54d9b5fc

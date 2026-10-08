@@ -1,0 +1,17 @@
+{
+  "schema": "exact-local-full192-duplicate-reclaim-entry-v1",
+  "source_commit": "354de4e46a74ee84106e8881203257a246b07dec",
+  "capsule_complete": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/full192-text-capsule-3d1bdfc-20261009/complete-sha-verified.json",
+    "sha256": "d888230e70add26e07da683b5c224ac3003aa07210d8c56929017f09389b4cf5"
+  },
+  "archive_helper": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/full192_text_capsule_20261009/archive.py",
+    "sha256": "90fccf2e118a0c9ee2ee0e4872be65c77d6d037775982f4401b224991bf3906a"
+  },
+  "source_root": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/full192/debug-894021c8f55f436f96bb3cb146ab05bb",
+  "output": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/full192-text-reclaim-354de4e-20261009",
+  "scope": "reclaim exact6547 accepted duplicate Mac text; preserve capsule56NPYandNode all6603 content",
+  "Node_signals_or_io": false,
+  "training_dependency": false
+}
