@@ -31,3 +31,15 @@ root另核文件清单、覆盖、字节数、SHA声明一致与本地实际存�
 新增终态助手已在 `f6cd787e2040e5c17c5f38ff7fdcba8d26b2f6cb` 提交、推送并逐文件从 FETCH_HEAD 回读相等，清单 SHA 为 `d93c99e9ac099c7a8ba3f6905bb72157d8351b383f156f3a44d3d4ade751ad5b`。独立部署到本实验的新 source 子目录，四源文件、发布票据与未修改完整效果计划均重新读回节点 SHA 相等。2026-10-08 20:41:27 CST，真实 live CLI exit0、accepted，绑定仍 TRAINING 的原控制器720753、前台 Bash720750、tmux server2373025、原socket/pane%70及单前台命令。实际输出原字节 SHA 为 `a9f91f1187231b9139607d221a7893b3e436db41b422ca5f5d28e97ec24b41d0`，独立本地只读复核通过。
 
 live输出没有最终退出码声明；这个 CLI 的 exit0 不等于训练控制器已 exit0。保持这份原字节用于未来 terminal 的明确 SHA 输入，终态另存输出，不能覆盖 live 原件。原部署、配置、三个科学/恢复源版本及 GPU工作均未热改。
+
+## 21:14 CST 独立进度和数值复核
+
+同一控制器新只读快照记录22个完整 outer、218次完成链 Adam、6665对累计曝光；outer22（第23轮）正在使用最新 CP218 raw adapter 采样。八个自有采样进程与既有 oracle 身份正确，八卡实际最少余量3279MiB，observer新鲜，历史低于运行门槛计数仍为0。305科学源码、23原助手、两次恢复源码、12个 source100 文件和两个数据的新 SHA 均一致。此快照的原始证据 SHA 为 `669484e04859d2e8bfd7a8c008f297f95850b0642e267871b79938503d919b1c`；它不代替后续读取。
+
+另用已发布的只读 CPU reader 实际打开明确绑定 CP218/outer21，manifest SHA `a42f7c8987ba2bdb1c02d3f5fc5bde2e19b3511e15e52c31625f582e2281c3bb`。八 rank 真实 Adam218、完整 moments/groups 逐项一致有限；504个 adapter 张量全部有限并相对 CP5 改变，最大绝对变化0.0016676150262355804。该 outer 10次更新和319个 token 文件清单对账通过；末批31条轨迹的全部7947个有效 token、原 mask、原记录 loss、轨迹均值与实际尾批分母31通过。没有重算 logits/分词器或更早全部 token；CPU前后没有初始化 CUDA，实际执行 exit0。独立票据 SHA 为 `6084683095420a38e5b12c6db1677bc0783777f8fd87b0c7dd96792bb565e835`。
+
+HKUST4 21:12 CST 新只读记录176/200 GRPO已完成、177进行中，176 reward0.496/gradnorm0.529有限，最新512验证与模型检查点仍为150；五个669文件目录的新 SHA 均一致。自有四卡与原检索/observer身份保持，没有改变或停止 archive。
+
+独立在线效果入口按已发布设计实现于 `control/opsd_online_results_eval_v1`。完整冻结清单 SHA 为 `5c8fb3d21f5c3c1ab33a349cb7923bedeeb212acf090c1becc819c354a3ac664`，10个负载文件、9个 Python AST/逐文件字节与 SHA 均通过；实际本地40个 CPU fixtures、0 skip通过。独立科学审查将终态、原始 nested wait、CP218真实 CPU execution、实际 CPUmerge 四票据与生产者接口逐项对齐。候选阶段发现的接口/短命子进程/CPU控制器 CUDA准入问题均在运行前修正，没有改变正跑源码。
+
+新入口保留六个资源锁、精确 oracle 与鲜活 observer，分别核训练200轮完整链/真实退出/最终八rank实际状态，再评 source100启用的CP0、预选CP89和最终outer199 raw。所有额外零效与hook控制排除在1536正式样本之外；最终模型不由采样cache或best替代。缺失真实最终输入会HOLD；源239条件不符只标条件诊断，不改参数凑数。训练200轮、终态和效果均尚未完成；本次没有新 EM，也没有启动该评估的 GPU 工作。

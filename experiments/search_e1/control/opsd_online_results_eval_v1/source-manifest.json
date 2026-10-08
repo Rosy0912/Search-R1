@@ -1,0 +1,46 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 11028,
+      "sha256": "0cea484f0aa055f205023409af68e5dfc1e838afab310cec0509421b956680c9"
+    },
+    "completion.py": {
+      "bytes": 23560,
+      "sha256": "58fcdda0ca010c7e46a909aed2d4aea031adedeeb460b59b9e3d47591ca377a5"
+    },
+    "controller.py": {
+      "bytes": 9806,
+      "sha256": "acb32bfa91d9df4bdda22665a1cbac23e774b47c4b572a8c68d8f99ce28bdbca"
+    },
+    "gates.py": {
+      "bytes": 11157,
+      "sha256": "6d882b5d53a0f5fdae6a68bb7b87c971a024f9864ddbc3761a2aa68615868388"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "prepare.py": {
+      "bytes": 6692,
+      "sha256": "201906c3e499c9c8f31b886087191f6855196593dfe764fae1031d0d711f7374"
+    },
+    "summary.py": {
+      "bytes": 8087,
+      "sha256": "5c9544d696c91846937c39d293f7a8244cc437f3a5a6b7fd9ff3293003cef0e9"
+    },
+    "test_results.py": {
+      "bytes": 22779,
+      "sha256": "30a562084fd3b4ef8d19b84f200e5738fc37cc28feb66cd7b8727d790a1869b5"
+    },
+    "utils.py": {
+      "bytes": 11047,
+      "sha256": "d2d57f4956f82c6155565109a5eda8525fc585446b9be9a5939239990c3453d9"
+    },
+    "worker.py": {
+      "bytes": 12080,
+      "sha256": "8880e2b075bff8f71d751e5fe06b481c5224a6b919ba536c4c226c2237e1e841"
+    }
+  },
+  "schema": "opsd-online-results-eval-source-manifest-v1",
+  "scope": "Independent local CPU candidate only; no Node/GPU execution or original source modification"
+}
