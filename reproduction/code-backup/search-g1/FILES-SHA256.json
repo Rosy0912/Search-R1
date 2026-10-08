@@ -24302,7 +24302,17 @@
       "bytes": 140166,
       "sha256": "bd9fa282778943ea06d915b541dacc42f13480e965b81a74e84ac49f2157794a",
       "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/a800_common/deploy.py",
+      "destination": "reproduction/a800_common/deploy.py",
+      "bytes": 24951,
+      "sha256": "38d59215457294b752b17587f16156d91f8a2bed8919bff8b0b6e5ca382e400e",
+      "role": "latest_current_checkout_working_copy"
     }
   ],
-  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization."
+  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization.",
+  "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "final_source_sweep_utc": "2026-10-08T02:42:30.218228+00:00",
+  "original_head_at_final_sweep": "97abb9e48bdd48acb3a61d116d4df662f0946218"
 }
