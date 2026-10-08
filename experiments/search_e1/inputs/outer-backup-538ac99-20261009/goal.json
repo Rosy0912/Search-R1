@@ -1,0 +1,75 @@
+{
+  "accepted": true,
+  "authorization": "Latest human explicitly authorized starting the seven-group HKUST node-local experiments with Mac backup; backups do not block launch.",
+  "cluster": "HKUST",
+  "explicit_node_local_with_mac_backup": true,
+  "goal_scope": "seven-group-outer-end10",
+  "groups": [
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+        "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs",
+      "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+      "variant": "C0"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/receipts/authorized-launch-20261009/config.json",
+        "sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/runs",
+      "run_id": "a1a56efd32e5456d8c6813454975e38f",
+      "variant": "C1"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+        "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/runs",
+      "run_id": "b255c1eb72e84ca0bd6315e57e3527d0",
+      "variant": "M"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/receipts/authorized-launch-20261009/config.json",
+        "sha256": "8cc81ae28882f0fb32a924d7a4d96fc6f7f0702b210ef62847e409c404d36ab9"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/runs",
+      "run_id": "779e853e37b540e8847336c142129377",
+      "variant": "R"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/config.json",
+        "sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/runs",
+      "run_id": "dc8a4e85822547548c0f79be4c87e13e",
+      "variant": "W"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/config.json",
+        "sha256": "dcc0a03750dec59651550609889a8b82ba0d967a728da01626216af6d7714412"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/runs",
+      "run_id": "c0a425974d2142b1955429c85a4fb9f3",
+      "variant": "P"
+    },
+    {
+      "config": {
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/receipts/authorized-launch-20261009/config.json",
+        "sha256": "da6f7396970b77d3bbf2572f437ed2e05f0c3469bb2bcbe5a63dbbe12306b01f"
+      },
+      "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/runs",
+      "run_id": "f40bcfd2693a4c36a154de5fd81a475d",
+      "variant": "J"
+    }
+  ],
+  "schema": "opsd-ablation-outer-backup-goal-v1",
+  "scope": "Only these seven new group outer0..9 native end checkpoints; no historical CP0/1/5/11/89 retransmission; CP374/full192 partials retained.",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777"
+}
