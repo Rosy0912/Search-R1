@@ -1,0 +1,679 @@
+{
+  "schema": "g1_a800_bf16_first_formally_recorded_outer_and_console_timing_v1",
+  "recorded_unix": 1791446570.7036648,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "evidence_kind": "sanitized_existing_producer_scalar_receipts_and_immutable_same_handle_observer",
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+  "deployment_id": "a20f0475ec824c69ba1554f39e9ff512",
+  "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "input_observed_times": {
+    "same_handle_observer": 1791446295.412253,
+    "same_handle_wrapper": 1791446295.473968,
+    "first_outer_and_timing_readback": 1791446366.728409,
+    "first_outer20_scalar_readback": 1791446387.7361295,
+    "reused_actual_precision_observation": 1791445809.2131786
+  },
+  "source_binding": {
+    "timing_receipt_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "timing_receipt_source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "writes_receipt_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "writes_receipt_source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "observer_manifest_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "observer_manifest_execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+    "observer_manifest_source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "run_manifest_sha256": "943e31dcfec0023a38ee4bb5f906d0cb06af578d81a9ba928c1cc73d62af2b25"
+  },
+  "formal_first_outer": {
+    "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "step": 1,
+    "metrics": {
+      "critic/rewards/mean": 0.2033454179763794,
+      "actor/pg_loss": 0.05888758734717096,
+      "actor/entropy_loss": 0.9025762509554625,
+      "actor/kl_loss": 0.0,
+      "actor/ppo_kl": 0.0014482243556901864,
+      "actor/grad_norm": 1.9790769823222731,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "actor/skipped_update_opportunities": 0.0
+    },
+    "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+    "behavior_probability_gate_sha256": "e9cf963c2c034155fb0212f7ad19dbe6139d1f2102626533b61653504ab3801c",
+    "attempt_id": "088b55211c504c7c947396f706e8ef5d",
+    "attempt_index": 1,
+    "optimizer_writes_before": 0,
+    "optimizer_writes_after": 20,
+    "opportunities_processed": 20,
+    "actual_optimizer_writes": 20,
+    "metrics_count": 9,
+    "recorded_metrics_finite": true,
+    "recorded_steps": [
+      1
+    ],
+    "formal_ledger_sha256": "11fd95dd831ff226244dfa5578d15395d3e3ffec49b08e729ebde173c216d50b",
+    "formal_ledger_bytes": 906,
+    "formal_ledger_modified_unix": 1791446260.6128705,
+    "formal_ledger_contains_timing": false
+  },
+  "worker_completion": {
+    "matching_attempt_rows": [
+      {
+        "all_ranks_agreed": true,
+        "attempt_id": "088b55211c504c7c947396f706e8ef5d",
+        "attempt_index": 1,
+        "complete_outer": true,
+        "completed_outer": 1,
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 0,
+        "optimizer_writes_this_attempt": 20,
+        "real_rank_count": 4,
+        "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+        "scheduler_advances": 1,
+        "status": "complete"
+      }
+    ],
+    "attempts_ledger_sha256": "f411a6be52f7eb53fae261945a0597f01ef9351162ea4225a3da00f92d5a9d45",
+    "actual_training_world_size": 4,
+    "scope": "Worker completion, scheduler advance once, four ranks agreed, and official driver step1 all recorded for this new run."
+  },
+  "returned_adam_write_evidence": {
+    "deduplicated_global_summary": {
+      "all_rank_norm_pairs_identical": true,
+      "consumed_learning_rates": [
+        0.0
+      ],
+      "global_gradient_norm_before_range": {
+        "max": 2.373548051307484,
+        "min": 1.534189516248523
+      },
+      "global_gradient_norm_after_range": {
+        "max": 0.9999995790032691,
+        "min": 0.9999993481385584
+      },
+      "rank_replication_count": 4,
+      "returned_adam_writes": 20,
+      "semantics": "20 global minibatch measurements; four rank copies counted once, not a console mean",
+      "global_minibatch_norm_pair_count": 20
+    },
+    "rank_rows": [
+      {
+        "rank": 0,
+        "returned_optimizer_write_count": 20,
+        "all_returned_writes_consumed_lr_zero": true,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "learning_rates_range": {
+          "max": 0.0,
+          "min": 0.0
+        },
+        "global_gradient_norm_before_range": {
+          "max": 2.373548051307484,
+          "min": 1.534189516248523
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999995790032691,
+          "min": 0.9999993481385584
+        },
+        "attempt_ids": [
+          "088b55211c504c7c947396f706e8ef5d"
+        ],
+        "complete_prefix_bytes": 118448,
+        "complete_prefix_sha256": "484a8687324127d3ed0121f33dd621fa6fa0186ee2e113b679d5c4fcdf2b5bef",
+        "selected_first_outer_write_lines_sha256": "1ec689e231b6cca92680096e44606d0facee1e36f139f1d94e1cb6bd0fd83b08",
+        "snapshot_bytes": 118448,
+        "partial_final_line": false,
+        "actual_norm_pair_count": 20
+      },
+      {
+        "rank": 1,
+        "returned_optimizer_write_count": 20,
+        "all_returned_writes_consumed_lr_zero": true,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "learning_rates_range": {
+          "max": 0.0,
+          "min": 0.0
+        },
+        "global_gradient_norm_before_range": {
+          "max": 2.373548051307484,
+          "min": 1.534189516248523
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999995790032691,
+          "min": 0.9999993481385584
+        },
+        "attempt_ids": [
+          "088b55211c504c7c947396f706e8ef5d"
+        ],
+        "complete_prefix_bytes": 118568,
+        "complete_prefix_sha256": "c9797ded2f6784d31b8f1a3584bcfc030e8e303c37a6d7e0e77858391d985f47",
+        "selected_first_outer_write_lines_sha256": "441a8dfbf0c8d9b7bc79e5a919c280dfa1625e34018e1a4987766c58a41e77d4",
+        "snapshot_bytes": 118568,
+        "partial_final_line": false,
+        "actual_norm_pair_count": 20
+      },
+      {
+        "rank": 2,
+        "returned_optimizer_write_count": 20,
+        "all_returned_writes_consumed_lr_zero": true,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "learning_rates_range": {
+          "max": 0.0,
+          "min": 0.0
+        },
+        "global_gradient_norm_before_range": {
+          "max": 2.373548051307484,
+          "min": 1.534189516248523
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999995790032691,
+          "min": 0.9999993481385584
+        },
+        "attempt_ids": [
+          "088b55211c504c7c947396f706e8ef5d"
+        ],
+        "complete_prefix_bytes": 118528,
+        "complete_prefix_sha256": "2c57b776e6e4bcbedc3f927ca947ad33a791a6d8be39ba0e7ce96ca2138df41d",
+        "selected_first_outer_write_lines_sha256": "43aaa15dbb76738e3ad38cc62640e8801b0e56df6f66b133e56f2977e384c40a",
+        "snapshot_bytes": 118528,
+        "partial_final_line": false,
+        "actual_norm_pair_count": 20
+      },
+      {
+        "rank": 3,
+        "returned_optimizer_write_count": 20,
+        "all_returned_writes_consumed_lr_zero": true,
+        "consumed_learning_rates": [
+          0.0
+        ],
+        "learning_rates_range": {
+          "max": 0.0,
+          "min": 0.0
+        },
+        "global_gradient_norm_before_range": {
+          "max": 2.373548051307484,
+          "min": 1.534189516248523
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999995790032691,
+          "min": 0.9999993481385584
+        },
+        "attempt_ids": [
+          "088b55211c504c7c947396f706e8ef5d"
+        ],
+        "complete_prefix_bytes": 118568,
+        "complete_prefix_sha256": "d4e469988a3f818b588b048105985e4e30fcf1b6e770633ee29a68aaf0b3c3e4",
+        "selected_first_outer_write_lines_sha256": "a7f9528be54ab276df5d1d5839ee7414f845bd55869a5710b8177f69fbdfeb41",
+        "snapshot_bytes": 118568,
+        "partial_final_line": false,
+        "actual_norm_pair_count": 20
+      }
+    ],
+    "same_handle_opportunity_ledger_rows": [
+      {
+        "rank": 0,
+        "exists": true,
+        "file_bytes": 118448,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "scanned_processed_opportunities": 20,
+        "processed_opportunities_per_rank": 20,
+        "scanned_successful_writes": 20,
+        "successful_writes_per_rank": 20,
+        "cumulative_optimizer_writes": 20
+      },
+      {
+        "rank": 1,
+        "exists": true,
+        "file_bytes": 118568,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "scanned_processed_opportunities": 20,
+        "processed_opportunities_per_rank": 20,
+        "scanned_successful_writes": 20,
+        "successful_writes_per_rank": 20,
+        "cumulative_optimizer_writes": 20
+      },
+      {
+        "rank": 2,
+        "exists": true,
+        "file_bytes": 118528,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "scanned_processed_opportunities": 20,
+        "processed_opportunities_per_rank": 20,
+        "scanned_successful_writes": 20,
+        "successful_writes_per_rank": 20,
+        "cumulative_optimizer_writes": 20
+      },
+      {
+        "rank": 3,
+        "exists": true,
+        "file_bytes": 118568,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "scanned_processed_opportunities": 20,
+        "processed_opportunities_per_rank": 20,
+        "scanned_successful_writes": 20,
+        "successful_writes_per_rank": 20,
+        "cumulative_optimizer_writes": 20
+      }
+    ],
+    "replica_counting_scope": "The same 20 global writes appear on four ranks; they are counted once, not as 80.",
+    "warmup_total_completed_outer_target": 57,
+    "warmup_completed_outers_in_snapshot": 1,
+    "all_first_outer_writes_consumed_lr_zero": true,
+    "nonzero_parameter_delta_proven": false,
+    "scope": "Actual returned OPTIMIZER_WRITE scalar rows demonstrate consumed LR0 and global gradient clipping; optimizer calls are not evidence of a nonzero parameter delta."
+  },
+  "actual_first_outer_timing": {
+    "console_records": [
+      {
+        "scalars": {
+          "actor/lr": 0.0,
+          "critic/rewards/mean": 0.203,
+          "timing_s/gen": 276.116,
+          "timing_s/ref": 203.509,
+          "timing_s/adv": 152.42,
+          "timing_s/update_actor": 976.31,
+          "timing_s/step": 1707.073
+        },
+        "line_sha256": "89a084e9263e33b7b28d09b7a10ae1830cbb1dfb7e88526065630bd62cefbcad",
+        "scope": "console scalar line, three decimal formatting; not full-precision timing"
+      }
+    ],
+    "step_seconds_from_console": 1707.073,
+    "step_minutes_from_console": 28.451216666666667,
+    "display_duration": "28m27.073s",
+    "timing_source": "Existing same-run step1 console scalar line; timers are not stored in actual-updates.jsonl.",
+    "precision": "Three-decimal console formatting; unrounded timer values are unavailable in these receipts.",
+    "step_scope": "Timer spans rollout, journal/context audit, reference log probability, reward/advantages and actor update. It excludes initialization and the preparation before the step timer. Step1 does not trigger scheduled step5/50 validation or checkpoint saving.",
+    "gen_scope": "Multi-turn rollout and retrieval/environment handling.",
+    "ref_scope": "Synchronous reference log probability RPC and result union.",
+    "adv_scope": "Combined reward decoding/probe request and wait/scoring/KL/GRPO advantages, not a pure probe timer.",
+    "update_actor_scope": "Mask preparation and synchronous actor update, including actual update opportunities and guards.",
+    "pure_probe_duration_seconds": null,
+    "training_log_snapshot": {
+      "sha256": "4b0803cd4103296ea1d0d70248363fcfbfa3497d85c07832031425dfb42f7167",
+      "bytes": 90535,
+      "modified_unix": 1791446261.0328746
+    },
+    "rough_user_comparison_reference": {
+      "reference_minutes_per_round": 7.5,
+      "multiplier": 4,
+      "reference_total_minutes": 30,
+      "actual_step_seconds": 1707.073,
+      "scope": "User-provided rough comparison only; no equal-configuration benchmark, scaling law, or reproduction acceptance is inferred."
+    }
+  },
+  "actual_precision": {
+    "row_count": 8,
+    "rank_rows": [
+      {
+        "rank": 0,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 1,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 3,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 2,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 0,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 1,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 3,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 2,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "optimizer_writes": 0
+      }
+    ],
+    "reused_prior_passive_observation": {
+      "new_forward_executed": false,
+      "observed_unix": 1791445809.2131786,
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-db474b6abf654ad9892b02ae67ab6f86-scalar-observation-1791445809.json",
+      "sha256": "ad29883f2478e37fa30ee3e8b54a62987ff5a572495ba4f13926ef017fda46df"
+    },
+    "selected_precision_log_hash": {
+      "matching_line_count": 8,
+      "matching_lines_sha256": "57e54be2ed7e532921d2e480a7eb32aadd587e75cb142513e832fedaeb03a450",
+      "scope": "Only existing actual-forward precision lines selected; no QA or token journal output"
+    },
+    "precision_profile": "bf16_policy_fp32_master",
+    "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "scope": "Existing actual actor/reference forward rows on four ranks show CUDA BF16 compute/logits/autocast, FP32 master parameters and selected log probabilities. cuda:0 is each worker local device ordinal. Initial row optimizer_writes=0 describes the forward observation point, not the later 20-write completion.",
+    "entire_actor_and_backward_dtype_independently_marked": false,
+    "all_fp32_arithmetic_removed_proven": false,
+    "all_tf32_flags_true": false,
+    "internal_attention_arithmetic_proven": false,
+    "new_model_forward_executed_to_make_this_receipt": false
+  },
+  "same_handle_continuation_observation": {
+    "observed_unix": 1791446295.412253,
+    "pipeline": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "alive": true,
+      "birth_matches": true,
+      "stage": "GRPO_1_TO_200"
+    },
+    "trainer": {
+      "ledger_state": "STARTED",
+      "leader": {
+        "alive": true,
+        "birth_matches": true,
+        "pid": 1337905,
+        "start_ticks": 552404529,
+        "state": "S"
+      },
+      "live_registered_count": 159,
+      "exit_code": null
+    },
+    "recorded_completed_outers": 1,
+    "last_recorded_outer": 1,
+    "epoch_step_markers": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "0",
+        "2"
+      ]
+    ],
+    "scope": "One official completed outer and a later epoch0/step2 marker in the same bound run/log; this does not establish completion of outer2."
+  },
+  "gpu_observation": {
+    "exists": true,
+    "first_scanned_sample_unix": 1791443987.95371,
+    "latest_sample_unix": 1791446294.7595098,
+    "latest_sample_age_seconds": 0.7146739959716797,
+    "maximum_scanned_sampling_gap_seconds": 2.3256168365478516,
+    "matching_sample_count": 1083,
+    "cumulative_sample_count": 1083,
+    "identity_or_scalar_rejected_rows": 0,
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampled_run_peak_mib": {
+      "0": 54177,
+      "1": 54773,
+      "2": 54767,
+      "3": 54177,
+      "5": 18911,
+      "6": 29626
+    },
+    "latest_devices": [
+      {
+        "assignment": "training",
+        "physical_index": 0,
+        "sampled_run_peak_mib": 54177,
+        "total_mib": 81920,
+        "used_mib": 30351,
+        "util_percent": 54
+      },
+      {
+        "assignment": "training",
+        "physical_index": 1,
+        "sampled_run_peak_mib": 54773,
+        "total_mib": 81920,
+        "used_mib": 30555,
+        "util_percent": 50
+      },
+      {
+        "assignment": "training",
+        "physical_index": 2,
+        "sampled_run_peak_mib": 54767,
+        "total_mib": 81920,
+        "used_mib": 30555,
+        "util_percent": 56
+      },
+      {
+        "assignment": "training",
+        "physical_index": 3,
+        "sampled_run_peak_mib": 54177,
+        "total_mib": 81920,
+        "used_mib": 30491,
+        "util_percent": 50
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 5,
+        "sampled_run_peak_mib": 18911,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 6,
+        "sampled_run_peak_mib": 29626,
+        "total_mib": 81920,
+        "used_mib": 29201,
+        "util_percent": 0
+      }
+    ],
+    "peak_timestamp_proven": false,
+    "scope_note": "Sampled pipeline lifetime including services/setup; occupancy does not diagnose a phase or prove an exact training peak."
+  },
+  "source_publication": {
+    "checked_unix": 1791443808.677463,
+    "branch": "search-g1",
+    "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "remote_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true,
+    "verified_file_count": 5,
+    "file_readback_records": [
+      {
+        "path": "reproduction/a800_common/adopt_initial_probes.py",
+        "bytes": 24519,
+        "sha256": "0104920f51d496e41f59dd933c55dc7d7abb5e6d1421bab7484716321d7c9eb8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/a800_common/bf16-adoption-source-delta.json",
+        "bytes": 1597,
+        "sha256": "3368544c1109492e3b75eaaec1cabfd2e57ed6f0272faf4db0f2f407c3535ed8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/common8/update_evidence.py",
+        "bytes": 4424,
+        "sha256": "9e6d7c8657f9536b533889dde9def604c39c26f8c603acacc731c6ea3d30d077",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-actor-and-reference-actual-and-seven-writes.json",
+        "bytes": 21259,
+        "sha256": "cc328dbbe0f94df25d74ec333161d1de737b7e834a4ba1c61bff7f30b4dbea95",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-first-worker-outer-recorder-failure.json",
+        "bytes": 9984,
+        "sha256": "082cbc0191f323129053ef8d37d5a95fb935e2f1099ccda549aa4c7fc30612c4",
+        "remote_blob_matches": true
+      }
+    ],
+    "scope": "Actual saved source remote/blob readbacks; source hashes alone are not loaded-code proof."
+  },
+  "goal_state": {
+    "formal_completed_outers": 1,
+    "target_official_outers": 200,
+    "old_failed_worker_outer_added_to_new_run": false,
+    "excluded_old_run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+    "first_five_acceptance_complete": false,
+    "final_acceptance_complete": false,
+    "new_development_em": null,
+    "new_final_em": null,
+    "goal_complete": false,
+    "healthy_checkpoint_or_reproduction_success_claimed": false,
+    "hourly_anchor_modified": false,
+    "automation_modified": false
+  },
+  "provenance": {
+    "first_record_and_timing": {
+      "path": "preparation/a800-db474b6-first-recorded-outer-and-timing.json",
+      "bytes": 2920,
+      "sha256": "9492a6d98e63e3191526ebcf89adf28628d57d55adf893ae77425e29763cd23f"
+    },
+    "first_outer_write_scalars": {
+      "path": "preparation/a800-db474b6abf654ad9892b02ae67ab6f86-first-outer20-scalars-1791446387.json",
+      "bytes": 34063,
+      "sha256": "2d93531a6c5c557bb5cd2335ce510896d82ef92ef5f96afaa66b2b9c12d83078"
+    },
+    "immutable_same_handle_observer": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791446295473758000.json",
+      "bytes": 16663,
+      "sha256": "dcb5d0b134f115ce156f471bf6bbc5b79c0188ba4b009f35a58a0fbc6e32649f"
+    },
+    "source_publication": {
+      "path": "preparation/a800-bf16-rank-recorder-fix-publication.json",
+      "bytes": 1949,
+      "sha256": "a027046a0340058ae73579ac3edcc323e54e4051ad674b47ad5ae9f6b451edcd"
+    }
+  },
+  "sanitization": "Only selected source/scalar/path/hash evidence; no raw QA, tokens, trajectories, model weights, full logs, credentials, per-minibatch payloads, or private behavior trace contents are copied."
+}
