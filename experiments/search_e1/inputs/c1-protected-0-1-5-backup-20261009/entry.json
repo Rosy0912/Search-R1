@@ -1,0 +1,29 @@
+{
+  "CP0_fresh_actual_manifest_sha256": "916f213785f1a65742c8a377602ba9a623323d0167523464677f010596a8185b",
+  "CP0_native_cat_actual_returncode": 0,
+  "CP1_fresh_actual_manifest_sha256": "2ac3a2a23119fee980ae623d2caa56bdb66b2f6561ab5e30960c50033dd3e82c",
+  "CP5_fresh_actual_manifest_sha256": "d98e1477ceeb21e6198a2d12975a1d3fa4b785b41d7c87d2b49d9bf5557be1b0",
+  "backup_is_training_dependency": false,
+  "files": {
+    "README.md": {
+      "bytes": 1477,
+      "sha256": "359c42b6eb17c8af0b50ed927fe2d7e2094c581ffc71839d5848c4a20d087daa"
+    },
+    "source-inventory.stdin.py": {
+      "bytes": 2834,
+      "sha256": "9b8a9f428407e033435a6edb33da45a932c36858d06b4238ef2c9209d2987713"
+    },
+    "source-metadata.stdin.py": {
+      "bytes": 1805,
+      "sha256": "11d912771af3e6edc18d97de2768cfe93edbd1cf9b46d448855f61ba8764b3c1"
+    },
+    "verify-local.py": {
+      "bytes": 2486,
+      "sha256": "44d2ea8af85a1163958d8c5e1cd5a8d28436adfa15c1f4aefc730de3635deb68"
+    }
+  },
+  "ready": true,
+  "schema": "C1-protected-state-backup-fixed-operational-entry-v1",
+  "science_or_gpu_change": false,
+  "scope": "C1 only initial/update1/update5; separate from outer-end queue"
+}

@@ -1,0 +1,79 @@
+{
+  "accepted": true,
+  "backup_is_training_dependency": false,
+  "checkpoints": [
+    {
+      "CPU_reader_SHA": "7bfde1c08c421ba50fafa936c39a53305bc0966c06fdb8a58514708630bafe8a",
+      "actual_reader_returncode": 0,
+      "actual_update": 1,
+      "adapter_tensor_sha256": "042fa18709575392391ce07471f89a31027a9e968ce220871718223a35b8cc7e",
+      "changed_tensors_vs_common_initial": 252,
+      "eight_rank_full_Adam_equal_finite": true,
+      "eight_rank_rng_scaler_cursor_validated": true,
+      "finite_fp32_adapter_tensors": 504,
+      "manifest": {
+        "bytes": 18416,
+        "ctime_ns": 1791500853775578204,
+        "device": 2065,
+        "inode": 466454524,
+        "mtime_ns": 1791500853771578221,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/runs/checkpoints/update-00000001-outer-00000/manifest.json",
+        "sha256": "2ac3a2a23119fee980ae623d2caa56bdb66b2f6561ab5e30960c50033dd3e82c"
+      },
+      "private_stdout_sha256": "c578b4e21987cd4b4a648de4f626afea95eee9870f60c36c70d0ee1eef304a5a"
+    },
+    {
+      "CPU_reader_SHA": "7bfde1c08c421ba50fafa936c39a53305bc0966c06fdb8a58514708630bafe8a",
+      "actual_reader_returncode": 0,
+      "actual_update": 5,
+      "adapter_tensor_sha256": "3ef73368f2e5703ab3c32bf93eae08b0db2dd653772a386873b23e44f2b089aa",
+      "changed_tensors_vs_common_initial": 504,
+      "eight_rank_full_Adam_equal_finite": true,
+      "eight_rank_rng_scaler_cursor_validated": true,
+      "finite_fp32_adapter_tensors": 504,
+      "manifest": {
+        "bytes": 20146,
+        "ctime_ns": 1791500882663458509,
+        "device": 2065,
+        "inode": 466454853,
+        "mtime_ns": 1791500882663458509,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/runs/checkpoints/update-00000005-outer-00000/manifest.json",
+        "sha256": "d98e1477ceeb21e6198a2d12975a1d3fa4b785b41d7c87d2b49d9bf5557be1b0"
+      },
+      "private_stdout_sha256": "cf8a78a45248ea4dd08c03aa2e49e079dd7f1f5a5f13012be03c6ea51387fee1"
+    }
+  ],
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "controller_identity": {
+    "pgid": 2276380,
+    "pid": 2276380,
+    "ppid": 1894801,
+    "starttick": 929210641,
+    "uid": 1005
+  },
+  "native_first_outer": {
+    "all_eight_sampling_actual_returncodes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "completed_outer_index": 0,
+    "formal_sampling_trajectories": 2560,
+    "native_submitted_updates": 11,
+    "numerical_Adam11_independent_readback": false,
+    "observed_cst": "2026-10-09T07:09:37.275107+08:00",
+    "usable_pairs": 327
+  },
+  "private_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-11/C1-update1-update5-actual/C1-first-five-actual-compact.private.json",
+    "sha256": "a5fd05a1beb5033bdb5b271b1eaf6191e2175257635f038b21426febb9256405"
+  },
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "C1-first-five-CPU-state-accepted-v1",
+  "scope": "Once per saved CP1/CP5 actual CPU state readback. No logits/heldout inference/online loss recomputation, no pause/reset. Five-step execution acceptance is not effect acceptance. CP1 changes252 tensors; CP5 changes504."
+}

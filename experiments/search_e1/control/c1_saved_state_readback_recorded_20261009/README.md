@@ -1,0 +1,3 @@
+# Recorded C1 saved-state readback
+
+These are exact external helpers captured after the already completed CPU-only observations. The original `audit_state.py` was published before execution; this directory records the local wrapper, first metadata probe (failed rc1 due to reading the wrong outer field), and corrected probe (rc0). Neither probe changed scientific code or state. CP1 and CP5 each ran the published numerical reader exactly once, with actual rc0. This record does not request another readback, model test, or restart. Private original outputs, manifests and execution records remain outside Git.

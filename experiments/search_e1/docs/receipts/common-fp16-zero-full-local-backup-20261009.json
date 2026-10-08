@@ -1,0 +1,23 @@
+{
+  "accepted": true,
+  "actual_rsync_returncode": 0,
+  "all_local_full_SHA_match": true,
+  "all_source_fresh_SHA_before": true,
+  "all_source_metadata_stable_after": true,
+  "backup_is_training_dependency": false,
+  "bytes": 35794129,
+  "excluded_rebuildable_subtrees": [
+    "cpu-merge/model"
+  ],
+  "files": 589,
+  "node_originals_retained": true,
+  "primary_slots": 512,
+  "private_completion": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-fp16-zero-closed-backup-20261009/complete-sha-verified.json",
+    "sha256": "cbe824bc18e2e34979b4d905bae9d57d76c5997f4762de4a5df6ad1c503b7317"
+  },
+  "raw_queries_tokens_models_in_Git": false,
+  "schema": "common-fp16-zero-full-local-persistence-summary-v1",
+  "source_actual_terminal_SHA": "2818e5fa42a983bab315e74496da1db8a12c1a43577e50d8a78d8a009715edaa",
+  "source_phase_SHA": "58da603affd15a2b85d1e1d18d27dac0a95370d82148598b3d7678d84a828a47"
+}
