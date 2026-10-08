@@ -13,3 +13,11 @@ Remaining operational risks, inherited substantially from the serial transport:
 - `active_files.partial_bytes` measures bytes supplied to the local pipe, not remote durable bytes; report it as advisory. No acceptance logic currently mistakes it for verified completion.
 
 The local integration gate exercises four streams, disconnect/resume and corrupt complete-file refusal using local shell routes and an injected test receiver. It does not prove SSH remote process cleanup or shared-storage EIO behavior. Keep remote cleanup proof separate from this gate.
+
+## Receiver-lock follow-up
+
+The final receiver adds a nonblocking per-partial writer flock before opening append, then validates actual partial size against the supplied source offset under that lock. The lock remains held through all writes and fsync. This closes concurrent append between new receivers and stale-offset restart races; old serial receivers still require explicit handoff quiescence because they may not participate in this lock protocol. The integration gate was independently rerun including real receiver stale-offset refusal, held-lock refusal and exact append.
+
+- `migrate_cosearch_hpc.py`: `c7b617ce714ed31db812e0b74f9adf133576b09e83f80ee79a4c98092489ea81`
+- `cosearch_transfer_io.py`: `fbbbc76cd0c9061dfd4ee50317b5f629cd65a94d627dabfab2b7903ee914d902`
+- `test_cosearch_parallel_transfer.py`: `cbfd4269e0b30f482a346734b23c3605d5c4cce04407bea7da6073dbd6e7db07`
