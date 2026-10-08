@@ -1,0 +1,66 @@
+{
+  "schema": "opsd-m2-helpers-review-v1",
+  "created_unix": 1791436057.8201768,
+  "accepted": true,
+  "scope": "Helper implementation and CPU fixtures only. Production full-data audit not yet run.",
+  "files": {
+    "experiments/search_e1/control/opsd_selection_audit/README.md": {
+      "bytes": 9969,
+      "sha256": "ba1e69b0dc87e62d23e57425344a6b6be375e7f9e7b4163c87560532900611a5"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/SOURCE_MANIFEST.json": {
+      "bytes": 1066,
+      "sha256": "25415d4d59b9b3975c4c400a76b7aad5906e6672a96162cec75cfee25155585e"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/audit_selection.py": {
+      "bytes": 33840,
+      "sha256": "b076faa17ff701aff42b60d5111139f149a1044d8d31454e015ca21ca7cde0b4"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/bounded-input-inspection-20261008.json": {
+      "bytes": 2175,
+      "sha256": "5ae31b90cfa590d824979517f60cb05c7e2010ba97db73d0da1a7063abb691b3"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/local-fixtures-receipt.json": {
+      "bytes": 1162,
+      "sha256": "3683862a1d4a7588873f3c243d341d6116ad9b6e41e181ec3697c2c74c679ce0"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/production-entry.json": {
+      "bytes": 1131,
+      "sha256": "781b0f57f5406f7e60c3f12335252df1b1b2a050a4b6b477f81f6738df2ba610"
+    },
+    "experiments/search_e1/control/opsd_selection_audit/test_audit_selection.py": {
+      "bytes": 10893,
+      "sha256": "2a20597affb0dc36f76004593a3d452269f9a6f7696f5ba7eccb236666f2b9bb"
+    },
+    "experiments/search_e1/control/opsd_token_region_analysis/README.md": {
+      "bytes": 6080,
+      "sha256": "928837ea4a5ce308388b6a1c5083c5c98872e7e01fd14c75098d450944741fa5"
+    },
+    "experiments/search_e1/control/opsd_token_region_analysis/summarize_regions.py": {
+      "bytes": 35905,
+      "sha256": "55bfd3f74aed1dd5b51bb5fa91244cc3940ecd02ac2c937c3282208942df311e"
+    },
+    "experiments/search_e1/control/opsd_token_region_analysis/test_summarize_regions.py": {
+      "bytes": 15352,
+      "sha256": "faad098929604d4954493a71bb7542f1ae7e5d81d0ad77dd2b99ffc79a5a8019"
+    }
+  },
+  "selection_review": {
+    "reviewer": "/root/review_e1_spec",
+    "decision": "APPROVE",
+    "native_shadow": true,
+    "fixtures": 13
+  },
+  "region_review": {
+    "reviewer": "/root/prepare_segmented_retriever",
+    "decision": "APPROVE",
+    "fixtures": 11,
+    "proof_sha256": "6aedcbae7330bfc344cd2aea2acfe7abd46ff5668c5112f4a8e2eb57e57ffbad"
+  },
+  "root_checks": {
+    "ast_all_python_pass": true,
+    "region_cpu_fixtures": 11,
+    "actual_first_case_token_and_summary_schema_matches": true
+  },
+  "no_training_or_gpu_started": true
+}

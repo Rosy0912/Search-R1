@@ -1,0 +1,22 @@
+{
+  "schema": "opsd-m2-proposed-production-entry-v1",
+  "deployed": false,
+  "started": false,
+  "publication_required_before_execution": true,
+  "host": "hkust1",
+  "cpu_processes": 1,
+  "no_gpu_or_http": true,
+  "source_directory": "/data/shaoshitong/search-e1-opsd-selection-audit-20261008/source/opsd_selection_audit",
+  "python": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+  "runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+  "runtime_manifest": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-runtime.sha256.json",
+  "cases_manifest": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/manifest.json",
+  "output": "/data/shaoshitong/search-e1-opsd-selection-audit-20261008/runs/full-selection-v1",
+  "environment_addition": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "linux_rlimit_as_bytes": 34359738368,
+  "minimum_scratch_free_bytes": 34359738368,
+  "helper_sha256": "b076faa17ff701aff42b60d5111139f149a1044d8d31454e015ca21ca7cde0b4",
+  "scientific_parameters_changed": false
+}

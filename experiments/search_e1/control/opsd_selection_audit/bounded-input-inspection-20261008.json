@@ -1,0 +1,79 @@
+{
+  "schema": "opsd-m2-bounded-input-inspection-v1",
+  "read_only": true,
+  "time_unix": 1791435313.8934782,
+  "scope": "Only first120 and final10 records, no fullscan; no question/answer/response body output. This does not establish complete file contiguity.",
+  "rollouts": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+    "bytes": 3866825184,
+    "inode": 466324430,
+    "mtime_ns": 1791407043581723047,
+    "ctime_ns": 1791407043581723047,
+    "metadata_stable": true,
+    "head_rows": 120,
+    "head_unique_questions": 24,
+    "head_sibling_patterns": [
+      [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    ],
+    "head_reappearing_question_runs": 0,
+    "tail_siblings": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "first_field_types": {
+      "question_id": "str",
+      "question": "str",
+      "answers": "list",
+      "data_source": "str",
+      "response": "str",
+      "search_calls": "int",
+      "policy_spans": "list",
+      "sibling": "int",
+      "termination": "str",
+      "token_count": "int",
+      "reward": "int"
+    }
+  },
+  "pairs": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+    "bytes": 829404707,
+    "inode": 466324470,
+    "mtime_ns": 1791407269983899859,
+    "ctime_ns": 1791407269983899859,
+    "metadata_stable": true,
+    "head_rows": 120,
+    "head_unique_questions": 120,
+    "head_reappearing_question_runs": 0,
+    "first_field_types": {
+      "question_id": "str",
+      "question": "str",
+      "answers": "list",
+      "reference": "str",
+      "student": "str",
+      "reference_reward": "int",
+      "student_reward": "int",
+      "student_policy_spans": "list"
+    }
+  },
+  "rapidfuzz_existing_k1_env": {
+    "version": "3.13.0",
+    "module_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/lib/python3.10/site-packages/rapidfuzz/__init__.py",
+    "module_sha256": "416b533ecff495a27e4a843d7f5c0f71f7d4016ecb15182c35406485dfc08381"
+  },
+  "full_scan_started": false,
+  "deployed": false
+}

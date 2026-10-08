@@ -1,0 +1,23 @@
+{
+  "schema": "opsd-m2-local-fixtures-v1",
+  "created_unix": 1791435825.853,
+  "tests": 13,
+  "failures": 0,
+  "errors": 0,
+  "status": "PASSED",
+  "last_reported_duration_sec": 0.1,
+  "platform": "macOS-15.3-arm64-arm-64bit",
+  "python_version": "3.9.6",
+  "rapidfuzz_version": "3.13.0",
+  "actual_live_data_full_scan": false,
+  "gpu_or_http_calls": false,
+  "production_linux_address_space_limit_executed_locally": false,
+  "frozen_runtime_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-preparation3-xformers-backup-20261008/snapshot/runtime/opsd-preparation3-xformers",
+  "frozen_scientific_core_sha256": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc",
+  "strict_qa_sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+  "checked_sources": {
+    "audit_selection.py": "b076faa17ff701aff42b60d5111139f149a1044d8d31454e015ca21ca7cde0b4",
+    "test_audit_selection.py": "2a20597affb0dc36f76004593a3d452269f9a6f7696f5ba7eccb236666f2b9bb"
+  },
+  "scope": "Tiny synthetic CPU fixtures with original imported hashed native core/QA and rapidfuzz; no production acceptance."
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "opsd-m2-helper-source-manifest-v1",
+  "created_unix": 1791435825.870904,
+  "scope": "Local candidate only; full-data acceptance pending Root publication and execution",
+  "files": {
+    "README.md": {
+      "bytes": 9969,
+      "sha256": "ba1e69b0dc87e62d23e57425344a6b6be375e7f9e7b4163c87560532900611a5"
+    },
+    "audit_selection.py": {
+      "bytes": 33840,
+      "sha256": "b076faa17ff701aff42b60d5111139f149a1044d8d31454e015ca21ca7cde0b4"
+    },
+    "bounded-input-inspection-20261008.json": {
+      "bytes": 2175,
+      "sha256": "5ae31b90cfa590d824979517f60cb05c7e2010ba97db73d0da1a7063abb691b3"
+    },
+    "local-fixtures-receipt.json": {
+      "bytes": 1162,
+      "sha256": "3683862a1d4a7588873f3c243d341d6116ad9b6e41e181ec3697c2c74c679ce0"
+    },
+    "production-entry.json": {
+      "bytes": 1131,
+      "sha256": "781b0f57f5406f7e60c3f12335252df1b1b2a050a4b6b477f81f6738df2ba610"
+    },
+    "test_audit_selection.py": {
+      "bytes": 10893,
+      "sha256": "2a20597affb0dc36f76004593a3d452269f9a6f7696f5ba7eccb236666f2b9bb"
+    }
+  }
+}
