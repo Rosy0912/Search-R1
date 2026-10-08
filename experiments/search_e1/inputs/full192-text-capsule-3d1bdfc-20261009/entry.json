@@ -1,0 +1,19 @@
+{
+  "schema": "closed-full192-text-capsule-entry-v1",
+  "source_commit": "3d1bdfcd03f97efab8e6ced7f19faa1262f8db4a",
+  "source_manifest": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/full192_text_capsule_20261009/source-manifest.json",
+    "sha256": "826da43a6253e45e01477773ae58ca1988ec4b4c4a9df133da004de15003a21e"
+  },
+  "accepted_inventory": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/full192-direct-final-verification-20261009/complete-sha-verified.json",
+    "sha256": "f0c5cc89e6579149f1482c8633e3b2a253e25ac6a27b4bb0b55b0fa5cddb7d3c"
+  },
+  "source_root": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/full192/debug-894021c8f55f436f96bb3cb146ab05bb",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/full192-text-capsule-3d1bdfc-20261009",
+  "backup_not_GPU_dependency": true,
+  "source_deletion": false,
+  "Node_IO": false,
+  "npy_remain_unmodified": true,
+  "observed_unix": 1791494964.253642
+}

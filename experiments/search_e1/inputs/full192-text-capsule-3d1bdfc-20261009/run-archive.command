@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/python3 -B /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/full192_text_capsule_20261009/archive.py --entry /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/full192-text-capsule-3d1bdfc-20261009/entry.json --entry-sha256 91f64625a73e010ff8d5b87488c83316f4cc5a9fb0a3dd0a9a2b5292ab8eb12b
