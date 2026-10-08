@@ -1,0 +1,414 @@
+--- v14/calibration_driver_v1.py
++++ v15/calibration_driver_v1.py
+@@ -17,7 +17,8 @@
+ from calibration_contract_v1 import (SCOPE, LIVE_SCOPE, DATA, REVISION, initial_fields, require,
+     validate_alignment, admit_alignment, validate_probability_receipts, summarize_guards,
+     validate_probability_approval, validate_action_probability_checks)
+-from calibration_state_v1 import state_digest, validate_pause_workers, assert_complete_pause_unchanged
++from calibration_state_v1 import (state_digest, validate_pause_workers, assert_complete_pause_unchanged,
++                                  validate_bf16_accumulation_identity)
+ from continuation_timing_v10 import observe_time, publish_timing
+ 
+ 
+@@ -31,6 +32,10 @@
+     require(len(rows) == 8 and {row['rank'] for row in rows} == set(range(8))
+             and len({row['pid'] for row in rows}) == 8, 'Missing actual eight-worker backend identity')
+     for row in rows:
++        validate_bf16_accumulation_identity(row, role='actor_rollout')
++        require(row['executor_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.spmd_gpu_executor.SPMDGPUExecutor'
++                and row['executor_worker_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.worker.Worker',
++                'BF16 process readback requires the actual in-process SPMD vLLM worker')
+         require(row['scope'] == 'ACTUAL_RUNNER_AND_ALL_LAYER_BACKEND_METADATA_ONLY'
+                 and row['source_commit'] == binding['code_commit']
+                 and row['binding_sha256'] == os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+@@ -57,6 +62,27 @@
+                 actual_observations=rows, probability_accepted=False)
+ 
+ 
++def observe_bf16_accumulation(trainer, run, stage):
++    """Read both real all-rank roles at idle boundaries; never reset a live flag."""
++    identities = {}
++    for role, group in (('actor_rollout', trainer.actor_rollout_wg), ('ref', trainer.ref_policy_wg)):
++        rows = worker_call(trainer, 'bf16_accumulation/' + stage + '/' + role,
++                           group.calibration_bf16_accumulation_identity)
++        require(len(rows) == 8 and {row['rank'] for row in rows} == set(range(8))
++                and len({row['pid'] for row in rows}) == 8, 'Missing actual eight-rank BF16 role readback')
++        for row in rows:
++            validate_bf16_accumulation_identity(row, role=role)
++        identities[role] = sorted(rows, key=lambda row: row['rank'])
++    previous = getattr(trainer, '_calibration_bf16_accumulation', None)
++    require(previous is None or previous == identities,
++            'BF16 policy or worker process changed; in-process repair is forbidden')
++    trainer._calibration_bf16_accumulation = copy.deepcopy(identities)
++    json_save(run / ('actual-bf16-accumulation-' + stage + '.json'), dict(
++        status='ACTUAL_ALL8_BOTH_ROLES_FALSE', stage=stage, actual_roles=identities,
++        live_flag_reset_permitted=False, probability_accepted=False))
++    return identities
++
++
+ def observe_official_zero(trainer, run):
+     from search_r1.baselines.fresh200 import record_initialization
+     trainer.global_steps = 0
+@@ -71,6 +97,7 @@
+     # Empty inspected Adam dictionary slots are legal; actual initial identity
+     # explicitly forbids populated step/moments. No load_training_state at0.
+     value = dict(scope=SCOPE, **initial_fields(), actual_initialization=proof,
++        runtime_numerical_execution=copy.deepcopy(trainer._calibration_bf16_accumulation),
+         workers=workers, phase0_state_reload_performed=False, formal_updates_contributed=0)
+     json_save(run / 'actual-official-zero-initialization.json', value)
+     return value
+@@ -81,12 +108,12 @@
+     from verl.trainer.ppo.ray_trainer import RayPPOTrainer, ResourcePoolManager, Role
+     from verl.single_controller.ray import RayWorkerGroup
+     from verl.utils import hf_tokenizer
+-    from calibration_worker_v1 import CalibrationWorker
++    from calibration_worker_v1 import CalibrationActorRolloutRefWorker
+     tokenizer = hf_tokenizer(config.actor_rollout_ref.model.path)
+     mapping = {Role.ActorRollout: 'global_pool', Role.RefPolicy: 'global_pool'}
+     manager = ResourcePoolManager(resource_pool_spec={'global_pool': [8]}, mapping=mapping)
+     trainer = RayPPOTrainer(config=config, tokenizer=tokenizer,
+-        role_worker_mapping={role: ray.remote(CalibrationWorker) for role in mapping},
++        role_worker_mapping={role: ray.remote(CalibrationActorRolloutRefWorker) for role in mapping},
+         resource_pool_manager=manager, ray_worker_group_cls=RayWorkerGroup,
+         reward_fn=RewardManager(tokenizer, 0), val_reward_fn=RewardManager(tokenizer, 1))
+     from metadata_colocation_v1 import scoped_metadata_colocation
+@@ -177,6 +204,7 @@
+             base_commit=controller.config.base_commit,
+             algorithm_source_commit=controller.config.algorithm_source_commit),
+         config=OmegaConf.to_container(trainer.config, resolve=True),
++        runtime_numerical_execution=copy.deepcopy(trainer._calibration_bf16_accumulation),
+         fresh200_live_admission=admission,
+         common_data_identity=copy.deepcopy(trainer.instruct_data_identity),
+         validation_trace_serial=driver_flow['validation_trace_serial'],
+@@ -196,14 +224,21 @@
+ def capture_post_sampling_pause(trainer, batch, run, material):
+     """Bind all live states after genuine sampling, not the pre-rollout checkpoint RNG."""
+     from search_r1.baselines.recovery import atomic_torch_save, file_sha256
++    numerical_execution = observe_bf16_accumulation(trainer, run, 'post-sampling-before-first-adam')
+     worker_states = worker_call(trainer, 'post_sampling_complete_pause',
+                                trainer.actor_rollout_wg.calibration_complete_pause_state)
++    for state in worker_states:
++        policy = validate_bf16_accumulation_identity(dict(pid=state['identity']['pid'],
++            bf16_accumulation=state['metadata']['bf16_accumulation']), role='actor_rollout')
++        require(policy == numerical_execution['actor_rollout'][state['identity']['rank']]['bf16_accumulation'],
++                'Complete pause and all-rank BF16 readback differ')
+     workers = validate_pause_workers([row['identity'] for row in worker_states])
+     driver = driver_complete_pause_state(trainer, batch)
+     require(driver['sampler']['cursor'] == 512 and driver['global_steps'] == 1
+             and driver['actual_outer_updates'] == 0, 'Wrong actual post-sampling driver state; zero Adam')
+     raw = atomic_torch_save(dict(workers=worker_states, driver=driver), run / 'post-sampling-pause-state.pt')
+     summary = dict(scope=SCOPE, status='POST_SAMPLING_BEFORE_FIRST_ADAM', workers=workers,
++        runtime_numerical_execution=numerical_execution,
+         worker_pause_sha256=state_digest(workers), driver_complete_state_sha256=state_digest(driver),
+         driver_pid=driver['pid'], driver_start_ticks=driver['start_ticks'], data_cursor=512,
+         scheduler=0, actual_adam_writes=0, raw=raw)
+@@ -262,6 +297,7 @@
+                 'Raw probability evidence changed while waiting')
+     validate_probability_receipts(records, admitted)
+     validate_action_probability_checks(cross_checks, admitted)
++    observe_bf16_accumulation(trainer, run, 'post-probability-review-before-first-adam')
+     after_worker_states = worker_call(trainer, 'post_approval_complete_pause',
+                                      trainer.actor_rollout_wg.calibration_complete_pause_state)
+     after_workers = [row['identity'] for row in after_worker_states]
+@@ -297,10 +333,19 @@
+             for rank in range(8):
+                 path = run / f'probabilities/train/call-{serial}-rank-{rank}.json'
+                 record = json.loads(path.read_text())
++                validate_bf16_accumulation_identity(record, role='actor_rollout')
+                 require(record['source_commit'] == binding['code_commit'] and record['rank'] == rank and record['serial'] == serial,
+                         'Perturn actual identity differs')
+                 raw_path = Path(record['raw']['path'])
+                 raw = checked_load(raw_path, record['raw'])
++                validate_bf16_accumulation_identity(raw, role='actor_rollout')
++                require(raw['bf16_accumulation'] == record['bf16_accumulation'],
++                        'Perturn raw and receipt BF16 process readback differ')
++                for key in ('repeated_probe_state_before', 'repeated_probe_state_after'):
++                    state = raw[key]
++                    policy = validate_bf16_accumulation_identity(dict(pid=state['identity']['pid'],
++                        bf16_accumulation=state['metadata']['bf16_accumulation']), role='actor_rollout')
++                    require(policy == raw['bf16_accumulation'], 'Perturn repeated state BF16 readback differs')
+                 require(raw['pid'] == record['pid'] and raw['source_commit'] == record['source_commit']
+                         and raw['binding_sha256'] == os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+                         'Raw sampling PT and receipt process/source identity differ')
+@@ -313,10 +358,15 @@
+             for rank in range(8):
+                 path = run / f'probabilities/complete-actions/{role}-rank-{rank}.json'
+                 record = json.loads(path.read_text())
++                worker_role = 'ref' if role == 'reference' else 'actor_rollout'
++                validate_bf16_accumulation_identity(record, role=worker_role)
+                 require(record['role'] == role and record['rank'] == rank and record['code_commit'] == binding['code_commit']
+                         and record['binding_sha256'] == os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'], 'Complete HF role/source binding differs')
+                 raw_path = Path(record['raw']['path'])
+                 raw = checked_load(raw_path, record['raw'])
++                validate_bf16_accumulation_identity(raw, role=worker_role)
++                require(raw['bf16_accumulation'] == record['bf16_accumulation'],
++                        'Complete HF raw and receipt BF16 process readback differ')
+                 require(raw['role'] == role and raw['rank'] == rank and raw['code_commit'] == binding['code_commit']
+                         and raw['binding_sha256'] == record['binding_sha256'] and raw['pid'] == record['pid'], 'Complete HF raw role/source identity differs')
+                 require(raw['micro_batch_size'] == {'old': 4, 'current': 2, 'reference': 4}[role]
+@@ -334,6 +384,7 @@
+                 for rank in range(8):
+                     path = run / f'probabilities/complete-actions/{role}-neutral-rank-{rank}.json'
+                     record = json.loads(path.read_text())
++                    validate_bf16_accumulation_identity(record, role=worker_role)
+                     require(record['rank'] == rank and record['actual_adam_writes'] == 0, 'Wrong neutral observation phase')
+                     require(record['complete_state_unchanged'] if role == 'current' else record['fixed_reference_unchanged'],
+                             'HF probability observation changed real actor/reference state; zero Adam')
+@@ -441,6 +492,7 @@
+     from search_r1.baselines.fresh200 import begin_attempt, consume_attempt, record_epoch_end
+     config = trainer.config
+     trainer.global_steps = outer
++    observe_bf16_accumulation(trainer, run, 'before-training-batch-' + str(outer))
+     progress['stage'] = 'next_training_batch'
+     try:
+         fetched = next(training_iterator)
+@@ -543,6 +595,7 @@
+     if first_sampling:
+         # Check again immediately before the first update RPC, including any
+         # intervening audit operation and still-current fixed rollout bytes.
++        observe_bf16_accumulation(trainer, run, 'immediately-before-first-adam')
+         before_workers, before_driver = trainer._calibration_approved_pause
+         live = trainer.actor_rollout_wg.calibration_complete_pause_state()
+         unchanged = assert_complete_pause_unchanged(before_workers, [row['identity'] for row in live],
+@@ -687,6 +740,7 @@
+     run = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])
+     require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Ray backend environment differs')
+     trainer = create_trainer(config)
++    observe_bf16_accumulation(trainer, run, 'before-official-zero-and-baseline')
+     backend_rows = trainer.actor_rollout_wg.calibration_backend_identity()
+     json_save(run / 'actual-vllm-backend-identity.json', dict(status='OBSERVED_UNREVIEWED',
+         actual_observations=backend_rows, probability_accepted=False))
+@@ -701,7 +755,10 @@
+             'Official zero native FSDP initialization requires all eight actual workers')
+     initial = observe_official_zero(trainer, run)
+     reference = trainer.ref_policy_wg.calibration_reference_identity()
+-    require(len(reference) == 8 and all(r['finite'] for r in reference), 'Nonfinite actual fixed reference')
++    require(len(reference) == 8 and {row['rank'] for row in reference} == set(range(8))
++            and all(r['finite'] for r in reference), 'Nonfinite or incomplete actual fixed reference')
++    for row in reference:
++        validate_bf16_accumulation_identity(row, role='ref')
+     baseline = evaluate(trainer, 'baseline', run)
+     baseline_after = trainer.actor_rollout_wg.checkpoint_pause_identity()
+     compared_fields = ('rank', 'pid', 'model_shards_sha256', 'local_shards_sha256',
+--- v14/calibration_run_v1.py
++++ v15/calibration_run_v1.py
+@@ -148,6 +148,13 @@
+     binding_path = Path(sys.argv[1])
+     require(sha(binding_path) == sys.argv[2], 'Calibration binding changed')
+     binding = json.loads(binding_path.read_text())
++    require(binding['allow_bf16_reduced_precision_reduction'] is False,
++            'This immutable BF16 candidate requires a new binding declaring the disabled reduction flag')
++    helpers = Path(__file__).resolve().parent
++    for name in ('calibration_run_v1.py', 'calibration_driver_v1.py',
++                 'calibration_worker_v1.py', 'calibration_state_v1.py'):
++        require(sum(Path(item['path']).resolve() == helpers / name for item in binding['files']) == 1,
++                'New binding must cover the actual BF16 candidate helper directory: ' + name)
+     repo = Path(os.environ['GIGPO_RESUME_REPO'])
+     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+     require(commit == binding['code_commit'] and not subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip(),
+--- v14/calibration_state_v1.py
++++ v15/calibration_state_v1.py
+@@ -5,6 +5,21 @@
+ 
+ import numpy as np
+ import torch
++
++
++BF16_ACCUMULATION_SCOPE = 'BF16_REDUCTION_DISABLED_BEFORE_BASE_WORKER_INITIALIZATION_V1'
++
++
++def validate_bf16_accumulation_identity(row, *, role):
++    """Require the actual process readback; never set or repair a live flag."""
++    policy = row['bf16_accumulation']
++    if (policy['scope'] != BF16_ACCUMULATION_SCOPE
++            or policy['allow_bf16_reduced_precision_reduction'] is not False
++            or policy['configured_before_base_worker_initialization'] is not True
++            or policy['constructor_pid'] != row['pid']
++            or policy['worker_role'] != role):
++        raise ValueError('BF16 accumulation process policy differs; no live flag repair is permitted')
++    return policy
+ 
+ 
+ def state_digest(value):
+--- v14/calibration_worker_v1.py
++++ v15/calibration_worker_v1.py
+@@ -9,15 +9,17 @@
+ from search_r1.baselines.recovery import (atomic_torch_save, tensor_digest, rng_state,
+                                         cpu_snapshot, parameter_layout, checkpoint_pause_identity)
+ from search_r1.baselines.instruct300 import equal_state
+-from calibration_state_v1 import state_digest
++from calibration_state_v1 import (BF16_ACCUMULATION_SCOPE, state_digest,
++                                  validate_bf16_accumulation_identity)
+ from raw_hf_observation_v1 import capture_existing_flat_calls, clone_cpu, require
+ from observer_safety_v2 import attempt, note, patches, observer_failures
+ from calibration_boundary_v2 import matched_stage
+ 
+ 
+-def observe_backend_identity(engine, rank):
++def observe_backend_identity(engine, rank, bf16_accumulation):
+     """Read selected runner and every attention implementation; no tensor computation."""
+-    runner = engine.llm_engine.model_executor.worker.model_runner
++    executor = engine.llm_engine.model_executor
++    runner = executor.worker.model_runner
+     backend = runner.attn_backend
+     rows = []
+     for name, module in runner.model.named_modules():
+@@ -33,6 +35,9 @@
+         source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+         binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+         requested_backend=os.environ.get('VLLM_ATTENTION_BACKEND'),
++        bf16_accumulation=bf16_accumulation,
++        executor_class=type(executor).__module__ + '.' + type(executor).__name__,
++        executor_worker_class=type(executor.worker).__module__ + '.' + type(executor.worker).__name__,
+         runner_backend_class=backend.__module__ + '.' + backend.__name__,
+         runner_backend_name=backend.get_name(), model_dtype=str(runner.model_config.dtype),
+         cache_dtype=runner.cache_config.cache_dtype, block_size=runner.cache_config.block_size,
+@@ -42,11 +47,44 @@
+ 
+ 
+ class CalibrationWorker(ActorRolloutRefWorker):
++    def __init__(self, config, role):
++        # The only setter: new role construction precedes all source worker,
++        # model/FSDP initialization and vLLM profiling or generation forwards.
++        torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False
++        self._bf16_accumulation_constructor_pid = os.getpid()
++        self._bf16_accumulation_constructor_role = role
++        require(torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction is False,
++                'BF16 reduction configuration was not applied before source initialization')
++        super().__init__(config=config, role=role)
++        self._bf16_accumulation_identity()
++
++    def _bf16_accumulation_identity(self):
++        """Read the live process flag; a changed flag refuses instead of being reset."""
++        row = dict(pid=os.getpid(), bf16_accumulation=dict(
++            scope=BF16_ACCUMULATION_SCOPE,
++            allow_bf16_reduced_precision_reduction=torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction,
++            configured_before_base_worker_initialization=True,
++            constructor_pid=self._bf16_accumulation_constructor_pid,
++            worker_role=self._bf16_accumulation_constructor_role))
++        return validate_bf16_accumulation_identity(row, role=self.role)
++
++    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
++    def calibration_bf16_accumulation_identity(self):
++        errors, row = [], None
++        try:
++            row = dict(rank=self.rank, pid=os.getpid(),
++                bf16_accumulation=self._bf16_accumulation_identity())
++        except BaseException as error:
++            errors.append(repr(error))
++        matched_stage('bf16_accumulation/local_process_readback', errors)
++        return row
++
+     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+     def calibration_initialize_actor_fsdp_before_zero(self):
+         """Establish native local shards before the immutable zero-state identity."""
+         errors, row = [], None
+         try:
++            self._bf16_accumulation_identity()
+             require(self._is_actor and self.config.actor.get('complete_internal_state', False),
+                     'Initialize only the complete-state actual actor role')
+             require(self.actor_lr_scheduler.last_epoch == 0
+@@ -64,6 +102,7 @@
+                         for parameter in self.actor_module_fsdp.parameters()),
+                     'Official zero requires complete native local shards')
+             row = dict(rank=self.rank, pid=os.getpid(), initialization=result,
++                bf16_accumulation=self._bf16_accumulation_identity(),
+                 source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                 binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+                 forward_calls=0, Adam_writes=0, scheduler_advances=0)
+@@ -161,6 +200,7 @@
+         from search_r1.baselines.fresh200_live import validate_live_update_boundary
+         errors = []
+         try:
++            self._bf16_accumulation_identity()
+             validate_live_update_boundary(self, data)
+         except BaseException as error:
+             errors.append(repr(error))
+@@ -170,7 +210,8 @@
+     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+     def calibration_backend_identity(self):
+         assert self._is_actor
+-        return observe_backend_identity(self.rollout.inference_engine, self.rank)
++        return observe_backend_identity(self.rollout.inference_engine, self.rank,
++                                        self._bf16_accumulation_identity())
+ 
+     def _complete_pause_state(self):
+         """Observe full local actor state after sampling, without a restore or optimizer write."""
+@@ -183,6 +224,7 @@
+             return dict(shape=list(tensor.shape), dtype=str(tensor.dtype), device=str(tensor.device),
+                         stride=list(tensor.stride()), storage_offset=tensor.storage_offset())
+         metadata = dict(source_runtime_metadata=self.checkpoint_runtime_metadata(),
++            bf16_accumulation=self._bf16_accumulation_identity(),
+             rng=cpu_snapshot(rng_state()), scheduler=cpu_snapshot(scheduler.state_dict()),
+             sharding_rng={key: cpu_snapshot(getattr(manager, key, None))
+                           for key in ('gen_random_states', 'torch_random_states')},
+@@ -259,6 +301,7 @@
+         values = list(self.ref_module_fsdp.parameters()) + list(self.ref_module_fsdp.buffers())
+         finite = all(bool(torch.isfinite(v.detach()).all()) for v in values)
+         return dict(rank=self.rank, pid=os.getpid(), finite=finite,
++                    bf16_accumulation=self._bf16_accumulation_identity(),
+                     source=self.config.ref.model_path,
+                     shards_sha256=tensor_digest(self.ref_module_fsdp.named_parameters()),
+                     buffers_sha256=tensor_digest(self.ref_module_fsdp.named_buffers()))
+@@ -270,6 +313,7 @@
+         errors, captured, context_record = [], [], dict(observer_errors=[])
+         engine, original = None, None
+         try:
++            self._bf16_accumulation_identity()
+             engine = self.rollout.inference_engine
+             original = engine.generate
+         except BaseException as error:
+@@ -346,6 +390,7 @@
+             directory = Path(os.environ['SEARCH_R1_BASELINE_AUDIT_DIR']).parent / 'probabilities' / phase
+             directory.mkdir(parents=True, exist_ok=True)
+             raw = dict(phase=phase, serial=serial, rank=self.rank, pid=os.getpid(),
++                bf16_accumulation=self._bf16_accumulation_identity(),
+                 source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                 binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+                 tensors={key: clone_cpu(output.batch[key]) for key in ('prompts', 'responses', 'input_ids',
+@@ -360,6 +405,7 @@
+                 repeated_probe_state_after=after_state)
+             receipt = atomic_torch_save(raw, directory / f'call-{serial}-rank-{self.rank}.pt')
+             record = dict(phase=phase, serial=serial, rank=self.rank, pid=os.getpid(),
++                bf16_accumulation=self._bf16_accumulation_identity(),
+                 source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'], comparison_scope='SAME_PREFIX_SAME_TOKENS',
+                 valid_tokens=int(valid.sum()), nonfinite_effective_count=int(bad.sum()), actor_old_max_abs_delta=max_old,
+                 actor_vllm_max_abs_delta=max_vllm, rows=len(output), raw=receipt,
+@@ -377,6 +423,7 @@
+         """All local checks/copies occur at fixed stages bracketing the original API."""
+         errors, before = [], None
+         try:
++            self._bf16_accumulation_identity()
+             require(data.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1', 'Raw HF capture needs raw source')
+             require(data.meta_info.get('raw_calibration_observation') is True, 'Unarmed diagnostic observer')
+             actor = self.ref_policy if role == 'reference' else self.actor
+@@ -407,6 +454,7 @@
+             require(not observer_failures(calls), 'Actual HF input/normalizer observation failed')
+             name = 'ref_log_prob' if role == 'reference' else 'old_log_probs'
+             raw = dict(schema='RAW_ACTION_HF_FORWARD_OBSERVATION_V1', role=role, rank=self.rank, pid=os.getpid(),
++                bf16_accumulation=self._bf16_accumulation_identity(),
+                 code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'], binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+                 actor_token_identity=data.meta_info['actor_token_identity'], actual_pad_token_id=self.tokenizer.pad_token_id,
+                 actual_eos_token_id=self.tokenizer.eos_token_id, temperature=data.meta_info['temperature'],
+@@ -424,11 +472,13 @@
+             receipt = atomic_torch_save(raw, target)
+             (directory / f'{role}-rank-{self.rank}.json').write_text(json.dumps(dict(
+                 schema=raw['schema'], role=role, rank=self.rank, pid=os.getpid(), code_commit=raw['code_commit'],
++                bf16_accumulation=self._bf16_accumulation_identity(),
+                 binding_sha256=raw['binding_sha256'], raw=receipt, observer_errors=[],
+                 actual_forward_calls=len(calls), observation_only=True, actual_adam_writes=0), indent=2, allow_nan=False))
+             if after_capture is not None:
+                 after = after_capture()
+                 neutral = dict(rank=self.rank, pid=os.getpid(), before=before['identity'] if role == 'current' else before,
++                    bf16_accumulation=self._bf16_accumulation_identity(),
+                     after=after['identity'] if role == 'current' else after, observation_only=True, actual_adam_writes=0)
+                 neutral['complete_state_unchanged' if role == 'current' else 'fixed_reference_unchanged'] = equal_state(before, after)
+                 (directory / f'{role}-neutral-rank-{self.rank}.json').write_text(json.dumps(neutral, indent=2, allow_nan=False))
+@@ -466,3 +516,7 @@
+         return self._capture_raw_complete_hf('reference', data,
+             lambda: super(CalibrationWorker, self).compute_ref_log_prob(data),
+             before_capture=self.calibration_reference_identity, after_capture=self.calibration_reference_identity)
++
++
++# Explicit driver name for the same role class and constructor; no extra MRO.
++CalibrationActorRolloutRefWorker = CalibrationWorker

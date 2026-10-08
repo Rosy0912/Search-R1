@@ -1,73 +1,99 @@
 {
-  "schema": "GIGPO3332_DIAGNOSTIC_PUBLICATION_V1",
-  "utc": "2026-10-08T04:15:03.375833+00:00",
-  "scientific_source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
-  "training_Adam_writes": 0,
   "files": [
     {
-      "path": "JOB3332-ACTUAL-PROBABILITY-INDEPENDENT-REVIEW.json",
+      "bytes": 4265,
+      "path": "GLOBALWORST-READONLY-TRANSPORT-NONAUTHOR-REVIEW-v4.json",
+      "sha256": "bd603be4960d6b0fe4baa920178a8ab9a2150c594bc94529dd3f1f819762fc82"
+    },
+    {
       "bytes": 110315,
+      "path": "JOB3332-ACTUAL-PROBABILITY-INDEPENDENT-REVIEW.json",
       "sha256": "de76720e150fece2a4ea2fbf3efd26327689b9b95358a0490f79f58c385f2503"
     },
     {
-      "path": "JOB3332-PROBABILITY-MISMATCH-CODE-DIAGNOSIS-v1.md",
+      "bytes": 15396,
+      "path": "JOB3332-GLOBALWORST-ACTUAL-RAW-READONLY-v4-DECODED.json",
+      "sha256": "854ec0612505d671ef3f24bd61ba9a93cdab2d30ef293529d08b5d89a18c0d71"
+    },
+    {
+      "bytes": 15686,
+      "path": "JOB3332-GLOBALWORST-ACTUAL-RAW-READONLY-v4-TRANSPORT.json",
+      "sha256": "16187bccbe05bdb6f39a278922c6d5120f83cb9cbfcc70a886e9c1e590cb2bdc"
+    },
+    {
+      "bytes": 6626,
+      "path": "JOB3332-GLOBALWORST-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v4.json",
+      "sha256": "5f012ed5f847b7c2f93fa219e696919c95b29df6e63bbd411f525817dced6abf"
+    },
+    {
       "bytes": 28139,
+      "path": "JOB3332-PROBABILITY-MISMATCH-CODE-DIAGNOSIS-v1.md",
       "sha256": "64b2cd8e2c7aed6cc8db1021a1295b695cefe0b40d1c2ed29f4b819f465389f0"
     },
     {
-      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v1.json",
       "bytes": 14184,
+      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v1.json",
       "sha256": "7ed804e25315c81dbcfd6285c3b7456db909c79242c42f0fdc4470bf8432561c"
     },
     {
-      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v2.json",
       "bytes": 9744,
+      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v2.json",
       "sha256": "6bd93b8ebfdae0d2b43297ebfac010c6966dee5824d44de17354efafb46a3a65"
     },
     {
-      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v3.json",
       "bytes": 11010,
+      "path": "JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v3.json",
       "sha256": "bed6b547395fecf041ddb38c3cb37ea51f6c3b5cb41ccffe36a25af426622380"
     },
     {
-      "path": "JOB3332-RANK3-READONLY-TRANSPORT-NONAUTHOR-REVIEW-v1.json",
       "bytes": 8927,
+      "path": "JOB3332-RANK3-READONLY-TRANSPORT-NONAUTHOR-REVIEW-v1.json",
       "sha256": "d62fc7b007516fffa200c24ee6b9ccbe006a8d3a2e46edf57be66c7c9cb58472"
     },
     {
+      "bytes": 2436,
       "path": "README.md",
-      "bytes": 1091,
-      "sha256": "96f9971160c116e30507806efa14a7f7191f42f2e8656ca9f5773402e92fb966"
+      "sha256": "0896852faea10c6ff57d8ecc4b9c0655c7d6a6e8f8482c2502cd0437c0f86852"
     },
     {
-      "path": "execute_job3332_globalworst_raw_reader_v4_readonly.py",
       "bytes": 4392,
+      "path": "execute_job3332_globalworst_raw_reader_v4_readonly.py",
       "sha256": "cc06330f323d8799630291a8addf926b15efed06b89cef4c086e426ec54d7a59"
     },
     {
-      "path": "execute_job3332_raw_reader_v3_readonly.py",
       "bytes": 4374,
+      "path": "execute_job3332_raw_reader_v3_readonly.py",
       "sha256": "04d81c7b63c3a88d4ba29a75214883b4d3e522fcf69a3474b586107a7bc3ad93"
     },
     {
-      "path": "inspect_job3332_actual_globalworst_readonly_v4.py",
       "bytes": 43522,
+      "path": "inspect_job3332_actual_globalworst_readonly_v4.py",
       "sha256": "bb4b730194c97cd8fc08813ab6441fa28489c9675469ba6272d888ddb12cf88f"
     },
     {
-      "path": "inspect_job3332_actual_rank3_call0_readonly_v1.py",
       "bytes": 26430,
+      "path": "inspect_job3332_actual_rank3_call0_readonly_v1.py",
       "sha256": "a0b99d340588e1b4e27d0bcf69cafd01bdcb8af8b92ba5d57809667b45d9a927"
     },
     {
-      "path": "inspect_job3332_actual_rank3_call0_readonly_v2.py",
       "bytes": 30383,
+      "path": "inspect_job3332_actual_rank3_call0_readonly_v2.py",
       "sha256": "624c14fe4b275e4fce34f0bdf7583dfa04e1892c0fe17429320df970b7af4ca0"
     },
     {
-      "path": "inspect_job3332_actual_rank3_call0_readonly_v3.py",
       "bytes": 31605,
+      "path": "inspect_job3332_actual_rank3_call0_readonly_v3.py",
       "sha256": "20a5a93c68c17d57b4d6724e46f81e3da121f996dc1922a4c1bb9a6b1a9ff987"
     }
-  ]
+  ],
+  "globalworst_v4_actual_read": "SUCCESS_RETURN_CODE_0",
+  "globalworst_v4_actual_read_utc": "2026-10-08T04:18:36.976727+00:00",
+  "globalworst_v4_reader_static_review": "PASS_READONLY_SCOPE",
+  "globalworst_v4_transport_static_review": "PASS_TRANSPORT_SCOPE",
+  "probability_admission": "BLOCK",
+  "schema": "GIGPO3332_DIAGNOSTIC_PUBLICATION_V2",
+  "scientific_source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "self_excluded": true,
+  "training_Adam_writes": 0,
+  "utc": "2026-10-08T04:24:31.729362+00:00"
 }

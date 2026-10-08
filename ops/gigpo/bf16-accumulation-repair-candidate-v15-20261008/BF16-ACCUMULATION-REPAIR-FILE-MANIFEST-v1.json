@@ -1,0 +1,600 @@
+{
+  "added_files": [],
+  "approval_created": false,
+  "candidate_code_executed": false,
+  "candidate_file_count": 44,
+  "candidate_gpu_used": false,
+  "candidate_runtime": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v15-bf16accum1",
+  "candidate_tree_manifest_sha256": "54545ec5d6bac0c58d744d90fe12b41f8d9f22d351bccf3450e8c269670ee4ff",
+  "changed_files": [
+    "calibration_driver_v1.py",
+    "calibration_run_v1.py",
+    "calibration_state_v1.py",
+    "calibration_worker_v1.py"
+  ],
+  "committed": false,
+  "created_at_utc": "2026-10-08T04:20:15.656864+00:00",
+  "existing_job_3332_modified": false,
+  "files": [
+    {
+      "after": {
+        "bytes": 3399,
+        "sha256": "5e09b002981fb6ee59359c07a58f63f4852840cad85a8ccb20e5c9c391af8655"
+      },
+      "before": {
+        "bytes": 3399,
+        "sha256": "5e09b002981fb6ee59359c07a58f63f4852840cad85a8ccb20e5c9c391af8655"
+      },
+      "bytes_identical": true,
+      "path": "attempt_accounting_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 6545,
+        "sha256": "cf1512d05c5c3067e94891ac0a308aeb1bebd24e46611ade961be5bc03cc51ae"
+      },
+      "before": {
+        "bytes": 6545,
+        "sha256": "cf1512d05c5c3067e94891ac0a308aeb1bebd24e46611ade961be5bc03cc51ae"
+      },
+      "bytes_identical": true,
+      "path": "calibration_audit_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 3435,
+        "sha256": "f99fe758101040391bedd9a62c443b30fa37fea413a5b9aae82cc5137c303afa"
+      },
+      "before": {
+        "bytes": 3435,
+        "sha256": "f99fe758101040391bedd9a62c443b30fa37fea413a5b9aae82cc5137c303afa"
+      },
+      "bytes_identical": true,
+      "path": "calibration_boundary_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 19709,
+        "sha256": "7405a57a311c5cecd5afe913c4ede8aa0a1b333c79999c01be0592d149013851"
+      },
+      "before": {
+        "bytes": 19709,
+        "sha256": "7405a57a311c5cecd5afe913c4ede8aa0a1b333c79999c01be0592d149013851"
+      },
+      "bytes_identical": true,
+      "path": "calibration_contract_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 54590,
+        "sha256": "07bd73a5bdf74bd60fe0a1d108fd27082b7b96d0118b43e5f1e90019024a47df"
+      },
+      "before": {
+        "bytes": 50332,
+        "sha256": "dc8cb399b7072ec10f36fe61c0864c9e45675f4ea02a1011b3e48c6bd7d0b9d3"
+      },
+      "bytes_identical": false,
+      "path": "calibration_driver_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 8663,
+        "sha256": "e939c4262934b3369215034c491817b9f684b5ee880269daadf0c62b55c97e6c"
+      },
+      "before": {
+        "bytes": 8663,
+        "sha256": "e939c4262934b3369215034c491817b9f684b5ee880269daadf0c62b55c97e6c"
+      },
+      "bytes_identical": true,
+      "path": "calibration_failure_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 3377,
+        "sha256": "ea213932a9a7170bfef1b52c464f128aaa6d569a73d2cd715974142f2f3009e2"
+      },
+      "before": {
+        "bytes": 3377,
+        "sha256": "ea213932a9a7170bfef1b52c464f128aaa6d569a73d2cd715974142f2f3009e2"
+      },
+      "bytes_identical": true,
+      "path": "calibration_failure_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 26703,
+        "sha256": "371afcedfb34fe320538f948e787860c4bc884ea3711d9d760514adcb9f43aa2"
+      },
+      "before": {
+        "bytes": 26139,
+        "sha256": "bc8d38a636eb6b132b1d3e09a818f1406c46c3bbfcc1e183f7e69f04e37bf4b5"
+      },
+      "bytes_identical": false,
+      "path": "calibration_run_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 5154,
+        "sha256": "fb3f96c87a8a4ddd891a28cae8b8a7d3351d2e021d6ac7b3cd906d8f2cf83ebb"
+      },
+      "before": {
+        "bytes": 4455,
+        "sha256": "e37bcc7c26613ebffdde532150c1d6c735e31e2f30a9568a9a4daef9b19caf8f"
+      },
+      "bytes_identical": false,
+      "path": "calibration_state_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 865,
+        "sha256": "966a0b2e848fc5a3c353227a001f18521203839d86e893a1be7b23f7181b1d6e"
+      },
+      "before": {
+        "bytes": 865,
+        "sha256": "966a0b2e848fc5a3c353227a001f18521203839d86e893a1be7b23f7181b1d6e"
+      },
+      "bytes_identical": true,
+      "path": "calibration_v1.sbatch"
+    },
+    {
+      "after": {
+        "bytes": 33826,
+        "sha256": "b936264ad7b0786a19a389aace7b55f6207450eaeacd9f3af94a62a12c6eeeef"
+      },
+      "before": {
+        "bytes": 30750,
+        "sha256": "09146a96937f956305e04c930de4fc6bc1c0d57be3f5b517dc308b3bd69b16c8"
+      },
+      "bytes_identical": false,
+      "path": "calibration_worker_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 2734,
+        "sha256": "afd513b9b19a2ac96d95c004380748ab067c063df6660077cddf244bd92c5c83"
+      },
+      "before": {
+        "bytes": 2734,
+        "sha256": "afd513b9b19a2ac96d95c004380748ab067c063df6660077cddf244bd92c5c83"
+      },
+      "bytes_identical": true,
+      "path": "continuation_timing_v10.py"
+    },
+    {
+      "after": {
+        "bytes": 24996,
+        "sha256": "1359eeab58b288a48d0f0535b104271340cdbd5ac916fad393439f9e32807fa3"
+      },
+      "before": {
+        "bytes": 24996,
+        "sha256": "1359eeab58b288a48d0f0535b104271340cdbd5ac916fad393439f9e32807fa3"
+      },
+      "bytes_identical": true,
+      "path": "decisive_normalizer_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 446,
+        "sha256": "0cc4b0c0161702bfd2bcb95947da9f24db60f6c9721c5c68da8881642cd844a3"
+      },
+      "before": {
+        "bytes": 446,
+        "sha256": "0cc4b0c0161702bfd2bcb95947da9f24db60f6c9721c5c68da8881642cd844a3"
+      },
+      "bytes_identical": true,
+      "path": "generation_rpc_boundary_v3.py"
+    },
+    {
+      "after": {
+        "bytes": 4291,
+        "sha256": "104b347d32bc9188023207e4886011ed317ac95c9bd6ce6f5ef17095e7b4ca74"
+      },
+      "before": {
+        "bytes": 4291,
+        "sha256": "104b347d32bc9188023207e4886011ed317ac95c9bd6ce6f5ef17095e7b4ca74"
+      },
+      "bytes_identical": true,
+      "path": "guard_uuid_input_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 22090,
+        "sha256": "68f76246635326df109480ef0bd620160bb5170febaafff6a97c4d3863f4882d"
+      },
+      "before": {
+        "bytes": 22090,
+        "sha256": "68f76246635326df109480ef0bd620160bb5170febaafff6a97c4d3863f4882d"
+      },
+      "bytes_identical": true,
+      "path": "live_continuation_v10.py"
+    },
+    {
+      "after": {
+        "bytes": 3781,
+        "sha256": "63a0d291053bf1a5e7e5abed9a33ec25f0c6372d681cb6ec480ebd33118fb52e"
+      },
+      "before": {
+        "bytes": 3781,
+        "sha256": "63a0d291053bf1a5e7e5abed9a33ec25f0c6372d681cb6ec480ebd33118fb52e"
+      },
+      "bytes_identical": true,
+      "path": "metadata_colocation_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 4247,
+        "sha256": "cf78df7f79639f84b731817498bd4327174cd158d7078ce25666c65c25547117"
+      },
+      "before": {
+        "bytes": 4247,
+        "sha256": "cf78df7f79639f84b731817498bd4327174cd158d7078ce25666c65c25547117"
+      },
+      "bytes_identical": true,
+      "path": "observer_safety_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 5265,
+        "sha256": "c5271d6f170da1c2e9332f28458322feb67e47e4032b56ae4815e33ac8053030"
+      },
+      "before": {
+        "bytes": 5265,
+        "sha256": "c5271d6f170da1c2e9332f28458322feb67e47e4032b56ae4815e33ac8053030"
+      },
+      "bytes_identical": true,
+      "path": "owned_runtime_resume_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 13406,
+        "sha256": "a43943129d95175db198fe43e8c93414dde9f70da4ebb2699fe11029607cea0f"
+      },
+      "before": {
+        "bytes": 13406,
+        "sha256": "a43943129d95175db198fe43e8c93414dde9f70da4ebb2699fe11029607cea0f"
+      },
+      "bytes_identical": true,
+      "path": "raw_alignment_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 11911,
+        "sha256": "ac725dd92ad35563b9920f23ee3be8c154ff60f2f25a8e0bbc62bd6d457eb485"
+      },
+      "before": {
+        "bytes": 11911,
+        "sha256": "ac725dd92ad35563b9920f23ee3be8c154ff60f2f25a8e0bbc62bd6d457eb485"
+      },
+      "bytes_identical": true,
+      "path": "raw_hf_observation_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 17239,
+        "sha256": "6a023cec9c451159a298d66e04d31f239debcc94bc4b6b8ce2c4c32bdd0ca2dd"
+      },
+      "before": {
+        "bytes": 17239,
+        "sha256": "6a023cec9c451159a298d66e04d31f239debcc94bc4b6b8ce2c4c32bdd0ca2dd"
+      },
+      "bytes_identical": true,
+      "path": "raw_runner_observation_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 2568,
+        "sha256": "e799eda33e241ebb92f7a52f79d87b73d88449e3f84255dc969dacf5622b27eb"
+      },
+      "before": {
+        "bytes": 2568,
+        "sha256": "e799eda33e241ebb92f7a52f79d87b73d88449e3f84255dc969dacf5622b27eb"
+      },
+      "bytes_identical": true,
+      "path": "ray_audit_resume_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 6493,
+        "sha256": "aa12b4196722b20b752ca601cb0e502fadfc38a82df5b160702a7b3d3d291a9f"
+      },
+      "before": {
+        "bytes": 6493,
+        "sha256": "aa12b4196722b20b752ca601cb0e502fadfc38a82df5b160702a7b3d3d291a9f"
+      },
+      "bytes_identical": true,
+      "path": "safety_audit_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 7802,
+        "sha256": "2f6c4823db2c75789b4bb527e11ca4148be175fe6f19416e351aa74daabebfc6"
+      },
+      "before": {
+        "bytes": 7802,
+        "sha256": "2f6c4823db2c75789b4bb527e11ca4148be175fe6f19416e351aa74daabebfc6"
+      },
+      "bytes_identical": true,
+      "path": "slurm_allocation_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 14085,
+        "sha256": "3ff00196ee58a4373c48a2644a7f50bee1349bc1c368bf6db33ba8a033cebe82"
+      },
+      "before": {
+        "bytes": 14085,
+        "sha256": "3ff00196ee58a4373c48a2644a7f50bee1349bc1c368bf6db33ba8a033cebe82"
+      },
+      "bytes_identical": true,
+      "path": "test_attempt_accounting_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 3017,
+        "sha256": "639979546dd19096a5e3e5667c4d55076aaa24d055091d7d15ee96e441ca2ebb"
+      },
+      "before": {
+        "bytes": 3017,
+        "sha256": "639979546dd19096a5e3e5667c4d55076aaa24d055091d7d15ee96e441ca2ebb"
+      },
+      "bytes_identical": true,
+      "path": "test_calibration_audit_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 4550,
+        "sha256": "56dc8fbabd8321d7cd3a4a97e1b02873e2b6f784480f6273c74d3b732c682c9c"
+      },
+      "before": {
+        "bytes": 4550,
+        "sha256": "56dc8fbabd8321d7cd3a4a97e1b02873e2b6f784480f6273c74d3b732c682c9c"
+      },
+      "bytes_identical": true,
+      "path": "test_calibration_contract_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 2998,
+        "sha256": "162fa94814b32dd007e94b0448d2338a5e4cf4af818c49568d305eab06029e78"
+      },
+      "before": {
+        "bytes": 2998,
+        "sha256": "162fa94814b32dd007e94b0448d2338a5e4cf4af818c49568d305eab06029e78"
+      },
+      "bytes_identical": true,
+      "path": "test_calibration_failure_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 970,
+        "sha256": "78883fba48545bc2d7355e53d67f150308ae21d612673b6a047d2cee4a525265"
+      },
+      "before": {
+        "bytes": 970,
+        "sha256": "78883fba48545bc2d7355e53d67f150308ae21d612673b6a047d2cee4a525265"
+      },
+      "bytes_identical": true,
+      "path": "test_calibration_state_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 18558,
+        "sha256": "1308df1fc9acae306075dde2ee596fa849d3ec92e78bd5cf6dc1beba29fd41aa"
+      },
+      "before": {
+        "bytes": 18558,
+        "sha256": "1308df1fc9acae306075dde2ee596fa849d3ec92e78bd5cf6dc1beba29fd41aa"
+      },
+      "bytes_identical": true,
+      "path": "test_colocated_live_admission_v12.py"
+    },
+    {
+      "after": {
+        "bytes": 11892,
+        "sha256": "1469e5102133e4a2d9bb8d53f373f9228a7bd80ac220ab016b1017470fe8fe94"
+      },
+      "before": {
+        "bytes": 11892,
+        "sha256": "1469e5102133e4a2d9bb8d53f373f9228a7bd80ac220ab016b1017470fe8fe94"
+      },
+      "bytes_identical": true,
+      "path": "test_generation_refusal_v3.py"
+    },
+    {
+      "after": {
+        "bytes": 4943,
+        "sha256": "be1c549b23ab34a56c51eea7ac86fdf45c5c7758840e994be750ca4d365615b1"
+      },
+      "before": {
+        "bytes": 4943,
+        "sha256": "be1c549b23ab34a56c51eea7ac86fdf45c5c7758840e994be750ca4d365615b1"
+      },
+      "bytes_identical": true,
+      "path": "test_guard_uuid_input_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 5534,
+        "sha256": "3f1b95b89382b0c9eaea44b5f74dc7301d1e19d8eb6624809da673b102243c27"
+      },
+      "before": {
+        "bytes": 5534,
+        "sha256": "3f1b95b89382b0c9eaea44b5f74dc7301d1e19d8eb6624809da673b102243c27"
+      },
+      "bytes_identical": true,
+      "path": "test_human_token_kl_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 49291,
+        "sha256": "4b09357e5221a9928854e5a73e7b3f6bcef695acfb968d05d70eca70073b40bd"
+      },
+      "before": {
+        "bytes": 49291,
+        "sha256": "4b09357e5221a9928854e5a73e7b3f6bcef695acfb968d05d70eca70073b40bd"
+      },
+      "bytes_identical": true,
+      "path": "test_live_continuation_v10.py"
+    },
+    {
+      "after": {
+        "bytes": 3284,
+        "sha256": "e02c102536957125e2b7f2eaea8f2d6264cce811aa0d85fe81f2329b6f804194"
+      },
+      "before": {
+        "bytes": 3284,
+        "sha256": "e02c102536957125e2b7f2eaea8f2d6264cce811aa0d85fe81f2329b6f804194"
+      },
+      "bytes_identical": true,
+      "path": "test_matched_refusal_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 5773,
+        "sha256": "c118ec8e2d77f732beeb3ff9af332a63f884f6eb09c5ccdaf64b266d000876e7"
+      },
+      "before": {
+        "bytes": 5773,
+        "sha256": "c118ec8e2d77f732beeb3ff9af332a63f884f6eb09c5ccdaf64b266d000876e7"
+      },
+      "bytes_identical": true,
+      "path": "test_observer_failures_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 1095,
+        "sha256": "b25ea87d19bd0027f15029a781cde030bd7dd393cb8fdc57457de02022b1926b"
+      },
+      "before": {
+        "bytes": 1095,
+        "sha256": "b25ea87d19bd0027f15029a781cde030bd7dd393cb8fdc57457de02022b1926b"
+      },
+      "bytes_identical": true,
+      "path": "test_raw_adapter_v1.py"
+    },
+    {
+      "after": {
+        "bytes": 2204,
+        "sha256": "d9c9d6f38e4da29e388c5f18186c393f434f0994b801127fcf38c5e92ea6abbc"
+      },
+      "before": {
+        "bytes": 2204,
+        "sha256": "d9c9d6f38e4da29e388c5f18186c393f434f0994b801127fcf38c5e92ea6abbc"
+      },
+      "bytes_identical": true,
+      "path": "test_refused_numeric_micro_v5.py"
+    },
+    {
+      "after": {
+        "bytes": 10120,
+        "sha256": "227e4aa27a6b536f5d34c00ad500373ec4b43e864f4856ec0efcb7326df8d9dc"
+      },
+      "before": {
+        "bytes": 10120,
+        "sha256": "227e4aa27a6b536f5d34c00ad500373ec4b43e864f4856ec0efcb7326df8d9dc"
+      },
+      "bytes_identical": true,
+      "path": "test_selected_probability_chain_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 9663,
+        "sha256": "8467298e4fca7accfb2e8d9c061a843db232e4da6c7d3f89a692b174d9b7ed0f"
+      },
+      "before": {
+        "bytes": 9663,
+        "sha256": "8467298e4fca7accfb2e8d9c061a843db232e4da6c7d3f89a692b174d9b7ed0f"
+      },
+      "bytes_identical": true,
+      "path": "test_slurm_allocation_v2.py"
+    },
+    {
+      "after": {
+        "bytes": 17880,
+        "sha256": "0eafb1cd1201669fa34df885ab3c22d54611965df65ede6b437f8118c1ae88e2"
+      },
+      "before": {
+        "bytes": 17880,
+        "sha256": "0eafb1cd1201669fa34df885ab3c22d54611965df65ede6b437f8118c1ae88e2"
+      },
+      "bytes_identical": true,
+      "path": "test_typed_refusal_producer_v11.py"
+    },
+    {
+      "after": {
+        "bytes": 17546,
+        "sha256": "2d1c758c49dea1f61e503e8a4d3108a55c6de63c352b3f3de1066e00ee449531"
+      },
+      "before": {
+        "bytes": 17546,
+        "sha256": "2d1c758c49dea1f61e503e8a4d3108a55c6de63c352b3f3de1066e00ee449531"
+      },
+      "bytes_identical": true,
+      "path": "test_worker_rpc_boundary_v4.py"
+    },
+    {
+      "after": {
+        "bytes": 9368,
+        "sha256": "637232579012a4cf6c2116801151c1499a0564d60d49dd9e1ee8cd7c083c335d"
+      },
+      "before": {
+        "bytes": 9368,
+        "sha256": "637232579012a4cf6c2116801151c1499a0564d60d49dd9e1ee8cd7c083c335d"
+      },
+      "bytes_identical": true,
+      "path": "worker_rpc_boundary_v4.py"
+    }
+  ],
+  "job_submitted": false,
+  "original_file_count": 44,
+  "original_runtime": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v14-evidenceclone1",
+  "original_tree_manifest_sha256": "7d6f4dce3bbfe45f287831103d555fb4063155e11c0e732a10761bc7e37876f6",
+  "pushed": false,
+  "removed_files": [],
+  "schema": "BF16_ACCUMULATION_REPAIR_STATIC_FILE_MANIFEST_V1",
+  "source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "status": "CANDIDATE_ONLY_NOT_EXECUTED_NOT_APPROVED_NOT_PUBLISHED",
+  "tests_executed": false,
+  "unchanged_files": [
+    "attempt_accounting_v5.py",
+    "calibration_audit_v1.py",
+    "calibration_boundary_v2.py",
+    "calibration_contract_v1.py",
+    "calibration_failure_v2.py",
+    "calibration_failure_v5.py",
+    "calibration_v1.sbatch",
+    "continuation_timing_v10.py",
+    "decisive_normalizer_v1.py",
+    "generation_rpc_boundary_v3.py",
+    "guard_uuid_input_v5.py",
+    "live_continuation_v10.py",
+    "metadata_colocation_v1.py",
+    "observer_safety_v2.py",
+    "owned_runtime_resume_v1.py",
+    "raw_alignment_v1.py",
+    "raw_hf_observation_v1.py",
+    "raw_runner_observation_v1.py",
+    "ray_audit_resume_v1.py",
+    "safety_audit_v1.py",
+    "slurm_allocation_v2.py",
+    "test_attempt_accounting_v5.py",
+    "test_calibration_audit_v1.py",
+    "test_calibration_contract_v1.py",
+    "test_calibration_failure_v2.py",
+    "test_calibration_state_v1.py",
+    "test_colocated_live_admission_v12.py",
+    "test_generation_refusal_v3.py",
+    "test_guard_uuid_input_v5.py",
+    "test_human_token_kl_v5.py",
+    "test_live_continuation_v10.py",
+    "test_matched_refusal_v2.py",
+    "test_observer_failures_v2.py",
+    "test_raw_adapter_v1.py",
+    "test_refused_numeric_micro_v5.py",
+    "test_selected_probability_chain_v2.py",
+    "test_slurm_allocation_v2.py",
+    "test_typed_refusal_producer_v11.py",
+    "test_worker_rpc_boundary_v4.py",
+    "worker_rpc_boundary_v4.py"
+  ]
+}

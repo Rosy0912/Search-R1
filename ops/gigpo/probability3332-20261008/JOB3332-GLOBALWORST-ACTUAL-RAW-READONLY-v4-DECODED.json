@@ -1,0 +1,320 @@
+{
+  "schema": "JOB3332_ACTUAL_GLOBALWORST_READONLY_DIAGNOSTIC_V4",
+  "status": "ACTUAL_SAVED_EVIDENCE_OBSERVATION_ONLY_NOT_ACCEPTANCE",
+  "job_id": "3332",
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081",
+  "source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "native_binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+  "rank": 2,
+  "serial": 1,
+  "phase": "train",
+  "pid": 1805679,
+  "binding": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-evidence-repair3325-once-v1/BINDING.json",
+    "bytes": 20571536,
+    "sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec"
+  },
+  "raw": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.pt",
+    "bytes": 129709754,
+    "sha256": "6f2098179df870fda32fba5efae455941a90dff6b92df1ca1e23d659f5dafb95"
+  },
+  "actual_target_receipt": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.json",
+    "bytes": 2310,
+    "sha256": "ab43ce18671947adcd66a426272ab2466c3544febe0d87c860705f95668bff86"
+  },
+  "actual_material_manifest": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probability-material-manifest.json",
+    "bytes": 50432,
+    "sha256": "7e43b667dcf0c8a4361f82b250ab3e8eaf534a20275e31eca689051c303359ab"
+  },
+  "actual_decisive_normalizer_metadata": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-decisive-normalizer-evidence.json",
+    "bytes": 34051,
+    "sha256": "06e85f9b95e9da6e3cd11f5318b80139a53843d052f2451740a8288545716b60"
+  },
+  "actual_second_turn_dp_receipts": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-0.json",
+      "bytes": 2310,
+      "sha256": "2d80731c7ae50d80b57f7ac7e95b62fb984646d716d661e502ce3e91b21dff0e"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-1.json",
+      "bytes": 2309,
+      "sha256": "c4bc63618dce73b427b5ec81351da04859439dfc05c15c689502b7c8c152ed1a"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.json",
+      "bytes": 2310,
+      "sha256": "ab43ce18671947adcd66a426272ab2466c3544febe0d87c860705f95668bff86"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-3.json",
+      "bytes": 2310,
+      "sha256": "6a0833c33c8884553d98acf4149747267664c1b2ac7fde52454380a3cff75980"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-4.json",
+      "bytes": 2310,
+      "sha256": "e975a5400711548f88aaac081e2d8e8cc55767cb18b4f8f9db11341f0d4cbb09"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-5.json",
+      "bytes": 2310,
+      "sha256": "12031430f4bedb30d15f3cad6f1e6a0a17048bb841b286d16f6c4da431d2998d"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-6.json",
+      "bytes": 2309,
+      "sha256": "dd8eb2382f86327aabfac997ed2775913c6d1aa8c3e14791d1f2f5aabe46a672"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-7.json",
+      "bytes": 2310,
+      "sha256": "a3f035f68fa3f84a4aa8bd9416f9c5a5e364e885b807eed121b2da41c373830c"
+    }
+  ],
+  "actual_second_turn_source_dp_closure": {
+    "turn_serial": 1,
+    "sources": 2455,
+    "unique_sources": 2455,
+    "initial_source_count": 2560,
+    "actual_eight_rank_chunk": 307,
+    "padded_rows": 1,
+    "target_rank_partition_begin": 614,
+    "target_rank_partition_end_exclusive": 921,
+    "original_source_index": 631,
+    "target_rank": 2,
+    "target_local": 17,
+    "first_turn_source_arithmetic_used": false,
+    "actual_source_list_used": true
+  },
+  "actual_before_first_adam_snapshot": {
+    "status": "POST_SAMPLING_BEFORE_FIRST_ADAM",
+    "actual_adam_writes": 0,
+    "scheduler": 0,
+    "data_cursor": 512,
+    "live_process_requeried": false,
+    "training_failure_or_job_cancellation_inferred": false
+  },
+  "training_prefix_snapshot": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/training-prefix-turns.json",
+    "bytes": 237823396,
+    "sha256": "a8936be3c20293ac50a8fdfae8d2ec5aceeeeccf0476da7cc03a3dede4be4a0f"
+  },
+  "frozen_helper_receipts": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v14-evidenceclone1/calibration_state_v1.py",
+      "bytes": 4455,
+      "sha256": "e37bcc7c26613ebffdde532150c1d6c735e31e2f30a9568a9a4daef9b19caf8f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v14-evidenceclone1/raw_hf_observation_v1.py",
+      "bytes": 11911,
+      "sha256": "ac725dd92ad35563b9920f23ee3be8c154ff60f2f25a8e0bbc62bd6d457eb485"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v14-evidenceclone1/raw_runner_observation_v1.py",
+      "bytes": 17239,
+      "sha256": "6a023cec9c451159a298d66e04d31f239debcc94bc4b6b8ce2c4c32bdd0ca2dd"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v14-evidenceclone1/raw_alignment_v1.py",
+      "bytes": 13406,
+      "sha256": "a43943129d95175db198fe43e8c93414dde9f70da4ebb2699fe11029607cea0f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v14-evidenceclone1/decisive_normalizer_v1.py",
+      "bytes": 24996,
+      "sha256": "1359eeab58b288a48d0f0535b104271340cdbd5ac916fad393439f9e32807fa3"
+    }
+  ],
+  "scientific_normalizer_source": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v11-2ddbb0a/verl/utils/torch_functional.py",
+    "bytes": 18647,
+    "sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575"
+  },
+  "raw_complete_probe_state_unchanged": true,
+  "repeated_probe_state_digests": [
+    "9cc2e8d8f44652b4145461fb61b1a4e23ee26302d0f1e5a5a219e1acfe6fecce",
+    "9cc2e8d8f44652b4145461fb61b1a4e23ee26302d0f1e5a5a219e1acfe6fecce"
+  ],
+  "deserialized_bytes_exactly_sha_bound": true,
+  "raw_deserialization": "CPU_ONLY_FROM_SAME_VERIFIED_IMMUTABLE_BYTES",
+  "sampled_support_tokens": 37416,
+  "retained_second_turn_rank2_support_tokens": 23875,
+  "hf_repeat_max_abs_delta": 0.0,
+  "sampled_support_hf_vllm_max_abs_delta": 2.4754629135131836,
+  "retained_support_hf_vllm_max_abs_delta": 2.4754629135131836,
+  "reported_complete_gate_globalworst_verified_at_target_raw": true,
+  "target_raw_retained_maximum": {
+    "local_row": 17,
+    "source": 661,
+    "step_id": 1,
+    "token_index": 1,
+    "original_turn_index": 631,
+    "actual_dp_rank": 2,
+    "actual_dp_local": 17,
+    "source_second_turn_dp_owner_independently_bound": true,
+    "real_sampled_length": 379,
+    "retained_action_length": 378,
+    "token_in_retained_action": true,
+    "token_is_terminal_eos": false,
+    "signed_saved_hf_minus_sampled_logp": -2.4754629135131836,
+    "absolute_saved_hf_sampled_delta": 2.4754629135131836,
+    "repeated_saved_hf_logp": -6.1275787353515625,
+    "repeated_hf_minus_old_logp": 0.0,
+    "actual_hf_engine_generation_prefix_exact": true,
+    "prefix_length": 698,
+    "prefix_sha256": "c7b0873fae1626dc08a6b536ace5f3bf5fd70fb1b8727e3779a111e5e486bc0a",
+    "hf": {
+      "flat_call_serial": 4,
+      "flat_row": 1,
+      "target_id": 26865,
+      "selected_normalizer_flat_index": 1516,
+      "independently_derived_normalizer_flat_index": 1516,
+      "selected_flat_index_and_prediction_target_independently_bound": true,
+      "actual_prediction_position": 698,
+      "preceding_input_token_id": 27,
+      "selected_logit": 29.875,
+      "fp32_lse": 36.00257873535156,
+      "actual_normalizer_logp": -6.1275787353515625,
+      "actual_normalizer_branch": "flash_attn_cross_entropy",
+      "normalizer": {
+        "module": "verl.utils.torch_functional",
+        "name": "logprobs_from_logits",
+        "source_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v11-2ddbb0a/verl/utils/torch_functional.py",
+        "source_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575"
+      },
+      "kernel": {
+        "module": "verl.utils.torch_functional",
+        "name": "logprobs_from_logits_flash_attn",
+        "source_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v11-2ddbb0a/verl/utils/torch_functional.py",
+        "source_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575"
+      },
+      "logits_input_dtype": "torch.bfloat16",
+      "normalizer_output_dtype": "torch.float32",
+      "use_remove_padding": true,
+      "use_cache": false,
+      "bounded_full_vocab_vector_present": false,
+      "full_vocab_vector_emitted": false
+    },
+    "vllm": {
+      "actual_runner_call_serial": 42,
+      "request_id": "498",
+      "seq_id": 498,
+      "prediction_position": 698,
+      "runner_input_index": 17,
+      "selected_logit_row": 17,
+      "target_id": 26865,
+      "selected_logit": 31.375,
+      "fp32_lse": 35.02711486816406,
+      "statistics_selected_flat_index": 17,
+      "statistics_target_id": 26865,
+      "selected_statistics_and_physical_owner_independently_bound": true,
+      "actual_normalizer_logp": -3.652115821838379,
+      "sequence_output_logp": -3.652115821838379,
+      "completion_output_logp": -3.652115821838379,
+      "raw_sampled_logp": -3.652115821838379,
+      "raw_sampled_dtype": "torch.float32",
+      "sampler_input_dtype": "torch.bfloat16",
+      "normalizer_input_dtype": "torch.float32",
+      "normalizer_output_dtype": "torch.float32",
+      "normalizer": "vllm.model_executor.layers.sampler.torch.log_softmax",
+      "normalizer_call_count": 1,
+      "normalizer_arguments": {
+        "dim": -1,
+        "dtype": "torch.float32"
+      },
+      "actual_processor_flags": {
+        "_do_penalties": false,
+        "_do_top_p_top_k": false,
+        "_do_min_p": false
+      },
+      "actual_logits_processor": {
+        "class_path": "vllm.model_executor.layers.logits_processor.LogitsProcessor",
+        "scale": 1.0,
+        "soft_cap": null,
+        "vocab_size": 151936,
+        "output_dtype": "torch.bfloat16",
+        "output_shape": [
+          256,
+          151936
+        ]
+      },
+      "processor_logits_unchanged": true,
+      "pre_processor_selected_rows_sha256": "35602b38f67a3173d267a0c41f8e33ebe33adbd96c49e2134d61ac32ef452a04",
+      "post_processor_selected_rows_sha256": "35602b38f67a3173d267a0c41f8e33ebe33adbd96c49e2134d61ac32ef452a04",
+      "selected_probability_chain_exact": true,
+      "selected_runner_request_sequence_owner_exact": true,
+      "cache_scope": "ACTUAL_FLASH_METADATA_FIELDS_NOT_DIRECT_KERNEL_KV_CONTENTS",
+      "decode_uses_cuda_graph": false,
+      "bounded_full_vocab_vector_present": false,
+      "full_vocab_vector_emitted": false
+    },
+    "decomposition": {
+      "actual_normalizer_hf_minus_vllm": -2.4754629135131836,
+      "selected_logit_delta": -1.5,
+      "fp32_lse_delta": 0.9754638671875,
+      "fp32_formula_delta": -2.4754638671875,
+      "hf_normalizer_minus_fp32_formula": 0.0,
+      "vllm_normalizer_minus_fp32_formula": -9.5367431640625e-07,
+      "normalizer_delta_minus_fp32_formula_delta": 9.5367431640625e-07,
+      "residual_identity_error": 0.0
+    },
+    "saved_normalizer_full_vocab_summary": {
+      "scope": "BOUNDED_ORIGINAL_SAVED_NORMALIZER_VECTORS_H100_CPU_STATISTICS_ONLY",
+      "hf": {
+        "available": false,
+        "shape": null,
+        "count": null,
+        "values_emitted": false
+      },
+      "vllm": {
+        "available": false,
+        "shape": null,
+        "count": null,
+        "values_emitted": false
+      },
+      "vector_values_emitted": false,
+      "paired_vocabulary_delta": {
+        "available": false,
+        "reason": "At least one actual anomalous selected vector was not in the original bounded capture; no vector is reconstructed."
+      }
+    },
+    "retained_action_joint_sums": {
+      "effective_tokens": 378,
+      "hf_perturn_old_sum": -731.8303165435791,
+      "sampled_sum": -728.3447800513147,
+      "signed_hf_old_minus_sampled_sum": -3.485536492264373,
+      "signed_repeated_hf_minus_old_sum": 0.0,
+      "scope": "ACTUAL_SOURCE661_STEP1_RETAINED_PREFIX_SAVED_PERTURN_HF_NOT_COMPLETE_ALL_TURN_HF"
+    }
+  },
+  "probability_accepted": false,
+  "approval_emitted": false,
+  "selected_tolerances": null,
+  "production_thresholds_selected": false,
+  "added_forward_calls": 0,
+  "added_sampling_calls": 0,
+  "rng_draws": 0,
+  "state_restores": 0,
+  "remote_artifact_writes": 0,
+  "full_vocab_vectors_emitted": false,
+  "limitations": [
+    "Only actual serial1 rank2 PT is opened; globalworst identity comes from the hash-bound complete-gate ledger, not an independent scan of all raw PTs.",
+    "Retained action sums use saved perturn HF; this reader does not independently reload complete-action old/current/reference evidence.",
+    "Original training-prefix-turns and all eight second-turn JSON receipts are exact frozen-manifest inputs; no first-turn source arithmetic is used.",
+    "FP32 decomposition residuals identify a source of difference and are not parity acceptance.",
+    "Full-vocabulary statistics are available only if both exact target vectors were present in the original bounded capture; missing vectors are not reconstructed.",
+    "Saved source identity is bound to the actual raw and frozen binding; no new git checkout audit or live process query is performed.",
+    "The actual job snapshot is before first Adam; numerical admission remains BLOCK pending independent justification and no approval is emitted."
+  ],
+  "raw_after_inspection": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.pt",
+    "bytes": 129709754,
+    "sha256": "6f2098179df870fda32fba5efae455941a90dff6b92df1ca1e23d659f5dafb95"
+  }
+}

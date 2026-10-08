@@ -1,0 +1,108 @@
+{
+  "schema": "GLOBALWORST_READONLY_TRANSPORT_NONAUTHOR_REVIEW_V4",
+  "verdict": "PASS",
+  "scope": "NONAUTHOR STATIC TRANSPORT REVIEW ONLY; one fixed saved global-worst CPU diagnostic, not training admission",
+  "wrapper": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/execute_job3332_globalworst_raw_reader_v4_readonly.py",
+    "bytes": 4392,
+    "sha256": "cc06330f323d8799630291a8addf926b15efed06b89cef4c086e426ec54d7a59",
+    "hash_and_bytes_checked": true,
+    "entire_source_read": true
+  },
+  "reader": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/inspect_job3332_actual_globalworst_readonly_v4.py",
+    "bytes": 43522,
+    "sha256": "bb4b730194c97cd8fc08813ab6441fa28489c9675469ba6272d888ddb12cf88f",
+    "static_pass": true
+  },
+  "findings": [],
+  "checks": [
+    {
+      "lines": [
+        12,
+        13,
+        14,
+        15,
+        19,
+        20,
+        22
+      ],
+      "result": "PASS",
+      "fact": "Only v4 source/SHA/bytes/label and local record names change from reviewed v3 transport. Local immutable source length/SHA checked before dispatch; exactly those bytes become in-memory base64 receiver source."
+    },
+    {
+      "lines": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        38,
+        50
+      ],
+      "result": "PASS",
+      "fact": "repr plus shlex.join/quote protect both SSH shell boundaries. Fixed existing Python receives -B -c, CUDA_VISIBLE_DEVICES='', PYTHONDONTWRITEBYTECODE=1 and CPU thread bounds. Reader runs in main with one argv entry; no remote source upload/write."
+    },
+    {
+      "lines": [
+        29,
+        30,
+        31,
+        33,
+        35,
+        46,
+        47,
+        49,
+        50
+      ],
+      "result": "PASS",
+      "fact": "Fixed retained18 public route selects h100-8 via recorded identity/gateway SSH-W. Node/gateway/outer SSH keep BatchMode, IdentitiesOnly, StrictHostKeyChecking=yes, UpdateHostKeys=no and bounded connection settings; host-key command is quoted. Strict known-host checks remain if route keys are absent."
+    },
+    {
+      "lines": [
+        39,
+        40,
+        41,
+        45,
+        50,
+        55,
+        57
+      ],
+      "result": "PASS",
+      "fact": "Existing receipt refuses replay; exclusive fixed local intent precedes SSH and persists on failures. Exclusive local output retains SHA/outer stdout/stderr/status. No retry/deletion, remote write, approval, forward, sample, GPU command, job start/cancel or training action."
+    },
+    {
+      "lines": [
+        36,
+        37,
+        50,
+        51,
+        54,
+        58,
+        60,
+        61,
+        62,
+        63,
+        64
+      ],
+      "result": "PASS",
+      "fact": "Management retains reader stdout/stderr/status as JSON; outer result saved before parse. Outer and inner nonzero exits propagate without retry. Timeouts affect new transport subprocesses, not a training job cancellation."
+    }
+  ],
+  "limitations": [
+    "No wrapper, reader, subprocess, SSH, tests/controls, GPU or job/training action executed; source unchanged. Only this requested local report was written.",
+    "Current management route JSON, remote SSH config/keys/identity/interpreter are unobserved trusted environment boundaries; local mgmt-host relevant alias/options were statically read in the earlier review.",
+    "Receiver assertion can be disabled by inherited Python optimization. Unconditional local source check, immutable payload, quoting and authenticated SSH still fix the transmitted source; no optimization-independent remote assertion is claimed.",
+    "32768-byte bound belongs to the reader line; transport envelopes/stderr have no equivalent cap.",
+    "Timeout may leave intent without receipt; persistent intent prevents automatic replay. Changed source/target/transport needs separate review.",
+    "PASS is not probability acceptance, tolerance selection, approval artifact or training admission."
+  ],
+  "result": {
+    "static_transport_pass": true,
+    "blocking_findings": 0,
+    "probability_accepted": false,
+    "approval_emitted": false,
+    "selected_tolerances": null,
+    "execution_performed": false
+  }
+}

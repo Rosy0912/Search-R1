@@ -1,0 +1,203 @@
+{
+  "schema": "JOB3332_GLOBALWORST_READONLY_DIAGNOSTIC_NONAUTHOR_REVIEW_V4",
+  "verdict": "PASS",
+  "scope": "NONAUTHOR CLEAN-CONTEXT STATIC REVIEW ONLY; not probability acceptance or training admission",
+  "script": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/inspect_job3332_actual_globalworst_readonly_v4.py",
+    "bytes": 43522,
+    "sha256": "bb4b730194c97cd8fc08813ab6441fa28489c9675469ba6272d888ddb12cf88f",
+    "hash_and_bytes_checked": true,
+    "entire_source_read": true
+  },
+  "fixed_target": {
+    "job": "3332",
+    "phase": "train",
+    "serial": 1,
+    "rank": 2,
+    "source": 661,
+    "step_id": 1,
+    "local": 17,
+    "token": 1,
+    "target_id": 26865,
+    "request": "498",
+    "seq_id": 498,
+    "physical_runner_index": 17,
+    "selected_logit_row": 17,
+    "pid": 1805679,
+    "start_ticks": "2237476976",
+    "raw_bytes": 129709754,
+    "raw_sha256": "6f2098179df870fda32fba5efae455941a90dff6b92df1ca1e23d659f5dafb95"
+  },
+  "findings": [],
+  "checks": [
+    {
+      "lines": [
+        68,
+        105,
+        114,
+        115,
+        385,
+        437,
+        438
+      ],
+      "result": "PASS",
+      "fact": "Exact expected raw bytes/SHA and manifest entry; bounded hash stream; verified immutable bytes supplied through BytesIO to CPU torch.load, with no pathname reopened for unpickling."
+    },
+    {
+      "lines": [
+        183,
+        188,
+        193,
+        195,
+        365,
+        375,
+        379,
+        393,
+        404,
+        409,
+        418,
+        440,
+        447,
+        451,
+        454
+      ],
+      "result": "PASS",
+      "fact": "Exact binding/source/HF-normalizer/five-helper identity and null tolerances; helper bytes verified before compile. Eight archived worker/receipt identities and fixed PID/start ticks match; complete typed saved repeated state digests match."
+    },
+    {
+      "lines": [
+        383,
+        387,
+        399,
+        402,
+        415,
+        416,
+        462,
+        467,
+        470,
+        472,
+        474,
+        479,
+        480,
+        484
+      ],
+      "result": "PASS",
+      "fact": "SHA-bound original turns and all eight serial1 JSON receipts close unique step1 sources against initial2560. Equal DP chunks and fewer than8 padded rows; the actual second-turn source661 list index derives rank2/local17. No first-turn source arithmetic."
+    },
+    {
+      "lines": [
+        460,
+        498,
+        501,
+        502,
+        504,
+        510,
+        512,
+        514,
+        517,
+        525,
+        526,
+        531,
+        532
+      ],
+      "result": "PASS",
+      "fact": "All rank2 partition rows match retained sampled prefixes/lengths, raw actor records, HF/engine/source prefixes and natural positions. Retained support is within real sample support, EOS excluded, and local17/token1/target26865 must be its retained maximum."
+    },
+    {
+      "lines": [
+        228,
+        239,
+        241,
+        246,
+        248,
+        249,
+        255,
+        259,
+        263,
+        304,
+        305,
+        307,
+        308,
+        311,
+        315,
+        317,
+        319,
+        536,
+        543,
+        545
+      ],
+      "result": "PASS",
+      "fact": "HF normalizer packed/dense index is independently derived with actual preceding/target tokens and prediction position. vLLM statistics index/target and physical request/seq/input/prediction owner match; exact actual-normalizer->SequenceOutput->CompletionOutput->raw dtype chain remains checked."
+    },
+    {
+      "lines": [
+        420,
+        422,
+        425,
+        552,
+        559,
+        613,
+        618
+      ],
+      "result": "PASS",
+      "fact": "Hash-bound complete-gate ledger reports this fixed worst coordinate. Raw retained maximum, delta and selected-logit/LSE/logp must equal that ledger exactly. Global identity comes from the ledger plus target verification; no independent all-PT scan is claimed."
+    },
+    {
+      "lines": [
+        123,
+        128,
+        132,
+        135,
+        139,
+        140,
+        145,
+        155,
+        160,
+        164,
+        168,
+        169,
+        179,
+        579
+      ],
+      "result": "PASS",
+      "fact": "Absent vectors remain absent; duplicates/malformed records refuse. Stored matching vectors must be real finite1D CPU FP32 vocab tensors with exact selected scalar. Only CPU scalar distributions and optional paired deltas are emitted; no reconstruction, vector output, model, normalization or RNG call."
+    },
+    {
+      "lines": [
+        572,
+        580,
+        583,
+        584,
+        585,
+        615,
+        617,
+        625,
+        632,
+        633,
+        641,
+        642,
+        643
+      ],
+      "result": "PASS",
+      "fact": "Signed retained-action SUMs and FP32 residuals are observation only. No tolerance, approval, GPU, forward, sampling, RNG restore/draw, signal, training RPC or file write. Final newline is inside32768-byte success/refusal cap; raw is rehashed afterward."
+    }
+  ],
+  "limitations": [
+    "Static source only: no reader, wrapper, Python model code, tests/controls, SSH, GPU, remote PT or live-process inspection was executed.",
+    "Remote artifacts were not newly observed. Archived before-first-Adam/PID/start metadata establishes saved evidence identity, not current live training neutrality or failure/cancellation.",
+    "General pickle is trusted only for the exact fixed SHA from the frozen worker; installed interpreter/torch/NumPy/startup are trusted environment dependencies. CPU mapping alone is not a pickle sandbox.",
+    "Only serial1/rank2 PT is loaded. Complete-gate global worst is ledger-bound; complete-action old/current/reference files and all other PTs are not independently reloaded.",
+    "Exact complete-action ledger/perturn scalar mismatches refuse; no tolerance is substituted. Stored target vectors are not presumed present.",
+    "Only paired vocabulary deltas require both vectors; individual HF/vLLM scalar summaries can be available separately despite the broad both-vector wording in line622.",
+    "The five unchanged exact-hash helpers and relevant producer/HF-normalizer were fully read in the preceding clean-context review; their functions were not run.",
+    "No probability acceptance, numerical tolerance, approval artifact, gate bypass or training admission is provided."
+  ],
+  "result": {
+    "static_reader_pass": true,
+    "blocking_findings": 0,
+    "probability_accepted": false,
+    "approval_emitted": false,
+    "selected_tolerances": null,
+    "execution_performed": false
+  }
+}
