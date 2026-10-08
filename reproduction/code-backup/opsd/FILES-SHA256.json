@@ -15330,5 +15330,8 @@
       "role": "loose_implementation_or_runtime_configuration"
     }
   ],
-  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization."
+  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization.",
+  "session_id": "01a0fcbd-c50e-7cf1-8073-256a13ac9f7e",
+  "final_source_sweep_utc": "2026-10-08T02:42:24.157382+00:00",
+  "original_head_at_final_sweep": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6"
 }
