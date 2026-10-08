@@ -1,12 +1,16 @@
 {
   "files": {
     "README.md": {
-      "bytes": 5211,
-      "sha256": "72bba029527bdb846fdc92aa6abf69a1f3827da8f724a4d22ea6e5fa6739cd78"
+      "bytes": 7065,
+      "sha256": "155b43898b05ad8bece9392e1434e8d2685868ada7ab2418e5973faee0494f2a"
     },
     "archive_readonly_snapshot.py": {
       "bytes": 8787,
       "sha256": "ac8fbee9e95d526667ee2c385d9e310c57aad4497379571a95818cca63666c75"
+    },
+    "online_readonly_snapshot.py": {
+      "bytes": 24226,
+      "sha256": "026f1938cddcacc8a5e9dc716abb0946549ee1d90fc1e352593472bdfd9813bc"
     },
     "read_checkpoint_cpu.py": {
       "bytes": 32648,
@@ -15,6 +19,10 @@
     "read_cp31_cpu.py": {
       "bytes": 14350,
       "sha256": "bd144d2a248fa3207749b37f6a182db519f3d55929960ec237fc548a3806d940"
+    },
+    "test_online_readonly_snapshot.py": {
+      "bytes": 11098,
+      "sha256": "5efff4e5f7c39ceae64fcdc3df0c5e84ec6f29cc73e264de64c10d1195811d28"
     },
     "test_read_checkpoint_cpu.py": {
       "bytes": 18053,
