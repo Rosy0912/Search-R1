@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "g1_a800_single_preclaim_recovery",
+  "created_at_utc": "2026-10-08T03:31:28.498445+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "deployment_id": "648f720041544dcb8e276676b105009b",
+  "run_id": "8b956bc72d5d4a5f8da11d870e4354bc",
+  "execution_id": "afc87f0979c14bc4bcf8fc1938dcaed9",
+  "source_publication": {
+    "repository": "shaoshitong/Search-R1",
+    "branch": "search-g1",
+    "publication_observed_unix": 1791430104.244261,
+    "published_commit": "e28634ca86f8494a037db0e3df4983ebcfc9cff8",
+    "remote_branch_commit": "e28634ca86f8494a037db0e3df4983ebcfc9cff8",
+    "remote_blob_readback_matches": true,
+    "launcher_source_path": "reproduction/a800_common/deploy.py",
+    "launcher_source_commit": "e28634ca86f8494a037db0e3df4983ebcfc9cff8",
+    "launcher_source_sha256": "c1512efd74268662f94b4a446df0cd6c3cdcaabd83d2ef2f65df698d35f3cd52",
+    "embedded_launcher_sha256": "143565b2e32c78035e57e78ccc32bd98f3ff6c447e94094e9e3acc649e7e4bf1",
+    "runtime_source_commit": "bd75dc76b17dcceefe488d00bc32811563d6d26f",
+    "runtime_source_unchanged_for_retry": true,
+    "source_transport": "published_git_bundle_relay",
+    "basis": "Saved publication, retry and observe receipts; no new remote access."
+  },
+  "original_pipeline": {
+    "pid": 953189,
+    "start_ticks": 550913108,
+    "same_birth_alive_at_retry": false,
+    "process_state_at_retry": null,
+    "outcome": "Exited on actual transient assigned GPU occupancy before any pipeline claim or training.",
+    "failure_reason_recorded_in_retry": "actual native GPU occupancy failure before any pipeline claim or training",
+    "pipeline_claimed_before_exit": false,
+    "completed_outer_updates": 0,
+    "adam_updates": 0,
+    "zero_update_basis": "Recorded preclaim failure plus the unchanged prepared run manifest completed_updates=0 and matching update ledger rows=0.",
+    "original_stdout_log_basename": "deployment-pipeline.log",
+    "original_stdout_log_sha256": "ddc9f5b0ce51a22b63ea4209946069100b70aa132473cae96f54ca4e43c5a464",
+    "original_launch_receipt_basename": "deployment-launch-receipt.json",
+    "original_launch_receipt_sha256": "8a82b03d4d6345158c970c5b7e76fa843f80d30c0363dd7933c597ed6c3c793d"
+  },
+  "assigned_gpu_readiness_before_retry": {
+    "observed_unix": 1791430098.961486,
+    "readiness_returncode": 0,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "training_world_size": 4,
+    "assigned_devices_idle": true,
+    "assigned_devices": [
+      {
+        "physical_index": 0,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 1,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 2,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 3,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 5,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 6,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0
+      }
+    ],
+    "scope": "Only the assigned physical devices at the recorded readiness observation."
+  },
+  "single_explicit_preclaim_retry": {
+    "preclaim_retry": true,
+    "no_automatic_retry": true,
+    "same_prepared_run": true,
+    "claimed_unix": 1791430114.1969879,
+    "launched_unix": 1791430114.2019298,
+    "pid": 968577,
+    "start_ticks": 550970551,
+    "same_process_after_five_seconds": true,
+    "launch_stage": "UNCLAIMED_PIPELINE_RETRY_LAUNCHED"
+  },
+  "recorded_observation": {
+    "observed_unix": 1791430127.1052768,
+    "pid": 968577,
+    "start_ticks": 550970551,
+    "pipeline_alive": true,
+    "pipeline_birth_matches": true,
+    "pipeline_process_state": "S",
+    "pipeline_claimed": true,
+    "preclaim_retry_claimed": true,
+    "using_preclaim_retry_receipt": true,
+    "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "trainer_claimed": false,
+    "completed_updates": 0,
+    "completed_outer_updates": 0,
+    "adam_updates": 0,
+    "last_recorded_outer": null,
+    "recorded_completed_outers": null,
+    "actual_updates_ledger_exists": false,
+    "matching_actual_update_rows": 0,
+    "gpu_observed_unix": 1791430126.360319,
+    "gpu_history_pretraining_only": true,
+    "assigned_devices": [
+      {
+        "assignment": "training",
+        "physical_index": 0,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "assignment": "training",
+        "physical_index": 1,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "assignment": "training",
+        "physical_index": 2,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "assignment": "training",
+        "physical_index": 3,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 5,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 6,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      }
+    ],
+    "run_manifest_run_binding_matches": true,
+    "run_manifest_execution_binding_matches": true,
+    "run_manifest_source_binding_matches": true
+  },
+  "production_admission": {
+    "calibration_reuse_status": "Pending normal production admission.",
+    "calibration_reuse_admitted_by_this_receipt": false
+  },
+  "goal_status": {
+    "target": 200,
+    "completed": false,
+    "recorded_completed_updates": 0,
+    "launch_counts_as_training_update": false
+  },
+  "sources": {
+    "publication": {
+      "receipt_basename": "a800-preclaim-retry-publication.json",
+      "receipt_sha256": "dfc4b420a1dd1927ace7de35304e122eaf9d3dcbe865f175e75b37c38d269b2a"
+    },
+    "assigned_gpu_readiness": {
+      "receipt_basename": "a800-assigned-gpu-readiness-1791430098961406000.json",
+      "receipt_sha256": "c0e2820662140b732b9ddcd0dc7258ea1186063a8dd20e605bd792d2bc5ac22a"
+    },
+    "retry": {
+      "receipt_basename": "a800-common-deployment-648f720041544dcb8e276676b105009b.retry-unclaimed-1791430114107938000.json",
+      "receipt_sha256": "aa79a7dd3d09a6cc82e00c7934c69910bc5f1fb8fce0708e07aca7e878b78f09"
+    },
+    "observe": {
+      "receipt_basename": "a800-common-deployment-648f720041544dcb8e276676b105009b.observe-1791430127020966000.json",
+      "receipt_sha256": "24f5fa38e9addb2613c1c8fcc573383c5b98e7f1b46e372738331b40d39ee02b"
+    }
+  },
+  "scope": "Sanitized scalar observations, source identities and hashes from the four saved local receipts. Startup and pretraining liveness do not establish completed training updates."
+}
