@@ -1,0 +1,39 @@
+{
+  "schema": "C0-debug-coverage-captured-source-v1",
+  "capture_scope": "Exact ad-hoc executed-source captured after actual execution, not a prior publication claim",
+  "reexecution_authorized": false,
+  "files": {
+    "00a_inventory_probe.py": {
+      "sha256": "4e14cb8f3688a911b55f8974f78db153b0c8a11775cc3f65ce8944ff60f60014",
+      "bytes": 671
+    },
+    "00b_schema_probe.py": {
+      "sha256": "42272a608b1809f8467f1007abb1b007d3bdf6ea18db35819e0a49ef6b4c9a6b",
+      "bytes": 795
+    },
+    "00c_case_trace_probe.py": {
+      "sha256": "40be6b15b1f96e0f659f3a3ecf0f55f30b739d7279dc3f8578cb4edb760ce419",
+      "bytes": 644
+    },
+    "01_actual_coverage_scan.py": {
+      "sha256": "880836e7efcb12506b53d0fdfc6b1514b699da2a53298c23007bed8d8ad33edd",
+      "bytes": 12667
+    },
+    "02_header_probe_failed.py": {
+      "sha256": "9d8bcd8cf8278a53a6e03514e883d7ea04b915be1f309f653e7f636374a429b5",
+      "bytes": 453
+    },
+    "03_preselection_terminal_probe_failed.py": {
+      "sha256": "b8c7f56c28c98912a935750db8e39336f5730f2fd6d61ce08c8466c1c553bf42",
+      "bytes": 3186
+    },
+    "04_final_preselection_and_scope.py": {
+      "sha256": "cb8663a2707e3a9531b2fb6beb89189e7fd928a77b283ab041e3fbf2799a54f0",
+      "bytes": 3392
+    },
+    "README.md": {
+      "sha256": "34daaa85abf63d945adbbb8dbe7dc7845407dea4ed378eca87d9b35fa48bdf1c",
+      "bytes": 360
+    }
+  }
+}

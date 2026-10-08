@@ -1,0 +1,24 @@
+{
+  "schema": "C0-protected-state-backup-fixed-operational-entry-v1",
+  "scope": "C0 only initial/update1/update5, distinct from outer-end queue",
+  "science_or_gpu_change": false,
+  "backup_is_training_dependency": false,
+  "files": {
+    "README.md": {
+      "bytes": 1102,
+      "sha256": "0e0725515a6d9cd19c4fd94596f7624c08ba7456c96b84e7e678704770ef0e0d"
+    },
+    "source-inventory.stdin.py": {
+      "bytes": 2834,
+      "sha256": "b416dc463ffaf447e469bf7d0015cdb0f37cfc941bf01fe4f5e17cdcbecd57da"
+    },
+    "source-metadata.stdin.py": {
+      "bytes": 1805,
+      "sha256": "530eaab10eaa2c39c7f73598c4c1628172f319866830b04221d9faf1dd1a3b76"
+    },
+    "verify-local.py": {
+      "bytes": 2486,
+      "sha256": "934369ea14e2fa35d9605e10603d5bd21687ceb5e35dcf15396fe50351f28e30"
+    }
+  }
+}

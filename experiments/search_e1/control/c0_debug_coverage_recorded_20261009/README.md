@@ -1,0 +1,1 @@
+Exact earlier Python stdin sources, saved after execution for publication/reproducibility. Do not rerun against current output directory: 01 refuses existing output; 04 modifies derived notes. Sources contain paths/field names only; reports and private execution proof must not Git. Failed02/03 preserve historical errors, not intended production entrypoints.

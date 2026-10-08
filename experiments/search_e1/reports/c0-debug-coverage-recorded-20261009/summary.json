@@ -1,0 +1,36 @@
+{
+  "schema": "C0-closed-debug-coverage-compact-v1",
+  "accepted": true,
+  "variant": "C0",
+  "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+  "outer_count": 10,
+  "teacher_autoregressive_cases": 80,
+  "teacher_per_outer": 8,
+  "teacher_scope": "Own autoregressive privileged-reference diagnostic; not originalD teacher-forced training q",
+  "valid_policy_tokens": 583074,
+  "top32_positions": 81920,
+  "top32_four_distributions": true,
+  "scalar_only_positions": 501154,
+  "top32_cap": 8192,
+  "top32_cap_skip_field_present": false,
+  "full_vocabulary_requested_tokens": 2,
+  "full_vocabulary_saved_tokens": 2,
+  "full_vocabulary_cap_skip_tokens": 0,
+  "npy_files": 8,
+  "npy_bytes": 4862976,
+  "npy_shape": [
+    151936
+  ],
+  "npy_dtype": "<f4",
+  "npy_payload_arithmetic_recomputed": false,
+  "npy_header_metadata_inspected": true,
+  "studywide_24GiB_cap": "PENDING other six groups and shared ledger",
+  "small_completion_ticket_SHA_fresh": true,
+  "case_HTTP_and_token_SHA_scope": "Prior accepted inventories and scalar audit plus current metadata continuity; no repeated large hashes",
+  "private_report_sha256": "425a4ff92db783bcffba5908840271107bd13f79efc356ed5dfbcc67715394c1",
+  "limitations": [
+    "C0 only; no new model or QA inference",
+    "Top32 shapes inspected; no new finite/normalization checks",
+    "Embedded teacher actual waits/release inspected; external phase-exit tickets not in these two raw inventories"
+  ]
+}
