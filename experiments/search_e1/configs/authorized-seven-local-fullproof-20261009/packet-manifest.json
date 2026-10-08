@@ -1,0 +1,64 @@
+{
+  "accepted_external_config_recovery": true,
+  "files": [
+    {
+      "relative_path": "eval-group-C0/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C0/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "c571c03c6125b7e9a64e12d3eec2c8a8cf85db21eba1562ff1c79f5eb6a64432",
+      "bytes": 5870
+    },
+    {
+      "relative_path": "eval-group-C1/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C1/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "2a17ae3b3baf53f54d9fc00c583c490a388ff2dce7aa85113ec744498bd7863e",
+      "bytes": 5870
+    },
+    {
+      "relative_path": "eval-group-M/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "dd64bb843ff59bc53087fb7452ed26b418e3b9992c59ddca0476f2c96d0aac20",
+      "bytes": 5860
+    },
+    {
+      "relative_path": "eval-group-R/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-R/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "06aa499d03e512d937d191ed8e8b1d981b55b7a8ba1edb105f5a42a60917433c",
+      "bytes": 5860
+    },
+    {
+      "relative_path": "eval-group-W/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-W/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "ab0518a5c5d3e435bd912c8a295cc91e001edb9f392a1a093f8d9bbbff0b1b3a",
+      "bytes": 5860
+    },
+    {
+      "relative_path": "eval-group-P/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-P/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "c20461dbb0b9be85db4b69d27557c25e03a703c147a20d0e1c4667df837340cb",
+      "bytes": 5939
+    },
+    {
+      "relative_path": "eval-group-J/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-J/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "86a808600dc17cbabe29d88a9d0751dcf970359f3faee4f357d167ede812db9f",
+      "bytes": 5939
+    },
+    {
+      "relative_path": "eval-common-zero/receipts/authorized-launch2-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-common-zero/receipts/authorized-launch2-20261009/template.json",
+      "sha256": "0a9fd3676eb071571a9af04caeef8a7f927f1f735ede9eb2b6037ab3289a8db5",
+      "bytes": 5963
+    },
+    {
+      "relative_path": "receipts/authorized-launch2-20261009/study-manifest.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/authorized-launch2-20261009/study-manifest.json",
+      "sha256": "b0c404d5cf4047fd6198416aa8ac70aeaea7b643127d804f8951741dc5fac1af",
+      "bytes": 6619
+    }
+  ],
+  "first_metadata_and_failure_preserved": true,
+  "scientific_source_unchanged": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "same_driver_run_id": "6566ff8f6da34caf8f2484d24f431a64",
+  "new_GPU_started": false,
+  "checked_unix": 1791480619.409502
+}
