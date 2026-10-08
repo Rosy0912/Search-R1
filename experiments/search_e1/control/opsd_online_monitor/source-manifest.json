@@ -1,0 +1,18 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3014,
+      "sha256": "1b7999bf0d3e5e8aa092ce61012b7fc3cd6391a5a250d6bc8b71aef190962744"
+    },
+    "archive_readonly_snapshot.py": {
+      "bytes": 8787,
+      "sha256": "ac8fbee9e95d526667ee2c385d9e310c57aad4497379571a95818cca63666c75"
+    },
+    "read_cp31_cpu.py": {
+      "bytes": 14350,
+      "sha256": "bd144d2a248fa3207749b37f6a182db519f3d55929960ec237fc548a3806d940"
+    }
+  },
+  "schema": "opsd-online-private-readonly-monitor-source-v1",
+  "scope": "Read-only CPU node inspection on authorized HKUST; no training deployment or process mutation"
+}
