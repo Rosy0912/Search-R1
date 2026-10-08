@@ -1,0 +1,318 @@
+{
+  "GPU": false,
+  "SSH": false,
+  "adapter_execution": false,
+  "author_git_push": false,
+  "candidate_execution": false,
+  "files": [
+    {
+      "bytes": 19484,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/zero_adam_stop3332_nonblocking_v17_once_v1.py",
+      "sha256": "bc46dd0a969f150d0adc8757e345ceaff89567a34f137396ca3459352dd8802a"
+    },
+    {
+      "bytes": 15416,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/deploy_submit_nonblocking3332_v17_once_v1.py",
+      "sha256": "ce7a30cdf89bef43616db1b6e8c52bb9dec943464be3d4d97eef3ed7fbc3fe01"
+    },
+    {
+      "bytes": 6216,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-DESIGN-v1.md",
+      "sha256": "c6afe6aa17c106a8652989600a707f5c0f0df55b8ede9ccb4a17876ab150c864"
+    },
+    {
+      "bytes": 34751,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-FILE-MANIFEST-v1.json",
+      "sha256": "d98babe108e7d373f136d16d1959f9896b6909529c7f9b90ca78ddaacf2e8046"
+    },
+    {
+      "bytes": 18034,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-RUNTIME-DIFF-v1.patch",
+      "sha256": "3798d5dee3d5b0d4cd30fca62d9954fa075b0c71392743205cb5ef958f3f83a1"
+    },
+    {
+      "bytes": 9799,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-SOURCE-DIFF-v1.patch",
+      "sha256": "b3f72099f0401dc3b90c44df3ca2724f6ad72d05c0cf4c303d1763c4d1f75bda"
+    },
+    {
+      "bytes": 19343,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-ADAPTER-DIFF-v1.patch",
+      "sha256": "6c6260d45f2bdfaff43ba9fdabe502ad64349c77b62b72fbee20ebf07b13b3e5"
+    },
+    {
+      "bytes": 5581,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-INDEPENDENT-REVIEW-v1.json",
+      "sha256": "3a3b5112db823034bc9790cb77ad349528f4bb10d110291d0dcd2d4dfe0ae621"
+    },
+    {
+      "bytes": 144076,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-NONBLOCKING-REPAIR-SOURCE-PUBLICATION-v1.json",
+      "sha256": "8dbf232dacd9c2ecd30d9f75435f40e371c751ad993e20f34eb00a9a6180310e"
+    },
+    {
+      "bytes": 1953,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-SOURCE-DELTA-v1.bundle",
+      "sha256": "a9671fd8603d94b14f0ad6c550e72c55a8d68ef58b0a9addbce0d1515e2458bf"
+    },
+    {
+      "bytes": 20590021,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-BINDING-CANDIDATE-v1.json",
+      "sha256": "3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399"
+    },
+    {
+      "bytes": 216616,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-NONBLOCKING-V17-DERIVATION-v1.json",
+      "sha256": "8ee0c6b0172fad140e652da5438c9854350abf071db737a09e941282a28c2609"
+    }
+  ],
+  "probability_approval_created": false,
+  "runtime_files": [
+    {
+      "bytes": 3399,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/attempt_accounting_v5.py",
+      "sha256": "5e09b002981fb6ee59359c07a58f63f4852840cad85a8ccb20e5c9c391af8655"
+    },
+    {
+      "bytes": 6545,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_audit_v1.py",
+      "sha256": "cf1512d05c5c3067e94891ac0a308aeb1bebd24e46611ade961be5bc03cc51ae"
+    },
+    {
+      "bytes": 3435,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_boundary_v2.py",
+      "sha256": "f99fe758101040391bedd9a62c443b30fa37fea413a5b9aae82cc5137c303afa"
+    },
+    {
+      "bytes": 19952,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_contract_v1.py",
+      "sha256": "d1280dcc0e3fda7181e369f0deca289318de6f04ac20ab42909f5092484472c0"
+    },
+    {
+      "bytes": 56113,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_driver_v1.py",
+      "sha256": "18e8ea2797b3837dd4c70a49332e350bbac791b5bafaa27fe157f564fcebf6d7"
+    },
+    {
+      "bytes": 8663,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_failure_v2.py",
+      "sha256": "e939c4262934b3369215034c491817b9f684b5ee880269daadf0c62b55c97e6c"
+    },
+    {
+      "bytes": 3377,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_failure_v5.py",
+      "sha256": "ea213932a9a7170bfef1b52c464f128aaa6d569a73d2cd715974142f2f3009e2"
+    },
+    {
+      "bytes": 28218,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_run_v1.py",
+      "sha256": "00343445246e9916d9963279112147c1022c22a744afb04cc734f97852e606ad"
+    },
+    {
+      "bytes": 5154,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_state_v1.py",
+      "sha256": "fb3f96c87a8a4ddd891a28cae8b8a7d3351d2e021d6ac7b3cd906d8f2cf83ebb"
+    },
+    {
+      "bytes": 865,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_v1.sbatch",
+      "sha256": "966a0b2e848fc5a3c353227a001f18521203839d86e893a1be7b23f7181b1d6e"
+    },
+    {
+      "bytes": 33826,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/calibration_worker_v1.py",
+      "sha256": "b936264ad7b0786a19a389aace7b55f6207450eaeacd9f3af94a62a12c6eeeef"
+    },
+    {
+      "bytes": 2734,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/continuation_timing_v10.py",
+      "sha256": "afd513b9b19a2ac96d95c004380748ab067c063df6660077cddf244bd92c5c83"
+    },
+    {
+      "bytes": 24996,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/decisive_normalizer_v1.py",
+      "sha256": "1359eeab58b288a48d0f0535b104271340cdbd5ac916fad393439f9e32807fa3"
+    },
+    {
+      "bytes": 446,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/generation_rpc_boundary_v3.py",
+      "sha256": "0cc4b0c0161702bfd2bcb95947da9f24db60f6c9721c5c68da8881642cd844a3"
+    },
+    {
+      "bytes": 4291,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/guard_uuid_input_v5.py",
+      "sha256": "104b347d32bc9188023207e4886011ed317ac95c9bd6ce6f5ef17095e7b4ca74"
+    },
+    {
+      "bytes": 22646,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/live_continuation_v10.py",
+      "sha256": "22f26d96a32a74c00624e98794d1082b893ec169bd2b4d9cbcdbb554363317f4"
+    },
+    {
+      "bytes": 3781,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/metadata_colocation_v1.py",
+      "sha256": "63a0d291053bf1a5e7e5abed9a33ec25f0c6372d681cb6ec480ebd33118fb52e"
+    },
+    {
+      "bytes": 4247,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/observer_safety_v2.py",
+      "sha256": "cf78df7f79639f84b731817498bd4327174cd158d7078ce25666c65c25547117"
+    },
+    {
+      "bytes": 5265,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/owned_runtime_resume_v1.py",
+      "sha256": "c5271d6f170da1c2e9332f28458322feb67e47e4032b56ae4815e33ac8053030"
+    },
+    {
+      "bytes": 13406,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/raw_alignment_v1.py",
+      "sha256": "a43943129d95175db198fe43e8c93414dde9f70da4ebb2699fe11029607cea0f"
+    },
+    {
+      "bytes": 11911,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/raw_hf_observation_v1.py",
+      "sha256": "ac725dd92ad35563b9920f23ee3be8c154ff60f2f25a8e0bbc62bd6d457eb485"
+    },
+    {
+      "bytes": 17239,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/raw_runner_observation_v1.py",
+      "sha256": "6a023cec9c451159a298d66e04d31f239debcc94bc4b6b8ce2c4c32bdd0ca2dd"
+    },
+    {
+      "bytes": 2568,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/ray_audit_resume_v1.py",
+      "sha256": "e799eda33e241ebb92f7a52f79d87b73d88449e3f84255dc969dacf5622b27eb"
+    },
+    {
+      "bytes": 6493,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/safety_audit_v1.py",
+      "sha256": "aa12b4196722b20b752ca601cb0e502fadfc38a82df5b160702a7b3d3d291a9f"
+    },
+    {
+      "bytes": 7802,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/slurm_allocation_v2.py",
+      "sha256": "2f6c4823db2c75789b4bb527e11ca4148be175fe6f19416e351aa74daabebfc6"
+    },
+    {
+      "bytes": 14085,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_attempt_accounting_v5.py",
+      "sha256": "3ff00196ee58a4373c48a2644a7f50bee1349bc1c368bf6db33ba8a033cebe82"
+    },
+    {
+      "bytes": 3017,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_calibration_audit_v1.py",
+      "sha256": "639979546dd19096a5e3e5667c4d55076aaa24d055091d7d15ee96e441ca2ebb"
+    },
+    {
+      "bytes": 4550,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_calibration_contract_v1.py",
+      "sha256": "56dc8fbabd8321d7cd3a4a97e1b02873e2b6f784480f6273c74d3b732c682c9c"
+    },
+    {
+      "bytes": 2998,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_calibration_failure_v2.py",
+      "sha256": "162fa94814b32dd007e94b0448d2338a5e4cf4af818c49568d305eab06029e78"
+    },
+    {
+      "bytes": 970,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_calibration_state_v1.py",
+      "sha256": "78883fba48545bc2d7355e53d67f150308ae21d612673b6a047d2cee4a525265"
+    },
+    {
+      "bytes": 18558,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_colocated_live_admission_v12.py",
+      "sha256": "1308df1fc9acae306075dde2ee596fa849d3ec92e78bd5cf6dc1beba29fd41aa"
+    },
+    {
+      "bytes": 11892,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_generation_refusal_v3.py",
+      "sha256": "1469e5102133e4a2d9bb8d53f373f9228a7bd80ac220ab016b1017470fe8fe94"
+    },
+    {
+      "bytes": 4943,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_guard_uuid_input_v5.py",
+      "sha256": "be1c549b23ab34a56c51eea7ac86fdf45c5c7758840e994be750ca4d365615b1"
+    },
+    {
+      "bytes": 5534,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_human_token_kl_v5.py",
+      "sha256": "3f1b95b89382b0c9eaea44b5f74dc7301d1e19d8eb6624809da673b102243c27"
+    },
+    {
+      "bytes": 49291,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_live_continuation_v10.py",
+      "sha256": "4b09357e5221a9928854e5a73e7b3f6bcef695acfb968d05d70eca70073b40bd"
+    },
+    {
+      "bytes": 3284,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_matched_refusal_v2.py",
+      "sha256": "e02c102536957125e2b7f2eaea8f2d6264cce811aa0d85fe81f2329b6f804194"
+    },
+    {
+      "bytes": 5773,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_observer_failures_v2.py",
+      "sha256": "c118ec8e2d77f732beeb3ff9af332a63f884f6eb09c5ccdaf64b266d000876e7"
+    },
+    {
+      "bytes": 1095,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_raw_adapter_v1.py",
+      "sha256": "b25ea87d19bd0027f15029a781cde030bd7dd393cb8fdc57457de02022b1926b"
+    },
+    {
+      "bytes": 2204,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_refused_numeric_micro_v5.py",
+      "sha256": "d9c9d6f38e4da29e388c5f18186c393f434f0994b801127fcf38c5e92ea6abbc"
+    },
+    {
+      "bytes": 10120,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_selected_probability_chain_v2.py",
+      "sha256": "227e4aa27a6b536f5d34c00ad500373ec4b43e864f4856ec0efcb7326df8d9dc"
+    },
+    {
+      "bytes": 9663,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_slurm_allocation_v2.py",
+      "sha256": "8467298e4fca7accfb2e8d9c061a843db232e4da6c7d3f89a692b174d9b7ed0f"
+    },
+    {
+      "bytes": 17880,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_typed_refusal_producer_v11.py",
+      "sha256": "0eafb1cd1201669fa34df885ab3c22d54611965df65ede6b437f8118c1ae88e2"
+    },
+    {
+      "bytes": 17546,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/test_worker_rpc_boundary_v4.py",
+      "sha256": "2d1c758c49dea1f61e503e8a4d3108a55c6de63c352b3f3de1066e00ee449531"
+    },
+    {
+      "bytes": 9368,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1/worker_rpc_boundary_v4.py",
+      "sha256": "637232579012a4cf6c2116801151c1499a0564d60d49dd9e1ee8cd7c083c335d"
+    }
+  ],
+  "sbatch": false,
+  "signal_sent": false,
+  "source_branch": "codex/gigpo-fresh200-nonblocking-20261008",
+  "source_changed_files": [
+    {
+      "bytes": 29572,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-fresh200-nonblocking-20261008/search_r1/baselines/fresh200_live.py",
+      "sha256": "7d502eb17ce09150fae45eb813e319637e618082846d51db59cdb3637b9263b4"
+    },
+    {
+      "bytes": 40022,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-fresh200-nonblocking-20261008/search_r1/baselines/instruct300.py",
+      "sha256": "fa22e18a562ead69641dd833b56e3929e31063ae1e5e488b7aa9b5189163a17f"
+    },
+    {
+      "bytes": 95041,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-fresh200-nonblocking-20261008/verl/workers/fsdp_workers.py",
+      "sha256": "b4329ed250f314875995ca9f6fa180923c6120d15e6281958015ba58804455e6"
+    }
+  ],
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "source_local_commit_authorized": true,
+  "source_parent_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "source_parent_or_old_runtime_edited": false,
+  "status": "FROZEN_STATIC_AUTHOR_HANDOFF_NOT_EXECUTED",
+  "tests": false
+}

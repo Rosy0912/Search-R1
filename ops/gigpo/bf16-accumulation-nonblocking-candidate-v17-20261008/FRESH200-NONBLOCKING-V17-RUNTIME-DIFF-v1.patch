@@ -1,0 +1,248 @@
+--- v16/calibration_contract_v1.py
++++ v17/calibration_contract_v1.py
+@@ -69,10 +69,13 @@
+     validate_live_binding(binding, actual_source)
+     validate_initial_fields(binding)
+     require(binding['actor_token_identity'] == 'sampled_action_prefix_v1'
+-            and binding['capture_actual_runner_inputs'] is True
+-            and binding['capture_actual_normalizer_inputs'] is True,
+-            'Missing decisive actual probability observations')
+-    require(binding['calibration_phase'] == 'probability_probe_then_wait', 'Missing before-first-Adam independent gate')
++            and binding.get('human_nonblocking_diagnostics') is True
++            and binding.get('external_diagnostic_review_blocks_training') is False
++            and binding.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1'
++            and binding['capture_actual_runner_inputs'] is False
++            and binding['capture_actual_normalizer_inputs'] is False
++            and binding['calibration_phase'] == 'human_nonblocking_training',
++            'Missing explicit human nonblocking diagnostic scope or actual raw action identity')
+     require(binding.get('source_native_acceptance') is None,
+             'Historical/unexecuted native cannot substitute this diagnostic actual GPU acceptance')
+     validate_guard_binding(binding)
+--- v16/calibration_driver_v1.py
++++ v17/calibration_driver_v1.py
+@@ -1,7 +1,7 @@
+ """One official-zero trainer and live iterator, retained first5 through completed200.
+ 
+ The actual trainer APIs keep GiGPO math, raw action mapping and state groups.
+-First existing sampling is observed and independently accepted before any Adam.
++Required training forwards retain raw sampled action structure; diagnostics are background only.
+ No fit(), historical restore, synthetic native or threshold invention occurs.
+ """
+ import copy
+@@ -515,9 +515,11 @@
+     attempt_id = begin_attempt(trainer, batch)
+     require(attempt_id == progress['attempt_id'], 'Real source attempt identity differs')
+     first_sampling = attempt_id == 1
+-    if not first_sampling:
+-        require(hasattr(trainer, '_calibration_probability_binding'), 'Fresh attempts require the first actual parity approval')
+-    trainer.actor_rollout_wg.calibration_phase('train' if first_sampling else 'train2')
++    require(binding.get('human_nonblocking_diagnostics') is True,
++            'Actual fresh attempt requires bound human nonblocking authorization')
++    # train2 selects the unchanged source generation/old/reference APIs without
++    # diagnostic repeats, current probes or full-logit capture on any attempt.
++    trainer.actor_rollout_wg.calibration_phase('train2')
+     batch = batch.repeat(repeat_times=5, interleave=True)
+     progress['batch'] = batch
+     batch.non_tensor_batch['audit_trajectory_row'] = np.arange(2560, dtype=object)
+@@ -549,7 +551,7 @@
+     require(generated.meta_info.get('actor_token_identity') == 'sampled_action_prefix_v1', 'Not raw action source')
+     generated.non_tensor_batch['audit_trajectory_row'] = np.asarray(sources, dtype=object)
+     generated.non_tensor_batch['audit_question_index'] = batch.non_tensor_batch['index'].copy()
+-    generated.meta_info['raw_calibration_observation'] = first_sampling
++    generated.meta_info['raw_calibration_observation'] = False
+     progress['stage'] = 'complete_old_hf'
+     with torch.no_grad():
+         with observe_time(trainer, 'old_policy_recompute',
+@@ -571,12 +573,6 @@
+         reference_output = trainer.ref_policy_wg.compute_ref_log_prob(batch)
+     batch = batch.union(reference_output)
+     progress['batch'] = batch
+-    # A separate actual same-state complete-action repeat, not inferred current logits.
+-    if first_sampling:
+-        repeated_batch = copy.deepcopy(batch)
+-        progress['stage'] = 'complete_current_hf'
+-        with observe_time(trainer, 'current_training_micro2_native_probe', 'first_probability_probe'):
+-            trainer.actor_rollout_wg.calibration_raw_current_log_prob(repeated_batch)
+     with observe_time(trainer, 'advantage_mask_and_rollout_evidence'):
+         progress['stage'] = 'advantage_mask_and_evidence'
+         batch.batch['token_level_scores'] = trainer.reward_fn(batch)
+@@ -592,10 +588,17 @@
+                               data_cursor=trainer.recovery_sampler.state_dict(), scope=SCOPE,
+                               attempt_id=attempt_id, completed_outer_label=outer),
+             run / ('actual-rollout-2560.pt' if first_sampling else f'actual-rollout-attempt{attempt_id}-2560.pt'))
+-    alignment = None
++    alignment = dict(status='HUMAN_NONBLOCKING_DIAGNOSTICS', independent_review_status='PENDING_BACKGROUND',
++                     actual_probability_accepted=False, probability_tolerances_selected=False)
+     if first_sampling:
+-        progress['stage'] = 'probability_alignment_review'
+-        alignment = probability_and_alignment(trainer, run, turns, binding, batch)
++        json_save(run / 'human-nonblocking-diagnostics.json', dict(alignment,
++            job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
++            source_commit=binding['code_commit'], binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
++            diagnostic_authorization_scope=binding['diagnostic_authorization_scope'],
++            external_diagnostic_review_blocks_training=False,
++            training_evidence=str(run / 'actual-rollout-2560.pt'),
++            extra_probability_forward_calls=0, hf_semantic_test_status='PENDING_BACKGROUND',
++            negative_tail_threshold_status='PENDING_BACKGROUND'))
+     from search_r1.baselines.runtime_audit import driver_outer
+     driver_outer(batch, outer, 'gigpo')
+     progress['stage'] = 'immediately_before_first_adam'
+@@ -603,11 +606,10 @@
+         # Check again immediately before the first update RPC, including any
+         # intervening audit operation and still-current fixed rollout bytes.
+         observe_bf16_accumulation(trainer, run, 'immediately-before-first-adam')
+-        before_workers, before_driver = trainer._calibration_approved_pause
+-        live = trainer.actor_rollout_wg.calibration_complete_pause_state()
+-        unchanged = assert_complete_pause_unchanged(before_workers, [row['identity'] for row in live],
+-                                                   before_driver, driver_complete_pause_state(trainer, batch))
+-        json_save(run / 'immediately-before-first-adam.json', unchanged)
++        json_save(run / 'immediately-before-first-adam.json', dict(
++            status='HUMAN_NONBLOCKING_DIAGNOSTICS', actual_probability_accepted=False,
++            independent_review_status='PENDING_BACKGROUND', actual_adam_writes=0,
++            diagnostic_authorization_scope=binding['diagnostic_authorization_scope']))
+     before_update_states = worker_call(trainer, 'pre_update_scheduler_identity',
+                                        trainer.actor_rollout_wg.calibration_complete_pause_state)
+     before_update = [row['identity'] for row in before_update_states]
+--- v16/calibration_run_v1.py
++++ v17/calibration_run_v1.py
+@@ -148,6 +148,10 @@
+     binding_path = Path(sys.argv[1])
+     require(sha(binding_path) == sys.argv[2], 'Calibration binding changed')
+     binding = json.loads(binding_path.read_text())
++    require(binding.get('human_nonblocking_diagnostics') is True
++            and binding.get('external_diagnostic_review_blocks_training') is False
++            and binding.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1',
++            'This isolated runtime requires explicit human nonblocking diagnostic authorization')
+     require(binding['allow_bf16_reduced_precision_reduction'] is False,
+             'This immutable BF16 candidate requires a new binding declaring the disabled reduction flag')
+     require(binding['initial_baseline_policy']['status'] == 'REUSED_USER_AUTHORIZED_BASELINE'
+@@ -246,6 +250,8 @@
+         OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.token_kl_threshold_source', 'human', force_add=True)
+         OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.token_kl_human_goal_updated_at', 1791282908, force_add=True)
+         OmegaConf.update(config, 'actor_rollout_ref.actor.fresh200_live_protocol', True, force_add=True)
++        OmegaConf.update(config, 'actor_rollout_ref.actor.human_nonblocking_diagnostics', True, force_add=True)
++        OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.human_nonblocking_diagnostics', True, force_add=True)
+         OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.live_training_protocol', True, force_add=True)
+         OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.first5_known_token_kl_enforced', True, force_add=True)
+         OmegaConf.update(config, 'actor_rollout_ref.actor.policy_safety.first5_tail_observation_only', True, force_add=True)
+@@ -348,18 +354,23 @@
+         require(observed['retained_training_updates_contributed'] == 200
+                 and observed['scope'] == LIVE_SCOPE and observed['live_goal_updated_at'] == LIVE_GOAL_UPDATED_AT
+                 and observed['official_training_outer_target'] == observed['scheduler_after'] == 200
+-                and observed['calibration_actual_outer_updates'] == 5
++                and observed['calibration_actual_outer_updates'] == 200
+                 and observed['human_old_policy_kl_selected'] is True
+                 and observed['candidate_old_policy_kl'] == observed['target_old_policy_kl'] == .2
+                 and observed['token_kl_threshold_source'] == 'human'
+                 and observed['token_kl_human_goal_updated_at'] == 1791282908
+-                and type(observed['negative_tail_limit']) in (int, float) and 0 <= observed['negative_tail_limit'] <= 1
++                and observed['negative_tail_limit'] is None
++                and observed['negative_tail_threshold_status'] == 'PENDING_BACKGROUND'
++                and observed['independent_review_status'] == 'PENDING_BACKGROUND'
++                and observed['actual_probability_accepted'] is False
++                and observed['human_nonblocking_diagnostics'] is True
+                 and observed['optimal_threshold_accepted'] is False
+                 and observed['output_quality_accepted'] is False
+-                and observed['production_admission_accepted'] is True and observed['no_discarded_training_updates'] is True,
+-                'Live result did not retain actual200 with independent production admission')
++                and observed['production_admission_accepted'] is False and observed['no_discarded_training_updates'] is True,
++                'Live result did not retain actual200 under the bound human nonblocking scope')
+         result.update(status=observed['status'], driver_exit=driver.returncode, observations=observed,
+-            retained_training_updates_contributed=200, negative_tail_threshold_not_selected=False)
++            retained_training_updates_contributed=200, negative_tail_threshold_not_selected=True,
++            negative_tail_threshold_status='PENDING_BACKGROUND', independent_review_status='PENDING_BACKGROUND')
+     except BaseException as error:
+         result.update(error_type=type(error).__name__, error=str(error))
+         raise
+--- v16/live_continuation_v10.py
++++ v17/live_continuation_v10.py
+@@ -1,4 +1,4 @@
+-"""Retain first5, admit only policy metadata at idle5, continue the same trainer to200."""
++"""Human-authorized same-process200; diagnostics do not block healthy training."""
+ import copy
+ import hashlib
+ import json
+@@ -20,11 +20,13 @@
+             and type(payload['live_goal_updated_at']) is int and payload['live_goal_updated_at'] == LIVE_GOAL_UPDATED_AT,
+             'Successor loop lost the actual live goal')
+     if completed == 200:
+-        require(payload['config_epoch'] == 1 and payload['phase'] == 'C1_PRODUCTION', 'Final200 lacks production admission')
++        require(payload['human_nonblocking_diagnostics'] is True
++                and payload['config_epoch'] == 0 and payload['phase'] == 'C0_CALIBRATION',
++                'Final200 lost the bound human nonblocking execution scope')
+         return None
+-    require((completed < 5 and payload['config_epoch'] == 0 and payload['phase'] == 'C0_CALIBRATION')
+-            or (completed >= 5 and payload['config_epoch'] == 1 and payload['phase'] == 'C1_PRODUCTION'),
+-            'Sixth fetch requires completed5 production admission; old2 cannot continue')
++    require(payload['human_nonblocking_diagnostics'] is True
++            and payload['config_epoch'] == 0 and payload['phase'] == 'C0_CALIBRATION',
++            'Fetch requires the unchanged bound human nonblocking safety configuration')
+     return completed + 1
+ 
+ 
+@@ -243,13 +245,17 @@
+             checkpoints.append(copy.deepcopy(trainer.instruct_manifest))
+             with observe_time(trainer, 'first5_raw_audit_hashing', 'first5_acceptance'):
+                 evidence = prepare_first5_evidence(trainer, run)
+-            # Real source full-state + HF roundtrip, then independent live pause.
+-            # Sixth fetch occurs only after the below C1 readback succeeds.
+-            with observe_time(trainer, 'first5_source_fullstate_reload_and_independent_wait', 'first5_acceptance'):
++            # Real same-PID complete-state reload, with CPU semantic diagnostics
++            # and external review pending in the background under the new scope.
++            with observe_time(trainer, 'first5_source_fullstate_reload', 'checkpoint'):
+                 roundtrip_and_wait(trainer, timing_observer=lambda stage, wall:
+                     record_duration(trainer, stage, wall))
+-            with observe_time(trainer, 'C0_to_C1_pure_admission_and_readback', 'first5_acceptance'):
+-                admissions.append(install_production_at5(trainer, run, evidence))
++            json_save(run / 'first5-human-nonblocking-diagnostics.json', dict(
++                status='HUMAN_NONBLOCKING_DIAGNOSTICS', independent_review_status='PENDING_BACKGROUND',
++                independent_review_passed=False, production_admission_accepted=False,
++                actual_probability_accepted=False, negative_tail_threshold_status='PENDING_BACKGROUND',
++                evidence=evidence, manifest=trainer.instruct_manifest,
++                external_diagnostic_review_blocks_training=False, retained_training_updates_contributed=5))
+         elif outer % 50 == 0:
+             trainer.actor_rollout_wg.calibration_phase('updated512')
+             with observe_time(trainer, f'periodic{outer}_512_evaluation', 'evaluation'):
+@@ -263,13 +269,13 @@
+         publish_timing(trainer, run, 'counted_complete_checkpoint_or_evaluation')
+     ledger = copy.deepcopy(trainer.fresh200_attempt_ledger)
+     totals = actual_attempt_totals(ledger, 200)
+-    require(trainer.global_steps == trainer.actual_outer_updates == 200 and len(admissions) == 1,
++    require(trainer.global_steps == trainer.actual_outer_updates == 200 and admissions == [],
+             'Live continuation endpoint is not actual retained200')
+     with observe_time(trainer, 'completed200_source_fullstate_HF_reload', 'checkpoint'):
+         roundtrip_and_wait(trainer, final=True, timing_observer=lambda stage, wall:
+             record_duration(trainer, stage, wall))
+     with observe_time(trainer, 'completed200_typed_endpoint_reload', 'checkpoint'):
+-        endpoint = reload_saved_complete_state(trainer, run, 200, 'completed200-C1')
++        endpoint = reload_saved_complete_state(trainer, run, 200, 'completed200-human-nonblocking')
+     audit = audit_attempts(trainer, run)
+     json_save(run / 'actual-continuation-audit.json', dict(scope=LIVE_SCOPE, checks=audit['checks'], observations=audit['observations']))
+     trainer._prepare_final_validation()
+@@ -281,20 +287,23 @@
+     production = trainer.fresh200_live_admission
+     return dict(initial_fields(), status='ACTUAL_RETAINED_FRESH200_COMPLETED', scope=LIVE_SCOPE,
+         live_goal_updated_at=LIVE_GOAL_UPDATED_AT, retained_training_updates_contributed=200,
+-        calibration_actual_outer_updates=5, official_training_outer_target=200,
++        calibration_actual_outer_updates=200, official_training_outer_target=200,
+         **totals, optimizer_steps_before=0, optimizer_steps_after=ledger['actual_adam_total'], scheduler_after=200,
+         data_cursor=trainer.recovery_sampler.cursor, data_epoch=trainer.recovery_sampler.epoch,
+         actual_attempt_ledger=ledger, fresh200_attempt_ledger=ledger, baseline=baseline,
+         attempts=attempts, evaluations=evaluations, checkpoints=checkpoints, admissions=admissions,
+         manifest=trainer.instruct_manifest, full_state_reloaded=True, roundtrip=endpoint, final_metrics=final_metrics,
+-        actual_admitted_probability_tolerances={key: trainer._calibration_probability_binding[key] for key in
++        unselected_probability_tolerances={key: binding[key] for key in
+             ('actor_recompute_abs_tolerance', 'actor_vllm_abs_tolerance',
+              'actor_recompute_joint_abs_tolerance', 'actor_vllm_joint_abs_tolerance')},
+         human_old_policy_kl_selected=True, target_old_policy_kl=.2, candidate_old_policy_kl=.2,
+         token_kl_threshold_source='human', token_kl_human_goal_updated_at=1791282908,
+         negative_tail_limit=production['policy']['negative_tail_limit'], observations=audit['observations'],
+         realized_admission=production, optimal_threshold_accepted=False,
+-        output_quality_accepted=False, production_admission_accepted=True, no_discarded_training_updates=True)
++        output_quality_accepted=False, production_admission_accepted=False,
++        actual_probability_accepted=False, independent_review_status='PENDING_BACKGROUND',
++        negative_tail_threshold_status='PENDING_BACKGROUND', human_nonblocking_diagnostics=True,
++        no_discarded_training_updates=True)
+ 
+ 
+ def run_counted_training(trainer, run, binding, initial, reference, baseline):

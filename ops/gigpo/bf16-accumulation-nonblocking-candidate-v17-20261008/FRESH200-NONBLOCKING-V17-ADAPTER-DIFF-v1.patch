@@ -1,0 +1,272 @@
+--- frozen-v16/zero_adam_stop3332_once_v1.py
++++ isolated-v17/zero_adam_stop3332_nonblocking_v17_once_v1.py
+@@ -17,12 +17,15 @@
+ OUT = BASE / 'outputs/gigpo-e1-instruct200'
+ ROOT = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006')
+ RUN = ROOT / 'runs/gigpo-e1-fresh200-live-job3332-1791429907029168081'
+-STATE = ROOT / 'logs/fresh200-bf16accum-skipbaseline-repair3332-once-v1'
++STATE = ROOT / 'logs/fresh200-nonblocking-v17-repair3332-once-v1'
+ OLD = ROOT / 'tools/fresh200-continuation-v14-evidenceclone1'
+-NEW = ROOT / 'tools/fresh200-continuation-v16-bf16accum1-skipbaseline1'
++NEW = ROOT / 'tools/fresh200-continuation-v17-bf16accum1-nonblocking1'
+ PARENT_BINDING = ROOT / 'logs/fresh200-evidence-repair3325-once-v1/BINDING.json'
+ PARENT_SHA = '2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec'
+-SOURCE = '2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963'
++PARENT_SOURCE = '2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963'
++SOURCE = 'ebe91bfebd56c3bd445219dcd94342d815f899f0'
++OLD_REPO = ROOT / 'repo-v11-2ddbb0a'
++NEW_REPO = ROOT / 'repo-v17-nonblocking1-ebe91bfe'
+ PYTHON = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env/bin/python')
+ ENV = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C', 'PYTHONDONTWRITEBYTECODE': '1'}
+ 
+@@ -86,14 +89,16 @@
+             and derivation['source_commit'] == SOURCE
+             and derivation['namespace'] == str(STATE), 'Wrong exact3332 derivation')
+     required = {name: record(BASE / 'work' / name) for name in
+-                ('zero_adam_stop3332_once_v1.py', 'deploy_submit_bf16accum3332_once_v1.py')}
++                ('zero_adam_stop3332_nonblocking_v17_once_v1.py', 'deploy_submit_nonblocking3332_v17_once_v1.py')}
+     required[Path(gate['derivation']['path']).name] = gate['derivation']
+     required[Path(derivation['child_binding']['local_path']).name] = dict(
+         bytes=derivation['child_binding']['bytes'], sha256=derivation['child_binding']['sha256'])
+     checked(derivation['child_binding']['local_path'], derivation['child_binding'])
++    required[Path(derivation['source_bundle']['local_path']).name] = derivation['source_bundle']
+     publication_gate(gate['adapter_publication'], required)
+     runtime_required = {row['path']: row['after'] for row in derivation['runtime_manifest']['files']}
+     publication_gate(gate['adapter_publication'], runtime_required)
++    publication_gate(gate['source_publication'], {Path(r['path']).name: r['after'] for r in derivation['source_changed_files']})
+     review = json.loads(checked(gate['adapter_review']['path'], gate['adapter_review']))
+     require(review['status'] == 'PASS_STATIC' and review['blocking_findings'] == []
+             and review['reviewer']['candidate_author'] is False and review['reviewer']['clean_context'] is True
+@@ -107,10 +112,10 @@
+ 
+ def transport(payload, action, stop_source, submit_source=None):
+     """One local invocation; all SSH layers retain the accepted18 route and host checks."""
+-    sources = {'zero_adam_stop3332_once_v1': stop_source}
++    sources = {'zero_adam_stop3332_nonblocking_v17_once_v1': stop_source}
+     require(len(packed(payload)) < 500000, 'Transport only the reviewed small delta frame')
+     if submit_source is not None:
+-        sources['deploy_submit_bf16accum3332_once_v1'] = submit_source
++        sources['deploy_submit_nonblocking3332_v17_once_v1'] = submit_source
+     encoded = {name: dict(b64=base64.b64encode(zlib.compress(raw)).decode(), sha256=sha(raw))
+                for name, raw in sources.items()}
+     receiver = """import base64,hashlib,json,sys,types,zlib
+@@ -123,7 +128,7 @@
+ p=json.loads(sys.stdin.buffer.read())
+ sys.modules[TARGET].remote(p)
+ """.replace('SOURCES', repr(json.dumps(encoded))).replace('TARGET', repr(
+-        'zero_adam_stop3332_once_v1' if action == 'stop' else 'deploy_submit_bf16accum3332_once_v1'))
++        'zero_adam_stop3332_nonblocking_v17_once_v1' if action == 'stop' else 'deploy_submit_nonblocking3332_v17_once_v1'))
+     worker = shlex.join(['env', '-u', 'LD_LIBRARY_PATH', 'CUDA_VISIBLE_DEVICES=',
+         'PYTHONDONTWRITEBYTECODE=1', 'OMP_NUM_THREADS=2', 'MKL_NUM_THREADS=2', str(PYTHON), '-B', '-c', receiver])
+     management = """import json,shlex,subprocess,sys
+@@ -138,7 +143,7 @@
+ r=subprocess.run(args+[user+'@'+ip,WORKER],input=sys.stdin.buffer.read(),capture_output=True,timeout=220)
+ sys.stdout.buffer.write(r.stdout);sys.stderr.buffer.write(r.stderr);raise SystemExit(r.returncode)
+ """.replace('WORKER', repr(worker))
+-    intent = OUT / ('BF16-ACCUMULATION-SKIPBASELINE-REPAIR3332-' + action.upper() + '-LOCAL-INTENT-v1.json')
++    intent = OUT / ('FRESH200-NONBLOCKING-V17-REPAIR3332-' + action.upper() + '-LOCAL-INTENT-v1.json')
+     once(intent, packed(dict(status='ONE_LOCAL_INVOCATION_NEVER_REPLAY', action=action,
+         payload_sha256=sha(packed(payload)), source_sha256={k: v['sha256'] for k, v in encoded.items()})))
+     outer = ['env', '-u', 'LD_LIBRARY_PATH', '/usr/bin/ssh', '-T', '-o', 'BatchMode=yes',
+@@ -153,7 +158,7 @@
+     except BaseException as error:
+         observation = dict(status='UNCERTAIN_NEVER_REPLAY', action=action,
+                            error_type=type(error).__name__, error=str(error))
+-    once(OUT / ('BF16-ACCUMULATION-SKIPBASELINE-REPAIR3332-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
++    once(OUT / ('FRESH200-NONBLOCKING-V17-REPAIR3332-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
+     print(json.dumps(observation))
+     require(observation.get('returncode') == 0, 'Read remote intent/facts; NEVER REPLAY after an uncertain invocation')
+ 
+@@ -217,7 +222,7 @@
+         live = proc(identity['pid'])
+         require(live['start_ticks'] == identity['start_ticks']
+                 and live['env']['SEARCH_R1_BASELINE_OUTPUT'] == str(RUN)
+-                and live['env']['SEARCH_R1_BASELINE_COMMIT'] == SOURCE
++                and live['env']['SEARCH_R1_BASELINE_COMMIT'] == PARENT_SOURCE
+                 and live['env']['GIGPO_POLICY_NATIVE_BINDING_SHA256'] == PARENT_SHA,
+                 'PID/start/run/source/binding identity changed')
+         processes.append({k: v for k, v in live.items() if k != 'env'})
+@@ -228,7 +233,7 @@
+         if parent['command'][1:] == [str(OLD / 'calibration_run_v1.py'), str(PARENT_BINDING), PARENT_SHA]:
+             executor = parent
+             break
+-    require(executor is not None and executor['cwd'] == str(ROOT / 'repo-v11-2ddbb0a')
++    require(executor is not None and executor['cwd'] == str(OLD_REPO)
+             and Path(executor['command'][0]).resolve() == PYTHON.resolve(), 'Exact ancestor launcher not found')
+     cgroup = Path(executor['cgroup'])
+     require(all(Path(row['cgroup']) == cgroup or Path(row['cgroup']).is_relative_to(cgroup) for row in processes),
+@@ -296,7 +301,7 @@
+     for row in preserved:
+         checked(row['path'], row)
+     fact = dict(status='ACTUAL_OWN3332_GRACEFUL_ZERO_ADAM_STOPPED', parent_job='3332',
+-        source_commit=SOURCE, parent_binding_sha256=PARENT_SHA, completed_outer=0, actual_adam_writes_per_rank=0,
++        source_commit=PARENT_SOURCE, target_source_commit=SOURCE, parent_binding_sha256=PARENT_SHA, completed_outer=0, actual_adam_writes_per_rank=0,
+         scheduler_step=0, data_cursor=512, original_processes=processes, executor=executor['pid'],
+         original_pids_gone=True, cgroup=str(cgroup), cgroup_gone=True, actual_residual_pids=[],
+         scheduler_terminal=scheduler, gpu=gpu, original_run_result=record(RUN / 'run-result.json'),
+@@ -311,7 +316,8 @@
+     require(len(sys.argv) == 2, 'Supply the exact reviewed/publication gate file')
+     gate, derivation = gates(sys.argv[1], 'stop')
+     payload = dict(parent=derivation['parent_stop_preconditions'], child_binding=derivation['child_binding'],
+-        adapter_review=gate['adapter_review'], adapter_publication=gate['adapter_publication'])
++        adapter_review=gate['adapter_review'], adapter_publication=gate['adapter_publication'],
++        source_publication=gate['source_publication'])
+     transport(payload, 'stop', Path(__file__).read_bytes())
+ 
+ 
+--- frozen-v16/deploy_submit_bf16accum3332_once_v1.py
++++ isolated-v17/deploy_submit_nonblocking3332_v17_once_v1.py
+@@ -1,4 +1,4 @@
+-"""Single-use draft: exact v14 clone plus four new files; one official200 sbatch after factual cleanup."""
++"""Single-use v17: six bound runtime files and isolated source delta; one official200 submission."""
+ import base64
+ import json
+ import os
+@@ -8,8 +8,8 @@
+ import subprocess
+ import sys
+ import zlib
+-from zero_adam_stop3332_once_v1 import (BASE, OUT, ROOT, RUN, STATE, OLD, NEW, PARENT_BINDING,
+-    PARENT_SHA, SOURCE, ENV, require, sha, packed, digest, checked, record, once, gates, transport, query, no_updates)
++from zero_adam_stop3332_nonblocking_v17_once_v1 import (BASE, OUT, ROOT, RUN, STATE, OLD, NEW, PARENT_BINDING,
++    PARENT_SHA, PARENT_SOURCE, SOURCE, OLD_REPO, NEW_REPO, ENV, require, sha, packed, digest, checked, record, once, gates, transport, query, no_updates)
+ 
+ OPTIONS = ['--parsable', '--partition=gpu', '--nodelist=h100-8', '--nodes=1', '--ntasks=1',
+            '--gres=gpu:h100:8', '--cpus-per-task=128', '--mem=512G', '--exclusive',
+@@ -18,7 +18,15 @@
+     'runtime_relative_files_digest', 'runtime_canonical_files_digest', 'declared_primary_files_digest',
+     'owned_submit_namespace', 'allow_bf16_reduced_precision_reduction', 'actual_runtime_static_review',
+     'actual_runtime_static_manifest', 'binding_derivation', 'bf16accum_repair_parent_job',
+-    'bf16accum_repair_parent_zero_adam_required', 'bf16accum_repair_stop_fact_path', 'initial_baseline_policy'}
++    'bf16accum_repair_parent_zero_adam_required', 'bf16accum_repair_stop_fact_path', 'initial_baseline_policy',
++    'repo', 'code_commit', 'source_commit', 'source_tree', 'source_version', 'source_files',
++    'source_file_count', 'source_relative_files_digest', 'source_canonical_files_digest',
++    'human_nonblocking_diagnostics', 'external_diagnostic_review_blocks_training', 'diagnostic_authorization_scope',
++    'capture_actual_runner_inputs', 'capture_actual_normalizer_inputs', 'calibration_phase',
++    'initial_calibration_counted_outer_limit', 'production_tail_required_before_outer6', 'allowed_safety_modes',
++    'accepted_actual_source_CPU_case_count', 'accepted_actual_source_CPU_result',
++    'independently_accepted_current_source_runtime_CPU_only', 'source_runtime_cpu_pending',
++    'source_runtime_controls_cpu_pending'}
+ 
+ 
+ def actual_stop(row):
+@@ -26,7 +34,8 @@
+     facts = json.loads(checked(row['path'], row))
+     require(facts['status'] == 'ACTUAL_OWN3332_GRACEFUL_ZERO_ADAM_STOPPED'
+             and facts['parent_job'] == '3332' and facts['parent_binding_sha256'] == PARENT_SHA
+-            and facts['source_commit'] == SOURCE and facts['completed_outer'] == facts['actual_adam_writes_per_rank'] == 0
++            and facts['source_commit'] == PARENT_SOURCE and facts['completed_outer'] == facts['actual_adam_writes_per_rank'] == 0
++            and facts['target_source_commit'] == SOURCE
+             and facts['scheduler_step'] == 0 and facts['data_cursor'] == 512
+             and facts['cgroup_gone'] is True and facts['original_pids_gone'] is True
+             and facts['actual_residual_pids'] == [] and facts['no_probability_approval'] is True,
+@@ -54,6 +63,7 @@
+     once(STATE / 'SUBMIT-INTENT.json', packed(dict(status='CLAIMED_NEVER_REPLAY',
+         binding=payload['binding'], parent_stop_facts=payload['parent_stop_facts'],
+         adapter_review=payload['adapter_review'], adapter_publication=payload['adapter_publication'],
++        source_publication=payload['source_publication'],
+         queued_submission_is_not_gpu_admission=True, extra_validation_job=False)))
+     facts, scheduler, gpu = actual_stop(payload['parent_stop_facts'])
+     queue = query(['squeue', '-h', '--all', '-o', '%i|%j|%T|%R'])
+@@ -63,28 +73,36 @@
+         require(not fields[1].startswith('gigpo-e1-fresh200-live'), 'Own old/new job remains; NEVER REPLAY')
+     parent = json.loads(checked(PARENT_BINDING, payload['parent_binding']))
+     require(len(parent['files']) == 39961 and len(parent['runtime_files']) == 44
+-            and parent['helpers'] == str(OLD) and parent['code_commit'] == SOURCE, 'Wrong complete parent binding')
++            and parent['helpers'] == str(OLD) and parent['code_commit'] == PARENT_SOURCE, 'Wrong complete parent binding')
+     require(set(payload['patch']) == PATCH_KEYS, 'Unexpected binding mutation')
+     child = dict(parent)
+     child.update(payload['patch'])
+     new_rows = {r['path']: r for r in child['runtime_files']}
+-    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 16
++    source_rows = {r['path']: r for r in child['source_files']}
++    require(len(source_rows) == 494 and child['repo'] == str(NEW_REPO)
++            and child['code_commit'] == child['source_commit'] == SOURCE
++            and child['human_nonblocking_diagnostics'] is True
++            and child['external_diagnostic_review_blocks_training'] is False, 'Wrong isolated source/nonblocking scope')
++    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 17
+             and child['allow_bf16_reduced_precision_reduction'] is False
+             and child['owned_submit_namespace'] == str(STATE)
+             and child['initial_baseline_policy']['status'] == 'REUSED_USER_AUTHORIZED_BASELINE'
+             and child['initial_baseline_policy']['parent_job'] == '3332'
+             and child['initial_baseline_policy']['new_run_evaluation_forward_calls'] == 0,
+             'Wrong exact numerical candidate and historical baseline policy')
+-    replaced = 0
++    replaced = source_replaced = 0
+     child_files = []
+     for row in parent['files']:
+         if row['path'].startswith(str(OLD) + '/'):
+             require(Path(row['path']).parent == OLD, 'Unexpected runtime subdirectory')
+             child_files.append(new_rows[str(NEW / Path(row['path']).name)])
+             replaced += 1
++        elif row['path'].startswith(str(OLD_REPO) + '/'):
++            child_files.append(source_rows[str(NEW_REPO / Path(row['path']).relative_to(OLD_REPO))])
++            source_replaced += 1
+         else:
+             child_files.append(row)
+-    require(replaced == 44, 'All44 runtime substitutions required')
++    require(replaced == 44 and source_replaced == 494, 'All44 runtime and494 isolated source substitutions required')
+     child['files'] = child_files
+     child['evidence'] = parent['evidence'] + payload['additional_evidence']
+     require(len(child['files']) == 39961 and child['evidence'][:len(parent['evidence'])] == parent['evidence'],
+@@ -99,7 +117,7 @@
+     require(len(raw) == payload['binding']['bytes'] and sha(raw) == payload['binding']['sha256'],
+             'Remote delta differs from independently reviewed exact child binding')
+     require(not NEW.exists() and not NEW.is_symlink() and NEW.parent.resolve() == NEW.parent,
+-            'Frozen v16 namespace already exists; no overwrite/replay')
++            'Frozen v17 namespace already exists; no overwrite/replay')
+     NEW.mkdir()
+     require(len(payload['runtime']) == 44 and set(r['name'] for r in payload['runtime']) == {Path(k).name for k in new_rows},
+             'Incomplete runtime staging')
+@@ -114,15 +132,28 @@
+             data = checked(OLD / name, row)
+         require(len(data) == row['bytes'] and sha(data) == row['sha256'], 'Staged bytes differ')
+         once(NEW / name, data)
+-    require(sorted(payload['changed_files']) == ['calibration_driver_v1.py', 'calibration_run_v1.py',
+-            'calibration_state_v1.py', 'calibration_worker_v1.py'], 'Beyond four numerical/runtime changes')
++    require(sorted(payload['changed_files']) == ['calibration_contract_v1.py', 'calibration_driver_v1.py', 'calibration_run_v1.py',
++            'calibration_state_v1.py', 'calibration_worker_v1.py', 'live_continuation_v10.py'], 'Beyond six bound runtime changes')
+     for row in payload['evidence_staging']:
+         path = Path(row['path'])
+         require(path.parent == STATE and path.name != 'BINDING.json', 'Metadata escaped private namespace')
+         data = zlib.decompress(base64.b64decode(row['b64']))
+         require(len(data) == row['bytes'] and sha(data) == row['sha256'], 'Evidence frame changed')
+         once(path, data)
+-    for row in child['runtime_files'] + child['evidence']:
++    source_bundle = payload['source_bundle']
++    bundle_path = STATE / 'SOURCE-DELTA.bundle'
++    bundle_bytes = zlib.decompress(base64.b64decode(source_bundle['b64']))
++    require(len(bundle_bytes) == source_bundle['bytes'] and sha(bundle_bytes) == source_bundle['sha256'], 'Source bundle frame changed')
++    once(bundle_path, bundle_bytes)
++    require(not NEW_REPO.exists() and not NEW_REPO.is_symlink() and NEW_REPO.parent.resolve() == NEW_REPO.parent,
++            'Isolated source namespace already exists; no overwrite')
++    require(subprocess.check_output(['git', '-C', str(OLD_REPO), 'rev-parse', 'HEAD'], text=True).strip() == PARENT_SOURCE,
++            'Original frozen source differs')
++    for command in (['git', 'clone', '--shared', '--no-checkout', str(OLD_REPO), str(NEW_REPO)],
++                    ['git', '-C', str(NEW_REPO), 'fetch', str(bundle_path), 'HEAD'],
++                    ['git', '-C', str(NEW_REPO), 'checkout', '--detach', SOURCE]):
++        subprocess.run(command, check=True, capture_output=True, text=True, timeout=60, env=ENV)
++    for row in child['runtime_files'] + child['source_files'] + child['evidence']:
+         checked(row['path'], row)
+     repo = Path(child['repo'])
+     require(subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip() == SOURCE
+@@ -174,13 +205,16 @@
+         data = checked(row['local_path'], row)
+         staging.append(dict(path=row['path'], bytes=len(data), sha256=sha(data),
+                             b64=base64.b64encode(zlib.compress(data)).decode()))
+-    payload = dict(parent_binding=derivation['parent_binding'], binding=derivation['child_binding'],
++    bundle_row = derivation['source_bundle']
++    bundle_data = checked(bundle_row['local_path'], bundle_row)
++    payload = dict(source_bundle=dict(bytes=len(bundle_data), sha256=sha(bundle_data),
++        b64=base64.b64encode(zlib.compress(bundle_data)).decode()), parent_binding=derivation['parent_binding'], binding=derivation['child_binding'],
+         patch=derivation['binding_patch'], additional_evidence=derivation['additional_evidence'],
+         runtime=runtime, changed_files=derivation['changed_files'], evidence_staging=staging,
+         parent_stop_facts={k: v for k, v in stop_row.items() if k != 'local_path'},
+         adapter_review=gate['adapter_review'], adapter_publication=gate['adapter_publication'],
+-        shared_storage=derivation['shared_storage'])
+-    transport(payload, 'submit', (BASE / 'work/zero_adam_stop3332_once_v1.py').read_bytes(), Path(__file__).read_bytes())
++        shared_storage=derivation['shared_storage'], source_publication=gate['source_publication'])
++    transport(payload, 'submit', (BASE / 'work/zero_adam_stop3332_nonblocking_v17_once_v1.py').read_bytes(), Path(__file__).read_bytes())
+ 
+ 
+ if __name__ == '__main__':

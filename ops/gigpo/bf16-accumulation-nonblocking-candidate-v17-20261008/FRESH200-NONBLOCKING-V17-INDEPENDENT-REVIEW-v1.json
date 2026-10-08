@@ -1,0 +1,79 @@
+{
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Frozen v17 source delta against 2ddbb0a and four runtime changes against already reviewed v16; read-only static review."
+  },
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "source_parent_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "source_path": "work/gigpo-e1-fresh200-nonblocking-20261008",
+  "runtime_path": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1",
+  "runtime_parent_path": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v16-bf16accum1-skipbaseline1",
+  "manifest_sha256": "d98babe108e7d373f136d16d1959f9896b6909529c7f9b90ca78ddaacf2e8046",
+  "source_diff_sha256": "b3f72099f0401dc3b90c44df3ca2724f6ad72d05c0cf4c303d1763c4d1f75bda",
+  "runtime_diff_sha256": "3798d5dee3d5b0d4cd30fca62d9954fa075b0c71392743205cb5ef958f3f83a1",
+  "source_changed_sha256": {
+    "search_r1/baselines/fresh200_live.py": "7d502eb17ce09150fae45eb813e319637e618082846d51db59cdb3637b9263b4",
+    "search_r1/baselines/instruct300.py": "fa22e18a562ead69641dd833b56e3929e31063ae1e5e488b7aa9b5189163a17f",
+    "verl/workers/fsdp_workers.py": "b4329ed250f314875995ca9f6fa180923c6120d15e6281958015ba58804455e6"
+  },
+  "runtime_changed_sha256": {
+    "calibration_contract_v1.py": "d1280dcc0e3fda7181e369f0deca289318de6f04ac20ab42909f5092484472c0",
+    "calibration_driver_v1.py": "18e8ea2797b3837dd4c70a49332e350bbac791b5bafaa27fe157f564fcebf6d7",
+    "calibration_run_v1.py": "00343445246e9916d9963279112147c1022c22a744afb04cc734f97852e606ad",
+    "live_continuation_v10.py": "22f26d96a32a74c00624e98794d1082b893ec169bd2b4d9cbcdbb554363317f4"
+  },
+  "static_checks": [
+    {
+      "scope": "source/search_r1/baselines/fresh200_live.py:95-187,449-466; runtime/live_continuation_v10.py:13-30",
+      "result": "The new human authorization is bound to the actual source/config/payload. Actual C0 epoch0 can continue to the true ledger limit200 without installing or claiming C1; the legacy branch remains separate."
+    },
+    {
+      "scope": "runtime/calibration_driver_v1.py:518-628; unchanged runtime/calibration_worker_v1.py:310-312,491-518",
+      "result": "train2 and raw observation false select the original required rollout, old-policy and reference APIs. Additional repeats/current full-logit probes/probability review waits are absent from the healthy main path. Existing loss, advantages, microbatch/layout, finite/structural checks, synchronized skip and actual eight-rank attempt receipts remain."
+    },
+    {
+      "scope": "source/search_r1/baselines/instruct300.py:305-323,342-521; source/verl/workers/fsdp_workers.py:1078-1098",
+      "result": "The authorized branch skips the additional CPU HF semantic test while retaining HF export and actual full-state shard/driver save, manifest checks, eight-rank actual load, and strict before/after state identities. Step5 returns only after real reload and reports background pending/false acceptance."
+    },
+    {
+      "scope": "runtime/live_continuation_v10.py:235-306; runtime/calibration_run_v1.py:353-373",
+      "result": "Required evaluations at5/50/100/150/200 and final51713, real final source and typed endpoint reload, reference identity, actual200 ledger and calibration count200 agree. No fabricated probability/production review PASS, C1, selected tail or tolerance is emitted; terminal launcher now accepts the actual pending diagnostic outcome."
+    },
+    {
+      "scope": "runtime/calibration_run_v1.py:config/binding initialization; existing BF16 worker and resource modules",
+      "result": "Historical authorized baseline reuse is retained without a new baseline forward or old optimizer/RNG/data restore. BF16 reduction false and all-role read-only observations, resource ownership and original cleanup remain intact. Source delta changes no model/data configuration or mathematical reduction."
+    },
+    {
+      "scope": "Frozen manifest44 runtime entries, four changed files, three source files and two diff artifacts",
+      "result": "Actual size/SHA of runtime entries and frozen changed source bytes were read and checked. Source HEAD is the declared commit and the source worktree was read as clean. Unchanged parent implementation was not expanded into a new review scope."
+    }
+  ],
+  "corrected_findings": [
+    {
+      "file": "calibration_run_v1.py",
+      "line": 362,
+      "finding": "The previous candidate required a selected tail and production acceptance after a deliberately C0/pending200 completion, which would mark healthy completion FAILED.",
+      "resolution": "Final frozen launcher requires null tail, pending diagnostic status and false probability/production acceptance, while preserving the actual200 requirements."
+    },
+    {
+      "file": "live_continuation_v10.py",
+      "line": 290,
+      "finding": "The previous candidate reported only5 calibration updates although all200 remain actual C0.",
+      "resolution": "Final frozen live result and launcher both report/require actual calibration count200."
+    }
+  ],
+  "review_limits": {
+    "static_only": true,
+    "candidate_execution": false,
+    "imports_or_tests_executed": false,
+    "ssh_or_gpu_access": false,
+    "implementation_modified_by_reviewer": false,
+    "binding_and_adapter_approval_included": false,
+    "numerical_repair_or_training_success_proven": false,
+    "background_diagnostic_acceptance_proven": false
+  }
+}

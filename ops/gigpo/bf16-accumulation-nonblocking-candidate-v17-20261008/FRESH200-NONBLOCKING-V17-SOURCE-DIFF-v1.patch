@@ -1,0 +1,132 @@
+diff --git a/search_r1/baselines/fresh200_live.py b/search_r1/baselines/fresh200_live.py
+index f709e53..5691f93 100644
+--- a/search_r1/baselines/fresh200_live.py
++++ b/search_r1/baselines/fresh200_live.py
+@@ -95,21 +95,27 @@ def validate_live_initialization(value):
+ def validate_live_binding(proof, actual_source):
+     """An old isolated-two READY can never admit this five-to200 session."""
+     from .fresh200 import CALIBRATION_SCOPE, TOKEN_KL_LIMIT
++    nonblocking = proof.get('human_nonblocking_diagnostics') is True
++    if nonblocking:
++        require(proof.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1'
++                and proof.get('external_diagnostic_review_blocks_training') is False
++                and proof.get('actual_probability_acceptance') is None,
++                'Unbound human nonblocking diagnostic authorization')
+     expected = dict(status='REVIEWED_FOR_FRESH200_LIVE_TRAINING_ONLY',
+         validation_scope=LIVE_SCOPE, calibration_scope=CALIBRATION_SCOPE,
+         live_goal_updated_at=LIVE_GOAL_UPDATED_AT, live_authorization_goal_updated_at=LIVE_AUTHORIZATION_GOAL_UPDATED_AT,
+         official_training_outer_target=200,
+-        initial_calibration_counted_outer_limit=5, first_full_acceptance_step=5,
++        initial_calibration_counted_outer_limit=200 if nonblocking else 5, first_full_acceptance_step=5,
+         first5_count_toward_goal=True, restart_after_calibration=False,
+         first5_known_token_kl_enforced=True, first5_tail_observation_only=True,
+-        production_tail_required_before_outer6=True, retained_training_updates_contributed=0,
++        production_tail_required_before_outer6=not nonblocking, retained_training_updates_contributed=0,
+         target_old_policy_kl=TOKEN_KL_LIMIT, candidate_old_policy_kl=TOKEN_KL_LIMIT,
+         token_kl_threshold_source='human', token_kl_human_goal_updated_at=1791282908,
+         outer_counting_authorization_source='human', outer_counting_human_goal_updated_at=1791283983)
+     for key, value in expected.items():
+         require(key in proof and type(proof[key]) is type(value) and proof[key] == value,
+                 'Different live human goal binding: ' + key)
+-    require(proof.get('allowed_safety_modes') == ['calibration', 'production']
++    require(proof.get('allowed_safety_modes') == (['calibration'] if nonblocking else ['calibration', 'production'])
+             and proof.get('code_commit') == proof.get('source_commit') == actual_source
+             and type(actual_source) is str and re.fullmatch(r'[0-9a-f]{40}', actual_source)
+             and proof.get('source_native_acceptance') is None
+@@ -130,11 +136,14 @@ def _initial_payload():
+                              os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'])
+     resolved = read_bound_json(config)
+     policy = resolved['actor_rollout_ref']['actor']['policy_safety']
++    require(policy.get('human_nonblocking_diagnostics', False) is proof.get('human_nonblocking_diagnostics', False),
++            'Actual safety config differs from the bound diagnostic authorization')
+     require(policy['mode'] == 'calibration' and policy['negative_tail_limit'] is None
+             and policy['first5_known_token_kl_enforced'] is True and policy['first5_tail_observation_only'] is True
+             and policy['candidate_old_policy_kl'] == policy['target_old_policy_kl'] == TOKEN_KL_LIMIT,
+             'Initial realized calibration policy differs')
+     return dict(schema=ADMISSION_SCHEMA, phase='C0_CALIBRATION', config_epoch=0,
++        human_nonblocking_diagnostics=proof.get('human_nonblocking_diagnostics') is True,
+         job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
+         source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'], live_goal_updated_at=LIVE_GOAL_UPDATED_AT,
+         live_authorization_goal_updated_at=LIVE_AUTHORIZATION_GOAL_UPDATED_AT,
+@@ -158,6 +167,8 @@ def validate_admission(payload):
+             and payload['c0_config_record']['path'] == str(root / 'resolved-config-C0.json'),
+             'Actual launcher/config byte identities differ')
+     initial = read_bound_json(payload['initial_binding_record'])
++    require(payload.get('human_nonblocking_diagnostics', False) is initial.get('human_nonblocking_diagnostics', False),
++            'Live payload differs from bound diagnostic authorization')
+     validate_live_binding(initial, payload['source_commit'])
+     resolved = read_bound_json(payload['config_record'])
+     require(resolved['actor_rollout_ref']['actor']['policy_safety'] == payload['policy'],
+@@ -448,6 +459,8 @@ def validate_live_update_boundary(worker, data):
+             and data.meta_info['fresh200_config_epoch'] == payload['config_epoch']
+             and data.meta_info['fresh200_config_sha256'] == payload['config_record']['sha256'],
+             'Actual update boundary/config epoch differs')
+-    require((payload['config_epoch'] == 0 and before < 5)
++    initial = read_bound_json(payload['initial_binding_record'])
++    nonblocking = initial.get('human_nonblocking_diagnostics') is True
++    require((payload['config_epoch'] == 0 and (before < 5 or nonblocking))
+             or (payload['config_epoch'] == 1 and before >= 5),
+             'Sixth update requires actual same-job first5 production admission')
+diff --git a/search_r1/baselines/instruct300.py b/search_r1/baselines/instruct300.py
+index 290bf79..4dc9386 100644
+--- a/search_r1/baselines/instruct300.py
++++ b/search_r1/baselines/instruct300.py
+@@ -302,7 +302,8 @@ def save_complete(trainer, checkpoint, worker_receipts, checkpoint_root=None):
+     receipt = atomic_torch_save(driver, Path(checkpoint) / 'training_state/driver.pt')
+     extra = dict(path=str(algorithm), bytes=len(algorithm_bytes), sha256=file_sha256(algorithm))
+     extras = [extra]
+-    if fresh200_enabled(trainer.config):
++    if (fresh200_enabled(trainer.config)
++            and trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is not True):
+         hf_records = [value['hf_loader_roundtrip'] for value in worker_receipts
+                       if value is not None and 'hf_loader_roundtrip' in value]
+         if len(hf_records) != 1:
+@@ -338,7 +339,8 @@ def roundtrip_and_wait(trainer, final=False, timing_observer=None):
+     check_manifest(manifest)
+     hf_roundtrip = None
+     from .fresh200 import enabled as fresh200_enabled
+-    if fresh200_enabled(trainer.config):
++    if (fresh200_enabled(trainer.config)
++            and trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is not True):
+         checkpoint_path = Path(manifest['path']).parent.parent
+         hf_records = [record for record in manifest['identity']['files']
+                       if Path(record['path']).resolve() == (checkpoint_path / 'training_state/hf-loader-roundtrip.json').resolve()]
+@@ -499,6 +501,24 @@ def roundtrip_and_wait(trainer, final=False, timing_observer=None):
+                      approval_path.with_name(f'resume{gate}-ready.json' if origin else 'instruct5-ready.json'))
+     if timing_observer is not None:
+         timing_observer('source_full_state_reload_before_first5_wait', time.monotonic() - timing_started)
++    if trainer.config.actor_rollout_ref.actor.get('human_nonblocking_diagnostics') is True:
++        # The actual full state has been reloaded above. Semantic CPU tests and
++        # external review are background observations under the newer human scope.
++        from .fresh200_live import driver_admission_state
++        admission = driver_admission_state(trainer)
++        proof = json.loads(Path(admission['payload']['initial_binding_record']['path']).read_text())
++        if proof.get('human_nonblocking_diagnostics') is not True:
++            raise RuntimeError('Unbound nonblocking diagnostic continuation')
++        atomic_json_save(dict(status='ACTUAL_FULL_STATE_RELOADED_DIAGNOSTICS_PENDING',
++            diagnostic_authorization_scope='HUMAN_NONBLOCKING_DIAGNOSTICS_V1',
++            independent_review_status='PENDING_BACKGROUND', hf_semantic_test_status='PENDING_BACKGROUND',
++            independent_review_passed=False, actual_probability_accepted=False,
++            manifest=manifest, actual_state_roundtrip=loaded,
++            actual_driver_state_roundtrip=driver_roundtrip,
++            actual_worker_runtime_roundtrip=worker_runtime_roundtrip,
++            checkpoint_pause_identity=expected, driver_cursor=after['cursor']),
++            approval_path.with_name('human-nonblocking-step5-state-roundtrip.json'))
++        return
+     timing_wait_started = time.monotonic() if timing_observer is not None else None
+     deadline = time.monotonic() + trainer.config.trainer.instruct300.wait_seconds
+     expected_binding = dict(job_id=os.environ['SLURM_JOB_ID'], source=manifest['identity']['source'],
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index 1846486..7d2bda6 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -1078,7 +1078,8 @@ class ActorRolloutRefWorker(Worker):
+                 os.makedirs(local_path, exist_ok=True)
+                 self.actor_module.save_pretrained(local_path, state_dict=state_dict)
+                 self.tokenizer.save_pretrained(local_path)
+-                if self.config.actor.get('fresh200_protocol', False):
++                if (self.config.actor.get('fresh200_protocol', False)
++                        and self.config.actor.get('human_nonblocking_diagnostics') is not True):
+                     from search_r1.baselines.instruct300 import hf_export_identity, reload_hf_checkpoint_cpu
+                     exported = hf_export_identity(state_dict, self.actor_module.config, self.tokenizer)
+                     # The child holds the FP32 HF model; release the ~12 GB

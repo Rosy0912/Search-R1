@@ -1,0 +1,62 @@
+{
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Frozen v17 once adapters against previously reviewed v16 adapters and exact v17 binding/derivation delta against the immutable3332 parent. Static only."
+  },
+  "binding_sha256": "3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399",
+  "derivation_sha256": "8ee0c6b0172fad140e652da5438c9854350abf071db737a09e941282a28c2609",
+  "adapter_sha256": {
+    "zero_adam_stop3332_nonblocking_v17_once_v1.py": "bc46dd0a969f150d0adc8757e345ceaff89567a34f137396ca3459352dd8802a",
+    "deploy_submit_nonblocking3332_v17_once_v1.py": "ce7a30cdf89bef43616db1b6e8c52bb9dec943464be3d4d97eef3ed7fbc3fe01"
+  },
+  "binding_bytes": 20590021,
+  "derivation_bytes": 216616,
+  "parent_binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+  "parent_source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "target_source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "code_review_sha256": "3a3b5112db823034bc9790cb77ad349528f4bb10d110291d0dcd2d4dfe0ae621",
+  "source_publication_sha256": "8dbf232dacd9c2ecd30d9f75435f40e371c751ad993e20f34eb00a9a6180310e",
+  "source_bundle_sha256": "a9671fd8603d94b14f0ad6c550e72c55a8d68ef58b0a9addbce0d1515e2458bf",
+  "static_checks": [
+    {
+      "scope": "zero_adam_stop3332_nonblocking_v17_once_v1.py:85-108,188-311",
+      "result": "The parent3332 source2dd identity remains separate from target ebe91. Exact parent binding/ready/material/PID/start/cgroup and CPU typed Adam0 pause checks remain; source helper bytes are bound. The only signal is pidfd SIGTERM to the exact own ancestor executor. Existing cleanup60 is retained, then original PID/cgroup absence, Slurm FAILED, actual interrupted terminal, empty residual/GPU and immutable original evidence readback are required. No new trained checkpoint is represented at Adam0."
+    },
+    {
+      "scope": "zero_adam_stop3332_nonblocking_v17_once_v1.py:63-69,113-163,200-205; deploy_submit_nonblocking3332_v17_once_v1.py:32-73,167-187",
+      "result": "Independent local and remote exclusive intents consume one attempt and prohibit replay on uncertainty. The once namespace is separate from prior candidates. Exactly one official200 sbatch exists and is reachable only after actual old-job terminal/GPU/PID/cgroup/no-update facts are checked again after staging. No extra validation job is submitted."
+    },
+    {
+      "scope": "deploy_submit_nonblocking3332_v17_once_v1.py:74-161; frozen binding/derivation",
+      "result": "Exact child reconstruction equals the frozen binding:39961 primary rows preserve order, replacing44 runtime paths and494 source paths while39423 other rows remain exact. Source has only3 size/SHA deltas and491 byte identities. All61 old evidence records remain in order with exactly5 declared additions. The permitted top-level patch, required200 target, model/data/math fields and four null tolerances agree with the immutable parent."
+    },
+    {
+      "scope": "deploy_submit_nonblocking3332_v17_once_v1.py:119-161,190-215; source delta bundle header and SHA",
+      "result": "Six runtime files are staged with new bytes and38 are cloned from exact original hashes. Source is staged into a new repo namespace using a shared no-checkout clone and the bound bundle advertising target HEAD with parent2dd prerequisite. All44 runtime and494 source rows and all evidence are rehashed before launch; source HEAD and clean status are required. Old runtime/source namespaces are not overwritten."
+    },
+    {
+      "scope": "zero_adam_stop3332_nonblocking_v17_once_v1.py:72-108; actual source publication record",
+      "result": "Execution gate requires exact nonauthor static review for both adapters and binding/derivation, plus committed/pushed independent file download publication for adapters, runtime, binding, derivation and bundle. The actual source publication is source ebe91 on both new_commit/remote_sha and its494 path/size/SHA readback records agree with the binding; the three changed-file publication lookups satisfy the adapter gate."
+    },
+    {
+      "scope": "Frozen binding_patch and declared digests",
+      "result": "The binding cites the actual v17 code review and manifest, BF16 reduced precision reduction false, historical baseline reuse with zero new initial forward, C0 limit200 and explicit nonblocking authorization. New source CPU acceptance fields are null/pending and current source CPU acceptance false. No historical CPU/probability/C1 PASS is substituted. Independently recomputed runtime relative/canonical, source relative/canonical and primary digests exactly match all five declared digests. Parent stop preconditions equal the previously reviewed3332 preconditions."
+    }
+  ],
+  "review_limits": {
+    "static_only": true,
+    "candidate_or_adapter_execution": false,
+    "tests_or_project_imports_executed": false,
+    "ssh_or_gpu_access": false,
+    "implementation_modified_by_reviewer": false,
+    "old_external_asset_rescan": false,
+    "actual_stop_or_submit_proven": false,
+    "numerical_repair_or_training_success_proven": false,
+    "background_diagnostics_pass_proven": false,
+    "actual_adapter_publication_still_required_by_execution_gate": true
+  }
+}

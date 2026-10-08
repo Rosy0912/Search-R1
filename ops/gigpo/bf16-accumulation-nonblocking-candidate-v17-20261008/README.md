@@ -1,0 +1,11 @@
+# GiGPO BF16 accumulation + nonblocking v17 frozen candidate backup
+
+Actual new scientific source commit: `ebe91bfebd56c3bd445219dcd94342d815f899f0`; parent source: `2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963`. The new source was independently committed by its author, pushed to `codex/gigpo-fresh200-nonblocking-20261008` on GitHub, and independently downloaded with all 494 tracked files matching. `metadata/BF16-ACCUMULATION-NONBLOCKING-REPAIR-SOURCE-PUBLICATION-v1.json` records the full scientific-source readback; `source-delta/` preserves exact copies of the three changed source files with their repository-relative paths. The source identity is the actual new commit and is never represented as unchanged parent2dd.
+
+Frozen local runtime: `work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1`; all 44 implementation, entry-point, launch and existing test source files are preserved exactly. The source manifest and runtime patch are author snapshots. Earlier v15/v16 namespaces, publications and original source remain preserved separately.
+
+The latest human direction is to run the training mainline while additional diagnostics run independently. This namespace preserves the corresponding v17 compatibility/runtime candidate. Status at this publication: **UNEXECUTED CANDIDATE; the exact final source and runtime received clean-context nonauthor `PASS_STATIC`; binding/derivation/adapters and source bundle are frozen and received their separate clean-context nonauthor `PASS_STATIC`.** No candidate effectiveness, numerical acceptance, deployment, stop or submit action is asserted by this backup. The publisher performs no source or runtime imports, tests, GPU access or experiment-node SSH.
+
+The final publication receipt will cover this current v17 namespace only and will remain outside its own manifest to avoid a circular hash. Later changed bytes require their own identity and proof.
+
+Copied source and patch artifacts retain their original bytes, including inherited source whitespace; publication does not edit them. Source publication proof remains an immutable earlier persistence snapshot; the included later code and control reviews supply their separate static PASS scopes.
