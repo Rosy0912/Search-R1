@@ -1,0 +1,18 @@
+{
+  "time": 1791425908.4248302,
+  "source_grpo_step": 100,
+  "actual_opsd_epoch": 1,
+  "validation_questions": 512,
+  "before_opsd_correct": 239,
+  "after_raw_epoch1_correct": 203,
+  "before_opsd_em": 0.466796875,
+  "after_raw_epoch1_em": 0.396484375,
+  "correct_delta": -36,
+  "percentage_point_delta": -7.03125,
+  "loss_epoch1": 0.17748732205277348,
+  "same_native_validation": true,
+  "selected_best_is_baseline": "independent full-tensor CPU identity audit recorded separately",
+  "raw_epoch1_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/adapter_epoch_1",
+  "current_seven_benchmark_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged",
+  "scope": "Full epoch native512 result; not final seven benchmark result or universal algorithm claim."
+}

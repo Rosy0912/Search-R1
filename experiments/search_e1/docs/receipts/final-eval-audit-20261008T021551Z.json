@@ -1,0 +1,417 @@
+{
+  "sample_start_unix": 1791425750.549356,
+  "base": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+  "scope": "Only existing K1 final seven-benchmark worker observations; CPU file reading and nvidia-smi queries only. No GPU inference, retrieval POST/health request, process/config/service changes.",
+  "phase": {
+    "phase": "OPSD100_PREPARATION3_FINAL_SEVEN_BENCHMARK_EVALUATION",
+    "time": 1791424294.7568414,
+    "controller_pid": 2459676,
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "generation": 3,
+    "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof"
+  },
+  "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged",
+  "worker_counts": [
+    {
+      "rank": 0,
+      "questions": 6465,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-0.jsonl",
+      "bytes_at_read": 3986582,
+      "mtime_unix": 1791425718.6899629,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-0.log",
+      "errors": [],
+      "log_tail": "a:test:3974\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3982\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3990\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3998\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4006\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4014\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4022\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4030\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4038\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4046\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4054\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4062\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 1,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-1.jsonl",
+      "bytes_at_read": 3969485,
+      "mtime_unix": 1791425745.56052,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-1.log",
+      "errors": [],
+      "log_tail": "a:test:3975\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3983\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3991\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3999\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4007\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4015\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4023\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4031\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4039\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4047\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4055\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4063\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 2,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-2.jsonl",
+      "bytes_at_read": 3957389,
+      "mtime_unix": 1791425669.1267586,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-2.log",
+      "errors": [],
+      "log_tail": "a:test:3976\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3984\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3992\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4000\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4008\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4016\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4024\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4032\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4040\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4048\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4056\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4064\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 3,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-3.jsonl",
+      "bytes_at_read": 3979111,
+      "mtime_unix": 1791425695.4295998,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-3.log",
+      "errors": [],
+      "log_tail": "a:test:3977\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3985\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3993\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4001\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4009\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4017\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4025\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4033\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4041\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4049\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4057\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4065\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 4,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-4.jsonl",
+      "bytes_at_read": 3931124,
+      "mtime_unix": 1791425695.3336477,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-4.log",
+      "errors": [],
+      "log_tail": "a:test:3978\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3986\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3994\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4002\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4010\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4018\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4026\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4034\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4042\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4050\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4058\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4066\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 5,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-5.jsonl",
+      "bytes_at_read": 4012374,
+      "mtime_unix": 1791425695.5495398,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-5.log",
+      "errors": [],
+      "log_tail": "a:test:3979\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3987\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3995\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4003\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4011\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4019\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4027\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4035\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4043\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4051\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4059\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4067\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 6,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 1024,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-6.jsonl",
+      "bytes_at_read": 4216715,
+      "mtime_unix": 1791425733.3746164,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-6.log",
+      "errors": [],
+      "log_tail": "a:test:4492\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4500\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4508\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4516\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4524\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4532\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4540\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4548\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4556\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4564\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4572\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4580\", \"sibling\": 0}\n"
+    },
+    {
+      "rank": 7,
+      "questions": 6464,
+      "complete_valid_rollout_rows": 960,
+      "partial_trailing_bytes": 0,
+      "malformed_complete_rows": [],
+      "rollout_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-7.jsonl",
+      "bytes_at_read": 4024087,
+      "mtime_unix": 1791425708.962829,
+      "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/worker-7.log",
+      "errors": [],
+      "log_tail": "a:test:3981\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3989\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:3997\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4005\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4013\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4021\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4029\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4037\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4045\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4053\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4061\", \"sibling\": 0}\n{\"question_id\": \"triviaqa:test:4069\", \"sibling\": 0}\n"
+    }
+  ],
+  "total_complete_rollout_rows": 7744,
+  "total_test_questions": 51713,
+  "questions_data_sources": {
+    "nq": 3610,
+    "triviaqa": 11313,
+    "popqa": 14267,
+    "hotpotqa": 7405,
+    "2wikimultihopqa": 12576,
+    "musique": 2417,
+    "bamboogle": 125
+  },
+  "complete_row_count_note": "Counts of newline-terminated valid JSON rows read from independent rank outputs using literal byte LF boundaries (Unicode line separators are not row delimiters), not completed worker count and not final merged evaluation metrics.",
+  "own_processes": [
+    {
+      "pid": 2459676,
+      "alive": true,
+      "starttick": 915357855,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/preparation-3-xformers/pipeline_preparation3_xformers.py",
+      "identity_env": []
+    },
+    {
+      "pid": 3960546,
+      "alive": true,
+      "starttick": 921600425,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl --k 1 --backend vllm --workers 8 --temperature 0 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960643,
+      "alive": true,
+      "starttick": 921600598,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-0.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-0.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 42 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=0",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960647,
+      "alive": true,
+      "starttick": 921600601,
+      "state": "R",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-1.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-1.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 43 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=1",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960648,
+      "alive": true,
+      "starttick": 921600604,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-2.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-2.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 44 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=2",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960649,
+      "alive": true,
+      "starttick": 921600607,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-3.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-3.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 45 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=3",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960650,
+      "alive": true,
+      "starttick": 921600610,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-4.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-4.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 46 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=4",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960651,
+      "alive": true,
+      "starttick": 921600614,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-5.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-5.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 47 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=5",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960652,
+      "alive": true,
+      "starttick": 921600617,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-6.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-6.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 48 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=6",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 3960653,
+      "alive": true,
+      "starttick": 921600620,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -m search_e1.rollout --model /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged --data /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/questions-7.jsonl --output /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-7.jsonl --backend vllm --workers 1 --k 1 --temperature 0.0 --batch-size 64 --seed 49 --retriever-url http://10.120.17.101:18004/retrieve",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "E1_PROFILE=opsd100-preparation3-xformers",
+        "CUDA_VISIBLE_DEVICES=7",
+        "E1_RUN_ID=914bfff786c84ede8d82414dff65f60e"
+      ]
+    },
+    {
+      "pid": 2239529,
+      "alive": true,
+      "starttick": 914664099,
+      "state": "S",
+      "method": "/data/shaoshitong/search-e1-retriever-segmented-20261007/env/bin/python /data/shaoshitong/search-e1-retriever-segmented-20261007/source/server.py --base /data/shaoshitong/search-e1-retriever-segmented-20261007 --assets /data/shaoshitong/search-e1-retriever-segmented-20261007/assets --asset-manifest /data/shaoshitong/search-e1-retriever-segmented-20261007/assets/manifest.json --host 10.120.17.101 --port 18004",
+      "identity_env": [
+        "E1_BASE=/data/shaoshitong/search-e1-retriever-segmented-20261007",
+        "CUDA_VISIBLE_DEVICES=7"
+      ]
+    }
+  ],
+  "gpu_sample_unix": 1791425750.9262211,
+  "gpu_direct_sample": [
+    {
+      "index": 0,
+      "uuid": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+      "total_mib": 24564,
+      "used_mib": 20683,
+      "free_mib": 3528,
+      "utilization_percent": 0
+    },
+    {
+      "index": 1,
+      "uuid": "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+      "total_mib": 24564,
+      "used_mib": 20339,
+      "free_mib": 3872,
+      "utilization_percent": 69
+    },
+    {
+      "index": 2,
+      "uuid": "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+      "total_mib": 24564,
+      "used_mib": 20343,
+      "free_mib": 3868,
+      "utilization_percent": 0
+    },
+    {
+      "index": 3,
+      "uuid": "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+      "total_mib": 24564,
+      "used_mib": 20343,
+      "free_mib": 3868,
+      "utilization_percent": 0
+    },
+    {
+      "index": 4,
+      "uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "total_mib": 24564,
+      "used_mib": 20341,
+      "free_mib": 3870,
+      "utilization_percent": 0
+    },
+    {
+      "index": 5,
+      "uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "total_mib": 24564,
+      "used_mib": 20681,
+      "free_mib": 3530,
+      "utilization_percent": 0
+    },
+    {
+      "index": 6,
+      "uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "total_mib": 24564,
+      "used_mib": 20003,
+      "free_mib": 4208,
+      "utilization_percent": 0
+    },
+    {
+      "index": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "total_mib": 24564,
+      "used_mib": 21259,
+      "free_mib": 2953,
+      "utilization_percent": 5
+    }
+  ],
+  "own_gpu_apps": [
+    "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 3960643, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20668",
+    "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 3960647, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20324",
+    "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 3960648, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20328",
+    "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 3960649, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20328",
+    "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 3960650, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20326",
+    "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 3960651, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20666",
+    "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 3960652, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 19988",
+    "GPU-6f04d45c-a34d-6617-030d-0635365f5395, 2239529, /data/shaoshitong/search-e1-retriever-segmented-20261007/env/bin/python, 574",
+    "GPU-6f04d45c-a34d-6617-030d-0635365f5395, 3960653, /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python, 20666"
+  ],
+  "memory_observer": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/memory-continuous-v2.json",
+    "pid": 2272620,
+    "samples": 33640,
+    "updated_at_unix": 1791425749.2131708,
+    "age_seconds_at_read": 1.844245433807373,
+    "actual_free_minima_by_gpu_mib": {
+      "0": 3528,
+      "1": 3718,
+      "2": 3714,
+      "3": 3756,
+      "4": 3756,
+      "5": 3530,
+      "6": 3714,
+      "7": 2953
+    },
+    "minimum_actual_free_mib": 2953,
+    "actual_free_source": "nvidia-smi memory.free; directly measured, no total-used substitution",
+    "phase": {
+      "phase": "OPSD100_PREPARATION3_FINAL_SEVEN_BENCHMARK_EVALUATION",
+      "time": 1791424294.7568414,
+      "controller_pid": 2459676,
+      "run_id": "914bfff786c84ede8d82414dff65f60e",
+      "generation": 3,
+      "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof"
+    }
+  },
+  "retriever_memory_observer": {
+    "path": "/data/shaoshitong/search-e1-retriever-segmented-20261007/receipts/gpu7-memory-v2-continuous.json",
+    "content": {
+      "candidate_pid": 2239529,
+      "source_identity_sha256": "b2626bd30e2c9ca12b94f17d4464ade6e012bbef36d7c2dd051c36e4f14fb614",
+      "gpu": 7,
+      "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+      "sample_start_unix": 1791355802.515925,
+      "sample_end_unix": 1791425750.868164,
+      "updated_at_unix": 1791425750.8682387,
+      "samples": 211507,
+      "max_process_mib": 654,
+      "min_free_mib": 2953,
+      "current": {
+        "time": 1791425750.868164,
+        "candidate_pid": 2239529,
+        "gpu": 7,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "total_mib": 24564,
+        "used_mib": 21259,
+        "free_mib": 2953,
+        "reserved_mib": 354,
+        "computed_total_minus_used_mib": 3305,
+        "candidate_process_mib": 574
+      },
+      "free_measurement": "nvidia-smi memory.free",
+      "process_limit_mib": 1024,
+      "free_minimum_mib": 1024,
+      "limits_met": true,
+      "scope": "V2 directly sampled memory.free and candidate process on allocated GPU7; preserve V1 computed reserve separately"
+    },
+    "age_seconds_at_read": 0.1892251968383789
+  },
+  "parent_log": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/preparation-3-final-test.log",
+    "text": "{'completed_rollout_workers': 0, 'workers': 8}\n",
+    "mtime_unix": 1791424297.9047608
+  },
+  "parent_log_note": "completed_rollout_workers counts processes that exited successfully; value0 does not imply zero generated rows.",
+  "sample_end_unix": 1791425751.0574937,
+  "sample_time_cst": "2026-10-08T10:15:51.057494+08:00",
+  "receipt_path": "/data/shaoshitong/search-e1-retriever-analysis-20261007/final-eval-audit/final-eval-audit-20261008T021551Z.json"
+}

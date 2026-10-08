@@ -1,0 +1,31 @@
+{
+  "time": 1791424295.964007,
+  "run_id": "914bfff786c84ede8d82414dff65f60e",
+  "controller_pid": 2459676,
+  "uid": 1005,
+  "child_pid": 3960546,
+  "child_pgid": 3960546,
+  "argv": [
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "-m",
+    "search_e1.rollout",
+    "--model",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged",
+    "--data",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/test.jsonl",
+    "--output",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl",
+    "--k",
+    "1",
+    "--backend",
+    "vllm",
+    "--workers",
+    "8",
+    "--temperature",
+    "0",
+    "--retriever-url",
+    "http://10.120.17.101:18004/retrieve"
+  ],
+  "log_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/preparation-3-final-test.log",
+  "scope": "Only this new preparation-3 stage and E1_RUN_ID descendants; never another job"
+}

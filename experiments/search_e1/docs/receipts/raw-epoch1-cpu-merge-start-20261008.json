@@ -1,0 +1,22 @@
+{
+  "time": 1791426148.5052428,
+  "source": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/source/raw-epoch1-eval-20261008/merge_raw_epoch1_cpu.py",
+  "source_sha256": "f4145180ac6a4b9dab5cbb717052439d3aa7c04bc287c4e3c330c78a0c79b97e",
+  "tmux": "e1-raw-epoch1-merge-cpu-20261008",
+  "log": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/logs/raw-epoch1-cpu-merge-20261008.log",
+  "environment": {
+    "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+    "HF_HOME": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/hf-cache",
+    "HF_DATASETS_CACHE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/hf-datasets",
+    "XDG_CACHE_HOME": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/cache",
+    "TMPDIR": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/tmp",
+    "HF_HUB_OFFLINE": "1",
+    "HF_DATASETS_OFFLINE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "CUDA_VISIBLE_DEVICES": "",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "parent_baseline_evaluation_pid": 3960546,
+  "original_run_id": "914bfff786c84ede8d82414dff65f60e",
+  "scope": "CPU-only merge preparation; original seven-benchmark GPU workers unchanged; no raw GPU evaluator started"
+}

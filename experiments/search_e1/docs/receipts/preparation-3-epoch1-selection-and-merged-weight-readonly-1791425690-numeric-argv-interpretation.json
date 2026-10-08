@@ -1,0 +1,138 @@
+{
+  "best_adapter_sha256": "8cbebc6cb10203bf93a2c8b7271d31020ab1d1e7f1958a6f94f5890af3206c3d",
+  "best_equals_initial_actual_sha": true,
+  "best_loraB_all_zero": true,
+  "boundary": "Observed one-run aggregate native512 decline, not NaN/inf collapse, a statistical significance claim, a general verdict on OPSD, or a completed seven-benchmark result. Original source100/source GRPO optimizer is not resumed.",
+  "corrected_final_budget_scope": {
+    "k_values": [
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1"
+    ],
+    "parent_pid": 3960546,
+    "parent_ppid": 2459676,
+    "passed": true,
+    "raw_temperature_argv_values": [
+      "0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+    ],
+    "reason": "Argparse float0 serializes as string0.0 in eight child argv entries and string0 in launcher argv. Values are numerically identical; no temperature or budget changed. Immutable original CPU receipt retains the checker false finding; this separate receipt compares parsed numeric values with all UID/run/PPID/model/GPU ownership evidence. No runtime or process was changed.",
+    "worker_gpu_ids": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "worker_pids": [
+      3960643,
+      3960647,
+      3960648,
+      3960649,
+      3960650,
+      3960651,
+      3960652,
+      3960653
+    ]
+  },
+  "created_unix": 1791425942.346266,
+  "current_final_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged",
+  "current_final_phase": "OPSD100_PREPARATION3_FINAL_SEVEN_BENCHMARK_EVALUATION",
+  "epoch1_adapter_sha256": "8eef75aafa06eb98dc21a6b0ab85195800fc373692d633faa0ecf461fa45afd0",
+  "epoch1_changed_tensor_count": 504,
+  "epoch1_finite": true,
+  "history_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/history.json",
+  "history_sha256": "44b2776b9a278518dc9c459cae0f224e5ed1a5cd47f8da1fc9ace05d836d7aa9",
+  "native512_conditions": {
+    "max_context": 8192,
+    "native_backend": "HF SearchAgent using the same model instance/tokenizer/retriever, greedy temperature0 at baseline and epoch end",
+    "rank_counts": [
+      64,
+      64,
+      64,
+      64,
+      64,
+      64,
+      64,
+      64
+    ],
+    "retriever": "http://10.120.17.101:18004/retrieve",
+    "rng_scope": "Greedy native decoding; no assumption that later vLLM test scores equal native512 scores.",
+    "same_global_function_calls": [
+      "opsd.py:114 baseline _opsd_global_validation(agent, validation, rank, world)",
+      "opsd.py:182 epoch end _opsd_global_validation(agent, validation, rank, world)"
+    ],
+    "selection": "strict em > best, baseline included; reload best_adapter before merge",
+    "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "validation_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+    "validation_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+    "world": 8
+  },
+  "native512_rank_lengths": [
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64
+  ],
+  "native512_validation_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+  "remaining_raw_checks_passed": true,
+  "result": "RAW_EPOCH1_DEGRADATION_AND_SELECTED_BASELINE_CONFIRMED",
+  "schema": "independent-epoch1-selection-publishable-interpretation-v1",
+  "scientific_label": "Current seven-benchmark evaluation reads merged selected baseline, not raw trained adapter_epoch_1. It can report the selection policy outcome but cannot be presented as performance of the trained OPSD weights or a positive OPSD gain. Raw epoch1 checkpoint remains available for separate matched evaluation.",
+  "scope": "Read-only CPU hash/tensor comparison and current process/source inspection. No GPU context, inference/retrieval workload, process stop, job/config/runtime/environment mutation or publisher edit.",
+  "score_comparison": {
+    "baseline_correct": 239,
+    "correct_delta": -36,
+    "n": 512,
+    "percentage_point_delta": -7.03125,
+    "raw_epoch1_correct": 203,
+    "raw_epoch1_training_loss": 0.17748732205277348,
+    "same_conditions_scope": "Same512/nativegreedy/agent/budgets/source100 and same global validation function; model weights are the changed variable. No later vLLM score is directly substituted."
+  },
+  "selection_source_sha256": "61df9cc630bca7466f3edfb06da18ad92ddff1c713bf7c6c4a104ba88672c037",
+  "source_merged_identity": {
+    "all_435_source_tensors_equal_merged_after_bf16_cast": true,
+    "merged_config_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/merged/config.json",
+    "merged_config_sha256": "44edc33861769e737120b9d0c3a24dfa0c695b92cc149c16d94219c92faf719d",
+    "merged_dtype": "bfloat16",
+    "merged_tensors": 434,
+    "missing_only_tied_lm_head": [
+      "lm_head.weight"
+    ],
+    "model_type": "qwen2",
+    "source_FP32_payload_bytes_read": 13588414464,
+    "source_name_or_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "source_tensors": 435,
+    "source_vs_merged_comparison_scope": "Complete actual source weights cast to BF16, as native main/merge loads, versus all merged tensors; missing tied lm_head checked against merged model.embed_tokens.weight. File layouts, dtype and shard counts differ, so not whole-file byte equivalence. This audit newly read full tensor payload values on CPU; it did not claim fresh raw source safetensors file SHA."
+  },
+  "source_raw_receipt": {
+    "actual_audit_end_unix": 1791425859.6909337,
+    "actual_audit_start_unix": 1791425819.4372191,
+    "original_failed_keys": [
+      "final_all8_source_budgets"
+    ],
+    "original_result": "REQUIRES_ATTENTION",
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/preparation-3-epoch1-selection-and-merged-weight-readonly-1791425690.json",
+    "sha256": "5f618b304b05d780c8c6ddd87d67a23f3bf5ea27c8965646adc67a14b2dd23d9"
+  }
+}
