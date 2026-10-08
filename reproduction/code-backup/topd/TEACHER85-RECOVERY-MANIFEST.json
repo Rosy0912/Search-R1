@@ -8,6 +8,10 @@
       "sha256": "bcdffa805d6442dd02e637455f17e2fc6ac6ecf57c44ff3fe1b328dc4efa3439",
       "size": 3775
     },
+    "reproduction/code-backup/topd/loose/hpc3-cpu-io-probe-20261008.sbatch": {
+      "sha256": "63f57214e0df2e7e78b5056f93ff4fdc000ddca8704a3006636db1884f5b4901",
+      "size": 1281
+    },
     "reproduction/code-backup/topd/loose/migrate_topd_to_hpc3_stream.py": {
       "sha256": "1b572db1c21b7707415cd6ae45235a29343e3263f1eb866aaaac75a384910803",
       "size": 12506
