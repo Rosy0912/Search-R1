@@ -25,3 +25,9 @@ root另核文件清单、覆盖、字节数、SHA声明一致与本地实际存�
 为保留真实退出证据，新增辅助入口仅核 live→terminal 的同一 tmux server/socket/pane、单前台 Bash 命令、原 PID/UID/starttick/argv和已发布源码链。节点既有 pane 已启用 remain-on-exit；助手不修改 tmux 选项。只有该同一保留 pane 的实际 dead status0、同一 controller的 COMPLETE200、所有自有后代释放，才可确认这个 controller 的 exit0。历史失败 attempt 不由该状态推断为成功。读取不确定、进程消失或源码兼容问题是 UNKNOWN，需要另查，不能当作训练失败或成功。
 
 没有产生新的 native512 EM；随机 TRAIN reward、loss和状态验收均不表示效果提升。不会恢复旧 M3/M4、旧 GRPO或旧八卡七基准作业，也不会自动追加训练消融。
+
+## 实际 live 来源验收补充
+
+新增终态助手已在 `f6cd787e2040e5c17c5f38ff7fdcba8d26b2f6cb` 提交、推送并逐文件从 FETCH_HEAD 回读相等，清单 SHA 为 `d93c99e9ac099c7a8ba3f6905bb72157d8351b383f156f3a44d3d4ade751ad5b`。独立部署到本实验的新 source 子目录，四源文件、发布票据与未修改完整效果计划均重新读回节点 SHA 相等。2026-10-08 20:41:27 CST，真实 live CLI exit0、accepted，绑定仍 TRAINING 的原控制器720753、前台 Bash720750、tmux server2373025、原socket/pane%70及单前台命令。实际输出原字节 SHA 为 `a9f91f1187231b9139607d221a7893b3e436db41b422ca5f5d28e97ec24b41d0`，独立本地只读复核通过。
+
+live输出没有最终退出码声明；这个 CLI 的 exit0 不等于训练控制器已 exit0。保持这份原字节用于未来 terminal 的明确 SHA 输入，终态另存输出，不能覆盖 live 原件。原部署、配置、三个科学/恢复源版本及 GPU工作均未热改。
