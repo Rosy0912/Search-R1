@@ -1,0 +1,653 @@
+{
+  "schema": "c0-committed-token-clipmass-full-local-aggregation-v1",
+  "accepted": true,
+  "started_unix": 1791495648.070261,
+  "ended_unix": 1791495662.681749,
+  "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+  "variant": "C0",
+  "actual_updates": 100,
+  "pair_exposures": 3012,
+  "outers": [
+    {
+      "outer_index": 0,
+      "pair_exposures": 327,
+      "committed_updates": 11,
+      "cumulative_optimizer_updates": 11,
+      "facts_valid_tokens": 70207,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 70207,
+      "clipped_vocabulary_count": 128,
+      "auxiliary_vocabulary_dump_rows": 2,
+      "hit_token_count": 128,
+      "hit_token_fraction": 0.0018231800247838536,
+      "vocabulary_slots": 10666970752,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.1999657913752195e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 113.97334629297256,
+          "pooled_valid_token_mean": 0.0016233900649931284,
+          "hit_token_mean": 0.8904167679138482,
+          "equal_trajectory_token_mean": 0.0019835432471750113,
+          "maximum_token_mass": 0.9999993443489075
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.00039270577520512267,
+          "pooled_valid_token_mean": 5.5935416013377965e-09,
+          "hit_token_mean": 3.068013868790021e-06,
+          "equal_trajectory_token_mean": 6.961129202519142e-09,
+          "maximum_token_mass": 4.0853254176909104e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.00039270577520512267,
+          "pooled_valid_token_mean": 5.5935416013377965e-09,
+          "hit_token_mean": 3.068013868790021e-06,
+          "equal_trajectory_token_mean": 6.961129202519142e-09,
+          "maximum_token_mass": 4.0853254176909104e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3680093590978883,
+          "equal_trajectory_token_mean": 0.4036150402836711,
+          "native_recorded_equal_trajectory_mean": 0.4036150402836711
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.35958329978722753,
+          "equal_trajectory_token_mean": 0.39324991095471,
+          "native_recorded_equal_trajectory_mean": 0.39324991095471
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 1,
+      "pair_exposures": 312,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 21,
+      "facts_valid_tokens": 69130,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 69130,
+      "clipped_vocabulary_count": 133,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 133,
+      "hit_token_fraction": 0.001923911471141328,
+      "vocabulary_slots": 10503335680,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.2662643949698083e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 117.68335023522377,
+          "pooled_valid_token_mean": 0.0017023484772924022,
+          "hit_token_mean": 0.8848372198137125,
+          "equal_trajectory_token_mean": 0.0019233111228064903,
+          "maximum_token_mass": 1.0
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.0004415025455086674,
+          "pooled_valid_token_mean": 6.386554976257303e-09,
+          "hit_token_mean": 3.319568011343364e-06,
+          "equal_trajectory_token_mean": 7.771787646207284e-09,
+          "maximum_token_mass": 4.006361632491462e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.0004415025455086674,
+          "pooled_valid_token_mean": 6.386554976257303e-09,
+          "hit_token_mean": 3.319568011343364e-06,
+          "equal_trajectory_token_mean": 7.771787646207284e-09,
+          "maximum_token_mass": 4.006361632491462e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3589033851856508,
+          "equal_trajectory_token_mean": 0.39424573014083847,
+          "native_recorded_equal_trajectory_mean": 0.3942457301408384
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.351674924593715,
+          "equal_trajectory_token_mean": 0.38599499178095825,
+          "native_recorded_equal_trajectory_mean": 0.38599499178095825
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 2,
+      "pair_exposures": 296,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 31,
+      "facts_valid_tokens": 55980,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 55980,
+      "clipped_vocabulary_count": 112,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 112,
+      "hit_token_fraction": 0.002000714540907467,
+      "vocabulary_slots": 8505377280,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.3168140143925515e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 99.38648408651352,
+          "pooled_valid_token_mean": 0.00177539271322818,
+          "hit_token_mean": 0.8873793222010136,
+          "equal_trajectory_token_mean": 0.0019292068409099755,
+          "maximum_token_mass": 0.9999997615814209
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.000489463729816875,
+          "pooled_valid_token_mean": 8.743546441887728e-09,
+          "hit_token_mean": 4.3702118733649554e-06,
+          "equal_trajectory_token_mean": 9.481068395959457e-09,
+          "maximum_token_mass": 3.9424812712240964e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.000489463729816875,
+          "pooled_valid_token_mean": 8.743546441887728e-09,
+          "hit_token_mean": 4.3702118733649554e-06,
+          "equal_trajectory_token_mean": 9.481068395959457e-09,
+          "maximum_token_mass": 3.9424812712240964e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.37072681862810225,
+          "equal_trajectory_token_mean": 0.40028328809760655,
+          "native_recorded_equal_trajectory_mean": 0.40028328809760655
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.36252228679664367,
+          "equal_trajectory_token_mean": 0.3911093070309625,
+          "native_recorded_equal_trajectory_mean": 0.39110930703096247
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 3,
+      "pair_exposures": 285,
+      "committed_updates": 9,
+      "cumulative_optimizer_updates": 40,
+      "facts_valid_tokens": 54968,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 54968,
+      "clipped_vocabulary_count": 114,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 114,
+      "hit_token_fraction": 0.0020739339251928395,
+      "vocabulary_slots": 8351618048,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.3650049528701818e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 102.52084389328957,
+          "pooled_valid_token_mean": 0.0018651004928920383,
+          "hit_token_mean": 0.8993056481867506,
+          "equal_trajectory_token_mean": 0.0020170538793433256,
+          "maximum_token_mass": 0.9999997615814209
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.0004645504913714802,
+          "pooled_valid_token_mean": 8.45128968438874e-09,
+          "hit_token_mean": 4.075004310276143e-06,
+          "equal_trajectory_token_mean": 8.517281845991598e-09,
+          "maximum_token_mass": 4.006269955425523e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.0004645504913714802,
+          "pooled_valid_token_mean": 8.45128968438874e-09,
+          "hit_token_mean": 4.075004310276143e-06,
+          "equal_trajectory_token_mean": 8.517281845991598e-09,
+          "maximum_token_mass": 4.006269955425523e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.358774049094488,
+          "equal_trajectory_token_mean": 0.38235526795538666,
+          "native_recorded_equal_trajectory_mean": 0.3823552679553866
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.3491633159288774,
+          "equal_trajectory_token_mean": 0.3714011077847774,
+          "native_recorded_equal_trajectory_mean": 0.3714011077847774
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 4,
+      "pair_exposures": 292,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 50,
+      "facts_valid_tokens": 55161,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 55161,
+      "clipped_vocabulary_count": 91,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 91,
+      "hit_token_fraction": 0.0016497162850564711,
+      "vocabulary_slots": 8380941696,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.0857968388377153e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 80.42034605145454,
+          "pooled_valid_token_mean": 0.0014579203794611146,
+          "hit_token_mean": 0.8837400664995004,
+          "equal_trajectory_token_mean": 0.0015275611572587037,
+          "maximum_token_mass": 0.9999996423721313
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.0003373938343788149,
+          "pooled_valid_token_mean": 6.116528604971174e-09,
+          "hit_token_mean": 3.707624553613351e-06,
+          "equal_trajectory_token_mean": 6.089567502936518e-09,
+          "maximum_token_mass": 4.005597293144092e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.0003373938343788149,
+          "pooled_valid_token_mean": 6.116528604971174e-09,
+          "hit_token_mean": 3.707624553613351e-06,
+          "equal_trajectory_token_mean": 6.089567502936518e-09,
+          "maximum_token_mass": 4.005597293144092e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3382494450443991,
+          "equal_trajectory_token_mean": 0.3690646820871077,
+          "native_recorded_equal_trajectory_mean": 0.3690646820871077
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.33057956600886224,
+          "equal_trajectory_token_mean": 0.36085495879594837,
+          "native_recorded_equal_trajectory_mean": 0.3608549587959483
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 5,
+      "pair_exposures": 295,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 60,
+      "facts_valid_tokens": 57560,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 57560,
+      "clipped_vocabulary_count": 94,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 94,
+      "hit_token_fraction": 0.0016330785267546907,
+      "vocabulary_slots": 8745436160,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.0748463344794457e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 83.88679313659668,
+          "pooled_valid_token_mean": 0.0014573800058477534,
+          "hit_token_mean": 0.8924126929425179,
+          "equal_trajectory_token_mean": 0.0015355614891838828,
+          "maximum_token_mass": 1.0
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.00021561916014211556,
+          "pooled_valid_token_mean": 3.745989578563509e-09,
+          "hit_token_mean": 2.2938208525756976e-06,
+          "equal_trajectory_token_mean": 3.813357043571316e-09,
+          "maximum_token_mass": 3.151774944853969e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.00021561916014211556,
+          "pooled_valid_token_mean": 3.745989578563509e-09,
+          "hit_token_mean": 2.2938208525756976e-06,
+          "equal_trajectory_token_mean": 3.813357043571316e-09,
+          "maximum_token_mass": 3.151774944853969e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3361813482180908,
+          "equal_trajectory_token_mean": 0.3597364595065854,
+          "native_recorded_equal_trajectory_mean": 0.3597364595065854
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.3292184592863766,
+          "equal_trajectory_token_mean": 0.3522106401833058,
+          "native_recorded_equal_trajectory_mean": 0.3522106401833058
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 6,
+      "pair_exposures": 303,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 70,
+      "facts_valid_tokens": 56205,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 56205,
+      "clipped_vocabulary_count": 88,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 88,
+      "hit_token_fraction": 0.0015656970020460814,
+      "vocabulary_slots": 8539562880,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.030497710908594e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 76.47828224301338,
+          "pooled_valid_token_mean": 0.001360702468517274,
+          "hit_token_mean": 0.869071389125152,
+          "equal_trajectory_token_mean": 0.0015803266006545243,
+          "maximum_token_mass": 1.0
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.0003030042057190163,
+          "pooled_valid_token_mean": 5.391054278427476e-09,
+          "hit_token_mean": 3.443229610443367e-06,
+          "equal_trajectory_token_mean": 5.593781426658918e-09,
+          "maximum_token_mass": 4.0060254832496867e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.0003030042057190163,
+          "pooled_valid_token_mean": 5.391054278427476e-09,
+          "hit_token_mean": 3.443229610443367e-06,
+          "equal_trajectory_token_mean": 5.593781426658918e-09,
+          "maximum_token_mass": 4.0060254832496867e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.33478055802683127,
+          "equal_trajectory_token_mean": 0.3580162795581761,
+          "native_recorded_equal_trajectory_mean": 0.35801627955817616
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.32857473450163754,
+          "equal_trajectory_token_mean": 0.35041410590935235,
+          "native_recorded_equal_trajectory_mean": 0.35041410590935246
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 7,
+      "pair_exposures": 303,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 80,
+      "facts_valid_tokens": 55409,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 55409,
+      "clipped_vocabulary_count": 84,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 84,
+      "hit_token_fraction": 0.0015159992059051778,
+      "vocabulary_slots": 8418621824,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 9.977880198933615e-09,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 76.73136007785797,
+          "pooled_valid_token_mean": 0.0013848176303102018,
+          "hit_token_mean": 0.9134685723554521,
+          "equal_trajectory_token_mean": 0.0015615324448549055,
+          "maximum_token_mass": 0.9999995231628418
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.00027777095246683185,
+          "pooled_valid_token_mean": 5.013101706705262e-09,
+          "hit_token_mean": 3.3067970531765696e-06,
+          "equal_trajectory_token_mean": 6.582271831617668e-09,
+          "maximum_token_mass": 4.172907574684359e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.00027777095246683185,
+          "pooled_valid_token_mean": 5.013101706705262e-09,
+          "hit_token_mean": 3.3067970531765696e-06,
+          "equal_trajectory_token_mean": 6.582271831617668e-09,
+          "maximum_token_mass": 4.172907574684359e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.33487210564699693,
+          "equal_trajectory_token_mean": 0.35203680713341207,
+          "native_recorded_equal_trajectory_mean": 0.3520368071334122
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.3276569618070198,
+          "equal_trajectory_token_mean": 0.34373601741760296,
+          "native_recorded_equal_trajectory_mean": 0.34373601741760296
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 8,
+      "pair_exposures": 295,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 90,
+      "facts_valid_tokens": 54923,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 54923,
+      "clipped_vocabulary_count": 100,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 100,
+      "hit_token_fraction": 0.0018207308413597217,
+      "vocabulary_slots": 8344780928,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 1.1983538077609794e-08,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 90.67078259587288,
+          "pooled_valid_token_mean": 0.0016508709028252805,
+          "hit_token_mean": 0.9067078259587288,
+          "equal_trajectory_token_mean": 0.0019534915194726883,
+          "maximum_token_mass": 1.0
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.0003622318923719648,
+          "pooled_valid_token_mean": 6.595267781657317e-09,
+          "hit_token_mean": 3.6223189237196483e-06,
+          "equal_trajectory_token_mean": 8.018590412679879e-09,
+          "maximum_token_mass": 4.130652450839989e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.0003622318923719648,
+          "pooled_valid_token_mean": 6.595267781657317e-09,
+          "hit_token_mean": 3.6223189237196483e-06,
+          "equal_trajectory_token_mean": 8.018590412679879e-09,
+          "maximum_token_mass": 4.130652450839989e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3367162082587098,
+          "equal_trajectory_token_mean": 0.3586594043260757,
+          "native_recorded_equal_trajectory_mean": 0.3586594043260757
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.32819478230178767,
+          "equal_trajectory_token_mean": 0.34878013046319706,
+          "native_recorded_equal_trajectory_mean": 0.34878013046319706
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    },
+    {
+      "outer_index": 9,
+      "pair_exposures": 304,
+      "committed_updates": 10,
+      "cumulative_optimizer_updates": 100,
+      "facts_valid_tokens": 53531,
+      "valid_tokens_exact_match": true,
+      "valid_token_rows": 53531,
+      "clipped_vocabulary_count": 77,
+      "auxiliary_vocabulary_dump_rows": 0,
+      "hit_token_count": 77,
+      "hit_token_fraction": 0.0014384188600997552,
+      "vocabulary_slots": 8133286016,
+      "vocabulary_sizes": [
+        151936
+      ],
+      "pooled_vocabulary_fraction": 9.467268192526823e-09,
+      "masses": {
+        "student": {
+          "sum_over_valid_tokens": 70.01751297712326,
+          "pooled_valid_token_mean": 0.0013079806649814736,
+          "hit_token_mean": 0.9093183503522502,
+          "equal_trajectory_token_mean": 0.0013672946196984094,
+          "maximum_token_mass": 1.0
+        },
+        "teacher": {
+          "sum_over_valid_tokens": 0.00030195916965985927,
+          "pooled_valid_token_mean": 5.640828111932512e-09,
+          "hit_token_mean": 3.9215476579202505e-06,
+          "equal_trajectory_token_mean": 5.450670071651989e-09,
+          "maximum_token_mass": 4.539781002677046e-05
+        },
+        "mixture": {
+          "sum_over_valid_tokens": 0.00030195916965985927,
+          "pooled_valid_token_mean": 5.640828111932512e-09,
+          "hit_token_mean": 3.9215476579202505e-06,
+          "equal_trajectory_token_mean": 5.450670071651989e-09,
+          "maximum_token_mass": 4.539781002677046e-05
+        }
+      },
+      "loss": {
+        "raw": {
+          "pooled_valid_token_mean": 0.3305437753407543,
+          "equal_trajectory_token_mean": 0.34583156334499315,
+          "native_recorded_equal_trajectory_mean": 0.3458315633449932
+        },
+        "post": {
+          "pooled_valid_token_mean": 0.3240183566638226,
+          "equal_trajectory_token_mean": 0.33909690259022335,
+          "native_recorded_equal_trajectory_mean": 0.33909690259022335
+        }
+      },
+      "all_inspected_metric_fields_finite": true
+    }
+  ],
+  "totals": {
+    "valid_token_rows": 583074,
+    "clipped_vocabulary_count": 1021,
+    "auxiliary_vocabulary_dump_rows": 2,
+    "hit_token_count": 1021,
+    "hit_token_fraction": 0.001751064187393024,
+    "vocabulary_slots": 88589931264,
+    "vocabulary_sizes": [
+      151936
+    ],
+    "pooled_vocabulary_fraction": 1.1525011764117943e-08,
+    "masses": {
+      "student": {
+        "sum_over_valid_tokens": 911.7691015899181,
+        "pooled_valid_token_mean": 0.0015637279343443853,
+        "hit_token_mean": 0.8930157704112812,
+        "equal_trajectory_token_mean": 0.001738896627926613,
+        "maximum_token_mass": 1.0
+      },
+      "teacher": {
+        "sum_over_valid_tokens": 0.0035862017566407477,
+        "pooled_valid_token_mean": 6.150508780430524e-09,
+        "hit_token_mean": 3.5124405060144442e-06,
+        "equal_trajectory_token_mean": 6.8226542548617564e-09,
+        "maximum_token_mass": 4.539781002677046e-05
+      },
+      "mixture": {
+        "sum_over_valid_tokens": 0.0035862017566407477,
+        "pooled_valid_token_mean": 6.150508780430524e-09,
+        "hit_token_mean": 3.5124405060144442e-06,
+        "equal_trajectory_token_mean": 6.8226542548617564e-09,
+        "maximum_token_mass": 4.539781002677046e-05
+      }
+    },
+    "loss": {
+      "raw": {
+        "pooled_valid_token_mean": 0.34762320439717015,
+        "equal_trajectory_token_mean": 0.37264755582515885
+      },
+      "post": {
+        "pooled_valid_token_mean": 0.33995930056164514,
+        "equal_trajectory_token_mean": 0.363949435585095
+      }
+    },
+    "all_inspected_metric_fields_finite": true
+  },
+  "scope": "Only explicitly referenced token logs of 100 committed updates, no failed attempt logs, no model/GPU/Node access.",
+  "definitions": {
+    "hit_token_fraction": "Number of policy-valid token positions with clipped_vocabulary_count > 0 divided by all valid token positions; not a vocabulary fraction.",
+    "pooled_vocabulary_fraction": "Sum of clipped vocabulary contributions divided by sum of vocabulary_size over policy-valid positions.",
+    "mass": "Sum of student/teacher/fixed-target probabilities on the same component > 10 hit set, at a single token. Sums across tokens are exposure sums, not one probability.",
+    "means": "Pooled token mean uses all valid tokens; equal-trajectory mean averages each trajectory token mean with weight 1; hit-token mean uses only hit positions.",
+    "C0_mixture_alias": "C0 use_mixture=false: recorded mixture is fixed teacher target, and teacher and mixture masses were exactly equal on all inspected rows.",
+    "raw_and_post": "Logged vocabulary sums include positive and negative components. Source clips only upper components at 10. Negative component sum/count was not logged separately and cannot be reconstructed.",
+    "limitations": "Recorded forward metrics and hashes verified, not reconstruction of logits, gradients, full vocabulary probabilities, generation quality, causal effects, or heldout512 accuracy."
+  },
+  "finite_scope": "All explicitly inspected scalar metric fields; top32 arrays and auxiliary full-vocabulary dump payload files not revalidated.",
+  "native_chunked_vs_local_sequential_recorded_mean_max_absolute_error": {
+    "raw": 4.440892098500626e-16,
+    "post": 4.440892098500626e-16
+  },
+  "native_mean_comparison_tolerance": {
+    "relative": 2e-06,
+    "absolute": 2e-06
+  },
+  "referenced_files": {
+    "update_receipts": 100,
+    "token_logs": 3012,
+    "total_files": 3112,
+    "total_bytes": 1443707199
+  },
+  "input_digests": {
+    "facts": {
+      "sha256": "b519d7d3a540e3fbea27f93a7e9d6e0149b268714af1fe7f33ec614574bcb982",
+      "bytes": 433659
+    },
+    "backup_inventories": [
+      {
+        "source_inventory": {
+          "sha256": "0a6e920b3c4d626f771458f9579eefe82cb9ee72e394a98ba19ede0686c0a2f6",
+          "bytes": 2091545
+        },
+        "local_inventory": {
+          "sha256": "9067b565619f4737750fa776553522716f1f71c58f96c8d4099f78ed7b496108",
+          "bytes": 2355904
+        }
+      },
+      {
+        "source_inventory": {
+          "sha256": "399cbd8b36fd3fa3dabfe211c23c6461fa6e6af3e77b1077cdfc3a87c37fbcb4",
+          "bytes": 519451
+        },
+        "local_inventory": {
+          "sha256": "5bfd846f6de9be03449ac1c1cdb97f78ba9a488204967d3344e6da8de88cda3e",
+          "bytes": 585103
+        }
+      }
+    ]
+  },
+  "actual_exit_code": 0,
+  "privacy": "Aggregate numbers and content digests only; no raw/private paths, question bodies, token text, IDs or logits."
+}

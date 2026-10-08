@@ -1,0 +1,32 @@
+{
+  "schema": "c0-recorded-clipmass-publication-asset-manifest-v1",
+  "actual_aggregation_rc0": true,
+  "files": [
+    {
+      "path": "control/c0_clipmass_recorded_20261009/aggregate_clipmass.py",
+      "bytes": 25660,
+      "sha256": "57191ac9f97d35bf00ac5d54a1187e82078a52b41d1ca7b9c015fbf99d89f7a7"
+    },
+    {
+      "path": "control/c0_clipmass_recorded_20261009/finalize_clipmass_proof.py",
+      "bytes": 8966,
+      "sha256": "0a266d9410237acf4c0a2e49828c737ff6eeb4a1ccaef8a1a21301c32808f705"
+    },
+    {
+      "path": "reports/c0-ten-outer-recorded-clipmass-20261009/C0-ten-outer-clipmass-publication.json",
+      "bytes": 25147,
+      "sha256": "dc8e1928de1a6a526c9fdc64e093eb35dd9154873dbb0ea7a174c1775537b674"
+    },
+    {
+      "path": "reports/c0-ten-outer-recorded-clipmass-20261009/C0-ten-outer-clipmass.csv",
+      "bytes": 5274,
+      "sha256": "c292f3c2dd8fd6421fce4edd59b04ce747879d6506c0790b6fe78007a66e3af8"
+    },
+    {
+      "path": "reports/c0-ten-outer-recorded-clipmass-20261009/C0-clipmass-notes.zh.md",
+      "bytes": 3657,
+      "sha256": "18eb29112139f162e23e01af70aee5da77b3b0e6ea8f9dc9f221076aa4ea8339"
+    }
+  ],
+  "scope": "3012 committed trajectories/583074 valid positions/100 Adams; recorded forward only, no heldout or causal claim"
+}
