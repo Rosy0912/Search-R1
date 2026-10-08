@@ -1,6 +1,6 @@
 # Preparation3 OPSD配对与教师语义只读审查（2026-10-08）
 
-实际源根：`/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/`。下述行号对应本目录保留的实际冻结源码副本。仅CPU文件读取、AST比较与一次pairs流式聚合；没有GPU、模型推理、检索请求、运行修改或publisher编辑。
+实际源根：`/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/`。下述行号对应本地 `/Users/shaoshitong/Documents/Codex/2026-10-03/xia/analysis-output/prep3-pair-mechanism-review-20261008/` 保留的实际冻结源码副本。仅CPU文件读取、AST比较与一次pairs流式聚合；没有GPU、模型推理、检索请求、运行修改或publisher编辑。
 
 ## 已产生结果与归因边界
 
