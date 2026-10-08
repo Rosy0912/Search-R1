@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "run_id": "2bf891f3543e46cda2004a08e43f5a0d",
+  "source_commit": "102f6553fd2bca2189cead2478e90aa2e26eacca",
+  "observed_unix": 1791431446.280009,
+  "failure": "Train shell overwrote bound short Ray root with long BASE/ray before Ray initialization",
+  "initial_probe_adoption_completed": true,
+  "probe_admission_completed": true,
+  "trainer_attempted": true,
+  "actual_complete_outers": 0,
+  "actual_adam_writes_per_rank": 0,
+  "cleanup_status": {
+    "checked_unix": 1791431414.177593,
+    "cleaned": true,
+    "scope": "only recorded project PID births and private local corpus cache"
+  },
+  "all_owned_registered_births_gone": true,
+  "observation_sha256": "a8803697499f3b82fbbf4cdfe7d3dd122a9b583f17666b703053aa66d43e564f",
+  "old_source_logs_preserved": true,
+  "no_new_tests": true,
+  "goal_complete": false
+}
