@@ -8,6 +8,10 @@
 
 原轨迹普遍存在非最终 span 的字面标签栈缺陷，同时原最终 span 的严格回答仍可能有效；不能用整条 transcript 的标签栈统计代替 EM，也不能说这些缺陷由 OPSD 首次产生。已保留每个 sibling、实际 selected reference/student 来源与重复来源候选；下一步角色审计只统计每题原算法实际选中的两条，而不把所有 sibling 的结构统计误称教师参考统计。
 
+实际选中角色的补审也已完成，每题只计一条 reference 和一条 student。100,974 条参考均为严格正确、最终 span 有效；但其中 100,962 条（99.99%）在较早非最终作者 span 留有未闭合 `<think>`，不能因此把参考 EM 改判为错误。这个结构在源策略生成的参考中已经存在，既不是 OPSD 新引入的事实，也不证明它导致退化；它提供了需要在教师反事实中重点核查的提示结构线索。参考平均搜索 1.432 次、完整 response 平均 823.37 token，学生分别为 1.790 次、1,052.15 token；这些 token 包含 observation，不是策略 token。
+
+44,079 条原选中错误学生中，43,744 条最终协议有效但 gold 不匹配，335 条最终行动无效。因此原训练错误学生并非主要由格式失败构成。新 epoch 模型是否扩大格式失败或减少实际搜索，必须由其真实新生成轨迹另行统计，不能把原样本结构直接当成训练后变化。角色结果 SHA `ff1e1bb84054f5f2d9ad0535425ba8266a39ac75ff8049406dc2aaf663edba6f`，单独保留在 `docs/receipts/opsd-selected-role-full-audit-result-20261008.json`。
+
 这一结果支持“完整 transcript 选择与策略文本选择不同”和“排除全失败题”的机制风险；检索、forced 提示和作者 information 各自的影响尚未分离。它尚未证明特权教师在错误前缀上的纠错能力，也尚未定位性能下降发生的更新。192 题固定权重诊断继续完成；随后优先用同一原 native512、同生成协议评估 source100/update1/update5/epoch1，先复现 239/512 与 203/512，再判断最早已有检查点的下降。教师四条件原前缀反事实安排在其后，不新增训练。
 
 证据：`docs/receipts/opsd-selection-full-audit-result-20261008.json`，SHA `a16a706ea37405fd58864736b1be9ba9e60eaf73247e5cc8facdbe5bf208fdec`。原始 QA/轨迹/SQLite 均保留在节点私有目录，未放入 Git。该审计不代替 512 或七基准评测。
