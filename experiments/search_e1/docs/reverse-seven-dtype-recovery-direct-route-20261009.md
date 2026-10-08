@@ -11,3 +11,17 @@ PEFT0.13.2 新增 `outer_old` adapter继承BF16，而共同初始及轮次checkp
 修复后的每组仍十个在线outer，随后立即原协议native512。新真实更新、八rank状态、完整十轮以及效果分别验收；未启动或后台初始化不能冒充完成。三个窄控制边界测试、两个overlay测试、十三备份固定身份测试各自通过，不重复整套历史fixture，也不新采样测试后归零。
 
 独立outer-end备份队列只处理已完成的固定checkpoint/完成票据，空间/网络失败写BACKLOG，不能停止或阻塞训练。旧CP89本地完整校验已完成；旧CP374和full192传输因代理中断保留partial，后续按直连独立恢复，不把包装进程0误称传输成功。HKUST4 archive原自有4–7继续，其他进程不触碰。
+
+## 实际恢复验收
+
+第二个外部driver77c27898在训练子进程启动前返回2：原显存observer的PID/UID/starttick/argv/run均未变化，但旧driver退出后其PPID变为1。独立964d3c7控制副本绑定这次driver-start、原pane%72真实rc2和退出身份，仅更新动态角色中的实时PPID，原binding、科学配置和完整门禁保留。538目录和失败记录保留。
+
+实际新driver为1a1850f798cc4dffb897ce6d0ac4d1da，tmux e1-reverse-seven-observer-1a1850f7-20261009，pane%73；C0控制器1701833/UID1005/starttick927513763，仍使用原runbfc195746b6d41aaa74db5ac4d7a8be7。它复用2560轨迹、327对及教师诊断，八rank实际outer-old加载receipt全部接受：504参数加载前转FP32，输入/载入摘要精确一致，当前adapter未变。
+
+原冻结CPU状态读取入口实际rc0：CP1 manifest b958d0de4a1c9a818bb462afbc1ac9fe44cc15a50f3a6397a5d7f97f19ff07d6，CP5 manifest 347cd199817b20529c7d2413ee83bde72554f7c21eae687b3ef47e6d566d40c2。两个检查点504张量均FP32/finite，相对共同初始全部改变；八rank绑定的完整共享Adam实读step1/5、完整摘要一致，独立rank RNG/scaler/cursor均实读。读取进程未初始化CUDA。这是五更新运行验收，尚不是十outer或512效果。
+
+后续真实快照已经OUTER_COMPLETE：首outer提交11次Adam，CP11 manifest 201f0013c5eff5307ac72d8c493743a94373d47b8de2f85fe2643724666e52a3；该后续CP只有原生提交及文件SHA观察，不冒充已独立数值实读。首outer原2560采样没有重复，也没有恢复GRPO Adam。继续同一driver完成C0十个outer及native512，再C1/M/R/W/P/J，不恢复旧200、旧八卡baseline/raw7、M3/M4或GRPO。
+
+实际训练overlay538ac99、外部角色恢复964d3c7、不可变输入74d0cdf分别保留。最新文档commit不代替实际执行身份。新源码/配置均先推送并从FETCH_HEAD逐文件回读，再独立部署。
+
+full192已经以物理网卡直连的只读rsync续传，保留partial、无delete；CP374旧partial和原节点资产保留。独立七组outer-end备份的空间/网络问题写BACKLOG，不成为训练启动或前进条件。
