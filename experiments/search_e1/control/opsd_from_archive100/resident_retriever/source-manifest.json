@@ -1,0 +1,99 @@
+{
+  "schema": "resident-source-package-v1",
+  "status": "LOCAL_SOURCE_READY_UNDEPLOYED_UNACTIVATED_UNADMITTED",
+  "created_at_unix": 1791431717.391642,
+  "files": {
+    "README.md": {
+      "bytes": 7099,
+      "sha256": "5ddd48e6cf2b21bf21152db7377c2376e17b7a81c3c08f0204ef93fd095deced"
+    },
+    "candidate-config.json": {
+      "bytes": 1795,
+      "sha256": "383cf9ddadd402627cbc091a8be3bba40e184e670a1a10d4f48189d6eb8ff6e2"
+    },
+    "cpu_fixture.py": {
+      "bytes": 2889,
+      "sha256": "b26fd4d5fb506d836cb6e0b0107cbd2160161d10e1dafbf107247e14f56078ce"
+    },
+    "full_live_gate.py": {
+      "bytes": 19373,
+      "sha256": "612adf9934b4e4a917c18f7929e1ad36f154f0f15fc743c2c1603fd38e3f6fde"
+    },
+    "launch_cpu.py": {
+      "bytes": 1526,
+      "sha256": "9e3d4251c7688d33d1ed8eefee908f20a19ab7288b16147ad98912aa97b4a3e5"
+    },
+    "memory_observer.py": {
+      "bytes": 4233,
+      "sha256": "cdf00deab5e26ec31811797c204d7d6f3fde9824ff0b1c90b4bf383797c31eb1"
+    },
+    "operator_trace.py": {
+      "bytes": 473,
+      "sha256": "78668aa2e19cabe72e27e227e8e72419bf1d64ccb1aa472edcb68c7230ccec79"
+    },
+    "prepare_candidate.py": {
+      "bytes": 7584,
+      "sha256": "fde01c5d3dc850fcb7f739afd3f607cef2c48bcd80675c6a97b5dc8ff7446814"
+    },
+    "request_queue.py": {
+      "bytes": 2620,
+      "sha256": "8253466108fab13b5827d55b1b5598bb74ddedc3bc4805a7f22013c5122e8cc6"
+    },
+    "resident_scan.py": {
+      "bytes": 7405,
+      "sha256": "7bf439df7c0894139db40d9b55384157ff58ec1d2ce6b6ee79cb276bc5c62943"
+    },
+    "server.py": {
+      "bytes": 22102,
+      "sha256": "bfd4d3de29e2c8fa4c58268e719bf5590fca582413ce4e2719b133c7b616f283"
+    },
+    "torch_streaming_flat.py": {
+      "bytes": 2613,
+      "sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca"
+    }
+  },
+  "syntax_compile_all_python": true,
+  "arithmetic_expression_ast_identical": [
+    "distances",
+    "merged_s",
+    "merged_i"
+  ],
+  "full_cpu_fixture_run": false,
+  "full_gpu_gate_run": false,
+  "plan": [
+    {
+      "device_rank": 0,
+      "tile_first": 0,
+      "tile_stop": 161,
+      "row_first": 0,
+      "row_stop": 5275648,
+      "vector_mib": 15456.0
+    },
+    {
+      "device_rank": 1,
+      "tile_first": 161,
+      "tile_stop": 322,
+      "row_first": 5275648,
+      "row_stop": 10551296,
+      "vector_mib": 15456.0
+    },
+    {
+      "device_rank": 2,
+      "tile_first": 322,
+      "tile_stop": 482,
+      "row_first": 10551296,
+      "row_stop": 15794176,
+      "vector_mib": 15360.0
+    },
+    {
+      "device_rank": 3,
+      "tile_first": 482,
+      "tile_stop": 642,
+      "row_first": 15794176,
+      "row_stop": 21015324,
+      "vector_mib": 15296.33203125
+    }
+  ],
+  "original_scanner_sha256": "9b5e50257261ce16d363e58900465ad154d6158f014b7c9707e9880f0a2e84ca",
+  "gpu_scientific_semantics_gate_still_required": true
+}
