@@ -1,0 +1,54 @@
+{
+  "schema": "opsd-ablation-source-publication-v1",
+  "accepted": true,
+  "branch": "search-e1",
+  "source_commit": "275aa9bd561f6c9d9694c097132d82204062f749",
+  "remote_readback_sha": "275aa9bd561f6c9d9694c097132d82204062f749",
+  "source_manifest_sha256": "8be3fa8be436873aa17bb2e5c200af488163e56edaeac0d801f172e78ff0e856",
+  "run_ids": {
+    "C0": "bfc195746b6d41aaa74db5ac4d7a8be7",
+    "C1": "a1a56efd32e5456d8c6813454975e38f",
+    "J": "f40bcfd2693a4c36a154de5fd81a475d",
+    "M": "b255c1eb72e84ca0bd6315e57e3527d0",
+    "P": "c0a425974d2142b1955429c85a4fb9f3",
+    "R": "779e853e37b540e8847336c142129377",
+    "W": "dc8a4e85822547548c0f79be4c87e13e"
+  },
+  "files": [
+    {
+      "path": "experiments/search_e1/control/opsd_ablation_compact_cleanup_recovery_v1/README.md",
+      "bytes": 4962,
+      "sha256": "aff1fdcdb1878e1b68c31d5d0ebe2bf17831af849e5d97658945d1c1588a2b28",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/control/opsd_ablation_compact_cleanup_recovery_v1/recover.py",
+      "bytes": 12194,
+      "sha256": "4b7259392e61ff5ecb2200fed8af2bd859550cdbc8fd01dd9f0547b821de38fd",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/control/opsd_ablation_compact_cleanup_recovery_v1/test_recovery.py",
+      "bytes": 4491,
+      "sha256": "4277a4b8519d008b218f8af0bf619400fcbfeb3b405c44d1f172e50d669777d4",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/control/opsd_ablation_compact_cleanup_recovery_v1/source-manifest.json",
+      "bytes": 503,
+      "sha256": "8be3fa8be436873aa17bb2e5c200af488163e56edaeac0d801f172e78ff0e856",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/docs/reverse-seven-dtype-recovery-direct-route-20261009.md",
+      "bytes": 19647,
+      "sha256": "5daec01249b01e15cfff5f7c1914bfb6b8e0bd5e93216a0351652c48dc9be690",
+      "equal": true
+    }
+  ],
+  "node_deployment_required": false,
+  "scope": "Mac-only external empty-directory cleanup recovery; unchanged core4d format/state and original Node V2 byte stream",
+  "actual_push_returncode": 0,
+  "actual_fetch_returncode": 0,
+  "observed_unix": 1791492402.810129
+}
