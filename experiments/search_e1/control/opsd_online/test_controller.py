@@ -127,7 +127,16 @@ class OnlineCPUFixtures(unittest.TestCase):
     def test_model_metadata_detects_post_hash_mutation(self):
         model=self.root/'model';model.mkdir();path=model/'weights';path.write_bytes(b'initial')
         identity=dict(path=str(model),files=[cp.fileproof(path)])
-        self.assertTrue(sampling.verify_model_metadata(identity));path.write_bytes(b'changed')
+        self.assertTrue(sampling.verify_model_metadata(identity))
+        # Same-size writes can occur within one filesystem timestamp tick. This
+        # tests metadata continuity, not a promise of full-byte hashing per load.
+        path.write_bytes(b'changed payload with a different size')
+        self.assertNotEqual(path.stat().st_size,identity['files'][0]['bytes'])
+        with self.assertRaises(ValueError):sampling.verify_model_metadata(identity)
+        identity=dict(path=str(model),files=[cp.fileproof(path)]);before=path.stat()
+        path.write_bytes(b'X'*before.st_size)
+        os.utime(path,ns=(before.st_atime_ns,before.st_mtime_ns+1_000_000_000))
+        self.assertNotEqual(path.stat().st_mtime_ns,identity['files'][0]['mtime_ns'])
         with self.assertRaises(ValueError):sampling.verify_model_metadata(identity)
 
     def test_merge_rejects_changed_source_before_torch_import(self):

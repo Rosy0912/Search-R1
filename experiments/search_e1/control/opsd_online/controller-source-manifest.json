@@ -10,8 +10,8 @@
   },
   "files": {
     "README.md": {
-      "bytes": 12913,
-      "sha256": "8f10252f5ecfa7502d1c48a1a9d3fcb8c906abd3e5260869e3bbbbb2c56b923f"
+      "bytes": 13380,
+      "sha256": "45b936c5f5be92f55f8c4b82f050936ab70acde24abacc48c575cb090925a03c"
     },
     "candidate-config-template.json": {
       "bytes": 4278,
@@ -38,12 +38,13 @@
       "sha256": "4e9b0ea3d4a88130b536538c2f0f39d756b3f8c10175f9382b3572ae0c339347"
     },
     "test_controller.py": {
-      "bytes": 24585,
-      "sha256": "59c0e3ff09c53d0af424a1b693e87ce6290c2398d86fcc4bb778bd4c82170c5d"
+      "bytes": 25245,
+      "sha256": "bbe0a79e401cb66308bdcdbff9a0870e16e138d0980e24411c366000023266e2"
     }
   },
+  "integration_note": "Post-publication correction only to metadata fixture and documentation; production source unchanged. Node first attempt 70/71 passed; retained failed fixture did not guarantee same-tick Linux timestamp change.",
   "integration_scope": "Actual frozen native rollout HTTP null-effect fixture; request objects/Response/exceptions preserved; private full JSON and protocol diagnostics only; original305 nested QA verified before imports; top32 logging first8192 validpositions per outer only",
-  "recorded_at_utc": "2026-10-08T08:21:21.078906+00:00",
+  "recorded_at_utc": "2026-10-08T08:27:56.404302+00:00",
   "schema": "opsd-online-controller-source-candidate-v2",
   "scope": "Local reviewed candidate subset only, supersedes prior candidate manifest; root full helper manifest required. No Git/deployment/CUDA. Missing human clip/outer/storage/transition approvals remain HOLD."
 }

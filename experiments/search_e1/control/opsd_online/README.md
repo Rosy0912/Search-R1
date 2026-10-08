@@ -12,6 +12,8 @@ Generation uses the original vLLM function: temperature1/top_p1, 8192 context, 5
 
 The first sampler loads raw source100. Later samplers load a CPU BF16 PEFT merge of source100 plus the latest completed raw adapter. This is the original E1 merge method; merged BF16 arithmetic need not be bitwise equal to unmerged training. The chosen identity binds the exact previous checkpoint, cumulative Adam count and adapter tensor digest. There is no best-checkpoint selection. One full CPU SHA scan binds sampling model files, then each actual LLM load and generation checks file inode/size/mtime/ctime continuity before/after. Merged cache files are never silently reused after metadata changes.
 
+Metadata continuity is not a repeated full-byte SHA scan. An in-place overwrite with the same size and identical filesystem timestamps cannot be detected by metadata alone. This controller writes each cache to a new exclusive path, publishes it after completion/hashing, and never rewrites completed cache files during loads. Those controls prevent its own concurrent rewriting, but do not establish OS-level immutability against another process under the same UID.
+
 Native mining keeps at most one pair per question: min-success search/token reference, fail-preferred maximum normalized full-string rapidfuzz Levenshtein student, native first tie, all-success fallback, all-wrong skip. Full2560 trajectories are required before mining. Record P before context/mask checks and K after checks, 0<=K<=P<=512. Training makes ceil(K/32) actual Adam calls, including a partial tail with its real denominator; K0 makes zero calls and no scheduler progression, but still saves a complete initial/current state.
 
 ## Resume and artifacts

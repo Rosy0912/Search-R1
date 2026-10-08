@@ -1,8 +1,8 @@
 {
   "files": {
     "README.md": {
-      "bytes": 12913,
-      "sha256": "8f10252f5ecfa7502d1c48a1a9d3fcb8c906abd3e5260869e3bbbbb2c56b923f"
+      "bytes": 13380,
+      "sha256": "45b936c5f5be92f55f8c4b82f050936ab70acde24abacc48c575cb090925a03c"
     },
     "acceptance.py": {
       "bytes": 15118,
@@ -21,8 +21,8 @@
       "sha256": "4fc2656ad577899f70b8a1c8c26fbb4f2cc873699a24cd9a7f0faddd630937c3"
     },
     "controller-source-manifest.json": {
-      "bytes": 1919,
-      "sha256": "53fdb34b96737fdb51c435eb11fdb765bad4fea236c57de98f42a1d9973c5cea"
+      "bytes": 2154,
+      "sha256": "eb422f0193141ff1ad28f99430432b2bd88749c0f26f88a01e27fbd1430db5e0"
     },
     "controller.py": {
       "bytes": 23704,
@@ -61,8 +61,8 @@
       "sha256": "667e988de8fdebab2627d947d38a533271979819110800c423294c3e3903be8e"
     },
     "test_controller.py": {
-      "bytes": 24585,
-      "sha256": "59c0e3ff09c53d0af424a1b693e87ce6290c2398d86fcc4bb778bd4c82170c5d"
+      "bytes": 25245,
+      "sha256": "bbe0a79e401cb66308bdcdbff9a0870e16e138d0980e24411c366000023266e2"
     },
     "test_independent_review.py": {
       "bytes": 5375,
@@ -102,12 +102,19 @@
     "tests": 71,
     "torch": "2.8.0"
   },
+  "node_cpu_attempt1": {
+    "failed": 1,
+    "failure_kind": "Linux same-tick same-size metadata test assumption; original source and log retained",
+    "passed": 70,
+    "production_code_changed": false,
+    "training_started": false
+  },
   "pending_human_inputs": [
     "KL component clip decision",
     "new online outer-iteration budget",
     "verified HKUST shared output root or explicit HKUST local exception"
   ],
-  "recorded_at_utc": "2026-10-08T08:22:15.373341+00:00",
+  "recorded_at_utc": "2026-10-08T08:27:56.434918+00:00",
   "schema": "opsd-online-helper-source-v1",
   "scope": "Final local source tree; no GPU launch. Five real updates are a separate live acceptance.",
   "specification_sha256": "c8cd882670173d47df03091b98e6aee0be8689d054fd48680ea887aedec61a28"
