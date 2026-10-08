@@ -1,0 +1,29 @@
+{
+  "schema": "c0-protected-0-1-5-full-state-local-backup-v1",
+  "accepted": true,
+  "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+  "variant": "C0",
+  "protected_updates": [
+    0,
+    1,
+    5
+  ],
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs/checkpoints",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c0-protected-0-1-5-closed-backup-20261009/payload",
+  "files": 39,
+  "bytes": 839690517,
+  "actual_rsync_returncode": 0,
+  "inventory_sha256": "4fd937fcc39430177c2e56851b7fee7ac2acfc8472837b8a4a4bb407366539e4",
+  "after_metadata_sha256": "8539e8b3885bf12421932cb9f6cbcedff839cecf9163d4612fe3d4faf41ee6d8",
+  "all_source_fresh_SHA_before": true,
+  "all_source_metadata_stable_after": true,
+  "all_local_full_SHA_match": true,
+  "node_originals_retained": true,
+  "backup_is_training_dependency": false,
+  "no_model_or_GPU": true,
+  "numeric_Adam_acceptance_is_separate": true,
+  "observed_unix": 1791498640.1787992,
+  "private_complete_receipt_sha256": "d61792afff1aaaa10393b59f2be055060cf722adc3182edc58b67cbbdb1d0c54",
+  "operational_source_commit": "6a7aa5b6afc3ead44b1add0a3a415916d193db6a",
+  "scope": "C0 only; future six groups initial/1/5 remain pending; outer-end queue unchanged"
+}

@@ -167,3 +167,8 @@ BF16zero严格239/512（46.6796875%），NQ110/256、Hotpot129/256；C0 raw10严
 BF16 零适配器基线单阶段的全部 588 个文件（33,040,499 bytes）已直连复制并实际 rsync exit0；传输前固定源 SHA、传输后源 metadata、全部本地 member SHA 一致。保留512条完整 native capture、逐rank结果、额外控制、日志和八worker真实退出/释放记录。源节点资产保留。此边界只表示 BF16 phase 已闭合；FP16评测与总controller仍独立继续，不等待本地复制或再次模型测试。必要入口源码已推送为 `d0e16ecc5f0cb7f44d7601744c57117872f07ed8`，未改变训练/评测科学实现。
 
 完成证据见 `receipts/common-bf16-zero-full-raw-local-backup-20261009.json`；私有完整轨迹不纳入Git。
+
+
+C0完整诊断覆盖已从本地闭合原数据对账：teacher自主诊断80题，每轮8题；583074有效policy位置保留标量，81920位置保留四分布top32。全词表预选两个位置、8个NPY，共4862976字节，仅核头/形状及原接受SHA声明，未重算词表概率。这不等同其余六组或全study门禁已完成。
+
+已补齐C0 initial/update1/update5的完整本地状态副本：39文件839690517字节，实际rsync返回0、源成员完整SHA等于原manifest、传后源集合/metadata不变、本地各成员SHA全部一致。其与已有十个outer-end包分别记账，不把数值验收JSON视为权重副本，也不宣称未来六组已备份。原Node资产和八卡流水线均保持；备份没有作为训练/评测启动依赖。操作源码为6a7aa5b，接受票据见docs/receipts/c0-initial-1-5-full-state-local-backup-20261009.json。
