@@ -101,7 +101,7 @@
     "launched_unix": 1791430114.2019298,
     "pid": 968577,
     "start_ticks": 550970551,
-    "same_process_after_five_seconds": true,
+    "same_trainer_after_five_outer_updates": true,
     "launch_stage": "UNCLAIMED_PIPELINE_RETRY_LAUNCHED"
   },
   "recorded_observation": {
