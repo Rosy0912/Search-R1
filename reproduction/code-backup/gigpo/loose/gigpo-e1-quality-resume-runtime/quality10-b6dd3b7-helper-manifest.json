@@ -1,0 +1,62 @@
+[
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/native_gpu_quality10_oracle_v1.py",
+    "relative": "quality10-native-b6dd3b7-v1/native_gpu_quality10_oracle_v1.py",
+    "sha256": "28c135f9f744a61b2f5c8d11560489d682723c7dba2506a8df602ed95af9c588"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/native_gpu_quality10_restore_v1.py",
+    "relative": "quality10-native-b6dd3b7-v1/native_gpu_quality10_restore_v1.py",
+    "sha256": "738f0a7c3f1fd6fdc5a31ae6bf946c1ddf6f31cc9bc8560ae5492d08700fa800"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/native_quality10_v1.sbatch",
+    "relative": "quality10-native-b6dd3b7-v1/native_quality10_v1.sbatch",
+    "sha256": "4764686187b003775128bf4508f1d87a4551bd38df2ae4d5bb26965463d4163a"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/native_run_quality10_v1.py",
+    "relative": "quality10-native-b6dd3b7-v1/native_run_quality10_v1.py",
+    "sha256": "0d1c10fdd777cb95f3404b5a918e08183ed8b520917ceb76ea98914a5da57578"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/owned_runtime_resume_v1.py",
+    "relative": "quality10-native-b6dd3b7-v1/owned_runtime_resume_v1.py",
+    "sha256": "cdfbccea40f30289c0a8d90a171b7e6e3c988b05087e28f6fefe49dcda0c99c6"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/native-v1/resume_final_audit_v1.py",
+    "relative": "quality10-native-b6dd3b7-v1/resume_final_audit_v1.py",
+    "sha256": "592897eb792899f0ae2d72d72c4023d55c2df2ab0a0d00af4c7e58fabfc0d2d9"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/formal_quality10_v1.py",
+    "relative": "quality10-formal-b6dd3b7-v1/formal_quality10_v1.py",
+    "sha256": "2fff998749536c1f97578c05a305ecdf2543e7d537dd35364cb91727fbe986de"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/formal_quality10_v1.sbatch",
+    "relative": "quality10-formal-b6dd3b7-v1/formal_quality10_v1.sbatch",
+    "sha256": "6450ee22162cb8e575475cd8dbb287ab7e115d76cb9de426ce122633a2bc41f8"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/owned_runtime_resume_v1.py",
+    "relative": "quality10-formal-b6dd3b7-v1/owned_runtime_resume_v1.py",
+    "sha256": "cdfbccea40f30289c0a8d90a171b7e6e3c988b05087e28f6fefe49dcda0c99c6"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/quality_final_audit_v1.py",
+    "relative": "quality10-formal-b6dd3b7-v1/quality_final_audit_v1.py",
+    "sha256": "d1794f4277c7bbaca44b891339898f1f4b0f08def81796e75ea0e2236fde6c40"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/ray_audit_resume_v1.py",
+    "relative": "quality10-formal-b6dd3b7-v1/ray_audit_resume_v1.py",
+    "sha256": "dbfcdffa710e92b7396c53df9bf7678cecc73fccdfc169ff62fe720b5b1cd4d6"
+  },
+  {
+    "local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/formal-v1/resume_final_audit_v1.py",
+    "relative": "quality10-formal-b6dd3b7-v1/resume_final_audit_v1.py",
+    "sha256": "592897eb792899f0ae2d72d72c4023d55c2df2ab0a0d00af4c7e58fabfc0d2d9"
+  }
+]
