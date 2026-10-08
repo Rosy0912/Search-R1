@@ -270,18 +270,71 @@ except BrokenPipeError:sys.stdout=open(os.devnull,'w')
 
 
 REMOTE_OBSERVE = r'''
-import json,os,re,time
+import hashlib,json,math,os,re,time
 from pathlib import Path
 intent=json.loads(__import__('sys').stdin.read());base=Path(intent['base'])
 assert str(base)=='/data/shaoshitong/Search-G1-a800-fresh200-'+intent['deployment_id']
 assert re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
-def read(name):
-    path=base/name
+read_limits=[]
+def owned_file(path):
+    path=Path(path);path.relative_to(base)
     if not path.is_file():return None
     assert not path.is_symlink() and path.resolve()==path and path.stat().st_uid==os.getuid()
-    return json.loads(path.read_text())
+    return path.stat()
+def read(name):
+    path=base/name;stat=owned_file(path)
+    if stat is None:return None
+    if stat.st_size>8*1024*1024:read_limits.append(name);return None
+    with path.open('rb') as f:return json.loads(f.read(8*1024*1024+1))
+def number(value):return type(value) in (int,float) and math.isfinite(value)
+def process(record):
+    value=dict(pid=record['pid'],start_ticks=record['start_ticks'],birth_matches=False,state=None,alive=False)
+    try:
+        proc=Path('/proc')/str(record['pid']);text=(proc/'stat').read_text()
+        fields=text[text.rfind(')')+2:].split()
+        matches=int(fields[19])==record['start_ticks']
+        if 'sid' in record:matches=matches and int(fields[3])==record['sid']
+        if 'uid' in record:matches=matches and proc.stat().st_uid==record['uid']==os.getuid()
+        value.update(birth_matches=matches,state=fields[0] if matches else None,
+                     alive=matches and fields[0] not in ('Z','X'))
+    except (FileNotFoundError,ProcessLookupError,PermissionError):pass
+    return value
+def complete_rows(path,info):
+    # Snapshot and stream at most32MiB; never load an entire long-running ledger.
+    stat=owned_file(path)
+    info.update(path=str(path),exists=stat is not None,malformed_complete_lines=0,
+                oversized_lines=0,partial_final_line=False)
+    if stat is None:return
+    end=stat.st_size;start=max(0,end-32*1024*1024);line_limit=1024*1024
+    info.update(file_bytes=end,scan_from_start=start==0,scan_start_byte=start)
+    with path.open('rb') as f:
+        f.seek(start)
+        if start:
+            # A tail begins inside an unknown record; discard its bounded chunks.
+            while f.tell()<end:
+                part=f.readline(min(line_limit+1,end-f.tell()))
+                if part.endswith(b'\n'):break
+                if f.tell()==end:info['partial_final_line']=True
+        while f.tell()<end:
+            raw=f.readline(min(line_limit+1,end-f.tell()))
+            if not raw.endswith(b'\n'):
+                if f.tell()==end:info['partial_final_line']=True;break
+                info['oversized_lines']+=1
+                while f.tell()<end:
+                    part=f.readline(min(line_limit+1,end-f.tell()))
+                    if part.endswith(b'\n'):break
+                    if f.tell()==end:info['partial_final_line']=True
+                continue
+            if len(raw)>line_limit:info['oversized_lines']+=1;continue
+            try:
+                row=json.loads(raw)
+                if not isinstance(row,dict):raise ValueError('Non-object receipt')
+            except (ValueError,UnicodeDecodeError):info['malformed_complete_lines']+=1;continue
+            yield row
+def cumulative_available(info):
+    return info.get('scan_from_start',False) and not info['malformed_complete_lines'] and not info['oversized_lines']
 def diagnostic(path):
-    if not path.is_file():return []
+    if owned_file(path) is None:return []
     with path.open('rb') as f:
         f.seek(max(0,path.stat().st_size-8192));lines=f.read().decode(errors='replace').splitlines()
     selected=[]
@@ -305,31 +358,123 @@ if owned is not None:
     if status:
         result['deployment_stage']=status['stage'];result['failure_type']=status.get('failure_type')
         result['last_command']=status.get('last_command')
+        result['deployment_status_unix']=status.get('observed_unix')
         if status['stage']=='DEPLOYMENT_FAILED_OR_UNCERTAIN' and status.get('last_command')=='prepare-run':
             result['failure_diagnostic']=diagnostic(base/'preparation/prepare-run.log')
     receipt=read('logs/deployment-launch-receipt.json')
     if receipt:
         result.update({k:receipt[k] for k in ('run_id','execution_id','pid','start_ticks','stdout_log','source_commit','source_transport')})
         result.update({k:receipt[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256') if k in receipt})
-        proc=Path('/proc')/str(receipt['pid'])/'stat';matches=False;process_state=None
-        if proc.is_file():
-            text=proc.read_text();fields=text[text.rfind(')')+2:].split()
-            matches=int(fields[19])==receipt['start_ticks'];process_state=fields[0] if matches else None
-        result.update(pipeline_birth_matches=matches,pipeline_process_state=process_state,
-                      pipeline_alive=matches and process_state not in ('Z','X'))
+        identity=process(receipt)
+        result.update(pipeline_birth_matches=identity['birth_matches'],pipeline_process_state=identity['state'],
+                      pipeline_alive=identity['alive'])
+    run=read('logs/run-manifest.json')
+    if run:
+        assert run['source_commit']==intent['source_commit']
+        if receipt:assert run['run_id']==receipt['run_id'] and run['execution_id']==receipt['execution_id']
+        result['run_manifest']={k:run[k] for k in ('run_id','execution_id','source_commit',
+            'training_world_size','completed_updates','train_log','training_physical_indices','auxiliary_physical_indices')}
+        training_log=Path(run['train_log']);training_log.relative_to(base/'logs')
+        stat=owned_file(training_log)
+        result['training_log']=dict(path=str(training_log),exists=stat is not None,
+            bytes=stat.st_size if stat else None,modified_unix=stat.st_mtime if stat else None,
+            exception_diagnostic=diagnostic(training_log))
+        ledger=read('logs/process-ledger.json')
+        if ledger:
+            assert ledger['run_id']==run['run_id']
+            jobs=[]
+            for name,job in list(ledger['jobs'].items())[:32]:
+                assert re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.-]{0,64}',name)
+                path=Path(job['log']);path.relative_to(base/'logs');stat=owned_file(path)
+                jobs.append(dict(name=name,ledger_state=job['state'],leader=process(job['leader']),
+                    exit_code=job.get('exit_code'),log_path=str(path),log_bytes=stat.st_size if stat else None,
+                    log_modified_unix=stat.st_mtime if stat else None,exception_diagnostic=diagnostic(path)))
+            result.update(owned_jobs=jobs,owned_jobs_truncated=len(ledger['jobs'])>32)
     for name,key in (('logs/pipeline-launch-claim.json','pipeline_claimed'),('logs/training-launch-claim.json','trainer_claimed')):
         result[key]=(base/name).is_file()
     pipeline=read('logs/pipeline-status.json')
     if pipeline:
+        if run:assert pipeline['run_id']==run['run_id']
         result['pipeline_stage']=pipeline['stage']
+        result['pipeline_status_unix']=pipeline.get('unix')
         if pipeline['stage'] in ('FAILED','OWNED_CLEANUP_FAILED'):
             result['failure_diagnostic']=diagnostic(base/'logs/deployment-pipeline.log')
-    records=base/'logs/actual-updates.jsonl'
-    if records.is_file():
-        steps=[json.loads(line)['step'] for line in records.read_text().splitlines()]
-        result.update(recorded_completed_outers=len(steps),last_recorded_outer=steps[-1] if steps else 0)
+    if run:
+        updates={};count=0;latest=None;foreign=0
+        for row in complete_rows(base/'logs/actual-updates.jsonl',updates):
+            if row.get('run_id')!=run['run_id'] or type(row.get('step')) is not int or row['step']<1:
+                foreign+=1;continue
+            count+=1;latest=row
+        updates.update(matching_complete_rows=count,identity_or_step_rejected_rows=foreign)
+        result['actual_updates_ledger']=updates
+        exact=cumulative_available(updates) and foreign==0
+        result.update(recorded_completed_outers=count if updates['exists'] and exact else None,
+                      last_recorded_outer=latest['step'] if latest else None)
+        if latest:
+            metric_keys=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss','actor/kl_loss',
+                'actor/ppo_kl','actor/grad_norm','actor/optimizer_steps_this_update',
+                'actor/update_opportunities_this_attempt','actor/skipped_update_opportunities')
+            result['latest_actual_update']=dict(step=latest['step'],metrics={k:latest['metrics'][k]
+                for k in metric_keys if number(latest.get('metrics',{}).get(k))},
+                **{k:latest[k] for k in ('opportunities_processed','actual_optimizer_writes',
+                    'optimizer_writes_before','optimizer_writes_after') if number(latest.get(k))})
+        opportunities=[]
+        assert type(run['training_world_size']) is int and 1<=run['training_world_size']<=8
+        for rank in range(run['training_world_size']):
+            info={};processed=0;written=0;last=None;foreign=0
+            for row in complete_rows(base/'logs'/('optimizer-rank-%d.jsonl'%rank),info):
+                if row.get('run_id')!=run['run_id'] or row.get('rank')!=rank:foreign+=1;continue
+                if row.get('kind')=='OPPORTUNITY' and row.get('processed') is True:
+                    processed+=1;written+=int(row.get('optimizer_write_succeeded') is True);last=row
+            if info['exists']:
+                exact=cumulative_available(info) and foreign==0
+                info.update(rank=rank,identity_rejected_rows=foreign,scanned_processed_opportunities=processed,
+                    processed_opportunities_per_rank=processed if exact else None,
+                    scanned_successful_writes=written,successful_writes_per_rank=written if exact else None,
+                    cumulative_optimizer_writes=last['optimizer_writes_after'] if last and number(last.get('optimizer_writes_after')) else None)
+                opportunities.append(info)
+        result['opportunity_ledgers']=opportunities
+        gpu={};latest=None;count=0;foreign=0;previous=None;first=None;max_gap=None;peaks={}
+        source_sha=hashlib.sha256(json.dumps(run['source_sha256'],sort_keys=True,separators=(',',':'),
+            ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+        producer=run.get('pipeline_identity')
+        if producer is not None:producer={k:producer[k] for k in ('pid','start_ticks','sid','uid')}
+        if producer is None and receipt:
+            producer={k:receipt[k] for k in ('pid','start_ticks','sid')};producer['uid']=os.getuid()
+        physical=run['training_physical_indices']+run['auxiliary_physical_indices']
+        for row in complete_rows(base/'logs'/('gpu-samples-'+run['run_id']+'.jsonl'),gpu):
+            valid=(row.get('run_id')==run['run_id'] and row.get('execution_id')==run['execution_id']
+                and row.get('execution_backend')=='ssh_local' and row.get('role')=='actual_common8_gpu_occupancy'
+                and row.get('source_map_sha256')==source_sha and row.get('sampler_identity')==producer
+                and number(row.get('unix')) and number(row.get('query_started_unix'))
+                and row['query_started_unix']<=row['unix'] and isinstance(row.get('gpus'),list))
+            devices=row.get('gpus',[]) if valid else []
+            valid=valid and len(devices)==len(physical) and all(isinstance(d,dict) and
+                type(d.get('index')) is int and all(number(d.get(k)) for k in ('used_mib','total_mib','util_percent'))
+                and d['total_mib']>0 and 0<=d['used_mib']<=d['total_mib'] and 0<=d['util_percent']<=100 for d in devices)
+            valid=valid and sorted(d['index'] for d in devices)==sorted(physical)
+            if not valid or (previous is not None and row['unix']<previous):foreign+=1;continue
+            if previous is not None:max_gap=max(max_gap or 0,row['unix']-previous)
+            if first is None:first=row['unix']
+            previous=row['unix'];count+=1;latest=row
+            for device in devices:peaks[device['index']]=max(peaks.get(device['index'],0),device['used_mib'])
+        exact=cumulative_available(gpu) and foreign==0
+        gpu.update(matching_sample_count=count,identity_or_scalar_rejected_rows=foreign,
+            cumulative_sample_count=count if gpu['exists'] and exact else None,first_scanned_sample_unix=first,
+            latest_sample_unix=previous,latest_sample_age_seconds=time.time()-previous if previous is not None else None,
+            maximum_scanned_sampling_gap_seconds=max_gap,sampled_run_peak_mib=peaks if exact and count else None,
+            sampled_scanned_peak_mib=peaks if count else None,
+            scope='pipeline lifetime including service startup/calibration; sampled occupancy only',
+            training_claimed=result['trainer_claimed'],pretraining_history_only=not result['trainer_claimed'])
+        if latest:
+            gpu['sampler']=process(producer)
+            gpu['latest_devices']=[dict(physical_index=d['index'],assignment='training' if d['index'] in run['training_physical_indices'] else 'auxiliary',
+                used_mib=d['used_mib'],total_mib=d['total_mib'],util_percent=d['util_percent'],
+                sampled_run_peak_mib=peaks[d['index']] if exact else None) for d in latest['gpus']]
+        result['gpu_samples']=gpu
     log=base/'logs/deployment-pipeline.log'
     if log.is_file():result.update(stdout_log_bytes=log.stat().st_size,stdout_log_modified_unix=log.stat().st_mtime)
+if read_limits:result['oversized_json_documents_skipped']=read_limits
 print('DEPLOYMENT_JSON:'+json.dumps(result),flush=True)
 '''
 
