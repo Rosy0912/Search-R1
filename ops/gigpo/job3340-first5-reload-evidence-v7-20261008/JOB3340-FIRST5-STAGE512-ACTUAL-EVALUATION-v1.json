@@ -1,0 +1,51 @@
+{
+  "job": 3340,
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097",
+  "utc": "2026-10-08T07:36:46.589546+00:00",
+  "original_record": {
+    "actual_new_updates": 5,
+    "commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+    "config_sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996",
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "dataset_files": [
+      {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/validation.parquet",
+        "sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+      }
+    ],
+    "job_id": "3340",
+    "logical_step": 5,
+    "metrics": {
+      "val/answer_format/all": 0.626953125,
+      "val/answer_format/hotpotqa": 0.55078125,
+      "val/answer_format/nq": 0.703125,
+      "val/em/all": 0.177734375,
+      "val/em/hotpotqa": 0.15234375,
+      "val/em/nq": 0.203125,
+      "val/evaluated_count/hotpotqa": 256,
+      "val/evaluated_count/nq": 256,
+      "val/f1/all": 0.23756273441156855,
+      "val/f1/hotpotqa": 0.19365867875358764,
+      "val/f1/nq": 0.2814667900695494,
+      "val/format_rate/all": 0.552734375,
+      "val/format_rate/hotpotqa": 0.44140625,
+      "val/format_rate/nq": 0.6640625,
+      "val/generated_tokens/all": 188.259765625,
+      "val/generated_tokens/hotpotqa": 222.3359375,
+      "val/generated_tokens/nq": 154.18359375,
+      "val/qa_count/all": 512,
+      "val/qa_count/hotpotqa": 256,
+      "val/qa_count/nq": 256,
+      "val/search_calls/all": 1.1796875,
+      "val/search_calls/hotpotqa": 1.26953125,
+      "val/search_calls/nq": 1.08984375,
+      "val/test_score/hotpotqa": 0.15234375,
+      "val/test_score/nq": 0.203125
+    },
+    "phase": "first5_512",
+    "pid": 2017160,
+    "validation_trace_serial": 1
+  },
+  "original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v38-first5-eval-save-records.json",
+  "checkpoint_and_reload_complete": false
+}

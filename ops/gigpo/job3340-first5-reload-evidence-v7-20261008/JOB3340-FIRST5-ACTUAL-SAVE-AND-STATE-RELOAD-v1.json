@@ -1,0 +1,3854 @@
+{
+  "job": 3340,
+  "node": "h100-8",
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097",
+  "utc": "2026-10-08T07:41:17.003096+00:00",
+  "completed_outer_updates": 5,
+  "actual_successful_adam_writes_per_rank": 100,
+  "checkpoint_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5",
+  "manifest": {
+    "identity": {
+      "actual_new_updates": 5,
+      "code_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+      "config_sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996",
+      "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "engine_restart_exact": false,
+      "files": [
+        {
+          "bytes": 6172142750,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_0.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "3a25446b9008badcf9e0c456591636308b7c4d1d98d101f3a38e33e7409ead14",
+            "model_shards_sha256": "3a25446b9008badcf9e0c456591636308b7c4d1d98d101f3a38e33e7409ead14",
+            "optimizer_tensors_sha256": "f7bcfa9150288a8a35f13dd2f58d6659b27ad603d95655a2a50298da31cf49da",
+            "pid": 2017580,
+            "rank": 0,
+            "rng_tensors_sha256": "0cccbfe888a87d5338f5146a18c2cea20c00276221777e603f0c436ac9627741",
+            "scheduler_step": 5,
+            "start_ticks": "2238672198"
+          },
+          "sha256": "016d740cb7115e9163334548b299c5cd985c75fdd0ef3af64b41911df969e1cb"
+        },
+        {
+          "bytes": 6172137438,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_1.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "4b7ab88cdf24b7f08b930862df8978d917277b551853bc252440bb23de8beabc",
+            "model_shards_sha256": "4b7ab88cdf24b7f08b930862df8978d917277b551853bc252440bb23de8beabc",
+            "optimizer_tensors_sha256": "99a5e8112836c331360cb5bd9b77b1ce56f83d982eddec2f60be6d4165672528",
+            "pid": 2017911,
+            "rank": 1,
+            "rng_tensors_sha256": "ba5c422ab79c6ee05dda52037e7432ee8d58e94b40d0bcc72f22b6f8afb101a7",
+            "scheduler_step": 5,
+            "start_ticks": "2238672763"
+          },
+          "sha256": "915aea9e13b936233a8b16ea91503ba17d9ea87598f1bd76a65583554da4864a"
+        },
+        {
+          "bytes": 6172137438,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_2.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "04bae0b239c74d9abb369e398edebb5b94ed0bd376e19ab09e9db2da55cc28b0",
+            "model_shards_sha256": "04bae0b239c74d9abb369e398edebb5b94ed0bd376e19ab09e9db2da55cc28b0",
+            "optimizer_tensors_sha256": "e3a7f0034ce5e9dfdcd57b66a4c551673b78fdda3cce0efba5ea05f458b6b74e",
+            "pid": 2017913,
+            "rank": 2,
+            "rng_tensors_sha256": "ad815a007633c320e31004b6c1d31715fe6f690e778ff41ddab290a1e6cac8ed",
+            "scheduler_step": 5,
+            "start_ticks": "2238672764"
+          },
+          "sha256": "ebc4f0dd60bc63970c3d95ae18fe45b55acca8ca7a35256eafdf18f9bc4f4d26"
+        },
+        {
+          "bytes": 6172138398,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_3.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "8be194d1875f222333eadb1c8a54c7fa2a87c6c82403ceec765baf1e2e51f75e",
+            "model_shards_sha256": "8be194d1875f222333eadb1c8a54c7fa2a87c6c82403ceec765baf1e2e51f75e",
+            "optimizer_tensors_sha256": "0e766c84b4acb1b27181bef4a0ab1073f2c2e7f788b36c46b9b0e7967def9020",
+            "pid": 2017914,
+            "rank": 3,
+            "rng_tensors_sha256": "1165cfddfbc909ce6b89f8545cd548c996059967dc6278ab50d173d47643bb83",
+            "scheduler_step": 5,
+            "start_ticks": "2238672765"
+          },
+          "sha256": "0232a7cbd731c5dbbe5ff181c6c9ccacc54a5551dc648aceab3a42c07649f734"
+        },
+        {
+          "bytes": 6172137438,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_4.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "4d7dd5dec82bfa5851bba6352bafb60d30c01eab5b98079ba19fafe3badb6c02",
+            "model_shards_sha256": "4d7dd5dec82bfa5851bba6352bafb60d30c01eab5b98079ba19fafe3badb6c02",
+            "optimizer_tensors_sha256": "89cbca6a4eda6e3e705d4af4234dfdf79e84cf8fe1eb6c69fa07b8053ff46a36",
+            "pid": 2017915,
+            "rank": 4,
+            "rng_tensors_sha256": "757bf4461a2aff45dd7f2421eecef8276cf93557058fdd1bba2dacd21d40f669",
+            "scheduler_step": 5,
+            "start_ticks": "2238672766"
+          },
+          "sha256": "c989d04de87c7294116571be19c395e9cf6bbd6c17d408f3e1566a18f9345ee5"
+        },
+        {
+          "bytes": 6172138398,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_5.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "03389877406ba24160820a4182521d6fc4daca5886c616812e6f5c6477dc7d8b",
+            "model_shards_sha256": "03389877406ba24160820a4182521d6fc4daca5886c616812e6f5c6477dc7d8b",
+            "optimizer_tensors_sha256": "3262b7c95278017f35236535a331d089f6f7f658d84b242e482c782910a64646",
+            "pid": 2017916,
+            "rank": 5,
+            "rng_tensors_sha256": "bb74fdb0564115a93cb8924d60799f136e218320a55be83ce718355a0098f7e2",
+            "scheduler_step": 5,
+            "start_ticks": "2238672767"
+          },
+          "sha256": "de154d611b727d740325bb962f07fac0613899c0bd7c043ae4825c73fde7601c"
+        },
+        {
+          "bytes": 6172137438,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_6.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "e6e737f62860fa74f2c86b178202c680f4e8749d5b62694577f914fe53c3deea",
+            "model_shards_sha256": "e6e737f62860fa74f2c86b178202c680f4e8749d5b62694577f914fe53c3deea",
+            "optimizer_tensors_sha256": "839ca911afda404823cd5ff361b055d83fd7e38788c37665bbea5d4efcb157e5",
+            "pid": 2017917,
+            "rank": 6,
+            "rng_tensors_sha256": "b38ec520f418446cf2139bb6f8dc58ae208535e8bdc8de09666e5fe954012bf0",
+            "scheduler_step": 5,
+            "start_ticks": "2238672767"
+          },
+          "sha256": "084afc192e21cae017a3690ee9694b7957d7b8b916980d4157c05f3746605001"
+        },
+        {
+          "bytes": 6172138782,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/rank_7.pt",
+          "pause_identity": {
+            "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+            "learning_rates": [
+              8.771929824561403e-08
+            ],
+            "local_shards_sha256": "cd1829f58d9bfb784cea22d52d9dc36c76d09c66cc01643018b3944530aa2988",
+            "model_shards_sha256": "cd1829f58d9bfb784cea22d52d9dc36c76d09c66cc01643018b3944530aa2988",
+            "optimizer_tensors_sha256": "34200b7d3585fd3693095cea891ff8d75e1c8e076b9a5b886c5b17d6f57642e5",
+            "pid": 2017918,
+            "rank": 7,
+            "rng_tensors_sha256": "884778f025d76241e4e827996ccecfcbc74263b6fcc67fe716703c42575d0ec7",
+            "scheduler_step": 5,
+            "start_ticks": "2238672768"
+          },
+          "sha256": "c60d3049d4a4e3ba6a199e62c981c16591a41f62690669f6b5a038edd9ce0946"
+        },
+        {
+          "bytes": 828248,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/driver.pt",
+          "sha256": "965197d882c63734c7ee5d659c76ffd409c6393a531c666839fa7ffee65955af"
+        },
+        {
+          "bytes": 726,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/algorithm/global_step_5/state.json",
+          "sha256": "d87baa7e2774b7d20f19ea640e25601829f91a88191c8c46f7c82ad5f59fc50b"
+        },
+        {
+          "bytes": 605,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/added_tokens.json",
+          "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+        },
+        {
+          "bytes": 805,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/config.json",
+          "sha256": "b4b648e4d8558a71be1ee13c631d131a6c34669526bd7bc0fb75be91ef0d41fd"
+        },
+        {
+          "bytes": 243,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/generation_config.json",
+          "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+        },
+        {
+          "bytes": 1671853,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "bytes": 4982131536,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/model-00001-of-00003.safetensors",
+          "sha256": "910ac931c456b875217991aec820ea54efdf5d64751a9979ed12c1fe95a2b72d"
+        },
+        {
+          "bytes": 4932949336,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/model-00002-of-00003.safetensors",
+          "sha256": "2dac3b22b4e659017117583222cd4f6d28cda87865d3c9746aae73f90fab9524"
+        },
+        {
+          "bytes": 3673383040,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/model-00003-of-00003.safetensors",
+          "sha256": "230147e34bc96b683471c484225b40908ec124f9a4398d6050634ababa317893"
+        },
+        {
+          "bytes": 35640,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/model.safetensors.index.json",
+          "sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d"
+        },
+        {
+          "bytes": 613,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/special_tokens_map.json",
+          "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+        },
+        {
+          "bytes": 11421896,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/tokenizer.json",
+          "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+        },
+        {
+          "bytes": 7306,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/tokenizer_config.json",
+          "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        {
+          "bytes": 2776833,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        }
+      ],
+      "job_id": "3340",
+      "logical_step": 5,
+      "recovery_mode": "fresh_official_instruct",
+      "schema": 1,
+      "source": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725"
+    },
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5/training_state/manifest.json",
+    "sha256": "65b7263e10e5c3c6dbc20d3f53893ab3e11fb96beea88017458176f68c214c23"
+  },
+  "source_complete_manifest_checks_executed_before_actual_reload": true,
+  "allrank_nonzero_model_bytes_change": [
+    {
+      "rank": 0,
+      "pid": 2017580,
+      "initial_model_shards_sha256": "205889c5f98a4ed70398cc89cd9bac89f6b66a9c8511974e00fb8090f8bab286",
+      "step5_model_shards_sha256": "3a25446b9008badcf9e0c456591636308b7c4d1d98d101f3a38e33e7409ead14",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 1,
+      "pid": 2017911,
+      "initial_model_shards_sha256": "c6d5f9699f84a3b6b40da2772b46fc3ed5f023313d6d025028a7a3f07c6e1d7a",
+      "step5_model_shards_sha256": "4b7ab88cdf24b7f08b930862df8978d917277b551853bc252440bb23de8beabc",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 2,
+      "pid": 2017913,
+      "initial_model_shards_sha256": "b34264367c639e1051c06a1b01bfbf1bc74fea21530c9f1b2920bac649fd8f7a",
+      "step5_model_shards_sha256": "04bae0b239c74d9abb369e398edebb5b94ed0bd376e19ab09e9db2da55cc28b0",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 3,
+      "pid": 2017914,
+      "initial_model_shards_sha256": "f13e149b92a71cd8b6121bec8686996dc165de1d7da5745997d9a3f3d4beedcf",
+      "step5_model_shards_sha256": "8be194d1875f222333eadb1c8a54c7fa2a87c6c82403ceec765baf1e2e51f75e",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 4,
+      "pid": 2017915,
+      "initial_model_shards_sha256": "8020e4592bed3b45a450903ff4281dec96bcd8d9c686ed3f8f25aef8cf6a1160",
+      "step5_model_shards_sha256": "4d7dd5dec82bfa5851bba6352bafb60d30c01eab5b98079ba19fafe3badb6c02",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 5,
+      "pid": 2017916,
+      "initial_model_shards_sha256": "6c6db8e1c562ccdf2fefced43c7e797cf102f3128deba9b00ce47771bfa2c509",
+      "step5_model_shards_sha256": "03389877406ba24160820a4182521d6fc4daca5886c616812e6f5c6477dc7d8b",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 6,
+      "pid": 2017917,
+      "initial_model_shards_sha256": "df435c6f7557b530ad5707e0277fa0337c5d2e28279057325ffeb0727b2181fb",
+      "step5_model_shards_sha256": "e6e737f62860fa74f2c86b178202c680f4e8749d5b62694577f914fe53c3deea",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    },
+    {
+      "rank": 7,
+      "pid": 2017918,
+      "initial_model_shards_sha256": "47caa91513534c3c0c9ff8380b3087faf2ffd2385b1d701aa0f3c10fc7ee1230",
+      "step5_model_shards_sha256": "cd1829f58d9bfb784cea22d52d9dc36c76d09c66cc01643018b3944530aa2988",
+      "model_bytes_changed": true,
+      "scheduler_step": 5
+    }
+  ],
+  "actual_full_state_roundtrip": [
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 0
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 1
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 2
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 3
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 4
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 5
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 6
+    },
+    {
+      "actual_complete_runtime_readback": true,
+      "actual_rank_pt_reload": true,
+      "automatic_rollback": false,
+      "collective_failure_recovery": false,
+      "fsdp_initialization": {
+        "initialized": false,
+        "reason": "already_initialized"
+      },
+      "logical_step": 5,
+      "matched_local_stages": true,
+      "rank": 7
+    }
+  ],
+  "actual_driver_state_roundtrip": {
+    "actual_adam_total": 100,
+    "actual_attempt_ledger_reload": true,
+    "actual_controller_stage_reload": true,
+    "actual_driver_flow_roundtrip": {
+      "actual_iterator_metadata_reload": true,
+      "actual_validation_trace_reload": true,
+      "data_cursor": 2560,
+      "iterator_num_yielded": 5,
+      "iterator_process_identity": 140544523075488,
+      "same_live_iterator": true,
+      "validation_trace_serial": 1
+    },
+    "actual_kl_controller_reload": true,
+    "actual_live_admission_reload": true,
+    "actual_rng_reload": true,
+    "actual_sampler_position": {
+      "cursor": 2560,
+      "epoch": 0,
+      "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+      "size": 169028
+    },
+    "actual_sampler_reload": true,
+    "attempts": 5,
+    "completed_outer_updates": 5,
+    "driver_cursor": 2560,
+    "driver_pid": 2017160,
+    "fresh200_live_admission": {
+      "audit_environment": {
+        "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+        "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+        "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+      },
+      "payload": {
+        "c0_config_record": {
+          "bytes": 11442,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+          "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+        },
+        "config_epoch": 0,
+        "config_record": {
+          "bytes": 11442,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+          "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+        },
+        "first5_manifest_record": null,
+        "human_nonblocking_diagnostics": true,
+        "initial_binding_record": {
+          "bytes": 20595107,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+          "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+        },
+        "job_id": "3340",
+        "live_authorization_goal_updated_at": 1791293201,
+        "live_goal_updated_at": 1791299045,
+        "parent_admission_sha256": null,
+        "phase": "C0_CALIBRATION",
+        "policy": {
+          "calibration_evidence_path": null,
+          "calibration_evidence_sha256": null,
+          "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+          "candidate_old_policy_kl": 0.2,
+          "dual_clip": 3.0,
+          "enabled": true,
+          "first5_known_token_kl_enforced": true,
+          "first5_tail_observation_only": true,
+          "human_nonblocking_diagnostics": true,
+          "kl_log_bound": 30.0,
+          "live_training_protocol": true,
+          "mode": "calibration",
+          "monitor_first_global_rows": 256,
+          "negative_tail_limit": null,
+          "target_old_policy_kl": 0.2,
+          "token_kl_human_goal_updated_at": 1791282908,
+          "token_kl_threshold_source": "human"
+        },
+        "policy_review_record": null,
+        "probability_approval_record": null,
+        "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+        "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+        "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+      },
+      "resolved_config": {
+        "actor_rollout_ref": {
+          "actor": {
+            "actor_token_identity": "sampled_action_prefix_v1",
+            "baseline_method": "gigpo",
+            "clip_ratio": 0.2,
+            "complete_internal_state": true,
+            "distillation": {
+              "beta": 0.0,
+              "chunk_size": 16,
+              "component_clip": 0.05,
+              "max_student_logits_gib": 4.0,
+              "privileged_answers": false,
+              "teacher_path": null,
+              "temperature": 1.0
+            },
+            "entropy_coeff": 0.0,
+            "fresh200_live_protocol": true,
+            "fresh200_protocol": true,
+            "fsdp_config": {
+              "fsdp_size": -1,
+              "grad_offload": true,
+              "optimizer_offload": true,
+              "param_offload": true,
+              "wrap_policy": {
+                "min_num_params": 0
+              }
+            },
+            "grad_clip": 1.0,
+            "human_nonblocking_diagnostics": true,
+            "joint_loss_scaling": true,
+            "kl_loss_coef": 0.0,
+            "kl_loss_type": "low_var_kl",
+            "optim": {
+              "lr": 1e-06,
+              "lr_warmup_steps": 57,
+              "lr_warmup_steps_ratio": 0.0,
+              "min_lr_ratio": null,
+              "save_training_state": true,
+              "total_training_steps": 200,
+              "warmup_style": "constant"
+            },
+            "policy_safety": {
+              "calibration_evidence_path": null,
+              "calibration_evidence_sha256": null,
+              "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+              "candidate_old_policy_kl": 0.2,
+              "dual_clip": 3.0,
+              "enabled": true,
+              "first5_known_token_kl_enforced": true,
+              "first5_tail_observation_only": true,
+              "human_nonblocking_diagnostics": true,
+              "kl_log_bound": 30.0,
+              "live_training_protocol": true,
+              "mode": "calibration",
+              "monitor_first_global_rows": 256,
+              "negative_tail_limit": null,
+              "target_old_policy_kl": 0.2,
+              "token_kl_human_goal_updated_at": 1791282908,
+              "token_kl_threshold_source": "human"
+            },
+            "ppo_epochs": 1,
+            "ppo_max_token_len_per_gpu": 16384,
+            "ppo_micro_batch_size": 16,
+            "ppo_mini_batch_size": 128,
+            "preserve_partial_policy_safety_state": true,
+            "shuffle": false,
+            "state_masking": true,
+            "strategy": "fsdp",
+            "ulysses_sequence_parallel_size": 1,
+            "use_dynamic_bsz": false,
+            "use_kl_loss": true
+          },
+          "hybrid_engine": true,
+          "model": {
+            "enable_gradient_checkpointing": true,
+            "external_lib": null,
+            "override_config": {},
+            "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+            "use_remove_padding": true
+          },
+          "ref": {
+            "actor_token_identity": "sampled_action_prefix_v1",
+            "fsdp_config": {
+              "fsdp_size": -1,
+              "param_offload": true,
+              "wrap_policy": {
+                "min_num_params": 0
+              }
+            },
+            "log_prob_max_token_len_per_gpu": 16384,
+            "log_prob_micro_batch_size": 32,
+            "log_prob_use_dynamic_bsz": false,
+            "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+            "ulysses_sequence_parallel_size": 1
+          },
+          "rollout": {
+            "actor_token_identity": "sampled_action_prefix_v1",
+            "do_sample": true,
+            "dtype": "bfloat16",
+            "enforce_eager": true,
+            "free_cache_engine": true,
+            "gpu_memory_utilization": 0.4,
+            "ignore_eos": false,
+            "load_format": "dummy_dtensor",
+            "log_prob_max_token_len_per_gpu": 16384,
+            "log_prob_micro_batch_size": 32,
+            "log_prob_use_dynamic_bsz": false,
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 1024,
+            "n": 1,
+            "n_agent": 5,
+            "name": "vllm",
+            "prompt_length": 4096,
+            "response_length": 500,
+            "temperature": 1.0,
+            "tensor_model_parallel_size": 1,
+            "top_k": -1,
+            "top_p": 1.0
+          }
+        },
+        "actor_token_identity": "sampled_action_prefix_v1",
+        "algorithm": {
+          "adv_estimator": "grpo",
+          "gamma": 1.0,
+          "kl_ctrl": {
+            "kl_coef": 0.0,
+            "type": "fixed"
+          },
+          "kl_penalty": "low_var_kl",
+          "lam": 1.0,
+          "no_think_rl": false,
+          "state_masking": {
+            "end_state_marker": "</information>",
+            "start_state_marker": "<information>"
+          }
+        },
+        "baselines": {
+          "algorithm_source_commit": "68184965c532fe30fef0d89c3ea19f976ac3bd63",
+          "bapo": {
+            "alpha": 0.05,
+            "bonus": 0.5,
+            "patience": 5,
+            "resample_attempts": 2,
+            "stage_validation_files": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/stage.parquet",
+            "stage_validation_freq": 1,
+            "stage_validation_num": 64,
+            "stage_validation_size": 64
+          },
+          "base_commit": "9ab694499ad3913b67499f7a4ea13da6b544d459",
+          "context_alignment": "report",
+          "distillation": {
+            "beta": 0.0,
+            "chunk_size": 16,
+            "component_clip": 0.05,
+            "max_student_logits_gib": 4.0,
+            "privileged_answers": false,
+            "teacher_path": null,
+            "temperature": 1.0
+          },
+          "gigpo": {
+            "anchor_mode": "observation",
+            "gamma": 0.95,
+            "normalize": false,
+            "omega": 1.0
+          },
+          "holdout": {
+            "data_root": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data",
+            "enabled": true,
+            "fraction": 0.02,
+            "input_mode": "prebuilt_manifest",
+            "manifest_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/manifest.json",
+            "manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "output_dir": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/common-data",
+            "seed": 42
+          },
+          "holdout_eval_only": false,
+          "holdout_record_path": null,
+          "local_runtime_host": "h100-8",
+          "local_runtime_only": true,
+          "loss_reduction": "sequence_mean",
+          "method": "gigpo",
+          "ranker": {
+            "batch_size": 8,
+            "candidates": 50,
+            "clip_ratio": 0.2,
+            "device": "cpu",
+            "epochs": 1,
+            "grad_clip": 1.0,
+            "keep": 3,
+            "lr": 1e-06,
+            "max_new_tokens": 256,
+            "min_group_size": 3,
+            "model_path": null,
+            "similarity": 0.8,
+            "split_availability": false,
+            "temperature": 1.0,
+            "threshold": 0.5
+          },
+          "seed": 42,
+          "topd": {
+            "alpha": 0.1
+          },
+          "tree": {
+            "expansions": 2,
+            "leaves": 3,
+            "roots": 2,
+            "rounds": 1
+          }
+        },
+        "critic": {
+          "cliprange_value": 0.5,
+          "forward_max_token_len_per_gpu": 32768,
+          "forward_micro_batch_size": 64,
+          "grad_clip": 1.0,
+          "model": {
+            "enable_gradient_checkpointing": false,
+            "external_lib": null,
+            "fsdp_config": {
+              "fsdp_size": -1,
+              "grad_offload": false,
+              "optimizer_offload": false,
+              "param_offload": false,
+              "wrap_policy": {
+                "min_num_params": 0
+              }
+            },
+            "override_config": {},
+            "path": "~/models/deepseek-llm-7b-chat",
+            "tokenizer_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+            "use_remove_padding": false
+          },
+          "optim": {
+            "lr": 1e-05,
+            "lr_warmup_steps_ratio": 0.0,
+            "min_lr_ratio": null,
+            "total_training_steps": 200,
+            "warmup_style": "constant"
+          },
+          "ppo_epochs": 1,
+          "ppo_max_token_len_per_gpu": 32768,
+          "ppo_micro_batch_size": 64,
+          "ppo_mini_batch_size": 128,
+          "shuffle": false,
+          "strategy": "fsdp",
+          "ulysses_sequence_parallel_size": 1,
+          "use_dynamic_bsz": false
+        },
+        "data": {
+          "final_val_files": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/final.parquet",
+          "max_obs_length": 500,
+          "max_prompt_length": 4096,
+          "max_response_length": 500,
+          "max_start_length": 2048,
+          "prompt_key": "prompt",
+          "return_raw_chat": false,
+          "return_raw_input_ids": false,
+          "shuffle_train_dataloader": true,
+          "tokenizer": null,
+          "train_batch_size": 512,
+          "train_data_num": null,
+          "train_files": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/train.parquet",
+          "val_batch_size": 32,
+          "val_data_num": null,
+          "val_files": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/common-data/validation.parquet"
+        },
+        "do_search": true,
+        "force_final_answer": false,
+        "max_turns": 4,
+        "retriever": {
+          "topk": 3,
+          "url": "http://127.0.0.1:18081/retrieve"
+        },
+        "reward_model": {
+          "enable": false,
+          "final_format_score": 0,
+          "forward_max_token_len_per_gpu": 32768,
+          "max_length": null,
+          "micro_batch_size": 64,
+          "model": {
+            "external_lib": null,
+            "fsdp_config": {
+              "min_num_params": 0,
+              "param_offload": false
+            },
+            "input_tokenizer": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+            "path": "~/models/FsfairX-LLaMA3-RM-v0.1",
+            "use_remove_padding": false
+          },
+          "retrieval_score": 0,
+          "strategy": "fsdp",
+          "structure_format_score": 0,
+          "ulysses_sequence_parallel_size": 1,
+          "use_dynamic_bsz": false
+        },
+        "trainer": {
+          "acceptance_step": 5,
+          "critic_warmup": 0,
+          "default_hdfs_dir": null,
+          "default_local_dir": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints",
+          "experiment_name": "gigpo-e1-fresh200-live",
+          "fresh200": {
+            "actual_write_counts_must_be_reported_separately": true,
+            "checkpoint_steps": [
+              5,
+              50,
+              100,
+              150,
+              200
+            ],
+            "counters_are_no_skip_reference": true,
+            "counting_human_goal_updated_at": 1791283983,
+            "counting_rules_source": "human",
+            "enabled": true,
+            "full_outer_requires_all_opportunities_processed": true,
+            "full_outer_requires_at_least_one_actual_adam_write": true,
+            "goal_updated_at": 1791275767,
+            "initial_adam_steps": 0,
+            "initial_data_cursor": 0,
+            "initial_outer_step": 0,
+            "initial_scheduler_step": 0,
+            "live_goal_updated_at": 1791299045,
+            "no_skip_adam_per_outer_per_rank": 20,
+            "no_skip_gradient_micro_per_outer_per_rank": 160,
+            "optimizer_opportunities_per_outer": 20,
+            "preserve_partial_updates": true,
+            "token_kl_human_goal_updated_at": 1791282908,
+            "token_kl_threshold_source": "human",
+            "zero_write_or_abandoned_outer_counts": false
+          },
+          "instruct300": {
+            "approval_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/instruct5-approval.json",
+            "enabled": true,
+            "restore_checkpoint": null,
+            "restore_manifest_sha256": null,
+            "wait_seconds": 43200
+          },
+          "logger": [
+            "console"
+          ],
+          "n_gpus_per_node": 8,
+          "nnodes": 1,
+          "project_name": "Search-R1-RL-Baselines",
+          "quality_resume": {
+            "enabled": false
+          },
+          "resume": {
+            "acceptance_step": 205,
+            "approval_path": null,
+            "enabled": false,
+            "scheduler_horizon": 501,
+            "seed": 42,
+            "source": null,
+            "start_step": 200,
+            "stop_step": 300,
+            "wait_seconds": 7200
+          },
+          "save_freq": 50,
+          "smoke_only": false,
+          "test_freq": 50,
+          "total_epochs": 15,
+          "total_training_steps": 200,
+          "trajectory_logging": true,
+          "val_before_train": false
+        }
+      },
+      "role_admissions": {
+        "actor": [
+          {
+            "pid": 2017580,
+            "rank": 0,
+            "role": "actor",
+            "start_ticks": "2238672198",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017911,
+            "rank": 1,
+            "role": "actor",
+            "start_ticks": "2238672763",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017913,
+            "rank": 2,
+            "role": "actor",
+            "start_ticks": "2238672764",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017914,
+            "rank": 3,
+            "role": "actor",
+            "start_ticks": "2238672765",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017915,
+            "rank": 4,
+            "role": "actor",
+            "start_ticks": "2238672766",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017916,
+            "rank": 5,
+            "role": "actor",
+            "start_ticks": "2238672767",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017917,
+            "rank": 6,
+            "role": "actor",
+            "start_ticks": "2238672767",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017918,
+            "rank": 7,
+            "role": "actor",
+            "start_ticks": "2238672768",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 2,
+                  "ppo_mini_batch_size": 16,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true,
+                  "use_remove_padding": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          }
+        ],
+        "reference": [
+          {
+            "pid": 2017580,
+            "rank": 0,
+            "role": "reference",
+            "start_ticks": "2238672198",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017911,
+            "rank": 1,
+            "role": "reference",
+            "start_ticks": "2238672763",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017913,
+            "rank": 2,
+            "role": "reference",
+            "start_ticks": "2238672764",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017914,
+            "rank": 3,
+            "role": "reference",
+            "start_ticks": "2238672765",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017915,
+            "rank": 4,
+            "role": "reference",
+            "start_ticks": "2238672766",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017916,
+            "rank": 5,
+            "role": "reference",
+            "start_ticks": "2238672767",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017917,
+            "rank": 6,
+            "role": "reference",
+            "start_ticks": "2238672767",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          },
+          {
+            "pid": 2017918,
+            "rank": 7,
+            "role": "reference",
+            "start_ticks": "2238672768",
+            "state": {
+              "audit_environment": {
+                "GIGPO_POLICY_NATIVE_BINDING": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                "GIGPO_POLICY_NATIVE_BINDING_SHA256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+                "SEARCH_R1_BASELINE_CONFIG_SHA256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+              },
+              "payload": {
+                "c0_config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "config_epoch": 0,
+                "config_record": {
+                  "bytes": 11442,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/resolved-config-C0.json",
+                  "sha256": "344fb1f9765e1e64e59457d74ba0b3c2bc54f5cedde0905398b7b0598ee9e996"
+                },
+                "first5_manifest_record": null,
+                "human_nonblocking_diagnostics": true,
+                "initial_binding_record": {
+                  "bytes": 20595107,
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1/BINDING.json",
+                  "sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c"
+                },
+                "job_id": "3340",
+                "live_authorization_goal_updated_at": 1791293201,
+                "live_goal_updated_at": 1791299045,
+                "parent_admission_sha256": null,
+                "phase": "C0_CALIBRATION",
+                "policy": {
+                  "calibration_evidence_path": null,
+                  "calibration_evidence_sha256": null,
+                  "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                  "candidate_old_policy_kl": 0.2,
+                  "dual_clip": 3.0,
+                  "enabled": true,
+                  "first5_known_token_kl_enforced": true,
+                  "first5_tail_observation_only": true,
+                  "human_nonblocking_diagnostics": true,
+                  "kl_log_bound": 30.0,
+                  "live_training_protocol": true,
+                  "mode": "calibration",
+                  "monitor_first_global_rows": 256,
+                  "negative_tail_limit": null,
+                  "target_old_policy_kl": 0.2,
+                  "token_kl_human_goal_updated_at": 1791282908,
+                  "token_kl_threshold_source": "human"
+                },
+                "policy_review_record": null,
+                "probability_approval_record": null,
+                "run_id": "gigpo-e1-fresh200-live-job3340-1791441919057393097",
+                "schema": "FRESH200_REALIZED_POLICY_CONFIG_V1",
+                "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+              },
+              "worker_config": {
+                "actor": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "baseline_method": "gigpo",
+                  "clip_ratio": 0.2,
+                  "complete_internal_state": true,
+                  "distillation": {
+                    "beta": 0.0,
+                    "chunk_size": 16,
+                    "component_clip": 0.05,
+                    "max_student_logits_gib": 4.0,
+                    "privileged_answers": false,
+                    "teacher_path": null,
+                    "temperature": 1.0
+                  },
+                  "entropy_coeff": 0.0,
+                  "fresh200_live_protocol": true,
+                  "fresh200_protocol": true,
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "grad_offload": true,
+                    "optimizer_offload": true,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "grad_clip": 1.0,
+                  "human_nonblocking_diagnostics": true,
+                  "joint_loss_scaling": true,
+                  "kl_loss_coef": 0.0,
+                  "kl_loss_type": "low_var_kl",
+                  "optim": {
+                    "lr": 1e-06,
+                    "lr_warmup_steps": 57,
+                    "lr_warmup_steps_ratio": 0.0,
+                    "min_lr_ratio": null,
+                    "save_training_state": true,
+                    "total_training_steps": 200,
+                    "warmup_style": "constant"
+                  },
+                  "policy_safety": {
+                    "calibration_evidence_path": null,
+                    "calibration_evidence_sha256": null,
+                    "calibration_scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+                    "candidate_old_policy_kl": 0.2,
+                    "dual_clip": 3.0,
+                    "enabled": true,
+                    "first5_known_token_kl_enforced": true,
+                    "first5_tail_observation_only": true,
+                    "human_nonblocking_diagnostics": true,
+                    "kl_log_bound": 30.0,
+                    "live_training_protocol": true,
+                    "mode": "calibration",
+                    "monitor_first_global_rows": 256,
+                    "negative_tail_limit": null,
+                    "target_old_policy_kl": 0.2,
+                    "token_kl_human_goal_updated_at": 1791282908,
+                    "token_kl_threshold_source": "human"
+                  },
+                  "ppo_epochs": 1,
+                  "ppo_max_token_len_per_gpu": 16384,
+                  "ppo_micro_batch_size": 16,
+                  "ppo_mini_batch_size": 128,
+                  "preserve_partial_policy_safety_state": true,
+                  "shuffle": false,
+                  "state_masking": true,
+                  "strategy": "fsdp",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_dynamic_bsz": false,
+                  "use_kl_loss": true
+                },
+                "hybrid_engine": true,
+                "model": {
+                  "enable_gradient_checkpointing": true,
+                  "external_lib": null,
+                  "override_config": {},
+                  "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "use_remove_padding": true
+                },
+                "ref": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "fsdp_config": {
+                    "fsdp_size": -1,
+                    "param_offload": true,
+                    "wrap_policy": {
+                      "min_num_params": 0
+                    }
+                  },
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 4,
+                  "log_prob_use_dynamic_bsz": false,
+                  "model_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/assets/qwen2.5-3b-instruct-aa8e725",
+                  "ulysses_sequence_parallel_size": 1,
+                  "use_remove_padding": true
+                },
+                "rollout": {
+                  "actor_token_identity": "sampled_action_prefix_v1",
+                  "do_sample": true,
+                  "dtype": "bfloat16",
+                  "enforce_eager": true,
+                  "free_cache_engine": true,
+                  "gpu_memory_utilization": 0.4,
+                  "ignore_eos": false,
+                  "load_format": "dummy_dtensor",
+                  "log_prob_max_token_len_per_gpu": 16384,
+                  "log_prob_micro_batch_size": 32,
+                  "log_prob_use_dynamic_bsz": false,
+                  "max_num_batched_tokens": 8192,
+                  "max_num_seqs": 1024,
+                  "n": 1,
+                  "n_agent": 5,
+                  "name": "vllm",
+                  "prompt_length": 4096,
+                  "response_length": 500,
+                  "temperature": 1.0,
+                  "tensor_model_parallel_size": 1,
+                  "top_k": -1,
+                  "top_p": 1.0
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "grouping_scope": "stateless_per_rollout; no persistent group cache or live rollout at completed outer",
+    "live_algorithm": {
+      "action_probability_context": "original_sampler_prefix_each_action",
+      "actor_token_identity": "sampled_action_prefix_v1",
+      "algorithm_source_commit": "68184965c532fe30fef0d89c3ea19f976ac3bd63",
+      "bapo": {
+        "best": null,
+        "early": true,
+        "patience": 5,
+        "stalled": 0
+      },
+      "base_commit": "9ab694499ad3913b67499f7a4ea13da6b544d459",
+      "gigpo_parameters": {
+        "anchor_mode": "observation",
+        "gamma": 0.95,
+        "normalize": false,
+        "omega": 1.0
+      },
+      "global_step": 5,
+      "groups": "stateless_per_rollout_with_step_ids_and_advantage_broadcast",
+      "loss_reduction": "sequence_mean",
+      "method": "gigpo",
+      "resume_supported": true,
+      "reward_token_identity": "legacy_canonical",
+      "teacher_path": null
+    }
+  },
+  "actual_worker_runtime_roundtrip": {
+    "actual_all8_saved_state_readback": true,
+    "complete_live_before_after_equal": true,
+    "scope": [
+      "python_rng",
+      "numpy_rng",
+      "torch_cpu_rng",
+      "torch_cuda_rng",
+      "sharding_rng",
+      "full_scheduler_state",
+      "module_training_modes",
+      "parameter_buffer_local_shard_placement",
+      "optimizer_tensor_placement",
+      "fresh200_live_admission"
+    ]
+  },
+  "hf_semantic_cpu_roundtrip": "PENDING_BACKGROUND",
+  "independent_review_status": "PENDING_BACKGROUND",
+  "actual_probability_accepted": false,
+  "negative_tail_threshold_status": "PENDING_BACKGROUND",
+  "same_process_continuation_authorized_by_human_nonblocking_diagnostics": true,
+  "original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v42-first5-reload-continuation.json"
+}
