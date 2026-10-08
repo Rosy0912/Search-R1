@@ -1,0 +1,30 @@
+{
+  "schema": "opsd-degradation-analysis-plan-review-v1",
+  "created_unix": 1791434941.092146,
+  "plan_path": "experiments/search_e1/docs/opsd-degradation-analysis-plan-20261008.md",
+  "plan_sha256": "0b6d1ef8a536bfbc0827e221562d223a787d429fb226ccbaa2a530493cdc1376",
+  "review_kind": "Plan and fixed snapshot analysis, not completion of proposed new experiments",
+  "reviews": [
+    {
+      "reviewer": "audit_opsd_acceptance",
+      "scope": "64-case paired transitions, M1/M4 scoring and statistical validity",
+      "decision": "APPROVED",
+      "resolved": "Failure primary categories are mutually exclusive; termination is a separate axis; final-span validity is not full-transcript grammatical validity."
+    },
+    {
+      "reviewer": "review_e1_spec",
+      "scope": "Math, H1/H3 falsification, common-prefix counterfactual executor, M4 evaluation identity",
+      "decision": "APPROVED_AFTER_REVISION",
+      "resolved": "Explicit consumed turn/search budgets, original observation and forced-information state, terminal skips; ref dependence vs corrective effectiveness and early vs cumulative drift are separate."
+    },
+    {
+      "reviewer": "prepare_segmented_retriever",
+      "scope": "Data, checkpoint existence, sampling prefix, capacity, resource sequencing",
+      "decision": "APPROVED",
+      "resolved": "M3/M4 after actual diagnostic release; M4 prioritized; resident/oracle/K4 preserved; cap is npy-only and cap_skip acknowledged; only OPSD1/5/3156 exist."
+    }
+  ],
+  "remaining_must_fix": [],
+  "authorized_scope": "Existing fixed-weight diagnostics and read-only statistical analysis; no restarted eight-card training or old final7 jobs; no new training hyperparameter ablation",
+  "contains_private_question_or_token_text": false
+}

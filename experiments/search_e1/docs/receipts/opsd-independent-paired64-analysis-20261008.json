@@ -1,0 +1,691 @@
+{
+  "schema": "independent-fixed-64-snapshot-paired-opsd-degradation-review-v1",
+  "created_unix": 1791434710.246472,
+  "snapshot_created_unix": 1791434219.0146153,
+  "snapshot_node_directory": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-user-analysis-20261008T043658Z",
+  "inputs": {
+    "snapshot-cases.jsonl": {
+      "bytes": 806129,
+      "sha256": "fc859474eb7ebf1310b470fa7de0e81106f85ab453f65887184a8dc6f1b91557",
+      "raw_snapshot_not_for_git": true
+    },
+    "snapshot-summary.json": {
+      "bytes": 19166,
+      "sha256": "6b19f8a6e94c0a9ec62827420373310195de1fe9cbfeed936f46ff6f755658bf",
+      "raw_snapshot_not_for_git": true
+    }
+  },
+  "readonly_cpu_analysis": true,
+  "no_cuda_no_http_no_signal_no_git": true,
+  "unique_paired_cases": 64,
+  "per_version": {
+    "source100": {
+      "analyzed": 64,
+      "strict_correct": 46,
+      "final_answer_protocol_valid": 64,
+      "protocol_valid_wrong_answer": 18,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    "update1": {
+      "analyzed": 64,
+      "strict_correct": 47,
+      "final_answer_protocol_valid": 64,
+      "protocol_valid_wrong_answer": 17,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    "update5": {
+      "analyzed": 64,
+      "strict_correct": 41,
+      "final_answer_protocol_valid": 64,
+      "protocol_valid_wrong_answer": 23,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    "epoch1": {
+      "analyzed": 64,
+      "strict_correct": 38,
+      "final_answer_protocol_valid": 61,
+      "protocol_valid_wrong_answer": 23,
+      "final_answer_protocol_invalid": 3,
+      "no_executed_search": 3,
+      "invalid_tag_candidate_matches_gold": 2,
+      "invalid_tag_candidate_unclosed_think": 3
+    }
+  },
+  "paired_relative_to_source100": {
+    "update1": {
+      "paired_denominator": 64,
+      "source100_correct_denominator": 46,
+      "source100_wrong_denominator": 18,
+      "transition_counts": {
+        "correct_to_correct": 43,
+        "correct_to_wrong": 3,
+        "wrong_to_correct": 4,
+        "wrong_to_wrong": 14
+      },
+      "transition_case_ids": {
+        "correct_to_correct": [
+          "nq-correct_correct-0000c8af8c12b617",
+          "nq-correct_correct-0003f444d6e00b8e",
+          "nq-correct_correct-000a58e3e999a9af",
+          "nq-correct_correct-000ee19ff01c69fc",
+          "nq-correct_correct-001c9f53b321a4f0",
+          "nq-correct_correct-00247097ed9db954",
+          "nq-correct_correct-002986e7214c2da4",
+          "nq-correct_correct-002b7be5bf93b181",
+          "nq-correct_correct-003d3af0e1ea1031",
+          "nq-correct_correct-0043b0b94404a273",
+          "nq-correct_correct-004c121f0ae64d50",
+          "nq-correct_wrong-0006955a3401d52f",
+          "nq-correct_wrong-00203efec850e728",
+          "hotpotqa-correct_wrong-0018f1a654155a51",
+          "hotpotqa-correct_correct-0014c91ea50c133a",
+          "nq-correct_correct-000132e29f0dabd7",
+          "nq-correct_correct-00059d2317ed48e6",
+          "nq-correct_correct-000c2e51a427ed2f",
+          "nq-correct_correct-0021d03072a6f60d",
+          "nq-correct_correct-00254e4e9433e89a",
+          "nq-correct_correct-002a0b422db1e5f7",
+          "nq-correct_correct-0035865ffb04a47e",
+          "nq-correct_correct-003ee3ccf3693944",
+          "nq-correct_correct-0046b39e2cd503d7",
+          "nq-correct_correct-004c6ad4b130c4f7",
+          "nq-correct_wrong-000a98a8b2b12111",
+          "nq-correct_wrong-0016106733819f83",
+          "nq-correct_wrong-0020f965eafe1d22",
+          "nq-correct_wrong-003988a6a0d4fe48",
+          "nq-correct_correct-002b73f8af134ea9",
+          "nq-correct_correct-0001d91b1824bbf8",
+          "nq-correct_correct-0005ca20542498c3",
+          "nq-correct_correct-000e9490c583237c",
+          "nq-correct_correct-001bf3968a7eba3f",
+          "nq-correct_correct-0022a6ae393cdcc4",
+          "nq-correct_correct-00276c03f9f4ef08",
+          "nq-correct_correct-003c01c6ccea7a93",
+          "nq-correct_correct-003efb6dde942fd4",
+          "nq-correct_correct-0047015e21578531",
+          "nq-correct_wrong-00178d86f7ce4c0d",
+          "nq-correct_wrong-004050d384e2e5f2",
+          "nq-correct_wrong-0047053d5eb0836b",
+          "nq-correct_wrong-00550bbd7512423e"
+        ],
+        "correct_to_wrong": [
+          "nq-correct_wrong-0040a3b1e813bb8b",
+          "nq-correct_wrong-004fa9d5ed793929",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "wrong_to_correct": [
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_wrong-0012d7724e7151f8",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-correct_wrong-0002779da209d09e"
+        ],
+        "wrong_to_wrong": [
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-all5_wrong-001312ba457f2cd2",
+          "hotpotqa-all5_wrong-0008bdcc8230fd99",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-0026d6cdb67fda37",
+          "nq-all5_wrong-0003dfe9de2a99e0",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-00252ac57cec16f5",
+          "nq-correct_wrong-0027609bae80bd88",
+          "nq-correct_wrong-004e7e432ad059a4"
+        ]
+      },
+      "loss_protocol_invalid": 0,
+      "loss_protocol_valid_answer_mismatch": 3,
+      "loss_invalid_literal_matches_gold": 0,
+      "loss_teacher_protocol_invalid": 1,
+      "net_correct_change": 1
+    },
+    "update5": {
+      "paired_denominator": 64,
+      "source100_correct_denominator": 46,
+      "source100_wrong_denominator": 18,
+      "transition_counts": {
+        "correct_to_correct": 40,
+        "correct_to_wrong": 6,
+        "wrong_to_correct": 1,
+        "wrong_to_wrong": 17
+      },
+      "transition_case_ids": {
+        "correct_to_correct": [
+          "nq-correct_correct-0000c8af8c12b617",
+          "nq-correct_correct-0003f444d6e00b8e",
+          "nq-correct_correct-000a58e3e999a9af",
+          "nq-correct_correct-000ee19ff01c69fc",
+          "nq-correct_correct-001c9f53b321a4f0",
+          "nq-correct_correct-00247097ed9db954",
+          "nq-correct_correct-002986e7214c2da4",
+          "nq-correct_correct-002b7be5bf93b181",
+          "nq-correct_correct-003d3af0e1ea1031",
+          "nq-correct_correct-0043b0b94404a273",
+          "nq-correct_correct-004c121f0ae64d50",
+          "nq-correct_wrong-0006955a3401d52f",
+          "nq-correct_wrong-00203efec850e728",
+          "hotpotqa-correct_wrong-0018f1a654155a51",
+          "hotpotqa-correct_correct-0014c91ea50c133a",
+          "nq-correct_correct-000132e29f0dabd7",
+          "nq-correct_correct-00059d2317ed48e6",
+          "nq-correct_correct-0021d03072a6f60d",
+          "nq-correct_correct-00254e4e9433e89a",
+          "nq-correct_correct-002a0b422db1e5f7",
+          "nq-correct_correct-0035865ffb04a47e",
+          "nq-correct_correct-003ee3ccf3693944",
+          "nq-correct_correct-0046b39e2cd503d7",
+          "nq-correct_correct-004c6ad4b130c4f7",
+          "nq-correct_wrong-000a98a8b2b12111",
+          "nq-correct_wrong-0016106733819f83",
+          "nq-correct_wrong-0020f965eafe1d22",
+          "nq-correct_correct-002b73f8af134ea9",
+          "nq-correct_correct-0001d91b1824bbf8",
+          "nq-correct_correct-0005ca20542498c3",
+          "nq-correct_correct-000e9490c583237c",
+          "nq-correct_correct-001bf3968a7eba3f",
+          "nq-correct_correct-0022a6ae393cdcc4",
+          "nq-correct_correct-00276c03f9f4ef08",
+          "nq-correct_correct-003c01c6ccea7a93",
+          "nq-correct_correct-003efb6dde942fd4",
+          "nq-correct_correct-0047015e21578531",
+          "nq-correct_wrong-00178d86f7ce4c0d",
+          "nq-correct_wrong-004050d384e2e5f2",
+          "nq-correct_wrong-00550bbd7512423e"
+        ],
+        "correct_to_wrong": [
+          "nq-correct_wrong-0040a3b1e813bb8b",
+          "nq-correct_wrong-004fa9d5ed793929",
+          "nq-correct_correct-000c2e51a427ed2f",
+          "nq-correct_wrong-003988a6a0d4fe48",
+          "nq-correct_wrong-0047053d5eb0836b",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "wrong_to_correct": [
+          "nq-correct_wrong-0026d6cdb67fda37"
+        ],
+        "wrong_to_wrong": [
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_wrong-0012d7724e7151f8",
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-all5_wrong-001312ba457f2cd2",
+          "hotpotqa-all5_wrong-0008bdcc8230fd99",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-all5_wrong-0003dfe9de2a99e0",
+          "nq-correct_wrong-0002779da209d09e",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-00252ac57cec16f5",
+          "nq-correct_wrong-0027609bae80bd88",
+          "nq-correct_wrong-004e7e432ad059a4"
+        ]
+      },
+      "loss_protocol_invalid": 0,
+      "loss_protocol_valid_answer_mismatch": 6,
+      "loss_invalid_literal_matches_gold": 0,
+      "loss_teacher_protocol_invalid": 2,
+      "net_correct_change": -5
+    },
+    "epoch1": {
+      "paired_denominator": 64,
+      "source100_correct_denominator": 46,
+      "source100_wrong_denominator": 18,
+      "transition_counts": {
+        "correct_to_correct": 33,
+        "correct_to_wrong": 13,
+        "wrong_to_correct": 5,
+        "wrong_to_wrong": 13
+      },
+      "transition_case_ids": {
+        "correct_to_correct": [
+          "nq-correct_correct-000a58e3e999a9af",
+          "nq-correct_correct-000ee19ff01c69fc",
+          "nq-correct_correct-00247097ed9db954",
+          "nq-correct_correct-002b7be5bf93b181",
+          "nq-correct_correct-003d3af0e1ea1031",
+          "nq-correct_correct-0043b0b94404a273",
+          "nq-correct_correct-004c121f0ae64d50",
+          "nq-correct_wrong-0006955a3401d52f",
+          "nq-correct_wrong-00203efec850e728",
+          "nq-correct_wrong-0040a3b1e813bb8b",
+          "nq-correct_wrong-004fa9d5ed793929",
+          "hotpotqa-correct_correct-0014c91ea50c133a",
+          "nq-correct_correct-000132e29f0dabd7",
+          "nq-correct_correct-00059d2317ed48e6",
+          "nq-correct_correct-000c2e51a427ed2f",
+          "nq-correct_correct-0021d03072a6f60d",
+          "nq-correct_correct-002a0b422db1e5f7",
+          "nq-correct_correct-003ee3ccf3693944",
+          "nq-correct_correct-0046b39e2cd503d7",
+          "nq-correct_correct-004c6ad4b130c4f7",
+          "nq-correct_wrong-0020f965eafe1d22",
+          "nq-correct_correct-002b73f8af134ea9",
+          "nq-correct_correct-0001d91b1824bbf8",
+          "nq-correct_correct-0005ca20542498c3",
+          "nq-correct_correct-001bf3968a7eba3f",
+          "nq-correct_correct-0022a6ae393cdcc4",
+          "nq-correct_correct-00276c03f9f4ef08",
+          "nq-correct_correct-003c01c6ccea7a93",
+          "nq-correct_correct-003efb6dde942fd4",
+          "nq-correct_correct-0047015e21578531",
+          "nq-correct_wrong-00178d86f7ce4c0d",
+          "nq-correct_wrong-004050d384e2e5f2",
+          "nq-correct_wrong-0047053d5eb0836b"
+        ],
+        "correct_to_wrong": [
+          "nq-correct_correct-0000c8af8c12b617",
+          "nq-correct_correct-0003f444d6e00b8e",
+          "nq-correct_correct-001c9f53b321a4f0",
+          "nq-correct_correct-002986e7214c2da4",
+          "hotpotqa-correct_wrong-0018f1a654155a51",
+          "nq-correct_correct-00254e4e9433e89a",
+          "nq-correct_correct-0035865ffb04a47e",
+          "nq-correct_wrong-000a98a8b2b12111",
+          "nq-correct_wrong-0016106733819f83",
+          "nq-correct_wrong-003988a6a0d4fe48",
+          "nq-correct_correct-000e9490c583237c",
+          "nq-correct_wrong-00550bbd7512423e",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "wrong_to_correct": [
+          "nq-correct_wrong-0012d7724e7151f8",
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-0027609bae80bd88"
+        ],
+        "wrong_to_wrong": [
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-all5_wrong-001312ba457f2cd2",
+          "hotpotqa-all5_wrong-0008bdcc8230fd99",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-0026d6cdb67fda37",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-all5_wrong-0003dfe9de2a99e0",
+          "nq-correct_wrong-0002779da209d09e",
+          "nq-correct_wrong-00252ac57cec16f5",
+          "nq-correct_wrong-004e7e432ad059a4"
+        ]
+      },
+      "loss_protocol_invalid": 3,
+      "loss_protocol_valid_answer_mismatch": 10,
+      "loss_invalid_literal_matches_gold": 2,
+      "loss_teacher_protocol_invalid": 4,
+      "net_correct_change": -8
+    }
+  },
+  "teacher_analyzed_denominator": 61,
+  "teacher_not_applicable_no_reference": 3,
+  "teacher_protocol_invalid": 17,
+  "teacher_invalid_literal_matches_gold": 16,
+  "teacher_protocol_valid_wrong_answer": 0,
+  "teacher_student_same_question_cross_tabs": {
+    "source100": [
+      {
+        "teacher_protocol_invalid": false,
+        "denominator": 44,
+        "student_strict_wrong": 12,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-0012d7724e7151f8",
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-0026d6cdb67fda37",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-correct_wrong-0002779da209d09e",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-0027609bae80bd88",
+          "nq-correct_wrong-004e7e432ad059a4"
+        ],
+        "student_protocol_invalid_case_ids": []
+      },
+      {
+        "teacher_protocol_invalid": true,
+        "denominator": 17,
+        "student_strict_wrong": 3,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-00252ac57cec16f5"
+        ],
+        "student_protocol_invalid_case_ids": []
+      }
+    ],
+    "update1": [
+      {
+        "teacher_protocol_invalid": false,
+        "denominator": 44,
+        "student_strict_wrong": 11,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-004fa9d5ed793929",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-0026d6cdb67fda37",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-0027609bae80bd88",
+          "nq-correct_wrong-004e7e432ad059a4",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "student_protocol_invalid_case_ids": []
+      },
+      {
+        "teacher_protocol_invalid": true,
+        "denominator": 17,
+        "student_strict_wrong": 3,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-0040a3b1e813bb8b",
+          "nq-correct_wrong-00252ac57cec16f5"
+        ],
+        "student_protocol_invalid_case_ids": []
+      }
+    ],
+    "update5": [
+      {
+        "teacher_protocol_invalid": false,
+        "denominator": 44,
+        "student_strict_wrong": 15,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-0012d7724e7151f8",
+          "nq-correct_wrong-00360bba782141d4",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-004fa9d5ed793929",
+          "nq-correct_wrong-005d66ef8e889145",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_wrong-003988a6a0d4fe48",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-correct_wrong-0002779da209d09e",
+          "nq-correct_wrong-000f7441a270d832",
+          "nq-correct_wrong-0027609bae80bd88",
+          "nq-correct_wrong-0047053d5eb0836b",
+          "nq-correct_wrong-004e7e432ad059a4",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "student_protocol_invalid_case_ids": []
+      },
+      {
+        "teacher_protocol_invalid": true,
+        "denominator": 17,
+        "student_strict_wrong": 5,
+        "student_protocol_invalid": 0,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-0040a3b1e813bb8b",
+          "nq-correct_correct-000c2e51a427ed2f",
+          "nq-correct_wrong-00252ac57cec16f5"
+        ],
+        "student_protocol_invalid_case_ids": []
+      }
+    ],
+    "epoch1": [
+      {
+        "teacher_protocol_invalid": false,
+        "denominator": 44,
+        "student_strict_wrong": 16,
+        "student_protocol_invalid": 2,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_correct-0003f444d6e00b8e",
+          "nq-correct_correct-001c9f53b321a4f0",
+          "nq-correct_wrong-0047468c7465d11c",
+          "nq-correct_wrong-0077ef73fb9a947f",
+          "hotpotqa-correct_wrong-0018f1a654155a51",
+          "nq-correct_correct-0017cbd693f70a88",
+          "nq-correct_correct-00254e4e9433e89a",
+          "nq-correct_correct-0035865ffb04a47e",
+          "nq-correct_wrong-0016106733819f83",
+          "nq-correct_wrong-0026d6cdb67fda37",
+          "nq-correct_wrong-003988a6a0d4fe48",
+          "nq-correct_wrong-004291308a4b40cf",
+          "nq-correct_correct-000e9490c583237c",
+          "nq-correct_wrong-0002779da209d09e",
+          "nq-correct_wrong-004e7e432ad059a4",
+          "nq-correct_wrong-0059477f1d00ea95"
+        ],
+        "student_protocol_invalid_case_ids": [
+          "nq-correct_correct-001c9f53b321a4f0",
+          "hotpotqa-correct_wrong-0018f1a654155a51"
+        ]
+      },
+      {
+        "teacher_protocol_invalid": true,
+        "denominator": 17,
+        "student_strict_wrong": 7,
+        "student_protocol_invalid": 1,
+        "student_strict_wrong_case_ids": [
+          "nq-correct_correct-0000c8af8c12b617",
+          "nq-correct_wrong-00578f4d71814b76",
+          "nq-correct_correct-002986e7214c2da4",
+          "nq-correct_wrong-0025c3f9b5bfc9ea",
+          "nq-correct_wrong-000a98a8b2b12111",
+          "nq-correct_wrong-00252ac57cec16f5",
+          "nq-correct_wrong-00550bbd7512423e"
+        ],
+        "student_protocol_invalid_case_ids": [
+          "nq-correct_correct-0000c8af8c12b617"
+        ]
+      }
+    ]
+  },
+  "cells": [
+    {
+      "dataset": "nq",
+      "group": "correct_correct",
+      "denominator": 32,
+      "strict_correct": {
+        "source100": 31,
+        "update1": 31,
+        "update5": 30,
+        "epoch1": 24
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "update5": {
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 0
+        },
+        "epoch1": {
+          "correct_to_wrong": 7,
+          "wrong_to_correct": 0
+        }
+      }
+    },
+    {
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "denominator": 27,
+      "strict_correct": {
+        "source100": 13,
+        "update1": 14,
+        "update5": 9,
+        "epoch1": 13
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 3,
+          "wrong_to_correct": 4
+        },
+        "update5": {
+          "correct_to_wrong": 5,
+          "wrong_to_correct": 1
+        },
+        "epoch1": {
+          "correct_to_wrong": 5,
+          "wrong_to_correct": 5
+        }
+      }
+    },
+    {
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "denominator": 2,
+      "strict_correct": {
+        "source100": 0,
+        "update1": 0,
+        "update5": 0,
+        "epoch1": 0
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "update5": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "epoch1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        }
+      }
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "denominator": 1,
+      "strict_correct": {
+        "source100": 1,
+        "update1": 1,
+        "update5": 1,
+        "epoch1": 1
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "update5": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "epoch1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        }
+      }
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "denominator": 1,
+      "strict_correct": {
+        "source100": 1,
+        "update1": 1,
+        "update5": 1,
+        "epoch1": 0
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "update5": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "epoch1": {
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 0
+        }
+      }
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "denominator": 1,
+      "strict_correct": {
+        "source100": 0,
+        "update1": 0,
+        "update5": 0,
+        "epoch1": 0
+      },
+      "transitions": {
+        "update1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "update5": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        },
+        "epoch1": {
+          "correct_to_wrong": 0,
+          "wrong_to_correct": 0
+        }
+      }
+    }
+  ],
+  "epoch1_protocol_invalid_cases": [
+    {
+      "case_id": "nq-correct_correct-0000c8af8c12b617",
+      "source100_strict_em": 1,
+      "invalid_literal_matches_gold": true,
+      "unclosed_think": true,
+      "search_calls": 0,
+      "teacher_protocol_valid": false,
+      "epoch1_generation_sha256": "ad1c9f581d463473d876bbf46c65722853936c9459a6bf3ec32d107bd3e6b450"
+    },
+    {
+      "case_id": "nq-correct_correct-001c9f53b321a4f0",
+      "source100_strict_em": 1,
+      "invalid_literal_matches_gold": false,
+      "unclosed_think": true,
+      "search_calls": 0,
+      "teacher_protocol_valid": true,
+      "epoch1_generation_sha256": "aa5df86faeec74b66a43ad0f44ff6eec4bf0b8c1a72f4f222df080afd8ef884d"
+    },
+    {
+      "case_id": "hotpotqa-correct_wrong-0018f1a654155a51",
+      "source100_strict_em": 1,
+      "invalid_literal_matches_gold": true,
+      "unclosed_think": true,
+      "search_calls": 0,
+      "teacher_protocol_valid": true,
+      "epoch1_generation_sha256": "96ea97edb4eaddf1407e05033bdf5aca831b63032bd32e0da48afac95eb63316"
+    }
+  ],
+  "summary_aggregates_independently_reproduced": true,
+  "contains_raw_question_response_token_text": false,
+  "limitations": [
+    "Completion/order bias: NQ61/64, Hotpot3/64; hard cases only3; six-cell completion uneven",
+    "Six-cell stratified training-case diagnostic sample does not estimate population EM, native512 or seven-benchmark scores",
+    "Teacher actual generation protocol failure differs from privileged next-token teacher forcing on original student prefix",
+    "Same-question overlap is descriptive association, not a randomized intervention or training causal effect",
+    "Legal answer mismatch is normalized benchmark gold disagreement, not proof of semantic factual error",
+    "Invalid literal match retains strict EM0; no scoring relaxation or protocol repair performed",
+    "Saved checkpoints1/5/3156 do not identify the first declining update; no intervening adapters exist"
+  ]
+}
