@@ -3,6 +3,7 @@
 Create: python -m reproduction.a800_common.deploy --source-commit FULL_SHA
 Launch: python -m reproduction.a800_common.deploy --handle INTENT --execute
 Read:   python -m reproduction.a800_common.deploy --handle INTENT --observe
+Prepared only: add --launch-prepared to the original handle after explicit recovery authorization.
 
 Only the existing controller's baai-a800 SSH route is used. Credentials and SSH
 configuration are never copied or changed. An uncertain launch is observed, not
@@ -52,6 +53,10 @@ def write_once(path,value):
     try:os.fsync(fd)
     finally:os.close(fd)
 
+def emit(value):
+    try:print('DEPLOYMENT_JSON:'+json.dumps(value),flush=True)
+    except BrokenPipeError:sys.stdout=open(os.devnull,'w')
+
 def state(stage,**extra):
     value=dict(deployment_id=intent['deployment_id'],base=str(base),source_commit=intent['source_commit'],
                stage=stage,observed_unix=time.time(),**extra)
@@ -61,7 +66,7 @@ def state(stage,**extra):
     fd=os.open(base/'logs',os.O_RDONLY|os.O_DIRECTORY)
     try:os.fsync(fd)
     finally:os.close(fd)
-    print('DEPLOYMENT_JSON:'+json.dumps(value),flush=True)
+    emit(value)
 
 def command(args,label,timeout=180,env=None):
     global last_command
@@ -189,8 +194,78 @@ except BaseException as failure:
         state('DEPLOYMENT_FAILED_OR_UNCERTAIN',failure_type=type(failure).__name__,
               last_command=last_command,no_automatic_retry=True)
     else:
-        print('DEPLOYMENT_JSON:'+json.dumps(dict(stage='REMOTE_INTENT_REJECTED',failure_type=type(failure).__name__)),flush=True)
+        emit(dict(stage='REMOTE_INTENT_REJECTED',failure_type=type(failure).__name__))
     sys.exit(1)
+'''
+
+
+REMOTE_LAUNCH_PREPARED = r'''
+import hashlib,json,os,re,socket,subprocess,sys,time
+from pathlib import Path
+payload=json.load(sys.stdin);intent=payload['intent'];base=Path(intent['base']);repo=base/'repo'
+assert intent['host']=='baai-a800' and re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
+assert str(base)=='/data/shaoshitong/Search-G1-a800-fresh200-'+intent['deployment_id'] and base.resolve()==base
+def read(name):
+    path=base/name;assert path.is_file() and path.resolve()==path and path.stat().st_uid==os.getuid()
+    return json.loads(path.read_text())
+def digest(path):
+    h=hashlib.sha256()
+    with path.open('rb') as f:
+        for part in iter(lambda:f.read(1024*1024),b''):h.update(part)
+    return h.hexdigest()
+def write_once(path,value):
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    with os.fdopen(fd,'w') as f:json.dump(value,f);f.flush();os.fsync(f.fileno())
+    fd=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+assert read('preparation/deployment-intent.json')==intent
+inputs=read('logs/deployment-input-receipt.json');source=read('logs/deployment-source-receipt.json')
+assert inputs['deployment_id']==source['deployment_id']==intent['deployment_id']
+assert inputs['inputs']==[{k:row[k] for k in ('target','bytes','sha256')} for row in intent['inputs']]
+for row in intent['inputs']:assert (base/row['target']).stat().st_size==row['bytes'] and digest(base/row['target'])==row['sha256']
+assert source['source_commit']==intent['source_commit'] and source['source_sha256']==intent['source_sha256']
+assert subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()==intent['source_commit']
+for name,sha in intent['source_sha256'].items():assert digest(repo/name)==sha
+run=read('logs/run-manifest.json');method=read('preparation/formal-inline-method.json');template=read('preparation/formal-inline-method-template.json')
+assert run['source_commit']==intent['source_commit'] and run['source_sha256']==intent['source_sha256']
+assert run['execution_backend']=='ssh_local' and run['slurm_job_id'] is None and run['execution_host']==socket.gethostname()
+assert run['completed_updates']==0 and run['training_world_size']==4 and run['initial_probe_version'] is None
+for row in intent['inputs']:
+    if row['target'].startswith('data/'):assert run['input_sha256'][Path(row['target']).name]==row['sha256']
+official=read('preparation/official-model-manifest-original.json');model_records={row['file']:row['sha256'] for row in official['files']}
+assert all(model_records[name]==sha for name,sha in run['initial_model_sha256'].items())
+assert {k:v for k,v in method.items() if k not in ('source_commit','source_map_sha256','created_unix')}=={k:v for k,v in template.items() if k not in ('source_commit','source_map_sha256','created_unix')}
+sys.path.insert(0,str(repo))
+from reproduction.common8.formal_inline_safety import verify_method
+from reproduction.common8.formal_contract import assert_formal_run
+assert_formal_run(run)
+verify_method(method,run)
+for name in ('logs/deployment-launch-receipt.json','logs/pipeline-launch-claim.json','logs/training-launch-claim.json','logs/process-ledger.json','logs/deployment-pipeline.log'):
+    assert not (base/name).exists(), 'Existing launch evidence requires observation, never another launch'
+for proc in Path('/proc').iterdir():
+    if proc.name.isdigit():
+        try:assert not (proc.stat().st_uid==os.getuid() and (proc/'cwd').resolve()==repo), 'Existing live process in the prepared runtime'
+        except (FileNotFoundError,PermissionError,ProcessLookupError):pass
+for key in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256'):
+    assert re.fullmatch('[0-9a-f]{40}' if key=='launcher_source_commit' else '[0-9a-f]{64}',payload[key])
+claim=dict(deployment_id=intent['deployment_id'],run_id=run['run_id'],execution_id=run['execution_id'],
+    runtime_source_commit=run['source_commit'],claimed_unix=time.time(),no_automatic_retry=True,
+    **{k:payload[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256')})
+write_once(base/'logs/prepared-launch-claim.json',claim)
+env=dict(os.environ)
+for key in tuple(env):
+    if key.startswith('SLURM_') or key in ('PYTHONHOME','RAY_ADDRESS','LD_LIBRARY_PATH','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(key,None)
+env.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+env.get('PATH','/usr/bin:/bin'),C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
+env.update({name:str(base/path) for name,path in dict(TMPDIR='tmp',RAY_TMPDIR='ray',HF_HOME='cache/hf',XDG_CACHE_HOME='cache',TRITON_CACHE_DIR='cache/triton',TORCHINDUCTOR_CACHE_DIR='cache/inductor').items()})
+log=base/'logs/deployment-pipeline.log'
+with log.open('xb') as out:
+    p=subprocess.Popen(['/data/search-g1/env/bin/python','-m','reproduction.a800_common.run_pipeline','--base',str(base)],cwd=repo,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=subprocess.STDOUT,start_new_session=True)
+    text=(Path('/proc')/str(p.pid)/'stat').read_text();fields=text[text.rfind(')')+2:].split();ticks=int(fields[19]);sid=int(fields[3]);assert ticks>0 and sid==p.pid
+    receipt=dict(claim,execution_backend='ssh_local',slurm_job_id=None,hostname=socket.gethostname(),pid=p.pid,start_ticks=ticks,sid=sid,stdout_log=str(log),source_commit=run['source_commit'],source_transport=source['source_transport'],launched_unix=time.time(),training_world_size=4,training_physical_indices=[0,1,2,3],same_process_after_five=True)
+    write_once(base/'logs/deployment-launch-receipt.json',receipt)
+try:print('DEPLOYMENT_JSON:'+json.dumps(dict(stage='PREPARED_PIPELINE_LAUNCHED',**receipt)),flush=True)
+except BrokenPipeError:sys.stdout=open(os.devnull,'w')
 '''
 
 
@@ -235,6 +310,7 @@ if owned is not None:
     receipt=read('logs/deployment-launch-receipt.json')
     if receipt:
         result.update({k:receipt[k] for k in ('run_id','execution_id','pid','start_ticks','stdout_log','source_commit','source_transport')})
+        result.update({k:receipt[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256') if k in receipt})
         proc=Path('/proc')/str(receipt['pid'])/'stat';matches=False;process_state=None
         if proc.is_file():
             text=proc.read_text();fields=text[text.rfind(')')+2:].split()
@@ -346,7 +422,7 @@ def ssh_command(code):
 
 
 def perform(args):
-    assert args.handle is not None, '--execute/--observe require the original persisted handle'
+    assert args.handle is not None, 'Execution/observation requires the original persisted handle'
     handle = args.handle.resolve(); intent = json.loads(handle.read_text())
     assert intent['role'] == 'fresh_a800_common_deployment_intent' and intent['host'] == 'baai-a800'
     assert re.fullmatch('[0-9a-f]{32}', intent['deployment_id']) and re.fullmatch('[0-9a-f]{40}', intent['source_commit'])
@@ -368,9 +444,20 @@ def perform(args):
                     member = tarfile.TarInfo(row['target']); member.size = row['bytes']; member.mode = 0o600
                     archive.addfile(member, original)
         payload = data.getvalue(); code = REMOTE_EXECUTE; timeout = 1000
+    elif args.launch_prepared:
+        repo = Path(__file__).resolve().parents[2]
+        launcher_commit = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
+        launcher_bytes = subprocess.check_output(['git', '-C', str(repo), 'show', launcher_commit + ':reproduction/a800_common/deploy.py'])
+        assert hashlib.sha256(launcher_bytes).hexdigest() == digest(Path(__file__).resolve()), 'Prepared launcher must be the published committed tool'
+        write_once(handle.with_name(handle.stem + '.launch-prepared-once.json'),
+                   dict(deployment_id=intent['deployment_id'], claimed_unix=time.time(), launcher_source_commit=launcher_commit, no_automatic_retry=True))
+        payload = json.dumps(dict(intent=intent, launcher_source_commit=launcher_commit,
+            launcher_source_sha256=hashlib.sha256(launcher_bytes).hexdigest(),
+            embedded_launcher_sha256=hashlib.sha256(REMOTE_LAUNCH_PREPARED.encode()).hexdigest()), sort_keys=True, allow_nan=False).encode()
+        code = REMOTE_LAUNCH_PREPARED; timeout = 60
     else:
         payload = json.dumps(intent, sort_keys=True, allow_nan=False).encode(); code = REMOTE_OBSERVE; timeout = 60
-    action = 'execute' if args.execute else 'observe'
+    action = 'execute' if args.execute else 'launch-prepared' if args.launch_prepared else 'observe'
     stderr_path = handle.with_name(handle.stem + '.' + action + '-' + str(time.time_ns()) + '.stderr')
     output = b''; exit_code = None; failure_type = None
     with stderr_path.open('xb') as errors:
@@ -396,13 +483,14 @@ def main():
     parser.add_argument('--handle', type=Path)
     actions = parser.add_mutually_exclusive_group()
     actions.add_argument('--execute', action='store_true'); actions.add_argument('--observe', action='store_true')
+    actions.add_argument('--launch-prepared', action='store_true')
     parser.add_argument('--source-commit')
     parser.add_argument('--shared-data', type=Path, default=PROJECT / 'shared-data')
     parser.add_argument('--official-manifest', type=Path, default=OFFICIAL)
     parser.add_argument('--method', type=Path, default=PROJECT / 'preparation/formal-inline-method.json')
     parser.add_argument('--bundle', type=Path)
     args = parser.parse_args()
-    if args.execute or args.observe:
+    if args.execute or args.observe or args.launch_prepared:
         assert args.source_commit is None and args.bundle is None, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
