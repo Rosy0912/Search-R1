@@ -1,0 +1,222 @@
+{
+  "schema": "ACTUAL_ORIGINAL_JOB_TERMINAL_FACTS_V1",
+  "job": 3337,
+  "node": "h100-8",
+  "observation_utc": "2026-10-08T05:59:28.936483+00:00",
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127",
+  "run_result_status": "FAILED",
+  "cleanup_residual_states": {},
+  "actual_completed_outer_updates": 2,
+  "actual_successful_adam_writes_per_rank": 40,
+  "failed_stage": "third rollout before Adam",
+  "original_pid_observation": [
+    {
+      "pid": 1938751,
+      "exists": false
+    },
+    {
+      "pid": 1939142,
+      "exists": false
+    },
+    {
+      "pid": 1939501,
+      "exists": false
+    },
+    {
+      "pid": 1939502,
+      "exists": false
+    },
+    {
+      "pid": 1939503,
+      "exists": false
+    },
+    {
+      "pid": 1939504,
+      "exists": false
+    },
+    {
+      "pid": 1939505,
+      "exists": false
+    },
+    {
+      "pid": 1939506,
+      "exists": false
+    },
+    {
+      "pid": 1939507,
+      "exists": false
+    }
+  ],
+  "original_cgroup_observation": {
+    "path": "/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3337/step_0",
+    "exists": false
+  },
+  "gpu_compute": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "checkpoint_directories": [],
+  "actual_slurm_raw": {
+    "returncode": 0,
+    "stdout": "JobId=3337 JobName=gigpo-e1-fresh200-live UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898729 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:20:14 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-08T13:34:21 EligibleTime=2026-10-08T13:34:21 AccrueTime=2026-10-08T13:34:21 StartTime=2026-10-08T13:34:22 EndTime=2026-10-08T13:54:36 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T13:34:22 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1931613 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=128 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=128 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v18-jsonmetadata1/calibration_v1.sbatch /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-jsonmetadata-repair3336-once-v1/BINDING.json 006c698e003aea7c629886e9bd1ab7af9628f2fc982508e1aa706e619ded8fa7 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v18-jsonmetadata1 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env WorkDir=/root StdErr=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3337.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3337.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "stderr": ""
+  },
+  "fixed_original_log_identities": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-6985de37de1677ca3c0324b9474ea3755827c4bc9623b6dd1a5f5fc0-02000000-1939503.err",
+      "dev": 64768,
+      "inode": 176231359,
+      "bytes": 3128,
+      "sha256": "d1f984f1c64b54b13934c3e895cafb90667b1ac4eb7fe04604dcea7eced7dfee"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-1f8785cb50d50caa3e12731b8dda28861e5fe5b5f03825257f3b6709-02000000-1939505.out",
+      "dev": 64768,
+      "inode": 176231362,
+      "bytes": 974,
+      "sha256": "9b3c38c17f91141b5f24d15169bee2602ff3082dfcb6e9596b03c06f58da4c71"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-a9271ad405ba2c58f34dd148c4fe17e5703fbe3f9307a8564821a3e5-02000000-1939501.err",
+      "dev": 64768,
+      "inode": 176231353,
+      "bytes": 3098,
+      "sha256": "bfa84b178dd51cadf4e6c2cc8c4999552b2a36406f95f3fc97746364fc248bbd"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-57e876d3516ee7760b769ae4101364277aabebd5b69d1eed2d273279-02000000-1939506.out",
+      "dev": 64768,
+      "inode": 176231369,
+      "bytes": 974,
+      "sha256": "84cc172966c5667c53c272c944e4b66d4685f0ac38a82d9c2f665a6ff861a542"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-a9271ad405ba2c58f34dd148c4fe17e5703fbe3f9307a8564821a3e5-02000000-1939501.out",
+      "dev": 64768,
+      "inode": 176231352,
+      "bytes": 1699,
+      "sha256": "771b9d9bf27ac7cd0d39b163730c79e447de554dda5b31abafb6a5aed33b2277"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-712d533c7536f34b6ff053363d06785fcabf3683bfed4426ef4ebe22-02000000-1939142.out",
+      "dev": 64768,
+      "inode": 176231335,
+      "bytes": 3230,
+      "sha256": "3128f2c07e0eeeedefcf78e915b2e4eb67f6747b686a6db8974a00e81e680056"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-51a48be3a192065d3f1fefddbca7c60b90f4fa56a8b225c35e109750-02000000-1939507.out",
+      "dev": 64768,
+      "inode": 176231375,
+      "bytes": 974,
+      "sha256": "904899141773bae80f69f1abcc839bca3e28868a49a155a0a465aca5d48404af"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-8d256daea0afb68f60737ad06d25ac346bd4257c70d055935e941196-02000000-1939504.out",
+      "dev": 64768,
+      "inode": 176231377,
+      "bytes": 974,
+      "sha256": "018a86046ef2db9cf2b987601929d34a0e3ff28563c420ff1d475665eb64e65f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-712d533c7536f34b6ff053363d06785fcabf3683bfed4426ef4ebe22-02000000-1939142.err",
+      "dev": 64768,
+      "inode": 176231336,
+      "bytes": 3098,
+      "sha256": "466967d3c96d16f4c2be8102dce9cae2ca4da9e85807d12d4e98f14ba0273714"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-d9ee5e9044fc09490b776c4b07300916fd328c26e3f7cc30f33c7992-02000000-1938751.out",
+      "dev": 64768,
+      "inode": 176231323,
+      "bytes": 954,
+      "sha256": "7016076612298a066374154d115500f1fdae9e1debbb8924f7ec75d15c77f145"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-51a48be3a192065d3f1fefddbca7c60b90f4fa56a8b225c35e109750-02000000-1939507.err",
+      "dev": 64768,
+      "inode": 176231376,
+      "bytes": 3098,
+      "sha256": "46991091b140eef06c8e8fa5ea21ac43f6b994674ae84b332be8ae6c3fed7542"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-1f8785cb50d50caa3e12731b8dda28861e5fe5b5f03825257f3b6709-02000000-1939505.err",
+      "dev": 64768,
+      "inode": 176231363,
+      "bytes": 3380,
+      "sha256": "240f505570f86c084e423d85b95ab5489bd8870c5719c020fb58828c9a916f89"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-31315f9684e3e18bf649acd61929798dd76507edc9bb4879e58b4db4-02000000-1939502.out",
+      "dev": 64768,
+      "inode": 176231347,
+      "bytes": 974,
+      "sha256": "40289b89c3022f7b7683e782ad98fe4b233527247751b4e4f7895442035ed662"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-8d256daea0afb68f60737ad06d25ac346bd4257c70d055935e941196-02000000-1939504.err",
+      "dev": 64768,
+      "inode": 176231378,
+      "bytes": 3098,
+      "sha256": "c8ab7514ee1fcad178786928ea0345185665690e6ac56cb2f53bb49474571205"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-31315f9684e3e18bf649acd61929798dd76507edc9bb4879e58b4db4-02000000-1939502.err",
+      "dev": 64768,
+      "inode": 176231348,
+      "bytes": 3098,
+      "sha256": "495bb3bc5cae10ef5200955274b7314bcd2eca69b4fd3f28b6739bd67c080b80"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-d9ee5e9044fc09490b776c4b07300916fd328c26e3f7cc30f33c7992-02000000-1938751.err",
+      "dev": 64768,
+      "inode": 176231324,
+      "bytes": 1316,
+      "sha256": "6921eafe1bb396a1ad6d1a50dcfe4e87e536ad35b4d222be1df6fd833422520b"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-57e876d3516ee7760b769ae4101364277aabebd5b69d1eed2d273279-02000000-1939506.err",
+      "dev": 64768,
+      "inode": 176231370,
+      "bytes": 3098,
+      "sha256": "ae5f48752ae96d44d81a28a6ef62e8ca67441e0d3de6a22fa8c43be757c824fb"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3337-1791437756282298127/ray/session_2026-10-08_13-37-28_019680_1935176/logs/worker-6985de37de1677ca3c0324b9474ea3755827c4bc9623b6dd1a5f5fc0-02000000-1939503.out",
+      "dev": 64768,
+      "inode": 176231358,
+      "bytes": 974,
+      "sha256": "556d9990c27fca81a23abd6320f26b917ddb4d0c1ab00b31cf4e0138c60de0c2"
+    }
+  ],
+  "hardware_kernel_log_readonly": {
+    "returncode": 0,
+    "stderr": "",
+    "relevant_lines": [
+      "[Wed Sep 23 21:33:07 2026] vethecc09fd: renamed from eth0",
+      "[Fri Sep 25 20:27:55 2026] docker0: port 6(veth33decc9) entered blocking state",
+      "[Fri Sep 25 20:27:55 2026] docker0: port 6(veth33decc9) entered disabled state",
+      "[Fri Sep 25 20:27:55 2026] device veth33decc9 entered promiscuous mode",
+      "[Fri Sep 25 20:27:55 2026] IPv6: ADDRCONF(NETDEV_CHANGE): veth33decc9: link becomes ready",
+      "[Fri Sep 25 20:27:55 2026] docker0: port 6(veth33decc9) entered blocking state",
+      "[Fri Sep 25 20:27:55 2026] docker0: port 6(veth33decc9) entered forwarding state",
+      "[Fri Sep 25 20:37:29 2026] docker0: port 6(veth33decc9) entered disabled state",
+      "[Fri Sep 25 20:37:30 2026] docker0: port 6(veth33decc9) entered disabled state",
+      "[Fri Sep 25 20:37:30 2026] device veth33decc9 left promiscuous mode",
+      "[Fri Sep 25 20:37:30 2026] docker0: port 6(veth33decc9) entered disabled state",
+      "[Mon Sep 28 01:20:57 2026] systemd[1]: systemd 249.11-0ubuntu3.12 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)",
+      "[Mon Sep 28 02:52:57 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1435622, name=UnrealEditor-Cm, channel 0x0000000a, errorString CTX SWITCH TIMEOUT, Info 0x1ac00a",
+      "[Mon Sep 28 02:55:03 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1437868, name=UnrealEditor-Cm, channel 0x0000000a, errorString CTX SWITCH TIMEOUT, Info 0x2ec00a",
+      "[Mon Sep 28 02:55:10 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1437904, name=UnrealEditor-Cm, channel 0x0000002e, errorString CTX SWITCH TIMEOUT, Info 0x3c01e",
+      "[Mon Sep 28 03:03:47 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1443192, name=UnrealEditor-Cm, channel 0x0000000a, errorString CTX SWITCH TIMEOUT, Info 0x1ec00a",
+      "[Mon Sep 28 03:07:00 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1464587, name=UnrealEditor-Cm, channel 0x0000000d, errorString CTX SWITCH TIMEOUT, Info 0x3c00e",
+      "[Mon Sep 28 03:36:06 2026] NVRM: Xid (PCI:0000:18:00): 109, pid=1494979, name=vkcube, channel 0x0000000d, errorString CTX SWITCH TIMEOUT, Info 0xfc00e",
+      "[Thu Oct  8 14:06:05 2026] NVRM: Xid (PCI:0000:1b:00): 31, pid=1939501, name=pt_main_thread, channel 0x0000001e, intr 00000000. MMU Fault: ENGINE GRAPHICS GPC5 GPCCLIENT_T1_8 faulted @ 0x7f3e_dc800000. Fault is of type FAULT_PDE ACCESS_TYPE_VIRT_READ"
+    ]
+  },
+  "raw_record": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3337-ACTUAL-STATUS-v14-terminal-original-logs-and-resources.json",
+  "raw_record_sha256": "818841ee034f8cc461fbdc8eaf88dc65901dfbae0652beade44ab95252e417e1",
+  "exact_resume_claimed": false,
+  "new_submission_executed": false
+}

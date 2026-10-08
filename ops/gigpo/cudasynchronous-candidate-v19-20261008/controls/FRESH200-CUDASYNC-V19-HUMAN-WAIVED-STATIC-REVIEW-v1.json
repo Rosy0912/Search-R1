@@ -1,0 +1,29 @@
+{
+  "adapter_sha256": {
+    "deploy_submit_cudasynchronous3337_v19_once_v1.py": "8079ae8507119362caa89e1ed6f22c053d1e1e9c1dd520abb4dd847a94349571"
+  },
+  "binding_sha256": "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844",
+  "derivation_sha256": "1948b447825dac20c9eb9c1edbd12ba3fb02c81400af24c0779bc238a70d32b7",
+  "human_instruction": "\u5ba1\u67e5\u5565\uff0c\u4f60\u76f4\u63a5\u8dd1\u5427\u3002\u3002\u522b\u6d6a\u8d39\u8d44\u6e90\uff0c\u4f60\u592a\u6162\u4e86",
+  "namespace": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1",
+  "new_static_review_pass": false,
+  "no_extra_tests": true,
+  "no_initial_baseline": true,
+  "observation_time_is_recorded_receipt_not_invented_human_send_time": true,
+  "observed_at_utc": "2026-10-08T06:09:47Z",
+  "publication_and_actual_safety_gates_retained": true,
+  "review_authorization_source": "Latest direct human instruction relayed by root, supersedes v19 pre-execution independent static review wait",
+  "runtime_changed_sha256": {
+    "calibration_driver_v1.py": "e5b68239d8c49898d8b7eb716fb3f409b317258bd4ad5b909afb008f7a3ce632",
+    "calibration_run_v1.py": "ca10bc004a73af749cfc1979fced7745d7b156776b16e111ac92926fd5aab557",
+    "calibration_worker_v1.py": "c5420b3123ee0615fdedfab881d95ad6ca10cd91c4adea3d004425a645f14246"
+  },
+  "runtime_manifest_sha256": "f118a3b0417ec9d2842f4b337bcf0c357b08ba7d70d1d237181b9743612ec917",
+  "scope": "Only this isolated v19 next official fresh200 execution; no independent static PASS claimed",
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "status": "HUMAN_WAIVED_STATIC_REVIEW",
+  "superseded_unexecuted_candidate": {
+    "binding_sha256": "6f1be832ff513b6bacffc86a894c789f4feca091fe723208b9df3c3467a79158",
+    "derivation_sha256": "f388fd31f1d635f7fa6e291b9af1e95205ee03a1e136478811e96bc90fc4fedc"
+  }
+}

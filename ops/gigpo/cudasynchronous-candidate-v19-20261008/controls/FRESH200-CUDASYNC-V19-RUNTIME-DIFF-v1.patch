@@ -1,0 +1,155 @@
+--- v18/calibration_driver_v1.py
++++ v19/calibration_driver_v1.py
+@@ -7,6 +7,8 @@
+ import copy
+ import json
+ import os
++if os.environ.get('CUDA_LAUNCH_BLOCKING') != '1':
++    raise RuntimeError('Synchronous CUDA policy must be inherited before driver imports')
+ import sys
+ import time
+ from pathlib import Path
+@@ -46,6 +48,10 @@
+             and len({row['pid'] for row in rows}) == 8, 'Missing actual eight-worker backend identity')
+     for row in rows:
+         validate_bf16_accumulation_identity(row, role='actor_rollout')
++        require(row['cuda_launch_blocking']['value'] == '1'
++                and row['cuda_launch_blocking']['present_before_torch_import'] is True
++                and row['cuda_launch_blocking']['constructor_pid'] == row['pid'],
++                'Actual vLLM process lost its pre-initialization synchronous CUDA policy')
+         require(row['executor_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.spmd_gpu_executor.SPMDGPUExecutor'
+                 and row['executor_worker_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.worker.Worker',
+                 'BF16 process readback requires the actual in-process SPMD vLLM worker')
+@@ -85,6 +91,10 @@
+                 and len({row['pid'] for row in rows}) == 8, 'Missing actual eight-rank BF16 role readback')
+         for row in rows:
+             validate_bf16_accumulation_identity(row, role=role)
++            policy = row['cuda_launch_blocking']
++            require(policy['value'] == '1' and policy['present_before_torch_import'] is True
++                    and policy['constructor_pid'] == row['pid'] and policy['worker_role'] == role,
++                    'Actual role lost the pre-initialization synchronous CUDA policy')
+         identities[role] = sorted(rows, key=lambda row: row['rank'])
+     previous = getattr(trainer, '_calibration_bf16_accumulation', None)
+     require(previous is None or previous == identities,
+@@ -92,6 +102,7 @@
+     trainer._calibration_bf16_accumulation = copy.deepcopy(identities)
+     json_save(run / ('actual-bf16-accumulation-' + stage + '.json'), dict(
+         status='ACTUAL_ALL8_BOTH_ROLES_FALSE', stage=stage, actual_roles=identities,
++        cuda_launch_blocking_status='ACTUAL_ALL8_BOTH_ROLES_1_BEFORE_INITIALIZATION',
+         live_flag_reset_permitted=False, probability_accepted=False))
+     return identities
+ 
+@@ -760,6 +771,8 @@
+ 
+ def main_task(config, binding):
+     run = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])
++    require(binding['cuda_launch_blocking'] == os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
++            'Ray task synchronous CUDA environment differs')
+     require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Ray backend environment differs')
+     trainer = create_trainer(config)
+     observe_bf16_accumulation(trainer, run, 'before-official-zero-and-first-batch')
+@@ -817,7 +830,7 @@
+     env = {key: value for key, value in os.environ.items() if key.startswith(('SEARCH_R1_BASELINE_', 'GIGPO_POLICY_'))}
+     env.update(PYTHONPATH=os.environ['PYTHONPATH'], CPATH=os.environ['CPATH'],
+                SEARCH_R1_PYTHON_HEADER_CPATH=os.environ['SEARCH_R1_PYTHON_HEADER_CPATH'],
+-               VLLM_ATTENTION_BACKEND='FLASH_ATTN')
++               VLLM_ATTENTION_BACKEND='FLASH_ATTN', CUDA_LAUNCH_BLOCKING='1')
+     require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Driver backend environment differs')
+     ray.init(address=os.environ['RAY_ADDRESS'], runtime_env={'env_vars': env})
+     try:
+--- v18/calibration_run_v1.py
++++ v19/calibration_run_v1.py
+@@ -2,6 +2,7 @@
+ import fcntl
+ import json
+ import os
++os.environ['CUDA_LAUNCH_BLOCKING'] = '1'  # New process only, before all owned CUDA subprocesses.
+ import signal
+ import socket
+ import subprocess
+@@ -148,6 +149,9 @@
+     binding_path = Path(sys.argv[1])
+     require(sha(binding_path) == sys.argv[2], 'Calibration binding changed')
+     binding = json.loads(binding_path.read_text())
++    require(binding['cuda_launch_blocking'] == '1'
++            and os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
++            'New immutable runtime requires explicit synchronous CUDA launch policy')
+     require(binding.get('human_nonblocking_diagnostics') is True
+             and binding.get('external_diagnostic_review_blocks_training') is False
+             and binding.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1',
+--- v18/calibration_worker_v1.py
++++ v19/calibration_worker_v1.py
+@@ -2,6 +2,9 @@
+ import copy
+ import json
+ import os
++_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT = os.environ.get('CUDA_LAUNCH_BLOCKING') == '1'
++if not _CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT:
++    raise RuntimeError('Synchronous CUDA policy must be inherited before worker imports')
+ from pathlib import Path
+ import torch
+ from verl.single_controller.base.decorator import Dispatch, register
+@@ -16,7 +19,7 @@
+ from calibration_boundary_v2 import matched_stage
+ 
+ 
+-def observe_backend_identity(engine, rank, bf16_accumulation):
++def observe_backend_identity(engine, rank, bf16_accumulation, cuda_launch_blocking):
+     """Read selected runner and every attention implementation; no tensor computation."""
+     executor = engine.llm_engine.model_executor
+     runner = executor.worker.model_runner
+@@ -36,6 +39,7 @@
+         binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+         requested_backend=os.environ.get('VLLM_ATTENTION_BACKEND'),
+         bf16_accumulation=bf16_accumulation,
++        cuda_launch_blocking=cuda_launch_blocking,
+         executor_class=type(executor).__module__ + '.' + type(executor).__name__,
+         executor_worker_class=type(executor.worker).__module__ + '.' + type(executor.worker).__name__,
+         runner_backend_class=backend.__module__ + '.' + backend.__name__,
+@@ -53,6 +57,7 @@
+         torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False
+         self._bf16_accumulation_constructor_pid = os.getpid()
+         self._bf16_accumulation_constructor_role = role
++        self._cuda_launch_blocking_identity()
+         require(torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction is False,
+                 'BF16 reduction configuration was not applied before source initialization')
+         super().__init__(config=config, role=role)
+@@ -60,6 +65,7 @@
+ 
+     def _bf16_accumulation_identity(self):
+         """Read the live process flag; a changed flag refuses instead of being reset."""
++        self._cuda_launch_blocking_identity()
+         row = dict(pid=os.getpid(), bf16_accumulation=dict(
+             scope=BF16_ACCUMULATION_SCOPE,
+             allow_bf16_reduced_precision_reduction=torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction,
+@@ -68,11 +74,21 @@
+             worker_role=self._bf16_accumulation_constructor_role))
+         return validate_bf16_accumulation_identity(row, role=self.role)
+ 
++
++    def _cuda_launch_blocking_identity(self):
++        require(os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
++                'Synchronous CUDA policy changed; no live repair is permitted')
++        return dict(value=os.environ['CUDA_LAUNCH_BLOCKING'],
++            present_before_torch_import=_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT,
++            constructor_pid=self._bf16_accumulation_constructor_pid,
++            worker_role=self._bf16_accumulation_constructor_role)
++
+     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+     def calibration_bf16_accumulation_identity(self):
+         errors, row = [], None
+         try:
+             row = dict(rank=self.rank, pid=os.getpid(),
++                cuda_launch_blocking=self._cuda_launch_blocking_identity(),
+                 bf16_accumulation=self._bf16_accumulation_identity())
+         except BaseException as error:
+             errors.append(repr(error))
+@@ -211,7 +227,7 @@
+     def calibration_backend_identity(self):
+         assert self._is_actor
+         return observe_backend_identity(self.rollout.inference_engine, self.rank,
+-                                        self._bf16_accumulation_identity())
++                                        self._bf16_accumulation_identity(), self._cuda_launch_blocking_identity())
+ 
+     def _complete_pause_state(self):
+         """Observe full local actor state after sampling, without a restore or optimizer write."""

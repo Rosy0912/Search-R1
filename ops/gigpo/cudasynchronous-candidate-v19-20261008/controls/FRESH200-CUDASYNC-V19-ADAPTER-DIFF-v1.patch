@@ -1,0 +1,279 @@
+--- v18/deploy_submit_jsonmetadata3336_v18_once_v1.py
++++ v19/deploy_submit_cudasynchronous3337_v19_once_v1.py
+@@ -1,4 +1,4 @@
+-"""Fresh v18 single-use JSON metadata repair; never signals or resumes a failed job."""
++"""Fresh v19 single-use synchronous CUDA execution; never signals or resumes a failed job."""
+ import base64
+ import hashlib
+ import json
+@@ -15,12 +15,12 @@
+ BASE = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+ OUT = BASE / 'outputs/gigpo-e1-instruct200'
+ ROOT = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006')
+-RUN = ROOT / 'runs/gigpo-e1-fresh200-live-job3336-1791435850455709441'
+-STATE = ROOT / 'logs/fresh200-jsonmetadata-repair3336-once-v1'
+-OLD = ROOT / 'tools/fresh200-continuation-v17-bf16accum1-nonblocking1'
+-NEW = ROOT / 'tools/fresh200-continuation-v18-jsonmetadata1'
+-PARENT_BINDING = ROOT / 'logs/fresh200-nonblocking-v17-repair3332-once-v1/BINDING.json'
+-PARENT_SHA = '3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399'
++RUN = ROOT / 'runs/gigpo-e1-fresh200-live-job3337-1791437756282298127'
++STATE = ROOT / 'logs/fresh200-cudasynchronous-repair3337-once-v1'
++OLD = ROOT / 'tools/fresh200-continuation-v18-jsonmetadata1'
++NEW = ROOT / 'tools/fresh200-continuation-v19-cudasynchronous1'
++PARENT_BINDING = ROOT / 'logs/fresh200-jsonmetadata-repair3336-once-v1/BINDING.json'
++PARENT_SHA = '006c698e003aea7c629886e9bd1ab7af9628f2fc982508e1aa706e619ded8fa7'
+ SOURCE = 'ebe91bfebd56c3bd445219dcd94342d815f899f0'
+ NEW_REPO = ROOT / 'repo-v17-nonblocking1-ebe91bfe'
+ PYTHON = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env/bin/python')
+@@ -84,27 +84,30 @@
+     derivation = json.loads(checked(gate['derivation']['path'], gate['derivation']))
+     require(derivation['parent_binding']['sha256'] == PARENT_SHA
+             and derivation['source_commit'] == SOURCE and derivation['namespace'] == str(STATE),
+-            'Wrong exact v18 derivation')
++            'Wrong exact v19 derivation')
+     checked(derivation['child_binding']['local_path'], derivation['child_binding'])
+     required = {Path(__file__).name: record(Path(__file__)),
+         Path(gate['derivation']['path']).name: gate['derivation'],
+         Path(derivation['child_binding']['local_path']).name: derivation['child_binding']}
+     required.update({row['path']: row['after'] for row in derivation['runtime_manifest']['files']})
+     publication_gate(gate['adapter_publication'], required)
+-    review = json.loads(checked(gate['adapter_review']['path'], gate['adapter_review']))
+-    require(review['status'] == 'PASS_STATIC' and review['blocking_findings'] == []
+-            and review['reviewer']['candidate_author'] is False and review['reviewer']['clean_context'] is True
+-            and review['binding_sha256'] == derivation['child_binding']['sha256']
+-            and review['derivation_sha256'] == gate['derivation']['sha256']
+-            and review['adapter_sha256'] == {Path(__file__).name: required[Path(__file__).name]['sha256']},
+-            'Missing exact nonauthor v18 binding/control review')
++    waiver = json.loads(checked(gate['human_review_waiver']['path'], gate['human_review_waiver']))
++    policy = derivation['binding_patch']['cuda_execution_review_policy']
++    require(policy['status'] == waiver['status'] == 'HUMAN_WAIVED_STATIC_REVIEW'
++            and policy['human_instruction'] == waiver['human_instruction'] == '审查啥，你直接跑吧。。别浪费资源，你太慢了'
++            and policy['observed_at_utc'] == waiver['observed_at_utc']
++            and waiver['binding_sha256'] == derivation['child_binding']['sha256']
++            and waiver['derivation_sha256'] == gate['derivation']['sha256']
++            and waiver['adapter_sha256'] == {Path(__file__).name: required[Path(__file__).name]['sha256']},
++            'Missing exact latest-human review waiver; never fabricate a static PASS')
++    publication_gate(gate['adapter_publication'], {Path(gate['human_review_waiver']['path']).name: gate['human_review_waiver']})
+     return gate, derivation
+ 
+ 
+ def transport(payload):
+     """One local invocation; all SSH layers retain the accepted18 route and host checks."""
+     action = 'submit'
+-    sources = {'deploy_submit_jsonmetadata3336_v18_once_v1': Path(__file__).read_bytes()}
++    sources = {'deploy_submit_cudasynchronous3337_v19_once_v1': Path(__file__).read_bytes()}
+     require(len(packed(payload)) < 500000, 'Transport only the reviewed small delta frame')
+     encoded = {name: dict(b64=base64.b64encode(zlib.compress(raw)).decode(), sha256=sha(raw))
+                for name, raw in sources.items()}
+@@ -118,7 +121,7 @@
+ p=json.loads(sys.stdin.buffer.read())
+ sys.modules[TARGET].remote(p)
+ """.replace('SOURCES', repr(json.dumps(encoded))).replace('TARGET', repr(
+-        'deploy_submit_jsonmetadata3336_v18_once_v1'))
++        'deploy_submit_cudasynchronous3337_v19_once_v1'))
+     worker = shlex.join(['env', '-u', 'LD_LIBRARY_PATH', 'CUDA_VISIBLE_DEVICES=',
+         'PYTHONDONTWRITEBYTECODE=1', 'OMP_NUM_THREADS=2', 'MKL_NUM_THREADS=2', str(PYTHON), '-B', '-c', receiver])
+     management = """import json,shlex,subprocess,sys
+@@ -133,7 +136,7 @@
+ r=subprocess.run(args+[user+'@'+ip,WORKER],input=sys.stdin.buffer.read(),capture_output=True,timeout=220)
+ sys.stdout.buffer.write(r.stdout);sys.stderr.buffer.write(r.stderr);raise SystemExit(r.returncode)
+ """.replace('WORKER', repr(worker))
+-    intent = OUT / ('FRESH200-JSONMETADATA-V18-REPAIR3336-' + action.upper() + '-LOCAL-INTENT-v1.json')
++    intent = OUT / ('FRESH200-CUDASYNC-V19-REPAIR3337-' + action.upper() + '-LOCAL-INTENT-v1.json')
+     once(intent, packed(dict(status='ONE_LOCAL_INVOCATION_NEVER_REPLAY', action=action,
+         payload_sha256=sha(packed(payload)), source_sha256={k: v['sha256'] for k, v in encoded.items()})))
+     outer = ['env', '-u', 'LD_LIBRARY_PATH', '/usr/bin/ssh', '-T', '-o', 'BatchMode=yes',
+@@ -148,7 +151,7 @@
+     except BaseException as error:
+         observation = dict(status='UNCERTAIN_NEVER_REPLAY', action=action,
+                            error_type=type(error).__name__, error=str(error))
+-    once(OUT / ('FRESH200-JSONMETADATA-V18-REPAIR3336-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
++    once(OUT / ('FRESH200-CUDASYNC-V19-REPAIR3337-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
+     print(json.dumps(observation))
+     require(observation.get('returncode') == 0, 'Read remote intent/facts; NEVER REPLAY after an uncertain invocation')
+ 
+@@ -164,45 +167,45 @@
+     '--no-requeue', '--time=1-00:00:00', '--export=ALL']
+ PATCH_KEYS = {'helpers', 'runtime_files', 'runtime_version', 'runtime_variant',
+     'runtime_relative_files_digest', 'runtime_canonical_files_digest', 'declared_primary_files_digest',
+-    'owned_submit_namespace', 'actual_runtime_static_review', 'actual_runtime_static_manifest',
+-    'binding_derivation', 'json_metadata_repair_parent'}
++    'owned_submit_namespace', 'actual_runtime_static_manifest', 'cuda_execution_review_policy',
++    'binding_derivation', 'cuda_synchronous_repair_parent', 'cuda_launch_blocking', 'cuda_execution_scope'}
+ 
+ 
+ def actual_terminal(row):
+-    require(Path(row['path']) == STATE / 'JOB3336-TERMINAL-FACTS-v1.json', 'Wrong exact failed-parent facts')
++    require(Path(row['path']) == STATE / 'JOB3337-TERMINAL-FACTS-v1.json', 'Wrong exact failed-parent facts')
+     facts = json.loads(checked(row['path'], row))
+-    require(facts['status'] == 'ACTUAL_OWN3336_FAILED_METADATA_SERIALIZATION_NO_COMPLETE_CHECKPOINT'
+-        and facts['parent_job'] == '3336' and facts['run'] == str(RUN)
+-        and facts['parent_binding_sha256'] == PARENT_SHA and facts['source_commit'] == SOURCE
+-        and facts['completed_outer'] == facts['scheduler_step'] == 1
+-        and facts['actual_adam_writes_per_rank'] == facts['opportunities_per_rank'] == 20
+-        and facts['gradient_micro_per_rank'] == 160 and facts['data_cursor'] == 512
+-        and facts['cleanup_residual_states'] == {} and facts['original_pids_gone'] is True
+-        and facts['cgroup_gone'] is True and facts['full_resume_possible'] is False
+-        and facts['complete_checkpoint_exists'] is False and facts['historical_completed1_not_stitched'] is True
+-        and facts['next_fresh_initial_outer'] == facts['next_fresh_initial_adam'] == 0,
+-        'Missing truthful one-completed-update parent reconciliation')
+-    pids = facts['original_processes']
++    require(facts['schema'] == 'ACTUAL_ORIGINAL_JOB_TERMINAL_FACTS_V1'
++        and facts['job'] == 3337 and facts['node'] == 'h100-8' and facts['run'] == str(RUN)
++        and facts['run_result_status'] == 'FAILED' and facts['cleanup_residual_states'] == {}
++        and facts['actual_completed_outer_updates'] == 2
++        and facts['actual_successful_adam_writes_per_rank'] == 40
++        and facts['checkpoint_directories'] == [] and facts['exact_resume_claimed'] is False,
++        'Missing truthful two-completed-update failed-parent reconciliation')
++    pids = facts['original_pid_observation']; cgroup = facts['original_cgroup_observation']
+     require(len(pids) == 9 and len({r['pid'] for r in pids}) == 9
+-        and all(r['gone'] is True and not (Path('/proc') / str(r['pid'])).exists() for r in pids)
+-        and facts['cgroup'] == '/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3336/step_0'
+-        and not Path(facts['cgroup']).exists(), 'Original own PID/cgroup remains or PID reused')
+-    terminal = json.loads(checked(facts['original_run_result']['path'], facts['original_run_result']))
+-    require(terminal['status'] == 'FAILED' and terminal['job_id'] == '3336'
++        and all(r['exists'] is False and not (Path('/proc') / str(r['pid'])).exists() for r in pids)
++        and cgroup['path'] == '/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3337/step_0'
++        and cgroup['exists'] is False and not Path(cgroup['path']).exists(), 'Original own PID/cgroup remains or PID reused')
++    result_path = RUN / 'run-result.json'
++    require(result_path.is_file() and not result_path.is_symlink(), 'Missing original run-result')
++    terminal = json.loads(result_path.read_bytes())
++    require(terminal['status'] == 'FAILED' and terminal['job_id'] == '3337'
+         and terminal['source_commit'] == SOURCE and terminal['binding_sha256'] == PARENT_SHA
++        and terminal['retained_training_updates_contributed'] == 2
+         and terminal['cleanup_residual_states'] == {} and terminal['final_gpu']['processes'] == [],
+-        'Original failed run-result or cleanup differs')
+-    attempt_row = facts['actual_attempt_receipt']
+-    attempt = json.loads(checked(attempt_row['path'], attempt_row))
+-    require(attempt == attempt_row['data'], 'Actual historical attempt receipt changed')
+-    actual = attempt['attempt']
+-    require(actual['counted_complete'] is True and actual['actual_successful_adam_writes'] == 20
++        'Original failed run-result or actual cleanup differs')
++    attempt_path = RUN / 'audit/partial-updates/attempt_000002/attempt-result.json'
++    require(attempt_path.is_file() and not attempt_path.is_symlink(), 'Missing actual historical second-attempt receipt')
++    actual = json.loads(attempt_path.read_bytes())['attempt']
++    require(actual['counted_complete'] is True and actual['attempt_id'] == 2 and actual['completed_before'] == 1
++        and actual['actual_successful_adam_writes'] == 20 and actual['actual_adam_total'] == 40
+         and len(actual['rank_receipts']) == 8 and {r['rank'] for r in actual['rank_receipts']} == set(range(8))
+         and all(r['counted_complete'] is True and r['actual_successful_adam_writes'] == 20
+-            and r['scheduler_step'] == 1 and r['skipped_opportunities'] == 0 for r in actual['rank_receipts']),
+-        'Historical actual one-update eight-rank receipts differ')
+-    saved = facts['saved_original_scheduler']
+-    require(saved['returncode'] == 0 and re.search(r'\bJobId=3336\b', saved['stdout'])
++            and r['actual_adam_total'] == 40 and r['scheduler_step'] == 2
++            and r['skipped_opportunities'] == 0 for r in actual['rank_receipts']),
++        'Historical actual second-update eight-rank receipts differ')
++    saved = facts['actual_slurm_raw']
++    require(saved['returncode'] == 0 and re.search(r'\bJobId=3337\b', saved['stdout'])
+         and re.search(r'\bJobState=FAILED\b', saved['stdout']) and re.search(r'\bExitCode=1:0\b', saved['stdout'])
+         and PARENT_SHA in saved['stdout'], 'Missing preserved actual Slurm failure; expired live history is not zero')
+     gpu = query(['nvidia-smi', '--query-compute-apps=pid,process_name,used_gpu_memory', '--format=csv,noheader'])
+@@ -219,11 +222,11 @@
+     require(socket.gethostname().split('.')[0] == 'h100-8' and os.environ.get('CUDA_VISIBLE_DEVICES') == '',
+         'Wrong CPU-only once-submit receiver')
+     require(not STATE.exists() and not STATE.is_symlink() and STATE.parent.resolve() == STATE.parent,
+-        'New v18 intent namespace already exists; never replay')
++        'New v19 intent namespace already exists; never replay')
+     STATE.mkdir()
+     once(STATE / 'SUBMIT-INTENT.json', packed(dict(status='CLAIMED_NEVER_REPLAY',
+         binding=payload['binding'], parent_terminal_facts=payload['parent_terminal_facts'],
+-        adapter_review=payload['adapter_review'], adapter_publication=payload['adapter_publication'],
++        human_review_waiver=payload['human_review_waiver'], adapter_publication=payload['adapter_publication'],
+         signal_sent=False, extra_validation_job=False, new_fresh_counter_initial=0)))
+     for row in payload['evidence_staging']:
+         path = Path(row['path'])
+@@ -231,18 +234,22 @@
+         data = zlib.decompress(base64.b64decode(row['b64']))
+         require(len(data) == row['bytes'] and sha(data) == row['sha256'], 'Evidence frame differs')
+         once(path, data)
++    waiver = json.loads(checked(payload['human_review_waiver']['path'], payload['human_review_waiver']))
++    require(waiver['status'] == 'HUMAN_WAIVED_STATIC_REVIEW'
++        and waiver['human_instruction'] == '审查啥，你直接跑吧。。别浪费资源，你太慢了'
++        and waiver['binding_sha256'] == payload['binding']['sha256'], 'Latest exact human waiver differs')
+     facts, gpu, queue = actual_terminal(payload['parent_terminal_facts'])
+     parent = json.loads(checked(PARENT_BINDING, payload['parent_binding']))
+     require(parent['code_commit'] == SOURCE and parent['helpers'] == str(OLD)
+         and len(parent['files']) == 39961 and len(parent['runtime_files']) == 44,
+         'Wrong immutable complete parent binding')
+-    require(set(payload['patch']) == PATCH_KEYS, 'Unexpected v18 binding mutation')
++    require(set(payload['patch']) == PATCH_KEYS, 'Unexpected v19 binding mutation')
+     child = dict(parent); child.update(payload['patch'])
+     new_rows = {r['path']: r for r in child['runtime_files']}
+-    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 18
++    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 19
+         and child['owned_submit_namespace'] == str(STATE)
+-        and child['json_metadata_repair_parent']['terminal_facts'] == payload['parent_terminal_facts'],
+-        'Wrong isolated v18 runtime/facts')
++        and child['cuda_synchronous_repair_parent']['terminal_facts'] == payload['parent_terminal_facts'],
++        'Wrong isolated v19 runtime/facts')
+     replaced = 0; rows = []
+     for row in parent['files']:
+         if row['path'].startswith(str(OLD) + '/'):
+@@ -258,6 +265,10 @@
+         and child['human_nonblocking_diagnostics'] is True
+         and child['external_diagnostic_review_blocks_training'] is False
+         and child['allow_bf16_reduced_precision_reduction'] is False
++        and child['cuda_launch_blocking'] == '1'
++        and child['cuda_execution_scope'] == 'CUDA_SYNCHRONOUS_FORMAL_TRAINING_UNPROVEN_REPAIR_V1'
++        and child['cuda_execution_review_policy']['status'] == 'HUMAN_WAIVED_STATIC_REVIEW'
++        and child['cuda_execution_review_policy']['observed_at_utc'] == waiver['observed_at_utc']
+         and child['initial_baseline_policy'] == parent['initial_baseline_policy'], 'Scientific/source/nonblocking policy changed')
+     for key in ('actor_recompute_abs_tolerance', 'actor_vllm_abs_tolerance',
+         'actor_recompute_joint_abs_tolerance', 'actor_vllm_joint_abs_tolerance', 'negative_tail_limit'):
+@@ -267,15 +278,15 @@
+         'Remote small-frame derivation differs from reviewed child binding')
+     require(not NEW.exists() and not NEW.is_symlink() and NEW.parent.resolve() == NEW.parent, 'Runtime exists; never overwrite')
+     NEW.mkdir()
+-    require(payload['changed_files'] == ['calibration_driver_v1.py'] and len(payload['runtime']) == 44
+-        and {r['name'] for r in payload['runtime']} == {Path(k).name for k in new_rows}, 'Beyond frozen one-file delta')
++    require(payload['changed_files'] == ['calibration_driver_v1.py', 'calibration_run_v1.py', 'calibration_worker_v1.py'] and len(payload['runtime']) == 44
++        and {r['name'] for r in payload['runtime']} == {Path(k).name for k in new_rows}, 'Beyond frozen three-file execution delta')
+     for row in payload['runtime']:
+         name = row['name']; expected = new_rows[str(NEW / name)]
+         require(Path(name).name == name and row['bytes'] == expected['bytes'] and row['sha256'] == expected['sha256'], 'Runtime frame escaped')
+-        if name == 'calibration_driver_v1.py':
++        if name in payload['changed_files']:
+             data = zlib.decompress(base64.b64decode(row['b64']))
+         else:
+-            require('b64' not in row, 'Only driver receives new bytes')
++            require('b64' not in row, 'Only three frozen execution files receive new bytes')
+             data = checked(OLD / name, row)
+         require(len(data) == row['bytes'] and sha(data) == row['sha256'], 'Runtime bytes differ')
+         once(NEW / name, data)
+@@ -296,8 +307,8 @@
+         receipt = dict(status='SUBMITTED_EXACTLY_ONCE' if result.returncode == 0 and job.isdecimal() else 'UNCERTAIN_NEVER_REPLAY',
+             command=command, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+             job_id=job if result.returncode == 0 and job.isdecimal() else None, binding=payload['binding'],
+-            parent_terminal_facts=payload['parent_terminal_facts'], historical_parent_completed_outer=1,
+-            historical_parent_adam_writes_per_rank=20, historical_updates_stitched=False,
++            parent_terminal_facts=payload['parent_terminal_facts'], historical_parent_completed_outer=2,
++            historical_parent_adam_writes_per_rank=40, historical_updates_stitched=False,
+             new_fresh_initial_outer=0, new_fresh_initial_adam=0, signal_sent=False,
+             training_success_not_yet_observed=True, extra_validation_job=False,
+             queued_submission_is_not_gpu_admission=True, shared_storage=storage)
+@@ -309,7 +320,7 @@
+ 
+ 
+ def main():
+-    require(len(sys.argv) == 2, 'Supply exact reviewed/publication gate file')
++    require(len(sys.argv) == 2, 'Supply exact human-waiver/publication gate file')
+     gate, derivation = gates(sys.argv[1])
+     runtime = []
+     for row in derivation['runtime_manifest']['files']:
+@@ -322,11 +333,15 @@
+     for row in derivation['additional_evidence_staging']:
+         data = checked(row['local_path'], row)
+         staging.append(dict(path=row['path'], bytes=len(data), sha256=sha(data), b64=base64.b64encode(zlib.compress(data)).decode()))
++    waiver_row = gate['human_review_waiver']
++    waiver_data = checked(waiver_row['path'], waiver_row)
++    remote_waiver = dict(path=str(STATE / Path(waiver_row['path']).name), bytes=len(waiver_data), sha256=sha(waiver_data))
++    staging.append(dict(remote_waiver, b64=base64.b64encode(zlib.compress(waiver_data)).decode()))
+     payload = dict(parent_binding=derivation['parent_binding'], binding=derivation['child_binding'],
+         patch=derivation['binding_patch'], additional_evidence=derivation['additional_evidence'],
+         evidence_staging=staging, parent_terminal_facts=derivation['parent_terminal_facts'],
+         runtime=runtime, changed_files=derivation['changed_files'], shared_storage=derivation['shared_storage'],
+-        adapter_review=gate['adapter_review'], adapter_publication=gate['adapter_publication'])
++        human_review_waiver=remote_waiver, adapter_publication=gate['adapter_publication'])
+     transport(payload)
+ 
+ 
