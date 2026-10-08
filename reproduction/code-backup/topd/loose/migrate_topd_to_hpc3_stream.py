@@ -1,5 +1,6 @@
 """Resumable byte relay. Model/data bytes never become local files."""
 import fcntl
+import concurrent.futures
 import hashlib
 import json
 import os
@@ -76,7 +77,7 @@ def transfer(record):
                                 'bytes_at_destination_sent': copied, 'total_bytes': expected,
                                 'resumed_from': offset, 'mean_mib_per_second': (copied-offset)/max(now-start,1)/1024**2,
                                 'intermediate_model_files': False}
-                    (LOCAL / 'progress.json').write_text(json.dumps(progress, indent=2) + '\n')
+                    (LOCAL / (name + '-progress.json')).write_text(json.dumps(progress, indent=2) + '\n')
                     print(json.dumps(progress), flush=True)
                     last_report = now
             dst.stdin.close()
@@ -133,7 +134,7 @@ def main():
     LOCAL.mkdir(parents=True, exist_ok=True)
     lock = (LOCAL / 'relay.lock').open('w')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False},indent=2)+'\n')
+    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False,'parallel_streams':4},indent=2)+'\n')
     completed = {}
     failures = 0
     while True:
@@ -144,9 +145,20 @@ def main():
             if scan['plan']:
                 order = [r['name'] for r in scan['plan']['groups']]
                 ready = {r['group']:r for r in scan['ready'] if r.get('status')=='PACKED_SOURCE_SHA256'}
-                for name in order:
-                    if name in ready and name not in completed:
-                        completed[name] = transfer(ready[name])
+                pending = [name for name in order if name in ready and name not in completed]
+                # Four independent package streams share no destination files.
+                # On restart each stream resumes its own physical partial.
+                with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                    futures = {pool.submit(transfer, ready[name]): name for name in pending}
+                    errors = []
+                    for future in concurrent.futures.as_completed(futures):
+                        name = futures[future]
+                        try:
+                            completed[name] = future.result()
+                        except Exception as error:
+                            errors.append((name, str(error)))
+                    if errors:
+                        raise RuntimeError('Package transfer failures: ' + str(errors))
                 if scan['complete'] and set(completed)==set(order):
                     final_check = r'''import pathlib,json,hashlib,time
 r=pathlib.Path(ROOT);files={}

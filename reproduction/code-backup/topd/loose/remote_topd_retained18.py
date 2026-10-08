@@ -20,7 +20,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--timeout', type=int, default=600)
     args = parser.parse_args()
-    code = REMOTE.replace('COMMAND', repr(sys.stdin.read())).replace('TIMEOUT', str(args.timeout))
+    code = REMOTE.replace('TIMEOUT', str(args.timeout)).replace('COMMAND', repr(sys.stdin.read()))
     result = subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=15',
                              'mgmt-host','env -u LD_LIBRARY_PATH python3 -'],
                             input=code,text=True,timeout=args.timeout+50)
