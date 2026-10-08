@@ -1,0 +1,130 @@
+{
+  "files": {
+    "reproduction/code-backup/topd/loose/bind_topd_instruct300_v8.py": {
+      "sha256": "5aa6fef0fdc4dfdd64849ed3dc77f15aa851b7300aded53b2a959e55e29a317a",
+      "size": 4663
+    },
+    "reproduction/code-backup/topd/loose/remote_topd_retained18.py": {
+      "sha256": "2fae2d742dc6f06d2d1aaceed629ad70b89a2e4128b7e1787926ed27a0608f3f",
+      "size": 1345
+    },
+    "reproduction/code-backup/topd/loose/start_topd_teacher85_approved.py": {
+      "sha256": "4ae7ad6901ae5eaa98f265794be45efa195d762b28ca596bc29e1b8d79ef68d0",
+      "size": 4571
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/README.md": {
+      "sha256": "461261758f1cae1e42c339263a137a8f60de734580efe3068bc74c867538cbf4",
+      "size": 3948
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/build_command.py": {
+      "sha256": "541ca044797388f0de21b0cdeda3c151b918a304344649aa9cbc0bb7974baf93",
+      "size": 996
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/files.json": {
+      "sha256": "316b6904ee463cc38eb13ad39618e9c11d4c64d7514dd317088f12909b03a2a5",
+      "size": 3771
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/launch.sbatch": {
+      "sha256": "0cfefe283e1088defe9bafb5bdcc2b5e7c0217037b3026ce6c67def98c5aae60",
+      "size": 934
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/prepare.py": {
+      "sha256": "e7432eef039ecb2d594394e018e512ac61d5190f416ef22fe13a8e0f18b6ea95",
+      "size": 3845
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/recipe.json": {
+      "sha256": "eda27512173543f25f4bd3e53b19f0ce52f38179ffc37d0662740d5de122b3a1",
+      "size": 3385
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/allocator_policy.py": {
+      "sha256": "f7f2c995319d64daf853621034d10ce120661dab6f687c741386342a65dc6dd6",
+      "size": 2211
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/checkpoint_inventory.py": {
+      "sha256": "ffc648031dcd368163f2103abcbc279776277c03dd7cb4fc42d35646e093af14",
+      "size": 5696
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/compiler_headers.py": {
+      "sha256": "a728b2dc2edf5583b05635ab37db0b47075b52622236a885ffc4baa766a01767",
+      "size": 2403
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/files.json": {
+      "sha256": "88d35477fc83ed081f5712ed17173d945095a12a2d2e608f4493a9aeb6fa1991",
+      "size": 2946
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/final_cleanup.py": {
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d",
+      "size": 4027
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/observed_worker.py": {
+      "sha256": "4dd4dfea492e53a2bfc44372b739b1c4335a20e252a218919207ece435f5ac2a",
+      "size": 3266
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/official_student.py": {
+      "sha256": "d7fd50ba651805b1fa77d4e0bd818af233bdd85c8eb69caad324886368debb93",
+      "size": 1838
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/pipeline.py": {
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0",
+      "size": 2455
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/process_observation.py": {
+      "sha256": "ec1affaa7087504b05b853e9a17a0bf21f027abe4bc59bf28c7b9c1741db88f9",
+      "size": 1901
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/r1_observation.py": {
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099",
+      "size": 1198
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/resource_audit.py": {
+      "sha256": "b20b0f4f8a6bfe3276d811a78e653bc795a53544c809db56f250ccd2b349ef35",
+      "size": 7991
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/retrieval_gate.py": {
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7",
+      "size": 4661
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/retrieval_startup.py": {
+      "sha256": "6b5576552cd6b3f4bd3cb37d39fea7d3543e80a344e45a17c3bb1d5137788afc",
+      "size": 19258
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/student_binding.py": {
+      "sha256": "a6e0661cb59bb464f22c8b9575fec27f63a18ac471a90a8981bbd0cc292a58ce",
+      "size": 2583
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/student_observation.py": {
+      "sha256": "b6803c9d42710bda880db2cd20ce021c150ee97d134ae537d8d227c29d993c9e",
+      "size": 1700
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/student_phase.py": {
+      "sha256": "826bd5d21f30afba1f8c90ed173f368bb2c3f8462f1521947ffbe26d1da8c385",
+      "size": 1717
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/supervise.py": {
+      "sha256": "fc980859c87073cf1ecf5a5197fa778557d5c7bf941d4fe578ad9730a9ff8afe",
+      "size": 16710
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/train_entry.py": {
+      "sha256": "b9b8175ffdcb7c3763789cb4e394042778d7c4d06fd318093df0ea51d9bcf6eb",
+      "size": 6477
+    },
+    "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/window_guardian.py": {
+      "sha256": "ab05bab91dc4c8023795516f589a55745cd250f5b6781b3c2926cc35924e1f9d",
+      "size": 9267
+    }
+  },
+  "scope": "new direct teacher85 launcher and retained18 transport; previous versions retained",
+  "session": "01a0fcbe-15f8-7600-ae84-9487d924560a"
+}
