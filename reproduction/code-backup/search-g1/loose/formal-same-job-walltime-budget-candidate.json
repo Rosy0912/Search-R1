@@ -1,0 +1,33 @@
+{
+  "role": "prospective_agent_selected_finite_same_job_walltime_budget",
+  "recorded_unix": 1791306933.478017,
+  "job_id": "3309",
+  "run_id": "db5235708c354bffae6d0120c1cb5459",
+  "basis_receipt_sha256": "b79c609a53f388d87f8e66b0e65965de4d54d92bd742904011b709f9b976c208",
+  "observed_rank0_complete_cycle_intervals_seconds": [
+    2127.5128359794617,
+    2007.2729487419128,
+    2103.652645111084,
+    2020.5469017028809
+  ],
+  "interval_count": 4,
+  "mean_seconds": 2064.746332883835,
+  "early_training_only_estimate_for200_seconds": 412949.26657676697,
+  "early_training_only_estimate_for200_hours": 114.70812960465749,
+  "scope_of_estimate": "four early rank0 complete-to-complete intervals; no stable full-run speed or measured final-evaluation ETA claim",
+  "training_uncertainty_factor": 1.3,
+  "separate_final_evaluation_and_calibration_budget_seconds": 86400,
+  "separate_budget_scope": "conservative implementation planning reserve, not a measured final51713 duration or user-given deadline",
+  "planned_required_seconds": 623234.046549797,
+  "agent_selected_total_walltime_seconds": 691200,
+  "agent_selected_total_walltime_slurm": "8-00:00:00",
+  "original_walltime_seconds": 172800,
+  "original_expected_end_time": "2026-10-08T21:50:20",
+  "prospective_expected_end_time": "2026-10-14T21:50:20",
+  "authority_scope": "necessary reversible exact same-job adjustment within active user-authorized200/full51713 goal; numeric choice belongs to agent, not quoted user instruction",
+  "implementation_prerequisites": "independently reviewed known-job observer/amendment chain and bounded streaming, all native non-time/source/PIDbirth/continuous prefix invariants, strict one-call and reconciliation of unknown outcomes",
+  "mutation_performed": false,
+  "implementation_executed": false,
+  "intent_frozen": false,
+  "original_receipts_mutated": false
+}

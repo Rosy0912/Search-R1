@@ -1,0 +1,22 @@
+{
+  "original_updated_unix": 1791275714,
+  "original_updated_china": "2026-10-06 16:35:14 +0800",
+  "source": "current authoritative get_goal updatedAt",
+  "target_actual_outer_updates": 200,
+  "lr": 1e-06,
+  "fixed_outer_warmup_steps": 57,
+  "entropy_coefficient": 0,
+  "reference_kl_coefficient": 0,
+  "reference_kl_type": "low_var_kl",
+  "saves": [
+    5,
+    50,
+    100,
+    150,
+    200
+  ],
+  "existing_diagnostic_job": "3298",
+  "existing_diagnostic_updates_count_toward_production": false,
+  "old300_zero_warmup_target_superseded": true,
+  "stop_scope": "No cancellation requested. Existing independent diagnostic may finish, frozen source unchanged; production must use new independent official-weight initialization."
+}
