@@ -1,6 +1,7 @@
 {
   "README.md": "16be2c8b4dbe1ebdb9a81065dee29202c86875fbbca4ee7bbba20af709bab120",
   "independent-target-audit.py": "8ce05652a7357ac20901124a8364bdb177df20f850724dc30315ed53a9f4b66d",
+  "independent-watcher-tests.py": "1f77f8265d5375e3deeea899b5da3d7a2b4760cd26ebf04d77b46fdcc17a91d6",
   "read-checkpoint100-metadata.py": "e58997074b55cf612ef923e3dd9907e7898a8e788e4a0e3d5cd652cb9e6accbd",
   "read-slurm3315.py": "4756c53d8a917ee618870fcfb8a3fc74bc9891e6c14672e8d7fdc4a38a2605e2",
   "replay-complete-prefix-a4.py": "ce83943ec80a6d3cb03a57f0067658c1e966ec5dc6eb17abbe26a11c62c1b6ae",
