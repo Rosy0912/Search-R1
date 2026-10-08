@@ -273,9 +273,16 @@ def reconcile(name, request, approval, expected):
         directory, target, _, proof, receipt, _ = bound_archive(a, paths, name, expected)
         intent, _ = a.read_json(target / '.replacement.intent.json', paths)
         ready, ready_raw = a.read_json(target / '.replacement.ready.json', paths)
-        a.require(intent['expected_pins'] == ready['expected_pins'] == expected
+        a.require(intent['status'] == 'REPLACEMENT_INTENT_ONLY'
+                  and ready['status'] == 'DURABLE_VERIFIED_ARCHIVE_READY_BEFORE_SOURCE_UNLINK'
+                  and ready['full_decompression_verified'] is True
+                  and ready['archive_aware_cpu_receipt_sha256'] == expected['cpu']
+                  and intent['expected_pins'] == ready['expected_pins'] == expected
                   and ready['request_id'] == intent['request_id'] and ready['original_manifest_sha256'] == proof['original_manifest_sha256'],
                   'No fixed durable pre-unlink ready proof for this original request')
+        a.require(re.fullmatch('[a-z0-9-]{8,80}', intent['request_id']), 'Original intent request identity differs')
+        a.require(bound_cpu_receipt(a, paths, name, expected, proof) == ready['archive_aware_cpu_receipt_sha256'],
+                  'Specific original-logic archive-aware CPU receipt no longer binds this READY')
         if leaf_present(paths, directory / 'actor-inputs.pt'):
             return dict(status='SOURCE_PRESENT_NO_UNLINK_OR_RETRY_PERFORMED', original_request_id=intent['request_id'],
                         message='Inspect source/intent. This reconciliation never deletes a present source.')
