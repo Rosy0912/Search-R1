@@ -1,0 +1,57 @@
+{
+  "utc": "2026-10-08T15:27:38.885692+00:00",
+  "job_id": 3340,
+  "classification": "EXPLICIT_SCHEDULER_CANCEL_UID0_INTENT_NOT_IDENTIFIED",
+  "completed_outer_updates": 60,
+  "completed_adam_per_rank": 1200,
+  "uncheckpointed_attempt61_partial_adam_per_rank": 16,
+  "historical_adam_per_rank": 1216,
+  "latest_full_checkpoint": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_50",
+  "latest_manifest_sha256": "09b682b1661172760ca5d042372d0cca7aadb929e25214efeb2e484948ec8bc0",
+  "latest_checkpoint_independent_full_sha_verified": false,
+  "cancel_node_time": "2026-10-08T23:14:22.878+08:00",
+  "cancel_utc": "2026-10-08T15:14:22.878Z",
+  "controller": {
+    "returncode": 0,
+    "stdout": "[2026-10-08T11:01:32.059] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=3329 uid 0\n[2026-10-08T12:05:45.449] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=3304 uid 0\n[2026-10-08T14:05:51.298] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=3335 uid 0\n[2026-10-08T14:43:45.202] _slurm_rpc_submit_batch_job: JobId=3340 InitPrio=4294898726 usec=544\n[2026-10-08T14:43:45.615] sched: Allocate JobId=3340 NodeList=h100-8 #CPUs=192 Partition=gpu\n[2026-10-08T15:04:57.118] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=3339 uid 0\n[2026-10-08T15:57:30.315] sched: _update_job: setting time_limit to 4320 for JobId=3340\n[2026-10-08T15:57:30.315] _slurm_rpc_update_job: complete JobId=3340 uid=0 usec=535\n[2026-10-08T23:14:22.878] _slurm_rpc_kill_job: REQUEST_KILL_JOB JobId=3340 uid 0\n[2026-10-08T23:14:41.527] _job_complete: JobId=3340 WEXITSTATUS 1\n[2026-10-08T23:14:41.528] _job_complete: JobId=3340 done\n",
+    "stderr": ""
+  },
+  "daemon": {
+    "returncode": 0,
+    "stdout": "[2026-07-22T03:07:16.979] launch task StepId=2660.71 request from UID:0 GID:0 HOST:10.33.0.5 PORT:33340\n[2026-10-08T14:43:45.617] task/affinity: task_p_slurmd_batch_request: task_p_slurmd_batch_request: 3340\n[2026-10-08T14:43:45.617] task/affinity: batch_bind: job 3340 CPU input mask for node: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\n[2026-10-08T14:43:45.617] task/affinity: batch_bind: job 3340 CPU final HW mask for node: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\n[2026-10-08T14:43:45.619] Launching batch job 3340 for UID 0\n[2026-10-08T14:43:45.912] launch task StepId=3340.0 request from UID:0 GID:0 HOST:10.33.0.8 PORT:52144\n[2026-10-08T14:43:45.912] task/affinity: lllp_distribution: JobId=3340 implicit auto binding: threads, dist 1\n[2026-10-08T14:43:45.912] task/affinity: _lllp_generate_cpu_bind: _lllp_generate_cpu_bind jobid [3340]: mask_cpu, 0x00000000FFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF\n[2026-10-08T23:14:22.881] [3340.0] error: *** STEP 3340.0 ON h100-8 CANCELLED AT 2026-10-08T23:14:22 ***\n[2026-10-08T23:14:41.522] [3340.0] done with job\n[2026-10-08T23:14:41.526] [3340.batch] sending REQUEST_COMPLETE_BATCH_SCRIPT, error:0 status:256\n[2026-10-08T23:14:41.529] [3340.batch] done with job\n",
+    "stderr": ""
+  },
+  "original_process_check": {
+    "returncode": 1,
+    "stdout": "    PID STAT COMMAND\n",
+    "stderr": ""
+  },
+  "cgroup_exists": false,
+  "gpu_now": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "queue_now": {
+    "returncode": 0,
+    "stdout": "JOBID|NAME|STATE|NODELIST(REASON)\n",
+    "stderr": ""
+  },
+  "run_error": "Owned calibration executor interrupted by signal 15",
+  "cleanup_residual_states": {},
+  "terminal_gpu_error": "RuntimeError('GPU compute remains after owned cleanup')",
+  "terminal_foreign_gpu_process": "UnrealEditor-Cmd PID2580282 1840MiB at initial observation; absent in follow-up",
+  "no_cuda_recurrence_observed": true,
+  "resume_submitted": false,
+  "resume_requires_cancel_intent_resolution": true,
+  "evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v162-thirtyminute-health-monitor.json",
+      "sha256": "68a63ba718270bf830e3fd58da3f52002cefcdb5c2511b3c511a96ca2fc5d39b"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3340-ACTUAL-STATUS-v165-terminal-daemon-source.json",
+      "sha256": "c8a4da28ab04bcfef37ebb2bd7dcd377109104511eafd3c8ea95082516e299ad"
+    }
+  ]
+}

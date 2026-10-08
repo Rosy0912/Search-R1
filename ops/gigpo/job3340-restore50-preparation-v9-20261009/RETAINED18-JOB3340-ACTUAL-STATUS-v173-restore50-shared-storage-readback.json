@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-08T16:48:47.389397+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-08T16:48:46.985029+00:00\\\", \\\"shared_manifest_path\\\": \\\"/mnt/shared/workspace/training_data_node_8/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_50/training_state/manifest.json\\\", \\\"exists\\\": true, \\\"sha256\\\": \\\"09b682b1661172760ca5d042372d0cca7aadb929e25214efeb2e484948ec8bc0\\\", \\\"mount\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"SOURCE              TARGET                                     FSTYPE\\\\nsystemd-1           /mnt/shared/workspace/training_data_node_8 autofs\\\\n10.32.0.8:/mnt/data /mnt/shared/workspace/training_data_node_8 nfs4\\\\n\\\", \\\"stderr\\\": \\\"\\\"}}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-08T16:48:47.113329+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}

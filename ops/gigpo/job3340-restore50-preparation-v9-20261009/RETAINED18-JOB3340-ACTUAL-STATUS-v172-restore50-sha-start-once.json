@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-08T16:47:52.474140+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"status\\\": \\\"HASH_VERIFICATION_STARTED_ONCE\\\", \\\"pid\\\": 2781606, \\\"namespace\\\": \\\"/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/restore50-authorized20261009-verification-v1\\\", \\\"result\\\": \\\"/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/restore50-authorized20261009-verification-v1/RESULT.json\\\", \\\"script_sha256\\\": \\\"b605a83c6a680decb39228f7a6865300cace03921c58c27f7c97b06ba9efa011\\\"}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-08T16:47:52.208484+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}
