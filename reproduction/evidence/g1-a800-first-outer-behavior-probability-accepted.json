@@ -1,0 +1,211 @@
+{
+  "actual_live_process_observation": {
+    "backend": "ssh_local",
+    "execution_id_matches_gate": true,
+    "observed_unix": 1791437705.651135,
+    "pipeline": {
+      "alive": true,
+      "birth_matches": true,
+      "claimed": true,
+      "pid": 1117834,
+      "stage": "GRPO_1_TO_200",
+      "start_ticks": 551422807,
+      "state": "S"
+    },
+    "run_id_matches_gate": true,
+    "scope": "Separate actual PID-birth liveness snapshot, timestamped from the saved observer. It does not override false authentication or admission flags in the original gate.",
+    "trainer": {
+      "alive": true,
+      "birth_matches": true,
+      "claimed": true,
+      "exit_code": null,
+      "ledger_state": "STARTED",
+      "pid": 1132363,
+      "start_ticks": 551468328,
+      "state": "S"
+    }
+  },
+  "created_at_utc": "2026-10-08T05:36:12.189021+00:00",
+  "deployment_id": "ade2ab6b1f654c0f95ff1039a2326b37",
+  "evidence_kind": "g1_a800_first_outer_behavior_probability_gate",
+  "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+  "goal_and_acceptance": {
+    "first_five_outer_updates_acceptance_completed": false,
+    "goal_active": true,
+    "goal_complete": false,
+    "probability_gate_acceptance_is_completed_outer": false,
+    "target_complete_outer_updates": 200,
+    "training_effect_acceptance_completed": false
+  },
+  "gpu_scalar_observation": {
+    "cumulative_sample_count": 1435,
+    "latest_sample_age_seconds": 1.7919728755950928,
+    "latest_sample_unix": 1791437703.9260657,
+    "peak_scope": "Cumulative sampled occupancy over this pipeline run, including setup; not an optimizer-only or continuous unsampled peak.",
+    "sample_scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "training_device_maximum_sampled_run_peak_mib": 70633,
+    "training_device_total_mib": 81920,
+    "training_devices": [
+      {
+        "physical_index": 0,
+        "sampled_run_peak_mib": 70537,
+        "total_mib": 81920,
+        "used_mib": 68785,
+        "util_percent": 100
+      },
+      {
+        "physical_index": 1,
+        "sampled_run_peak_mib": 70633,
+        "total_mib": 81920,
+        "used_mib": 68881,
+        "util_percent": 100
+      },
+      {
+        "physical_index": 2,
+        "sampled_run_peak_mib": 70633,
+        "total_mib": 81920,
+        "used_mib": 68881,
+        "util_percent": 100
+      },
+      {
+        "physical_index": 3,
+        "sampled_run_peak_mib": 70537,
+        "total_mib": 81920,
+        "used_mib": 68785,
+        "util_percent": 100
+      }
+    ]
+  },
+  "original_gate_receipt_provenance": {
+    "raw_receipt_or_trace_copied_to_repository": false,
+    "receipt_basename": "behavior-probability-attempt-3fdaaeb2cfbf45f3bb9085296cd04713.json",
+    "receipt_bytes": 1592809,
+    "receipt_modified_unix": 1791437268.8384962,
+    "receipt_sha256": "524796b474563179a44d70d8c6822eb0efaa490cdc7c738cc2a36ed869f796c1"
+  },
+  "original_probability_gate_scalars": {
+    "accepted": true,
+    "actor_rows_sha256": "19ce5d4c894c7566d029d3ddf5668766c84f082257d76e2313587a5dd9e54ed4",
+    "actual_frozen_old_all_finite": true,
+    "attempt_id": "3fdaaeb2cfbf45f3bb9085296cd04713",
+    "attempt_index": 1,
+    "audit_sha256": "25ee747b374af4fa1d8c877c00c03f0717b52bd9ac6d7202edb7309d0b7c993c",
+    "denominator": "actual_selected_sampling_log_probs_after_all_token_context_and_0.05_gate",
+    "execution_backend": "ssh_local",
+    "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+    "healthy_checkpoint_accepted": false,
+    "hf_dtype": "torch.float32",
+    "included_actor_token_count": 437087,
+    "logical_update": 1,
+    "max_abs_discrepancy": 0.0010242462158203125,
+    "physical_execution_authenticated": false,
+    "policy_snapshot_id": "e3aaceec997b4afab30bbce3f9f2afff:1:policy-3fdaaeb2cfbf45f3bb9085296cd04713",
+    "private_trace_sha256": "e652df9cc87caa0d3f66be382e4fe65508d8e8f56b868621cecbbdf4539b4bdb",
+    "production_admission": false,
+    "role": "common8_behavior_probability_gate",
+    "row_tensor_hashes_count": 2560,
+    "row_tensor_hashes_map_sha256": "1ba9dc7bbb89c3666440e45c594c5471fb83db9c89ac4ad2816458400e55a491",
+    "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+    "sampling_dtype": "torch.float32",
+    "scope": "all retained actor tokens in all2560 actual trajectories; observations, corrections and padding excluded; not the32 monitor sample",
+    "slurm_job_id": null,
+    "source_files_count": 381,
+    "source_map_sha256": "d1ea7713368c8bc39d4e44fa9c1cb2daa7b48f6069b71fcf01fe21e365ca4b85",
+    "tolerance": 0.05,
+    "trace_sha256": "e652df9cc87caa0d3f66be382e4fe65508d8e8f56b868621cecbbdf4539b4bdb",
+    "trajectory_count": 2560
+  },
+  "probability_acceptance_scope": {
+    "accepted": true,
+    "attempt_index": 1,
+    "generated_actor_token_count": 437087,
+    "healthy_checkpoint_accepted": false,
+    "included_token_scope": "all retained actor tokens in all2560 actual trajectories; observations, corrections and padding excluded; not the32 monitor sample",
+    "logical_outer_update": 1,
+    "maximum_absolute_selected_token_log_probability_discrepancy": 0.0010242462158203125,
+    "maximum_discrepancy_below_tolerance": true,
+    "observed_unix": 1791437584.5219634,
+    "ordered_trajectory_count": 2560,
+    "original_flags_preserved_without_override": true,
+    "physical_execution_authenticated": false,
+    "production_admission": false,
+    "scope": "Probability consistency only; not Adam/outer/five/accuracy/final acceptance",
+    "tolerance": 0.05,
+    "trajectory_rows_or_raw_token_data_published": false,
+    "unique_trajectory_count": 2560
+  },
+  "published_field_scope": "Only probability scalars, unchanged gate flags, aggregate trace/source hashes, run/execution identities, PID births, selected method labels, complete-ledger lower bounds, GPU scalars and incomplete acceptance status. No trajectory rows, raw token journals or content payloads are copied.",
+  "recorded_training_progress_lower_bounds": {
+    "absent_ledger_is_proof_of_no_attempted_operation": false,
+    "actual_update_ledger_exists": false,
+    "full_observer_unix": 1791437705.651135,
+    "known_total_attempted_optimizer_operations": null,
+    "last_recorded_outer": null,
+    "matching_complete_actual_update_rows": 0,
+    "new_em_recorded": false,
+    "new_reward_recorded": false,
+    "opportunity_ledger_count": 0,
+    "recorded_complete_opportunity_lower_bound": 0,
+    "recorded_complete_outer_lower_bound": 0,
+    "recorded_completed_outers": null,
+    "recorded_returned_adam_update_lower_bound": 0,
+    "run_manifest_completed_updates": 0,
+    "scope": "No complete outer or returned Adam ledger in this saved snapshot. Zero values are recorded lower bounds, not proof that no internal operation has been attempted."
+  },
+  "reference_probability_phase_observation": {
+    "method": "ref_compute_ref_log_prob",
+    "observed_unix": 1791437357.1663191,
+    "owned_reference_processes": [
+      {
+        "method": "ref_compute_ref_log_prob",
+        "pid": 1136317,
+        "start_ticks": 551475478,
+        "state": "R"
+      },
+      {
+        "method": "ref_compute_ref_log_prob",
+        "pid": 1136318,
+        "start_ticks": 551475479,
+        "state": "R"
+      },
+      {
+        "method": "ref_compute_ref_log_prob",
+        "pid": 1136319,
+        "start_ticks": 551475479,
+        "state": "R"
+      }
+    ],
+    "reference_log_probability_compute_observed": true,
+    "scope": "Selected owned method titles at this phase receipt timestamp; no full process argument vector is published.",
+    "stage_completion_or_optimizer_return_observed": false
+  },
+  "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "runtime_source_identity": {
+    "execution_backend_recorded_by_gate": "ssh_local",
+    "execution_matches_manifest": true,
+    "run_matches_manifest": true,
+    "scope": "Exact source-map, run and execution binding from the locally sanitized gate. Source hashes are separate from live-process observation.",
+    "source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "source_files_count": 381,
+    "source_map_exactly_matches_run_manifest": true,
+    "source_map_sha256": "d1ea7713368c8bc39d4e44fa9c1cb2daa7b48f6069b71fcf01fe21e365ca4b85",
+    "training_world_size": 4
+  },
+  "schema_version": 1,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "sources": {
+    "actual_latest_full_observer": {
+      "receipt_basename": "a800-ade2-observe-latest-output.json",
+      "sha256": "a8cb2b1631fb58bdfb5277b2648f7442a2a99ff5cb3bf66de0850cd2aefd65fd"
+    },
+    "private_probability_phase": {
+      "receipt_basename": "a800-ade2-probability-phase-private.json",
+      "sha256": "b99c649a2f9294f5d1f03f47b057e500fd551cd8160475ddedb8b4f265111419"
+    },
+    "sanitized_behavior_gate": {
+      "receipt_basename": "a800-ade2-behavior-gate-sanitized.json",
+      "sha256": "c19996b5805588ffee4294c8077fe96b877edb53d6ce2469980c896e7c569e9c"
+    }
+  }
+}
