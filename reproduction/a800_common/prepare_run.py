@@ -98,6 +98,13 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
         retriever_gpu_lib='/data/search-r1/retriever-gpu-lib',
         python_executable='/data/search-g1/env/bin/python',
         python_headers='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include')
+    baseline_relative='repo/reproduction/evidence/g1-historical-official-dev512-baseline.json'
+    baseline_path=base/baseline_relative
+    baseline=json.loads(baseline_path.read_text())
+    baseline.update(source_artifact_relative=baseline_relative,source_artifact_sha256=digest(baseline_path))
+    result.update(pretraining_baseline_policy='reuse_historical',historical_development_baseline=baseline,
+        vllm_gpu_memory_utilization=0.25,
+        runtime_memory_adaptation='A800 FP32 inference cache reduced after real pre-update CUDA OOM; sampling and effective training batches unchanged')
     if initial_probes_source_base is not None:
         # Selection metadata only; the pipeline must verify the actual immutable
         # source probe artifacts and receipts before it can adopt them.

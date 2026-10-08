@@ -1,16 +1,73 @@
 """Real paired dev512 reporting at official0 and fresh5; accuracy is measured.
 
+An explicit historical-baseline policy skips current-run official0 generation
+and compares a source-bound scalar baseline with the real current fresh5 rows.
 This does not add an accuracy/no-drop acceptance rule. The existing stage64
 checks remain separate and retain their original canonical occurrences.
 """
-import json,math,os,time
+import json,math,os,re,time
 from pathlib import Path
 from reproduction.common8.formal_contract import SAFETY_MODE,assert_formal_run
 from reproduction.common8.policy_calibration_plan import document_sha256
 from reproduction.common8.verify_data import digest
 
 ROLE='formal_inline_development_evaluation'
+HISTORICAL_ROLE='formal_inline_historical_development_baseline'
 PATHS={0:'logs/formal-inline-development-before.json',5:'logs/formal-inline-development-after.json'}
+
+
+def historical_baseline(base,run):
+    """Authenticate an explicitly selected historical scalar receipt, never rows."""
+    from reproduction.common8.verify_data import MANIFEST_SHA
+    base=Path(base);assert run.get('pretraining_baseline_policy')=='reuse_historical'
+    assert_formal_run(run)
+    baseline=run['historical_development_baseline']
+    assert baseline['schema_version']==1 and baseline['role']=='historical_development_baseline'
+    assert re.fullmatch('[0-9a-f]{32}',baseline['source_run_id']) and baseline['source_run_id']!=run['run_id']
+    assert re.fullmatch('[0-9a-f]{40}',baseline['source_commit'])
+    assert re.fullmatch('[0-9a-f]{64}',baseline['source_artifact_sha256'])
+    assert str(baseline['source_native_job_id']).isdigit()
+    relative=Path(baseline['source_artifact_relative'])
+    assert not relative.is_absolute() and '..' not in relative.parts
+    source=base/relative
+    assert source.is_file() and not source.is_symlink() and source.resolve()==source and source.stat().st_uid==os.getuid()
+    assert source.stat().st_size<=256*1024 and digest(source)==baseline['source_artifact_sha256']
+    evidence=json.loads(source.read_text())
+    fields=('schema_version','role','source_run_id','source_native_job_id','source_commit',
+        'common_manifest_sha256','validation_sha256','model_revision','question_count',
+        'source_counts','correct','weighted_em','weighted_f1')
+    assert all(evidence[key]==baseline[key] for key in fields), 'Historical baseline scalar identity differs from source bytes'
+    assert not any(key in baseline or key in evidence for key in ('rows','question_ids','data_sources','em','f1'))
+    manifest=base/'data/manifest.json';assert digest(manifest)==MANIFEST_SHA==baseline['common_manifest_sha256']
+    validation=json.loads(manifest.read_text())['splits']['validation']
+    assert baseline['validation_sha256']==validation['sha256'] and digest(base/'data'/validation['path'])==validation['sha256']
+    assert baseline['model_revision']==run['model_revision'] and run['budget']['common_manifest_sha256']==MANIFEST_SHA
+    assert type(baseline['question_count']) is int and baseline['question_count']==validation['rows']==512
+    assert baseline['source_counts']==validation['source_counts']=={'nq':256,'hotpotqa':256}
+    assert type(baseline['correct']) is int and 0<=baseline['correct']<=512
+    assert type(baseline['weighted_em']) in (int,float) and baseline['weighted_em']==baseline['correct']/512
+    assert type(baseline['weighted_f1']) in (int,float) and math.isfinite(baseline['weighted_f1']) and baseline['weighted_em']<=baseline['weighted_f1']<=1
+    result={key:baseline[key] for key in fields+('source_artifact_relative','source_artifact_sha256')}
+    for key in ('valid_action_rate','executed_search_question_rate','executed_search_calls_per_question'):
+        if key in baseline:
+            assert type(baseline[key]) in (int,float) and math.isfinite(baseline[key]) and baseline[key]>=0
+            assert evidence[key]==baseline[key]
+            result[key]=baseline[key]
+    return result
+
+
+def record_historical_baseline(base,run):
+    from reproduction.common8.calibration_runtime import write_once
+    from reproduction.common8.formal_inline_safety import verify_plan
+    baseline=historical_baseline(base,run)
+    artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text());_,plan_sha=verify_plan(base,artifact,run)
+    result=dict(baseline,role=HISTORICAL_ROLE,comparison_run_id=run['run_id'],step=0,
+        policy_safety_mode=SAFETY_MODE,plan_sha256=plan_sha,source_map_sha256=document_sha256(run['source_sha256']),
+        historical_comparison=True,current_run_evaluation_performed=False,paired_same_run=False,
+        accuracy_health_gate=False,checked_unix=time.time(),
+        semantics='Historical official-model dev512 scalar baseline; current-run pretraining generation was explicitly skipped; no per-question historical rows are asserted')
+    write_once(base/PATHS[0],result)
+    return result
 
 
 def score_counts(rows):
@@ -65,7 +122,10 @@ def record_development(step,rows,original_rewards):
 def evaluate_development(trainer):
     """Same live trainer and weights; preserve normal stage/dev loader selection."""
     from reproduction.common8 import validation_identity as validation
-    assert active_run() is not None and int(trainer.global_steps) in PATHS
+    active=active_run();assert active is not None and int(trainer.global_steps) in PATHS
+    base,run=active
+    if int(trainer.global_steps)==0 and run.get('pretraining_baseline_policy')=='reuse_historical':
+        return record_historical_baseline(base,run)
     original_loader=trainer.val_dataloader
     original_split=validation._ACTIVE_SPLIT;original_sources=validation._ACTIVE_SOURCE_COUNTS
     try:
@@ -86,7 +146,18 @@ def verify_pair(base,run):
     for step,path in PATHS.items():
         target=base/path
         assert target.is_file() and not target.is_symlink() and target.resolve()==target
-        proof=json.loads(target.read_text());measured=aggregate(proof['rows'],ids,frame['data_source'].tolist())
+        proof=json.loads(target.read_text())
+        if step==0 and run.get('pretraining_baseline_policy')=='reuse_historical':
+            baseline=historical_baseline(base,run)
+            assert proof['schema_version']==1 and proof['role']==HISTORICAL_ROLE and proof['comparison_run_id']==run['run_id']
+            assert proof['policy_safety_mode']==SAFETY_MODE and proof['step']==0 and proof['plan_sha256']==plan_sha
+            assert proof['source_map_sha256']==document_sha256(run['source_sha256'])
+            assert all(proof[key]==value for key,value in baseline.items() if key!='role')
+            assert proof['historical_comparison'] is True and proof['current_run_evaluation_performed'] is False and proof['paired_same_run'] is False
+            assert not any(key in proof for key in ('rows','question_ids','data_sources','em','f1'))
+            proofs[step]=proof;hashes[str(step)]=digest(target)
+            continue
+        measured=aggregate(proof['rows'],ids,frame['data_source'].tolist())
         measured.update(score_counts(proof['rows']))
         assert proof['schema_version']==1 and proof['role']==ROLE and proof['run_id']==run['run_id']
         assert proof['policy_safety_mode']==SAFETY_MODE and proof['step']==step and proof['plan_sha256']==plan_sha
@@ -94,6 +165,15 @@ def verify_pair(base,run):
         assert all(proof[name]==value for name,value in measured.items() if name not in ('role','semantics'))
         proofs[step]=proof;hashes[str(step)]=digest(target)
     before,after=proofs[0],proofs[5]
+    if run.get('pretraining_baseline_policy')=='reuse_historical':
+        assert after['question_ids']==ids and after['data_sources']==frame['data_source'].tolist()
+        change_keys=('weighted_em','weighted_f1')+tuple(key for key in ('valid_action_rate',
+            'executed_search_question_rate','executed_search_calls_per_question') if key in before and key in after)
+        return dict(schema_version=1,role='formal_inline_historical_development_comparison',run_id=run['run_id'],plan_sha256=plan_sha,
+            before=before,after=after,file_sha256=hashes,historical_baseline_source_sha256=before['source_artifact_sha256'],
+            changes={name:after[name]-before[name] for name in change_keys},paired_same_run=False,
+            current_run_after_evaluation_performed=True,accuracy_health_gate=False,
+            semantics='True current-run after512 scores compared with an authenticated historical official-model scalar baseline; this is not a same-run paired evaluation or a health gate')
     assert before['question_ids']==after['question_ids']==ids and before['data_sources']==after['data_sources']==frame['data_source'].tolist()
     return dict(schema_version=1,role='formal_inline_paired_development_report',run_id=run['run_id'],plan_sha256=plan_sha,
         before=before,after=after,file_sha256=hashes,

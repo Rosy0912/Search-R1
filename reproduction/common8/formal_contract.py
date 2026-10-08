@@ -100,7 +100,7 @@ def verify_formal_config(document, run, base):
                for name in ('param_dtype', 'reduce_dtype', 'buffer_dtype'))
     exact(rollout, dict(n=1, n_agent=5, temperature=1.0, top_p=1.0,
         log_prob_micro_batch_size=32, dtype='float32', tensor_model_parallel_size=1,
-        name='vllm', gpu_memory_utilization=0.4), 'Rollout mathematics')
+        name='vllm', gpu_memory_utilization=run.get('vllm_gpu_memory_utilization',0.4)), 'Rollout mathematics')
     exact(reference, dict(log_prob_micro_batch_size=32), 'Reference micro batch')
     exact(document['algorithm'], dict(adv_estimator='grpo', no_think_rl=False), 'Advantages')
     exact(document['data'], dict(train_batch_size=512, val_batch_size=64,
@@ -117,7 +117,8 @@ def verify_formal_config(document, run, base):
     assert reference['fsdp_config']['param_offload'] is True
     exact(document['trainer'], dict(n_gpus_per_node=world_size(run), nnodes=1,
         total_training_steps=TARGET_UPDATES + 1, total_epochs=15, save_freq=50,
-        test_freq=50, acceptance_step=5, val_only=False, val_before_train=True), 'Training horizon')
+        test_freq=50, acceptance_step=5, val_only=False,
+        val_before_train=run.get('pretraining_baseline_policy')!='reuse_historical'), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']
     assert Path(run['checkpoint_dir']).resolve() == base / 'checkpoints/search-g1-common8'
     assert document['max_turns'] == 4 and document['do_search'] is True

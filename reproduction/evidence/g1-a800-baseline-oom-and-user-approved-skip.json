@@ -1,0 +1,182 @@
+{
+  "schema": "search-g1-a800-baseline-oom-user-approved-skip-v1",
+  "role": "sanitized_actual_baseline_cuda_oom_and_user_authorized_historical_reference",
+  "observed_unix": 1791434085.5645719,
+  "run_id": "f6c4a066ce6841e7bc1532ed635c251c",
+  "execution_id": "b4337cccf0754605b211df3d2eaf143c",
+  "deployment_id": "968a013da6a24ab0b2ef1c52566c8b71",
+  "runtime_source_commit": "3b47bf5cbff3468739ff3f733fb793f157052627",
+  "actual_terminal_state": {
+    "pipeline_stage": "FAILED",
+    "pipeline_failed_unix": 1791433938.0726018,
+    "cleanup_cleaned": true,
+    "cleanup_checked_unix": 1791433947.9911687,
+    "cleanup_scope": "recorded project PID births and private local corpus cache only",
+    "completed_outers": 0,
+    "actual_adam_writes_per_rank": 0,
+    "actual_update_ledger_exists": false,
+    "before_development512_completed": false,
+    "scope": "Failure during pretraining baseline generation before any actual optimizer update; no completed before512 record."
+  },
+  "actual_cuda_oom": {
+    "error_type": "torch.OutOfMemoryError: CUDA out of memory",
+    "failed_role": "actor_rollout_generate_sequences during training-before baseline",
+    "requested_allocation_mib": 172.0,
+    "cuda_reported_device_index": 0,
+    "cuda_reported_total_gib": 79.25,
+    "cuda_reported_free_mib": 157.62,
+    "reported_process_memory": [
+      {
+        "reported_pid": 1083556,
+        "used_gib": 1.43
+      },
+      {
+        "reported_pid": 1087066,
+        "used_gib": 59.36
+      }
+    ],
+    "failing_process_including_non_pytorch_used_gib": 18.22,
+    "pytorch_allocated_gib": 16.75,
+    "pytorch_reserved_unallocated_mib": 96.43,
+    "raylet_failure_is_this_failure": false,
+    "ownership_of_reported_59gib_process": "unresolved; may be an owned process under host/container PID mapping; not proven foreign",
+    "physical_device_attribution_from_this_trace": null
+  },
+  "post_cleanup_gpu_snapshot": {
+    "checked_unix": 1791434085.5645719,
+    "gpu_used_mib": {
+      "0": 4,
+      "1": 4,
+      "2": 4,
+      "3": 4,
+      "4": 4,
+      "5": 4,
+      "6": 4
+    },
+    "gpu_util_percent": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "gpu7_used_mib": 68494,
+    "gpu7_util_percent": 100,
+    "foreign_gpu7_untouched": true,
+    "scope": "Read-only post-cleanup observation; idle0..6 does not resolve the OOM trace PID ownership. Assigned training GPUs remain0..3,auxiliary5..6;4/7 are excluded."
+  },
+  "current_run_initial_stage64": {
+    "run_id": "f6c4a066ce6841e7bc1532ed635c251c",
+    "split": "stage",
+    "step": 0,
+    "final": false,
+    "question_count": 64,
+    "correct_count": 14.0,
+    "weighted_em": 0.21875,
+    "weighted_f1": 0.30167993505026125,
+    "checked_unix": 1791433768.6726506,
+    "scalar_capture_observed_unix": 1791433812.556349,
+    "scope": "Actual training-before step0 stage64 scalar; no learned-parameter improvement. This does not complete the separate before512 baseline."
+  },
+  "user_authorization": {
+    "source": "Latest direct human instruction relayed by root for this evidence task",
+    "instruction_scope": "Skip both training-before initial stage64 and before512 evaluations for the next authorized A800 run; reuse the historical approximately17.77percent reference.",
+    "skip_initial_stage64_before_training": true,
+    "skip_development512_before_training": true,
+    "reuse_historical_91_of_512_reference": true,
+    "original_user_message_timestamp_not_present_in_this_local_record": true,
+    "scope_limit": "Only training-before baselines are skipped; subsequent required training,firstfive inline acceptance and final/development scoring remain required."
+  },
+  "historical_reference": {
+    "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "job_id": "3329",
+    "hardware": "8H100",
+    "node_list": "h100-8",
+    "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+    "step": 0,
+    "question_count": 512,
+    "correct_count": 91,
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743,
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "checked_unix": 1791373184.34943,
+    "historical_raw_capture_sha256": "46203e1d5ec2eec81f7c0df1a89224ad6f656458aea7064a34198a371a6fca7f",
+    "evidence_file": "reproduction/evidence/g1-native3329-before512-and-first-epoch.json",
+    "evidence_file_sha256": "11d2cc2e73024df50f6a96d6638f2a5ea6a3df4e7aea8c220b8b8107f7089594",
+    "comparison_scope": "Explicitly historical and across runs/hardware; not a new current-run before512 evaluation and not same-run paired proof. The historical scalar reader did not independently audit ordered IDs/binary item scores."
+  },
+  "separate_older_historical_91_of_512_reference": {
+    "run_id": "db5235708c354bffae6d0120c1cb5459",
+    "job_id": "3309",
+    "source_commit": "dec4e52b67042373348ef522ddc611d337eadf79",
+    "correct_count": 91,
+    "question_count": 512,
+    "weighted_em": 0.177734375,
+    "weighted_f1": 0.24118301022177743,
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "raw_before512_sha256": "2acbfae9f828452e54488e6024bc4af88429f59551715e96cf41dbbe668f1b1a",
+    "evidence_file": "reproduction/evidence/g1-formal-inline-before512-and-training-entry.json",
+    "evidence_file_sha256": "daf7d039901711c14aed81751fa5437d9eed985c9140ae97b3aeb783685f4b3f",
+    "scope": "Separate oldrun evidence with exact91/512; identical scores do not identify the runs or establish a same-run comparison."
+  },
+  "root_runtime_mitigation_in_progress": {
+    "vllm_gpu_memory_utilization_before": 0.4,
+    "vllm_gpu_memory_utilization_requested": 0.25,
+    "status": "Root applying resource-only change; no new-run success or validation is claimed by this evidence file.",
+    "previous_ray_resource_cap": {
+      "num_cpus": 16,
+      "object_store_memory_gib": 8
+    },
+    "unchanged_scientific_configuration": {
+      "compute_dtype": "float32",
+      "allow_tf32": false,
+      "G": 5,
+      "mini_batch": 128,
+      "actor_local_micro": 2,
+      "actor_global_micro": 8,
+      "gradient_accumulations_per_mini": 16,
+      "old_ref_global_micro": 32,
+      "old_ref_local_micro": 8,
+      "optimizer_opportunities_per_outer": 20,
+      "target_complete_outers": 200,
+      "global_training_batch": 512
+    },
+    "optimizer_opportunities_are_not_actual_adam_write_counts": true
+  },
+  "local_input_provenance": [
+    {
+      "local_record": "preparation/a800-968-user-skip-baseline-current-state.json",
+      "sha256": "dd35b6995c17a1c25de32e4eeb143a943ec86713b23224e9791d1aeade42c3b3",
+      "scope": "Baseline incomplete,update ledger absent and actual CUDA OOM scalar extraction; private console text is not copied."
+    },
+    {
+      "local_record": "preparation/a800-968-actual-oom-gpu-ownership-private.json",
+      "sha256": "161046441f17c91b3038ee40b637b2b17558b3aa57393f83363610b5e5a6404b",
+      "scope": "Actual FAILED/cleanup and GPU occupancy scalar extraction; GPU UUIDs,IPs and private transcript are not copied."
+    },
+    {
+      "local_record": "preparation/a800-968-real-log-progress-private.json",
+      "sha256": "9744fc8d576788daf1be95735d66cba7fb04ece79a527145ef882dbf4c11c70e",
+      "scope": "Actual initial stage64 metrics scalar extraction; private transcript is not copied."
+    }
+  ],
+  "goal_status": "active",
+  "goal_complete": false,
+  "fresh_five_accepted": false,
+  "recording_actions": {
+    "local_records_only": true,
+    "ssh": false,
+    "tests": false,
+    "reviews": false,
+    "additional_evaluation": false,
+    "new_trainer_execution": false,
+    "commits": false,
+    "hourly_anchor_modified": false,
+    "only_written_file": "reproduction/evidence/g1-a800-baseline-oom-and-user-approved-skip.json"
+  }
+}

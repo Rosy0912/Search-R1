@@ -1,0 +1,28 @@
+{
+  "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "correct": 91,
+  "current_run_evaluation_performed": false,
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "ordered_item_scores_independently_reaudited_here": false,
+  "original_captured_evaluation_bytes": 249497,
+  "original_captured_evaluation_sha256": "46203e1d5ec2eec81f7c0df1a89224ad6f656458aea7064a34198a371a6fca7f",
+  "original_checked_unix": 1791373184.34943,
+  "original_runtime": "eight H100 official initial model; current A800 pretraining generation explicitly skipped by user",
+  "original_scalar_report_relative": "repo/reproduction/evidence/g1-native3329-before512-and-first-epoch.json",
+  "original_scalar_report_sha256": "11d2cc2e73024df50f6a96d6638f2a5ea6a3df4e7aea8c220b8b8107f7089594",
+  "paired_same_run": false,
+  "question_count": 512,
+  "role": "historical_development_baseline",
+  "schema_version": 1,
+  "semantics": "Historical scalar reference selected by user. EM91/512 and F1 are original observed aggregates; common model/data identifiers retain the established official shared-data experiment lineage. No synthetic item rows or current-run measurements.",
+  "source_commit": "ddf71bf874e943d9ad1c535517f2a4342e4baecf",
+  "source_counts": {
+    "hotpotqa": 256,
+    "nq": 256
+  },
+  "source_native_job_id": "3329",
+  "source_run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+  "weighted_em": 0.177734375,
+  "weighted_f1": 0.24118301022177743
+}

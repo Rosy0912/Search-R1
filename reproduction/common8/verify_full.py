@@ -152,7 +152,7 @@ def verify_full(base):
         'Actual first-five immutable attempt/state/monitor selection changed'
     from reproduction.common8.formal_inline_evaluation import verify_pair
     paired_development=verify_pair(base,run)
-    assert five['paired_development']==paired_development, 'Actual paired5120/5 measurements changed after acceptance'
+    assert five['paired_development']==paired_development, 'Authenticated baseline/current512 comparison changed after acceptance'
     assert [r['step'] for r in five['actual_updates']]==list(range(1,6))
     for saved,actual in zip(five['actual_updates'],records[:5]):
         assert saved['probe_version']==actual['probe_version']

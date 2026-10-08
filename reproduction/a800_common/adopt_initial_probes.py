@@ -29,6 +29,9 @@ LOCAL_HELPERS = frozenset((
     'reproduction/a800_common/train.sh',
     'reproduction/common8/verify_full.py',
     'reproduction/common8/formal_inline_safety.py',
+    'reproduction/common8/formal_inline_evaluation.py',
+    'reproduction/common8/configuration.py',
+    'reproduction/common8/formal_contract.py',
 ))
 RAY_ENTRY = 'verl/trainer/main_ppo_eco.py'
 ORIGINAL_HYDRA_OUTPUTS = {
