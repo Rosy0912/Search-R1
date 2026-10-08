@@ -1,0 +1,474 @@
+{
+  "aggregation": {
+    "base_drift_questions": 192,
+    "cells": 6,
+    "missing_teacher_hard_questions": 64,
+    "native_mask": "frozen policy token mask; information excluded from loss, retained in context",
+    "questions_each_cell": 32,
+    "region_definition": "Exact tags precede innermost open think/search content; last complete answer payload inside last authored span is final_answer, not a protocol validity claim; mixed-category or zero-width tokens are boundary. Frozen mask alone selects supervision.",
+    "regional_contribution_reconstruction_abs_error_limit": 1e-10,
+    "root_aggregate_match_abs_error_limit": 1e-14,
+    "teacher_eligible_cells": 4,
+    "teacher_questions": 128,
+    "trajectory_rule": "native valid policy-token mean; hard five sibling trajectories averaged within question; then equal questions"
+  },
+  "analysis_verified": true,
+  "caveats": [
+    "stratified training diagnostics do not estimate population validation EM",
+    "teacher clipped vocabulary contributions are not unconditionally standard unclipped KL",
+    "loss contributions do not equal gradient contribution",
+    "posthoc fixed-response loss is not historical online loss",
+    "observed-field teacher invariance does not prove full-vocabulary equality",
+    "correct reference final answer does not prove all reference reasoning correct",
+    "diagnostic outcome and loss association do not establish training causal contribution"
+  ],
+  "created_utc": "2026-10-08T06:08:31.283304+00:00",
+  "epoch1_strict_flip_associations": [
+    {
+      "mean_original_history_metric_change": {
+        "base_ordinary_to_student_kl": 0.14170198842104856,
+        "clipped_teacher_probability_mass": null,
+        "clipped_vocabulary_contributions": null,
+        "teacher_student_clipped_kl": null,
+        "teacher_student_unclipped_kl": null
+      },
+      "questions": 88,
+      "strict_flip": "0->0",
+      "version": "epoch1"
+    },
+    {
+      "mean_original_history_metric_change": {
+        "base_ordinary_to_student_kl": 0.13954551752648642,
+        "clipped_teacher_probability_mass": null,
+        "clipped_vocabulary_contributions": null,
+        "teacher_student_clipped_kl": null,
+        "teacher_student_unclipped_kl": null
+      },
+      "questions": 12,
+      "strict_flip": "0->1",
+      "version": "epoch1"
+    },
+    {
+      "mean_original_history_metric_change": {
+        "base_ordinary_to_student_kl": 0.13850724042379392,
+        "clipped_teacher_probability_mass": -0.004132711365809034,
+        "clipped_vocabulary_contributions": -0.005114899699336992,
+        "teacher_student_clipped_kl": -0.33762765862520766,
+        "teacher_student_unclipped_kl": -0.36948837290690506
+      },
+      "questions": 25,
+      "strict_flip": "1->0",
+      "version": "epoch1"
+    },
+    {
+      "mean_original_history_metric_change": {
+        "base_ordinary_to_student_kl": 0.13645415087098248,
+        "clipped_teacher_probability_mass": -0.0035180598572934854,
+        "clipped_vocabulary_contributions": -0.004485952416574795,
+        "teacher_student_clipped_kl": -0.34356188578328,
+        "teacher_student_unclipped_kl": -0.3669037210835016
+      },
+      "questions": 67,
+      "strict_flip": "1->1",
+      "version": "epoch1"
+    }
+  ],
+  "full_vocabulary_generated_response_scope": "not requested; cannot claim all response full distributions persisted or verified",
+  "full_vocabulary_requested_status_total": 28,
+  "full_vocabulary_status_original_probe_counts": {
+    "cap_skip": 17,
+    "complete": 11,
+    "not_requested": 1764
+  },
+  "hypotheses": {
+    "H1": {
+      "counterfactual_execution_status": "CPU64 ready; GPU not started",
+      "support": "teacher own generation protocol defects and loss/outcome divergence are observed",
+      "unresolved": "same wrong prefix continuation / reference sensitivity; own teacher response differs from training q"
+    },
+    "H2": {
+      "all_five_strict_failure_questions_excluded": 68129,
+      "change_rate": 0.36070671658050585,
+      "correct_correct_fallback_pairs": 56895,
+      "policy_only_changed_student_pairs": 36422,
+      "population_pairs": 100974,
+      "population_questions": 169103,
+      "scope": "fixed data selection counterfactual, no retraining; policy-only removes multiple nonpolicy regions, not isolated retrieval effect"
+    },
+    "H3": {
+      "onset_limit": "only preserved checkpoints observed, cannot infer exact update or native512 onset",
+      "support": "same original response teacher loss decreases, ordinary drift increases by epoch, diagnostic strict counts decrease after update1",
+      "weakening": "both lost25 and preserved67 exhibit similar loss decrease and drift; scalar means alone do not identify individual cause"
+    }
+  },
+  "producer": {
+    "case_manifest": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/manifest.json",
+      "sha256": "1d7ba339511419d8b0e3044e7a94f798876972a526a083b573c971112a6429d8",
+      "stat": {
+        "bytes": 4105,
+        "ctime_ns": 1791431798328474952,
+        "device": 2065,
+        "inode": 466324603,
+        "mtime_ns": 1791431798296490954
+      }
+    },
+    "cases": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/cases.jsonl",
+      "sha256": "1703b15b1a1b3c5b91b13422fa314ab9a3b83f7bf7bf8a85dd7afcdaecdbf082",
+      "stat": {
+        "bytes": 5694015,
+        "ctime_ns": 1791431798288494954,
+        "device": 2065,
+        "inode": 466324596,
+        "mtime_ns": 1791431798288494954
+      }
+    },
+    "completed_result_prefixes": [
+      {
+        "bytes_hashed": 2845808,
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/case-results.jsonl",
+        "prefix_only": true,
+        "sha256": "fd18c99bc89df632d84e97d5897e9a1c68de500e3b813a4538f423d336f737ea",
+        "stat": {
+          "bytes": 2845808,
+          "ctime_ns": 1791437810936455701,
+          "device": 2065,
+          "inode": 466324968,
+          "mtime_ns": 1791437810936455701
+        },
+        "trailing_partial_line_skipped": false
+      },
+      {
+        "bytes_hashed": 2781959,
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/case-results.jsonl",
+        "prefix_only": true,
+        "sha256": "4e726c1ba8ff202cdc237c0e6bb148c597c20e57046c1b4602410f107fa8f77e",
+        "stat": {
+          "bytes": 2781959,
+          "ctime_ns": 1791437538832585261,
+          "device": 2065,
+          "inode": 466324969,
+          "mtime_ns": 1791437538832585261
+        },
+        "trailing_partial_line_skipped": false
+      },
+      {
+        "bytes_hashed": 2427003,
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/case-results.jsonl",
+        "prefix_only": true,
+        "sha256": "603e132e74511e5d3c427a2c3ddc88b3d4bd94160a5c5e157f7528c15cc45b2a",
+        "stat": {
+          "bytes": 2427003,
+          "ctime_ns": 1791437684379770147,
+          "device": 2065,
+          "inode": 466324965,
+          "mtime_ns": 1791437684379770147
+        },
+        "trailing_partial_line_skipped": false
+      }
+    ],
+    "helper": {
+      "path": "/data/shaoshitong/search-e1-opsd-selection-audit-20261008/source/opsd_token_region_analysis/summarize_regions.py",
+      "sha256": "55bfd3f74aed1dd5b51bb5fa91244cc3940ecd02ac2c937c3282208942df311e",
+      "stat": {
+        "bytes": 35905,
+        "ctime_ns": 1791436130505150744,
+        "device": 2065,
+        "inode": 466357554,
+        "mtime_ns": 1791435665657371997
+      }
+    },
+    "region_cases_private_output_metadata": {
+      "path": "/data/shaoshitong/search-e1-opsd-selection-audit-20261008/runs/full192-token-regions-v1/cases.jsonl",
+      "rows": 192,
+      "sha256": "c9d845032ee517a367d561d2e89e376e1ee3c38c629b52fd9e3688c03c47a6c8"
+    },
+    "run_config": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/config.json",
+      "sha256": "06b110c20a248364e99c6f037e87d8da6c8fc9b6fe27506f879bd58fb4a54cd4",
+      "stat": {
+        "bytes": 4953,
+        "ctime_ns": 1791432876872895063,
+        "device": 2065,
+        "inode": 466324957,
+        "mtime_ns": 1791432876872895063
+      }
+    }
+  },
+  "region_share_of_total_teacher_loss_reduction": {
+    "boundary": 0.008377483627718361,
+    "final_answer": 0.016499590063119504,
+    "other": 0.0,
+    "search_query": 0.02618782813813667,
+    "structural_tags": 0.04764640589017237,
+    "think_text": 0.9012886922808528
+  },
+  "relative_teacher_loss_reduction": 0.6650655615706755,
+  "report": {
+    "bytes": 5220,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/opsd-full192-loss-drift-findings-20261008.md",
+    "sha256": "fc9207ad8c82d1e8627fc69ec6cc8ff4042d5e5e50c4b6abf0d4169215b1a436"
+  },
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "schema": "opsd-full192-loss-drift-findings-v1",
+  "scope": "192 balanced training diagnostic questions; not native512, population EM, historical online loss, gradient or training causal proof",
+  "source_proofs": {
+    "accepted_full_selection_summary": {
+      "bytes": 13042,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-selection-full-audit-result-20261008.json",
+      "sha256": "a16a706ea37405fd58864736b1be9ba9e60eaf73247e5cc8facdbe5bf208fdec"
+    },
+    "independent_protocol_summary": {
+      "bytes": 19265,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-protocol-full192-20261008/summary.json",
+      "sha256": "6ceb906987ade78f13bc0a345c63e4b802613cc4ae0e0a5d6b0c7360baaca62a"
+    },
+    "region_summary": {
+      "bytes": 386466,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-protocol-full192-20261008/token-regions-summary.json",
+      "sha256": "ec1933f10c25c7cf4bd0fb4004ea71fe762423c1cf7c8045b89de4debe11b197"
+    },
+    "root_equal_question_aggregate": {
+      "bytes": 4554,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-protocol-full192-20261008/root-equal-question-region-aggregates.json",
+      "sha256": "0b3c29ec11cfc213e0d00b3fca5fffb8331d9ea12567835c7b638b8cfa291024"
+    }
+  },
+  "status": {
+    "generation_and_independent_cpu_region_checks": "complete",
+    "m1_full_numeric_end_acceptance": "pending root fresh live audit",
+    "m3_fixed64_cpu_preparation": "ready",
+    "m3_gpu_counterfactual_execution": "not started",
+    "native512_four_weights": "actual launch pending acceptance"
+  },
+  "teacher_original_history_invariance": {
+    "checks_by_status": {
+      "verified": 384
+    },
+    "interpretation": "Only observed target/topk/logprob/entropy equality, not full-vocabulary proof; missing fields are not evidence of equality. No invariant requirement for new own-history responses.",
+    "missing_field_token_counts": {}
+  },
+  "teacher_own_generation_counts": {
+    "analyzed": 128,
+    "completed_case_artifacts": 192,
+    "final_answer_protocol_invalid": 25,
+    "final_answer_protocol_valid": 103,
+    "invalid_tag_candidate_matches_gold": 24,
+    "invalid_tag_candidate_unclosed_think": 25,
+    "no_executed_search": 76,
+    "protocol_valid_wrong_answer": 1,
+    "skipped": 64,
+    "strict_correct": 102
+  },
+  "versions": [
+    {
+      "all_questions": 192,
+      "base_drift_reconstruction_abs_error": 0.0,
+      "base_drift_region_contribution": {
+        "boundary": 0.0,
+        "final_answer": 0.0,
+        "other": 0.0,
+        "search_query": 0.0,
+        "structural_tags": 0.0,
+        "think_text": 0.0
+      },
+      "base_drift_region_share": {
+        "boundary": null,
+        "final_answer": null,
+        "other": null,
+        "search_query": null,
+        "structural_tags": null,
+        "think_text": null
+      },
+      "base_ordinary_to_student_kl": 0.0,
+      "eligible_questions": 128,
+      "native_reconstruction_abs_error": 1.1102230246251565e-16,
+      "student_protocol_counts": {
+        "analyzed": 192,
+        "completed_case_artifacts": 192,
+        "final_answer_protocol_invalid": 0,
+        "final_answer_protocol_valid": 192,
+        "invalid_tag_candidate_matches_gold": 0,
+        "invalid_tag_candidate_unclosed_think": 0,
+        "no_executed_search": 0,
+        "protocol_valid_wrong_answer": 100,
+        "strict_correct": 92
+      },
+      "teacher_loss_region_contribution": {
+        "boundary": 0.003862969506482613,
+        "final_answer": 0.01139713027540699,
+        "other": 0.0,
+        "search_query": 0.022221557668820856,
+        "structural_tags": 0.02240595700036837,
+        "think_text": 0.4415624396453722
+      },
+      "teacher_loss_region_share": {
+        "boundary": 0.007703597746027151,
+        "final_answer": 0.022728345888691076,
+        "other": 0.0,
+        "search_query": 0.04431459820831262,
+        "structural_tags": 0.044682330408241835,
+        "think_text": 0.8805711277487273
+      },
+      "teacher_student_clipped_kl": 0.501450054096451,
+      "version": "source100"
+    },
+    {
+      "all_questions": 192,
+      "base_drift_reconstruction_abs_error": 1.0842021724855044e-19,
+      "base_drift_region_contribution": {
+        "boundary": 7.910497449068559e-06,
+        "final_answer": 1.4456341640269362e-05,
+        "other": 0.0,
+        "search_query": 5.3281657034264045e-05,
+        "structural_tags": 4.3827918977325605e-05,
+        "think_text": 0.0007772858571740609
+      },
+      "base_drift_region_share": {
+        "boundary": 0.008821175570868395,
+        "final_answer": 0.016120595265002837,
+        "other": 0.0,
+        "search_query": 0.05941558725379277,
+        "structural_tags": 0.04887350899156243,
+        "think_text": 0.8667691329187736
+      },
+      "base_ordinary_to_student_kl": 0.0008967622722749884,
+      "eligible_questions": 128,
+      "native_reconstruction_abs_error": 1.1102230246251565e-16,
+      "student_protocol_counts": {
+        "analyzed": 192,
+        "completed_case_artifacts": 192,
+        "final_answer_protocol_invalid": 0,
+        "final_answer_protocol_valid": 192,
+        "invalid_tag_candidate_matches_gold": 0,
+        "invalid_tag_candidate_unclosed_think": 0,
+        "no_executed_search": 0,
+        "protocol_valid_wrong_answer": 91,
+        "strict_correct": 101
+      },
+      "teacher_loss_region_contribution": {
+        "boundary": 0.003939845556396048,
+        "final_answer": 0.011420550417529731,
+        "other": 0.0,
+        "search_query": 0.022147733096519583,
+        "structural_tags": 0.022182713014421318,
+        "think_text": 0.440974326215968
+      },
+      "teacher_loss_region_share": {
+        "boundary": 0.00786922239820908,
+        "final_answer": 0.02281075485296685,
+        "other": 0.0,
+        "search_query": 0.04423661660283839,
+        "structural_tags": 0.04430648349216175,
+        "think_text": 0.8807769226538238
+      },
+      "teacher_student_clipped_kl": 0.5006651683008347,
+      "version": "update1"
+    },
+    {
+      "all_questions": 192,
+      "base_drift_reconstruction_abs_error": 0.0,
+      "base_drift_region_contribution": {
+        "boundary": 4.692618769086678e-06,
+        "final_answer": 1.4600287964669223e-05,
+        "other": 0.0,
+        "search_query": 6.313293923942842e-05,
+        "structural_tags": 4.8062650229306645e-05,
+        "think_text": 0.0011142105521324728
+      },
+      "base_drift_region_share": {
+        "boundary": 0.0037700830376338787,
+        "final_answer": 0.011729974393569317,
+        "other": 0.0,
+        "search_query": 0.050721448950958446,
+        "structural_tags": 0.03861387240040084,
+        "think_text": 0.8951646212174376
+      },
+      "base_ordinary_to_student_kl": 0.0012446990483349638,
+      "eligible_questions": 128,
+      "native_reconstruction_abs_error": 5.551115123125783e-17,
+      "student_protocol_counts": {
+        "analyzed": 192,
+        "completed_case_artifacts": 192,
+        "final_answer_protocol_invalid": 0,
+        "final_answer_protocol_valid": 192,
+        "invalid_tag_candidate_matches_gold": 0,
+        "invalid_tag_candidate_unclosed_think": 0,
+        "no_executed_search": 0,
+        "protocol_valid_wrong_answer": 103,
+        "strict_correct": 89
+      },
+      "teacher_loss_region_contribution": {
+        "boundary": 0.003848377889363788,
+        "final_answer": 0.011362822668536691,
+        "other": 0.0,
+        "search_query": 0.021831518752960324,
+        "structural_tags": 0.02178292889683096,
+        "think_text": 0.4233917540522817
+      },
+      "teacher_loss_region_share": {
+        "boundary": 0.007980586912309413,
+        "final_answer": 0.023563692673228654,
+        "other": 0.0,
+        "search_query": 0.04527318726085812,
+        "structural_tags": 0.04517242387923472,
+        "think_text": 0.8780101092743691
+      },
+      "teacher_student_clipped_kl": 0.48221740225997345,
+      "version": "update5"
+    },
+    {
+      "all_questions": 192,
+      "base_drift_reconstruction_abs_error": 2.7755575615628914e-17,
+      "base_drift_region_contribution": {
+        "boundary": 0.0006380730014841992,
+        "final_answer": 0.0020760062913756133,
+        "other": 0.0,
+        "search_query": 0.004969548230113689,
+        "structural_tags": 0.005080599988836866,
+        "think_text": 0.12655572202111037
+      },
+      "base_drift_region_share": {
+        "boundary": 0.004579911230397232,
+        "final_answer": 0.014900998014538197,
+        "other": 0.0,
+        "search_query": 0.03567004041254986,
+        "structural_tags": 0.03646713917044839,
+        "think_text": 0.9083819111720666
+      },
+      "base_ordinary_to_student_kl": 0.1393199495329207,
+      "eligible_questions": 128,
+      "native_reconstruction_abs_error": 0.0,
+      "student_protocol_counts": {
+        "analyzed": 192,
+        "completed_case_artifacts": 192,
+        "final_answer_protocol_invalid": 8,
+        "final_answer_protocol_valid": 184,
+        "invalid_tag_candidate_matches_gold": 3,
+        "invalid_tag_candidate_unclosed_think": 8,
+        "no_executed_search": 8,
+        "protocol_valid_wrong_answer": 105,
+        "strict_correct": 79
+      },
+      "teacher_loss_region_contribution": {
+        "boundary": 0.0010691024933838515,
+        "final_answer": 0.005894563818042684,
+        "other": 0.0,
+        "search_query": 0.013487991310331123,
+        "structural_tags": 0.006516015864724247,
+        "think_text": 0.14098521878266734
+      },
+      "teacher_loss_region_share": {
+        "boundary": 0.006365490221332923,
+        "final_answer": 0.035096530571182304,
+        "other": 0.0,
+        "search_query": 0.08030818122927134,
+        "structural_tags": 0.03879668743234352,
+        "think_text": 0.8394331105458699
+      },
+      "teacher_student_clipped_kl": 0.16795289226914925,
+      "version": "epoch1"
+    }
+  ]
+}
