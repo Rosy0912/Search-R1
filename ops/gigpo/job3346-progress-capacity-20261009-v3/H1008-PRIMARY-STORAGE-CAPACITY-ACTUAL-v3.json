@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-08T20:53:11.779098+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-08T20:53:10.351997+00:00\\\", \\\"vg\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"  VG        VSize          VFree\\\\n  data      15362997354496     0\\\\n  ubuntu-vg   476791701504     0\\\\n\\\", \\\"stderr\\\": \\\"\\\"}, \\\"lv\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"  LV        VG        LSize         \\\\n  data      data      15362997354496\\\\n  ubuntu-lv ubuntu-vg   476791701504\\\\n\\\", \\\"stderr\\\": \\\"\\\"}, \\\"mount\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"TARGET    SOURCE                FSTYPE OPTIONS\\\\n/mnt/data /dev/mapper/data-data ext4   rw,relatime,stripe=32\\\\n\\\", \\\"stderr\\\": \\\"\\\"}, \\\"disk\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"Filesystem                 1B-blocks           Used    Available Use% Mounted on\\\\n/dev/mapper/data-data 15240760295424 13911752183808 560841469952  97% /mnt/data\\\\n\\\", \\\"stderr\\\": \\\"\\\"}, \\\"statvfs\\\": {\\\"free_bytes_including_reserved\\\": 1329008111616, \\\"available_unreserved_bytes\\\": 560841469952, \\\"effective_uid\\\": 0, \\\"free_inodes\\\": 421128263}}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-08T20:53:11.849672+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}
