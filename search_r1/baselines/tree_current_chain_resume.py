@@ -1,4 +1,4 @@
-"""Explicit migration of job3335's completed native5 boundary, never generic recovery.
+"""Explicit migration of job3339's completed native6 boundary, never generic recovery.
 
 Only native state of this current Fresh200 chain is accepted. File hashes and
 loaded/live state comparisons execute at training startup; no executor/vLLM
@@ -16,23 +16,23 @@ from .training_state import (atomic_save, cpu_copy, digest, driver_snapshot,
     worker_snapshot)
 
 PROTOCOL = 'current_fresh200_chain_fault_repair_continuation_v1'
-PARENT_JOB = '3335'
-PARENT_RUN = 'tree-current200-continue-3335'
-PARENT_COMMIT = '6efb60466a233f70bf8f50de26df32012f49b4bc'
-PARENT_CONFIG_SHA256 = '5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb'
-PARENT_MANIFEST_SHA256 = '56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260'
-PARENT_COMPLETED_STEP = 5
-PARENT_OPTIMIZER_CALLS = 100
-PARENT_CURSOR = 2560
+PARENT_JOB = '3339'
+PARENT_RUN = 'tree-current200-continue-3339'
+PARENT_COMMIT = '62271081ba1bb74d8fc3f4958d623758efa74fa5'
+PARENT_CONFIG_SHA256 = '98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b'
+PARENT_MANIFEST_SHA256 = '2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3'
+PARENT_COMPLETED_STEP = 6
+PARENT_OPTIMIZER_CALLS = 120
+PARENT_CURSOR = 3072
 PARENT_NEXT_STEP = PARENT_COMPLETED_STEP + 1
 PARENT_MANIFEST = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/PARENT_RUN/\
-    'checkpoints/training_state/global_step_5/manifest.json'
+    'checkpoints/training_state/rolling-completed/global_step_6/manifest.json'
 OFFICIAL_MODEL = '/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725'
 ENV_PREFIX = 'TREE_CURRENT_CHAIN_RESUME_'
 ENV_FIELDS = {'MANIFEST', 'MANIFEST_SHA256', 'AUTHORITY'}
 COUNTS = {str(rank): PARENT_OPTIMIZER_CALLS for rank in range(8)}
-PARENT_MIGRATION_RECEIPT = PARENT_MANIFEST.parents[3]/'output/current-chain-migrated.json'
-PARENT_MIGRATION_SHA256 = '07c19b89289ba2116f874447c7bfbf1dfc93b8d115644be5fe4c2cbf24bb543c'
+PARENT_MIGRATION_RECEIPT = PARENT_MANIFEST.parents[4]/'output/current-chain-migrated.json'
+PARENT_MIGRATION_SHA256 = '6384b8350550ef767c8d1e0b5c27705842913517c642d8556d59b37058a98c3e'
 
 
 def enabled(environ=None):
@@ -42,7 +42,7 @@ def enabled(environ=None):
 
 def require(condition, message):
     if not condition:
-        raise ValueError('Current-chain3335 migration: ' + message)
+        raise ValueError('Current-chain3339 migration: ' + message)
 
 
 def validate_entry(config=None, environ=None):
@@ -55,9 +55,9 @@ def validate_entry(config=None, environ=None):
     require(supplied == ENV_FIELDS, 'all three explicit entry fields are required')
     require(environ[ENV_PREFIX+'AUTHORITY'] == PROTOCOL, 'continuation scope differs')
     require(environ[ENV_PREFIX+'MANIFEST_SHA256'] == PARENT_MANIFEST_SHA256,
-            'parent manifest SHA differs from the pinned native5 boundary')
+            'parent manifest SHA differs from the pinned native6 boundary')
     require(Path(environ[ENV_PREFIX+'MANIFEST']) == PARENT_MANIFEST,
-            'only the byte-pinned preserved3335 native5 manifest is permitted')
+            'only the byte-pinned preserved3339 native6 manifest is permitted')
     require(socket.gethostname().split('.')[0] == 'h100-10',
             'approved retired-node saved state must load only on retained18 h100-10')
     if config is not None:
@@ -88,12 +88,12 @@ def parent_manifest():
             'actual parent manifest bytes changed')
     manifest = json.loads(raw)
     identity = manifest['identity']
-    # Native milestone identity omits run_id; the exact path/SHA and saved
-    # parent provenance bind the run instead.
-    expected = dict(job_id=PARENT_JOB, code_commit=PARENT_COMMIT,
+    # Native rolling identity includes run_id; bind it alongside the exact bytes.
+    expected = dict(job_id=PARENT_JOB, run_id=PARENT_RUN, code_commit=PARENT_COMMIT,
         config_sha256=PARENT_CONFIG_SHA256, completed_step=PARENT_COMPLETED_STEP,
         actual_update_limit=200)
-    require(manifest['status'] == 'COMPLETE_SAME_WORLD_STATE_SAVED'
+    require(manifest['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED'
+            and manifest['snapshot_kind'] == 'rolling_completed_outer'
             and all(identity.get(k) == v for k, v in expected.items()),
             'parent status/source/config/completed boundary differs')
     for key, variable in [('data_identity', 'SEARCH_R1_BASELINE_DATA_IDENTITY'),
@@ -117,9 +117,12 @@ def parent_manifest():
                 and bool(rank_identity['cuda_visible_devices'])
                 and record['actual_total_optimizer_calls'] == PARENT_OPTIMIZER_CALLS
                 and record['scheduler_last_epoch'] == PARENT_COMPLETED_STEP
-                and record['full_worker_state_finite'] is True,
+                and record['full_worker_state_finite'] is True
+                and record['observed_adam_steps'] == [PARENT_OPTIMIZER_CALLS]
+                and record['exact_same_world_reload_verified'] is False,
                 'parent native worker identity/counters differ')
-    require(manifest['driver']['next_step'] == PARENT_NEXT_STEP, 'parent driver next outer differs')
+    require(manifest['driver']['next_step'] == PARENT_NEXT_STEP
+            and manifest['driver']['exact_reload_verified'] is False, 'parent driver next outer differs')
     return manifest
 
 
@@ -217,7 +220,8 @@ def migrate_trainer(trainer):
             'actual serialized driver state or identity changed')
     require(saved['completed_step'] == saved['actual_outer_updates'] == PARENT_COMPLETED_STEP
             and saved['next_step'] == PARENT_NEXT_STEP
-            and saved['sampler']['batch_size'] == 512 and saved['sampler']['cursor'] == PARENT_CURSOR
+            and saved['sampler']['batch_size'] == trainer.config.data.train_batch_size == 512
+            and saved['sampler']['cursor'] == PARENT_CURSOR == PARENT_COMPLETED_STEP * trainer.config.data.train_batch_size
             and saved['sampler']['epoch'] == 0, 'actual saved counters/cursor differ')
     restore_driver(trainer, saved, manifest['identity'])
     require(digest(driver_snapshot(trainer, manifest['identity'])) == record['logical_state_sha256'],
@@ -237,7 +241,7 @@ def migrate_trainer(trainer):
     parent_receipt = json.loads(parent_receipt_raw)
     require(parent_receipt['status'] == 'COLD_CURRENT_CHAIN_STATE_MIGRATED'
             and saved_parent_provenance == parent_receipt['provenance'],
-            'saved parent complete ancestry differs from actual3335 migration receipt')
+            'saved parent complete ancestry differs from actual3339 migration receipt')
     provenance = dict(protocol=PROTOCOL, parent_identity=manifest['identity'],
         parent_manifest_path=str(PARENT_MANIFEST), parent_manifest_sha256=PARENT_MANIFEST_SHA256,
         parent_completed_step=PARENT_COMPLETED_STEP, parent_cursor=PARENT_CURSOR,
@@ -247,8 +251,8 @@ def migrate_trainer(trainer):
         child_job_id=os.environ['SLURM_JOB_ID'], child_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
         parent_failed_attempt=dict(attempt_id=PARENT_NEXT_STEP, completed_outer_credit=0,
             optimizer_writes=None, published_rank_optimizer_record=None,
-            error_type='HumanRequestedStop', failure_component='manual_stop_slow3335',
-            scope='User stopped slow3335 after completed5; interrupted6 partial writes remain unknown; only completed native5 is migrated'),
+            error_type='HumanRequestedStop', failure_component='manual_stop_slow3339',
+            scope='User stopped slow3339 after completed6; interrupted7 partial writes remain unknown; only completed native6 is migrated'),
         automatic_resume_supported=False, executor_equivalence=False, exact_executor_resume=False)
     # The existing snapshot format preserves this provenance without old env,
     # sampler migration, old300 protocol or a ten-write restriction.
