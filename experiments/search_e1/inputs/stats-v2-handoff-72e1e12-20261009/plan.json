@@ -1,0 +1,56 @@
+{
+  "backup_completion_is_training_dependency": false,
+  "destination": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/stats-v2-handoff-8b641cb51b4c478684f596f75c603851/inputs",
+  "eval_bases": {
+    "C0": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/C0",
+    "C1": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/C1",
+    "J": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/J",
+    "M": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/M",
+    "P": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/P",
+    "R": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/R",
+    "W": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/W",
+    "zero": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero"
+  },
+  "live_foreground_binding": {
+    "bytes": 4948,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/stats-v2-handoff-72e1e12-20261009/old-exec-live-foreground-binding.accepted.json",
+    "sha256": "71fe4c29c4e03987ce0f241716f8553c5083edaa661090dc8e11ce2386a4d1fa"
+  },
+  "new_session": "e1-reverse-seven-stats-697c6bdf-20261009",
+  "new_source": {
+    "commit": "72e1e1276a3e5b21be108c346337f63b13368d66",
+    "helper_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/eval-stats-v2-72e1e12/opsd_ablation_eval_v1",
+    "manifest": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/eval-stats-v2-72e1e12/opsd_ablation_eval_v1/source-manifest.json",
+      "sha256": "2e55c809d91bd3b4654d0ec0c4b0532e3ee8c413aac69a19cfd8f28bf042c842"
+    },
+    "publication": {
+      "bytes": 5456,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/stats-v2-handoff-72e1e12-20261009/opsd_ablation_eval_stats_recovery_v2-publication.json",
+      "sha256": "76e48661db4f028d8051cc37f30ac039a02a8807e6e1ed8d228dbcbc03d166d0"
+    }
+  },
+  "no_signals_or_training_resume": true,
+  "node_local_outputs_authorized": true,
+  "old_pane": "%73",
+  "old_session": "e1-reverse-seven-observer-1a1850f7-20261009",
+  "old_study": {
+    "bytes": 10175,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/observer-recovery-964d3c7-20261009/study-manifest.json",
+    "sha256": "45aca46652d14f7a8b2390bfd66e9b5ba41af13b9d3cd0f45706582a955ab3ea"
+  },
+  "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver-stats-v2-8b641cb51b4c478684f596f75c603851/runs",
+  "run_ids": {
+    "C0": "eeb2a0a84aa94763bfaf7b5d9a80f5a9",
+    "C1": "8d74046ea72b409d9fdf6682f5637bd8",
+    "J": "522eaa5de94d4c43a8d96fde0330ae37",
+    "M": "df8481e6ce58439f9d5fc95e893efc49",
+    "P": "4b500d8f122940d9867b425ee32600c8",
+    "R": "214e1c0ab8f4488e9f2781e349cb4296",
+    "W": "fa3f3ed66e1e405fa35acabeb22b0ba1",
+    "driver": "697c6bdf9cad41458cfed8acc78617e9",
+    "zero": "d6fb70ec8f374ff8b8a841b2e6f15450"
+  },
+  "schema": "opsd-ablation-stats-handoff-plan-v1",
+  "study_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008"
+}

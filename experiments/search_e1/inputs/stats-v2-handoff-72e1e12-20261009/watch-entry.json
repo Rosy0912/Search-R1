@@ -1,0 +1,44 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_stats_handoff_v1/handoff.py",
+    "watch",
+    "--plan",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/stats-v2-handoff-72e1e12-20261009/plan.json",
+    "--plan-sha256",
+    "237e294034054bb8d63218ca0dfbe01125f9796f09399bfe49a0eca12d8c7d7f",
+    "--local-output",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/eval-stats-v2-handoff-72e1e12-20261009/watch",
+    "--remote-python",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "--remote-helper",
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/stats-handoff-72e1e12/opsd_ablation_stats_handoff_v1/handoff.py",
+    "--self-manifest",
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/stats-handoff-72e1e12/opsd_ablation_stats_handoff_v1/source-manifest.json",
+    "--self-manifest-sha256",
+    "97fb97f6dbb12b4ac4033a6237a4c1f3d8f32866b627f1985ad4b6c17ae389a5",
+    "--self-publication",
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/stats-v2-handoff-72e1e12-20261009/opsd_ablation_stats_handoff_v1-publication.json",
+    "--self-publication-sha256",
+    "c5c83fe57e439dd14733fe3ddf58f32d1f4101fbd9aa845ef11ac7cf70f69aa7",
+    "--self-commit",
+    "72e1e1276a3e5b21be108c346337f63b13368d66",
+    "--ssh-host",
+    "hkust1"
+  ],
+  "expected_training_run": "bfc195746b6d41aaa74db5ac4d7a8be7",
+  "plan_sha256": "237e294034054bb8d63218ca0dfbe01125f9796f09399bfe49a0eca12d8c7d7f",
+  "publication": {
+    "bytes": 1620,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/stats-v2-handoff-72e1e12-20261009/opsd_ablation_stats_handoff_v1-publication.json",
+    "sha256": "c5c83fe57e439dd14733fe3ddf58f32d1f4101fbd9aa845ef11ac7cf70f69aa7"
+  },
+  "schema": "opsd-ablation-stats-handoff-watch-entry-v1",
+  "scope": "Mac CPU watcher; C0 stays running and no backup dependency; actual launch/terminal/effects separate",
+  "source_commit": "72e1e1276a3e5b21be108c346337f63b13368d66",
+  "source_manifest": {
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/stats-handoff-72e1e12/opsd_ablation_stats_handoff_v1/source-manifest.json",
+    "sha256": "97fb97f6dbb12b4ac4033a6237a4c1f3d8f32866b627f1985ad4b6c17ae389a5"
+  }
+}
