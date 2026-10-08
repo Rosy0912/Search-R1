@@ -1,0 +1,16 @@
+{
+  "session": "01a0fcbc-0b46-7502-8b66-d8b21a0e032d",
+  "source_commit": "e7236b7d8729482aad864419fe986066643f3be5",
+  "original_local_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008",
+  "scope": "Code-only management route; no credentials, environments, models or datasets",
+  "files": {
+    "README.md": {
+      "size": 1253,
+      "sha256": "5d7e9626a705923785d6c33c01d5ae7a6c66b5c5d7cfb8cb2d6490570af48931"
+    },
+    "ssh_retained18.py": {
+      "size": 2662,
+      "sha256": "e69daf1d10dc112c20198e71449507b8dfbaddf3232d494dbbd71ada5ded9f7f"
+    }
+  }
+}
