@@ -105,3 +105,10 @@ C0 raw10 BF16的512正式预测已完整验收，八个rank各64题；独立cont
 44.34%是该权重的实际完整结果，同条件共同零adapter基线尚未完整结束，暂不称提升或下降，也不与旧离线epoch/历史239强拼曲线。C0原评测1896257自然结束，主driver1894801同run继续；新共同基线run d6fb70ec8f374ff8b8a841b2e6f15450已实际开始普通BF16推理，04:43 CST已有20条正式结果。七组自动流程没有等待备份，更未重跑C0。后续仍完整70outer/11×512=5632及按题配对比较。
 
 原完整C0报告和实际wait/handoff证据均留私有本地：goal-continuation-20261009-6/c0-native512-complete.compact.json、after-c0-handoff-1791492205.json；原逐题/检索/生成上下文仅私有保存，不提交Git。
+
+
+## 已完成的首组评测证据备份与后续不中断执行
+
+C0完整native512的585个文件、28,055,269字节已经实际direct rsync返回0；源端全文件SHA、传前/传后metadata连续性及本机全文件SHA均接受。本机保留512题原生上下文、检索HTTP、生成IDs、控制/身份及完整统计，Node原件保留。私有complete-sha-verified.json SHA为4532c72cd27a55ed6502168f2c8481fd6da3b5a847344acf2ada5fb14475f34f。这是已封闭C0评测的证据副本，不是当前正在运行的共同基线，也不替代其他六组或70轮检查点备份。
+
+Mac-only空目录收尾修复已在独立275aa9bd561f6c9d9694c097132d82204062f749源发布；manifest8be3fa8be436873aa17bb2e5c200af488163e56edaeac0d801f172e78ff0e856，三项必要CPU边界测试通过且独立审查接受。不可变待执行输入fcbbb5aa1bc05452b494a37d5d06b9abe2cb8f0b仍明确ready=false：它必须拿到45060的真实无活动传输边界和实际退出码后才能接续同一个队列。当前原4d压缩队列继续已有固定检查点，没有热改、没有向Node发信号，训练/评测仍不等待备份。
