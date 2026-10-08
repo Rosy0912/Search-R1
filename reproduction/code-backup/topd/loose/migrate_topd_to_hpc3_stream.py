@@ -134,7 +134,7 @@ def main():
     LOCAL.mkdir(parents=True, exist_ok=True)
     lock = (LOCAL / 'relay.lock').open('w')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False,'parallel_streams':4},indent=2)+'\n')
+    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False,'parallel_streams':4,'retry_policy':'unlimited_with_30_to_180_second_backoff'},indent=2)+'\n')
     completed = {}
     failures = 0
     while True:
@@ -190,8 +190,7 @@ print(json.dumps({'status':'FINAL_SHARED_FILES_FRESH_SHA256_PASS','files':len(fi
             with (LOCAL/'failures.jsonl').open('a') as f:
                 f.write(json.dumps({'epoch':time.time(),'error':str(error),'consecutive':failures})+'\n')
             print(json.dumps({'status':'RETRY_PRESERVING_SOURCE_AND_DESTINATION_PARTIAL','error':str(error),'consecutive':failures}),flush=True)
-            if failures>=5:
-                raise
+            # Keep retrying transient SSH/storage failures until all hashes pass.
             time.sleep(min(180, 30 * failures))
 
 
