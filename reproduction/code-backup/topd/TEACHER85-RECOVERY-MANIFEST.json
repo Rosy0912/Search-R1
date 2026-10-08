@@ -127,6 +127,10 @@
     "reproduction/code-backup/topd/loose/topd-instruct300-launch-v6/runtime/window_guardian.py": {
       "sha256": "ab05bab91dc4c8023795516f589a55745cd250f5b6781b3c2926cc35924e1f9d",
       "size": 9267
+    },
+    "reproduction/code-backup/topd/loose/watch_topd3224_teacher85_readonly.py": {
+      "sha256": "899582cc2609585a429b6f472b24aced74ddc9fa9e87bd8f4f03dabd66e47a9b",
+      "size": 2828
     }
   },
   "scope": "new direct teacher85 launcher and retained18 transport; previous versions retained",
