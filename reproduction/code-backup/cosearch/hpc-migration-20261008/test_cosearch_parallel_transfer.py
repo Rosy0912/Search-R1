@@ -22,7 +22,7 @@ with p.open('ab',buffering=0) as f:
   f.write(chunk);time.sleep(.08)
   if not marker.exists():marker.write_text('once');raise RuntimeError('injected disconnect')
 '''
- code=code.replace('from cosearch_transfer_io import receiver_code','def receiver_code(path):return '+repr(injected)+".replace('PATH',repr(path))")
+ code=code.replace('from cosearch_transfer_io import receiver_code','def receiver_code(path, expected_offset=None):return '+repr(injected)+".replace('PATH',repr(path))")
  run=b/'run.py';run.write_text(code);out=b/'log'
  with out.open('w') as log:p=subprocess.Popen([sys.executable,str(run)],stdout=log,stderr=log)
  maximum=0;deadline=time.time()+45
@@ -40,3 +40,18 @@ with p.open('ab',buffering=0) as f:
  assert r.returncode!=0
  st=json.loads((e/'native-x-hpc-migration-progress.json').read_text());assert 'AssertionError' in st['error'];assert (dst/rows[0]['path']).read_bytes()==b'corrupted'
  print(json.dumps({'parallel_streams_observed':maximum,'injected_disconnects_retried':4,'all_files_final_SHA_equal':True,'corrupt_completed_target_hard_stop':True}))
+
+# Real receiver: stale offset is rejected, and concurrent writer cannot acquire lock.
+from cosearch_transfer_io import receiver_code
+import fcntl
+with tempfile.TemporaryDirectory() as tmp:
+ p=Path(tmp)/'partial';p.write_bytes(b'abc')
+ r=subprocess.run([sys.executable,'-c',receiver_code(str(p),0)],input=b'bad',stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ assert r.returncode!=0 and p.read_bytes()==b'abc'
+ with open(str(p)+'.writer-lock','a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  r=subprocess.run([sys.executable,'-c',receiver_code(str(p),3)],input=b'bad',stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+  assert r.returncode!=0 and p.read_bytes()==b'abc'
+ r=subprocess.run([sys.executable,'-c',receiver_code(str(p),3)],input=b'def',stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ assert r.returncode==0 and p.read_bytes()==b'abcdef'
+print('Real receiver writer-lock/stale-offset/append gate PASS')

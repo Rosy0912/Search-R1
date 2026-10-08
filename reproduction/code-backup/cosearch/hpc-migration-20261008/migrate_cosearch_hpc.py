@@ -87,7 +87,7 @@ try:
      offset=info['partial_bytes'];assert offset<=rec['bytes']
      progress(status='transferring',partial_bytes=offset)
      reader="import sys;f=open("+repr(src)+",'rb');f.seek("+str(offset)+");\nfor b in iter(lambda:f.read(4194304),b''):sys.stdout.buffer.write(b)"
-     receiver=receiver_code(part)
+     receiver=receiver_code(part,offset)
      pipeline('python3 -c '+shlex.quote(reader),'python3 -c '+shlex.quote(receiver))
      verifier="from pathlib import Path;import hashlib,json;p=Path("+repr(part)+");h=hashlib.sha256();\nwith p.open('rb') as f:\n for b in iter(lambda:f.read(16777216),b''):h.update(b)\nassert p.stat().st_size=="+str(rec['bytes'])+";assert h.hexdigest()=="+repr(rec['sha256'])+";p.replace("+repr(dst)+");print(json.dumps({'verified':True}))"
      query('hpc3',verifier)

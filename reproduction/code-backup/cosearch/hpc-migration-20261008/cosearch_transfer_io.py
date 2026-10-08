@@ -1,11 +1,16 @@
 """Generate bounded, unbuffered shared-storage receiver with exact partial-write handling."""
 import textwrap
 
-def receiver_code(path):
+def receiver_code(path, expected_offset=None):
  return textwrap.dedent('''\
  from pathlib import Path
- import sys,os,time
+ import sys,os,time,fcntl
  p=Path(PATH);p.parent.mkdir(parents=True,exist_ok=True)
+ lock=open(str(p)+'.writer-lock','a')
+ fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ expected=EXPECTED_OFFSET
+ actual=p.stat().st_size if p.exists() else 0
+ if expected is not None and actual!=expected:raise RuntimeError('Partial offset changed before writer lock; retry')
  with p.open('ab',buffering=0) as f:
   for chunk in iter(lambda:sys.stdin.buffer.read(4194304),b''):
    remaining=memoryview(chunk);failures=0
@@ -24,4 +29,4 @@ def receiver_code(path):
    except OSError as exc:
     if exc.errno!=5 or attempt==5:raise
     time.sleep(2)
- ''').replace('PATH',repr(path))
+ ''').replace('PATH',repr(path)).replace('EXPECTED_OFFSET',repr(expected_offset))
