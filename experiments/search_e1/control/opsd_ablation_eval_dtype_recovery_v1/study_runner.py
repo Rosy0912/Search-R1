@@ -97,10 +97,10 @@ class Driver:
             require(index==0 and old['run_id']==train['run_id'] and old['config_sha256']==tf['sha256'],
                 'Only explicitly recovered C0 may migrate an existing exact CPU role receipt')
             from recovery import validate_old_roles
-            validate_old_roles(self.value,train,tf,old,admit)
+            live_observer_role=validate_old_roles(self.value,train,tf,old,admit)
             durable(self.output/'previous-scoped-cpu-roles.json',dict(reference=old_ref,value=old))
             # Same live memory observer is retained; only dead study-driver role is replaced.
-            role_value.update(roles=[driver_role]+[r for r in old['roles'] if r['role']=='memory_observer'])
+            role_value.update(roles=[driver_role,live_observer_role])
             atomic_json(receipt_path,role_value)
         else:atomic_json(receipt_path,role_value,exclusive=True)
         # This dedicated stage has all normal source/storage/transition/oracle/
@@ -129,7 +129,11 @@ class Driver:
                 hold_evidence(lambda:durable((scope if job else self.output/(f'{index:02d}-'+train['variant']))/
                     ('observer-uncertain-'+str(time.time_ns())+'.json'),dict(error_type=type(error).__name__,reason=str(error),no_training_started=True)))
                 time.sleep(2)
-        observer_role=self.role(identity,fileproof(Path(train['paths']['helper_root'])/'memory_observer.py'),
+        live_identity=admit.process(identity['pid'])
+        require(admit.same_process(live_identity,identity)
+            and all(live_identity.get(k)==identity.get(k) for k in ('argv','run_id','pgid')),
+            'Observer identity changed while collecting its fresh sample')
+        observer_role=self.role(live_identity,fileproof(Path(train['paths']['helper_root'])/'memory_observer.py'),
             train['helper_source_manifest'],train['gates']['publication'],tf,'memory_observer')
         role_value.update(roles=[driver_role,observer_role],updated_unix=time.time());atomic_json(receipt_path,role_value)
         validated=admit.scoped_cpu_processes(train)

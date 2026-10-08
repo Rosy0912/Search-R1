@@ -1,5 +1,5 @@
 {
-  "cpu_fixture_count": 3,
+  "cpu_fixture_count": 5,
   "cpu_skipped": 0,
   "files": {
     "README.md": {
@@ -31,12 +31,12 @@
       "sha256": "c2130b70f87b520350e28c580436a67d82147bb6b35739fbf29a108973a30168"
     },
     "recovery.py": {
-      "bytes": 6085,
-      "sha256": "7ea1c3197db1fdc5a3bc74c93c9e3ec6516c729bdbcc8a495ea16a02189cd16f"
+      "bytes": 7542,
+      "sha256": "25ef5fed9a8e5a425fe9a52630eced6468f7eccb2791033ea05f0a79d653bf08"
     },
     "study_runner.py": {
-      "bytes": 21860,
-      "sha256": "70cddb8ee0c5f88c255b9126101f8b7f72b4337cacca4006a82818097471939a"
+      "bytes": 22126,
+      "sha256": "ba6cf60ecc1b350f29e3f28f930a5a0f8e3ef430a26c5bb1cde492bc5905f00e"
     },
     "summary.py": {
       "bytes": 14030,
@@ -47,8 +47,8 @@
       "sha256": "282523c335f93cb84d1e2cbdf0b962501216ad1f827f29e441d5c4a90a731c06"
     },
     "test_recovery.py": {
-      "bytes": 2248,
-      "sha256": "7ba8cb477102639bf230a6cd9c125e26dcd42f9ab028a27bc60eccaeaffbb3b4"
+      "bytes": 4896,
+      "sha256": "9ba84619974bd4116e02ecd362876289f0d445c513e8775c344bac99a431da47"
     },
     "utils.py": {
       "bytes": 12320,

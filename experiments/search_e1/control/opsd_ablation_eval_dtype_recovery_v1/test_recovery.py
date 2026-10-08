@@ -1,5 +1,6 @@
 """Focused regression boundaries; no models, Node access or GPU operations."""
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 import recovery
 
@@ -34,6 +35,43 @@ class RecoveryTests(unittest.TestCase):
             original_configs=[dict(tf,sha256='c'*64)])
         with patch.object(recovery,'checked_json',return_value=(repair,value['dtype_repair'])):
             with self.assertRaises(recovery.Hold):recovery.repair_command(value,train,tf,0)
+
+    def test_reparented_observer_keeps_binding_but_uses_actual_role_identity(self):
+        tf=dict(path='/original/config',sha256='a'*64)
+        train=dict(study_id='s',run_id='train')
+        driver=dict(pid=20,uid=1005,starttick=200,run_id='driver2')
+        observer=dict(pid=30,uid=1005,starttick=300,ppid=10,pgid=30,argv=['python','observer'],run_id='observe')
+        actual=dict(observer,ppid=1)
+        start_ref=dict(path='/driver2-start',sha256='b'*64)
+        input_ref=dict(path='/driver2-input',sha256='c'*64)
+        r=dict(role_previous_driver_start=start_ref,role_previous_session='session2',
+            role_previous_dead_pane='$72 %72 20 1 2')
+        value=dict(recovery=r)
+        old=dict(run_id='train',config_sha256=tf['sha256'],roles=[
+            dict(role='study_driver',identity=driver,input_config=input_ref),
+            dict(role='memory_observer',identity=observer,input_config=tf,source={'sha256':'original'})])
+        records={'/driver2-start':dict(owner=driver,input_manifest=input_ref),
+            '/driver2-input':dict(study_id='s',run_id='driver2',groups=[dict(training_config=tf)])}
+        admit=SimpleNamespace(process=lambda pid:actual if pid==30 else None,
+            same_process=lambda a,b:all(a[k]==b[k] for k in ('pid','uid','starttick')))
+        with patch.object(recovery,'previous_values',return_value=(r,dict(owner={'pid':10}),{})), \
+             patch.object(recovery,'checked_json',side_effect=lambda ref:(records[ref['path']],ref)), \
+             patch.object(recovery.subprocess,'run',return_value=SimpleNamespace(stdout='$72 %72 20 1 2\n')) as pane:
+            role=recovery.validate_old_roles(value,train,tf,old,admit)
+            self.assertEqual(role['identity'],actual)
+            self.assertEqual(old['roles'][1]['identity']['ppid'],10)
+            self.assertEqual(role['input_config'],tf)
+            self.assertIn('session2',pane.call_args.args[0])
+            actual['starttick']=301
+            with self.assertRaises(recovery.Hold):recovery.validate_old_roles(value,train,tf,old,admit)
+            actual['starttick']=300;records['/driver2-input']['study_id']='foreign'
+            with self.assertRaises(recovery.Hold):recovery.validate_old_roles(value,train,tf,old,admit)
+
+    def test_additional_role_driver_requires_complete_bound_terminal(self):
+        r=dict(role_previous_driver_start=dict(path='/start',sha256='b'*64))
+        with patch.object(recovery,'previous_values',return_value=(r,{},{})):
+            with self.assertRaises(recovery.Hold):
+                recovery.validate_old_roles({}, {}, {}, {}, SimpleNamespace())
 
 
 if __name__=='__main__':unittest.main()
