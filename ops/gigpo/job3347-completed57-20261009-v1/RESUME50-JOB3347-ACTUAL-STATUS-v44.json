@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-08T22:09:04.089243+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 1, \"stdout\": \"\", \"stderr\": \"Traceback (most recent call last):\\n  File \\\"<string>\\\", line 55, in <module>\\nNameError: name 'Path' is not defined\\n\", \"utc\": \"2026-10-08T22:09:04.159407+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}
