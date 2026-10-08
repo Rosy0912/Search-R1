@@ -1,0 +1,259 @@
+{
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "runtime_source": "fe59dc164490098054879141d5421e0b418b4056",
+  "observed_unix": 1791456844.1928918,
+  "previous_delivery_unix": 1791452477.438105,
+  "window_seconds": 4366.754786729813,
+  "previous_complete_outer": 4,
+  "completed_outers": 7,
+  "new_complete_outers": 3,
+  "processed_opportunities": 140,
+  "returned_adam_writes": 140,
+  "new_writes_since_previous_counter_snapshot": 53,
+  "skipped": 0,
+  "reward": {
+    "latest": 0.21332213282585144,
+    "mean": 0.2131587564945221,
+    "min": 0.19987162947654724,
+    "max": 0.2262825071811676,
+    "change_from_previous_window_mean": -0.002862021327018738,
+    "precision": "Actual ledger scalar precision; console timing has three decimals"
+  },
+  "actual_update_records": [
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 5,
+      "metrics": {
+        "critic/rewards/mean": 0.2262825071811676,
+        "actor/pg_loss": 0.006717135835764143,
+        "actor/entropy_loss": 0.8905668476596474,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0011807083455298128,
+        "actor/grad_norm": 1.946294146543373,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "0183875ca32ac1f380ca556b61adf11cb6715545ff93d601fbe4263e03b33f55",
+      "behavior_trace_sha256": "ee74e14ebf4fe7891553eae7fbebf8269c5202d946dc067315d13d180511cb6b",
+      "attempt_id": "ae9dacbe131b4f098b20962be6df37cd",
+      "attempt_index": 5,
+      "optimizer_writes_before": 80,
+      "optimizer_writes_after": 100,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 6,
+      "metrics": {
+        "critic/rewards/mean": 0.19987162947654724,
+        "actor/pg_loss": 0.11588880195330883,
+        "actor/entropy_loss": 0.8971137595362961,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.001311969218189013,
+        "actor/grad_norm": 1.7839295171066447,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "1750a32195cbd5403a68727c365629ae446191e76aa73194514105bb1b83a6a9",
+      "behavior_trace_sha256": "76b78e916390edc5c4b59fbb6a41fc5f4fa0a68b211d09b058ae2fe0707375bf",
+      "attempt_id": "2f843d310143408ea4096f0fb9afe246",
+      "attempt_index": 6,
+      "optimizer_writes_before": 100,
+      "optimizer_writes_after": 120,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 7,
+      "metrics": {
+        "critic/rewards/mean": 0.21332213282585144,
+        "actor/pg_loss": 0.06522874427033994,
+        "actor/entropy_loss": 0.9149499925784766,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0011489156500601894,
+        "actor/grad_norm": 1.9174522925805146,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "d96ef83f39c7fdae2024c34057b63f5266b343bebbf4d6cec4694e5c97d6bfa2",
+      "behavior_trace_sha256": "a07fb34f0a10db46cc6a03f000d049a775aeb60a246dabf0b4fd7842ec4b20bc",
+      "attempt_id": "42f98e0ec8c249a68c9804157a65ba12",
+      "attempt_index": 7,
+      "optimizer_writes_before": 120,
+      "optimizer_writes_after": 140,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    }
+  ],
+  "console_timing_records": [
+    {
+      "step": 5,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.226,
+        "timing_s/gen": 272.791,
+        "timing_s/ref": 179.786,
+        "timing_s/adv": 152.151,
+        "timing_s/update_actor": 875.618,
+        "timing_s/testing": 55.496,
+        "timing_s/save_checkpoint": 29.672,
+        "timing_s/step": 1659.852
+      },
+      "line_sha256": "da82bfb14d7504e08b4f0ce2ab7db782c95243fbebfd6375ddb68530bded55d6",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 6,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.2,
+        "timing_s/gen": 260.294,
+        "timing_s/ref": 184.079,
+        "timing_s/adv": 147.642,
+        "timing_s/update_actor": 870.569,
+        "timing_s/step": 1556.669
+      },
+      "line_sha256": "e259d19bdd94aba67b74a44762994fa7b0d5571049b5c5e8f3b34a40430a0e13",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 7,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.213,
+        "timing_s/gen": 265.643,
+        "timing_s/ref": 186.82,
+        "timing_s/adv": 150.024,
+        "timing_s/update_actor": 882.009,
+        "timing_s/step": 1580.101
+      },
+      "line_sha256": "85ba5b40ea38a2fbe3691c88a145a2911dfd12011e6cea94ee3485a876709ecf",
+      "precision": "three decimal console formatting"
+    }
+  ],
+  "latest_stage64": {
+    "step": 5,
+    "correct": 13,
+    "count": 64,
+    "em": 0.203125,
+    "f1": 0.2706333740454399
+  },
+  "latest_dev512": {
+    "step": 5,
+    "correct": 90,
+    "count": 512,
+    "em": 0.17578125,
+    "f1": 0.24091333577987706,
+    "paired_same_run_baseline": false
+  },
+  "new_validation_since_previous_30min_milestone": false,
+  "gpu": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/gpu-samples-db474b6abf654ad9892b02ae67ab6f86.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 8801499,
+    "scan_from_start": true,
+    "scan_start_byte": 0,
+    "matching_sample_count": 6026,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": 6026,
+    "first_scanned_sample_unix": 1791443987.95371,
+    "latest_sample_unix": 1791456843.2229185,
+    "latest_sample_age_seconds": 1.1824188232421875,
+    "maximum_scanned_sampling_gap_seconds": 2.3256168365478516,
+    "sampled_run_peak_mib": {
+      "0": 54821,
+      "1": 54917,
+      "2": 55071,
+      "3": 54821,
+      "5": 18965,
+      "6": 30225
+    },
+    "sampled_scanned_peak_mib": {
+      "0": 54821,
+      "1": 54917,
+      "2": 55071,
+      "3": 54821,
+      "5": 18965,
+      "6": 30225
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "birth_matches": true,
+      "state": "R",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 2897,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 54821
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 2993,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 54917
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 2993,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 55071
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 2897,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 54821
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 18965
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 29201,
+        "total_mib": 81920,
+        "util_percent": 95,
+        "sampled_run_peak_mib": 30225
+      }
+    ]
+  },
+  "observation_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791456844414383000.json",
+  "observation_receipt_sha256": "2279c328c447ddd443c105aee9b0f0f5c8419b5ae605feb2d76197f829c328fa",
+  "actual_metrics_receipt_sha256": "442cce1645bc477965b05028f8c948a09d4e97a2eaaea17a8950038838eea10e",
+  "trainer_birth_verified": true,
+  "trainer_pid": 1337905,
+  "trainer_start_ticks": 552404529,
+  "exceptions": [],
+  "goal_complete": false
+}
