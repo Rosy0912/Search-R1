@@ -1,0 +1,31 @@
+{
+  "accepted": true,
+  "backup_policy": {
+    "also_retain_debug_and_evaluation": true,
+    "durable_target": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-durable-backup-20261009",
+    "no_training_wait_for_transfer": true,
+    "synchronize_completed_checkpoints": true,
+    "transfers_run_in_background": true
+  },
+  "cluster": "HKUST",
+  "human_authorization": {
+    "context": "Direct reply to explanation that new seven-group HKUST local storage scope, with background Mac backup, was pending; confirms this scope and immediate launch. Backup transfer does not block training.",
+    "explicit_exception": true,
+    "goal_created_unix": 1791472699,
+    "observed_unix": 1791480255.256659,
+    "text": "是啊，那你启动啊；又不影响的；为什么非要等他",
+    "thread_id": "01a1028b-b626-7f91-93db-0099ff1623c5"
+  },
+  "mode": "human_hkust_local_exception",
+  "node_originals_retained": true,
+  "node_release_date": "UNKNOWN",
+  "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-P/runs",
+  "run_id": "68c895afce8e40419d0adefd0e32ebf6",
+  "schema": "opsd-ablation-output-local-human-exception-v1",
+  "scope": {
+    "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-P/runs",
+    "run_id": "68c895afce8e40419d0adefd0e32ebf6",
+    "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+    "variant": "P"
+  }
+}

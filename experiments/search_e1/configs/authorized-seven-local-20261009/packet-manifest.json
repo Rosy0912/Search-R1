@@ -1,0 +1,257 @@
+{
+  "accepted_local_metadata": true,
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+  "driver_run_id": "6566ff8f6da34caf8f2484d24f431a64",
+  "files": [
+    {
+      "relative_path": "receipts/authorized-launch-20261009/new-human-storage-authorization.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/authorized-launch-20261009/new-human-storage-authorization.json",
+      "sha256": "a21e3de3b9e38c225ec64f6759330513cddf54a3821b93478d7a3c3dffc252ac",
+      "bytes": 744
+    },
+    {
+      "relative_path": "group-C0/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "4e941cf420f891d27418ad19342baa800cf1581f7e4c60f9a725f4f4ee948c56",
+      "bytes": 1465
+    },
+    {
+      "relative_path": "group-C0/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+      "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8",
+      "bytes": 9498
+    },
+    {
+      "relative_path": "group-C1/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "b662d9ac3cf668e83ce54055e6a124779d7ee89246bc9c7a8d12d17d26a4a9ea",
+      "bytes": 1465
+    },
+    {
+      "relative_path": "group-C1/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/receipts/authorized-launch-20261009/config.json",
+      "sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+      "bytes": 9498
+    },
+    {
+      "relative_path": "group-M/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "3bd0faf3a7b13ed9a8f3bb43658938f677d7c11413635923bc21aa20b85dd2da",
+      "bytes": 1462
+    },
+    {
+      "relative_path": "group-M/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+      "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12",
+      "bytes": 9487
+    },
+    {
+      "relative_path": "group-R/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "d7cb2203a0df83c9af25f3df7579e5a50f5bae6c494d40f4e9f01eb3430f2182",
+      "bytes": 1462
+    },
+    {
+      "relative_path": "group-R/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/receipts/authorized-launch-20261009/config.json",
+      "sha256": "8cc81ae28882f0fb32a924d7a4d96fc6f7f0702b210ef62847e409c404d36ab9",
+      "bytes": 9487
+    },
+    {
+      "relative_path": "group-W/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "ad2b3918ab5e252396b56261e354cef6adf50330345b3c7426f4064c6c3c9a30",
+      "bytes": 1462
+    },
+    {
+      "relative_path": "group-W/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/config.json",
+      "sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494",
+      "bytes": 9487
+    },
+    {
+      "relative_path": "group-P/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "915378b6dd816a9a7e9804eab416a5391b6e3d2878640e0d63cea8c49bb0d67d",
+      "bytes": 1462
+    },
+    {
+      "relative_path": "group-P/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/config.json",
+      "sha256": "dcc0a03750dec59651550609889a8b82ba0d967a728da01626216af6d7714412",
+      "bytes": 9494
+    },
+    {
+      "relative_path": "group-J/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "fa0dcb4256e38f460116f747f0d3f56f846e40a1a657d962d695941cdd8c12f6",
+      "bytes": 1462
+    },
+    {
+      "relative_path": "group-J/receipts/authorized-launch-20261009/config.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/receipts/authorized-launch-20261009/config.json",
+      "sha256": "da6f7396970b77d3bbf2572f437ed2e05f0c3469bb2bcbe5a63dbbe12306b01f",
+      "bytes": 9494
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-C0-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-C0-publication.json",
+      "sha256": "99852f8df9ea9f1923cb216bb5cce5253a8450728e5e7902283efd9633a11cd1",
+      "bytes": 3826
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-C1-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-C1-publication.json",
+      "sha256": "f0aecd8ab6b277a9c7beb233dd3b295019e5385b329e2e3d1de3bb746ef27573",
+      "bytes": 3826
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-M-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-M-publication.json",
+      "sha256": "a7380cd23eb3d6c92c0e2232cc021d81f83906ab32a5dc64849f3e340dd8e14b",
+      "bytes": 3825
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-R-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-R-publication.json",
+      "sha256": "5e154eeedb7f22c4d6c7562bd4e2d97230687085abd693ee33b03be67007cd39",
+      "bytes": 3825
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-W-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-W-publication.json",
+      "sha256": "f297c8d8ac569ec12e54ceac4b59dc02f6cd133155efacb0c1a61a7391299385",
+      "bytes": 3823
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-P-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-P-publication.json",
+      "sha256": "7c1beba40759a756c4a4c331f2a22fc3be0c59fbe7de7dbd1f96f0bd7e7de6ba",
+      "bytes": 3825
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/group-J-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/group-J-publication.json",
+      "sha256": "85f877f3b062d8af3a844a6c49aa5487b876e07efc5abf12ba12f0f0b665efbb",
+      "bytes": 3825
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/common-zero-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/common-zero-publication.json",
+      "sha256": "77a45557cb0fe53dd77abc7cefa35122379ebbd997403f09f9939cb657ada9a9",
+      "bytes": 3832
+    },
+    {
+      "relative_path": "receipts/evaluation-source-publication-871dc46/study-driver-publication.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/evaluation-source-publication-871dc46/study-driver-publication.json",
+      "sha256": "b5ce94feae54b9baa3f2fb2d0c9a7f26c97a5697adb7ea0b413c9d69e5329852",
+      "bytes": 3834
+    },
+    {
+      "relative_path": "eval-group-C0/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C0/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "78244093d467d08c8f212b2cc35737845c8c92ee7f6f8fd8c0ed8b0bec85d2df",
+      "bytes": 1475
+    },
+    {
+      "relative_path": "eval-group-C0/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C0/receipts/authorized-launch-20261009/template.json",
+      "sha256": "56d49d51e6b954028205ce60e76e1efb1dbac9c0d519c2e85807f725d68d91f5",
+      "bytes": 5618
+    },
+    {
+      "relative_path": "eval-group-C1/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C1/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "e6b81d256d6d5eefdb9c7f111704e0b85592c4c0ea358cf1a00f8c3e03030832",
+      "bytes": 1475
+    },
+    {
+      "relative_path": "eval-group-C1/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-C1/receipts/authorized-launch-20261009/template.json",
+      "sha256": "f129b84612c7e9cc343f53f23c0bb895b0b4ce322df02f64d37123c1596fe513",
+      "bytes": 5618
+    },
+    {
+      "relative_path": "eval-group-M/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "0f172c84b94463d7ab6f18ffa1fc2fe6d799b306d05bc0a913f07b3374d9605c",
+      "bytes": 1472
+    },
+    {
+      "relative_path": "eval-group-M/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M/receipts/authorized-launch-20261009/template.json",
+      "sha256": "aa09dfc552476d18aa2de95f225eb61ca641c81cee3338198797f7ce8b3dd4a5",
+      "bytes": 5608
+    },
+    {
+      "relative_path": "eval-group-R/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-R/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "ea9351d9b924d93d16d6dcad232ef12c4e66b9c07b6dea48de133b4595072cb9",
+      "bytes": 1472
+    },
+    {
+      "relative_path": "eval-group-R/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-R/receipts/authorized-launch-20261009/template.json",
+      "sha256": "abca7bf3c3d78f7637a67d56a51fee439cbb57f94ddb565b77866e7edb50c243",
+      "bytes": 5608
+    },
+    {
+      "relative_path": "eval-group-W/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-W/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "975b2dea7631291c123948d2484268fab8ff2d60654d3ee9535b15773f2d3f2b",
+      "bytes": 1472
+    },
+    {
+      "relative_path": "eval-group-W/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-W/receipts/authorized-launch-20261009/template.json",
+      "sha256": "e3be03abfb6d3c71d1fe222cae3fcf4532ad72bb43ccf379cecb0b54b2310f7b",
+      "bytes": 5608
+    },
+    {
+      "relative_path": "eval-group-P/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-P/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "aab93cb9ebeeea2941209a3133e419a4cd436a9661476e9f28938f138dfaf22c",
+      "bytes": 1472
+    },
+    {
+      "relative_path": "eval-group-P/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-P/receipts/authorized-launch-20261009/template.json",
+      "sha256": "42ab934b5b73d3153d844ed4eae30099b02c82af66f5756cfdb977bba3f5c03b",
+      "bytes": 5687
+    },
+    {
+      "relative_path": "eval-group-J/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-J/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "f6968c64e140091ff84c76dac8d1ebbbe0c05cf7eb3548b566c6918d90ae32c5",
+      "bytes": 1472
+    },
+    {
+      "relative_path": "eval-group-J/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-J/receipts/authorized-launch-20261009/template.json",
+      "sha256": "8274c5839d20d726335c8524e8ecd361ce394f7b400dfe400e30eb6b3ce55ebd",
+      "bytes": 5687
+    },
+    {
+      "relative_path": "eval-common-zero/receipts/authorized-launch-20261009/storage.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-common-zero/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "1833f92e34a22ce90575d8bbb50c830a6ed6fa1f9737a9c6f880f8fda0c84b25",
+      "bytes": 1481
+    },
+    {
+      "relative_path": "eval-common-zero/receipts/authorized-launch-20261009/template.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-common-zero/receipts/authorized-launch-20261009/template.json",
+      "sha256": "9695ef9290d1134f8d9d602ffd3da0b31d653ead218946111a4163f17a9f5a25",
+      "bytes": 5711
+    },
+    {
+      "relative_path": "receipts/authorized-launch-20261009/study-manifest.json",
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/authorized-launch-20261009/study-manifest.json",
+      "sha256": "ac02041a1d648f5aa2ca25abcf00401710a1e280a0a0b2576628c8b48580a3f8",
+      "bytes": 5673
+    }
+  ],
+  "new_storage_authorized": true,
+  "source_commit": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "new_GPU_started": false,
+  "backup_transfer_not_a_launch_dependency": true
+}

@@ -1,0 +1,239 @@
+{
+  "authorization": {
+    "eight_gpu_execution": {
+      "cluster": "HKUST",
+      "goal_created_unix": 1791472699,
+      "node": "hkust1",
+      "uid": 1005
+    },
+    "reverse_seven_group_ten_outer": {
+      "human_goal_created_unix": 1791472699,
+      "scope": "C0/C1/M/R/W/P/J fresh reverse ten online outers then full512",
+      "source": "latest explicit execution goal"
+    }
+  },
+  "common_cohort_manifest": {
+    "bytes": 1867377,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/common-cohorts.json",
+    "sha256": "9791c62cee985d1d31633d323e63a7b36c265bcd08742d4705b6997fcbaa28a3"
+  },
+  "common_initial_adapter_manifest": {
+    "bytes": 1296,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/common-initial-adapter.json",
+    "sha256": "641e98442cdd995fe6aa571a95956b4281de81ad4db510e7795b76087a21b654"
+  },
+  "common_initial_adapter_tensor_sha256": "836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f",
+  "diagnostics": {
+    "diagnostic_precision_common_bf16": true,
+    "teacher_autoregressive": true,
+    "teacher_max_cases_per_outer": 8,
+    "teacher_precision": "bf16",
+    "teacher_seed": 42,
+    "teacher_selection_version": "opsd-ablation-privileged-teacher-autoregressive-v1",
+    "teacher_strata": [
+      "self_pair",
+      "CW",
+      "CC"
+    ],
+    "teacher_temperature": 0.0,
+    "training_or_validation_denominator_contribution": 0
+  },
+  "gates": {
+    "memory_binding_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/memory-binding.json",
+    "publication": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/training-publication-871dc46.json",
+      "sha256": "68859ddd019b07ca0280b4c74af153031ba30e04c38525979962c6104b701e10"
+    },
+    "resource_transition": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/resource-transition-readonly-20261009-0051.json",
+      "sha256": "031e0b085dd3c16b43e0dc8034344045a0bf338a4823aa72fbd330a953764e7d"
+    },
+    "retriever_admission": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/oracle18004-admission-20261009-0051.json",
+      "sha256": "2cd857abb6ad69e647259940e7d60a67de3dde64d5c7f48cedb0c09520b704f7"
+    },
+    "scoped_cpu_processes_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/scoped-cpu-processes.json",
+    "storage": {
+      "bytes": 1462,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "ad2b3918ab5e252396b56261e354cef6adf50330345b3c7426f4064c6c3c9a30"
+    }
+  },
+  "helper_source_manifest": {
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1/source-manifest.json",
+    "sha256": "8b22e616d470d79022cc6a0b07dcb0774df21b8e35ebd7dbcaa9b19150236a41"
+  },
+  "logging": {
+    "all_valid_token_losses": true,
+    "full_vocab_study_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/runs/full-vocabulary",
+    "topk": 32,
+    "topk_max_tokens_per_outer": 8192
+  },
+  "mining": {
+    "cohort_version": "search-e1-opsd-ten-train-cohorts-seed42-v1",
+    "random_version": "search-e1-opsd-uniform-five-sha256-u64-rejection-v1",
+    "version": "search-e1-opsd-ablation-miner-v1",
+    "weights_version": "search-e1-opsd-correctness-weights-v1"
+  },
+  "owner": {
+    "gpu_uuids": [
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+      "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+    ],
+    "physical_gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "uid": 1005
+  },
+  "paths": {
+    "base": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W",
+    "helper_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1",
+    "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/runs",
+    "python": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "receipts": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts",
+    "retriever_url": "http://10.120.17.101:18004/retrieve",
+    "runtime": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/runtime/frozen-305",
+    "study_base": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+    "train": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+    "validation": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl"
+  },
+  "precision": {
+    "mode": "bf16"
+  },
+  "preparation_status": {
+    "fresh_startup_resources_still_required": true,
+    "holds": [],
+    "no_cuda_started": true,
+    "original_candidate": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/config-candidate.json",
+      "sha256": "245021a535e85c60a9fbc27037d8157468d455b3bc05ec974e42a875aa197236"
+    },
+    "ready": true,
+    "static_publication_resource_retriever_receipts_prepared": true,
+    "storage_scope": "Latest direct human reply confirms new seven-group HKUST local+Mac exception"
+  },
+  "resources": {
+    "minimum_disk_bytes": 107374182400,
+    "shared_gpu_lease_paths": [
+      "/data/shaoshitong/search-e1-opsd-debug-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-native512-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-teacher-counterfactual-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/online-experiment.lock"
+    ],
+    "startup_minimum_free_mib": 20480,
+    "study_lease_path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/ablation-gpu-experiment.lock",
+    "training_minimum_free_mib": 1024
+  },
+  "retention": {
+    "authorized": false,
+    "merged_cache_cleanup_authorized": false,
+    "mode": "keep_all"
+  },
+  "run_id": "dc8a4e85822547548c0f79be4c87e13e",
+  "runtime_manifest": {
+    "bytes": 37563,
+    "ctime_ns": 1791361759634672207,
+    "device": 2065,
+    "inode": 466324416,
+    "mtime_ns": 1791361759634672207,
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-runtime.sha256.json",
+    "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+  },
+  "sampling": {
+    "attention_backend": "XFORMERS",
+    "backend": "vllm",
+    "batch_questions": 64,
+    "cpu_blocks_expected": 7281,
+    "dtype": "bfloat16",
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.85,
+    "max_model_len": 8192,
+    "max_search_calls": 4,
+    "max_tokens": 500,
+    "model_merge": "original_PEFT_CPU_BF16_latest_adapter_no_best_selection",
+    "num_gpu_blocks_override": 22671,
+    "observation_tokens": 480,
+    "question_order": "shared_frozen_original_seed42_first5120_train_permutation_no_replacement",
+    "questions": 512,
+    "seed": 42,
+    "siblings": 5,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "topk": 3,
+    "turns": 5,
+    "workers": 8
+  },
+  "schema": "opsd-ablation-config-v1",
+  "scientific": {
+    "chunk": 32,
+    "component_clip": 10,
+    "epochs_per_outer": 1,
+    "global_batch": 32,
+    "grad_norm_clip": 1.0,
+    "learning_rate": 1e-06,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "lora_rank": 16,
+    "loss_reduction": "trajectory_mean",
+    "max_context": 8192,
+    "micro_batch": 1,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "kind": "AdamW",
+      "weight_decay": 0.01
+    },
+    "outer_iterations": 10,
+    "scheduler": "none",
+    "seed": 42,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "teacher_frozen": true,
+    "warmup_updates": 0
+  },
+  "source_commit": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "source_model_manifest": {
+    "bytes": 4797,
+    "ctime_ns": 1791450237661627219,
+    "device": 2065,
+    "inode": 466389693,
+    "mtime_ns": 1791450237661627219,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/source100-model-files.json",
+    "sha256": "2ef6070a328357b0f9d3a026010aaed0aa3f8840a241bc1021ed9a183e8d75f7"
+  },
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+  "train_identity": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+    "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f"
+  },
+  "validation_identity": {
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+    "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  },
+  "variant": "W"
+}

@@ -1,0 +1,98 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "checked_unix": 1791480074.912031,
+  "files": [
+    {
+      "bytes": 12248,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/README.md",
+      "sha256": "61d6f4c2086315e4e3e953506e519721b112b5385a81a35e6454917584ff03c9"
+    },
+    {
+      "bytes": 9988,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/completion.py",
+      "sha256": "eb64f16b3b68124b41b1252db3a308ee45f724322ba9b21f0a1be647fe340c15"
+    },
+    {
+      "bytes": 12571,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/controller.py",
+      "sha256": "880df450fb07ba1dcebf8f4a04d903338801a91843d0fac63dc7c02b68af0a4d"
+    },
+    {
+      "bytes": 6288,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/cpu_merge.py",
+      "sha256": "ec632e3ca477a4714ccbe765c1ec95b7c610f6888205b50b58ef59d2e523768f"
+    },
+    {
+      "bytes": 11796,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/gates.py",
+      "sha256": "1e2bf13cb8f558269f076a977914b95a840ad3187f4b519fab7bae2379ba44ce"
+    },
+    {
+      "bytes": 5071,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/hooks.py",
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    {
+      "bytes": 9973,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/prepare.py",
+      "sha256": "c2130b70f87b520350e28c580436a67d82147bb6b35739fbf29a108973a30168"
+    },
+    {
+      "bytes": 1802,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/source-manifest.json",
+      "sha256": "dfa805975bdc3516f42550370f0b77757b04c19d9449a8fbcfdef4271a3dedaf"
+    },
+    {
+      "bytes": 21141,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/study_runner.py",
+      "sha256": "a9a25228d5836b7559bacf7173b25157707685ebf9ee667b92c37c8f18df5b5d"
+    },
+    {
+      "bytes": 14030,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/summary.py",
+      "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+    },
+    {
+      "bytes": 29219,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/test_eval.py",
+      "sha256": "282523c335f93cb84d1e2cbdf0b962501216ad1f827f29e441d5c4a90a731c06"
+    },
+    {
+      "bytes": 12320,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/utils.py",
+      "sha256": "cc93226760ecf9b3c27bff0bf3f2fd7a2f5e01aedb7e0ff58d0a3ca464816d3b"
+    },
+    {
+      "bytes": 13680,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_v1/worker.py",
+      "sha256": "33ab79dc7b9b3d270fe0950ce4c00c8f4955340e2376f26879101588d011587b"
+    }
+  ],
+  "publication_evidence": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/publication-871dc46-verified.json",
+    "sha256": "110df349c773a7a7ecfdbea4b0b9026eeeb97072a1b8e6efcc14db7c400e25c8"
+  },
+  "remote_readback_sha": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "role": "group",
+  "run_id": "fb742a8502fc4d649c621d3011681d92",
+  "schema": "opsd-ablation-independent-evaluation-source-publication-v1",
+  "scope": "Published source/readback for this planned independent run only. No storage acceptance, no READY manifest, no GPU launch.",
+  "source_commit": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "source_manifest_sha256": "dfa805975bdc3516f42550370f0b77757b04c19d9449a8fbcfdef4271a3dedaf",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+  "variant": "C1"
+}
