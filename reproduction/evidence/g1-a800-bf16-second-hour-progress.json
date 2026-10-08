@@ -1,0 +1,453 @@
+{
+  "schema": "g1_a800_bf16_second_hour_progress_scalar_evidence_v1",
+  "recorded_unix": 1791452315.496295,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+  "deployment_id": "a20f0475ec824c69ba1554f39e9ff512",
+  "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "anchor": {
+    "observed_unix": 1791448341.0825331,
+    "last_complete_outer": 2,
+    "cumulative_opportunities": 40,
+    "cumulative_returned_adam_writes": 40,
+    "previous_window_mean_reward": 0.20128631591796875,
+    "previous_window_complete_count": 2,
+    "modified_by_this_task": false
+  },
+  "authoritative_progress_capture": {
+    "observed_unix": 1791451963.8175557,
+    "elapsed_from_anchor_seconds": 3622.735022544861,
+    "official_completed_outers": 4,
+    "target_outers": 200,
+    "new_complete_outer_steps": [
+      3,
+      4
+    ],
+    "new_complete_outer_count": 2,
+    "captured_cumulative_opportunities": 87,
+    "captured_cumulative_returned_adam_writes": 87,
+    "new_opportunity_increment": 47,
+    "new_returned_adam_write_increment": 47,
+    "new_skip_increment": 0,
+    "completed_outer_contribution": {
+      "new_opportunities": 40,
+      "new_returned_adam_writes": 40
+    },
+    "inflight_outer": {
+      "logical_update": 5,
+      "processed_opportunities": 7,
+      "returned_adam_writes": 7,
+      "planned_opportunities": 20,
+      "counts_as_complete_outer": false
+    },
+    "rank_cumulative_counts": [
+      {
+        "rank": 0,
+        "processed_opportunities_per_rank": 87,
+        "successful_writes_per_rank": 87,
+        "cumulative_optimizer_writes": 87,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 1,
+        "processed_opportunities_per_rank": 87,
+        "successful_writes_per_rank": 87,
+        "cumulative_optimizer_writes": 87,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 2,
+        "processed_opportunities_per_rank": 87,
+        "successful_writes_per_rank": 87,
+        "cumulative_optimizer_writes": 87,
+        "identity_rejected_rows": 0
+      },
+      {
+        "rank": 3,
+        "processed_opportunities_per_rank": 87,
+        "successful_writes_per_rank": 87,
+        "cumulative_optimizer_writes": 87,
+        "identity_rejected_rows": 0
+      }
+    ],
+    "scope": "Counters captured at the authoritative observer time. Four replicated rank copies counted once; partial fifth-outer writes are separate from complete outer counts."
+  },
+  "window_rewards": {
+    "complete_outer_rewards": [
+      0.21366667747497559,
+      0.21837487816810608
+    ],
+    "mean": 0.21602077782154083,
+    "min": 0.21366667747497559,
+    "max": 0.21837487816810608,
+    "previous_window_mean": 0.20128631591796875,
+    "previous_window_mean_change": 0.014734461903572083,
+    "latest_complete_reward": 0.21837487816810608,
+    "previous_report_latest_complete_reward": 0.1992272138595581,
+    "latest_complete_reward_change": 0.019147664308547974,
+    "scope": "Only actual completed steps3 and4 above the anchor; calculations use original formal JSON reward values, not rounded console values or historical runs."
+  },
+  "new_complete_outer_records": {
+    "observed_unix": 1791452021.9419134,
+    "records": [
+      {
+        "step": 3,
+        "metrics": {
+          "critic/rewards/mean": 0.21366667747497559,
+          "actor/pg_loss": 0.045476412856811366,
+          "actor/entropy_loss": 0.8939439924433827,
+          "actor/kl_loss": 0.0,
+          "actor/ppo_kl": 0.0013892248472387792,
+          "actor/grad_norm": 2.0924940930612177,
+          "actor/optimizer_steps_this_update": 20.0,
+          "actor/update_opportunities_this_attempt": 20.0,
+          "actor/skipped_update_opportunities": 0.0
+        },
+        "attempt_id": "0bbdfbc40d1c404091b7c417e1208dab",
+        "attempt_index": 3,
+        "opportunities_processed": 20,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 40,
+        "optimizer_writes_after": 60
+      },
+      {
+        "step": 4,
+        "metrics": {
+          "critic/rewards/mean": 0.21837487816810608,
+          "actor/pg_loss": 0.039751923622082797,
+          "actor/entropy_loss": 0.8659620660357177,
+          "actor/kl_loss": 0.0,
+          "actor/ppo_kl": 0.001063534567691704,
+          "actor/grad_norm": 1.9496468493123615,
+          "actor/optimizer_steps_this_update": 20.0,
+          "actor/update_opportunities_this_attempt": 20.0,
+          "actor/skipped_update_opportunities": 0.0
+        },
+        "attempt_id": "f55db30e68bb4e21840de349e4211cb3",
+        "attempt_index": 4,
+        "opportunities_processed": 20,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 60,
+        "optimizer_writes_after": 80
+      }
+    ],
+    "metric_finite_by_step": {
+      "3": true,
+      "4": true
+    },
+    "update_ledger_sha256": "571c2834a47658e4d5b3f6c38063368c8181905b3956929a964627d43e9a83a5",
+    "update_ledger_bytes": 3630
+  },
+  "existing_actual_timing_and_lr": {
+    "console_records": [
+      {
+        "step": 3,
+        "scalars": {
+          "actor/lr": 0.0,
+          "critic/rewards/mean": 0.214,
+          "timing_s/gen": 276.489,
+          "timing_s/ref": 182.743,
+          "timing_s/adv": 149.915,
+          "timing_s/update_actor": 892.442,
+          "timing_s/step": 1594.822
+        },
+        "line_sha256": "33491202487644e836586339943f20359d4ac6737c29acfe0e6a90e34f3c442e",
+        "precision": "three decimal console formatting"
+      },
+      {
+        "step": 4,
+        "scalars": {
+          "actor/lr": 0.0,
+          "critic/rewards/mean": 0.218,
+          "timing_s/gen": 251.544,
+          "timing_s/ref": 192.623,
+          "timing_s/adv": 150.077,
+          "timing_s/update_actor": 904.695,
+          "timing_s/step": 1596.073
+        },
+        "line_sha256": "faa9bfd2add22df66b623af07c461fbba07eb36418d5613d9742aa9dd3e4d3d6",
+        "precision": "three decimal console formatting"
+      }
+    ],
+    "actual_consumed_lr_from_worker_receipts": [
+      {
+        "step": 3,
+        "consumed_learning_rates": [
+          3.508771929824561e-08
+        ],
+        "returned_adam_writes": 20,
+        "all_rank_norm_pairs_identical": true,
+        "global_gradient_norm_before_range": {
+          "max": 2.6842409565067187,
+          "min": 1.6639450305270338
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999996273078436,
+          "min": 0.9999993986554025
+        },
+        "source_receipt_sha256": "272c4ac8cd76907df0e892d9a6d129838cf79b415a342063c020bcf2c014d5bf"
+      },
+      {
+        "step": 4,
+        "attempt_id": "f55db30e68bb4e21840de349e4211cb3",
+        "attempt_index": 4,
+        "consumed_learning_rates": [
+          5.2631578947368416e-08
+        ],
+        "returned_adam_writes": 20,
+        "all_rank_norm_pairs_identical": true,
+        "global_gradient_norm_before_range": {
+          "max": 2.314154524779674,
+          "min": 1.5957541311504404
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.9999995674932322,
+          "min": 0.999999373347677
+        },
+        "source_receipt_sha256": "9011b202826b664f1e8694ffcd8ef3a563c9cd25fe67aa681d102c501007cea4"
+      }
+    ],
+    "training_log_sha256": "b2e8168cb7a74f52141b96448d5c911c61ebb2175375166d0c7fb0af2784bfb2",
+    "training_log_bytes": 251952,
+    "epoch_step_markers": [
+      [
+        "0",
+        "2"
+      ],
+      [
+        "0",
+        "3"
+      ],
+      [
+        "0",
+        "4"
+      ],
+      [
+        "0",
+        "5"
+      ]
+    ],
+    "step5_marker_is_complete_outer": false,
+    "scope": "Console timers have three decimal formatting and exclude startup. adv combines reward/probe/scoring/KL/advantages, not pure probe time. Console LR0.000 is rounded; actual consumed LR is taken from existing worker scalar receipts."
+  },
+  "same_process_live_readback": {
+    "observed_unix": 1791451963.8175557,
+    "pipeline": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "pipeline_alive": true,
+      "pipeline_birth_matches": true,
+      "pipeline_stage": "GRPO_1_TO_200"
+    },
+    "trainer": {
+      "ledger_state": "STARTED",
+      "leader": {
+        "alive": true,
+        "birth_matches": true,
+        "pid": 1337905,
+        "start_ticks": 552404529,
+        "state": "S"
+      },
+      "live_registered_count": 159,
+      "exit_code": null
+    }
+  },
+  "gpu_actual_second_window": {
+    "window_start_unix": 1791448341.0825331,
+    "window_stop_read_unix": 1791452053.608024,
+    "window_duration_seconds": 3712.525490760803,
+    "window_first_sample_unix": 1791448341.8331845,
+    "window_last_sample_unix": 1791452052.2493372,
+    "window_sample_count": 1739,
+    "window_max_gap_between_sample_completion_seconds": 2.267538070678711,
+    "window_start_to_first_sample_seconds": 0.7506513595581055,
+    "window_last_sample_to_stop_seconds": 1.3586866855621338,
+    "window_receipt_selection_sha256": "c319cbd7896efb3b665003ff19e4835fb5b0f978e52886a034ec527313b97f6d",
+    "complete_prefix_bytes": 5520609,
+    "complete_prefix_sha256": "48ea804d8f55ec99144d098a184bea02b3ae769edd49810c9730899489f6d321",
+    "partial_final_line": false,
+    "sampler_actual_pid_birth_readback": null,
+    "sampler_identity_claim_scope": "Existing receipt claim only; no actual PID-birth or liveness readback performed",
+    "window_peak": {
+      "0": {
+        "peak_fraction": 0.66920166015625,
+        "peak_memory_sample_unix": 1791449831.6697106,
+        "peak_used_mib": 54821,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791448437.3385203,
+        "total_mib_at_peak": 81920
+      },
+      "1": {
+        "peak_fraction": 0.67037353515625,
+        "peak_memory_sample_unix": 1791449831.6697106,
+        "peak_used_mib": 54917,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791448439.4885988,
+        "total_mib_at_peak": 81920
+      },
+      "2": {
+        "peak_fraction": 0.67037353515625,
+        "peak_memory_sample_unix": 1791449833.7973225,
+        "peak_used_mib": 54917,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791448437.3385203,
+        "total_mib_at_peak": 81920
+      },
+      "3": {
+        "peak_fraction": 0.66920166015625,
+        "peak_memory_sample_unix": 1791449833.7973225,
+        "peak_used_mib": 54821,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791448439.4885988,
+        "total_mib_at_peak": 81920
+      },
+      "5": {
+        "peak_fraction": 0.23084716796875,
+        "peak_memory_sample_unix": 1791451032.1261,
+        "peak_used_mib": 18911,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791449430.812193,
+        "total_mib_at_peak": 81920
+      },
+      "6": {
+        "peak_fraction": 0.36895751953125,
+        "peak_memory_sample_unix": 1791451032.1261,
+        "peak_used_mib": 30225,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791448375.810575,
+        "total_mib_at_peak": 81920
+      }
+    },
+    "current_gpus_at_last_actual_sample": {
+      "0": {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 48181,
+        "used_fraction": 0.58814697265625,
+        "util_percent": 100
+      },
+      "1": {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 48277,
+        "used_fraction": 0.58931884765625,
+        "util_percent": 100
+      },
+      "2": {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 48723,
+        "used_fraction": 0.59476318359375,
+        "util_percent": 100
+      },
+      "3": {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 48181,
+        "used_fraction": 0.58814697265625,
+        "util_percent": 100
+      },
+      "5": {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "used_fraction": 0.21834716796875,
+        "util_percent": 0
+      },
+      "6": {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 29201,
+        "used_fraction": 0.35645751953125,
+        "util_percent": 0
+      }
+    },
+    "sampler_live_birth_independently_read": false,
+    "scope": "Pipeline sampling window includes services/setup. Existing scalar samples only; peaks are observed samples, not continuous coverage. No sampler PID/birth readback was performed."
+  },
+  "gpu_separate_cumulative_scope": {
+    "first_sample_unix": 1791443987.95371,
+    "full_run_sample_count": 3781,
+    "cumulative_peak_used_mib": {
+      "0": 54821,
+      "1": 54917,
+      "2": 54917,
+      "3": 54821,
+      "5": 18911,
+      "6": 30225
+    },
+    "scope": "All sampled history of this run; separate from second-hour window even though this capture has matching peak MiB values. Fixed first-hour max54773MiB stays historical."
+  },
+  "capture_time_separation": {
+    "progress_observed_unix": 1791451963.8175557,
+    "timing_receipt_read_unix": 1791452021.9419134,
+    "gpu_window_read_stop_unix": 1791452053.608024,
+    "gpu_last_actual_sample_unix": 1791452052.2493372,
+    "gpu_read_stop_minus_progress_seconds": 89.79046821594238,
+    "scope": "GPU window ends later than progress capture. Its current GPU readings are not attributed to the earlier87-write snapshot; delivery time does not extend sample coverage."
+  },
+  "acceptance_and_evaluation_scope": {
+    "precision_profile": "bf16_policy_fp32_master",
+    "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "first_five_acceptance_complete": false,
+    "checkpoint5_proven": false,
+    "final_acceptance_complete": false,
+    "fresh_200_complete": false,
+    "new_stage64_em": null,
+    "new_stage64_f1": null,
+    "new_dev512_em": null,
+    "new_dev512_f1": null,
+    "historical_17_77_percent_is_new_run_evaluation": false,
+    "same_run_before_after_paired_evaluation_claimed": false,
+    "healthy_checkpoint_or_reproduction_success_claimed": false
+  },
+  "runtime_source_publication": {
+    "checked_unix": 1791443808.677463,
+    "branch": "search-g1",
+    "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "remote_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true
+  },
+  "publication_and_delivery_scope": {
+    "evidence_commit_changes_runtime_source": false,
+    "anchor_modified": false,
+    "app_modified": false,
+    "runtime_source_or_recipe_modified": false,
+    "scope": "Root delivers the actually published report before separately advancing anchor. This agent prepares and publishes only this evidence; publication receipt is immutable and delivery is separate."
+  },
+  "provenance": {
+    "authoritative_progress_observer": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791451963999595000.json",
+      "bytes": 16671,
+      "sha256": "80c3a3599cf452f4b5ff8b748c67edacd7fb55e879fec0ebf2a2e6bc2a2d092e"
+    },
+    "actual_metric_and_timing_receipt": {
+      "path": "preparation/a800-db474b6-actual-updates-and-timing-1791452021940071000.json",
+      "bytes": 6858,
+      "sha256": "c90f9e703504a096539d33b6bb8b681039a28e0c5a5c74b1e1687cde479a44d9"
+    },
+    "actual_gpu_window_receipt": {
+      "path": "preparation/a800-db474b6-second-hour-gpu-window.json",
+      "bytes": 6745,
+      "sha256": "49d0574b8728e3e6f8285e68eaeb7c1112a36d5d747aa53f2d4a2000b234a4d4"
+    },
+    "third_outer_worker_scalars": {
+      "path": "preparation/a800-db474b6abf654ad9892b02ae67ab6f86-third-outer20-scalars-1791449531.json",
+      "bytes": 47013,
+      "sha256": "272c4ac8cd76907df0e892d9a6d129838cf79b415a342063c020bcf2c014d5bf"
+    },
+    "fourth_outer_worker_scalars": {
+      "path": "preparation/a800-db474b6abf654ad9892b02ae67ab6f86-fourth-outer20-scalars-1791451013.json",
+      "bytes": 43125,
+      "sha256": "9011b202826b664f1e8694ffcd8ef3a563c9cd25fe67aa681d102c501007cea4"
+    },
+    "runtime_source_publication": {
+      "path": "preparation/a800-bf16-rank-recorder-fix-publication.json",
+      "bytes": 1949,
+      "sha256": "a027046a0340058ae73579ac3edcc323e54e4051ad674b47ad5ae9f6b451edcd"
+    }
+  },
+  "sanitization": "Selected source/scalar/hash identities only; no rawQA/tokens/full traces/logs/models/weights/credentials or full source map. No new SSH/model/tests/review."
+}
