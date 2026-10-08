@@ -1,0 +1,29 @@
+{
+  "schema": "owned-m1-tmux-exit-status-preservation-v1",
+  "created_unix": 1791435637.206691,
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "controller": {
+    "pid": 33834,
+    "uid": 1005,
+    "starttick": 922457688
+  },
+  "parent_shell": {
+    "pid": 33832,
+    "uid": 1005,
+    "starttick": 922457687,
+    "argv": [
+      "bash",
+      "-c",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_debug/launch_gpu_debug.py >> /data/shaoshitong/search-e1-opsd-debug-20261008/logs/debug-controller.log 2>&1"
+    ]
+  },
+  "tmux_session": "e1-opsd-debug-20261008",
+  "window_id": "@60",
+  "pane_id": "%60",
+  "pane_start_command": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python /data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_debug/launch_gpu_debug.py >> /data/shaoshitong/search-e1-opsd-debug-20261008/logs/debug-controller.log 2>&1",
+  "remain_on_exit": "remain-on-exit on",
+  "controller_source_sha256": "49374005e46e6ff99cab4fbf83284f9635a6e31579c7f64c09da999e90fe0db4",
+  "purpose": "Preserve actual exit status of last-command Python controller through owned tmux bash pane; later pane_dead_status is required, current running is not exit0.",
+  "no_process_signal": true,
+  "no_scientific_or_running_source_change": true
+}
