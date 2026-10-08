@@ -1,0 +1,21 @@
+{
+  "status": "LOCAL_V14_NATIVE6_TO7_ENTRY_PREPARATION_NOT_DEPLOYED_NOT_SUBMITTED",
+  "source_commit": "8693d0b57406dc87fb96f3aab3538e566c63f621",
+  "source_pushed_success_reported_by_root": true,
+  "local_cached_remote_tracking_ref": "8693d0b57406dc87fb96f3aab3538e566c63f621 refs/remotes/origin/codex/tree-speed-repair-20261008",
+  "current_running_job_unchanged": 3339,
+  "current_running_source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "runtime_version_candidate": "V14",
+  "intended_parent_job_id": 3339,
+  "intended_parent_completed_outer": 6,
+  "intended_parent_adam_per_rank": 120,
+  "intended_parent_scheduler_step": 6,
+  "intended_parent_rolling_manifest_sha256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3",
+  "intended_next_outer": 7,
+  "source_deployed": false,
+  "new_job_submitted": false,
+  "new_source_training_running": false,
+  "normal_outer_target_seconds": 420,
+  "normal_outer_target_verified": false,
+  "scope": "Root reports actual pushed fastprefix repair and local next entry preparation; current3339 continues V13. No remote or runtime action by status agent."
+}

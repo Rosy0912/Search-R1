@@ -1,0 +1,67 @@
+{
+  "status": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "execution_mode": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "packet_revision": 13,
+  "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "current_chain_resume": {
+    "protocol": "current_fresh200_chain_fault_repair_continuation_v1",
+    "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+    "parent_job_id": "3335",
+    "parent_run_id": "tree-current200-continue-3335",
+    "parent_code_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+    "parent_config_sha256": "5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/manifest.json",
+      "sha256": "56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260"
+    },
+    "parent_completed_outer": 5,
+    "parent_training_attempts": 5,
+    "parent_optimizer_calls_per_rank": {
+      "0": 100,
+      "1": 100,
+      "2": 100,
+      "3": 100,
+      "4": 100,
+      "5": 100,
+      "6": 100,
+      "7": 100
+    },
+    "parent_scheduler_step": 5,
+    "parent_sampler_cursor": 2560,
+    "parent_sampler_epoch": 0,
+    "next_outer_update": 6,
+    "completed_outer_goal": 200,
+    "planned_new_completed_outer": 195,
+    "environment": {
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/manifest.json",
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256": "56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260",
+      "TREE_CURRENT_CHAIN_RESUME_AUTHORITY": "current_fresh200_chain_fault_repair_continuation_v1"
+    },
+    "automatic_resume_supported": false,
+    "exact_executor_resume": false,
+    "executor_equivalence": false,
+    "actual_migration_executed": false,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "parent_failed_attempt": {
+      "attempt_id": 6,
+      "completed_outer_credit": 0,
+      "optimizer_writes": null,
+      "published_rank_optimizer_record": null,
+      "error_type": "HumanRequestedStop",
+      "failure_component": "manual_stop_slow3335"
+    }
+  },
+  "manifest_sha256": "cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63",
+  "human_training_authority_sha256": "fc283828cd1d478d647314e5dcecc52054734dc4b593c98e0676434ca7790592",
+  "cluster_name": "wuhan-h100",
+  "node_list": "h100-10",
+  "dispatch_renderer_sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501",
+  "dispatch_submitter_sha256": "d3b48104ff4a05927604906c5cc85be49c670df4b37ad062d0a8fd02c8441d8e",
+  "dispatch_intent_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-retained18-current200-speed-v13-6227108.json",
+  "production_thresholds_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "original_sampler_actor_gate_accepted": false
+}

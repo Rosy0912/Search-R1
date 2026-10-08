@@ -1,0 +1,19 @@
+{
+  "status": "ACCEPTED_AFTER_REAL_DIFFERENCE_REVIEW",
+  "scope": "Limited 14-query two-repeat Tree top3 sanity permits two actual updates only; not full query or top50 rank equivalence",
+  "review_file": "TREE_RETRIEVAL_REVIEW_2854.md",
+  "review_sha256": "c649da2e00ccdcd036c1d9b58de0f18752c8f7654a58add99b380e67a3624910",
+  "top3_ids_order_content_equal_queries": 14,
+  "query_count": 14,
+  "top50_gpu_encoder_rank_changed_queries": 9,
+  "cpu_embeddings_gpu_index_top50_rank_changed_queries": 1,
+  "training_actual_outer_updates": 0,
+  "evidence_file_sha256": {
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/retrieval-2854/cpu.json": "b17eb5c17a7370e3d13edd7194eadfc67a7a42f36d71ca6fd209f9021646f2a0",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/retrieval-2854/gpu-encoder-cpu-index.json": "0f24e2db75cc902f0ea5ebbcf0342b9e26e661a748f95f046f50fd87c0074b0a",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/retrieval-2854/gpu.json": "854bef8268f8ec5cbe327719ea4b43de34d1097cd683d751045eeb0f99a7cabb",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/retrieval-2854/gpu-index-cpu-embeddings.json": "9e6ca2e5f9ddc21695a2fa9984b9daebe77848eae42c1f9d648c97588f752a60",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/retrieval-2854/index-only-difference.json": "618355737fba1ff646fcd7be270bf640a691d27dbd1178a24535b845c7c80488"
+  },
+  "source_commit": "aed28e176da946dc6cff73cfb23fac5cf2a879a8"
+}

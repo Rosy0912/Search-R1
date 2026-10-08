@@ -1,0 +1,2669 @@
+{
+  "status": "LIVE_OWNED_CPU_HOTSPOT_CONFIRMED_OUTER6_SPEED_PENDING",
+  "job_id": 3339,
+  "scope": "owned live training only; no test jobs, GPU calls, source edits or signals",
+  "observations": [
+    {
+      "tool_sha256": "9b4d1f39b2a47ae44f4c6a46f615dcc0287d7755beba5065f32391951e07d594",
+      "identity_before": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441634.0304954
+      },
+      "identity_after": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441634.0983915
+      },
+      "dump_args": [
+        "dump",
+        "--nonblocking",
+        "--full-filenames",
+        "--json",
+        "--pid",
+        "305810"
+      ],
+      "capture_start_epoch": 1791441634.0498474,
+      "capture_end_epoch": 1791441634.0979586,
+      "returncode": 0,
+      "stderr": "",
+      "snapshot": [
+        {
+          "pid": 305810,
+          "thread_id": 140118763320448,
+          "thread_name": "MainThread",
+          "os_thread_id": null,
+          "active": true,
+          "owns_gil": false,
+          "frames": [
+            {
+              "name": "get_objects",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "line": 882,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "get",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "line": 2755,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "wrapper",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/client_mode_hook.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/client_mode_hook.py",
+              "line": 103,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "auto_init_wrapper",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/auto_init_hook.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/auto_init_hook.py",
+              "line": 21,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "func",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/single_controller/ray/base.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/single_controller/ray/base.py",
+              "line": 42,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 166,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 130,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "complete",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 282,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 398,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 362,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 292,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 263,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "line": 33,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "fit",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "line": 989,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "line": 223,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "measured_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "line": 165,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_loop",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "line": 922,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "<module>",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "line": 289,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": true
+            }
+          ],
+          "process_info": null
+        }
+      ],
+      "stdout_if_not_json": null,
+      "phase_lines": [
+        "\u001b[36m(measured_task pid=305810)\u001b[0m epoch 0, step 6"
+      ]
+    },
+    {
+      "tool_sha256": "9b4d1f39b2a47ae44f4c6a46f615dcc0287d7755beba5065f32391951e07d594",
+      "identity_before": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441691.5309381
+      },
+      "identity_after": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441691.5768855
+      },
+      "dump_args": [
+        "dump",
+        "--nonblocking",
+        "--full-filenames",
+        "--json",
+        "--pid",
+        "305810"
+      ],
+      "capture_start_epoch": 1791441691.5309436,
+      "capture_end_epoch": 1791441691.576489,
+      "returncode": 0,
+      "stderr": "",
+      "snapshot": [
+        {
+          "pid": 305810,
+          "thread_id": 140118763320448,
+          "thread_name": "MainThread",
+          "os_thread_id": null,
+          "active": true,
+          "owns_gil": true,
+          "frames": [
+            {
+              "name": "infer_framework_from_repr",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 94,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_get_frameworks_and_test_func",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 116,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "to_py_obj",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 274,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "<listcomp>",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 269,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "to_py_obj",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 269,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "decode",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py",
+              "line": 4002,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_scan_utf8_prefixes",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 245,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "sampled_action",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 536,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 200,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 130,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "complete",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 282,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 398,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 362,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 292,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 263,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "line": 33,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "fit",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "line": 989,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "line": 223,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "measured_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "line": 165,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_loop",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "line": 922,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "<module>",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "line": 289,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": true
+            }
+          ],
+          "process_info": null
+        }
+      ],
+      "stdout_if_not_json": null
+    },
+    {
+      "tool_sha256": "9b4d1f39b2a47ae44f4c6a46f615dcc0287d7755beba5065f32391951e07d594",
+      "identity_before": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441706.5842328
+      },
+      "identity_after": {
+        "pid": 305810,
+        "starttime_ticks": 1850185226,
+        "own_job3339_cgroup": true,
+        "cmdline": "ray::measured_task",
+        "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3339/step_batch\n0::/system.slice/slurmd.service\n",
+        "epoch": 1791441706.6297781
+      },
+      "dump_args": [
+        "dump",
+        "--nonblocking",
+        "--full-filenames",
+        "--json",
+        "--pid",
+        "305810"
+      ],
+      "capture_start_epoch": 1791441706.5842452,
+      "capture_end_epoch": 1791441706.6293721,
+      "returncode": 0,
+      "stderr": "",
+      "snapshot": [
+        {
+          "pid": 305810,
+          "thread_id": 140118763320448,
+          "thread_name": "MainThread",
+          "os_thread_id": null,
+          "active": true,
+          "owns_gil": true,
+          "frames": [
+            {
+              "name": "infer_framework_from_repr",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 94,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_get_frameworks_and_test_func",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 116,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "to_py_obj",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 274,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "<listcomp>",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 269,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "to_py_obj",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/utils/generic.py",
+              "line": 269,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "decode",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py",
+              "line": 4002,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_scan_utf8_prefixes",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 245,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "sampled_action",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 536,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 200,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "advance",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 130,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "complete",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 282,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 398,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "run",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/rollout.py",
+              "line": 362,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "_generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 292,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/search_r1/baselines/controller.py",
+              "line": 263,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "generate",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+              "line": 33,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "fit",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/ppo/ray_trainer.py",
+              "line": 989,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/source/repo/verl/trainer/main_ppo.py",
+              "line": 223,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "measured_task",
+              "filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "module": null,
+              "short_filename": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+              "line": 165,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "main_loop",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/worker.py",
+              "line": 922,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": false
+            },
+            {
+              "name": "<module>",
+              "filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "module": null,
+              "short_filename": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_private/workers/default_worker.py",
+              "line": 289,
+              "locals": null,
+              "is_entry": true,
+              "is_shim_entry": true
+            }
+          ],
+          "process_info": null
+        }
+      ],
+      "stdout_if_not_json": null
+    }
+  ],
+  "resource_series_since_migrated_state": [
+    {
+      "epoch": 1791441415.352568,
+      "gpu_util": [
+        17,
+        17,
+        11,
+        12,
+        19,
+        11,
+        16,
+        11
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441420.4167037,
+      "gpu_util": [
+        48,
+        51,
+        48,
+        50,
+        51,
+        50,
+        53,
+        52
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441425.507902,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441430.5819478,
+      "gpu_util": [
+        72,
+        70,
+        65,
+        72,
+        74,
+        72,
+        74,
+        69
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441435.637983,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441440.6953244,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441445.7512052,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441450.8066,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441455.8636484,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441460.9223495,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441465.978533,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441471.0350478,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441476.0951107,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441481.1760507,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441486.2320976,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441491.2885907,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441496.3426046,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441501.398598,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441506.4554205,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441511.5126677,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441516.569761,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441521.625455,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441526.6867309,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441531.7493389,
+      "gpu_util": [
+        70,
+        86,
+        80,
+        4,
+        49,
+        65,
+        68,
+        95
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441536.809549,
+      "gpu_util": [
+        56,
+        61,
+        63,
+        66,
+        58,
+        58,
+        64,
+        59
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441541.8706298,
+      "gpu_util": [
+        42,
+        55,
+        55,
+        55,
+        54,
+        55,
+        55,
+        56
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441546.9277518,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441551.9840865,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441557.0399296,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441562.099028,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441567.1639194,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441572.2206745,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441577.2766242,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441582.3318653,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441587.386445,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441592.444609,
+      "gpu_util": [
+        59,
+        22,
+        19,
+        21,
+        27,
+        93,
+        39,
+        85
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441597.5066292,
+      "gpu_util": [
+        53,
+        56,
+        55,
+        55,
+        56,
+        54,
+        57,
+        55
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441602.564839,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441607.6204371,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441612.6815672,
+      "gpu_util": [
+        12,
+        25,
+        55,
+        31,
+        13,
+        21,
+        21,
+        21
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441617.7412508,
+      "gpu_util": [
+        100,
+        55,
+        55,
+        100,
+        56,
+        54,
+        100,
+        100
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441622.7977276,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441627.8559349,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441632.916097,
+      "gpu_util": [
+        93,
+        57,
+        91,
+        72,
+        92,
+        62,
+        58,
+        93
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441637.9791777,
+      "gpu_util": [
+        49,
+        54,
+        72,
+        49,
+        69,
+        50,
+        52,
+        54
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441643.0386376,
+      "gpu_util": [
+        82,
+        82,
+        85,
+        81,
+        81,
+        83,
+        77,
+        86
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441648.1082926,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441653.1682773,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441658.2245452,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441663.2840366,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441668.3401608,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441673.3967922,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441678.4534535,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441683.5098393,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441688.5630786,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441693.6203945,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441698.677487,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441703.7332058,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441708.79319,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441713.8509161,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441718.904808,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441723.9837883,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441729.0398047,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441734.1060717,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441739.1626914,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441744.2189984,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441749.274915,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441754.339661,
+      "gpu_util": [
+        61,
+        0,
+        0,
+        0,
+        37,
+        46,
+        83,
+        7
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441759.4017134,
+      "gpu_util": [
+        65,
+        63,
+        64,
+        64,
+        67,
+        67,
+        65,
+        69
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441764.4677684,
+      "gpu_util": [
+        55,
+        55,
+        76,
+        54,
+        55,
+        54,
+        56,
+        54
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441769.524509,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    },
+    {
+      "epoch": 1791441774.5818486,
+      "gpu_util": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "any_foreign_memory": false,
+      "max_foreign_sm_upper": 0
+    }
+  ],
+  "resource_last_epoch": 1791441703.7332058,
+  "resource_sample_count": 109,
+  "process_resource_row_schema": {
+    "epoch": "float",
+    "retriever": "dict",
+    "processes": "list"
+  },
+  "phase_lines": [
+    "\u001b[36m(measured_task pid=305810)\u001b[0m epoch 0, step 6",
+    "\u001b[36m(measured_task pid=305810)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 659 & 500",
+    "\u001b[36m(measured_task pid=305810)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 571 & 500",
+    "\u001b[36m(measured_task pid=305810)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 597 & 500",
+    "\u001b[36m(measured_task pid=305810)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 526 & 500",
+    "\u001b[36m(measured_task pid=305810)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 821 & 500"
+  ],
+  "audit_metadata_file_list": [
+    {
+      "name": "current-chain-migrated.json",
+      "size": 35073,
+      "mtime": 1791441411.270278
+    },
+    {
+      "name": "entry-audit/entry.jsonl",
+      "size": 649,
+      "mtime": 1791441293.8224018
+    },
+    {
+      "name": "fresh-initialization.json",
+      "size": 9934,
+      "mtime": 1791441368.8597658
+    }
+  ],
+  "observation_epoch": 1791441775.4336576,
+  "driver_cpu_series_since_migrated_state": [
+    {
+      "epoch": 1791441411.3528929,
+      "user_cpu_ticks": 2256,
+      "system_cpu_ticks": 290,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1672180 kB"
+      ]
+    },
+    {
+      "epoch": 1791441416.7849896,
+      "user_cpu_ticks": 2310,
+      "system_cpu_ticks": 299,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1778512 kB"
+      ]
+    },
+    {
+      "epoch": 1791441422.1690068,
+      "user_cpu_ticks": 2311,
+      "system_cpu_ticks": 299,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1778512 kB"
+      ]
+    },
+    {
+      "epoch": 1791441427.5155575,
+      "user_cpu_ticks": 2312,
+      "system_cpu_ticks": 300,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1778512 kB"
+      ]
+    },
+    {
+      "epoch": 1791441432.8809505,
+      "user_cpu_ticks": 3502,
+      "system_cpu_ticks": 361,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1860292 kB"
+      ]
+    },
+    {
+      "epoch": 1791441438.22162,
+      "user_cpu_ticks": 4034,
+      "system_cpu_ticks": 366,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1860988 kB"
+      ]
+    },
+    {
+      "epoch": 1791441443.5784664,
+      "user_cpu_ticks": 4569,
+      "system_cpu_ticks": 369,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1861732 kB"
+      ]
+    },
+    {
+      "epoch": 1791441448.9677532,
+      "user_cpu_ticks": 5108,
+      "system_cpu_ticks": 372,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1861992 kB"
+      ]
+    },
+    {
+      "epoch": 1791441454.3593915,
+      "user_cpu_ticks": 5647,
+      "system_cpu_ticks": 373,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862204 kB"
+      ]
+    },
+    {
+      "epoch": 1791441459.694439,
+      "user_cpu_ticks": 6182,
+      "system_cpu_ticks": 374,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862372 kB"
+      ]
+    },
+    {
+      "epoch": 1791441465.11905,
+      "user_cpu_ticks": 6725,
+      "system_cpu_ticks": 376,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862412 kB"
+      ]
+    },
+    {
+      "epoch": 1791441470.4899876,
+      "user_cpu_ticks": 7262,
+      "system_cpu_ticks": 377,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862476 kB"
+      ]
+    },
+    {
+      "epoch": 1791441475.9283724,
+      "user_cpu_ticks": 7807,
+      "system_cpu_ticks": 378,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862476 kB"
+      ]
+    },
+    {
+      "epoch": 1791441481.330043,
+      "user_cpu_ticks": 8344,
+      "system_cpu_ticks": 383,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862476 kB"
+      ]
+    },
+    {
+      "epoch": 1791441486.7209046,
+      "user_cpu_ticks": 8883,
+      "system_cpu_ticks": 385,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862476 kB"
+      ]
+    },
+    {
+      "epoch": 1791441492.0580792,
+      "user_cpu_ticks": 9418,
+      "system_cpu_ticks": 386,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862476 kB"
+      ]
+    },
+    {
+      "epoch": 1791441497.3930926,
+      "user_cpu_ticks": 9952,
+      "system_cpu_ticks": 386,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862480 kB"
+      ]
+    },
+    {
+      "epoch": 1791441502.7588077,
+      "user_cpu_ticks": 10490,
+      "system_cpu_ticks": 387,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1862636 kB"
+      ]
+    },
+    {
+      "epoch": 1791441508.0930483,
+      "user_cpu_ticks": 11024,
+      "system_cpu_ticks": 388,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1863636 kB"
+      ]
+    },
+    {
+      "epoch": 1791441513.4269223,
+      "user_cpu_ticks": 11558,
+      "system_cpu_ticks": 390,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1864756 kB"
+      ]
+    },
+    {
+      "epoch": 1791441518.8380547,
+      "user_cpu_ticks": 12100,
+      "system_cpu_ticks": 390,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1866020 kB"
+      ]
+    },
+    {
+      "epoch": 1791441524.1811152,
+      "user_cpu_ticks": 12636,
+      "system_cpu_ticks": 391,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1867364 kB"
+      ]
+    },
+    {
+      "epoch": 1791441529.6175394,
+      "user_cpu_ticks": 18932,
+      "system_cpu_ticks": 771,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 1946176 kB"
+      ]
+    },
+    {
+      "epoch": 1791441535.02577,
+      "user_cpu_ticks": 19115,
+      "system_cpu_ticks": 782,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2031340 kB"
+      ]
+    },
+    {
+      "epoch": 1791441540.4608696,
+      "user_cpu_ticks": 19117,
+      "system_cpu_ticks": 782,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2031340 kB"
+      ]
+    },
+    {
+      "epoch": 1791441545.9945242,
+      "user_cpu_ticks": 20231,
+      "system_cpu_ticks": 1331,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2229620 kB"
+      ]
+    },
+    {
+      "epoch": 1791441551.3503997,
+      "user_cpu_ticks": 20764,
+      "system_cpu_ticks": 1337,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2233236 kB"
+      ]
+    },
+    {
+      "epoch": 1791441556.72386,
+      "user_cpu_ticks": 21299,
+      "system_cpu_ticks": 1341,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2233488 kB"
+      ]
+    },
+    {
+      "epoch": 1791441562.064283,
+      "user_cpu_ticks": 21830,
+      "system_cpu_ticks": 1346,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2235332 kB"
+      ]
+    },
+    {
+      "epoch": 1791441567.4070172,
+      "user_cpu_ticks": 22363,
+      "system_cpu_ticks": 1349,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2237236 kB"
+      ]
+    },
+    {
+      "epoch": 1791441572.744617,
+      "user_cpu_ticks": 22895,
+      "system_cpu_ticks": 1352,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2239616 kB"
+      ]
+    },
+    {
+      "epoch": 1791441578.1223612,
+      "user_cpu_ticks": 23433,
+      "system_cpu_ticks": 1354,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2241812 kB"
+      ]
+    },
+    {
+      "epoch": 1791441583.4607825,
+      "user_cpu_ticks": 23966,
+      "system_cpu_ticks": 1357,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2243548 kB"
+      ]
+    },
+    {
+      "epoch": 1791441588.8519182,
+      "user_cpu_ticks": 24505,
+      "system_cpu_ticks": 1359,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2245960 kB"
+      ]
+    },
+    {
+      "epoch": 1791441594.2209716,
+      "user_cpu_ticks": 25118,
+      "system_cpu_ticks": 1789,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2278924 kB"
+      ]
+    },
+    {
+      "epoch": 1791441599.6035702,
+      "user_cpu_ticks": 25120,
+      "system_cpu_ticks": 1790,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2278924 kB"
+      ]
+    },
+    {
+      "epoch": 1791441605.0230436,
+      "user_cpu_ticks": 25587,
+      "system_cpu_ticks": 1871,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2284048 kB"
+      ]
+    },
+    {
+      "epoch": 1791441610.5687952,
+      "user_cpu_ticks": 26294,
+      "system_cpu_ticks": 1930,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2289524 kB"
+      ]
+    },
+    {
+      "epoch": 1791441616.0181415,
+      "user_cpu_ticks": 26295,
+      "system_cpu_ticks": 1931,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2289524 kB"
+      ]
+    },
+    {
+      "epoch": 1791441621.4310524,
+      "user_cpu_ticks": 26549,
+      "system_cpu_ticks": 1946,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2292596 kB"
+      ]
+    },
+    {
+      "epoch": 1791441626.8033326,
+      "user_cpu_ticks": 27156,
+      "system_cpu_ticks": 1965,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2357760 kB",
+        "VmRSS:\t 2314144 kB"
+      ]
+    },
+    {
+      "epoch": 1791441632.1886215,
+      "user_cpu_ticks": 27276,
+      "system_cpu_ticks": 1979,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2498752 kB",
+        "VmRSS:\t 2498752 kB"
+      ]
+    },
+    {
+      "epoch": 1791441637.5703952,
+      "user_cpu_ticks": 27277,
+      "system_cpu_ticks": 1979,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2498752 kB",
+        "VmRSS:\t 2498752 kB"
+      ]
+    },
+    {
+      "epoch": 1791441642.9423687,
+      "user_cpu_ticks": 27279,
+      "system_cpu_ticks": 1980,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2498752 kB",
+        "VmRSS:\t 2498752 kB"
+      ]
+    },
+    {
+      "epoch": 1791441648.2973003,
+      "user_cpu_ticks": 29591,
+      "system_cpu_ticks": 2426,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923796 kB"
+      ]
+    },
+    {
+      "epoch": 1791441653.692141,
+      "user_cpu_ticks": 30130,
+      "system_cpu_ticks": 2429,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923852 kB"
+      ]
+    },
+    {
+      "epoch": 1791441659.0626268,
+      "user_cpu_ticks": 30665,
+      "system_cpu_ticks": 2433,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923916 kB"
+      ]
+    },
+    {
+      "epoch": 1791441664.4043226,
+      "user_cpu_ticks": 31196,
+      "system_cpu_ticks": 2439,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923948 kB"
+      ]
+    },
+    {
+      "epoch": 1791441669.7437375,
+      "user_cpu_ticks": 31727,
+      "system_cpu_ticks": 2443,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923964 kB"
+      ]
+    },
+    {
+      "epoch": 1791441675.116339,
+      "user_cpu_ticks": 32264,
+      "system_cpu_ticks": 2445,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2923968 kB"
+      ]
+    },
+    {
+      "epoch": 1791441680.5034497,
+      "user_cpu_ticks": 32803,
+      "system_cpu_ticks": 2447,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2924060 kB"
+      ]
+    },
+    {
+      "epoch": 1791441685.9157696,
+      "user_cpu_ticks": 33342,
+      "system_cpu_ticks": 2451,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2925524 kB"
+      ]
+    },
+    {
+      "epoch": 1791441691.3029835,
+      "user_cpu_ticks": 33880,
+      "system_cpu_ticks": 2454,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2926828 kB"
+      ]
+    },
+    {
+      "epoch": 1791441696.6907487,
+      "user_cpu_ticks": 34419,
+      "system_cpu_ticks": 2456,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2928204 kB"
+      ]
+    },
+    {
+      "epoch": 1791441702.028189,
+      "user_cpu_ticks": 34952,
+      "system_cpu_ticks": 2458,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2929696 kB"
+      ]
+    },
+    {
+      "epoch": 1791441707.3660214,
+      "user_cpu_ticks": 35486,
+      "system_cpu_ticks": 2459,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2930964 kB"
+      ]
+    },
+    {
+      "epoch": 1791441712.7251275,
+      "user_cpu_ticks": 36014,
+      "system_cpu_ticks": 2469,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2931944 kB"
+      ]
+    },
+    {
+      "epoch": 1791441718.0629406,
+      "user_cpu_ticks": 36548,
+      "system_cpu_ticks": 2471,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2933328 kB"
+      ]
+    },
+    {
+      "epoch": 1791441723.3971586,
+      "user_cpu_ticks": 37081,
+      "system_cpu_ticks": 2473,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2934608 kB"
+      ]
+    },
+    {
+      "epoch": 1791441728.7542427,
+      "user_cpu_ticks": 37615,
+      "system_cpu_ticks": 2477,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2936308 kB"
+      ]
+    },
+    {
+      "epoch": 1791441734.1053457,
+      "user_cpu_ticks": 38150,
+      "system_cpu_ticks": 2479,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2938932 kB",
+        "VmRSS:\t 2937728 kB"
+      ]
+    },
+    {
+      "epoch": 1791441739.441054,
+      "user_cpu_ticks": 38684,
+      "system_cpu_ticks": 2479,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2939424 kB",
+        "VmRSS:\t 2939424 kB"
+      ]
+    },
+    {
+      "epoch": 1791441744.8191073,
+      "user_cpu_ticks": 39221,
+      "system_cpu_ticks": 2482,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2940980 kB",
+        "VmRSS:\t 2940980 kB"
+      ]
+    },
+    {
+      "epoch": 1791441750.207391,
+      "user_cpu_ticks": 39760,
+      "system_cpu_ticks": 2484,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2942748 kB",
+        "VmRSS:\t 2942748 kB"
+      ]
+    },
+    {
+      "epoch": 1791441755.6472745,
+      "user_cpu_ticks": 44156,
+      "system_cpu_ticks": 3161,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2999280 kB",
+        "VmRSS:\t 2913440 kB"
+      ]
+    },
+    {
+      "epoch": 1791441761.0562112,
+      "user_cpu_ticks": 44157,
+      "system_cpu_ticks": 3161,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2999280 kB",
+        "VmRSS:\t 2913460 kB"
+      ]
+    },
+    {
+      "epoch": 1791441766.4695709,
+      "user_cpu_ticks": 44159,
+      "system_cpu_ticks": 3161,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 2999280 kB",
+        "VmRSS:\t 2913460 kB"
+      ]
+    },
+    {
+      "epoch": 1791441771.8092318,
+      "user_cpu_ticks": 45501,
+      "system_cpu_ticks": 3704,
+      "hz": 100,
+      "memory": [
+        "VmHWM:\t 3044348 kB",
+        "VmRSS:\t 3036148 kB"
+      ]
+    }
+  ],
+  "completed_cost_metadata": [],
+  "last_owned_driver_process_resource": {
+    "epoch": 1791441702.028189,
+    "driver": [
+      {
+        "pid": 305810,
+        "user_cpu_ticks": 34952,
+        "system_cpu_ticks": 2458,
+        "hz": 100,
+        "memory": [
+          "VmHWM:\t 2938932 kB",
+          "VmRSS:\t 2929696 kB"
+        ]
+      }
+    ]
+  },
+  "source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "package": "package-code-only-v13",
+  "route": "retained Wuhan H10018 h100-10 only; ssh_retained18.py",
+  "run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339",
+  "observed_at_utc": "2026-10-08T06:42:55.433658+00:00",
+  "ordinary_outer_target_seconds": 420,
+  "outer_target_verdict": {
+    "candidate_outer": 6,
+    "completed_outer_in_loaded_native_chain": 5,
+    "completed_outer6_cost_available": false,
+    "target_pass_proven": false,
+    "target_failure_proven": false,
+    "state_migration_mtime_epoch": 1791441411.270278,
+    "state_migration_age_seconds_at_last_observation": 364.16337966918945,
+    "limit": "Migration mtime is a reference, not an exact outer-start stopwatch. No complete ordinary-outer timing yet."
+  },
+  "diagnostic_safety": {
+    "snapshot_count": 3,
+    "max_authorized_snapshots": 3,
+    "nonblocking_only": true,
+    "native_mode": false,
+    "locals_flag": false,
+    "actual_cgroup_and_starttime_checked_before_and_after_every_attach": true,
+    "pid": 305810,
+    "starttime_ticks": 1850185226,
+    "dump_total_command_wall_seconds": 0.13878345489501953,
+    "snapshot_start_intervals_seconds": [
+      57.481096267700195,
+      15.053301572799683
+    ],
+    "read_sources": "Existing own resource-samples/process-resources/stage logs and generated metadata; local frozen code for interpretation",
+    "gpu_queries_or_model_calls_added": 0,
+    "test_or_new_jobs": 0,
+    "source_or_runtime_changes": 0,
+    "training_signal_or_pause_actions": 0,
+    "no_new_tool_installation": true
+  },
+  "resource_summary": {
+    "epoch_bounds": [
+      1791441415.352568,
+      1791441774.5818486
+    ],
+    "samples": 72,
+    "all_eight_zero_gpu_util_samples": 56,
+    "arithmetic_mean_gpu_util_all_cards_and_samples": 12.291666666666666,
+    "median_gpu_util_all_cards_and_samples": 0.0,
+    "all_records_foreign_memory_zero": true,
+    "all_records_foreign_sm_upper_zero": true,
+    "scope_limit": "These are existing approximately five-second total GPU-util snapshots, not exact phase durations or a throughput profiler."
+  },
+  "confirmed_hotspot": {
+    "name": "Serial native-prefix tokenizer decode and Python input conversion",
+    "capture_indices_zero_based": [
+      1,
+      2
+    ],
+    "source_file": "search_r1/baselines/tree_raw_tokens.py",
+    "source_line": 245,
+    "function": "_scan_utf8_prefixes",
+    "call_chain": "sampled_action:536 -> _scan_utf8_prefixes:245 -> tokenizer.decode:4002 -> to_py_obj -> infer_framework_from_repr",
+    "cpu_window": {
+      "start_epoch": 1791441680.5034497,
+      "end_epoch": 1791441707.3660214,
+      "wall_seconds": 26.862571716308594,
+      "driver_cpu_seconds": 26.95,
+      "driver_cpu_percent_one_core_basis": 100.32546505455517,
+      "gpu_sample_count": 5,
+      "all_eight_cards_zero_for_every_window_sample": true
+    },
+    "evidence_statement": "Two sparse snapshots separated by 15.053s found the same prefix decode path. Nearby existing process samples show about one busy driver CPU core while all eight GPUs have zero sampled utilization. This confirms an actual CPU processing hotspot during rollout; three samples cannot estimate whole-outer hotspot share."
+  },
+  "other_observations": [
+    {
+      "name": "GPU generation wait also observed",
+      "evidence": "First snapshot is ray.get_objects -> actor_rollout_wg.generate_sequences -> rollout._advance:166. Generation and CPU verification occur at different times.",
+      "classification": "Observed phase, not a proven failure"
+    },
+    {
+      "name": "Ray filesystem >95% warning",
+      "evidence": "Stage reports 539.374-539.379 GB free at total capacity 14194.1 GB. No spill or object creation failure has been seen in the inspected tail.",
+      "classification": "Candidate resource risk, not confirmed cause; do not delete existing artifacts"
+    },
+    {
+      "name": "Observation length warnings",
+      "evidence": "659, 571, 597, 526 and 821 reported versus observation limit 500.",
+      "classification": "Existing behavior, not authorization to reduce data/context/token budget"
+    }
+  ],
+  "remaining_optimization_candidates": [
+    {
+      "priority": 1,
+      "candidate": "Batch authoritative native prefix decodes using the already identity-bound tokenizer backend, avoiding Hugging Face per-prefix to_py_obj/framework detection.",
+      "reason": "Both CPU snapshots are inside the repeated generic decode/input-conversion wrapper; all prefixes are native Python ints already validated by the emission contract.",
+      "preserve": "Keep every native prefix equality check, exact frozen ByteLevel decoder/special-token/cleanup binding, complete UTF8 proof, prefix hashes, probability metadata and action boundary. Do not disable check_native_prefixes or reduce scan length.",
+      "status": "Unimplemented, untested hypothesis. Review exact wrapper/backend semantics before a later entry. No hot change to 3339."
+    },
+    {
+      "priority": 2,
+      "candidate": "Cache immutable ID-to-byte pieces inside a tokenizer identity-bound context and reuse already computed per-emission immutable proof only where original contract permits.",
+      "reason": "Scan currently repeats convert_ids_to_tokens and alphabet conversion for each token. This may remove additional Python work after decode-wrapper optimization.",
+      "preserve": "Identity validation and same output/proof remain mandatory; no cross-outer evidence cache or weakening of drift checks.",
+      "status": "Not measured separately; secondary candidate."
+    },
+    {
+      "priority": 3,
+      "candidate": "Continue using actual next completed ordinary outer and existing semantic_prefix_scan cost fields to evaluate whether remaining time is CPU scanning or GPU generation.",
+      "reason": "Completed training-rollout-cost ledger is published only after Controller.generate returns. At this observation no completed outer6 cost exists.",
+      "preserve": "Use actual live training only; no added GPU baseline, short training or test job.",
+      "status": "Main agent already observing; subagent adds no monitor or extra attach."
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "author_sha": "763bf8c4d7caa363ad845d39ddfd53b81ae377bd",
+  "cases": [
+    {
+      "text": "I live in Hague",
+      "answers": [
+        "The Hague"
+      ],
+      "local": false,
+      "official": false
+    },
+    {
+      "text": "THE Hague",
+      "answers": [
+        "The Hague"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "foo-bar",
+      "answers": [
+        "foo-bar"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "foobar",
+      "answers": [
+        "foo-bar"
+      ],
+      "local": false,
+      "official": false
+    },
+    {
+      "text": "a café",
+      "answers": [
+        "café"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "no punctuation?",
+      "answers": [
+        "punctuation?"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "no punctuation",
+      "answers": [
+        "punctuation?"
+      ],
+      "local": false,
+      "official": false
+    },
+    {
+      "text": "中文答案",
+      "answers": [
+        "中文答案"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "Roman",
+      "answers": [
+        "Rome"
+      ],
+      "local": false,
+      "official": false
+    },
+    {
+      "text": "anything",
+      "answers": [
+        ""
+      ],
+      "local": false,
+      "official": false
+    },
+    {
+      "text": "multiple",
+      "answers": [
+        "wrong",
+        "multiple"
+      ],
+      "local": true,
+      "official": true
+    },
+    {
+      "text": "an apple",
+      "answers": [
+        "apple"
+      ],
+      "local": true,
+      "official": true
+    }
+  ]
+}

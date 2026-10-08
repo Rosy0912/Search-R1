@@ -1,0 +1,1009 @@
+{
+  "observed_at": "2026-10-08T06:52:42.903215+00:00",
+  "job_id": 3339,
+  "source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "manifest_sha256": "cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63",
+  "completed_outer": 6,
+  "target_outer": 200,
+  "current_outer_in_progress": 7,
+  "completed_outer7_verified": false,
+  "in_progress_outer7_partial_adam_writes": null,
+  "actual_successful_adam_writes_per_rank": {
+    "0": 120,
+    "1": 120,
+    "2": 120,
+    "3": 120,
+    "4": 120,
+    "5": 120,
+    "6": 120,
+    "7": 120
+  },
+  "actual_scheduler_steps_per_rank": {
+    "0": 6,
+    "1": 6,
+    "2": 6,
+    "3": 6,
+    "4": 6,
+    "5": 6,
+    "6": 6,
+    "7": 6
+  },
+  "completed_outer6_rank_opportunities": [
+    {
+      "rank": 0,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank00.json",
+        "rank": 0,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "b40fbd4b0903c35edd42b87885d3b793ff6331e35e706b20d6df9571477bd864"
+      }
+    },
+    {
+      "rank": 1,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank01.json",
+        "rank": 1,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "27351be81c344182e976924a13cf91c32cd127d1618be11e464678bc99ef23e8"
+      }
+    },
+    {
+      "rank": 2,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank02.json",
+        "rank": 2,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "088bc298b5e0b14a0048036443c98a7c93765754df11271729173acf4ade0c60"
+      }
+    },
+    {
+      "rank": 3,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank03.json",
+        "rank": 3,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "98c0de2fb1203441f88ab204cb200aedf42b73b22ae51670070840f24667635e"
+      }
+    },
+    {
+      "rank": 4,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank04.json",
+        "rank": 4,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "6924c6447fecea9cba276bc97540d3b531005571f6a971ca6d02769fb8732373"
+      }
+    },
+    {
+      "rank": 5,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank05.json",
+        "rank": 5,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "2c3a1d1883daa44cc6a976bc116ae95cd97a3f7dea24615076595de507956608"
+      }
+    },
+    {
+      "rank": 6,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank06.json",
+        "rank": 6,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "1ef36f781494f831acb7eb84636d65b109a3cd4eff5022c2eb1b51741f4b53fa"
+      }
+    },
+    {
+      "rank": 7,
+      "optimizer_calls": 20,
+      "opportunities_processed": 20,
+      "opportunities_skipped": 0,
+      "scheduler_before": 5,
+      "scheduler_after": 6,
+      "direct_rank_record": {
+        "actual_optimizer_calls": 20,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank07.json",
+        "rank": 7,
+        "scheduler_step_after": 6,
+        "scheduler_step_before": 5,
+        "sha256": "f0a4cc00df3c90d3ba2d50241da3889b96350b175de90cc2b86f0a66f526195b"
+      }
+    }
+  ],
+  "attempt6": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/attempt-results/attempt-000006.json",
+    "sha256": "949ae54c7c2f47d8a1a189b237b8f5cc34085e4db7a4e4b737dec68f9b043d16",
+    "status": "COMPLETED_OPPORTUNITIES_OUTER_CREDITED",
+    "attempt_id": 6,
+    "accepted_outer": 6,
+    "actual_completed_optimizer_calls_per_rank": {
+      "0": 120,
+      "1": 120,
+      "2": 120,
+      "3": 120,
+      "4": 120,
+      "5": 120,
+      "6": 120,
+      "7": 120
+    },
+    "rank_updates": [
+      {
+        "rank": 0,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank00.json",
+          "rank": 0,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "b40fbd4b0903c35edd42b87885d3b793ff6331e35e706b20d6df9571477bd864"
+        }
+      },
+      {
+        "rank": 1,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank01.json",
+          "rank": 1,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "27351be81c344182e976924a13cf91c32cd127d1618be11e464678bc99ef23e8"
+        }
+      },
+      {
+        "rank": 2,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank02.json",
+          "rank": 2,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "088bc298b5e0b14a0048036443c98a7c93765754df11271729173acf4ade0c60"
+        }
+      },
+      {
+        "rank": 3,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank03.json",
+          "rank": 3,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "98c0de2fb1203441f88ab204cb200aedf42b73b22ae51670070840f24667635e"
+        }
+      },
+      {
+        "rank": 4,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank04.json",
+          "rank": 4,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "6924c6447fecea9cba276bc97540d3b531005571f6a971ca6d02769fb8732373"
+        }
+      },
+      {
+        "rank": 5,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank05.json",
+          "rank": 5,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "2c3a1d1883daa44cc6a976bc116ae95cd97a3f7dea24615076595de507956608"
+        }
+      },
+      {
+        "rank": 6,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank06.json",
+          "rank": 6,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "1ef36f781494f831acb7eb84636d65b109a3cd4eff5022c2eb1b51741f4b53fa"
+        }
+      },
+      {
+        "rank": 7,
+        "optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_before": 5,
+        "scheduler_after": 6,
+        "direct_rank_record": {
+          "actual_optimizer_calls": 20,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/output/fresh-state/outer-000006-attempt-000006-rank07.json",
+          "rank": 7,
+          "scheduler_step_after": 6,
+          "scheduler_step_before": 5,
+          "sha256": "f0a4cc00df3c90d3ba2d50241da3889b96350b175de90cc2b86f0a66f526195b"
+        }
+      }
+    ]
+  },
+  "rank_numeric_update_summary": [
+    {
+      "rank": 0,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 8063,
+        "minimum": -1.5236437320709229e-06,
+        "maximum": 1.6167759895324707e-06
+      }
+    },
+    {
+      "rank": 1,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7946,
+        "minimum": -1.4994293451309204e-06,
+        "maximum": 1.5273690223693848e-06
+      }
+    },
+    {
+      "rank": 2,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7918,
+        "minimum": -1.4379620552062988e-06,
+        "maximum": 1.6652047634124756e-06
+      }
+    },
+    {
+      "rank": 3,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7883,
+        "minimum": -1.560896635055542e-06,
+        "maximum": 1.5487894415855408e-06
+      }
+    },
+    {
+      "rank": 4,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7857,
+        "minimum": -1.6462290659546852e-06,
+        "maximum": 1.4938414096832275e-06
+      }
+    },
+    {
+      "rank": 5,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7790,
+        "minimum": -1.648440957069397e-06,
+        "maximum": 1.6167759895324707e-06
+      }
+    },
+    {
+      "rank": 6,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7643,
+        "minimum": -1.479464117437601e-06,
+        "maximum": 1.6075791791081429e-06
+      }
+    },
+    {
+      "rank": 7,
+      "outer_step": 6,
+      "successful_optimizer_calls": 20,
+      "finite_grad_norms": 20,
+      "nonzero_grad_norms": 20,
+      "local_parameter_sample_delta": {
+        "count": 8192,
+        "finite": 8192,
+        "nonzero": 7537,
+        "minimum": -1.5525147318840027e-06,
+        "maximum": 1.5124678611755371e-06
+      }
+    }
+  ],
+  "native_rolling6": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/manifest.json",
+    "sha256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3",
+    "matches_latest_pointer": true,
+    "value": {
+      "automatic_resume_supported": false,
+      "driver": {
+        "exact_reload_verified": false,
+        "logical_state_sha256": "3495520e7902983d4b22d455cda51b972275e5d26686522ca4b39e62f9528a79",
+        "next_step": 7,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/driver.pt",
+        "sha256": "2ff60e318f65aa0a22922db9f993280ff9f66baaa7d960117b0f9cc305fc8042"
+      },
+      "exact_executor_resume_verified": false,
+      "hf_checkpoint": null,
+      "hf_identity": null,
+      "identity": {
+        "actual_update_limit": 200,
+        "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+        "completed_step": 6,
+        "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "guard_continue_accounting": {
+          "completed_optimizer_calls_per_rank": {
+            "0": 120,
+            "1": 120,
+            "2": 120,
+            "3": 120,
+            "4": 120,
+            "5": 120,
+            "6": 120,
+            "7": 120
+          },
+          "completed_outer_updates": 6,
+          "guard_refused_attempts": 0,
+          "partial_evidence": [],
+          "partial_optimizer_calls_per_rank": {},
+          "protocol": "tree_guard_continue_fresh_rollout_v1",
+          "refused_attempts": 0,
+          "total_optimizer_calls_per_rank": {
+            "0": 120,
+            "1": 120,
+            "2": 120,
+            "3": 120,
+            "4": 120,
+            "5": 120,
+            "6": 120,
+            "7": 120
+          },
+          "training_attempts": 6
+        },
+        "job_id": "3339",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+        "run_id": "tree-current200-continue-3339"
+      },
+      "limits": "Native same-world boundary snapshot only; no reload performed, no automatic restart or executor/vLLM equivalence claim",
+      "retention": {
+        "keep_completed": 2,
+        "permanent_milestones_unchanged": [
+          5,
+          50,
+          100,
+          150,
+          200
+        ]
+      },
+      "saved_components": {
+        "adam_optimizer": true,
+        "config_bytes": false,
+        "driver_python_numpy_torch_rng": true,
+        "executor_vllm_state": false,
+        "sampler_order_cursor_generator": true,
+        "scheduler": true,
+        "source_bytes": false,
+        "source_config_identity": true,
+        "tree_rng_and_algorithm_state": true,
+        "worker_buffers": true,
+        "worker_gradients": true,
+        "worker_model_shards": true,
+        "worker_parameters": true,
+        "worker_python_numpy_torch_cuda_rng": true
+      },
+      "snapshot_kind": "rolling_completed_outer",
+      "status": "COMPLETE_NATIVE_ROLLING_STATE_SAVED",
+      "worker_states": [
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.508702997118235,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "0",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 0,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "1dc977c714f4c419588b266e0d855f4eb5913a267b276fd8783ec165cc58eee4",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-00.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "eb37747c6dc4bda745d3ed64fe550ea6ea57578c42e6152e6285d14929327b73"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.76470044627786,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "1",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 1,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "6e079dffde6085c2cee343488771e702a60b836fe63edd77c9a7d2969b01f26a",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-01.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "b6c1527f6c7e19ffc2978254eec8a5577bdf3871eac542169195190528d0d343"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.57178479060531,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "2",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 2,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "ed8e1350d78c1ee587fde9129bac5a039d3f9ff6d706ff7a92b1fe471f14eca6",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-02.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "e50dc6ad79212a4f2f7cb95eeccc1419cad08a5c318eec5dcbd96bb4839f5a67"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.71783205866814,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "3",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 3,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "25681cf23713ba3745b3800cbf5c2f8caaa49521029f1e4ce8f62a49c8ebd87e",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-03.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "08f9979bb44914fc2a66d3c4d04db7135de345c861a0b26975a0f5acf423e011"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 35.48552068322897,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "4",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 4,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "3102e8d990190c2276d7906802750fbaae027dcbf820eb045d586320fdf5d7c9",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-04.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "5918b16307972f90993f19dd291590174e6830cbac2df9a48e0d20ed99ebcc1d"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.49041864275932,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "5",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 5,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "f819a91fad6626ab7feb516f2412d7f2eff9c252dd15ec37c324f42e05bc940c",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-05.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "1e265db4fbc94be433a0a4fbf4af25b60b1478315421ec33c37bf1b3a35d51b9"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 34.40566721558571,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "6",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 6,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "9e33a3e71a05a32b9a347b4b1dd5f7251a64a6c421cd9a4ad5af96e900fa0308",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-06.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "2ceb71ec171f908ad44f76d3ecaa85e083197f20a50ca4dffe04d704fb608c7d"
+        },
+        {
+          "actual_total_optimizer_calls": 120,
+          "bytes": 6171974630,
+          "checkpoint_and_reload_seconds": 37.265898644924164,
+          "exact_same_world_reload_verified": false,
+          "full_worker_state_finite": true,
+          "identity": {
+            "actual_update_limit": 200,
+            "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+            "completed_step": 6,
+            "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+            "cuda_visible_devices": "7",
+            "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+            "guard_continue_accounting": {
+              "completed_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "completed_outer_updates": 6,
+              "guard_refused_attempts": 0,
+              "partial_evidence": [],
+              "partial_optimizer_calls_per_rank": {},
+              "protocol": "tree_guard_continue_fresh_rollout_v1",
+              "refused_attempts": 0,
+              "total_optimizer_calls_per_rank": {
+                "0": 120,
+                "1": 120,
+                "2": 120,
+                "3": 120,
+                "4": 120,
+                "5": 120,
+                "6": 120,
+                "7": 120
+              },
+              "training_attempts": 6
+            },
+            "job_id": "3339",
+            "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+            "rank": 7,
+            "run_id": "tree-current200-continue-3339",
+            "world_size": 8
+          },
+          "logical_state_sha256": "5d0fc09a7a64e3f1e3c7665ed41e62c8698ecb00d5a2594371532c992089fcf8",
+          "observed_adam_steps": [
+            120
+          ],
+          "optimizer_lrs": [
+            1.0526315789473683e-07
+          ],
+          "optimizer_state_entries": 37,
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/rank-07.pt",
+          "scheduler_last_epoch": 6,
+          "sha256": "41cfd776df8ebf67942628cbb4275e4cc494a4d60617fddb14701cefacc7e33e"
+        }
+      ]
+    }
+  },
+  "source_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_AND_OUTER7_OBSERVATION_20261008.json",
+  "source_observation_sha256": "86bd9a43c9b3a47c36e1c9205b06aa2401c3de0e230dbe606ecb3ac21f4290b8",
+  "raw_stage_tail": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_STAGE_LOG_TAIL_RAW_20261008.log",
+  "raw_stage_tail_sha256": "a33f7ce0ecf3ffd61888352de99a2a2fbf538fb89b7125e8a273ac115f47a944",
+  "stage_tail_scope": "Original16000-byte tail captured by root observer, not complete stage log",
+  "new_effect_evaluation_observed": false,
+  "current_validation_report_count": 0,
+  "normal_outer_target_seconds": 420,
+  "normal_outer_target_verified": false,
+  "timing_s": {
+    "gen": 476.73417269811034,
+    "ref": 10.264341719448566,
+    "adv": 10.3913037404418,
+    "update_actor": 239.90899964421988,
+    "stage_testing": 38.23219284042716,
+    "step": 870.9754463396966
+  },
+  "actual_step_minutes": 14.516257438994945,
+  "stage_testing_scope": "Tree stage_validation returns{} (root source review). This timer includes native rolling save wrapper and is not new effect evaluation; do not deduct38.232s to claim ordinary outer<=420s."
+}

@@ -1,0 +1,17 @@
+# Tree 真实训练最小诊断方案（设计，未改运行代码）
+
+目标是补足当前cost日志不能证明六叶来源、真实共享prefix和观测mask的缺口。当前运行作业禁止修改source；本方案仅供下一次独立冻结和审查。诊断由环境变量显式开启，只写自身run目录，关闭时不额外遍历tensor、不改变RNG/生成/排序/梯度。输出只包含SHA256、匿名标识、长度、计数和布尔结果，不含query、文本、token ID、reward内容或模型权重。
+
+建议在Controller.generate中建立递增rollout_id并传入独立诊断对象，绑定匿名question hash、global outer step与input row→question/root的对应关系。根数量要按每个问题检查两个root，而不是把整个batch误写成总计两个root；input gen_batch通常包含许多问题。诊断结束写schema_version、method、来源commit、rollout_id、配置2roots/3leaves/rounds/expansions、完成标记以及状态总数，原子发布单次JSON（临时文件exclusive创建后replace，不覆盖已有rollout_id文件）。如果诊断显式开启却写失败或不满足规定不变量，退出自身训练并保留错误证据，不写成功标记。
+
+在SearchRollout.run的rng.choice(nodes).branch边界，先保存选中parent引用和状态摘要，再对child尚未complete时计算摘要。对实际rolling、prompt、response、model_mask、steps、observation、anchors分别用带长度和字段名的canonical int64/UTF8编码hash。记录parent node、parent trajectory、child trajectory、root tree、source的匿名hash。要求branch前后每个状态字段hash和长度相等、source/tree/node/turns/done/final_used继承、只有trajectory重新唯一生成。快照不能推算自最后leaf：必须在branch之后、任何continuation之前记录。之后child完成时记录同source/tree且其父节点仍在该root候选pool；不要求最终response含未经截断完整parent，因为既有right cap可能截掉尾部。
+
+run采样结束记录每个原root候选leaf数、采样3个trajectory hash、来源input row映射和tree hash。要求每root恰好3条、sample无重复，树与source不跨root；每匿名question恰好两个不同root和合计六条leaf；允许不同tree共享文本prefix，不能用prefixhash代替tree identity。零候选/候选不足应保留失败计数而不能产出success。跨root批量generation以及候选pool增长保持原算法，不加诊断RNG调用。
+
+compose前逐状态要求len(response)=len(model_mask)=len(steps)，mask仅0/1，steps仅有效anchor index或-1。保留下来的所有观测位置mask=0且steps=-1，所有model位置mask=1且0<=step<len(anchors)。compose后根据实际retained长度区分observation与padding：response尾padding的mask=0/steps=-1；observation位置responses_with_info_mask为pad，input/info/attention及step_ids shape一致；info_mask的response切片对应model_mask。记录每leaf长度、action/observation/padding数量、anchor数量和违例数量，断言action+observation=retained response长度。合法模型token恰巧等于pad的既有attention语义须另列计数，不能误把此处诊断当pad语义修复。必要时在trainer构造loss_mask后增加只读比对：loss_mask=info_mask_response*attention_response且observation全零，报告leaf uid随DataProto重排保持来源。这一额外hook需独立冻结，不是当前已实现证据。
+
+保留实际generation context与scoring prompt+response分别的hash和匹配布尔；Search-R1 rolling截断与scoring prefix差异是已授权report偏离。只能证明branch复制了实际生成状态，不能因此宣布两种context完全相同。前缀长度截断和context mismatch计数仍需实际披露。
+
+有意义测试：用现有fake manager驱动真实branch/run/compose，两个问题各两个root、长短响应/早done/连续两outer update，验证每问题六叶、来源继承、每branch共享prefix和persistent RNG输出开启/关闭完全相同；用不同rollout padding及窗口截断检验retained observation mask和-1 steps，不把原始未保留observation计入。故意污染child rolling、source/tree、trajectory重复、observation mask/steps、compose padding和重排后的uid，要求对应检查拒绝。测试row selection/跨root batching/最终DataProto reorder后映射仍成立。关闭诊断不得文件IO，开启诊断不改变tensor、cost、RNG状态、生成调用次数或actor梯度/参数；并列score和文本不影响tree identity。再用至少真实两更新产生完整诊断JSON及真实loss_mask计数，工具按step1/2核完整性；CPU fixture不能宣称GPU运行不变量验收。
+
+该诊断只提供rollout与mask证据；真实参数更新、checkpoint重载、资源trace与七集效果仍由各自验收负责。不得因诊断成功自动写stage acceptance。

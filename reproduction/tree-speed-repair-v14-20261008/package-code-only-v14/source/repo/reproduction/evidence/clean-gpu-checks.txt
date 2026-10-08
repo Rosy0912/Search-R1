@@ -1,0 +1,14 @@
+[W1002 15:04:55.559185575 socket.cpp:697] [c10d] The client socket has failed to connect to [::ffff:192.168.0.7]:36231 (errno: 110 - Connection timed out).
+EIGHT_GPU_NCCL_BF16_OK 2.4.0+cu121
+INFO 10-02 15:05:09 model_runner.py:1060] Starting to load model /data/search-r1/assets/qwen2.5-3b...
+INFO 10-02 15:05:09 selector.py:115] Using XFormers backend.
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:00<00:00,  1.15it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.44it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.38it/s]
+
+INFO 10-02 15:05:11 model_runner.py:1071] Loading model weights took 5.7915 GB
+INFO 10-02 15:05:11 gpu_executor.py:122] # GPU blocks: 16869, # CPU blocks: 7281
+INFO 10-02 15:05:11 gpu_executor.py:126] Maximum concurrency for 1024 tokens per request: 263.58x
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  4.54it/s, est. speed input: 22.70 toks/s, output: 72.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  4.54it/s, est. speed input: 22.70 toks/s, output: 72.63 toks/s]
+REAL_MODEL_VLLM_CUDA_OK 0.6.3 ' Paris. The capital of the United States is Washington, D.C. The capital'

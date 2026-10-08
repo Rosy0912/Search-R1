@@ -1,0 +1,723 @@
+{
+  "decision": "SUFFICIENT_FOR_LIMITED_TREE_TOP3_SANITY_TO_PROCEED_TO_TWO_UPDATE_SMOKE_REVIEW",
+  "not_acceptance_record": true,
+  "training_started_by_reviewer": false,
+  "full_query_equivalence": false,
+  "cosearch_top50_order_parity": false,
+  "ablation_pending": true,
+  "input_sha256": {
+    "retrieval-cpu-2854.json": "b17eb5c17a7370e3d13edd7194eadfc67a7a42f36d71ca6fd209f9021646f2a0",
+    "retrieval-gpu-encoder-cpu-index.json": "0f24e2db75cc902f0ea5ebbcf0342b9e26e661a748f95f046f50fd87c0074b0a",
+    "retrieval-gpu.json": "854bef8268f8ec5cbe327719ea4b43de34d1097cd683d751045eeb0f99a7cabb",
+    "retrieval-cpu-vs-gpu-encoder-cpu-index.json": "c8b1f52c8266f54b6302ba60a4c165b2c00d0b4b2fd9a69c0f6cd6482985dd11",
+    "retrieval-cpu-vs-gpu.json": "2617698e8613f9b071de58d8cda88b3cc07a5fdcb733128ca8854dffc3231eac"
+  },
+  "recipe": {
+    "model": "e5",
+    "pooling": "mean",
+    "max_query_length": 256,
+    "encoder_fp16": true,
+    "topk": [
+      3,
+      50
+    ],
+    "batch_size": 512
+  },
+  "source_code_sha": "a545a0d2349be9f4d591576f56f62b7d35d1bed8",
+  "retrieval_server_sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+  "asset_identity_equal_and_verified": true,
+  "rows": [
+    {
+      "query_index": 1,
+      "query": "What is the capital of France?",
+      "top3_ids": [
+        1039175,
+        9447685,
+        2543511
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 6.186962127685547e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              27,
+              28,
+              49,
+              50
+            ],
+            "max_matched_id_score_abs_delta": 8.505582809448242e-05
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 6.186962127685547e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              27,
+              28,
+              49,
+              50
+            ],
+            "max_matched_id_score_abs_delta": 8.499622344970703e-05
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 2,
+      "query": "Who wrote Pride and Prejudice?",
+      "top3_ids": [
+        4950710,
+        592735,
+        13328669
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00014495849609375
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              33,
+              34
+            ],
+            "max_matched_id_score_abs_delta": 0.0001970529556274414
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00014495849609375
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              33,
+              34
+            ],
+            "max_matched_id_score_abs_delta": 0.0001971125602722168
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 3,
+      "query": "What is the largest planet in the Solar System?",
+      "top3_ids": [
+        11549858,
+        18934865,
+        13379999
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 4.267692565917969e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              38,
+              39,
+              42,
+              43,
+              46,
+              47
+            ],
+            "max_matched_id_score_abs_delta": 5.6743621826171875e-05
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 4.2498111724853516e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              38,
+              39,
+              42,
+              43,
+              46,
+              47
+            ],
+            "max_matched_id_score_abs_delta": 5.6743621826171875e-05
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 4,
+      "query": "Where is Mount Everest located?",
+      "top3_ids": [
+        5733239,
+        11694402,
+        9996982
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 5.549192428588867e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 5.6862831115722656e-05
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 5.5670738220214844e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 5.6862831115722656e-05
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 5,
+      "query": "Who painted the Mona Lisa?",
+      "top3_ids": [
+        12232081,
+        2203859,
+        2203852
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00012969970703125
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              46,
+              47
+            ],
+            "max_matched_id_score_abs_delta": 0.00016486644744873047
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00012969970703125
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              46,
+              47
+            ],
+            "max_matched_id_score_abs_delta": 0.00016486644744873047
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 6,
+      "query": "What is the chemical symbol for gold?",
+      "top3_ids": [
+        8537275,
+        7548030,
+        5486094
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 7.349252700805664e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00010460615158081055
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 7.343292236328125e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00010466575622558594
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 7,
+      "query": "Which country contains the ancient city of Petra?",
+      "top3_ids": [
+        17785757,
+        10726707,
+        10726706
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 4.363059997558594e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00010418891906738281
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 4.398822784423828e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00010412931442260742
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 8,
+      "query": "When did the Apollo 11 mission land on the Moon?",
+      "top3_ids": [
+        6517991,
+        12324085,
+        3893448
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00031834840774536133
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              37,
+              38,
+              40,
+              41
+            ],
+            "max_matched_id_score_abs_delta": 0.00033342838287353516
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00031834840774536133
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              11,
+              12,
+              37,
+              38,
+              40,
+              41
+            ],
+            "max_matched_id_score_abs_delta": 0.00033342838287353516
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": false
+    },
+    {
+      "query_index": 9,
+      "query": "What language is primarily spoken in Brazil?",
+      "top3_ids": [
+        14300822,
+        10255973,
+        19367753
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.0002537965774536133
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.0002815127372741699
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.0002537369728088379
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00028139352798461914
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 10,
+      "query": "Who developed the theory of general relativity?",
+      "top3_ids": [
+        9170063,
+        7721330,
+        12036758
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 6.878376007080078e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              44,
+              45
+            ],
+            "max_matched_id_score_abs_delta": 9.644031524658203e-05
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 6.866455078125e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              44,
+              45
+            ],
+            "max_matched_id_score_abs_delta": 9.655952453613281e-05
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 11,
+      "query": "Which river flows through Cairo?",
+      "top3_ids": [
+        860631,
+        19151556,
+        19124882
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 7.921457290649414e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              34,
+              35
+            ],
+            "max_matched_id_score_abs_delta": 0.00011175870895385742
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 7.915496826171875e-05
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              34,
+              35
+            ],
+            "max_matched_id_score_abs_delta": 0.00011169910430908203
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 12,
+      "query": "What is the tallest building in the world?",
+      "top3_ids": [
+        16864745,
+        7009180,
+        7009195
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.0003972649574279785
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00042301416397094727
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.0003975033760070801
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00042307376861572266
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 13,
+      "query": "Who was the first person to win two Nobel Prizes?",
+      "top3_ids": [
+        3417551,
+        11376096,
+        2026541
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00011354684829711914
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              45,
+              46,
+              47,
+              48
+            ],
+            "max_matched_id_score_abs_delta": 0.00014060735702514648
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00011366605758666992
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              45,
+              46,
+              47,
+              48
+            ],
+            "max_matched_id_score_abs_delta": 0.0001405477523803711
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    },
+    {
+      "query_index": 14,
+      "query": "Which ocean lies between Africa and Australia?",
+      "top3_ids": [
+        20339771,
+        285785,
+        2272179
+      ],
+      "modes": {
+        "gpu_encoder_cpu_index": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00017881393432617188
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              15,
+              16
+            ],
+            "max_matched_id_score_abs_delta": 0.00017881393432617188
+          }
+        },
+        "gpu": {
+          "3": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": true,
+            "changed_rank_positions": [],
+            "max_matched_id_score_abs_delta": 0.00017881393432617188
+          },
+          "50": {
+            "id_set_equal": true,
+            "content_hash_equal": true,
+            "rank_order_equal": false,
+            "changed_rank_positions": [
+              15,
+              16
+            ],
+            "max_matched_id_score_abs_delta": 0.00017881393432617188
+          }
+        }
+      },
+      "gpu_cpu_index_vs_gpu_index_order_equal": true
+    }
+  ]
+}

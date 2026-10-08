@@ -1,0 +1,67 @@
+{
+  "protocol": "v14_rolling6_independent_source_wrapper_review_v1",
+  "reviewed_at_utc": "2026-10-08 07:05:42 UTC",
+  "core_commit": "ebef786697b78abafc2248c0c794827606c7214a",
+  "scope": "core, current runtime-template, V14 builder/deployer/submitter, local parent JSON",
+  "verdict": "no_actionable_source_wrapper_findings",
+  "findings": [],
+  "package_built_at_review": false,
+  "actual3339_stop_receipt_locally_available_at_review": false,
+  "parent": {
+    "job_id": "3339",
+    "run_id": "tree-current200-continue-3339",
+    "source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+    "config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+    "manifest_sha256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3",
+    "ancestry_receipt_sha256": "6384b8350550ef767c8d1e0b5c27705842913517c642d8556d59b37058a98c3e",
+    "path_parents4_is_run_root": true,
+    "snapshot_kind": "rolling_completed_outer",
+    "completed_outer": 6,
+    "training_attempts": 6,
+    "adam_writes_per_rank": 120,
+    "scheduler_step": 6,
+    "expected_startup_cursor": 3072,
+    "sampler_epoch": 0,
+    "next_outer": 7,
+    "parent_worker_reload_verified": false,
+    "parent_driver_reload_verified": false,
+    "hf_checkpoint": null
+  },
+  "startup_source_checks": {
+    "full_state_file_sha_same_fd": true,
+    "serialized_logical_digest": true,
+    "actual_loaded_worker_and_driver_logical_equality": true,
+    "complete_saved_ancestry_equality": true,
+    "actual_child_checks_executed_by_reviewer": false
+  },
+  "source_sha256": {
+    "source/search_r1/baselines/tree_current_chain_resume.py": "9d6a5a5176286a38e3662a4e56837804132b840616b6cb0d112abab23cb23b98",
+    "source/search_r1/baselines/tree_raw_tokens.py": "8798793a60eb093981b532a490acbab7eafe4688811ab484dcb519d2d63ef384",
+    "runtime-template/current_chain_runtime.py": "106585f97db751f4c5937fb609852d65f3d272f1c54f4447e434ab469da849a0",
+    "runtime-template/train_monitor.py": "2602d4978960cf010ee0369bff299c49c57cdf459b45f1d044d4b4f4650c9ab7",
+    "runtime-template/supervisor.py": "2e82f5e735a2eb922e7a0cf1ee6bdc2c235a946ebc738a6414d5677a4129e513",
+    "runtime-template/production_contract.py": "99cbc130c66581a541fae63f24cb1d21a8b6ec2668a970a1d37b3d350bdf4cca",
+    "runtime-template/launch.sbatch": "0eb812580772918f6274dc735dad13cbe058cbdbd793f02ca21a22940c03d8c3",
+    "runtime-template/owned_lease_identity.py": "2d76aa53b88a521b4f3bc4d18cf0f3680fd7e79e858485d828ac6495e17b2e3e",
+    "runtime-template/attempt_accounting.py": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29",
+    "runtime-template/rolling_training_state_hooks.py": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85",
+    "runtime-template/render_dispatch.py": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501",
+    "runtime-template/submit_once.py": "b3d7523f2aa99fd7b61049e5d6ecb5dedcf807564f892e2e71f3c57cb1a54a4d",
+    "build_speed_packet.py": "ff154ce11056f8901239437d5881bf4112c809188e214002870993443bbf1113",
+    "deploy_speed_packet.py": "dcd6340bb022868bd5cca506f17ad9729ea5731b6374dd13a95141cd962ac561",
+    "submit_speed_once.py": "b3d7523f2aa99fd7b61049e5d6ecb5dedcf807564f892e2e71f3c57cb1a54a4d",
+    "submit_speed_packet.py": "8370491e56aeabfab3de8fc1a672bd68c91884c0bcd3952c735afc26045d8a94"
+  },
+  "reviewer_actions": {
+    "local_read_only_source_diff_json_hash": true,
+    "tests_executed": false,
+    "ssh_gpu_job_actions": false,
+    "training_modified_or_stopped": false,
+    "writes": ["V14_BINDING_REVIEW.md", "V14_BINDING_REVIEW.json"]
+  },
+  "evidence_limits": {
+    "actual_child_migration_observed": false,
+    "ordinary_outer_le_420s_verified": false,
+    "pause_running_training_gate": false
+  }
+}

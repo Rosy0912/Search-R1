@@ -1,0 +1,243 @@
+{
+  "observed_at": "2026-10-08T07:00:16.763682+00:00",
+  "current_observation_at": "2026-10-08T06:52:42.903215+00:00",
+  "current_job_id": 3339,
+  "completed_outer": 6,
+  "unique_files": 19,
+  "copies": 38,
+  "files": [
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/STATUS.json",
+      "sha256": "7b94573e95a2d5787e39be3c9b0a3f454c6593f7a0f6dd85ff50e77d09f6c94f",
+      "bytes": 582137
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/STATUS.json",
+      "sha256": "7b94573e95a2d5787e39be3c9b0a3f454c6593f7a0f6dd85ff50e77d09f6c94f",
+      "bytes": 582137
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/REPORT.md",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/REPORT.md",
+      "sha256": "77f8e079f6fb564fbde72038f2473248f7323ae46a7a2c6f9227849151e02a45",
+      "bytes": 3102
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/REPORT.md",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/REPORT.md",
+      "sha256": "77f8e079f6fb564fbde72038f2473248f7323ae46a7a2c6f9227849151e02a45",
+      "bytes": 3102
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/FRESH200_CANONICAL.json",
+      "sha256": "c889fb24fc8dbe668d206f5d5d0fa7a05916a230844df9903c8d46375ae6efca",
+      "bytes": 140034
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/FRESH200_CANONICAL.json",
+      "sha256": "c889fb24fc8dbe668d206f5d5d0fa7a05916a230844df9903c8d46375ae6efca",
+      "bytes": 140034
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL.md",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/FRESH200_CANONICAL.md",
+      "sha256": "77f8e079f6fb564fbde72038f2473248f7323ae46a7a2c6f9227849151e02a45",
+      "bytes": 3102
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL.md",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/FRESH200_CANONICAL.md",
+      "sha256": "77f8e079f6fb564fbde72038f2473248f7323ae46a7a2c6f9227849151e02a45",
+      "bytes": 3102
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_AND_OUTER7_OBSERVATION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_AND_OUTER7_OBSERVATION_20261008.json",
+      "sha256": "86bd9a43c9b3a47c36e1c9205b06aa2401c3de0e230dbe606ecb3ac21f4290b8",
+      "bytes": 758659
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_AND_OUTER7_OBSERVATION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_AND_OUTER7_OBSERVATION_20261008.json",
+      "sha256": "86bd9a43c9b3a47c36e1c9205b06aa2401c3de0e230dbe606ecb3ac21f4290b8",
+      "bytes": 758659
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_STAGE_LOG_TAIL_RAW_20261008.log",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_STAGE_LOG_TAIL_RAW_20261008.log",
+      "sha256": "a33f7ce0ecf3ffd61888352de99a2a2fbf538fb89b7125e8a273ac115f47a944",
+      "bytes": 16000
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_STAGE_LOG_TAIL_RAW_20261008.log",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_STAGE_LOG_TAIL_RAW_20261008.log",
+      "sha256": "a33f7ce0ecf3ffd61888352de99a2a2fbf538fb89b7125e8a273ac115f47a944",
+      "bytes": 16000
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_RUNTIME_RECEIPT_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_RUNTIME_RECEIPT_20261008.json",
+      "sha256": "eabb8ec5ef800bd0fd341c08d60c1b02e6f1a28b1299681c55c5936e8cc40933",
+      "bytes": 38012
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_RUNTIME_RECEIPT_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_RUNTIME_RECEIPT_20261008.json",
+      "sha256": "eabb8ec5ef800bd0fd341c08d60c1b02e6f1a28b1299681c55c5936e8cc40933",
+      "bytes": 38012
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_ACTUAL_TIMING_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_ACTUAL_TIMING_20261008.json",
+      "sha256": "318a03a24924c1773946b434bea7b06cfbf7d4b18b36257a8185c62638733b96",
+      "bytes": 4783
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_ACTUAL_TIMING_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_JOB3339_COMPLETED_OUTER6_ACTUAL_TIMING_20261008.json",
+      "sha256": "318a03a24924c1773946b434bea7b06cfbf7d4b18b36257a8185c62638733b96",
+      "bytes": 4783
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FASTPREFIX_V14_LOCAL_PREPARATION_FROM_COMPLETE6_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_FASTPREFIX_V14_LOCAL_PREPARATION_FROM_COMPLETE6_20261008.json",
+      "sha256": "a19a4d725bb15d8347efd8a5f91a5192d10c5a049662093ae8c693f99e5a08b9",
+      "bytes": 1127
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FASTPREFIX_V14_LOCAL_PREPARATION_FROM_COMPLETE6_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_FASTPREFIX_V14_LOCAL_PREPARATION_FROM_COMPLETE6_20261008.json",
+      "sha256": "a19a4d725bb15d8347efd8a5f91a5192d10c5a049662093ae8c693f99e5a08b9",
+      "bytes": 1127
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_CODE_PUBLICATION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_CODE_PUBLICATION_20261008.json",
+      "sha256": "88dda40b49dca73b3d0c69cb50758d8bcefbebbcef8ca25d9fcdc1060e02f73b",
+      "bytes": 480581
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_CODE_PUBLICATION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_CODE_PUBLICATION_20261008.json",
+      "sha256": "88dda40b49dca73b3d0c69cb50758d8bcefbebbcef8ca25d9fcdc1060e02f73b",
+      "bytes": 480581
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.json",
+      "sha256": "77ccb7dae1a3e2cd6d7863637f55148473fae88c5da0137bc46db5e6efa5af5d",
+      "bytes": 6992
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.json",
+      "sha256": "77ccb7dae1a3e2cd6d7863637f55148473fae88c5da0137bc46db5e6efa5af5d",
+      "bytes": 6992
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.md",
+      "sha256": "f3f43f3e43696169e026d94acc05295da4acbb994311ab4d992ffd4cd6e0254d",
+      "bytes": 14096
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_SPEED_V13_INDEPENDENT_REVIEW_20261008.md",
+      "sha256": "f3f43f3e43696169e026d94acc05295da4acbb994311ab4d992ffd4cd6e0254d",
+      "bytes": 14096
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_GOAL_STATE_AND_LATEST_MANUAL_EXECUTION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_GOAL_STATE_AND_LATEST_MANUAL_EXECUTION_20261008.json",
+      "sha256": "9158a5865ab72bb87e3c1d41008f166b89dbf6aae231e66870efe53dd5f28afe",
+      "bytes": 590
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_GOAL_STATE_AND_LATEST_MANUAL_EXECUTION_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_GOAL_STATE_AND_LATEST_MANUAL_EXECUTION_20261008.json",
+      "sha256": "9158a5865ab72bb87e3c1d41008f166b89dbf6aae231e66870efe53dd5f28afe",
+      "bytes": 590
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json",
+      "sha256": "0d28e778c47f9dbda9cc46eb19d237f16516c36a54955d747489522a7eaa0d91",
+      "bytes": 18041
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json",
+      "sha256": "0d28e778c47f9dbda9cc46eb19d237f16516c36a54955d747489522a7eaa0d91",
+      "bytes": 18041
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+      "sha256": "9ac9240066bbeff69df7c96ebced8b57b60dd1470ed378d396abcb174dd156d6",
+      "bytes": 4964
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+      "sha256": "9ac9240066bbeff69df7c96ebced8b57b60dd1470ed378d396abcb174dd156d6",
+      "bytes": 4964
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/STATUS_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/STATUS_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "sha256": "a637cdd25f63afb33048e8cfbed3e441b22672fa3e56f9805aac6390e92cc5d4",
+      "bytes": 542403
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/STATUS_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/STATUS_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "sha256": "a637cdd25f63afb33048e8cfbed3e441b22672fa3e56f9805aac6390e92cc5d4",
+      "bytes": 542403
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/REPORT_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/REPORT_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "sha256": "a55d1894e9d9666ac2f66e23fa1b515a97038088c5791117eb20f3292b33d5cb",
+      "bytes": 3203
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/REPORT_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/REPORT_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "sha256": "a55d1894e9d9666ac2f66e23fa1b515a97038088c5791117eb20f3292b33d5cb",
+      "bytes": 3203
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "sha256": "327dbc573b7d726519e17d3ecbea42f1c10b46d1e87a7c2e82da56aa2583f87c",
+      "bytes": 119925
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.json",
+      "sha256": "327dbc573b7d726519e17d3ecbea42f1c10b46d1e87a7c2e82da56aa2583f87c",
+      "bytes": 119925
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "sha256": "a55d1894e9d9666ac2f66e23fa1b515a97038088c5791117eb20f3292b33d5cb",
+      "bytes": 3203
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "destination": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-fresh200/FRESH200_CANONICAL_BEFORE_COMPLETED6_SPEED3339_20261008.md",
+      "sha256": "a55d1894e9d9666ac2f66e23fa1b515a97038088c5791117eb20f3292b33d5cb",
+      "bytes": 3203
+    }
+  ],
+  "read_only_local_root_LIVE": true,
+  "LIVE_source_runtime_or_job_modified": false,
+  "remote_actions": false,
+  "goal_or_automation_mutation": false,
+  "model_tensor_data_copied": false
+}

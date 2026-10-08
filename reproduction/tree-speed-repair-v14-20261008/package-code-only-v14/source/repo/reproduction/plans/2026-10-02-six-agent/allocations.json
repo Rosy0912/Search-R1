@@ -1,0 +1,119 @@
+{
+  "code_start": "0723dca0c1458482ac3e78f8ed43af04893955d2",
+  "max_concurrent_gpu_jobs": 6,
+  "criteria": {
+    "utilization_percent_max": 15,
+    "memory_percent_max": 15,
+    "existing_processes_allowed": true
+  },
+  "allocations": [
+    {
+      "method": "gigpo",
+      "branch": "reproduce/gigpo",
+      "host": "h100-8",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18081,
+      "ray_port": 16381,
+      "status": "planned_not_reserved"
+    },
+    {
+      "method": "tree_grpo",
+      "branch": "reproduce/tree-grpo",
+      "host": "h100-9",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18082,
+      "ray_port": 16382,
+      "status": "planned_not_reserved"
+    },
+    {
+      "method": "bapo",
+      "branch": "reproduce/bapo",
+      "host": "h100-5",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18083,
+      "ray_port": 16383,
+      "status": "planned_not_reserved"
+    },
+    {
+      "method": "opsd",
+      "branch": "reproduce/opsd",
+      "host": "h100-10",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18084,
+      "ray_port": 16384,
+      "status": "planned_not_reserved"
+    },
+    {
+      "method": "topd",
+      "branch": "reproduce/topd",
+      "host": "h100-11",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18085,
+      "ray_port": 16385,
+      "status": "planned_not_reserved"
+    },
+    {
+      "method": "cosearch",
+      "branch": "reproduce/cosearch",
+      "host": "h100-16",
+      "gpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "http_port": 18086,
+      "ray_port": 16386,
+      "status": "planned_not_reserved"
+    }
+  ]
+}

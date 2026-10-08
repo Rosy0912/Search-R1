@@ -1,0 +1,28 @@
+libpython3.10-stdlib:amd64	3.10.12-1~22.04.18
+python3.10	3.10.12-1~22.04.18
+python3.10-minimal	3.10.12-1~22.04.18
+Package: libpython3.10-dev
+Source: python3.10
+Priority: optional
+Section: libdevel
+Installed-Size: 20432
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Version: 3.10.12-1~22.04.18
+Recommends: libc6-dev | libc-dev
+Depends: libpython3.10-stdlib (= 3.10.12-1~22.04.18), libpython3.10 (= 3.10.12-1~22.04.18), libexpat1-dev, zlib1g-dev
+Filename: pool/main/p/python3.10/libpython3.10-dev_3.10.12-1~22.04.18_amd64.deb
+Size: 4765042
+MD5sum: e2b3b101db4da26f21117f28a880d3e1
+SHA1: cafb2d3a0950edafa023fdaf9327194120d3905e
+SHA256: c058675011ec4b64f5ad803d74b5fe7de0c720c3700683040da68d1fb5b44ed9
+SHA512: ad1bd41fa7ecd65a0551f6eb948c0249adc2e774384147373923b5b8a07e251e634c931f0d6d6b5c5036c839dc4bb02c120817c70c71482dd4405ae9ffd3b8e5
+Description-en: Header files and a static library for Python (v3.10)
+ Header files, a static library and development tools for building
+ Python (v3.10) modules, extending the Python interpreter or embedding
+ Python (v3.10) in applications.
+ .
+ Maintainers of Python packages should read README.maintainers.
+ .
+ This package contains development files. It is normally not
+ used on it's own, but as a dependency of python3.10-dev.

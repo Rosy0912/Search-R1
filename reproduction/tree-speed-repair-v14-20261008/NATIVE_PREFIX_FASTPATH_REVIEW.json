@@ -1,0 +1,42 @@
+{
+  "protocol": "native_prefix_fastpath_independent_source_review_v1",
+  "reviewed_at_utc": "2026-10-08 06:52:35 UTC",
+  "baseline_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "candidate_commit": "8693d0b57406dc87fb96f3aab3538e566c63f621",
+  "production_file": "source/search_r1/baselines/tree_raw_tokens.py",
+  "production_sha256": "8798793a60eb093981b532a490acbab7eafe4688811ab484dcb519d2d63ef384",
+  "fixture_file": "source/test_tree_native_prefix_fastpath_cpu.py",
+  "fixture_sha256": "6b851ad438f608b7bb124cefe1f271882ec0f76902d3a1fc099cb7574f05eaa0",
+  "verdict": "no_actionable_source_findings",
+  "findings": [],
+  "resolved_during_review": [
+    "successful scope exit now checks public/private/converter runtime bindings",
+    "approved method cache does not bypass defaults checks",
+    "fresh converter code override does not authorize native fastpath",
+    "defaults and keyword defaults are independent strict runtime snapshots"
+  ],
+  "preserved": [
+    "every native prefix agreement",
+    "UTF8 invalid/pending/final bytes and special-token proofs",
+    "prefix hashes and immutable inherited action validation",
+    "custom tokenizer and overridden HF wrapper fallback",
+    "live tokenizer file/backend/encoder/decoder/runtime refusal",
+    "5leaf [3,2], four search rounds, 2048/4096/500/500",
+    "sampled IDs/logprobs, PPO and mu validation"
+  ],
+  "reviewer_actions": {
+    "local_read_only_source_diff_hash": true,
+    "tests_executed": false,
+    "ssh_gpu_job_actions": false,
+    "deployed_3339_modified_or_stopped": false,
+    "writes": ["NATIVE_PREFIX_FASTPATH_REVIEW.md", "NATIVE_PREFIX_FASTPATH_REVIEW.json"]
+  },
+  "evidence_limits": {
+    "hf_local_source_read": "4.44.2 decode/_decode/to_py_obj",
+    "hf_remote_4_46_3_source_equivalence": "author reported, not independently read",
+    "tiny_fixture_two_cases": "author reported pass before final default binding additions; reviewer did not execute",
+    "final_syntax_diff_checks": "author reported",
+    "ordinary_outer_le_420s_verified": false,
+    "pause_running_training_gate": false
+  }
+}

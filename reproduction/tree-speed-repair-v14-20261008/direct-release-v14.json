@@ -1,0 +1,69 @@
+{
+  "status": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "execution_mode": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "packet_revision": 14,
+  "code_commit": "ebef786697b78abafc2248c0c794827606c7214a",
+  "current_chain_resume": {
+    "protocol": "current_fresh200_chain_fault_repair_continuation_v1",
+    "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+    "parent_job_id": "3339",
+    "parent_run_id": "tree-current200-continue-3339",
+    "parent_code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+    "parent_config_sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/manifest.json",
+      "sha256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3"
+    },
+    "parent_completed_outer": 6,
+    "parent_training_attempts": 6,
+    "parent_optimizer_calls_per_rank": {
+      "0": 120,
+      "1": 120,
+      "2": 120,
+      "3": 120,
+      "4": 120,
+      "5": 120,
+      "6": 120,
+      "7": 120
+    },
+    "parent_scheduler_step": 6,
+    "parent_sampler_cursor": 3072,
+    "parent_sampler_epoch": 0,
+    "parent_sampler_cursor_scope": "Expected6*actual fixed batch512; saved driver cursor verified at child startup",
+    "next_outer_update": 7,
+    "completed_outer_goal": 200,
+    "planned_new_completed_outer": 194,
+    "environment": {
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3339/checkpoints/training_state/rolling-completed/global_step_6/manifest.json",
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3",
+      "TREE_CURRENT_CHAIN_RESUME_AUTHORITY": "current_fresh200_chain_fault_repair_continuation_v1"
+    },
+    "automatic_resume_supported": false,
+    "exact_executor_resume": false,
+    "executor_equivalence": false,
+    "actual_migration_executed": false,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "parent_stop_receipt_required_before_build_or_submit": true,
+    "parent_failed_attempt": {
+      "attempt_id": 7,
+      "completed_outer_credit": 0,
+      "optimizer_writes": null,
+      "published_rank_optimizer_record": null,
+      "error_type": "HumanRequestedStop",
+      "failure_component": "manual_stop_slow3339"
+    }
+  },
+  "manifest_sha256": "9774e8854889ace8e618335d5f09c8cfbe229bd265c9b6f454d46ebc8cdfbc88",
+  "human_training_authority_sha256": "ed94b10b4a5e11982d4fcdf88b7e2e60201763987317c856df8e5b556e702ec6",
+  "cluster_name": "wuhan-h100",
+  "node_list": "h100-10",
+  "dispatch_renderer_sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501",
+  "dispatch_submitter_sha256": "b3d7523f2aa99fd7b61049e5d6ecb5dedcf807564f892e2e71f3c57cb1a54a4d",
+  "dispatch_intent_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-retained18-current200-speed-v14-ebef786.json",
+  "production_thresholds_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "original_sampler_actor_gate_accepted": false
+}

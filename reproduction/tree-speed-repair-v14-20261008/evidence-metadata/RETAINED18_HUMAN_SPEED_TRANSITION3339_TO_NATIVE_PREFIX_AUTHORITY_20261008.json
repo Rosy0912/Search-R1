@@ -1,0 +1,48 @@
+{
+  "status": "LATEST_MANUAL_SPEED_REPAIR_AUTHORITY_APPLIED_TO_CURRENT_OWN_SEGMENT",
+  "recorded_at": "2026-10-08T07:01:22.211874+00:00",
+  "raw_human_timestamps_available": false,
+  "manual_instructions": [
+    {
+      "instruction": "47.3分钟和7分钟，差距不是一般的大，还不是你的问题啊？不用注明那么多，啥玩意啊，你就写快的版本和慢的版本的区别，你做了什么导致这个问题。。。。然后还跑啥啊大哥，你都这个速度了你还跑，重新跑啊",
+      "original_object": "Slow Tree3335; same current200 goal"
+    },
+    {
+      "instruction": "就是你的速度如果没到7分钟一次迭代，那么就找出问题，速度很重要！",
+      "scope": "Actual normal iteration speed target420s; diagnose/fix own overhead"
+    },
+    {
+      "instruction": "边启动边审查，别浪费时间",
+      "scope": "Launch and review concurrently; no review hold"
+    },
+    {
+      "instruction": "快点跑起来，减少测试！",
+      "scope": "Continue actual training; no extra test/baseline/shorttrain stage"
+    }
+  ],
+  "selected_current_own_segment": 3339,
+  "interpretation": "Apply the already authorized own slow-run fix/restart to activate the now committed native-prefix performance fix while preserving actual completed6 and its native state. This is an implementation-scope interpretation, not a verbatim human order naming3339.",
+  "actual_completed_outer": 6,
+  "actual_successful_adam_writes_per_rank": {
+    "0": 120,
+    "1": 120,
+    "2": 120,
+    "3": 120,
+    "4": 120,
+    "5": 120,
+    "6": 120,
+    "7": 120
+  },
+  "actual_normal_outer6_wall_seconds": 870.9754463396966,
+  "normal_target_seconds": 420,
+  "speed_target_accepted": false,
+  "current_source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "native_prefix_fix_commit": "8693d0b57406dc87fb96f3aab3538e566c63f621",
+  "preserve_native6_manifest_sha256": "2421b7f1f8f8db0d5b73e342e9de1a9c8b61a5fe08cb6596da492a0d3a04fbc3",
+  "current_job_stop_executed": false,
+  "stage7_partial_writes": null,
+  "new_job_submitted": false,
+  "other_jobs_modified": false,
+  "goal_pause_authorized": false,
+  "no_additional_tests_baseline_or_shorttrain": true
+}

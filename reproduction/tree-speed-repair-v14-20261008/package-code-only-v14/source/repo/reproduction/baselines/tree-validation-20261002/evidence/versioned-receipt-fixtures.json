@@ -1,0 +1,46 @@
+{
+  "scope": "actual launcher RECEIPT Python block extracted; no Slurm/GPU/production edits",
+  "cases": [
+    {
+      "case": "positive",
+      "returncode": 0,
+      "accepted": true
+    },
+    {
+      "case": "two-only",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "receipt-hash-changed",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "expired",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "insufficient-stage-time",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "missing-budget",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "outside-own-logs",
+      "returncode": 1,
+      "accepted": false
+    },
+    {
+      "case": "evidence-changed",
+      "returncode": 1,
+      "accepted": false
+    }
+  ],
+  "source_sha256": "90fa5074f3ba3e5f27e8e0d5bf7a100c81a8615b407b7c7d25f78d7ecbcb6cc2"
+}

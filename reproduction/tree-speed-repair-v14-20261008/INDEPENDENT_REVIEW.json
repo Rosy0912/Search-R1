@@ -1,0 +1,123 @@
+{
+  "protocol": "tree_speed_repair_independent_static_review_v1",
+  "reviewed_at_utc": "2026-10-08T06:19:42Z",
+  "base_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "initial_reviewed_commit": "0150ee6891e6deb7ff616fd9bf416de42526e029",
+  "mu_cache_fix_commit": "48a59da5f30a6368e296137281fff1d620149d04",
+  "reviewed_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "status": "V13_ACTIVE_PATH_STATIC_REVIEW_COMPLETE_P1_AND_P2_FIXED_ACTUAL_LOAD_AND_SPEED_PENDING",
+  "context_free_task": true,
+  "independent_tests_executed": false,
+  "ssh_executed": false,
+  "gpu_or_checkpoint_load_executed": false,
+  "training_managed_or_interrupted": false,
+  "core_source_edited": false,
+  "production_files_reviewed": [
+    "search_r1/baselines/controller.py",
+    "search_r1/baselines/policy_safety_runtime.py",
+    "search_r1/baselines/rollout.py",
+    "search_r1/baselines/tree_behavior_mu.py",
+    "search_r1/baselines/tree_current_chain_resume.py",
+    "search_r1/baselines/tree_raw_tokens.py",
+    "verl/workers/actor/dp_actor.py"
+  ],
+  "fixture_source_read": "test_tree_driver_speed_cpu.py",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": 2,
+      "kind": "guard_integrity_cache_invalidated_incompletely",
+      "file": "search_r1/baselines/policy_safety_runtime.py",
+      "lines": [43, 56, 189, 193],
+      "summary": "Same-object nested metadata/non-tensor mutations retain a valid context and skip the full mu validator",
+      "trigger": "Validate a batch and receive context, mutate nested raw/behavior binding/runtime provenance/row identities in the existing containers, construct SafetyRuntime with the same batch/context",
+      "current_production_mutation_observed": false,
+      "production_window": "dp_actor.update_policy validator return to SafetyRuntime construction, with select/audit constructor/split in between",
+      "minimal_fix": "Snapshot or canonical content-digest key metadata and complete raw/mu/row identities; compare actual content on matches, retaining tensor identity/version; changed content falls back to full validation",
+      "stop_or_restart_authority": false,
+      "resolution": "STATICALLY_CLOSED_IN_48a59da5f30a6368e296137281fff1d620149d04",
+      "closure_evidence": "Actual nested metadata/raw/mu/row identity contents and runtime provenance environment are recomputed into canonical SHA in matches; no caller binding hash alone is trusted; existing tensor identity/version gate retained",
+      "implementation_side_targeted_cpu_cases_reported": 4,
+      "independently_rerun": false
+    },
+    {
+      "id": "F2",
+      "priority": 1,
+      "kind": "native_milestone_schema_mismatch",
+      "files": ["search_r1/baselines/tree_current_chain_resume.py", "current_chain_runtime.py"],
+      "summary": "Native global_step_5 manifest identity omits run_id; V12 core and external parent validators incorrectly required it",
+      "resolution": "STATICALLY_CLOSED_IN_CORE_62271081ba1bb74d8fc3f4958d623758efa74fa5_AND_V13_WRAPPER",
+      "closure_evidence": "Removed unsupported native identity field while preserving byte-pinned native path/SHA, parent job/source/config/counters, exact worker/driver PT paths and byte-bound3335 ancestry receipt run identity",
+      "test_or_ssh_executed_by_reviewer": false
+    }
+  ],
+  "static_invariants": {
+    "tree_objective_or_leaf_quota_changed": false,
+    "ppo_thresholds_changed": false,
+    "twenty_opportunities_contract_changed": false,
+    "scheduler57_contract_changed": false,
+    "finite_parameter_and_adam_checks_removed": false,
+    "initial_actor_repeat_removed": false,
+    "all_rank_monitor_reuse_agreement_present": true,
+    "actual_monitor_calls_distinguished_from_reuse": true,
+    "native5_parent_and_ancestry_byte_binding_present": true,
+    "child_source_explicitly_differs_from_parent": true,
+    "executor_equivalence_claimed": false
+  },
+  "performance": {
+    "normal_outer_target_seconds": 420,
+    "target_met_observed": false,
+    "new_run_walltime_observed_by_reviewer": false,
+    "evaluation_and_save_costs_must_be_separate": true,
+    "monitor_native_calls_theoretical_20_writes": {"base": 656, "new": 352, "requires_19_actual_reuses": true},
+    "remaining_hotspots": ["native per-prefix decode quadratic in each new emission", "row ledger hashing/copying and mu reconstruction", "exhaustive finite parameter/Adam scans", "two FP64 gradient scans per write", "FSDP communications and actor forward/backward", "retrieval and IO"]
+  },
+  "evidence_limits": [
+    "Implementation-side CPU claims were read, not independently rerun",
+    "Synthetic tokenizer/toy Torch optimizer do not prove native-vLLM or 8-rank GPU/FSDP behavior",
+    "Tensor version assumes ordinary Torch in-place operations; data-alias/numpy writes need content proof",
+    "Root reports3339 RUNNING; reviewer did not independently observe remote runtime",
+    "Actual native5 load equality receipts and measured420s performance remain pending",
+    "Standalone SafetyRuntime temperature gate is a preexisting boundary and is not a new diff finding or startup blocker",
+    "Original remote native5 file bytes and actual restoration were not inspected"
+  ],
+  "reviewed_external_entry_status": "V13_LOCAL_PACKET_AND_ACTIVE_DIRECT_PATH_VERIFIED_ROOT_REPORTS3339_RUNNING_ACTUAL_LOAD_AND_SPEED_PENDING",
+  "final_local_packet": {
+    "packet_revision": 13,
+    "source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+    "manifest_sha256": "cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63",
+    "manifest_file_count": 762,
+    "manifest_file_hash_failures": [],
+    "seven_core_files_equal_clean_source_checkout": true,
+    "release_sha256": "17a85334b491a73541d733ae676065b91dda456851d4558aa92a879e181d84a0",
+    "authority_sha256": "fc283828cd1d478d647314e5dcecc52054734dc4b593c98e0676434ca7790592",
+    "dispatch_script_sha256": "fb5b8c0851bf86715d74458ae48ec53ec741b99af007d3184b0af3f1bfd7c31d",
+    "parent_completed_outer": 5,
+    "next_outer": 6,
+    "planned_new_completed_outer": 195,
+    "actual_remote_startup_observed_by_reviewer": false,
+    "actual_native5_load_observed_by_reviewer": false
+  },
+  "v13_active_path": {
+    "generic_fresh0_consumer_called_by_direct_terminal": false,
+    "direct_accounting_inherits_completed_outer": 5,
+    "direct_accounting_inherits_optimizer_writes_per_rank": 100,
+    "direct_accounting_first_child_attempt": 6,
+    "new_confirmed_unresolved_active_path_bug": false,
+    "incorrect_generic_api_active_failure_inference_retracted": true
+  },
+  "root_reported_runtime": {
+    "job_id": 3339,
+    "state": "RUNNING",
+    "provenance": "Root task message, not independent reviewer SSH observation",
+    "native5_load_success_evidence_pending": true,
+    "normal_outer_420s_evidence_pending": true
+  },
+  "this_record_update": {
+    "records_existing_review_only": true,
+    "extra_tests_executed": false,
+    "extra_ssh_executed": false,
+    "package_or_source_modified": false,
+    "training_managed": false
+  }
+}
