@@ -1,0 +1,131 @@
+{
+  "accepted": true,
+  "after": {
+    "applications": [
+      {
+        "gpu_uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395",
+        "pid": 2239529,
+        "used_mib": 574
+      }
+    ],
+    "checked_unix": 1791450307.1623068,
+    "devices": [
+      {
+        "actual_free_mib": 24208,
+        "index": 0,
+        "total_mib": 24564,
+        "uuid": "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 1,
+        "total_mib": 24564,
+        "uuid": "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 2,
+        "total_mib": 24564,
+        "uuid": "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 3,
+        "total_mib": 24564,
+        "uuid": "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 4,
+        "total_mib": 24564,
+        "uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 5,
+        "total_mib": 24564,
+        "uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf"
+      },
+      {
+        "actual_free_mib": 24208,
+        "index": 6,
+        "total_mib": 24564,
+        "uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45"
+      },
+      {
+        "actual_free_mib": 23628,
+        "index": 7,
+        "total_mib": 24564,
+        "uuid": "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+      }
+    ]
+  },
+  "allowed_gpu7_oracle": {
+    "pid": 2239529,
+    "starttick": 914664099,
+    "uid": 1005
+  },
+  "before": {
+    "bytes": 7773,
+    "ctime_ns": 1791450304002842289,
+    "device": 2065,
+    "inode": 466389700,
+    "mtime_ns": 1791450304002842289,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/resident-before-retirement.json",
+    "sha256": "eff2bc0b097d18582749186e8bddef4e9de9b7d4a32b5ea04d1a6bbf125636e9"
+  },
+  "checked_unix": 1791450308.1986015,
+  "cluster": "HKUST",
+  "gpu_uuids": [
+    "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+    "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+    "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+    "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+    "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+    "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+    "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+    "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+  ],
+  "human_authorization": {
+    "bytes": 1064,
+    "ctime_ns": 1791450172748524416,
+    "device": 2065,
+    "inode": 466389385,
+    "mtime_ns": 1791450172748524416,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/human-authorization.json",
+    "sha256": "bc024065e3f45accec98a0725e979067de8fa1c436df734af3cb0bc4c12126c2"
+  },
+  "k4_untouched": true,
+  "locks": [
+    "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/online-experiment.lock",
+    "/data/shaoshitong/search-e1-opsd-debug-20261008/experiment.lock",
+    "/data/shaoshitong/search-e1-opsd-native512-20261008/experiment.lock",
+    "/data/shaoshitong/search-e1-opsd-teacher-counterfactual-20261008/experiment.lock",
+    "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/experiment.lock"
+  ],
+  "new_run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "no_old_grpo_or_opsd_restarted": true,
+  "old_artifacts_retained": true,
+  "preserved_backup": {
+    "bytes": 5907,
+    "ctime_ns": 1791450172772526304,
+    "device": 2065,
+    "inode": 466389386,
+    "mtime_ns": 1791450172772526304,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/resident-backup.json",
+    "sha256": "2a9e8ae0d447ea3fad82d1699c4ee8fd0572e83f94584416178fa03167c6a477"
+  },
+  "resident_terminal": "ABSENT",
+  "retired_resident": {
+    "pid": 4189880,
+    "run_id": "resident-09a3c264ec76419f9c5da1c6eb14b364",
+    "starttick": 922361711,
+    "uid": 1005
+  },
+  "sigkill_sent": false,
+  "signal": "pidfd SIGTERM only exact resident",
+  "superseded_unstarted_scopes": [
+    "M3 counterfactual GPU",
+    "M4 native512 GPU"
+  ]
+}

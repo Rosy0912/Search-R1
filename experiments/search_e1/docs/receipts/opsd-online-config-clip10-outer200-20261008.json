@@ -1,0 +1,256 @@
+{
+  "authorization": {
+    "clip_decision": "保留10，200，hkust存户到本地即可",
+    "eight_gpu_execution": "保留10，200，hkust存户到本地即可",
+    "outer_iterations_decision": "保留10，200，hkust存户到本地即可"
+  },
+  "bootstrap_human_authorization": {
+    "bytes": 1064,
+    "ctime_ns": 1791450172748524416,
+    "device": 2065,
+    "inode": 466389385,
+    "mtime_ns": 1791450172748524416,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/human-authorization.json",
+    "sha256": "bc024065e3f45accec98a0725e979067de8fa1c436df734af3cb0bc4c12126c2"
+  },
+  "bootstrap_launch_environment": {
+    "CUDA_DEVICE_ORDER": "PCI_BUS_ID",
+    "CUDA_VISIBLE_DEVICES": "0,1,2,3,4,5,6,7",
+    "E1_BASE": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008",
+    "E1_INFERENCE_UTIL": "0.85",
+    "E1_PROFILE": "opsd-online-archive100",
+    "E1_RUN_ID": "1d1d67b60f0e46a2afc0536a36ab69b1",
+    "HF_DATASETS_CACHE": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/hf-datasets",
+    "HF_DATASETS_OFFLINE": "1",
+    "HF_HOME": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/hf-cache",
+    "HF_HUB_OFFLINE": "1",
+    "NCCL_IB_DISABLE": "1",
+    "NCCL_P2P_DISABLE": "1",
+    "PYTHONPATH": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runtime/frozen-305/upstream/Search-R1:/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runtime/frozen-305",
+    "PYTHONUNBUFFERED": "1",
+    "TMPDIR": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/tmp",
+    "TOKENIZERS_PARALLELISM": "false",
+    "VLLM_ATTENTION_BACKEND": "XFORMERS",
+    "WANDB_MODE": "offline",
+    "XDG_CACHE_HOME": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/cache"
+  },
+  "bootstrap_resident_backup": {
+    "bytes": 5907,
+    "ctime_ns": 1791450172772526304,
+    "device": 2065,
+    "inode": 466389386,
+    "mtime_ns": 1791450172772526304,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/resident-backup.json",
+    "sha256": "2a9e8ae0d447ea3fad82d1699c4ee8fd0572e83f94584416178fa03167c6a477"
+  },
+  "gates": {
+    "publication": {
+      "bytes": 6956,
+      "ctime_ns": 1791450172728522845,
+      "device": 2065,
+      "inode": 466389384,
+      "mtime_ns": 1791450172728522845,
+      "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/publication.json",
+      "sha256": "bc8e4024ea5d2378d1ff1f32a691a5924b7057e9ac030691fbeeeec68c1b1578"
+    },
+    "resource_transition": {
+      "bytes": 4098,
+      "ctime_ns": 1791450308195171847,
+      "device": 2065,
+      "inode": 466389701,
+      "mtime_ns": 1791450308195171847,
+      "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/resource-transition.json",
+      "sha256": "42e709a2088ec9219a7f9c4543ef967bd017cce71697c9d1317122f157a071db"
+    },
+    "retriever_admission": {
+      "bytes": 799,
+      "ctime_ns": 1791450238985731306,
+      "device": 2065,
+      "inode": 466389695,
+      "mtime_ns": 1791450238985731306,
+      "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/oracle18004-admission.json",
+      "sha256": "f69c5aab88424323c1d63a82e6a0e399ec7f9ad221e07e540d8f5b3884ab810b"
+    },
+    "storage": {
+      "bytes": 2056,
+      "ctime_ns": 1791450237777636339,
+      "device": 2065,
+      "inode": 466389694,
+      "mtime_ns": 1791450237777636339,
+      "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/storage-local-human-exception.json",
+      "sha256": "9395d9a17569468cd4e0159d590c30fd4ff2defea7fbcc5c99749075e32afc31"
+    }
+  },
+  "helper_source_manifest": {
+    "bytes": 4182,
+    "ctime_ns": 1791450172272486995,
+    "device": 2065,
+    "inode": 466389370,
+    "mtime_ns": 1791450124000000000,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/source/revision-7cf2853/opsd_online/source-manifest.json",
+    "sha256": "66cb43dd0830b9a7776bd644a0ef5bbf3d1661a3db3b159cc9e781db582c5233"
+  },
+  "logging": {
+    "all_valid_token_losses": true,
+    "topk": 32,
+    "topk_max_tokens_per_outer": 8192
+  },
+  "owner": {
+    "gpu_uuids": [
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+      "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+    ],
+    "physical_gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "uid": 1005
+  },
+  "paths": {
+    "base": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008",
+    "helper_root": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/source/revision-7cf2853/opsd_online",
+    "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "output_root": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runs",
+    "python": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "receipts": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts",
+    "retriever_url": "http://10.120.17.101:18004/retrieve",
+    "runtime": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runtime/frozen-305",
+    "train": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+    "validation": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl"
+  },
+  "resources": {
+    "minimum_disk_bytes": 107374182400,
+    "shared_gpu_lease_paths": [
+      "/data/shaoshitong/search-e1-opsd-debug-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-native512-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-teacher-counterfactual-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/experiment.lock"
+    ],
+    "startup_minimum_free_mib": 20480,
+    "training_minimum_free_mib": 1024
+  },
+  "retention": {
+    "authorized": true,
+    "latest_complete": 2,
+    "merged_cache_keep": 2,
+    "mode": "rolling",
+    "preserve_outer_end": true,
+    "protected_updates": [
+      0,
+      1,
+      5
+    ]
+  },
+  "run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "runtime_manifest": {
+    "bytes": 37563,
+    "ctime_ns": 1791361759634672207,
+    "device": 2065,
+    "inode": 466324416,
+    "mtime_ns": 1791361759634672207,
+    "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-runtime.sha256.json",
+    "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+  },
+  "sampling": {
+    "attention_backend": "XFORMERS",
+    "backend": "vllm",
+    "batch_questions": 64,
+    "cpu_blocks_expected": 7281,
+    "dtype": "bfloat16",
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.85,
+    "max_model_len": 8192,
+    "max_search_calls": 4,
+    "max_tokens": 500,
+    "model_merge": "original_PEFT_CPU_BF16_latest_adapter_no_best_selection",
+    "num_gpu_blocks_override": 22671,
+    "observation_tokens": 480,
+    "question_order": "seed42_permuted_train_stream_skip_boundary_duplicate_with_recorded_cursor",
+    "questions": 512,
+    "seed": 42,
+    "siblings": 5,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "topk": 3,
+    "turns": 5,
+    "workers": 8
+  },
+  "schema": "opsd-online-config-v1",
+  "scientific": {
+    "chunk": 32,
+    "component_clip": 10,
+    "epochs_per_outer": 1,
+    "global_batch": 32,
+    "grad_norm_clip": 1.0,
+    "learning_rate": 5e-06,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "lora_rank": 16,
+    "loss_reduction": "trajectory_mean",
+    "max_context": 8192,
+    "micro_batch": 1,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "kind": "AdamW",
+      "weight_decay": 0.01
+    },
+    "outer_iterations": 200,
+    "scheduler": "none",
+    "seed": 42,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "teacher_frozen": true,
+    "warmup_updates": 0
+  },
+  "source_commit": "7cf285308572af645676ae85a48fc8359f8c8ccb",
+  "source_model_manifest": {
+    "bytes": 4797,
+    "ctime_ns": 1791450237661627219,
+    "device": 2065,
+    "inode": 466389693,
+    "mtime_ns": 1791450237661627219,
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/receipts/source100-model-files.json",
+    "sha256": "2ef6070a328357b0f9d3a026010aaed0aa3f8840a241bc1021ed9a183e8d75f7"
+  },
+  "train_identity": {
+    "bytes": 31766631,
+    "ctime_ns": 1791118440105231608,
+    "device": 2065,
+    "inode": 466293300,
+    "mtime_ns": 1791118440105231608,
+    "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+    "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f"
+  },
+  "validation_identity": {
+    "bytes": 93609,
+    "ctime_ns": 1791118442950653508,
+    "device": 2065,
+    "inode": 466293374,
+    "mtime_ns": 1791118442950653508,
+    "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/validation.jsonl",
+    "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  }
+}
