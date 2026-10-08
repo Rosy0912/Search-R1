@@ -1,0 +1,14 @@
+{
+  "accepted": true,
+  "context_boundary_fix": "Later context rejection preserves earlier executable search/observation boundary",
+  "frozen_spec_sha256": "0407a576aeb82614b64ac7d7da030173cabae1fa2b3adcadae97de0e0e51d4c2",
+  "gpu_executor_scope_pending": true,
+  "independent_cpu_fixtures": 19,
+  "real_preparation_started": false,
+  "reviewed_unix": 1791437650.0950642,
+  "reviewer": "audit_opsd_acceptance APPROVE",
+  "root_cpu_fixtures": 19,
+  "schema": "opsd-m3-cpu-preparation-review-v1",
+  "skips": 0,
+  "source_manifest_sha256": "e1537835dd94ae16fd5fb80cfc26e75c546d8a7712152d19aa7fb53b7e61e3ab"
+}
