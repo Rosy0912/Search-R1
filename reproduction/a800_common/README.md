@@ -50,3 +50,12 @@ Triton/Inductor/HF caches. The original model and retrieval hashes are verified
 at deployment/runtime. The Mac controller dependency is the user's existing
 `Documents/remote_codex_control/control.py` SSH route; deployment changes no
 SSH/VPN settings or authentication files.
+# Local startup recovery
+
+Ray uses the manifest-bound private `/tmp/g-<execution_id>` root so its Unix
+socket path stays within the system limit. The old failed namespace remains
+unchanged. A new deployment may specify `--initial-probes-source-base` for a
+completed official-model initial0 calibration. Its real labels, fitted heads,
+model/data fingerprints and unchanged scientific producer bytes are verified;
+copied heads receive a new run version with the original provenance. This does
+not inherit trained weights or optimizer state, or claim a new calibration.

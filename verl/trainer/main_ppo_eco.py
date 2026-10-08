@@ -668,8 +668,25 @@ import hydra
 @hydra.main(config_path='config', config_name='ppo_trainer', version_base=None)
 def main(config):
     import os
+    import stat
+    from pathlib import Path
+    from reproduction.common8.topology import _bound_run,validate_base
     assert not ray.is_initialized(), 'Search-G1 requires its private fresh local Ray'
-    ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=os.environ['RAY_TMPDIR'],
+    ray_tmp_dir=os.environ['RAY_TMPDIR'];run=_bound_run()
+    if run is not None and run.get('execution_backend')=='ssh_local':
+        validate_base(Path(os.environ['SEARCH_G1_BASE']),run)
+        assert run['profile']=='common8' and run['training_world_size']==4
+        path=Path(run['ray_tmp_dir'])
+        assert path==Path('/tmp')/('g-'+run['execution_id']) and ray_tmp_dir==str(path), \
+            'Local Ray temporary directory differs from the bound fresh run'
+        current=path.lstat()
+        assert stat.S_ISDIR(current.st_mode) and path.resolve()==path and path.parent.resolve()==path.parent
+        assert current.st_uid==os.getuid() and stat.S_IMODE(current.st_mode)==0o700
+        assert run['ray_tmp_dir_identity']==dict(device=current.st_dev,inode=current.st_ino,
+            uid=current.st_uid,mode=stat.S_IMODE(current.st_mode)), 'Private Ray root identity changed'
+        assert len(os.fsencode(str(path/'session_0000-00-00_00-00-00_000000_2147483647'/'sockets/plasma_store')))<107
+        ray_tmp_dir=str(path)
+    ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=ray_tmp_dir,
              runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
     try:
         ray.get(main_task.remote(config))

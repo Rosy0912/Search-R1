@@ -8,6 +8,7 @@ import copy
 import json
 import os
 import socket
+import stat
 import subprocess
 import time
 import uuid
@@ -19,11 +20,16 @@ from reproduction.common8.formal_contract import CONTRACT_KIND,TARGET_UPDATES,SA
 from reproduction.common8.topology import validate_base
 
 
-def prepare(base,model,official_path,commit):
+def prepare(base,model,official_path,commit,initial_probes_source_base=None):
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
         slurm_job_id=None,execution_id=uuid.uuid4().hex)
     validate_base(base,identity)
+    if initial_probes_source_base is not None:
+        initial_probes_source_base=Path(initial_probes_source_base)
+        validate_base(initial_probes_source_base,identity)
+        assert initial_probes_source_base!=base and initial_probes_source_base.is_dir()
+        assert initial_probes_source_base.stat().st_uid==os.getuid(), 'Initial-probe source owner differs'
     assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
     assert model==Path('/data/search-g1/assets/qwen2.5-3b-instruct').resolve()
     target=base/'logs/run-manifest.json'
@@ -54,8 +60,22 @@ def prepare(base,model,official_path,commit):
     inputs={name:digest(base/'data'/name) for name in
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
+    # Ray's Unix sockets include its timestamp/session/PID suffix. Keep this
+    # private real root short; a symlink alias of the long base is insufficient.
+    ray_tmp_dir=Path('/tmp')/('g-'+identity['execution_id'])
+    assert ray_tmp_dir.parent.resolve()==ray_tmp_dir.parent, 'Ray temporary parent must be a real directory'
+    ray_tmp_dir.mkdir(mode=0o700,exist_ok=False)
+    ray_stat=ray_tmp_dir.lstat()
+    assert stat.S_ISDIR(ray_stat.st_mode) and ray_tmp_dir.resolve()==ray_tmp_dir
+    assert ray_stat.st_uid==os.getuid() and stat.S_IMODE(ray_stat.st_mode)==0o700
+    assert len(os.fsencode(str(ray_tmp_dir/'session_0000-00-00_00-00-00_000000_2147483647'/'sockets/plasma_store')))<107
+    ray_identity=dict(device=ray_stat.st_dev,inode=ray_stat.st_ino,uid=ray_stat.st_uid,mode=0o700)
+    fd=os.open(ray_tmp_dir.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(fd)
+    finally:os.close(fd)
     result=dict(identity,run_id=uuid.uuid4().hex,started_unix=time.time(),
         execution_host=socket.gethostname(),completed_updates=0,
+        ray_tmp_dir=str(ray_tmp_dir),ray_tmp_dir_identity=ray_identity,
         policy_safety_required=True,initial_model=str(model),reference_model=str(model),
         initial_model_sha256=model_hashes,model_revision=REVISION,budget=budget,
         source_commit=commit,source_sha256=source,
@@ -76,6 +96,10 @@ def prepare(base,model,official_path,commit):
         retriever_gpu_lib='/data/search-r1/retriever-gpu-lib',
         python_executable='/data/search-g1/env/bin/python',
         python_headers='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include')
+    if initial_probes_source_base is not None:
+        # Selection metadata only; the pipeline must verify the actual immutable
+        # source probe artifacts and receipts before it can adopt them.
+        result['initial_probe_adoption_source_base']=str(initial_probes_source_base)
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:
@@ -89,5 +113,6 @@ def prepare(base,model,official_path,commit):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',default='/data/search-g1/assets/qwen2.5-3b-instruct')
-    p.add_argument('--official-manifest',required=True);p.add_argument('--source-commit',required=True);a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit)))
+    p.add_argument('--official-manifest',required=True);p.add_argument('--source-commit',required=True)
+    p.add_argument('--initial-probes-source-base');a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base)))

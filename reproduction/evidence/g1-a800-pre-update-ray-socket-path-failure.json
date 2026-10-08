@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "role": "actual_A800_fresh200_pre_optimizer_Ray_socket_failure",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "run_id": "6de29bcb7be741cfa1bfacdf9e34efc9",
+  "execution_id": "565795550d8e4adf978db54159283f2d",
+  "source_commit": "f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c",
+  "observed_unix": 1791429073.5684392,
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef",
+  "pipeline_stage": "FAILED",
+  "pipeline_alive": false,
+  "trainer_claimed": true,
+  "trainer_exit_code": 1,
+  "completed_outer_rows_present": false,
+  "optimizer_opportunity_ledgers_present": false,
+  "completed_outers": 0,
+  "actual_Adam_writes": 0,
+  "failure": "Ray AF_UNIX path exceeds 107 bytes before worker/training initialization",
+  "calibration": {
+    "actual_initial_300_generation_completed": true,
+    "job_exit_code": 0,
+    "source_model": "official Qwen2.5-3B-Instruct",
+    "source_step": 0,
+    "reusable_only_with_exact_model_data_scientific_source_provenance": true
+  },
+  "owned_jobs": [
+    {
+      "name": "retrieval-stage",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": 0
+    },
+    {
+      "name": "retriever",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": null
+    },
+    {
+      "name": "initial-calibration",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": 0
+    },
+    {
+      "name": "probe-server",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": null
+    },
+    {
+      "name": "probe-admission",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": 0
+    },
+    {
+      "name": "trainer",
+      "state": "STOPPED",
+      "leader_birth_matches": false,
+      "alive": false,
+      "exit_code": 1
+    }
+  ],
+  "original_observation_sha256": "f387de34ddfdbaa6f9156c3aa14ca3d6b47ab80b26bf1639fb96c81bf55271ce",
+  "sampler_stopped": true,
+  "historical_sampler_samples": 385,
+  "sampled_startup_peak_mib": {
+    "0": 36175,
+    "1": 36361,
+    "2": 36361,
+    "3": 36265,
+    "5": 18017,
+    "6": 37555
+  },
+  "goal_status": "active",
+  "goal_complete": false,
+  "scope": "actual observed failure, not human pause; preserve original source/logs/probes; fresh namespace retry after published fix and owned cleanup"
+}

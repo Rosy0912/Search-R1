@@ -165,11 +165,15 @@ try:
         NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
     os.chdir(repo)
     python='/data/search-g1/env/bin/python'
-    assert command([python,'-m','reproduction.a800_common.prepare_run','--base',str(base),
+    prepare=[python,'-m','reproduction.a800_common.prepare_run','--base',str(base),
         '--model','/data/search-g1/assets/qwen2.5-3b-instruct',
         '--official-manifest',str(base/'preparation/official-model-manifest-original.json'),
-        '--source-commit',actual],'prepare-run',600,environment)==0
+        '--source-commit',actual]
+    if intent.get('initial_probes_source_base') is not None:
+        prepare.extend(['--initial-probes-source-base',intent['initial_probes_source_base']])
+    assert command(prepare,'prepare-run',600,environment)==0
     run=json.loads((base/'logs/run-manifest.json').read_text());verify_method(method,run)
+    environment['RAY_TMPDIR']=run['ray_tmp_dir']
     assert run['source_sha256']==source and run['execution_backend']=='ssh_local' and run['slurm_job_id'] is None
     assert not (base/'logs/pipeline-launch-claim.json').exists() and not (base/'logs/process-ledger.json').exists()
     state('STARTING_ONE_ACTUAL_LOCAL_PIPELINE',run_id=run['run_id'],execution_id=run['execution_id'])
@@ -257,7 +261,8 @@ env=dict(os.environ)
 for key in tuple(env):
     if key.startswith('SLURM_') or key in ('PYTHONHOME','RAY_ADDRESS','LD_LIBRARY_PATH','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(key,None)
 env.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+env.get('PATH','/usr/bin:/bin'),C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
-env.update({name:str(base/path) for name,path in dict(TMPDIR='tmp',RAY_TMPDIR='ray',HF_HOME='cache/hf',XDG_CACHE_HOME='cache',TRITON_CACHE_DIR='cache/triton',TORCHINDUCTOR_CACHE_DIR='cache/inductor').items()})
+env.update({name:str(base/path) for name,path in dict(TMPDIR='tmp',HF_HOME='cache/hf',XDG_CACHE_HOME='cache',TRITON_CACHE_DIR='cache/triton',TORCHINDUCTOR_CACHE_DIR='cache/inductor').items()})
+env['RAY_TMPDIR']=run.get('ray_tmp_dir',str(base/'ray'))
 log=base/'logs/deployment-pipeline.log'
 with log.open('xb') as out:
     p=subprocess.Popen(['/data/search-g1/env/bin/python','-m','reproduction.a800_common.run_pipeline','--base',str(base)],cwd=repo,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=subprocess.STDOUT,start_new_session=True)
@@ -386,10 +391,17 @@ if owned is not None:
             for name,job in list(ledger['jobs'].items())[:32]:
                 assert re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.-]{0,64}',name)
                 path=Path(job['log']);path.relative_to(base/'logs');stat=owned_file(path)
+                live_registered=[process(record) for record in job['ledger'].values()]
+                live_registered=[record for record in live_registered if record['alive']]
                 jobs.append(dict(name=name,ledger_state=job['state'],leader=process(job['leader']),
+                    live_registered_count=len(live_registered),live_registered_identities=live_registered[:16],
                     exit_code=job.get('exit_code'),log_path=str(path),log_bytes=stat.st_size if stat else None,
                     log_modified_unix=stat.st_mtime if stat else None,exception_diagnostic=diagnostic(path)))
             result.update(owned_jobs=jobs,owned_jobs_truncated=len(ledger['jobs'])>32)
+        cleanup=read('logs/cleanup-status.json')
+        if cleanup:
+            assert cleanup['run_id']==run['run_id'] and cleanup['execution_id']==run['execution_id']
+            result['cleanup_status']={k:cleanup[k] for k in ('cleaned','checked_unix','scope')}
     for name,key in (('logs/pipeline-launch-claim.json','pipeline_claimed'),('logs/training-launch-claim.json','trainer_claimed')):
         result[key]=(base/name).is_file()
     pipeline=read('logs/pipeline-status.json')
@@ -555,6 +567,11 @@ def create_intent(args):
         inputs=inputs, training_world_size=4, training_physical_indices=[0, 1, 2, 3],
         auxiliary_physical_indices=[5, 6], target_updates=200, same_process_after_five=True,
         execution_policy='one explicit execution; inspect the same handle after failure or uncertainty; no automatic retry')
+    if args.initial_probes_source_base is not None:
+        source_base=args.initial_probes_source_base
+        assert re.fullmatch('/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',source_base)
+        assert source_base != value['base']
+        value['initial_probes_source_base']=source_base
     handle = args.handle.resolve() if args.handle is not None else PROJECT / 'preparation' / ('a800-common-deployment-' + identifier + '.json')
     write_once(handle, value)
     print(json.dumps(dict(handle=str(handle), base=value['base'], source_commit=value['source_commit'], intent_created=True)))
@@ -638,9 +655,10 @@ def main():
     parser.add_argument('--official-manifest', type=Path, default=OFFICIAL)
     parser.add_argument('--method', type=Path, default=PROJECT / 'preparation/formal-inline-method.json')
     parser.add_argument('--bundle', type=Path)
+    parser.add_argument('--initial-probes-source-base')
     args = parser.parse_args()
     if args.execute or args.observe or args.launch_prepared:
-        assert args.source_commit is None and args.bundle is None, 'Use the persisted intent without replacement inputs'
+        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
     return 0

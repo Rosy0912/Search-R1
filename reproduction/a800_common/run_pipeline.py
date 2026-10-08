@@ -11,6 +11,7 @@ import json
 import os
 import signal
 import socket
+import stat
 import threading
 import time
 from pathlib import Path
@@ -21,7 +22,37 @@ from reproduction.common8.formal_contract import assert_formal_run
 from reproduction.common8.topology import execution_job_id,validate_base
 
 
+def bound_ray_tmp_dir(run):
+    path=Path(run['ray_tmp_dir'])
+    assert path==Path('/tmp')/('g-'+run['execution_id']), 'Local Ray root differs from the bound fresh run'
+    current=path.lstat()
+    assert stat.S_ISDIR(current.st_mode) and path.resolve()==path and path.parent.resolve()==path.parent
+    assert current.st_uid==os.getuid() and stat.S_IMODE(current.st_mode)==0o700
+    assert run['ray_tmp_dir_identity']==dict(device=current.st_dev,inode=current.st_ino,
+        uid=current.st_uid,mode=stat.S_IMODE(current.st_mode)), 'Private Ray root identity changed'
+    assert len(os.fsencode(str(path/'session_0000-00-00_00-00-00_000000_2147483647'/'sockets/plasma_store')))<107
+    return str(path)
+
+
 class LocalPipeline(Pipeline):
+    def __init__(self,base,run):
+        ray_tmp_dir=bound_ray_tmp_dir(run)
+        super().__init__(base,run)
+        self.env['RAY_TMPDIR']=ray_tmp_dir
+
+    def initial_probe_calibration(self):
+        source=self.run.get('initial_probe_adoption_source_base')
+        if source is None:
+            return super().initial_probe_calibration()
+        assert isinstance(source,str) and source and not any(c in source for c in '\r\n\0')
+        source_base=Path(source);validate_base(source_base,self.run)
+        assert source_base!=self.base and source_base.is_dir()
+        self.stage('AUTHENTICATED_COMPLETED_INITIAL_300_PROBE_ADOPTION',source_base=source)
+        child=self.start('initial-probe-adoption',[self.python,'-m',
+            'reproduction.a800_common.adopt_initial_probes','--base',str(self.base),
+            '--source-base',source],[])
+        self.wait('initial-probe-adoption',child)
+
     def execute(self):
         sampler=None;success=False;finished_stage=None
         try:
@@ -109,6 +140,7 @@ class LocalPipeline(Pipeline):
 
 def launch(base,run):
     base=Path(base).resolve();validate_base(base,run);assert_formal_run(run)
+    assert os.environ.get('RAY_TMPDIR')==bound_ray_tmp_dir(run), 'Launcher Ray root differs from the bound fresh run'
     assert execution_job_id(run) is None and run['execution_host']==socket.gethostname()
     assert supported_execution_role(run,base)=='production'
     assert run['completed_updates']==0 and run['initial_probe_version'] is None
