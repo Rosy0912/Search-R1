@@ -1,0 +1,16 @@
+{
+  "files": {
+    "__init__.py": "cba7bf875fb119750a2b78029af6ec1e760352735d17d8862f437b247e902bd1",
+    "controller.py": "beea33aed80f352dcb241d4536e2358f82117cf1c08a4c210953fdba224c4a7a",
+    "gates.py": "41c39ae57baae5f4877c093d621c236c66e50265376df52ca4e4f8d989231228",
+    "hooks.py": "730a646fb5a3a1dbc1cab085652a566d6d2b15f9b248c0c7ebe9e4766906cadb",
+    "identity.py": "70c833384b5351ce4f9ad78343cee08b7f94751ff23187963c2c7b963e9677c4",
+    "owned_process_audit.py": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26",
+    "prepare_config.py": "b7409e6eed377a514f86ee9c3fcbf55bc76c11235ffa1955c0894c40283bf322",
+    "test_native512.py": "3571655176dbddc1079e4c61acb6baac9627378dfbd77532c358c52b2f4ff3a7",
+    "test_owned_process_audit.py": "d93206a202ebe672713e364c2db104462e9568702cfd4a877aceb9012950dd67",
+    "utils.py": "396dbd1581e716f029bd9310eb1738fefdeb6b52a13437c497d2072e85e7acf0",
+    "worker.py": "9cc509bd1e5d3f09763c17df2ad137f199261c1c1b27b1baaa77a5f45f68207f"
+  },
+  "schema": "native512-m4-source-manifest-v2"
+}

@@ -1,0 +1,78 @@
+{
+  "accepted_cpu_candidate": true,
+  "actual_exit0_required_unchanged": true,
+  "actual_remote_acceptance_claimed": false,
+  "actual_wrapped_comm_production_context": "Root read-only production observation; this author did not probe the node",
+  "all_192_and_2688_native_probes_required_unchanged": true,
+  "fresh_tests": {
+    "m1": {
+      "duration_seconds": 0.344,
+      "failures": 0,
+      "skips": 0,
+      "tests": 27
+    },
+    "m4": {
+      "duration_seconds": 0.454,
+      "failures": 0,
+      "skips": 0,
+      "tests": 26
+    }
+  },
+  "independent_final_review": {
+    "decision": "APPROVE",
+    "failures": 0,
+    "m1_tests": 27,
+    "m4_tests": 26,
+    "narrow_exact_wrapped_pam_review": true,
+    "scanner_sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26",
+    "skips": 0
+  },
+  "input_run_directory_not_owned_gpu_output": true,
+  "kernel_effective_uid_not_proc_directory_owner": true,
+  "kernel_pam_comm_allowlist_exact": [
+    "sd-pam",
+    "(sd-pam)"
+  ],
+  "known_owned_pid_same_starttick_always_blocked_including_uid_change": true,
+  "m4_science_and_fixtures_byte_identical_to_v1": {
+    "__init__.py": true,
+    "hooks.py": true,
+    "identity.py": true,
+    "test_native512.py": true,
+    "worker.py": true
+  },
+  "no_git_or_deploy": true,
+  "no_remote_changes_or_gpu_or_http_or_signals": true,
+  "pam_verified_root_systemd_parent_uid_predating_constraints_unchanged": true,
+  "production_independent_cpu_exclusion_proofs": [],
+  "remote_deployment_claimed": false,
+  "root_cpu_fixtures": {
+    "failures": 0,
+    "m1_tests": 27,
+    "m4_tests": 26,
+    "skips": 0
+  },
+  "scanner_copies_identical": true,
+  "scanner_own_fresh_source_hash_and_end_stat_bound": true,
+  "scanner_sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26",
+  "schema": "m1-m4-ownership-v2-local-candidate-proof-v1",
+  "source_manifests": {
+    "m1": {
+      "files": 7,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_m1_acceptance_v2/SOURCE_MANIFEST.json",
+      "sha256": "45c4c78ec2ae4722276118a529a70420b9ac7a9d531f5a8758f9de71110b16a3"
+    },
+    "m4": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_native512_eval_v2/source-manifest.json",
+      "python_files": 11,
+      "sha256": "d13a81d26ee6155ddd8cef7b9dfb29f09a53349c9118331effbd4c7cda62f661"
+    }
+  },
+  "supersedes_local_candidate_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ownership-v2-review-20261008/local-v2-candidate-proof.json",
+    "sha256": "8139551cf68e3a7e8da3131448a2a86d3538266e4db92fd65c7c806b8a2eb575"
+  },
+  "unknown_environ_never_assumed_empty": true,
+  "unknown_opaque_live_and_unknown_zombie_fail_closed": true,
+  "verified_unix": 1791439214.240129
+}
