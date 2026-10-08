@@ -43029,5 +43029,8 @@
       "role": "active_topd_student_source_overlay"
     }
   ],
-  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization."
+  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization.",
+  "session_id": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+  "final_source_sweep_utc": "2026-10-08T02:42:25.779069+00:00",
+  "original_head_at_final_sweep": "413a10c50f32febaafc83db8170e2b005e0e979f"
 }
