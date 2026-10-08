@@ -1,0 +1,65 @@
+{
+  "role": "requested_hourly_status_authentication_failure",
+  "automation_id": "search-r1-500",
+  "scheduled_trigger_iso": "2026-10-08T02:00:10.782Z",
+  "observed_rejection_unix": 1791424856.104169,
+  "job_id": "3329",
+  "run_id": "840f82d338ee4d3b97b41372e64e08f1",
+  "base": "/mnt/data/shaoshitong/g1f-ef498ac3",
+  "goal_status": "blocked",
+  "objective_incomplete": true,
+  "current_observation_status": "UNKNOWN_SSH_AUTHENTICATION_DENIED",
+  "current_native_state": null,
+  "current_trainer_alive": null,
+  "current_completed_outer": null,
+  "current_processed_opportunities": null,
+  "current_successful_adam_writes": null,
+  "current_skipped_opportunities": null,
+  "current_reward": null,
+  "current_reward_window_mean": null,
+  "current_reward_window_range": null,
+  "current_reward_mean_change": null,
+  "current_evaluation_scores": null,
+  "current_gpu_state": null,
+  "current_gpu_window_peak": null,
+  "current_gpu_cumulative_peak": null,
+  "new_completed_outer_since_last_formal_report": null,
+  "observation_failure_not_trainer_terminal": true,
+  "original_diagnostic_basename": "goal-native3329-observer-diagnostic-1791424856104175000.json",
+  "original_diagnostic_sha256": "a0dfcf025476533463afa36bfef34412213ad362cdc6d4d2f24bdcd8eda8e036",
+  "last_actual_formal_anchor": {
+    "actual_observation_unix": 1791378799.3523192,
+    "report_unix": 1791379058.783437,
+    "completed_outer": 2,
+    "sha256": "35021271523c53c615f1d4f62611fde245e3fa6d7fa09a791ee885307aebe3f1"
+  },
+  "elapsed_since_last_real_formal_observation_seconds": 46056.75184965134,
+  "window_scope": "Attempt time only; no new actual training window available. Do not describe the whole elapsed interval as one hour.",
+  "last_verified_actual_state": {
+    "checked_unix": 1791380488.0233138,
+    "completed_outer": 3,
+    "returned_adam_writes_per_rank": 60,
+    "reward": 0.20620942115783691,
+    "scope": "Historical Oct7 21:41:28 only; not current state."
+  },
+  "latest_locally_observed_scores": {
+    "development512": {
+      "step": 0,
+      "em": 0.177734375,
+      "f1": 0.24118301022177743
+    },
+    "stage64": {
+      "step": 0,
+      "em": 0.21875,
+      "f1": 0.30167993505026125
+    },
+    "scope": "Historical current-run baselines; new scores unavailable, not proven unchanged."
+  },
+  "hourly_actual_anchor_advanced": false,
+  "hourly_monitor_retained": true,
+  "training_stopped_or_restarted": false,
+  "additional_authentication_candidates_tested": false,
+  "runtime_or_configuration_modified": false,
+  "fullfresh200_final51713_checkpoints_and_only_owned_cleanup_unproven": true,
+  "goal_complete": false
+}
