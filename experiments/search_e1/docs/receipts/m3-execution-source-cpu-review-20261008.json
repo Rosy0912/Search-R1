@@ -1,0 +1,130 @@
+{
+  "schema": "opsd-m3-independent-final-source-cpu-review-v1",
+  "reviewed_unix": 1791440118.5833569,
+  "reviewer": "/root/audit_opsd_acceptance",
+  "decision": "APPROVE_SOURCE_AND_CPU_SEMANTICS",
+  "source_directory": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_teacher_counterfactual_execution",
+  "manifest_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_teacher_counterfactual_execution/source-manifest.json",
+  "manifest_sha256": "8be30fd691b3be943fed527631aa1dd4a9e9d032fea93c2fe09683910046009b",
+  "exact_python_inventory_count": 11,
+  "files": [
+    {
+      "name": "acceptance.py",
+      "sha256": "f701c8bd96fd8682a6ad244ee221020b26cf0d3c2d2be34b69b51a2fba590b87",
+      "bytes": 9909,
+      "ast_passed": true
+    },
+    {
+      "name": "admission.py",
+      "sha256": "82b5ed786aeed778b501df09b93456c4f5262cc327172149d2058e779ae58ac5",
+      "bytes": 8983,
+      "ast_passed": true
+    },
+    {
+      "name": "continuation.py",
+      "sha256": "af2cb5aaab866b9c694eb2806ee4ad285221fddfa997f5b58ae78fa1f35aed5b",
+      "bytes": 5823,
+      "ast_passed": true
+    },
+    {
+      "name": "controller.py",
+      "sha256": "4ea18cbad8741d86afeea8a5651492893c7ff62e6e2fd42d08969ecb7401e86a",
+      "bytes": 20845,
+      "ast_passed": true
+    },
+    {
+      "name": "engine.py",
+      "sha256": "652ea0954114e1b8ef449ff0dcd783c7719c23e94a048ceb43c9200016cc1774",
+      "bytes": 3797,
+      "ast_passed": true
+    },
+    {
+      "name": "numeric_regions.py",
+      "sha256": "3dd9854832df5b49749b0747c646856b813634da36e1bc507e80b5dcd2e2b954",
+      "bytes": 1539,
+      "ast_passed": true
+    },
+    {
+      "name": "ownership.py",
+      "sha256": "c4116d29c050273b7bf327e019d0396a6366069c5c6cec25c56fa53de57940b6",
+      "bytes": 1875,
+      "ast_passed": true
+    },
+    {
+      "name": "release_wait.py",
+      "sha256": "3b51247d493657eed1fc94239acb64652ff557a95e3d6209ed3a2a98685fd77f",
+      "bytes": 1149,
+      "ast_passed": true
+    },
+    {
+      "name": "supervision.py",
+      "sha256": "886012a6b160867a12a45a5e6f269f89d510de32648e03cbde2e49b729bb9bea",
+      "bytes": 788,
+      "ast_passed": true
+    },
+    {
+      "name": "test_execution.py",
+      "sha256": "b958bb4a87a21f2c82c797ce7d24c3cddd1baad6c444fdfdf5a40c1984e7643d",
+      "bytes": 23139,
+      "ast_passed": true
+    },
+    {
+      "name": "worker.py",
+      "sha256": "bb86dcf88392b7f7a89622fb8cbb3a0a04fa166025299daa2386b06d97328447",
+      "bytes": 19223,
+      "ast_passed": true
+    }
+  ],
+  "readme_sha256": "020c29f3f0f79e17ca9b74add03a8ce537d352e84aff7cdd8b21aa27133b6d4d",
+  "independent_tests": {
+    "command": "python3 -B -m unittest discover -s experiments/search_e1/control/opsd_teacher_counterfactual_execution -p test_execution.py -v",
+    "exit_code": 0,
+    "tests_run": 34,
+    "skips": 0,
+    "seconds": 0.033,
+    "result": "PASS"
+  },
+  "closed_must_fixes": [
+    "Actual V2 process audit API; preserve raw audit and separately classify only exact live own controller",
+    "Counterfactual teacher presence numeric-only AST overlay; unchanged reference success label and frozen formulas",
+    "Live resource lease guard before each generation, forcing, probe and control computation",
+    "Spawn and monitor failure latch; revoke own leases and never renew partial failed work",
+    "Release reads and proof writes fail closed with locks held until explicit own identity/CUDA release evidence"
+  ],
+  "final_release_review": {
+    "read_failures": "UNCERTAIN; segmented CPU retry while locks held",
+    "proof_write_failures": "retry; do not accept release",
+    "normal_release": "full accepted strict audit plus known PID absent or reused and no own CUDA",
+    "narrow_hold": "only independent opaque_live_process_not_proven_infrastructure blockers, after 55s, with known identity absent/reused and own CUDA clear",
+    "no_opaque_exception_for": [
+      "known owned",
+      "owned parent-chain",
+      "kernel identity unreadable",
+      "zombie",
+      "own CUDA uncertain"
+    ]
+  },
+  "scientific_scope": {
+    "fixed_weights": true,
+    "no_optimizer_or_backward": true,
+    "teacher_generation_and_forced_prefix_loss_distinguished": true,
+    "reference_interventions_change_length_and_positions": "do not interpret as pure semantic or training causal effect",
+    "initial_requires_grad_flags": "PEFT switching may alter flags; all computation remains no_grad; README now explicit"
+  },
+  "pending_actual_runtime_acceptance": [
+    "actual M4 2048 slots and baseline239/epoch203 endpoint proofs",
+    "actual M1/M4 process/GPU release and locks",
+    "M3 real GPU null-effect, pilot16 artifacts/finite/native scalar/replay and remaining48"
+  ],
+  "actual_gpu_or_model_run_by_reviewer": false,
+  "http_requests_by_reviewer": false,
+  "remote_job_changes_by_reviewer": false,
+  "source_changes_by_reviewer": false,
+  "git_by_reviewer": false,
+  "not_claimed": [
+    "experimental efficacy",
+    "causal attribution",
+    "population EM",
+    "real M3 runtime acceptance"
+  ]
+}
