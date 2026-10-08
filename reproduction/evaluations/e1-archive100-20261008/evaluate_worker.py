@@ -94,10 +94,11 @@ def main():
     for relative, expected in plan['strict_reward_source_manifest'].items():
         assert sha(code / relative) == expected, 'Frozen code/data checksum mismatch'
     partial = BASE / 'model.partial'
+    model_root = BASE / 'model' if (BASE / 'model').exists() else partial
     save('verifying_checkpoint', checked_files=0, checkpoint_bytes=spec['checkpoint_bytes'])
     verified = []
     for row in spec['files']:
-        path = partial / row['name']
+        path = model_root / row['name']
         assert path.is_file() and not path.is_symlink()
         before = path.stat()
         assert before.st_size == row['bytes']
@@ -107,8 +108,9 @@ def main():
         assert digest == row['sha256'], 'Checkpoint SHA256 mismatch'
         verified.append(dict(name=row['name'], bytes=before.st_size, sha256=digest))
         save('verifying_checkpoint', checked_files=len(verified), checkpoint_bytes=spec['checkpoint_bytes'])
-    assert not (BASE / 'model').exists()
-    partial.rename(BASE / 'model')
+    if model_root == partial:
+        assert not (BASE / 'model').exists()
+        partial.rename(BASE / 'model')
     (BASE / 'checkpoint-verification.json').write_text(json.dumps(dict(files=verified,
         verified_epoch=time.time(), pinned_hf_revision=plan['model_revision']), indent=2) + '\n')
     gpu = query(['nvidia-smi', '--id=0', '--query-gpu=index,uuid,utilization.gpu,memory.used,memory.total', '--format=csv,noheader,nounits'])
@@ -130,11 +132,14 @@ def main():
         '--temperature', '0', '--seed', '42', '--backend', 'vllm', '--batch-size', '64',
         '--workers', '1', '--retriever-url', endpoint]
     env = os.environ.copy()
-    env.update(CUDA_VISIBLE_DEVICES=parts[1], PYTHONPATH=str(code), PYTHONDONTWRITEBYTECODE='1',
+    # vLLM 0.6.3 parses CUDA_VISIBLE_DEVICES entries as integers. Admission above
+    # still checks the physical UUID; PCI ordering and ordinal0 select that card.
+    env.update(CUDA_VISIBLE_DEVICES='0', CUDA_DEVICE_ORDER='PCI_BUS_ID',
+        PYTHONPATH=str(code), PYTHONDONTWRITEBYTECODE='1',
         TOKENIZERS_PARALLELISM='false', VLLM_ATTENTION_BACKEND='XFORMERS', OMP_NUM_THREADS='8',
         HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1')
     (BASE / 'resolved-inference.json').write_text(json.dumps(dict(command=command,
-        environment={k:env[k] for k in ('CUDA_VISIBLE_DEVICES','PYTHONPATH','VLLM_ATTENTION_BACKEND','OMP_NUM_THREADS')},
+        environment={k:env[k] for k in ('CUDA_VISIBLE_DEVICES','CUDA_DEVICE_ORDER','PYTHONPATH','VLLM_ATTENTION_BACKEND','OMP_NUM_THREADS')},
         historical_equivalence=False, scope='Fresh greedy fixed512; no training or model updates'), indent=2) + '\n')
     started = time.time()
     with (BASE / 'inference.log').open('xb') as log:

@@ -7,8 +7,8 @@
     {
       "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/evaluate_worker.py",
       "published_relative": "reproduction/evaluations/e1-archive100-20261008/evaluate_worker.py",
-      "bytes": 8781,
-      "sha256": "cd3b210cc6cd553145f933ff26d0baebf4310718353ff417188f0351d63ea842"
+      "bytes": 9115,
+      "sha256": "317de56accb38b3509f8f187f716b97ff4a86f6ae4573c4d5c64e3870917c7c0"
     },
     {
       "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/launch_controller.py",
@@ -116,5 +116,11 @@
     "live transfer status/PID reports and runtime logs"
   ],
   "note": "Deployment scripts saved for source durability only; this publication does not launch evaluation.",
-  "transfer_source_added_at": "2026-10-08T03:54:40.829119+00:00"
+  "transfer_source_added_at": "2026-10-08T03:54:40.829119+00:00",
+  "recovery_source_updated_at": "2026-10-08T03:58:30.920028+00:00",
+  "recovery_notes": [
+    "vLLM0.6.3 accepts numericCUDAordinal0; physicalUUIDadmission preserved",
+    "Retry onpromoted modelstillrequiresall12fullSHAverification; priorfailedattemptartifacts mustbearchivedbefore restart",
+    "Frozen inference/reward source andvalidationhashmanifest unchanged"
+  ]
 }

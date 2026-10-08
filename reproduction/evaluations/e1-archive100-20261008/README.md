@@ -37,3 +37,9 @@ Do not rerun a failed worker blindly: checkpoint verification may already have r
 `direct_https_receive.py` preserves existing partial files, verifies source/target prefix SHA before resuming, retains rejected partial copies, and uses at most three concurrent transfers. It flushes and fsyncs each file, reads every full SHA256 back, then registers a single inference worker. It removes only its own random HTTP credential file after transfer.
 
 Generated authentication files, TLS private keys/certificates, runtime status/PID evidence and logs are excluded from this source backup. The 8 MiB route test is only a connectivity/speed sample; completion still requires all twelve file hashes and the inference worker's independent full checkpoint verification.
+
+## vLLM 0.6.3 GPU selection and failed-attempt retry
+
+The wrapper retains the GPU0 physical UUID admission check, and passes `CUDA_VISIBLE_DEVICES=0` with `CUDA_DEVICE_ORDER=PCI_BUS_ID` to the inference child. vLLM 0.6.3 parses visible-device entries as integers and does not accept a UUID string. There is no fallback to another GPU. Confirm the child process's actual GPU UUID using the read-only process inventory after launch.
+
+A retry can revalidate an already promoted `model` directory. It still reads and checks all twelve complete file hashes before inference. Preserve the failed attempt's logs, output and resolved-admission/checkpoint metadata, and verify prior owned workers have exited before a single retry. The worker refuses existing completed, prediction and inference-log artifacts, and never bypasses coverage or checkpoint checks. The frozen generation and scoring modules remain unchanged.
