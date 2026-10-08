@@ -1,0 +1,18 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4424,
+      "sha256": "0f9f12965d8d747077206597597aed6cfc933c95608ceebb305819c9a77d5346"
+    },
+    "selection_roles.py": {
+      "bytes": 20865,
+      "sha256": "96e078f2c703f5b1a50a89090fb5ff8b0e3b4d85cc89d3093335798cfcb1956a"
+    },
+    "test_selection_roles.py": {
+      "bytes": 12449,
+      "sha256": "e1d82bc675e3d4f161a271ebc8546f186092cf30b3f4850c8462e6c8b40cfac2"
+    }
+  },
+  "schema": "opsd-selected-roles-source-manifest-v1",
+  "scope": "Local CPU-only candidate; root commit/push/readback and review required before node execution. No original raw input reread."
+}

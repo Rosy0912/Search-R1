@@ -1,0 +1,12 @@
+{
+  "accepted": true,
+  "does_not_prove_real_data_acceptance": true,
+  "independent_cpu_fixture_count": 14,
+  "independent_reviewer": "prepare_segmented_retriever APPROVE",
+  "manifest_sha256": "292b860e95a5bc6832dc98f9e91d7f61258aea2334e8f1fc8477d40f3f2629be",
+  "reviewed_unix": 1791437407.670788,
+  "root_cpu_fixture_count": 14,
+  "schema": "opsd-selected-role-helper-review-v1",
+  "skipped": 0,
+  "source_sha256": "96e078f2c703f5b1a50a89090fb5ff8b0e3b4d85cc89d3093335798cfcb1956a"
+}
