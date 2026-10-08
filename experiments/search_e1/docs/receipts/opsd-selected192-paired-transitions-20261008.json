@@ -1,0 +1,123 @@
+{
+  "all192_transitions": {
+    "source100->epoch1": {
+      "correct->correct": 67,
+      "correct->invalid": 4,
+      "correct->valid_wrong": 21,
+      "valid_wrong->correct": 12,
+      "valid_wrong->invalid": 4,
+      "valid_wrong->valid_wrong": 84
+    },
+    "source100->update1": {
+      "correct->correct": 87,
+      "correct->valid_wrong": 5,
+      "valid_wrong->correct": 14,
+      "valid_wrong->valid_wrong": 86
+    },
+    "source100->update5": {
+      "correct->correct": 81,
+      "correct->valid_wrong": 11,
+      "valid_wrong->correct": 8,
+      "valid_wrong->valid_wrong": 92
+    },
+    "update1->update5": {
+      "correct->correct": 87,
+      "correct->valid_wrong": 14,
+      "valid_wrong->correct": 2,
+      "valid_wrong->valid_wrong": 89
+    }
+  },
+  "created_unix": 1791441954.140665,
+  "first_update_dataset_net_correct": {
+    "hotpotqa": 5,
+    "nq": 4
+  },
+  "limits": [
+    "Hash-selected balanced training diagnostic questions; not population or native512 EM",
+    "Pair unit is question; no token pseudoreplication",
+    "Only saved checkpoints observed; no exact onset step",
+    "Own privileged teacher rollout differs from training q on original student history",
+    "Descriptive paired transitions do not prove training causal mechanism or hyperparameter root"
+  ],
+  "n_questions": 192,
+  "private_independent_review_sha256": "971b01dd56c550cb1322f006251f59b52bb1db3c41802457ea1c24a735aba38c",
+  "root_reaggregation_verified": true,
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "schema": "opsd-selected192-independent-paired-transitions-v1",
+  "six_cells": [
+    {
+      "dataset": "hotpotqa",
+      "n": 32,
+      "original_group": "correct_correct",
+      "strict_correct": {
+        "epoch1": 27,
+        "source100": 31,
+        "update1": 32,
+        "update5": 32
+      }
+    },
+    {
+      "dataset": "hotpotqa",
+      "n": 32,
+      "original_group": "correct_wrong",
+      "strict_correct": {
+        "epoch1": 12,
+        "source100": 15,
+        "update1": 19,
+        "update5": 13
+      }
+    },
+    {
+      "dataset": "hotpotqa",
+      "n": 32,
+      "original_group": "all5_wrong",
+      "strict_correct": {
+        "epoch1": 1,
+        "source100": 0,
+        "update1": 0,
+        "update5": 1
+      }
+    },
+    {
+      "dataset": "nq",
+      "n": 32,
+      "original_group": "correct_correct",
+      "strict_correct": {
+        "epoch1": 24,
+        "source100": 31,
+        "update1": 31,
+        "update5": 30
+      }
+    },
+    {
+      "dataset": "nq",
+      "n": 32,
+      "original_group": "correct_wrong",
+      "strict_correct": {
+        "epoch1": 15,
+        "source100": 15,
+        "update1": 19,
+        "update5": 13
+      }
+    },
+    {
+      "dataset": "nq",
+      "n": 32,
+      "original_group": "all5_wrong",
+      "strict_correct": {
+        "epoch1": 0,
+        "source100": 0,
+        "update1": 0,
+        "update5": 0
+      }
+    }
+  ],
+  "source_cases_sha256": "f0b2eb93b4a51fbb0041a8b2a4fe244f5cc7abaad749bc37057530f9cd155903",
+  "teacher128": {
+    "gained": 30,
+    "lost": 20,
+    "lost_all_final_protocol_invalid": true,
+    "source_correct": 92,
+    "teacher_correct": 102
+  }
+}

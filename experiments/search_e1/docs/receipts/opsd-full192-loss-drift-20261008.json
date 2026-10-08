@@ -206,9 +206,9 @@
   },
   "relative_teacher_loss_reduction": 0.6650655615706755,
   "report": {
-    "bytes": 6420,
+    "bytes": 7137,
     "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/opsd-full192-loss-drift-findings-20261008.md",
-    "sha256": "963f15a8dfee5a54bad6d820f29c0975faff21c1403eeccb2f693434a7ba4642"
+    "sha256": "5a6164ee924f01994e543ba3e0d70fb3492221abc390974954f226338c4a8593"
   },
   "root_additions": {
     "eligible128_em_reaggregated_from_full_frozen_classifier": true,
@@ -216,6 +216,13 @@
     "teacher_own_rollout_lost": 20,
     "teacher_own_rollout_same_eligible_cohort_base_correct": 92,
     "teacher_own_rollout_same_eligible_cohort_teacher_correct": 102,
+    "update1_to_update5": {
+      "all_lost_protocol_valid_wrong": true,
+      "gained": 2,
+      "lost": 14,
+      "not_population_or_causal_evidence": true,
+      "root_reaggregation_verified": true
+    },
     "updated_unix": 1791441029.149632
   },
   "run_id": "894021c8f55f436f96bb3cb146ab05bb",
@@ -256,6 +263,11 @@
       "bytes": 13042,
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-selection-full-audit-result-20261008.json",
       "sha256": "a16a706ea37405fd58864736b1be9ba9e60eaf73247e5cc8facdbe5bf208fdec"
+    },
+    "independent_paired_transitions": {
+      "bytes": 3166,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-selected192-paired-transitions-20261008.json",
+      "sha256": "acbe8cce7a115223d2384e180c9c5c597fd9f26f6ceeb66745d07c23435ac651"
     },
     "independent_protocol_summary": {
       "bytes": 19265,
