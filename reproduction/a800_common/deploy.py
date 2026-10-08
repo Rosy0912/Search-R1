@@ -418,7 +418,11 @@ def create_intent(args):
 def ssh_command(code):
     spec = importlib.util.spec_from_file_location('a800_existing_control', CONTROL)
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-    return module.ssh('baai-a800') + ['python3 -c ' + shlex.quote(code)]
+    # The existing physical-route netcat has a ten-second idle timeout.
+    # Keep this invocation alive sooner, without editing its route or config.
+    route = [argument.replace('ServerAliveInterval=15', 'ServerAliveInterval=5')
+             for argument in module.ssh('baai-a800')]
+    return route + ['python3 -c ' + shlex.quote(code)]
 
 
 def perform(args):
