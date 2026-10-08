@@ -252,7 +252,58 @@ def memory_observer_admission(config):
     return dict(binding_path=str(path),observer_identity=owner,age_seconds=age,current=report['current'])
 
 
-def require_owned_release(config, run_id, owner, known_children=None):
+def scoped_cpu_processes(config, observer_optional=False):
+    """Only freshly verified external CPU sources are explicit scanner exemptions."""
+    path=Path(config['gates']['scoped_cpu_processes_path']).resolve()
+    require(path==Path(config['paths']['receipts']).resolve()/'scoped-cpu-processes.json','CPU role registry path changed')
+    reference=dict(path=str(path),sha256=sha(path));receipt=bound(reference)
+    require(receipt.get('schema')=='opsd-ablation-scoped-cpu-processes-v1' and receipt.get('accepted') is True
+            and receipt.get('run_id')==config['run_id'] and receipt.get('config_sha256')==config['_config_sha256'],
+            'CPU role registry config/run changed')
+    roles=receipt['roles'];names=[role['role'] for role in roles]
+    require(len(names)==len(set(names)) and (set(names)=={'study_driver','memory_observer'}
+            or observer_optional and names==['study_driver']),'Required exact CPU roles absent or duplicated')
+    devices,apps=inventory();gpu_pids={app['pid'] for app in apps};identities=[];proofs=[]
+    for role in roles:
+        identity=role['identity'];actual=process(identity['pid'])
+        require(all(actual.get(key)==identity.get(key) for key in ('pid','uid','starttick','ppid','pgid','argv','run_id'))
+            and actual['uid']==config['owner']['uid'] and actual.get('run_id')
+            and actual['run_id']!=config['run_id'] and role.get('no_gpu_or_training') is True,
+            'External CPU role live identity/marker changed')
+        argv_sha=hashlib.sha256(json.dumps(actual['argv'],sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+        require(role.get('argv_sha256')==argv_sha and actual['pid'] not in gpu_pids,'CPU role argv/GPU ownership changed')
+        input_value=bound(role['input_config'])
+        if role['role']=='study_driver':
+            require(input_value['study_id']==config['study_id'],'Driver belongs to another study')
+            helper_root=Path(input_value['helper_root']).resolve();name='study_runner.py';option='--study-manifest'
+            manifest_ref=input_value['helper_source_manifest'];publication_ref=input_value['publication'];commit=input_value['source_commit']
+            require(helper_root.name=='opsd_ablation_eval_v1','Driver is outside published ablation evaluator namespace')
+        else:
+            require(input_value=={key:value for key,value in config.items() if not key.startswith('_')},
+                    'Observer is not reading this immutable group config')
+            helper_root=Path(config['paths']['helper_root']).resolve();name='memory_observer.py';option='--config'
+            manifest_ref=config['helper_source_manifest'];publication_ref=config['gates']['publication'];commit=config['source_commit']
+        require(role['helper_source_manifest']==manifest_ref and role['publication']==publication_ref,
+                'CPU role source/publication differs from its actual bound input')
+        publication=bound(publication_ref);manifest=bound(manifest_ref)
+        require(publication.get('accepted') is True and publication.get('branch')=='search-e1'
+            and publication.get('source_commit')==publication.get('remote_readback_sha')==commit
+            and publication.get('source_manifest_sha256')==manifest_ref['sha256'],'CPU role source was not published/read back')
+        source=helper_root/name;entry=manifest['files'][name];digest=entry['sha256'] if isinstance(entry,dict) else entry
+        require(Path(role['source']['path']).resolve()==source and role['source']['sha256']==digest
+            and sha(source)==digest and source.stat().st_size==role['source']['bytes'],'CPU role actual source bytes changed')
+        argv=actual['argv'];prefix=[config['paths']['python']]
+        require(argv[:len(prefix)]==prefix and (argv[1:2]==[str(source)] or argv[1:3]==['-B',str(source)]),
+                'CPU role is not the exact published Python entry')
+        require(argv.count(option)==1 and argv[argv.index(option)+1]==role['input_config']['path'],
+                'CPU role actual input argv differs')
+        identities.append(actual);proofs.append(dict(role=role['role'],identity=actual,source=role['source'],input_config=role['input_config']))
+    require(len({identity['run_id'] for identity in identities})==len(identities), 'CPU roles must use distinct non-training markers')
+    return dict(accepted=True,receipt=reference,identities=identities,roles=proofs,observer_optional=observer_optional,
+                direct_gpu_inventory=devices,checked_unix=time.time())
+
+
+def _require_owned_release(config, run_id, owner, known_children=None, external_driver=False):
     """Reuse the reviewed V2 full scan; only the exact live phase controller is exempt."""
     import importlib.util
     source = Path(config['paths']['helper_root']) / 'owned_process_audit.py'
@@ -276,15 +327,33 @@ def require_owned_release(config, run_id, owner, known_children=None):
              for filename in ('sampling.py', 'trainer.py', 'teacher_diag.py')]
     roots.append(str(Path(config['paths']['output_root']).resolve()))
     references = config.get('gates', {}).get('process_exclusions', [])
+    cpu_roles=scoped_cpu_processes(config)
+    if external_driver:
+        driver=next(role['identity'] for role in cpu_roles['roles'] if role['role']=='study_driver')
+        require(same_process(owner,driver) and owner.get('run_id')==driver['run_id'],
+                'External release owner is not the exact admitted study driver')
+        anchors=known_children or []
+    else:
+        require(owner.get('run_id')==run_id,'Training release owner marker differs')
+        anchors=[owner]
     result = module.audit_same_uid(run_id, owner['uid'], owner['starttick'], known_children or [], roots,
-                                  exclusions=module.load_exclusions(references), ignored_exact=[owner],
-                                  environment_reader=environment_reader, ancestry_anchors=[owner])
+                                  exclusions=module.load_exclusions(references), ignored_exact=[owner]+cpu_roles['identities'],
+                                  environment_reader=environment_reader, ancestry_anchors=anchors)
     require(result['accepted_no_owned_or_opaque'], 'Owned/opaque descendant remains; preserve lock and inspect')
     require(same_process(module.proc_snapshot(owner['pid']), owner), 'Release controller changed after full scan')
-    return dict(accepted=True, checked_unix=time.time(), audit=result, no_signals_sent=True)
+    return dict(accepted=True, checked_unix=time.time(), audit=result, scoped_cpu_processes=cpu_roles,no_signals_sent=True)
 
 
-def require_launch(config, phase, run_id, owner, known_children=None):
+def require_owned_release(config, run_id, owner, known_children=None):
+    return _require_owned_release(config,run_id,owner,known_children)
+
+
+def require_external_study_release(config, run_id, owner, known_children=None):
+    """Driver's observer is external; known phase child ancestry still blocks."""
+    return _require_owned_release(config,run_id,owner,known_children,external_driver=True)
+
+
+def _require_launch(config, phase, run_id, owner, known_children=None, observer_bootstrap=False):
     gates = config.get('gates', {})
     require(os.getuid() == owner['uid'] and same_process(process(owner['pid']), owner), 'Controller owner identity changed')
     require(config.get('schema')=='opsd-ablation-config-v1' and config['run_id']==run_id,'Wrong ablation config/run')
@@ -294,7 +363,8 @@ def require_launch(config, phase, run_id, owner, known_children=None):
     require(transition.get('accepted') is True and transition.get('cluster') == 'HKUST',
             'Missing explicit new-goal eight-GPU transition receipt')
     retrieval = retriever_admission(config, bound(gates.get('retriever_admission')))
-    observer=memory_observer_admission(config)
+    cpu_roles=scoped_cpu_processes(config,observer_optional=observer_bootstrap)
+    observer=(dict(startup_not_yet_spawned=True) if observer_bootstrap else memory_observer_admission(config))
     devices, applications = inventory()
     require([item['index'] for item in devices] == list(range(8)), 'Expected exactly eight physical GPUs')
     require([item['uuid'] for item in devices] == transition.get('gpu_uuids'), 'Physical GPU UUID mapping changed')
@@ -312,4 +382,16 @@ def require_launch(config, phase, run_id, owner, known_children=None):
     resource_limits(config, phase, devices, owned, owned_uuids)
     return dict(accepted=True, checked_unix=time.time(), phase=phase, run_id=run_id,
                 publication=publication, storage=storage, retriever=retrieval,
-                devices=devices, owned_gpu_processes=owned,memory_observer=observer,no_signals_sent=True)
+                devices=devices, owned_gpu_processes=owned,memory_observer=observer,scoped_cpu_processes=cpu_roles,no_signals_sent=True)
+
+
+def require_launch(config, phase, run_id, owner, known_children=None):
+    return _require_launch(config,phase,run_id,owner,known_children)
+
+
+def require_launch_without_memory(config, run_id, owner, known_children=None):
+    """Only the CPU observer bootstrap; all actual GPU phase gates require memory."""
+    require(not known_children,'Observer bootstrap cannot borrow running child GPU ownership')
+    result=_require_launch(config,'cpu-merge',run_id,owner,[],observer_bootstrap=True)
+    result['phase']='observer-startup'
+    return result

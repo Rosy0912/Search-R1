@@ -1,0 +1,56 @@
+{
+  "cpu_fixture_count": 25,
+  "cpu_skipped": 0,
+  "execution_scope": "Candidate source and CPU fixtures only; no Node/GPU/HTTP/Git execution",
+  "files": {
+    "README.md": {
+      "bytes": 12248,
+      "sha256": "61d6f4c2086315e4e3e953506e519721b112b5385a81a35e6454917584ff03c9"
+    },
+    "completion.py": {
+      "bytes": 9988,
+      "sha256": "eb64f16b3b68124b41b1252db3a308ee45f724322ba9b21f0a1be647fe340c15"
+    },
+    "controller.py": {
+      "bytes": 12571,
+      "sha256": "880df450fb07ba1dcebf8f4a04d903338801a91843d0fac63dc7c02b68af0a4d"
+    },
+    "cpu_merge.py": {
+      "bytes": 6288,
+      "sha256": "ec632e3ca477a4714ccbe765c1ec95b7c610f6888205b50b58ef59d2e523768f"
+    },
+    "gates.py": {
+      "bytes": 11796,
+      "sha256": "1e2bf13cb8f558269f076a977914b95a840ad3187f4b519fab7bae2379ba44ce"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "prepare.py": {
+      "bytes": 9973,
+      "sha256": "c2130b70f87b520350e28c580436a67d82147bb6b35739fbf29a108973a30168"
+    },
+    "study_runner.py": {
+      "bytes": 21141,
+      "sha256": "a9a25228d5836b7559bacf7173b25157707685ebf9ee667b92c37c8f18df5b5d"
+    },
+    "summary.py": {
+      "bytes": 14030,
+      "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+    },
+    "test_eval.py": {
+      "bytes": 29219,
+      "sha256": "282523c335f93cb84d1e2cbdf0b962501216ad1f827f29e441d5c4a90a731c06"
+    },
+    "utils.py": {
+      "bytes": 12320,
+      "sha256": "cc93226760ecf9b3c27bff0bf3f2fd7a2f5e01aedb7e0ff58d0a3ca464816d3b"
+    },
+    "worker.py": {
+      "bytes": 13680,
+      "sha256": "33ab79dc7b9b3d270fe0950ce4c00c8f4955340e2376f26879101588d011587b"
+    }
+  },
+  "schema": "opsd-ablation-eval-source-manifest-v1"
+}

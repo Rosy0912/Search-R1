@@ -20,3 +20,13 @@
 执行依赖仍须真实区分：新七组的HKUST本地盘例外已一次询问，未获新scope答复前只推进CPU实现、审查、发布和备份。旧run的例外不能视为新goal批准。新GPU尚未开始；配置、CPUfixtures、Git发布、空闲GPU都不等于已启动或完成消融。
 
 每组10outer的原始末adapter将立即独立native512；共同BF16 zero和FP16 zero/P/J另评，共5632正式预测。教师自主诊断与训练原Dhistory上的q分开。最终报告比较各组真实K/Adam/曝光预算、逐题严格EM与gain/lost/协议/搜索，并明确支持、削弱和未知的归因边界。
+
+## Sequential evaluation entry prepared on 2026-10-09
+
+The independent `opsd_ablation_eval_v1` entry is now implemented. It waits for each actual training child rc0, ten complete outer chains, the raw final checkpoint and full owned GPU release, then evaluates that group immediately. Seven main BF16 raw10 endpoints, common BF16/FP16 zeros and P/J FP16 deployments total 5632 official predictions. Transparent hooks and zero-effect checks are extra controls, not part of that denominator. The driver independently starts a source-bound CPU memory observer before each group; only observer bootstrap can lack a live memory sample, while every actual GPU phase requires one. Exact CPU-role identity separates the study driver/independent observer from phase descendants without relaxing foreign or opaque-process rejection.
+
+The final local candidates passed 52 necessary training CPU fixtures and 25 evaluator CPU fixtures, without skips. These establish CPU contracts only; actual eight-rank updates, FP16 memory/scaler behavior and complete native512 outputs remain unmeasured. No new GPU job has started. The executor explicitly requires the HKUST node-local exception to cover this new seven-group goal; the single pending input question has not received a reply. Preparation proceeds while that input remains pending.
+
+Old CP374 backup is now copying from the preserved canonical checkpoint, with all 18 source members freshly inventoried. It is not yet a complete local backup. The earlier CP89 and full192 transfers failed when SSH was closed by the remote host (actual rc255); originals and partial files remain. Full192 native checksum rsync has resumed under its existing backup authorization. A separate prefix-verified recovery helper is being prepared for CP89; no completed-transfer claim is made.
+
+The independent `opsd_backup_resume_v1` helper has now passed eight necessary synthetic CPU fixtures and root code review. It regenerates and hashes the exact failed CP89 USTAR prefix on the node before sending only the suffix; Mac copies into a new private destination and accepts only actual transport rc0 plus strict full archive/member SHA readback. This helper does not modify the failed partial or change training. Its implementation readiness is separate from actual restored-transfer success.

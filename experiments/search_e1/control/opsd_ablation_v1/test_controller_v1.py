@@ -110,9 +110,67 @@ class Control(unittest.TestCase):
              patch.object(gates,'bound',return_value=transition),patch.object(gates,'scoped',side_effect=lambda c,r:r),\
              patch.object(gates,'publication_admission',return_value={}),patch.object(gates,'storage_admission',return_value={}),\
              patch.object(gates,'retriever_admission',return_value={'owner':{'pid':77}}),\
+             patch.object(gates,'scoped_cpu_processes',return_value={'accepted':True,'identities':[]}),\
              patch.object(gates,'memory_observer_admission',return_value={}),\
              patch.object(gates,'inventory',return_value=(cards,[dict(pid=9,gpu_uuid=cards[0]['uuid'],used_mib=500)])):
             with self.assertRaisesRegex(gates.Hold,'controller'):gates.require_launch(cfg,'sampling-running','a'*32,owner,[])
+    def test_observer_bootstrap_only_missing_memory_not_gpu_phase_bypass(self):
+        cfg=prepare.template('/group','C0','study','/study');cfg.update(run_id='a'*32,_config_sha256='b'*64)
+        owner=dict(pid=9,uid=1005,starttick=3)
+        cards=[dict(index=i,uuid=u,actual_free_mib=23000) for i,u in enumerate(cfg['owner']['gpu_uuids'])]
+        transition=dict(accepted=True,cluster='HKUST',gpu_uuids=cfg['owner']['gpu_uuids'])
+        with patch.object(gates.os,'getuid',return_value=1005),patch.object(gates,'process',return_value=owner),\
+             patch.object(gates,'bound',return_value=transition),patch.object(gates,'scoped',side_effect=lambda c,r:r),\
+             patch.object(gates,'publication_admission',return_value={}),patch.object(gates,'storage_admission',return_value={}),\
+             patch.object(gates,'retriever_admission',return_value={'owner':{'pid':77}}),\
+             patch.object(gates,'scoped_cpu_processes',return_value={'accepted':True,'identities':[]}),\
+             patch.object(gates,'memory_observer_admission',side_effect=gates.Hold('observer not created')) as memory,\
+             patch.object(gates,'inventory',return_value=(cards,[])):
+            self.assertEqual(gates.require_launch_without_memory(cfg,'a'*32,owner,[])['phase'],'observer-startup')
+            memory.assert_not_called()
+            with self.assertRaisesRegex(gates.Hold,'observer not created'):gates.require_launch(cfg,'sampling-start','a'*32,owner,[])
+            with self.assertRaisesRegex(gates.Hold,'running child'):gates.require_launch_without_memory(cfg,'a'*32,owner,[owner])
+
+    def test_dynamic_cpu_roles_actual_published_sources_argv_and_gpu_refusal(self):
+        cp=sys.modules[PACKAGE+'.checkpoint']
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);cfg=prepare.template(str(root/'group'),'C0','study',str(root))
+            cfg.update(run_id='a'*32,source_commit='c'*40);cfg['paths']['python']='/python'
+            train_root=Path(cfg['paths']['helper_root']);train_root.mkdir(parents=True)
+            eval_root=root/'opsd_ablation_eval_v1';eval_root.mkdir()
+            def published(helper,name,commit):
+                source=helper/name;source.write_text('# synthetic CPU fixture; never executed\n')
+                ref=cp.fileproof(source);manifest=cp.exclusive_json(helper/'manifest.json',dict(files={name:ref}))
+                publication=cp.exclusive_json(helper/'publication.json',dict(accepted=True,branch='search-e1',
+                    source_commit=commit,remote_readback_sha=commit,source_manifest_sha256=manifest['sha256']))
+                return ref,manifest,publication
+            driver_source,driver_manifest,driver_pub=published(eval_root,'study_runner.py','d'*40)
+            observer_source,observer_manifest,observer_pub=published(train_root,'memory_observer.py','c'*40)
+            cfg['helper_source_manifest']=observer_manifest;cfg['gates']['publication']=observer_pub
+            group_config=cp.exclusive_json(root/'group-config.json',cfg);cfg['_config_sha256']=group_config['sha256']
+            study=cp.exclusive_json(root/'study.json',dict(study_id='study',helper_root=str(eval_root),
+                helper_source_manifest=driver_manifest,publication=driver_pub,source_commit='d'*40))
+            roles=[];actuals={}
+            for i,(name,source,manifest,pub,input_ref,option) in enumerate([
+                ('study_driver',driver_source,driver_manifest,driver_pub,study,'--study-manifest'),
+                ('memory_observer',observer_source,observer_manifest,observer_pub,group_config,'--config')]):
+                identity=dict(pid=100+i,uid=1005,starttick=20+i,ppid=1,pgid=100+i,run_id=name+'-independent',
+                    argv=['/python',source['path'],option,input_ref['path']])
+                actuals[identity['pid']]=identity
+                roles.append(dict(role=name,identity=identity,source=source,helper_source_manifest=manifest,
+                    publication=pub,input_config=input_ref,no_gpu_or_training=True,argv_sha256=cp.object_sha(identity['argv'])))
+            registry=Path(cfg['gates']['scoped_cpu_processes_path']);registry.parent.mkdir(parents=True)
+            cp.exclusive_json(registry,dict(schema='opsd-ablation-scoped-cpu-processes-v1',accepted=True,
+                run_id=cfg['run_id'],config_sha256=cfg['_config_sha256'],roles=roles))
+            with patch.object(gates,'process',side_effect=lambda pid:actuals[pid]),patch.object(gates,'inventory',return_value=([],[])):
+                proof=gates.scoped_cpu_processes(cfg);self.assertEqual(len(proof['identities']),2)
+                actuals[100]=dict(actuals[100],argv=['/python','foreign.py'])
+                with self.assertRaises(gates.Hold):gates.scoped_cpu_processes(cfg)
+                actuals[100]=roles[0]['identity']
+            with patch.object(gates,'process',side_effect=lambda pid:actuals[pid]),\
+                 patch.object(gates,'inventory',return_value=([],[dict(pid=100)])):
+                with self.assertRaisesRegex(gates.Hold,'CPU role argv/GPU'):gates.scoped_cpu_processes(cfg)
+
     def test_http_proxy_original_object_args_exception_and_private_logging(self):
         response=types.SimpleNamespace(status_code=200,text='{"result":[]}',json=lambda:{'result':[]})
         original=types.SimpleNamespace(post=lambda *a,**k:response);handle=io.StringIO()

@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4805,
+      "sha256": "18ebd245e9a000cd0ac487b291a0cbdecfd83be6bec2c4fd00d8048d14c6b3d1"
+    },
+    "backup.py": {
+      "bytes": 31321,
+      "sha256": "4d6a536854ee4de79a104040f9f7f7138b300e0dba63201a8eeb254047bf4d1d"
+    },
+    "test_resume.py": {
+      "bytes": 9404,
+      "sha256": "3c8f9c8eefc0808c639ad059a8e487d3be62af19791484c869fa37a8877c8dd7"
+    }
+  },
+  "schema": "opsd-cp89-prefix-resume-source-v1"
+}

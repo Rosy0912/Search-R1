@@ -58,7 +58,8 @@ def template(base, variant='C0', study_id=None, study_base=None):
             teacher_strata=['self_pair','CW','CC'],training_or_validation_denominator_contribution=0),
         retention=dict(mode='keep_all',authorized=False,merged_cache_cleanup_authorized=False),
         gates=dict(publication=None,storage=None,resource_transition=None,retriever_admission=None,
-            memory_binding_path=base+'/receipts/memory-binding.json'),
+            memory_binding_path=base+'/receipts/memory-binding.json',
+            scoped_cpu_processes_path=base+'/receipts/scoped-cpu-processes.json'),
         source_model_manifest=None,runtime_manifest=None,helper_source_manifest=None,
         train_identity=None,validation_identity=None,common_cohort_manifest=None,common_initial_adapter_manifest=None,
         common_initial_adapter_tensor_sha256=None,
@@ -103,6 +104,8 @@ def validate_config(config, launch=False):
     if not isinstance(config.get('source_commit'),str) or len(config['source_commit'])!=40: reasons.append('Published source commit missing')
     require(config['retention']['mode']=='keep_all' and config['retention']['authorized'] is False,'No historical checkpoint deletion authorized')
     require(config['resources']['study_lease_path']==fixed['resources']['study_lease_path'],'Ablation common GPU lease changed')
+    require(config['gates']['scoped_cpu_processes_path']==fixed['gates']['scoped_cpu_processes_path'],
+            'CPU role registry must be the planned group receipt path')
     if launch: require(not reasons,'HOLD: '+'; '.join(reasons))
     return reasons
 
