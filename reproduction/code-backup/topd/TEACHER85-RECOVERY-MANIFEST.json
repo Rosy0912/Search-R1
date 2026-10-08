@@ -12,6 +12,10 @@
       "sha256": "63f57214e0df2e7e78b5056f93ff4fdc000ddca8704a3006636db1884f5b4901",
       "size": 1281
     },
+    "reproduction/code-backup/topd/loose/hpc3-cpu-transfer-20261008.sbatch": {
+      "sha256": "2f43a2b7e16c9463ce5af3b9c52dd287e095087169294a64396f8e5e1356e0f5",
+      "size": 401
+    },
     "reproduction/code-backup/topd/loose/migrate_topd_to_hpc3_stream.py": {
       "sha256": "1b572db1c21b7707415cd6ae45235a29343e3263f1eb866aaaac75a384910803",
       "size": 12506
