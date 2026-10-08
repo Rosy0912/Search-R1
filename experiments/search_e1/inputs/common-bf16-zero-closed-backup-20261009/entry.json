@@ -1,0 +1,77 @@
+{
+  "acceptance": "actual rsync exit0, fixed source metadata unchanged after transfer, exact local regular-file list and every member fresh SHA; no model/reward re-evaluation",
+  "actual_started": false,
+  "actual_terminal": {
+    "bytes": 9040,
+    "ctime_ns": 1791496092791305054,
+    "device": 2065,
+    "inode": 466429463,
+    "mode": 33204,
+    "mtime_ns": 1791496092787305071,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/bf16_zero/actual-terminal.json",
+    "sha256": "086ab8c00c684c2651140594d584b90b37ee2fc388825109ab9a1609e42572e4"
+  },
+  "actual_worker_wait_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "argv": [
+    "/usr/bin/rsync",
+    "-a",
+    "--partial",
+    "--progress",
+    "--from0",
+    "--files-from=/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-bf16-zero-closed-backup-20261009/files-from.private.nul",
+    "--rsync-path=env -u E1_RUN_ID CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 rsync",
+    "-e",
+    "/usr/bin/ssh -B en0 -oProxyCommand=none -oProxyJump=none -oControlMaster=no -S none -oBatchMode=yes -oConnectTimeout=10",
+    "hkust1:/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/bf16_zero/",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-bf16-zero-closed-backup-20261009/files/"
+  ],
+  "backup_is_training_dependency": false,
+  "bytes": 33040499,
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-bf16-zero-closed-backup-20261009/files",
+  "files": 588,
+  "files_from": {
+    "bytes": 20865,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-bf16-zero-closed-backup-20261009/files-from.private.nul",
+    "sha256": "0797e74f265fbe00b2bca73f2c1524d367ca1cacfe63a0fd03dd9516cdad2edc"
+  },
+  "inventory": {
+    "bytes": 267061,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/common-bf16-zero-closed-backup-20261009/source-inventory.json",
+    "sha256": "80ef026dbff05146934f69033a04a1eda5bde4313dec492c00703fd8c6de5bf1"
+  },
+  "no_delete": true,
+  "no_gpu": true,
+  "no_node_writes": true,
+  "observed_local_free_bytes": 55685017600,
+  "parent_controller_may_still_be_running": true,
+  "phase": {
+    "bytes": 76658,
+    "ctime_ns": 1791496096723288762,
+    "device": 2065,
+    "inode": 466429469,
+    "mode": 33204,
+    "mtime_ns": 1791496096719288779,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/bf16_zero/phase-complete.json",
+    "sha256": "09d430b301fdf453cdb9ac9a0e5d371a40640bbb85a1261cddcc2520025bc94f"
+  },
+  "phase_closed_accepted": true,
+  "primary_slots": 512,
+  "run_id": "d6fb70ec8f374ff8b8a841b2e6f15450",
+  "schema": "search-e1-closed-single-baseline-phase-backup-entry-v1",
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/bf16_zero",
+  "source_helper": {
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/outer-backup-v2-554c52c/opsd_ablation_outer_backup_v2/backup.py",
+    "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "strict_hits": 239,
+  "version": "bf16_zero"
+}
