@@ -5,9 +5,11 @@ tolerance is defined here. Unsupported boundaries reject the current batch.
 """
 import codecs
 import copy
+import ast
 from contextlib import contextmanager
 from contextvars import ContextVar
 import hashlib
+import inspect
 import json
 import math
 import os
@@ -15,6 +17,8 @@ from pathlib import Path
 import re
 import sys
 import time
+import textwrap
+import types
 
 
 PROTOCOL = 'tree_sampled_prefix_legacy_semantics_v1'
@@ -26,6 +30,7 @@ _VALIDATION_TOKENIZERS = {}
 _TOKENIZER_FILE_SHA_CACHE = {}
 _ENCODER_SEMANTICS_CACHE = None
 _ACTIVE_VALIDATION_CONTEXT = ContextVar('tree_raw_validation_context',default=None)
+_HF_DECODE_CODE_CHECKS = {}
 
 
 def require(value,message):
@@ -201,6 +206,72 @@ def _invalid_utf8_events(data,byte_start,token_prefix_length,phase):
     return events
 
 
+def _same_hf_code(left,right,skip_doc=False):
+    fields=('co_code','co_names','co_varnames','co_argcount','co_posonlyargcount','co_kwonlyargcount','co_flags')
+    if not all(getattr(left,key)==getattr(right,key) for key in fields):return False
+    left_consts=left.co_consts[1:] if skip_doc else left.co_consts
+    right_consts=right.co_consts[1:] if skip_doc else right.co_consts
+    return len(left_consts)==len(right_consts) and all(
+        _same_hf_code(a,b) if isinstance(a,types.CodeType) and isinstance(b,types.CodeType) else _same_binding(a,b)
+        for a,b in zip(left_consts,right_consts))
+
+
+def _approved_hf_decode_method(method,body_sha,defaults=(False,None)):
+    """Bind live code to the inspected HF wrapper, not just its class/name."""
+    if not _same_binding(method.__defaults__,defaults) or method.__kwdefaults__ is not None:return False
+    code=method.__code__;key=(code,body_sha)
+    if key not in _HF_DECODE_CODE_CHECKS:
+        try:
+            source=textwrap.dedent(inspect.getsource(method));node=ast.parse(source).body[0]
+            body=node.body
+            if isinstance(body[0],ast.Expr) and isinstance(body[0].value,ast.Constant) and isinstance(body[0].value.value,str):
+                body=body[1:]
+            digest=hashlib.sha256(ast.dump(ast.Module(body=body,type_ignores=[]),
+                include_attributes=False).encode()).hexdigest()
+            expected=next(value for value in compile(source,'<tree-hf-decode-binding>','exec',
+                dont_inherit=True).co_consts if isinstance(value,types.CodeType))
+            # Dedenting changes only the wrapper docstring's whitespace.
+            valid=digest==body_sha and _same_hf_code(code,expected,skip_doc=True)
+        except (OSError,TypeError,ValueError,SyntaxError,StopIteration):valid=False
+        _HF_DECODE_CODE_CHECKS[key]=valid
+    return _HF_DECODE_CODE_CHECKS[key]
+
+
+def _bound_fast_prefix_decoder(tokenizer):
+    """Only the inspected, unmodified Qwen2 HF wrappers authorize native decode."""
+    try:
+        from transformers.models.qwen2.tokenization_qwen2_fast import Qwen2TokenizerFast
+        from transformers.tokenization_utils_base import PreTrainedTokenizerBase
+        from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
+        from transformers.utils.generic import to_py_obj
+        from tokenizers import Tokenizer
+    except ImportError:return None
+    if (type(tokenizer) is not Qwen2TokenizerFast or type(tokenizer.backend_tokenizer) is not Tokenizer or
+        tokenizer.backend_tokenizer is not tokenizer._tokenizer or tokenizer.clean_up_tokenization_spaces is not False or
+        PreTrainedTokenizerBase.decode.__globals__.get('to_py_obj') is not to_py_obj or
+        getattr(tokenizer.decode,'__func__',None) is not PreTrainedTokenizerBase.decode or
+        getattr(tokenizer._decode,'__func__',None) is not PreTrainedTokenizerFast._decode):return None
+    # Both HF 4.44.2 (local CPU) and 4.46.3 (own training environment) have
+    # these bodies: to_py_obj(list[int]) -> _decode -> native decode, cleanup=false.
+    if not (_approved_hf_decode_method(PreTrainedTokenizerBase.decode,
+        '849e5b7280369da401eb82a89c67692a7b424296001bab4ed7eaf8d379144144') and
+        _approved_hf_decode_method(PreTrainedTokenizerFast._decode,
+        'd651226d2aba095d2180450e48566362685e0a0deee5094e13fc3b23e99ca08d') and
+        _approved_hf_decode_method(to_py_obj,
+        '11c54124f7603ea1e7541d5b06e24e8ef7c5493c6dc2a5d74b31215ebb8ee152',defaults=None)):return None
+    return tokenizer.backend_tokenizer.decode
+
+
+def _decode_method_binding(tokenizer):
+    public=tokenizer.decode;private=getattr(tokenizer,'_decode',None)
+    functions=(getattr(public,'__func__',public),getattr(private,'__func__',private))
+    converter=getattr(functions[0],'__globals__',{}).get('to_py_obj')
+    return (public,private,*[(getattr(method,'__code__',None),
+        copy.deepcopy(getattr(method,'__defaults__',None)),copy.deepcopy(getattr(method,'__kwdefaults__',None)))
+        for method in functions],converter,getattr(converter,'__code__',None),
+        copy.deepcopy(getattr(converter,'__defaults__',None)),copy.deepcopy(getattr(converter,'__kwdefaults__',None)))
+
+
 def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_context=None):
     _context=_context or _validation_context(tokenizer,identity)
     require(type(_context) is _TokenizerValidationContext and _context.tokenizer is tokenizer and
@@ -242,7 +313,12 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
         pending_text=pending.decode('utf-8',errors='replace')
         expected=stable+pending_text
         if check_native_prefixes:
-            native=tokenizer.decode(ids[:stop],skip_special_tokens=True)
+            if _context.native_prefix_decoder is not None:
+                # Preserve HF _decode's only side effect; IDs are already real
+                # Python integers, so its generic framework conversion is inert.
+                tokenizer._decode_use_source_tokenizer=False
+                native=_context.native_prefix_decoder(ids[:stop],skip_special_tokens=True)
+            else:native=tokenizer.decode(ids[:stop],skip_special_tokens=True)
             require(isinstance(native,str) and native==expected,
                     'Native prefix decode differs from proven ByteLevel replacement/cleanup')
         prefix_hash=stable_hash.copy()
@@ -345,12 +421,15 @@ class _TokenizerValidationContext:
         self.actions={}
         self.native_methods=(tokenizer.decode,tokenizer.encode,tokenizer.convert_ids_to_tokens)
         self.backend=tokenizer.backend_tokenizer
+        self.decode_method_binding=_decode_method_binding(tokenizer)
+        self.native_prefix_decoder=_bound_fast_prefix_decoder(tokenizer)
 
     def check_runtime(self):
         tokenizer=self.tokenizer;identity=self.identity
         path,sha=_tokenizer_file_identity(tokenizer)
         require(tokenizer.backend_tokenizer is self.backend and
             (tokenizer.decode,tokenizer.encode,tokenizer.convert_ids_to_tokens)==self.native_methods and
+            _same_binding(_decode_method_binding(tokenizer),self.decode_method_binding) and
             path==identity['tokenizer_path'] and sha==identity['tokenizer_json_sha256'] and
             type(tokenizer).__module__+'.'+type(tokenizer).__qualname__==identity['tokenizer_class'] and
             tokenizer.pad_token_id==identity['pad_token_id'] and tokenizer.eos_token_id==identity['eos_token_id'] and
@@ -359,6 +438,7 @@ class _TokenizerValidationContext:
             'Actual registered tokenizer runtime identity drifted')
 
     def check_complete(self):
+        self.check_runtime()
         require(_current_tokenizer_identity(self.tokenizer)==self.identity,
                 'Actual registered tokenizer file/path/encoder/decode identity drifted')
 
