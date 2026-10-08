@@ -88,7 +88,9 @@ def parent_manifest():
             'actual parent manifest bytes changed')
     manifest = json.loads(raw)
     identity = manifest['identity']
-    expected = dict(job_id=PARENT_JOB, run_id=PARENT_RUN, code_commit=PARENT_COMMIT,
+    # Native milestone identity omits run_id; the exact path/SHA and saved
+    # parent provenance bind the run instead.
+    expected = dict(job_id=PARENT_JOB, code_commit=PARENT_COMMIT,
         config_sha256=PARENT_CONFIG_SHA256, completed_step=PARENT_COMPLETED_STEP,
         actual_update_limit=200)
     require(manifest['status'] == 'COMPLETE_SAME_WORLD_STATE_SAVED'
