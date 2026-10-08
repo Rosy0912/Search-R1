@@ -1,0 +1,99 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 14921,
+      "name": "stratified-paired-summary.json",
+      "sha256": "7fb1130f6831c6738505c3de370a190728c9d25d7de184dd6d31b96f9e5aa207"
+    },
+    {
+      "bytes": 3963,
+      "name": "stratified-paired.csv",
+      "sha256": "0a2771b3d1c9e2f2baf6f4be4d826ea8f3402200b386fe3a308d7053cfb2e104"
+    },
+    {
+      "bytes": 1379,
+      "name": "stratified-paired-notes.zh.md",
+      "sha256": "f9f02412bf29825c25b6fe1908a7f0e90581da81a7b9bfdde6fe9d26cec6bb1c"
+    }
+  ],
+  "coverage": {
+    "complete_comparisons": 2,
+    "complete_models": 3,
+    "complete_primary_slots": 1536,
+    "expected_comparison_strata": 54,
+    "expected_comparisons": 18,
+    "expected_models": 11,
+    "expected_primary_slots": 5632,
+    "full5632_model_records_complete": false,
+    "pending_models": [
+      "C1",
+      "M",
+      "R",
+      "W",
+      "P",
+      "J",
+      "P_fp16",
+      "J_fp16"
+    ]
+  },
+  "input_manifest": {
+    "bytes": 2593,
+    "sha256": "167fce90dad491d9a3997621f6fe0dd27b3cb4ed4a23ce0850eb6b39cb2fc9a6"
+  },
+  "inputs": {
+    "C0": {
+      "native_counts_reproduced": true,
+      "native_private_primary_records_SHA_match": true,
+      "records": {
+        "bytes": 495307,
+        "sha256": "150dfec19072b825bf41bdfd7052399e4b54362526c34415d3aeff216f82d29e"
+      },
+      "summary": {
+        "bytes": 78934,
+        "sha256": "6e07ca2c9e60c201ae4f956ad4eae4f2be638f0579f98250c91d95bb434f7c02"
+      },
+      "version": "raw10_bf16"
+    },
+    "bf16_zero": {
+      "native_counts_reproduced": true,
+      "native_private_primary_records_SHA_match": true,
+      "records": {
+        "bytes": 994765,
+        "sha256": "954d7487eb885b3cea50d1ebec8ae5e19728faec70808847e701543b7e250f28"
+      },
+      "summary": {
+        "bytes": 104176,
+        "sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6"
+      },
+      "version": "bf16_zero"
+    },
+    "fp16_zero": {
+      "native_counts_reproduced": true,
+      "native_private_primary_records_SHA_match": true,
+      "records": {
+        "bytes": 994765,
+        "sha256": "954d7487eb885b3cea50d1ebec8ae5e19728faec70808847e701543b7e250f28"
+      },
+      "summary": {
+        "bytes": 104176,
+        "sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6"
+      },
+      "version": "fp16_zero"
+    }
+  },
+  "no_new_scientific_test": true,
+  "no_question_or_row_identifiers": true,
+  "no_remote_IO": true,
+  "no_rescoring": true,
+  "observed_unix": 1791503500.0258298,
+  "pure_function_source": {
+    "bytes": 14030,
+    "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+  },
+  "schema": "opsd-ablation-stratified-derivation-v1",
+  "source_code": {
+    "bytes": 17688,
+    "sha256": "588bc7da3e782d6ae06e666e1099f0b232cf6a566b6b54af9ec90c33b5966eed"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "accepted": true,
+  "actual_derive_returncode": 0,
+  "both_existing_overall_paired_bootstrap_exactly_reproduced": true,
+  "C0_existing_per_dataset_pair_counts_exactly_reproduced": true,
+  "native_all_1536_model_counts_reproduced": true,
+  "coverage": {
+    "complete_comparisons": 2,
+    "complete_models": 3,
+    "complete_primary_slots": 1536,
+    "expected_comparison_strata": 54,
+    "expected_comparisons": 18,
+    "expected_models": 11,
+    "expected_primary_slots": 5632,
+    "full5632_model_records_complete": false,
+    "pending_models": [
+      "C1",
+      "M",
+      "R",
+      "W",
+      "P",
+      "J",
+      "P_fp16",
+      "J_fp16"
+    ]
+  },
+  "no_new_inference_scoring_or_GPU": true,
+  "summary_sha256": "7fb1130f6831c6738505c3de370a190728c9d25d7de184dd6d31b96f9e5aa207",
+  "derivation_manifest_sha256": "c9e5413f0e9f828909ae908fd629e4ca4dbffd2db85200363814eb1774c0a206",
+  "old_c0_summary_sha256": "b4a836316b735a60652f906e8fbaa4c76a22688d23ef1a76159b6f6b9e88fc51",
+  "source_code_sha256": "588bc7da3e782d6ae06e666e1099f0b232cf6a566b6b54af9ec90c33b5966eed",
+  "source_commit": "68ad9a03c274bdb054b8d02aef1d2bcd2d5fd6d6",
+  "original_pure_source_sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877",
+  "no_goal_completion_claim": true
+}
