@@ -1,0 +1,360 @@
+{
+  "accepted": true,
+  "endpoint": "http://10.120.17.101:18005",
+  "pid": 4189880,
+  "uid": 1005,
+  "starttick": 922361711,
+  "run_id": "resident-09a3c264ec76419f9c5da1c6eb14b364",
+  "source_identity_sha256": "c1265ec3f5884e1b3cc61ca52dfedcbf21992ad50bcbf144deb0c9fd85d5152e",
+  "published_source_commit": "c52d57ac5526853654e94dbe9e6acaebf84ee075",
+  "published_runtime_commit": "9c32343f2b958c31e9a8e8790ea28b259863da61",
+  "completed_at_utc": "2026-10-08T04:14:33.873153+00:00",
+  "full_gate": {
+    "path": "/data/shaoshitong/search-e1-retriever-resident-20261008/receipts/resident-full-gate-v1.json",
+    "sha256": "fe38729cdcb882e0c140f7be88737ad80bd3c43e6deac34c98c0623e9e7e5317",
+    "checks": 24,
+    "gate_start_unix": 1791432122.134272,
+    "gate_end_unix": 1791432793.597779,
+    "actual_gate_seconds": 671.463506937027
+  },
+  "admission": {
+    "path": "/data/shaoshitong/search-e1-retriever-resident-20261008/receipts/admit-requests.json",
+    "sha256": "3b4fd6dec16201576708466f4c128ba77aad0acb3b84da7f99aad85822ed681a"
+  },
+  "verification": {
+    "remote_path": "/data/shaoshitong/search-e1-retriever-resident-20261008/receipts/admission-verified.json",
+    "sha256": "a4955d3d40cbc79fbc9a5254087804b92b91e3097e4c51ed06e9f5819b93c7e2"
+  },
+  "exact_checks": [
+    {
+      "queries": 1,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 63,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 64,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 65,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1284,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 128,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1284,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 129,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1926,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 320,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 3210,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 1,
+      "topk": 3,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 63,
+      "topk": 4,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 64,
+      "topk": 3,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 642,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 65,
+      "topk": 4,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1284,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 128,
+      "topk": 3,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1284,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 129,
+      "topk": 4,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 1926,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 320,
+      "topk": 3,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 3210,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": false,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 3330
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 3,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    },
+    {
+      "queries": 2560,
+      "topk": 4,
+      "return_scores": true,
+      "scores_exact": true,
+      "ids_exact": true,
+      "shape_exact": true,
+      "actual_gemm_count": 25680,
+      "batch_requests": 8,
+      "batch_queries": 20480
+    }
+  ],
+  "evidence_scopes": {
+    "same_gpu": "all listed sizes/topks/tails/stress exact; resident four-device versus original first-device on complete index",
+    "gpu7_http": "one real 320-query topk3 return_scores=true complete JSON exact; no other sizes",
+    "stress": "candidate-only 8 x 2560; actual worker requests <=320; not a training budget"
+  },
+  "original_320_http": {
+    "queries": 320,
+    "topk": 3,
+    "return_scores": true,
+    "requests_to_k4": 1,
+    "sequential": true,
+    "complete_json_exact": true,
+    "candidate_seconds": 2.293677933514118,
+    "oracle_seconds": 20.678292606025934,
+    "query_sha256": "c0c1ca0591d5901d9c2ad3990d104d7b760efe696411a81c52556457c87953b4"
+  },
+  "memory": {
+    "gate_start_unix": 1791432122.134272,
+    "gate_end_unix": 1791432793.597779,
+    "sample_start_unix": 1791432042.763769,
+    "sample_end_unix": 1791432794.849393,
+    "updated_at_unix": 1791432794.84952,
+    "process_peak_mib": 16110,
+    "actual_free_min_mib": 8094,
+    "max_process_by_uuid_mib": {
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe": 16110,
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7": 16014,
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c": 15918,
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b": 15856
+    },
+    "minimum_actual_free_by_uuid_mib": {
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe": 8094,
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7": 8190,
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c": 8286,
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b": 8348
+    },
+    "foreign_compute_apps_seen": [],
+    "observer": {
+      "pid": 3554,
+      "source_sha256": "cdf00deab5e26ec31811797c204d7d6f3fde9824ff0b1c90b4bf383797c31eb1"
+    }
+  },
+  "source_identity_path": "/data/shaoshitong/search-e1-retriever-resident-20261008/receipts/source-identity.json",
+  "source_identity_file_sha256": "2a35e6193a6cea28f598b03f81810476554b9b7498670b7b97b925be84ee2753",
+  "asset_chain": {
+    "binding": {
+      "original": "/data/shaoshitong/search-e1-retriever-resident-20261008/receipts/asset-bindings.json",
+      "bytes": 11881,
+      "sha256": "de7e0257ad5adf212580091a19777c62e3689c22ada5c92e038b1db726b83569"
+    },
+    "index_sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+    "corpus_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+    "encoder_source_sha256": "fc528a2df9d2927f7dbf21a92d4671405259cba90e8e02dca661a4ad784c1a97"
+  },
+  "local_complete_proof": {
+    "archive_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/resident-retriever-20261008/resident-acceptance-evidence.tar.gz",
+    "archive_sha256": "fb45df23e8bfbf7e96af98b87085c8d2b0966e0ad8ab99260111b4a22e2cc78c",
+    "unpacked_directory": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/resident-retriever-20261008/accepted-evidence",
+    "verified_snapshot_files": 19,
+    "complete_full_gate_bytes": 43398881
+  },
+  "executor": {
+    "path": "/data/shaoshitong/search-e1-resident-staging-20261008/admit_verified.py",
+    "sha256": "e7744d92daeb499e3888edf1d013ff55525067c7f433a7ff5d59cd7fd5f45716"
+  },
+  "scope": "Private four-card resident endpoint accepted. Same complete FP32 index, independent CPU E5 batch128/request encoding, original querymicro64/vector32768/global merge shapes/order. No old evaluations restarted. Single 320 HTTP timing is controlled query evidence, not whole training throughput; pressure timings include extra original scanner comparisons."
+}
