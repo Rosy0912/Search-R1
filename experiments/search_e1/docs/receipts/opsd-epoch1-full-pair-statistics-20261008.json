@@ -1,0 +1,213 @@
+{
+  "schema": "search-e1-full-pair-cpu-statistics-v1",
+  "sample_start_unix": 1791426982.914093,
+  "sample_end_unix": 1791426996.2246623,
+  "scope": "Full 100974 mined pairs; stdlib streaming CPU-only aggregate statistics. No text/question/answer examples printed. No model, tokenizer, GPU inference, retrieval or live process/config change.",
+  "pairs_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+  "pairs_bytes": 829404707,
+  "pairs_sha256_measured_while_streaming": "a81a3ae61bb402f6b99dd35ae552c4bb76df8da391f3620c17fbd742ba2b1f40",
+  "pairs_stable_size_and_mtime": true,
+  "train_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+  "train_bytes": 31766631,
+  "train_sha256_measured_while_streaming": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f",
+  "train_questions": 169103,
+  "train_unique_question_ids": 169103,
+  "train_duplicate_question_ids": 0,
+  "train_sources": {
+    "nq": 78912,
+    "hotpotqa": 90191
+  },
+  "counts": {
+    "pairs": 100974,
+    "duplicate_question_ids": 0,
+    "reference_complete_answer_present": 100974
+  },
+  "unique_pair_question_ids": 100974,
+  "malformed_json_rows": [],
+  "reference_reward_counts": {
+    "1": 100974
+  },
+  "student_reward_counts": {
+    "0": 44079,
+    "1": 56895
+  },
+  "reference_student_reward_joint": {
+    "reference=1,student=0": 44079,
+    "reference=1,student=1": 56895
+  },
+  "student_reward_fractions": {
+    "0": 0.43653811872363185,
+    "1": 0.5634618812763682
+  },
+  "sources": {
+    "hotpotqa": {
+      "pairs": 58270,
+      "reference_reward_1": 58270,
+      "student_reward_0": 26070,
+      "student_complete_answer_present": 58182,
+      "student_reward_1": 32200,
+      "student_complete_answer_missing": 88,
+      "train_questions": 90191,
+      "fraction_of_pairs": 0.5770792481232793,
+      "pair_coverage_of_source_train_questions": 0.6460733332594162,
+      "student_reward0_fraction": 0.44740003432297926
+    },
+    "nq": {
+      "pairs": 42704,
+      "reference_reward_1": 42704,
+      "student_reward_0": 18009,
+      "student_complete_answer_present": 42622,
+      "student_reward_1": 24695,
+      "student_complete_answer_missing": 82,
+      "train_questions": 78912,
+      "fraction_of_pairs": 0.42292075187672074,
+      "pair_coverage_of_source_train_questions": 0.5411597729115978,
+      "student_reward0_fraction": 0.421716935181716
+    }
+  },
+  "full_trajectory_character_lengths": {
+    "reference": {
+      "n": 100974,
+      "mean": 3413.080396933864,
+      "total_characters": 344632380,
+      "quantiles_nearest_rank": {
+        "p0": 1117,
+        "p1": 2087,
+        "p5": 2202,
+        "p10": 2262,
+        "p25": 2385,
+        "p50": 2660,
+        "p75": 4483,
+        "p90": 4851,
+        "p95": 5381,
+        "p99": 7821,
+        "p100": 11579
+      }
+    },
+    "student": {
+      "n": 100974,
+      "mean": 4363.254233763147,
+      "total_characters": 440575233,
+      "quantiles_nearest_rank": {
+        "p0": 124,
+        "p1": 2168,
+        "p5": 2301,
+        "p10": 2379,
+        "p25": 2587,
+        "p50": 4459,
+        "p75": 5019,
+        "p90": 7200,
+        "p95": 8344,
+        "p99": 9640,
+        "p100": 13435
+      }
+    }
+  },
+  "lengths_by_student_reward": {
+    "0": {
+      "reference": {
+        "n": 44079,
+        "mean": 3900.298827105878,
+        "total_characters": 171921272,
+        "quantiles_nearest_rank": {
+          "p0": 1117,
+          "p1": 2145,
+          "p5": 2275,
+          "p10": 2352,
+          "p25": 2530,
+          "p50": 4162,
+          "p75": 4713,
+          "p90": 5553,
+          "p95": 7002,
+          "p99": 8923,
+          "p100": 11579
+        }
+      },
+      "student": {
+        "n": 44079,
+        "mean": 4868.222101227342,
+        "total_characters": 214586362,
+        "quantiles_nearest_rank": {
+          "p0": 124,
+          "p1": 2190,
+          "p5": 2345,
+          "p10": 2449,
+          "p25": 2768,
+          "p50": 4638,
+          "p75": 6361,
+          "p90": 8209,
+          "p95": 9091,
+          "p99": 9988,
+          "p100": 13435
+        }
+      }
+    },
+    "1": {
+      "reference": {
+        "n": 56895,
+        "mean": 3035.6113542490552,
+        "total_characters": 172711108,
+        "quantiles_nearest_rank": {
+          "p0": 1692,
+          "p1": 2060,
+          "p5": 2173,
+          "p10": 2229,
+          "p25": 2328,
+          "p50": 2497,
+          "p75": 4249,
+          "p90": 4579,
+          "p95": 4725,
+          "p99": 5064,
+          "p100": 9655
+        }
+      },
+      "student": {
+        "n": 56895,
+        "mean": 3972.033939713507,
+        "total_characters": 225988871,
+        "quantiles_nearest_rank": {
+          "p0": 1747,
+          "p1": 2160,
+          "p5": 2281,
+          "p10": 2348,
+          "p25": 2509,
+          "p50": 4339,
+          "p75": 4765,
+          "p90": 5645,
+          "p95": 7063,
+          "p99": 8945,
+          "p100": 11690
+        }
+      }
+    }
+  },
+  "student_answer_syntax_by_reward": {
+    "0": {
+      "pairs": 44079,
+      "raw_complete_answer_present": 43909,
+      "raw_complete_answer_missing": 170,
+      "raw_open_tag_present": 43933,
+      "raw_close_tag_present": 43909,
+      "raw_last_complete_answer_empty": 1,
+      "complete_answer_within_policy_span_and_outside_information": 43856,
+      "complete_answer_not_confirmed_in_policy_span": 223
+    },
+    "1": {
+      "pairs": 56895,
+      "raw_complete_answer_present": 56895,
+      "raw_complete_answer_missing": 0,
+      "raw_open_tag_present": 56895,
+      "raw_close_tag_present": 56895,
+      "raw_last_complete_answer_empty": 0,
+      "complete_answer_within_policy_span_and_outside_information": 56895,
+      "complete_answer_not_confirmed_in_policy_span": 0
+    }
+  },
+  "student_policy_span_anomalies": 0,
+  "answer_definition_note": "Complete answer presence means the exact case-sensitive <answer>...</answer> syntax in the stored full trajectory. The additional span count requires containment inside a recorded student_policy_span and outside information blocks. Neither syntax statistic proves terminal action execution; pair files do not retain the rollout termination field. Correct/incorrect counts use stored student_reward without rescoring.",
+  "character_length_note": "Python Unicode code-point length of entire stored trajectories, including retrieved information, not tokenizer lengths or loss-mask lengths. Quantiles use nearest rank ceil(p*n/100), clipped to endpoints.",
+  "source_coverage_note": "Map each question_id to exact data/train.jsonl data_source; miner is expected to emit at most one pair per question, duplicate counts explicitly checked.",
+  "not_final_evaluation_note": "These mined-pair training-data statistics are not final seven-benchmark EM metrics.",
+  "sample_time_cst": "2026-10-08T10:36:36.224662+08:00",
+  "receipt_path": "/data/shaoshitong/search-e1-retriever-analysis-20261007/pair-statistics/full-pair-statistics-20261008T023636Z.json"
+}

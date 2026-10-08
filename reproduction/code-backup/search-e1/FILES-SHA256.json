@@ -1,0 +1,1894 @@
+{
+  "label": "search-e1",
+  "captured_utc": "2026-10-08T02:40:34.603504+00:00",
+  "original_repo": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish",
+  "source_commit": "6e34423d95a288dbac12c9561e3d17cdd3254399",
+  "source_branch": null,
+  "backup_branch": "codex/backup-search-e1-latest-20261008t023352z",
+  "files": [
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
+      "destination": "experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
+      "bytes": 10325,
+      "sha256": "0f8a9ab00fa3a7d58bf75c1a96069307f70166f8195e2021b56a8fd2c88abb67",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json",
+      "destination": "experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json",
+      "bytes": 21611,
+      "sha256": "490c0a9dccbee1fc426702110267361640530a17c34cb57aff6a299e619dcfbf",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json",
+      "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json",
+      "bytes": 7027,
+      "sha256": "5ca19588e84ec80be14207c307905d82789fe185df17e375d8908ca1aa8494d5",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json",
+      "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json",
+      "bytes": 854,
+      "sha256": "4e304733bcb6731af658eda7ec4afbcc81695ec76c3bb482a922d6eb4d6f22fb",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json",
+      "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json",
+      "bytes": 1619,
+      "sha256": "8fa68d970490e9487b23e9d2ba2cac6bfdc8b75c3753110072870d74c4a83d85",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py",
+      "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py",
+      "bytes": 1812,
+      "sha256": "6cc688cd89ca5fb8253118f143a0a2782801ef64878d46fe339258b56f2645aa",
+      "role": "current_checkout_uncommitted"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/check_format_reward_manager.py",
+      "destination": "reproduction/code-backup/search-e1/loose/check_format_reward_manager.py",
+      "bytes": 1821,
+      "sha256": "44c10880dce7fb04ec402f4f500e6b4bb8d9d46ab33f2b8eedf15765f7c0a650",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/draft_e1_reruns.py",
+      "destination": "reproduction/code-backup/search-e1/loose/draft_e1_reruns.py",
+      "bytes": 11847,
+      "sha256": "98061fcf5f6147130e80674a626efcd6f86d8259d425452979ddbecd03f27877",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/finalize_reward_fix.py",
+      "destination": "reproduction/code-backup/search-e1/loose/finalize_reward_fix.py",
+      "bytes": 2103,
+      "sha256": "ee85a595d214f800da713c4c049e469669d427eca5816808e1da1b6bb0c7276a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/implement_reward_fix.py",
+      "destination": "reproduction/code-backup/search-e1/loose/implement_reward_fix.py",
+      "bytes": 7078,
+      "sha256": "081d93be54dfb71f662cf22865d754bb867a93fa0ab262e3c0339e15c0a3a9cf",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/propagate_reward_fix.py",
+      "destination": "reproduction/code-backup/search-e1/loose/propagate_reward_fix.py",
+      "bytes": 4194,
+      "sha256": "7a692dc32a432b6abbeaabdcc59d2daaa0e12630e470b7ce2cb84eefc4b0cea1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/push_reward_fix.py",
+      "destination": "reproduction/code-backup/search-e1/loose/push_reward_fix.py",
+      "bytes": 1567,
+      "sha256": "cf4e1f6315161ae81c8d5a19fdd56a977b50ad3e98e472da3aa10fa4515b2d04",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/verify_and_push_reward_fix.py",
+      "destination": "reproduction/code-backup/search-e1/loose/verify_and_push_reward_fix.py",
+      "bytes": 2287,
+      "sha256": "40a664352def2729005cdfaee21da5bba9721f0e23b5770ecda02545b2f7cdc1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-memory-risk/measure_partial.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/opsd-memory-risk/measure_partial.py",
+      "bytes": 6637,
+      "sha256": "1659f3914e930a52933b0c3763b51b346b6f70d525ba317cf51d988921243275",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-epoch1-result-20261008/config-20261008.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/opsd-epoch1-result-20261008/config-20261008.json",
+      "bytes": 671,
+      "sha256": "84a6167b9216c65fe0e810d03a8489f263d7feccddface605fa0ab6e726e8640",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/observer3-review/prefix-only.diff",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/observer3-review/prefix-only.diff",
+      "bytes": 6789,
+      "sha256": "468bae9c8f7d3832c0977eea282b29b754a12e8be5b54f05e9b280b1aa078368",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd100-five-acceptance-20261008/native-opsd-config-20261008.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/opsd100-five-acceptance-20261008/native-opsd-config-20261008.json",
+      "bytes": 671,
+      "sha256": "84a6167b9216c65fe0e810d03a8489f263d7feccddface605fa0ab6e726e8640",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/build_source_identity.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/cpu-encoder-identity/build_source_identity.py",
+      "bytes": 5644,
+      "sha256": "33f64ac24e779dbc534bcc3b5f37b8fb99aa2157002095944ae7cfc3d47833a7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/cpu-encoder-identity/encode_cpu.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/cpu-encoder-identity/encode_cpu.py",
+      "bytes": 4619,
+      "sha256": "da10bd44697436bbf89d26e1ee395a58fb1f5fcd650279dc460a608608c6bfc7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/raw-epoch1-eval-20261008/merge_raw_epoch1_cpu.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-analysis-output/raw-epoch1-eval-20261008/merge_raw_epoch1_cpu.py",
+      "bytes": 14987,
+      "sha256": "f4145180ac6a4b9dab5cbb717052439d3aa7c04bc287c4e3c330c78a0c79b97e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/PACKAGE_MANIFEST.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/PACKAGE_MANIFEST.json",
+      "bytes": 52493,
+      "sha256": "4679e283b1f81f1969546d9cfbab951f63e3e2f073c12aa3e51836e902639a16",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/SOURCE_MANIFEST.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/SOURCE_MANIFEST.json",
+      "bytes": 53385,
+      "sha256": "787f483e35f6164bee5e4b7ff1f6471a3ad4d1acb148494e3876be6d66cefd0c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/pyproject.toml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/pyproject.toml",
+      "bytes": 362,
+      "sha256": "5cc2772aa6e82008d8cb77c0a3dce4d3c72f82ae36ff7445ec8c932e568dc804",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/tests/test_core.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/tests/test_core.py",
+      "bytes": 2358,
+      "sha256": "4860445fb535e0947658cc135fed376d1477b015ac3b12492c4d94e3eb80c468",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/tests/test_grpo_batching.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/tests/test_grpo_batching.py",
+      "bytes": 1692,
+      "sha256": "0fb6848b5e6346e1b94de983c487db03eb7a685b7448d01c58f63692a5efdc05",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/benchmark_gpu_index.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/benchmark_gpu_index.py",
+      "bytes": 1393,
+      "sha256": "6c5cd0237d7cfb499adfa655a4e3299ea51099967f3a4a270efa1b20da222d56",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/benchmark_retriever_threads.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/benchmark_retriever_threads.py",
+      "bytes": 1317,
+      "sha256": "c780939a3343eedef515bfd1568888ab9a0f8f0a5193437faa70d220334b3260",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/bootstrap.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/bootstrap.sh",
+      "bytes": 315,
+      "sha256": "fa86968da588e29ab0f119ccc521112c6781ded0cb50e0afced446e44aef717f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/cycle.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/cycle.sh",
+      "bytes": 1792,
+      "sha256": "72d1c314d4fd324053edf0407aadd1d8bb6c32a9a9006b93fc7a053b52139387",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/distributed_smoke.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/distributed_smoke.py",
+      "bytes": 1813,
+      "sha256": "27829be67fa64655d0c36b788df85d114d0f140c4772e464789862353a341eab",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/gpu_smoke.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/gpu_smoke.py",
+      "bytes": 2124,
+      "sha256": "1eadba272eff015ad86f29a46aad9b3a7057b397afb4f15affdde8f4e7d25563",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/grpo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/grpo.sh",
+      "bytes": 2965,
+      "sha256": "e543057c57a63a3de7ca1d7e2873d60410cc74099dca9157121ad3c3dcb48aa1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_baseline.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_baseline.sbatch",
+      "bytes": 892,
+      "sha256": "d30fca99982f05303318c63c75cd415ada85c656b6d8d1be9b6d1f3c20eb4da4",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_batch_bench.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_batch_bench.sbatch",
+      "bytes": 1309,
+      "sha256": "536d36b30f6b94c6805fc58669819c39e165147e018ea0c71cac1e59b0cc9155",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_full.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_full.sbatch",
+      "bytes": 700,
+      "sha256": "4ced672682b86b089eb0dd878defd4bc166e194808a38a73d2f7fb26b407232c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_phase.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_phase.sbatch",
+      "bytes": 728,
+      "sha256": "6b65a6f41037e21fd68800c57795d8bb3f4c126f2edb3efbcdbf0a563813b84a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_pilot.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_pilot.sbatch",
+      "bytes": 2140,
+      "sha256": "62bb2ce49498ba86e0e0c49179fcf64a738ff531762766d34c9ebe47e12ade46",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_rollout_bench.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_rollout_bench.sbatch",
+      "bytes": 1284,
+      "sha256": "37adc20bfa73d828941d4c75afcb6fb51ea9237042e551b12d0b7e52608fa889",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_smoke.sbatch",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/lumia_smoke.sbatch",
+      "bytes": 496,
+      "sha256": "e0500537754e5f06e9ca074ec44bda1741f1eadbb3631bdf66195994d3b51449",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/prepare_lumia.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/prepare_lumia.sh",
+      "bytes": 991,
+      "sha256": "69682513286188309fa7bccf75bee4c6965fc61172301d4eeacd23eda85f07d8",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/retriever.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/retriever.py",
+      "bytes": 2132,
+      "sha256": "74afc7e97b719d597fd63e5a4ea1e78a6ea2561938e204377e6276c2b629de25",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/run_phase.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/run_phase.sh",
+      "bytes": 2969,
+      "sha256": "32e58c5d30a0a45fdc68ea40a65e31e5530bff8c671e422e6511d5a847dc1492",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/start_retriever.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/start_retriever.sh",
+      "bytes": 1611,
+      "sha256": "8f64abffa862de970c6074041e0c220b7c412e0f5d76789d3e5acb5a78ddc030",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/submit_lumia.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/submit_lumia.py",
+      "bytes": 1129,
+      "sha256": "eddf65c661b2b61e22b1db95e3a7522d7339b0da80524c35c136fedfd5f74ecf",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/submit_phases.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/scripts/submit_phases.py",
+      "bytes": 1746,
+      "sha256": "452af89ba03718969d6b6673defacf7a5161e8b3f96a23fb24e8a82cee630aea",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/__init__.py",
+      "bytes": 68,
+      "sha256": "30fa96aa59c1c4ee26e0e3b79c478131f5423998e3a9090cf647e64e24ab97dd",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/core.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/core.py",
+      "bytes": 3668,
+      "sha256": "da48acb849e7e03b95316b5cf2137d997cb54032b49ea932a8d9e4d4207dc9d1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/gpu_index.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/gpu_index.py",
+      "bytes": 2663,
+      "sha256": "7d5fd3bd73312f301feca271a6fe0c11872bc54cf9318dae835823ae0858f9a4",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/grpo_batching.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/grpo_batching.py",
+      "bytes": 1767,
+      "sha256": "c6be925da005d59937595af7bd1ea1d2392a7b1295c1870e00a881cc8dd45132",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/grpo_main.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/grpo_main.py",
+      "bytes": 1982,
+      "sha256": "5d2c7f535f75c0971e63ec0a108fa47efb49792035db96b64c07e5c9df7b7398",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/io.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/io.py",
+      "bytes": 526,
+      "sha256": "97e58faa829f5300e4d8cc2e79bf636d2d60c7806d4bf755a1df1cffd458a6ce",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/mine.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/mine.py",
+      "bytes": 601,
+      "sha256": "d87885a2bde61fdd994bdf3b811830be29e2ac30afb3fae889b8064d94cbebfc",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/opsd.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/opsd.py",
+      "bytes": 7804,
+      "sha256": "91d726c7e666b2dd41cfbc8e30a05af0cbdadb0080768d78f6677cf4cb00eabf",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/parallel_rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/parallel_rollout.py",
+      "bytes": 5139,
+      "sha256": "de7f2790dca84fca9397cbc755fe4f81357fa743f3780ed3de5e196e92213a46",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/prepare.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/prepare.py",
+      "bytes": 2399,
+      "sha256": "0af20daae4eae60261b0a3e45df8baa19f66427d0513e8bef93661fdbf3b5d46",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/rollout.py",
+      "bytes": 6773,
+      "sha256": "3faae5d5a02980508db4e2a6a547b6b07b5e7c21843d13d70681619129ee6f0b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/vllm_rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/vllm_rollout.py",
+      "bytes": 3489,
+      "sha256": "7b284355a5f0d39e1f933e7dc146335da917980e2939a88dc1cc6470850915e8",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/worker_debug.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/search_e1/worker_debug.py",
+      "bytes": 482,
+      "sha256": "4b3cfa032e21a1fc483aacbd4edcb53977d29f652bd6507fb06ece535290a0b3",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/data/manifest.json",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/data/manifest.json",
+      "bytes": 642,
+      "sha256": "c67f5ecba92a04869a2a26c6e23b39a65219a1320b517fddf1e691470c33c164",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/infer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/infer.py",
+      "bytes": 5180,
+      "sha256": "21e5931f0a8271ee54fb5ff7906860f261cafedb842b847bba089a708709a942",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/pyproject.toml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/pyproject.toml",
+      "bytes": 2219,
+      "sha256": "2265c9e13551eb3d7a6bac14d3ea68ee636d6d072d0c22e4f8fb99395cf5e720",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/requirements.txt",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/requirements.txt",
+      "bytes": 153,
+      "sha256": "708f05baa1561a98fefd0c2453dd716c5e52e53f15f98e3c62f37c3f53e6eb0b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/retrieval_launch.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/retrieval_launch.sh",
+      "bytes": 578,
+      "sha256": "a15ca0d54b2ba99029f39377765e5d4055b1625b3c95b5e0f27c45a2dd1e41e2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/setup.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/setup.py",
+      "bytes": 1917,
+      "sha256": "1f45bacb406604058229b111b07a226d8b1c0299132dfbafc2b28df011c8100e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/train_grpo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/train_grpo.sh",
+      "bytes": 3615,
+      "sha256": "203098948565e60caf90da93aeaab74759d8ad9df1449649c8f03425e64f7c66",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/train_ppo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/train_ppo.sh",
+      "bytes": 3909,
+      "sha256": "8bc267ec2812ba07d73791ebc5d96009551f448833eaee0ed0322e868c7919af",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_ann.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_ann.sh",
+      "bytes": 522,
+      "sha256": "3956b453b93bb7b3f9d61916ec7b7b0b6fadbc0a192242173361bc8274466ff6",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_bm25.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_bm25.sh",
+      "bytes": 398,
+      "sha256": "53a561e9e57e4fe34e3436860200a6ea08defddc8e23bd4728c73466219e7fe0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_google.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_google.sh",
+      "bytes": 460,
+      "sha256": "11f4ceda894cf0e333930c4888d7ce617f5a094da9bad16f4b326b75cfe8c65c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_hierarchical.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_hierarchical.sh",
+      "bytes": 861,
+      "sha256": "d86b406e6abb9e8edd5fdc01b6e77e75325e4b44179837bd527ca38e429936cd",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_serpapi.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/retriever/retrieval_launch_serpapi.sh",
+      "bytes": 311,
+      "sha256": "0e6c3b04702e645561ade0b87a9face19d9787da72a7f8085fb023f3d434e189",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_grpo_multinode_32b.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_grpo_multinode_32b.sh",
+      "bytes": 3247,
+      "sha256": "0640e0b0bd15477fb0ce78c5b017dc6b6c39bb9dfef4c7d8f3ff178dd4b5a95c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_grpo_multinode_72b.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_grpo_multinode_72b.sh",
+      "bytes": 3020,
+      "sha256": "7058943d81b6feaab61c1e15fdafddc3e800ec8e8466a78c1d93b34fe8b1949e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_ppo_multinode_32b.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/example/multinode/train_ppo_multinode_32b.sh",
+      "bytes": 3329,
+      "sha256": "bdff33601c2f2818012f2286899e7fb922d6655c2bba8d696abe1081b9000a97",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/generation.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/generation.py",
+      "bytes": 19766,
+      "sha256": "ab88b308db9d0b72fdbdd9a00f282ca28c20d3a63229a38959ce258daa1c063d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/tensor_helper.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/llm_agent/tensor_helper.py",
+      "bytes": 3148,
+      "sha256": "b000f3b61c5a2be13dfcf64e1ce9091ce89dda99ed3b331fb24ab1f43b4dce69",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/build_index.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/build_index.sh",
+      "bytes": 603,
+      "sha256": "37ec41b6e100a7112188320582aef2812e875552654ad76a113c693d6b0e2526",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/google_search_server.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/google_search_server.py",
+      "bytes": 7843,
+      "sha256": "68a3f7b30ccbdcd9e61f3e81e6a4e7a5b21a9006dd6ee9906d2e38cf7cd17e72",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/index_builder.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/index_builder.py",
+      "bytes": 12587,
+      "sha256": "01b24673d2ad568c4c532fc9cb9a4ee823930210eb6276c583f9b2ad37c6cba1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/rerank_server.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/rerank_server.py",
+      "bytes": 5342,
+      "sha256": "497664365277efd9b3547e4a35e82756968ae9537c5a5abf1206287f79e5ede7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval.py",
+      "bytes": 12700,
+      "sha256": "bab4cff67fb67a034dad561c5fef6b4017f0f3d612a9fcbd65f630e5ec4efe62",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval.sh",
+      "bytes": 918,
+      "sha256": "00f6414706fa434f007c1b831fee1dbe4ccbcf45289ba0aaa7589c489654ec0c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_request.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_request.py",
+      "bytes": 500,
+      "sha256": "469671b8625574a7fc75011c0fb566004a12c3208dcea4b2aba010fe975f6c6b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_rerank_server.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_rerank_server.py",
+      "bytes": 4729,
+      "sha256": "64e8da3f902dddbdb79968b17f94dd29044a0893342f2eaa0c4c0e6f3bf76bc3",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_server.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/retrieval_server.py",
+      "bytes": 14028,
+      "sha256": "e85ab42b9032d66a35239a36e8cd73c6f3e3efde929541150fe7c5bfdb4936d9",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/serp_search_server.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/search_r1/search/serp_search_server.py",
+      "bytes": 3922,
+      "sha256": "53a721e7d7dfc46bbb3cdf4b11e70e65495d467ad3a5550028e88acac26e7b7b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/__init__.py",
+      "bytes": 927,
+      "sha256": "41d6e41c33606205fb21af76c9ea180ade26413345a073b07c24848cb06b41f6",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/protocol.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/protocol.py",
+      "bytes": 24417,
+      "sha256": "ceccbe7c9ad3bfe430355f35705054881f32dc254b0862a1f0bf6800e387405d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/__init__.py",
+      "bytes": 678,
+      "sha256": "2a347bac8c8dd4741d639d32cd86e58a081d272b129d0c1125df9398e8661105",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/config.py",
+      "bytes": 839,
+      "sha256": "b59763b8653abf6a011abf5304c2679b9e68690d2acc33a9a05fd6cfe0aab542",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/distributed.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/distributed.py",
+      "bytes": 1124,
+      "sha256": "ee90007c15948b647338f404dd865cc5a0e2586903b8790ce6331d1cf01d2244",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/flops_counter.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/flops_counter.py",
+      "bytes": 4887,
+      "sha256": "753efda577398fe9378e2ce696eeb6288f153fc03086db63136633b4fc5fad1f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/fs.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/fs.py",
+      "bytes": 2821,
+      "sha256": "a922d349ce08eb4e23d878a33eba415e478ca467562b2082708fcc6f409ecb7e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/fsdp_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/fsdp_utils.py",
+      "bytes": 13201,
+      "sha256": "9b406351ace9f1a84b3d25ed3041395a10ea3508999cf4105de5fe0ee0dab2c0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/hdfs_io.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/hdfs_io.py",
+      "bytes": 4562,
+      "sha256": "3f006815223e1798ee829b325aa942453cdb6131731f056b07fd8de957d0bcf7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/import_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/import_utils.py",
+      "bytes": 1351,
+      "sha256": "96fbdc91902ef5b62dee939d0a1f5a5cec7c5d93b240966017ef08278e644722",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logging_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logging_utils.py",
+      "bytes": 843,
+      "sha256": "ee547e49dd03ebf83d493ee11ee71c65ef1ae8a6b68d7d21c195e0d24abcea4b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron_utils.py",
+      "bytes": 11812,
+      "sha256": "905d61e476d8062c298db358f8490a67e4b836b755ab6fbc0d45559f62d8dd23",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/memory_buffer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/memory_buffer.py",
+      "bytes": 7964,
+      "sha256": "736f122e7ca97cbfb173aaa97eab0f55fae19d8c0e3fc2da2e1722adeca8c518",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/model.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/model.py",
+      "bytes": 12885,
+      "sha256": "6b6def87d02f60692f175d3a4f8e8c2a07e914b896881c1ab3bf5e83287e359a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/py_functional.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/py_functional.py",
+      "bytes": 1656,
+      "sha256": "2b7cb3329422c6d5efef8e922eabf4f0942dfc330c04728d6d99159e953a3e6f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/ray_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/ray_utils.py",
+      "bytes": 1401,
+      "sha256": "77ef654419c1c1de59a6ec2b32b457eca7dd8cc73fe74a0d98278a3255835b58",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/seqlen_balancing.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/seqlen_balancing.py",
+      "bytes": 10327,
+      "sha256": "836a381b88a7c2185aea684b8e8c26e7eb0c25c6183e8f2f4d1686c85636fefb",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/tokenizer.py",
+      "bytes": 2384,
+      "sha256": "839dd008294614789194d3d97bedbd2ae381038fc288d7ed1f600bca7dc3470b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/torch_dtypes.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/torch_dtypes.py",
+      "bytes": 2217,
+      "sha256": "db8a3796a51fed225f3781dcfe5341a68ba83811133f6ef0b41aba28958d92d0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/torch_functional.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/torch_functional.py",
+      "bytes": 18349,
+      "sha256": "e6f0578b0f52b530d52e9fc69968108d67badeb8374f18f39258e3550ac35454",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/tracking.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/tracking.py",
+      "bytes": 3839,
+      "sha256": "5b481f6dfbe40f957d24c4139a47ccecede04f842631bcfec1796b2a7d3e1609",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/ulysses.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/ulysses.py",
+      "bytes": 10619,
+      "sha256": "c47179787683e6ff73a50e09fd4acd6328bcd9d61d526afb827f234e538f238a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logger/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logger/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logger/aggregate_logger.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/logger/aggregate_logger.py",
+      "bytes": 1400,
+      "sha256": "9fcaf99c0e6bacb838c7d1e40f1a51dcab6b4fe633b9320d97f5434f032fee9d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/rendezvous/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/rendezvous/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/rendezvous/ray_backend.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/rendezvous/ray_backend.py",
+      "bytes": 2720,
+      "sha256": "902cda6fef0dd91061454e2f2461e3766eaa6b3227d4f7a9e829ab96b3e0b63d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/__init__.py",
+      "bytes": 670,
+      "sha256": "85b71f93709dab550ee5705fe8fd88e9cc77d4b9465249eaeb92bc7646bda7e3",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/rl_dataset.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/rl_dataset.py",
+      "bytes": 5690,
+      "sha256": "e95b34a590956ed37e69631c87712c9dacbddc0fae632ca1e5403ed19e409815",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/rm_dataset.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/dataset/rm_dataset.py",
+      "bytes": 5494,
+      "sha256": "927ff2808f7c0928d4399cc1cd213fab2d922365c055a67ad6d4228b162c5d1d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/memory.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/memory.py",
+      "bytes": 1534,
+      "sha256": "422a9340d8aae030664b5e425bb89bffc5d428b34057d091905b84a5033291e1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/optimizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/optimizer.py",
+      "bytes": 4349,
+      "sha256": "f99cc03963e38b1ae6178564adac0f9e731d875589908290dbd844bba1642d80",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/optimizer_config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/optimizer_config.py",
+      "bytes": 4051,
+      "sha256": "d978c3e93e3353af1dc30c36d0b14cbd7a2d97189fa861caa9b9591819da2f14",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/pipeline_parallel.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/pipeline_parallel.py",
+      "bytes": 2119,
+      "sha256": "322d879dbfd3ae6219944ec328b2b6c0fb19091a45bb4a2257402b4934f1dd46",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/sequence_parallel.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/sequence_parallel.py",
+      "bytes": 1810,
+      "sha256": "5291153114babd5010d809c671c17fe14a7ac06c2ea4d997844bf3b6f1f4154e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/tensor_parallel.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/megatron/tensor_parallel.py",
+      "bytes": 7257,
+      "sha256": "a6a059f8304728ae390c96252666cf8bfc742454dbec9af2746ef46d2cc1e2ba",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/__init__.py",
+      "bytes": 646,
+      "sha256": "7c2e66dafef4ae2d091deec16c763299acc927bc7486268190239d9290c0b77c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/performance.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/performance.py",
+      "bytes": 1214,
+      "sha256": "a27524298cce8e7c5b0dc060a9d58f4c79d5a63a2da36293dee491dbb927a211",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/trajectory_tracker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/debug/trajectory_tracker.py",
+      "bytes": 3174,
+      "sha256": "f47db3824fe10b827c62110cb49151e075ae3e8bc9ea95905bb5dd915d60b897",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/countdown.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/countdown.py",
+      "bytes": 3778,
+      "sha256": "1e94bdc94c9cf9b013c3eb2a1f5046323e51f9fbf9481dac0d329dec80adff56",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/gsm8k.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/gsm8k.py",
+      "bytes": 2385,
+      "sha256": "ad8c22fa6becda86f429a9cac622aa9a2e9178758ecde00e3a02a55e09b93b6e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/math.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/math.py",
+      "bytes": 6717,
+      "sha256": "fd0eb6f4702e249e3386e91ac03964214bd3deafa5a0b3d9f9a05849930735c7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/multiply.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/multiply.py",
+      "bytes": 1977,
+      "sha256": "c42d763bcce3700fc0b7c17f94cce7eee973d550b61410d9d3f041a26787a180",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/qa_em.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/qa_em.py",
+      "bytes": 4567,
+      "sha256": "1c9f5e2b2f868dc265b943d27d783baf6f275ca6f9ec854235fc29b0c0fde039",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/qa_em_format.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/utils/reward_score/qa_em_format.py",
+      "bytes": 7454,
+      "sha256": "aa50d6bf30245dd94c65b42f2a305037ddd23873d3647e16237adbdc97eba5f2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/__init__.py",
+      "bytes": 1746,
+      "sha256": "9a1b9a8a579f4de9cc7e9d0419631a3d006e45ed5dc2d8504a96aab0954cac4a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/arg_utils.py",
+      "bytes": 16002,
+      "sha256": "072ff25d639aac9716f353a7f9573db9296e6f2cdbde8c905b0966f193c5570c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/config.py",
+      "bytes": 9527,
+      "sha256": "fafdec45f81c2def3798ca7ea86d00cfda7b3ee790c9ba4cc5f00a842ff9a181",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/dtensor_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/dtensor_weight_loaders.py",
+      "bytes": 12378,
+      "sha256": "8567b6e6a43a709cad9f2ba6d7d3fc34d19c24ba3c9d8c5866d506207aaf64b0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/hf_weight_loader.py",
+      "bytes": 4032,
+      "sha256": "05fb8e715913bd4e0ac7384bf4e116610639a25700e46c6aafb2fc5df4c81bdc",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/llm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/llm.py",
+      "bytes": 15147,
+      "sha256": "8ad6dfe89c1178ebcb764d2cfd9b888d2de1df3ec4a3124935ea6c5bb7a7c4ce",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/llm_engine_sp.py",
+      "bytes": 12403,
+      "sha256": "daf7e56923a73e6075ce7e45a648b7d9f2957e26e7c4476be9dec3efb7625556",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/megatron_weight_loaders.py",
+      "bytes": 15726,
+      "sha256": "8031edaf38d3e80ec53b872b3dae963254d54d49bcbd060db61f2b4037461181",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/model_loader.py",
+      "bytes": 13600,
+      "sha256": "ec29dcd0785c71e44a3e755ca0d649afc27a98929128f9b76eaa078d76051f13",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/model_runner.py",
+      "bytes": 12581,
+      "sha256": "9a7a637e14192a5253c708ba86584995a4f6fecc9a0ec6935c60957f6ca94750",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/parallel_state.py",
+      "bytes": 12798,
+      "sha256": "29aa956ffc9b828b1d60fd47975b575c455ff82053fec1c6b7bed9d273040bc7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/spmd_gpu_executor.py",
+      "bytes": 8647,
+      "sha256": "29254e03f754ed706f1265f7ab839dd9c465cd48cbd8549ad6cdf8a4db702a63",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/tokenizer.py",
+      "bytes": 3310,
+      "sha256": "497a401f78f5c164308c4d48df0144e8b0c7a47bd4dfb3212681c8d511fe98bb",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_4_2/worker.py",
+      "bytes": 13310,
+      "sha256": "5de27b2ac756955564514b6e0e097b2e7d1c98c93f6a495ffd5ae29a240865a1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/arg_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/arg_utils.py",
+      "bytes": 3142,
+      "sha256": "fa211803d2705904fa27b4af7c4db629e60623046cc675bc04f5786a20675efc",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/config.py",
+      "bytes": 4167,
+      "sha256": "9380fdc1024ef0ec327c75c35195a009edfdcf39a4e92f53a45149fe246cec6d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/dtensor_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/dtensor_weight_loaders.py",
+      "bytes": 17356,
+      "sha256": "280ba6eacd660cb208f6e0fe1b427cd634c67927121328d6b3bc1226d59d0280",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/hf_weight_loader.py",
+      "bytes": 1773,
+      "sha256": "01e371e44c45c0a4ecc2a757f3244a7220f6baa31c52a57d3b6c58f07a367752",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/llm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/llm.py",
+      "bytes": 10236,
+      "sha256": "5bc262b93ac5e938c82cc51f0e48b22a33cf13d0f5966f02afa15b60445203ff",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py",
+      "bytes": 17823,
+      "sha256": "618c464b9b80f595863c9c831c65a53a854f695012cc506f63c691073bf86e53",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/megatron_weight_loaders.py",
+      "bytes": 13909,
+      "sha256": "d5c3463d34dace74fbea556bd21655f9027572d72ccba407ce035be6074f668a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py",
+      "bytes": 14439,
+      "sha256": "3f033175550ad920a7398e36a7f0b4e16859b692c4098eeb3a5eca7b97219945",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/model_runner.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/model_runner.py",
+      "bytes": 7587,
+      "sha256": "a30b7696071da0d9a08f30a0b42335cce3acd5331abbfdc0bc64fa3ef56a21ac",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/parallel_state.py",
+      "bytes": 12915,
+      "sha256": "c63e53effe7be48e3291d790bd02a7c95795692594655c39922a49381d93b56b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py",
+      "bytes": 10115,
+      "sha256": "0dd0c264240aeaac9f3bdd86054f1493334194143833de54a8636cfc200d27ae",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/tokenizer.py",
+      "bytes": 1649,
+      "sha256": "f6f2517ebbac01f4cfb234ec71776d54e15a088cd883d48014f6c120d73a8da2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_6_3/worker.py",
+      "bytes": 15138,
+      "sha256": "d63fc21f39c9a730c9ddd1e776a98f554a7adc7dc9de96ae895d63b476e0577a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/arg_utils.py",
+      "bytes": 23746,
+      "sha256": "f4fe86d839cefc374e4606f13ce53a7f224e13c2221bca80d775eabb6c03990c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/config.py",
+      "bytes": 11948,
+      "sha256": "5dac246763fa9ba0331f36ee72bbb43fae1a702bb354adc156e08cbaa6f0fa5e",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/dtensor_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/dtensor_weight_loaders.py",
+      "bytes": 15827,
+      "sha256": "3f71614c586d78588d8ee69d66e1533896c51e985e0cb8719cb8bd124e35c3f3",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/hf_weight_loader.py",
+      "bytes": 1895,
+      "sha256": "8c819582f3ad7b23df842087cdf4a1992392e931cd419bcdc19879742ee828fe",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/llm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/llm.py",
+      "bytes": 12271,
+      "sha256": "47be604307df31d16239191df3051ded9a7a0d7d7a69f3ee88539686556c2f30",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/llm_engine_sp.py",
+      "bytes": 14689,
+      "sha256": "85fe01207028cd8b23f86be73179e2795eb7f45420a7f48db0d27835c9dcd1d1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/megatron_weight_loaders.py",
+      "bytes": 13939,
+      "sha256": "08dccb70b440541f1f3c68e5f519c1c419bce66360885af1084c4fee2b972079",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/model_loader.py",
+      "bytes": 14974,
+      "sha256": "0e43f762258581069c1d20717591a6cbeb42288c033fa2aabc92c77f536768f4",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/model_runner.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/model_runner.py",
+      "bytes": 6857,
+      "sha256": "5f3ed36a09a9ae7c3ce2036c77f955a6c1b5ed1999dcf7e4df65a2b3ce606c1d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/parallel_state.py",
+      "bytes": 13091,
+      "sha256": "f9b0ec025d5523972e62f343f5a80c35dc6f68199a735ee1dc6f45e68e731fbb",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/spmd_gpu_executor.py",
+      "bytes": 10184,
+      "sha256": "3ce0cddfb329f0898287fcef40209e88cd8d8f6e4dc1e7ad78e31ac2bacfce7f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/tokenizer.py",
+      "bytes": 3310,
+      "sha256": "497a401f78f5c164308c4d48df0144e8b0c7a47bd4dfb3212681c8d511fe98bb",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_5_4/worker.py",
+      "bytes": 15305,
+      "sha256": "4235c9a8d985c1c4c4b6db086b3515c38681517a11f77004a488c6790383897c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/arg_utils.py",
+      "bytes": 11957,
+      "sha256": "241d3e47e1bf283647237be71099df7ff857e11ce24c1f6082f9225929a7d4be",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/config.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/config.py",
+      "bytes": 25666,
+      "sha256": "868aa707443c67986ef8b2c5437b617d640f4d47a53026f7e378ddde22ce7965",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/llm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/llm.py",
+      "bytes": 13604,
+      "sha256": "bb5dd8a628d2d58b9daf33fe97fd471778b11e07212f5a7ac75c47a48273dca7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/llm_engine_sp.py",
+      "bytes": 35525,
+      "sha256": "ae76e88278e330c7a82b9ed149e76022e1e9522b5199a48f272ea514ed80b6cd",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/model_loader.py",
+      "bytes": 12265,
+      "sha256": "9178cfe4c30b03a55856a0a59bdd2cf14856181185050814502fe9012cfcde10",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/model_runner.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/model_runner.py",
+      "bytes": 13381,
+      "sha256": "3ea4154e940f51a1d1f4770240c905b46ed9b923e32f9aa399a715b9ac9c5ff7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/parallel_state.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/parallel_state.py",
+      "bytes": 6075,
+      "sha256": "7129fc091140197f245ef083b829dafb7b68341f5f7e83959a31e0cbc063b76d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/tokenizer.py",
+      "bytes": 3047,
+      "sha256": "557315a3db0e6e7d6cf5bd1dae035e15d69c5d0fb707ee395b629f2f9443e7f1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/weight_loaders.py",
+      "bytes": 4215,
+      "sha256": "5f5e0fe0298bb98c6b8c453f5d8b403c14786b95ccfaa2e02c83db5f91a2f6df",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/third_party/vllm/vllm_v_0_3_1/worker.py",
+      "bytes": 13214,
+      "sha256": "20cdda355891836b9c8e80e1ba6c8af30634ec5a8f345259d4cc2463b3c04d13",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/fsdp_workers.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/fsdp_workers.py",
+      "bytes": 54106,
+      "sha256": "7240fc2a9334a6a521f7e51836a031d09d2b4422796b40d5bcb4e3e897867e26",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/megatron_workers.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/megatron_workers.py",
+      "bytes": 36430,
+      "sha256": "bf136fe2d2595dd78a1df92234ecd6bd6b9a0ed0252e8915ebdd7caa88449fc0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/__init__.py",
+      "bytes": 1169,
+      "sha256": "32a39ab63010e701598f3c892357ede984a36a8e9013c78478b3f4a33e36ec21",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/base.py",
+      "bytes": 982,
+      "sha256": "d249884ee73ed51563443388163d57caaff198af11f60da44c70b85568c5127f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/fsdp_ulysses.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/fsdp_ulysses.py",
+      "bytes": 3542,
+      "sha256": "ec64073e9239d67d0dc7fa360013e779534e1bab8a6eb6991c6b9305aa573867",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/fsdp_vllm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/fsdp_vllm.py",
+      "bytes": 6186,
+      "sha256": "c186b6c455d1e97c1b09c6fd8c80ea915d90f24e318b6fc377794e628583abd8",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/megatron_vllm.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/sharding_manager/megatron_vllm.py",
+      "bytes": 18595,
+      "sha256": "a96ff19985b83712f572dfb8bfe937b3d2c43d031f879c99bfc2fafc5d10eee8",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/__init__.py",
+      "bytes": 753,
+      "sha256": "6dc2b3dd28631c76b826f545091bedc233111ad6bab00511a4fe40e6a1e4cf78",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/base.py",
+      "bytes": 1141,
+      "sha256": "480b812f13b681735e18347220dc7462a7ae982fb61a46541dc713d4e2608d12",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/hf_rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/hf_rollout.py",
+      "bytes": 5867,
+      "sha256": "38d84c1bcbe61fa560dc6ab3e5f2acb46a4561c1bb329cf344d6cccc781b1009",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/tokenizer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/tokenizer.py",
+      "bytes": 5747,
+      "sha256": "92fbaf5d1c93e2c0d2ec2e399af83be277ac744005466b3016331516708ed00b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/naive/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/naive/__init__.py",
+      "bytes": 641,
+      "sha256": "551983cdba422a02f03c8b9cce52face25963b511b9029e09247a16afa3c70fd",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/naive/naive_rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/naive/naive_rollout.py",
+      "bytes": 4821,
+      "sha256": "09dcb0d16d53b02d8cb665b21b4fc74f47ed479bdbe6b0292550d2b1b9a46d61",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/vllm_rollout/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/vllm_rollout/__init__.py",
+      "bytes": 638,
+      "sha256": "875ce539030328cfd2feeec2d531a12ca24175762177ba5b4db2256c8669e0f7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "bytes": 10319,
+      "sha256": "da4a0338a8bd7144fc387d19d0fdae421f66bdbae1c627b2097b24eb2871512f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/__init__.py",
+      "bytes": 732,
+      "sha256": "a61c624ef2dd6bec59cc59302d88d1ccdc151ea5beb776b9733ac19bcfbe8fb7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/base.py",
+      "bytes": 1094,
+      "sha256": "9609662cb80dc02afb53a424abb6a9ae93e0448d190a3dd5bc4cd5e0d92ea6a2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/dp_critic.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/dp_critic.py",
+      "bytes": 9785,
+      "sha256": "53bd4fcebb5aee477d24bb2e9d40d0f1fc94f57677cb918873cc2984234229a3",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/megatron_critic.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/critic/megatron_critic.py",
+      "bytes": 10641,
+      "sha256": "19fb92b0d5cca0024ba7ff77e90ef62772d629bf99210804182945393f1deebb",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/__init__.py",
+      "bytes": 638,
+      "sha256": "969b640ba9c36d51ddf12380041963eb2255b094318027e76053c191339bd825",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/base.py",
+      "bytes": 1710,
+      "sha256": "7f6e0ccd8edaca5a5edc02e8f545297bef4acaea84d0858b870340a157ed0983",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/megatron/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/megatron/__init__.py",
+      "bytes": 647,
+      "sha256": "1a01e19bf170896603577bc8752239de2743685141424dcef64bb685cb2ffd96",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/megatron/reward_model.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/reward_model/megatron/reward_model.py",
+      "bytes": 13316,
+      "sha256": "e823efa4d1a943ad9f6eb79061d40aed46501528efd83c2fdeedd645b5d81d53",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/__init__.py",
+      "bytes": 727,
+      "sha256": "3053474474716dc57f7e1b5d80d23b28c7b146d9257f8b6bf3b7878de4eae219",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/base.py",
+      "bytes": 2071,
+      "sha256": "4afcfa27274dd1b58e40cc5484ca352890d5423ce2c162734f1ee6b4fb26890b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/dp_actor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/dp_actor.py",
+      "bytes": 14366,
+      "sha256": "71cc289d50076e6fc3bb30c26d69c2e98486834c28fe02548eb2a4c1c4301e33",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/megatron_actor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/workers/actor/megatron_actor.py",
+      "bytes": 18814,
+      "sha256": "4e06adb8ae9802223b7d6c2ccd7658ec71c2286aaeb4139eeeebbf4319dc3df4",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/__init__.py",
+      "bytes": 787,
+      "sha256": "504089640d8e047b8b53d032a9278ad3374c0efaae8c2a177468c7b2ceb7a02f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/__init__.py",
+      "bytes": 778,
+      "sha256": "fc7a2d9064a035f948c196db973149438f977b41d81e55a5e05a3e599c9101ab",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/base.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/base.py",
+      "bytes": 19238,
+      "sha256": "b0dca8aad381d4e9a60169df108af2035fd0b5f88ab38dfc833689c842d4caa9",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/megatron.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/ray/megatron.py",
+      "bytes": 3035,
+      "sha256": "f07274afae8e1b14e930b48a7b228fd0afe3e409a5012f790481a953858ccde5",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/__init__.py",
+      "bytes": 699,
+      "sha256": "2ccb73c92abfe5b47ea9af01ae0d9a2877553267d5c9e702f75c12071b7fea6b",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/decorator.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/decorator.py",
+      "bytes": 15531,
+      "sha256": "b6e4cd3c8ad3c4fa2eea07df3ef45344bb5dc2e1e8357c0b94a9d19a6bd4daac",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/worker.py",
+      "bytes": 6416,
+      "sha256": "3a4c40474aab8a2f898cc2fbbcbad7db5a697507065330026f6e7bbc9e11b181",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/worker_group.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/worker_group.py",
+      "bytes": 7494,
+      "sha256": "aee8ea551404288e27a0d12e29304504a1551468ba388b2f0e1292e8ff4dde79",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/register_center/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/register_center/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/register_center/ray.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/register_center/ray.py",
+      "bytes": 939,
+      "sha256": "453fb6557bd4dde011730d92d96b8004e280c2dd75bb60f4d3eff9b8947ae702",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/worker.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/worker.py",
+      "bytes": 1595,
+      "sha256": "37aa599c7e77c72e99f52ebf1019a3e69e6dfeaa67bb852dc1b2e6afdd6e2c08",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/worker_group.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/single_controller/base/megatron/worker_group.py",
+      "bytes": 2080,
+      "sha256": "73362d1f9a2c162dcad2470c3ae93cb0867273a5fa236b135357e76807fa987f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/fsdp_sft_trainer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/fsdp_sft_trainer.py",
+      "bytes": 19679,
+      "sha256": "7d0fe2f63fdc2f2026a8d731ff71dbd5ddddfb3413bc9273336d8514d894ad08",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_eval.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_eval.py",
+      "bytes": 2204,
+      "sha256": "91d913c8280df50eca396ea2c6d1961d9569a29ed7c7f104a597610e24cfda50",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_generation.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_generation.py",
+      "bytes": 5760,
+      "sha256": "19a40ee1d20bb06bff56d46b2c1bb9417e6e33539ff35eaae96fd3e55a4e5ae2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_ppo.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_ppo.py",
+      "bytes": 7773,
+      "sha256": "e60fc5ae2ee0d8d59e2876178ee7e84276ccbba19dfbd5b976b5fcd2bc6c09aa",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_ppo_format.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/main_ppo_format.py",
+      "bytes": 8213,
+      "sha256": "b95012f29660f66d4c16826d8d1df70af08f082328b1c87009cab44976ea7949",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/runtime_env.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/runtime_env.yaml",
+      "bytes": 122,
+      "sha256": "4b48b9246dcaa5df082844675c32e6095abd198e347eb928fc8c7d931c13e4d6",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/evaluation.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/evaluation.yaml",
+      "bytes": 160,
+      "sha256": "106cd5daf5846e03aa5866897c7f7c13096e2859cd87a9cb2b73417143aa50ec",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/generation.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/generation.yaml",
+      "bytes": 779,
+      "sha256": "fc82ade5d7a06f4aa0a3690b846d73a2dd93e50faf5ab7fd4624e35832c42e86",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/ppo_megatron_trainer.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/ppo_megatron_trainer.yaml",
+      "bytes": 4467,
+      "sha256": "561c1b5d8a4bc0452150c6dbff8986feb9e1aa0ca9f52ad1166dc6542bb9d955",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/ppo_trainer.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/ppo_trainer.yaml",
+      "bytes": 5844,
+      "sha256": "d990ac6c00f34fcbfde426a520ffc1b96d0ef96f118914ba26033d5eaba314b7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/sft_trainer.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/config/sft_trainer.yaml",
+      "bytes": 1147,
+      "sha256": "121ef7e863948fcb2f7091322e953bc07ae086bd3ae41c6c06d5657adee35a78",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/__init__.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/__init__.py",
+      "bytes": 600,
+      "sha256": "e65abd77db034b4f29eb1268c24867f84919dbce22e28d1997e563ed1d94179c",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/core_algos.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/core_algos.py",
+      "bytes": 9911,
+      "sha256": "f7a0260fcc9dd73a856d358e9da325b74cc24a5e360da08eb31749457f752e33",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/ray_trainer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/verl/trainer/ppo/ray_trainer.py",
+      "bytes": 42315,
+      "sha256": "8e2fcb515bc3493660802e4eba40ae20ef71e9aa303b0d92b09a0d9695bfc591",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/download.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/download.py",
+      "bytes": 834,
+      "sha256": "cf0324aeb61e32b6138327af260c23b031aadf476e17b7b678fd6b6280cd6342",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/download.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/download.sh",
+      "bytes": 118,
+      "sha256": "447682b2632c9e95f4f612da6102ca424b39be56313242ddf2966f9589fb67dc",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/upload.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/upload.py",
+      "bytes": 395,
+      "sha256": "1a48a98467e1f59b14546c800960ba7306eb239d9330614abc8adf40b4ed106f",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/upload.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/upload.sh",
+      "bytes": 99,
+      "sha256": "afb6204799e2e7887edf88b0e8a96fcc3d19954691e613fc0485dd87cf4f7391",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/data_process.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/data_process.sh",
+      "bytes": 469,
+      "sha256": "1ec08ed39ca897f6dc85d07710272e40a9af1e3dd342d2869b8616d397e44d4a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/evaluate.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/evaluate.sh",
+      "bytes": 2831,
+      "sha256": "0e1b023e22c0213ce580478515aacacf61d2dfe14d34bee5f684accca271ee81",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.3/train_grpo_format.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.3/train_grpo_format.sh",
+      "bytes": 4118,
+      "sha256": "fac89534659a537f2ef87fbaf50ae99449a7139b2a45fbd277e07ba4c5c3250a",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.3/train_ppo_format.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.3/train_ppo_format.sh",
+      "bytes": 4320,
+      "sha256": "7908e8261f693d7ee48375271a3c357283b421300214bcf5c63a7f63f00823d0",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.2/train_grpo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.2/train_grpo.sh",
+      "bytes": 3553,
+      "sha256": "32426422b5150fe0bfc74c4c1521360bfc5d451e0627663c1035d613c2dfdf97",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.2/train_ppo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.2/train_ppo.sh",
+      "bytes": 3902,
+      "sha256": "167cefac672609f9ed7ff5793e889ca0ace2125c5b6fa08b9496d2b41321fcd9",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.1/train_grpo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.1/train_grpo.sh",
+      "bytes": 3805,
+      "sha256": "04d3018c9306d93aa83ed8989d879463b2fae2682814b07e07dacaa8ee99a422",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.1/train_ppo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/nq_hotpotqa/v0.1/train_ppo.sh",
+      "bytes": 4109,
+      "sha256": "3802dc89a85c308e9ee43ef5524ad9b646e6eac3129401e9c63268dcaf89b2de",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq.py",
+      "bytes": 3259,
+      "sha256": "e61aa76e9278434076b892238435e56fa7f4777014c17d61a355983a31a85bdd",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq_rag.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq_rag.py",
+      "bytes": 5194,
+      "sha256": "89c4c33775d6b6b5c68bddd40d2cf6059176240c2971b6b3e7d3f075be9e02a1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq_search.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/nq_search.py",
+      "bytes": 3570,
+      "sha256": "c1c09c2337daf204134805e502da374d11fa0dadeae8951c9bb11914c742048d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/qa_search_test_merge.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/qa_search_test_merge.py",
+      "bytes": 4285,
+      "sha256": "f68ff89f04e0f0f6b7d42102d15c35a43ab36a7407098fbdf7c56cd9cea577e1",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/qa_search_train_merge.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/search-e1-reproduction-20261003-233328/upstream/Search-R1/scripts/data_process/qa_search_train_merge.py",
+      "bytes": 3790,
+      "sha256": "c040d8987ce543c553f7781113260178de87bf55aa5793691aea849b80207bbf",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/search_r1/llm_agent/generation.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/search_r1/llm_agent/generation.py",
+      "bytes": 19988,
+      "sha256": "c89ee84842a76c6c7eec5a4f824cbfb18759a41609f0eb25788ebe0d3a89fbd2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/verl/workers/actor/dp_actor.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/verl/workers/actor/dp_actor.py",
+      "bytes": 14366,
+      "sha256": "71cc289d50076e6fc3bb30c26d69c2e98486834c28fe02548eb2a4c1c4301e33",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/verl/trainer/config/ppo_trainer.yaml",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/verl/trainer/config/ppo_trainer.yaml",
+      "bytes": 5844,
+      "sha256": "d990ac6c00f34fcbfde426a520ffc1b96d0ef96f118914ba26033d5eaba314b7",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/verl/trainer/ppo/ray_trainer.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/verl/trainer/ppo/ray_trainer.py",
+      "bytes": 44487,
+      "sha256": "0b239feaa9b19e87368bbe9dfba37e616b9a792e66a0d2f2ff791927f620bcf2",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/reproduction/h20/prepare_paper_data.py",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/reproduction/h20/prepare_paper_data.py",
+      "bytes": 3858,
+      "sha256": "c8a075ade2c7b6175b3c7831dd876c6f60e3e3df31203185a75badc7b6beb06d",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/reproduction/h20/train_paper_grpo.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/reproduction/h20/train_paper_grpo.sh",
+      "bytes": 3357,
+      "sha256": "f92c2ea0ea3d79fcaba37bd0f6c1ab30c1ec6206ad71945f81799b5c79937d46",
+      "role": "loose_implementation_or_runtime_configuration"
+    },
+    {
+      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-audit/r1-source/reproduction/a800/train_continuation.sh",
+      "destination": "reproduction/code-backup/search-e1/loose/search-e1-audit/r1-source/reproduction/a800/train_continuation.sh",
+      "bytes": 3943,
+      "sha256": "da74eab082794c407526587191f04f41c9513cb015ea881d497180e0a86e3d2b",
+      "role": "loose_implementation_or_runtime_configuration"
+    }
+  ],
+  "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization."
+}

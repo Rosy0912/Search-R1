@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "search-e1-reproduction"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = ["torch>=2.4", "transformers>=4.45,<4.50", "peft>=0.13,<0.15", "datasets", "requests", "pyarrow", "rapidfuzz==3.13.0"]
+[tool.setuptools.packages.find]
+include = ["search_e1*"]

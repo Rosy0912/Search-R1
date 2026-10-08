@@ -1,0 +1,19 @@
+{
+  "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+  "pairs": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+  "validation": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+  "output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+  "retriever_url": "http://10.120.17.101:18004/retrieve",
+  "epochs": 1,
+  "lr": 1e-05,
+  "rank": 16,
+  "alpha": 32,
+  "clip": 10.0,
+  "chunk": 32,
+  "accumulation": 4,
+  "max_context": 8192,
+  "seed": 42,
+  "usable_pairs": 100974,
+  "skipped_pairs": 0,
+  "world_size": 8
+}

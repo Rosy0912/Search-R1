@@ -1,0 +1,84 @@
+--- /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_from_archive100/observe_preparation2.py
++++ /Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_from_archive100/observe_preparation3.py
+@@ -1,6 +1,6 @@
+ """External CPU-only progress evidence, bound to one real controller lifetime.
+ 
+-Reads new preparation-2 outputs by incremental bytes. Never starts a model,
++Reads new preparation-3 outputs by incremental bytes. Never starts a model,
+ posts a retrieval query, changes routing, edits a runtime or stops a process.
+ Controller identity loss/change is recorded and terminates only this observer.
+ """
+@@ -142,7 +142,7 @@
+     parser.add_argument('--controller-path', type=Path, required=True)
+     parser.add_argument('--run-id', required=True)
+     parser.add_argument('--interval', type=float, default=60)
+-    parser.add_argument('--tag', default='preparation-2-progress-20261007')
++    parser.add_argument('--tag', default='preparation-3-progress-20261007')
+     args = parser.parse_args()
+     if args.interval != 60 or '/' in args.tag or '..' in args.tag:
+         raise ValueError('Reviewed observer uses a 60-second interval and a simple new tag')
+@@ -155,7 +155,7 @@
+     fcntl.flock(observer_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+     if any(path.exists() for path in [sample_path,summary_path,startup_path]):
+         raise RuntimeError('Observer evidence already exists; preserve it and use a reviewed new tag')
+-    run_path = receipt_dir/'preparation-2-run.json'
++    run_path = receipt_dir/'preparation-3-run.json'
+     run = read_json(run_path)
+     if run.get('controller_pid') != args.controller_pid or run.get('run_id') != args.run_id or run.get('process_uid') != os.getuid():
+         raise IdentityMismatch('Initial run receipt/controller UID does not match')
+@@ -170,9 +170,9 @@
+     expected_argv = [str(base/'env/bin/python'),str(args.controller_path)]
+     if current is None or current['uid'] != os.getuid() or current['starttick'] != args.controller_starttick or current['argv'] != expected_argv or current['state']=='Z':
+         raise IdentityMismatch('Initial real controller UID/path/starttick/argv mismatch')
+-    expected_rollout = base/'runs/preparation-2-rollouts.jsonl'
++    expected_rollout = base/'runs/preparation-3-rollouts.jsonl'
+     if config['rollout_output'] != str(expected_rollout) or config['opsd_output'] != str(base/'runs/opsd'):
+-        raise IdentityMismatch('Configuration is not the new preparation-2 output namespace')
++        raise IdentityMismatch('Configuration is not the new preparation-3 output namespace')
+     candidate_pid=run['candidate']['candidate_pid']
+     candidate_digest=run['candidate']['source_identity_sha256']
+     question_proofs=[]
+@@ -184,14 +184,14 @@
+             expected_trajectory_rows=question_count*5,device=question_stat.st_dev,
+             inode=question_stat.st_ino,size=question_stat.st_size,mtime_ns=question_stat.st_mtime_ns))
+     if sum(item['question_rows'] for item in question_proofs)!=169103:
+-        raise IdentityMismatch('Actual preparation-2 question shards do not contain the original 169103 questions')
++        raise IdentityMismatch('Actual preparation-3 question shards do not contain the original 169103 questions')
+     started=time.time()
+     startup=dict(time=started,observer_pid=os.getpid(),observer_uid=os.getuid(),
+         observer_source=str(Path(__file__).resolve()),observer_source_sha256=sha(Path(__file__).resolve()),
+         controller=current,run_id=args.run_id,run_receipt_path=str(run_path),run_receipt_sha256=sha(run_path),
+         config_path=str(config_path),config_sha256=sha(config_path),controller_source_sha256=control_sha,
+         interval_seconds=60,cpu_only=True,retrieval_requests=False,question_shards=question_proofs,
+-        scope='Only preparation-2 actual output bytes; no preparation-1 rows; no training mutations')
++        scope='Only preparation-3 actual output bytes; no preparation-1 rows; no training mutations')
+     with startup_path.open('x') as stream:json.dump(startup,stream,indent=2)
+     shards=[IncrementalLines(Path(str(expected_rollout)+'.parts')/f'rollouts-{rank}.jsonl') for rank in range(8)]
+     merged=IncrementalLines(expected_rollout)
+@@ -222,7 +222,7 @@
+                 if phase.get('controller_pid')!=args.controller_pid or phase.get('run_id')!=args.run_id:
+                     raise IdentityMismatch('Stable phase pointer switched to a different controller/run')
+                 snapshot['phase']=phase
+-                child_receipt=read_json(receipt_dir/'preparation-2-active-child.json')
++                child_receipt=read_json(receipt_dir/'preparation-3-active-child.json')
+                 if child_receipt['controller_pid']!=args.controller_pid or child_receipt['run_id']!=args.run_id or child_receipt['uid']!=os.getuid():
+                     raise IdentityMismatch('Active child ownership receipt differs')
+                 child=process_identity(child_receipt['child_pid'])
+@@ -241,7 +241,7 @@
+                     proof=question_proofs[rank]
+                     stat=Path(proof['path']).stat()
+                     if (stat.st_dev,stat.st_ino,stat.st_size,stat.st_mtime_ns)!=(proof['device'],proof['inode'],proof['size'],proof['mtime_ns']):
+-                        raise IdentityMismatch('Original preparation-2 question shard identity changed')
++                        raise IdentityMismatch('Original preparation-3 question shard identity changed')
+                     row=counter.observe()
+                     row.update(rank=rank,expected_rows=proof['expected_trajectory_rows'],
+                         question_rows=proof['question_rows'],elapsed_seconds=snapshot['elapsed_seconds'],
+@@ -250,7 +250,7 @@
+                 total=sum(value['rows'] for value in rows if value['exists'])
+                 reset=any(any(isinstance(event,dict) and event['event'] in ['INODE_CHANGED','FILE_TRUNCATED','CONTENT_REWRITTEN_BEFORE_OFFSET','FILE_SHRANK_DURING_READ'] for event in value['events']) for value in rows)
+                 snapshot['rollouts']=dict(shards=rows,total_rows=total,expected_rows=845515,
+-                    merged=merged.observe(),source='New preparation-2 shard complete newline counts only',
++                    merged=merged.observe(),source='New preparation-3 shard complete newline counts only',
+                     mean_rows_per_elapsed_second=total/snapshot['elapsed_seconds'] if snapshot['elapsed_seconds']>0 else None,
+                     interval_rows_per_second=(total-last_total)/(now-last_time) if last_total is not None and not reset and total>=last_total and now>last_time else None,
+                     interval_reset_or_replacement=reset)
