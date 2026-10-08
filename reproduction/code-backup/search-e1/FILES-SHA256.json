@@ -2,51 +2,51 @@
   "label": "search-e1",
   "captured_utc": "2026-10-08T02:40:34.603504+00:00",
   "original_repo": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish",
-  "source_commit": "6e34423d95a288dbac12c9561e3d17cdd3254399",
+  "source_commit": "00a64f62e42140d7e5cad6110be08b0c804b35b2",
   "source_branch": null,
   "backup_branch": "codex/backup-search-e1-latest-20261008t023352z",
   "files": [
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
       "destination": "experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
-      "bytes": 10325,
-      "sha256": "0f8a9ab00fa3a7d58bf75c1a96069307f70166f8195e2021b56a8fd2c88abb67",
-      "role": "current_checkout_uncommitted"
+      "bytes": 10429,
+      "sha256": "adb2b9627be10fa351863c4846beb76c732b9bf533618c189469112eb82ed896",
+      "role": "latest_source_commit_final_capture"
     },
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json",
       "destination": "experiments/search_e1/docs/receipts/archive-audit-20261008T023007Z.json",
       "bytes": 21611,
       "sha256": "490c0a9dccbee1fc426702110267361640530a17c34cb57aff6a299e619dcfbf",
-      "role": "current_checkout_uncommitted"
+      "role": "latest_source_commit_final_capture"
     },
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json",
       "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-full-pair-statistics-20261008.json",
       "bytes": 7027,
       "sha256": "5ca19588e84ec80be14207c307905d82789fe185df17e375d8908ca1aa8494d5",
-      "role": "current_checkout_uncommitted"
+      "role": "latest_source_commit_final_capture"
     },
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json",
       "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-function-equivalence-20261008.json",
       "bytes": 854,
       "sha256": "4e304733bcb6731af658eda7ec4afbcc81695ec76c3bb482a922d6eb4d6f22fb",
-      "role": "current_checkout_uncommitted"
+      "role": "latest_source_commit_final_capture"
     },
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json",
       "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-evidence-20261008.json",
       "bytes": 1619,
       "sha256": "8fa68d970490e9487b23e9d2ba2cac6bfdc8b75c3753110072870d74c4a83d85",
-      "role": "current_checkout_uncommitted"
+      "role": "latest_source_commit_final_capture"
     },
     {
-      "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py",
+      "source": "source_commit:00a64f62e42140d7e5cad6110be08b0c804b35b2:experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py",
       "destination": "experiments/search_e1/docs/receipts/opsd-epoch1-pair-stat-probe-20261008.py",
       "bytes": 1812,
       "sha256": "6cc688cd89ca5fb8253118f143a0a2782801ef64878d46fe339258b56f2645aa",
-      "role": "current_checkout_uncommitted"
+      "role": "latest_source_commit_final_capture"
     },
     {
       "source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/check_format_reward_manager.py",
@@ -1923,10 +1923,19 @@
       "bytes": 3005,
       "sha256": "2352254792dfd1741881f01d67546b37b6a0d75a397ee3d23c747eb14c6d3437",
       "role": "user_required_persistent_backup_rule"
+    },
+    {
+      "source": "prior_backup_commit:4a278b083cbe1585e7a19c1f5c2319757a84712c:experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
+      "destination": "reproduction/code-backup/search-e1/prior-capture/experiments/search_e1/docs/opsd-epoch1-mechanism-review-20261008.md",
+      "bytes": 10325,
+      "sha256": "0f8a9ab00fa3a7d58bf75c1a96069307f70166f8195e2021b56a8fd2c88abb67",
+      "role": "preserved_prior_document_capture"
     }
   ],
   "excludes": "Model weights, datasets, environments, credentials, caches and bulk logs; known Git checkouts preserved by source commit. Historical/draft loose implementations retain original directory names and are not execution authorization.",
   "session_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
   "final_source_sweep_utc": "2026-10-08T02:42:31.222529+00:00",
-  "original_head_at_final_sweep": "00a64f62e42140d7e5cad6110be08b0c804b35b2"
+  "original_head_at_final_sweep": "00a64f62e42140d7e5cad6110be08b0c804b35b2",
+  "initial_source_commit": "6e34423d95a288dbac12c9561e3d17cdd3254399",
+  "final_captured_utc": "2026-10-08T02:45:29.679197+00:00"
 }
