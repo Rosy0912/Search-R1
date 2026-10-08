@@ -1,0 +1,18 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 10035,
+      "sha256": "de4be4dd745581b5e6f253ae85fb6d379db6112982823d6ed5b2419741eb3151"
+    },
+    "backup.py": {
+      "bytes": 29583,
+      "sha256": "5069e0bff06b4b007cc1b64800eb0024925d33fd7c8b76d13186592ac404a1aa"
+    },
+    "test_backup.py": {
+      "bytes": 21504,
+      "sha256": "d3c23512faabd5b4eb8fa4e1b3b21a59e66cd1e4ffefeb2dcf08b44d4c7b9808"
+    }
+  },
+  "schema": "opsd-online-pinned-backup-source-manifest-v1",
+  "scope": "Independent stdlib transfer helper; source preparation is not actual backup or numerical/final200 acceptance"
+}

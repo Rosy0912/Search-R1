@@ -47,3 +47,17 @@ HKUST4 21:12 CST 新只读记录176/200 GRPO已完成、177进行中，176 rewar
 双独立审查均正式批准后，新入口已在 `fb0932a019379b7a17f7b74ebc8037cefb28774c` 提交、推送，12个新源码/文档逐文件从 FETCH_HEAD 回读一致。节点独立目录 `/data/shaoshitong/search-e1-opsd-online-results-20261008/source/results-eval-fb0932a/opsd_online_results_eval_v1` 的11个文件逐字节与本地相同。首 Node CPU fixture 缺少测试使用的仓库 sibling admission.py，四项路径错误已保存；补入字节相同、已经发布的原 acceptance.py 作为测试依赖，未修改 evaluator 或训练源码。原环境40项 CPU tests 随后全部通过，0 skip；这不是一次训练故障或 GPU 恢复。完整复跑票据 SHA 为 `5a311563a19e323f56d250784111fa186ba5ffbabeb482f7cd1bd7b39727f2a4`。
 
 实际 CPU prepare 对 source100/305源码/数据/CP0/CP89 身份检查通过，产生新独立 run `0aa669133f74418e818f14d217b4d9b7`。发布绑定的 `receipts/config-published-not-ready.json` SHA 为 `fe3d6eb5903fdc55334922f020bf53b9009d63d0a8155da5e3758dd90eb92d33`，自身出版与原 observer 已绑定；真实最终 checkpoint、终态和全200验收仍明确缺失，因此 ready=false/HOLD。实际 CLI exit0只表示准备完成，不能当作效果评估开始。配置绑定过程没有 import Torch，所有新阶段均未启动 GPU。
+
+## 22:18 CST 新读状态与 CP286
+
+同一720753控制器继续运行，最新只读快照实际记录29个完整 outer、286次完成链 Adam、8744对累计曝光，outer29（第30轮）用最新 CP286 raw adapter 采样。原科学源码、恢复入口、source100及两份数据均通过新 SHA 核验，八个自有采样进程与原18004 oracle身份正确；八卡实际最少余量3143MiB，observer年龄0.35秒，历史低于运行门槛计数0。快照 SHA 为 `3951946d33aa9796a9c4a2525b6ec5ecd3e4b54e09492adca8c831d12164a0ec`，数据只对应22:18的读取。
+
+独立 CPU reader 实际读取明确固定 CP286/outer28，manifest SHA `ea208123e618e7574fcc4b7a1d3c702e45cb892bdfc67ed197f6eb7f92489e3f`。八rank真实 Adam286、完整 moments/groups逐项相同且有限，504个 adapter 张量全有限并相对 CP5 改变，最大变化0.002025941386818886。此轮279对/9次更新与 token 清单对账通过；末批23条轨迹5800个有效 token 的文件 SHA、原有效 mask、记录损失、轨迹均值及尾批分母23通过。没有重算分词器或 logits，也没有声称早先所有 token 已重新实读；CPU前后 CUDA未初始化、实际 exit0。独立审计 SHA 为 `92b023b301176ee3366954a15b626df6ac4fa35b235fa785181861881057cde8`。
+
+HKUST4 22:13:58 CST 实读177/200 GRPO已完成、178进行中，177 reward0.529/gradnorm0.619，末四轮有限；最新 native512 与检查点仍为150。五个669文件 runtime 的新 SHA、14个已知进程身份和鲜活 observer 通过。GPU4–7直接余量至少27651MiB，原共享检索718MiB；没有停止或修改 archive。
+
+这些是训练健康、真实状态与逐token证据的验收，不是新效果结果。新在线三模型 native512入口仍等待原200轮完成及真实终态，不抢占训练八卡，不恢复旧评测。
+
+为提前保全预选 CP89，新增独立 stdlib 备份入口 `control/opsd_online_pinned_backup_v1`，只接收明确 manifest/config SHA、run、update/outer与已发布源码票据，不猜 latest，也不重发已完成 CP0/1/5/11。29项 CPU fixtures通过，覆盖真实18成员结构、SHA/stat/路径/符号链接、完整 USTAR成员及失败 partial保留；清单 SHA `1cc12fd6b9215d177480c1c46ae0c04c2f0b8cae641c16287f08b0e260338163`，两个新本地目录根权限0700。必须先推送、读回、独立部署后才执行真实备份；全部成员安全提取、另一次本地磁盘 SHA读回及真实传输rc0后才能完成。入口就绪不等于 CP89已备份或200轮完成。
+
+另复核旧192题原始诊断本地副本：当前只有1050文件/4414030129字节，0/56 NPY；1017份可对照文件 SHA相符，一份 token日志尚短，32份仅有原 metadata与本地 SHA。原 rsync已不在，旧返回码未知，不能改写成 exit0。节点固定 run 的6401份已验收路径 metadata未变，当前完整目录6603文件/39215210380字节；曾记总量39224070870与当前目录范围相差8860490字节，来源范围尚未定位，不能据此称数据丢失。新只读 rsync已复用原 partial继续传输，无 delete、未改节点或启动GPU。该副本仍标 PARTIAL，实际新退出码和全内容核验完成前不称全部备份成功。
