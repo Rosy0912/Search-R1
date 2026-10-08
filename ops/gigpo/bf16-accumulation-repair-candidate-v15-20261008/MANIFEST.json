@@ -1,6 +1,9 @@
 {
+  "candidate_deployed": false,
   "candidate_executed": false,
-  "candidate_review_status": "PENDING_NONAUTHOR_STATIC_REVIEW",
+  "candidate_execution_authorized_by_review": false,
+  "candidate_review_sha256": "72c6e8ff67cade3a04c190196fb87b829e3c25b0bbd52a32f02987e2cbfbbf49",
+  "candidate_review_status": "PASS_STATIC_EXACT_FROZEN_CANDIDATE_SCOPE",
   "files": [
     {
       "bytes": 9169,
@@ -18,9 +21,14 @@
       "sha256": "4793d5bb3c10b05eece568d5bd57dbc04929b7f73f3c6b59cd9c00470281de14"
     },
     {
-      "bytes": 1803,
+      "bytes": 10535,
+      "path": "BF16-ACCUMULATION-REPAIR-INDEPENDENT-REVIEW-v1.json",
+      "sha256": "72c6e8ff67cade3a04c190196fb87b829e3c25b0bbd52a32f02987e2cbfbbf49"
+    },
+    {
+      "bytes": 2146,
       "path": "README.md",
-      "sha256": "16b4b19db1800c9b9c0a12427662d0b55d975fe174ede01f56fe863ab445e5ff"
+      "sha256": "5eeb60d13b79b6bd471b5f31f18cd53137deee3f098342638a37eee069a61a1f"
     },
     {
       "bytes": 3399,
@@ -248,5 +256,5 @@
   "scientific_source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
   "self_excluded": true,
   "training_Adam_writes": 0,
-  "utc": "2026-10-08T04:24:31.729362+00:00"
+  "utc": "2026-10-08T04:29:16.359630+00:00"
 }

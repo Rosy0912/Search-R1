@@ -1,0 +1,159 @@
+{
+  "schema": "BF16_ACCUMULATION_REPAIR_INDEPENDENT_STATIC_REVIEW_V1",
+  "reviewed_at_utc": "2026-10-08T04:25:28Z",
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "candidate_author": false,
+    "clean_context": true,
+    "context_received": "Explicit candidate, parent, design, manifest, diff paths and review target only; no author or main-thread history."
+  },
+  "status": "PASS_STATIC",
+  "conclusion": "No blocking defect found within the reviewed static scope. This is a hypothetical runtime candidate, not evidence that the probability mismatch is fixed.",
+  "approval_or_execution_authorization": false,
+  "probability_accepted": false,
+  "numerical_repair_success_claimed": false,
+  "blocking_findings": [],
+  "candidate_runtime": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v15-bf16accum1",
+  "parent_runtime": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v14-evidenceclone1",
+  "frozen_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-fresh200-cpufixturefix-20261007",
+    "head": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+    "git_status_porcelain_empty": true,
+    "source_modified_by_reviewer": false
+  },
+  "review_inputs": {
+    "design": {
+      "path": "outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-REPAIR-DESIGN-v1.md",
+      "sha256": "1d2be53d9e0b5403b1ca33080b86644ea4dc8694270f1e62dce7a4f8323b488f"
+    },
+    "manifest": {
+      "path": "outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-REPAIR-FILE-MANIFEST-v1.json",
+      "sha256": "4793d5bb3c10b05eece568d5bd57dbc04929b7f73f3c6b59cd9c00470281de14"
+    },
+    "diff": {
+      "path": "outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-REPAIR-DIFF-v1.patch",
+      "sha256": "a95c148533bc760dc4ef872ad9f94486369ac575ac627f841bf6fc32f07d3837"
+    }
+  },
+  "independent_byte_verification": {
+    "candidate_files": 44,
+    "manifest_entries": 44,
+    "all_parent_and_candidate_sizes_and_sha256_match_manifest": true,
+    "changed_files": 4,
+    "byte_identical_files": 40,
+    "added_files": [],
+    "removed_files": [],
+    "test_files_changed": false,
+    "parent_tree_manifest_sha256": "7d6f4dce3bbfe45f287831103d555fb4063155e11c0e732a10761bc7e37876f6",
+    "candidate_tree_manifest_sha256": "54545ec5d6bac0c58d744d90fe12b41f8d9f22d351bccf3450e8c269670ee4ff",
+    "tree_digest_recomputed_from_independently_checked_manifest_entries": true
+  },
+  "reviewed_changed_files": [
+    {
+      "path": "calibration_run_v1.py",
+      "bytes": 26703,
+      "sha256": "371afcedfb34fe320538f948e787860c4bc884ea3711d9d760514adcb9f43aa2",
+      "reviewed_lines": [151, 157, 166, 168, 320, 335],
+      "finding": "Launcher requires the binding flag to be the boolean false and uniquely covers each of the four actual helper paths before services or Ray construction. Existing size/SHA verification then verifies their actual bytes. A missing flag or old helper-only binding fails closed. The unchanged sbatch supplies the same helper directory to the launcher and PYTHONPATH."
+    },
+    {
+      "path": "calibration_worker_v1.py",
+      "bytes": 33826,
+      "sha256": "b936264ad7b0786a19a389aace7b55f6207450eaeacd9f3af94a62a12c6eeeef",
+      "reviewed_lines": [18, 46, 49, 80, 203, 208, 216, 249, 298, 307, 309, 419, 422, 518, 522],
+      "finding": "The only flag assignment is line 53, before the source role constructor at line 58. All later candidate accesses read and validate the flag. Constructor PID and role are retained, and mismatches refuse rather than repair. Numerical metadata is added separately from the source identity/runtime metadata before the complete-state digest at line 248. Original sampling, loss, probability, update and restore APIs remain in place."
+    },
+    {
+      "path": "calibration_driver_v1.py",
+      "bytes": 54590,
+      "sha256": "07bd73a5bdf74bd60fe0a1d108fd27082b7b96d0118b43e5f1e90019024a47df",
+      "reviewed_lines": [30, 83, 99, 125, 178, 213, 224, 252, 255, 318, 328, 391, 495, 598, 650, 736, 739, 799],
+      "finding": "Both real worker groups are queried, each requires ranks 0 through 7 and eight distinct PIDs, and subsequent identities must exactly equal the first readback. Actor/ref aliases reach the same genuine class. Backend checks require the actual in-process SPMD executor/worker and preserve all existing FlashAttention checks. Raw PT, receipts and repeated complete state bind the same false readback."
+    },
+    {
+      "path": "calibration_state_v1.py",
+      "bytes": 5154,
+      "sha256": "fb3f96c87a8a4ddd891a28cae8b8a7d3351d2e021d6ac7b3cd906d8f2cf83ebb",
+      "reviewed_lines": [10, 22, 25, 110],
+      "finding": "Strict validator rejects absent fields, non-false values, wrong scope, missing constructor-time declaration, PID mismatch and role mismatch. Existing typed digest and pause validation logic are unchanged."
+    }
+  ],
+  "static_checks": [
+    {
+      "check": "actual_ray_role_construction_and_setter_timing",
+      "status": "PASS_STATIC",
+      "evidence": [
+        "candidate/calibration_driver_v1.py:111-121",
+        "candidate/calibration_worker_v1.py:49-69,522",
+        "candidate/metadata_colocation_v1.py:37-59",
+        "source/verl/trainer/ppo/ray_trainer.py:675-700,715-737",
+        "source/verl/workers/fsdp_workers.py:285-314,520-586"
+      ],
+      "reason": "Frozen trainer supplies actor_rollout and ref roles; colocation calls both real role constructors in each Ray process before either init_model call. Setter precedes ActorRolloutRefWorker initialization and all model/FSDP/vLLM load and profile operations. No driver-only inheritance assumption is used."
+    },
+    {
+      "check": "vllm_process_scope",
+      "status": "PASS_STATIC",
+      "evidence": [
+        "source/verl/workers/fsdp_workers.py:500-518,576-579",
+        "source/verl/workers/rollout/vllm_rollout/vllm_rollout.py:91",
+        "source/verl/third_party/vllm/vllm_v_0_6_3/llm.py:142",
+        "source/verl/third_party/vllm/vllm_v_0_6_3/llm_engine_sp.py:212-227,365-402",
+        "source/verl/third_party/vllm/vllm_v_0_6_3/spmd_gpu_executor.py:80-112,162-168",
+        "candidate/calibration_driver_v1.py:35-59"
+      ],
+      "reason": "SPMDGPUExecutor directly constructs Worker and calls its model runner in the same process. Candidate reads the process flag there and requires exact executor/worker classes; no unobserved vLLM Ray subprocess is substituted. This does not claim the PyTorch flag controls every FlashAttention or custom vLLM kernel."
+    },
+    {
+      "check": "both_roles_live_boundary_readbacks",
+      "status": "PASS_STATIC",
+      "evidence": [
+        "candidate/calibration_driver_v1.py:65-83",
+        "candidate/calibration_driver_v1.py:227,300,495,598,743",
+        "candidate/calibration_worker_v1.py:71-80,203-208"
+      ],
+      "reason": "Checks occur before official zero/baseline, before every actual training batch, post-sampling before first Adam, after probability review, and immediately before first Adam. Update boundary additionally checks the actual actor process within its existing matched stage. These are metadata checks on the same trajectory, not added validation jobs."
+    },
+    {
+      "check": "complete_pause_and_checkpoint_reload_field_consistency",
+      "status": "PASS_STATIC",
+      "evidence": [
+        "candidate/calibration_worker_v1.py:221-249",
+        "candidate/calibration_driver_v1.py:195-213,227-242,665-688,706-725",
+        "source/verl/workers/fsdp_workers.py:179-199,239-276,938-964,967-1046"
+      ],
+      "reason": "False flag metadata enters the candidate complete-pause hash before hashing. Source checkpoint identity and its strict runtime_metadata key set remain intact; the endpoint supplement stores full candidate worker state and driver numerical identities. Reload requires equality of all typed worker and driver fields before/after, including the supplemental numerical field, and does not set a live flag. Driver numerical identities are the cached latest validated all-role RPC result, not a claim about the driver's own PyTorch flag."
+    },
+    {
+      "check": "scientific_and_acceptance_boundaries",
+      "status": "PASS_STATIC",
+      "evidence": [
+        "independently verified forty unchanged parent files",
+        "clean source HEAD 2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+        "candidate/calibration_contract_v1.py:67-93,96-136",
+        "candidate/calibration_driver_v1.py:43-59,298-305,372-390",
+        "candidate/calibration_worker_v1.py:349-372,451,494-518"
+      ],
+      "reason": "No source, model/data/config, BF16 parameter setting, FlashAttention implementation, mathematical loss or probability reduction, microbatch, old/current layout, guard or acceptance protocol change is present. Four binding probability tolerances remain null; no dynamic tolerance invention or approval bypass was added."
+    }
+  ],
+  "reviewer_actions": {
+    "candidate_executed": false,
+    "tests_executed": false,
+    "candidate_or_source_imported": false,
+    "ssh_used": false,
+    "gpu_used": false,
+    "training_or_job_modified": false,
+    "implementation_files_modified": false,
+    "commits_or_pushes_performed": false,
+    "binding_created_or_approved": false,
+    "only_output_written": "outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-REPAIR-INDEPENDENT-REVIEW-v1.json"
+  },
+  "limitations_and_remaining_gates": [
+    "PASS_STATIC applies only to the exact four SHA256 values and the two tree manifests recorded here; changed bytes require a new review.",
+    "No new immutable binding was supplied for review. Its exact v15 deployment paths, false declaration and all executed file hashes must be independently checked before execution.",
+    "Publication and remote SHA/file readback were outside this review and are not certified by this report.",
+    "No remote access was used; the report certifies the local parent/candidate snapshot, not independent observation of job3332. Nothing in this review authorizes setting its live flag or changing its frozen runtime.",
+    "Only the authorized fresh official Instruct200 actual first batch can establish whether the numerical mismatch is resolved. Existing independent probability and training acceptance gates remain required; no CPU/native/GPU validation task was created or run."
+  ]
+}
