@@ -1,0 +1,43 @@
+{
+  "accepted_attempt_log_sha256": "59509aea7a8fa4db63aedb284179f385d9b6c0421290279e63f94a1381d37560",
+  "accepted_cpu_only": true,
+  "actual_frozen_runtime_files": 305,
+  "attempt1": {
+    "cause": "Test assumed immediate same-size Linux overwrite advances filesystem timestamps; only fixture/docs corrected, production source unchanged",
+    "failed": 1,
+    "failure_log_sha256": "9477fee89c1a522677c38e37c96f5afe2330849a7330c115a5e9ec4b2188c0f1",
+    "original_source_and_log_preserved": true,
+    "passed": 70
+  },
+  "cuda_initialized": false,
+  "dependency_versions": {
+    "numpy": "1.26.4",
+    "peft": "0.13.2",
+    "rapidfuzz": "3.13.0",
+    "torch": "2.4.0",
+    "transformers": "4.46.3",
+    "vllm": "0.6.3",
+    "xformers": "0.0.27.post2"
+  },
+  "deployment": "HKUST1/source/revision-72b9331/opsd_online",
+  "helper_files_verified_before_and_after": 23,
+  "live_five_update_acceptance": false,
+  "pending_human_inputs": [
+    "KL component clip decision",
+    "total online outer iterations",
+    "verified same-cluster shared output root or explicit HKUST local exception"
+  ],
+  "production_training_started": false,
+  "schema": "opsd-online-node-cpu-accepted-20261008",
+  "source_commit": "72b9331474a5fa68627019e46683c42d26440501",
+  "source_manifest_sha256": "6c52243a2e06c68b1689136d6bef2e3e549d353ad159fdda0dac1eb234239137",
+  "strict_scorer_sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "passed": 71,
+    "seconds": 1.128,
+    "skipped": 0
+  },
+  "verified_at_utc": "2026-10-08T08:30:29.822288+00:00"
+}
