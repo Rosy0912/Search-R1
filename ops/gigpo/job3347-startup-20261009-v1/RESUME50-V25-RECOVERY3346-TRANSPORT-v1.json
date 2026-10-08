@@ -1,0 +1,6 @@
+{
+  "returncode": 0,
+  "stdout": "{\"returncode\": 0, \"stdout\": \"3347\\n\", \"stderr\": \"\", \"binding\": {\"path\": \"/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/resume50-v25-recovery3346-once-v1/BINDING.json\", \"bytes\": 20621615, \"sha256\": \"cc999f7fcca4f4cfa5eeb9dedd3cede4a5d1378d9d680dd7dba25ad836b1c2fa\"}, \"namespace\": \"/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/resume50-v25-recovery3346-once-v1\", \"submitted_exactly_once\": true}\n",
+  "stderr": "",
+  "never_replay": true
+}
