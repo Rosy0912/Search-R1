@@ -1,0 +1,78 @@
+{
+  "schema": "existing-full-vocab-dump-independent-cpu-reconstruction-v1",
+  "started_unix": 1791433654.7698917,
+  "ended_unix": 1791433655.6255147,
+  "scope": "Existing completed first-cw original-mined-student FP32 full distributions only; CPU numpy read, no model load, inference, retrieval, or writes",
+  "checks": [
+    {
+      "version": "source100",
+      "tokens": 261,
+      "policy_tokens": 183,
+      "fp32_dump_paths": {
+        "base_ordinary__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-base_ordinary-logprobs.npy",
+        "base_ordinary__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-base_ordinary-probabilities.npy",
+        "student__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-student-logprobs.npy",
+        "student__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-student-probabilities.npy",
+        "teacher_privileged__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-teacher_privileged-logprobs.npy",
+        "teacher_privileged__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-teacher_privileged-probabilities.npy"
+      },
+      "bound_dump_sha256": {
+        "base_ordinary__logprobs": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+        "base_ordinary__probabilities": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+        "student__logprobs": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+        "student__probabilities": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+        "teacher_privileged__logprobs": "7dbcf3e971d5e3c7ddf63b4442a9eb84166f21808c7b9fab427c725944f35d97",
+        "teacher_privileged__probabilities": "f694a3eb7d005f8a2c27e46fc1067eaf6b0d6cb33c9da7dc8ac230dc5957d741"
+      },
+      "independent_cpu_max_absolute_errors": {
+        "unclipped_kl": 9.5367431640625e-07,
+        "clipped_kl": 9.5367431640625e-07,
+        "base_kl": 0.0,
+        "target_logprob": 0.0,
+        "topk_logprob": 0.0,
+        "normalization": 3.5762786865234375e-07
+      },
+      "independent_cpu_reconstructed_trajectory_mean": 0.6245460562756981,
+      "native_frozen_pair_loss": 0.6245460510253906,
+      "reconstructed_trajectory_absolute_error": 5.250307522075559e-09,
+      "mismatches": [],
+      "passed": true
+    },
+    {
+      "version": "epoch1",
+      "tokens": 261,
+      "policy_tokens": 183,
+      "fp32_dump_paths": {
+        "base_ordinary__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-base_ordinary-logprobs.npy",
+        "base_ordinary__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-base_ordinary-probabilities.npy",
+        "student__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-student-logprobs.npy",
+        "student__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-student-probabilities.npy",
+        "teacher_privileged__logprobs": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-teacher_privileged-logprobs.npy",
+        "teacher_privileged__probabilities": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-teacher_privileged-probabilities.npy"
+      },
+      "bound_dump_sha256": {
+        "base_ordinary__logprobs": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+        "base_ordinary__probabilities": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+        "student__logprobs": "4b8a0d2d1939df59ee335b2beffe7fba1ed30470b5442d5ce044ab8e5efc432d",
+        "student__probabilities": "94f1fd94e51a8aec087ba46a6d5f1a8fbf3d87e370a6a348e1d0d8cd27e7851c",
+        "teacher_privileged__logprobs": "7dbcf3e971d5e3c7ddf63b4442a9eb84166f21808c7b9fab427c725944f35d97",
+        "teacher_privileged__probabilities": "f694a3eb7d005f8a2c27e46fc1067eaf6b0d6cb33c9da7dc8ac230dc5957d741"
+      },
+      "independent_cpu_max_absolute_errors": {
+        "unclipped_kl": 7.152557373046875e-07,
+        "clipped_kl": 7.152557373046875e-07,
+        "base_kl": 2.384185791015625e-07,
+        "target_logprob": 0.0,
+        "topk_logprob": 0.0,
+        "normalization": 7.152557373046875e-07
+      },
+      "independent_cpu_reconstructed_trajectory_mean": 0.3407885387497126,
+      "native_frozen_pair_loss": 0.3407885432243347,
+      "reconstructed_trajectory_absolute_error": 4.4746221172786704e-09,
+      "mismatches": [],
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "reduction_note": "CPU NumPy FP32 summation can differ from GPU Torch reduction; explicit 2e-5 atol / 2e-4 rtol recorded, not bitwise claimed"
+}

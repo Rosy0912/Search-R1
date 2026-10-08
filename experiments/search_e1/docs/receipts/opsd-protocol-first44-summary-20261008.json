@@ -1,0 +1,588 @@
+{
+  "schema": "frozen-protocol-postprocess-v1",
+  "created_unix": 1791433764.841582,
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "scope": "Completed stratified diagnostic cases only; not native512/seven-benchmark EM or proof of semantic correctness",
+  "interpretation": "invalid_tag_candidate_matches_gold is excluded from strict_correct; no rawtop32 or loss interpreted as historical online loss",
+  "selected_cases": 192,
+  "completed_cases": 44,
+  "skip_counts": {
+    "trailing_partial_results_line": 0,
+    "teacher_no_successful_reference": 3,
+    "selected_cases_not_yet_complete": 148
+  },
+  "source": {
+    "science": {
+      "search_e1/core.py": {
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/core.py",
+        "sha256": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc",
+        "stat": {
+          "device": 2065,
+          "inode": 466324161,
+          "bytes": 3998,
+          "mtime_ns": 1791118024437516198,
+          "ctime_ns": 1791361759586672218
+        }
+      },
+      "upstream/Search-R1/search_r1/qa_protocol.py": {
+        "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1/search_r1/qa_protocol.py",
+        "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+        "stat": {
+          "device": 2065,
+          "inode": 466324181,
+          "bytes": 2984,
+          "mtime_ns": 1791118024373484200,
+          "ctime_ns": 1791361759586672218
+        }
+      }
+    },
+    "cases": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/cases.jsonl",
+      "sha256": "1703b15b1a1b3c5b91b13422fa314ab9a3b83f7bf7bf8a85dd7afcdaecdbf082",
+      "stat": {
+        "device": 2065,
+        "inode": 466324596,
+        "bytes": 5694015,
+        "mtime_ns": 1791431798288494954,
+        "ctime_ns": 1791431798288494954
+      }
+    },
+    "case_manifest": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/manifest.json",
+      "sha256": "1d7ba339511419d8b0e3044e7a94f798876972a526a083b573c971112a6429d8",
+      "stat": {
+        "device": 2065,
+        "inode": 466324603,
+        "bytes": 4105,
+        "mtime_ns": 1791431798296490954,
+        "ctime_ns": 1791431798328474952
+      }
+    },
+    "run_config": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/config.json",
+      "sha256": "06b110c20a248364e99c6f037e87d8da6c8fc9b6fe27506f879bd58fb4a54cd4",
+      "stat": {
+        "device": 2065,
+        "inode": 466324957,
+        "bytes": 4953,
+        "mtime_ns": 1791432876872895063,
+        "ctime_ns": 1791432876872895063
+      }
+    },
+    "completed_results_prefixes": [
+      {
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/case-results.jsonl",
+        "prefix_bytes": 459770,
+        "prefix_sha256": "583764c87c2cf0a792a0912d1172b0083262af7a42ab7833bd5539fa32ee264f",
+        "snapshot_stat": {
+          "device": 2065,
+          "inode": 466324968,
+          "bytes": 459770,
+          "mtime_ns": 1791433741620274679,
+          "ctime_ns": 1791433741620274679
+        },
+        "trailing_partial_line_skipped": false,
+        "whole_final_file_hash_claimed": false
+      },
+      {
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/case-results.jsonl",
+        "prefix_bytes": 425726,
+        "prefix_sha256": "fe53087a1d9e0249d84f24a0101eddef20621dd587e8e5a9e1f922cd88b84a4a",
+        "snapshot_stat": {
+          "device": 2065,
+          "inode": 466324969,
+          "bytes": 425726,
+          "mtime_ns": 1791433737554308822,
+          "ctime_ns": 1791433737554308822
+        },
+        "trailing_partial_line_skipped": false,
+        "whole_final_file_hash_claimed": false
+      },
+      {
+        "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/case-results.jsonl",
+        "prefix_bytes": 429875,
+        "prefix_sha256": "a4ed21da2cd7c10bb0e3d1bddfeff2c6fbe95feeba31feabdafca4bd62b37e81",
+        "snapshot_stat": {
+          "device": 2065,
+          "inode": 466324965,
+          "bytes": 429875,
+          "mtime_ns": 1791433744170998590,
+          "ctime_ns": 1791433744170998590
+        },
+        "trailing_partial_line_skipped": false,
+        "whole_final_file_hash_claimed": false
+      }
+    ]
+  },
+  "by_version": {
+    "epoch1": {
+      "completed_case_artifacts": 44,
+      "analyzed": 44,
+      "strict_correct": 29,
+      "final_answer_protocol_valid": 41,
+      "protocol_valid_wrong_answer": 12,
+      "final_answer_protocol_invalid": 3,
+      "no_executed_search": 3,
+      "invalid_tag_candidate_matches_gold": 2,
+      "invalid_tag_candidate_unclosed_think": 3
+    },
+    "source100": {
+      "completed_case_artifacts": 44,
+      "analyzed": 44,
+      "strict_correct": 35,
+      "final_answer_protocol_valid": 44,
+      "protocol_valid_wrong_answer": 9,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    "teacher": {
+      "completed_case_artifacts": 44,
+      "analyzed": 41,
+      "strict_correct": 29,
+      "final_answer_protocol_valid": 29,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 12,
+      "no_executed_search": 37,
+      "invalid_tag_candidate_matches_gold": 11,
+      "invalid_tag_candidate_unclosed_think": 12,
+      "skipped": 3
+    },
+    "update1": {
+      "completed_case_artifacts": 44,
+      "analyzed": 44,
+      "strict_correct": 38,
+      "final_answer_protocol_valid": 44,
+      "protocol_valid_wrong_answer": 6,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    "update5": {
+      "completed_case_artifacts": 44,
+      "analyzed": 44,
+      "strict_correct": 34,
+      "final_answer_protocol_valid": 44,
+      "protocol_valid_wrong_answer": 10,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    }
+  },
+  "cells": [
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 0,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 1,
+      "no_executed_search": 1,
+      "invalid_tag_candidate_matches_gold": 1,
+      "invalid_tag_candidate_unclosed_think": 1
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 2,
+      "analyzed": 2,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 2,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "completed_case_artifacts": 31,
+      "analyzed": 31,
+      "strict_correct": 23,
+      "final_answer_protocol_valid": 29,
+      "protocol_valid_wrong_answer": 6,
+      "final_answer_protocol_invalid": 2,
+      "no_executed_search": 2,
+      "invalid_tag_candidate_matches_gold": 1,
+      "invalid_tag_candidate_unclosed_think": 2
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 8,
+      "analyzed": 8,
+      "strict_correct": 5,
+      "final_answer_protocol_valid": 8,
+      "protocol_valid_wrong_answer": 3,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 2,
+      "analyzed": 2,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 2,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "completed_case_artifacts": 31,
+      "analyzed": 31,
+      "strict_correct": 30,
+      "final_answer_protocol_valid": 31,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 8,
+      "analyzed": 8,
+      "strict_correct": 3,
+      "final_answer_protocol_valid": 8,
+      "protocol_valid_wrong_answer": 5,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 1,
+      "skipped": 1
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 0,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 1,
+      "no_executed_search": 1,
+      "invalid_tag_candidate_matches_gold": 1,
+      "invalid_tag_candidate_unclosed_think": 1
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 2,
+      "skipped": 2
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "completed_case_artifacts": 31,
+      "analyzed": 31,
+      "strict_correct": 22,
+      "final_answer_protocol_valid": 22,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 9,
+      "no_executed_search": 30,
+      "invalid_tag_candidate_matches_gold": 8,
+      "invalid_tag_candidate_unclosed_think": 9
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 8,
+      "analyzed": 8,
+      "strict_correct": 6,
+      "final_answer_protocol_valid": 6,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 2,
+      "no_executed_search": 6,
+      "invalid_tag_candidate_matches_gold": 2,
+      "invalid_tag_candidate_unclosed_think": 2
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 2,
+      "analyzed": 2,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 2,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "completed_case_artifacts": 31,
+      "analyzed": 31,
+      "strict_correct": 30,
+      "final_answer_protocol_valid": 31,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 8,
+      "analyzed": 8,
+      "strict_correct": 6,
+      "final_answer_protocol_valid": 8,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 1,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 1,
+      "analyzed": 1,
+      "strict_correct": 1,
+      "final_answer_protocol_valid": 1,
+      "protocol_valid_wrong_answer": 0,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "completed_case_artifacts": 2,
+      "analyzed": 2,
+      "strict_correct": 0,
+      "final_answer_protocol_valid": 2,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "completed_case_artifacts": 31,
+      "analyzed": 31,
+      "strict_correct": 29,
+      "final_answer_protocol_valid": 31,
+      "protocol_valid_wrong_answer": 2,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "completed_case_artifacts": 8,
+      "analyzed": 8,
+      "strict_correct": 3,
+      "final_answer_protocol_valid": 8,
+      "protocol_valid_wrong_answer": 5,
+      "final_answer_protocol_invalid": 0,
+      "no_executed_search": 0,
+      "invalid_tag_candidate_matches_gold": 0,
+      "invalid_tag_candidate_unclosed_think": 0
+    }
+  ],
+  "cases_output": {
+    "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-initial-d1e2215/cases.jsonl",
+    "sha256": "d2824d921e7bb2d6c6399e2eda5cffea9cf28943c048d4cce61026cd6894538f",
+    "rows": 44
+  }
+}

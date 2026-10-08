@@ -1,0 +1,181 @@
+{
+  "checked_at_unix": 1791041493.7085235,
+  "submission": {
+    "created_at_utc": "2026-10-01T17:04:07.593635+00:00",
+    "experiment_dir": "/home/jmzhang/Workspace/Search-E1-20261001/runs/staged-3b-20261001-170407",
+    "gpus": 4,
+    "qos": "normal",
+    "partition": "L40S",
+    "jobs": [
+      {
+        "phase": "grpo1",
+        "job_id": 133235,
+        "afterok": null,
+        "requested_gpus": 4
+      },
+      {
+        "phase": "opsd1",
+        "job_id": 133236,
+        "afterok": 133235,
+        "requested_gpus": 8
+      },
+      {
+        "phase": "grpo2",
+        "job_id": 133237,
+        "afterok": 133236,
+        "requested_gpus": 8
+      },
+      {
+        "phase": "opsd2",
+        "job_id": 133238,
+        "afterok": 133237,
+        "requested_gpus": 8
+      },
+      {
+        "phase": "eval",
+        "job_id": 133239,
+        "afterok": 133238,
+        "requested_gpus": 8
+      }
+    ],
+    "configuration": {
+      "cycles": 2,
+      "updates_per_cycle": 200,
+      "train_batch": 512,
+      "ppo_minibatch": 128,
+      "actor_micro_per_gpu": 2,
+      "score_micro_per_gpu": 4,
+      "trajectory_mean_batching": true
+    },
+    "gpu_allocation_by_phase": {
+      "grpo1": 4,
+      "opsd1": 8,
+      "grpo2": 8,
+      "opsd2": 8,
+      "eval": 8
+    },
+    "scaling": {
+      "updated_at_utc": "2026-10-02T08:29:23.433367+00:00",
+      "reason": "Step 50 same-path 512-question validation macro EM approximately 0.416 vs initial 0.24609375; both sources improve. User-authorized scaling.",
+      "method": "scontrol update Gres=gpu:8 for four pending jobs; dependencies and IDs retained",
+      "pending_actual_allocation": true,
+      "opsd_global_batch": 32,
+      "opsd_accumulation_per_gpu": 4,
+      "first_grpo_untouched": true
+    },
+    "quality_gate": {
+      "held_at_unix": 1791021422.1531267,
+      "phase": "opsd1",
+      "job_id": 133236,
+      "reason": "Repeated severe finite pre-clipping gradient spikes122-127 and degraded training action/finish metrics; pending automatic handoff has no model quality gate. Preserve ongoing first GRPO optimizer; await same-path step150 independent validation before deciding release or evidence-supported repair. This hold is not a claim of independently verified EM decline.",
+      "release_condition": "Explicitly assess upcoming independent validation and stability evidence, then release retained job with scontrol release133236 when safe to advance. Do not forget held job.",
+      "scope_unchanged": true,
+      "grpo1_untouched": true,
+      "requested_gpus": 8,
+      "afterok": 133235,
+      "scontrol_verification": "JobId=133236 JobName=search-e1-opsd1 UserId=jmzhang(1066) GroupId=lumia(2001) MCS_label=N/A Priority=0 Nice=0 Account=lumia QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=afterok:133235(unfulfilled) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-02T01:04:07 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-02T01:04:07 Scheduler=Main Partition=L40S AllocNode:Sid=storage-hdd:3534228 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=32 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=32,mem=512G,node=1,billing=32,gres/gpu=8 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/home/jmzhang/Workspace/Search-E1-20261001/scripts/lumia_phase.sbatch WorkDir=/home/jmzhang/Workspace/Search-E1-20261001 StdErr=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.err StdIn=/dev/null StdOut=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.out KillOInInvalidDependent=Yes TresPerNode=gres/gpu:8 TresPerTask=cpu=32 \n"
+    }
+  },
+  "squeue": {
+    "returncode": 0,
+    "stdout": "             JOBID        STATE  TRES_PER_NODE           TIME NODELIST(REASON)\n            133239      PENDING     gres/gpu:8           0:00 (Dependency)\n            133238      PENDING     gres/gpu:8           0:00 (Dependency)\n            133237      PENDING     gres/gpu:8           0:00 (Dependency)\n            133236      PENDING     gres/gpu:8           0:00 (JobHeldUser)\n            133235      RUNNING     gres/gpu:4     1-22:26:20 node10\n",
+    "stderr": ""
+  },
+  "sacct": {
+    "returncode": 0,
+    "stdout": "JobID|State|ExitCode|Elapsed|AllocTRES\n133235|RUNNING|0:0|1-22:26:20|billing=32,cpu=32,gres/gpu=4,mem=512G,node=1\n133236|PENDING|0:0|00:00:00|\n133237|PENDING|0:0|00:00:00|\n133238|PENDING|0:0|00:00:00|\n133239|PENDING|0:0|00:00:00|\n133489|COMPLETED|0:0|00:16:25|billing=32,cpu=32,gres/gpu=4,mem=512G,node=1\n",
+    "stderr": ""
+  },
+  "log_path": "/home/jmzhang/Workspace/Search-E1-20261001/runs/staged-3b-20261001-170407/round-1/grpo.log",
+  "log_mtime": 1791041447.3248851,
+  "latest_metrics": [
+    "(main_task pid=2547507) step:133 - global_seqlen/min:1783844.000 - global_seqlen/max:1810770.000 - global_seqlen/minmax_diff:26926.000 - global_seqlen/balanced_min:1803441.000 - global_seqlen/balanced_max:1803442.000 - global_seqlen/mean:1803441.500 - state_tokens/total:6157460.000 - state_tokens/coverage:0.897 - actor/kl_loss:0.452 - actor/kl_coef:0.001 - actor/entropy_loss:1.005 - actor/pg_loss:0.002 - actor/pg_clipfrac:0.000 - actor/ppo_kl:0.016 - actor/grad_norm:0.614 - mfu/actor:0.331 - actor/lr:0.000 - critic/score/mean:0.002 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.002 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.002 - critic/advantages/max:1.789 - critic/advantages/min:-0.730 - critic/returns/mean:-0.002 - critic/returns/max:1.789 - critic/returns/min:-0.730 - response_length/mean:2680.555 - response_length/max:3542.000 - response_length/min:77.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.322 - prompt_length/max:209.000 - prompt_length/min:127.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:4.980 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.005 - env/number_of_valid_action:0.244 - env/ratio_of_valid_action:0.052 - env/number_of_valid_search:0.238 - timing_s/gen:1078.067 - timing_s/ref:116.430 - timing_s/adv:2.460 - timing_s/update_actor:691.565 - timing_s/step:2005.295 - timing_per_token_ms/adv:0.000 - timing_per_token_ms/ref:0.016 - timing_per_token_ms/gen:0.157 - timing_per_token_ms/update_actor:0.096",
+    "(main_task pid=2547507) step:134 - global_seqlen/min:1784110.000 - global_seqlen/max:1799778.000 - global_seqlen/minmax_diff:15668.000 - global_seqlen/balanced_min:1790445.000 - global_seqlen/balanced_max:1790446.000 - global_seqlen/mean:1790445.250 - state_tokens/total:6141035.000 - state_tokens/coverage:0.902 - actor/kl_loss:0.488 - actor/kl_coef:0.001 - actor/entropy_loss:0.916 - actor/pg_loss:0.001 - actor/pg_clipfrac:0.000 - actor/ppo_kl:0.025 - actor/grad_norm:8.057 - mfu/actor:0.329 - actor/lr:0.000 - critic/score/mean:0.002 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.002 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.002 - critic/advantages/max:1.789 - critic/advantages/min:-0.447 - critic/returns/mean:-0.002 - critic/returns/max:1.789 - critic/returns/min:-0.447 - response_length/mean:2659.581 - response_length/max:3156.000 - response_length/min:46.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.990 - prompt_length/max:238.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:4.982 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.005 - env/number_of_valid_action:0.207 - env/ratio_of_valid_action:0.044 - env/number_of_valid_search:0.201 - timing_s/gen:1067.281 - timing_s/ref:115.840 - timing_s/adv:2.376 - timing_s/update_actor:690.051 - timing_s/step:1991.042 - timing_per_token_ms/adv:0.000 - timing_per_token_ms/ref:0.016 - timing_per_token_ms/gen:0.157 - timing_per_token_ms/update_actor:0.096",
+    "(main_task pid=2547507) step:135 - global_seqlen/min:1776004.000 - global_seqlen/max:1786878.000 - global_seqlen/minmax_diff:10874.000 - global_seqlen/balanced_min:1782120.000 - global_seqlen/balanced_max:1782121.000 - global_seqlen/mean:1782120.250 - state_tokens/total:6099687.000 - state_tokens/coverage:0.900 - actor/kl_loss:0.541 - actor/kl_coef:0.001 - actor/entropy_loss:0.753 - actor/pg_loss:63.485 - actor/pg_clipfrac:0.000 - actor/ppo_kl:-0.001 - actor/grad_norm:3525.093 - mfu/actor:0.328 - actor/lr:0.000 - critic/score/mean:0.001 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.001 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.001 - critic/advantages/max:1.789 - critic/advantages/min:-0.447 - critic/returns/mean:-0.001 - critic/returns/max:1.789 - critic/returns/min:-0.447 - response_length/mean:2646.967 - response_length/max:3417.000 - response_length/min:56.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.596 - prompt_length/max:226.000 - prompt_length/min:126.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:4.956 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.014 - env/number_of_valid_action:0.252 - env/ratio_of_valid_action:0.059 - env/number_of_valid_search:0.238 - timing_s/gen:1066.569 - timing_s/ref:115.867 - timing_s/adv:2.406 - timing_s/update_actor:689.742 - timing_s/step:1990.462 - timing_per_token_ms/adv:0.000 - timing_per_token_ms/ref:0.016 - timing_per_token_ms/gen:0.157 - timing_per_token_ms/update_actor:0.097",
+    "(main_task pid=2547507) step:136 - global_seqlen/min:1769117.000 - global_seqlen/max:1788106.000 - global_seqlen/minmax_diff:18989.000 - global_seqlen/balanced_min:1775701.000 - global_seqlen/balanced_max:1775702.000 - global_seqlen/mean:1775701.500 - state_tokens/total:6114744.000 - state_tokens/coverage:0.906 - actor/kl_loss:0.573 - actor/kl_coef:0.001 - actor/entropy_loss:0.874 - actor/pg_loss:0.003 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.108 - actor/grad_norm:487.150 - mfu/actor:0.327 - actor/lr:0.000 - critic/score/mean:0.004 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.004 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.004 - critic/advantages/max:1.789 - critic/advantages/min:-0.730 - critic/returns/mean:-0.004 - critic/returns/max:1.789 - critic/returns/min:-0.730 - response_length/mean:2637.278 - response_length/max:3217.000 - response_length/min:48.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.256 - prompt_length/max:205.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:4.948 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.016 - env/number_of_valid_action:0.178 - env/ratio_of_valid_action:0.045 - env/number_of_valid_search:0.163 - timing_s/gen:1057.622 - timing_s/ref:114.859 - timing_s/adv:2.311 - timing_s/update_actor:687.562 - timing_s/step:1978.502 - timing_per_token_ms/adv:0.000 - timing_per_token_ms/ref:0.016 - timing_per_token_ms/gen:0.157 - timing_per_token_ms/update_actor:0.097",
+    "(main_task pid=2547507) step:137 - global_seqlen/min:1691194.000 - global_seqlen/max:1713199.000 - global_seqlen/minmax_diff:22005.000 - global_seqlen/balanced_min:1702151.000 - global_seqlen/balanced_max:1702151.000 - global_seqlen/mean:1702151.000 - state_tokens/total:5819663.000 - state_tokens/coverage:0.901 - actor/kl_loss:0.649 - actor/kl_coef:0.001 - actor/entropy_loss:0.977 - actor/pg_loss:0.015 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.037 - actor/grad_norm:61023.842 - mfu/actor:0.314 - actor/lr:0.000 - critic/score/mean:0.011 - critic/score/max:1.000 - critic/score/min:0.000 - critic/rewards/mean:0.011 - critic/rewards/max:1.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.016 - critic/advantages/max:1.789 - critic/advantages/min:-0.730 - critic/returns/mean:-0.016 - critic/returns/max:1.789 - critic/returns/min:-0.730 - response_length/mean:2522.312 - response_length/max:3423.000 - response_length/min:48.000 - response_length/clip_ratio:0.000 - prompt_length/mean:137.299 - prompt_length/max:238.000 - prompt_length/min:128.000 - prompt_length/clip_ratio:0.000 - env/number_of_actions/mean:4.787 - env/number_of_actions/max:5.000 - env/number_of_actions/min:1.000 - env/finish_ratio:0.060 - env/number_of_valid_action:0.245 - env/ratio_of_valid_action:0.088 - env/number_of_valid_search:0.185 - timing_s/gen:1017.826 - timing_s/ref:113.756 - timing_s/adv:2.433 - timing_s/update_actor:686.954 - timing_s/step:1935.688 - timing_per_token_ms/adv:0.000 - timing_per_token_ms/ref:0.017 - timing_per_token_ms/gen:0.158 - timing_per_token_ms/update_actor:0.101"
+  ],
+  "nonfinite_metric_lines": [],
+  "recent_errors": [],
+  "checkpoints": [
+    "round-1/grpo/actor/global_step_100",
+    "round-1/grpo/actor/global_step_50"
+  ],
+  "markers": [],
+  "baseline_done": true,
+  "remote_root": [
+    {
+      "name": "outputs",
+      "is_dir": true
+    },
+    {
+      "name": "scripts",
+      "is_dir": true
+    },
+    {
+      "name": "models",
+      "is_dir": true
+    },
+    {
+      "name": "upstream",
+      "is_dir": true
+    },
+    {
+      "name": "reports",
+      "is_dir": true
+    },
+    {
+      "name": "README.md",
+      "is_dir": false
+    },
+    {
+      "name": "runs",
+      "is_dir": true
+    },
+    {
+      "name": "data",
+      "is_dir": true
+    },
+    {
+      "name": "configs",
+      "is_dir": true
+    },
+    {
+      "name": "pyproject.toml",
+      "is_dir": false
+    },
+    {
+      "name": ".gitignore",
+      "is_dir": false
+    },
+    {
+      "name": ".venv",
+      "is_dir": true
+    },
+    {
+      "name": "search_e1",
+      "is_dir": true
+    },
+    {
+      "name": "wheels",
+      "is_dir": true
+    },
+    {
+      "name": "tests",
+      "is_dir": true
+    }
+  ],
+  "upstream": [
+    "Search-R1"
+  ],
+  "git_search_r1": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "git_search_r1_head": {
+    "returncode": 0,
+    "stdout": "598e61bd1d36895726d28a8d06b3a15bed19f5d3\n",
+    "stderr": ""
+  }
+}

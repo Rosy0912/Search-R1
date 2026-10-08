@@ -1,0 +1,1386 @@
+{
+  "schema": "opsd-debug-first-three-cases-verified-local-copy-proof-v1",
+  "created_unix": 1791433698.0405781,
+  "actual_runtime_audit_started_unix": 1791433487.2232642,
+  "actual_runtime_audit_ended_unix": 1791433497.360129,
+  "primary_readonly_audit": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-three-cases-independent-cpu-audit-20261008.json",
+    "sha256": "8607f5d7e6071330603e53322bbfccc5dc7c2300363510fcdad404ab8f003db2",
+    "contains_raw_question_and_span_text": true,
+    "git_publication": false
+  },
+  "full_vocabulary_cpu_reconstruction": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cw-existing-full-vocab-cpu-reconstruction-20261008.json",
+    "sha256": "2b5ff309b67ad5371dcc6da3bfe4f6b19731e2a7f3864f9246d014cd2a3914e8",
+    "passed": true
+  },
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "node_output": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb",
+  "no_training_or_gpu_requests_performed_by_auditor": true,
+  "source15_f60dc64_local_and_node_sha_matched": true,
+  "source100_large_weights_fresh_rehashed_this_audit": false,
+  "source100_prior_fresh_sha_manifest_exact_metadata_bound": true,
+  "source100_manifest_sha256": "a68648d3b2266e4d51b63f27e89f108f6c059f4de3785a0c7769ab87049fb8c9",
+  "fixed_adapter_fresh_cpu_model_sha256": {
+    "epoch1": "8eef75aafa06eb98dc21a6b0ab85195800fc373692d633faa0ecf461fa45afd0",
+    "source100": "8cbebc6cb10203bf93a2c8b7271d31020ab1d1e7f1958a6f94f5890af3206c3d",
+    "update1": "a36ba7b25c6d57083fcd1ab5a699f4aedeca52d8a8aa2fb4d994647f791aee01",
+    "update5": "44efab6b2a7e92fec4237275dada2e27b47d665e7162220cdc9db6bf594d3157"
+  },
+  "worker_processes": [
+    {
+      "pid": 33998,
+      "uid": 1005,
+      "starttick": 922457979,
+      "ppid": 33834,
+      "pgid": 33998,
+      "gpu_uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "completed_cases_at_snapshot": 11,
+      "status": "RUNNING",
+      "log_failure_patterns": [],
+      "gpu": {
+        "cuda_free_bytes": 17032740864,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+        "nvidia_smi_actual_free_mib": 16244,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 7967,
+        "sample_unix": 1791433461.9922078,
+        "torch_peak_allocated_bytes": 7015342080,
+        "torch_peak_reserved_bytes": 7860125696
+      }
+    },
+    {
+      "pid": 33999,
+      "uid": 1005,
+      "starttick": 922457979,
+      "ppid": 33834,
+      "pgid": 33999,
+      "gpu_uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "completed_cases_at_snapshot": 9,
+      "status": "RUNNING",
+      "log_failure_patterns": [],
+      "gpu": {
+        "cuda_free_bytes": 16902717440,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+        "nvidia_smi_actual_free_mib": 16120,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 8091,
+        "sample_unix": 1791433484.1465795,
+        "torch_peak_allocated_bytes": 7039917056,
+        "torch_peak_reserved_bytes": 7990149120
+      }
+    },
+    {
+      "pid": 34000,
+      "uid": 1005,
+      "starttick": 922457979,
+      "ppid": 33834,
+      "pgid": 34000,
+      "gpu_uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "completed_cases_at_snapshot": 10,
+      "status": "RUNNING",
+      "log_failure_patterns": [],
+      "gpu": {
+        "cuda_free_bytes": 17217290240,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+        "nvidia_smi_actual_free_mib": 16420,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 7791,
+        "sample_unix": 1791433469.8617768,
+        "torch_peak_allocated_bytes": 7030904320,
+        "torch_peak_reserved_bytes": 7675576320
+      }
+    }
+  ],
+  "exact_first_cases_copy_inventory": true,
+  "local_file_count": 102,
+  "local_total_bytes": 242864102,
+  "all_local_sha_and_bytes_matched": true,
+  "copied_files": [
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/admitted-retriever-health.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/admitted-retriever-health.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/admitted-retriever-health.json",
+      "bytes": 2651,
+      "local_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "node_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/student-generation-epoch1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/student-generation-epoch1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/student-generation-epoch1.json",
+      "bytes": 3706,
+      "local_sha256": "ad1c9f581d463473d876bbf46c65722853936c9459a6bf3ec32d107bd3e6b450",
+      "node_sha256": "ad1c9f581d463473d876bbf46c65722853936c9459a6bf3ec32d107bd3e6b450",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/student-generation-source100.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/student-generation-source100.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/student-generation-source100.json",
+      "bytes": 30848,
+      "local_sha256": "50d804a7bf3fd1e6b6521682ab8080271dbb0e15966472bbb5d254c52aae8bd6",
+      "node_sha256": "50d804a7bf3fd1e6b6521682ab8080271dbb0e15966472bbb5d254c52aae8bd6",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/student-generation-update1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/student-generation-update1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/student-generation-update1.json",
+      "bytes": 30849,
+      "local_sha256": "61b26d6cdfb66ecdbada1f20dd8a93d02093af18f18d2c93f9fd5b40ac247cdc",
+      "node_sha256": "61b26d6cdfb66ecdbada1f20dd8a93d02093af18f18d2c93f9fd5b40ac247cdc",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/student-generation-update5.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/student-generation-update5.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/student-generation-update5.json",
+      "bytes": 30849,
+      "local_sha256": "ac6f2272d7d2a9218e0ef2be71ceebfa83a94161a7a30b45e07f942611386e85",
+      "node_sha256": "ac6f2272d7d2a9218e0ef2be71ceebfa83a94161a7a30b45e07f942611386e85",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/teacher-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/teacher-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/teacher-generation.json",
+      "bytes": 8147,
+      "local_sha256": "b3b908b0e1c6c792a08d84aac8ef51ed23ac0db64d7c3623842823fab198eb5c",
+      "node_sha256": "b3b908b0e1c6c792a08d84aac8ef51ed23ac0db64d7c3623842823fab198eb5c",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-actual-student-generation.json",
+      "bytes": 2071,
+      "local_sha256": "3c729cd6545a5792881d099a724b162231fb96c978b9d2c9b01079ac115d64cc",
+      "node_sha256": "3c729cd6545a5792881d099a724b162231fb96c978b9d2c9b01079ac115d64cc",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-epoch1-original-mined-student.json",
+      "bytes": 2052,
+      "local_sha256": "6f5b37bfcfa683745c6f5eec8da46cd77547b321a040718f66969b7e8cc95047",
+      "node_sha256": "6f5b37bfcfa683745c6f5eec8da46cd77547b321a040718f66969b7e8cc95047",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-student-generation.json",
+      "bytes": 2081,
+      "local_sha256": "3f29fd3bf14db661090a96441b096a418c269a23f5f1e21208351de6a1b17fd3",
+      "node_sha256": "3f29fd3bf14db661090a96441b096a418c269a23f5f1e21208351de6a1b17fd3",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-teacher-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-teacher-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-source100-actual-teacher-generation.json",
+      "bytes": 2078,
+      "local_sha256": "184962a46c4a210f26c08c848d39c8b95d577d92a4aa7f233c2693599a35e826",
+      "node_sha256": "184962a46c4a210f26c08c848d39c8b95d577d92a4aa7f233c2693599a35e826",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-source100-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-source100-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-source100-original-mined-student.json",
+      "bytes": 2054,
+      "local_sha256": "bab336658321b3a6a45962113b026aa50e7b7afaf629e8d2b0ba01222f54634e",
+      "node_sha256": "bab336658321b3a6a45962113b026aa50e7b7afaf629e8d2b0ba01222f54634e",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-update1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-update1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-update1-actual-student-generation.json",
+      "bytes": 2075,
+      "local_sha256": "c9678f1fcc654ebc10c8a6bb3600c79d2c2348bb81156530486645a46ab82a2d",
+      "node_sha256": "c9678f1fcc654ebc10c8a6bb3600c79d2c2348bb81156530486645a46ab82a2d",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-update1-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-update1-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-update1-original-mined-student.json",
+      "bytes": 2051,
+      "local_sha256": "d5b7f28b2bb5f897fff51b50f7866575607553937a3d795c8c37823ca29ae2f5",
+      "node_sha256": "d5b7f28b2bb5f897fff51b50f7866575607553937a3d795c8c37823ca29ae2f5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-update5-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-update5-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-update5-actual-student-generation.json",
+      "bytes": 2077,
+      "local_sha256": "aef7f70a95f9ab8b896c049e809ccebdb698b5b8a394184e7ec5c8c88055fbe6",
+      "node_sha256": "aef7f70a95f9ab8b896c049e809ccebdb698b5b8a394184e7ec5c8c88055fbe6",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/token-summary-update5-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/token-summary-update5-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/token-summary-update5-original-mined-student.json",
+      "bytes": 2051,
+      "local_sha256": "9d319a2b6e5b76faceedf0d14d572fa23945efa6cdee9e566f6af8bf33c51909",
+      "node_sha256": "9d319a2b6e5b76faceedf0d14d572fa23945efa6cdee9e566f6af8bf33c51909",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "bytes": 562759,
+      "local_sha256": "eb552b5c397d5120f54f707bc730c8aeaa2afa3bffcf029abc075f31896bd114",
+      "node_sha256": "eb552b5c397d5120f54f707bc730c8aeaa2afa3bffcf029abc075f31896bd114",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "bytes": 5522137,
+      "local_sha256": "9d86e383c763610146735fc8267a6cc898243d4148b648d9118ffeea07ba2e88",
+      "node_sha256": "9d86e383c763610146735fc8267a6cc898243d4148b648d9118ffeea07ba2e88",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-student-generation/tokens.jsonl",
+      "bytes": 5395790,
+      "local_sha256": "e008e1d30a40c41e95aae85901e2baf8b5400f162fb4a3d5e83a1357abe3db10",
+      "node_sha256": "e008e1d30a40c41e95aae85901e2baf8b5400f162fb4a3d5e83a1357abe3db10",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "bytes": 483108,
+      "local_sha256": "30bbef6bd4ff18b087ccc3b9a13cf807c7ea8aa3180251dc2c8f1b7505d9ad89",
+      "node_sha256": "30bbef6bd4ff18b087ccc3b9a13cf807c7ea8aa3180251dc2c8f1b7505d9ad89",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-source100-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-source100-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-source100-original-mined-student/tokens.jsonl",
+      "bytes": 5507976,
+      "local_sha256": "20a3dbf4a185e7fe0ccf686b189ef05af41b63b98518863ef5e20ac793749861",
+      "node_sha256": "20a3dbf4a185e7fe0ccf686b189ef05af41b63b98518863ef5e20ac793749861",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-update1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-update1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-update1-actual-student-generation/tokens.jsonl",
+      "bytes": 5404682,
+      "local_sha256": "54067ca341f1e31da7e4bcb7ddb26f940044bfdaaf369c258220f1d685118ed5",
+      "node_sha256": "54067ca341f1e31da7e4bcb7ddb26f940044bfdaaf369c258220f1d685118ed5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-update1-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-update1-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-update1-original-mined-student/tokens.jsonl",
+      "bytes": 5517409,
+      "local_sha256": "52050e34840eb144bf94be06c479a0a033a6b8c0feaf6702cb93b94156bc847b",
+      "node_sha256": "52050e34840eb144bf94be06c479a0a033a6b8c0feaf6702cb93b94156bc847b",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-update5-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-update5-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-update5-actual-student-generation/tokens.jsonl",
+      "bytes": 5405138,
+      "local_sha256": "de268636c3614df47c2aeac1b57316409711add7519c12f3436d0b63761f1fec",
+      "node_sha256": "de268636c3614df47c2aeac1b57316409711add7519c12f3436d0b63761f1fec",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-correct_correct-0000c8af8c12b617/tokens-update5-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-correct_correct-0000c8af8c12b617/tokens-update5-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-0/nq-correct_correct-0000c8af8c12b617/tokens-update5-original-mined-student/tokens.jsonl",
+      "bytes": 5518382,
+      "local_sha256": "b42841cd9715e053f4c136a3167f5f35119dcf556560b9fc73033b36bd6c58b7",
+      "node_sha256": "b42841cd9715e053f4c136a3167f5f35119dcf556560b9fc73033b36bd6c58b7",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/admitted-retriever-health.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/admitted-retriever-health.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/admitted-retriever-health.json",
+      "bytes": 2651,
+      "local_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "node_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/student-generation-epoch1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-epoch1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-epoch1.json",
+      "bytes": 7854,
+      "local_sha256": "96ea97edb4eaddf1407e05033bdf5aca831b63032bd32e0da48afac95eb63316",
+      "node_sha256": "96ea97edb4eaddf1407e05033bdf5aca831b63032bd32e0da48afac95eb63316",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/student-generation-source100.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-source100.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-source100.json",
+      "bytes": 40514,
+      "local_sha256": "8739a34a6c9788f08ceca1131b94c3eb64e20dab3ba3396817289d7521a457d0",
+      "node_sha256": "8739a34a6c9788f08ceca1131b94c3eb64e20dab3ba3396817289d7521a457d0",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update1.json",
+      "bytes": 71471,
+      "local_sha256": "0dd79ca919baf2a014bb6ea2f09dcc6c6740d643b24494ba058986e89faf05d1",
+      "node_sha256": "0dd79ca919baf2a014bb6ea2f09dcc6c6740d643b24494ba058986e89faf05d1",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update5.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update5.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/student-generation-update5.json",
+      "bytes": 71939,
+      "local_sha256": "da361441411a7ab8274aaca70a0380359b5b6c91dc6977b16b6939a15bcaf59b",
+      "node_sha256": "da361441411a7ab8274aaca70a0380359b5b6c91dc6977b16b6939a15bcaf59b",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/teacher-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/teacher-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/teacher-generation.json",
+      "bytes": 44774,
+      "local_sha256": "c31f243479c2d09a957335608acf70644280fa48e63b5ccb85e08718c0d617c7",
+      "node_sha256": "c31f243479c2d09a957335608acf70644280fa48e63b5ccb85e08718c0d617c7",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-actual-student-generation.json",
+      "bytes": 2085,
+      "local_sha256": "73e5dfd9ff0056b0ad3981a008a9ec656730512e743eef8e36b1fb450ed5cb80",
+      "node_sha256": "73e5dfd9ff0056b0ad3981a008a9ec656730512e743eef8e36b1fb450ed5cb80",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-epoch1-original-mined-student.json",
+      "bytes": 6388,
+      "local_sha256": "144291dfd6cd9eb5d090e00018bdfe11e2bccb7b629a27907eb38841485fac66",
+      "node_sha256": "144291dfd6cd9eb5d090e00018bdfe11e2bccb7b629a27907eb38841485fac66",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-student-generation.json",
+      "bytes": 2093,
+      "local_sha256": "57c6f636f5dcd620642552b135d848d15e9662257ead2d7f6d514b2f292da0c9",
+      "node_sha256": "57c6f636f5dcd620642552b135d848d15e9662257ead2d7f6d514b2f292da0c9",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-teacher-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-teacher-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-actual-teacher-generation.json",
+      "bytes": 2090,
+      "local_sha256": "42df779cf3cb748432981cfea99b57e4e0877f7df2399cf0dca6f2a42eed5a37",
+      "node_sha256": "42df779cf3cb748432981cfea99b57e4e0877f7df2399cf0dca6f2a42eed5a37",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-source100-original-mined-student.json",
+      "bytes": 6410,
+      "local_sha256": "ec09b91eec84d70079741801e747044a0519d5dc22b16994bdf17fcc966a5bf1",
+      "node_sha256": "ec09b91eec84d70079741801e747044a0519d5dc22b16994bdf17fcc966a5bf1",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-actual-student-generation.json",
+      "bytes": 2087,
+      "local_sha256": "3f91d09ffdfc91891c46bab254d2ebc81048429a6544d68095cab8b3ef17c791",
+      "node_sha256": "3f91d09ffdfc91891c46bab254d2ebc81048429a6544d68095cab8b3ef17c791",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update1-original-mined-student.json",
+      "bytes": 2060,
+      "local_sha256": "99e994346cca7ec63002ed3ea7b87978b9474fd541e00ed8e82668b071a9dbcd",
+      "node_sha256": "99e994346cca7ec63002ed3ea7b87978b9474fd541e00ed8e82668b071a9dbcd",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-actual-student-generation.json",
+      "bytes": 2089,
+      "local_sha256": "1d55d4b0a40ddfafa380e4157f28dce6cd0902fad360dd09013c8f037906163c",
+      "node_sha256": "1d55d4b0a40ddfafa380e4157f28dce6cd0902fad360dd09013c8f037906163c",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-original-mined-student.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-original-mined-student.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/token-summary-update5-original-mined-student.json",
+      "bytes": 2058,
+      "local_sha256": "72a540e36ee16e80ad70e662a22856784b6acca202130e2ca352856ea2e4306d",
+      "node_sha256": "72a540e36ee16e80ad70e662a22856784b6acca202130e2ca352856ea2e4306d",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "bytes": 1999307,
+      "local_sha256": "c060b8469c91037834c9677723750a1543c142d341461f67ecd49c82592ab8cb",
+      "node_sha256": "c060b8469c91037834c9677723750a1543c142d341461f67ecd49c82592ab8cb",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/tokens.jsonl",
+      "bytes": 2787657,
+      "local_sha256": "95c11ba2f85828f31dcc4895956a7a6c7d8d662b77290b59fbaec559e542f698",
+      "node_sha256": "95c11ba2f85828f31dcc4895956a7a6c7d8d662b77290b59fbaec559e542f698",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-student-generation/tokens.jsonl",
+      "bytes": 8635376,
+      "local_sha256": "907ae2c685c841403cfb8b3c96f25331dc5f576ea53c6366617c15b625d7fff5",
+      "node_sha256": "907ae2c685c841403cfb8b3c96f25331dc5f576ea53c6366617c15b625d7fff5",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-actual-teacher-generation/tokens.jsonl",
+      "bytes": 6450534,
+      "local_sha256": "276cc3f049229dfbc57a2445760da18929076452fc349591a589881cad5336f6",
+      "node_sha256": "276cc3f049229dfbc57a2445760da18929076452fc349591a589881cad5336f6",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/tokens.jsonl",
+      "bytes": 2774568,
+      "local_sha256": "537a3d99506d8d5c61a83d39b0b553bec10a3ead869f1a1cb28c0c90ad808b3e",
+      "node_sha256": "537a3d99506d8d5c61a83d39b0b553bec10a3ead869f1a1cb28c0c90ad808b3e",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-actual-student-generation/tokens.jsonl",
+      "bytes": 13642393,
+      "local_sha256": "af00ef0d126486dabe4803598e96e2fb16e8ace08fe501c3cd3d6db4f647ac94",
+      "node_sha256": "af00ef0d126486dabe4803598e96e2fb16e8ace08fe501c3cd3d6db4f647ac94",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update1-original-mined-student/tokens.jsonl",
+      "bytes": 2779138,
+      "local_sha256": "acfc993fa0b79f3268499feace36aff322ffaa42776ef53c98c36c688c0ca8b2",
+      "node_sha256": "acfc993fa0b79f3268499feace36aff322ffaa42776ef53c98c36c688c0ca8b2",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-actual-student-generation/tokens.jsonl",
+      "bytes": 13776175,
+      "local_sha256": "01b0b5f3b4eaf4efcefe1849b7bcedfd2ce1ce1ad07c7046bccc769d39fae286",
+      "node_sha256": "01b0b5f3b4eaf4efcefe1849b7bcedfd2ce1ce1ad07c7046bccc769d39fae286",
+      "matched": true
+    },
+    {
+      "relative_path": "hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-original-mined-student/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-original-mined-student/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-update5-original-mined-student/tokens.jsonl",
+      "bytes": 2779352,
+      "local_sha256": "47be8b43ef4ab254828650fb67afb0718d2564be290ce29ecf7200cc224841c7",
+      "node_sha256": "47be8b43ef4ab254828650fb67afb0718d2564be290ce29ecf7200cc224841c7",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/admitted-retriever-health.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/admitted-retriever-health.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/admitted-retriever-health.json",
+      "bytes": 2651,
+      "local_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "node_sha256": "8de63e8b1b72ceb1f79decdba757158e5211abc6a054fbc9f063167a272bbcf5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/student-generation-epoch1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/student-generation-epoch1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/student-generation-epoch1.json",
+      "bytes": 33469,
+      "local_sha256": "9e4b9614997c166208e816a2b8258948e2ef365e27fac83294168ced99bfd273",
+      "node_sha256": "9e4b9614997c166208e816a2b8258948e2ef365e27fac83294168ced99bfd273",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/student-generation-source100.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/student-generation-source100.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/student-generation-source100.json",
+      "bytes": 33296,
+      "local_sha256": "27b201d44edd16749810309109c7d07aa79ae02ba959e4cf3172db60414a643a",
+      "node_sha256": "27b201d44edd16749810309109c7d07aa79ae02ba959e4cf3172db60414a643a",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/student-generation-update1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/student-generation-update1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/student-generation-update1.json",
+      "bytes": 33310,
+      "local_sha256": "d4b954ce0e5cbc81ee04dfa7a79e22f79b92c2fc628aa278b57c9a908525a6aa",
+      "node_sha256": "d4b954ce0e5cbc81ee04dfa7a79e22f79b92c2fc628aa278b57c9a908525a6aa",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/student-generation-update5.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/student-generation-update5.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/student-generation-update5.json",
+      "bytes": 35899,
+      "local_sha256": "b24d6b073eaccbea07c20cab9d2fce8e213209383018049fe7108ee3644913ad",
+      "node_sha256": "b24d6b073eaccbea07c20cab9d2fce8e213209383018049fe7108ee3644913ad",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/teacher-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/teacher-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/teacher-generation.json",
+      "bytes": 235,
+      "local_sha256": "a4564946ec11834db529505882f2194cdc3795158670367d44b53708457d378a",
+      "node_sha256": "a4564946ec11834db529505882f2194cdc3795158670367d44b53708457d378a",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-actual-student-generation.json",
+      "bytes": 1692,
+      "local_sha256": "ce84f5a86728cd3b6d19b48f4ccbdb6b9e6281acc6f1e3d63fd42c01797985a7",
+      "node_sha256": "ce84f5a86728cd3b6d19b48f4ccbdb6b9e6281acc6f1e3d63fd42c01797985a7",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-0.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-0.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-0.json",
+      "bytes": 1680,
+      "local_sha256": "15f3cb3097edf9ae29869b586dd17c17826358ae42f10963b1344d4d218fd217",
+      "node_sha256": "15f3cb3097edf9ae29869b586dd17c17826358ae42f10963b1344d4d218fd217",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-1.json",
+      "bytes": 1680,
+      "local_sha256": "a56f20e47e5a9f378ef9803fb055c48dc10fa8dd5f63ddb7fe894636d2c81622",
+      "node_sha256": "a56f20e47e5a9f378ef9803fb055c48dc10fa8dd5f63ddb7fe894636d2c81622",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-2.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-2.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-2.json",
+      "bytes": 1682,
+      "local_sha256": "763579a962da43adf6fd317dda5bcb4c14dc3a22296f8994e45be7c714e7f6c0",
+      "node_sha256": "763579a962da43adf6fd317dda5bcb4c14dc3a22296f8994e45be7c714e7f6c0",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-3.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-3.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-3.json",
+      "bytes": 1682,
+      "local_sha256": "2b13f3d3322e0e3d3e0d87b08d7e7c6af8eee25f4ba9f138e11c14e56c1fab6b",
+      "node_sha256": "2b13f3d3322e0e3d3e0d87b08d7e7c6af8eee25f4ba9f138e11c14e56c1fab6b",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-4.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-4.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-epoch1-original-failed-sibling-4.json",
+      "bytes": 1682,
+      "local_sha256": "2935469a1d166ba4d341aae942f4717560f277bd8918c65a52ad824d1079a515",
+      "node_sha256": "2935469a1d166ba4d341aae942f4717560f277bd8918c65a52ad824d1079a515",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-actual-student-generation.json",
+      "bytes": 1698,
+      "local_sha256": "ac7fa761264cdedf42431170bfa85c21f1dda6cf14102be12812d6ff756fa9c2",
+      "node_sha256": "ac7fa761264cdedf42431170bfa85c21f1dda6cf14102be12812d6ff756fa9c2",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-0.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-0.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-0.json",
+      "bytes": 1686,
+      "local_sha256": "31041d841fc3081334f65ff68fc3b9008f15e0bc8ae02e57c0affd3f0d6a4a9b",
+      "node_sha256": "31041d841fc3081334f65ff68fc3b9008f15e0bc8ae02e57c0affd3f0d6a4a9b",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-1.json",
+      "bytes": 1686,
+      "local_sha256": "5cb80e82432a46b7b4a4d4093c630f70c3d680a5e6882c64a80c58222ffb0c85",
+      "node_sha256": "5cb80e82432a46b7b4a4d4093c630f70c3d680a5e6882c64a80c58222ffb0c85",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-2.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-2.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-2.json",
+      "bytes": 1688,
+      "local_sha256": "8c1fb3830e8a130199e4c665d9757d1555e9fcaace0f1089cf8ac3a0beb8e379",
+      "node_sha256": "8c1fb3830e8a130199e4c665d9757d1555e9fcaace0f1089cf8ac3a0beb8e379",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-3.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-3.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-3.json",
+      "bytes": 1688,
+      "local_sha256": "bc76d824799a504acee590d0617c53ab5b224ccf72d34243a891ec617c042d30",
+      "node_sha256": "bc76d824799a504acee590d0617c53ab5b224ccf72d34243a891ec617c042d30",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-4.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-4.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-source100-original-failed-sibling-4.json",
+      "bytes": 1688,
+      "local_sha256": "229de08430bf478a8cd22abaf678472c3cae9f8bd5f2869f60b533f93077eb80",
+      "node_sha256": "229de08430bf478a8cd22abaf678472c3cae9f8bd5f2869f60b533f93077eb80",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-actual-student-generation.json",
+      "bytes": 1694,
+      "local_sha256": "14535a7d80a4cfc79d00d077cfa2cd3d7b5d0ed4d529b4720ea0a7c36b949c14",
+      "node_sha256": "14535a7d80a4cfc79d00d077cfa2cd3d7b5d0ed4d529b4720ea0a7c36b949c14",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-0.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-0.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-0.json",
+      "bytes": 1682,
+      "local_sha256": "d63be4f9e716aea882e2eb0ddfa609f844cd013b010c17c68d7a6944beec80d7",
+      "node_sha256": "d63be4f9e716aea882e2eb0ddfa609f844cd013b010c17c68d7a6944beec80d7",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-1.json",
+      "bytes": 1682,
+      "local_sha256": "2b73cc71af62237b8d1a16de8a880829e9a2b3a254b9170b091e7a094dd7ffb4",
+      "node_sha256": "2b73cc71af62237b8d1a16de8a880829e9a2b3a254b9170b091e7a094dd7ffb4",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-2.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-2.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-2.json",
+      "bytes": 1684,
+      "local_sha256": "a507740859810f309d5d25b8eee9cbf058c157140e1fd10ef76e314af89b766e",
+      "node_sha256": "a507740859810f309d5d25b8eee9cbf058c157140e1fd10ef76e314af89b766e",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-3.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-3.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-3.json",
+      "bytes": 1684,
+      "local_sha256": "7afb7fd8bf91f704f4cf84f617680f8f390f681e6ee1438dc6eb913693fa54d9",
+      "node_sha256": "7afb7fd8bf91f704f4cf84f617680f8f390f681e6ee1438dc6eb913693fa54d9",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-4.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-4.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update1-original-failed-sibling-4.json",
+      "bytes": 1684,
+      "local_sha256": "5f925766ee2dc4e0dd445ff483f37da04748cde29627471eae51863183352aa9",
+      "node_sha256": "5f925766ee2dc4e0dd445ff483f37da04748cde29627471eae51863183352aa9",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-actual-student-generation.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-actual-student-generation.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-actual-student-generation.json",
+      "bytes": 1694,
+      "local_sha256": "96d49eb5c9b3a2b8efdb788488ef6a8327019fb6d1858c776055d199afa0b70f",
+      "node_sha256": "96d49eb5c9b3a2b8efdb788488ef6a8327019fb6d1858c776055d199afa0b70f",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-0.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-0.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-0.json",
+      "bytes": 1682,
+      "local_sha256": "836d4f19e64f8e8eb8f178ec2a175ed62b789c8dee528da69f1658f9c1af6a19",
+      "node_sha256": "836d4f19e64f8e8eb8f178ec2a175ed62b789c8dee528da69f1658f9c1af6a19",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-1.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-1.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-1.json",
+      "bytes": 1682,
+      "local_sha256": "0c63c090ff46381327b364125a369a2c85f30195dcc6dd65dfcf2c519ed4183c",
+      "node_sha256": "0c63c090ff46381327b364125a369a2c85f30195dcc6dd65dfcf2c519ed4183c",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-2.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-2.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-2.json",
+      "bytes": 1684,
+      "local_sha256": "3fd5d3e4c3ee790bae3ff8268338b571fdf5dae1d33d2447d1b03ff3a9b93581",
+      "node_sha256": "3fd5d3e4c3ee790bae3ff8268338b571fdf5dae1d33d2447d1b03ff3a9b93581",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-3.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-3.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-3.json",
+      "bytes": 1684,
+      "local_sha256": "54a6f589955aeaa3f47e1998834314f96b838c4072ee00d24b45f30f159b4765",
+      "node_sha256": "54a6f589955aeaa3f47e1998834314f96b838c4072ee00d24b45f30f159b4765",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-4.json",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-4.json",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/token-summary-update5-original-failed-sibling-4.json",
+      "bytes": 1684,
+      "local_sha256": "226de299a8aa669d18fffb83f3003dc1ef66d12c3509493dba6e5f22c213e563",
+      "node_sha256": "226de299a8aa669d18fffb83f3003dc1ef66d12c3509493dba6e5f22c213e563",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-actual-student-generation/tokens.jsonl",
+      "bytes": 4285685,
+      "local_sha256": "a6eb32ca3877b40baca5782a108d6954680cc80866ebac53c26acf022a6e19a6",
+      "node_sha256": "a6eb32ca3877b40baca5782a108d6954680cc80866ebac53c26acf022a6e19a6",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-0/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-0/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-0/tokens.jsonl",
+      "bytes": 4084930,
+      "local_sha256": "9420ad52a3f3c40ffbb7cf2693ca194de37b4645cf258bcd83230629e340cfe9",
+      "node_sha256": "9420ad52a3f3c40ffbb7cf2693ca194de37b4645cf258bcd83230629e340cfe9",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-1/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-1/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-1/tokens.jsonl",
+      "bytes": 4949546,
+      "local_sha256": "e528af0d2115574ad80b73cb6af1d9bdf5e4d4d18d7c3359d8ea60b9a8181482",
+      "node_sha256": "e528af0d2115574ad80b73cb6af1d9bdf5e4d4d18d7c3359d8ea60b9a8181482",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-2/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-2/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-2/tokens.jsonl",
+      "bytes": 7791831,
+      "local_sha256": "0b86a4f1ea2e647ae529bfcb069e8bc54e376abb2d6c082fa62284b5a54b47d5",
+      "node_sha256": "0b86a4f1ea2e647ae529bfcb069e8bc54e376abb2d6c082fa62284b5a54b47d5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-3/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-3/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-3/tokens.jsonl",
+      "bytes": 8123314,
+      "local_sha256": "ed68fadaab8366c2d52b60478de90773f79b23ea0c3f96114ed3b9dab06f6ee0",
+      "node_sha256": "ed68fadaab8366c2d52b60478de90773f79b23ea0c3f96114ed3b9dab06f6ee0",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-4/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-4/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-epoch1-original-failed-sibling-4/tokens.jsonl",
+      "bytes": 7565216,
+      "local_sha256": "025ebcfd1ff0616e6c75be2f47cd87e5a01f3969a15a6a54f7334b77bf6f9db6",
+      "node_sha256": "025ebcfd1ff0616e6c75be2f47cd87e5a01f3969a15a6a54f7334b77bf6f9db6",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-actual-student-generation/tokens.jsonl",
+      "bytes": 4163163,
+      "local_sha256": "27f2f9c71d0682e717d951921fcf7617f244f08e43bb0a47d64daae591e42dc5",
+      "node_sha256": "27f2f9c71d0682e717d951921fcf7617f244f08e43bb0a47d64daae591e42dc5",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-0/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-0/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-0/tokens.jsonl",
+      "bytes": 4076019,
+      "local_sha256": "5aa4968a5deea58f960c61628c63df0bb4e354572b538f1a1f34ff49e4c57e52",
+      "node_sha256": "5aa4968a5deea58f960c61628c63df0bb4e354572b538f1a1f34ff49e4c57e52",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-1/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-1/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-1/tokens.jsonl",
+      "bytes": 4937525,
+      "local_sha256": "584f06c90b12d872dbe687d033d748d7c540f70718d106dedc72436468559566",
+      "node_sha256": "584f06c90b12d872dbe687d033d748d7c540f70718d106dedc72436468559566",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-2/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-2/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-2/tokens.jsonl",
+      "bytes": 7769272,
+      "local_sha256": "0b1557b8a4526ddea2b1b1c2f824211838ac4e5bc9d57c17af4eb9a0bf32d1df",
+      "node_sha256": "0b1557b8a4526ddea2b1b1c2f824211838ac4e5bc9d57c17af4eb9a0bf32d1df",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-3/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-3/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-3/tokens.jsonl",
+      "bytes": 8097776,
+      "local_sha256": "63c639f2cdfc2f880bec77687df765e0694f012b4c5e8d6bfbedc8bace32353c",
+      "node_sha256": "63c639f2cdfc2f880bec77687df765e0694f012b4c5e8d6bfbedc8bace32353c",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-4/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-4/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-source100-original-failed-sibling-4/tokens.jsonl",
+      "bytes": 7538922,
+      "local_sha256": "26c3d8bcb1f13af345456b9c807da68a960ecc56c743c294ea352d0b508e8785",
+      "node_sha256": "26c3d8bcb1f13af345456b9c807da68a960ecc56c743c294ea352d0b508e8785",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-actual-student-generation/tokens.jsonl",
+      "bytes": 4174909,
+      "local_sha256": "894856aaa9401b9f92279d29bdf8358f725804db2f47150c3cb693775c88113e",
+      "node_sha256": "894856aaa9401b9f92279d29bdf8358f725804db2f47150c3cb693775c88113e",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-0/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-0/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-0/tokens.jsonl",
+      "bytes": 4085350,
+      "local_sha256": "dbdf8524e1cf3f6d8531f6b9333e7be144fe0519c47f4ee665cfcf4040a88c69",
+      "node_sha256": "dbdf8524e1cf3f6d8531f6b9333e7be144fe0519c47f4ee665cfcf4040a88c69",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-1/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-1/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-1/tokens.jsonl",
+      "bytes": 4949288,
+      "local_sha256": "dc3e282a7dd06eb344ff464d5726e75c3427135a2fc1a6eb5cf14e49d49622d9",
+      "node_sha256": "dc3e282a7dd06eb344ff464d5726e75c3427135a2fc1a6eb5cf14e49d49622d9",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-2/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-2/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-2/tokens.jsonl",
+      "bytes": 7788721,
+      "local_sha256": "9a1d236bca9a5e3535d4161aad94cd0abc0ef59559daa91928bea4500e6d3772",
+      "node_sha256": "9a1d236bca9a5e3535d4161aad94cd0abc0ef59559daa91928bea4500e6d3772",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-3/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-3/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-3/tokens.jsonl",
+      "bytes": 8118942,
+      "local_sha256": "cc4b38638b910b7d5d2384ea4577d6bb023c096f404690e797ab84e11687034e",
+      "node_sha256": "cc4b38638b910b7d5d2384ea4577d6bb023c096f404690e797ab84e11687034e",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-4/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-4/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update1-original-failed-sibling-4/tokens.jsonl",
+      "bytes": 7559439,
+      "local_sha256": "eaf3557732b4ec9f812a4e49420daa4647948442ac0525a80dfaa7fdea3513c6",
+      "node_sha256": "eaf3557732b4ec9f812a4e49420daa4647948442ac0525a80dfaa7fdea3513c6",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-actual-student-generation/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-actual-student-generation/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-actual-student-generation/tokens.jsonl",
+      "bytes": 4787575,
+      "local_sha256": "54c78ed370f69c29cbf5ccea53113c84d5ab34855c0e3e22a56cab6507daf082",
+      "node_sha256": "54c78ed370f69c29cbf5ccea53113c84d5ab34855c0e3e22a56cab6507daf082",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-0/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-0/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-0/tokens.jsonl",
+      "bytes": 4086454,
+      "local_sha256": "99144a0397ee7d89252abb178b77b5598decf679be0fee2b5a99a435be2e3d0d",
+      "node_sha256": "99144a0397ee7d89252abb178b77b5598decf679be0fee2b5a99a435be2e3d0d",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-1/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-1/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-1/tokens.jsonl",
+      "bytes": 4950060,
+      "local_sha256": "25e86effed1ed7889d5289a422e56a7ed46c8eee99fd36b10587d66432324451",
+      "node_sha256": "25e86effed1ed7889d5289a422e56a7ed46c8eee99fd36b10587d66432324451",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-2/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-2/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-2/tokens.jsonl",
+      "bytes": 7788627,
+      "local_sha256": "b9e97d6eb9095fd4b76779aba18692d3c3964e09b9281172b842971ab01c1824",
+      "node_sha256": "b9e97d6eb9095fd4b76779aba18692d3c3964e09b9281172b842971ab01c1824",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-3/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-3/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-3/tokens.jsonl",
+      "bytes": 8119148,
+      "local_sha256": "bd7c3a18f78349ef5607b6e994103631c98b7485aaf82ad2f12c86b2848911bb",
+      "node_sha256": "bd7c3a18f78349ef5607b6e994103631c98b7485aaf82ad2f12c86b2848911bb",
+      "matched": true
+    },
+    {
+      "relative_path": "nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-4/tokens.jsonl",
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-debug-audit/first-cases/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-4/tokens.jsonl",
+      "node_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-2/nq-all5_wrong-0003dfe9de2a99e0/tokens-update5-original-failed-sibling-4/tokens.jsonl",
+      "bytes": 7558994,
+      "local_sha256": "65f2cb2ca6ac18d9ca291ab5aaffd4d7b9156fcacfaf13be4a9058e418063757",
+      "node_sha256": "65f2cb2ca6ac18d9ca291ab5aaffd4d7b9156fcacfaf13be4a9058e418063757",
+      "matched": true
+    }
+  ],
+  "raw_diagnostic_data_git_publication": false,
+  "full_vocabulary_downloaded": false,
+  "full_vocabulary_persisted_node_files": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-base_ordinary-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-base_ordinary-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-student-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "4b8a0d2d1939df59ee335b2beffe7fba1ed30470b5442d5ce044ab8e5efc432d",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-student-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "94f1fd94e51a8aec087ba46a6d5f1a8fbf3d87e370a6a348e1d0d8cd27e7851c",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-teacher_privileged-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "7dbcf3e971d5e3c7ddf63b4442a9eb84166f21808c7b9fab427c725944f35d97",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-epoch1-original-mined-student/full-vocabulary-teacher_privileged-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "f694a3eb7d005f8a2c27e46fc1067eaf6b0d6cb33c9da7dc8ac230dc5957d741",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-base_ordinary-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-base_ordinary-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-student-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "9364927f323321703f8e78874cca608b635540b09dbc79f0fc65c7195507d699",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-student-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "f3b46293be3ac67eb5c206e53cdcc5c1ee62cbf2e999ec52d1893078c7a044f1",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-teacher_privileged-logprobs.npy",
+      "bytes": 158621312,
+      "sha256": "7dbcf3e971d5e3c7ddf63b4442a9eb84166f21808c7b9fab427c725944f35d97",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/worker-1/hotpotqa-correct_wrong-0018f1a654155a51/tokens-source100-original-mined-student/full-vocabulary-teacher_privileged-probabilities.npy",
+      "bytes": 158621312,
+      "sha256": "f694a3eb7d005f8a2c27e46fc1067eaf6b0d6cb33c9da7dc8ac230dc5957d741",
+      "shape": [
+        261,
+        151936
+      ],
+      "dtype": "float32",
+      "cpu_all_values_finite": true
+    }
+  ],
+  "full_vocabulary_bytes": 1903455744,
+  "case_summaries": [
+    {
+      "case_id": "nq-correct_correct-0000c8af8c12b617",
+      "case_index": 0,
+      "group": "correct_correct",
+      "dataset": "nq",
+      "completed_unix": 1791432945.6866627,
+      "generations": {
+        "teacher-generation.json": {
+          "protocol_em": 0,
+          "protocol_valid": false,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 0,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": true,
+          "privileged_reference": true,
+          "source_sha256": "b3b908b0e1c6c792a08d84aac8ef51ed23ac0db64d7c3623842823fab198eb5c"
+        },
+        "student-generation-source100.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "50d804a7bf3fd1e6b6521682ab8080271dbb0e15966472bbb5d254c52aae8bd6"
+        },
+        "student-generation-update1.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "61b26d6cdfb66ecdbada1f20dd8a93d02093af18f18d2c93f9fd5b40ac247cdc"
+        },
+        "student-generation-update5.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "ac6f2272d7d2a9218e0ef2be71ceebfa83a94161a7a30b45e07f942611386e85"
+        },
+        "student-generation-epoch1.json": {
+          "protocol_em": 0,
+          "protocol_valid": false,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 0,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": true,
+          "privileged_reference": false,
+          "source_sha256": "ad1c9f581d463473d876bbf46c65722853936c9459a6bf3ec32d107bd3e6b450"
+        }
+      },
+      "original_mined_response_trajectory_mean_by_checkpoint": {
+        "source100": 1.2235770225524902,
+        "update1": 1.2197926044464111,
+        "update5": 1.1593531370162964,
+        "epoch1": 0.20120088756084442
+      },
+      "token_probe_count": 9,
+      "token_rows": 3772,
+      "all_token_rows_independently_cpu_finite": true,
+      "successful_original_reference_fresh_protocol_em": 1
+    },
+    {
+      "case_id": "hotpotqa-correct_wrong-0018f1a654155a51",
+      "case_index": 142,
+      "group": "correct_wrong",
+      "dataset": "hotpotqa",
+      "completed_unix": 1791433016.5742402,
+      "generations": {
+        "teacher-generation.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": true,
+          "source_sha256": "c31f243479c2d09a957335608acf70644280fa48e63b5ccb85e08718c0d617c7"
+        },
+        "student-generation-source100.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "8739a34a6c9788f08ceca1131b94c3eb64e20dab3ba3396817289d7521a457d0"
+        },
+        "student-generation-update1.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 2,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "0dd79ca919baf2a014bb6ea2f09dcc6c6740d643b24494ba058986e89faf05d1"
+        },
+        "student-generation-update5.json": {
+          "protocol_em": 1,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 2,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "da361441411a7ab8274aaca70a0380359b5b6c91dc6977b16b6939a15bcaf59b"
+        },
+        "student-generation-epoch1.json": {
+          "protocol_em": 0,
+          "protocol_valid": false,
+          "normalized_literal_answer_matches_gold": true,
+          "search_calls": 0,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": true,
+          "privileged_reference": false,
+          "source_sha256": "96ea97edb4eaddf1407e05033bdf5aca831b63032bd32e0da48afac95eb63316"
+        }
+      },
+      "original_mined_response_trajectory_mean_by_checkpoint": {
+        "source100": 0.6245460510253906,
+        "update1": 0.6225523352622986,
+        "update5": 0.616375744342804,
+        "epoch1": 0.3407885432243347
+      },
+      "token_probe_count": 9,
+      "token_rows": 5258,
+      "all_token_rows_independently_cpu_finite": true,
+      "successful_original_reference_fresh_protocol_em": 1
+    },
+    {
+      "case_id": "nq-all5_wrong-0003dfe9de2a99e0",
+      "case_index": 65,
+      "group": "all5_wrong",
+      "dataset": "nq",
+      "completed_unix": 1791432982.6241708,
+      "generations": {
+        "teacher-generation.json": {
+          "status": "not_applicable_no_successful_reference"
+        },
+        "student-generation-source100.json": {
+          "protocol_em": 0,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": false,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "27b201d44edd16749810309109c7d07aa79ae02ba959e4cf3172db60414a643a"
+        },
+        "student-generation-update1.json": {
+          "protocol_em": 0,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": false,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "d4b954ce0e5cbc81ee04dfa7a79e22f79b92c2fc628aa278b57c9a908525a6aa"
+        },
+        "student-generation-update5.json": {
+          "protocol_em": 0,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": false,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "b24d6b073eaccbea07c20cab9d2fce8e213209383018049fe7108ee3644913ad"
+        },
+        "student-generation-epoch1.json": {
+          "protocol_em": 0,
+          "protocol_valid": true,
+          "normalized_literal_answer_matches_gold": false,
+          "search_calls": 1,
+          "terminal_marker": "answer",
+          "unclosed_think_in_final_span": false,
+          "privileged_reference": false,
+          "source_sha256": "9e4b9614997c166208e816a2b8258948e2ef365e27fac83294168ced99bfd273"
+        }
+      },
+      "original_mined_response_trajectory_mean_by_checkpoint": null,
+      "token_probe_count": 24,
+      "token_rows": 20353,
+      "all_token_rows_independently_cpu_finite": true,
+      "successful_original_reference_fresh_protocol_em": null
+    }
+  ],
+  "total_probe_count": 42,
+  "total_token_rows": 29383,
+  "native_scalar_check_count": 18,
+  "native_scalar_absolute_error_max": 0.0,
+  "independent_cpu_original_dump_reconstructed_objective_passed": true,
+  "gpu_actual_free_snapshot": {
+    "sample_unix": 1791433497.360129,
+    "exit_code": 0,
+    "stdout": "0, GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 8270, 15941, 24564\n1, GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 8270, 15941, 24564\n2, GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 8366, 15845, 24564\n3, GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 8428, 15783, 24564\n4, GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 16244, 7967, 24564\n5, GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 16120, 8091, 24564\n6, GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 16420, 7791, 24564\n7, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 23628, 583, 24564\n",
+    "stderr": ""
+  },
+  "kernel_existing_gpu_error_lines": [
+    "2026-08-28T06:41:50,838801+00:00 NVRM: Xid (PCI:0000:2e:00): 43, pid=2310831, name=python, Ch 00000008",
+    "2026-08-28T06:41:53,133310+00:00 NVRM: Xid (PCI:0000:2e:00): 43, pid=2310901, name=python, Ch 00000008",
+    "2026-10-07T08:20:49,152642+00:00 NVRM: Xid (PCI:0000:64:00): 31, pid='<unknown>', name=<unknown>, Ch 00000008, intr 00000000. MMU Fault: ENGINE GRAPHICS GPCCLIENT_T1_2 faulted @ 0x7f56_65800000. Fault is of type FAULT_PDE ACCESS_TYPE_VIRT_READ"
+  ],
+  "interpreted_result": "The first two non-hard epoch1 generations contain lexical correct answers but fail strict action format because think is unclosed. This is a per-case protocol regression, not factual answer error or a new reward-scoring bug.",
+  "limitations": [
+    "termination=answer is a stopping marker, not strict protocol validity; frozen QA independently parses final authored span",
+    "Lexical answer agreement is diagnostic only; protocol-invalid output retains strict EM0",
+    "Actual greedy diagnostic generation uses HF SDPA BF16 base and FP32 loaded LoRA; it is not the native512 aggregate or vLLM rollout bitwise reproduction",
+    "These selected cases do not establish the cause or prevalence of the native512 decline or first declining update",
+    "Generated-response teacher-forced losses are posthoc diagnostics, not autoregressive generation probabilities or original mined training examples",
+    "Hard cases have no successful reference; no privileged teacher or OPSD loss is fabricated",
+    "No fresh read of large source100 weight contents; exact unchanged metadata binds the prior fresh CPU manifest SHA",
+    "correct_correct/correct_wrong labels describe the original sampled mined pair, not the new fixed-weight greedy generations",
+    "Runtime and local copies certify first-three completed cases only, not completion of all 192 or native512 attribution"
+  ],
+  "independent_checks_passed": true,
+  "issues": []
+}

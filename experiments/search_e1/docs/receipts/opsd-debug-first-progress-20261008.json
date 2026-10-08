@@ -1,0 +1,807 @@
+{
+  "case_source_sha256": "1703b15b1a1b3c5b91b13422fa314ab9a3b83f7bf7bf8a85dd7afcdaecdbf082",
+  "cases_manifest_sha256": "1d7ba339511419d8b0e3044e7a94f798876972a526a083b573c971112a6429d8",
+  "cells": [
+    {
+      "completed_cases": 1,
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 0,
+        "source100": 0,
+        "update1": 0,
+        "update5": 0
+      },
+      "teacher_available": 0,
+      "teacher_correct": 0,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-failed-sibling-0": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 168
+          },
+          "original-failed-sibling-1": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 1176,
+            "valid_policy_tokens": 239
+          },
+          "original-failed-sibling-2": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 669,
+            "valid_policy_tokens": 185
+          },
+          "original-failed-sibling-3": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 613,
+            "valid_policy_tokens": 144
+          },
+          "original-failed-sibling-4": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 694,
+            "valid_policy_tokens": 222
+          }
+        },
+        "source100": {
+          "original-failed-sibling-0": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 168
+          },
+          "original-failed-sibling-1": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 1176,
+            "valid_policy_tokens": 239
+          },
+          "original-failed-sibling-2": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 669,
+            "valid_policy_tokens": 185
+          },
+          "original-failed-sibling-3": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 613,
+            "valid_policy_tokens": 144
+          },
+          "original-failed-sibling-4": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 694,
+            "valid_policy_tokens": 222
+          }
+        },
+        "update1": {
+          "original-failed-sibling-0": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 168
+          },
+          "original-failed-sibling-1": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 1176,
+            "valid_policy_tokens": 239
+          },
+          "original-failed-sibling-2": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 669,
+            "valid_policy_tokens": 185
+          },
+          "original-failed-sibling-3": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 613,
+            "valid_policy_tokens": 144
+          },
+          "original-failed-sibling-4": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 694,
+            "valid_policy_tokens": 222
+          }
+        },
+        "update5": {
+          "original-failed-sibling-0": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 168
+          },
+          "original-failed-sibling-1": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 1176,
+            "valid_policy_tokens": 239
+          },
+          "original-failed-sibling-2": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 669,
+            "valid_policy_tokens": 185
+          },
+          "original-failed-sibling-3": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 613,
+            "valid_policy_tokens": 144
+          },
+          "original-failed-sibling-4": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 694,
+            "valid_policy_tokens": 222
+          }
+        }
+      }
+    },
+    {
+      "completed_cases": 1,
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 1,
+        "source100": 1,
+        "update1": 1,
+        "update5": 1
+      },
+      "teacher_available": 1,
+      "teacher_correct": 0,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.12604151666164398,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 149
+          }
+        },
+        "source100": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.39228591322898865,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 149
+          }
+        },
+        "update1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.3882862627506256,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 149
+          }
+        },
+        "update5": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.37667080760002136,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 637,
+            "valid_policy_tokens": 149
+          }
+        }
+      }
+    },
+    {
+      "completed_cases": 1,
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 1
+        },
+        "update1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 0,
+        "source100": 1,
+        "update1": 1,
+        "update5": 1
+      },
+      "teacher_available": 1,
+      "teacher_correct": 1,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.3407885432243347,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 261,
+            "valid_policy_tokens": 183
+          }
+        },
+        "source100": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.6245460510253906,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 261,
+            "valid_policy_tokens": 183
+          }
+        },
+        "update1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.6225523352622986,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 261,
+            "valid_policy_tokens": 183
+          }
+        },
+        "update5": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.616375744342804,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 261,
+            "valid_policy_tokens": 183
+          }
+        }
+      }
+    },
+    {
+      "completed_cases": 2,
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 0,
+        "source100": 0,
+        "update1": 0,
+        "update5": 0
+      },
+      "teacher_available": 0,
+      "teacher_correct": 0,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-failed-sibling-0": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1103,
+            "valid_policy_tokens": 231
+          },
+          "original-failed-sibling-1": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1232,
+            "valid_policy_tokens": 360
+          },
+          "original-failed-sibling-2": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1620,
+            "valid_policy_tokens": 322
+          },
+          "original-failed-sibling-3": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1677,
+            "valid_policy_tokens": 362
+          },
+          "original-failed-sibling-4": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1590,
+            "valid_policy_tokens": 281
+          }
+        },
+        "source100": {
+          "original-failed-sibling-0": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1103,
+            "valid_policy_tokens": 231
+          },
+          "original-failed-sibling-1": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1232,
+            "valid_policy_tokens": 360
+          },
+          "original-failed-sibling-2": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1620,
+            "valid_policy_tokens": 322
+          },
+          "original-failed-sibling-3": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1677,
+            "valid_policy_tokens": 362
+          },
+          "original-failed-sibling-4": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1590,
+            "valid_policy_tokens": 281
+          }
+        },
+        "update1": {
+          "original-failed-sibling-0": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1103,
+            "valid_policy_tokens": 231
+          },
+          "original-failed-sibling-1": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1232,
+            "valid_policy_tokens": 360
+          },
+          "original-failed-sibling-2": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1620,
+            "valid_policy_tokens": 322
+          },
+          "original-failed-sibling-3": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1677,
+            "valid_policy_tokens": 362
+          },
+          "original-failed-sibling-4": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1590,
+            "valid_policy_tokens": 281
+          }
+        },
+        "update5": {
+          "original-failed-sibling-0": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1103,
+            "valid_policy_tokens": 231
+          },
+          "original-failed-sibling-1": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1232,
+            "valid_policy_tokens": 360
+          },
+          "original-failed-sibling-2": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1620,
+            "valid_policy_tokens": 322
+          },
+          "original-failed-sibling-3": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1677,
+            "valid_policy_tokens": 362
+          },
+          "original-failed-sibling-4": {
+            "completed": 2,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": null,
+            "probes": 2,
+            "skipped": 0,
+            "tokens": 1590,
+            "valid_policy_tokens": 281
+          }
+        }
+      }
+    },
+    {
+      "completed_cases": 12,
+      "dataset": "nq",
+      "group": "correct_correct",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 4
+        },
+        "update1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 8,
+        "source100": 12,
+        "update1": 12,
+        "update5": 12
+      },
+      "teacher_available": 12,
+      "teacher_correct": 8,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-mined-student": {
+            "completed": 12,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.12922202330082655,
+            "probes": 12,
+            "skipped": 0,
+            "tokens": 8376,
+            "valid_policy_tokens": 1856
+          }
+        },
+        "source100": {
+          "original-mined-student": {
+            "completed": 12,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.6094331617156664,
+            "probes": 12,
+            "skipped": 0,
+            "tokens": 8376,
+            "valid_policy_tokens": 1856
+          }
+        },
+        "update1": {
+          "original-mined-student": {
+            "completed": 12,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.6086446369687716,
+            "probes": 12,
+            "skipped": 0,
+            "tokens": 8376,
+            "valid_policy_tokens": 1856
+          }
+        },
+        "update5": {
+          "original-mined-student": {
+            "completed": 12,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.5775377800067266,
+            "probes": 12,
+            "skipped": 0,
+            "tokens": 8376,
+            "valid_policy_tokens": 1856
+          }
+        }
+      }
+    },
+    {
+      "completed_cases": 1,
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "paired_checkpoint_flips": {
+        "epoch1": {
+          "improved": 0,
+          "worsened": 0
+        },
+        "update1": {
+          "improved": 1,
+          "worsened": 0
+        },
+        "update5": {
+          "improved": 0,
+          "worsened": 0
+        }
+      },
+      "planned_cases": 32,
+      "student_correct": {
+        "epoch1": 0,
+        "source100": 0,
+        "update1": 1,
+        "update5": 0
+      },
+      "teacher_available": 1,
+      "teacher_correct": 0,
+      "token_loss_origins": {
+        "epoch1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.1733482927083969,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 539,
+            "valid_policy_tokens": 109
+          }
+        },
+        "source100": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.7913832664489746,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 539,
+            "valid_policy_tokens": 109
+          }
+        },
+        "update1": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.7857951521873474,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 539,
+            "valid_policy_tokens": 109
+          }
+        },
+        "update5": {
+          "original-mined-student": {
+            "completed": 1,
+            "frozen_loss_checks_passed": true,
+            "mean_trajectory_loss": 0.7646791934967041,
+            "probes": 1,
+            "skipped": 0,
+            "tokens": 539,
+            "valid_policy_tokens": 109
+          }
+        }
+      }
+    }
+  ],
+  "completed_cases": 18,
+  "controller_status": "RUNNING",
+  "created_unix": 1791433269.2117116,
+  "planned_cases": 192,
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "run_path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb",
+  "scope": "Partial completed-case summaries only unless192 complete; fixed stratified greedy HF diagnostic, not native512/full7. Teacher privilege and checkpoint effects are associations, not causal attribution. No training.",
+  "workers": [
+    {
+      "assigned_cases": 64,
+      "completed_cases": 7,
+      "gpu": {
+        "cuda_free_bytes": 17078878208,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+        "nvidia_smi_actual_free_mib": 16288,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 7923,
+        "sample_unix": 1791433230.1516373,
+        "torch_peak_allocated_bytes": 7015342080,
+        "torch_peak_reserved_bytes": 7813988352
+      },
+      "last_failure": null,
+      "pid": 33998,
+      "proc_starttick": 922457979,
+      "status": "RUNNING",
+      "worker_index": 0
+    },
+    {
+      "assigned_cases": 64,
+      "completed_cases": 5,
+      "gpu": {
+        "cuda_free_bytes": 16902717440,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+        "nvidia_smi_actual_free_mib": 16120,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 8091,
+        "sample_unix": 1791433268.891901,
+        "torch_peak_allocated_bytes": 7039917056,
+        "torch_peak_reserved_bytes": 7990149120
+      },
+      "last_failure": null,
+      "pid": 33999,
+      "proc_starttick": 922457979,
+      "status": "RUNNING",
+      "worker_index": 1
+    },
+    {
+      "assigned_cases": 64,
+      "completed_cases": 6,
+      "gpu": {
+        "cuda_free_bytes": 17217290240,
+        "cuda_total_bytes": 25386352640,
+        "gpu_uuid": "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+        "nvidia_smi_actual_free_mib": 16420,
+        "nvidia_smi_total_mib": 24564,
+        "nvidia_smi_used_mib": 7791,
+        "sample_unix": 1791433238.354467,
+        "torch_peak_allocated_bytes": 7004076544,
+        "torch_peak_reserved_bytes": 7675576320
+      },
+      "last_failure": null,
+      "pid": 34000,
+      "proc_starttick": 922457979,
+      "status": "RUNNING",
+      "worker_index": 2
+    }
+  ]
+}

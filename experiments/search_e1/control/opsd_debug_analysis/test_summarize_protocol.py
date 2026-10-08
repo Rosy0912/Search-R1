@@ -9,15 +9,13 @@ import unittest
 HERE=Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('protocol_analysis',HERE/'summarize_protocol.py')
 a=importlib.util.module_from_spec(spec);spec.loader.exec_module(a)
-# Locate committed frozen source from the repository itself, not test reimplementations.
-REPO=HERE.parents[3]
-CORE=REPO/'experiments/search_e1/reproduction/runtime/search_e1/core.py'
-# Actual frozen source bytes live in retained local analysis snapshots in this
-# workspace; fixtures accept an explicit path for repository portability.
+# Fixtures use the exact committed frozen runtime; explicit env paths permit
+# auditing another preserved checkout while source hashes remain mandatory.
 import os
-WORKSPACE=HERE.parents[5]
-CORE=Path(os.environ.get('E1_FIXTURE_FROZEN_CORE',str(WORKSPACE/'analysis-output/prep3-pair-mechanism-review-20261008/core.py')))
-QA=Path(os.environ.get('E1_FIXTURE_FROZEN_QA',str(WORKSPACE/'analysis-output/opsd-validation-review-20261007/native-qa-protocol.py')))
+REPO=HERE.parents[3]
+FROZEN=REPO/'experiments/search_e1/control/opsd_debug_frozen_runtime_20261008/runtime'
+CORE=Path(os.environ.get('E1_FIXTURE_FROZEN_CORE',str(FROZEN/'search_e1/core.py')))
+QA=Path(os.environ.get('E1_FIXTURE_FROZEN_QA',str(FROZEN/'upstream/Search-R1/search_r1/qa_protocol.py')))
 
 
 def generation(response,spans=None,em=0,calls=0):

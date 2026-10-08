@@ -1,0 +1,226 @@
+{
+  "read_only": true,
+  "collected_at_utc": "2026-10-08T04:22:42.155143+00:00",
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "uid": 1001,
+  "base": "/weka_3/shaoshitong/search-e1-config-study-20261004",
+  "completed_updates": 162,
+  "target": 200,
+  "in_progress_step": [
+    "0",
+    "163"
+  ],
+  "latest_training_metrics": {
+    "critic/rewards/mean": 0.458,
+    "audit/legacy_em": 0.459,
+    "audit/strict_em": 0.458,
+    "audit/score_disagreement": 0.001,
+    "actor/grad_norm": 0.768,
+    "actor/kl_loss": 1.03,
+    "actor/entropy_loss": 0.297,
+    "env/finish_ratio": 0.969,
+    "timing_s/gen": 924.97,
+    "timing_s/update_actor": 948.563,
+    "timing_s/step": 2315.079
+  },
+  "previous_preclip_norm": 85.777,
+  "all_reported_metrics_finite": true,
+  "fatal_markers": {
+    "Traceback (most recent call last)": 0,
+    "CUDA out of memory": 0,
+    "FloatingPointError:": 0,
+    "CUDA error:": 0,
+    "illegal memory access": 0
+  },
+  "native512": [
+    {
+      "step": 0,
+      "line": 908,
+      "sources": {
+        "nq": {
+          "reported_console_three_decimal": 0.176,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            45
+          ],
+          "unique_reconstructed_score": 0.17578125
+        },
+        "hotpotqa": {
+          "reported_console_three_decimal": 0.203,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            52
+          ],
+          "unique_reconstructed_score": 0.203125
+        }
+      },
+      "total_hits_reconstructed": 97,
+      "total_questions": 512,
+      "global_reconstructed_score": 0.189453125,
+      "scope": "Exact integer reconstruction from native three-decimal console EM and known 256+256 counts; not a newly executed evaluation or an independent seven-benchmark score."
+    },
+    {
+      "step": 50,
+      "line": 51512,
+      "sources": {
+        "nq": {
+          "reported_console_three_decimal": 0.309,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            79
+          ],
+          "unique_reconstructed_score": 0.30859375
+        },
+        "hotpotqa": {
+          "reported_console_three_decimal": 0.324,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            83
+          ],
+          "unique_reconstructed_score": 0.32421875
+        }
+      },
+      "total_hits_reconstructed": 162,
+      "total_questions": 512,
+      "global_reconstructed_score": 0.31640625,
+      "scope": "Exact integer reconstruction from native three-decimal console EM and known 256+256 counts; not a newly executed evaluation or an independent seven-benchmark score."
+    },
+    {
+      "step": 100,
+      "line": 105528,
+      "sources": {
+        "nq": {
+          "reported_console_three_decimal": 0.422,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            108
+          ],
+          "unique_reconstructed_score": 0.421875
+        },
+        "hotpotqa": {
+          "reported_console_three_decimal": 0.473,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            121
+          ],
+          "unique_reconstructed_score": 0.47265625
+        }
+      },
+      "total_hits_reconstructed": 229,
+      "total_questions": 512,
+      "global_reconstructed_score": 0.447265625,
+      "scope": "Exact integer reconstruction from native three-decimal console EM and known 256+256 counts; not a newly executed evaluation or an independent seven-benchmark score."
+    },
+    {
+      "step": 150,
+      "line": 171075,
+      "sources": {
+        "nq": {
+          "reported_console_three_decimal": 0.387,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            99
+          ],
+          "unique_reconstructed_score": 0.38671875
+        },
+        "hotpotqa": {
+          "reported_console_three_decimal": 0.512,
+          "questions": 256,
+          "possible_integer_exact_hits": [
+            131
+          ],
+          "unique_reconstructed_score": 0.51171875
+        }
+      },
+      "total_hits_reconstructed": 230,
+      "total_questions": 512,
+      "global_reconstructed_score": 0.44921875,
+      "scope": "Exact integer reconstruction from native three-decimal console EM and known 256+256 counts; not a newly executed evaluation or an independent seven-benchmark score."
+    }
+  ],
+  "latest_checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_150",
+  "frozen": [
+    {
+      "base": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive",
+      "files": 669,
+      "mismatches": []
+    },
+    {
+      "base": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005",
+      "files": 669,
+      "mismatches": []
+    },
+    {
+      "base": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive-jit-20261005-env-v2",
+      "files": 669,
+      "mismatches": []
+    },
+    {
+      "manifest": "/weka_3/shaoshitong/search-e1-config-study-20261004/receipts/archive-opsd-runtime.sha256.json",
+      "manifest_sha256": "633ee77aa68f0b952dfeb2bf563dda57eb548414ae6cc1365f7820309f8eca3c",
+      "base": "/weka_3/shaoshitong/search-e1-config-study-20261004/opsd-runtime/archive",
+      "files": 669,
+      "mismatches": []
+    }
+  ],
+  "observer_pids": [
+    2062794,
+    1751713
+  ],
+  "post_jit_memory": {
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "started": 1791152901.890629,
+    "continuous_observer_started": 1791156535.2196116,
+    "initial_source": "archive-post-jit-memory.json",
+    "initial_source_samples": 1726,
+    "peaks_mib": {
+      "4": 33438,
+      "5": 35388,
+      "6": 31460,
+      "7": 33779
+    },
+    "samples": 132661,
+    "minimum_reserve_mib": {
+      "4": 15702,
+      "5": 13752,
+      "6": 17680,
+      "7": 15361
+    },
+    "shared_gpu_margin_met": true,
+    "updated": 1791433337.5471044,
+    "pipeline_phase": "2026-10-04T02:52:00+00:00 FRESH_GRPO_ROUND_1\n",
+    "source_run_status": "RUNNING",
+    "source_run_matches": true
+  },
+  "shared_service_peak_mib": 738,
+  "retriever_pid": 1749337,
+  "retriever_health": {
+    "ready": true,
+    "ntotal": 21015324,
+    "d": 768,
+    "encoder": "CPU FP32 E5",
+    "index": "full FP32 streaming FlatIP joined scan",
+    "query_micro": 64,
+    "serialized": true,
+    "tf32": false,
+    "source_manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "acceptance_sha256": "f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443"
+  },
+  "current_direct_gpu_inventory": [
+    "4, GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 49140, 24302, 24459, 70",
+    "5, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 49140, 24088, 24673, 67",
+    "6, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 49140, 24880, 23881, 72",
+    "7, GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 49140, 24795, 23965, 67"
+  ],
+  "scope": "Still round1 GRPO; no K4 OPSD yet. Native512 integer scores reconstructed uniquely from console precision and each source256. Norm is clip_grad_norm_ returned preclip norm averaged across Adam miniupdates. Historical pre-JIT shared peak43643/reserve5497 remains a failed observation and is not current-phase evidence. Current direct memory.free separately retained. Source/controller/observer unchanged.",
+  "evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/archive-status-20261008/archive-status-20261008-1223.json",
+      "sha256": "1db53957801de81cc0c283a3ab22d79b3153a2161bc0c5c4d7137bf5f5944d0d"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/archive-status-20261008/archive-observer-supplement-20261008-1225.json",
+      "sha256": "cb331d099dcb5fddf4d00cae290ca99ddb320bb4d051bad77a47aceeb8b19d00"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "job_id": 133489,
+  "validation_samples": 512,
+  "model": "Qwen2.5-3B-Instruct",
+  "metrics": {
+    "nq": 0.21875,
+    "hotpotqa": 0.2734375
+  },
+  "macro_em": 0.24609375,
+  "note": "Initial model; same upstream validation path as GRPO step 50; inspect log for terminal state",
+  "state": "COMPLETED",
+  "exit_code": "0:0",
+  "elapsed_seconds": 985,
+  "completion_marker_verified": true
+}

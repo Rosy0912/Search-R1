@@ -1,0 +1,12 @@
+{
+  "held_at_unix": 1791021422.1531267,
+  "phase": "opsd1",
+  "job_id": 133236,
+  "reason": "Repeated severe finite pre-clipping gradient spikes122-127 and degraded training action/finish metrics; pending automatic handoff has no model quality gate. Preserve ongoing first GRPO optimizer; await same-path step150 independent validation before deciding release or evidence-supported repair. This hold is not a claim of independently verified EM decline.",
+  "release_condition": "Explicitly assess upcoming independent validation and stability evidence, then release retained job with scontrol release133236 when safe to advance. Do not forget held job.",
+  "scope_unchanged": true,
+  "grpo1_untouched": true,
+  "requested_gpus": 8,
+  "afterok": 133235,
+  "scontrol_verification": "JobId=133236 JobName=search-e1-opsd1 UserId=jmzhang(1066) GroupId=lumia(2001) MCS_label=N/A Priority=0 Nice=0 Account=lumia QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=afterok:133235(unfulfilled) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-02T01:04:07 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-02T01:04:07 Scheduler=Main Partition=L40S AllocNode:Sid=storage-hdd:3534228 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=32 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=32,mem=512G,node=1,billing=32,gres/gpu=8 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/home/jmzhang/Workspace/Search-E1-20261001/scripts/lumia_phase.sbatch WorkDir=/home/jmzhang/Workspace/Search-E1-20261001 StdErr=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.err StdIn=/dev/null StdOut=/home/jmzhang/Workspace/Search-E1-20261001/runs/search-e1-opsd1-133236.out KillOInInvalidDependent=Yes TresPerNode=gres/gpu:8 TresPerTask=cpu=32 \n"
+}

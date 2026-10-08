@@ -1,0 +1,11 @@
+{
+  "archive": "/Users/chengruoxi/Downloads/search-e1-reproduction-20261003-233328.tar.gz",
+  "directory": "/Users/chengruoxi/Downloads/search-e1-reproduction-20261003-233328",
+  "snapshot_time_shanghai": "2026-10-03 23:31",
+  "source_file_count": 287,
+  "source_bytes": 4785540,
+  "source_hashes_verified": true,
+  "upstream_commit": "598e61bd1d36895726d28a8d06b3a15bed19f5d3",
+  "upstream_git_status": "",
+  "completed_grpo1_step": 137
+}

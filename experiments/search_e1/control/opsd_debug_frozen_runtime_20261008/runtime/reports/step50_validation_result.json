@@ -1,0 +1,20 @@
+{
+  "job_id": 133235,
+  "step": 50,
+  "validation_samples": 512,
+  "metrics_log_rounded": {
+    "nq": 0.379,
+    "hotpotqa": 0.453
+  },
+  "macro_em_approx": 0.41600000000000004,
+  "baseline_job": 133489,
+  "baseline_metrics": {
+    "nq": 0.21875,
+    "hotpotqa": 0.2734375
+  },
+  "baseline_macro_em": 0.24609375,
+  "gain_percentage_points_approx": 16.990625000000005,
+  "same_validation_path": true,
+  "checkpoint": "round-1/grpo/actor/global_step_50",
+  "note": "Step 50 console metrics have three decimal places. Training reward is excluded from the scaling decision. This is a holdout validation result, not the seven full test sets."
+}
