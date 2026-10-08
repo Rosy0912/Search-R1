@@ -7,6 +7,7 @@ import sys
 import time
 import traceback
 import subprocess
+from collections import Counter
 
 if not __package__:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -136,6 +137,8 @@ def main():
     model.enable_input_require_grads()
     for parameter in model.parameters():
         parameter.requires_grad_(False)
+    loaded_dtype_counts = {version: dict(Counter(str(parameter.dtype) for name, parameter in model.named_parameters()
+                                                if "." + version + "." in name and "lora_" in name)) for version in VERSIONS}
     budget = FullVocabularyBudget(args.full_vocab_max_bytes, args.workers, args.full_vocab_case_id, versions)
     agent = TraceSearchAgent(model, tokenizer, core, rollout, args.retriever_url, admission.check_live)
     assigned = [case for case in cases if case["case_index"] % args.workers == args.worker_index]
@@ -147,6 +150,8 @@ def main():
                                key=lambda case: (case["case_id"] not in priority, case["case_index"]))
     status.update(status="RUNNING", assigned_cases=len(assigned), completed_cases=0, gpu=current_gpu_memory(torch),
                   execution_order=[case["case_id"] for case in assigned],
+                  actual_loaded_adapter_dtype_counts=loaded_dtype_counts,
+                  actual_base_output_head_dtype=str(model.get_base_model().get_output_embeddings().weight.dtype),
                   execution_order_reason="First case group rotates correct_correct/correct_wrong/all5_wrong by worker; then requested full-vocabulary cases first; fixed greedy weights, no training")
     atomic_json(directory / "status.json", status)
     with (directory / "case-results.jsonl").open("x") as results:

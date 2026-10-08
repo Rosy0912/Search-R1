@@ -1,6 +1,6 @@
 {
   "files": {
-    "worker.py": "4ecae139f6a8b741fbe4ae3c88aa9775a62bbae2cce7e98b965c978cee77d484",
+    "worker.py": "596cc6bbd8e9e1ff5fcbcf1bceb1ab291df47bd08e999cfa8283db8d9e2897d0",
     "start_cpu_preparation.py": "225b4fed208718cf8d4646e9b8f9941b59d680de8df3341ec09503d1cac7bab6",
     "test_select_cases.py": "735070335ca636b539f35d4c9eee8e397a97d875380bd65b250c0f119cbc9360",
     "prepare_weight_manifest.py": "046ebd4066eebf6b5ce614d6e6213cc13358c89bdabff40839494c238987e78d",
@@ -13,8 +13,8 @@
     "launch_gpu_debug.py": "49374005e46e6ff99cab4fbf83284f9635a6e31579c7f64c09da999e90fe0db4",
     "weight_identity.py": "dd55b22a86a64f551eec88fd4d0df38b8c237cbeaeb9b2939b26c206ad3dcebd",
     "admission.py": "80c7116dc7472c23b509f2dce53964fabd5fb51074ca2dc7b346c8474d6f1fe9",
-    "token_probe.py": "4c75cec7e72a7b24cc4ed6cf32080f157ae519a06819079e73fca40f83c409f2",
+    "token_probe.py": "7e70a2082ea1c2556735f4ac13245d5f16e07d06cc2039ea17b34f6b8fa25c86",
     "summarize_debug.py": "07705e44524a6dd226fe349e7f8efc5cc9b0149a3a77cc26fce9a7cf547b7fbe"
   },
-  "scope": "Independent fixed-weight diagnostics; original runtime is separate, unchanged; actual live acceptance pending"
+  "scope": "Final reviewed independent diagnostic source; weights/frozen science unchanged; no live GPU model run yet"
 }

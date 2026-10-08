@@ -37,7 +37,7 @@ class FullVocabularyBudget:
             path = output / f"full-vocabulary-{name}-{quantity}.npy"
             arrays[key] = np.lib.format.open_memmap(path, mode="w+", dtype="float32", shape=shape)
             files[key] = dict(path=str(path), dtype="float32", shape=list(shape), distribution=name, quantity=quantity,
-                              precision="BF16 head logits -> FP32 log_softmax and probabilities; logprobs retained through probability underflow")
+                              precision="Recorded model head logits -> FP32 log_softmax and probabilities; logprobs retained through probability underflow")
         return arrays, dict(status="allocated", files=files, bytes_reserved_with_header_allowance=estimated,
                             worker_cap_bytes=self.cap, worker_bytes_reserved=self.used)
 
@@ -63,7 +63,7 @@ def probe(model, tokenizer, core, opsd, response, policy_spans, question, refere
                    version=version, case_id=case_id, response_tokens=token_count, valid_policy_tokens=valid_count,
                    ordinary_prefix_tokens=len(prefixes[0]), privileged_prefix_tokens=len(prefixes[1]) if teacher_present else None,
                    reference_status="successful_original_reference" if teacher_present else "not_applicable_no_successful_reference",
-                   precision="BF16 fixed base/adapter forward and output head; FP32 log_softmax/distribution sums",
+                   precision="BF16 fixed base and output head; adapter dtype follows recorded PEFT loading; FP32 log_softmax/distribution sums",
                    implicit_temperature=1.0, contribution_upper_clip=10.0, topk=topk,
                    topk_limit="Topk, target probabilities and token loss do not reconstruct the full vocabulary distribution",
                    token_reduction="valid policy token mean per trajectory", max_context=8192)
@@ -73,6 +73,8 @@ def probe(model, tokenizer, core, opsd, response, policy_spans, question, refere
     device = next(model.parameters()).device
     base = model.get_base_model()
     transformer, head = base.base_model, base.get_output_embeddings()
+    summary["actual_head_weight_dtype"] = str(head.weight.dtype)
+    summary["actual_adapter_parameter_dtypes"] = sorted({str(parameter.dtype) for name, parameter in model.named_parameters() if "lora_" in name})
     tensor = lambda prefix: torch.tensor([prefix + response_ids], dtype=torch.long, device=device)
     model.eval()
     with torch.no_grad(), model.disable_adapter():

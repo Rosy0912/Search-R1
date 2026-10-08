@@ -1,0 +1,74 @@
+{
+  "cuda_initialized": false,
+  "end_unix": 1791432347.758951,
+  "errors": 0,
+  "failures": 0,
+  "passed": true,
+  "schema": "independent-opsd-debug-cpu-tests-v1",
+  "scope": "CPU synthetic software tests; no GPU, inference/retrieval request, training, deployment or remote process change",
+  "source_files": [
+    {
+      "bytes": 76,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/__init__.py",
+      "sha256": "0ad13104d232fc222dc85c7ed319b283fe616b89b9820642befaadeeaf2f95df"
+    },
+    {
+      "bytes": 4374,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/common.py",
+      "sha256": "63b6ef90d295e90e8a1e03af2381ce6e19d993848067b4bf8df1012283cd67da"
+    },
+    {
+      "bytes": 9205,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/select_cases.py",
+      "sha256": "ffe38bccda1505012a2f64b7e543bc75dc21775dd2521bf914708f786ff5660b"
+    },
+    {
+      "bytes": 6175,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/test_select_cases.py",
+      "sha256": "735070335ca636b539f35d4c9eee8e397a97d875380bd65b250c0f119cbc9360"
+    },
+    {
+      "bytes": 16185,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/worker.py",
+      "sha256": "596cc6bbd8e9e1ff5fcbcf1bceb1ab291df47bd08e999cfa8283db8d9e2897d0"
+    },
+    {
+      "bytes": 3208,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/weight_identity.py",
+      "sha256": "dd55b22a86a64f551eec88fd4d0df38b8c237cbeaeb9b2939b26c206ad3dcebd"
+    },
+    {
+      "bytes": 4106,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/admission.py",
+      "sha256": "80c7116dc7472c23b509f2dce53964fabd5fb51074ca2dc7b346c8474d6f1fe9"
+    },
+    {
+      "bytes": 5658,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/trace_agent.py",
+      "sha256": "d2e0ea7eff28cdc6a4ce4fd5ff1f81d323216ab8c28d3052348a86388255d906"
+    },
+    {
+      "bytes": 16004,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/token_probe.py",
+      "sha256": "7e70a2082ea1c2556735f4ac13245d5f16e07d06cc2039ea17b34f6b8fa25c86"
+    },
+    {
+      "bytes": 8868,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/test_token_probe.py",
+      "sha256": "5c5a6d6c97344a0cfbaf17a1bf25dc4c74b2b031df8664fc0141d458c291e1b2"
+    },
+    {
+      "bytes": 3536,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/test_admission.py",
+      "sha256": "d9be0dd9b17f3051658852a1501ade853399dd481b7f20fc1ddf062356ddcb14"
+    },
+    {
+      "bytes": 9082,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_debug/README.md",
+      "sha256": "adc4d86b4860dc6d2407c436b99de92a925672251591866f9bc5e1e00b113639"
+    }
+  ],
+  "start_unix": 1791432347.0666409,
+  "tests_run": 20,
+  "torch_version": "2.8.0"
+}
