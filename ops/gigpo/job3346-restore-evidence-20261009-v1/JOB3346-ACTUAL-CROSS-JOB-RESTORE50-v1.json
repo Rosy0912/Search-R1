@@ -1,0 +1,162 @@
+{
+  "observed_utc": "2026-10-08T20:42:24.839802+00:00",
+  "source_evidence": "outputs/gigpo-e1-instruct200/RESUME50-JOB3346-ACTUAL-STATUS-v3.json",
+  "source_evidence_sha256": "92715011ff3514e1345aef63eef97d98aebdc327739205e839e039c252560321",
+  "actual_record": {
+    "actual_adam_per_rank": 1000,
+    "current_job_id": "3346",
+    "current_run_id": "gigpo-e1-fresh200-live-job3346-1791491801428232461",
+    "data_cursor": 25600,
+    "discarded_unsaved_outer": [
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60
+    ],
+    "driver_flow_readback_equal": true,
+    "next_outer": 51,
+    "parent": {
+      "manifest_sha256": "09b682b1661172760ca5d042372d0cca7aadb929e25214efeb2e484948ec8bc0",
+      "parent_binding_sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+      "retained_outer": 50,
+      "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097",
+      "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+    },
+    "same_original_process": false,
+    "scheduler_step": 50,
+    "status": "ACTUAL_COMPLETE_STATE_RESTORED",
+    "workers": [
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 0
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 1
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 2
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 3
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 4
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 5
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 6
+      },
+      {
+        "actual_complete_runtime_readback": true,
+        "actual_rank_pt_reload": true,
+        "automatic_rollback": false,
+        "collective_failure_recovery": false,
+        "fsdp_initialization": {
+          "initialized": false,
+          "reason": "already_initialized"
+        },
+        "logical_step": 50,
+        "matched_local_stages": true,
+        "rank": 7
+      }
+    ]
+  },
+  "discarded_unsaved_current_parent3344_outers": [
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67
+  ],
+  "discarded_partial_outer": 68,
+  "new_updates_complete": 0
+}
