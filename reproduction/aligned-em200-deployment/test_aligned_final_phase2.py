@@ -22,7 +22,11 @@ def test_full_small_inventory_fingerprints_and_membership(tmp_path,monkeypatch):
     monkeypatch.setattr(h,'ROOT',root)
     manifest=h.inventory_manifest(folder,root);assert manifest['files_total']==2
     h.check_inventory(manifest)
-    (folder/'a').write_bytes(b'original') # Same bytes/mtime-reset cannot retain ctime proof.
+    original=folder/'a';before=original.stat()
+    original.write_bytes(b'original')
+    # Exercise changed metadata explicitly; same-tick writes can keep fingerprints.
+    os.utime(original,ns=(before.st_atime_ns,before.st_mtime_ns+2_000_000_000))
+    assert original.stat().st_mtime_ns!=before.st_mtime_ns
     with pytest.raises(ValueError,match='fingerprint'):h.check_inventory(manifest)
 
 
