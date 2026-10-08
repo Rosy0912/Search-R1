@@ -17,6 +17,7 @@ from reproduction.common8.formal_contract import assert_formal_run
 from reproduction.common8.freeze_calibration_plan import _unstarted
 from reproduction.common8.policy_calibration_plan import canonical_bytes
 from reproduction.common8.prepare_run import verify_model
+from reproduction.common8.precision_contract import BF16_PROFILE
 from reproduction.common8.source_files import runtime_files
 from reproduction.common8.verify_data import digest
 
@@ -34,6 +35,15 @@ LOCAL_HELPERS = frozenset((
     'reproduction/common8/formal_contract.py',
 ))
 RAY_ENTRY = 'verl/trainer/main_ppo_eco.py'
+BF16_SOURCE_DELTA = 'reproduction/a800_common/bf16-adoption-source-delta.json'
+BF16_DELTA_SOURCE_FILES = frozenset((
+    'verl/workers/actor/dp_actor.py',
+    'reproduction/common8/behavior_probability.py',
+    'reproduction/common8/behavior_runtime.py',
+    'verl/trainer/ppo/ray_trainer.py',
+    'reproduction/common8/precision_evidence.py',
+    'reproduction/common8/precision_contract.py',
+))
 ORIGINAL_HYDRA_OUTPUTS = {
     'outputs/2026-10-08/11-08-49/.hydra/config.yaml':
         'f68a9586ff09bac9b74a5613bf6295efe0d2a05324dd8feaf17fe0a412a3fbfa',
@@ -131,6 +141,75 @@ def _outside_ray_bootstrap(raw):
     return prefix + start + end + suffix
 
 
+def _bf16_reuse(run, old):
+    return ('precision_profile' not in old
+            and run.get('precision_profile') == BF16_PROFILE
+            and old['run_id'] == '6de29bcb7be741cfa1bfacdf9e34efc9'
+            and old['source_commit'] == 'f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c')
+
+
+def budget_changes_allowed(run, old):
+    """Only the authenticated legacy-to-BF16 execution fields may differ."""
+    previous, current = old['budget'], run['budget']
+    if canonical_bytes(previous) == canonical_bytes(current):
+        return {}
+    _check(_bf16_reuse(run, old), 'Initial calibration scientific budget changed')
+    values = dict(compute_dtype=('float32', 'bfloat16'),
+                  rollout_dtype=('float32', 'bfloat16'), allow_tf32=(False, None))
+    for name, (before, after) in values.items():
+        _check(canonical_bytes(previous[name]) == canonical_bytes(before)
+               and canonical_bytes(current[name]) == canonical_bytes(after),
+               'Unapproved initial calibration precision transition: ' + name)
+    _check(canonical_bytes({k: v for k, v in previous.items() if k not in values})
+           == canonical_bytes({k: v for k, v in current.items() if k not in values}),
+           'Initial calibration nonprecision budget changed')
+    return {name: dict(old=previous[name], new=current[name]) for name in values}
+
+
+def source_changed_allowed(name, previous, current, run, old):
+    """Authenticate exact published BF16 deltas, never a blanket core exception.
+
+    This module runs from the target's bound repo during adoption and final
+    acceptance. The delta document is itself bound by that target source map.
+    """
+    _check(previous == old['source_sha256'] and current == run['source_sha256'],
+           'Source comparison is not the complete bound manifests')
+    if name in LOCAL_HELPERS:
+        return True
+    if not _bf16_reuse(run, old) or name not in BF16_DELTA_SOURCE_FILES | {BF16_SOURCE_DELTA}:
+        return False
+    base = Path(__file__).resolve().parents[3]
+    path = artifacts._owned_file(base / 'repo' / BF16_SOURCE_DELTA, base)
+    _check(digest(path) == current.get(BF16_SOURCE_DELTA),
+           'BF16 adoption delta differs from the target source snapshot')
+    delta = artifacts._read(path)
+    _check(set(delta) == {'schema_version', 'role', 'original_run_id',
+                         'original_source_commit', 'target_precision_profile', 'changes'}
+           and type(delta['schema_version']) is int and delta['schema_version'] == 1
+           and delta['role'] == 'a800_bf16_initial_probe_source_delta'
+           and delta['original_run_id'] == old['run_id']
+           and delta['original_source_commit'] == old['source_commit']
+           and delta['target_precision_profile'] == run['precision_profile'],
+           'BF16 adoption delta has an unbound origin or precision profile')
+    changes = delta['changes']
+    _check(type(changes) is dict and changes and set(changes) <= BF16_DELTA_SOURCE_FILES,
+           'BF16 adoption delta includes an unapproved source path')
+    for item, proof in changes.items():
+        _check(type(proof) is dict and set(proof) == {'old_sha256', 'new_sha256'}
+               and proof['old_sha256'] == previous.get(item)
+               and proof['new_sha256'] == current.get(item)
+               and proof['old_sha256'] != proof['new_sha256']
+               and isinstance(proof['new_sha256'], str) and len(proof['new_sha256']) == 64
+               and all(c in '0123456789abcdef' for c in proof['new_sha256'])
+               and (proof['old_sha256'] is not None
+                    or item == 'reproduction/common8/precision_contract.py'),
+               'BF16 adoption source hashes do not bind the manifests: ' + item)
+    if name == BF16_SOURCE_DELTA:
+        _check(name not in previous, 'BF16 source delta replaced an original bound file')
+        return True
+    return name in changes
+
+
 def _compatible(base, source, run, old, source_provenance=None):
     for candidate in (run, old):
         assert_formal_run(candidate)
@@ -146,9 +225,10 @@ def _compatible(base, source, run, old, source_provenance=None):
            'Original and target must have separate fresh identities')
     for name in ('initial_model', 'reference_model', 'initial_model_sha256',
                  'model_revision', 'input_sha256', 'calibration_question_ids',
-                 'budget', 'retrieval_asset_paths', 'retrieval_encoder'):
+                 'retrieval_asset_paths', 'retrieval_encoder'):
         _check(canonical_bytes(run[name]) == canonical_bytes(old[name]),
                'Initial calibration scientific identity changed: ' + name)
+    budget_changes_allowed(run, old)
     model = Path(run['initial_model'])
     _check(model == model.resolve()
            and model == Path('/data/search-g1/assets/qwen2.5-3b-instruct'),
@@ -172,7 +252,8 @@ def _compatible(base, source, run, old, source_provenance=None):
             _check(_outside_ray_bootstrap(before) == _outside_ray_bootstrap(after),
                    'Generation/reward/trainer bytes changed outside local Ray startup')
         else:
-            _check(name in LOCAL_HELPERS, 'Scientific source changed: ' + name)
+            _check(source_changed_allowed(name, previous, current, run, old),
+                   'Scientific source changed: ' + name)
         changed.append(name)
     return changed
 
@@ -336,6 +417,9 @@ def adopt(base, source_base):
     receipt = dict(schema_version=1, role='a800_initial_probe_adoption',
         run_id=run['run_id'], execution_id=run['execution_id'], source_commit=run['source_commit'],
         adopted=True, version=new['version'], origin=origin, allowed_startup_source_changes=changes,
+        allowed_training_precision_budget_changes=budget_changes_allowed(run, old),
+        training_precision_source_delta_sha256=(run['source_sha256'].get(BF16_SOURCE_DELTA)
+            if _bf16_reuse(run, old) else None),
         live_manifest_sha256=digest(live_dir / 'manifest.json'),
         target_archive=str(round_dir / 'version-manifest.json'),
         target_archive_sha256=digest(round_dir / 'version-manifest.json'),

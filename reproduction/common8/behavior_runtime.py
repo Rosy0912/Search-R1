@@ -19,6 +19,7 @@ from reproduction.common8.behavior_trace import (
     _exclusive_private_file, _evidence_value,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
+from reproduction.common8.precision_contract import sampling_journal_only
 from reproduction.common8.topology import (
     execution_job_id, local_trajectories, logprob_local_micro, ranks, validate_base, world_size,
 )
@@ -26,6 +27,9 @@ from reproduction.common8.topology import (
 
 TOKEN_FIELDS = frozenset(('input_ids', 'prompts', 'responses', 'responses_with_info_mask',
                           'attention_mask', 'position_ids', 'info_mask', 'loss_mask'))
+JOURNAL_ONLY_POLICY = 'sampling_journal_no_extra_hf_forward'
+JOURNAL_ONLY_DENOMINATOR = 'actual_selected_sampling_log_probs_after_all_token_context_audit'
+HF_PARITY_DENOMINATOR = 'actual_selected_sampling_log_probs_after_all_token_context_and_0.05_gate'
 
 
 def cast_token_fields(batch):
@@ -141,7 +145,8 @@ def context_before_forward(batch):
     assert private['serialization_transformed'] is False
     audit = audit_outer(trace, actor_rows=rows, **bindings)
     assert audit['trace_sha256'] == private['private_trace_sha256']
-    return dict(trace=trace, actor_rows=rows, audit=audit, bindings=bindings, private=private)
+    return dict(trace=trace, actor_rows=rows, audit=audit, bindings=bindings, private=private,
+                sampling_journal_only=sampling_journal_only(run))
 
 
 def _tensor_hash(value):
@@ -157,26 +162,40 @@ def row_hash(batch, index):
 
 
 def freeze_after_probability_gate(batch, context, hf_output):
-    """HF recomputation is a diagnostic; actual passed sampling LP becomes old."""
+    """Freeze actual sampling LP after the run-bound journal/parity audit."""
     from reproduction.common8.behavior_probability import verify
-    assert hf_output.meta_info['temperature'] == batch.meta_info['behavior_sampling']['temperature'] == 1.0
-    assert hf_output.meta_info['micro_batch_size'] == logprob_local_micro() and hf_output.meta_info['use_dynamic_bsz'] is False
+    base, run, job = _native_run()
+    journal_only = sampling_journal_only(run)
+    assert context.get('sampling_journal_only', False) == journal_only
+    assert batch.meta_info['behavior_sampling']['temperature'] == 1.0
+    if journal_only:
+        assert run['behavior_probability_policy'] == JOURNAL_ONLY_POLICY and hf_output is None
+        hf_log_probs = None
+    else:
+        assert hf_output is not None
+        assert hf_output.meta_info['temperature'] == 1.0
+        assert hf_output.meta_info['micro_batch_size'] == logprob_local_micro() and hf_output.meta_info['use_dynamic_bsz'] is False
+        hf_log_probs = hf_output.batch['old_log_probs'].detach().cpu()
     width = batch.batch['responses'].shape[1]
     actual = batch.batch['sampling_log_probs'].detach().cpu()
     authored = batch.batch['info_mask'][:, -width:].detach().cpu()
     attention = batch.batch['attention_mask'][:, -width:].detach().cpu()
     assert torch.equal(batch.batch['sampling_mask'].detach().cpu(), authored.bool())
-    proof = verify(hf_output.batch['old_log_probs'].detach().cpu(), actual, authored, attention,
-        trace=context['trace'], actor_rows=context['actor_rows'], audit=context['audit'], **context['bindings'])
+    proof = verify(hf_log_probs, actual, authored, attention,
+        trace=context['trace'], actor_rows=context['actor_rows'], audit=context['audit'],
+        require_hf_parity=not journal_only, **context['bindings'])
     batch.batch['old_log_probs'] = batch.batch['sampling_log_probs'].clone()
-    batch.meta_info['temperature'] = hf_output.meta_info['temperature']
-    base, run, job = _native_run()
+    batch.meta_info['temperature'] = batch.meta_info['behavior_sampling']['temperature']
     proof.update(row_tensor_sha256={value: row_hash(batch, index) for index, value in
                  enumerate(batch.non_tensor_batch['behavior_trajectory_id'].tolist())},
                  upstream_group_sha256={value: batch.meta_info['behavior_identity']['parent_group_ids'][index // 5].split('-', 1)[1]
                      for index, value in enumerate(batch.non_tensor_batch['behavior_trajectory_id'].tolist())},
                  private_trace_sha256=context['private']['private_trace_sha256'],
-                 denominator='actual_selected_sampling_log_probs_after_all_token_context_and_0.05_gate')
+                 denominator=JOURNAL_ONLY_DENOMINATOR if journal_only else HF_PARITY_DENOMINATOR)
+    if journal_only:
+        proof.update(behavior_probability_policy=run['behavior_probability_policy'],
+                     hf_parity_policy_note='No extra HF forward or maximum-discrepancy gate; '
+                         'actual sampling journal/context/token/mask provenance and finite LP remain required.')
     identity=batch.meta_info['behavior_identity']
     attempt_id=identity.get('attempt_id');attempt_index=identity.get('attempt_index')
     if run.get('policy_safety_mode')=='inline_first_five':
@@ -195,6 +214,8 @@ def freeze_after_probability_gate(batch, context, hf_output):
         os.close(directory)
     batch.meta_info['behavior_probability_gate'] = dict(path=str(path), sha256=hashlib.sha256(content).hexdigest(),
         run_id=run['run_id'], slurm_job_id=job, logical_update=proof['logical_update'])
+    if journal_only:
+        batch.meta_info['behavior_probability_gate']['behavior_probability_policy'] = run['behavior_probability_policy']
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         batch.meta_info['behavior_probability_gate'].update(execution_backend='ssh_local', execution_id=run['execution_id'])
     if attempt_id is not None:
@@ -266,6 +287,22 @@ def gate_path(base,run,step,*,attempt_id=None):
     return Path(base)/'logs'/('behavior-probability-outer-'+str(step)+'.json')
 
 
+def _verify_probability_policy(proof, run):
+    """A journal-only proof is valid only for its explicit BF16 run policy."""
+    assert proof['actual_frozen_old_all_finite'] is True
+    if sampling_journal_only(run):
+        assert proof['behavior_probability_policy'] == run['behavior_probability_policy'] == JOURNAL_ONLY_POLICY
+        assert proof['hf_recomputation_performed'] is False and proof['hf_parity_accepted'] is None
+        assert proof['max_abs_discrepancy'] is None and proof['tolerance'] is None
+        assert proof['hf_dtype'] is None and 'hf_old_log_probs' not in proof['tensor_sha256']
+        assert proof['denominator'] == JOURNAL_ONLY_DENOMINATOR
+    else:
+        assert proof.get('hf_recomputation_performed', True) is True
+        assert proof.get('hf_parity_accepted', True) is True
+        assert 0 <= proof['max_abs_discrepancy'] <= proof['tolerance'] == 0.05
+        assert proof['denominator'] == HF_PARITY_DENOMINATOR
+
+
 def read_gate_receipt(base, run, step, *, update_record=None,attempt_id=None,attempt_index=None):
     """Light scalar/hash binding; never claim this rereads raw trajectories."""
     base = Path(base)
@@ -293,17 +330,18 @@ def read_gate_receipt(base, run, step, *, update_record=None,attempt_id=None,att
     if run.get('policy_safety_mode')=='inline_first_five':
         assert proof['attempt_id']==attempt_id and proof['attempt_index']==attempt_index
         assert proof['policy_snapshot_id']==run['run_id']+':'+str(step)+':policy-'+attempt_id
-    assert proof['actual_frozen_old_all_finite'] is True
-    assert 0 <= proof['max_abs_discrepancy'] <= proof['tolerance'] == 0.05
+    _verify_probability_policy(proof, run)
     assert proof['sampling']['temperature'] == proof['sampling']['top_p'] == 1.0
-    assert proof['denominator'] == 'actual_selected_sampling_log_probs_after_all_token_context_and_0.05_gate'
     assert len(proof['row_tensor_sha256']) == len(proof['upstream_group_sha256']) == 2560
     if update_record is not None:
         assert update_record['behavior_probability_gate_sha256'] == sha
         assert update_record['behavior_trace_sha256'] == proof['trace_sha256'] == proof['private_trace_sha256']
     result=dict(proof_sha256=sha, private_trace_sha256=proof['private_trace_sha256'],
                 included_actor_token_count=proof['included_actor_token_count'],
-                max_abs_discrepancy=proof['max_abs_discrepancy'])
+                max_abs_discrepancy=proof['max_abs_discrepancy'],
+                hf_recomputation_performed=proof.get('hf_recomputation_performed', True),
+                hf_parity_accepted=proof.get('hf_parity_accepted', True),
+                behavior_probability_policy=proof.get('behavior_probability_policy'))
     if run.get('policy_safety_mode')=='inline_first_five':
         result.update(attempt_id=attempt_id,attempt_index=attempt_index)
     return result
@@ -359,7 +397,10 @@ def verify_worker_input(data, *, logical_update, group):
             assert proof['attempt_id']==receipt['attempt_id']==data.meta_info['attempt_id']
             assert proof['attempt_index']==receipt['attempt_index']==data.meta_info['attempt_index']
         assert proof['trajectory_count'] == 2560 and len(proof['row_tensor_sha256']) == 2560
-        assert proof['max_abs_discrepancy'] <= 0.05 and data.meta_info['temperature'] == 1.0
+        _verify_probability_policy(proof, run)
+        if sampling_journal_only(run):
+            assert receipt['behavior_probability_policy'] == run['behavior_probability_policy']
+        assert data.meta_info['temperature'] == 1.0
         assert len(data) == local_trajectories(run) and torch.equal(data.batch['old_log_probs'], data.batch['sampling_log_probs'])
         width = data.batch['responses'].shape[1]
         authored = data.batch['info_mask'][:, -width:]

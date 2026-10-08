@@ -1,4 +1,4 @@
-"""CPU parity gate for every retained actor token in one common8 outer.
+"""CPU sampling-journal audit and optional HF parity for one common8 outer.
 
 The caller owns the native journal, forwards, persistence and collective dispatch.
 This reader neither authenticates physical execution nor grants health/admission.
@@ -86,26 +86,32 @@ def verify_sampling(sampling):
 def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
            trace, actor_rows, audit, expected_run_id, expected_source_sha256,
            expected_slurm_job_id, expected_logical_update, expected_parent_group_ids,
-           expected_trajectory_ids, expected_policy_snapshot_id, expected_sampling):
-    """Check actual journal provenance and the original .05 gate on all actor tokens.
+           expected_trajectory_ids, expected_policy_snapshot_id, expected_sampling,
+           require_hf_parity=True):
+    """Audit every actual token, with the original .05 HF gate by default.
 
-    ``actor_rows`` are the current complete padded rows used for the HF forward.
+    ``actor_rows`` are the current complete padded rows used by the actor.
     The trace audit is rerun against those rows, including after a valid reorder.
     HF values on observations/corrections/padding may be nonfinite: they never
     enter this comparison. Actual old values outside the actor mask must be zero,
     so copying the passed sampling tensor as frozen old is globally finite.
     The returned dictionary contains measurement evidence only; inputs are intact.
     """
-    hf = _tensor(hf_old_log_probs, 'HF old log-probabilities')
-    actual = _tensor(sampling_log_probs, 'actual sampling log-probabilities', hf.shape)
-    authored = _tensor(actor_mask, 'actor mask', hf.shape, mask=True).bool()
-    attention = _tensor(attention_mask, 'attention mask', hf.shape, mask=True).bool()
+    _require(type(require_hf_parity) is bool, 'invalid HF parity policy')
+    _require(require_hf_parity or hf_old_log_probs is None,
+             'journal-only audit must not present copied sampling values as HF output')
+    hf = _tensor(hf_old_log_probs, 'HF old log-probabilities') if require_hf_parity else None
+    actual = _tensor(sampling_log_probs, 'actual sampling log-probabilities',
+                     hf.shape if hf is not None else None)
+    authored = _tensor(actor_mask, 'actor mask', actual.shape, mask=True).bool()
+    attention = _tensor(attention_mask, 'attention mask', actual.shape, mask=True).bool()
     _require(bool((authored <= attention).all()), 'actor mask includes padding')
     _require(bool(authored.any()), 'no included actor tokens')
     _require(bool(torch.isfinite(actual).all()), 'actual frozen old contains a nonfinite value')
     _require(bool((actual[~authored] == 0).all()),
              'observation/correction/padding probabilities must be zero outside actor mask')
-    _require(bool(torch.isfinite(hf[authored]).all()), 'nonfinite HF actor log-probability')
+    if require_hf_parity:
+        _require(bool(torch.isfinite(hf[authored]).all()), 'nonfinite HF actor log-probability')
     _require(bool((actual[authored] <= 0).all()), 'positive actual log-probability')
     verify_sampling(expected_sampling)
     _require(isinstance(trace, Mapping), 'missing actual trace')
@@ -141,7 +147,7 @@ def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
         _require(type(width) is int and width > 0, 'invalid actual prompt width')
         info, valid = row.get('info_mask'), row.get('attention_mask')
         _require(isinstance(info, list) and isinstance(valid, list) and
-                 len(info) == len(valid) == width + hf.shape[1],
+                 len(info) == len(valid) == width + actual.shape[1],
                  'actual padded response width differs')
         _require(info[width:] == actor_mask[index].tolist() and
                  valid[width:] == attention_mask[index].tolist(),
@@ -156,10 +162,14 @@ def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
     # Equality also proves that observations and padding received zero, not an LP.
     _require(torch.equal(actual, journal),
              'sampling tensor differs from actual selected log-probabilities')
-    discrepancy = (hf[authored].double() - actual[authored].double()).abs()
-    maximum = discrepancy.max().item()
-    _require(math.isfinite(maximum) and maximum <= LOGPROB_ATOL,
-             'HF versus actual sampling maximum exceeds original0.05: ' + repr(maximum))
+    maximum = None
+    tensors = dict(sampling_log_probs=actual, actor_mask=actor_mask, attention_mask=attention_mask)
+    if require_hf_parity:
+        discrepancy = (hf[authored].double() - actual[authored].double()).abs()
+        maximum = discrepancy.max().item()
+        _require(math.isfinite(maximum) and maximum <= LOGPROB_ATOL,
+                 'HF versus actual sampling maximum exceeds original0.05: ' + repr(maximum))
+        tensors['hf_old_log_probs'] = hf
     return dict(schema_version=1, role='common8_behavior_probability_gate', accepted=True,
                 run_id=expected_run_id, source_sha256=dict(expected_source_sha256),
                 slurm_job_id=expected_slurm_job_id, logical_update=expected_logical_update,
@@ -168,12 +178,13 @@ def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
                 sampling_distribution='full_softmax; actual neutral filters and penalties verified',
                 trajectory_ids=rebuilt['trajectory_ids'], actor_token_counts=counts,
                 included_actor_token_count=sum(counts), max_abs_discrepancy=maximum,
-                tolerance=LOGPROB_ATOL, trace_sha256=rebuilt['trace_sha256'],
+                tolerance=LOGPROB_ATOL if require_hf_parity else None,
+                hf_recomputation_performed=require_hf_parity,
+                hf_parity_accepted=True if require_hf_parity else None,
+                trace_sha256=rebuilt['trace_sha256'],
                 actor_rows_sha256=rebuilt['actor_rows_sha256'], audit_sha256=document_sha256(rebuilt),
-                tensor_sha256={name: _tensor_sha256(value) for name, value in
-                               (('hf_old_log_probs', hf), ('sampling_log_probs', actual),
-                                ('actor_mask', actor_mask), ('attention_mask', attention_mask))},
-                hf_dtype=str(hf.dtype), sampling_dtype=str(actual.dtype),
+                tensor_sha256={name: _tensor_sha256(value) for name, value in tensors.items()},
+                hf_dtype=str(hf.dtype) if hf is not None else None, sampling_dtype=str(actual.dtype),
                 actual_frozen_old_all_finite=True,
                 scope='all retained actor tokens in all2560 actual trajectories; '
                       'observations, corrections and padding excluded; not the32 monitor sample',

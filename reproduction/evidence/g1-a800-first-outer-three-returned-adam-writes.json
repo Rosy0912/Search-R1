@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "g1_a800_first_outer_three_returned_adam_writes",
+  "created_at_utc": "2026-10-08T06:12:21.204437+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "deployment_id": "ade2ab6b1f654c0f95ff1039a2326b37",
+  "run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "execution_id": "090a2b5419b54dd7b2b155e5d3477baa",
+  "runtime_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+  "observed_unix": 1791439793.875842,
+  "actual_process_identity": {
+    "backend": "ssh_local",
+    "pipeline": {
+      "pid": 1117834,
+      "start_ticks": 551422807,
+      "alive": true,
+      "birth_matches": true,
+      "state": "S",
+      "stage": "GRPO_1_TO_200",
+      "claimed": true
+    },
+    "trainer": {
+      "pid": 1132363,
+      "start_ticks": 551468328,
+      "alive": true,
+      "birth_matches": true,
+      "state": "S",
+      "claimed": true,
+      "exit_code": null
+    },
+    "owned_jobs_selected_scalars": [
+      {
+        "name": "retrieval-stage",
+        "ledger_state": "STOPPED",
+        "exit_code": 0,
+        "leader": {
+          "pid": 1118174,
+          "start_ticks": 551423613,
+          "birth_matches": false,
+          "state": null,
+          "alive": false
+        },
+        "live_registered_count": 0
+      },
+      {
+        "name": "retriever",
+        "ledger_state": "STARTED",
+        "exit_code": null,
+        "leader": {
+          "pid": 1120350,
+          "start_ticks": 551431072,
+          "birth_matches": true,
+          "state": "S",
+          "alive": true
+        },
+        "live_registered_count": 1
+      },
+      {
+        "name": "initial-probe-adoption",
+        "ledger_state": "STOPPED",
+        "exit_code": 0,
+        "leader": {
+          "pid": 1129797,
+          "start_ticks": 551458843,
+          "birth_matches": false,
+          "state": null,
+          "alive": false
+        },
+        "live_registered_count": 0
+      },
+      {
+        "name": "probe-server",
+        "ledger_state": "STARTED",
+        "exit_code": null,
+        "leader": {
+          "pid": 1130639,
+          "start_ticks": 551462058,
+          "birth_matches": true,
+          "state": "S",
+          "alive": true
+        },
+        "live_registered_count": 1
+      },
+      {
+        "name": "probe-admission",
+        "ledger_state": "STOPPED",
+        "exit_code": 0,
+        "leader": {
+          "pid": 1131232,
+          "start_ticks": 551464136,
+          "birth_matches": false,
+          "state": null,
+          "alive": false
+        },
+        "live_registered_count": 0
+      },
+      {
+        "name": "trainer",
+        "ledger_state": "STARTED",
+        "exit_code": null,
+        "leader": {
+          "pid": 1132363,
+          "start_ticks": 551468328,
+          "birth_matches": true,
+          "state": "S",
+          "alive": true
+        },
+        "live_registered_count": 159
+      }
+    ],
+    "scope": "Actual recorded PID-birth liveness and selected owned-job scalars, separate from probability-gate authentication flags."
+  },
+  "first_outer_returned_optimizer_progress": {
+    "logical_outer_update": 1,
+    "outer_opportunity_budget": 20,
+    "rank_count": 4,
+    "all_rank_processed_opportunities_agree": true,
+    "all_rank_successful_returned_writes_agree": true,
+    "replica_once_processed_opportunities": 3,
+    "replica_once_successful_returned_adam_writes": 3,
+    "replica_once_cumulative_returned_adam_writes": 3,
+    "rank_counts_are_not_summed_as_extra_updates": true,
+    "per_rank": [
+      {
+        "rank": 0,
+        "ledger_exists": true,
+        "processed_opportunities": 3,
+        "successful_returned_writes": 3,
+        "cumulative_optimizer_writes": 3,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "partial_final_line": false,
+        "scan_from_start": true
+      },
+      {
+        "rank": 1,
+        "ledger_exists": true,
+        "processed_opportunities": 3,
+        "successful_returned_writes": 3,
+        "cumulative_optimizer_writes": 3,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "partial_final_line": false,
+        "scan_from_start": true
+      },
+      {
+        "rank": 2,
+        "ledger_exists": true,
+        "processed_opportunities": 3,
+        "successful_returned_writes": 3,
+        "cumulative_optimizer_writes": 3,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "partial_final_line": false,
+        "scan_from_start": true
+      },
+      {
+        "rank": 3,
+        "ledger_exists": true,
+        "processed_opportunities": 3,
+        "successful_returned_writes": 3,
+        "cumulative_optimizer_writes": 3,
+        "identity_rejected_rows": 0,
+        "malformed_complete_lines": 0,
+        "partial_final_line": false,
+        "scan_from_start": true
+      }
+    ],
+    "complete_outer_updates": 0,
+    "complete_outer_update_ledger_exists": false,
+    "matching_complete_outer_update_rows": 0,
+    "last_recorded_outer": null,
+    "recorded_completed_outers": null,
+    "new_reward_sample": null,
+    "new_current_run_em": null,
+    "scope": "Three complete successful returned Adam records agree across all four ranks. This is 3 of 20 opportunities in outer 1, counted once per replica; outer 1 has not completed."
+  },
+  "first_outer_learning_rate_and_weight_change": {
+    "first_outer_learning_rate": 0.0,
+    "weight_change_verified": false,
+    "scope": "First-outer LR is zero. Returned Adam calls do not establish parameter changes, and no weight delta proof is included."
+  },
+  "precision_state": {
+    "sampling_dtype_recorded_by_actual_gate": "torch.float32",
+    "frozen_old_hf_dtype_recorded_by_actual_gate": "torch.float32",
+    "runtime_precision": "FP32",
+    "precision_switch_performed": false,
+    "scope": "Existing same-source FP32 run; this evidence records no precision switch."
+  },
+  "behavior_probability_gate": {
+    "accepted": true,
+    "logical_update": 1,
+    "attempt_id": "3fdaaeb2cfbf45f3bb9085296cd04713",
+    "trajectory_count": 2560,
+    "unique_trajectory_count": 2560,
+    "included_actor_token_count": 437087,
+    "max_abs_discrepancy": 0.0010242462158203125,
+    "tolerance": 0.05,
+    "below_tolerance": true,
+    "actual_frozen_old_all_finite": true,
+    "gate_receipt_sha256": "524796b474563179a44d70d8c6822eb0efaa490cdc7c738cc2a36ed869f796c1",
+    "actor_rows_sha256": "19ce5d4c894c7566d029d3ddf5668766c84f082257d76e2313587a5dd9e54ed4",
+    "trace_sha256": "e652df9cc87caa0d3f66be382e4fe65508d8e8f56b868621cecbbdf4539b4bdb",
+    "source_files_count": 381,
+    "source_map_sha256": "d1ea7713368c8bc39d4e44fa9c1cb2daa7b48f6069b71fcf01fe21e365ca4b85",
+    "source_map_matches_manifest": true,
+    "run_matches_manifest": true,
+    "execution_matches_manifest": true,
+    "runtime_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+    "healthy_checkpoint_accepted": false,
+    "physical_execution_authenticated": false,
+    "production_admission": false,
+    "scope": "Probability consistency only. Original false authentication, production-admission and healthy-checkpoint flags remain unchanged; optimizer returns do not change them."
+  },
+  "gpu_observed_window": {
+    "baseline_observation_unix": 1791434647.0379927,
+    "current_observation_unix": 1791439793.875842,
+    "elapsed_between_observations_seconds": 5146.837849378586,
+    "first_scanned_sample_unix": 1791434644.9455354,
+    "latest_sample_unix": 1791439792.9369166,
+    "latest_sample_age_seconds": 1.0204269886016846,
+    "cumulative_sample_count": 2415,
+    "matching_sample_count": 2415,
+    "maximum_scanned_sampling_gap_seconds": 2.3526179790496826,
+    "training_gpu_maximum_sampled_peak_mib": 70633,
+    "training_gpu_total_mib": 81920,
+    "training_gpu_maximum_sampled_peak_percent": 86.221923828125,
+    "current_training_devices": [
+      {
+        "physical_index": 0,
+        "used_mib": 59713,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "cumulative_sampled_run_peak_mib": 70537
+      },
+      {
+        "physical_index": 1,
+        "used_mib": 59809,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "cumulative_sampled_run_peak_mib": 70633
+      },
+      {
+        "physical_index": 2,
+        "used_mib": 59809,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "cumulative_sampled_run_peak_mib": 70633
+      },
+      {
+        "physical_index": 3,
+        "used_mib": 59713,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "cumulative_sampled_run_peak_mib": 70537
+      }
+    ],
+    "sampler_scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "scope": "Actual earliest launch observation baseline to this observation. Recorder cumulative statistics cover the pipeline lifetime, including setup and samples beginning slightly before the first observation; they are not an optimizer-only peak or a new formal hourly window."
+  },
+  "historical_reference_score": {
+    "em": 0.177734375,
+    "f1": 0.24118301022177743,
+    "correct": 91,
+    "count": 512,
+    "source_run_id": "840f82d338ee4d3b97b41372e64e08f1",
+    "source_native_job_id": 3329,
+    "reused_historical_reference": true,
+    "current_run_new_score": false,
+    "paired_same_run": false,
+    "published_source_path": "reproduction/evidence/g1-historical-official-dev512-baseline.json",
+    "published_source_sha256": "acbfc88f029fd8a2ce9d9e5e1da660f85deab2fe0f2ebd3b38ee042e8deb8164",
+    "scope": "Reused historical dev512 comparison, not a new evaluation or reward sample for the current run."
+  },
+  "goal_and_reporting_state": {
+    "goal_active": true,
+    "goal_complete": false,
+    "target_complete_outer_updates": 200,
+    "recorded_complete_outer_updates": 0,
+    "first_five_outer_update_acceptance_completed": false,
+    "training_effect_acceptance_completed": false,
+    "hourly_anchor_advanced": false
+  },
+  "sources": {
+    "full_observer_receipt": {
+      "receipt_basename": "a800-common-deployment-ade2ab6b1f654c0f95ff1039a2326b37.observe-1791439793983971000.json",
+      "sha256": "02f13fa7f0ae44d2a419c52ef831e4c17b3cf48e2bc72f818cd4c834ad388c98"
+    },
+    "observer_wrapper": {
+      "receipt_basename": "a800-ade2-observe-latest-output.json",
+      "sha256": "a451ce0fc092815da989d3d3a36dc8e76f9c93bfc660f046f18dea83b918aee5"
+    },
+    "sanitized_behavior_gate": {
+      "receipt_basename": "a800-ade2-behavior-gate-sanitized.json",
+      "sha256": "c19996b5805588ffee4294c8077fe96b877edb53d6ce2469980c896e7c569e9c"
+    }
+  },
+  "published_field_scope": "Only scalar counters, agreed rank summaries, selected owned PID births, probability-gate hashes and flags, source-map digest, GPU statistics and historical score provenance. No raw logs, token journals, per-trajectory rows, full source map or content payloads are copied."
+}

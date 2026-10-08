@@ -16,7 +16,9 @@ Single Process Actor
 """
 
 import itertools
-from typing import Iterable, Tuple
+import json
+import os
+from typing import Iterable, Optional, Tuple
 
 import torch
 from search_g1.compute_precision import ComputePrecision
@@ -28,7 +30,7 @@ from verl import DataProto
 from verl.trainer.ppo import core_algos
 from verl.workers.actor import BasePPOActor
 from verl.utils.py_functional import append_to_dict
-from verl.utils.torch_functional import logprobs_from_logits, masked_mean
+from verl.utils.torch_functional import logprobs_of_labels_v2, masked_mean
 from verl.utils.ulysses import ulysses_pad_and_slice_inputs, gather_outpus_and_unpad
 from verl.utils.seqlen_balancing import rearrange_micro_batches, get_reverse_idx
 import verl.utils.torch_functional as verl_F
@@ -64,10 +66,11 @@ class DataParallelPPOActor(BasePPOActor):
 
         self.compute_entropy_from_logits = torch.compile(verl_F.entropy_from_logits, dynamic=True)
 
-    def _forward_micro_batch(self, micro_batch, temperature) -> Tuple[torch.Tensor, torch.Tensor]:
+    def _forward_micro_batch(self, micro_batch, temperature,
+                             compute_entropy=True) -> Tuple[Optional[torch.Tensor], torch.Tensor]:
         """
         Returns:
-            entropy: # (bs, response_len)
+            entropy: # (bs, response_len), or None when not requested
             log_probs: # (bs, response_len)
         """
         response_length = micro_batch['responses'].size(-1)
@@ -82,6 +85,9 @@ class DataParallelPPOActor(BasePPOActor):
                 input_ids_rmpad, indices, *_ = unpad_input(input_ids.unsqueeze(-1),
                                                            attention_mask)  # input_ids_rmpad (total_nnz, ...)
                 input_ids_rmpad = input_ids_rmpad.transpose(0, 1)  # (1, total_nnz)
+                response_positions = indices.remainder(seqlen)
+                response_positions = ((response_positions >= seqlen - response_length - 1) &
+                                      (response_positions < seqlen - 1)).unsqueeze(0)
 
                 # unpad the position_ids to align the rotary
                 position_ids_rmpad = index_first_axis(rearrange(position_ids.unsqueeze(-1), "b s ... -> (b s) ..."),
@@ -97,8 +103,11 @@ class DataParallelPPOActor(BasePPOActor):
                                                                                                 sp_size=self.ulysses_sequence_parallel_size)
                     input_ids_rmpad_rolled, _, _ = ulysses_pad_and_slice_inputs(input_ids_rmpad_rolled, None,
                                                                                 self.ulysses_sequence_parallel_size)
+                    response_positions, _, _ = ulysses_pad_and_slice_inputs(response_positions, None,
+                                                                               self.ulysses_sequence_parallel_size)
 
                 input_ids_rmpad_rolled = input_ids_rmpad_rolled.squeeze(0)  # ((total_nnz / sp) + pad)
+                response_positions = response_positions.squeeze(0)
 
                 # only pass input_ids and position_ids to enable flash_attn_varlen
                 output = self.actor_module(input_ids=input_ids_rmpad,
@@ -108,35 +117,41 @@ class DataParallelPPOActor(BasePPOActor):
                 self.last_forward_precision = self.compute_precision.observe_logits(output.logits,
                                                                                     process_group=precision_group)
                 logits_rmpad = output.logits.squeeze(0)  # (total_nnz, vocab_size)
-
-                logits_rmpad.div_(temperature)
-
-                # compute entropy
-                entropy_rmpad = self.compute_entropy_from_logits(logits_rmpad)  # ((total_nnz / sp) + pad)
-
-                # if use_sp: ((total_nnz / sp) + pad) ; if not use_sp: (batch, seqlen)
-                log_probs = logprobs_from_logits(logits=logits_rmpad, labels=input_ids_rmpad_rolled)
+                # Only response prediction rows need a FP32 vocabulary reduction.
+                response_logits = logits_rmpad[response_positions].float()
+                response_logits.div_(temperature)
+                response_log_probs = logprobs_of_labels_v2(response_logits,
+                                                          input_ids_rmpad_rolled[response_positions])
+                log_probs = response_log_probs.new_zeros(logits_rmpad.size(0)).masked_scatter(
+                    response_positions, response_log_probs)
+                if compute_entropy:
+                    response_entropy = self.compute_entropy_from_logits(response_logits)
+                    entropy_rmpad = response_entropy.new_zeros(logits_rmpad.size(0)).masked_scatter(
+                        response_positions, response_entropy)
 
                 # gather log_prob if sp > 1
                 if self.use_ulysses_sp:
                     # gather and unpad for the ulysses sp
                     log_probs = gather_outpus_and_unpad(log_probs, gather_dim=0, unpad_dim=0, padding_size=pad_size)
-                    entropy_rmpad = gather_outpus_and_unpad(entropy_rmpad,
-                                                            gather_dim=0,
-                                                            unpad_dim=0,
-                                                            padding_size=pad_size)
+                    if compute_entropy:
+                        entropy_rmpad = gather_outpus_and_unpad(entropy_rmpad,
+                                                              gather_dim=0,
+                                                              unpad_dim=0,
+                                                              padding_size=pad_size)
                 # pad back to (bsz, seqlen)
-                full_entropy = pad_input(hidden_states=entropy_rmpad.unsqueeze(-1),
-                                         indices=indices,
-                                         batch=batch_size,
-                                         seqlen=seqlen)
+                if compute_entropy:
+                    full_entropy = pad_input(hidden_states=entropy_rmpad.unsqueeze(-1),
+                                             indices=indices,
+                                             batch=batch_size,
+                                             seqlen=seqlen)
                 full_log_probs = pad_input(hidden_states=log_probs.unsqueeze(-1),
                                            indices=indices,
                                            batch=batch_size,
                                            seqlen=seqlen)
 
                 # only return response part:
-                entropy = full_entropy.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
+                entropy = (full_entropy.squeeze(-1)[:, -response_length - 1:-1]
+                           if compute_entropy else None)  # (bsz, response_length)
                 log_probs = full_log_probs.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
 
             else:  # not using rmpad and no ulysses sp
@@ -146,12 +161,22 @@ class DataParallelPPOActor(BasePPOActor):
                                            use_cache=False)  # prevent model thinks we are generating
                 self.last_forward_precision = self.compute_precision.observe_logits(output.logits,
                                                                                     process_group=precision_group)
-                logits = output.logits
+                logits = output.logits[:, -response_length - 1:-1].float()  # (bsz, response_length, vocab)
                 logits.div_(temperature)
-                logits = logits[:, -response_length - 1:-1]  # (bsz, response_length)
-                log_probs = logprobs_from_logits(logits, micro_batch['responses'])
-                entropy = verl_F.entropy_from_logits(logits)  # (bsz, response_length)
+                log_probs = logprobs_of_labels_v2(logits, micro_batch['responses'])
+                entropy = verl_F.entropy_from_logits(logits) if compute_entropy else None
 
+            if (os.environ.get('SEARCH_G1_PROFILE') == 'common8'
+                    and self.compute_precision.compute_dtype == 'bfloat16'
+                    and not getattr(self, '_actual_precision_logged', False)):
+                observation = dict(self.last_forward_precision,
+                    role='actor' if self.actor_optimizer is not None else 'reference',
+                    rank=torch.distributed.get_rank(),
+                    master_parameter_dtypes=sorted({str(p.dtype) for p in self.actor_module.parameters()}),
+                    selected_log_prob_dtype=str(log_probs.dtype),
+                    actual_forward=True, optimizer_writes=getattr(self, '_optimizer_writes', 0))
+                print('SEARCH_G1_ACTUAL_POLICY_PRECISION=' + json.dumps(observation, sort_keys=True), flush=True)
+                self._actual_precision_logged = True
             return entropy, log_probs
 
     def _optimizer_step(self):
@@ -224,7 +249,8 @@ class DataParallelPPOActor(BasePPOActor):
         log_probs_lst = []
         for micro_batch in micro_batches:
             with torch.no_grad():
-                _, log_probs = self._forward_micro_batch(micro_batch, temperature=temperature)
+                _, log_probs = self._forward_micro_batch(micro_batch, temperature=temperature,
+                                                        compute_entropy=False)
             log_probs_lst.append(log_probs)
         log_probs = torch.concat(log_probs_lst, dim=0)
 
@@ -253,7 +279,8 @@ class DataParallelPPOActor(BasePPOActor):
             with torch.no_grad():
                 for micro in frozen.split(self.config.ppo_micro_batch_size):
                     micro = micro.cuda(device=torch.cuda.current_device())
-                    _, new = self._forward_micro_batch(micro, temperature=self._monitor_temperature)
+                    _, new = self._forward_micro_batch(micro, temperature=self._monitor_temperature,
+                                                      compute_entropy=False)
                     mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
                     valid = mask.bool()
                     delta = torch.where(valid,new,0.).double() - torch.where(valid,micro['old_log_probs'],0.).double()

@@ -1,0 +1,64 @@
+{
+  "checked_unix": 1791440586.967586,
+  "manual_authorizations": [
+    {
+      "original_timestamp": "2026-10-08T06:10:36.836Z",
+      "instruction": "轨迹增加4倍，时间应该是7.5*4，如果没到差不多的级别，那么请你解决问题，也不是做无缘无故的测试，找出问题并解决谢谢。",
+      "scope": "Correct current A800 training performance; no unrelated test repetition"
+    },
+    {
+      "original_timestamp": "2026-10-08T06:14:22.420Z",
+      "instruction": "不管最大差什么的，如果这边的实验算法也是bf16，那你也是bf16，别乱改。",
+      "reference_thread_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
+      "scope": "Align Search-G1 policy compute with Search-E1 BF16; supersedes the prior all-FP32/full-HF-discrepancy admission choice"
+    }
+  ],
+  "old_run_id": "e3aaceec997b4afab30bbce3f9f2afff",
+  "old_base": "/data/shaoshitong/Search-G1-a800-fresh200-ade2ab6b1f654c0f95ff1039a2326b37",
+  "old_source_commit": "96c648d1088ac8dea133c7a5e7fe7afc8fcb11bc",
+  "planned_action": "After changed source review and verified publication, stop only this owned pipeline, preserve its partial first-outer logs, start a separate official-fresh0 BF16 run with new Adam/scheduler and reused genuine initial0 probe artifacts/historical dev512 scalars",
+  "stop_scope": "Only current owned pipeline PID1117834/start_ticks551422807 and its registered SID/UID/PIDbirth children; no foreign process/GPU4/GPU7; not a goal pause",
+  "reason": "Necessary single precision/performance correction for latest explicit human instruction; not an unexplained training restart",
+  "goal_target_complete_outers": 200,
+  "goal_status": "active",
+  "stop_executed": false,
+  "new_run_started": false,
+  "no_inherited_checkpoint_or_optimizer_or_scheduler": true,
+  "no_extra_baseline_or_calibration_generation": true,
+  "source_implementation_review_required": true,
+  "no_additional_cpu_gpu_test_suites": true,
+  "reference_actor_implementation": {
+    "thread_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
+    "thread_title": "Search-E1研究",
+    "source_path": "experiments/search_e1/control/opsd_debug_frozen_runtime_20261008/runtime/upstream/Search-R1/verl/workers/actor/dp_actor.py",
+    "line": 133,
+    "bf16_autocast": true,
+    "source_sha256": "159abe978614d04ae2d4d2b5bf2a361eb4e0d9f1f805ab1c86e7cd7a883a0911"
+  },
+  "independent_review": {
+    "agent": "/root/bf16_scope_review",
+    "fork_turns": "none",
+    "no_blocker": true,
+    "scope_caveat": "Legacy FP32 manifests/0.05 gate remain supported; shared selected-logprob helper and discarded-entropy optimization also apply to newly launched FP32 source, so numerical implementation is not claimed byte-identical to historical code"
+  },
+  "correction": {
+    "profile": "bf16_policy_fp32_master",
+    "hf_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "primary_forward_dtype": "BF16",
+    "actor_master_weights_adam": "FP32",
+    "selected_log_prob_reduction": "FP32",
+    "rope_buffers": "FP32",
+    "gradient_norm": "FP64",
+    "tf32_flags_override": null,
+    "actual_sampling_old_denominator_retained": true,
+    "kl_safety": 0.2,
+    "tail_limit": 0.01,
+    "warmup_complete_outer_steps": 57,
+    "target_complete_outer_steps": 200,
+    "complete_outer_opportunities": 20,
+    "historical_baseline_reused": true,
+    "real_initial_probe_artifacts_reused": true,
+    "new_run_started": false,
+    "speedup_measured": false
+  }
+}

@@ -865,12 +865,16 @@ class RayPPOTrainer(object):
                                 final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
 
                         with torch.no_grad():
-                            output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
-                            if behavior_identity is not None:
-                                freeze_after_probability_gate(final_gen_batch_output, behavior_context, output)
-                                del behavior_context
+                            if behavior_identity is not None and behavior_context['sampling_journal_only']:
+                                freeze_after_probability_gate(final_gen_batch_output, behavior_context, None)
                             else:
-                                final_gen_batch_output = final_gen_batch_output.union(output)
+                                output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
+                                if behavior_identity is not None:
+                                    freeze_after_probability_gate(final_gen_batch_output, behavior_context, output)
+                                else:
+                                    final_gen_batch_output = final_gen_batch_output.union(output)
+                            if behavior_identity is not None:
+                                del behavior_context
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)

@@ -5,6 +5,7 @@ from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
 from reproduction.common8.topology import world_size, actor_global_micro, execution_job_id, monitor_trajectories_per_rank
+from reproduction.common8.precision_contract import bf16_policy, verify as verify_precision_config
 
 CONTRACT_KIND = 'fresh200_warmup57'
 TARGET_UPDATES = 200
@@ -31,6 +32,8 @@ def formal_mathematics(run=None):
     values = copy.deepcopy(FORMAL_MATHEMATICS)
     values.update(world_size=size, ppo_micro_batch_size=2 * size,
                   per_rank_log_prob_micro_batch=32 // size)
+    if run is not None and bf16_policy(run):
+        values.update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     return values
 
 
@@ -93,13 +96,9 @@ def verify_formal_config(document, run, base):
         use_dynamic_bsz=False, ulysses_sequence_parallel_size=1), 'Actor mathematics')
     exact(actor['optim'], dict(lr=1e-6, lr_warmup_steps_ratio=0.0,
         lr_warmup_steps=WARMUP_STEPS, warmup_style='constant'), 'Optimizer mathematics')
-    for part in (actor, reference):
-        exact(part, dict(compute_dtype='float32', allow_tf32=False), 'Actor/reference precision')
-        assert part['fsdp_config']['model_dtype'] == 'fp32'
-    assert all(actor['fsdp_config']['mixed_precision'][name] == 'fp32'
-               for name in ('param_dtype', 'reduce_dtype', 'buffer_dtype'))
+    verify_precision_config(document, run)
     exact(rollout, dict(n=1, n_agent=5, temperature=1.0, top_p=1.0,
-        log_prob_micro_batch_size=32, dtype='float32', tensor_model_parallel_size=1,
+        log_prob_micro_batch_size=32, dtype=run['budget']['rollout_dtype'], tensor_model_parallel_size=1,
         name='vllm', gpu_memory_utilization=run.get('vllm_gpu_memory_utilization',0.4)), 'Rollout mathematics')
     exact(reference, dict(log_prob_micro_batch_size=32), 'Reference micro batch')
     exact(document['algorithm'], dict(adv_estimator='grpo', no_think_rl=False), 'Advantages')

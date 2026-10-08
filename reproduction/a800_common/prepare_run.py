@@ -18,12 +18,14 @@ from reproduction.common8.verify_data import digest,verify
 from reproduction.common8.source_files import runtime_files
 from reproduction.common8.formal_contract import CONTRACT_KIND,TARGET_UPDATES,SAFETY_MODE,assert_formal_run,formal_mathematics
 from reproduction.common8.topology import validate_base
+from reproduction.common8.precision_contract import BF16_PROFILE,SAMPLING_JOURNAL_POLICY
 
 
 def prepare(base,model,official_path,commit,initial_probes_source_base=None):
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
-        slurm_job_id=None,execution_id=uuid.uuid4().hex)
+        slurm_job_id=None,execution_id=uuid.uuid4().hex,precision_profile=BF16_PROFILE,
+        behavior_probability_policy=SAMPLING_JOURNAL_POLICY)
     validate_base(base,identity)
     if initial_probes_source_base is not None:
         initial_probes_source_base=Path(initial_probes_source_base)
@@ -104,7 +106,7 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
     baseline.update(source_artifact_relative=baseline_relative,source_artifact_sha256=digest(baseline_path))
     result.update(pretraining_baseline_policy='reuse_historical',historical_development_baseline=baseline,
         vllm_gpu_memory_utilization=0.25,
-        runtime_memory_adaptation='A800 FP32 inference cache reduced after real pre-update CUDA OOM; sampling and effective training batches unchanged')
+        runtime_memory_adaptation='BF16 policy forward/rollout; FP32 master weights/Adam/RoPE and selected-token probability arithmetic; FP64 gradient norm; TF32 flags not overridden; cache fraction0.25 retained; effective batches unchanged')
     if initial_probes_source_base is not None:
         # Selection metadata only; the pipeline must verify the actual immutable
         # source probe artifacts and receipts before it can adopt them.

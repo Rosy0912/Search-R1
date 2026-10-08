@@ -9,6 +9,7 @@ from pathlib import Path
 from reproduction.common8.batch_contract import check_global
 from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config, formal_mathematics
 from reproduction.common8.topology import world_size, actor_global_micro, monitor_trajectories_per_rank, execution_job_id
+from reproduction.common8.precision_contract import overrides as precision_overrides, verify as verify_precision_config
 
 REPO = Path(__file__).resolve().parents[2]
 RECIPE = REPO / 'reproduction/common8/recipe.json'
@@ -31,9 +32,11 @@ def arguments(base):
     for name in ('reproduction/common8/recipe.json', 'verl/trainer/config/ppo_trainer.yaml'):
         assert sha(REPO / name) == run['source_sha256'][name], 'Recipe changed after run binding'
     values = json.loads(RECIPE.read_text())
+    precision = precision_overrides(run)
     overrides = []
     for value in values:
         key, raw = value.split('=', 1)
+        raw = precision.get(key, raw)
         if key=='actor_rollout_ref.actor.ppo_micro_batch_size':
             raw=str(actor_global_micro(run))
         elif key=='trainer.n_gpus_per_node':
@@ -64,13 +67,7 @@ def resolved(base):
                  config.actor_rollout_ref.actor.ulysses_sequence_parallel_size)
     assert config.data.train_batch_size == 512
     assert config.actor_rollout_ref.actor.grad_clip == 1.0
-    for role in ('actor', 'ref'):
-        part = config.actor_rollout_ref[role]
-        assert part.compute_dtype == 'float32' and part.allow_tf32 is False
-        assert part.fsdp_config.model_dtype == 'fp32'
-    mixed = config.actor_rollout_ref.actor.fsdp_config.mixed_precision
-    assert all(mixed[k] == 'fp32' for k in ('param_dtype', 'reduce_dtype', 'buffer_dtype'))
-    assert config.actor_rollout_ref.rollout.dtype == 'float32'
+    verify_precision_config(OmegaConf.to_container(config, resolve=True), run)
     assert config.trainer.total_training_steps == 201
     assert config.actor_rollout_ref.model.path == run['initial_model']
     assert config.trainer.default_local_dir == run['checkpoint_dir']

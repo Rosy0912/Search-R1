@@ -1,3 +1,27 @@
+# A800 BF16 performance correction (2026-10-08)
+
+The latest user instruction aligns this run with Search-E1 BF16 execution.
+New local A800 manifests explicitly select `bf16_policy_fp32_master`: actor and
+reference CUDA forward use BF16 autocast, actor FSDP compute parameters and
+vLLM generation use BF16, while actor master weights/Adam and Qwen RoPE buffers
+remain FP32. Selected-response log-probability reductions use FP32; global
+L2 clipping still accumulates FP64. Torch TF32 flags are no longer overridden.
+No optimizer clipping, batch, reward, reference weight, or safety limit changes.
+
+`sampling_journal_no_extra_hf_forward` uses the actual generated selected token
+log-probabilities as frozen old. Full actual token/context/mask/sampler/finite
+provenance remains checked, but the additional full-outer independent HF forward
+and maximum discrepancy gate are omitted under the newer explicit instruction.
+Receipts record unmeasured HF discrepancy/parity as null, never as passed.
+Runtime global32 policy KL0.2/tail0.01 and finite gradient/parameter/Adam checks
+remain. The initial original-model probe artifacts and historical dev512 scalar
+baseline are reused with their recorded provenance. A new run starts from the
+official weights and fresh optimizer/scheduler; no in-memory partial old run is
+promoted to a completed outer or inherited. This is a configuration correction,
+not a measured speedup or successful five-step/final acceptance claim.
+
+The FP32 observations below describe historical diagnostic execution only.
+
 # Explicit common8 compute precision
 
 Native3260 tested an isolated FP32 candidate with the original probability

@@ -18,6 +18,7 @@ from reproduction.common8.policy_calibration_plan import canonical_bytes, docume
 from reproduction.common8.verify_data import digest
 from reproduction.common8.topology import (world_size, ranks, execution_job_id,
                                           monitor_trajectories_per_rank, monitor_scope)
+from reproduction.common8.precision_contract import sampling_journal_only
 
 ROLE = 'formal_inline_first_five_candidates'
 METHOD_ROLE = 'formal_inline_training_method'
@@ -100,7 +101,13 @@ def verify_prospective_probability(base, run, probability, receipts):
     assert type(probability['actual_optimizer_writes']) is int and probability['actual_optimizer_writes'] == 0
     assert probability['actual_behavior_probability_accepted'] is False
     assert probability['actual_full_rollout_gate_required'] is True
-    assert probability['trajectory_count'] == 2560 and probability['tolerance'] == 0.05
+    assert probability['trajectory_count'] == 2560
+    if sampling_journal_only(run):
+        assert probability['tolerance'] is None
+        assert probability['hf_recomputation_required'] is False
+        assert probability['behavior_probability_policy'] == run['behavior_probability_policy']
+    else:
+        assert probability['tolerance'] == 0.05
     assert probability['sampling'] == dict(temperature=1.0, top_p=1.0)
     resource = read(owned_path(base, 'logs/local-resource-admission.json'))
     assert resource['accepted'] is True and resource['run_id'] == run['run_id']
@@ -141,8 +148,13 @@ def _prepare_local(base, run, document, method, initial, receipts):
         initial_probe_version=run['initial_probe_version'], resolved_config=document,
         resolved_config_sha256=document_sha256(document), actual_optimizer_writes=0,
         actual_behavior_probability_accepted=False, actual_full_rollout_gate_required=True,
-        trajectory_count=2560, tolerance=0.05, sampling=dict(temperature=1.0, top_p=1.0),
+        trajectory_count=2560, tolerance=None if sampling_journal_only(run) else 0.05,
+        sampling=dict(temperature=1.0, top_p=1.0),
         semantics='prospective bound local inputs only; actual selected vLLM/HF log-probability gate for all2560 trajectories is mandatory before every Adam attempt')
+    if sampling_journal_only(run):
+        probability.update(behavior_probability_policy=run['behavior_probability_policy'],
+            hf_recomputation_required=False,
+            semantics='prospective inputs only; actual sampling journal/context/finite audit covers all2560 trajectories before Adam; no additional full HF forward or maximum-discrepancy admission; runtime policy KL/tail safeguards remain')
     relative = 'logs/prospective-probability-admission.json'
     write_once(base / relative, probability)
     receipts[relative] = digest(base / relative)

@@ -56,8 +56,12 @@ def verify_a800_adopted_initial_probe(base, run, live, archive_path):
             'inherited_policy_run_id','inherited_optimizer_run_id','inherited_scheduler_run_id'))
     assert run['run_id']!=old['run_id'] and run['execution_id']!=old['execution_id']
     for key in ('initial_model','reference_model','initial_model_sha256','model_revision','input_sha256',
-        'calibration_question_ids','budget','retrieval_asset_paths','retrieval_encoder'):
+        'calibration_question_ids','retrieval_asset_paths','retrieval_encoder'):
         assert canonical_bytes(run[key])==canonical_bytes(old[key]), 'Adopted initial0 scientific identity changed: '+key
+    budget_changes=adoption.budget_changes_allowed(run,old)
+    assert receipt.get('allowed_training_precision_budget_changes',{})==budget_changes
+    if adoption._bf16_reuse(run,old):
+        assert receipt['training_precision_source_delta_sha256']==run['source_sha256'][adoption.BF16_SOURCE_DELTA]
     model=Path(run['initial_model']);assert model==model.resolve()==Path('/data/search-g1/assets/qwen2.5-3b-instruct')
     official=adoption.artifacts._owned_file(base/'preparation/official-model-manifest-original.json',base)
     assert adoption.verify_model(model,official)==run['initial_model_sha256']
@@ -78,7 +82,7 @@ def verify_a800_adopted_initial_probe(base, run, live, archive_path):
             before=adoption.artifacts._owned_file(source/'repo'/name,source).read_bytes()
             after=adoption.artifacts._owned_file(base/'repo'/name,base).read_bytes()
             assert adoption._outside_ray_bootstrap(before)==adoption._outside_ray_bootstrap(after)
-        else:assert name in adoption.LOCAL_HELPERS, 'Adopted scientific source changed: '+name
+        else:assert adoption.source_changed_allowed(name,previous,current,run,old), 'Adopted scientific source changed: '+name
         changes.append(name)
     assert receipt['allowed_startup_source_changes']==changes
     original,original_archive,heads,dump,files,job,calibration_log=adoption._original_artifacts(source,old)
