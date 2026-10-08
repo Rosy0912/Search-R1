@@ -1,0 +1,17 @@
+{
+  "adapter_publication": {
+    "bytes": null,
+    "path": "REPLACE_WITH_ACTUAL_PUBLICATION_RECORD_PATH",
+    "sha256": null
+  },
+  "derivation": {
+    "bytes": 41310,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-XFORMERS-V20-DERIVATION-v1.json",
+    "sha256": "245ac01050898ef79d5659633a5a6cfaf4db234850852923bff9affa92f4ad7f"
+  },
+  "human_review_waiver": {
+    "bytes": 1528,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-XFORMERS-V20-HUMAN-WAIVED-STATIC-REVIEW-v1.json",
+    "sha256": "a88d64352352a9bdb84b7e3cfab65e2225f97aa6a12af9ca0250e2cd376d25be"
+  }
+}

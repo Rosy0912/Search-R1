@@ -1,0 +1,6 @@
+{
+  "job": 3338,
+  "observed_utc": "2026-10-08T06:32:33.701993+00:00",
+  "original_instruction": "Stop current3338 and apply XFORMERS workaround; preserve history and add fault-table row",
+  "never_replay": true
+}

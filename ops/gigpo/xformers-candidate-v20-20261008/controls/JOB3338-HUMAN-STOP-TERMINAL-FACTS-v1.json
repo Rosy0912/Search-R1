@@ -1,0 +1,392 @@
+{
+  "actual_completed_outer_updates": 1,
+  "actual_partial_policy_last_by_rank": [
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-0.jsonl",
+      "phase": "after",
+      "rank": 0,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-1.jsonl",
+      "phase": "after",
+      "rank": 1,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-2.jsonl",
+      "phase": "after",
+      "rank": 2,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-3.jsonl",
+      "phase": "after",
+      "rank": 3,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-4.jsonl",
+      "phase": "after",
+      "rank": 4,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-5.jsonl",
+      "phase": "after",
+      "rank": 5,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-6.jsonl",
+      "phase": "after",
+      "rank": 6,
+      "rejection_reason": null
+    },
+    {
+      "actual_optimizer_writes": 20,
+      "allowed": true,
+      "attempt_id": 1,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/policy-safety/rank-7.jsonl",
+      "phase": "after",
+      "rank": 7,
+      "rejection_reason": null
+    }
+  ],
+  "actual_slurm_raw": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "JobId=3338 JobName=gigpo-e1-fresh200-live UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898728 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:18:02 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-08T14:14:54 EligibleTime=2026-10-08T14:14:54 AccrueTime=2026-10-08T14:14:54 StartTime=2026-10-08T14:14:54 EndTime=2026-10-08T14:32:56 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T14:14:54 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1977564 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=128 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=128 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1/calibration_v1.sbatch /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env WorkDir=/root StdErr=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3338.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3338.log Power= TresPerNode=gres:gpu:h100:8 \n"
+  },
+  "actual_successful_adam_writes_per_rank": 20,
+  "binding_sha256": "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844",
+  "checkpoint_directories": [],
+  "classification": "HUMAN_STOP_TO_APPLY_XFORMERS_WORKAROUND",
+  "cleanup_residual_states": {},
+  "cuda_failure_observed": false,
+  "exact_resume_claimed": false,
+  "final_gpu": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "fixed_original_main_worker_logs": [
+    {
+      "bytes": 954,
+      "dev": 64768,
+      "inode": 176232284,
+      "mtime": 1791441142.224841,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/ray/session_2026-10-08_14-17-56_161905_1980820/logs/worker-09209c70e4aa88a32f52878d692d2b9ce19234e58bcb01377c390a3f-02000000-1984437.out",
+      "terminal_sha256": "7016076612298a066374154d115500f1fdae9e1debbb8924f7ec75d15c77f145"
+    }
+  ],
+  "historical_updates_stitched": false,
+  "human_instruction_observed_utc": "2026-10-08T06:30:55Z",
+  "human_scope": "Stop own3338 only; apply XFORMERS and continue active200 goal",
+  "job": 3338,
+  "latest_human_instruction": "那你可以直接停掉了，既然100%报错，那不如直接按照目标修复来。。。然后写进本地这个：/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/gigpo/gigpo-e1-instruct200/FAILURES-AND-FIXES-20261008.md （增加表格一行）",
+  "node": "h100-8",
+  "observed_utc": "2026-10-08T06:35:55.400312+00:00",
+  "original_cgroup_observation": {
+    "exists": false,
+    "path": "/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3338/step_0"
+  },
+  "original_observation": {
+    "bytes": 314566,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3338-ACTUAL-STATUS-v11-human-stop-terminal.json",
+    "sha256": "52b3af675fd683a32f3ae7891054369458819eae13747c20015ddf38db82e76a"
+  },
+  "original_pid_observation": [
+    {
+      "exists": false,
+      "pid": 1984437
+    },
+    {
+      "exists": false,
+      "pid": 1984827
+    },
+    {
+      "exists": false,
+      "pid": 1985174
+    },
+    {
+      "exists": false,
+      "pid": 1985175
+    },
+    {
+      "exists": false,
+      "pid": 1985176
+    },
+    {
+      "exists": false,
+      "pid": 1985177
+    },
+    {
+      "exists": false,
+      "pid": 1985178
+    },
+    {
+      "exists": false,
+      "pid": 1985179
+    },
+    {
+      "exists": false,
+      "pid": 1985180
+    }
+  ],
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460",
+  "run_result_status": "FAILED",
+  "schema": "ACTUAL_ORIGINAL_JOB_TERMINAL_FACTS_V1",
+  "signal_receipt": {
+    "checkpoint_directories": [],
+    "classification": "HUMAN_STOP_TO_APPLY_XFORMERS_WORKAROUND",
+    "driver": {
+      "cgroup": "1:freezer:/slurm_h100-8/uid_0/job_3338/step_0\n0::/system.slice/slurmd.service\n",
+      "command": [
+        "ray::main_task"
+      ],
+      "env": {
+        "GIGPO_POLICY_NATIVE_BINDING_SHA256": "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844",
+        "SEARCH_R1_BASELINE_COMMIT": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+        "SEARCH_R1_BASELINE_OUTPUT": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460"
+      },
+      "pid": 1984437,
+      "ppid": 1981132,
+      "start_ticks": 2238497792
+    },
+    "human_authorized": true,
+    "human_observed_utc": "2026-10-08T06:32:33.701993+00:00",
+    "job": 3338,
+    "launcher": {
+      "cgroup": "1:freezer:/slurm_h100-8/uid_0/job_3338/step_0\n0::/system.slice/slurmd.service\n",
+      "command": [
+        "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env/bin/python",
+        "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1/calibration_run_v1.py",
+        "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json",
+        "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844"
+      ],
+      "env": {},
+      "pid": 1977665,
+      "ppid": 1977659,
+      "start_ticks": 2238478209
+    },
+    "progress_before_signal": {
+      "actual_adam_total": 20,
+      "actual_attempt_ledger": {
+        "active_attempt": null,
+        "actual_adam_total": 20,
+        "attempts": 1,
+        "completed_outer_updates": 1,
+        "consumed_training_questions": 512,
+        "epoch_ends": [],
+        "gradient_micro_batches": 160,
+        "history": [
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_adam_total_before": 0,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "config_epoch": 0,
+            "config_sha256": "93243815d3f5d73c0384c19bf7ea9c9e7abfeb5dd83ac4d0cf64a39bc42ce9bf",
+            "counted_complete": true,
+            "driver_pid": 1984437,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "rank_receipts": [
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1984827,
+                "rank": 0,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985174,
+                "rank": 1,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985175,
+                "rank": 2,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985176,
+                "rank": 3,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985177,
+                "rank": 4,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985178,
+                "rank": 5,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985179,
+                "rank": 6,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1985180,
+                "rank": 7,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              }
+            ],
+            "safe_to_continue": true,
+            "sampler_position": {
+              "cursor": 512,
+              "epoch": 0,
+              "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+              "size": 169028
+            },
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          }
+        ],
+        "schema": "FRESH200_OPPORTUNITIES_AND_ACTUAL_WRITES_V1",
+        "skipped_attempts": 0,
+        "skipped_opportunities": 0,
+        "successful_adam_writes_abandoned_attempts": 0,
+        "successful_adam_writes_completed_outers": 20
+      },
+      "completed_outer_updates": 1,
+      "config_epoch": 0,
+      "config_sha256": "93243815d3f5d73c0384c19bf7ea9c9e7abfeb5dd83ac4d0cf64a39bc42ce9bf",
+      "job_id": "3338",
+      "last_actual_attempt": {
+        "attempt_id": 1,
+        "counted_complete": true,
+        "driver_receipt": {
+          "bytes": 1288832898,
+          "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460/audit/partial-updates/attempt_000001/driver.pt",
+          "sha256": "97c025524ec3234476030fc659d0f0523b6ea8f9b954a0ac01f54958a6d7ec83"
+        }
+      },
+      "scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_LIVE_V1",
+      "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+    },
+    "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3338-1791440187570483460",
+    "scheduler_before": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "JobId=3338 JobName=gigpo-e1-fresh200-live UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898728 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:17:48 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-08T14:14:54 EligibleTime=2026-10-08T14:14:54 AccrueTime=2026-10-08T14:14:54 StartTime=2026-10-08T14:14:54 EndTime=2026-10-09T14:14:54 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T14:14:54 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1977564 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=128 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=128 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1/calibration_v1.sbatch /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env WorkDir=/root StdErr=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3338.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3338.log Power= TresPerNode=gres:gpu:h100:8 \n"
+    },
+    "signal": "SIGTERM",
+    "signal_sent": true,
+    "status": "SIGNALLED_OWN_LAUNCHER_TERMINAL_NOT_YET_CONFIRMED"
+  },
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0"
+}

@@ -1,0 +1,199 @@
+--- v19/deploy_submit_cudasynchronous3337_v19_once_v1.py
++++ v20/deploy_submit_xformers3338_v20_once_v1.py
+@@ -1,4 +1,4 @@
+-"""Fresh v19 single-use synchronous CUDA execution; never signals or resumes a failed job."""
++"""Fresh v20 single-use XFORMERS execution; never signals, resumes or stitches the human-stopped parent."""
+ import base64
+ import hashlib
+ import json
+@@ -15,12 +15,12 @@
+ BASE = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+ OUT = BASE / 'outputs/gigpo-e1-instruct200'
+ ROOT = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006')
+-RUN = ROOT / 'runs/gigpo-e1-fresh200-live-job3337-1791437756282298127'
+-STATE = ROOT / 'logs/fresh200-cudasynchronous-repair3337-once-v1'
+-OLD = ROOT / 'tools/fresh200-continuation-v18-jsonmetadata1'
+-NEW = ROOT / 'tools/fresh200-continuation-v19-cudasynchronous1'
+-PARENT_BINDING = ROOT / 'logs/fresh200-jsonmetadata-repair3336-once-v1/BINDING.json'
+-PARENT_SHA = '006c698e003aea7c629886e9bd1ab7af9628f2fc982508e1aa706e619ded8fa7'
++RUN = ROOT / 'runs/gigpo-e1-fresh200-live-job3338-1791440187570483460'
++STATE = ROOT / 'logs/fresh200-xformers-repair3338-once-v1'
++OLD = ROOT / 'tools/fresh200-continuation-v19-cudasynchronous1'
++NEW = ROOT / 'tools/fresh200-continuation-v20-xformers1'
++PARENT_BINDING = ROOT / 'logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json'
++PARENT_SHA = 'd73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844'
+ SOURCE = 'ebe91bfebd56c3bd445219dcd94342d815f899f0'
+ NEW_REPO = ROOT / 'repo-v17-nonblocking1-ebe91bfe'
+ PYTHON = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env/bin/python')
+@@ -84,7 +84,7 @@
+     derivation = json.loads(checked(gate['derivation']['path'], gate['derivation']))
+     require(derivation['parent_binding']['sha256'] == PARENT_SHA
+             and derivation['source_commit'] == SOURCE and derivation['namespace'] == str(STATE),
+-            'Wrong exact v19 derivation')
++            'Wrong exact v20 derivation')
+     checked(derivation['child_binding']['local_path'], derivation['child_binding'])
+     required = {Path(__file__).name: record(Path(__file__)),
+         Path(gate['derivation']['path']).name: gate['derivation'],
+@@ -107,7 +107,7 @@
+ def transport(payload):
+     """One local invocation; all SSH layers retain the accepted18 route and host checks."""
+     action = 'submit'
+-    sources = {'deploy_submit_cudasynchronous3337_v19_once_v1': Path(__file__).read_bytes()}
++    sources = {'deploy_submit_xformers3338_v20_once_v1': Path(__file__).read_bytes()}
+     require(len(packed(payload)) < 500000, 'Transport only the reviewed small delta frame')
+     encoded = {name: dict(b64=base64.b64encode(zlib.compress(raw)).decode(), sha256=sha(raw))
+                for name, raw in sources.items()}
+@@ -121,7 +121,7 @@
+ p=json.loads(sys.stdin.buffer.read())
+ sys.modules[TARGET].remote(p)
+ """.replace('SOURCES', repr(json.dumps(encoded))).replace('TARGET', repr(
+-        'deploy_submit_cudasynchronous3337_v19_once_v1'))
++        'deploy_submit_xformers3338_v20_once_v1'))
+     worker = shlex.join(['env', '-u', 'LD_LIBRARY_PATH', 'CUDA_VISIBLE_DEVICES=',
+         'PYTHONDONTWRITEBYTECODE=1', 'OMP_NUM_THREADS=2', 'MKL_NUM_THREADS=2', str(PYTHON), '-B', '-c', receiver])
+     management = """import json,shlex,subprocess,sys
+@@ -136,7 +136,7 @@
+ r=subprocess.run(args+[user+'@'+ip,WORKER],input=sys.stdin.buffer.read(),capture_output=True,timeout=220)
+ sys.stdout.buffer.write(r.stdout);sys.stderr.buffer.write(r.stderr);raise SystemExit(r.returncode)
+ """.replace('WORKER', repr(worker))
+-    intent = OUT / ('FRESH200-CUDASYNC-V19-REPAIR3337-' + action.upper() + '-LOCAL-INTENT-v1.json')
++    intent = OUT / ('FRESH200-XFORMERS-V20-REPAIR3338-' + action.upper() + '-LOCAL-INTENT-v1.json')
+     once(intent, packed(dict(status='ONE_LOCAL_INVOCATION_NEVER_REPLAY', action=action,
+         payload_sha256=sha(packed(payload)), source_sha256={k: v['sha256'] for k, v in encoded.items()})))
+     outer = ['env', '-u', 'LD_LIBRARY_PATH', '/usr/bin/ssh', '-T', '-o', 'BatchMode=yes',
+@@ -151,7 +151,7 @@
+     except BaseException as error:
+         observation = dict(status='UNCERTAIN_NEVER_REPLAY', action=action,
+                            error_type=type(error).__name__, error=str(error))
+-    once(OUT / ('FRESH200-CUDASYNC-V19-REPAIR3337-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
++    once(OUT / ('FRESH200-XFORMERS-V20-REPAIR3338-' + action.upper() + '-TRANSPORT-v1.json'), packed(observation))
+     print(json.dumps(observation))
+     require(observation.get('returncode') == 0, 'Read remote intent/facts; NEVER REPLAY after an uncertain invocation')
+ 
+@@ -168,46 +168,52 @@
+ PATCH_KEYS = {'helpers', 'runtime_files', 'runtime_version', 'runtime_variant',
+     'runtime_relative_files_digest', 'runtime_canonical_files_digest', 'declared_primary_files_digest',
+     'owned_submit_namespace', 'actual_runtime_static_manifest', 'cuda_execution_review_policy',
+-    'binding_derivation', 'cuda_synchronous_repair_parent', 'cuda_launch_blocking', 'cuda_execution_scope'}
++    'binding_derivation', 'xformers_repair_parent', 'cuda_launch_blocking', 'cuda_execution_scope', 'vllm_attention_backend'}
+ 
+ 
+ def actual_terminal(row):
+-    require(Path(row['path']) == STATE / 'JOB3337-TERMINAL-FACTS-v1.json', 'Wrong exact failed-parent facts')
++    require(Path(row['path']) == STATE / 'JOB3338-HUMAN-STOP-TERMINAL-FACTS-v1.json', 'Wrong exact human-stopped-parent facts')
+     facts = json.loads(checked(row['path'], row))
+     require(facts['schema'] == 'ACTUAL_ORIGINAL_JOB_TERMINAL_FACTS_V1'
+-        and facts['job'] == 3337 and facts['node'] == 'h100-8' and facts['run'] == str(RUN)
++        and facts['job'] == 3338 and facts['node'] == 'h100-8' and facts['run'] == str(RUN)
++        and facts['source_commit'] == SOURCE and facts['binding_sha256'] == PARENT_SHA
++        and facts['classification'] == 'HUMAN_STOP_TO_APPLY_XFORMERS_WORKAROUND'
++        and facts['cuda_failure_observed'] is False and facts['signal_receipt']['signal_sent'] is True
++        and facts['signal_receipt']['human_authorized'] is True
+         and facts['run_result_status'] == 'FAILED' and facts['cleanup_residual_states'] == {}
+-        and facts['actual_completed_outer_updates'] == 2
+-        and facts['actual_successful_adam_writes_per_rank'] == 40
+-        and facts['checkpoint_directories'] == [] and facts['exact_resume_claimed'] is False,
+-        'Missing truthful two-completed-update failed-parent reconciliation')
++        and facts['actual_completed_outer_updates'] == 1
++        and facts['actual_successful_adam_writes_per_rank'] == 20
++        and facts['checkpoint_directories'] == [] and facts['exact_resume_claimed'] is False
++        and facts['historical_updates_stitched'] is False
++        and facts['final_gpu']['returncode'] == 0 and not facts['final_gpu']['stdout'].strip(),
++        'Missing truthful human-stop one-completed-update reconciliation')
++    historical = facts['actual_partial_policy_last_by_rank']
++    require(len(historical) == 8 and {r['rank'] for r in historical} == set(range(8))
++        and all(r['phase'] == 'after' and r['attempt_id'] == 1 and r['actual_optimizer_writes'] == 20
++            and r['allowed'] is True and r['rejection_reason'] is None for r in historical),
++        'Missing actual eight-rank historical twenty-write receipts')
+     pids = facts['original_pid_observation']; cgroup = facts['original_cgroup_observation']
+     require(len(pids) == 9 and len({r['pid'] for r in pids}) == 9
+         and all(r['exists'] is False and not (Path('/proc') / str(r['pid'])).exists() for r in pids)
+-        and cgroup['path'] == '/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3337/step_0'
++        and cgroup['path'] == '/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3338/step_0'
+         and cgroup['exists'] is False and not Path(cgroup['path']).exists(), 'Original own PID/cgroup remains or PID reused')
+     result_path = RUN / 'run-result.json'
+     require(result_path.is_file() and not result_path.is_symlink(), 'Missing original run-result')
+     terminal = json.loads(result_path.read_bytes())
+-    require(terminal['status'] == 'FAILED' and terminal['job_id'] == '3337'
++    require(terminal['status'] == 'FAILED' and terminal['job_id'] == '3338'
+         and terminal['source_commit'] == SOURCE and terminal['binding_sha256'] == PARENT_SHA
+-        and terminal['retained_training_updates_contributed'] == 2
++        and terminal['retained_training_updates_contributed'] == 1
++        and terminal['error'] == 'Owned calibration executor interrupted by signal 15'
+         and terminal['cleanup_residual_states'] == {} and terminal['final_gpu']['processes'] == [],
+-        'Original failed run-result or actual cleanup differs')
+-    attempt_path = RUN / 'audit/partial-updates/attempt_000002/attempt-result.json'
+-    require(attempt_path.is_file() and not attempt_path.is_symlink(), 'Missing actual historical second-attempt receipt')
+-    actual = json.loads(attempt_path.read_bytes())['attempt']
+-    require(actual['counted_complete'] is True and actual['attempt_id'] == 2 and actual['completed_before'] == 1
+-        and actual['actual_successful_adam_writes'] == 20 and actual['actual_adam_total'] == 40
+-        and len(actual['rank_receipts']) == 8 and {r['rank'] for r in actual['rank_receipts']} == set(range(8))
+-        and all(r['counted_complete'] is True and r['actual_successful_adam_writes'] == 20
+-            and r['actual_adam_total'] == 40 and r['scheduler_step'] == 2
+-            and r['skipped_opportunities'] == 0 for r in actual['rank_receipts']),
+-        'Historical actual second-update eight-rank receipts differ')
++        'Original human-stop run-result or actual cleanup differs; FAILED is not a CUDA failure claim')
++    checkpoint_root = RUN / 'checkpoints'
++    require(not checkpoint_root.is_symlink() and (not checkpoint_root.exists()
++        or (checkpoint_root.is_dir() and not any(checkpoint_root.iterdir()))),
++        'Parent full checkpoint state changed; never stitch or assume exact resume')
+     saved = facts['actual_slurm_raw']
+-    require(saved['returncode'] == 0 and re.search(r'\bJobId=3337\b', saved['stdout'])
++    require(saved['returncode'] == 0 and re.search(r'\bJobId=3338\b', saved['stdout'])
+         and re.search(r'\bJobState=FAILED\b', saved['stdout']) and re.search(r'\bExitCode=1:0\b', saved['stdout'])
+-        and PARENT_SHA in saved['stdout'], 'Missing preserved actual Slurm failure; expired live history is not zero')
++        and PARENT_SHA in saved['stdout'], 'Missing preserved actual human-stop Slurm terminal evidence')
+     gpu = query(['nvidia-smi', '--query-compute-apps=pid,process_name,used_gpu_memory', '--format=csv,noheader'])
+     require(not gpu['stdout'].strip(), 'GPU compute remains; do not affect other jobs')
+     queue = query(['squeue', '-h', '--all', '-o', '%i|%j|%T|%R'])
+@@ -222,7 +228,7 @@
+     require(socket.gethostname().split('.')[0] == 'h100-8' and os.environ.get('CUDA_VISIBLE_DEVICES') == '',
+         'Wrong CPU-only once-submit receiver')
+     require(not STATE.exists() and not STATE.is_symlink() and STATE.parent.resolve() == STATE.parent,
+-        'New v19 intent namespace already exists; never replay')
++        'New v20 intent namespace already exists; never replay')
+     STATE.mkdir()
+     once(STATE / 'SUBMIT-INTENT.json', packed(dict(status='CLAIMED_NEVER_REPLAY',
+         binding=payload['binding'], parent_terminal_facts=payload['parent_terminal_facts'],
+@@ -243,13 +249,13 @@
+     require(parent['code_commit'] == SOURCE and parent['helpers'] == str(OLD)
+         and len(parent['files']) == 39961 and len(parent['runtime_files']) == 44,
+         'Wrong immutable complete parent binding')
+-    require(set(payload['patch']) == PATCH_KEYS, 'Unexpected v19 binding mutation')
++    require(set(payload['patch']) == PATCH_KEYS, 'Unexpected v20 binding mutation')
+     child = dict(parent); child.update(payload['patch'])
+     new_rows = {r['path']: r for r in child['runtime_files']}
+-    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 19
++    require(len(new_rows) == 44 and child['helpers'] == str(NEW) and child['runtime_version'] == 20
+         and child['owned_submit_namespace'] == str(STATE)
+-        and child['cuda_synchronous_repair_parent']['terminal_facts'] == payload['parent_terminal_facts'],
+-        'Wrong isolated v19 runtime/facts')
++        and child['xformers_repair_parent']['terminal_facts'] == payload['parent_terminal_facts'],
++        'Wrong isolated v20 runtime/facts')
+     replaced = 0; rows = []
+     for row in parent['files']:
+         if row['path'].startswith(str(OLD) + '/'):
+@@ -265,8 +271,9 @@
+         and child['human_nonblocking_diagnostics'] is True
+         and child['external_diagnostic_review_blocks_training'] is False
+         and child['allow_bf16_reduced_precision_reduction'] is False
+-        and child['cuda_launch_blocking'] == '1'
+-        and child['cuda_execution_scope'] == 'CUDA_SYNCHRONOUS_FORMAL_TRAINING_UNPROVEN_REPAIR_V1'
++        and child['cuda_launch_blocking'] == '0'
++        and child['vllm_attention_backend'] == 'XFORMERS'
++        and child['cuda_execution_scope'] == 'XFORMERS_ASYNCHRONOUS_FORMAL_TRAINING_UNPROVEN_WORKAROUND_V1'
+         and child['cuda_execution_review_policy']['status'] == 'HUMAN_WAIVED_STATIC_REVIEW'
+         and child['cuda_execution_review_policy']['observed_at_utc'] == waiver['observed_at_utc']
+         and child['initial_baseline_policy'] == parent['initial_baseline_policy'], 'Scientific/source/nonblocking policy changed')
+@@ -307,8 +314,9 @@
+         receipt = dict(status='SUBMITTED_EXACTLY_ONCE' if result.returncode == 0 and job.isdecimal() else 'UNCERTAIN_NEVER_REPLAY',
+             command=command, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+             job_id=job if result.returncode == 0 and job.isdecimal() else None, binding=payload['binding'],
+-            parent_terminal_facts=payload['parent_terminal_facts'], historical_parent_completed_outer=2,
+-            historical_parent_adam_writes_per_rank=40, historical_updates_stitched=False,
++            parent_terminal_facts=payload['parent_terminal_facts'], historical_parent_completed_outer=1,
++            historical_parent_adam_writes_per_rank=20, historical_updates_stitched=False, parent_classification=facts['classification'],
++            parent_stop_was_human_authorized=True, parent_cuda_failure_observed=False,
+             new_fresh_initial_outer=0, new_fresh_initial_adam=0, signal_sent=False,
+             training_success_not_yet_observed=True, extra_validation_job=False,
+             queued_submission_is_not_gpu_admission=True, shared_storage=storage)

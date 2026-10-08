@@ -1,0 +1,24 @@
+{
+  "adapter_sha256": {
+    "deploy_submit_xformers3338_v20_once_v1.py": "081cebb3997fbf18cf67bd0ac64e930a9425cdf3cd15e9c1d68fe4723641022d"
+  },
+  "binding_sha256": "5f65aa458f3607f546608f38368da48321874f33b526fcc15e3764271d48199c",
+  "derivation_sha256": "245ac01050898ef79d5659633a5a6cfaf4db234850852923bff9affa92f4ad7f",
+  "human_instruction": "\u5ba1\u67e5\u5565\uff0c\u4f60\u76f4\u63a5\u8dd1\u5427\u3002\u3002\u522b\u6d6a\u8d39\u8d44\u6e90\uff0c\u4f60\u592a\u6162\u4e86",
+  "namespace": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-xformers-repair3338-once-v1",
+  "new_static_review_pass": false,
+  "no_extra_tests": true,
+  "no_initial_baseline": true,
+  "observation_time_is_recorded_receipt_not_invented_human_send_time": true,
+  "observed_at_utc": "2026-10-08T06:37:10Z",
+  "publication_and_actual_safety_gates_retained": true,
+  "runtime_changed_sha256": {
+    "calibration_driver_v1.py": "f9b105b162b7976a26f5a679774a7cc8810a7caa07111a0614226d015af5c749",
+    "calibration_run_v1.py": "354f5574a67d2e0d52a86745bf77ad4fbc1cbb66d43477cb60137bc9abfdfdd8",
+    "calibration_worker_v1.py": "4ac711be8f1b3a0a5f24aecf28909083fdcb8b16964de7c8c90876798c4b1836"
+  },
+  "runtime_manifest_sha256": "9e7a03217e81aa2baa546b8493dc9f7b205feb8035faf273889625d3eaa821b6",
+  "scope": "Only this isolated v20 XFORMERS next official fresh200 execution; no independent static PASS claimed",
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "status": "HUMAN_WAIVED_STATIC_REVIEW"
+}

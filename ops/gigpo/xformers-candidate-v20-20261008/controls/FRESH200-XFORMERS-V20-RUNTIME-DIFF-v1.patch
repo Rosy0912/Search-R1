@@ -1,0 +1,190 @@
+--- runtime19/calibration_driver_v1.py
++++ runtime20/calibration_driver_v1.py
+@@ -7,8 +7,9 @@
+ import copy
+ import json
+ import os
+-if os.environ.get('CUDA_LAUNCH_BLOCKING') != '1':
+-    raise RuntimeError('Synchronous CUDA policy must be inherited before driver imports')
++if (os.environ.get('CUDA_LAUNCH_BLOCKING') != '0'
++        or os.environ.get('VLLM_ATTENTION_BACKEND') != 'XFORMERS'):
++    raise RuntimeError('XFORMERS/asynchronous CUDA policy must be inherited before driver imports')
+ import sys
+ import time
+ from pathlib import Path
+@@ -42,16 +43,18 @@
+     return dict(state, complete_state_sha256=complete_state_sha256, metadata_only=True)
+ 
+ 
+-def validate_actual_flash_backend(rows, binding):
++def validate_actual_xformers_backend(rows, binding):
+     """An environment request or missing fallback log is insufficient for admission."""
+     require(len(rows) == 8 and {row['rank'] for row in rows} == set(range(8))
+             and len({row['pid'] for row in rows}) == 8, 'Missing actual eight-worker backend identity')
+     for row in rows:
+         validate_bf16_accumulation_identity(row, role='actor_rollout')
+-        require(row['cuda_launch_blocking']['value'] == '1'
++        require(row['cuda_launch_blocking']['value'] == '0'
++                and row['cuda_launch_blocking']['vllm_attention_backend'] == 'XFORMERS'
++                and row['cuda_launch_blocking']['backend_present_before_torch_import'] is True
+                 and row['cuda_launch_blocking']['present_before_torch_import'] is True
+                 and row['cuda_launch_blocking']['constructor_pid'] == row['pid'],
+-                'Actual vLLM process lost its pre-initialization synchronous CUDA policy')
++                'Actual vLLM process lost its pre-initialization XFORMERS/asynchronous policy')
+         require(row['executor_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.spmd_gpu_executor.SPMDGPUExecutor'
+                 and row['executor_worker_class'] == 'verl.third_party.vllm.vllm_v_0_6_3.worker.Worker',
+                 'BF16 process readback requires the actual in-process SPMD vLLM worker')
+@@ -59,25 +62,25 @@
+                 and row['source_commit'] == binding['code_commit']
+                 and row['binding_sha256'] == os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
+                 'Backend evidence identity differs')
+-        require(row['requested_backend'] == 'FLASH_ATTN'
+-                and row['runner_backend_class'] == 'vllm.attention.backends.flash_attn.FlashAttentionBackend'
+-                and row['runner_backend_name'] == 'flash-attn', 'Actual vLLM backend fell back or differs')
++        require(row['requested_backend'] == binding['vllm_attention_backend'] == 'XFORMERS'
++                and row['runner_backend_class'] == 'vllm.attention.backends.xformers.XFormersBackend'
++                and row['runner_backend_name'] == 'xformers', 'Actual vLLM backend fell back or differs')
+         require(row['model_dtype'] == 'torch.bfloat16' and row['cache_dtype'] == 'auto'
+                 and row['block_size'] == 16 and row['model_sliding_window'] is None,
+-                'Actual Flash dtype/cache/block/sliding configuration differs')
++                'Actual XFORMERS dtype/cache/block/sliding configuration differs')
+         layers = row['attention_layers']
+         require(len(layers) == 36 and len({layer['name'] for layer in layers}) == 36,
+                 'Missing actual full-model attention implementation metadata')
+         for layer in layers:
+-            require(layer['implementation_class'] == 'vllm.attention.backends.flash_attn.FlashAttentionImpl'
++            require(layer['implementation_class'] == 'vllm.attention.backends.xformers.XFormersImpl'
+                     and layer['head_size'] == 128 and layer['num_heads'] == 16
+-                    and layer['num_kv_heads'] == 2 and layer['sliding_window'] == [-1, -1],
++                    and layer['num_kv_heads'] == 2 and layer['sliding_window'] is None,
+                     'Actual attention implementation differs or silently falls back')
+         require(row['observation_forward_calls'] == 0 and row['observation_tensor_value_reads'] == 0
+                 and row['actual_vllm_runner_positions_observed'] is False
+                 and row['probability_accepted'] is False, 'Backend metadata scope overstated')
+     return dict(status='PASS_ACTUAL_METADATA_ONLY_NOT_PROBABILITY_PARITY',
+-                expected_backend='FLASH_ATTN', rank_count=8, layers_per_rank=36,
++                expected_backend='XFORMERS', rank_count=8, layers_per_rank=36,
+                 actual_observations=rows, probability_accepted=False)
+ 
+ 
+@@ -92,9 +95,11 @@
+         for row in rows:
+             validate_bf16_accumulation_identity(row, role=role)
+             policy = row['cuda_launch_blocking']
+-            require(policy['value'] == '1' and policy['present_before_torch_import'] is True
++            require(policy['value'] == '0' and policy['present_before_torch_import'] is True
++                    and policy['vllm_attention_backend'] == 'XFORMERS'
++                    and policy['backend_present_before_torch_import'] is True
+                     and policy['constructor_pid'] == row['pid'] and policy['worker_role'] == role,
+-                    'Actual role lost the pre-initialization synchronous CUDA policy')
++                    'Actual role lost the pre-initialization XFORMERS/asynchronous policy')
+         identities[role] = sorted(rows, key=lambda row: row['rank'])
+     previous = getattr(trainer, '_calibration_bf16_accumulation', None)
+     require(previous is None or previous == identities,
+@@ -102,7 +107,8 @@
+     trainer._calibration_bf16_accumulation = copy.deepcopy(identities)
+     json_save(run / ('actual-bf16-accumulation-' + stage + '.json'), dict(
+         status='ACTUAL_ALL8_BOTH_ROLES_FALSE', stage=stage, actual_roles=identities,
+-        cuda_launch_blocking_status='ACTUAL_ALL8_BOTH_ROLES_1_BEFORE_INITIALIZATION',
++        cuda_launch_blocking_status='ACTUAL_ALL8_BOTH_ROLES_0_BEFORE_INITIALIZATION',
++        vllm_attention_backend_status='ACTUAL_ALL8_BOTH_ROLES_XFORMERS_BEFORE_INITIALIZATION',
+         live_flag_reset_permitted=False, probability_accepted=False))
+     return identities
+ 
+@@ -771,15 +777,16 @@
+ 
+ def main_task(config, binding):
+     run = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])
+-    require(binding['cuda_launch_blocking'] == os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
+-            'Ray task synchronous CUDA environment differs')
+-    require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Ray backend environment differs')
++    require(binding['cuda_launch_blocking'] == os.environ.get('CUDA_LAUNCH_BLOCKING') == '0',
++            'Ray task asynchronous CUDA environment differs')
++    require(binding['vllm_attention_backend'] == os.environ.get('VLLM_ATTENTION_BACKEND') == 'XFORMERS',
++            'Ray backend environment differs')
+     trainer = create_trainer(config)
+     observe_bf16_accumulation(trainer, run, 'before-official-zero-and-first-batch')
+     backend_rows = trainer.actor_rollout_wg.calibration_backend_identity()
+     json_save(run / 'actual-vllm-backend-identity.json', dict(status='OBSERVED_UNREVIEWED',
+         actual_observations=backend_rows, probability_accepted=False))
+-    json_save(run / 'actual-vllm-backend-identity.json', validate_actual_flash_backend(backend_rows, binding))
++    json_save(run / 'actual-vllm-backend-identity.json', validate_actual_xformers_backend(backend_rows, binding))
+     from search_r1.baselines.holdout import _validate_prebuilt
+     trainer.instruct_data_identity = _validate_prebuilt(config)
+     fsdp_initialization = trainer.actor_rollout_wg.calibration_initialize_actor_fsdp_before_zero()
+@@ -830,8 +837,8 @@
+     env = {key: value for key, value in os.environ.items() if key.startswith(('SEARCH_R1_BASELINE_', 'GIGPO_POLICY_'))}
+     env.update(PYTHONPATH=os.environ['PYTHONPATH'], CPATH=os.environ['CPATH'],
+                SEARCH_R1_PYTHON_HEADER_CPATH=os.environ['SEARCH_R1_PYTHON_HEADER_CPATH'],
+-               VLLM_ATTENTION_BACKEND='FLASH_ATTN', CUDA_LAUNCH_BLOCKING='1')
+-    require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Driver backend environment differs')
++               VLLM_ATTENTION_BACKEND='XFORMERS', CUDA_LAUNCH_BLOCKING='0')
++    require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'XFORMERS', 'Driver backend environment differs')
+     ray.init(address=os.environ['RAY_ADDRESS'], runtime_env={'env_vars': env})
+     try:
+         value = ray.get(ray.remote(num_cpus=1)(main_task).options(runtime_env={'env_vars': env}).remote(config, binding))
+--- runtime19/calibration_run_v1.py
++++ runtime20/calibration_run_v1.py
+@@ -2,7 +2,8 @@
+ import fcntl
+ import json
+ import os
+-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'  # New process only, before all owned CUDA subprocesses.
++os.environ['CUDA_LAUNCH_BLOCKING'] = '0'  # New process only: restore normal asynchronous CUDA.
++os.environ['VLLM_ATTENTION_BACKEND'] = 'XFORMERS'  # Before Ray/Torch and all owned subprocesses.
+ import signal
+ import socket
+ import subprocess
+@@ -149,9 +150,9 @@
+     binding_path = Path(sys.argv[1])
+     require(sha(binding_path) == sys.argv[2], 'Calibration binding changed')
+     binding = json.loads(binding_path.read_text())
+-    require(binding['cuda_launch_blocking'] == '1'
+-            and os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
+-            'New immutable runtime requires explicit synchronous CUDA launch policy')
++    require(binding['cuda_launch_blocking'] == os.environ.get('CUDA_LAUNCH_BLOCKING') == '0'
++            and binding['vllm_attention_backend'] == os.environ.get('VLLM_ATTENTION_BACKEND') == 'XFORMERS',
++            'New immutable runtime requires explicit XFORMERS and asynchronous CUDA policy')
+     require(binding.get('human_nonblocking_diagnostics') is True
+             and binding.get('external_diagnostic_review_blocks_training') is False
+             and binding.get('diagnostic_authorization_scope') == 'HUMAN_NONBLOCKING_DIAGNOSTICS_V1',
+@@ -231,7 +232,7 @@
+         XDG_CACHE_HOME=str(alias / 'cache'), HF_HOME=str(alias / 'cache/hf'),
+         HF_DATASETS_CACHE='/mnt/data/shaoshitong/search-r1-rl/gigpo/cache/retriever-datasets',
+         OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', HF_HUB_OFFLINE='1',
+-        HF_DATASETS_OFFLINE='1', WANDB_MODE='offline', VLLM_NO_USAGE_STATS='1', NCCL_NVLS_ENABLE='0', VLLM_ATTENTION_BACKEND='FLASH_ATTN')
++        HF_DATASETS_OFFLINE='1', WANDB_MODE='offline', VLLM_NO_USAGE_STATS='1', NCCL_NVLS_ENABLE='0', VLLM_ATTENTION_BACKEND='XFORMERS')
+     result = dict(status='FAILED', scope=LIVE_SCOPE, job_id=job, run_id=run_id, source_commit=commit,
+                   binding_sha256=sha(binding_path), retained_training_updates_contributed=None,
+                   restore_checkpoint=None, restore_manifest_sha256=None,
+--- runtime19/calibration_worker_v1.py
++++ runtime20/calibration_worker_v1.py
+@@ -2,9 +2,10 @@
+ import copy
+ import json
+ import os
+-_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT = os.environ.get('CUDA_LAUNCH_BLOCKING') == '1'
+-if not _CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT:
+-    raise RuntimeError('Synchronous CUDA policy must be inherited before worker imports')
++_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT = os.environ.get('CUDA_LAUNCH_BLOCKING') == '0'
++_VLLM_ATTENTION_BACKEND_BEFORE_TORCH_IMPORT = os.environ.get('VLLM_ATTENTION_BACKEND') == 'XFORMERS'
++if not (_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT and _VLLM_ATTENTION_BACKEND_BEFORE_TORCH_IMPORT):
++    raise RuntimeError('XFORMERS/asynchronous CUDA policy must be inherited before worker imports')
+ from pathlib import Path
+ import torch
+ from verl.single_controller.base.decorator import Dispatch, register
+@@ -76,9 +77,12 @@
+ 
+ 
+     def _cuda_launch_blocking_identity(self):
+-        require(os.environ.get('CUDA_LAUNCH_BLOCKING') == '1',
+-                'Synchronous CUDA policy changed; no live repair is permitted')
++        require(os.environ.get('CUDA_LAUNCH_BLOCKING') == '0'
++                and os.environ.get('VLLM_ATTENTION_BACKEND') == 'XFORMERS',
++                'XFORMERS/asynchronous CUDA policy changed; no live repair is permitted')
+         return dict(value=os.environ['CUDA_LAUNCH_BLOCKING'],
++            vllm_attention_backend=os.environ['VLLM_ATTENTION_BACKEND'],
++            backend_present_before_torch_import=_VLLM_ATTENTION_BACKEND_BEFORE_TORCH_IMPORT,
+             present_before_torch_import=_CUDA_LAUNCH_BLOCKING_BEFORE_TORCH_IMPORT,
+             constructor_pid=self._bf16_accumulation_constructor_pid,
+             worker_role=self._bf16_accumulation_constructor_role)
