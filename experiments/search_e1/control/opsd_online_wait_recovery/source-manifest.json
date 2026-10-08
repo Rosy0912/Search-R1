@@ -1,0 +1,22 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 5917,
+      "sha256": "b75268aa28fbdac6b235c0ddddd210cc009452f797f3f4c72f3e50c1bb09b2bf"
+    },
+    "recovery.py": {
+      "bytes": 17715,
+      "sha256": "55ee0b95e6330530ebd3da0c0f32b7699e33fae17e4aa9e049e387387176a214"
+    },
+    "test_recovery.py": {
+      "bytes": 16173,
+      "sha256": "272367fc9f8ed5c7754cb8b1ff5bef2af5d4a804cce7d5eec9917e4c156407da"
+    }
+  },
+  "original_config_sha256": "d0c30df9b035e73d87bb5402bbcd32c16b2314a4180c451a543522ca5b321b17",
+  "original_helper_manifest_sha256": "66cb43dd0830b9a7776bd644a0ef5bbf3d1661a3db3b159cc9e781db582c5233",
+  "original_source_commit": "7cf285308572af645676ae85a48fc8359f8c8ccb",
+  "run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "schema": "opsd-online-wait-recovery-source-manifest-v1",
+  "scope": "Independent external same-run only-wait override; original immutable scientific/runtime/config bytes unchanged"
+}
