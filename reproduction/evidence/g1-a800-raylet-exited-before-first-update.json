@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "g1_a800_raylet_exit_before_first_recorded_update",
+  "created_at_utc": "2026-10-08T04:18:06.032304+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "deployment_id": "527016556c6e45e69c772b28e2e4af47",
+  "run_id": "5712571f6a974ea9a0a383f9bdf33af0",
+  "execution_id": "b5ed7a1f9e0d4ce9b72a0fdc44d6e440",
+  "source_commit_recorded_by_observer": "af5d6e89d950a855275e640ed63813181c98903c",
+  "actual_failure": {
+    "observation_unix": 1791432641.9478855,
+    "short_error_type": "LocalRayletDiedError",
+    "short_error_source": "private_failure_diagnostic",
+    "broken_pipe_observed": true,
+    "broken_pipe_logged_local_times": [
+      "2026-10-08 12:07:49.925"
+    ],
+    "pipeline_stage": "FAILED",
+    "pipeline_failed_unix": 1791432472.4827983,
+    "pipeline_pid": 998409,
+    "pipeline_start_ticks": 551113980,
+    "pipeline_alive_at_observation": false,
+    "pipeline_birth_matches_at_observation": false,
+    "trainer_pid": 1025546,
+    "trainer_start_ticks": 551160660,
+    "trainer_exit_code": 1,
+    "trainer_alive_at_observation": false,
+    "trainer_live_registered_count": 0,
+    "trainer_ledger_state": "STOPPED",
+    "project_cleanup_completed": true,
+    "project_cleanup_checked_unix": 1791432479.9073641,
+    "cleanup_is_runtime_failure_handling": true
+  },
+  "recorded_training_progress": {
+    "completed_updates": 0,
+    "recorded_complete_outer_updates": 0,
+    "recorded_adam_updates": 0,
+    "actual_updates_ledger_exists": false,
+    "matching_complete_update_rows": 0,
+    "opportunity_ledger_count": 0,
+    "recorded_complete_opportunities": 0,
+    "last_recorded_outer": null,
+    "recorded_completed_outers": null,
+    "scope": "No complete outer/update or opportunity ledger exists in the saved observation. Counts refer to recorded complete evidence, not an inferred number of attempted operations.",
+    "new_training_reward_or_effect_acceptance_established": false
+  },
+  "stage0_initial64_score": {
+    "observed_unix": 1791432638.6224184,
+    "runtime_checked_unix": 1791432230.1146631,
+    "step": 0,
+    "split": "stage",
+    "final": false,
+    "question_count": 64,
+    "unique_question_count": 64,
+    "binary_em": true,
+    "em_correct": 14,
+    "em_denominator": 64,
+    "em": 0.21875,
+    "f1": 0.30167993505026125,
+    "per_source": {
+      "nq": {
+        "count": 32,
+        "correct": 8.0,
+        "f1_sum": 9.974182509883386,
+        "em": 0.25,
+        "f1": 0.3116932034338558
+      },
+      "hotpotqa": {
+        "count": 32,
+        "correct": 6.0,
+        "f1_sum": 9.333333333333336,
+        "em": 0.1875,
+        "f1": 0.29166666666666674
+      }
+    },
+    "question_ids_ordered_sha256": "b4a64b9af015dcf2ca7fedc4bb037eb0c49252e7eaeda69f1265f3308f8c5a96",
+    "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "validation_identity_file_sha256": "05a82e6629ccd06194202f666ca5b089b3f7f14c52cc2c857678662d6c16d079",
+    "scope": "Stage 0 initial 64-question score before any recorded complete training update; this is not a new post-training effect result."
+  },
+  "runtime_resource_observations": {
+    "ray_logged_default_object_store_bytes": 200000000000,
+    "ray_logged_default_object_store_source_units": "200 GB",
+    "ray_object_store_source": "private_raylet_memory_inspection",
+    "cgroup_memory_limit_bytes": 816043786240,
+    "inspected_current_cgroup_memory_usage_bytes": 581906968576,
+    "inspected_memory_usage_is_failure_peak": false,
+    "inspected_memory_usage_scope": "Current memory.usage_in_bytes at inspection, after the failure; it is not a recorded failure-time peak.",
+    "historical_oom_kill_count": 1314,
+    "historical_oom_count_linked_to_this_raylet_failure": false,
+    "historical_oom_count_scope": "Historical cumulative cgroup oom_kill count. No direct link to this Raylet failure is established.",
+    "exact_failed_raylet_pid_matched_in_kernel": false,
+    "kernel_clock_was_old": true,
+    "kernel_evidence_time_alignment_with_this_failure_established": false,
+    "memory_and_kernel_source": "private_exact_kernel_inspection",
+    "kernel_interpretation_basis": "Root inspection reported no exact failing Raylet PID match and an old kernel clock; numerical readings are present in the retained private inspection files."
+  },
+  "causal_status": {
+    "root_cause_resolved": false,
+    "cuda_oom_proven": false,
+    "guard_failure_proven": false,
+    "historical_kernel_oom_proves_this_failure": false,
+    "status": "The actual Raylet death and Broken pipe are observed. The cause of the Raylet exit remains unresolved."
+  },
+  "planned_runtime_mitigation": {
+    "ray_object_store_cap_gib": 8,
+    "ray_object_store_cap_bytes": 8589934592,
+    "ray_cpu_count_cap": 16,
+    "status": "Planned runtime resource bounds; application and a successful retry are not verified by this evidence.",
+    "is_causal_diagnosis": false,
+    "is_scientific_method_change": false,
+    "scope": "Runtime resource mitigation while the Raylet failure cause remains unresolved."
+  },
+  "goal_status": {
+    "active": true,
+    "completed": false,
+    "target_outer_updates": 200,
+    "recorded_complete_outer_updates": 0,
+    "failure_is_user_requested_pause": false,
+    "first_five_outer_update_acceptance_completed": false,
+    "training_effect_acceptance_completed": false
+  },
+  "sources": {
+    "initial64_stage0_scalars": {
+      "source_basename": "a800-527-initial64-sanitized-scalars.json",
+      "sha256": "4ed890946a9c727c71a8deeac7370b3b1c8a89b62463c74142b7371adb87e166",
+      "raw_content_copied_to_repository": false
+    },
+    "deployment_observation": {
+      "source_basename": "a800-common-deployment-527016556c6e45e69c772b28e2e4af47.observe-1791432641879035000.json",
+      "sha256": "1cc8946abcbfaa3804cfb9075647ae9e4609553d971c6cf7c78e4c69556b67ca",
+      "raw_content_copied_to_repository": false
+    },
+    "private_failure_diagnostic": {
+      "source_basename": "a800-527-actual-failure-tail-private.txt",
+      "sha256": "776e57d009f7215605355b36692b1f0f0e0649e3b60b665e535c9391239f7cfa",
+      "raw_content_copied_to_repository": false
+    },
+    "private_raylet_memory_inspection": {
+      "source_basename": "a800-527-raylet-memory-private.txt",
+      "sha256": "4e50295e4aeed28246591f9e22d899f2ea3eeb4e53ea0145c444fc7a0a239489",
+      "raw_content_copied_to_repository": false
+    },
+    "private_exact_kernel_inspection": {
+      "source_basename": "a800-527-raylet-exact-kernel-private.txt",
+      "sha256": "5415ea9c54ec98ae83c4c900ff5a46ed5adfc6466e89a08fe39461ed5f0cc69d",
+      "raw_content_copied_to_repository": false
+    }
+  },
+  "scope": "Only selected short errors, scalar observations, score summaries and source hashes are published. Raw diagnostic files remain outside the repository."
+}
