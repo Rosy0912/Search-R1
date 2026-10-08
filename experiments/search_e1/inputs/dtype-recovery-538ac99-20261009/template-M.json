@@ -1,0 +1,153 @@
+{
+  "evaluation_role": "group",
+  "gates": {
+    "memory_observer": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/memory-binding.json",
+      "sha256": null
+    },
+    "memory_observer_config": {
+      "bytes": 9487,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421978,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+      "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+    },
+    "memory_observer_source": {
+      "bytes": 4843,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1/memory_observer.py",
+      "sha256": "e4dc1d824a6a6739c814ca7b981c38e626a953a66d9540ad82017a6a149601ae"
+    },
+    "process_exclusions": [],
+    "publication": {
+      "bytes": 3906,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/opsd_ablation_eval_dtype_recovery_v1-publication-8955d70b32ba4504bed76303d940756b.json",
+      "sha256": "eb4cc71d05123eafb906dcbca17529969e66993e4aaeb438fce9c40de03ab95e"
+    },
+    "retriever_admission": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/oracle18004-admission-20261009-0051.json",
+      "sha256": "db1d2d9b0c3ee40a46b905ae69b4f00fd1b70db5f9841e3705034aff802c0da4"
+    },
+    "storage": {
+      "bytes": 1472,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M/receipts/authorized-launch-20261009/storage.json",
+      "sha256": "0f172c84b94463d7ab6f18ffa1fc2fe6d799b306d05bc0a913f07b3374d9605c"
+    }
+  },
+  "helper_source_manifest": {
+    "bytes": 2073,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/evaluation-dtype-538ac99/opsd_ablation_eval_v1/source-manifest.json",
+    "sha256": "16680dde0271b8c84a42b9ccfd34f0acc6be44c0ffe144f0bbbd4c568e0db39d"
+  },
+  "models": {
+    "raw10_bf16": {
+      "deployment_model": null
+    }
+  },
+  "owner": {
+    "gpu_uuids": [
+      "GPU-3dd530f7-5348-350d-02cc-183445e1ecbe",
+      "GPU-d1f1df21-5faa-e406-00e0-dddab33148c7",
+      "GPU-a291bae9-7444-ba85-f4d0-64ece80f706c",
+      "GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b",
+      "GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6",
+      "GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf",
+      "GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45",
+      "GPU-6f04d45c-a34d-6617-030d-0635365f5395"
+    ],
+    "physical_gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "uid": 1005
+  },
+  "paths": {
+    "base": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M",
+    "helper_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/evaluation-dtype-538ac99/opsd_ablation_eval_v1",
+    "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-group-M/runs",
+    "python": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+    "retriever_url": "http://10.120.17.101:18004/retrieve"
+  },
+  "resources": {
+    "group_lock": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/online-experiment.lock",
+    "minimum_disk_bytes": 107374182400,
+    "running_minimum_free_mib": 1024,
+    "shared_gpu_lease_paths": [
+      "/data/shaoshitong/search-e1-opsd-debug-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-native512-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-teacher-counterfactual-20261008/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/experiment.lock",
+      "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/online-experiment.lock"
+    ],
+    "startup_minimum_free_mib": 20480,
+    "study_lock": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/ablation-gpu-experiment.lock"
+  },
+  "run_id": "8955d70b32ba4504bed76303d940756b",
+  "schema": "opsd-ablation-native512-eval-config-v1",
+  "scientific": {
+    "adapter_dtype": "torch.float32",
+    "attention_backend": "sdpa",
+    "deployment_contract": "CPU_FP32_base_FP32_LoRA_merge_then_one_FP16_cast",
+    "deployment_dtype": "torch.float16",
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "hook_control_first_slots_per_rank": 1,
+    "max_context": 8192,
+    "max_new_tokens": 500,
+    "max_search_calls": 4,
+    "no_training": true,
+    "observation_tokens": 480,
+    "ordinary_prompt": true,
+    "physical_to_logical": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "primary_base_dtype": "torch.bfloat16",
+    "privileged_reference": false,
+    "rank_seed": 42,
+    "repetition_penalty": 1.05,
+    "temperature": 0,
+    "topk": 3,
+    "total_primary_slots": 512,
+    "turns": 5,
+    "validation_questions": 512,
+    "versions": [
+      "raw10_bf16"
+    ],
+    "zero_effect_first_slots_per_rank": 1
+  },
+  "source_commit": "538ac99aac12ca9347f993556de22ad06391c132",
+  "state": "TEMPLATE: accepted new storage/source; actual training terminal/raw10/observer bound by driver after10outer",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777",
+  "training": {
+    "config": {
+      "bytes": 9487,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421978,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+      "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+    },
+    "final_state_audit": null,
+    "raw10_checkpoint": null,
+    "run_id": "b255c1eb72e84ca0bd6315e57e3527d0",
+    "terminal": null
+  },
+  "variant": "M"
+}

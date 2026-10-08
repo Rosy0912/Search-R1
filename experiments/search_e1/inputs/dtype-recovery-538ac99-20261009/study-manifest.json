@@ -1,0 +1,211 @@
+{
+  "common_zero_template": {
+    "bytes": 6046,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-zero.json",
+    "sha256": "781f52cb4e5ffbe7d2bfdc1428086b1c3d1a3e2112c8f4aeac57527177a0d9ed"
+  },
+  "dtype_repair": {
+    "bytes": 3929,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/repair-manifest.json",
+    "sha256": "b26ef0a9c11d4acc2b08453c8248b2c532eeb8bde0956245354f42a78e4e381d"
+  },
+  "groups": [
+    {
+      "evaluation_template": {
+        "bytes": 5956,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-C0.json",
+        "sha256": "debf43f7099a51be15e7805ce2054b5459a580ee22f658f559fbb26f4ebfc080"
+      },
+      "training_config": {
+        "bytes": 9498,
+        "ctime_ns": 1791480422544261186,
+        "device": 2065,
+        "inode": 466421974,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+        "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+      },
+      "variant": "C0"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 5956,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-C1.json",
+        "sha256": "6a664635d3f76cb18b5a48e4fd59362ab1068e20e7c99c37a466ed3062ceef70"
+      },
+      "training_config": {
+        "bytes": 9498,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421976,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/receipts/authorized-launch-20261009/config.json",
+        "sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310"
+      },
+      "variant": "C1"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 5947,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-M.json",
+        "sha256": "ba6b345606d42320528ba81f363511f89ac2d9ae9be6af42d672b1c3506f804b"
+      },
+      "training_config": {
+        "bytes": 9487,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421978,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+        "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+      },
+      "variant": "M"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 5947,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-R.json",
+        "sha256": "339ed5e53bc2862a35c05c8f6f172625f948987849181c536fff18b4f22cf416"
+      },
+      "training_config": {
+        "bytes": 9487,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421980,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/receipts/authorized-launch-20261009/config.json",
+        "sha256": "8cc81ae28882f0fb32a924d7a4d96fc6f7f0702b210ef62847e409c404d36ab9"
+      },
+      "variant": "R"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 5947,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-W.json",
+        "sha256": "3118c1845889f876a9bbef5fcfa8dcb7a5635667bc1ef3aaf035d028c791501e"
+      },
+      "training_config": {
+        "bytes": 9487,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421982,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/config.json",
+        "sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494"
+      },
+      "variant": "W"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 6026,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-P.json",
+        "sha256": "6fd1995497f7022c24dea2e08e21f06dc6e4c78cfed9faabe92d909fa87eb750"
+      },
+      "training_config": {
+        "bytes": 9494,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421984,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/config.json",
+        "sha256": "dcc0a03750dec59651550609889a8b82ba0d967a728da01626216af6d7714412"
+      },
+      "variant": "P"
+    },
+    {
+      "evaluation_template": {
+        "bytes": 6026,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/template-J.json",
+        "sha256": "01690642f4490e5ecc43ee36bf600077438fea04b63ab3d13883c157040b2bae"
+      },
+      "training_config": {
+        "bytes": 9494,
+        "ctime_ns": 1791480422548261169,
+        "device": 2065,
+        "inode": 466421986,
+        "mtime_ns": 1791480255000000000,
+        "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/receipts/authorized-launch-20261009/config.json",
+        "sha256": "da6f7396970b77d3bbf2572f437ed2e05f0c3469bb2bcbe5a63dbbe12306b01f"
+      },
+      "variant": "J"
+    }
+  ],
+  "helper_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/evaluation-dtype-538ac99/opsd_ablation_eval_v1",
+  "helper_source_manifest": {
+    "bytes": 2073,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/evaluation-dtype-538ac99/opsd_ablation_eval_v1/source-manifest.json",
+    "sha256": "16680dde0271b8c84a42b9ccfd34f0acc6be44c0ffe144f0bbbd4c568e0db39d"
+  },
+  "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver-dtype-538ac99/runs",
+  "publication": {
+    "bytes": 3906,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/opsd_ablation_eval_dtype_recovery_v1-publication-77c27898c6d148e7b8f1a9c96f86a47f.json",
+    "sha256": "0092434411b06e6dcb07fccb85366f587eed20d76799c3e5789e4be3d0e6563b"
+  },
+  "recovery": {
+    "actual_training_exit": {
+      "bytes": 1569,
+      "ctime_ns": 1791481265752745161,
+      "device": 2065,
+      "inode": 466422121,
+      "mtime_ns": 1791481265736745227,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver/runs/00-C0/training/actual-child-exit.json",
+      "sha256": "fbbecd35064d5fdc31c6e9211cf29c88979fe6d688776e7082d49f8c4a309a2c"
+    },
+    "actual_training_release": {
+      "bytes": 40746,
+      "ctime_ns": 1791481267588737534,
+      "device": 2065,
+      "inode": 466422122,
+      "mtime_ns": 1791481267584737551,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver/runs/00-C0/training/actual-child-release.json",
+      "sha256": "f84644cf5e58c1bf84dbfb719377d0f32776ebf1088baa2f39ea60c4fa1e989b"
+    },
+    "driver_start": {
+      "bytes": 1014,
+      "ctime_ns": 1791480816294614911,
+      "device": 2065,
+      "inode": 466422024,
+      "mtime_ns": 1791480816278614978,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver/runs/driver-start.json",
+      "sha256": "c415c7c3190f2b357eb46fa8b4fd6a1f38f43bb761f3c797b2bd5232ff28ed6b"
+    },
+    "expected_dead_pane": "$71 %71 1624589 1 2",
+    "outer_manifest": {
+      "bytes": 49311,
+      "ctime_ns": 1791481082017508743,
+      "device": 2065,
+      "inode": 466422096,
+      "mtime_ns": 1791481082017508743,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs/outers/outer-00000/outer-manifest.json",
+      "sha256": "6025bfa0fe2f1e5a50ecac9e05d7b38d69e24cf4e6dafc892aa7bd9a3be46596"
+    },
+    "output_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs",
+    "previous_session": "e1-reverse-seven-10-6566ff8f-20261009",
+    "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+    "schema": "opsd-ablation-c0-before-adam-recovery-v1",
+    "training_config": {
+      "bytes": 9498,
+      "ctime_ns": 1791480422544261186,
+      "device": 2065,
+      "inode": 466421974,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+      "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+    },
+    "training_failure": {
+      "bytes": 17213,
+      "ctime_ns": 1791481261080764568,
+      "device": 2065,
+      "inode": 466422099,
+      "mtime_ns": 1791481261064764634,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs/status.json",
+      "sha256": "825f0679638145564ac9d1f3bcfab9a248ad88861426c104da49c0d867843721"
+    }
+  },
+  "run_id": "77c27898c6d148e7b8f1a9c96f86a47f",
+  "schema": "opsd-ablation-seven-sequential-study-v1",
+  "source_commit": "538ac99aac12ca9347f993556de22ad06391c132",
+  "state": "READY",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777"
+}

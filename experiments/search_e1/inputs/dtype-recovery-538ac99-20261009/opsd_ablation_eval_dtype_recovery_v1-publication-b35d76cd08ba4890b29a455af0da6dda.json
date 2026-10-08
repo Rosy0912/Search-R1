@@ -1,0 +1,101 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 13738,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/README.md",
+      "sha256": "c63e31fa23b9cbe818a9350e3a7035826575a98114a65985ace23e40cdc11b52"
+    },
+    {
+      "bytes": 9988,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/completion.py",
+      "sha256": "eb64f16b3b68124b41b1252db3a308ee45f724322ba9b21f0a1be647fe340c15"
+    },
+    {
+      "bytes": 12571,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/controller.py",
+      "sha256": "880df450fb07ba1dcebf8f4a04d903338801a91843d0fac63dc7c02b68af0a4d"
+    },
+    {
+      "bytes": 6288,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/cpu_merge.py",
+      "sha256": "ec632e3ca477a4714ccbe765c1ec95b7c610f6888205b50b58ef59d2e523768f"
+    },
+    {
+      "bytes": 11811,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/gates.py",
+      "sha256": "838254d4845c10917aa911fee437657ea4ecf5776222198de28310cafc553920"
+    },
+    {
+      "bytes": 5071,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/hooks.py",
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    {
+      "bytes": 9973,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/prepare.py",
+      "sha256": "c2130b70f87b520350e28c580436a67d82147bb6b35739fbf29a108973a30168"
+    },
+    {
+      "bytes": 6085,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/recovery.py",
+      "sha256": "7ea1c3197db1fdc5a3bc74c93c9e3ec6516c729bdbcc8a495ea16a02189cd16f"
+    },
+    {
+      "bytes": 2073,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/source-manifest.json",
+      "sha256": "16680dde0271b8c84a42b9ccfd34f0acc6be44c0ffe144f0bbbd4c568e0db39d"
+    },
+    {
+      "bytes": 21860,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/study_runner.py",
+      "sha256": "70cddb8ee0c5f88c255b9126101f8b7f72b4337cacca4006a82818097471939a"
+    },
+    {
+      "bytes": 14030,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/summary.py",
+      "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+    },
+    {
+      "bytes": 29219,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/test_eval.py",
+      "sha256": "282523c335f93cb84d1e2cbdf0b962501216ad1f827f29e441d5c4a90a731c06"
+    },
+    {
+      "bytes": 2248,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/test_recovery.py",
+      "sha256": "7ba8cb477102639bf230a6cd9c125e26dcd42f9ab028a27bc60eccaeaffbb3b4"
+    },
+    {
+      "bytes": 12320,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/utils.py",
+      "sha256": "cc93226760ecf9b3c27bff0bf3f2fd7a2f5e01aedb7e0ff58d0a3ca464816d3b"
+    },
+    {
+      "bytes": 13680,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_eval_dtype_recovery_v1/worker.py",
+      "sha256": "33ab79dc7b9b3d270fe0950ce4c00c8f4955340e2376f26879101588d011587b"
+    }
+  ],
+  "remote_readback_sha": "538ac99aac12ca9347f993556de22ad06391c132",
+  "run_id": "b35d76cd08ba4890b29a455af0da6dda",
+  "source_commit": "538ac99aac12ca9347f993556de22ad06391c132",
+  "source_manifest_sha256": "16680dde0271b8c84a42b9ccfd34f0acc6be44c0ffe144f0bbbd4c568e0db39d",
+  "verified_unix": 1791482911.497302
+}

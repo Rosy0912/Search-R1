@@ -1,0 +1,47 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 3923,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/README.md",
+      "sha256": "efeb47298a04a0c29014b7f334df40d539fedb23dc931a3555c29ae602f21b6d"
+    },
+    {
+      "bytes": 3773,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/controller.py",
+      "sha256": "05a933e2f0aebe6dc8e13a3430dc5c81fd3a30c1c3d9eeb973738ea46fe44d35"
+    },
+    {
+      "bytes": 6580,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/recovery_common.py",
+      "sha256": "b35e3cd47b6f7755b3bde61ff7d96833bcc5306c631fcaa12e67e7ebb5103608"
+    },
+    {
+      "bytes": 752,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/source-manifest.json",
+      "sha256": "eee5adf6621f85274584412c19be642d8a7e4a8f6f005c84b8a90a972f9803b9"
+    },
+    {
+      "bytes": 4707,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/test_recovery.py",
+      "sha256": "9031fe297a0696d985121ed5ab2a3d25fe4ed4cb9a099966d800b5c40c289253"
+    },
+    {
+      "bytes": 5033,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_dtype_recovery_v1/trainer_launcher.py",
+      "sha256": "5b8bfe675ee5b2186aee45a598e56991b2738becb15b140cf8d0cdbb89cbeb7a"
+    }
+  ],
+  "remote_readback_sha": "538ac99aac12ca9347f993556de22ad06391c132",
+  "run_id": "77c27898c6d148e7b8f1a9c96f86a47f",
+  "source_commit": "538ac99aac12ca9347f993556de22ad06391c132",
+  "source_manifest_sha256": "eee5adf6621f85274584412c19be642d8a7e4a8f6f005c84b8a90a972f9803b9",
+  "verified_unix": 1791482911.497302
+}
