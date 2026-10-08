@@ -1,0 +1,8 @@
+{
+  "scope": "Independent CPU postprocess; never changes running diagnostic or reward",
+  "files": {
+    "summarize_protocol.py": "a3ce95854029be735051ebbe6ab6976c15adc1f3758854fbaa051931b7c9f60a",
+    "test_summarize_protocol.py": "75cdf777a0bd00cd5b8c01c309381edbefb7c0b555c1e01a2d8fc84fe788fecd"
+  },
+  "fixture_tests": 12
+}
