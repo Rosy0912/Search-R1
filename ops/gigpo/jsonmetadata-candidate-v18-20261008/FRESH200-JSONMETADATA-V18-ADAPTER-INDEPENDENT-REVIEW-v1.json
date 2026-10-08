@@ -1,0 +1,66 @@
+{
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Frozen v18 standalone once-submit control and immutable binding/derivation against reviewed v17; exact failed3336 terminal binding. Static review only."
+  },
+  "binding_sha256": "006c698e003aea7c629886e9bd1ab7af9628f2fc982508e1aa706e619ded8fa7",
+  "derivation_sha256": "21529fd08377485fa90336625da90cde047f51378ad115f8ca40a180cb44c25f",
+  "adapter_sha256": {
+    "deploy_submit_jsonmetadata3336_v18_once_v1.py": "6d8110dbab0d9d992c607eb4a880d6e40bb15280c2a5831b698c6759996c1f4b"
+  },
+  "binding_bytes": 20590536,
+  "derivation_bytes": 40504,
+  "adapter_bytes": 20945,
+  "parent_binding_sha256": "3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399",
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "runtime_code_review_sha256": "fa4025f1a884685ecb7cc4c1e32bfb4b76f1a6ade56de141893455f12f1622f8",
+  "runtime_manifest_sha256": "610860cfbbef6c43927f601e2f9bb4538470c553cb6e68eaf0fb178bd3d4f929",
+  "failed_parent_terminal_facts_sha256": "57383da606323f232a806b36cc971539dc8248bc4df79fc8ebb905402e7e9390",
+  "static_checks": [
+    {
+      "file": "deploy_submit_jsonmetadata3336_v18_once_v1.py",
+      "line": 82,
+      "result": "The pre-execution gate requires exact nonauthor static review hashes for this standalone control, binding and derivation plus actual pushed/independent Git download publication matching control, binding, derivation and44 runtime files. No consumed3332/3336 control is imported or invoked."
+    },
+    {
+      "file": "deploy_submit_jsonmetadata3336_v18_once_v1.py",
+      "line": 104,
+      "result": "The retained SSH route/host checks remain, with one local exclusive v18 intent and a separate v18 remote namespace/intent. An uncertain transport or sbatch result cannot authorize a replay. Only the small patch/metadata/runtime delta is transported, not the full20MB binding."
+    },
+    {
+      "file": "deploy_submit_jsonmetadata3336_v18_once_v1.py",
+      "line": 171,
+      "result": "The receiver hashes exact failed3336 facts and original run-result/attempt receipt, checks source and parent binding, verifies all8 actual counted-complete receipts at1 scheduler step/20 Adam writes, requires exact9 original PIDs and own cgroup absent, and reads current GPU empty/current own queue absent. Preserved actual Slurm FAILED/ExitCode1:0 evidence is used truthfully when live scheduler history has expired. These checks repeat immediately before submission."
+    },
+    {
+      "file": "deploy_submit_jsonmetadata3336_v18_once_v1.py",
+      "line": 218,
+      "result": "No signal, restore, cleanup mutation or old-original deletion occurs. New metadata and runtime namespaces are created exclusively. Only the reviewed driver receives new compressed bytes;43 files clone their exact original hashes. Existing source ebe91 and its clean HEAD remain. Exactly one sbatch call launches the ordinary formal200 entry after terminal facts and binding byte reconstruction match."
+    },
+    {
+      "file": "FRESH200-JSONMETADATA-V18-DERIVATION-v1.json",
+      "line": 1,
+      "result": "Independent data reconstruction exactly equals the frozen child:39961 primary records preserve original order, changing only44 runtime paths, with39917 other records and all494 source records exact.66 original evidence records plus exactly3 additions are preserved. The allowed patch changes runtime identity/review/metadata only; BF16 false, nonblocking policy, historical initial baseline, mathematical/model/data/config fields and four null tolerances remain identical."
+    },
+    {
+      "file": "FRESH200-JSONMETADATA-V18-BINDING-CANDIDATE-v1.json",
+      "line": 1,
+      "result": "The parent reconciliation records historical1 outer/20 Adam writes per rank/160 gradient micros, no complete model/Adam resume checkpoint, historical updates not stitched, and new fresh outer0/Adam0. It cites the actual v18 metadata code review. The three declared runtime-relative/runtime-canonical/primary digests and embedded44-file manifest match independently recomputed data. No CPU/GPU/probability test PASS or training success is invented."
+    }
+  ],
+  "review_limits": {
+    "static_only": true,
+    "candidate_or_control_executed": false,
+    "tests_or_project_imports_executed": false,
+    "ssh_or_gpu_access": false,
+    "implementation_modified_by_reviewer": false,
+    "old_asset_or_source_rescan": false,
+    "actual_new_submission_proven": false,
+    "numerical_repair_or_training_success_proven": false,
+    "actual_publication_still_required_by_execution_gate": true
+  }
+}

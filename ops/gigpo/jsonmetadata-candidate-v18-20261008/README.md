@@ -1,0 +1,9 @@
+# GiGPO v18 JSON sampler metadata candidate backup
+
+Scientific source remains the actually published `ebe91bfebd56c3bd445219dcd94342d815f899f0`; its existing source publication proof is preserved and reused without source edits or a new source scan. Frozen runtime: `work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v18-jsonmetadata1`. All 44 runtime files are preserved; only `calibration_driver_v1.py` differs from frozen v17, and the other 43 are byte-identical.
+
+The one-file repair replaces a sampler RNG Tensor in the JSON-only observation with dtype, shape and its typed digest. The actual sampler and typed checkpoint state stay unchanged. Exact runtime delta received clean-context nonauthor `PASS_STATIC`; this static result does not establish runtime success. Candidate and any new control have not been executed by this publisher.
+
+Prior actual job3336 failed while serializing metadata after one completed outer update, twenty successful Adam writes per rank, scheduler1 and cursor512. It had no complete model/optimizer checkpoint. The eight original receipts and terminal FAILED evidence are preserved in `evidence/`; the next fresh run starts at zero and is not falsely represented as restoring those twenty writes. A small exact original Tensor serialization traceback excerpt is included with its original local decoded-file hash. The 5.7 MB full audit decode remains local and is excluded from Git.
+
+The frozen new once-submit control, binding/derivation and their final independent clean-context static PASS are included. This is backup evidence; no control execution or submission has occurred by the publisher. This backup imports no candidate, runs no tests or GPU work, contacts no experimental node and submits or modifies no job. Earlier v15/v16/v17 and original failures remain intact. The final publication receipt is outside its own manifest to avoid a circular SHA.

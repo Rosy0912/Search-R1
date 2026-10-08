@@ -1,0 +1,31 @@
+--- v17/calibration_driver_v1.py
++++ v18/calibration_driver_v1.py
+@@ -25,6 +25,19 @@
+ def json_save(path, value):
+     from search_r1.baselines.recovery import atomic_json_save
+     atomic_json_save(value, path)
++
++
++def sampler_json_metadata(sampler):
++    """JSON observation only; PT snapshots/reload retain the exact typed state."""
++    state = sampler.state_dict()
++    generator = state['generator']
++    require(isinstance(generator, torch.Tensor) and generator.dtype == torch.uint8
++            and generator.device.type == 'cpu' and generator.ndim == 1,
++            'Actual sampler generator must remain its CPU byte state')
++    complete_state_sha256 = state_digest(state)
++    state['generator'] = dict(type='torch.Tensor', dtype=str(generator.dtype),
++        shape=list(generator.shape), typed_state_sha256=state_digest(generator), metadata_only=True)
++    return dict(state, complete_state_sha256=complete_state_sha256, metadata_only=True)
+ 
+ 
+ def validate_actual_flash_backend(rows, binding):
+@@ -646,7 +659,7 @@
+         counted_complete=outcome['counted_complete'], actual_opportunities_processed=attempt['opportunities_processed'],
+         actual_successful_adam_writes=attempt['actual_successful_adam_writes'],
+         actual_gradient_micro_batches=attempt['gradient_micro_batches'],
+-        data_cursor=trainer.recovery_sampler.cursor, sampler=trainer.recovery_sampler.state_dict(),
++        data_cursor=trainer.recovery_sampler.cursor, sampler=sampler_json_metadata(trainer.recovery_sampler),
+         alignment=alignment, metrics=metrics, outcome=outcome, driver_receipt=driver_receipt,
+         actual_lr_before_update=expected_lr, timings=copy.deepcopy(progress.get('timings', [])), worker_before=before_update,
+         worker_after=[row['identity'] for row in after_states], automatic_rollback=False))

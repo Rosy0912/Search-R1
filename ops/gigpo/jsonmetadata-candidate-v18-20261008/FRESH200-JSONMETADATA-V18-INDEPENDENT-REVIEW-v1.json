@@ -1,0 +1,56 @@
+{
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Frozen v18 one-file metadata serialization delta against reviewed v17; static read-only review without execution."
+  },
+  "candidate_runtime": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v18-jsonmetadata1",
+  "parent_runtime": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v17-bf16accum1-nonblocking1",
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "manifest_sha256": "610860cfbbef6c43927f601e2f9bb4538470c553cb6e68eaf0fb178bd3d4f929",
+  "runtime_diff_sha256": "c62ddcaf12d4578a68d75c198ab81ee494aae012c4e564c1cc691ff32342561b",
+  "runtime_changed_sha256": {
+    "calibration_driver_v1.py": "5170213b8d30661bed303f4ae2c09af9809e44168f759ef8c6cfe1cda383a39c"
+  },
+  "changed_bytes": 56854,
+  "unchanged_runtime_files": 43,
+  "static_checks": [
+    {
+      "file": "calibration_driver_v1.py",
+      "line": 30,
+      "result": "The new sampler_json_metadata reads the actual state and requires a CPU one-dimensional uint8 generator. This exact type has no floating nonfinite values. The complete typed sampler digest is computed before replacing the generator in the JSON observation with dtype, shape and its typed digest, clearly marked metadata_only. All returned values at this site are JSON primitives."
+    },
+    {
+      "file": "search_r1/baselines/recovery.py",
+      "line": 114,
+      "result": "The actual source RecoverableSampler.state_dict returns a fresh dict, copied order and cloned generator state. Replacing a key in that returned dict cannot mutate the live sampler, order, generator or training RNG. The existing state_digest only reads values/types/shapes/raw bytes."
+    },
+    {
+      "file": "calibration_driver_v1.py",
+      "line": 662,
+      "result": "Only the sampler argument of the attempt JSON observation changes. Actor updates, receipts, finite checks, metrics, mathematical reductions, synchronized skip, data advancement and actual counted/write ledgers are untouched. Existing complete typed PT snapshots, sampler reload and hash identity checks remain unchanged."
+    },
+    {
+      "file": "search_r1/baselines/recovery.py",
+      "line": 341,
+      "result": "json_save still invokes the unchanged atomic_json_save with allow_nan=False. Unexpected nonfinite numbers and unsupported JSON values fail explicitly; no catch, coercion to zero/null/string or false acceptance was introduced."
+    },
+    {
+      "file": "FRESH200-JSONMETADATA-V18-FILE-MANIFEST-v1.json",
+      "line": 1,
+      "result": "Actual44 runtime file sizes/SHA match the frozen manifest. Direct byte comparisons identify only calibration_driver_v1.py as changed, with43 files identical to v17. The actual changed SHA, manifest SHA and diff SHA match the freeze. Scientific source, BF16 false policy, authorized nonblocking training, historical initial baseline reuse and resources remain unchanged."
+    }
+  ],
+  "review_limits": {
+    "static_only": true,
+    "candidate_executed": false,
+    "imports_or_tests_executed": false,
+    "ssh_or_gpu_access": false,
+    "implementation_modified_by_reviewer": false,
+    "binding_or_once_control_approval_included": false,
+    "numerical_repair_or_training_success_proven": false
+  }
+}

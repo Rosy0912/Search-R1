@@ -1,0 +1,183 @@
+{
+  "original_run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441",
+  "observation_utc": "2026-10-08T05:20:34.986437+00:00",
+  "scheduler_original": {
+    "returncode": 0,
+    "stdout": "JobId=3336 JobName=gigpo-e1-fresh200-live UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898730 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:12:59 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-08T13:02:36 EligibleTime=2026-10-08T13:02:36 AccrueTime=2026-10-08T13:02:36 StartTime=2026-10-08T13:02:37 EndTime=2026-10-08T13:15:36 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T13:02:37 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1894912 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=128 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=128 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v17-bf16accum1-nonblocking1/calibration_v1.sbatch /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-nonblocking-v17-repair3332-once-v1/BINDING.json 3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v17-bf16accum1-nonblocking1 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env WorkDir=/root StdErr=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3336.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3336.log Power= TresPerNode=gres:gpu:h100:8 \n",
+    "stderr": ""
+  },
+  "source_read_only": true,
+  "no_training_or_fixture_executed": true,
+  "metadata": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/ray-audit-environment-verification.json",
+      "observed_bytes": 27632,
+      "decoded_text_bytes": 27632,
+      "decoded_text_sha256": "af4b2c4df97c7720dbb1248bbbdbb8e67146435d082908a41c1bde4416a0e4b9"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/driver.jsonl",
+      "observed_bytes": 1128,
+      "decoded_text_bytes": 1128,
+      "decoded_text_sha256": "78ec601704739d429467e40fe240c26aa5d24e8bb38f09ec45fedf56b0129c0c"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/4.jsonl",
+      "observed_bytes": 190271,
+      "decoded_text_bytes": 190271,
+      "decoded_text_sha256": "ea8dffe0541df567feea025901912800238361e4a071af80e0a0b127c6681116"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/1.jsonl",
+      "observed_bytes": 190406,
+      "decoded_text_bytes": 190406,
+      "decoded_text_sha256": "76986c6da315a5245a5a3d40ab69e1575b21bac62067f14cbcfdc6e6ee5c7cde"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/0.jsonl",
+      "observed_bytes": 190563,
+      "decoded_text_bytes": 190563,
+      "decoded_text_sha256": "428eafb5683d9011c3ead783f7bc5648dd8cc2972d11193f0e10a46e108810c0"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/3.jsonl",
+      "observed_bytes": 190228,
+      "decoded_text_bytes": 190228,
+      "decoded_text_sha256": "e35b3a9ad9fe90723a74d7d1322cc5f38bf281214424b606b1350873a4962a13"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/7.jsonl",
+      "observed_bytes": 190353,
+      "decoded_text_bytes": 190353,
+      "decoded_text_sha256": "c59f69e5a15bd6db87d5c80a4bf8456a9173246bb935fb82ce44fd31003b6efd"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/6.jsonl",
+      "observed_bytes": 190448,
+      "decoded_text_bytes": 190448,
+      "decoded_text_sha256": "49ee7466857d9a9bcc2bee1433da6ceccb043fa13c2776a891d167869723e0dc"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/2.jsonl",
+      "observed_bytes": 190619,
+      "decoded_text_bytes": 190619,
+      "decoded_text_sha256": "99de709920d903f014fa09288f7102d509c2de1f2fdea587176e64fe53d7568c"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/5.jsonl",
+      "observed_bytes": 190493,
+      "decoded_text_bytes": 190493,
+      "decoded_text_sha256": "ec49bb292654df48fff3a8766c9eafea4bf1f7ab8719783d536bb683a1f3a8a8"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/partial-updates/attempt_000001/attempt-result.json",
+      "observed_bytes": 10173,
+      "decoded_text_bytes": 10173,
+      "decoded_text_sha256": "aa6bbde4ad41890768c19fba207f169cb188ff038e2bd45d18e1e9a00bd7f1f7"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-2.jsonl",
+      "observed_bytes": 318537,
+      "decoded_text_bytes": 318537,
+      "decoded_text_sha256": "9702216877fecd8fc9cbc30c2ac0146cabd11a26dc75dff85ca27e8f3bca4a71"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-7.jsonl",
+      "observed_bytes": 318026,
+      "decoded_text_bytes": 318026,
+      "decoded_text_sha256": "285cfd1db2768efb307cf1e67d31c70a01b832f1e75278fead6d98c2d78f804f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-5.jsonl",
+      "observed_bytes": 318264,
+      "decoded_text_bytes": 318264,
+      "decoded_text_sha256": "25e979f6119d54e6f3a4ca2e765313a6c6c825e57059c7c1a121e2c879fbcc1f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-4.jsonl",
+      "observed_bytes": 317710,
+      "decoded_text_bytes": 317710,
+      "decoded_text_sha256": "7306f40e46682a123bb1351537eab3a3e2adfbc54a8c7751d749f3545e0aabd9"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-0.jsonl",
+      "observed_bytes": 318534,
+      "decoded_text_bytes": 318534,
+      "decoded_text_sha256": "4274bdb81d7235d5defe34fa584187d7b23373a7268a519de34922e384452dd2"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-1.jsonl",
+      "observed_bytes": 318087,
+      "decoded_text_bytes": 318087,
+      "decoded_text_sha256": "03ea0375c23857aa6d0d894abb21706f257589070b13db7a647c287d4c421869"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-6.jsonl",
+      "observed_bytes": 318173,
+      "decoded_text_bytes": 318173,
+      "decoded_text_sha256": "64e3f7f081f4ec19f59a5fb7bec5c70335cabc26c185f10f678107b772e84616"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/numeric/micro-3.jsonl",
+      "observed_bytes": 317330,
+      "decoded_text_bytes": 317330,
+      "decoded_text_sha256": "39a6c35468d3c9c6a9fb73166c35b7c5e1a16f3aec457f32606e97cf143a78ef"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-6.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "a20b1a767e5f4c0f7d846fcdebfe4bb36f69db31dafc52df3ac84faf712f5ba4"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-7.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "e295972c61a806f42970a0de5ad0760df26212fdd0a810fd8ecafd9c89f46794"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-4.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "664d41bbf8273b8076626c87a41be10206984dfe1746529bc0a95405f0d76507"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-5.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "9bc160d4d45047f3c40dabd633fae4b0db7048af06413c48cfb31a1080a4197f"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-0.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "968e650fb2ea41f9e00a2ef6b88b14b0c7385a37aacc18156741cbf2b63fc13c"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-2.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "f99c470488859f4ce80720fff189518a591f89693f86eb7e9c9d047177145d54"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-1.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "d3ae22c6b7b3688aa288696222d879b798cb577bdc5a803dac44693c979da178"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/policy-safety/rank-3.jsonl",
+      "observed_bytes": 129137,
+      "decoded_text_bytes": 129137,
+      "decoded_text_sha256": "df73e56ea97d90438f9fca2774e1f70a95bf42e6069d95883780f3899a7cd32a"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/attempt-failures/attempt_1/result.json",
+      "observed_bytes": 889,
+      "decoded_text_bytes": 889,
+      "decoded_text_sha256": "7a7baf3ce0e5abfc1562799ee293fb5516b80616938011a7dc5e1e9616088ea5"
+    }
+  ],
+  "driver_only_state_not_model_optimizer_checkpoint": true,
+  "remote_originals_retained": true
+}

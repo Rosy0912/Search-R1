@@ -1,0 +1,430 @@
+{
+  "actual_adam_writes_per_rank": 20,
+  "actual_attempt_receipt": {
+    "bytes": 10173,
+    "data": {
+      "attempt": {
+        "abandoned": false,
+        "actual_adam_total": 20,
+        "actual_adam_total_before": 0,
+        "actual_successful_adam_writes": 20,
+        "attempt_id": 1,
+        "completed_before": 0,
+        "config_epoch": 0,
+        "config_sha256": "d9d2474e0c937df643cd89942ede9fd6dd0b8bcd135b017ecaec10dbd2895ce0",
+        "counted_complete": true,
+        "driver_pid": 1902302,
+        "gradient_micro_batches": 160,
+        "opportunities_processed": 20,
+        "rank_receipts": [
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1902722,
+            "rank": 0,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903041,
+            "rank": 1,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903043,
+            "rank": 2,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903044,
+            "rank": 3,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903045,
+            "rank": 4,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903046,
+            "rank": 5,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903047,
+            "rank": 6,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          },
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "counted_complete": true,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "pid": 1903048,
+            "rank": 7,
+            "refusals": [],
+            "safe_to_continue": true,
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          }
+        ],
+        "safe_to_continue": true,
+        "sampler_position": {
+          "cursor": 512,
+          "epoch": 0,
+          "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+          "size": 169028
+        },
+        "scheduler_step": 1,
+        "skipped_opportunities": 0
+      },
+      "driver_receipt": {
+        "bytes": 1288832898,
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/partial-updates/attempt_000001/driver.pt",
+        "sha256": "1096188967e938bf9d8fe15b4a4d4e6bad983104e1ccf4d840202410c67ea16d"
+      },
+      "ledger": {
+        "active_attempt": null,
+        "actual_adam_total": 20,
+        "attempts": 1,
+        "completed_outer_updates": 1,
+        "consumed_training_questions": 512,
+        "epoch_ends": [],
+        "gradient_micro_batches": 160,
+        "history": [
+          {
+            "abandoned": false,
+            "actual_adam_total": 20,
+            "actual_adam_total_before": 0,
+            "actual_successful_adam_writes": 20,
+            "attempt_id": 1,
+            "completed_before": 0,
+            "config_epoch": 0,
+            "config_sha256": "d9d2474e0c937df643cd89942ede9fd6dd0b8bcd135b017ecaec10dbd2895ce0",
+            "counted_complete": true,
+            "driver_pid": 1902302,
+            "gradient_micro_batches": 160,
+            "opportunities_processed": 20,
+            "rank_receipts": [
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1902722,
+                "rank": 0,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903041,
+                "rank": 1,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903043,
+                "rank": 2,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903044,
+                "rank": 3,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903045,
+                "rank": 4,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903046,
+                "rank": 5,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903047,
+                "rank": 6,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              },
+              {
+                "abandoned": false,
+                "actual_adam_total": 20,
+                "actual_successful_adam_writes": 20,
+                "attempt_id": 1,
+                "completed_before": 0,
+                "counted_complete": true,
+                "gradient_micro_batches": 160,
+                "opportunities_processed": 20,
+                "pid": 1903048,
+                "rank": 7,
+                "refusals": [],
+                "safe_to_continue": true,
+                "scheduler_step": 1,
+                "skipped_opportunities": 0
+              }
+            ],
+            "safe_to_continue": true,
+            "sampler_position": {
+              "cursor": 512,
+              "epoch": 0,
+              "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+              "size": 169028
+            },
+            "scheduler_step": 1,
+            "skipped_opportunities": 0
+          }
+        ],
+        "schema": "FRESH200_OPPORTUNITIES_AND_ACTUAL_WRITES_V1",
+        "skipped_attempts": 0,
+        "skipped_opportunities": 0,
+        "successful_adam_writes_abandoned_attempts": 0,
+        "successful_adam_writes_completed_outers": 20
+      }
+    },
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/audit/partial-updates/attempt_000001/attempt-result.json",
+    "sha256": "aa6bbde4ad41890768c19fba207f169cb188ff038e2bd45d18e1e9a00bd7f1f7"
+  },
+  "cgroup": "/sys/fs/cgroup/freezer/slurm_h100-8/uid_0/job_3336/step_0",
+  "cgroup_gone": true,
+  "cleanup_residual_states": {},
+  "complete_checkpoint_exists": false,
+  "completed_outer": 1,
+  "current_gpu": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "current_queue": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "current_scheduler_read": {
+    "returncode": 1,
+    "stderr": "slurm_load_jobs error: Invalid job id specified\n",
+    "stdout": ""
+  },
+  "data_cursor": 512,
+  "driver_only_state_not_resume": true,
+  "full_resume_possible": false,
+  "gradient_micro_per_rank": 160,
+  "historical_completed1_not_stitched": true,
+  "next_fresh_initial_adam": 0,
+  "next_fresh_initial_outer": 0,
+  "opportunities_per_rank": 20,
+  "original_pids_gone": true,
+  "original_processes": [
+    {
+      "gone": true,
+      "pid": 1902302
+    },
+    {
+      "gone": true,
+      "pid": 1902722
+    },
+    {
+      "gone": true,
+      "pid": 1903041
+    },
+    {
+      "gone": true,
+      "pid": 1903043
+    },
+    {
+      "gone": true,
+      "pid": 1903044
+    },
+    {
+      "gone": true,
+      "pid": 1903045
+    },
+    {
+      "gone": true,
+      "pid": 1903046
+    },
+    {
+      "gone": true,
+      "pid": 1903047
+    },
+    {
+      "gone": true,
+      "pid": 1903048
+    }
+  ],
+  "original_run_result": {
+    "bytes": 22302,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441/run-result.json",
+    "sha256": "54e9ea8cefc44c1c8d49f09dc412849b628a63a026a43acfeeabe39575c0f588"
+  },
+  "original_slurm_exit": "1:0",
+  "parent_binding_sha256": "3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399",
+  "parent_job": "3336",
+  "read_only_observation": true,
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3336-1791435850455709441",
+  "saved_original_scheduler": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "JobId=3336 JobName=gigpo-e1-fresh200-live UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898730 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:12:59 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-08T13:02:36 EligibleTime=2026-10-08T13:02:36 AccrueTime=2026-10-08T13:02:36 StartTime=2026-10-08T13:02:37 EndTime=2026-10-08T13:15:36 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T13:02:37 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1894912 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=128 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=512G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=128 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v17-bf16accum1-nonblocking1/calibration_v1.sbatch /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-nonblocking-v17-repair3332-once-v1/BINDING.json 3b6a6dbdc6f97e34f713d178699564542fcfb29b88a241f80a814d9d5fad0399 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v17-bf16accum1-nonblocking1 /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env WorkDir=/root StdErr=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3336.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-live-3336.log Power= TresPerNode=gres:gpu:h100:8 \n"
+  },
+  "saved_original_scheduler_observation_utc": "2026-10-08T05:20:34.986437+00:00",
+  "saved_original_scheduler_record": {
+    "bytes": 8197890,
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3336-ACTUAL-STATUS-v9-failure-ledger.json",
+    "sha256": "587d363e3b2e8608aa9755d9531baae312ad0d8cfefa3615a937759474551a3c"
+  },
+  "scheduler_step": 1,
+  "signal_sent": false,
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "status": "ACTUAL_OWN3336_FAILED_METADATA_SERIALIZATION_NO_COMPLETE_CHECKPOINT",
+  "utc": "2026-10-08T05:24:16.863536+00:00"
+}
