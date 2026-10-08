@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "corrected_unpublished_candidate": true,
+  "does_not_prove_live_completion": true,
+  "independent_review": "audit_opsd_acceptance APPROVE; actual frozen M4 checked_json/validate_exit_proof and preserved tmux proof exercised",
+  "manifest_sha256": "89d815f0eaa93276080ccc67bd763903adcd6939414b5b2aaef24b619a53a220",
+  "real_end_audit_started": false,
+  "reviewed_unix": 1791437262.3511198,
+  "root_cpu_fixtures": {
+    "failed": 0,
+    "passed": 14,
+    "skipped": 0
+  },
+  "schema": "opsd-m1-acceptance-helper-independent-review-v1",
+  "source_sha256": "a8de0ff1ff7256b6a9dc085185485d35a85bddefb865fa778df0db90ad0ea8d0"
+}

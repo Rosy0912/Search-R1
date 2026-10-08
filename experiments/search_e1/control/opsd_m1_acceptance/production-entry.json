@@ -1,0 +1,25 @@
+{
+  "schema": "m1-independent-cpu-completion-config-v1",
+  "uid": 1005,
+  "m1_run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "run_dir": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb",
+  "controller_start_proof": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/m1-controller-live-identity-20261008.json",
+  "preservation_receipt": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/m1-tmux-exit-status-preservation-20261008.json",
+  "diagnostic_source": "/data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_debug",
+  "debug_source_manifest": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/gpu-source-manifest.json",
+  "runtime": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+  "runtime_manifest": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/receipts/preparation-3-runtime.sha256.json",
+  "weight_manifest": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/weight-manifest.json",
+  "cases_dir": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases",
+  "region_helper": "/data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_token_region_analysis/summarize_regions.py",
+  "prior_full_vocab_proofs": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/first-cw-existing-full-vocab-cpu-reconstruction-20261008.json",
+      "sha256": "2b5ff309b67ad5371dcc6da3bfe4f6b19731e2a7f3864f9246d014cd2a3914e8"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/first-three-cases-verified-local-copy-proof-20261008.json",
+      "sha256": "f7c83e57cd98281d0774c9129c7582937c2588702379c2e6d0ee725c8219fb77"
+    }
+  ]
+}

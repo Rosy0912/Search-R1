@@ -1,0 +1,26 @@
+{
+  "schema": "m1-cpu-acceptance-source-manifest-v1",
+  "files": {
+    "test_verify_m1_completion.py": {
+      "sha256": "b7c5fa64bb3488b461397f7a8d83f02d3f22b2cef402bde02f09ee59a253423f",
+      "bytes": 15330
+    },
+    "production-entry.json": {
+      "sha256": "a11f9b1c62f8bd765f5ca677b57865555422eae8e677f54a137d3b8236499421",
+      "bytes": 1738
+    },
+    "verify_m1_completion.py": {
+      "sha256": "a8de0ff1ff7256b6a9dc085185485d35a85bddefb865fa778df0db90ad0ea8d0",
+      "bytes": 35761
+    },
+    "README.md": {
+      "sha256": "43647178add50ef6933a0c0f8121e9e5ffb02f7fac82bdebf221db6c636ab1f7",
+      "bytes": 7024
+    },
+    "fixture-tmux-preservation-binding.json": {
+      "sha256": "d872cfc0da2329e319167f6d8d6ae85ac48ce309d21fd83d92c6b75bf61ed45b",
+      "bytes": 1369
+    }
+  },
+  "scope": "Corrected local candidate supersedes unpublished bcbb4ec4/30cb18e8; root publication required before node execution"
+}
