@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/ssh -B en0 -oProxyCommand=none -oProxyJump=none -oControlMaster=no -S none "$@"
