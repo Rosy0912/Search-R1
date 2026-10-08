@@ -1,0 +1,72 @@
+{
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Optional standalone job3337 read-only observer template and its directly extracted observer dependency; no training/control/binding changes reviewed or authorized."
+  },
+  "template": {
+    "path": "work/read_gigpo_job3337_retained18_actual_template.sh",
+    "bytes": 4715,
+    "sha256": "e6acd38449f6b3ec4f60ba1035ca8b92cfc6a3475cb99cb31e1df416e3f52bc0"
+  },
+  "extracted_observer_dependency": {
+    "path": "work/read_gigpo_job3332_actual.py",
+    "bytes": 2852,
+    "sha256": "2b39987c19bf3ead89d868de33ad7021a838314b16bd3ade1f282810471fe1df",
+    "old_script_imported_or_executed": false,
+    "retired_route_code_executed": false
+  },
+  "static_checks": [
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 4,
+      "result": "The template contains an unused local import of the existing control module. Its current import-time scope reads local route configuration and defines functions; the guarded CLI main, retired-route transport, credential synchronization and probe functions are not invoked. This import is distinct from the old3332 script, which is never imported. No model or candidate is imported remotely."
+    },
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 5,
+      "result": "The old file is parsed as AST and only its literal code assignment is extracted. Its old route construction and executable top-level calls are not imported or executed. The extracted query/read code is retargeted from3332 to3337."
+    },
+    {
+      "file": "work/read_gigpo_job3332_actual.py",
+      "line": 4,
+      "result": "The extracted remote observer only queries scheduler/queue and GPU compute telemetry, reads matching run metadata and bounded log tails, and prints JSON. There is no model/candidate import, GPU computation, signal, job submission/cancellation, remote file write/deletion or credential operation."
+    },
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 8,
+      "result": "The3337 additions only read metadata and original Ray main-task log heads/tails plus file identity/size/time. They do not attach to Ray or modify live processes, trainer state, buffers, probability rules or counters."
+    },
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 24,
+      "result": "Remote Python uses an empty environment and -E -B -S, and the route uses the retained18 public configuration with explicit identity selection, batch mode, strict host-key checking, no host-key updates and single connection attempt. Credentials are referenced for existing SSH authentication only; none are rewritten or synchronized."
+    },
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 38,
+      "result": "Only a new local observation report is created with exclusive mode x. OBSERVATION_TAG must be substituted with a unique filename tag before each later use. Any observation/transport/parse failure exits this standalone reader; it has no linkage that pauses or gates healthy3337 training."
+    }
+  ],
+  "non_blocking_observations": [
+    {
+      "file": "work/read_gigpo_job3337_retained18_actual_template.sh",
+      "line": 28,
+      "observation": "The SSH options are strict, while the exact gateway/IP/identity values are read from the retained18 public configuration. This template does not itself pin those three values to the once-control constants; review does not claim that an arbitrary changed configuration retains the same endpoints. Root reports actual h100-8 hostname observations twice; this reviewer did not execute an additional observation. The accepted V1 template stays unchanged and this dependency is not a training blocker."
+    }
+  ],
+  "review_limits": {
+    "static_only": true,
+    "reader_executed": false,
+    "tests_or_imports_executed": false,
+    "ssh_or_gpu_access": false,
+    "implementation_modified": false,
+    "actual_training_health_proven": false,
+    "training_waits_for_this_review": false,
+    "stop_or_training_mutation_authorized": false,
+    "remote_route_configuration_read_by_reviewer": false
+  }
+}

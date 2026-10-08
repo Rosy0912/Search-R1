@@ -1,0 +1,11 @@
+# Job3337 consumed once-submission receipt and reviewed read-only observer
+
+Scientific source remains published commit `ebe91bfebd56c3bd445219dcd94342d815f899f0`. Frozen v18 runtime/control publication remains commit `82afc6045ad5378c237653ad5494edee6bdddb23`, namespace `ops/gigpo/jsonmetadata-candidate-v18-20261008`; its 61-file snapshot and local publication receipt are preserved unchanged.
+
+The consumed once-submit receipt records actual job3337 submitted exactly once with returncode 0. It sent no signal, launched no extra validation job, and started fresh at zero outer updates and zero Adam writes. The prior failed job3336's real one outer update and twenty Adam writes per rank were not stitched into this fresh run. These are saved historical observations, not claims of continuing live state or training success.
+
+Saved read-only actual observations v1 at 2026-10-08T05:35:03.929038+00:00 and v2 at 2026-10-08T05:36:08.003092+00:00 record Slurm RUNNING on h100-8; v2 identifies run `gigpo-e1-fresh200-live-job3337-1791437756282298127`. They do not establish completed counted updates or repaired-training acceptance.
+
+The job3337 reader template and exact direct AST dependency are copied unchanged with the final independent nonauthor PASS_STATIC report. The dependency's old standalone route is not used: the template extracts its reviewed AST symbol rather than executing or importing the old script. The template also contains an unused local import of the existing control module; its guarded main and transport/probe functions are not invoked. That module and retained18 public route configuration remain existing local runtime dependencies outside this frozen two-script scope. Concrete gateway/IP/identity are chosen by the public configuration and are not hardpinned by this template. No credential/configuration file is copied here. These limits are explicitly recorded in the final review.
+
+The publisher did not execute either reader, test it, SSH to experiment nodes, signal/stop/submit any job, replay a consumed controller, or alter the running training. The receipt, startup observations, two scripts and review are the only implementation/evidence payload. Git publication receipt is outside its own manifest to avoid circular hashes. Previous namespaces and receipts remain immutable.

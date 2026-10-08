@@ -1,0 +1,57 @@
+{
+  "existing_control_import_and_publiccfg_dependencies_outside_reviewed_two_script_scope": true,
+  "files": [
+    {
+      "bytes": 4353,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/JOB3337-READONLY-OBSERVER-INDEPENDENT-REVIEW-v1.json",
+      "sha256": "06dc5e7cba5fb2e29b9e27d4b2b5ac36307a9677ff555a1750533b4f4363fcbd"
+    },
+    {
+      "bytes": 2318,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/README.md",
+      "sha256": "da2fd52f0ea20ea043411e68c3f6ffe611d96c51bdca8bf2c5edd183b7729392"
+    },
+    {
+      "bytes": 3005,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/evidence/JOB3337-ACTUAL-ONCE-SUBMISSION-RECEIPT-v1.json",
+      "sha256": "1bdde3b0e17a78b2fd0ca791460745c8d99317fa859728826cc12ed61ffb7311"
+    },
+    {
+      "bytes": 6710,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/evidence/RETAINED18-JOB3337-ACTUAL-STATUS-v1-post-submit.json",
+      "sha256": "d97e78fd181fa4e16f5ca3d567333a8ca797cef490d46f5c05ee7b62622d22d6"
+    },
+    {
+      "bytes": 8771,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/evidence/RETAINED18-JOB3337-ACTUAL-STATUS-v2-startup.json",
+      "sha256": "0be4cc37bbed17e5b6f74c691c598cc74698cc0ecd389de3e280c4d4f6928d20"
+    },
+    {
+      "bytes": 2852,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/readers/read_gigpo_job3332_actual.py",
+      "sha256": "2b39987c19bf3ead89d868de33ad7021a838314b16bd3ade1f282810471fe1df"
+    },
+    {
+      "bytes": 4715,
+      "path": "ops/gigpo/job3337-actual-once-and-readonly-observation-20261008/readers/read_gigpo_job3337_retained18_actual_template.sh",
+      "sha256": "e6acd38449f6b3ec4f60ba1035ca8b92cfc6a3475cb99cb31e1df416e3f52bc0"
+    }
+  ],
+  "historical_saved_observations_not_current_live_proof": true,
+  "job_id": "3337",
+  "observer_review_sha256": "06dc5e7cba5fb2e29b9e27d4b2b5ac36307a9677ff555a1750533b4f4363fcbd",
+  "observer_review_status": "PASS_STATIC",
+  "once_receipt_status": "SUBMITTED_EXACTLY_ONCE",
+  "publication_receipt_excluded": true,
+  "reader_executed_by_publisher": false,
+  "schema": "GIGPO_JOB3337_ACTUAL_ONCE_READONLY_OBSERVER_PUBLICATION_MANIFEST_V1",
+  "self_excluded": true,
+  "sensitive_scan": {
+    "findings": [],
+    "incremental_text_files": 7,
+    "status": "PASS_NO_HIGH_CONFIDENCE_CREDENTIAL_MATCH"
+  },
+  "source_commit": "ebe91bfebd56c3bd445219dcd94342d815f899f0",
+  "training_altered_by_publisher": false,
+  "v18_implementation_publication_commit": "82afc6045ad5378c237653ad5494edee6bdddb23"
+}
