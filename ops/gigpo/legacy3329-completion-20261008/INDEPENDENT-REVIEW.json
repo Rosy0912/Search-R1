@@ -1,0 +1,59 @@
+{
+  "schema": "LEGACY3329_COMPLETION_V2_INDEPENDENT_STATIC_REVIEW_V1",
+  "status": "PASS",
+  "independent_review": true,
+  "non_author_reviewer": true,
+  "clean_context_review": true,
+  "reviewer": "/root/legacy3329_completion_clean_review",
+  "reviewed_utc": "2026-10-08 03:22:42 UTC",
+  "review_scope": "Static inspection only of the candidate, exactly-once transport, and saved read-only evidence. Neither candidate nor transport was executed; no SSH or tests were run.",
+  "source_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/close_job3329_legacy_controller_once_v2.py",
+  "source_sha256": "660dc498af0d2ee3540e25052cc290a9226a26aa155ddeab8883debbde8b1d9f",
+  "transport_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/execute_legacy_controller_repair3329_v2_once.py",
+  "transport_sha256": "58b0ad87852aa288c6ab8ece03c384f6ca0f5de7a0c6853b215994f463f0f6c2",
+  "evidence": [
+    {
+      "path": "outputs/gigpo-e1-instruct200/RETAINED18-JOB3332-ACTUAL-STATUS-v7-target-stepd.json",
+      "sha256": "488421ab18cd4807c47987ef1e8a6b22bbb562860d0392e76f7b39dcd96af21d"
+    },
+    {
+      "path": "outputs/gigpo-e1-instruct200/RETAINED18-JOB3332-ACTUAL-STATUS-v5-real-completion-diagnostics.json",
+      "sha256": "b711c911a57e933bc3188fbcf6b19a79743511a3a55baea3b13b54fdb8c20478"
+    },
+    {
+      "path": "outputs/gigpo-e1-instruct200/HUMAN-PREEMPT3329-ACTUAL-RECEIPT-v1.json",
+      "sha256": "1fc053cb565cb4e846a31cf43a26c36cffec0a1381acf47b615735a00d0f1b7c"
+    }
+  ],
+  "authorized_scope": {
+    "host": "h100-8",
+    "cancelled_job": "3329 / search-g1-formal-inline-ef498ac3 / StartTime=2026-10-07T19:10:26",
+    "existing_queued_job": "3332 / gigpo-e1-fresh200-live / SubmitTime=2026-10-07T19:46:26",
+    "binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+    "action": "One append-only temporary resolver alias to permit the original cancelled batch stepd to deliver its own completion RPC; then comment only the uniquely owned prefix's first byte."
+  },
+  "accepted_checks": [
+    "Cancellation intent is bound to authorization bytes and exact original job identity; queued GiGPO command and frozen binding are checked.",
+    "Live runtime guards require h100-8/root, target job COMPLETING, existing job 3332 PENDING, no GPU compute applications, no listed task PIDs, no target cgroup, exactly one target batch stepd, recent target-prefixed legacy DNS failure, and a local current-controller listener.",
+    "No new submission, service restart, synthetic completion/exit code, Slurm state override, task PID kill, or training/source/checkpoint modification appears in the candidate or transport.",
+    "Watchdog is detached from SSH and atomically publishes a complete ready record before append; the parent checks its PID, source SHA, deadline, and live status.",
+    "The same-line full unique ownership prefix precedes h100-16, removing the marker-only short-write ambiguity. Cleanup verifies the full unique prefix and changes only its first byte.",
+    "Cleanup rechecks the current hosts path and refuses success while an active legacy alias remains or the checked inode differs.",
+    "The transport binds both reviewed SHAs, uses exclusive local and remote staging records to prevent replay, and fixes the retained18 target/gateway route with explicit SSH host-key controls and Mac proxy."
+  ],
+  "limitations": [
+    "This PASS approves only the inspected static implementation. It proves neither actual Slurm cancellation acknowledgment/resource release nor job 3332 allocation, GPU behavior, training startup, or scientific acceptance.",
+    "The resolver alias is temporarily global to h100-8. The stepd inventory guard narrows known Slurm consumers but does not make resolver changes process-local.",
+    "flock protects cooperating writers only. A noncooperating in-place hosts rewrite can race range checks; the code provides no absolute compare-and-swap guarantee.",
+    "Commenting the owned line restores resolver semantics, not original file bytes; the inactive line or a harmless incomplete owned prefix may remain.",
+    "The 65-second watchdog deadline triggers a cleanup attempt, not an absolute cleanup completion bound. Kernel/file-system blocking, external lock holders, clock changes, watchdog death, or machine failure can delay or defeat cleanup.",
+    "Copied ownership prefixes under external atomic replacement are rechecked, but repeated replacement, duplicate ownership markers, changed owned ranges, unrelated newly active legacy aliases, or permission/I/O errors can still cause explicit restoration failure.",
+    "Failure or unknown transport outcome must be observed through the durable records and current hosts/Slurm state; neither transport nor repair may be replayed automatically.",
+    "All actual runtime guards must still pass, and actual main/watchdog cleanup receipts plus a fresh current-hosts read must be verified before claiming the temporary alias was removed."
+  ],
+  "runtime_acceptance_claimed": false,
+  "gpu_or_training_acceptance_claimed": false,
+  "tests_run": false,
+  "ssh_run": false,
+  "candidate_or_transport_executed": false
+}
