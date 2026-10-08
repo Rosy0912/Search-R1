@@ -1,16 +1,24 @@
 {
   "files": {
     "README.md": {
-      "bytes": 3014,
-      "sha256": "1b7999bf0d3e5e8aa092ce61012b7fc3cd6391a5a250d6bc8b71aef190962744"
+      "bytes": 5211,
+      "sha256": "72bba029527bdb846fdc92aa6abf69a1f3827da8f724a4d22ea6e5fa6739cd78"
     },
     "archive_readonly_snapshot.py": {
       "bytes": 8787,
       "sha256": "ac8fbee9e95d526667ee2c385d9e310c57aad4497379571a95818cca63666c75"
     },
+    "read_checkpoint_cpu.py": {
+      "bytes": 32648,
+      "sha256": "7b26007cc4b0a79930bea938cf8e902ba6773613afcb690b492c2fd47cf37e03"
+    },
     "read_cp31_cpu.py": {
       "bytes": 14350,
       "sha256": "bd144d2a248fa3207749b37f6a182db519f3d55929960ec237fc548a3806d940"
+    },
+    "test_read_checkpoint_cpu.py": {
+      "bytes": 18053,
+      "sha256": "a1058f7f9c3ad1a11ed9e17a366e59c64ffbafce1e82ad9855088a6e83a6c833"
     }
   },
   "schema": "opsd-online-private-readonly-monitor-source-v1",
