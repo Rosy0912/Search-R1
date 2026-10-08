@@ -1,5 +1,5 @@
 {
-  "scope": "Retained18 v11 immutable path fix and terminal-bound continuation; code/config only",
+  "scope": "Retained18 v11 immutable path fix + actual3335 launch config + JSON-only credited outer/write observer; code/config only; running V11 source unchanged",
   "files": {
     "FILE-MANIFEST.json": {
       "bytes": 164363,
@@ -30,8 +30,8 @@
       "sha256": "fda4557f3158693d073082fec118105ac9a5ba4f7be7f2ccb2ae0a1f93426b1d"
     },
     "deployment.json": {
-      "bytes": 1244,
-      "sha256": "d8bd9f3741f7e1c5616a452c818fc89ce29fdd6c91edc301ddedd2445760518a"
+      "bytes": 1306,
+      "sha256": "7a22e860f62d13f1cfa4290351d7e47457b50e317ae922f89f73e4f9f11e9745"
     },
     "direct-release-v10.json": {
       "bytes": 3931,
@@ -6302,8 +6302,8 @@
       "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
     },
     "poll_retained18.py": {
-      "bytes": 4301,
-      "sha256": "12ef31a8e1fa1fab4564ebe0752fd90db90510043107725a12e738099fe4cb3a"
+      "bytes": 5710,
+      "sha256": "8f7bb3b1ad2bc9b2d505bbfafda0ffc926a83da2a132907d3c2041741e320c2b"
     },
     "ssh_retained18.py": {
       "bytes": 2662,

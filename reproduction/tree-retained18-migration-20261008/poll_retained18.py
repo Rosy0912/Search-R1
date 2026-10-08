@@ -36,6 +36,27 @@ for relative in ['output/current-chain-migrated.json','output/fresh-initializati
  if p.is_file():
   raw=p.read_bytes();out['native_json'][relative]={'sha256':hashlib.sha256(raw).hexdigest(),'value':json.loads(raw)}
 out['native_parent_loaded']='output/current-chain-migrated.json' in out['native_json']
+decisions=[]
+for p in sorted((run/'checkpoints/training_state/attempt-results').glob('attempt-*.json')):
+ raw=p.read_bytes();value=json.loads(raw)
+ ranks=value.get('all_rank_result',{}).get('ranks',[])
+ decisions.append({'path':str(p),'sha256':hashlib.sha256(raw).hexdigest(),
+  'status':value.get('status'),'attempt_id':value.get('attempt_id'),
+  'accepted_outer':value.get('accepted_outer'),
+  'actual_completed_optimizer_calls_per_rank':value.get('actual_completed_optimizer_calls_per_rank'),
+  'rank_updates':[{'rank':r.get('rank'),'optimizer_calls':r.get('optimizer_calls'),
+   'opportunities_processed':r.get('opportunities_processed'),
+   'opportunities_skipped':r.get('opportunities_skipped'),
+   'scheduler_before':r.get('scheduler_before'),'scheduler_after':r.get('scheduler_after'),
+   'direct_rank_record':r.get('direct_rank_record')} for r in ranks]})
+out['attempt_result_summaries']=decisions
+latest=out['native_json'].get('checkpoints/training_state/rolling-completed/latest.json',{}).get('value',{})
+if latest.get('manifest_path'):
+ p=Path(latest['manifest_path'])
+ if p.is_file() and p.resolve().is_relative_to((run/'checkpoints/training_state/rolling-completed').resolve()):
+  raw=p.read_bytes();actual=hashlib.sha256(raw).hexdigest()
+  out['latest_rolling_manifest']={'path':str(p),'sha256':actual,
+   'matches_latest_pointer':actual==latest.get('manifest_sha256'),'value':json.loads(raw)}
 for relative in ['resource-samples.jsonl','stage.log','guard.log','retriever.log']:
  p=run/relative
  if p.is_file():

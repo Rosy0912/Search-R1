@@ -8,7 +8,9 @@
   "once_intent": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-retained18-current200-v11-6efb604.json",
   "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
   "local_package": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11",
-  "remote_submitted": false,
+  "remote_submitted": true,
   "script_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18-V11-6efb604.sbatch",
-  "script_sha": "4c63bdc4428d470d34a52ec956e87822a932d82b80c5c3f95cabce9dce4df27a"
+  "script_sha": "4c63bdc4428d470d34a52ec956e87822a932d82b80c5c3f95cabce9dce4df27a",
+  "job_id": 3335,
+  "run_id": "tree-current200-continue-3335"
 }
