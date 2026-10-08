@@ -1,3 +1,5 @@
 {
-  "stop_owned_baseline_for_debug.py": "6af2d4e77d115d93473d01ada0d448c7b501b5fc24aa44cde04bf8dc11ed4f1b"
+  "README.md": "69f01bd96bb6cbfc02f76a8f14b2984f4739020dab13247095d6be0721a292da",
+  "stop_owned_baseline_for_debug.py": "6af2d4e77d115d93473d01ada0d448c7b501b5fc24aa44cde04bf8dc11ed4f1b",
+  "finalize_stop_receipt.py": "6c9de655aed5ccdcd7562382b39a256328d5e6f6926341c7444fc7a01d5541f5"
 }

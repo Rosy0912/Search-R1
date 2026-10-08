@@ -1,0 +1,92 @@
+{
+  "status": "STOPPED_BY_LATEST_HUMAN_FOR_DEBUG",
+  "time": 1791431417.582475,
+  "run_id": "914bfff786c84ede8d82414dff65f60e",
+  "authorization_path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/preserved/user-stop-eight-evaluation-debug-20261008T034935Z/authorization-before-signals.json",
+  "authorization_sha256": "e0a808b7765a34ff57c5178565ec80a520b577429adf23bbe8b58e98e551a595",
+  "source_commit": "e820ed6d9811e1001091a42cd0a73579be307923",
+  "targets_terminal": {
+    "2459676": null,
+    "3960546": null,
+    "3960643": null,
+    "3960647": null,
+    "3960648": null,
+    "3960649": null,
+    "3960650": null,
+    "3960651": null,
+    "3960652": null,
+    "3960653": null
+  },
+  "retriever_kept": {
+    "pid": 2239529,
+    "state": "S",
+    "starttick": 914664099
+  },
+  "completed_opsd_updates": 3156,
+  "partial_rows": 38592,
+  "final_seven_partial_shards": [
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-0.jsonl",
+      "rows": 4800,
+      "bytes": 21152593,
+      "sha256": "bcd58f9729694503576ac8f42c4cca71299fcad54304eccdb579f61e1cafd89f"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-1.jsonl",
+      "rows": 4800,
+      "bytes": 21041897,
+      "sha256": "4e28d5bddd0c6b2e54ffa7a33cfbc23a71ffa45631b2ff2943774c5774cfdb50"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-2.jsonl",
+      "rows": 4864,
+      "bytes": 21574135,
+      "sha256": "e5f88422a7f8670e22a8fbd1faf4a4454953d88f4245c5d209219da769df13ad"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-3.jsonl",
+      "rows": 4800,
+      "bytes": 21195523,
+      "sha256": "178cd9106965c6d9671299cb280b37e54548b09511ce2f8db2126cfa4d6e70ea"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-4.jsonl",
+      "rows": 4864,
+      "bytes": 21433590,
+      "sha256": "16091de41f2091d3087a22eae1e1cf0a4ba5a7e4b1ace4fd64cd059c263eafd8"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-5.jsonl",
+      "rows": 4800,
+      "bytes": 21334983,
+      "sha256": "c656ce38bc74edf213e5f516c8d9547018ac17eb5caadb798b907250deb8c6bc"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-6.jsonl",
+      "rows": 4864,
+      "bytes": 21653707,
+      "sha256": "15f47705114c3f505c53dcc7d1f8f7cb31a42b839e35f6f5877e650952e2a8ec"
+    },
+    {
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-final-test.jsonl.parts/rollouts-7.jsonl",
+      "rows": 4800,
+      "bytes": 21332182,
+      "sha256": "0fa084177bc8dc45c8ea6d69f1003fb853d030bce755bb90be9c177bfd9a90d4"
+    }
+  ],
+  "partial_is_not_complete_final_evaluation": true,
+  "initial_stop_evidence_failure": "After initial exact SIGTERM actions, exited /proc environ became inaccessible; all original targets independently confirmed absent. This finalizer sends no signals.",
+  "compute_apps": [
+    "GPU-6f04d45c-a34d-6617-030d-0635365f5395, 2239529, 576"
+  ],
+  "actual_memory_free": [
+    "0, GPU-3dd530f7-5348-350d-02cc-183445e1ecbe, 24208",
+    "1, GPU-d1f1df21-5faa-e406-00e0-dddab33148c7, 24208",
+    "2, GPU-a291bae9-7444-ba85-f4d0-64ece80f706c, 24208",
+    "3, GPU-99dbcc6b-11ee-aa49-74bc-f3e73e10e59b, 24208",
+    "4, GPU-1b18ee4f-7486-4183-bf3e-3290d8133db6, 24208",
+    "5, GPU-0f337443-2d5c-cac7-51e9-1f628f90a2bf, 24208",
+    "6, GPU-2d1c2f87-07d3-0c7a-ef9c-20f7ee656e45, 24208",
+    "7, GPU-6f04d45c-a34d-6617-030d-0635365f5395, 23626"
+  ]
+}
