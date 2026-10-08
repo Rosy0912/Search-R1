@@ -54,6 +54,37 @@ the replica needs further same-H100 durable storage before that deadline.
 Native manifests retain `automatic_resume_supported=false` and
 `exact_executor_resume_verified=false`; copying does not upgrade those limits.
 
+## Existing r2 publication recovery
+
+The r2 copy finished both the source-stream and full independent destination SHA
+passes for all nine native files (49,376,545,288 bytes) at 08:58:20 UTC. Its actual
+failure was `renameat2(RENAME_NOREPLACE)` returning EINVAL on this NFS mount;
+directory fsync had succeeded. The original request remains FAILED in its original
+status, log and journals, and its prepublication `.complete` bytes are archived.
+
+`finalize_existing_backup.py` validates the existing native13 manifest and fixed
+inventory hash, nine successful target SHA receipts, sizes and unchanged target
+stats, then publishes the existing copy. It uses the same own-writer flock, an
+exclusive new request and an exclusive empty final-directory reservation. Ordinary
+atomic NFS rename replaces only this newly reserved empty directory. Every
+previously existing final path is rejected. File and directory fsync errors remain
+fatal. A new completion receipt is written only after the rename succeeds.
+
+The isolated finalize request `retained18-native-finalize-r2-20261008` completed at
+09:09:01 UTC, using entry SHA256
+`f1f0b524a1a83be194118b9cdd201b504c84b9c54a685266dec0cc6051f62863`.
+It copied zero new native bytes and performed no repeated large native hash pass,
+reusing the frozen prior full verification evidence. Its new published `.complete`
+SHA256 is `b8009471f0dff57fcff35ac2c950290ef0077e64b3d94756d5c1cc9f22033309`.
+The receipt explicitly distinguishes recovery success from original r2 failure and
+retains the native13/260 Adam-call identity, independently of later live training.
+It records successful file/directory synchronization calls without claiming a
+server power-failure guarantee or retention after the provider's release date.
+
+`deploy_finalize_existing.py` deploys this small helper and journals its one launch.
+It refuses to relaunch any existing finalize intent. Read both the original failed
+status and the new recovery status/complete receipt when auditing this boundary.
+
 Local entry wrappers use the pre-existing strict `../tree-speed-repair-20261008/ssh_retained18.py`
 management helper. No credentials, model weights, data or environment are included
 in this source publication.
