@@ -1,0 +1,51 @@
+{
+  "schema": "C0-recorded-curve-public-asset-manifest-v1",
+  "source_facts_sha256": "b519d7d3a540e3fbea27f93a7e9d6e0149b268714af1fe7f33ec614574bcb982",
+  "aggregate_sha256": "1aa7bd93776a50570a23c0065e2d2ccbd8e7a3f1289959cf7835455c126e70a0",
+  "coverage": {
+    "outer_rows": 10,
+    "actual_adam_updates": 100,
+    "pair_exposures": 3012,
+    "valid_policy_tokens": 583074,
+    "all_recorded_losses_and_norms_finite": true,
+    "continuous_update_ids": [
+      1,
+      100
+    ]
+  },
+  "scope": "Local derived TRAIN scalars across ten different cohorts; not fixed heldout512 or scientific/causal acceptance",
+  "actual_derivation_returncode": 0,
+  "visual_verified": true,
+  "files": [
+    {
+      "path": "experiments/search_e1/control/c0_recorded_curve_20261009/README.md",
+      "bytes": 709,
+      "sha256": "c45386b20369f8c5743387a7f99be8004f4383e86f39b2a1e8e9abca5681a52a"
+    },
+    {
+      "path": "experiments/search_e1/control/c0_recorded_curve_20261009/derive_c0_curve.py",
+      "bytes": 13402,
+      "sha256": "4a3e80cf218f3c263e676b2f6974e2c3e240ac1d034a87c678289ddf7fe88777"
+    },
+    {
+      "path": "experiments/search_e1/reports/c0-ten-outer-recorded-20261009/C0-ten-outer-curve.csv",
+      "bytes": 3563,
+      "sha256": "e4c34cd051fe3c9fd278ec4c3d6cb0331ff43026b9a3fd5d7a00afbca11f8106"
+    },
+    {
+      "path": "experiments/search_e1/reports/c0-ten-outer-recorded-20261009/C0-ten-outer-curve.notes.md",
+      "bytes": 1384,
+      "sha256": "33e6dfd553d3577016b3b0d740764bbe4aaf1ee14482841d925fdad417646840"
+    },
+    {
+      "path": "experiments/search_e1/reports/c0-ten-outer-recorded-20261009/C0-ten-outer-curve.png",
+      "bytes": 391965,
+      "sha256": "8bee7d2bae8badda375994cb8635c06c55c0dd0f5a6425586b61310080ae0dd4"
+    },
+    {
+      "path": "experiments/search_e1/reports/c0-ten-outer-recorded-20261009/C0-ten-outer-curve.svg",
+      "bytes": 279630,
+      "sha256": "cea6c54c40e53ed50cb105e3dfe3f02586880f9b999255d3851147773d8be260"
+    }
+  ]
+}

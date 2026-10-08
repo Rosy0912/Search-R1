@@ -131,3 +131,11 @@ Mac-only空目录收尾修复已在独立275aa9bd561f6c9d9694c097132d82204062f74
 主driver1894801及共同基线2009320持续运行；05:08 CST只读观察先数到267完整JSONL，再读到269原生完成状态，两条在顺序读取间完成，不是覆盖缺失或失败。该部分结果不计算最终EM。后续训练和评测继续自动执行，备份不获取训练锁、不成为启动条件。
 
 K4受保护archive的05:12 CST新快照为187完成、188进入，186/187严格TRAIN reward为0，187裁剪前gradnorm0.027有限，未见新增fatal或退出。最新固定512仍150步230/512；五套669文件冻结SHA通过。此处记录已知TRAIN失效后续，不把旧巨大gradnorm重复称为当前尖峰，也不把不同TRAIN批次当heldout曲线。原作业、GPU0–3他人任务及共享检索均未改动。
+
+## 独立保存曲线、debug 与后续备份范围
+
+C0十轮已提交的记录曲线和CSV产出，数据逐行核对100次Adam、3012pair曝光、583074有效token；图上注明各outer是不同TRAIN cohort，不能称固定512收益曲线。实际Mac派生源逐字节保存在control/c0_recorded_curve_20261009，聚合图/CSV在reports/c0-ten-outer-recorded-20261009；私有源事实、完整token和问题不入Git。固定效果仍只有C0完整227/512，共同零adapter基线05:23 CST实际372原生行、随后376状态，八worker运行，尚无完整基线或C1结果。
+
+独立备份范围核对确认70个outer末CP队列不覆盖全部sampling/HTTP/token/top32/NPY、正式评测及driver终态。后六组将复用已实际接受的固定files-from、direct rsync、source SHA及metadata前后/本机全SHA流程，闭合一组即可保存，不等全部70结束。zero/P/J的可重建cpu-merge/model缓存不重复复制，全部FP16模型身份、merge请求及实际退出、生成/HTTP、统计票据保留。C0旧成品保持不覆盖。
+
+为给后续完整debug预留本机容量，已发布的Mac-only标准PAX tar/gzip1入口在05:29 CST实际启动，PID30463/UID501，根持有unified95780；source3d1bdfcd03f97efab8e6ced7f19faa1262f8db4a、manifest826da43a6253e45e01477773ae58ca1988ec4b4c4a9df133da004de15003a21e，不可变entry629078fce88fa7e2d3f173b8643adc618c08c9df。它仅处理原full192已闭合且全SHA接受的6547个JSON/JSONL共22,419,590,028字节，56个NPY共16,795,620,352字节保持原样。写时重新核source SHA/metadata，完成后独立流式逐成员完整SHA及gzip footer验证，不产生22GB解包副本。当前仅启动，不能称完成或已节省空间；全部原文本与Node原件保留，不自动删除，不碰训练锁、GPU、模型或HTTP。
