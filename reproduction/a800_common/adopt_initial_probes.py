@@ -43,6 +43,7 @@ BF16_DELTA_SOURCE_FILES = frozenset((
     'verl/trainer/ppo/ray_trainer.py',
     'reproduction/common8/precision_evidence.py',
     'reproduction/common8/precision_contract.py',
+    'reproduction/common8/update_evidence.py',
 ))
 ORIGINAL_HYDRA_OUTPUTS = {
     'outputs/2026-10-08/11-08-49/.hydra/config.yaml':

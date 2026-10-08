@@ -6,6 +6,7 @@ from pathlib import Path
 from reproduction.common8.formal_contract import (
     CONTRACT_KIND, SAFETY_MODE, TARGET_UPDATES, assert_formal_run,
 )
+from reproduction.common8.topology import world_size
 
 
 LEGACY_METRICS=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
@@ -43,7 +44,8 @@ def record(step,metrics,probe_version,attempt_result=None):
     if inline:
         assert isinstance(attempt_result,dict) and attempt_result['status']=='complete'
         assert attempt_result['all_ranks_agreed'] is True
-        assert type(attempt_result['real_rank_count']) is int and attempt_result['real_rank_count']==8
+        assert type(attempt_result['real_rank_count']) is int and attempt_result['real_rank_count']==world_size(run), \
+            'Completed attempt rank count differs from the actual run topology'
         assert attempt_result['logical_update']==step and attempt_result['completed_outer']==step
         assert attempt_result['complete_outer'] is True and attempt_result['scheduler_advances']==1
         successes=attempt_result['optimizer_writes_this_attempt']

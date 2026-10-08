@@ -1,29 +1,33 @@
 {
-  "schema_version": 1,
-  "role": "a800_bf16_initial_probe_source_delta",
-  "original_run_id": "6de29bcb7be741cfa1bfacdf9e34efc9",
-  "original_source_commit": "f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c",
-  "target_precision_profile": "bf16_policy_fp32_master",
   "changes": {
-    "verl/workers/actor/dp_actor.py": {
-      "old_sha256": "a6b46ba64cc307875bb39c42f613f9e2b13255ad42c67c69130c76c7dcbf82e0",
-      "new_sha256": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e"
-    },
     "reproduction/common8/behavior_probability.py": {
-      "old_sha256": "be6ee53ae44529440bb8222b5e7a70d87378b41ceeb71a7bbc0d6fdbb0e07457",
-      "new_sha256": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5"
+      "new_sha256": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5",
+      "old_sha256": "be6ee53ae44529440bb8222b5e7a70d87378b41ceeb71a7bbc0d6fdbb0e07457"
     },
     "reproduction/common8/behavior_runtime.py": {
-      "old_sha256": "ddcb8caf3c44a6b70323874e0d9b2465f217e13266f6073f0836dfce1d0be74f",
-      "new_sha256": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d"
-    },
-    "verl/trainer/ppo/ray_trainer.py": {
-      "old_sha256": "29b286cb75d272ff708ccb5882c144c1415a7bd37f686fafa29ad16a8858f35d",
-      "new_sha256": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0"
+      "new_sha256": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d",
+      "old_sha256": "ddcb8caf3c44a6b70323874e0d9b2465f217e13266f6073f0836dfce1d0be74f"
     },
     "reproduction/common8/precision_contract.py": {
-      "old_sha256": null,
-      "new_sha256": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458"
+      "new_sha256": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458",
+      "old_sha256": null
+    },
+    "reproduction/common8/update_evidence.py": {
+      "new_sha256": "9e6d7c8657f9536b533889dde9def604c39c26f8c603acacc731c6ea3d30d077",
+      "old_sha256": "42da0d71a1a2a8c0145863f9992330f3111374da6ba3a0d21c0fee986884ca51"
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "new_sha256": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0",
+      "old_sha256": "29b286cb75d272ff708ccb5882c144c1415a7bd37f686fafa29ad16a8858f35d"
+    },
+    "verl/workers/actor/dp_actor.py": {
+      "new_sha256": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e",
+      "old_sha256": "a6b46ba64cc307875bb39c42f613f9e2b13255ad42c67c69130c76c7dcbf82e0"
     }
-  }
+  },
+  "original_run_id": "6de29bcb7be741cfa1bfacdf9e34efc9",
+  "original_source_commit": "f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c",
+  "role": "a800_bf16_initial_probe_source_delta",
+  "schema_version": 1,
+  "target_precision_profile": "bf16_policy_fp32_master"
 }

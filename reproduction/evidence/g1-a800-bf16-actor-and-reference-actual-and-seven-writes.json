@@ -1,0 +1,640 @@
+{
+  "schema": "g1_a800_bf16_actor_reference_actual_forward_and_seven_returned_writes_v1",
+  "recorded_unix": 1791442928.1514509,
+  "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "evidence_kind": "passive_existing_runtime_log_and_ledger_observations",
+  "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+  "execution_id": "107ede2e32274842a8fb6cd1bb9eeb22",
+  "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+  "deployment_id": "ddc07f5fc0bb470ab9596b8a66a4049d",
+  "actual_precision_observed_unix": 1791442613.3800204,
+  "optimizer_ledger_observed_unix": 1791442727.503503,
+  "precision_profile": "bf16_policy_fp32_master",
+  "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+  "actual_forward": {
+    "row_count": 8,
+    "reference_rank_count": 4,
+    "actor_rank_count": 4,
+    "rank_rows": [
+      {
+        "rank": 0,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 1,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 2,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 3,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 0,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          2,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 1,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          2,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 2,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          2,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 3,
+        "role": "actor",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          2,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      }
+    ],
+    "scope": "Forward tensor and autocast observations; cuda:0 is the local device ordinal of each rank. These initial forward rows report optimizer_writes=0 at their own observation points."
+  },
+  "rollout": {
+    "actual_active_trajectory_counts": [
+      [
+        2560,
+        2444,
+        281,
+        131,
+        83,
+        69
+      ]
+    ],
+    "observed_epoch_steps": [
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "sampling_journal_gate": {
+    "selected_scalar_fields": {
+      "accepted": true,
+      "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+      "attempt_index": 1,
+      "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+      "denominator": "actual_selected_sampling_log_probs_after_all_token_context_audit",
+      "execution_id": "107ede2e32274842a8fb6cd1bb9eeb22",
+      "hf_dtype": null,
+      "hf_parity_accepted": null,
+      "logical_update": 1,
+      "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+      "trajectory_count": 2560
+    },
+    "receipt_path": "behavior-probability-attempt-10568a4773b04d7fa4a21898fb14022c.json",
+    "receipt_bytes": 1593208,
+    "receipt_sha256": "a5bd8a03cc6f951d77523c1f22fddf190a6473cc37f4bedff7c2dc44f725a1c7",
+    "receipt_modified_unix": 1791442069.6312253,
+    "scope": "Accepted actual sampling journal/context audit; denominator is actual selected sampling log probabilities. HF parity acceptance is null; no independent HF maximum-difference acceptance is claimed."
+  },
+  "actual_progress": {
+    "logical_outer": 1,
+    "planned_opportunities_per_outer": 20,
+    "processed_opportunities_replica_counted_once": 7,
+    "returned_adam_writes_replica_counted_once": 7,
+    "rank_rows": [
+      {
+        "rank": 0,
+        "exists": true,
+        "file_bytes": 41319,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 7,
+        "processed_opportunities_per_rank": 7,
+        "scanned_successful_writes": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7
+      },
+      {
+        "rank": 1,
+        "exists": true,
+        "file_bytes": 41291,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 7,
+        "processed_opportunities_per_rank": 7,
+        "scanned_successful_writes": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7
+      },
+      {
+        "rank": 2,
+        "exists": true,
+        "file_bytes": 41305,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 7,
+        "processed_opportunities_per_rank": 7,
+        "scanned_successful_writes": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7
+      },
+      {
+        "rank": 3,
+        "exists": true,
+        "file_bytes": 41291,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 7,
+        "processed_opportunities_per_rank": 7,
+        "scanned_successful_writes": 7,
+        "successful_writes_per_rank": 7,
+        "cumulative_optimizer_writes": 7
+      }
+    ],
+    "replica_counting_scope": "Four replicated rank ledgers confirm the same seven writes; counts are not summed to 28. Successful writes are returned optimizer calls, not a proof of a nonzero parameter delta.",
+    "actual_outer_ledger": {
+      "exists": false,
+      "identity_or_step_rejected_rows": 0,
+      "malformed_complete_lines": 0,
+      "matching_complete_rows": 0,
+      "oversized_lines": 0,
+      "partial_final_line": false
+    },
+    "complete_outer_updates_recorded_lower_bound": 0,
+    "fresh_200_complete": false,
+    "new_reward_or_em_recorded": null,
+    "first_five_acceptance_complete": false
+  },
+  "local_count_change_window": {
+    "start_observed_unix": 1791442574.0865319,
+    "end_observed_unix": 1791442727.503503,
+    "elapsed_seconds": 153.41697120666504,
+    "start_returned_writes_replica_counted_once": 3,
+    "end_returned_writes_replica_counted_once": 7,
+    "increment": 4,
+    "start_rank_rows": [
+      {
+        "rank": 0,
+        "exists": true,
+        "file_bytes": 20143,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 3,
+        "processed_opportunities_per_rank": 3,
+        "scanned_successful_writes": 3,
+        "successful_writes_per_rank": 3,
+        "cumulative_optimizer_writes": 3
+      },
+      {
+        "rank": 1,
+        "exists": true,
+        "file_bytes": 20129,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 3,
+        "processed_opportunities_per_rank": 3,
+        "scanned_successful_writes": 3,
+        "successful_writes_per_rank": 3,
+        "cumulative_optimizer_writes": 3
+      },
+      {
+        "rank": 2,
+        "exists": true,
+        "file_bytes": 20136,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 3,
+        "processed_opportunities_per_rank": 3,
+        "scanned_successful_writes": 3,
+        "successful_writes_per_rank": 3,
+        "cumulative_optimizer_writes": 3
+      },
+      {
+        "rank": 3,
+        "exists": true,
+        "file_bytes": 20129,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 3,
+        "processed_opportunities_per_rank": 3,
+        "scanned_successful_writes": 3,
+        "successful_writes_per_rank": 3,
+        "cumulative_optimizer_writes": 3
+      }
+    ],
+    "scope": "Change between two passive observation snapshots of the same run/execution. This is neither a whole-outer duration nor a stage-isolated benchmark; exact write times are not derived."
+  },
+  "actual_process_identity": {
+    "pipeline": {
+      "pid": 1276417,
+      "start_ticks": 552073585,
+      "alive": true,
+      "birth_matches": true,
+      "stage": "GRPO_1_TO_200"
+    },
+    "trainer": {
+      "ledger_state": "STARTED",
+      "leader": {
+        "alive": true,
+        "birth_matches": true,
+        "pid": 1285330,
+        "start_ticks": 552118987,
+        "state": "S"
+      },
+      "live_registered_count": 159,
+      "exit_code": null
+    },
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ]
+  },
+  "gpu_samples": {
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "scan_from_start": true,
+    "scan_start_byte": 0,
+    "matching_sample_count": 740,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": 740,
+    "first_scanned_sample_unix": 1791441152.5725718,
+    "latest_sample_unix": 1791442726.8783357,
+    "latest_sample_age_seconds": 0.6760644912719727,
+    "maximum_scanned_sampling_gap_seconds": 2.2182998657226562,
+    "sampled_run_peak_mib": {
+      "0": 50029,
+      "1": 50125,
+      "2": 50123,
+      "3": 50029,
+      "5": 19477,
+      "6": 27275
+    },
+    "sampled_scanned_peak_mib": {
+      "0": 50029,
+      "1": 50125,
+      "2": 50123,
+      "3": 50029,
+      "5": 19477,
+      "6": 27275
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 46825,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": 50029
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 47367,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": 50125
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 46921,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": 50123
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 46825,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": 50029
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 19477
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 27275,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 27275
+      }
+    ],
+    "training_max_sampled_peak_mib": 50125,
+    "training_capacity_mib_per_card": 81920,
+    "training_max_sampled_peak_fraction": 0.61187744140625,
+    "peak_timestamp_proven": false,
+    "sampling_scope_note": "Pipeline lifetime, including services and setup; sampled occupancy does not establish an exact peak timestamp or training-only allocation."
+  },
+  "precision_limits": {
+    "complete_backward_dtype_proven": false,
+    "internal_attention_arithmetic_proven": false,
+    "master_parameter_update_or_nonzero_delta_proven": false,
+    "source_hashes_prove_loaded_code": false
+  },
+  "source_publication": {
+    "checked_unix": 1791440721.065387,
+    "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "branch": "search-g1",
+    "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "remote_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true
+  },
+  "published_runtime_source_file_hashes": [
+    {
+      "path": "reproduction/a800_common/adopt_initial_probes.py",
+      "bytes": 24472,
+      "sha256": "bfc2750c2988523009b78ab0c8b4b6f1d7f45db6fb7064fbf405f6874ba308d8",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/a800_common/prepare_run.py",
+      "bytes": 8625,
+      "sha256": "af72ca95e3d8247b25ec1926f50a4522bf6cb3683d22bf4b9a2697c32d51e585",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/behavior_probability.py",
+      "bytes": 11771,
+      "sha256": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/behavior_runtime.py",
+      "bytes": 25276,
+      "sha256": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/configuration.py",
+      "bytes": 5839,
+      "sha256": "71d42ad85864a29f12633c2b39029b7663572c07cd0ce84086a1405b29b6d765",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/formal_contract.py",
+      "bytes": 8559,
+      "sha256": "d9a3b9ef63730baf911b3b930b317de7b194bdeec38d8e9ef048f59ab275e63e",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/formal_inline_safety.py",
+      "bytes": 31826,
+      "sha256": "669d066a562a60a4e94663277f7e50c87bbc5f369d495137e2a878896b1fc0a3",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/precision_contract.py",
+      "bytes": 2274,
+      "sha256": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/verify_full.py",
+      "bytes": 19876,
+      "sha256": "75087894ebf6366f129fefd212365bf983c2e0c0c593b620fdc2b0ceb3b02e55",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "verl/trainer/ppo/ray_trainer.py",
+      "bytes": 55463,
+      "sha256": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "verl/workers/actor/dp_actor.py",
+      "bytes": 37572,
+      "sha256": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e",
+      "remote_blob_matches": true
+    }
+  ],
+  "train_log_snapshot_hash": {
+    "bytes": 52280,
+    "sha256": "9de592ee26c1af2c1e385bfe5def421bb2eb58a0e9a780f0cc83712e3f284b72",
+    "scope": "Actual precision observer log snapshot; contents omitted."
+  },
+  "provenance": {
+    "actual_runtime": {
+      "path": "preparation/a800-bf16-actual-runtime-latest.json",
+      "bytes": 8618,
+      "sha256": "febf94c9369cfba65e3aae03fccd15eb0d886eef17e190bacf5786276d50bee7"
+    },
+    "latest_observer_wrapper": {
+      "path": "preparation/a800-bf16-deployment-observe-latest-output.json",
+      "bytes": 10856,
+      "sha256": "f321683692f9842e050d2ae4a31374bbbbab9c4618e0457eb154f0491f8db979"
+    },
+    "latest_full_observer_receipt": {
+      "path": "preparation/a800-common-deployment-ddc07f5fc0bb470ab9596b8a66a4049d.observe-1791442727482713000.json",
+      "bytes": 15866,
+      "sha256": "9e73d2c5f7fe0d4d5eb450a42c90a9c3d89d55b2079d18204708cdb2c448502d"
+    },
+    "window_start_full_observer_receipt": {
+      "path": "preparation/a800-common-deployment-ddc07f5fc0bb470ab9596b8a66a4049d.observe-1791442574109487000.json",
+      "bytes": 15866,
+      "sha256": "ea356659caa4d3ddaf8792cb2965b77994a1e0928deff822e26f506c5f050eb7"
+    },
+    "source_publication": {
+      "path": "preparation/a800-bf16-source-publication.json",
+      "bytes": 3828,
+      "sha256": "7077b4fb2967a9d8c363b03b4931d5b6726433e3b60c53602d13de8930ab5574"
+    }
+  },
+  "sanitization": "Selected scalar observations, identities, source file hashes, and receipt hashes only. No raw tokens, QA, prompts, complete logs, gate field_names, individual trajectory hashes, or token hashes are copied."
+}
