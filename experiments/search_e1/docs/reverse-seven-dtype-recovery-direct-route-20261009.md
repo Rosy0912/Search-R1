@@ -25,3 +25,11 @@ PEFT0.13.2 新增 `outer_old` adapter继承BF16，而共同初始及轮次checkp
 实际训练overlay538ac99、外部角色恢复964d3c7、不可变输入74d0cdf分别保留。最新文档commit不代替实际执行身份。新源码/配置均先推送并从FETCH_HEAD逐文件回读，再独立部署。
 
 full192已经以物理网卡直连的只读rsync续传，保留partial、无delete；CP374旧partial和原节点资产保留。独立七组outer-end备份的空间/网络问题写BACKLOG，不成为训练启动或前进条件。
+
+## 第二轮真实进展与独立备份修复
+
+2026-10-09 02:31 CST 实读同一C0完成outer0/1，共21次真实Adam、639可用pair曝光。第二outer P=K312，10次更新，末尾24条；CP21 manifest aa17ac89df232c91b7856cec41fabc7e14575fad0eca1f4f6b01c6e0105385d2，completion53952bc3d1e02acb6588596a7cbeda8a67d949fa0269b6cca30aad55356dd580。此为原生提交及文件观察；独立Adam数值实读仍是CP1/5。第三outer新采样已进行，控制器实际PID/UID/starttick/run身份及pane匹配，未重复首轮。
+
+备份V1的inventory在请求archive前实际返回1：合法共同初始adapter声明只有path/SHA/bytes，闭包误要求其同时声明历史inode/时间戳。19个CP核心文件均有完整stat，故障不是网络或训练。独立V2 source554c52c仅兼容该闭包schema，仍实际固定句柄全文件SHA、当前stat前后稳定；19核心严格规则不变。15聚焦CPU fixtures与独立审查通过，新源码先push/FETCH_HEAD回读后部署新目录及新队列，V1失败目录和原源保留。备份不取训练锁、不写训练文件，不是下一轮条件。
+
+当前十轮后评测入口的源码及配置只读复核通过：每组raw10 BF16，共同BF16/FP16零adapter，P/J额外FP16raw10，总11×512=5632正式槽。各实际训练终态、完整资源释放以及真实GPU评估仍需验收；源码绑定通过不是结果。
