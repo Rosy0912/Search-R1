@@ -1,0 +1,24 @@
+{
+  "cpu_expected": 46,
+  "files": {
+    "README.md": {
+      "sha256": "694ddef8619e8fbe8828305b912fcd8441548605b1038c31cbb2670fbf29543a",
+      "size": 7751
+    },
+    "actual3140-exit.fixture.json": {
+      "sha256": "e28c1e05e92f823787301d42aa92456969c63bcac232dbdad1a8d3640695bb6e",
+      "size": 1628
+    },
+    "stage_cleanup.py": {
+      "sha256": "0b7a36109202a017650b930ce043aedaaecc5d166412b413181d884860a4e717",
+      "size": 13365
+    },
+    "test_stage_cleanup.py": {
+      "sha256": "f4e490be5b844848064808ec98fd6120e465601b632b723054b27d8e9a0478df",
+      "size": 19165
+    }
+  },
+  "linux_only_skipped": 1,
+  "local_passed": 23,
+  "scope": "SOURCE_ONLY_NOT_CALIBRATION_OR_GPU_ACCEPTANCE"
+}

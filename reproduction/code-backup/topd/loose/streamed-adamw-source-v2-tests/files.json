@@ -1,0 +1,31 @@
+{
+  "base_commit": "0d8a9214dc6e19f10e21549b56f6c01b45d67100",
+  "files": {
+    "README.md": {
+      "sha256": "a70d34d47b64a0608297af93ab0763ef688f961a2e74c95abf81375be1104433",
+      "size": 3531
+    },
+    "native-cpu.sbatch": {
+      "sha256": "b5e6563be173bc1249ba3c6154d26b27808229f0622fca5258c82d610a0879bb",
+      "size": 612
+    },
+    "native_entry.py": {
+      "sha256": "1fd5eaa18295f6fa2519132b9b653e6bd966c1181677f9ce06c50a3ca1d54331",
+      "size": 1944
+    },
+    "native_torch24_adamw.py": {
+      "sha256": "fe1a551e4cadce2b0ecbdb74e2c7827fdc52c51bfb6fb0a11f0aee7e792596b6",
+      "size": 30473
+    },
+    "native_torch24_optimizer.py": {
+      "sha256": "46f911d59955d779b3323a61cbc35c33725da64edfff6b9b2fa7e59b732b1a5b",
+      "size": 44739
+    },
+    "test_streamed_adamw.py": {
+      "sha256": "6d61b08a45885dee1c6268340ad06cce785c5096e1920c2f11f121b1820da3e5",
+      "size": 9404
+    }
+  },
+  "native_expected": 17,
+  "scope": "ORIGINAL_TORCH24_ADAMW_CPU_CONTRACTS_NO_GPU"
+}

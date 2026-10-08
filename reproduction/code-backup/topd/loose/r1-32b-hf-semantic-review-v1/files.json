@@ -1,0 +1,25 @@
+{
+  "scope": "CPU_SCAN_SOURCE_PREPARATION_NOT_EXECUTED_NO_APPROVAL",
+  "files": {
+    "README.md": {
+      "size": 3146,
+      "sha256": "2bba2566c847b556449826c5882fd2d61aa3f011d9b81492e50809ae9126b1b9"
+    },
+    "checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "original_semantic_gate.py": {
+      "size": 15227,
+      "sha256": "10ecd9ac072a93903e55acb870b4962844c1bcfd9bf5f2440355885e24e7b759"
+    },
+    "review.py": {
+      "size": 10395,
+      "sha256": "8d1d58f57b62f7547bec5a9a1d69ddc1e81c39c6d3a3b9f70f58a6b726aa6c16"
+    },
+    "test_review.py": {
+      "size": 3402,
+      "sha256": "957825ec562782a15fd862ad86022210211213ff89302ce76e0ba06cc0cdbc01"
+    }
+  }
+}

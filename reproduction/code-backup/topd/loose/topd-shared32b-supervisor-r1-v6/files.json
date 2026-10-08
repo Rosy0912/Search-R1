@@ -1,0 +1,81 @@
+{
+  "scope": "STANDARD_SEARCH_R1_TEACHER_ROUTE_SOURCE_PREPARATION_NOT_ACTUAL_APPROVAL",
+  "files": {
+    "README.md": {
+      "size": 2270,
+      "sha256": "a2cc480650a16d1dfc9f9d52938eef4ed708bf64fdfe1183173812252808ab57"
+    },
+    "STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "7a5e3e7c39ae78f040750668efd8af725ff0032c8adef8178efbe0b6b83feda0"
+    },
+    "config-template.json": {
+      "size": 2417,
+      "sha256": "1b483be7ead8f0749131ef46acc7e3126bacda098e20bf6d46caa994126aad5b"
+    },
+    "contracts.py": {
+      "size": 14578,
+      "sha256": "dc86acb7d5b5e6b79c91ea8822c198067fc1b45c5e41cc28494a5f756cdf13fc"
+    },
+    "dependencies.py": {
+      "size": 6656,
+      "sha256": "c56186a871fe815aa29714e6e77038b73e2f57b3a66109ce1d05008e6d422120"
+    },
+    "hardware_profile.py": {
+      "size": 4028,
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54"
+    },
+    "hf_inventory.py": {
+      "size": 3579,
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774"
+    },
+    "launch.sbatch": {
+      "size": 912,
+      "sha256": "d0feaf54cc493016fa6c7f7a6dcacb6f77162b764cefbf22ca7c6be0edb1a816"
+    },
+    "lifecycle.py": {
+      "size": 3273,
+      "sha256": "2615a37e040c6a36c1097cd5e5f0ede4a3f3f1c635c2f0dd82f3064ef9a10173"
+    },
+    "native-cpu.sbatch": {
+      "size": 1012,
+      "sha256": "438bca89f69107dbe2d96c51d659b2313014d650d82f4a0b114779e660adbdfb"
+    },
+    "owner_entry.py": {
+      "size": 1839,
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68"
+    },
+    "retrieval_startup.py": {
+      "size": 19215,
+      "sha256": "1f401e123b97e240f1040beb9ee02fbcb525d86fa90b9494951f231f9003ecf4"
+    },
+    "retriever_lifecycle.py": {
+      "size": 4189,
+      "sha256": "bcca6c850214d9e1007e12e796084942af300bdcf3c8f96eb0f01070c8e25674"
+    },
+    "shared_supervision_hooks.py": {
+      "size": 6978,
+      "sha256": "a4aef2f7fc2502acaf29fca7a8467438d1499ba74883b5fd14f26bb5fc5d8c39"
+    },
+    "supervise.py": {
+      "size": 12398,
+      "sha256": "d3b6bb18572777ced84aaacda3b85c762553c30feb9d96b2ec72ad76d0ff7d8e"
+    },
+    "telemetry_policy.py": {
+      "size": 2604,
+      "sha256": "053cc8dd2a44cbb76ffbb5adeca59f59ebbd89b5c945f947bcf3b71668be2548"
+    },
+    "test_contracts.py": {
+      "size": 30141,
+      "sha256": "9bd10d2d49330ff53707e944dd5433861ef9ab1778ac861c97120bdecd7df0c8"
+    },
+    "test_source_repairs.py": {
+      "size": 6701,
+      "sha256": "0555fb170adba9d9dd1feb06ccb27ee95a5255dd3bcd7d3a6f40a70a7c2427cd"
+    },
+    "train_entry.py": {
+      "size": 4423,
+      "sha256": "411389b05ad4c0108ed3c9a7c800fd76f6a2aa22afce577fe77d076408890789"
+    }
+  }
+}

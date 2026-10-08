@@ -40,9 +40,9 @@ def validate_config(config):
     method = config.baselines.method
     if method=='topd':
         backend=config.baselines.get('topd',{}).get('teacher_backend','cpu')
-        if backend not in ('cpu','local_gpu_fp32_parallel'):
+        if backend not in ('cpu','local_gpu_fp32_parallel','local_gpu_fp32_shared_pipeline32b','local_gpu_bf16_tp8_prompt_logprobs'):
             raise ValueError('Unknown TOP-D teacher backend')
-        if backend=='local_gpu_fp32_parallel' and (not config.baselines.get('local_runtime_only',False)
+        if backend in ('local_gpu_fp32_parallel','local_gpu_fp32_shared_pipeline32b','local_gpu_bf16_tp8_prompt_logprobs') and (not config.baselines.get('local_runtime_only',False)
                 or config.trainer.nnodes!=1 or config.trainer.n_gpus_per_node!=8
                 or not config.baselines.topd.get('socket_manifest') or config.baselines.distillation.privileged_answers):
             raise ValueError('Parallel GPU teacher requires audited own single-node8GPU/no-gold socket manifest')
@@ -74,7 +74,7 @@ def validate_config(config):
             raise ValueError('GiGPO response cap can truncate the action timeline; reduce turn/response/observation budget')
     if method in ('opsd', 'topd'):
         actor = config.actor_rollout_ref.actor
-        if actor.use_kl_loss or actor.entropy_coeff or config.algorithm.kl_ctrl.kl_coef:
+        if (method == 'opsd' and actor.use_kl_loss) or actor.entropy_coeff or config.algorithm.kl_ctrl.kl_coef:
             raise ValueError('Pure distillation requires reference KL and entropy coefficients zero')
         if not config.baselines.distillation.teacher_path:
             raise ValueError('Provide an explicit frozen teacher checkpoint')
@@ -184,6 +184,16 @@ class Controller:
                 self.teacher=FrozenTeacher(self.config.distillation.teacher_path,trainer.tokenizer,'cpu')
                 from .topd_runtime_audit import enabled,teacher_boundary
                 if enabled():teacher_boundary(self.teacher,0,'loaded')
+            elif backend=='local_gpu_fp32_shared_pipeline32b':
+                from topd32b_shared_pipeline.backend import load_production_client
+                if self.config.distillation.privileged_answers:
+                    raise ValueError('Shared32B TOP-D never accepts private targets')
+                self.teacher=load_production_client(self.config.topd.socket_manifest,self.config.distillation.teacher_path,trainer.tokenizer)
+            elif backend=='local_gpu_bf16_tp8_prompt_logprobs':
+                from topd_vllm_teacher.client import Client
+                if self.config.distillation.privileged_answers:
+                    raise ValueError('TOPD never accepts private targets')
+                self.teacher=Client(self.config.topd.socket_manifest,self.config.distillation.teacher_path,trainer.tokenizer)
             elif backend=='local_gpu_fp32_parallel':
                 from .topd_runtime_audit import configure_teacher_cpu_threads
                 configure_teacher_cpu_threads()
@@ -267,10 +277,15 @@ class Controller:
             before = usage() if audit_enabled else None
             tokens_before = self.teacher.scored_tokens
             setting = self.config.distillation
-            if self.config.get('topd',{}).get('teacher_backend','cpu')=='local_gpu_fp32_parallel':
+            if self.config.get('topd',{}).get('teacher_backend','cpu') in ('local_gpu_fp32_parallel','local_gpu_fp32_shared_pipeline32b','local_gpu_bf16_tp8_prompt_logprobs'):
                 teacher_logp=self.teacher.score(data.batch['prompts'],data.batch['responses'],
                               data.batch['attention_mask'][:,-width:],self.trainer.config.actor_rollout_ref.rollout.temperature,
                               setting.chunk_size,int(data.meta_info['topd_outer_step'])).to(rewards.device)
+                if self.config.get('topd',{}).get('teacher_backend')=='local_gpu_fp32_shared_pipeline32b':
+                    from topd32b_shared_pipeline.backend import require_global_ack_before_actor
+                    require_global_ack_before_actor(self.teacher,int(data.meta_info['topd_outer_step']))
+                if self.config.get('topd',{}).get('teacher_backend')=='local_gpu_bf16_tp8_prompt_logprobs':
+                    self.teacher.require_released(int(data.meta_info['topd_outer_step']))
                 after=usage() if audit_enabled else None
             else:
                 scored=[]
@@ -301,17 +316,28 @@ class Controller:
         data.batch['advantages'], data.batch['returns'] = adv, returns
         if self.method in ('gigpo', 'tree_grpo', 'topd', 'cosearch'):
             from .objectives import attach_policy_weights
-            attach_policy_weights(data, self.method)
+            attach_policy_weights(data, self.method, self.trainer.config.actor_rollout_ref.actor.get("loss_agg_mode", "paper"))
         if self.method == 'topd' and audit_enabled:
             from .topd_runtime_audit import driver_evidence
             driver_evidence(data, teacher_logp, before, after,
                             self.teacher.scored_tokens - tokens_before, setting.privileged_answers)
-        if self.method=='topd' and self.config.get('topd',{}).get('teacher_backend','cpu')=='local_gpu_fp32_parallel' and audit_enabled:
+        if self.method=='topd' and self.config.get('topd',{}).get('teacher_backend','cpu') in ('local_gpu_fp32_parallel','local_gpu_fp32_shared_pipeline32b','local_gpu_bf16_tp8_prompt_logprobs') and audit_enabled:
             from .topd_runtime_audit import emit
             emit('teacher_ipc_reconcile',dict(outer_step=int(data.meta_info['topd_outer_step']),
                  scorer_receipts=self.teacher.last_receipts,scored_tokens_delta=self.teacher.scored_tokens-tokens_before,
                  scope='driver IPC/control wall/RSS; scorer GPU/process costs separate'))
         return data
+
+    def before_actor_update(self, data, outer_step):
+        if self.method == 'topd' and self.config.get('topd', {}).get('teacher_backend') == 'local_gpu_bf16_tp8_prompt_logprobs':
+            if int(data.meta_info['topd_outer_step']) != int(outer_step):
+                raise RuntimeError('Teacher/actor outer identity mismatch')
+            self.teacher.require_released(int(outer_step))
+        if self.method == 'topd' and self.config.get('topd', {}).get('teacher_backend') == 'local_gpu_fp32_shared_pipeline32b':
+            if int(data.meta_info['topd_outer_step']) != int(outer_step):
+                raise RuntimeError('Shared32B actor outer identity mismatch')
+            from topd32b_shared_pipeline.backend import require_global_ack_before_actor
+            require_global_ack_before_actor(self.teacher, int(outer_step))
 
     def after_actor(self, data, metrics):
         if self.method == 'topd':

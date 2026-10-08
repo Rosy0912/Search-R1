@@ -1,0 +1,122 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "6f68aa3937274b1bff444287c0003bd3bbde095a23f9bcddc9109ca759d219e0",
+      "size": 10259
+    },
+    "actual3144-nonauthority.fixture.json": {
+      "sha256": "bab7060f032044652bb744cc0c7facd3918c92bea513d0bc82801cda92aa60e0",
+      "size": 1143
+    },
+    "assets-template.json": {
+      "sha256": "6913636b53da1bbe667fa761a9e3845ce42ed91490808b1945b4f7fc94eb3238",
+      "size": 3514
+    },
+    "checkpoint_inventory.py": {
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f",
+      "size": 4763
+    },
+    "compiler_headers.py": {
+      "sha256": "a728b2dc2edf5583b05635ab37db0b47075b52622236a885ffc4baa766a01767",
+      "size": 2403
+    },
+    "final_cleanup.py": {
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d",
+      "size": 4027
+    },
+    "ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "native-cpu.sbatch": {
+      "sha256": "6672d0eeafd19db518a0561fd28df2f122a474788c01b3c3a2ef56292b24b9c9",
+      "size": 675
+    },
+    "native_entry.py": {
+      "sha256": "808b26fb089929df5f55a80e1991ab15f0db86ffa93c26c6cb7eb22c184c0f33",
+      "size": 2432
+    },
+    "observed_worker.py": {
+      "sha256": "6cd12b18847395df94c93731089ad91a78d5398dcccfe09313f6bea220710e36",
+      "size": 2790
+    },
+    "original-core-files.json": {
+      "sha256": "9f1513b6413bfe50baf542ad50cc20236e3df6f8735ad7895a5712cc3c87ce73",
+      "size": 418
+    },
+    "original-g1-server.py": {
+      "sha256": "0f770791898c4fcbd9ac077540c9afbec94e13d18c8dd869dfbd7fa0ef056ec0",
+      "size": 14043
+    },
+    "original-native-server.py": {
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+      "size": 15344
+    },
+    "owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "pipeline.py": {
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0",
+      "size": 2455
+    },
+    "prepare.py": {
+      "sha256": "01e68c7586f9e1dcf78b317df4596950dc7c842226074263a7dffa3a335d4094",
+      "size": 5189
+    },
+    "process_observation.py": {
+      "sha256": "ec1affaa7087504b05b853e9a17a0bf21f027abe4bc59bf28c7b9c1741db88f9",
+      "size": 1901
+    },
+    "production.sbatch": {
+      "sha256": "3bef6ed978dc0bcc96f3e3f1e55700fc3171216cfedfcc83b0c931c58d7f752e",
+      "size": 682
+    },
+    "r1_observation.py": {
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099",
+      "size": 1198
+    },
+    "resource_audit.py": {
+      "sha256": "f839177ce7cf81b2eee1b7cc82d1c23014e80d18e290bec199e0a4b942b48d56",
+      "size": 5739
+    },
+    "retrieval_gate.py": {
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7",
+      "size": 4661
+    },
+    "retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "retrieval_startup.py": {
+      "sha256": "6f22fe7c9ca583862ec5c8121faf0b78da45665caa8d98cc852bcf12c83e75fd",
+      "size": 16107
+    },
+    "supervise.py": {
+      "sha256": "a6ee920164c43085094c7345e8f8a152fddbabc53d6d003eac607a2b3345fad6",
+      "size": 16172
+    },
+    "test_final_cleanup.py": {
+      "sha256": "5ebbd1bf477b7d13a43a5fd876f05b73f941c856930e84984e126f903add7c71",
+      "size": 2634
+    },
+    "test_observer_factory.py": {
+      "sha256": "5533559e3879ee1af65dcf05150567bd0fbc36b03be668e4f858cd4942b2a2c0",
+      "size": 5914
+    },
+    "test_standard_r1.py": {
+      "sha256": "d957aa67f8a9738f7d4378628266a55213b6c525e35f3d605893370d989d137b",
+      "size": 12938
+    },
+    "train_entry.py": {
+      "sha256": "a06ddd17ff0370c4418405a1d6cb19bd5a98ed79b0a0b54d6ae8735b48dd6ffc",
+      "size": 3782
+    },
+    "window_guardian.py": {
+      "sha256": "d23fe423906e270629499384d1f44c5cae2357404559ada7708fbdee8cdb6d3b",
+      "size": 7355
+    }
+  },
+  "native_expected": 36,
+  "scope": "SOURCE_CPU_FREEZE_NOT_GPU_RESOURCE_NOT_TEACHER_NOT_TOPD"
+}

@@ -1,0 +1,14 @@
+{
+  "version": "v2",
+  "scope": "TELEMETRY_ONLY_SOURCE_REVIEWED_PENDING_NATIVE_CPU_AND_GPU",
+  "cpu_expected_tests": 28,
+  "files": {
+    "probe.py": "d1654246503585e1814f3ed1bb2fde9bb2367cc7ddf655398f9dbd1e44511c56",
+    "worker.py": "18d4c6e30c1eae70403c334098991a58e4ee633456167f122f693b33e9949f33",
+    "test_probe.py": "ed6dc305b044594d4979dac2d54ee969aaf0a7be95cd943c735397a1efda4cb9",
+    "probe.sbatch": "321be508edb684fedc6f68e92a2188b70af0cea1ed5e9efe8f07b15c287e0b18",
+    "native-cpu.sbatch": "357bd384a2e5945d974e0720adfae1fe5b67a2aa36d5a6a15ff7feeab17d1288",
+    "../qwen25-32b-eval64/runtime_safety_candidate.py": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+    "../qwen25-32b-eval64/test_runtime_safety_candidate.py": "baa85c65f84e478a3cd98e135956cb57d8e81b10778e2ca2a61f222a6cc29d8b"
+  }
+}

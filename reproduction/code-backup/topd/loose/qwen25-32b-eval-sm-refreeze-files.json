@@ -1,0 +1,31 @@
+{
+  "scope": "LOCAL_EVAL_REFREEZE_PENDING_INDEPENDENT_REVIEW_AND_NATIVE_CONTRACTS",
+  "expected_counts": {
+    "eval64": 61,
+    "builder": 16,
+    "combined": 77
+  },
+  "runtime_exact_candidate_sha256": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+  "files": {
+    "qwen25-32b-eval64/eval64.py": "7380b9d5d675b30abef439e1feaa976325c0a87db539d8b28642ba01da7714dc",
+    "qwen25-32b-eval64/supervisor.py": "b2cbbd278770b92dc4722e06bed573f63cbc7bcffff1f0156f2e0e13221913c2",
+    "qwen25-32b-eval64/runtime_safety.py": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+    "qwen25-32b-eval64/test_eval64.py": "8f47a3f1bf31f0067af28612ecea61d692f3aae60ac843adf5acdf1dee4bbfcb",
+    "qwen25-32b-eval64/eval64.sbatch": "fa612b1148d543cd50c053b465b2ffcc75aa5abcfe3f3b77cc0851c118c31ef2",
+    "qwen25-32b-eval64/native-cpu.sbatch": "73e70654b0bf5dc8c038c903a392eb69544a2e7529ee73713300edb8b993bdb2",
+    "qwen25-32b-eval64/build_binding.py": "b5c80facfb507ed020e29ac48d8246aa025a9967edb12754816717d730c1c27b",
+    "qwen25-32b-eval64/test_build_binding.py": "95c120569c42de60b9ad35e3bd4773ef9082a25c092afb0d3d70353d22da5f27",
+    "qwen25-32b-eval64/native-builder-cpu.sbatch": "711a25c16bc35e43e72e296ef0151faf3b83f977b5ac67328501c61ba3317e38",
+    "qwen25-32b-inventory.sbatch": "6d92fd84e7c0230e654433ac431ddfb4926c8cce8976b4525cd30e45e123c12a",
+    "watch_qwen25_32b_inventory.py": "0674f697ef5bf3399e081c010d5c8ad8c3a4cd842818ed81d046e2dc5dc3ff40"
+  },
+  "unchanged_evaluator_files": [
+    "eval64.py",
+    "supervisor.py",
+    "eval64.sbatch",
+    "native-cpu.sbatch"
+  ],
+  "production_source_commit": "438af3529b40663aae7b8293080e09fda57f6a87",
+  "watch_state": "outputs/qwen25-32b-download-v6-state.json",
+  "scope_note": "NoGPU submit; no running watcher/downloader operations; hardware3009 telemetry acceptance only"
+}

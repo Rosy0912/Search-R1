@@ -1,0 +1,24 @@
+{
+  "original_safety_sha256": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+  "candidate_safety_sha256": "d9c495d8f2eb5bf9b1ff5680b6a8c0c2626d1e5375e92ae4971a78a9bf3dac70",
+  "unchanged_helper_function_shas": {
+    "pid_identity": "0af3a751ddcad6aec52ab742a37c4c12878be6eb169d202c3ca3f08f4388aa6f",
+    "accounting_gate": "43ec66b358790d1a41b421d6b838cab997ab2b82e216bf4d7ae0643f6a5512e8"
+  },
+  "changed_functions": [
+    "nvml_snapshot",
+    "collect_process_windows"
+  ],
+  "api_source": "https://docs.nvidia.com/deploy/archive/R550/nvml-api/group__nvmlDeviceQueries.html",
+  "scope": "SOURCE_CPU_QUERY_CONCURRENCY_ONLY_NOT_GPU_LATENCY_OR_TRAINING_APPROVAL",
+  "collector_change": "Only parallel scheduling of original eight NVML queries and original GPU/applications subprocess queries; actual common start/wait/end/query/final evaluation clocks and all thresholds retained.",
+  "previous_window_runtime_sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6",
+  "guard_increment": "Only explicit low_high_attempts=9 allows exact LOW_HIGH retries through attempt8; all other errors keep ordinary cap<=6; fullfresh/30seconds unchanged",
+  "previous_guard_sha256": "65165ac7c8f5c9042ba254fd36d26e222096e6764fa83c167061e25530d5ad39",
+  "unchanged_from_v5_functions": {
+    "pid_identity": "0b561cea366c92428076690513b52e1d072dc3babe3051e89ababba3742a1ea3",
+    "sm_aggregate_bounds": "9d1858ab91ffa84c1e950a08b9db8033438d32419ae77787b946a3c70f454cc2",
+    "accounting_gate": "b2b3069f0a200f27cd214277a1cbd309b01fa117c8896f863a5cfd70f02ba9b6",
+    "active_gate": "7dc16dc43934a0589a68d6c7e1bdb0a579fd818bd1ac0ea272d8f14a30e255ad"
+  }
+}

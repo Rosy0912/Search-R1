@@ -1,0 +1,73 @@
+{
+  "scope": "STANDARD_SEARCH_R1_TEACHER_ROUTE_SOURCE_PREPARATION_NOT_ACTUAL_APPROVAL",
+  "files": {
+    "README.md": {
+      "size": 12102,
+      "sha256": "9c2b714b7927d6b905914ea0c5b302b436e0d1437b9fe90908562860adc10cea"
+    },
+    "STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "config-template.json": {
+      "size": 1923,
+      "sha256": "42bbb6fc48905a30a811c3a0ac6d7f46baa35340ab49e2509dd4cb11a6ab9dc4"
+    },
+    "contracts.py": {
+      "size": 14567,
+      "sha256": "6f29354edf568b811c552252e60f2242aa8721de0d39f606bea331918b03366d"
+    },
+    "dependencies.py": {
+      "size": 6419,
+      "sha256": "2e5c563239357b20b54ab33b4a20b2cc85bd58d5418478518e167374d05dbae7"
+    },
+    "hardware_profile.py": {
+      "size": 4028,
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54"
+    },
+    "hf_inventory.py": {
+      "size": 3579,
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774"
+    },
+    "launch.sbatch": {
+      "size": 912,
+      "sha256": "7f5cd963cb11b42b9285ac0733e66091d5060f04194bef676df1b6ebc09748d1"
+    },
+    "lifecycle.py": {
+      "size": 3273,
+      "sha256": "2615a37e040c6a36c1097cd5e5f0ede4a3f3f1c635c2f0dd82f3064ef9a10173"
+    },
+    "native-cpu.sbatch": {
+      "size": 1012,
+      "sha256": "0f87376d203c73fdf6fbfe6fefb030acbdf3a6c486af9c7d20cc0d72b209a240"
+    },
+    "owner_entry.py": {
+      "size": 1839,
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68"
+    },
+    "retrieval_startup.py": {
+      "size": 16107,
+      "sha256": "6f22fe7c9ca583862ec5c8121faf0b78da45665caa8d98cc852bcf12c83e75fd"
+    },
+    "retriever_lifecycle.py": {
+      "size": 4096,
+      "sha256": "239fd4c96080a15f0fa2b97e174e8a380e3f47caa7d89c2a1a18332318727633"
+    },
+    "shared_supervision_hooks.py": {
+      "size": 6373,
+      "sha256": "2f17bb04b80af5fac45d59e3dd451e68420fa6458de00b7a203126d132990271"
+    },
+    "supervise.py": {
+      "size": 12378,
+      "sha256": "1100aedb74dcf249a3e8a9450ebdf0297a671a020c05bb8a9f7ad757a31e6471"
+    },
+    "test_contracts.py": {
+      "size": 30141,
+      "sha256": "9bd10d2d49330ff53707e944dd5433861ef9ab1778ac861c97120bdecd7df0c8"
+    },
+    "train_entry.py": {
+      "size": 4423,
+      "sha256": "3d32a3889a9d74f1570586fbfe0a2e90c822463646e79d4e7692539896012e14"
+    }
+  }
+}

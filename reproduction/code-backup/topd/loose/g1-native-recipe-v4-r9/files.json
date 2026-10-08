@@ -1,0 +1,24 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "09fd8887bcd7e3e94c58111f3acaf00de57902a026a6b88659f705eacbdec445",
+      "size": 2659
+    },
+    "actual3102-static-config.fixture.json": {
+      "sha256": "31cb3982851beee1f7d0f2c614d725e31d80e2af489ee21461547a31a96275a6",
+      "size": 11009
+    },
+    "native-rebind.sbatch": {
+      "sha256": "3909cf970d07d91bfd06a30489667744a264c1922b0125b4e02847d07da44c2e",
+      "size": 2654
+    },
+    "rebind_initial.py": {
+      "sha256": "e09d88928dafd37d118c64224b705a147f6d07c81c175967aba455d9c682cb65",
+      "size": 6207
+    },
+    "test_rebind_initial.py": {
+      "sha256": "9ae3d78701010c67b6766794bb4eebe4a0ab5509d830831794e2d72dc5ab47d5",
+      "size": 2763
+    }
+  }
+}

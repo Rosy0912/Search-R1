@@ -1,0 +1,37 @@
+{
+  "scope": "STANDARD_SEARCH_R1_TEACHER_ROUTE_SOURCE_PREPARATION_NOT_ACTUAL_APPROVAL",
+  "files": {
+    "README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "controller-integration-DRAFT.patch": {
+      "size": 3936,
+      "sha256": "1a79cac7273aea7f8f89f60ffb27abb9256747f5988ceed807a0ead1752657d5"
+    },
+    "test_backend.py": {
+      "size": 10012,
+      "sha256": "672998a513542d5ab97d82d4dd0f91491850273b5b25259dbb703632f5a676a3"
+    },
+    "topd32b_shared_pipeline/__init__.py": {
+      "size": 76,
+      "sha256": "2b8d4c46d0f651d6be028b455a7165eb341ce467c79d1270d4fd19db4e0bbd11"
+    },
+    "topd32b_shared_pipeline/backend.py": {
+      "size": 22858,
+      "sha256": "5329501da15436d7f05b502e220081caa586df9fcbb6a58a722407ca93e3c5e6"
+    },
+    "topd32b_shared_pipeline/protocol.py": {
+      "size": 4730,
+      "sha256": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227"
+    },
+    "topd32b_shared_pipeline/readiness.py": {
+      "size": 4958,
+      "sha256": "ed012a2382e1f178c53756c59f3f0b512f7cbba4218ed14f6e712f48afd85922"
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "cpu_expected": 68,
+  "files": {
+    "README.md": {
+      "sha256": "92b208caf4c027acc5095709497374074148577fc7220dbc187bdf67f9b4abd9",
+      "size": 8553
+    },
+    "first_fault.py": {
+      "sha256": "8a1ccace3b3bd6a5a9bdcd6672a40fb17a0e35e1aaf75f76133460d1a7d6bacc",
+      "size": 2766
+    },
+    "gates.py": {
+      "sha256": "fc0da515a882f41db99ff712e1d241d2875ca4346f1d5e070754126ecefdb266",
+      "size": 1258
+    },
+    "native-cpu.sbatch": {
+      "sha256": "719e653140e4b8cdc44ba0bf31a335935f3177f9b2e14503b780ff66b233cb0d",
+      "size": 650
+    },
+    "native_cpu.py": {
+      "sha256": "7eb71045f3e19391f9c6238b09295924c727ba58d76e31c5310c3db5ae67fd4e",
+      "size": 2772
+    },
+    "original-source-bindings.json": {
+      "sha256": "10cc0c09228abe86318bd051d29981fb30ae7a5bdcb00150e01f04720f136482",
+      "size": 272
+    },
+    "original/ts_coevolve.py": {
+      "sha256": "50f1d4daaaed02d77cbbcb501691c525704fe57e9cd87826f4447d9e85c6b4a7",
+      "size": 5434
+    },
+    "original/ts_probe_dump.py": {
+      "sha256": "816052e763ff52f4322932372a58ba0b438710af50db5f21a82631241f246719",
+      "size": 14052
+    },
+    "original/ts_probe_train.py": {
+      "sha256": "f12881dfbd2df07f51632949d06fa9dca5a41ad08ad9da1d7de5b9bd1e9117a0",
+      "size": 8682
+    },
+    "original_blocks.py": {
+      "sha256": "52e363082f1d09053b3c4f83951648e9519aa7a77e23a1f542523cb0ac0034a3",
+      "size": 3007
+    },
+    "owner.py": {
+      "sha256": "a1f2dae0631ea60415c24baccfb224aa4ccd1d9249fa00b3c66ce41a02479609",
+      "size": 15768
+    },
+    "owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "phase_control.py": {
+      "sha256": "4f45516c9a616470c6ba74a512c9f15bb29b55f2032e0d8e7d0cb716ab7bc042",
+      "size": 1588
+    },
+    "publication.py": {
+      "sha256": "5d820d5ff0c32d0fe73b85c84df90e67232a6aed48f0267282c945bf07226e4d",
+      "size": 4185
+    },
+    "refit_with_owner.py": {
+      "sha256": "9268d1ea7b3e4960257d4e9b7b565ea9469f8aaeea0ee8a8f2bfd501a5fef423",
+      "size": 9831
+    },
+    "stage_baseline.py": {
+      "sha256": "c0ff8db8e88d266aff23eff3e465873c9f6404ae51237628e012aa2e8a1f0b23",
+      "size": 3184
+    },
+    "stage_cleanup.py": {
+      "sha256": "4b542a9d3855b0123579bf2140e9845fb31b07cb0995dc36e6f1c9c0ce171528",
+      "size": 6060
+    },
+    "stage_worker.py": {
+      "sha256": "4bc12acb6a91527db30dfdf57baddbc7134f359ec0614da25b0af0272d85d2a7",
+      "size": 10100
+    },
+    "test_first_fault.py": {
+      "sha256": "3335168ea26ee64990cd3496c79a81f572425720286a65d3d3678b97dad4370a",
+      "size": 2106
+    },
+    "test_phase_control.py": {
+      "sha256": "7acdb46b45a191661711a6589f5698f18c2c87fd29b2309459ea564bfb64a8ad",
+      "size": 1966
+    },
+    "test_producer.py": {
+      "sha256": "96ac392a75031b3d0173990980ff465472b85fe3c631120b71ef113381235c10",
+      "size": 18218
+    },
+    "test_stage_baseline.py": {
+      "sha256": "3b755a7b38a671b98481a2317ec3db91905fe1a4b40686459c15eb2a1d130417",
+      "size": 6198
+    },
+    "test_stage_cleanup.py": {
+      "sha256": "2825be9ea7c1df2d47eadecf3e1e4de9a471e9295524afa687c9f70f23367593",
+      "size": 10137
+    }
+  },
+  "scope": "INITIAL_ONLY_SOURCE_CPU_NO_GPU_RESOURCE_PROOF"
+}

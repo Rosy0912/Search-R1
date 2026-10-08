@@ -1,0 +1,27 @@
+{
+  "cpu_expected": 2,
+  "files": {
+    "README.md": {
+      "sha256": "a11877db75fb7402e5a025b81cfa09b23836c3d278fc17f1f9950512e6253f45",
+      "size": 1332
+    },
+    "actual3102-static-config.fixture.json": {
+      "sha256": "31cb3982851beee1f7d0f2c614d725e31d80e2af489ee21461547a31a96275a6",
+      "size": 11009
+    },
+    "native-rebind.sbatch": {
+      "sha256": "d6c65633fcf14e66ff7534467f0d1dcd2a156c4224f624b03b16ad733ef29037",
+      "size": 1790
+    },
+    "rebind_initial.py": {
+      "sha256": "2c15655043b67a80c2788e44df0e897e7b57447fae36ef9e004232c815d6af2c",
+      "size": 3925
+    },
+    "test_rebind_initial.py": {
+      "sha256": "953ca9d3fa9e6003e3b77fca38d748b5d9a4236dc257b91529b42ee0d36769b7",
+      "size": 907
+    }
+  },
+  "native_incremental_expected": 16,
+  "scope": "SOURCE_ONLY_REBIND_ACTUAL3102_NOT_NEW_NATIVE64"
+}

@@ -1,0 +1,53 @@
+--- frozen-v5/runtime_safety.py
++++ isolated-v6/runtime_safety.py
+@@ -4,6 +4,7 @@
+ import os
+ from pathlib import Path
+ import subprocess
++from concurrent.futures import ThreadPoolExecutor
+ from eval64 import require
+ 
+ FRACTION = .40
+@@ -18,8 +19,12 @@
+ 
+ def nvml_snapshot():
+     query = ['nvidia-smi', '--format=csv,noheader,nounits']
+-    gpus = subprocess.check_output(query + ['--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu'], text=True, timeout=10)
+-    apps = subprocess.check_output(query + ['--query-compute-apps=gpu_uuid,pid,used_gpu_memory'], text=True, timeout=10)
++    # Both original read-only queries must finish before any snapshot is returned.
++    # Executor exit joins the sibling even if either future raises.
++    with ThreadPoolExecutor(max_workers=2) as executor:
++        gpu_future = executor.submit(subprocess.check_output, query + ['--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu'], text=True, timeout=10)
++        app_future = executor.submit(subprocess.check_output, query + ['--query-compute-apps=gpu_uuid,pid,used_gpu_memory'], text=True, timeout=10)
++        gpus, apps = gpu_future.result(), app_future.result()
+     gpu_rows = []
+     for line in gpus.splitlines():
+         i, uid, used, total, sm = [v.strip() for v in line.split(',')]
+@@ -102,8 +107,8 @@
+     try:
+         start = int(time.time()*1_000_000)
+         time.sleep(1.0)
+-        windows = {}
+-        for g in targets:
++        def query_device(g):
++            query_start_us = int(time.time()*1_000_000)
+             handle = nv.nvmlDeviceGetHandleByUUID(g['uuid'])
+             try:
+                 rows = nv.nvmlDeviceGetProcessUtilization(handle, start)
+@@ -111,8 +116,14 @@
+                 samples = [dict(pid=int(r.pid), timestamp_us=int(r.timeStamp), sm=float(r.smUtil)) for r in rows]
+             except nv.NVMLError as exc:
+                 status, samples = 'NVML_ERROR_' + str(exc.value), []
+-            windows[g['uuid']] = dict(start_us=start, end_us=int(time.time()*1_000_000),
+-                                     status=status, samples=samples)
++            query_end_us = int(time.time()*1_000_000)
++            return g['uuid'], dict(start_us=start, end_us=query_end_us,
++                                  query_start_us=query_start_us, query_end_us=query_end_us,
++                                  status=status, samples=samples)
++        # All query workers join before nvmlShutdown, including unexpected failures.
++        with ThreadPoolExecutor(max_workers=len(targets)) as executor:
++            futures = [executor.submit(query_device, g) for g in targets]
++            windows = dict(future.result() for future in futures)
+         return windows, int(time.time()*1_000_000)
+     finally:
+         nv.nvmlShutdown()

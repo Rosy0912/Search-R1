@@ -1,0 +1,12 @@
+{
+  "scope": "CPU_PRELOAD_IDENTITY_CANDIDATE_ONLY_NO_GPU_NO_SCORING_NO_QUALITY_APPROVAL",
+  "source_commit": "413a10c50f32febaafc83db8170e2b005e0e979f",
+  "files": {
+    "README.md": "78492fde642bd2071f96ec90b88fce0c632caa8bb7b973c3ab02607262ff3346",
+    "cpu-preload.sbatch": "c24d2040ac7242a9c8938676ff1634f8552462a11deb395496c322fc5f61edea",
+    "preload.py": "d20466b8bbfa31a5f8b42253602b1610b29ffaf12babe0f77012ba199920f055",
+    "score_gate.py": "59ea83dd33c47939b647c47cb5122a0a8da2bd2d35540ca980655253808a46c7",
+    "test_score_gate.py": "da89e00f8595fd077e3a1035673c38910ce7503231f52b0e41bcba977bc0ad75"
+  },
+  "policy_tests": "21 passed; no actual32B preload yet"
+}

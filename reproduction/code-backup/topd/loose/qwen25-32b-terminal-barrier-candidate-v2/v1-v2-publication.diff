@@ -1,0 +1,45 @@
+--- frozen-v1/terminal.py
++++ v2/terminal.py
+@@ -1,5 +1,5 @@
+ """Explicit held-owner terminal handshake; never interprets an UNKNOWN SM window."""
+-import hashlib,json,os,time
++import hashlib,json,os,time,tempfile
+ from pathlib import Path
+ 
+ 
+@@ -12,17 +12,26 @@
+ 
+ 
+ def durable(path,value):
++    path=Path(path)
+     data=json.dumps(value,sort_keys=True,allow_nan=False).encode()+b'\n'
+-    fd=os.open(str(path),os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
++    fd,private=tempfile.mkstemp(prefix='.'+path.name+'.pending-',dir=str(path.parent))
+     try:
+-        view=memoryview(data)
+-        while view:
+-            written=os.write(fd,view);require(written>0,'Terminal short write');view=view[written:]
+-        os.fsync(fd)
+-    finally:os.close(fd)
+-    directory=os.open(str(Path(path).parent),os.O_RDONLY)
+-    try:os.fsync(directory)
+-    finally:os.close(directory)
++        try:
++            view=memoryview(data)
++            while view:
++                written=os.write(fd,view);require(written>0,'Terminal short write');view=view[written:]
++            os.fsync(fd)
++        finally:os.close(fd)
++        # link is atomic and exclusive: an existing authorization is never replaced.
++        os.link(private,path)
++        directory=os.open(str(path.parent),os.O_RDONLY)
++        try:os.fsync(directory)
++        finally:os.close(directory)
++    finally:
++        os.unlink(private)
++        directory=os.open(str(path.parent),os.O_RDONLY)
++        try:os.fsync(directory)
++        finally:os.close(directory)
+ 
+ 
+ def process_identity(pid):

@@ -1,0 +1,183 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "68821511874aba7de20b4f35654f1ce513263b9b2923ac567ad5774f3885b025",
+      "size": 4417
+    },
+    "actual3144-nonauthority.fixture.json": {
+      "sha256": "bab7060f032044652bb744cc0c7facd3918c92bea513d0bc82801cda92aa60e0",
+      "size": 1143
+    },
+    "actual3176-startup.fixture.jsonl": {
+      "sha256": "2e3056e392b64c2e4e17b7891216a0bb16b94919ed70838470c01e2b6c7fe418",
+      "size": 56676
+    },
+    "allocator_policy.py": {
+      "sha256": "f7f2c995319d64daf853621034d10ce120661dab6f687c741386342a65dc6dd6",
+      "size": 2211
+    },
+    "assets-template.json": {
+      "sha256": "6913636b53da1bbe667fa761a9e3845ce42ed91490808b1945b4f7fc94eb3238",
+      "size": 3514
+    },
+    "checkpoint_inventory.py": {
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f",
+      "size": 4763
+    },
+    "compiler_headers.py": {
+      "sha256": "a728b2dc2edf5583b05635ab37db0b47075b52622236a885ffc4baa766a01767",
+      "size": 2403
+    },
+    "final_cleanup.py": {
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d",
+      "size": 4027
+    },
+    "ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "native-cpu.sbatch": {
+      "sha256": "0eaaee80a3eec660b5f25adadd923e4ca5342ae41954b29f6616453b15a4d27d",
+      "size": 697
+    },
+    "native_entry.py": {
+      "sha256": "2deb9dd0c633bba3073e7d1a4b74e2bee97557d05157c3c1a70518b610144d5b",
+      "size": 2889
+    },
+    "native_torch24_adamw.py": {
+      "sha256": "fe1a551e4cadce2b0ecbdb74e2c7827fdc52c51bfb6fb0a11f0aee7e792596b6",
+      "size": 30473
+    },
+    "native_torch24_optimizer.py": {
+      "sha256": "46f911d59955d779b3323a61cbc35c33725da64edfff6b9b2fa7e59b732b1a5b",
+      "size": 44739
+    },
+    "observed_worker.py": {
+      "sha256": "1394d8412a163d260f0f67d359ba8e80ddfce6df827a9fb77177e2f13dbc18da",
+      "size": 3176
+    },
+    "original-core-files.json": {
+      "sha256": "308f72a142f48e463a0f1ba4e399b0441ab43fe08a10a8d005b16ed6bcac54f6",
+      "size": 731
+    },
+    "original-g1-server.py": {
+      "sha256": "0f770791898c4fcbd9ac077540c9afbec94e13d18c8dd869dfbd7fa0ef056ec0",
+      "size": 14043
+    },
+    "original-native-server.py": {
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+      "size": 15344
+    },
+    "owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "pipeline.py": {
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0",
+      "size": 2455
+    },
+    "prepare.py": {
+      "sha256": "3c64850c8a9afcca34eaa48576fba033ac030062d9ff4898e47edc40cafbf8c2",
+      "size": 6346
+    },
+    "process_observation.py": {
+      "sha256": "ec1affaa7087504b05b853e9a17a0bf21f027abe4bc59bf28c7b9c1741db88f9",
+      "size": 1901
+    },
+    "production.sbatch": {
+      "sha256": "76544bba3309390fc85e632c1b72ce9f291efafcdbc69b11f890909e5a49134c",
+      "size": 750
+    },
+    "r1_observation.py": {
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099",
+      "size": 1198
+    },
+    "resource_audit.py": {
+      "sha256": "c382ad97e256e1c15d8b839fcc2a839a271e62032e8cd3a0b8e77af983691f63",
+      "size": 7986
+    },
+    "retrieval_gate.py": {
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7",
+      "size": 4661
+    },
+    "retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "retrieval_startup.py": {
+      "sha256": "1f401e123b97e240f1040beb9ee02fbcb525d86fa90b9494951f231f9003ecf4",
+      "size": 19215
+    },
+    "source_binding.py": {
+      "sha256": "aa504543a1046a3bfdd1420f86fdb78fc8954492f17f8444303c20a73ca2e326",
+      "size": 15907
+    },
+    "supervise.py": {
+      "sha256": "5b5ec29d8f5ac4ba4add3e2962cd34184ec77f9c0ceae9fb285667e79103d6a4",
+      "size": 16607
+    },
+    "test_allocator_policy.py": {
+      "sha256": "97246cadd743f3160e379137c7476baf161292c8b53fcc3b250020ac531313ee",
+      "size": 4873
+    },
+    "test_device_correctness_binding.py": {
+      "sha256": "10c99a783a779fd5f2b462a22db38c0a55c406931c67e103f4cc99b4a794ad40",
+      "size": 2828
+    },
+    "test_entropy_proof_binding.py": {
+      "sha256": "01037b1f27a4e5a7532e6a23f05e9a5c3d2154809c4f6cb4f9d4a020be6b3056",
+      "size": 4329
+    },
+    "test_final_cleanup.py": {
+      "sha256": "5ebbd1bf477b7d13a43a5fd876f05b73f941c856930e84984e126f903add7c71",
+      "size": 2634
+    },
+    "test_fresh_base.py": {
+      "sha256": "b0acdf47508745ca6e7c12b851c867d7a7a8378db8b21d492e7c0edbda1b7c37",
+      "size": 1301
+    },
+    "test_latest_source_binding.py": {
+      "sha256": "7762cece02ba598165b1cc00f05f53d54abad7dc62dfc9b495cfc317b50bfd82",
+      "size": 2309
+    },
+    "test_observer_factory.py": {
+      "sha256": "f7f3786dadbcf5788d7108fce27a30d472d87a682d4780f788e8c8e2b3226784",
+      "size": 6229
+    },
+    "test_pre_backward_memory.py": {
+      "sha256": "b5b6937de49927f7d4807f5e2bfb9ed107cb24715e6b952e1c624ec17c361df3",
+      "size": 4407
+    },
+    "test_standard_r1.py": {
+      "sha256": "3a82169ea4cf781242faeee78a1800329cf87a8718a88d63f4801138ca6f0955",
+      "size": 15057
+    },
+    "test_startup_progress.py": {
+      "sha256": "af14c329ecec9b11450869799b9d7fd63608c3e3306aa6f44723e28d087363ab",
+      "size": 4410
+    },
+    "test_trainer_first_exception.py": {
+      "sha256": "4f417597bc872623e2d8ba2e48de1f87daa9677f0f1f14e786cdd26fa4cac239",
+      "size": 2427
+    },
+    "test_window_v5_binding.py": {
+      "sha256": "11849c12e9ce28ac336e41428df8f0ca215eb15343953cc51dc4a5944846653c",
+      "size": 3600
+    },
+    "train_entry.py": {
+      "sha256": "b3683b64a6b9e006b5af7300e09667426b609d3e8b6618cd3115a319f809f4a4",
+      "size": 5935
+    },
+    "window_guardian.py": {
+      "sha256": "59729265ab93b40e894da7705c6306b797def6bdf5dc91317702171c97648157",
+      "size": 8880
+    }
+  },
+  "inherited_unchanged_tools_native": {
+    "count": 87,
+    "job": "3208",
+    "manifest_sha256": "783709270e21d4da3fa999dae2830d2c053fb28414175f5f2a1e53b5f8af4ba7"
+  },
+  "native_expected": 17,
+  "scope": "SOURCE_CPU_ONLY_NEW_ENTROPY_PROOF_PENDING"
+}

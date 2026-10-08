@@ -1,0 +1,18 @@
+{
+  "scope": "READ_ONLY_NO_MODEL_NO_CALIBRATION_APPROVAL",
+  "files": {
+    "test_replay.py": {
+      "size": 2199,
+      "sha256": "31f706fff50629c56035525c672074112b70cf89efdde4f0ef49551b1ace9349"
+    },
+    "README.md": {
+      "size": 2219,
+      "sha256": "1b721b583f3897c5bba3bf16b08dda86d769d4a811fadd1fc2b1d333334ffa15"
+    },
+    "replay.py": {
+      "size": 10707,
+      "sha256": "9df12639d83987c7c94d217732825c7e15aba998f8b57f2c0d4e3a34db176afd"
+    }
+  },
+  "local_cpu_passed": 4
+}

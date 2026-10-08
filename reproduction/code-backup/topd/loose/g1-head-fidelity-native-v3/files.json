@@ -1,0 +1,26 @@
+{
+  "binding_cpu_tests": 5,
+  "files": {
+    "README.md": {
+      "sha256": "593485a8a0709536da5d1811a6eb6e571af0e7097de6b74c94a57588680f1004",
+      "size": 2289
+    },
+    "head_fidelity.py": {
+      "sha256": "e9281af4f0c67490e990fec0bb14a83c2032b98ba367fff4fbedec2b445f9df7",
+      "size": 6088
+    },
+    "native-head-fidelity.sbatch": {
+      "sha256": "015e5a22387383841ab2506210a672c15dcad8ff8d5b7bd5526875c3d8dfffae",
+      "size": 555
+    },
+    "native_run.py": {
+      "sha256": "0bc47d69d07faf01a306dd9c2c0b394e4cd8b9b8d6c45d8194f61d8faa41373d",
+      "size": 5891
+    },
+    "test_binding.py": {
+      "sha256": "d9e4227959fc4a3b908a22232676a87e9e769eb18241b4228a23cf107d8116ff",
+      "size": 1914
+    }
+  },
+  "scope": "NATIVE_CPU_HEAD_FIDELITY_WRAPPER_ONLY"
+}

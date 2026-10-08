@@ -1,0 +1,13 @@
+{
+  "candidate_archive_sha256": "f6b25cf3095917001abf468b1fa0a0869f50c3420b624e1d36840e11571e216a",
+  "files": {
+    "README.md": "ecb0177afc74dfe2834b6894da2e50fcd373f1256eafda711c2800a3b7190ec0",
+    "frozen-candidate-v6.tar.gz": "f6b25cf3095917001abf468b1fa0a0869f50c3420b624e1d36840e11571e216a",
+    "native-cpu.sbatch": "cb2ecf04e09ef2dd9a6c2b79254e6e1568df60e2e948d1f57ab57998fe56e620",
+    "probe.py": "2a6232c7cb58c4a80e14080badbdf68a77ee585af3770b9a43ffc6253e053cc0",
+    "test_probe.py": "737607a6ffa1ae1d3ed31b47d024a4a1887691039a5720788213d6128c415e90"
+  },
+  "frozen_transport_cpu_fixtures": 44,
+  "local_supplement_contract_fixtures": 4,
+  "scope": "OWNED_CPU_TRANSPORT_NATIVE_SUPPLEMENT_NO_ALGORITHM"
+}

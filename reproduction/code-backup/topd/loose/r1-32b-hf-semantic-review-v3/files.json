@@ -1,0 +1,25 @@
+{
+  "scope": "SOURCE_PREPARATION_ONLY_NO_ACTUAL_HF_SCAN",
+  "files": {
+    "README.md": {
+      "size": 3248,
+      "sha256": "0c9e0079f3108c0580e7f0353b50e37c8e18f4949996170568c8adecc8abfe60"
+    },
+    "checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "original_semantic_gate.py": {
+      "size": 15227,
+      "sha256": "10ecd9ac072a93903e55acb870b4962844c1bcfd9bf5f2440355885e24e7b759"
+    },
+    "review.py": {
+      "size": 10939,
+      "sha256": "1e6e42b6e706e1fba6bae97c91c6eb851a6b670b6e0a5b9f68c805acf6eb0659"
+    },
+    "test_review.py": {
+      "size": 4886,
+      "sha256": "7a29d2d69b137a53866841c4c3231d26beed5397caa2a9cfc7b905a3c8debd46"
+    }
+  }
+}

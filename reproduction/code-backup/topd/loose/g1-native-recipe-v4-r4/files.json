@@ -1,0 +1,25 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "9ff4660e4404717dcafb27f43da7fa5a9210e2f09550239ae24e7d9645384c0c",
+      "size": 1304
+    },
+    "actual3102-static-config.fixture.json": {
+      "sha256": "31cb3982851beee1f7d0f2c614d725e31d80e2af489ee21461547a31a96275a6",
+      "size": 11009
+    },
+    "native-rebind.sbatch": {
+      "sha256": "61151140be7231c9ff002e7ed12769b7f56a0f19e199581fab894bedee12e841",
+      "size": 2139
+    },
+    "rebind_initial.py": {
+      "sha256": "6b31d8c4d370cdde9fe0f223853a5ff1e554b14db3bc7c77f8ca052a66269bf7",
+      "size": 4939
+    },
+    "test_rebind_initial.py": {
+      "sha256": "5ee48de1a2b0788579a69919e1ba5ec08f40ff7f9f23afe323d7ad3066453760",
+      "size": 2175
+    }
+  },
+  "scope": "SOURCE_CPU_PREPARATION_ONLY_NOT_CALIBRATION_PROFILE100_OR_TOPD_APPROVAL"
+}

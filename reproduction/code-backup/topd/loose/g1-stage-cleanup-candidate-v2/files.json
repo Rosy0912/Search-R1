@@ -1,0 +1,20 @@
+{
+  "scope": "SOURCE_CPU_ONLY_NO_GPU_NO_HISTORICAL_SENDER_PROOF",
+  "files": {
+    "README.md": {
+      "size": 3414,
+      "sha256": "bb6d9a5542b5efc810e6d5d00b28c16a0908ffba2a307607c18bb58b07bae716"
+    },
+    "stage_cleanup.py": {
+      "size": 4622,
+      "sha256": "6a771c329b58fc8597e96edb4064a7af94b1c6d8eaf6dde17600006dee1c1bd8"
+    },
+    "test_stage_cleanup.py": {
+      "size": 6413,
+      "sha256": "b61edaa5a175d713d72b7ef803a7b9de58f9cc3c49610cd775bc575827d7ecf4"
+    }
+  },
+  "local_passed": 9,
+  "local_linux_skipped": 1,
+  "native_expected": 10
+}

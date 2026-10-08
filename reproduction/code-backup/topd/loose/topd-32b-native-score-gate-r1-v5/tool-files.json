@@ -1,0 +1,13 @@
+{
+  "README.md": "fc3a52dba6efabde4fa4530cc377ebbe89e4535c111dcabee72af804f349cb0c",
+  "STANDARD_ROUTE.md": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76",
+  "caller_contracts.py": "aca296084c788a38011f7329ac6285d4a077c6feea6dda815e7fc06c149ec1a8",
+  "files.sha256": "9e8a53cc19d8ece94813ff4ff9cb53a5bbf2154b1d4a3230f9c64534596f3c4d",
+  "native-cpu.sbatch": "7e6243dd7db8c51d7730ed060bf1580895ab4d266a3caa00e6e7ab1c96c21931",
+  "native-score.sbatch": "ef07b297a3db49a87f67422552fdc9677b185d812b260952f7b6c7531b9b3b3f",
+  "score_gate.py": "9b690208a29d90f9062e576ed220c2728c243d09c8bd331778fa537e49685489",
+  "supervisor.py": "41d920063840f375f493377b499b98f338f342494a8a221bdd88f21bd1225442",
+  "test_caller_contracts.py": "d980c2e1a5c40f860a98474190d0edf5248d65a507d8ca8c67c2dc305eeba237",
+  "test_score_gate.py": "21cab1b2842a4ebd6891448cd884b5c057c5e682cda494c4fa48a0357548bccc",
+  "worker.py": "36cdc9c196a20b0d88f9ed1b35e4cf5eb7c15b0363e16d1d3744363e7acc452c"
+}

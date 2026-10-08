@@ -1,0 +1,52 @@
+--- sealed/eval64.py
++++ candidate/eval64.py
+@@ -341,9 +341,11 @@
+         for row in rows:
+             f.write(json.dumps(jsonable(row), allow_nan=False) + '\n')
+     write_json(output / 'result.json', dict(status='COMPLETE64_UNREVIEWED_NO_TRAINING',
+-               quality=quality_gate(rows), metrics=aggregate_answer_metrics(rows),
++               producer_epoch=time.time(), quality=quality_gate(rows), metrics=aggregate_answer_metrics(rows),
+                wall_seconds=time.time()-start, final_sha256=sha(output / 'final.safetensors'),
+                qa_sha256=sha(output / 'qa.jsonl')))
++    from terminal import hold_owner
++    hold_owner(output, engine)  # Before run returns and engine/executor can be destroyed.
+ 
+ 
+ def main():
+--- sealed/supervisor.py
++++ candidate/supervisor.py
+@@ -5,6 +5,7 @@
+ import os
+ from pathlib import Path
+ import signal
++import secrets
+ import socket
+ import subprocess
+ import sys
+@@ -61,7 +62,8 @@
+     out = ROOT / 'logs' / ('qwen25-32b-terminal-fixed413-eval64-' + os.environ['SLURM_JOB_ID'])
+     out.mkdir(exist_ok=False)
+     env = local_env(os.environ)
+-    env.update(SEARCH_R1_EVAL64_SUPERVISOR_PID=str(os.getpid()), SEARCH_R1_EVAL64_CGROUP=relative)
++    env.update(SEARCH_R1_EVAL64_SUPERVISOR_PID=str(os.getpid()), SEARCH_R1_EVAL64_CGROUP=relative,
++               SEARCH_R1_EVAL64_TERMINAL_NONCE=secrets.token_hex(32))
+     stop, monitor_thread = threading.Event(), None
+     result = dict(scope='QWEN25_32B_BASE_EVAL64_NO_TRAINING', status='RUNNING',
+                   binding_sha256=sha(args.binding), cgroup=relative, leases=[dict(uuid=i['uuid']) for i in leases],
+@@ -165,7 +167,16 @@
+         while child.poll() is None:
+             require(service.poll() is None, 'Own retriever exited during evaluation')
+             require(not sampler_errors, 'Active GPU accounting/sampling failed')
++            if (out / 'evaluation/terminal-held.json').is_file():
++                from terminal import authorize
++                result['terminal'] = authorize(out / 'evaluation', child.pid, os.getpid(), os.environ['SLURM_JOB_ID'],
++                    env['SEARCH_R1_EVAL64_TERMINAL_NONCE'], lambda: launcher.stop_monitor(stop, monitor_thread), sampler_errors)
++                break
+             time.sleep(1)
++        require('terminal' in result, 'Evaluation exited without held-owner terminal handshake')
++        require(child.wait(timeout=60) == 0, 'Authorized evaluation exit failed')
++        from terminal import verify_ack
++        result['terminal_child_ack'] = verify_ack(out / 'evaluation', result['terminal'])
+         require(child.returncode == 0, 'Own32B evaluation failed; preserve partial raw evidence')
+         evaluated = json.loads((out / 'evaluation/result.json').read_text())
+         require(evaluated['status'] == 'COMPLETE64_UNREVIEWED_NO_TRAINING', 'Incomplete64')

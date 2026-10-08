@@ -1,0 +1,81 @@
+{
+  "scope": "SOURCE_DEPENDENCY_SNAPSHOTS_AND_CPU_ENTRY_ONLY",
+  "files": {
+    "native-cpu.sbatch": {
+      "size": 917,
+      "sha256": "52ccaa3546b4f5ec58ca96d4a435620c00f430d6e8793f552ffb0e46b2320aec"
+    },
+    "native_cpu_runner.py": {
+      "size": 2487,
+      "sha256": "cfde91379ac1806341b8725951c795561f5bce3e13a17e2f0566ffeb6e9b7563"
+    },
+    "qwen25-32b-terminal-barrier-candidate-v2/eval64.py": {
+      "size": 22081,
+      "sha256": "9d1b07602b4b84d9f3b99d53e6b2463cbc5f7b299d843dbdccb59d0de62b4282"
+    },
+    "qwen25-32b-terminal-fix-refreeze/eval64.py": {
+      "size": 21926,
+      "sha256": "24d144fdac16b0983a11e3bd99d111f44d0bc312dc98b74847f3d16524076bee"
+    },
+    "qwen25-32b-trained-eval64-candidate-v2/eval64.py": {
+      "size": 16295,
+      "sha256": "69c8c9226bf38a1d70a81bbf26670f7c8c8d8031ac1714894086522404f520e4"
+    },
+    "qwen25-32b-window-safety-candidate-v4/README.md": {
+      "size": 1389,
+      "sha256": "215bd19d1da4c8a4c367ca96578fac5b2f8f4f1d1de00f5abe8138ff088be1b4"
+    },
+    "qwen25-32b-window-safety-candidate-v4/actual3056-window.json": {
+      "size": 11735,
+      "sha256": "0f82914ed023422f39329b60d338830d75077cf6664ec4ed77ae47ea0103f77b"
+    },
+    "qwen25-32b-window-safety-candidate-v4/files.json": {
+      "size": 920,
+      "sha256": "9835bc499bcb10da1959ae0e3bce88cf7a7966ad51ed21dc80fbe03368eaba8c"
+    },
+    "qwen25-32b-window-safety-candidate-v4/launch.py": {
+      "size": 5510,
+      "sha256": "9daffd3df4435dcf269e64ff1de647c4a6b7fea49c0e86846f64fb90d3ee94cb"
+    },
+    "qwen25-32b-window-safety-candidate-v4/native-cpu.sbatch": {
+      "size": 1069,
+      "sha256": "ec40237d1b599517520895f38f50d2409070bb3578ad685fd7f11a1475f36834"
+    },
+    "qwen25-32b-window-safety-candidate-v4/runtime-safety-vs-c7.diff": {
+      "size": 5217,
+      "sha256": "08d65dd0a0490c4f7834486765186c4d752b767d709e446bde5f0985c196e6b4"
+    },
+    "qwen25-32b-window-safety-candidate-v4/runtime_safety.py": {
+      "size": 12581,
+      "sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6"
+    },
+    "qwen25-32b-window-safety-candidate-v4/source-binding.json": {
+      "size": 1250,
+      "sha256": "96bd55f6967500cc8a80531eb31767c3ab2d840b3a19c1cc8cbb96812aaf8952"
+    },
+    "qwen25-32b-window-safety-candidate-v4/startup_guard.py": {
+      "size": 19417,
+      "sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b"
+    },
+    "qwen25-32b-window-safety-candidate-v4/test_runtime_safety.py": {
+      "size": 11554,
+      "sha256": "5c8e914e6855b0361300e803a7c3da744ef732a795a8f46d919f8f931e003ea6"
+    },
+    "qwen25-32b-window-safety-candidate-v4/test_startup_guard.py": {
+      "size": 27049,
+      "sha256": "a5f6c019847ab31ae0c9278bb3113b375a46d48d43a4e369672f29c3bec22a01"
+    },
+    "topd-32b-native-score-caller-v1-readonly-review/caller_contracts.py": {
+      "size": 2626,
+      "sha256": "aca296084c788a38011f7329ac6285d4a077c6feea6dda815e7fc06c149ec1a8"
+    },
+    "topd-32b-pipeline-ipc-candidate-v2/topd32b_shared_pipeline/backend.py": {
+      "size": 22858,
+      "sha256": "5329501da15436d7f05b502e220081caa586df9fcbb6a58a722407ca93e3c5e6"
+    },
+    "topd-32b-pipeline-ipc-candidate-v2/topd32b_shared_pipeline/protocol.py": {
+      "size": 4730,
+      "sha256": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227"
+    }
+  }
+}

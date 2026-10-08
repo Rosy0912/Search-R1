@@ -90,6 +90,24 @@ def content_identity(specification, train, holdout):
 
 def prepare_common_holdout(config):
     settings = config.baselines.holdout
+    if settings.get('common_manifest'):
+        manifest_path = Path(settings.common_manifest).resolve()
+        expected = settings.get('common_manifest_sha256')
+        if file_hash(manifest_path) != expected:
+            raise ValueError('Shared common dataset manifest changed')
+        manifest = json.loads(manifest_path.read_text())
+        for name, count in [('train',169028),('validation',512),('stage',64),('final',51713)]:
+            item = manifest['splits'][name]
+            path = manifest_path.parent / item['path']
+            if item['rows'] != count or file_hash(path) != item['sha256']:
+                raise ValueError('Shared common dataset changed: ' + name)
+        config.data.train_files = str(manifest_path.parent / manifest['splits']['train']['path'])
+        config.data.val_files = str(manifest_path.parent / manifest['splits']['validation']['path'])
+        config.data.final_val_files = str(manifest_path.parent / manifest['splits']['final']['path'])
+        config.baselines.bapo.stage_validation_files = str(manifest_path.parent / manifest['splits']['stage']['path'])
+        return dict(content_identity={'sha256':expected},common_manifest=manifest,
+                    train_rows=169028,holdout_rows=64,
+                    sha256={row['path']:row['sha256'] for row in manifest['splits'].values()})
     if not settings.enabled:
         raise ValueError('All new baseline/GRPO comparisons require the common holdout split')
     inputs = [str(Path(p).expanduser().resolve()) for p in paths(config.data.train_files)]

@@ -1,0 +1,54 @@
+{
+  "cpu_expected": 25,
+  "scope": "INITIAL_ONLY_SOURCE_CPU_NO_GPU_RESOURCE_PROOF",
+  "files": {
+    "checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "ipc.py": {
+      "size": 1488,
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10"
+    },
+    "window_guardian.py": {
+      "size": 8655,
+      "sha256": "5e1e06c948e1bb3f81e5066afaf37a9a741459b630767a3d347e2f85d8bcb66b"
+    },
+    "production.sbatch": {
+      "size": 1038,
+      "sha256": "3fcb193883d09447367cf89e5ab2657fe0041b4075e1b093279bce85cdffd807"
+    },
+    "README.md": {
+      "size": 11307,
+      "sha256": "d3787c1adf4da3bc48ad62f2fc71324ba16a3bd5726d4796319723cdf4bbb0c3"
+    },
+    "pipeline.py": {
+      "size": 8868,
+      "sha256": "48e894930fda7bc12fb44050f2bef4794cd1710449234518296185a7d3e23c8c"
+    },
+    "native-cpu.sbatch": {
+      "size": 790,
+      "sha256": "3b7655eeb5d5a42bd903a8bd3b7b0ba09881a0af8953e236be77dd137f4139bf"
+    },
+    "local-cpu.log": {
+      "size": 625,
+      "sha256": "90ad1b1e83273dc4ebea43b808bc51396feaccbfaefbd623646fdaf6d55e3678"
+    },
+    "test_guardian.py": {
+      "size": 3645,
+      "sha256": "07d990cffda0244a6798e2bc8470af39ca1ece8f34c06425343b934407e6460c"
+    },
+    "run_candidate.py": {
+      "size": 807,
+      "sha256": "4d9b0db955f81a69301e9263551a3e356555cc2971f06aee4135138bb6cb9da8"
+    },
+    "supervise.py": {
+      "size": 17122,
+      "sha256": "1f1ea6a91d061fb2660bd00c9ea5c3c3e39f37236a0f6294113839b54fc1c20a"
+    },
+    "test_pipeline.py": {
+      "size": 15536,
+      "sha256": "f21ad7cc424ab1c2a9c2e654957e951d9cc5670934b7cb5d41ab8dbbbebe7d19"
+    }
+  }
+}

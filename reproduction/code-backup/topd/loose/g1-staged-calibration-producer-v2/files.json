@@ -1,0 +1,67 @@
+{
+  "cpu_expected": 28,
+  "files": {
+    "README.md": {
+      "sha256": "565d9399ee008ffd8c70777ece5d485c308f4d73f06bc96041e3dc6791be7efa",
+      "size": 6089
+    },
+    "gates.py": {
+      "sha256": "fc0da515a882f41db99ff712e1d241d2875ca4346f1d5e070754126ecefdb266",
+      "size": 1258
+    },
+    "native-cpu.sbatch": {
+      "sha256": "179c5ba939de071fdbbd0388c95b05f361a4278ad66b1de278421d99b89a11f3",
+      "size": 650
+    },
+    "native_cpu.py": {
+      "sha256": "8a7da84abd03662531e719ae211bde05225f4f0c73d3dbbaabe31edc97df8e93",
+      "size": 2637
+    },
+    "original-source-bindings.json": {
+      "sha256": "10cc0c09228abe86318bd051d29981fb30ae7a5bdcb00150e01f04720f136482",
+      "size": 272
+    },
+    "original/ts_coevolve.py": {
+      "sha256": "50f1d4daaaed02d77cbbcb501691c525704fe57e9cd87826f4447d9e85c6b4a7",
+      "size": 5434
+    },
+    "original/ts_probe_dump.py": {
+      "sha256": "816052e763ff52f4322932372a58ba0b438710af50db5f21a82631241f246719",
+      "size": 14052
+    },
+    "original/ts_probe_train.py": {
+      "sha256": "f12881dfbd2df07f51632949d06fa9dca5a41ad08ad9da1d7de5b9bd1e9117a0",
+      "size": 8682
+    },
+    "original_blocks.py": {
+      "sha256": "52e363082f1d09053b3c4f83951648e9519aa7a77e23a1f542523cb0ac0034a3",
+      "size": 3007
+    },
+    "owner.py": {
+      "sha256": "c58706bd858f9768fe0a72368480f4b9d51457a7a9b584a65f75e415f02105ec",
+      "size": 13599
+    },
+    "owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "publication.py": {
+      "sha256": "5d820d5ff0c32d0fe73b85c84df90e67232a6aed48f0267282c945bf07226e4d",
+      "size": 4185
+    },
+    "refit_with_owner.py": {
+      "sha256": "eaa4579e36b071d5f139e6212afdf5d99a828197390f8b5f82117eaca66650cf",
+      "size": 8297
+    },
+    "stage_worker.py": {
+      "sha256": "7a9bec67777ccfa814fd68b3dd1ce83680711c4760b88443225e6274c8ca3e46",
+      "size": 9833
+    },
+    "test_producer.py": {
+      "sha256": "59a1e508c4cda142a75fb45143c9c1cf249e5b863fe90af02519b9c5cea53772",
+      "size": 17484
+    }
+  },
+  "scope": "ORIGINAL_G1_TWO_STAGE_CALIBRATION_PROTOTYPE_SOURCE_CPU_ONLY",
+  "source_commit": "4e7448d66a78996467134441571fda0a6844d180"
+}

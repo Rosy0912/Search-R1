@@ -9,11 +9,15 @@ from verl.utils import torch_functional as F
 
 
 @torch.no_grad()
-def attach_policy_weights(data, method):
+def attach_policy_weights(data, method, loss_agg_mode="paper"):
+    if loss_agg_mode not in ("paper", "sequence_mean"):
+        raise ValueError("Unsupported trajectory reduction")
     width = data.batch['responses'].shape[1]
     mask = (data.batch['attention_mask'][:, -width:] * data.batch['info_mask'][:, -width:]).float()
     weights = torch.zeros_like(mask)
-    if method == 'topd':
+    if method == 'topd' and loss_agg_mode == 'sequence_mean':
+        weights = mask / mask.sum(-1, keepdim=True).clamp_min(1)
+    elif method == 'topd':
         groups = defaultdict(list)
         for i, uid in enumerate(data.non_tensor_batch['uid']):
             groups[uid].append(i)

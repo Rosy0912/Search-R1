@@ -1,0 +1,257 @@
+{
+  "scope": "SOURCE_CPU_ONLY_NO_ACTUAL100_NO_TEACHER_APPROVAL",
+  "files": {
+    "qwen25-32b-trained-eval64-r1-v4/README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/eval64.py": {
+      "size": 16302,
+      "sha256": "dee33ad529f3ff9d70be2a0c93981064026e929778499e112f16d35882075fcb"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/files.json": {
+      "size": 1895,
+      "sha256": "439d68efe8a65d4697e7e2e2c0f1fce3cd27f8dec0bfa964a4bce5517a99830c"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/original_r1_observation.py": {
+      "size": 1198,
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/runtime_safety.py": {
+      "size": 12581,
+      "sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/startup_guard.py": {
+      "size": 19417,
+      "sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/supervisor.py": {
+      "size": 12042,
+      "sha256": "6cd4f6cd19df9762eb88cd1dff2240aeea4a0f276d742222e3251041b316ac05"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/terminal.py": {
+      "size": 6010,
+      "sha256": "2897fe0ad094f07cacd654e570df67ae04a473592726c672bdc880a39dc8310a"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/test_trained_assets.py": {
+      "size": 4992,
+      "sha256": "f3d81efd03eadbaa91318353ebc2834e3cb49ab14ac95cab00fbbd212d20d16b"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/test_training_identity.py": {
+      "size": 4257,
+      "sha256": "413dd9566d920e238c02b35c07f74e97c7a027fdabecfa123f33887f13b67cc4"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/trained_assets.py": {
+      "size": 9736,
+      "sha256": "7f83deeae4d660ba6da2599019f0d0d927353a714b3b837b766e7e79a36df3cd"
+    },
+    "qwen25-32b-trained-eval64-r1-v4/training_identity.py": {
+      "size": 3065,
+      "sha256": "568ea251e12ae8bbe7620b2772e5521f97ed5c07b1cbe5d0aec9d687f6d30966"
+    },
+    "topd-32b-native-score-gate-r1-v4/README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "topd-32b-native-score-gate-r1-v4/STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "topd-32b-native-score-gate-r1-v4/caller_contracts.py": {
+      "size": 2626,
+      "sha256": "aca296084c788a38011f7329ac6285d4a077c6feea6dda815e7fc06c149ec1a8"
+    },
+    "topd-32b-native-score-gate-r1-v4/files.sha256": {
+      "size": 828,
+      "sha256": "d784c70943709be9a1b79695c4460f1f22727d8fdb2a655c24fc7af9050e556f"
+    },
+    "topd-32b-native-score-gate-r1-v4/native-cpu.sbatch": {
+      "size": 810,
+      "sha256": "20d7fea87fe5a5a33696d8f30a532c48fbcac2747de3239ebe1217e27c453c8c"
+    },
+    "topd-32b-native-score-gate-r1-v4/native-score.sbatch": {
+      "size": 1342,
+      "sha256": "57d364ace97549771e6e98a6042732ba946475886d5fc739fd5b267ac1b7b2c2"
+    },
+    "topd-32b-native-score-gate-r1-v4/score_gate.py": {
+      "size": 26644,
+      "sha256": "c6ee9c585c8dc2b390d0333d946e04d4d2a56366b3d76110d7e9a3090b027cfe"
+    },
+    "topd-32b-native-score-gate-r1-v4/supervisor.py": {
+      "size": 11664,
+      "sha256": "41d920063840f375f493377b499b98f338f342494a8a221bdd88f21bd1225442"
+    },
+    "topd-32b-native-score-gate-r1-v4/test_caller_contracts.py": {
+      "size": 5883,
+      "sha256": "d980c2e1a5c40f860a98474190d0edf5248d65a507d8ca8c67c2dc305eeba237"
+    },
+    "topd-32b-native-score-gate-r1-v4/test_score_gate.py": {
+      "size": 10285,
+      "sha256": "21cab1b2842a4ebd6891448cd884b5c057c5e682cda494c4fa48a0357548bccc"
+    },
+    "topd-32b-native-score-gate-r1-v4/tool-files.json": {
+      "size": 987,
+      "sha256": "1cc58101bd37908c5cddd97a923499a1f682319e2e2bbdd4d0456054de8c6109"
+    },
+    "topd-32b-native-score-gate-r1-v4/worker.py": {
+      "size": 5238,
+      "sha256": "36cdc9c196a20b0d88f9ed1b35e4cf5eb7c15b0363e16d1d3744363e7acc452c"
+    },
+    "topd-32b-shared-owner-r1-v4/README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "topd-32b-shared-owner-r1-v4/STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "topd-32b-shared-owner-r1-v4/context_policy.py": {
+      "size": 2088,
+      "sha256": "8e38a7bc10fa7d9f5cf03be8356f84cdcdb8143cdd88940200ecb0fb79481777"
+    },
+    "topd-32b-shared-owner-r1-v4/files.json": {
+      "size": 1186,
+      "sha256": "7d08bb874a9cf8bb1ff2a4e71fc1f0164a2b3cba034e664442c94219f13b6860"
+    },
+    "topd-32b-shared-owner-r1-v4/import_gate.py": {
+      "size": 2239,
+      "sha256": "90b716a874fed9f17e10e7d3666aa22155da658f4f1e1558332cb14f123f6364"
+    },
+    "topd-32b-shared-owner-r1-v4/ipc-source-pins.json": {
+      "size": 343,
+      "sha256": "9bb7ce90631419187dbf9cee626ecb612d333fb77797afe2b67cb1e0b8763514"
+    },
+    "topd-32b-shared-owner-r1-v4/owner.py": {
+      "size": 11744,
+      "sha256": "fc135c115ff4528c8e3927a16c4599caf8bdcd323f9dafb040c460843b8ed476"
+    },
+    "topd-32b-shared-owner-r1-v4/test_context_policy.py": {
+      "size": 2236,
+      "sha256": "d6ecb8a317e3279705c88f26a42e149041655803178f0ce63a9fe431105db8bc"
+    },
+    "topd-32b-shared-owner-r1-v4/test_owner.py": {
+      "size": 6500,
+      "sha256": "1f3db4ddf842383b85268d4d17bd239f25c7546faecd45b57a3adfa4ef4bc178"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/controller-integration-DRAFT.patch": {
+      "size": 3936,
+      "sha256": "1a79cac7273aea7f8f89f60ffb27abb9256747f5988ceed807a0ead1752657d5"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/files.json": {
+      "size": 1281,
+      "sha256": "e85a401cb8227c28877ea085c7a23fa54093444051264c4293d7a7a2af98fad4"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/test_backend.py": {
+      "size": 10012,
+      "sha256": "672998a513542d5ab97d82d4dd0f91491850273b5b25259dbb703632f5a676a3"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/topd32b_shared_pipeline/__init__.py": {
+      "size": 76,
+      "sha256": "2b8d4c46d0f651d6be028b455a7165eb341ce467c79d1270d4fd19db4e0bbd11"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/topd32b_shared_pipeline/backend.py": {
+      "size": 22858,
+      "sha256": "5329501da15436d7f05b502e220081caa586df9fcbb6a58a722407ca93e3c5e6"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/topd32b_shared_pipeline/protocol.py": {
+      "size": 4730,
+      "sha256": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227"
+    },
+    "topd-32b-pipeline-ipc-r1-v4/topd32b_shared_pipeline/readiness.py": {
+      "size": 4958,
+      "sha256": "19ca883a8aacb5d3246d6c8b403478a5ea05b7a0bc402b61cdbfa567b659d22b"
+    },
+    "topd-shared32b-supervisor-r1-v4/README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "topd-shared32b-supervisor-r1-v4/STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "topd-shared32b-supervisor-r1-v4/config-template.json": {
+      "size": 1923,
+      "sha256": "4543e3e9144f64d9b5317f3a206e5bb01f3d87199caade785cb6d72ad23e6e1e"
+    },
+    "topd-shared32b-supervisor-r1-v4/contracts.py": {
+      "size": 14567,
+      "sha256": "6f29354edf568b811c552252e60f2242aa8721de0d39f606bea331918b03366d"
+    },
+    "topd-shared32b-supervisor-r1-v4/dependencies.py": {
+      "size": 6419,
+      "sha256": "72093a7708e4cfba54c181179ecda6f5fd2c5af498227640dda5fce00e70bb70"
+    },
+    "topd-shared32b-supervisor-r1-v4/files.json": {
+      "size": 2424,
+      "sha256": "7af9590796c07f56635ec00127a70bccd0ddc90514d29f2c30221329accef11e"
+    },
+    "topd-shared32b-supervisor-r1-v4/hardware_profile.py": {
+      "size": 4028,
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54"
+    },
+    "topd-shared32b-supervisor-r1-v4/hf_inventory.py": {
+      "size": 3579,
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774"
+    },
+    "topd-shared32b-supervisor-r1-v4/launch.sbatch": {
+      "size": 912,
+      "sha256": "8c4211cf7c0c172ca371edee8b4fff9157bfe611533c02ec91c82524357830a0"
+    },
+    "topd-shared32b-supervisor-r1-v4/lifecycle.py": {
+      "size": 3273,
+      "sha256": "2615a37e040c6a36c1097cd5e5f0ede4a3f3f1c635c2f0dd82f3064ef9a10173"
+    },
+    "topd-shared32b-supervisor-r1-v4/native-cpu.sbatch": {
+      "size": 1012,
+      "sha256": "efa7e612642438d588e8b06bd24a3b16bb5fe76d4d3dfc76f7093bbeaac8324f"
+    },
+    "topd-shared32b-supervisor-r1-v4/owner_entry.py": {
+      "size": 1839,
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68"
+    },
+    "topd-shared32b-supervisor-r1-v4/retrieval_startup.py": {
+      "size": 16107,
+      "sha256": "6f22fe7c9ca583862ec5c8121faf0b78da45665caa8d98cc852bcf12c83e75fd"
+    },
+    "topd-shared32b-supervisor-r1-v4/retriever_lifecycle.py": {
+      "size": 4096,
+      "sha256": "239fd4c96080a15f0fa2b97e174e8a380e3f47caa7d89c2a1a18332318727633"
+    },
+    "topd-shared32b-supervisor-r1-v4/shared_supervision_hooks.py": {
+      "size": 6373,
+      "sha256": "2f17bb04b80af5fac45d59e3dd451e68420fa6458de00b7a203126d132990271"
+    },
+    "topd-shared32b-supervisor-r1-v4/supervise.py": {
+      "size": 12378,
+      "sha256": "dee6d3dea0a4b5cb2ae7ee254bc6d5d44669739eddee38572d7e5759d7536f01"
+    },
+    "topd-shared32b-supervisor-r1-v4/test_contracts.py": {
+      "size": 30141,
+      "sha256": "9bd10d2d49330ff53707e944dd5433861ef9ab1778ac861c97120bdecd7df0c8"
+    },
+    "topd-shared32b-supervisor-r1-v4/train_entry.py": {
+      "size": 4423,
+      "sha256": "a9ecef54d450e9adf8eb1f5c75395674a5e08b63ce22ef7053e84b38766dc97d"
+    },
+    "test_standard_teacher_identity_v4_chain.py": {
+      "size": 3121,
+      "sha256": "9bc7bf571911e06efae2533fc88567535a1590a8a0cec2876702b0203d637219"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "cpu_fixtures": 44,
+  "files": {
+    "README.md": "cccded502fc28ba1420d3479940cf33c4189a40934663165f2410bc2b5ad77b0",
+    "downloader_v6.py": "f117e17d9dbc78b74fbb42101b53cd2c4585874125efd74bf80756a97df750ba",
+    "local-collect.log": "805b8ba75d9a7077936e64c22d059d4eb910d9a6dcfadeac5dcc5e99138d30f7",
+    "local-compression-samples.json": "202308c677594eac06f36038cf6011fab27be31a7f4eb4f763bccf85fe0b4bfb",
+    "local-cpu-tests.log": "ee3ed90260493d4b84d4691bbf476f3b805e283fd2b36e14e95b856aa73f54fd",
+    "official-metadata.json": "e546ba207f643dbe1a098323e28d45ff07942a6390bc73b8391c0acfc20d84d1",
+    "test_downloader_v6.py": "cfaaf8a1a93eeebd4c968e03cdf6227b5ec456fe582029d3bc43c0505dbd7cd0",
+    "test_transfer.py": "6e9585f97896c1b4831a3f944f110feb5d8b5d77fbd3c933a95e44b19ffeef95",
+    "transfer.py": "11f703ec21139b437eb5044703041077af310e196acc5b2b9bdcd634f0f95d0a"
+  },
+  "official_metadata_sha256": "e546ba207f643dbe1a098323e28d45ff07942a6390bc73b8391c0acfc20d84d1",
+  "scope": "OFFICIAL_TRANSPORT_V6_CPU_CANDIDATE_NOT_RUNNING_NOT_NATIVE_VALIDATED"
+}

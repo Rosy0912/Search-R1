@@ -1,0 +1,71 @@
+{
+  "cpu_expected": 53,
+  "files": {
+    "README.md": {
+      "sha256": "e3d659e4beef688431d9cc3499209be1d8a027c2a13579c61bec26d30ff3ff26",
+      "size": 13594
+    },
+    "checkpoint_inventory.py": {
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f",
+      "size": 4763
+    },
+    "ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "local-cpu.log": {
+      "sha256": "ac89b34aafcd8800c50021e2785ff6e918b4cfc2fe4b3aea3a52b3f2f6e404e9",
+      "size": 208
+    },
+    "native-cpu.sbatch": {
+      "sha256": "f0315c3b380959a9c22553bb543417504172a9c2063455c88f0dde81223fc144",
+      "size": 830
+    },
+    "pipeline.py": {
+      "sha256": "48e894930fda7bc12fb44050f2bef4794cd1710449234518296185a7d3e23c8c",
+      "size": 8868
+    },
+    "production.sbatch": {
+      "sha256": "3fcb193883d09447367cf89e5ab2657fe0041b4075e1b093279bce85cdffd807",
+      "size": 1038
+    },
+    "retrieval_gate.py": {
+      "sha256": "8c79b415ee029d1a1ca47f31fd7a0a97ad59b08e39754ad3a4c08a182723666b",
+      "size": 2453
+    },
+    "retrieval_startup.py": {
+      "sha256": "a7a43e57db058325536cda72e4d37afcb446bca3918b08cb8b78f1d67716a71b",
+      "size": 13745
+    },
+    "run_candidate.py": {
+      "sha256": "4d9b0db955f81a69301e9263551a3e356555cc2971f06aee4135138bb6cb9da8",
+      "size": 807
+    },
+    "supervise.py": {
+      "sha256": "f73e5533483811de6aa5c599edb6f508ab1b8394a17a161bac0d313b13194ec2",
+      "size": 17643
+    },
+    "test_guardian.py": {
+      "sha256": "07d990cffda0244a6798e2bc8470af39ca1ece8f34c06425343b934407e6460c",
+      "size": 3645
+    },
+    "test_pipeline.py": {
+      "sha256": "f21ad7cc424ab1c2a9c2e654957e951d9cc5670934b7cb5d41ab8dbbbebe7d19",
+      "size": 15536
+    },
+    "test_retrieval_gate.py": {
+      "sha256": "49629ae152012477f1cf1ad043b788fa6992842913ee2ea5f05576c86b657e84",
+      "size": 1575
+    },
+    "test_retrieval_startup.py": {
+      "sha256": "f40e590de0f06d5e452bc985f447ac118616b56c7a75f796ab481d237191b234",
+      "size": 11984
+    },
+    "window_guardian.py": {
+      "sha256": "de0812b45286fd0a486b6474650faa47719eae40007d26a88e6ba492a2ed8cd7",
+      "size": 10336
+    }
+  },
+  "incremental_cpu_expected": 25,
+  "scope": "INITIAL_ONLY_SOURCE_CPU_PARTIAL_RETRIEVER_STARTUP_NOT_GPU_PROOF"
+}

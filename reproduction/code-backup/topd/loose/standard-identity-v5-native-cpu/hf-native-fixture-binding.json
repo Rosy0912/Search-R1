@@ -1,0 +1,6 @@
+{
+  "scope": "ONLY_NATIVE_SLURM_JOB_EXPECTATION_FIX_NOT_SCAN",
+  "original_test_sha256": "7a29d2d69b137a53866841c4c3231d26beed5397caa2a9cfc7b905a3c8debd46",
+  "native_test_sha256": "a290ebe1be8bbdf0c03d3282e01e0b1bccb7f8808af82c6e622033b46ac739dc",
+  "original_hf_manifest_sha256": "1b4bae153472c5778c5bfd8ab00905491a5b58820dbec62e742a3a377bab17db"
+}

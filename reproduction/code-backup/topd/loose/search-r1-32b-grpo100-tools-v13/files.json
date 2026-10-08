@@ -1,0 +1,172 @@
+{
+  "files": {
+    "README.md": {
+      "size": 17697,
+      "sha256": "76468398f2cd213b100d8719673c7d33af340e1bb0074368e923e790ab4ac978"
+    },
+    "actual3144-nonauthority.fixture.json": {
+      "size": 1143,
+      "sha256": "bab7060f032044652bb744cc0c7facd3918c92bea513d0bc82801cda92aa60e0"
+    },
+    "actual3176-startup.fixture.jsonl": {
+      "size": 56676,
+      "sha256": "2e3056e392b64c2e4e17b7891216a0bb16b94919ed70838470c01e2b6c7fe418"
+    },
+    "allocator_policy.py": {
+      "size": 2211,
+      "sha256": "f7f2c995319d64daf853621034d10ce120661dab6f687c741386342a65dc6dd6"
+    },
+    "assets-template.json": {
+      "size": 3514,
+      "sha256": "6913636b53da1bbe667fa761a9e3845ce42ed91490808b1945b4f7fc94eb3238"
+    },
+    "checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "compiler_headers.py": {
+      "size": 2403,
+      "sha256": "a728b2dc2edf5583b05635ab37db0b47075b52622236a885ffc4baa766a01767"
+    },
+    "final_cleanup.py": {
+      "size": 4027,
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d"
+    },
+    "ipc.py": {
+      "size": 1488,
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10"
+    },
+    "native-cpu.sbatch": {
+      "size": 686,
+      "sha256": "f3198d93d748ad359c680d4a18482491f507e9203e31e31591ccc807a067f59a"
+    },
+    "native_entry.py": {
+      "size": 3091,
+      "sha256": "863031b09b694a0de81d9bcca3ecaf9e489372a75e88817ba2a2de453d59e51f"
+    },
+    "native_torch24_adamw.py": {
+      "size": 30473,
+      "sha256": "fe1a551e4cadce2b0ecbdb74e2c7827fdc52c51bfb6fb0a11f0aee7e792596b6"
+    },
+    "native_torch24_optimizer.py": {
+      "size": 44739,
+      "sha256": "46f911d59955d779b3323a61cbc35c33725da64edfff6b9b2fa7e59b732b1a5b"
+    },
+    "observed_worker.py": {
+      "size": 3176,
+      "sha256": "1394d8412a163d260f0f67d359ba8e80ddfce6df827a9fb77177e2f13dbc18da"
+    },
+    "original-core-files.json": {
+      "size": 731,
+      "sha256": "308f72a142f48e463a0f1ba4e399b0441ab43fe08a10a8d005b16ed6bcac54f6"
+    },
+    "original-g1-server.py": {
+      "size": 14043,
+      "sha256": "0f770791898c4fcbd9ac077540c9afbec94e13d18c8dd869dfbd7fa0ef056ec0"
+    },
+    "original-native-server.py": {
+      "size": 15344,
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052"
+    },
+    "owner_support.py": {
+      "size": 64788,
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09"
+    },
+    "pipeline.py": {
+      "size": 2455,
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0"
+    },
+    "prepare.py": {
+      "size": 6130,
+      "sha256": "89619b9d346eb11e5dc0217d8f895c1e24a1300debedd16e8008ab9f9033072c"
+    },
+    "process_observation.py": {
+      "size": 1901,
+      "sha256": "ec1affaa7087504b05b853e9a17a0bf21f027abe4bc59bf28c7b9c1741db88f9"
+    },
+    "production.sbatch": {
+      "size": 750,
+      "sha256": "76544bba3309390fc85e632c1b72ce9f291efafcdbc69b11f890909e5a49134c"
+    },
+    "r1_observation.py": {
+      "size": 1198,
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099"
+    },
+    "resource_audit.py": {
+      "size": 7498,
+      "sha256": "bc7ec327a6a3c31c0e83ac2d14a0a953be9346c3cd9feaa0ee5c3489a9b43ee5"
+    },
+    "retrieval_gate.py": {
+      "size": 4661,
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7"
+    },
+    "retrieval_server.py": {
+      "size": 15476,
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2"
+    },
+    "retrieval_startup.py": {
+      "size": 19215,
+      "sha256": "1f401e123b97e240f1040beb9ee02fbcb525d86fa90b9494951f231f9003ecf4"
+    },
+    "source_binding.py": {
+      "size": 6659,
+      "sha256": "8e9bf8fd9b815d9889eef2ff7dfb947b41af356b7d9f6daf6d2b7852a7d6e166"
+    },
+    "supervise.py": {
+      "size": 16552,
+      "sha256": "be812f63637edab291c8889d7a75963ceeb3f12d44bfc5630bac42cd6fe0791e"
+    },
+    "test_allocator_policy.py": {
+      "size": 4873,
+      "sha256": "97246cadd743f3160e379137c7476baf161292c8b53fcc3b250020ac531313ee"
+    },
+    "test_device_correctness_binding.py": {
+      "size": 2802,
+      "sha256": "f3cd112e8fd3792d260910298c4ba13495efba98ac4768ab059f898af1521288"
+    },
+    "test_final_cleanup.py": {
+      "size": 2634,
+      "sha256": "5ebbd1bf477b7d13a43a5fd876f05b73f941c856930e84984e126f903add7c71"
+    },
+    "test_fresh_base.py": {
+      "size": 1301,
+      "sha256": "b0acdf47508745ca6e7c12b851c867d7a7a8378db8b21d492e7c0edbda1b7c37"
+    },
+    "test_latest_source_binding.py": {
+      "size": 2274,
+      "sha256": "7facea7892ddb994ffecd93e4ddaf20eb85bef4f117508ee10f5b9f941ca1fb3"
+    },
+    "test_observer_factory.py": {
+      "size": 6229,
+      "sha256": "f7f3786dadbcf5788d7108fce27a30d472d87a682d4780f788e8c8e2b3226784"
+    },
+    "test_pre_backward_memory.py": {
+      "size": 3032,
+      "sha256": "30425f2865a09b51fc793809e3e76c62499c8d52473f0659f3970cd6c7411148"
+    },
+    "test_standard_r1.py": {
+      "size": 15057,
+      "sha256": "14e37f26bd21305ec92533d3669c0e3bdb5e130f774e701ea70c9ef974c1e881"
+    },
+    "test_startup_progress.py": {
+      "size": 4410,
+      "sha256": "af14c329ecec9b11450869799b9d7fd63608c3e3306aa6f44723e28d087363ab"
+    },
+    "test_trainer_first_exception.py": {
+      "size": 2427,
+      "sha256": "4f417597bc872623e2d8ba2e48de1f87daa9677f0f1f14e786cdd26fa4cac239"
+    },
+    "test_window_v5_binding.py": {
+      "size": 3596,
+      "sha256": "294b0bc1bb9b8f6a4b54c87786a26f69036292afaea6171c224bcc02099e7628"
+    },
+    "train_entry.py": {
+      "size": 5880,
+      "sha256": "8b395d51c8c6353383e7a299a883572fbea6877b80887be985a9897cbc08579e"
+    },
+    "window_guardian.py": {
+      "size": 8876,
+      "sha256": "76b596ba8fcd4a548c7705f2e787827664cda134c576166be49ddbb93b070d5c"
+    }
+  }
+}

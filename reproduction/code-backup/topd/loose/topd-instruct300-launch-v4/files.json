@@ -1,0 +1,113 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "461261758f1cae1e42c339263a137a8f60de734580efe3068bc74c867538cbf4",
+      "size": 3948
+    },
+    "build_command.py": {
+      "sha256": "541ca044797388f0de21b0cdeda3c151b918a304344649aa9cbc0bb7974baf93",
+      "size": 996
+    },
+    "launch.sbatch": {
+      "sha256": "3c59f9c9aa716897b5f488ed093076c84e0540d87ede3cbfb464d72ce0c54254",
+      "size": 934
+    },
+    "prepare.py": {
+      "sha256": "d3d4675a20f9f6b2af86e907c7c5e965493db8ceef217b7d5c89e9cd521bc3cd",
+      "size": 3845
+    },
+    "recipe.json": {
+      "sha256": "eda27512173543f25f4bd3e53b19f0ce52f38179ffc37d0662740d5de122b3a1",
+      "size": 3385
+    },
+    "runtime/allocator_policy.py": {
+      "sha256": "f7f2c995319d64daf853621034d10ce120661dab6f687c741386342a65dc6dd6",
+      "size": 2211
+    },
+    "runtime/checkpoint_inventory.py": {
+      "sha256": "ffc648031dcd368163f2103abcbc279776277c03dd7cb4fc42d35646e093af14",
+      "size": 5696
+    },
+    "runtime/compiler_headers.py": {
+      "sha256": "a728b2dc2edf5583b05635ab37db0b47075b52622236a885ffc4baa766a01767",
+      "size": 2403
+    },
+    "runtime/files.json": {
+      "sha256": "03fcc0ce7d2cfca1f9bf328d7ca2f137555003dedd881b2a3b4277552ad362ec",
+      "size": 2946
+    },
+    "runtime/final_cleanup.py": {
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d",
+      "size": 4027
+    },
+    "runtime/ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "runtime/observed_worker.py": {
+      "sha256": "4dd4dfea492e53a2bfc44372b739b1c4335a20e252a218919207ece435f5ac2a",
+      "size": 3266
+    },
+    "runtime/official_student.py": {
+      "sha256": "d7fd50ba651805b1fa77d4e0bd818af233bdd85c8eb69caad324886368debb93",
+      "size": 1838
+    },
+    "runtime/owner_support.py": {
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+      "size": 64788
+    },
+    "runtime/pipeline.py": {
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0",
+      "size": 2455
+    },
+    "runtime/process_observation.py": {
+      "sha256": "ec1affaa7087504b05b853e9a17a0bf21f027abe4bc59bf28c7b9c1741db88f9",
+      "size": 1901
+    },
+    "runtime/r1_observation.py": {
+      "sha256": "3a605c3b244c6d8de9c76b25764a120125beee9e83369ef392ea3abfa6fd2099",
+      "size": 1198
+    },
+    "runtime/resource_audit.py": {
+      "sha256": "b20b0f4f8a6bfe3276d811a78e653bc795a53544c809db56f250ccd2b349ef35",
+      "size": 7991
+    },
+    "runtime/retrieval_gate.py": {
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7",
+      "size": 4661
+    },
+    "runtime/retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "runtime/retrieval_startup.py": {
+      "sha256": "6b5576552cd6b3f4bd3cb37d39fea7d3543e80a344e45a17c3bb1d5137788afc",
+      "size": 19258
+    },
+    "runtime/student_binding.py": {
+      "sha256": "72621d18c92451cfb21cdfe57f275490335e256b713d18f30ce974f1f698fb71",
+      "size": 2083
+    },
+    "runtime/student_observation.py": {
+      "sha256": "b6803c9d42710bda880db2cd20ce021c150ee97d134ae537d8d227c29d993c9e",
+      "size": 1700
+    },
+    "runtime/student_phase.py": {
+      "sha256": "826bd5d21f30afba1f8c90ed173f368bb2c3f8462f1521947ffbe26d1da8c385",
+      "size": 1717
+    },
+    "runtime/supervise.py": {
+      "sha256": "ce9fcdaf0740ed812941f51af6f1f05c8aaf67ae08d0c26adafb97b0b0b719a7",
+      "size": 16332
+    },
+    "runtime/train_entry.py": {
+      "sha256": "b9b8175ffdcb7c3763789cb4e394042778d7c4d06fd318093df0ea51d9bcf6eb",
+      "size": 6477
+    },
+    "runtime/window_guardian.py": {
+      "sha256": "cb0dd9c27080313b2a3bc4028c167ee99ca5d5654dfcf1850f50f7ba39b7d9c1",
+      "size": 8841
+    }
+  },
+  "schema": "EXACT_LOCAL_SOURCE_BYTES_V1"
+}

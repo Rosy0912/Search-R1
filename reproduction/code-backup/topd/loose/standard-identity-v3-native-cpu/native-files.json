@@ -1,0 +1,45 @@
+{
+  "scope": "SOURCE_DEPENDENCY_SNAPSHOTS_AND_CPU_ENTRY_ONLY",
+  "files": {
+    "native-cpu.sbatch": {
+      "size": 898,
+      "sha256": "621d4a8099762f8c75983fe9a2f92da37a78f4776960c19fcf55f4842d98a2a2"
+    },
+    "native_cpu_runner.py": {
+      "size": 2487,
+      "sha256": "cfde91379ac1806341b8725951c795561f5bce3e13a17e2f0566ffeb6e9b7563"
+    },
+    "qwen25-32b-terminal-barrier-candidate-v2/eval64.py": {
+      "size": 22081,
+      "sha256": "9d1b07602b4b84d9f3b99d53e6b2463cbc5f7b299d843dbdccb59d0de62b4282"
+    },
+    "qwen25-32b-terminal-fix-refreeze/eval64.py": {
+      "size": 21926,
+      "sha256": "24d144fdac16b0983a11e3bd99d111f44d0bc312dc98b74847f3d16524076bee"
+    },
+    "qwen25-32b-trained-eval64-candidate-v2/eval64.py": {
+      "size": 16295,
+      "sha256": "69c8c9226bf38a1d70a81bbf26670f7c8c8d8031ac1714894086522404f520e4"
+    },
+    "qwen25-32b-window-safety-candidate-v4/runtime_safety.py": {
+      "size": 12581,
+      "sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6"
+    },
+    "qwen25-32b-window-safety-candidate-v4/startup_guard.py": {
+      "size": 19417,
+      "sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b"
+    },
+    "topd-32b-native-score-caller-v1-readonly-review/caller_contracts.py": {
+      "size": 2626,
+      "sha256": "aca296084c788a38011f7329ac6285d4a077c6feea6dda815e7fc06c149ec1a8"
+    },
+    "topd-32b-pipeline-ipc-candidate-v2/topd32b_shared_pipeline/backend.py": {
+      "size": 22858,
+      "sha256": "5329501da15436d7f05b502e220081caa586df9fcbb6a58a722407ca93e3c5e6"
+    },
+    "topd-32b-pipeline-ipc-candidate-v2/topd32b_shared_pipeline/protocol.py": {
+      "size": 4730,
+      "sha256": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227"
+    }
+  }
+}

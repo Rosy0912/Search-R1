@@ -1,0 +1,16 @@
+{
+  "files": {
+    "topd-short-run.py": "c7e0b530753f2cc5bb71b1d8dca0c539d697eed2fea82759df19a83812656638",
+    "topd-five-step.sbatch": "0b9de6df9e1fb5bba31f700391bef3246288bd034349ca3c7fffbd55697ab1eb",
+    "test_topd_local_gpu_ipc.py": "3ee86518fef97f4a720174f1ba341da40f9d45c203d94cdd7c0ce40a3cbaa88f",
+    "test_topd_launch_gate.py": "479b1fb37ce967ef63d44e09ea0de77c0e1efb2381ef5c4f0f20f59cfddb7b9e",
+    "test_topd_checkpoint.py": "49d411954b05722c2f66e27f5c4b161ccd0b0256691c35afe7dc24c56d0f3a39",
+    "test_verify_topd_teacher.py": "dbc35d9a2d83d5d0dfaf6d58f2841d6633807b96f5e960437795942eed41ab10",
+    "verify-topd-checkpoint.py": "0a04ed6f4ce5264b54036ad7220897d4a2a383556ecfba9a44648541616a6123",
+    "verify-topd-teacher.py": "10ecd9ac072a93903e55acb870b4962844c1bcfd9bf5f2440355885e24e7b759",
+    "launcher-cleanup-native-probe.py": "debc77d0c22683927e3abf68c22281f0646ec94fef3683e63a984891dde7e7c4",
+    "execution-proof-native.sbatch": "2e5e6c1d8ef1b1966745214e5e9c4e3a28d59bdb2c502e7366200cb7dd9eb482"
+  },
+  "native_tools_fixtures": 113,
+  "scope": "Implementation frozen, actual native result pending"
+}

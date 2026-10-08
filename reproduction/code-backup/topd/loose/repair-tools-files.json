@@ -1,0 +1,28 @@
+{
+  "code_commit": "438af3529b40663aae7b8293080e09fda57f6a87",
+  "files": {
+    "build_topd_execution_evidence.py": "01d2232173853b1967dcc9124635b371aa7dd42ae961c6badcc4dda2f85cb1b7",
+    "execution-proof-native.sbatch": "0e82a1350510768f0800d8434af51773b46d2ed93d01bb39209927fd78768114",
+    "gpu-oracle-native.sbatch": "4066d2affc85fdd51038ea2bea147602de486064d36717f54431d29dc55221e0",
+    "launcher-cleanup-native-probe.py": "792af0cff8a48871cb5df8b7fdfeebc9678ff2599d25e6e134270e8006ad0233",
+    "repair-normalizer-native.sbatch": "5aeed801572efc854da81b137b3255cc1190b1b666f9a0fa1762bd2c89aff7dd",
+    "repair-source-native.sbatch": "7b8a81fb4a63a0ddc41bee54dc49d48ddc54f0e4085423393eaabf4661dbae1f",
+    "test_build_topd_execution_evidence.py": "0759a9dd2e67da2b71a9f0d1d03c5a570ca38fa3bdb2e22ef4089c53db58a1a1",
+    "test_topd_checkpoint.py": "49d411954b05722c2f66e27f5c4b161ccd0b0256691c35afe7dc24c56d0f3a39",
+    "test_topd_launch_gate.py": "9cdaf0b87c76a772e92ced6f0ddfacaee21fd5c046ad1663a96002d1410ccac9",
+    "test_topd_local_gpu_ipc.py": "83e8c05412da60087931c1acf298a7cce3a7030c0ff142da3df83b52a7b68071",
+    "test_verify_topd_teacher.py": "dbc35d9a2d83d5d0dfaf6d58f2841d6633807b96f5e960437795942eed41ab10",
+    "topd-five-step.sbatch": "0b9de6df9e1fb5bba31f700391bef3246288bd034349ca3c7fffbd55697ab1eb",
+    "topd-short-run.py": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+    "verify-topd-checkpoint.py": "0a04ed6f4ce5264b54036ad7220897d4a2a383556ecfba9a44648541616a6123",
+    "verify-topd-teacher.py": "10ecd9ac072a93903e55acb870b4962844c1bcfd9bf5f2440355885e24e7b759"
+  },
+  "native_counts": {
+    "normalizer": 32,
+    "oracle": 24,
+    "source": 205,
+    "tools": 128
+  },
+  "scope": "PROSPECTIVE_ORIGINAL_GPU_ORACLE_TOOLS_NO_TRAINING",
+  "source_fingerprint": "101eb46fdd5cc493d8be3be11cb9d63313b3e94819bd9d2034b37a1f94e3a9a6"
+}

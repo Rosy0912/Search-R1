@@ -1,0 +1,40 @@
+import pathlib,subprocess
+remote=r'''python3 - <<'INNER'
+import json,pathlib,hashlib,tarfile,os,fcntl,subprocess,time
+r=pathlib.Path('/dataset/shaoshitong/search-r1-rl/topd')
+items=[('g1-32b-fallback-candidate-v3','9b3c1e304636f3e60113f9fb5ad3ebd38f1801898f24cbe724920fa896be30c1','reproduction/conditional-teacher100/files.json'),('g1-production-pipeline-v1','2cf87db0474f0e1dcb20f92b6d61c15312b2b7aa656e0856f4ad9c65f2c3d843','files.json')]
+for name,h,manifest in items:
+ archive=r/'tools'/(name+'-tools.tar.gz');assert hashlib.sha256(archive.read_bytes()).hexdigest()==h
+ target=r/'tools'/name;target.mkdir(exist_ok=True)
+ with tarfile.open(archive) as t:
+  for m in t.getmembers():
+   parts=pathlib.PurePosixPath(m.name).parts;assert m.isfile() and len(parts)>=2 and parts[0]==name and not any(x in ('.','..') for x in parts)
+   p=r/'tools'/m.name;p.parent.mkdir(parents=True,exist_ok=True);b=t.extractfile(m).read()
+   assert not p.is_symlink()
+   if p.exists():assert p.read_bytes()==b
+   else:p.write_bytes(b)
+ d=json.loads((target/manifest).read_text())
+ for n,v in d['files'].items():
+  p=target/n;assert target in p.resolve().parents and not p.is_symlink() and p.stat().st_size==v['size'] and hashlib.sha256(p.read_bytes()).hexdigest()==v['sha256']
+ print('FROZEN_PAYLOAD_MATCH',name,len(d['files']))
+entry=r/'tools/g1-production-pipeline-v1/native-cpu.sbatch';assert hashlib.sha256(entry.read_bytes()).hexdigest()=='148dd73c8aad32f249db575a0ff4cce70048777278aefc153ebf3cf3990bcb0c'
+record=r/'logs/g1-production-pipeline-v1-native-cpu-submission.json'
+def persist(d):
+ tmp=record.with_suffix('.tmp')
+ with tmp.open('w') as f:json.dump(d,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
+ os.replace(tmp,record);fd=os.open(str(record.parent),os.O_RDONLY);os.fsync(fd);os.close(fd)
+with record.with_suffix('.lock').open('a') as lock:
+ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
+ if record.exists():
+  d=json.loads(record.read_text());assert d['status']=='SUBMITTED',d
+ else:
+  q=subprocess.check_output(['squeue','-h','-o','%i|%j'],text=True);assert not any(x.split('|',1)[-1]=='g1-pipeline-cpu' for x in q.splitlines())
+  d=dict(status='UNKNOWN_BEFORE_SUBMISSION',scope='CPU_CONTRACT_NO_32B_CALIBRATION_NO_GPU_NO_TRAINING',epoch=time.time(),entry=str(entry));persist(d)
+  export='ALL,PIPELINE_ROOT='+str(r/'tools/g1-production-pipeline-v1')+',CANDIDATE_ROOT='+str(r/'tools/g1-32b-fallback-candidate-v3')
+  res=subprocess.run(['sbatch','--partition=gpu','--output='+str(r/'logs/g1-pipeline-native-cpu-%j.log'),'--export='+export,'--parsable',str(entry)],text=True,capture_output=True);d.update(returncode=res.returncode,stdout=res.stdout,stderr=res.stderr);persist(d);assert res.returncode==0,d
+  jid=res.stdout.strip().split(';')[0];assert jid.isdigit();d.update(status='SUBMITTED',job_id=int(jid));persist(d)
+print(json.dumps(d))
+INNER'''
+p=subprocess.run(['python3','work/remote_topd.py'],input=remote,text=True,capture_output=True);print(p.stdout,end='');print(p.stderr,end='')
+if not p.returncode:pathlib.Path('outputs/g1-production-pipeline-v1-native-cpu-submission.json').write_text(p.stdout)
+raise SystemExit(p.returncode)

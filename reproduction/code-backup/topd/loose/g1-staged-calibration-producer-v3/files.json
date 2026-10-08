@@ -1,0 +1,74 @@
+{
+  "cpu_expected": 30,
+  "scope": "INITIAL_ONLY_SOURCE_CPU_NO_GPU_RESOURCE_PROOF",
+  "files": {
+    "native_cpu.py": {
+      "size": 2671,
+      "sha256": "aded6318061858d5abb809204270fcf3b5e2f32203fdb6c090edcc39e9fc52a0"
+    },
+    "refit_with_owner.py": {
+      "size": 8297,
+      "sha256": "eaa4579e36b071d5f139e6212afdf5d99a828197390f8b5f82117eaca66650cf"
+    },
+    "test_producer.py": {
+      "size": 17484,
+      "sha256": "59a1e508c4cda142a75fb45143c9c1cf249e5b863fe90af02519b9c5cea53772"
+    },
+    "phase_control.py": {
+      "size": 1588,
+      "sha256": "4f45516c9a616470c6ba74a512c9f15bb29b55f2032e0d8e7d0cb716ab7bc042"
+    },
+    "gates.py": {
+      "size": 1258,
+      "sha256": "fc0da515a882f41db99ff712e1d241d2875ca4346f1d5e070754126ecefdb266"
+    },
+    "owner.py": {
+      "size": 13684,
+      "sha256": "f0dd1cc5b0629b0df2a0a666f2b55a3d9f90d50dbfa4cca4f61132994806f30c"
+    },
+    "test_phase_control.py": {
+      "size": 1966,
+      "sha256": "7acdb46b45a191661711a6589f5698f18c2c87fd29b2309459ea564bfb64a8ad"
+    },
+    "README.md": {
+      "size": 6682,
+      "sha256": "78dc6f7e40799a2ea52c8ab3f8b88b070acbb6c2d68d6055ec7eea6b157236fd"
+    },
+    "stage_worker.py": {
+      "size": 10100,
+      "sha256": "4bc12acb6a91527db30dfdf57baddbc7134f359ec0614da25b0af0272d85d2a7"
+    },
+    "original_blocks.py": {
+      "size": 3007,
+      "sha256": "52e363082f1d09053b3c4f83951648e9519aa7a77e23a1f542523cb0ac0034a3"
+    },
+    "publication.py": {
+      "size": 4185,
+      "sha256": "5d820d5ff0c32d0fe73b85c84df90e67232a6aed48f0267282c945bf07226e4d"
+    },
+    "native-cpu.sbatch": {
+      "size": 650,
+      "sha256": "db29146d83777560b60a1a056279ab598bcb3ae03b8ca711ba37c37f84172529"
+    },
+    "original-source-bindings.json": {
+      "size": 272,
+      "sha256": "10cc0c09228abe86318bd051d29981fb30ae7a5bdcb00150e01f04720f136482"
+    },
+    "owner_support.py": {
+      "size": 64788,
+      "sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09"
+    },
+    "original/ts_probe_dump.py": {
+      "size": 14052,
+      "sha256": "816052e763ff52f4322932372a58ba0b438710af50db5f21a82631241f246719"
+    },
+    "original/ts_coevolve.py": {
+      "size": 5434,
+      "sha256": "50f1d4daaaed02d77cbbcb501691c525704fe57e9cd87826f4447d9e85c6b4a7"
+    },
+    "original/ts_probe_train.py": {
+      "size": 8682,
+      "sha256": "f12881dfbd2df07f51632949d06fa9dca5a41ad08ad9da1d7de5b9bd1e9117a0"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "STANDARD_SEARCH_R1_TEACHER_ROUTE_SOURCE_PREPARATION_NOT_ACTUAL_APPROVAL",
+  "files": {
+    "README.md": {
+      "size": 2270,
+      "sha256": "d2549ede3188b425b272a1387ea4c16ffa76983a2afad849a1f97c0c728d02f3"
+    },
+    "STANDARD_ROUTE.md": {
+      "size": 1049,
+      "sha256": "96371b2acc6210950ce3c575a77ca9125e3834fa63cf242b9f9958ef34422c76"
+    },
+    "context_policy.py": {
+      "size": 2088,
+      "sha256": "8e38a7bc10fa7d9f5cf03be8356f84cdcdb8143cdd88940200ecb0fb79481777"
+    },
+    "import_gate.py": {
+      "size": 2239,
+      "sha256": "a072543bc7064b6b3a13f63f019e9fb8e222b6a637ad90677d3cac75765effb3"
+    },
+    "ipc-source-pins.json": {
+      "size": 343,
+      "sha256": "aaa00714fbbb55b5969031f5ed1155d2becb3499e2f01395443aa1e6d57e4a1c"
+    },
+    "owner.py": {
+      "size": 11744,
+      "sha256": "b07e9ed8f2b0cde11dd1d7ec29a57e89605a8e4167ee8a4f5e4ebb717caca7fb"
+    },
+    "test_context_policy.py": {
+      "size": 2236,
+      "sha256": "d6ecb8a317e3279705c88f26a42e149041655803178f0ce63a9fe431105db8bc"
+    },
+    "test_owner.py": {
+      "size": 6500,
+      "sha256": "653309ef019924310934e402d02fde3bd87eeacafe1a56d8a873e646f37b9486"
+    }
+  }
+}

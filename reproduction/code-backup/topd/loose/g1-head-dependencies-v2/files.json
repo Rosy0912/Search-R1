@@ -1,0 +1,42 @@
+{
+  "cpu_tests": 5,
+  "files": {
+    "README.md": {
+      "sha256": "fefd3aa19cf0d75445729ef05814506058316d8d355602c80283ef3373a253be",
+      "size": 3807
+    },
+    "install.py": {
+      "sha256": "c73fca27ae350d0c87b1a98837a4dc7be5b4ba370ea1ba808678087c5ec34c74",
+      "size": 9453
+    },
+    "joblib-1.4.2-pypi.json": {
+      "sha256": "2f4b4bc09a83001086d58394d18a0b70ea7cb023b2ecb1072deaea466a84225b",
+      "size": 7614
+    },
+    "native-overlay.sbatch": {
+      "sha256": "accb929f58b9d702e23cb91115bf91e523fd1348fda37b29657aab2e01b17ab8",
+      "size": 787
+    },
+    "official-wheels.json": {
+      "sha256": "52e8eebaf530af4051f86dda499685b225213600a406259aa830e97a0b7ecbab",
+      "size": 8749
+    },
+    "scikit-learn-1.5.2-pypi.json": {
+      "sha256": "6e2295de2fc2cc7fc383766746cf559d764db1ccac9ec8d2ed0b765b22ce302d",
+      "size": 36288
+    },
+    "scipy-1.14.1-pypi.json": {
+      "sha256": "dd5bb23ba900857f55c3d2251d7843c9e54bb59889f7b0107693bb7ce1d6a30b",
+      "size": 80843
+    },
+    "test_install.py": {
+      "sha256": "5dcbb0e10fd1d97238b640c0db5dd7dde16c9315f160471a6e715928579f2715",
+      "size": 2607
+    },
+    "threadpoolctl-3.5.0-pypi.json": {
+      "sha256": "3453c4258d761521ca9543ecac09e1e572db7c07727beb868aefdd3cd3d21431",
+      "size": 16569
+    }
+  },
+  "scope": "OFFICIAL_PYPI_HEAD_CPU_OVERLAY_ONLY"
+}

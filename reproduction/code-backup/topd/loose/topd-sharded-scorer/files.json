@@ -1,0 +1,13 @@
+{
+  "expected_cpu_fixtures": 23,
+  "files": {
+    "DEPLOYMENT.md": "69fa0991ad78fd341783fa523515ca53f8c97b15f893f9c2e0ad9fe6428adb16",
+    "README.md": "3929a9aa759674a211399a4d84dd472888ee4fb027e5d8307756deea8a9c42ce",
+    "dependencies.json": "8f3a8df7a81393212cb1195b5bdc933107b4aaf88f186070e312c68cf9b86c69",
+    "native-cpu-gate.py": "237a156060b0ac0b54879d192d0694424c0994e866c401a9fe2890fab3bcd9d5",
+    "native-cpu.sbatch": "43128bfa234f63c3ce75e30a30f60c21e7358918dd8fb3f5327bc8becb3134a6",
+    "scorer.py": "2d5da3fdd94b637c1625677b302df4df21395ef138f9de2ce484035eab7298ea",
+    "test_scorer.py": "0a86aa8bcf2af4cde59f9b562560a4aacec0cabb9c61902299945c5127c492f9"
+  },
+  "scope": "CPU_CONTRACT_PACKAGE_NOT_GPU_READY"
+}

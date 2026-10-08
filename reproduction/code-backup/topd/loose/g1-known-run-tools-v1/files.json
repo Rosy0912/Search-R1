@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "29dd4caa24281b8fc4d091936a817a462394249783c88fd6f993c8f9061fe6a6",
+      "size": 5004
+    },
+    "known_record.py": {
+      "sha256": "e7cded4dd60789403c2a1cf852559ab94a73fc98dfda0b902ea56d23b36be501",
+      "size": 1584
+    },
+    "native-cpu.sbatch": {
+      "sha256": "e7fef57912d54a3891e65510b4a6518f76c1892108ca35c53730e9ce17001f38",
+      "size": 1465
+    },
+    "native_run.py": {
+      "sha256": "81a77cd9475d945f76d03ec5b8d2a6223f2f1fd9805e02feb17226f063c25f08",
+      "size": 11576
+    },
+    "test_known_record.py": {
+      "sha256": "4fd44b368c6e27e40ea7ea1e0b2c405b316495b391803c97f280c7336191ac84",
+      "size": 2195
+    },
+    "test_native_run.py": {
+      "sha256": "62143ebbe8e177bdecb7899d5afa685d57278f90c158a07e62132773deed492e",
+      "size": 2436
+    }
+  },
+  "scope": "SOURCE_CPU_PREDEPLOY_NOT_GPU_OR_TRAINING"
+}

@@ -1,0 +1,20 @@
+{
+  "cpu_expected": 34,
+  "files": {
+    "README.md": {
+      "sha256": "de0e2cf5e1ca2c7ee29a91de8eb256393348d1158a759c599ecba18f192812a8",
+      "size": 6835
+    },
+    "stage_cleanup.py": {
+      "sha256": "cc55f32fbb7eb65f6d4f13ed5b9a58d54bbb73ee25ae4cd6918a0d68dc9b3a80",
+      "size": 10356
+    },
+    "test_stage_cleanup.py": {
+      "sha256": "8f016027825548f9c6e1fe5678e6b46f939f309d015407344c9d539353260cd4",
+      "size": 14401
+    }
+  },
+  "linux_only_skipped": 1,
+  "local_passed": 23,
+  "scope": "SOURCE_ONLY_NOT_CALIBRATION_OR_GPU_ACCEPTANCE"
+}

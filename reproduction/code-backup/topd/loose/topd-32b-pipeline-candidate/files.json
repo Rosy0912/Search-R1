@@ -1,0 +1,19 @@
+{
+  "scope": "CANDIDATE_SOURCE_CPU_ONLY_NOT_GPU_OR_PRODUCTION_READY",
+  "original_method_sha256": "e23b1cdb73736723ff422a9c041f2678b5e8f04cb9a496bd219ad87827b5ef7d",
+  "original_distillation_sha256": "fede3c23e882139a12a2b50c531177438012959774958fc39e03fb3f9d29e229",
+  "files": {
+    "README.md": "809741efa1a19ea8a3010193493196e005a680f49788ea5c9ef787c07c53c991",
+    "capacity_reference.py": "2d5da3fdd94b637c1625677b302df4df21395ef138f9de2ce484035eab7298ea",
+    "native_gate.py": "c945b54294a4e7d222aa6a8c964f2ac8aa5349c0a3d3199532fe0dbba18e95b0",
+    "pipeline.py": "8d7a847daa6ffc84d62c24c0cdb6250c285c8433883fc37fdfe72b6f0254edde",
+    "test_pipeline.py": "3d4e4676446cb5eb453566313d7879f4443029f3f1c67746aa306e54256f8b42"
+  },
+  "cpu_tests": {
+    "passed": 12,
+    "log_sha256": "d24dad9eb0f42180dbc36d7c718231784d6f51d90516bf6c6b270dd03f48fe2b"
+  },
+  "production_source_changed": false,
+  "native_gpu_measured": false,
+  "teacher64quality_measured": false
+}

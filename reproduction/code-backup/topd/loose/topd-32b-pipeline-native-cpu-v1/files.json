@@ -1,0 +1,14 @@
+{
+  "scope": "CPU_CONTRACT_GATE_ONLY_NO_GPU_NO_TRAINING",
+  "files": {
+    "README.md": "809741efa1a19ea8a3010193493196e005a680f49788ea5c9ef787c07c53c991",
+    "capacity_reference.py": "2d5da3fdd94b637c1625677b302df4df21395ef138f9de2ce484035eab7298ea",
+    "pipeline.py": "8d7a847daa6ffc84d62c24c0cdb6250c285c8433883fc37fdfe72b6f0254edde",
+    "native-cpu.sbatch": "c7a2a16add426d1af021b931852a433c979b56e55afb70b06df2b8c381c7007c",
+    "test_pipeline.py": "9c7e57939ed7dcc45b0a1bd5ab597d3ab7ad5bc4c58f67c14b2f761a386b7177",
+    "native_gate.py": "c945b54294a4e7d222aa6a8c964f2ac8aa5349c0a3d3199532fe0dbba18e95b0"
+  },
+  "expected_cpu_tests": 12,
+  "source_commit": "413a10c50f32febaafc83db8170e2b005e0e979f",
+  "original_method_sha256": "e23b1cdb73736723ff422a9c041f2678b5e8f04cb9a496bd219ad87827b5ef7d"
+}

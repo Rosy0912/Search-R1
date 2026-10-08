@@ -100,7 +100,7 @@ class DataParallelPPOActor(BasePPOActor):
                 logits_rmpad.div_(temperature)
 
                 # compute entropy
-                entropy_rmpad = self.compute_entropy_from_logits(logits_rmpad)  # ((total_nnz / sp) + pad)
+                entropy_rmpad = (self.compute_entropy_from_logits(logits_rmpad) if self.config.get('entropy_coeff',0) != 0 else torch.zeros_like(logits_rmpad[..., 0]))  # ((total_nnz / sp) + pad)
 
                 # if use_sp: ((total_nnz / sp) + pad) ; if not use_sp: (batch, seqlen)
                 log_probs = logprobs_from_logits(logits=logits_rmpad, labels=input_ids_rmpad_rolled)
@@ -136,7 +136,7 @@ class DataParallelPPOActor(BasePPOActor):
                 logits.div_(temperature)
                 logits = logits[:, -response_length - 1:-1]  # (bsz, response_length)
                 log_probs = logprobs_from_logits(logits, micro_batch['responses'])
-                entropy = verl_F.entropy_from_logits(logits)  # (bsz, response_length)
+                entropy = (verl_F.entropy_from_logits(logits) if self.config.get('entropy_coeff',0) != 0 else torch.zeros_like(logits[..., 0]))  # (bsz, response_length)
 
             return entropy, log_probs
 

@@ -1,0 +1,38 @@
+{
+  "cpu_expected": 23,
+  "files": {
+    "README.md": {
+      "sha256": "5a26ea3e7f57cbecb026098dc298c266d4a190462d363434f33f939635642de1",
+      "size": 2256
+    },
+    "context_policy.py": {
+      "sha256": "8e38a7bc10fa7d9f5cf03be8356f84cdcdb8143cdd88940200ecb0fb79481777",
+      "size": 2088
+    },
+    "import_gate.py": {
+      "sha256": "4f458642fb9e2e88a62c3e49bfcbff2ca93ee0517d573abeb6ed76d637b104a3",
+      "size": 2246
+    },
+    "ipc-source-pins.json": {
+      "sha256": "e21e8513df0f849e73f3dd184c476621814d15928a6a1aae9d4a1581d0325b43",
+      "size": 343
+    },
+    "local-cpu.log": {
+      "sha256": "63d4e9fc47d14facd854ebea7f4a8c6032499c689e648b277f1ed8b9c9dd7940",
+      "size": 99
+    },
+    "owner.py": {
+      "sha256": "f005923335e6000efae85f123c930389fc08f664c76e31af9523c304dfe0b564",
+      "size": 11741
+    },
+    "test_context_policy.py": {
+      "sha256": "d6ecb8a317e3279705c88f26a42e149041655803178f0ce63a9fe431105db8bc",
+      "size": 2236
+    },
+    "test_owner.py": {
+      "sha256": "e9cb1f2f1b1f85db2032e906d230e0480dcd50a7adb260cf5b4d9249d5604999",
+      "size": 5186
+    }
+  },
+  "scope": "SOURCE_CPU_ONLY_NOT_GPU_OR_PRODUCTION_READY"
+}

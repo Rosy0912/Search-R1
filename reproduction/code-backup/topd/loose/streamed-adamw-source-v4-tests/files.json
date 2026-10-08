@@ -1,0 +1,39 @@
+{
+  "base_commit": "e623724532d06e975b61f3b35ec7925dc790c939",
+  "files": {
+    "README.md": {
+      "sha256": "fc712bf7d77b559d020f430c08a2533502a0e3d312645564707bfc7185604903",
+      "size": 927
+    },
+    "gpu-device-correctness.py": {
+      "sha256": "bfbeb696df23a04487e0dcbffd8d8d62a7c723a14bd330d41ce9a9a6ba09d30c",
+      "size": 5784
+    },
+    "native-cpu.sbatch": {
+      "sha256": "b5e6563be173bc1249ba3c6154d26b27808229f0622fca5258c82d610a0879bb",
+      "size": 612
+    },
+    "native_entry.py": {
+      "sha256": "0a561c651ac65d0176566226417fc2c6d05fe82950c434793697152c10c32e5a",
+      "size": 1982
+    },
+    "native_torch24_adamw.py": {
+      "sha256": "fe1a551e4cadce2b0ecbdb74e2c7827fdc52c51bfb6fb0a11f0aee7e792596b6",
+      "size": 30473
+    },
+    "native_torch24_optimizer.py": {
+      "sha256": "46f911d59955d779b3323a61cbc35c33725da64edfff6b9b2fa7e59b732b1a5b",
+      "size": 44739
+    },
+    "test_latest_branch.py": {
+      "sha256": "a151c33e3d50e39c50c764df14f7f7652b819984f1dbd62e0f5fd87a96e49e39",
+      "size": 1821
+    },
+    "test_streamed_adamw.py": {
+      "sha256": "2a2ae6202838f24802bb028f79fedbf3c2a1d4b795352cb300e72489335f3d68",
+      "size": 12342
+    }
+  },
+  "native_expected": 26,
+  "scope": "SOURCE_CPU_ONLY_ORIGINAL_DYNAMO_DISABLED_INIT_BODY_REBIND_GPU_DEVICE_PROOF_PENDING"
+}

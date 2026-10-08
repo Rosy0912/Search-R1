@@ -1,0 +1,62 @@
+{
+  "cpu_expected": 51,
+  "files": {
+    "README.md": {
+      "sha256": "bb5614bb29e258a573872bb29278f5bf2a46cc94503c398f2ac7d325552c1458",
+      "size": 10198
+    },
+    "config-template.json": {
+      "sha256": "3f4dedc057e23af6e543d4cadc50d40f95d466cae016e7d4c59489b269e2e1fa",
+      "size": 1920
+    },
+    "contracts.py": {
+      "sha256": "6f29354edf568b811c552252e60f2242aa8721de0d39f606bea331918b03366d",
+      "size": 14567
+    },
+    "dependencies.py": {
+      "sha256": "96c248d747db83ecfc22c1a7245e61f96ad3238f02ea513e1abc76f8af377825",
+      "size": 6399
+    },
+    "hardware_profile.py": {
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54",
+      "size": 4028
+    },
+    "hf_inventory.py": {
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774",
+      "size": 3579
+    },
+    "launch.sbatch": {
+      "sha256": "b3e5d482a1fd59f97a308b60da2ed8bf687c80e055008847fb00dc6123d43beb",
+      "size": 906
+    },
+    "lifecycle.py": {
+      "sha256": "ef9e8348194d6efc4e6bdf32e8a6ba92c413c5bb0366f3433eb695f015a048d4",
+      "size": 3112
+    },
+    "native-cpu.sbatch": {
+      "sha256": "2c6343d70a312ed04dbe426306169ac460a463a033bda619613eebe2a2eb9ac3",
+      "size": 1006
+    },
+    "owner_entry.py": {
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68",
+      "size": 1839
+    },
+    "shared_supervision_hooks.py": {
+      "sha256": "2f17bb04b80af5fac45d59e3dd451e68420fa6458de00b7a203126d132990271",
+      "size": 6373
+    },
+    "supervise.py": {
+      "sha256": "af56395825a06c87b9f9f5ca1b1b74092a66c4749720068bb0eb1efd07d2d4ad",
+      "size": 12243
+    },
+    "test_contracts.py": {
+      "sha256": "6c3ae1e59b41dbc4d442d7494f62693017398b26eeea0143ee2915a10cf5658f",
+      "size": 23455
+    },
+    "train_entry.py": {
+      "sha256": "f5a7f26ad82dd01e022e2447e4061754f89b2dcfcb69bce989dec61c148c3a0f",
+      "size": 4430
+    }
+  },
+  "source_cpu_scope_only": true
+}

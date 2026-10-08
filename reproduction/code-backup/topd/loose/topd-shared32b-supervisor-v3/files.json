@@ -1,0 +1,63 @@
+{
+  "cpu_expected": 45,
+  "files": {
+    "README.md": {
+      "sha256": "2418e07464f6b678a72b4b4fd3904b059bd1d5bf4cd93d33c1e4f566786ecac9",
+      "size": 8400
+    },
+    "config-template.json": {
+      "sha256": "d35471c4b75fbe475599cb83675e29ccf4e98e6c484f698bc6e63b29e5b18111",
+      "size": 1339
+    },
+    "contracts.py": {
+      "sha256": "6f29354edf568b811c552252e60f2242aa8721de0d39f606bea331918b03366d",
+      "size": 14567
+    },
+    "dependencies.py": {
+      "sha256": "3bc0c8e56de02f12afaaf1764b401e67f9a7b2b65ba388168076794f34f18769",
+      "size": 5440
+    },
+    "hardware_profile.py": {
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54",
+      "size": 4028
+    },
+    "hf_inventory.py": {
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774",
+      "size": 3579
+    },
+    "launch.sbatch": {
+      "sha256": "6324ad1b4f2e197c6c538e14200ad299710c7f83dfbf43fc6e26941980a41866",
+      "size": 906
+    },
+    "lifecycle.py": {
+      "sha256": "e01e67b46c5344af08b42cb7f0417a315dcc2573bd8ba6ed028e29080eae189f",
+      "size": 2190
+    },
+    "native-cpu.sbatch": {
+      "sha256": "494426334a2d38562e09993f68da28e64253b6477473a9e1896decdd1b4600d0",
+      "size": 1006
+    },
+    "owner_entry.py": {
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68",
+      "size": 1839
+    },
+    "shared_supervision_hooks.py": {
+      "sha256": "a9190b9f235b2f2a679925e24646bfa1631341dad19b27ccc29ff9835e0c0308",
+      "size": 6270
+    },
+    "supervise.py": {
+      "sha256": "d0397d2c35cd97f6520f7f19e0ccc9405e978557e283207099019f8316d9f96b",
+      "size": 12129
+    },
+    "test_contracts.py": {
+      "sha256": "933c7e6dc55d0501e2453d1e7a92ae85311e3a8b448956e2539696de595b09bf",
+      "size": 20026
+    },
+    "train_entry.py": {
+      "sha256": "b196088d8947a93844dbe9579a6403b8d4e321053eb81b0c168301560c4d7fb3",
+      "size": 4821
+    }
+  },
+  "scope": "SOURCE_CPU_ONLY_NO_NATIVE_GPU_OR_ALGORITHM_ACCEPTANCE",
+  "source_commit": "d23c56c78fdb09f40b7859e02b14eeddbe83a863"
+}

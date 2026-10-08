@@ -1,0 +1,22 @@
+{
+  "files": {
+    "probe.py": {
+      "size": 5766,
+      "sha256": "b5f936edb281d4f9959cf0ef054138d2855763cfc731e15cb938ae45216be1a7"
+    },
+    "test_probe.py": {
+      "size": 1242,
+      "sha256": "c40277d26c4ccae3ce0848c37df5bc7403dd2efd9641a150223a50b69a9f7469"
+    },
+    "native.sbatch": {
+      "size": 526,
+      "sha256": "40e27a8e2b2c924aba0e728ebbe1f34900b248a9a91eac211414d9d513da50bd"
+    },
+    "README.md": {
+      "size": 1518,
+      "sha256": "76c386a1cfa33931a1b1ef71cc6cf52f2ca3992f2abc488dec380e106cbb780b"
+    }
+  },
+  "scope": "NATIVE_CPU_ZOMBIE_PROOF_PREPARATION_NO_GPU_OR_STAGE_APPROVAL",
+  "local_contracts_passed": 8
+}

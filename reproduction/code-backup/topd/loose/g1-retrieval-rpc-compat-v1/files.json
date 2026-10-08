@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "c198069bcc0557740d10735a4c34a41c88c3cefd2ad171eca2440d7c5656a325",
+      "size": 2102
+    },
+    "original-g1-server.py": {
+      "sha256": "0f770791898c4fcbd9ac077540c9afbec94e13d18c8dd869dfbd7fa0ef056ec0",
+      "size": 14043
+    },
+    "original-native-server.py": {
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+      "size": 15344
+    },
+    "retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "test_rpc.py": {
+      "sha256": "32bafa415bed01c104dc3c10153c85a6ed5cdd2b5184a13415565713248095ab",
+      "size": 3306
+    },
+    "verify_api.py": {
+      "sha256": "728f163d6b91fe5dcf36695e562b35eee2a6868b1c3bb6406ba4a2d5b874449c",
+      "size": 1940
+    }
+  },
+  "scope": "SOURCE_CPU_ONLY_NOT_GPU_APPROVAL"
+}

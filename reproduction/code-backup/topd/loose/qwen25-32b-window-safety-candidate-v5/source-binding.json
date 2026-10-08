@@ -1,0 +1,20 @@
+{
+  "original_safety_sha256": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+  "candidate_safety_sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6",
+  "unchanged_helper_function_shas": {
+    "pid_identity": "0af3a751ddcad6aec52ab742a37c4c12878be6eb169d202c3ca3f08f4388aa6f",
+    "nvml_snapshot": "85c194cb6bf3ac3401a584da115ecf8f81ce757a772c83ac5960b15e8309ba1f",
+    "accounting_gate": "43ec66b358790d1a41b421d6b838cab997ab2b82e216bf4d7ae0643f6a5512e8"
+  },
+  "changed_functions": [
+    "sm_aggregate_bounds",
+    "active_gate",
+    "collect_process_windows"
+  ],
+  "api_source": "https://docs.nvidia.com/deploy/archive/R550/nvml-api/group__nvmlDeviceQueries.html",
+  "scope": "SOURCE_CPU_REPLAY_POLICY_ONLY_NOT_NATIVE_GPU_APPROVAL",
+  "collector_change": "Actual wait1.2 to1.0 seconds; complete returned samples preserved; same cursor and final1.5s age unchanged",
+  "previous_window_runtime_sha256": "3316d920f76256c5b45c5bf5e3c16c5c89a26a95cdaf821eb12ab612dc7a7384",
+  "guard_increment": "Only explicit low_high_attempts=9 allows exact LOW_HIGH retries through attempt8; all other errors keep ordinary cap<=6; fullfresh/30seconds unchanged",
+  "previous_guard_sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b"
+}

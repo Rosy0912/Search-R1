@@ -1,0 +1,9 @@
+{
+  "README.md": "44f24656f7d44358959f87cc754ade1ee6bbc1fb56c550c9ec306de2d2002e64",
+  "controller-integration-DRAFT.patch": "1a79cac7273aea7f8f89f60ffb27abb9256747f5988ceed807a0ead1752657d5",
+  "test_backend.py": "672998a513542d5ab97d82d4dd0f91491850273b5b25259dbb703632f5a676a3",
+  "topd32b_shared_pipeline/__init__.py": "2b8d4c46d0f651d6be028b455a7165eb341ce467c79d1270d4fd19db4e0bbd11",
+  "topd32b_shared_pipeline/backend.py": "5329501da15436d7f05b502e220081caa586df9fcbb6a58a722407ca93e3c5e6",
+  "topd32b_shared_pipeline/protocol.py": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227",
+  "topd32b_shared_pipeline/readiness.py": "93cd52830441987bc0accf6f01150c9b757f322508d84f87b5c2f4e1dd319423"
+}

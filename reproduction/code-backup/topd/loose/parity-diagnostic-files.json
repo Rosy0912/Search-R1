@@ -1,0 +1,9 @@
+{
+  "scope": "DIAGNOSTIC_NO_TRAINING_NO_NUMERIC_APPROVAL",
+  "source_commit": "438af3529b40663aae7b8293080e09fda57f6a87",
+  "files": {
+    "diagnose_topd_fp32_parity.py": "0fd75fd73f29afa31516986a8b46c0864f1c135c0ab1b1223e966e9884fa48fa",
+    "topd-parity-diagnostic-wrapper.py": "74991be67c4d4d6bf2ac6a9c626add4766e968a309cdcfda3abbe8b704f73794",
+    "topd-parity-diagnostic.sbatch": "6706ef4c8ccd5d5905c698f125d4a008c3270118c620f894522bd07a5cb2ba0c"
+  }
+}

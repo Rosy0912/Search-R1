@@ -1,0 +1,26 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "cb8d0590211499f094147bf863d25822cebec267003771dfdc4221d871546706",
+      "size": 4009
+    },
+    "native-cpu.sbatch": {
+      "sha256": "33ae81aaf96a556349dde9b7fd37bef40c3d66fbecf611f560d5cb9d473a1655",
+      "size": 625
+    },
+    "native_entry.py": {
+      "sha256": "99b12cb463577783f08e7ccfd73125774d395c6ea7568ee64c178dfcb859a091",
+      "size": 1866
+    },
+    "prior-dp-actor.py": {
+      "sha256": "26ab1b6ade6f1d385c3381941a4346ba8c136c3b9b65405d4c7d32242cbafcad",
+      "size": 15525
+    },
+    "test_entropy_compile.py": {
+      "sha256": "f419435205088989751abcc585ec85c37b65f8c3356abc9c6c2fbab6219752f1",
+      "size": 2264
+    }
+  },
+  "native_expected": 4,
+  "scope": "SOURCE_AND_CPU_CONTRACTS_ONLY_GPU_PENDING"
+}

@@ -1,0 +1,13 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "005571cb7eb507d9855d97827f6f55bd37c3f867a70819c61fcb37f9d55b21d2",
+      "size": 1683
+    },
+    "head_fidelity.py": {
+      "sha256": "e9281af4f0c67490e990fec0bb14a83c2032b98ba367fff4fbedec2b445f9df7",
+      "size": 6088
+    }
+  },
+  "scope": "PREPARED_NOT_EXECUTED_CPU_HEAD_FIDELITY"
+}

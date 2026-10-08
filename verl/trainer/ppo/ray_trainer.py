@@ -900,6 +900,12 @@ class RayPPOTrainer(object):
                                 batch.meta_info['baseline_outer_step'] = self.global_steps
                                 from search_r1.baselines.runtime_audit import driver_outer
                                 driver_outer(batch, self.global_steps, self.config.baselines.method)
+                            baseline_config = getattr(self.config, 'baselines', None)
+                            if (getattr(baseline_config, 'method', None) == 'topd'
+                                    and getattr(baseline_config, 'topd', {}).get('teacher_backend', 'cpu') in ('local_gpu_fp32_shared_pipeline32b','local_gpu_bf16_tp8_prompt_logprobs')):
+                                if getattr(self, 'baseline_controller', None) is None:
+                                    raise RuntimeError('Shared32B actor requires its active controller')
+                                self.baseline_controller.before_actor_update(batch, self.global_steps)
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
@@ -943,6 +949,9 @@ class RayPPOTrainer(object):
 
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
+                if self.config.trainer.get('topd_actual_outer_receipt'):
+                    from r1_observation import record_outer
+                    record_outer(self.config.trainer.topd_actual_outer_receipt, self.global_steps, metrics, self.config.trainer.default_local_dir)
 
                 self.global_steps += 1
 

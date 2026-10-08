@@ -1,0 +1,221 @@
+{
+  "experiment": "search_g1_32b_fallback100",
+  "base_model": "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/qwen2.5-32b",
+  "candidate": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-32b-fallback-candidate-v3",
+  "producer": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-staged-calibration-producer-v3",
+  "source_bindings": [
+    {
+      "kind": "candidate",
+      "root": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-32b-fallback-candidate-v3",
+      "manifest": {
+        "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-32b-fallback-candidate-v3/reproduction/conditional-teacher100/files.json",
+        "sha256": "8f6582c4cb31ccbdbef62cfbe602981d1cf7032b69a01655604908d64fb783ff"
+      }
+    },
+    {
+      "kind": "producer",
+      "root": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-staged-calibration-producer-v3",
+      "manifest": {
+        "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-staged-calibration-producer-v3/files.json",
+        "sha256": "0c5669eea865d8f1494e3aa752f99b657b4a2a5a294fe65e09fae5b737b1f9c5"
+      }
+    },
+    {
+      "kind": "pipeline",
+      "root": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-production-pipeline-v3-r2",
+      "manifest": {
+        "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-production-pipeline-v3-r2/files.json",
+        "sha256": "d9f9b063f64495f05119eccd54ae050b6edf45d647d9cbb02cef01c2c0557e0b"
+      }
+    }
+  ],
+  "train_file": "/dataset/shaoshitong/search-r1-rl/topd/outputs/common-data/59f547830de6916f0d20/train.parquet",
+  "val_file": "/dataset/shaoshitong/search-r1-rl/topd/assets-root/data/paper-grpo/validation-64.parquet",
+  "checkpoint_root": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/checkpoints",
+  "final_checkpoint": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/checkpoints/actor/global_step_100",
+  "actual_outer_receipt_path": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/actual-outer100.json",
+  "evidence_root": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/initial-allocation-evidence",
+  "refit_args": {
+    "work_dir": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/calibration-work",
+    "manifest_root": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/probe-manifests",
+    "data": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/g1-calibration300.parquet",
+    "tag": "nq",
+    "nq": 300,
+    "holdout_offset": 0,
+    "group_size": 5,
+    "layers": "21,24,27",
+    "gpu_mem": 0.55,
+    "commit_position": "Xa",
+    "commit_label": "flip"
+  },
+  "overlay": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-head-dependencies-v2/overlay",
+  "overlay_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-head-dependencies-v2/install-receipt.json",
+    "sha256": "21b345df2b5a278cfc9e982ae866d813cbe2a83bf67dfbf5d935d42cb62cba40"
+  },
+  "base64_quality_independent_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/qwen25-32b-quality64-3077-independent-review.json",
+    "sha256": "19d172818cc07cc46a030b70afdbeee2d7fdc6a9cce62a33b140b2919000e569"
+  },
+  "base_model_inventory": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/base-hf-inventory.json",
+    "sha256": "eedbfdd05bc06c08cb5e6f2e34022b36ebf95d6a29376514398786bb4a0f581a"
+  },
+  "base_model_inventory_sha256": "164229dc921e7fd07326ff97276dc864d97e8f00908061229e6bca7b9287fbdf",
+  "base64_result_sha256": "7f1e169a417f768f2c20bca9a8be87bfec273bb065cef5293018b7362c606c39",
+  "input_bindings": [
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/topd/outputs/common-data/59f547830de6916f0d20/train.parquet",
+      "sha256": "e5e774fd1f5777a8be91103facaccb711cfd9593d7563e9d5afe04e6b1a52bea"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/topd/assets-root/data/paper-grpo/validation-64.parquet",
+      "sha256": "af397b98b1601b517c01663171ffe543573005b9d31d24cace482480751a6756"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/g1-calibration300.parquet",
+      "sha256": "b8ac4940ad00ca4a3694a277f6c608ed9f2f7bd7b1d3e941b9ef103298564a2f"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/topd/outputs/common-data/59f547830de6916f0d20/manifest.json",
+      "sha256": "f44943df65f90d88afe5e2651c1c23263b2fb713b39ff8add9190ee3aca002ea"
+    }
+  ],
+  "preflight_source": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/repo-terminal-fixed413/search_r1/baselines/preflight.py",
+    "sha256": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605"
+  },
+  "retriever_url": "http://127.0.0.1:18085/retrieve",
+  "retriever_health_url": "http://127.0.0.1:18085/health",
+  "probe_url": "http://127.0.0.1:18086/judge_probe",
+  "probe_health_url": "http://127.0.0.1:18086/health",
+  "owner_context": {
+    "support_sha256": "d4de70880869abbec64f81ccd86f6f8dd8755b01d9db2cb93e2ec112d3031a09",
+    "config": {
+      "stage_timeout_seconds": 86400,
+      "base64_binding": {
+        "result_path": "/dataset/shaoshitong/search-r1-rl/topd/logs/qwen25-32b-terminal-fixed413-eval64-3077/evaluation/result.json",
+        "result_sha256": "7f1e169a417f768f2c20bca9a8be87bfec273bb065cef5293018b7362c606c39",
+        "qa_path": "/dataset/shaoshitong/search-r1-rl/topd/logs/qwen25-32b-terminal-fixed413-eval64-3077/evaluation/qa.jsonl",
+        "qa_sha256": "a9df96b16ceccb3f3e6149dc05a782b3cb21fcaf0b6429c347832acb4856e819"
+      },
+      "job": null,
+      "leases": [],
+      "uuids": [],
+      "cgroup": null
+    }
+  },
+  "independent_gate": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/initial-source-allocation-gate.json",
+    "sha256": null
+  },
+  "telemetry_policy": {
+    "directory": "/dataset/shaoshitong/search-r1-rl/topd/tools/qwen25-32b-window-safety-candidate-v4",
+    "runtime_sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6",
+    "guard_sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b",
+    "manifest_sha256": "9835bc499bcb10da1959ae0e3bce88cf7a7966ad51ed21dc80fbe03368eaba8c",
+    "actual_independent_native_review": {
+      "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/qwen25-32b-window-v4-3092-observed-paths-independent-review.json",
+      "sha256": "a8e3668e142b39d773ac6ac3267e5d183f688ef10c2fa30f1f84a11d8bb1129b"
+    }
+  },
+  "candidate_manifest_sha256": "8f6582c4cb31ccbdbef62cfbe602981d1cf7032b69a01655604908d64fb783ff",
+  "producer_manifest_sha256": "0c5669eea865d8f1494e3aa752f99b657b4a2a5a294fe65e09fae5b737b1f9c5",
+  "pipeline_manifest_sha256": "d9f9b063f64495f05119eccd54ae050b6edf45d647d9cbb02cef01c2c0557e0b",
+  "training_command": [
+    "/dataset/shaoshitong/search-r1-rl/topd/env/bin/python",
+    "-m",
+    "verl.trainer.main_ppo_eco",
+    "data.train_files=/dataset/shaoshitong/search-r1-rl/topd/outputs/common-data/59f547830de6916f0d20/train.parquet",
+    "data.val_files=/dataset/shaoshitong/search-r1-rl/topd/assets-root/data/paper-grpo/validation-64.parquet",
+    "data.train_data_num=null",
+    "data.val_data_num=64",
+    "data.train_batch_size=128",
+    "data.val_batch_size=64",
+    "data.max_prompt_length=4096",
+    "data.max_response_length=500",
+    "data.max_start_length=2048",
+    "data.max_obs_length=500",
+    "data.shuffle_train_dataloader=True",
+    "algorithm.adv_estimator=grpo",
+    "actor_rollout_ref.model.path=/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/qwen2.5-32b",
+    "actor_rollout_ref.model.enable_gradient_checkpointing=true",
+    "actor_rollout_ref.model.use_remove_padding=False",
+    "actor_rollout_ref.actor.optim.lr=1e-6",
+    "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.285",
+    "actor_rollout_ref.actor.use_kl_loss=true",
+    "actor_rollout_ref.actor.kl_loss_coef=0.001",
+    "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+    "actor_rollout_ref.actor.ppo_mini_batch_size=256",
+    "actor_rollout_ref.actor.ppo_micro_batch_size=64",
+    "actor_rollout_ref.actor.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.grad_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.optimizer_offload=true",
+    "actor_rollout_ref.rollout.log_prob_micro_batch_size=16",
+    "actor_rollout_ref.rollout.tensor_model_parallel_size=8",
+    "actor_rollout_ref.rollout.name=vllm",
+    "actor_rollout_ref.rollout.gpu_memory_utilization=0.60",
+    "actor_rollout_ref.rollout.n_agent=5",
+    "actor_rollout_ref.rollout.temperature=1",
+    "actor_rollout_ref.ref.log_prob_micro_batch_size=16",
+    "actor_rollout_ref.ref.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.state_masking=true",
+    "algorithm.no_think_rl=false",
+    "trainer.logger=['console']",
+    "trainer.default_hdfs_dir=null",
+    "trainer.n_gpus_per_node=8",
+    "trainer.nnodes=1",
+    "trainer.save_freq=25",
+    "trainer.test_freq=25",
+    "trainer.project_name=Search-G1",
+    "trainer.experiment_name=search_g1_32b_fallback100",
+    "trainer.total_epochs=15",
+    "trainer.total_training_steps=101",
+    "trainer.default_local_dir=/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/checkpoints",
+    "max_turns=4",
+    "retriever.url=http://127.0.0.1:18085/retrieve",
+    "retriever.topk=3",
+    "+actor_rollout_ref.actor.optim.foreach=false",
+    "+trainer.val_only=false",
+    "+trainer.val_before_train=true",
+    "+trainer.g1_refresh_freq=25"
+  ],
+  "retriever_command": [
+    "/dataset/shaoshitong/search-r1-rl/topd/env/bin/python",
+    "-c",
+    "import torch,runpy,sys; server=sys.argv.pop(1); sys.argv[0]=server; runpy.run_path(server,run_name='__main__')",
+    "/dataset/shaoshitong/search-r1-rl/topd/repo/search_r1/search/retrieval_server.py",
+    "--index_path",
+    "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/wiki/e5_Flat.index",
+    "--corpus_path",
+    "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/wiki/wiki-18.jsonl",
+    "--retriever_model",
+    "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/e5-base-v2",
+    "--retriever_name",
+    "e5",
+    "--topk",
+    "3",
+    "--device",
+    "cuda",
+    "--faiss_gpu",
+    "--threads",
+    "8",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18085"
+  ],
+  "retrieval_asset_binding": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/qwen25-32b-terminal-fixed413-binding.json",
+    "sha256": "7ded91b8c81a18bd56d6123b1fb5c1dc6426368766a34b2e29383388fa1304a2"
+  },
+  "probe_command": [
+    "/dataset/shaoshitong/search-r1-rl/topd/env/bin/python",
+    "/dataset/shaoshitong/search-r1-rl/topd/tools/g1-32b-fallback-candidate-v3/probe_server.py",
+    "--manifest",
+    "/dataset/shaoshitong/search-r1-rl/topd/logs/g1-initial-static-cpu-3102/recipe/probe-manifests/live_search_g1_32b_fallback100/manifest.json",
+    "--port",
+    "18086",
+    "--outer-barrier"
+  ]
+}

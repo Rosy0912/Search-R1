@@ -1,0 +1,25 @@
+{
+  "scope": "CPU_FULL_HF_SCAN_OPERATION_SOURCE_ONLY",
+  "files": {
+    "README.md": {
+      "size": 2167,
+      "sha256": "b3e304eec872a00e458e71224cfdd5142f248524aa195f4240cd7849f172a779"
+    },
+    "admission.py": {
+      "size": 4086,
+      "sha256": "5ac3e8245b854320ad4194d944cc514d9ae7f01324d61bfff5aaf2118b878a7c"
+    },
+    "entry.py": {
+      "size": 2114,
+      "sha256": "fe10ffdb3ce43c4f3675ba9bc03b0696e079f4a6d807732f306f5e4abb2ed5de"
+    },
+    "native-cpu.sbatch": {
+      "size": 660,
+      "sha256": "ead47f123f0e0cbfa11b18dcc64c2028134d8402d821a211de1e569f354555b3"
+    },
+    "test_admission.py": {
+      "size": 4616,
+      "sha256": "03c000487560261db672f59e046a2c931db65a43078979d6810d26c34b4013fb"
+    }
+  }
+}

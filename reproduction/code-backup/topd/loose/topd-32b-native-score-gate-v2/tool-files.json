@@ -1,0 +1,11 @@
+{
+  "README.md": "130014d3e6ac4e25e1be988c5bcd720b86636d5aee735a134f4c37190a8ec90b",
+  "caller_contracts.py": "aca296084c788a38011f7329ac6285d4a077c6feea6dda815e7fc06c149ec1a8",
+  "native-cpu.sbatch": "6a86ecee3a5ce92bd72a32ceb8e7c70d31e15fa3a9063c89097172808813a9e2",
+  "native-score.sbatch": "8aea6305a5fb9c3e6b78ef43181822f4e1af48edeab5c298b23fd47542f519f8",
+  "score_gate.py": "ab6324524187ef70c213709fcde105e01444b6c4a5a15d7abf65005313382e84",
+  "supervisor.py": "efb7b821b1c69658f56764ab8ff7dbd37dd499a0189025f4c254e82bab0ba320",
+  "test_caller_contracts.py": "d6f30b168475ba8629d4116871ecf6dc78c6f4b5056fb874edb82a679cb2f4af",
+  "test_score_gate.py": "69453bbddc0992c512a427518eed9f403005408a26f5c5cd33818c28378a95fd",
+  "worker.py": "36cdc9c196a20b0d88f9ed1b35e4cf5eb7c15b0363e16d1d3744363e7acc452c"
+}

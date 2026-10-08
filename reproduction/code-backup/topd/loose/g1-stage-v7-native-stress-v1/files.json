@@ -1,0 +1,22 @@
+{
+  "files": {
+    "stress.py": {
+      "size": 4530,
+      "sha256": "d000aee4ccb0d520dcea7c7ab5bcd3d87c8bb74d90dc83c7d526d4b962e30d5b"
+    },
+    "native.sbatch": {
+      "size": 717,
+      "sha256": "59b7690f8e5229240700e45820353ebff2456cb5e712c9313a33e8dfdb1a876a"
+    },
+    "test_stress.py": {
+      "size": 926,
+      "sha256": "6c098dfe3d2c14dbfbb8bccfcd9531686706518161330fddec62a4103b820715"
+    },
+    "README.md": {
+      "size": 1003,
+      "sha256": "91290b4f6a4b8941547e086df941a41cf6c1e7b31a38cd9f0453f38b7c255a30"
+    }
+  },
+  "scope": "REAL_LINUX_CPU_STAGE_CENSUS_NOT_GPU_MODEL_CALIBRATION",
+  "local_contracts_passed": 3
+}

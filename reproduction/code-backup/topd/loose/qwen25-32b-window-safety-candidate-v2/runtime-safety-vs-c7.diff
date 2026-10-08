@@ -1,0 +1,75 @@
+--- sealed-c7/runtime_safety.py
++++ window-candidate/runtime_safety.py
+@@ -32,14 +32,17 @@
+                 identities={str(row['pid']): pid_identity(row['pid']) for row in app_rows})
+ 
+ 
+-def sm_aggregate_bounds(snapshot, foreign, own, windows, now_us):
++def sm_aggregate_bounds(snapshot, foreign, own, windows, now_us, *, actual_query_completed_us=None):
+     """Return aggregate bounds, never fake numeric values for absent pmon PIDs.
+ 
+     A SUCCESS sparse list is interpretable only with a fresh positive known-own
+-    sample proving that this device's last-period process sampler is functioning.
+-    All fresh foreign samples contribute per-PID maxima (conservative over window).
++    sample proving that this device's supported process sampler returned actual positive activity.
++    Foreign bound is the sum of per-PID maxima among this query's returned records.
++    It is not a continuous/instantaneous bound over unreturned historical activity.
+     Global utilization bounds foreign aggregate when it alone is <=15.
+     """
++    query_completed_us = now_us if actual_query_completed_us is None else actual_query_completed_us
++    require(query_completed_us <= now_us, 'Query completion later than evaluation clock')
+     bounds, evidence = {}, {}
+     for gpu in snapshot['gpus']:
+         uid, sm = gpu['uuid'], gpu['sm']
+@@ -54,6 +57,7 @@
+         w = windows.get(uid)
+         require(w is not None and w['status'] == 'SUCCESS', 'High-device-SM needs supported fresh process samples')
+         start, end = w['start_us'], w['end_us']
++        require(end <= query_completed_us, 'Window end later than original query completion')
+         require(0 <= now_us-end <= 2_000_000 and 1_000_000 <= end-start <= 3_000_000,
+                 'Stale or invalid process sampling window')
+         rows = w['samples']
+@@ -64,11 +68,9 @@
+             require(start < r['timestamp_us'] <= end and 0 <= now_us-r['timestamp_us'] <= 1_500_000,
+                     'Stale/future process sample')
+             require(math.isfinite(r['sm']) and 0 <= r['sm'] <= 100, 'Invalid process SM')
+-        require(len({r['timestamp_us'] for r in rows}) == 1,
+-                'Process records span different completed sampling periods')
+         positive_own = [r for r in rows if (uid, r['pid']) in own and r['sm'] > 0]
+         require(positive_own, 'No positive known-own sample proves active process sampler')
+-        # Samples in this successful window list all processes with nonzero use.
++        # NVML returns nonzero-filtered per-process records; recording times may differ.
+         # Do not derive anything from NOT_FOUND, pmon '-', or a previous window.
+         maxima = {}
+         for r in rows:
+@@ -79,7 +81,12 @@
+         evidence[uid] = dict(method='FRESH_SUPPORTED_NONZERO_PROCESS_WINDOW', upper_bound=bound,
+                             window=w, positive_own_pids=sorted({r['pid'] for r in positive_own}),
+                             foreign_observed_maxima=maxima,
+-                            absent_interpretation='INFERRED_ZERO_NONZERO_FILTER_NOT_MEASURED',
++                            query_completed_us=query_completed_us, evaluation_now_us=now_us,
++                            timestamp_min_us=min(r['timestamp_us'] for r in rows),
++                            timestamp_max_us=max(r['timestamp_us'] for r in rows),
++                            timestamp_span_us=max(r['timestamp_us'] for r in rows)-min(r['timestamp_us'] for r in rows),
++                            aggregate_scope='SUM_OF_PER_FOREIGN_PID_MAXIMA_IN_RETURNED_RECORDS_NOT_CONTINUOUS_BOUND',
++                            absent_interpretation='NONZERO_FILTER_WINDOW_INFERENCE_NOT_MEASURED',
+                             foreign_absent_pids=sorted(pid for u,pid in foreign if u == uid and pid not in maxima))
+     return bounds, evidence
+ 
+@@ -188,7 +195,8 @@
+     initial_snapshot = snapshot
+     snapshot = final
+     import time
+-    sm, evidence = sm_aggregate_bounds(snapshot, foreign, own, windows, int(time.time()*1_000_000))
++    sm, evidence = sm_aggregate_bounds(snapshot, foreign, own, windows, int(time.time()*1_000_000),
++                                       actual_query_completed_us=now_us)
+     # pmon is retained for provenance; '-' is never interpreted by this gate.
+     for uid, row in evidence.items():
+         final_bound = sm[uid]
+@@ -197,5 +205,5 @@
+                    final_foreign_upper_bound=final_bound,
+                    initial_evidence=initial_evidence[uid], scope='TWO_FOREIGN_BOUND_SNAPSHOTS_MAXIMUM')
+     record = accounting_gate(snapshot, runtime['baseline'], uuids, runtime['retriever_identity'], runtime['cgroup'], sm, pre_model)
+-    record.update(raw_snapshot=snapshot, foreign_sm_evidence=evidence, raw_foreign_pmon=raw_pmon, candidate_scope='UNVALIDATED_ON_GPU')
++    record.update(raw_snapshot=snapshot, foreign_sm_evidence=evidence, raw_foreign_pmon=raw_pmon, candidate_scope='UNVALIDATED_MULTI_PID_WINDOW_ON_GPU')
+     return record

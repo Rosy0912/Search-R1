@@ -1,0 +1,70 @@
+{
+  "cpu_expected": 62,
+  "files": {
+    "README.md": {
+      "sha256": "a846eca99fb3435ec37418139207efb0c3b1671989d1a175fd2d35fbe892565c",
+      "size": 12080
+    },
+    "config-template.json": {
+      "sha256": "3f4dedc057e23af6e543d4cadc50d40f95d466cae016e7d4c59489b269e2e1fa",
+      "size": 1920
+    },
+    "contracts.py": {
+      "sha256": "6f29354edf568b811c552252e60f2242aa8721de0d39f606bea331918b03366d",
+      "size": 14567
+    },
+    "dependencies.py": {
+      "sha256": "96c248d747db83ecfc22c1a7245e61f96ad3238f02ea513e1abc76f8af377825",
+      "size": 6399
+    },
+    "hardware_profile.py": {
+      "sha256": "f3065daaabb0e30ac830a0833bc0692fd95fd88dae0a7835123eba8403919a54",
+      "size": 4028
+    },
+    "hf_inventory.py": {
+      "sha256": "2b094b2a209eda25597c870f6cac40d4672d761961eeeab09e91a516cf949774",
+      "size": 3579
+    },
+    "launch.sbatch": {
+      "sha256": "955f15dc1a5c37f988f79fef2d6ffcd06e0edeeb3843c7d45e44abfdbb0771d3",
+      "size": 906
+    },
+    "lifecycle.py": {
+      "sha256": "2615a37e040c6a36c1097cd5e5f0ede4a3f3f1c635c2f0dd82f3064ef9a10173",
+      "size": 3273
+    },
+    "native-cpu.sbatch": {
+      "sha256": "04d5891c65fe514f2a4953773abff47967df0d842636c4ca997f2def3d8871db",
+      "size": 1006
+    },
+    "owner_entry.py": {
+      "sha256": "bf54b5ba76bfbf1a9a441a25476bcf1eb894c43c654f197511348b7254977d68",
+      "size": 1839
+    },
+    "retrieval_startup.py": {
+      "sha256": "6f22fe7c9ca583862ec5c8121faf0b78da45665caa8d98cc852bcf12c83e75fd",
+      "size": 16107
+    },
+    "retriever_lifecycle.py": {
+      "sha256": "239fd4c96080a15f0fa2b97e174e8a380e3f47caa7d89c2a1a18332318727633",
+      "size": 4096
+    },
+    "shared_supervision_hooks.py": {
+      "sha256": "2f17bb04b80af5fac45d59e3dd451e68420fa6458de00b7a203126d132990271",
+      "size": 6373
+    },
+    "supervise.py": {
+      "sha256": "4dbfefc6b4afb2c7601a2f912fdf19bae38e380647dc4c55377c8427464dcad6",
+      "size": 12385
+    },
+    "test_contracts.py": {
+      "sha256": "9bd10d2d49330ff53707e944dd5433861ef9ab1778ac861c97120bdecd7df0c8",
+      "size": 30141
+    },
+    "train_entry.py": {
+      "sha256": "f5a7f26ad82dd01e022e2447e4061754f89b2dcfcb69bce989dec61c148c3a0f",
+      "size": 4430
+    }
+  },
+  "source_cpu_scope_only": true
+}

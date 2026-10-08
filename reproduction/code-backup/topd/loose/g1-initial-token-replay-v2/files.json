@@ -1,0 +1,26 @@
+{
+  "scope": "READONLY_CPU_NO_MODEL_NO_APPROVAL",
+  "files": {
+    "aggregate.py": {
+      "sha256": "8dbc328803375b9e7e00eaa17739527227f2a2c4255bb1b000da5acec54e1452",
+      "size": 2195
+    },
+    "test_replay.py": {
+      "sha256": "31f706fff50629c56035525c672074112b70cf89efdde4f0ef49551b1ace9349",
+      "size": 2199
+    },
+    "README.md": {
+      "sha256": "72c51cf157221ff25cc6bfdd6395df2f2612a50dee987a750f14174dc6bd8a07",
+      "size": 3154
+    },
+    "replay.py": {
+      "sha256": "03429dcc7c0b01d9466af6a33801df5383b0bf93b69fa1855ef8cd4102a6e72a",
+      "size": 13352
+    },
+    "test_aggregate.py": {
+      "sha256": "827e0fc0da261c21b7f3139adaf5928c4a3b12185ecce1395aae76a5b4d6c630",
+      "size": 1629
+    }
+  },
+  "local_cpu_passed": 9
+}

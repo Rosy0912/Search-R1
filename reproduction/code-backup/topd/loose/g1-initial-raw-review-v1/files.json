@@ -1,0 +1,18 @@
+{
+  "scope": "READ_ONLY_CONTRACTS_NO_APPROVAL",
+  "files": {
+    "review.py": {
+      "size": 7125,
+      "sha256": "f4e288862197553a1827ceda0a6c6e5f518c7722735df2dec857b3fd938da11a"
+    },
+    "README.md": {
+      "size": 3506,
+      "sha256": "f0f76eba6cfdcaa22279e74821fbc6fa085725d70a105b3e2f83bcd69e4ce0d9"
+    },
+    "test_review.py": {
+      "size": 2297,
+      "sha256": "e3e959ff0f27e3d54991d0b97a5fbaa217bb211266c2af1f922893dd9cd59563"
+    }
+  },
+  "local_tests_passed": 5
+}

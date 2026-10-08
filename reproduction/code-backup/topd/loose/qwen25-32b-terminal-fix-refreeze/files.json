@@ -1,0 +1,46 @@
+{
+  "scope": "LOCAL_PREPARED_UNREVIEWED_NO_DEPLOY_NO_GPU_NO_QUALITY_NO_TRAINING",
+  "source_commit": "413a10c50f32febaafc83db8170e2b005e0e979f",
+  "previous_source_commit": "438af3529b40663aae7b8293080e09fda57f6a87",
+  "runtime_repo": "/dataset/shaoshitong/search-r1-rl/topd/repo-terminal-fixed413",
+  "tool_directory": "/dataset/shaoshitong/search-r1-rl/topd/tools/qwen25-32b-terminal-fix-refreeze",
+  "local_tests": {
+    "eval_contracts": 61,
+    "builder_contracts": 16,
+    "new_terminal_quality": 9,
+    "committed_protocol": 5,
+    "total": 91,
+    "actual_log_sha256": "696ccfcf5e9973d62723a5ffdda8033879aa59583b89ba891194169048f23fd9"
+  },
+  "files": {
+    "build_binding.py": "162c2e35a940ad9ece959507a67c71da85e57dafc46cdf434b8c672fff0438d2",
+    "eval64.py": "24d144fdac16b0983a11e3bd99d111f44d0bc312dc98b74847f3d16524076bee",
+    "eval64.sbatch": "21aa558e8f6ce0ad3e719b56c91e8c32644add9dc28326400e1d3655e00bf0ba",
+    "inventory.sbatch": "204da445541a0b86b0ae4cf13152b8f951053b56c0c6f57d4361f8fd7203d698",
+    "native-builder-cpu.sbatch": "be981991ffd98f8048d5f71060261eec8fbafd74fff600c8b2f3f6203dfae901",
+    "native-cpu.sbatch": "2e0627622655e4085694acab27c1f7dd2d5be5cf1634bbf94a38ac3d6d6f0b14",
+    "runtime_safety.py": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+    "supervisor.py": "d79fc9dc99894ebc62d3a68ac1e12db16d100d6de46428ae84ec995229cb9964",
+    "test_build_binding.py": "e5d194f6a0fb7a2c341df84ea7e97cb2ab538c1da985f7e65f174fd7e12dd0de",
+    "test_eval64.py": "1bef8cf898202257556db74d7aadddbf513b59d37ac3218e3d1cb62c10e31f32",
+    "test_terminal_quality.py": "42de20937f5a5da55310594bb4d59780aa30fee8a90faf3133bbba467db5d047"
+  },
+  "same_runtime_safety_sha256": "c7b16f1dd5d7cc133e55f034025c7dc8181ddcafaf59bdccfda02ceaf51f081d",
+  "source_files": {
+    "search_r1/qa_protocol.py": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+    "search_r1/baselines/bapo.py": "f95eebe667b02b2bab685cf2c62c6aabafb6021f7b9824e839d878876cdb7b94",
+    "search_r1/baselines/evaluation.py": "b7fd01f2993b22d475dd220b80ab9dcf225971bca98ecbe9016c271edcca145f",
+    "search_r1/baselines/preflight.py": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605",
+    "search_r1/baselines/topd_local_gpu.py": "4861cb7cd20fe9277a89dca21eff77e7e6107d91940e0f6591b6b75d3e5f6a89",
+    "search_r1/llm_agent/generation.py": "91e281dc853c077dfcda3f05b64a714c009c8993fe05b2069fcc2def8f114470",
+    "search_r1/llm_agent/tensor_helper.py": "b000f3b61c5a2be13dfcf64e1ce9091ce89dda99ed3b331fb24ab1f43b4dce69",
+    "search_r1/search/retrieval_server.py": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+    "verl/protocol.py": "ceccbe7c9ad3bfe430355f35705054881f32dc254b0862a1f0bf6800e387405d",
+    "verl/trainer/main_ppo.py": "95e630c73fc0701738c28f48481ee338bd08aff771b513490260b61c412051b9",
+    "verl/utils/dataset/rl_dataset.py": "e95b34a590956ed37e69631c87712c9dacbddc0fae632ca1e5403ed19e409815",
+    "verl/utils/reward_score/qa_em.py": "fa5e8f9386b0db2411dafa7612bc633a1ced362232c81f2495fe78c7ed1b4997",
+    "verl/utils/tokenizer.py": "839dd008294614789194d3d97bedbd2ae381038fc288d7ed1f600bca7dc3470b",
+    "verl/utils/torch_functional.py": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575",
+    "verl/workers/rollout/vllm_rollout/vllm_rollout.py": "da4a0338a8bd7144fc387d19d0fdae421f66bdbae1c627b2097b24eb2871512f"
+  }
+}

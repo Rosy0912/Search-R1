@@ -233,7 +233,7 @@ class ActorRolloutRefWorker(Worker):
 
             total_steps = optim_config.get('total_training_steps', 0)
             num_warmup_steps_ratio = optim_config.get('lr_warmup_steps_ratio', 0.)
-            num_warmup_steps = int(num_warmup_steps_ratio * total_steps)
+            num_warmup_steps = int(optim_config.get("lr_warmup_steps", int(num_warmup_steps_ratio * total_steps)))
 
             print(f'Total steps: {total_steps}, num_warmup_steps: {num_warmup_steps}')
 

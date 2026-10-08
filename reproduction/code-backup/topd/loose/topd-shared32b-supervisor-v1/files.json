@@ -1,0 +1,59 @@
+{
+  "cpu_expected": 32,
+  "files": {
+    "README.md": {
+      "sha256": "88cd3e98bd85bf56b8e134479ba1ec5700cfb66d8da718e0ce8c36a25a0613bc",
+      "size": 4978
+    },
+    "config-template.json": {
+      "sha256": "d35471c4b75fbe475599cb83675e29ccf4e98e6c484f698bc6e63b29e5b18111",
+      "size": 1339
+    },
+    "contracts.py": {
+      "sha256": "dca4fec7e176951f67d57422a4da6035dfa8fc678e077d1037fd8f0e5dfecc7c",
+      "size": 11869
+    },
+    "dependencies.py": {
+      "sha256": "bba8fa89b2a288cff514ffd389d2d82dc77ce3a56c909e77ec83606c4e30c3cd",
+      "size": 5578
+    },
+    "hardware_profile.py": {
+      "sha256": "33224879aec64b36350d761269a02a3fcff7d3e861fd2afb50ad8a0f5c57c658",
+      "size": 3792
+    },
+    "launch.sbatch": {
+      "sha256": "4ab0d91b1994154f2ce464e4018cfb571ced23cd2adde0677f99d384342ef192",
+      "size": 792
+    },
+    "lifecycle.py": {
+      "sha256": "5265bd4954a2b8187ad2d5c505574d60c878a377c40a964977e6f21aab337599",
+      "size": 1823
+    },
+    "native-cpu.sbatch": {
+      "sha256": "b2b5d8300e7613fa295021b9e6e0271bd31825511ab278851642cb85cb5e8eb6",
+      "size": 888
+    },
+    "owner_entry.py": {
+      "sha256": "ce759aea91e954dd5e40b35a3f162ce6034af463e5eb84172f0cdb840ef2b01e",
+      "size": 1477
+    },
+    "shared_supervision_hooks.py": {
+      "sha256": "cb0e418a9f90ea46d1cf4190bf141333734380d22445ce25ea87eda7eb797ebd",
+      "size": 5779
+    },
+    "supervise.py": {
+      "sha256": "e13215bfa49ef0f4a9038d45eafb128145367fc82c820353a3ea2563f1ca823d",
+      "size": 11395
+    },
+    "test_contracts.py": {
+      "sha256": "4d83d6d0a6599c52a9d1b6443bd94a7d690952f03d5593a21e962afffbb2c5f1",
+      "size": 12356
+    },
+    "train_entry.py": {
+      "sha256": "cf6672f79c6d3b3a6a5d13637d5cd515444c95f437dbf46e742db772309f2ee6",
+      "size": 4093
+    }
+  },
+  "scope": "SOURCE_CPU_ONLY_NO_NATIVE_GPU_OR_ALGORITHM_ACCEPTANCE",
+  "source_commit": "d23c56c78fdb09f40b7859e02b14eeddbe83a863"
+}

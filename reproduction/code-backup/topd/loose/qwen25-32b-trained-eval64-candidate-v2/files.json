@@ -1,0 +1,42 @@
+{
+  "scope": "FUTURE_ACTUAL100_SAME64_SOURCE_CPU_NOT_GPU_ACCEPTANCE",
+  "cpu_expected": 11,
+  "files": {
+    "README.md": {
+      "size": 4174,
+      "sha256": "1f9d8e11264e4df5436c1e3febde39b992c4c4a33a7a7902854daa883bc2d5ab"
+    },
+    "checkpoint_inventory.py": {
+      "size": 4763,
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f"
+    },
+    "eval64.py": {
+      "size": 16295,
+      "sha256": "69c8c9226bf38a1d70a81bbf26670f7c8c8d8031ac1714894086522404f520e4"
+    },
+    "runtime_safety.py": {
+      "size": 12581,
+      "sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6"
+    },
+    "startup_guard.py": {
+      "size": 19417,
+      "sha256": "d340c77f54c8c744816da416c91016e59bd5a21bd42262b2ae672a3432f6588b"
+    },
+    "supervisor.py": {
+      "size": 12035,
+      "sha256": "78c6a8a2687bb8401e2f57bbd6dd6f34d16d8b5e7452caae260ef42a038d0316"
+    },
+    "terminal.py": {
+      "size": 6010,
+      "sha256": "2897fe0ad094f07cacd654e570df67ae04a473592726c672bdc880a39dc8310a"
+    },
+    "test_trained_assets.py": {
+      "size": 4967,
+      "sha256": "25fe3ac4e97528aaaf40c5644768fb77221dcdda843b8e6698218be046dfe836"
+    },
+    "trained_assets.py": {
+      "size": 8843,
+      "sha256": "c66791628ea11525dc62d94486791f2e4470696479a9c2f06c0ddbf4f742b777"
+    }
+  }
+}

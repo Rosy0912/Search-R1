@@ -1,0 +1,18 @@
+{
+  "scope": "SOURCE_CPU_ONLY_NO_ACTUAL_QUALITY_NO_GPU_NO_TRAINING",
+  "cpu_expected": 7,
+  "files": {
+    "build.py": {
+      "size": 10693,
+      "sha256": "e32f6478199b784d96eda3d6273931b4013b547da6970ca77d6830bf7b6628da"
+    },
+    "README.md": {
+      "size": 5608,
+      "sha256": "144745550947bbec02329951b02e525692c7b2660dc6c74317072d0414a0fd31"
+    },
+    "test_build.py": {
+      "size": 2544,
+      "sha256": "3ab0e6079e68bd4a5ea5ee85b6b1fcd6de24ee69dc94c90d61540b40c628f9f0"
+    }
+  }
+}

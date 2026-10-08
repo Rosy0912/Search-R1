@@ -1,0 +1,35 @@
+{
+  "base_commit": "e623724532d06e975b61f3b35ec7925dc790c939",
+  "files": {
+    "README.md": {
+      "sha256": "6bce91208b93eaf7e9b03586567e9a3273b2461d06c51b425ccf8566f40adecf",
+      "size": 459
+    },
+    "native-cpu.sbatch": {
+      "sha256": "b5e6563be173bc1249ba3c6154d26b27808229f0622fca5258c82d610a0879bb",
+      "size": 612
+    },
+    "native_entry.py": {
+      "sha256": "da1c0114dffe5cf025ea4c0d46c08e492c807ef78b3f1eb2400a65561ea3dd13",
+      "size": 1982
+    },
+    "native_torch24_adamw.py": {
+      "sha256": "fe1a551e4cadce2b0ecbdb74e2c7827fdc52c51bfb6fb0a11f0aee7e792596b6",
+      "size": 30473
+    },
+    "native_torch24_optimizer.py": {
+      "sha256": "46f911d59955d779b3323a61cbc35c33725da64edfff6b9b2fa7e59b732b1a5b",
+      "size": 44739
+    },
+    "test_latest_branch.py": {
+      "sha256": "a151c33e3d50e39c50c764df14f7f7652b819984f1dbd62e0f5fd87a96e49e39",
+      "size": 1821
+    },
+    "test_streamed_adamw.py": {
+      "sha256": "58bed103f2acc3aa6cf20275900981b7919ddca4eea4c0d2c624d2b97a4dcd55",
+      "size": 9404
+    }
+  },
+  "native_expected": 22,
+  "scope": "SOURCE_CPU_ONLY_LATEST_SEARCH_R1_WITH_ORIGINAL_STREAMED_ADAMW_NO_GPU_PROOF"
+}

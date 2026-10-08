@@ -1,0 +1,17 @@
+{
+  "expected_native_cpu_fixtures": 48,
+  "files": {
+    "README.md": "895d4ac8b2607b5cf86696a5e68cbbb3723e43ba959e0e94be381547dcf4dce8",
+    "client.py": "2e7a81c7ef6f25236af47ef7036f0e3e42d83e915b305d1dd6de93f2ef13d14b",
+    "linux-peer-fixture.py": "e75b1e5c12e561e4554685a1899b60259af1348ef3e2262588ac23cecf6c2237",
+    "native-cpu-gate.py": "127469fc5e781ec607d7a478162d7f2e08f9188e5bed0cdb3854eb21c152486b",
+    "native-cpu.sbatch": "7a5ff77be4687f22d1698258ba6e2c3b777571ec56570c498d1f2c1fb9de505c",
+    "protocol.py": "c503ea34890fddd93c09cb52f055dd5abaac0ec99fb4f255a79761d603ac1227",
+    "server.py": "d25f9e5758aba55e4d4d649007d7482638d364f37307bd2f3520b24acdeab518",
+    "session.py": "dc3efba28d0545400c4b98868b3976fac4e38e455fdf36a91242fab17dc11cff",
+    "test_ipc.py": "46e3fbceb528ce4f4fd5daa5a89da9c3933d96f8860b89faca9cd3953ff5bcfc"
+  },
+  "local_expected_passed": 45,
+  "local_linux_skipped": 3,
+  "scope": "CPU_ONLY_SHARED_IPC_NOT_GPU_READY"
+}

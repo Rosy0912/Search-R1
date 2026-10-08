@@ -1,0 +1,23 @@
+{
+  "cpu_expected": 6,
+  "scope": "INITIAL_ONLY_SOURCE_CPU_NO_GPU_RESOURCE_PROOF",
+  "files": {
+    "README.md": {
+      "size": 3396,
+      "sha256": "2e1ac607209816e7c3700e27bfcebf7a01b408bb0cace5434845f6d019f03bf6"
+    },
+    "assemble.py": {
+      "size": 13085,
+      "sha256": "7b3b7d00490b771d2551bc257170b8d1fe93c5a9686fdfdb620fa7751f8e766e"
+    },
+    "native-assemble.sbatch": {
+      "size": 2151,
+      "sha256": "96497a455cbe2ac4828c0d411277871b893f69419b7131dc068a4b0dfb9b21fe"
+    },
+    "test_assemble.py": {
+      "size": 2352,
+      "sha256": "ef8f5639fa3d1e5a7275702becd302daa9b106c8efac1570f31088af7289e6a3"
+    }
+  },
+  "native_aggregate_expected": 64
+}

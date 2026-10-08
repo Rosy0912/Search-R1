@@ -1,0 +1,121 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "2c76bacd0134ad0e7e3ef0f6cba36cd118c37eb5baa18f58d58425613a18ead9",
+      "size": 3828
+    },
+    "actual3111-startup-attach.fixture.json": {
+      "sha256": "e431c859e4d2668771089e4ffd54f86fba74c5ac2e7623b7c2933baf9b43a17c",
+      "size": 25530
+    },
+    "actual3120-exit.fixture.json": {
+      "sha256": "64dcc6d1ffe350cba4292c22a4f86ba7df5bdb58b421ee96f2f0330595056743",
+      "size": 49331
+    },
+    "checkpoint_inventory.py": {
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f",
+      "size": 4763
+    },
+    "controlled-exit-readme.md": {
+      "sha256": "219d8648ed7b6f80a5cd4adeaa030dd719217a1f5a6fdce9fdecc0418c2f6e83",
+      "size": 4276
+    },
+    "controlled_exit.py": {
+      "sha256": "4d581f629cfa2b1cee55d32dcb58e844efaad5ec04c8e5ee77ccc1e2bff1a6b3",
+      "size": 17056
+    },
+    "ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "local-cpu-result.json": {
+      "sha256": "82ffb8b6bf63e7b12e81f80c09acd053ec41878b88f9017a3a3bbf8d1e43ecaa",
+      "size": 460
+    },
+    "native-cpu.sbatch": {
+      "sha256": "f0315c3b380959a9c22553bb543417504172a9c2063455c88f0dde81223fc144",
+      "size": 830
+    },
+    "original-g1-server.py": {
+      "sha256": "0f770791898c4fcbd9ac077540c9afbec94e13d18c8dd869dfbd7fa0ef056ec0",
+      "size": 14043
+    },
+    "original-native-server.py": {
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+      "size": 15344
+    },
+    "pipeline.py": {
+      "sha256": "48e894930fda7bc12fb44050f2bef4794cd1710449234518296185a7d3e23c8c",
+      "size": 8868
+    },
+    "production.sbatch": {
+      "sha256": "3fcb193883d09447367cf89e5ab2657fe0041b4075e1b093279bce85cdffd807",
+      "size": 1038
+    },
+    "retrieval_gate.py": {
+      "sha256": "41cc401aaebf54d9f2c65db33a4093f1118d5c157d87aa36c00afb632979caa7",
+      "size": 4661
+    },
+    "retrieval_http_audit.py": {
+      "sha256": "ab9c79bada7994506ba43b2ddbdaf1c61ddc26444be4f67aa2e1de9145ff36b7",
+      "size": 1601
+    },
+    "retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "retrieval_startup.py": {
+      "sha256": "6f22fe7c9ca583862ec5c8121faf0b78da45665caa8d98cc852bcf12c83e75fd",
+      "size": 16107
+    },
+    "run_candidate.py": {
+      "sha256": "4d9b0db955f81a69301e9263551a3e356555cc2971f06aee4135138bb6cb9da8",
+      "size": 807
+    },
+    "supervise.py": {
+      "sha256": "7075fb9fb7eae494d795e08c8b18fe23dde34eff1ecee5ef9471ee196b467e0c",
+      "size": 19111
+    },
+    "test_controlled_exit.py": {
+      "sha256": "84249eccb5e4a6cc9e208e7c8729269f48ce638cfca590cc327b28c63d50e0f3",
+      "size": 13753
+    },
+    "test_guardian.py": {
+      "sha256": "f6cae4c6172ebff0323267ebb5f1a6cee18502b19391c55f6df0398a8e06bab5",
+      "size": 4854
+    },
+    "test_health.py": {
+      "sha256": "d9017f4931e27d7fd6daf1650f39eb50666373f5b64d379e04262d9cb5df88c6",
+      "size": 2180
+    },
+    "test_pipeline.py": {
+      "sha256": "f21ad7cc424ab1c2a9c2e654957e951d9cc5670934b7cb5d41ab8dbbbebe7d19",
+      "size": 15536
+    },
+    "test_retrieval_gate.py": {
+      "sha256": "f25cf6508c09244d08863ed252ec25c8e17f5a89bd847f8bae5275c3336f4403",
+      "size": 1884
+    },
+    "test_retrieval_http_audit.py": {
+      "sha256": "8df3acc978e8e9ee37b38f232b6a26b941e3aac3c0578ab7530ce314e8347a73",
+      "size": 1445
+    },
+    "test_retrieval_startup.py": {
+      "sha256": "632dafcfc151766e60d3315ab3a8ce8df9411d85f5b242606f7a1ef419355045",
+      "size": 16613
+    },
+    "test_rpc.py": {
+      "sha256": "11bdf13b312e8008a56fb80ae32a71a1df7fd5df31368d7b67e773e3caf6bb21",
+      "size": 5794
+    },
+    "verify_api.py": {
+      "sha256": "4adcc6c432aff5ecef90a6aaa6ad6623554baafcbbd018d551d0f7ecd287203c",
+      "size": 4017
+    },
+    "window_guardian.py": {
+      "sha256": "4c1ad43e3f65b2511640b414a9f627a1829f4ffe15808a2eeee744d7e0371096",
+      "size": 11818
+    }
+  },
+  "scope": "SOURCE_CPU_PREPARATION_ONLY_NOT_CALIBRATION_PROFILE100_OR_TOPD_APPROVAL"
+}

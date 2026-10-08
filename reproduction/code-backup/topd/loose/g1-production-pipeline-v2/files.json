@@ -1,0 +1,48 @@
+{
+  "cpu_expected": 19,
+  "files": {
+    "README.md": {
+      "sha256": "1355fba4011ee921dec81830e3799de12e1bc8fe0ae6492379056a437c57b8b0",
+      "size": 7786
+    },
+    "checkpoint_inventory.py": {
+      "sha256": "ebd884a65e185b4ae55b48e8c2034e3da8a9e18f866de49719926565fdefee2f",
+      "size": 4763
+    },
+    "ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "local-cpu.log": {
+      "sha256": "90ad1b1e83273dc4ebea43b808bc51396feaccbfaefbd623646fdaf6d55e3678",
+      "size": 625
+    },
+    "native-cpu.sbatch": {
+      "sha256": "148dd73c8aad32f249db575a0ff4cce70048777278aefc153ebf3cf3990bcb0c",
+      "size": 726
+    },
+    "pipeline.py": {
+      "sha256": "48e894930fda7bc12fb44050f2bef4794cd1710449234518296185a7d3e23c8c",
+      "size": 8868
+    },
+    "production.sbatch": {
+      "sha256": "86b8213353d75f9aff798ed440e388cc24dc72800d553c48fb0774cd4ee54413",
+      "size": 883
+    },
+    "run_candidate.py": {
+      "sha256": "4d9b0db955f81a69301e9263551a3e356555cc2971f06aee4135138bb6cb9da8",
+      "size": 807
+    },
+    "supervise.py": {
+      "sha256": "2e39c815a0462d3259cf62cd0105d62c668f7e33cd7bb657bb8b7dedc9eea1a4",
+      "size": 16445
+    },
+    "test_pipeline.py": {
+      "sha256": "c8d07a507028823e13ad2c2002211e76420cca25d4b1157fbf9b9a87112cb948",
+      "size": 15536
+    }
+  },
+  "original_g1_commit": "4e7448d66a78996467134441571fda0a6844d180",
+  "scope": "ISOLATED_SOURCE_CPU_NOT_GPU_OR_TRAINING_READY",
+  "snapshot_not_git_checkout": true
+}

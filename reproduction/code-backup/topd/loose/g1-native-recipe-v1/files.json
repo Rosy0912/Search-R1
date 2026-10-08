@@ -1,0 +1,23 @@
+{
+  "cpu_expected": 6,
+  "native_aggregate_expected": 60,
+  "scope": "INITIAL_ONLY_SOURCE_CPU_NATIVE_ASSEMBLY_NOT_GPU",
+  "files": {
+    "native-assemble.sbatch": {
+      "size": 2068,
+      "sha256": "8d34440e8973a0684a5f13bc83e2d930dfff3495fb0ed292a0a7f6038acfef31"
+    },
+    "assemble.py": {
+      "size": 12903,
+      "sha256": "b4a7627378877646e73e3f017bfe800b46af3718b7eb7bf2aa0d34447693f014"
+    },
+    "README.md": {
+      "size": 2949,
+      "sha256": "4795957480f160bc8c61f429d10b37ce301cc8d52ffbdf64ccfead213c8f515c"
+    },
+    "test_assemble.py": {
+      "size": 2352,
+      "sha256": "ef8f5639fa3d1e5a7275702becd302daa9b106c8efac1570f31088af7289e6a3"
+    }
+  }
+}

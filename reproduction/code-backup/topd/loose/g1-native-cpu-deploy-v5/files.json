@@ -1,0 +1,41 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "3ae332f06c414279afd66a012a57b20b054ff18da1a183ca16f2b3066df5967e",
+      "size": 3944
+    },
+    "capture_cpu_binding.py": {
+      "sha256": "d3c0ef1ab82c2bb04daac1a86a37d19479e85111b8ebaafcc02c6cce8eef095c",
+      "size": 2664
+    },
+    "deploy_cpu.py": {
+      "sha256": "6bd0035d59241f2b4cf70872107a7613199f0632bb1a7369427b33474f26317d",
+      "size": 2612
+    },
+    "native-combined.sbatch": {
+      "sha256": "a5440cedf6cbf5620b64a8f6f8f88876a908d157575642c96ed1927566f814d3",
+      "size": 660
+    },
+    "native_entry.py": {
+      "sha256": "ee028965a06b1ce88178bcda9a086d317b6a77d7ab0b00cc9721c7020f4cb2fe",
+      "size": 4577
+    },
+    "remote_bootstrap.py": {
+      "sha256": "65051c190ac37bef782a37503d4ce8677f10e089262460156f7f1fbea8a2aa74",
+      "size": 5415
+    },
+    "stream_transport.py": {
+      "sha256": "8c28ce8e119df18ed359ba2accc7ce33ed82c167f97e0ddb1236a496cb6865dd",
+      "size": 1526
+    },
+    "test_cpu_deploy.py": {
+      "sha256": "c3963c158f171fd84396a67df16543fd835abd07339be39238d379e1f22a8e1a",
+      "size": 4676
+    },
+    "test_stream_transport.py": {
+      "sha256": "4a553d870f15da789b676cd75ed208dcb49dbfc934c104610ea9eedd78f497f1",
+      "size": 1588
+    }
+  },
+  "scope": "CPU_ONLY_SOURCE_STDIN_TRANSPORT_NO_GPU_NO_WEIGHT_RELAY"
+}

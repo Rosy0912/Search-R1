@@ -1,0 +1,53 @@
+{
+  "status": "TEMPLATE_NOT_EXECUTABLE_PENDING_ACTUAL_REFERENCES",
+  "code_commit": "d23c56c78fdb09f40b7859e02b14eeddbe83a863",
+  "repo": "/dataset/shaoshitong/search-r1-rl/topd/repo-shared32b",
+  "run_id": "ROOT_MUST_SELECT_UNIQUE_RUN",
+  "run_directory": "/dataset/shaoshitong/search-r1-rl/topd/logs/ROOT_MUST_SELECT_UNIQUE_RUN",
+  "expected_uuids": [],
+  "common_overrides": [
+    "actor_rollout_ref.model.path=/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/qwen2.5-3b",
+    "actor_rollout_ref.actor.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.grad_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.optimizer_offload=true"
+  ],
+  "module_sources": {},
+  "source_trees": [],
+  "source_review": null,
+  "teacher_gate_source": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/topd-32b-native-score-gate-r1-v6/score_gate.py",
+    "sha256": "9a81a129422694e8ea3ec6faf6e921876fe1219abda465714984341f4a0eebfa"
+  },
+  "teacher_provenance": null,
+  "hf_inventory_sha256": null,
+  "native_numerical_release": null,
+  "native_numerical_review": null,
+  "resource_proof": null,
+  "resource_review": null,
+  "owner_source": null,
+  "owner_context_source": null,
+  "owner_import_gate": null,
+  "owner_support_source": null,
+  "retriever_launcher_source": null,
+  "sealed_eval_source": null,
+  "sealed_runtime_source": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/qwen25-32b-window-safety-candidate-v5/runtime_safety.py",
+    "sha256": "9e41464d49054a1765fed29f5839f9fd8c568f0040aedbf6cf36b3c096adb3c6"
+  },
+  "telemetry_source": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/tools/qwen25-32b-window-safety-candidate-v5/startup_guard.py",
+    "sha256": "65165ac7c8f5c9042ba254fd36d26e222096e6764fa83c167061e25530d5ad39"
+  },
+  "telemetry_native_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/topd/logs/window-v5-native3194-independent-cpu-policy-review.json",
+    "sha256": "ef9af55c09feb5f1f052b5d2aae6b65b92930339d348249e1e2cdedce745ca03"
+  },
+  "integrated_source_manifest": null,
+  "profile_manifest": null,
+  "formal_manifest": null,
+  "teacher_training_source": {
+    "upstream_commit": "e623724532d06e975b61f3b35ec7925dc790c939",
+    "source_manifest_sha256": "12da9b40250360f5a9448d546c93949186eed2e35bf80be9250a1b5e1db338be",
+    "tools_manifest_sha256": "abf316a0018dd36c09a46162e8219033b0c66f53b937498c6cd826cac71a0ef8"
+  }
+}

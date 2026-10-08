@@ -124,9 +124,12 @@ class FrozenTeacher:
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         if self.tokenizer.get_vocab() != student_tokenizer.get_vocab():
             raise ValueError('Teacher/student token-to-id vocabularies differ')
-        for attr in ('bos_token_id', 'eos_token_id'):
-            if getattr(self.tokenizer, attr) != getattr(student_tokenizer, attr):
-                raise ValueError('Teacher/student special tokens differ')
+        # Scoring consumes existing shared-vocabulary token IDs; it does not
+        # generate with teacher EOS. Preserve both official tokenizer identities.
+        self.tokenizer_special_ids = {
+            'teacher': {name: getattr(self.tokenizer, name) for name in ('bos_token_id','eos_token_id')},
+            'student': {name: getattr(student_tokenizer, name) for name in ('bos_token_id','eos_token_id')},
+            'scope': 'FULL_TOKEN_TO_ID_EQUALITY_REQUIRED_SPECIAL_GENERATION_IDS_RECORDED'}
         self.tokenizer.pad_token_id = student_tokenizer.pad_token_id
         self.device = torch.device(device)
         self.model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.float32,
