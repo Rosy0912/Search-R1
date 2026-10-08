@@ -31,7 +31,7 @@ root=Path(ROOT);destination=Path('/mnt/data/shaoshitong/search-r1-rl/tree-grpo-r
 copy=json.loads((destination/'.node-migration/result.json').read_text())
 assert copy['status']=='LOCAL_ASSETS_AND_PARENT_FILES_COPIED_VERIFIED'
 assert root.resolve()==destination and not Path(PACKAGE).exists()
-raw=sys.stdin.buffer.read();assert hashlib.sha256(raw).hexdigest()==ARCHIVE_SHA
+raw=sys.stdin.buffer.read(ARCHIVE_BYTES);assert len(raw)==ARCHIVE_BYTES and hashlib.sha256(raw).hexdigest()==ARCHIVE_SHA
 with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz') as archive:
  for item in archive.getmembers():
   p=Path(item.name)
@@ -50,10 +50,17 @@ print(json.dumps({'status':'FROZEN_CODE_ONLY_PACKET_DEPLOYED','manifest_sha256':
  'external_files_verified':len(m['external_files']),'archive_sha256':ARCHIVE_SHA,'native_parent_loaded':False,
  'gpu_work_executed':False,'training_submitted':False,'assets_transferred_via_client':False,'python_headers_copied_within_H100':True}))
 '''
-    for name,value in [('ROOT',ROOT),('PACKAGE',spec['package']),('ARCHIVE_SHA',digest),('MANIFEST_SHA',spec['manifest_sha'])]:
+    for name,value in [('ROOT',ROOT),('PACKAGE',spec['package']),('ARCHIVE_SHA',digest),('ARCHIVE_BYTES',archive.stat().st_size),('MANIFEST_SHA',spec['manifest_sha'])]:
         code=code.replace(name,repr(value))
-    with archive.open('rb') as stream:
-        result=subprocess.run(ssh.route('python3 -c '+shlex.quote(code)),stdin=stream,capture_output=True,text=True,timeout=180)
+    try:
+        with archive.open('rb') as stream:
+            result=subprocess.run(ssh.route('python3 -c '+shlex.quote(code)),stdin=stream,capture_output=True,text=True,timeout=180)
+    except subprocess.TimeoutExpired:
+        record=dict(observed_at=datetime.now(timezone.utc).isoformat(),status='CODE_UPLOAD_RESPONSE_UNKNOWN_TIMEOUT',
+                    timeout_seconds=180,archive_sha256=digest,archive_bytes=archive.stat().st_size,
+                    training_submitted=False,follow_up='Read actual own remote package/process state before any retry')
+        (HERE.parents[1]/'outputs/tree-fresh200/RETAINED18_PACKET_DEPLOYMENT_20261008.json').write_text(json.dumps(record,indent=2)+'\n')
+        print(json.dumps(record));raise SystemExit(1)
     record=dict(observed_at=datetime.now(timezone.utc).isoformat(),returncode=result.returncode,
                 stdout=result.stdout,stderr=result.stderr,archive_sha256=digest,archive_bytes=archive.stat().st_size)
     (HERE.parents[1]/'outputs/tree-fresh200/RETAINED18_PACKET_DEPLOYMENT_20261008.json').write_text(json.dumps(record,indent=2)+'\n')
