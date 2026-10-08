@@ -1,0 +1,5 @@
+# 本机重复文本回收，保持全6603文件内容可恢复
+
+只在已完成capsule的整文件SHA和第二次独立6547成员解压SHA均接受后，回收与压缩时完整metadata一致的准确JSON/JSONL本机副本。每个unlink前再检查原inode/size/mtime/ctime；不递归删目录、不删Node原件、NPY、archive或旧inventory/proof。原full192成品的新布局为标准tar.gz中6547原相对路径成员＋原目录56个NPY，全部6603内容可完整恢复。
+
+标准恢复：按原relative_path从tar.gz提取需要的文本到独立分析目录，并对原accepted inventory核SHA；全量恢复需要为22,419,590,028字节预留空间。无模型、GPU、HTTP、Node或训练锁。不与训练启动绑定。失败保留压缩成品、durable plan和进度；已经删除的成员仍在全SHA接受的capsule中，不伪称原6603裸文件还存在。
