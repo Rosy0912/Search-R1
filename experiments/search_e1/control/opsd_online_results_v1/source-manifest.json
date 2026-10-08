@@ -1,0 +1,21 @@
+{
+  "completion_effect_plan_sha256": "6b2af6ea4a463f82c81eb9b3dd84fb64f9d3c05ef3b92ee3b85fa024f6909945",
+  "files": {
+    "README.md": {
+      "bytes": 5229,
+      "sha256": "398d594c3348561ea0eebb7e977b0024d3c3d9297912ae2f59371219fb737b2f"
+    },
+    "capture_online_terminal.py": {
+      "bytes": 24824,
+      "sha256": "d863af0b581aef62936d527379c75e3a52d1eadd03a1dab728c669e12b4969cd"
+    },
+    "test_capture_online_terminal.py": {
+      "bytes": 15097,
+      "sha256": "d5a4e020e9bca25f5f2b647d0734f566e00760fe92f9b709c897cd01dcee4c15"
+    }
+  },
+  "original_config_sha256": "d0c30df9b035e73d87bb5402bbcd32c16b2314a4180c451a543522ca5b321b17",
+  "run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "schema": "opsd-online-results-terminal-capture-source-manifest-v1",
+  "scope": "One-shot read-only CPU capture of exact current foreground controller rc and release; no 200-outer scientific audit or evaluator"
+}
