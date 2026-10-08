@@ -85,3 +85,23 @@ GPU7当前PCIe为实际Gen4×16，等于其报告上限；SM2520MHz、40°C，ac
 
 
 K4受保护旧archive作业的独立04:07实读：真实185更新完成，186已进入。185严格TRAIN得分0.003、legacy0.211、两者分歧0.208；裁剪前梯度范数626616388620.689仍有限，pg_loss391546347.992，未出现日志fatal模式或进程退出。该新一步继续低严格分数，不能将legacy视为恢复，也不能把不同TRAIN批次当固定512退化曲线。最后固定512/检查点仍150。五套669文件冻结哈希一致，GPU4–7直接余量至少25877MiB；作业、observer、共享检索保留且未修改。C0从已验收的source100独立训练，不使用这些后续旧archive权重。私有K4 compact SHA256 `d15287e3ad503f402480e279d7ef4a3930739d88e8d26d28abc5d2282f64f66f`。
+
+
+## 本机后台备份：首次真实无损压缩与独立收尾修复
+
+C0十轮训练已经完成，04:34 CST独立native评测实际507/512槽，六个分片完成。评测、后续共同基线及六组自动流程始终没有等待本机备份。
+
+新Mac-only compact源4d2065e及不可变入口6701362均已push/FETCH逐字节核验。根只在旧Mac队列10637的UID501、准确启动时间/argv、无子进程、十包COMPLETE及新鲜状态均确认后进行技术置换，旧unified53942实际返回143。没有向HKUST训练、评测、检索或他人进程发信号；原Node V2源554和所有原始资产保留。实际新Mac队列45060/UID501、unified32781继续相同七组70个固定outer-end检查点，XZ直接压缩、恢复验收在本机执行。
+
+首个真实CP11/outer0包已完整接受：原USTAR为483143680字节，单XZ为347466100字节。票据e23d2f69f4ae05853fac4e403be2e1a2b12bb8593a7c3815b370c0a92ae95149保存原整tar SHA、27个成员SHA及独立磁盘解压读回结果。此包是已有本机V2包的lossless导入，没有新增网络检查点传输，也不是重新进行Adam数值验收。原完成JSON及inventory的SHA仍一致。
+
+在新包durable COMPLETE及再次全解压验证后，显式回收已删除旧本机tar和27个可恢复重复payload，但空目录收尾失败：bottom-up os.walk父层的dirs列表仍含已删子目录，随后checked_path触发FileNotFoundError。新压缩包保持COMPLETE，Node原件和旧JSON保持；不能称整个回收已成功。队列继续其他固定包，未出现压缩BACKLOG或HOLD。独立外部修复只处理该空目录收尾与其已记录计划，不热改现有4d源、XZ格式、训练或评测。下一次启动必须确认原Mac队列真实终态和无活动传输，并继续原已接受状态，不重新压缩已完成包。
+
+
+## C0 首个完整512结果与自动接续
+
+C0 raw10 BF16的512正式预测已完整验收，八个rank各64题；独立controller实际wait返回0，全自有GPU后代释放、result-accepted及controller-complete均真实落盘。严格EM为227/512=44.3359375%：NQ109/256=42.578125%，Hotpot118/256=46.09375%。最终协议无效0，协议有效但gold不匹配285；全部512均执行过实际检索并以answer终止。该身份为raw CP100/outer9、504FP32adapter digest90df42161c6e022f09a5250299e2dedaab391e75fcaaf0fcae0ed5807e443403，未选择best或使用下一outer采样cache。验证题SHA75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76，普通提示HF SDPA/greedy/repetition1.05及原检索/生成预算保持。
+
+44.34%是该权重的实际完整结果，同条件共同零adapter基线尚未完整结束，暂不称提升或下降，也不与旧离线epoch/历史239强拼曲线。C0原评测1896257自然结束，主driver1894801同run继续；新共同基线run d6fb70ec8f374ff8b8a841b2e6f15450已实际开始普通BF16推理，04:43 CST已有20条正式结果。七组自动流程没有等待备份，更未重跑C0。后续仍完整70outer/11×512=5632及按题配对比较。
+
+原完整C0报告和实际wait/handoff证据均留私有本地：goal-continuation-20261009-6/c0-native512-complete.compact.json、after-c0-handoff-1791492205.json；原逐题/检索/生成上下文仅私有保存，不提交Git。
