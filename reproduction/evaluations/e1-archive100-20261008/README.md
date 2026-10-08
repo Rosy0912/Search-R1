@@ -27,3 +27,13 @@ HKUST5 node-local storage was explicitly authorized by the user on October 8, 20
 Do not rerun a failed worker blindly: checkpoint verification may already have renamed `model.partial` to `model`, and partial predictions must be preserved. Inspect task status, launch receipt, owned processes and file state first. Source checkpoints are retained.
 
 `SOURCE_FILES.json` records the exact original local source locations and hashes. The final publication receipt is kept outside this Git tree to avoid circular commit hashes.
+
+## Optional same-cluster direct transfer
+
+`switch_direct_transfer.py` prepares a task-private HTTPS source service on HKUST1, validates the pinned certificate and an 8 MiB SHA-checked range transfer from HKUST5, and switches only this task's existing Mac pipe if direct transfer is demonstrably faster. It verifies the original controller and SSH child command identities before signaling them, then uses `inspect_target_writers.py` to reject any remaining target task tar/write FD before starting a replacement receiver. It never signals training or unrelated processes.
+
+`direct_https_source.py` exports only the twelve allowlisted immutable checkpoint files. It requires a random Bearer credential, uses TLS 1.2 or newer, checks source file stability, supports SHA-prefix checks and byte ranges, and expires after the configured task lifetime. The receiver trusts the explicit generated task certificate and validates the source IP.
+
+`direct_https_receive.py` preserves existing partial files, verifies source/target prefix SHA before resuming, retains rejected partial copies, and uses at most three concurrent transfers. It flushes and fsyncs each file, reads every full SHA256 back, then registers a single inference worker. It removes only its own random HTTP credential file after transfer.
+
+Generated authentication files, TLS private keys/certificates, runtime status/PID evidence and logs are excluded from this source backup. The 8 MiB route test is only a connectivity/speed sample; completion still requires all twelve file hashes and the inference worker's independent full checkpoint verification.

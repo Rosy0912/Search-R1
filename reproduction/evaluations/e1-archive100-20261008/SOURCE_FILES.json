@@ -76,13 +76,45 @@
       "bytes": 4658,
       "sha256": "a6562278427757983f4cf1685504d7415fe1e95cab142cc954bc1e4e51e38fbd",
       "purpose": "Input checkpoint size/hash metadata; no model contents"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/direct_https_source.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/direct_https_source.py",
+      "bytes": 3693,
+      "sha256": "070efcdeb736adeea68e22dca958b8edcfd4f6f16b3ab73fc34c6c5e33d2b800",
+      "purpose": "Same-cluster isolatedcheckpoint transfer, not inference/score change"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/direct_https_receive.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/direct_https_receive.py",
+      "bytes": 5134,
+      "sha256": "ba7ef019ff164d5df549bbf42ee41982505c4a5ed9db919769982e2c9b46c90e",
+      "purpose": "Same-cluster isolatedcheckpoint transfer, not inference/score change"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/switch_direct_transfer.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/switch_direct_transfer.py",
+      "bytes": 8608,
+      "sha256": "291d806e469947df2e3890bb982dad0aa6787bdda6f8d64b77b1067a2cb5a7c3",
+      "purpose": "Same-cluster isolatedcheckpoint transfer, not inference/score change"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/inspect_target_writers.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/inspect_target_writers.py",
+      "bytes": 1536,
+      "sha256": "82547d4e22e19b5a81dcc26aba9d932fbf841b3f75920fa3926c61c55b7e4f38",
+      "purpose": "Same-cluster isolatedcheckpoint transfer, not inference/score change"
     }
   ],
   "excluded": [
     "data/validation.jsonl (512 QA dataset)",
     "model/checkpoint weights",
     "all runtime logs and predictions",
-    "all credentials/environment directories"
+    "all credentials/environment directories",
+    "all ephemeral HTTPS authentication/private-config files",
+    "source TLS private key and generated certificates",
+    "live transfer status/PID reports and runtime logs"
   ],
-  "note": "Deployment scripts saved for source durability only; this publication does not launch evaluation."
+  "note": "Deployment scripts saved for source durability only; this publication does not launch evaluation.",
+  "transfer_source_added_at": "2026-10-08T03:54:40.829119+00:00"
 }
