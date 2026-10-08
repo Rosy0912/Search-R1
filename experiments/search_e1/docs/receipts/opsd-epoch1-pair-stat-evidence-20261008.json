@@ -1,0 +1,66 @@
+{
+  "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+  "sha256": "a81a3ae61bb402f6b99dd35ae552c4bb76df8da391f3620c17fbd742ba2b1f40",
+  "bytes": 829404707,
+  "pairs": 100974,
+  "unique_question_ids": 100974,
+  "counts": {
+    "student_reward_0": 44079,
+    "reference_reward_1": 100974,
+    "student_complete_answer_present": 100804,
+    "student_answer_fully_in_policy_span": 100767,
+    "student_reward_1": 56895
+  },
+  "by_source": {
+    "nq": {
+      "student_reward_0": 18009,
+      "pairs": 42704,
+      "student_reward_1": 24695
+    },
+    "hotpotqa": {
+      "student_reward_0": 26070,
+      "pairs": 58270,
+      "student_reward_1": 32200
+    }
+  },
+  "lengths": {
+    "reference_chars": {
+      "min": 1117,
+      "max": 11579,
+      "mean": 3413.080396933864,
+      "p50": 2660,
+      "p90": 4851,
+      "p99": 7821
+    },
+    "reference_search_tags": {
+      "min": 1,
+      "max": 4,
+      "mean": 1.4322201754907204,
+      "p50": 1,
+      "p90": 2,
+      "p99": 3
+    },
+    "student_chars": {
+      "min": 124,
+      "max": 13435,
+      "mean": 4363.254233763147,
+      "p50": 4459,
+      "p90": 7200,
+      "p99": 9640
+    },
+    "student_search_tags": {
+      "min": 0,
+      "max": 5,
+      "mean": 1.7903321647156694,
+      "p50": 2,
+      "p90": 3,
+      "p99": 4
+    }
+  },
+  "span_char_totals": {
+    "policy_chars": 95537458,
+    "response_chars": 440575233,
+    "empty_spans": 0
+  },
+  "limitations": "search_tags counts syntactic text, not logged executed calls; character lengths are not token lengths; no questions or answers emitted"
+}

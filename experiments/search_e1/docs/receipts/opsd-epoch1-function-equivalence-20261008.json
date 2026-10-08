@@ -1,0 +1,26 @@
+{
+  "core.py:prompt": {
+    "byte_identical": true,
+    "sha256": "127b45ba05ba9bc25f4f5523eab9ad02f0085d81d0715399492c6ce9a25e7772"
+  },
+  "core.py:response_encoding": {
+    "byte_identical": true,
+    "sha256": "c6d25bae73cf697f561c8b6f9a26b20f1a6da7508519a31fdce1e63eccd83e1d"
+  },
+  "core.py:mine_pairs": {
+    "byte_identical": true,
+    "sha256": "b415b01e09682f05fb3972dd5cd325498c69feab9c9325fd886ed2b94f3805d9"
+  },
+  "core.py:clipped_forward_kl": {
+    "byte_identical": true,
+    "sha256": "ff51e50aede34f1bf05c096f410dbf64a381621fa442bfd91be27b0bd47d9a68"
+  },
+  "opsd.py:encoded_pair": {
+    "byte_identical": true,
+    "sha256": "c64188956a7ecc82a18f03a8a71020b3463b842eaecd39cf474e555d69295692"
+  },
+  "opsd.py:pair_loss": {
+    "byte_identical": true,
+    "sha256": "ccff42a99b0667e8bd3960df2a179d9e288482ae9c2c0d4d5750cf4a4b9e5dcf"
+  }
+}
