@@ -1,5 +1,6 @@
 """Copy immutable CoSearch recovery assets through existing SSH routes; no GPU/job/auth changes."""
-import fcntl, hashlib, importlib.util, json, os, shlex, subprocess, time, threading
+import fcntl, hashlib, importlib.util, json, os, shlex, subprocess, time, threading, signal
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from cosearch_transfer_io import receiver_code
 BASE=Path(__file__).resolve().parents[1]
@@ -12,11 +13,24 @@ spec=importlib.util.spec_from_file_location('existing_control','/Users/shaoshito
 ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl)
 lock=(E/'native-x-hpc-migration.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 status={'pid':os.getpid(),'started_epoch':time.time(),'status':'waiting_source_manifest','source':SOURCE,'target':TARGET,'verified_files':0,'verified_bytes':0,'training_started':False}
+mutex=threading.RLock();local=threading.local();stop=threading.Event();active={};verified=set();retries=json.loads(STATE.read_text()).get('file_retry_count',0) if STATE.exists() else 0
 def save(**kw):
- status.update(kw,updated_epoch=time.time());p=STATE.with_suffix('.tmp');p.write_text(json.dumps(status,indent=2)+'\n');p.replace(STATE)
+ with mutex:
+  status.update(kw,updated_epoch=time.time(),parallel_streams=4,active_files=list(active.values()),file_retry_count=retries)
+  p=STATE.with_suffix('.tmp');p.write_text(json.dumps(status,indent=2)+'\n');p.replace(STATE)
+def interrupted(signum,frame):stop.set()
+signal.signal(signal.SIGTERM,interrupted)
+def progress(**kw):
+ with mutex:
+  entry=getattr(local,'entry',None)
+  if entry is not None:entry.update(kw);active[entry['path']]=dict(entry)
+  if time.time()-status.get('updated_epoch',0)>10:save()
+
 def query(host,code):
  r=subprocess.run(ctl.route(host,'python3 -c '+shlex.quote(code)),capture_output=True,text=True,timeout=120)
- if r.returncode:raise RuntimeError(host+': '+r.stderr[-1000:])
+ if r.returncode:
+  if 'AssertionError' in r.stderr:raise AssertionError(host+': '+r.stderr[-1000:])
+  raise RuntimeError(host+': '+r.stderr[-1000:])
  return json.loads(r.stdout)
 def pipeline(source_command,target_command,input_bytes=None):
  with (E/'native-x-hpc-migration-transport.error.log').open('ab') as err:
@@ -32,8 +46,13 @@ def pipeline(source_command,target_command,input_bytes=None):
    while True:
     data=a.stdout.read(4*1024*1024)
     if not data:break
-    b.stdin.write(data);status['current_stream_bytes']=status.get('current_stream_bytes',0)+len(data)
-    if time.time()-status.get('updated_epoch',0)>15:save()
+    if stop.is_set():raise InterruptedError('Transfer handoff requested')
+    b.stdin.write(data)
+    if getattr(local,'entry',None) is not None:
+     progress(partial_bytes=local.entry.get('partial_bytes',0)+len(data))
+    else:
+     status['current_stream_bytes']=status.get('current_stream_bytes',0)+len(data)
+     if time.time()-status.get('updated_epoch',0)>15:save()
    b.stdin.close()
    if writer:writer.join(timeout=30);assert not writer.is_alive()
    ra=a.wait();rb=b.wait()
@@ -49,22 +68,45 @@ try:
   time.sleep(10)
  files=[x for x in rows if x['kind']=='file'];links=[x for x in rows if x['kind']=='symlink']
  assert len(files)==rows[-1]['files']
+ assert len({x['path'] for x in files+links})==len(files+links), 'Duplicate manifest paths'
  assert all(not x['path'].startswith('/') and '..' not in Path(x['path']).parts for x in files+links)
  total=sum(x['bytes'] for x in files);save(status='transferring',total_files=len(files),total_bytes=total)
  query('hpc3',"from pathlib import Path;import json;p=Path("+repr(TARGET)+");p.mkdir(parents=True,exist_ok=True);print(json.dumps({'created':True}))")
  large=sorted([x for x in files if x['bytes']>=64*1024*1024],key=lambda x:(0 if '/global_step_203/' in x['path'] else 1,x['path']))
- for rec in large:
-  src=SOURCE+'/'+rec['path'];dst=TARGET+'/'+rec['path'];part=dst+'.migration-partial'
-  info=query('hpc3',"from pathlib import Path;import hashlib,json;p=Path("+repr(dst)+");q=Path("+repr(part)+");h=hashlib.sha256();\nif p.exists():\n with p.open('rb') as f:\n  for b in iter(lambda:f.read(16777216),b''):h.update(b)\nprint(json.dumps({'existing_sha':h.hexdigest() if p.exists() else None,'partial_bytes':q.stat().st_size if q.exists() else 0}))")
-  if info['existing_sha']!=rec['sha256']:
-   offset=info['partial_bytes'];assert offset<=rec['bytes']
-   save(current_file=rec['path'],current_stream_bytes=offset)
-   reader="import sys;f=open("+repr(src)+",'rb');f.seek("+str(offset)+");\nfor b in iter(lambda:f.read(4194304),b''):sys.stdout.buffer.write(b)"
-   receiver=receiver_code(part)
-   pipeline('python3 -c '+shlex.quote(reader),'python3 -c '+shlex.quote(receiver))
-   verifier="from pathlib import Path;import hashlib,json;p=Path("+repr(part)+");h=hashlib.sha256();\nwith p.open('rb') as f:\n for b in iter(lambda:f.read(16777216),b''):h.update(b)\nassert p.stat().st_size=="+str(rec['bytes'])+";assert h.hexdigest()=="+repr(rec['sha256'])+";p.replace("+repr(dst)+");print(json.dumps({'verified':True}))"
-   query('hpc3',verifier)
-  save(verified_files=status['verified_files']+1,verified_bytes=status['verified_bytes']+rec['bytes'])
+ def transfer_one(rec):
+  global retries
+  attempt=0
+  while not stop.is_set():
+   local.entry={'path':rec['path'],'bytes':rec['bytes'],'status':'checking_destination','attempt':attempt,'partial_bytes':0}
+   progress()
+   try:
+    src=SOURCE+'/'+rec['path'];dst=TARGET+'/'+rec['path'];part=dst+'.migration-partial'
+    info=query('hpc3',"from pathlib import Path;import hashlib,json;p=Path("+repr(dst)+");q=Path("+repr(part)+");h=hashlib.sha256();\nif p.exists():\n with p.open('rb') as f:\n  for b in iter(lambda:f.read(16777216),b''):h.update(b)\nprint(json.dumps({'existing_sha':h.hexdigest() if p.exists() else None,'partial_bytes':q.stat().st_size if q.exists() else 0}))")
+    if info['existing_sha'] is not None and info['existing_sha']!=rec['sha256']:raise AssertionError('SHA mismatch existing target '+rec['path'])
+    if info['existing_sha']!=rec['sha256']:
+     offset=info['partial_bytes'];assert offset<=rec['bytes']
+     progress(status='transferring',partial_bytes=offset)
+     reader="import sys;f=open("+repr(src)+",'rb');f.seek("+str(offset)+");\nfor b in iter(lambda:f.read(4194304),b''):sys.stdout.buffer.write(b)"
+     receiver=receiver_code(part)
+     pipeline('python3 -c '+shlex.quote(reader),'python3 -c '+shlex.quote(receiver))
+     verifier="from pathlib import Path;import hashlib,json;p=Path("+repr(part)+");h=hashlib.sha256();\nwith p.open('rb') as f:\n for b in iter(lambda:f.read(16777216),b''):h.update(b)\nassert p.stat().st_size=="+str(rec['bytes'])+";assert h.hexdigest()=="+repr(rec['sha256'])+";p.replace("+repr(dst)+");print(json.dumps({'verified':True}))"
+     query('hpc3',verifier)
+    with mutex:
+     verified.add(rec['path']);active.pop(rec['path'],None)
+     save(verified_files=len(verified),verified_bytes=sum(x['bytes'] for x in large if x['path'] in verified))
+    return
+   except AssertionError:
+    stop.set();raise
+   except Exception as exc:
+    if stop.is_set():raise
+    attempt+=1
+    with mutex:retries+=1;progress(status='retry_backoff',attempt=attempt,error=repr(exc));save()
+    if stop.wait(min(120,15*(2**min(attempt-1,3)))):raise InterruptedError('Transfer stopped')
+  raise InterruptedError('Transfer stopped')
+ with ThreadPoolExecutor(max_workers=4) as pool:
+  futures=[pool.submit(transfer_one,rec) for rec in large]
+  for f in futures:f.result()
+ if stop.is_set():raise InterruptedError('Transfer stopped')
  small=[x for x in files if x['bytes']<64*1024*1024]
  names=[x['path'] for x in small+links]
  save(status='transferring_small_bundle',current_file='small files and symlinks',current_stream_bytes=0)

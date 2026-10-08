@@ -20,7 +20,8 @@ def main():
  a=p.parse_args();e=a.evidence_dir;e.mkdir(parents=True,exist_ok=True)
  lock=(e/'native-x-hpc-transfer-supervisor.lock').open('a')
  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
- state={'status':'supervising','training_started':False,'retry_count':0}
+ previous=json.loads((e/'native-x-hpc-transfer-supervisor.json').read_text()) if (e/'native-x-hpc-transfer-supervisor.json').exists() else {}
+ state={'status':'supervising','training_started':False,'retry_count':previous.get('retry_count',0)}
  def save(**kw):
   state.update(kw,updated_epoch=time.time());q=e/'native-x-hpc-transfer-supervisor.json';t=q.with_suffix('.tmp');t.write_text(json.dumps(state,indent=2)+'\n');t.replace(q)
  try:
