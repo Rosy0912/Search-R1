@@ -1,0 +1,72 @@
+{
+  "status": "SUBMITTED_EXACTLY_ONCE",
+  "utc": "2026-10-08T06:15:32.621525+00:00",
+  "original_transport": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-CUDASYNC-V19-REPAIR3337-SUBMIT-TRANSPORT-v1.json",
+  "original_transport_sha256": "8814c3ad1524de712059d1793371cec67f035251a1760098cb987c88dbc03114",
+  "receipt": {
+    "status": "SUBMITTED_EXACTLY_ONCE",
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--partition=gpu",
+      "--nodelist=h100-8",
+      "--nodes=1",
+      "--ntasks=1",
+      "--gres=gpu:h100:8",
+      "--cpus-per-task=128",
+      "--mem=512G",
+      "--exclusive",
+      "--no-requeue",
+      "--time=1-00:00:00",
+      "--export=ALL",
+      "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1/calibration_v1.sbatch",
+      "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json",
+      "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844",
+      "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v17-nonblocking1-ebe91bfe",
+      "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/tools/fresh200-continuation-v19-cudasynchronous1",
+      "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/env"
+    ],
+    "returncode": 0,
+    "stdout": "3338\n",
+    "stderr": "",
+    "job_id": "3338",
+    "binding": {
+      "bytes": 20594237,
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-CUDASYNC-V19-BINDING-CANDIDATE-v1.json",
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/BINDING.json",
+      "sha256": "d73886efdd76bd50fbb34f3e53c665c42f371bc200adf1d7bdc6920f8bd55844"
+    },
+    "parent_terminal_facts": {
+      "bytes": 14373,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-cudasynchronous-repair3337-once-v1/JOB3337-TERMINAL-FACTS-v1.json",
+      "sha256": "c6e5f8738b2e4147724097a6c731887841471a0538646f8880f31f3c58d1616d"
+    },
+    "historical_parent_completed_outer": 2,
+    "historical_parent_adam_writes_per_rank": 40,
+    "historical_updates_stitched": false,
+    "new_fresh_initial_outer": 0,
+    "new_fresh_initial_adam": 0,
+    "signal_sent": false,
+    "training_success_not_yet_observed": true,
+    "extra_validation_job": false,
+    "queued_submission_is_not_gpu_admission": true,
+    "shared_storage": {
+      "binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+      "client_node": "h100-10",
+      "independent_durable_copy": false,
+      "migration_required_before_release": true,
+      "mount_type": "nfs4",
+      "original_read_only_receipt": {
+        "bytes": 1236,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/RETAINED18-JOB3332-ACTUAL-STATUS-shared-output-actual-mount-v1.json",
+        "sha256": "23c007c733c53b5091dad1936b064e8e701e13014195a4936d9a39c3b3f03be2"
+      },
+      "server8_release_date": "2026-10-20",
+      "shared_root": "/mnt/shared/workspace/training_data_node_8/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006",
+      "source": "10.32.0.8:/mnt/data"
+    }
+  },
+  "user_review_waiver": "HUMAN_WAIVED_STATIC_REVIEW",
+  "baseline": "SKIP_AND_REUSE_HISTORICAL",
+  "training_running_observed": false
+}

@@ -1,0 +1,17 @@
+{
+  "adapter_publication": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-CUDASYNC-V19-PUBLICATION-v1.json",
+    "bytes": 28804,
+    "sha256": "450df346a83edbf662bcf602e116144add3d8d88b153063c8ff867883abcf9ff"
+  },
+  "derivation": {
+    "bytes": 42514,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-CUDASYNC-V19-DERIVATION-v1.json",
+    "sha256": "1948b447825dac20c9eb9c1edbd12ba3fb02c81400af24c0779bc238a70d32b7"
+  },
+  "human_review_waiver": {
+    "bytes": 1904,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-CUDASYNC-V19-HUMAN-WAIVED-STATIC-REVIEW-v1.json",
+    "sha256": "995f103fec693e7c55d6569b911f41407b2bc6b2b462c58d77c7df1fde720f36"
+  }
+}

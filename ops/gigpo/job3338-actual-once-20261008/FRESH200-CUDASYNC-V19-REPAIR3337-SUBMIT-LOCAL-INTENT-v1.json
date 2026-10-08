@@ -1,0 +1,8 @@
+{
+  "action": "submit",
+  "payload_sha256": "85080b13af5060a11991c3a070c77ef242a603b72147d1dedeff347f4df4fa59",
+  "source_sha256": {
+    "deploy_submit_cudasynchronous3337_v19_once_v1": "8079ae8507119362caa89e1ed6f22c053d1e1e9c1dd520abb4dd847a94349571"
+  },
+  "status": "ONE_LOCAL_INVOCATION_NEVER_REPLAY"
+}
