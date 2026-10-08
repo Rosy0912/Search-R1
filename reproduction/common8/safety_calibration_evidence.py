@@ -98,18 +98,19 @@ def _adjacent(previous, current):
             _require(left == right, 'Adjacent unchanged-policy exact field differs: ' + name)
 
 
-def _identity(value):
+def _identity(value, monitor_count=4):
+    _require(type(monitor_count) is int and monitor_count in (4, 8), 'Unsupported local monitor count')
     _require(isinstance(value, Mapping), 'Missing local monitor identity')
     _require(set(value) == {'selection_indices', 'actor_token_lengths', 'tensor_sha256'},
              'Unexpected monitor identity schema')
     indices = value['selection_indices']
     lengths = value['actor_token_lengths']
-    _require(isinstance(indices, list) and len(indices) == 4, 'Need four monitor indices')
+    _require(isinstance(indices, list) and len(indices) == monitor_count, 'Incomplete local monitor indices')
     for index in indices:
         _integer(index, 'selection_index')
-        _require(index < 320, 'Monitor index outside local rollout')
-    _require(len(set(indices)) == 4, 'Duplicate monitor index')
-    _require(isinstance(lengths, list) and len(lengths) == 4, 'Need four monitor lengths')
+        _require(index < 80 * monitor_count, 'Monitor index outside local rollout')
+    _require(len(set(indices)) == monitor_count, 'Duplicate monitor index')
+    _require(isinstance(lengths, list) and len(lengths) == monitor_count, 'Incomplete local monitor lengths')
     for length in lengths:
         _integer(length, 'actor_token_length', minimum=1)
     _require(lengths == sorted(lengths), 'Monitor lengths are not stratified')
@@ -204,6 +205,11 @@ def verify_formal_segment(rows_by_rank, binding):
     Rejected monitors must correspond to explicit guarded skip/postwrite records.
     """
     from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, SAFETY_MODE, consumed_lr
+    size = binding.get('training_world_size', 8)
+    _require(type(size) is int and size in (4, 8), 'Unsupported formal evidence topology')
+    monitor_count = 32 // size
+    scope = ('fixed four trajectories per rank across length strata; not full rollout' if size == 8 else
+             'fixed eight trajectories per rank across length strata; not full rollout')
     _require(binding['schema_version'] == 1 and binding['role'] == 'production' and
              binding['policy_safety_mode'] == SAFETY_MODE, 'Not explicit inline formal evidence')
     _require(binding['candidate_thresholds'] == FORMAL_SAFEGUARDS, 'Frozen formal safeguards differ')
@@ -213,7 +219,7 @@ def verify_formal_segment(rows_by_rank, binding):
     attempts = binding['complete_attempts']
     _require([r['step'] for r in attempts] == list(range(1, outers + 1)), 'Incomplete complete-outer selection')
     _require(len({r['attempt_id'] for r in attempts}) == outers, 'Duplicate completed attempt identity')
-    _require(set(rows_by_rank) == set(range(8)), 'Need all eight formal rank logs')
+    _require(set(rows_by_rank) == set(range(size)), 'Need all actual formal rank logs')
     observations = {}; identities = {}; dispositions = {}; selected_attempts = {}
     previous_attempt = 0; previous_writes = 0
     for record in attempts:
@@ -225,7 +231,7 @@ def verify_formal_segment(rows_by_rank, binding):
         _require(record['opportunities_processed'] == 20, 'Incomplete opportunities cannot count as outer')
         selected_attempts[outer] = record
         previous_attempt, previous_writes = index, end
-    for rank in range(8):
+    for rank in range(size):
         rows = rows_by_rank[rank]; cursor = 0
         for outer in range(1, outers + 1):
             attempt = selected_attempts[outer]; counter = attempt['optimizer_writes_before']
@@ -280,9 +286,9 @@ def verify_formal_segment(rows_by_rank, binding):
                     _require(row['execution_role'] == 'production' and row['enforcement'] == _enforcement('production'),
                              'Formal brakes are not enforced')
                     _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
-                             row['monitoring_scope'] == MONITORING_SCOPE, 'Formal monitor weighting/scope differs')
+                             row['monitoring_scope'] == scope, 'Formal monitor weighting/scope differs')
                     _integer(row['rejection_count'], 'actual cumulative rejection_count')
-                    _identity(row['monitor_identity'])
+                    _identity(row['monitor_identity'], monitor_count=monitor_count)
                     if identity is None:
                         identity = copy.deepcopy(row['monitor_identity']); identities[(outer, rank)] = identity
                     _require(identity == row['monitor_identity'], 'Frozen formal monitor inputs changed')
@@ -322,7 +328,7 @@ def verify_formal_segment(rows_by_rank, binding):
                             execution_role='production', enforcement=_enforcement('production'), **statistics)
                     else:
                         _require(all(observations[key][name] == statistics[name] for name in GLOBAL_FIELDS),
-                                 'Eight rank global formal observations disagree')
+                                 'Actual rank global formal observations disagree')
                 if write is not None:
                     _row(write, rank, binding, 'OPTIMIZER_WRITE')
                     _require(write['write_count'] == prior + 1 and write['learning_rates'] and
@@ -335,7 +341,7 @@ def verify_formal_segment(rows_by_rank, binding):
             _require(cursor < len(rows), 'Missing completed opportunity budget')
             budget = rows[cursor]; cursor += 1; _row(budget, rank, binding, 'OUTER_BUDGET')
             for name, value in dict(logical_update=outer, attempt_id=attempt['attempt_id'], attempt_index=attempt['attempt_index'],
-                local_trajectories=320, local_mini=16, local_micro=2, opportunities_processed=20,
+                local_trajectories=2560 // size, local_mini=128 // size, local_micro=2, opportunities_processed=20,
                 optimizer_writes=attempt['optimizer_writes_after'] - attempt['optimizer_writes_before'],
                 optimizer_writes_before=attempt['optimizer_writes_before'], optimizer_writes_after=counter,
                 cumulative_writes=counter).items():
@@ -343,7 +349,7 @@ def verify_formal_segment(rows_by_rank, binding):
             _require(counter == attempt['optimizer_writes_after'], 'Complete outer actual success count differs')
         _require(cursor == len(rows), 'Extra completed opportunity evidence')
     for (outer, mini, stage), observation in observations.items():
-        count = sum(sum(identities[(outer, rank)]['actor_token_lengths']) for rank in range(8))
+        count = sum(sum(identities[(outer, rank)]['actor_token_lengths']) for rank in range(size))
         _require(observation['effective_token_count'] == count, 'Formal global token count differs')
         if observation['kl_estimate_complete']:
             _same_arithmetic(observation['effective_weight_mass'], 16., 'formal global masked-mean weight mass')

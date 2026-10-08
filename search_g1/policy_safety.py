@@ -206,7 +206,9 @@ def bind_actual_config(actor_config, group=None):
     import json,hashlib,os
     from pathlib import Path
     from omegaconf import OmegaConf
+    from reproduction.common8.topology import monitor_trajectories_per_rank
     ok=True
+    monitor_count=4
     try:
         document=OmegaConf.to_container(actor_config,resolve=True)
         serialized=json.dumps(document,sort_keys=True,allow_nan=False).encode()
@@ -215,6 +217,7 @@ def bind_actual_config(actor_config, group=None):
             ok=False
         if os.environ.get('SEARCH_G1_PROFILE')=='common8':
             run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            monitor_count=monitor_trajectories_per_rank(run)
             if run.get('policy_safety_required') is True and (s is None or s.get('enabled') is not True):
                 ok=False
         if s and s['enabled']:
@@ -222,8 +225,9 @@ def bind_actual_config(actor_config, group=None):
             ok=ok and (isinstance(s['enabled'],bool) and 0<epsilon<1 and math.isfinite(c) and c>1+epsilon
                 and math.isfinite(float(s['target_old_policy_kl'])) and s['target_old_policy_kl']>0
                 and math.isfinite(float(s['kl_log_bound'])) and s['kl_log_bound']>0
-                and s['monitor_trajectories_per_rank']==4 and not document['use_dynamic_bsz'])
-    except (ValueError,TypeError,KeyError,OSError):
+                and s['monitor_trajectories_per_rank']==monitor_count
+                and not document['use_dynamic_bsz'])
+    except (ValueError,TypeError,KeyError,OSError,AssertionError):
         ok=False;serialized=b'INVALID'
     device='cuda:'+str(torch.cuda.current_device()) if dist.is_initialized() and dist.get_backend(group)=='nccl' else 'cpu'
     flag=torch.tensor(int(ok),device=device,dtype=torch.int32)

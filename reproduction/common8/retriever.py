@@ -1,7 +1,8 @@
-"""Original eight-shard FP16 retriever with real CPU/GPU parity and owned cache.
+"""Original Flat FP16 retriever with real CPU/GPU parity and owned cache.
 
 No retrieval mathematics or document order changes. The CPU index is retained
 only for the initial independent comparison, then released before training.
+Native execution uses eight shards; local A800 uses its two assigned auxiliaries.
 """
 import hashlib
 import importlib.util
@@ -59,27 +60,48 @@ def main(base):
     from reproduction.common8.native_allocation import cuda_uuids
     base = Path(base).resolve()
     run, job, allocation = binding(base)
-    assert memory_bytes(job['TRES']) >= 512 * 2**30
-    assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
-    assert cuda_uuids() == allocation['actual_cuda_runtime_uuids']
-    assert faiss.get_num_gpus() == torch.cuda.device_count() == 8
-    assert Path(faiss.__file__).resolve().is_relative_to((base / 'retriever-gpu-lib').resolve())
+    local=run.get('execution_backend','slurm')=='ssh_local'
+    if local:
+        from reproduction.common8.topology import execution_job_id
+        from reproduction.a800_common.cache import create as local_create,extract_corpus as local_extract
+        selected=run['retriever_physical_indices'];shard_count=len(selected)
+        assert selected==[5,6] and os.environ['CUDA_VISIBLE_DEVICES'].split(',')==list(map(str,selected))
+        actual_gpu_uuids=cuda_uuids(shard_count)
+        assert actual_gpu_uuids==[allocation['assigned_gpu_uuids'][str(i)] for i in selected]
+        job_id=execution_job_id(run)
+        gpu_lib=Path(run['retriever_gpu_lib']);encoder=Path(run['retrieval_encoder'])
+        create,extract=local_create,local_extract
+    else:
+        assert memory_bytes(job['TRES']) >= 512 * 2**30
+        assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
+        actual_gpu_uuids=cuda_uuids()
+        assert actual_gpu_uuids == allocation['actual_cuda_runtime_uuids']
+        shard_count=8;job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
+        create,extract=create_cache,extract_corpus
+    assert faiss.get_num_gpus() == torch.cuda.device_count() == shard_count
+    assert Path(faiss.__file__).resolve().is_relative_to(gpu_lib.resolve())
     for name in ('reproduction/common8/encoder-assets.json', 'reproduction/common8/retriever.py',
                  'search_r1/search/retrieval_server.py'):
         assert digest(REPO / name) == run['source_sha256'][name]
     staged = json.loads((base / 'logs/retrieval-assets.json').read_text())
     assert staged['accepted'] is True and staged['run_id'] == run['run_id']
-    assert staged['slurm_job_id'] == job['JobId'] and set(staged['files']) == set(ASSETS)
-    claim = json.loads((base / 'logs/retrieval-staging-claim.json').read_text())
+    assert staged['slurm_job_id'] == job_id and set(staged['files']) == set(ASSETS)
+    if local:
+        assert staged['execution_backend']=='ssh_local' and staged['execution_id']==run['execution_id']
+        assert staged['temporary_original_assets'] is False
+    else:claim = json.loads((base / 'logs/retrieval-staging-claim.json').read_text())
     for name, item in ASSETS.items():
         path = Path(staged['files'][name]['path'])
-        assert path == Path(claim['root']) / name and not path.is_symlink()
+        if local:
+            assert path==Path(run['retrieval_asset_paths'][name])
+            assert (path.stat().st_dev,path.stat().st_ino)==(staged['files'][name]['device'],staged['files'][name]['inode'])
+        else:assert path == Path(claim['root']) / name
+        assert not path.is_symlink()
         assert path.stat().st_size == item['size'] and digest(path) == item['sha256']
     assets = json.loads((REPO / 'reproduction/common8/encoder-assets.json').read_text())
-    encoder = base / 'assets/e5-base-v2'
     for name, item in assets['files'].items():
         assert (encoder / name).stat().st_size == item['size'] and digest(encoder / name) == item['sha256']
-    cache = create_cache(base, run, job)
+    cache = create(base, run, job)
     spec = importlib.util.spec_from_file_location('common8_upstream_retriever', REPO / 'search_r1/search/retrieval_server.py')
     upstream = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = upstream; spec.loader.exec_module(upstream)
@@ -90,7 +112,7 @@ def main(base):
         index = original_read(path, *args, **kwargs); cpu_indices.append(index); return index
     def corpus(path):
         assert Path(path) == Path(staged['files']['wiki-18.jsonl']['path'])
-        corpus_file = extract_corpus(base, cache, Path(path))
+        corpus_file = extract(base, cache, Path(path))
         return datasets.load_dataset('json', data_files=str(corpus_file), split='train', num_proc=4, cache_dir=str(cache))
     upstream.load_corpus = corpus
     upstream.config = upstream.Config(retrieval_method='e5', retrieval_topk=3,
@@ -104,7 +126,7 @@ def main(base):
     cpu = cpu_indices[0]; retriever = upstream.retriever
     assert cpu.d == retriever.index.d == 768
     assert cpu.ntotal == retriever.index.ntotal == len(retriever.corpus)
-    assert retriever.index.count() == 8, 'GPU index is not the original eight-shard layout'
+    assert retriever.index.count() == shard_count, 'GPU index does not have the assigned Flat shard count'
     record, frame, ids = expected(base, 'stage')
     assert record['sha256'] == run['input_sha256']['stage.parquet']
     queries = []
@@ -122,12 +144,17 @@ def main(base):
     parity = compare_search(vectors, cpu_scores, cpu_ids, gpu_scores, gpu_ids, cpu_vectors, gpu_vectors, metric)
     documents = [[hashlib.sha256(json.dumps(retriever.corpus[int(i)], sort_keys=True,
                   ensure_ascii=False, separators=(',', ':')).encode()).hexdigest() for i in row] for row in gpu_ids]
-    proof = dict(accepted=True, run_id=run['run_id'], slurm_job_id=job['JobId'], index_sha256=ASSETS['e5_Flat.index']['sha256'],
+    proof = dict(accepted=True, run_id=run['run_id'], slurm_job_id=job_id, index_sha256=ASSETS['e5_Flat.index']['sha256'],
         corpus_sha256=ASSETS['wiki-18.jsonl']['sha256'], encoder_assets=assets, ntotal=int(cpu.ntotal), dimension=768,
-        shard_count=8, use_float16=True, query_prefix='query: ', pooling='mean', encoder_dtype='float16',
+        shard_count=shard_count, use_float16=True, query_prefix='query: ', pooling='mean', encoder_dtype='float16',
         question_ids=ids, stage_sha256=record['sha256'], gpu_document_ids=gpu_ids.tolist(),
         gpu_document_sha256=documents, gpu_document_scores=gpu_scores.tolist(), parity=parity, cache=str(cache), checked_unix=time.time(),
         scope='actual original CPU/GPU index and document-order comparison; HTTP readiness and training coexistence separate')
+    if local:
+        from reproduction.a800.owned_processes import identity
+        proof.update(execution_backend='ssh_local',execution_id=run['execution_id'],
+            host=allocation['node'],retriever_identity=identity(os.getpid()),
+            physical_gpu_indices=selected,actual_cuda_runtime_uuids=actual_gpu_uuids)
     target = base / 'logs/retrieval-admission.json'
     assert not target.exists()
     index_bytes = int(cpu.ntotal) * int(cpu.d) * 4
@@ -149,8 +176,10 @@ def main(base):
     retriever.batch_search = serial_batch
     @upstream.app.get('/health')
     async def health():
-        return dict(ok=True, run_id=run['run_id'], slurm_job_id=job['JobId'], shard_count=8,
+        result=dict(ok=True, run_id=run['run_id'], slurm_job_id=job_id, shard_count=shard_count,
                     admission_sha256=digest(target), ntotal=proof['ntotal'])
+        if local:result.update(execution_backend='ssh_local',execution_id=run['execution_id'])
+        return result
     uvicorn.run(upstream.app, host='127.0.0.1', port=18010, workers=1)
 
 

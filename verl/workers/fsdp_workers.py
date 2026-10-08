@@ -400,10 +400,11 @@ class ActorRolloutRefWorker(Worker):
                             return dict(enabled=False,
                                         schedule_kind=getattr(self.actor_lr_scheduler, '_common8_schedule_kind', None))
                         if not hasattr(self, '_outer_scheduler_evidence'):
+                            from reproduction.common8.topology import execution_job_id
                             self._outer_scheduler_evidence = OuterSchedulerEvidence(
                                 os.environ['SEARCH_G1_BASE'], self.actor_optimizer, self.actor_lr_scheduler,
                                 rank=torch.distributed.get_rank(), world_size=torch.distributed.get_world_size(),
-                                job_id=os.environ['SLURM_JOB_ID'])
+                                job_id=execution_job_id())
                         scheduler_evidence = self._outer_scheduler_evidence
                         scheduler_evidence.begin_outer(data.meta_info['logical_update'],
                             optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),

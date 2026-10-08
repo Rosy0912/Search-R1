@@ -6,7 +6,7 @@ from pathlib import Path
 from reproduction.common8.verify_data import digest, verify
 from reproduction.a800 import probe_admission as generic
 from reproduction.a800.recovery_binding import finite_fitted_values
-from reproduction.common8.formal_contract import assert_formal_run
+from reproduction.common8.formal_contract import assert_formal_run, formal_mathematics
 
 
 def check_common(base):
@@ -18,11 +18,17 @@ def check_common(base):
     assert run['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
     verify(base/'data')
     budget=json.loads((base/'repo/reproduction/common8/budget.json').read_text())
+    budget.update(formal_mathematics(run))
     assert run['budget']==budget
     # These must be produced by real admission, never by prepare_run.
-    for name in ('eight-rank-admission.json','retrieval-admission.json','probe-coexistence-admission.json'):
+    names=(('local-resource-admission.json','retrieval-admission.json')
+           if run.get('execution_backend')=='ssh_local' else
+           ('eight-rank-admission.json','retrieval-admission.json','probe-coexistence-admission.json'))
+    for name in names:
         proof=json.loads((base/'logs'/name).read_text())
         assert proof['accepted'] is True and proof['run_id']==run['run_id']
+        if run.get('execution_backend')=='ssh_local':
+            assert proof['execution_id']==run['execution_id'] and proof['slurm_job_id'] is None
     assert run['probe_visible_device'] is not None
     live=json.loads((base/'artifacts/live/manifest.json').read_text())
     report=live['calibration_report'];protocol=live['label_proof']['calibration_protocol']

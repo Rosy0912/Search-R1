@@ -10,6 +10,7 @@ from reproduction.a800.owned_processes import OwnedProcesses,publish
 from reproduction.common8.verify_data import digest
 from reproduction.common8.stage_retrieval import binding,memory_bytes
 from reproduction.common8.formal_contract import CONTRACT_KIND,SAFETY_MODE, assert_formal_run, has_formal_markers
+from reproduction.common8.topology import world_size,execution_job_id
 ALLOWED=tuple(range(8))
 CALIBRATION_ROLES=('policy_safety_calibration_discovery','policy_safety_calibration_confirmation')
 _interrupt_requested=None
@@ -79,16 +80,33 @@ def gpu_rows(fields,kind='gpu'):
 class Pipeline:
     def __init__(self,base,run):
         supported_execution_role(run,base)  # Reject missing sources before ownership or component launch.
-        self.base=base;self.run=run;self.repo=base/'repo';self.python=str(base/'env/bin/python')
+        self.base=base;self.run=run;self.repo=base/'repo';self.local=run.get('execution_backend','slurm')=='ssh_local'
+        self.python=run['python_executable'] if self.local else str(base/'env/bin/python')
+        self.job_id=execution_job_id(run);self.world=world_size(run)
         self.owned=OwnedProcesses(base/'logs/process-ledger.json',run['run_id'])
         allocation=json.loads((base/'logs/native-allocation-admission.json').read_text());self.physical_indices=set(allocation['actual_allocated_indices'])
         self.stop_sampling=threading.Event();self.max_used={};self.sample_error=None
-        self.visible=os.environ['CUDA_VISIBLE_DEVICES'].split(',');assert len(self.visible)==8
-        self.env=dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=str(base),PYTHONPATH=str(self.repo),PATH=str(base/'env/bin')+':'+os.environ['PATH'],
+        if self.local:
+            from reproduction.common8.native_allocation import local_placement
+            training,auxiliary,retriever,probe=local_placement(run)
+            assert supported_execution_role(run,base)=='production' and run['contract_kind']==CONTRACT_KIND
+            assert os.environ['CUDA_VISIBLE_DEVICES'].split(',')==allocation['training_visible_devices']==list(map(str,training))
+            self.visible=allocation['visible_devices'];self.allowed=tuple(training+auxiliary)
+            self.device_tokens={i:str(i) for i in self.allowed};self.training_gpus=training
+            self.retriever_gpus=retriever;self.probe_gpus=[probe]
+            self.train_script='reproduction/a800_common/train.sh'
+            include=run['python_headers']
+        else:
+            self.visible=os.environ['CUDA_VISIBLE_DEVICES'].split(',');assert len(self.visible)==8
+            self.allowed=ALLOWED;self.device_tokens=dict(enumerate(self.visible))
+            self.training_gpus=ALLOWED;self.retriever_gpus=ALLOWED;self.probe_gpus=[7]
+            self.train_script='reproduction/common8/train.sh'
+            include=str(base/'bootstrap-tools/python-dev/usr/include/python3.10')+':'+str(base/'bootstrap-tools/python-dev/usr/include')
+        self.env=dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=str(base),SEARCH_G1_TRAINING_WORLD_SIZE=str(self.world),PYTHONPATH=str(self.repo),PATH=str(Path(self.python).parent)+':'+os.environ['PATH'],
                       HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',
                       TMPDIR=str(base/'tmp'),RAY_TMPDIR=str(base/'ray'),HF_HOME=str(base/'cache/hf'),XDG_CACHE_HOME=str(base/'cache'),
                       TRITON_CACHE_DIR=str(base/'cache/triton'),TORCHINDUCTOR_CACHE_DIR=str(base/'cache/inductor'),
-                      C_INCLUDE_PATH=str(base/'bootstrap-tools/python-dev/usr/include/python3.10')+':'+str(base/'bootstrap-tools/python-dev/usr/include'),
+                      C_INCLUDE_PATH=include,
                       NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost')
         for key in ('PYTHONHOME','RAY_ADDRESS','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):self.env.pop(key,None)
     def stage(self,name,**extra):publish(self.base/'logs/pipeline-status.json',dict(run_id=self.run['run_id'],stage=name,unix=time.time(),**extra))
@@ -107,10 +125,14 @@ class Pipeline:
                         if int(r[0]) in self.physical_indices:
                             item=dict(index=int(r[0]),uuid=r[1].strip(),used_mib=int(r[2]),total_mib=int(r[3]),util_percent=int(r[4]));rows.append(item)
                             self.max_used[item['index']]=max(self.max_used.get(item['index'],0),item['used_mib'])
-                    f.write(json.dumps(dict(schema_version=1,role='actual_common8_gpu_occupancy',
-                        run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],
+                    sample=dict(schema_version=1,role='actual_common8_gpu_occupancy',
+                        run_id=self.run['run_id'],slurm_job_id=self.job_id,
                         source_map_sha256=source_sha,sampler_identity=producer,sampling_interval_seconds=2,
-                        query_started_unix=query_started,unix=time.time(),gpus=rows))+'\n');f.flush()
+                        query_started_unix=query_started,unix=time.time(),gpus=rows)
+                    if self.local:sample.update(execution_backend='ssh_local',execution_id=self.run['execution_id'],
+                        host=socket.gethostname(),hostname=socket.gethostname(),training_physical_indices=self.run['training_physical_indices'],
+                        auxiliary_physical_indices=self.run['auxiliary_physical_indices'])
+                    f.write(json.dumps(sample)+'\n');f.flush()
                     os.fsync(f.fileno())
                     parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
                     try:os.fsync(parent_fd)
@@ -127,8 +149,9 @@ class Pipeline:
 
     def start(self,name,args,gpus,extra=None):
         assert _interrupt_requested is None, 'Pipeline stop requested before component launch'
-        assert set(gpus)<=set(ALLOWED)
-        env=dict(self.env,CUDA_VISIBLE_DEVICES=','.join(self.visible[i] for i in gpus));env.update(extra or {})
+        assert set(gpus)<=set(self.allowed), 'Component requested an unassigned GPU'
+        assert 'CUDA_VISIBLE_DEVICES' not in (extra or {}), 'Component cannot bypass its assigned GPU subset'
+        env=dict(self.env,CUDA_VISIBLE_DEVICES=','.join(self.device_tokens[i] for i in gpus));env.update(extra or {})
         process=self.owned.start(name,args,env,self.base/'logs'/(name+'.log'),self.repo)
         self.observe_all() # Deferred stop can now safely clean this registered child.
         return process
@@ -161,12 +184,12 @@ class Pipeline:
                 assert time.monotonic()-started<1800, name+' endpoint readiness failed'
                 time.sleep(2)
     def smoke(self, phase):
-        p=self.start('model-'+phase,[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','-m','reproduction.common8.model_smoke','--phase',phase],ALLOWED)
+        p=self.start('model-'+phase,[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node='+str(self.world),'-m','reproduction.common8.model_smoke','--phase',phase],self.training_gpus)
         self.wait('model-'+phase,p,3600)
         path=self.base/'logs'/('model-smoke-'+phase)/'complete.json'
         proof=json.loads(path.read_text())
         assert proof['accepted'] is True and proof['run_id']==self.run['run_id']
-        assert proof['slurm_job_id']==os.environ['SLURM_JOB_ID'] and proof['phase']==phase
+        assert proof['slurm_job_id']==self.job_id and proof['phase']==phase
         return path
     def calibration_measurements(self):
         """Require the completed child artifact; this never grants health admission."""
@@ -256,7 +279,7 @@ class Pipeline:
         self.stage('GRPO_1_TO_200' if role=='production' else 'BOUNDED_POLICY_CALIBRATION_ONE_OUTER',execution_role=role)
         log=Path(self.run['train_log'])
         assert not log.exists(), 'Canonical trainer log belongs to the claimed trainer, not preparation'
-        t=self.start('trainer',['bash','reproduction/common8/train.sh'],ALLOWED,{'SEARCH_G1_TRAIN_LOG':str(log)})
+        t=self.start('trainer',['bash',self.train_script],self.training_gpus,{'SEARCH_G1_TRAIN_LOG':str(log)})
         self.wait('trainer',t)
         if role in CALIBRATION_ROLES:
             self.calibration_measurements()
@@ -269,7 +292,7 @@ class Pipeline:
         role=supported_execution_role(self.run,self.base)
         if role==CALIBRATION_ROLES[0] or (role=='production' and self.run.get('contract_kind')==CONTRACT_KIND):
             self.stage('REAL_INITIAL_300_QUESTION_CALIBRATION')
-            c=self.start('initial-calibration',[self.python,'-m','reproduction.common8.refit','--step','0','--model',self.run['initial_model']],[7])
+            c=self.start('initial-calibration',[self.python,'-m','reproduction.common8.refit','--step','0','--model',self.run['initial_model']],self.probe_gpus)
             self.wait('initial-calibration',c)
         else:
             self.stage('AUTHENTICATED_INITIAL_PROBE_ADOPTION',execution_role=role)
@@ -281,7 +304,7 @@ class Pipeline:
             if formal:
                 command.extend(['--diagnostic-proof',str(sources['diagnostic_proof']),
                                 '--terminal-proof',str(sources['diagnostic_terminal_proof'])])
-            c=self.start('initial-probe-adoption',command,ALLOWED)
+            c=self.start('initial-probe-adoption',command,self.training_gpus)
             self.wait('initial-probe-adoption',c)
     def execute(self, export_port):
         sampler=None;success=False;finished_stage=None
@@ -336,8 +359,12 @@ class Pipeline:
                 self.owned.stop_all()
                 from reproduction.common8.temporary_cache import cleanup as clean_cache
                 from reproduction.common8.stage_retrieval import cleanup as clean_stage
-                if (self.base/'logs/corpus-cache-claim.json').exists():clean_cache(self.base)
-                if (self.base/'logs/retrieval-staging-claim.json').exists():clean_stage(self.base)
+                if (self.base/'logs/corpus-cache-claim.json').exists():
+                    if self.local:
+                        from reproduction.a800_common.cache import cleanup as clean_local_cache
+                        clean_local_cache(self.base)
+                    else:clean_cache(self.base)
+                if not self.local and (self.base/'logs/retrieval-staging-claim.json').exists():clean_stage(self.base)
                 recorded={r['pid'] for job in self.owned.jobs.values() for r in job['ledger'].values()}
                 # CUDA contexts may remain briefly in the driver after their
                 # owned processes exit. Wait for release instead of declaring
@@ -357,9 +384,14 @@ class Pipeline:
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--base',type=Path,required=True);ap.add_argument('--export-port',type=int,required=True);a=ap.parse_args()
-    base=a.base.resolve();assert 1024<=a.export_port<=65535
+    ap=argparse.ArgumentParser();ap.add_argument('--base',type=Path,required=True);ap.add_argument('--export-port',type=int);a=ap.parse_args()
+    base=a.base.resolve()
     run=json.loads((base/'logs/run-manifest.json').read_text())
+    if run.get('execution_backend','slurm')=='ssh_local':
+        assert a.export_port is None, 'Local A800 execution uses existing local assets, without an export service'
+        from reproduction.a800_common.run_pipeline import launch
+        return launch(base,run)
+    assert a.export_port is not None and 1024<=a.export_port<=65535
     supported_execution_role(run,base)
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):(base/name).mkdir(parents=True,exist_ok=True)
     lock=(base/'gpu-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

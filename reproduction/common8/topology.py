@@ -1,0 +1,97 @@
+"""Manifest-bound actual training topology; legacy common8 remains eight ranks."""
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+
+def _bound_run():
+    base = os.environ.get('SEARCH_G1_BASE')
+    if base is None:
+        return None
+    path = Path(base) / 'logs/run-manifest.json'
+    return json.loads(path.read_text()) if path.is_file() else None
+
+
+def world_size(run=None):
+    """Use a bound manifest, or the launcher's explicit pre-manifest topology."""
+    run = _bound_run() if run is None else run
+    explicit = os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')
+    if explicit is not None:
+        assert explicit in ('4', '8'), 'Unsupported explicit Search-G1 training topology'
+    size = (run.get('training_world_size', 8) if run is not None else
+            int(explicit) if explicit is not None else 8)
+    assert type(size) is int and size in (4, 8), 'Only actual four/eight-rank training is supported'
+    if run is not None:
+        assert run['profile'] == 'common8'
+        if explicit is not None:
+            assert size == int(explicit), 'Launch topology differs from bound run'
+        if 'budget' in run:
+            assert type(run['budget']['world_size']) is int and run['budget']['world_size'] == size, \
+                'Bound budget differs from actual training topology'
+    distributed = sys.modules.get('torch.distributed')
+    if distributed is not None and distributed.is_initialized():
+        assert distributed.get_world_size() == size, 'Actual process group differs from bound training topology'
+    return size
+
+
+def ranks(run=None):
+    return range(world_size(run))
+
+
+def actor_global_micro(run=None):
+    return 2 * world_size(run)
+
+
+def actor_local_mini(run=None):
+    return 128 // world_size(run)
+
+
+def local_trajectories(run=None):
+    return 2560 // world_size(run)
+
+
+def logprob_local_micro(run=None):
+    return 32 // world_size(run)
+
+
+def monitor_trajectories_per_rank(run=None):
+    return 32 // world_size(run)
+
+
+def monitor_scope(run=None):
+    count = monitor_trajectories_per_rank(run)
+    word = 'four' if count == 4 else 'eight'
+    return 'fixed ' + word + ' trajectories per rank across length strata; not full rollout'
+
+
+def execution_job_id(run=None):
+    """Return a real native job ID, or null for an explicitly bound local run."""
+    run = _bound_run() if run is None else run
+    assert run is not None, 'Execution identity requires a bound run manifest'
+    backend = run.get('execution_backend', 'slurm')
+    if backend == 'ssh_local':
+        assert run['slurm_job_id'] is None
+        assert isinstance(run['execution_id'], str) and re.fullmatch('[0-9a-f]{32}', run['execution_id'])
+        assert os.environ.get('SLURM_JOB_ID') is None, 'Local execution cannot inherit or spoof a Slurm job'
+        return None
+    assert backend == 'slurm', 'Unknown execution backend'
+    job = os.environ['SLURM_JOB_ID']
+    assert re.fullmatch('[1-9][0-9]*', job), 'Missing actual native Slurm job ID'
+    if 'slurm_job_id' in run:
+        assert run['slurm_job_id'] == job, 'Actual native job differs from bound run'
+    return job
+
+
+def validate_base(base, run):
+    """Keep legacy native namespace strict; admit only the bound fresh A800 base."""
+    base = Path(base)
+    assert base.is_absolute() and base.resolve() == base
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        execution_job_id(run)
+        assert re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[A-Za-z0-9._-]+', str(base)), \
+            'Local training requires its fresh A800 run namespace'
+    else:
+        assert str(base).startswith('/mnt/data/shaoshitong/'), 'Native training namespace changed'
+    return base

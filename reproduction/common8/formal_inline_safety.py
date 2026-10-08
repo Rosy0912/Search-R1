@@ -16,6 +16,8 @@ from reproduction.common8.formal_contract import (
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
 from reproduction.common8.verify_data import digest
+from reproduction.common8.topology import (world_size, ranks, execution_job_id,
+                                          monitor_trajectories_per_rank, monitor_scope)
 
 ROLE = 'formal_inline_first_five_candidates'
 METHOD_ROLE = 'formal_inline_training_method'
@@ -48,12 +50,122 @@ def owned_path(base, relative):
 
 
 def native_birth(allocation):
+    if allocation.get('execution_backend', 'slurm') == 'ssh_local':
+        assert allocation['slurm_job_id'] is None and allocation['training_world_size'] == 4
+        producer = allocation['pipeline_identity']
+        assert all(type(producer[key]) is int for key in ('pid', 'start_ticks', 'sid', 'uid'))
+        assert producer['pid'] > 0 and producer['start_ticks'] > 0 and producer['sid'] > 0 and producer['uid'] >= 0
+        assert allocation['training_physical_indices'] == [0, 1, 2, 3]
+        assert allocation['actual_allocated_indices'] == [0, 1, 2, 3, 5, 6]
+        assert allocation['auxiliary_physical_indices'] == allocation['retriever_physical_indices'] == [5, 6]
+        assert allocation['probe_physical_index'] == 6 and allocation['assigned_compute_applications'] == []
+        assert set(allocation['assigned_gpu_uuids']) == {'0', '1', '2', '3', '5', '6'}
+        assert len(set(allocation['assigned_gpu_uuids'].values())) == 6
+        assert len(set(allocation['actual_cuda_runtime_uuids'])) == 4
+        assert allocation['actual_cuda_runtime_uuids'] == [allocation['assigned_gpu_uuids'][str(i)] for i in (0, 1, 2, 3)]
+        return dict(role='actual_ssh_local_resource_birth', execution_backend='ssh_local',
+            execution_id=allocation['execution_id'], hostname=allocation['node'],
+            pipeline_identity={key: producer[key] for key in ('pid', 'start_ticks', 'sid', 'uid')},
+            training_physical_indices=allocation['training_physical_indices'],
+            assigned_gpu_uuids=allocation['assigned_gpu_uuids'],
+            training_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'])
     from reproduction.common8.native_allocation import fields
     job = fields(allocation['actual_allocation_detail'])
     names = ('JobId', 'SubmitTime', 'StartTime', 'UserId', 'Command', 'WorkDir', 'NodeList')
     assert all(name in job and job[name] not in ('Unknown', '(null)', 'N/A') for name in names)
     assert job['JobState'] == 'RUNNING' and job['JobId'] == allocation['slurm_job_id']
     return {name: job[name] for name in names}
+
+
+def verify_prospective_probability(base, run, probability, receipts):
+    """Bind local launch inputs; only the real full-rollout gate admits Adam."""
+    assert run['execution_backend'] == 'ssh_local' and execution_job_id(run) is None
+    allocation = read(owned_path(base, 'logs/native-allocation-admission.json'))
+    assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
+    assert allocation['execution_id'] == run['execution_id'] and allocation['execution_backend'] == 'ssh_local'
+    assert probability['schema_version'] == 1 and probability['role'] == 'prospective_probability_admission'
+    assert probability['run_id'] == run['run_id'] and probability['execution_id'] == run['execution_id']
+    assert probability['execution_backend'] == 'ssh_local' and probability['slurm_job_id'] is None
+    assert probability['resource_birth'] == native_birth(allocation)
+    assert probability['initial_model_sha256'] == run['initial_model_sha256']
+    assert probability['source_sha256'] == run['source_sha256']
+    assert probability['input_sha256'] == run['input_sha256']
+    assert probability['budget_sha256'] == document_sha256(run['budget'])
+    assert probability['initial_probe_version'] == run['initial_probe_version']
+    assert probability['training_world_size'] == world_size(run) == 4
+    assert allocation['training_physical_indices'] == run['training_physical_indices']
+    assert allocation['auxiliary_physical_indices'] == run['auxiliary_physical_indices']
+    assert allocation['retriever_physical_indices'] == run['retriever_physical_indices']
+    assert allocation['probe_physical_index'] == run['probe_physical_index']
+    assert type(probability['actual_optimizer_writes']) is int and probability['actual_optimizer_writes'] == 0
+    assert probability['actual_behavior_probability_accepted'] is False
+    assert probability['actual_full_rollout_gate_required'] is True
+    assert probability['trajectory_count'] == 2560 and probability['tolerance'] == 0.05
+    assert probability['sampling'] == dict(temperature=1.0, top_p=1.0)
+    resource = read(owned_path(base, 'logs/local-resource-admission.json'))
+    assert resource['accepted'] is True and resource['run_id'] == run['run_id']
+    assert resource['execution_id'] == run['execution_id'] and resource['slurm_job_id'] is None
+    assert resource['host'] == allocation['node'] and resource['training_world_size'] == 4
+    assert resource['allocation_sha256'] == receipts['logs/native-allocation-admission.json']
+    assert resource['historical_gpu_smoke_executed'] is False
+    assert resource['occupancy_policy'] == 'monitor_only' and resource['sampled_peak_fraction_stop_limit'] is None
+    assert resource['retrieval_admission_sha256'] == receipts['logs/retrieval-admission.json']
+    assert resource['retrieval_http_admission_sha256'] == receipts['logs/retrieval-http-admission.json']
+    assert resource['evaluator_release_admission_sha256'] == receipts['logs/evaluator-release-admission.json']
+    initial = read(owned_path(base, INITIAL))
+    assert resource['fitted_probe_manifest_sha256'] == initial['archive_sha256']
+    accepted_probe = read(owned_path(base, 'logs/initial-probes-accepted.json'))
+    assert accepted_probe['accepted'] is True and accepted_probe['run_id'] == run['run_id']
+    assert accepted_probe['version'] == run['initial_probe_version']
+    assert accepted_probe['live_manifest_sha256'] == initial['archive_sha256']
+    from reproduction.common8.formal_contract import verify_formal_config
+    proof = verify_formal_config(probability['resolved_config'], run, base)
+    assert probability['resolved_config_sha256'] == proof['resolved_config_sha256']
+    relative = 'logs/prospective-probability-admission.json'
+    assert relative in receipts and digest(owned_path(base, relative)) == receipts[relative]
+    assert canonical_bytes(read(base / relative)) == canonical_bytes(probability)
+    return proof
+
+
+def _prepare_local(base, run, document, method, initial, receipts):
+    """Freeze honest local inputs without claiming duplicate smoke executions."""
+    from reproduction.common8.freeze_calibration_plan import _unstarted
+    allocation = read(base / 'logs/native-allocation-admission.json')
+    assert execution_job_id(run) is None and allocation['slurm_job_id'] is None
+    resource_birth = native_birth(allocation)
+    probability = dict(schema_version=1, role='prospective_probability_admission',
+        run_id=run['run_id'], execution_backend='ssh_local', execution_id=run['execution_id'],
+        slurm_job_id=None, resource_birth=resource_birth, training_world_size=world_size(run),
+        initial_model_sha256=run['initial_model_sha256'], source_sha256=run['source_sha256'],
+        input_sha256=run['input_sha256'], budget_sha256=document_sha256(run['budget']),
+        initial_probe_version=run['initial_probe_version'], resolved_config=document,
+        resolved_config_sha256=document_sha256(document), actual_optimizer_writes=0,
+        actual_behavior_probability_accepted=False, actual_full_rollout_gate_required=True,
+        trajectory_count=2560, tolerance=0.05, sampling=dict(temperature=1.0, top_p=1.0),
+        semantics='prospective bound local inputs only; actual selected vLLM/HF log-probability gate for all2560 trajectories is mandatory before every Adam attempt')
+    relative = 'logs/prospective-probability-admission.json'
+    write_once(base / relative, probability)
+    receipts[relative] = digest(base / relative)
+    for relative in ('logs/native-allocation-admission.json', 'preparation/formal-inline-method.json',
+                     'logs/local-resource-admission.json', 'logs/retrieval-admission.json',
+                     'logs/retrieval-http-admission.json', 'logs/evaluator-release-admission.json',
+                     'logs/initial-probes-accepted.json'):
+        receipts[relative] = digest(base / relative)
+    artifact = dict(schema_version=4, role=ROLE, run_id=run['run_id'], source_commit=run['source_commit'],
+        source_sha256=run['source_sha256'], initial_model_sha256=run['initial_model_sha256'],
+        input_sha256=run['input_sha256'], budget=run['budget'],
+        execution_backend='ssh_local', execution_id=run['execution_id'], training_world_size=world_size(run),
+        accepted_for_guarded_training=True, short_train_accepted=False, healthy_checkpoint_accepted=False,
+        initial_probe_version=run['initial_probe_version'], initial_probe_archive=initial['archive'],
+        method_sha256=digest(base / 'preparation/formal-inline-method.json'),
+        probability=probability, receipts_sha256=receipts, slurm_job_id=None,
+        native_birth=resource_birth, actual_optimizer_writes_at_freeze=0,
+        created_unix=time.time(), **FORMAL_SAFEGUARDS, optimizer_counting=FORMAL_COUNTING,
+        monitoring_scope=monitor_scope(run),
+        semantics='prospective candidates and actual local inputs; full2560 behavior gate precedes Adam; same process1..5 acceptance precedes6..200; no inherited state')
+    verify_plan(base, artifact, run); _unstarted(base, run)
+    write_once(base / PLAN, artifact)
+    return artifact
 
 
 def verify_method(method, run):
@@ -140,8 +252,14 @@ def verify_plan(base, artifact, run):
     assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
     assert artifact['native_birth'] == native_birth(allocation)
     assert artifact['slurm_job_id'] == allocation['slurm_job_id']
-    from reproduction.common8.production_safety_admission import _verify_parent_probability
-    _verify_parent_probability(base, run, artifact['probability'], receipts)
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        assert artifact['execution_backend'] == 'ssh_local' and artifact['execution_id'] == run['execution_id']
+        assert artifact['training_world_size'] == world_size(run)
+        assert artifact['monitoring_scope'] == monitor_scope(run)
+        verify_prospective_probability(base, run, artifact['probability'], receipts)
+    else:
+        from reproduction.common8.production_safety_admission import _verify_parent_probability
+        _verify_parent_probability(base, run, artifact['probability'], receipts)
     assert artifact['probability']['slurm_job_id'] == artifact['slurm_job_id']
     return artifact['negative_tail_limit'], document_sha256(artifact)
 
@@ -158,13 +276,15 @@ def prepare(base):
     method = read(base / 'preparation/formal-inline-method.json'); verify_method(method, run)
     document = OmegaConf.to_container(config, resolve=True); verify_formal_config(document, run, base)
     initial, receipts = archive_initial_probe(base, run)
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        return _prepare_local(base, run, document, method, initial, receipts)
     root = base / 'logs/policy-safety-admission-receipts/parent'
     root.mkdir(parents=True, exist_ok=False)
     phases = {}
     for phase in ('initial', 'coexistence'):
         original = base / ('logs/model-smoke-' + phase)
         for name, target in [('complete.json', 'model-smoke-' + phase + '-complete.json')] + [
-                (f'rank-{rank}.json', f'model-smoke-{phase}-rank-{rank}.json') for rank in range(8)]:
+                (f'rank-{rank}.json', f'model-smoke-{phase}-rank-{rank}.json') for rank in ranks(run)]:
             source = original / name; path = root / target
             with path.open('xb') as stream:
                 stream.write(source.read_bytes()); stream.flush(); os.fsync(stream.fileno())
@@ -239,8 +359,11 @@ def publish_optimizer_state(module, optimizer, logical_update, writes, group=Non
             plan_sha256=sha, logical_update=logical_update if complete else 0, optimizer_writes=writes,
             attempt_id=attempt_id, attempt_index=attempt_index,
             consumed_lr=consumed_lr(logical_update), rank=dist.get_rank(),
-            slurm_job_id=os.environ['SLURM_JOB_ID'], pid=pid, start_ticks=ticks,
+            slurm_job_id=execution_job_id(run), pid=pid, start_ticks=ticks,
             cuda_uuid=uuids[torch.cuda.current_device()], observed_unix=time.time(), **snapshot)
+        if run.get('execution_backend', 'slurm') == 'ssh_local':
+            import socket
+            proof.update(execution_backend='ssh_local', execution_id=run['execution_id'], hostname=socket.gethostname())
         valid = snapshot['parameter_numel'] > 0
     except Exception:
         valid = False
@@ -272,7 +395,7 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
                                          last=5, plan_sha256=sha)
     rows_by_rank = {}; files = {}; selections = {}; births = set()
     allocation = read(base / 'logs/native-allocation-admission.json')
-    for rank in range(8):
+    for rank in ranks(run):
         path = base / 'logs' / f'optimizer-rank-{rank}.jsonl'
         rows = [json.loads(line) for line in path.read_text().splitlines()]
         rows_by_rank[rank] = [r for r in rows if (r.get('context') or r).get('attempt_id') in attempt_ids]
@@ -287,6 +410,9 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
             assert proof['run_id'] == run['run_id'] and proof['rank'] == rank
             assert (proof['pid'], proof['start_ticks']) == identity
             assert proof['slurm_job_id'] == plan['slurm_job_id'] and proof['plan_sha256'] == sha
+            if run.get('execution_backend', 'slurm') == 'ssh_local':
+                assert proof['execution_backend'] == 'ssh_local' and proof['execution_id'] == run['execution_id']
+                assert proof['hostname'] == allocation['node']
             assert proof['cuda_uuid'] == allocation['actual_cuda_runtime_uuids'][rank]
             assert proof['logical_update'] == step
             expected_writes = complete_attempts[-1]['optimizer_writes_after'] if step else 0
@@ -302,7 +428,8 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
                 assert proof['attempt_index'] == complete_attempts[-1]['attempt_index']
     binding = dict(schema_version=1, role='production', policy_safety_mode=SAFETY_MODE,
         run_id=run['run_id'], calibration_sha256=sha, outer_count=5, initial_optimizer_writes=0,
-        candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts)
+        candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts,
+        training_world_size=world_size(run))
     segment = verify_formal_segment(rows_by_rank, binding)
     assert len(segment['global_monitors']) == 200
     for row in segment['global_monitors']:

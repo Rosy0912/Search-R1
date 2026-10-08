@@ -2,11 +2,13 @@
 import hashlib
 import json
 import os
+import socket
 import time
 from pathlib import Path
 
 from reproduction.common8.batch_contract import check_global
-from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config
+from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config, formal_mathematics
+from reproduction.common8.topology import world_size, actor_global_micro, monitor_trajectories_per_rank, execution_job_id
 
 REPO = Path(__file__).resolve().parents[2]
 RECIPE = REPO / 'reproduction/common8/recipe.json'
@@ -20,6 +22,7 @@ def arguments(base):
     base = Path(base).resolve()
     run = json.loads((base / 'logs/run-manifest.json').read_text())
     budget = json.loads((REPO / 'reproduction/common8/budget.json').read_text())
+    budget.update(formal_mathematics(run))
     assert run['profile'] == 'common8' and run['budget'] == budget
     assert_formal_run(run)
     assert run['model_revision'] == budget['model_revision']
@@ -31,12 +34,18 @@ def arguments(base):
     overrides = []
     for value in values:
         key, raw = value.split('=', 1)
+        if key=='actor_rollout_ref.actor.ppo_micro_batch_size':
+            raw=str(actor_global_micro(run))
+        elif key=='trainer.n_gpus_per_node':
+            raw=str(world_size(run))
         assert key not in [x.split('=', 1)[0] for x in overrides], 'Duplicate recipe override'
         if '@BASE@' in raw or '@MODEL@' in raw:
             raw = raw.replace('@BASE@', str(base)).replace('@MODEL@', run['initial_model'])
             # Hydra receives these as individual argv strings, never shell code.
             raw = json.dumps(raw)
         overrides.append(key + '=' + raw)
+    overrides.append('actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank='+
+                     str(monitor_trajectories_per_rank(run)))
     return run, overrides
 
 
@@ -74,7 +83,10 @@ def launch(base):
     run, config, overrides = resolved(base)
     claim = json.loads((base / 'logs/training-launch-claim.json').read_text())
     assert claim['run_id'] == run['run_id']
-    assert claim['slurm_job_id'] == os.environ['SLURM_JOB_ID']
+    assert claim['slurm_job_id'] == execution_job_id(run)
+    if run.get('execution_backend')=='ssh_local':
+        assert claim['execution_backend']=='ssh_local' and claim['execution_id']==run['execution_id']
+        assert claim['hostname']==run['execution_host']==socket.gethostname()
     assert claim['shell_pid'] == os.getppid(), 'Only the claimed shell may launch'
     stat = Path(f'/proc/{claim["shell_pid"]}/stat').read_text().rsplit(')', 1)[1].split()
     assert int(stat[19]) == claim['shell_start_ticks']
@@ -86,6 +98,9 @@ def launch(base):
                  resolved_config=document, actual_argv_overrides=overrides,
                  formal_contract=verify_formal_config(document, run, base),
                  semantics='resolved launch configuration; not actual optimizer or model evidence')
+    if run.get('execution_backend')=='ssh_local':
+        proof.update(execution_backend='ssh_local',execution_id=run['execution_id'],
+                     hostname=socket.gethostname())
     with (base / 'logs/resolved-training-config.json').open('x') as f:
         json.dump(proof, f, indent=2); f.flush(); os.fsync(f.fileno())
     os.execv(sys.executable, [sys.executable, '-m', 'verl.trainer.main_ppo_eco', *overrides])

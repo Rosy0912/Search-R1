@@ -8,8 +8,11 @@ import json
 import math
 import os
 import re
+import socket
 import time
 from pathlib import Path
+
+from reproduction.common8.topology import execution_job_id, ranks, world_size as training_world_size
 
 BASE_LR = 1e-6
 WARMUP_OUTERS = 57
@@ -142,7 +145,7 @@ def _identity(base, *, job_id):
           budget['target_actual_outer_updates'] == TARGET_OUTERS and
           type(budget['lr_warmup_steps']) is int and budget['lr_warmup_steps'] == WARMUP_OUTERS and
           budget['lr_warmup_steps_ratio'] == 0. and budget['learning_rate'] == BASE_LR and
-          budget['world_size'] == 8 and budget['optimizer_steps_per_outer'] == WRITES_PER_OUTER,
+          budget['world_size'] == training_world_size(run) and budget['optimizer_steps_per_outer'] == WRITES_PER_OUTER,
           'Run is not the fresh200 fixed57 production scheduler contract')
     _need(re.fullmatch('[0-9a-f]{32}', run['run_id']) and
           re.fullmatch('[0-9a-f]{40}', run['source_commit']) and
@@ -151,19 +154,30 @@ def _identity(base, *, job_id):
               for name, sha in run['source_sha256'].items()), 'Invalid run/source scheduler identity')
     allocation = json.loads((base / 'logs/native-allocation-admission.json').read_text())
     _need(allocation['accepted'] is True and allocation['run_id'] == run['run_id'] and
-          allocation['slurm_job_id'] == job_id and re.fullmatch('[1-9][0-9]*', job_id),
-          'Scheduler is not bound to this actual native allocation')
+          allocation['slurm_job_id'] == job_id, 'Scheduler is not bound to this actual allocation')
+    local_identity = {}
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        _need(job_id is None and execution_job_id(run) is None and
+              allocation['execution_backend'] == 'ssh_local' and allocation['execution_id'] == run['execution_id'] and
+              allocation['node'] == socket.gethostname(),
+              'Scheduler local execution identity changed')
+        local_identity = dict(execution_backend='ssh_local', execution_id=run['execution_id'], hostname=socket.gethostname())
+    else:
+        _need(isinstance(job_id, str) and re.fullmatch('[1-9][0-9]*', job_id),
+              'Scheduler requires the actual native allocation job ID')
     return dict(run_id=run['run_id'], source_commit=run['source_commit'], slurm_job_id=job_id,
                 source_map_sha256=hashlib.sha256(_canonical(run['source_sha256'])).hexdigest(),
                 policy_safety_mode=run.get('policy_safety_mode'),
-                scheduler_contract_sha256=hashlib.sha256(_canonical(budget)).hexdigest())
+                scheduler_contract_sha256=hashlib.sha256(_canonical(budget)).hexdigest(), **local_identity)
 
 
 class OuterSchedulerEvidence:
     """One rank, one fresh scheduler, one exclusive append-only durable ledger."""
     def __init__(self, base, optimizer, scheduler, *, rank, world_size, job_id):
-        _need(type(rank) is int and rank in range(8) and world_size == 8, 'Wrong real scheduler rank topology')
         self.base = Path(base).resolve()
+        run = json.loads((self.base / 'logs/run-manifest.json').read_text())
+        _need(type(rank) is int and rank in ranks(run) and world_size == training_world_size(run),
+              'Wrong real scheduler rank topology')
         self.identity = _identity(self.base, job_id=job_id)
         _need(getattr(scheduler, '_common8_schedule_kind', None) == CONTRACT_KIND and
               scheduler.last_epoch == 0 and scheduler._step_count == 1 and

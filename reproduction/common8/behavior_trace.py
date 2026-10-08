@@ -542,7 +542,15 @@ def _outer(trace, *, expected_run_id, expected_source_sha256, expected_slurm_job
              'outer_trace_schema_changed')
     for name, value in (('run_id', expected_run_id), ('slurm_job_id', expected_slurm_job_id),
                         ('policy_snapshot_id', expected_policy_snapshot_id)):
-        _name(value, name); _require(trace[name] == value, 'outer_bound_identity_changed:' + name)
+        if name=='slurm_job_id' and value is None:
+            from reproduction.common8.topology import execution_job_id
+            run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            _require(run.get('execution_backend')=='ssh_local' and execution_job_id(run) is None and
+                     run['run_id']==expected_run_id and run['source_sha256']==expected_source_sha256,
+                     'outer_local_execution_binding_changed')
+        else:
+            _name(value, name)
+        _require(trace[name] == value, 'outer_bound_identity_changed:' + name)
     _require(type(expected_logical_update) is int and expected_logical_update >= 1 and
              type(trace['logical_update']) is int and trace['logical_update'] == expected_logical_update,
              'outer_logical_update_changed')
@@ -672,13 +680,13 @@ def write_private_evidence(base, trace, *, attempt_id=None):
     and explicitly prevents treating its byte hash as an accepted trace hash.
     """
     base = Path(base)
-    _require(base.is_absolute() and base.resolve() == base and
-             str(base).startswith('/mnt/data/shaoshitong/'), 'raw_trace_requires_native_cluster_namespace')
     run = json.loads((base / 'logs/run-manifest.json').read_text())
+    from reproduction.common8.topology import execution_job_id, validate_base
+    validate_base(base,run)
     _require(type(trace) is dict and type(trace.get('logical_update')) is int and trace['logical_update'] >= 1 and
              run['run_id'] == trace.get('run_id') and run['source_sha256'] == trace.get('source_sha256') and
-             isinstance(trace.get('slurm_job_id'), str) and
-             os.environ.get('SLURM_JOB_ID') == trace['slurm_job_id'], 'raw_trace_native_run_identity_changed')
+             'slurm_job_id' in trace and
+             execution_job_id(run) == trace['slurm_job_id'], 'raw_trace_execution_run_identity_changed')
     artifacts = base / 'artifacts'
     _require(artifacts.is_dir() and artifacts.resolve() == artifacts and
              artifacts.stat().st_uid == os.getuid(), 'raw_trace_artifact_symlink_or_foreign_owner')

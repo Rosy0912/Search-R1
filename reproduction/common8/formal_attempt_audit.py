@@ -11,9 +11,12 @@ from pathlib import Path
 
 from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, consumed_lr
 from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
+from reproduction.common8.topology import (
+    actor_local_mini, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
+)
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
-    MONITORING_SCOPE, OBJECTIVE_WEIGHT_DEFINITION, QUANTILE_METHOD,
+    OBJECTIVE_WEIGHT_DEFINITION, QUANTILE_METHOD,
     _adjacent, _enforcement, _finite, _hash, _identity, _integer, _require,
     _row, _same_arithmetic, _statistics,
 )
@@ -119,12 +122,12 @@ def _monitor_statistics(row):
     return {name: copy.deepcopy(row[name]) for name in GLOBAL_FIELDS}
 
 
-def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
+def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Require40 true pre/post monitors and20 dispositions for this real UUID."""
     observations = {}; dispositions = {}; identities = {}; final_rejections = []
     outer = attempt['logical_update']; start = attempt['optimizer_writes_before']
     successes = attempt['optimizer_writes_this_attempt']; complete = attempt['complete_outer']
-    for rank in range(8):
+    for rank in ranks(run):
         rows = rows_by_rank[rank]; cursor = 0; counter = start; identity = None; frozen = None
         rejections = rejection_before
         for mini in range(20):
@@ -174,7 +177,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
                      'Driver return differs from the real opportunity disposition')
             local_decision = {key: copy.deepcopy(value) for key, value in decision.items() if key != 'rank'}
             if mini in dispositions:
-                _require(dispositions[mini] == local_decision, 'Eight ranks disagree on actual opportunity disposition')
+                _require(dispositions[mini] == local_decision, 'Actual ranks disagree on opportunity disposition')
             else:
                 dispositions[mini] = local_decision
             for row, stage, writes in ((before, 'before_minibatch', counter),
@@ -187,8 +190,8 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
                          row['execution_role'] == 'production' and row['enforcement'] == _enforcement('production'),
                          'Actual monitor prospective plan or enforced role differs')
                 _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
-                         row['monitoring_scope'] == MONITORING_SCOPE, 'Actual monitor weight/scope differs')
-                _identity(row['monitor_identity'])
+                         row['monitoring_scope'] == monitor_scope(run), 'Actual monitor weight/scope differs')
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
                 if identity is None:
                     identity = copy.deepcopy(row['monitor_identity']); identities[rank] = identity
                 _require(identity == row['monitor_identity'], 'Actual frozen monitor identity changed')
@@ -210,7 +213,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
                 key = (mini, stage)
                 if key in observations:
                     _require(all(observations[key][name] == statistics[name] for name in GLOBAL_FIELDS),
-                             'Eight rank replicas disagree on global attempt statistics')
+                             'Actual rank replicas disagree on global attempt statistics')
                 else:
                     observations[key] = statistics
             for event in guards:
@@ -239,7 +242,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
                 _integer(terminal[key], key)
             _require(terminal[key] == value, 'Actual attempt terminal counter differs: ' + key)
         if complete:
-            for key, value in dict(local_trajectories=320, local_mini=16, local_micro=2,
+            for key, value in dict(local_trajectories=local_trajectories(run), local_mini=actor_local_mini(run), local_micro=2,
                 optimizer_writes_before=start, optimizer_writes_after=counter).items():
                 _require(terminal[key] == value, 'Actual completed budget differs: ' + key)
         else:
@@ -253,7 +256,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before):
                      'Actual skipped terminal cannot advance or claim rollback')
         _require(counter == attempt['optimizer_writes_after'], 'Actual retained attempt write total differs')
         final_rejections.append(rejections)
-    _require(len(set(final_rejections)) == 1, 'Eight ranks disagree on actual policy rejection totals')
+    _require(len(set(final_rejections)) == 1, 'Actual ranks disagree on policy rejection totals')
     token_count = sum(sum(identity['actor_token_lengths']) for identity in identities.values())
     for (mini, stage), observation in observations.items():
         _require(observation['effective_token_count'] == token_count, 'Actual global32 token count differs')
@@ -281,7 +284,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
     _require(last <= 200 and run['policy_safety_mode'] == 'inline_first_five', 'Invalid formal attempt scope')
     _require([row['step'] for row in complete_records] == list(range(1, last + 1)), 'Incomplete actual completed selection')
     cutoff = _integer(complete_records[-1]['attempt_index'], 'cutoff attempt', minimum=1)
-    _require(set(scheduler_receipts) == {str(rank) for rank in range(8)}, 'Need eight actual scheduler receipts')
+    _require(set(scheduler_receipts) == {str(rank) for rank in ranks(run)}, 'Need every actual scheduler receipt')
     all_attempts = _owned_rows(base, 'logs/actual-attempts.jsonl')
     attempts = [row for row in all_attempts if _attempt_identity(row)[1] <= cutoff]
     _require(last < 200 or len(attempts) == len(all_attempts), 'Actual driver contains attempts after final COMPLETE200')
@@ -289,7 +292,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
              'Actual driver attempt prefix is omitted, duplicated or reordered')
     _require(len({row['attempt_id'] for row in attempts}) == cutoff, 'Actual driver attempt UUID reused')
     rank_workers = {}; rank_schedulers = {}; selected_hashes = {}; scheduler_hashes = {}
-    for rank in range(8):
+    for rank in ranks(run):
         all_scheduler = _owned_rows(base, f'logs/scheduler-rank-{rank}.jsonl')
         scheduler = [row for row in all_scheduler if _attempt_identity(row)[1] <= cutoff]
         _require(last < 200 or len(scheduler) == len(all_scheduler), 'Actual scheduler continues after final COMPLETE200')
@@ -303,7 +306,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         scheduler_hashes[str(rank)] = document_sha256(scheduler)
     binding = dict(run_id=run['run_id'], calibration_sha256=plan_sha256)
     completed = 0; writes = 0; aborted = 0; rejections = 0; summaries = []
-    scheduler_cursors = {rank: 0 for rank in range(8)}; worker_cursors = {rank: 0 for rank in range(8)}
+    scheduler_cursors = {rank: 0 for rank in ranks(run)}; worker_cursors = {rank: 0 for rank in ranks(run)}
     job = rank_schedulers[0][0]['slurm_job_id']
     for ordinal, raw_attempt in enumerate(attempts, 1):
         attempt = copy.deepcopy(raw_attempt); outer = completed + 1
@@ -312,8 +315,11 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
             _integer(attempt[name], name)
         _require(attempt['run_id'] == run['run_id'] and attempt['slurm_job_id'] == job and
                  attempt['logical_update'] == outer and attempt['all_ranks_agreed'] is True and
-                 type(attempt['real_rank_count']) is int and attempt['real_rank_count'] == 8,
+                 type(attempt['real_rank_count']) is int and attempt['real_rank_count'] == world_size(run),
                  'Actual driver attempt run/rank/outer identity differs')
+        if run.get('execution_backend', 'slurm') == 'ssh_local':
+            _require(job is None and attempt['execution_backend'] == 'ssh_local' and
+                     attempt['execution_id'] == run['execution_id'], 'Actual driver local execution identity differs')
         count = _integer(attempt['optimizer_writes_this_attempt'], 'actual attempt writes')
         _require(count <= 20 and attempt['optimizer_writes_before'] == writes and
                  attempt['optimizer_writes_after'] == writes + count and
@@ -351,7 +357,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         attempt['behavior_probability_gate_sha256'] = gate['proof_sha256']
         rows_by_rank = {}
         expected_kinds = ['BEGIN', 'COMMIT_PREPARED', 'COMPLETE'] if complete else ['BEGIN', 'ABORTED_ATTEMPT']
-        for rank in range(8):
+        for rank in ranks(run):
             cursor = scheduler_cursors[rank]; rows = rank_schedulers[rank]
             selected = rows[cursor:cursor + len(expected_kinds)]
             _require([row['kind'] for row in selected] == expected_kinds, 'Actual scheduler attempt is partial or reordered')
@@ -359,6 +365,9 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                 _require(_attempt_identity(row) == (attempt['attempt_id'], ordinal) and row['run_id'] == run['run_id'] and
                          row['rank'] == rank and row['slurm_job_id'] == job and row['logical_update'] == outer and
                          row['batch_gate_sha256'] == gate['proof_sha256'], 'Actual scheduler attempt identity/gate differs')
+                if run.get('execution_backend', 'slurm') == 'ssh_local':
+                    _require(row['execution_backend'] == 'ssh_local' and row['execution_id'] == run['execution_id'],
+                             'Actual scheduler local execution identity differs')
                 end = row['kind'] != 'BEGIN'; advanced = row['kind'] == 'COMPLETE'
                 _require(row['writes_before'] == writes and row['writes_after'] == writes + (count if end else 0) and
                          row['actual_optimizer_writes'] == (count if end else 0) and
@@ -370,7 +379,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
             while cursor < len(rows) and _attempt_identity(rows[cursor]) == (attempt['attempt_id'], ordinal):
                 selected.append(rows[cursor]); cursor += 1
             worker_cursors[rank] = cursor; rows_by_rank[rank] = selected
-        audit = _audit_monitor_rows(rows_by_rank, binding, attempt, rejections)
+        audit = _audit_monitor_rows(rows_by_rank, binding, attempt, rejections, run=run)
         _require(audit['global_monitor_count'] == 40, 'Need40 actual global monitors for every attempt')
         rejections = audit['rejection_count']
         summaries.append(dict(attempt_id=attempt['attempt_id'], attempt_index=ordinal, logical_update=outer,
@@ -378,7 +387,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
             guard_triggered_monitor_count=audit['guard_triggered_monitor_count']))
         writes += count; completed += int(complete)
     _require(completed == last and attempts[-1]['complete_outer'] is True, 'Actual attempt prefix does not end at the requested COMPLETE')
-    for rank in range(8):
+    for rank in ranks(run):
         _require(scheduler_cursors[rank] == len(rank_schedulers[rank]) and worker_cursors[rank] == len(rank_workers[rank]),
                  'Extra or unbound actual scheduler/worker attempt receipts')
     selection = dict(plan_sha256=plan_sha256, driver_attempts=attempts,

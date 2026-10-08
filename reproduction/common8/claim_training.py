@@ -1,13 +1,16 @@
 """Exclusive fresh-run claim; a failed attempt must never silently reuse its run ID."""
 import json
 import os
+import socket
 import time
 from pathlib import Path
+from reproduction.common8.topology import execution_job_id, validate_base
 
 
 def claim(base):
     base=Path(base)
     run=json.loads((base/'logs/run-manifest.json').read_text())
+    validate_base(base,run)
     assert run['profile']=='common8' and run['completed_updates']==0
     assert not (base/'logs/training-launch-claim.json').exists(), 'This run has already been claimed'
     assert not list((base/'logs').glob('optimizer-rank-*.jsonl')), 'Existing actual write evidence'
@@ -18,8 +21,13 @@ def claim(base):
     parent=os.getppid()
     stat=Path(f'/proc/{parent}/stat').read_text().rsplit(')',1)[1].split()
     payload=dict(run_id=run['run_id'],shell_pid=parent,shell_start_ticks=int(stat[19]),
-        slurm_job_id=os.environ['SLURM_JOB_ID'],claimed_unix=time.time(),
+        slurm_job_id=execution_job_id(run),claimed_unix=time.time(),
         semantics='exclusive launch claim, not evidence of a completed update')
+    if run.get('execution_backend')=='ssh_local':
+        allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
+        assert allocation['node']==run['execution_host']==socket.gethostname()
+        payload.update(execution_backend='ssh_local',execution_id=run['execution_id'],
+                       hostname=socket.gethostname())
     with (base/'logs/training-launch-claim.json').open('x') as f:
         json.dump(payload,f);f.flush();os.fsync(f.fileno())
     return payload

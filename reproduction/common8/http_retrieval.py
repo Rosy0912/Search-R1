@@ -4,6 +4,7 @@ from pathlib import Path
 from reproduction.common8.validation_identity import expected
 from reproduction.common8.verify_data import digest
 from reproduction.common8.stage_retrieval import atomic
+from reproduction.common8.topology import execution_job_id
 
 
 def compare_response(response, proof):
@@ -28,7 +29,7 @@ def admit_http(base):
     run=json.loads((base/'logs/run-manifest.json').read_text())
     proof=json.loads((base/'logs/retrieval-admission.json').read_text())
     assert proof['accepted'] is True and proof['run_id']==run['run_id']
-    assert proof['slurm_job_id']==os.environ['SLURM_JOB_ID']
+    assert proof['slurm_job_id']==execution_job_id(run)
     record,frame,ids=expected(base,'stage')
     assert proof['stage_sha256']==record['sha256']==run['input_sha256']['stage.parquet']
     assert proof['question_ids']==ids
@@ -39,6 +40,8 @@ def admit_http(base):
     session=requests.Session();session.trust_env=False
     response=session.post('http://127.0.0.1:18010/retrieve',json={'queries':queries,'topk':3,'return_scores':True},timeout=300)
     response.raise_for_status();hashes=compare_response(response.json(),proof)
-    result=dict(accepted=True,run_id=run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],question_ids=ids,stage_sha256=record['sha256'],retrieval_admission_sha256=digest(base/'logs/retrieval-admission.json'),document_sha256=hashes,checked_unix=time.time(),scope='actual localhost HTTP64 document/score equality; not training or model accuracy')
+    result=dict(accepted=True,run_id=run['run_id'],slurm_job_id=execution_job_id(run),question_ids=ids,stage_sha256=record['sha256'],retrieval_admission_sha256=digest(base/'logs/retrieval-admission.json'),document_sha256=hashes,checked_unix=time.time(),scope='actual localhost HTTP64 document/score equality; not training or model accuracy')
+    if run.get('execution_backend')=='ssh_local':
+        result.update(execution_backend='ssh_local',execution_id=run['execution_id'])
     target=base/'logs/retrieval-http-admission.json';assert not target.exists();atomic(target,result)
     return result

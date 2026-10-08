@@ -115,8 +115,9 @@ def generation_source(model_config, loader, *, run=None):
     document = _json(raw)
     _require(type(document) is dict, 'generation file is not a document')
     eos = _ids(document.get('eos_token_id'), 'generation EOS', optional=True)
+    from reproduction.common8.topology import execution_job_id
     record = dict(schema_version=1, role=GENERATION_ROLE, run_id=run['run_id'],
-        slurm_job_id=str(os.environ['SLURM_JOB_ID']), source_commit=run['source_commit'],
+        slurm_job_id=execution_job_id(run), source_commit=run['source_commit'],
         source_map_sha256=digest(run['source_sha256']), model_path=str(model),
         generation_config_path=str(path), generation_config_sha256=sha,
         generation_config_eos_token_ids=eos, loader_source=callable_source(loader))
@@ -181,7 +182,8 @@ def validate_effective_stop_provenance(proof, *, request_id, actual_request_toke
              type(generation['schema_version']) is int and generation['schema_version'] == 1 and
              generation['role'] == GENERATION_ROLE and type(generation['run_id']) is str and
              0 < len(generation['run_id']) <= 512 and
-             type(generation['slurm_job_id']) is str and generation['slurm_job_id'].isdigit() and
+             (generation['slurm_job_id'] is None or
+              type(generation['slurm_job_id']) is str and generation['slurm_job_id'].isdigit()) and
              _sha(generation['source_commit'], 40), 'loaded generation provenance schema changed')
     for key in ('source_map_sha256', 'generation_config_sha256', 'actual_loaded_fields_sha256'):
         _require(_sha(generation[key]), 'invalid loaded generation digest')

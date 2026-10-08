@@ -1,8 +1,10 @@
-"""Verify a real, exclusive native eight-GPU allocation before project GPU work.
+"""Verify real native allocation or the explicitly assigned local A800 resources.
 
 Slurm's requested GRES alone is insufficient: also check RUNNING/node binding,
 visible CUDA devices, no other active allocation on this node, and no foreign
-compute applications. This is allocation evidence, not model/GRPO acceptance.
+compute applications. The local branch binds only the authorized GPUs and actual
+PID birth/host; foreign jobs outside that assignment do not affect admission.
+This is resource evidence, not model/GRPO acceptance.
 """
 import argparse
 import csv
@@ -74,6 +76,9 @@ def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated,
 
 
 def admit(base):
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    if run.get('execution_backend','slurm')=='ssh_local':
+        return admit_local(base,run)
     import torch
     assert 'SLURM_JOB_ID' in os.environ, 'Must run under native Slurm'
     job_id=os.environ['SLURM_JOB_ID']
@@ -102,6 +107,66 @@ def admit(base):
     target=base/'logs/native-allocation-admission.json'
     with target.open('x') as f:
         json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())
+    return proof
+
+
+def local_placement(run):
+    """Only the human-authorized A800 placement is accepted by this adapter."""
+    from reproduction.common8.topology import world_size, execution_job_id
+    assert execution_job_id(run) is None and world_size(run)==4
+    training=run['training_physical_indices'];auxiliary=run['auxiliary_physical_indices']
+    retriever=run['retriever_physical_indices'];probe=run['probe_physical_index']
+    assert training==[0,1,2,3] and auxiliary==[5,6] and retriever==[5,6] and probe==6
+    assigned=training+auxiliary
+    assert all(type(i) is int for i in assigned) and len(set(assigned))==len(assigned)
+    return training,auxiliary,retriever,probe
+
+
+def admit_local(base,run):
+    """Bind actual local process birth and assigned UUIDs without a Slurm fiction.
+
+    GPUs outside the assigned set are inventoried for mapping only. Their jobs
+    are neither an admission failure nor eligible for project cleanup.
+    """
+    from reproduction.a800.owned_processes import identity
+    from reproduction.common8.topology import validate_base
+    import torch
+    validate_base(base,run)
+    assert run['profile']=='common8' and run['completed_updates']==0
+    training,auxiliary,retriever,probe=local_placement(run)
+    assigned=training+auxiliary
+    visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
+    assert visible==list(map(str,training)), 'Local pipeline must expose only its four training GPUs'
+    raw=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total','--format=csv,noheader,nounits'],text=True,timeout=30)
+    rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
+    physical={int(r[0]):r[1] for r in rows}
+    assert set(assigned)<=set(physical) and len({physical[i] for i in assigned})==len(assigned)
+    raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=30)
+    assigned_uuids={physical[i] for i in assigned}
+    applications=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw_apps)) if r]
+    occupied=[r for r in applications if r[0] in assigned_uuids]
+    assert not occupied, 'Authorized local GPUs are occupied: '+repr(occupied)
+    # Check idle assignment first, before creating CUDA contexts or any claim.
+    assert torch.cuda.device_count()==len(training)
+    actual=cuda_uuids(len(training))
+    assert actual==[physical[i] for i in training], 'Actual training CUDA UUID mapping differs from assignment'
+    producer=identity(os.getpid())
+    proof=dict(accepted=True,profile='common8',run_id=run['run_id'],slurm_job_id=None,
+        execution_backend='ssh_local',execution_id=run['execution_id'],node=socket.gethostname(),
+        pipeline_identity=producer,training_world_size=len(training),
+        visible_devices=list(map(str,assigned)),training_visible_devices=visible,
+        actual_allocated_indices=assigned,training_physical_indices=training,
+        auxiliary_physical_indices=auxiliary,retriever_physical_indices=retriever,
+        probe_physical_index=probe,assigned_gpu_uuids={str(i):physical[i] for i in assigned},
+        actual_cuda_runtime_uuids=actual,physical_gpu_inventory=rows,
+        assigned_compute_applications=occupied,unassigned_compute_applications=[r for r in applications if r[0] not in assigned_uuids],
+        checked_unix=time.time(),scope='actual local PID birth/host and idle assigned GPU UUIDs before project launch; not model/GRPO acceptance')
+    target=base/'logs/native-allocation-admission.json'
+    with target.open('x') as f:
+        json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())
+    fd=os.open(target.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(fd)
+    finally:os.close(fd)
     return proof
 
 

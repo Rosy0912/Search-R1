@@ -14,9 +14,11 @@ from reproduction.common8.formal_contract import (
     FORMAL_COUNTING, assert_formal_run, consumed_lr,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes
+from reproduction.common8.topology import world_size, ranks, actor_local_mini, local_trajectories, execution_job_id
 
 
-def budget_rows(text, first, last,complete_records=None):
+def budget_rows(text, first, last,complete_records=None, run=None):
+    size = world_size(run)
     rows = []
     writes = []
     opportunities = []
@@ -32,15 +34,15 @@ def budget_rows(text, first, last,complete_records=None):
             payload = re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', payload)
             rows.append(json.loads(payload))
     selected = [r for r in rows if first <= r['logical_update'] <= last]
-    assert len(selected) == (last-first+1)*8
+    assert len(selected) == (last-first+1)*size
     completed={} if complete_records is None else {r['step']:r for r in complete_records if first<=r['step']<=last}
     if complete_records is not None:
         assert set(completed)==set(range(first,last+1))
     for step in range(first, last+1):
         group = [r for r in selected if r['logical_update'] == step]
-        assert sorted(r['rank'] for r in group) == list(range(8))
+        assert sorted(r['rank'] for r in group) == list(range(size))
         for r in group:
-            assert (r['local_trajectories'], r['local_mini'], r['local_micro']) == (320, 16, 2)
+            assert (r['local_trajectories'], r['local_mini'], r['local_micro']) == (local_trajectories(run), actor_local_mini(run), 2)
             record=completed.get(step)
             if record is None:
                 # Retain old pure receipt tests; actual inline callers supply
@@ -117,6 +119,13 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     console_check=verify_no_fatal_scheduler_console(base,run)
     claim = json.loads((base/'logs/training-launch-claim.json').read_text())
     assert claim['run_id'] == run['run_id']
+    allocation = json.loads((base/'logs/native-allocation-admission.json').read_text())
+    assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        assert claim['slurm_job_id'] is None and allocation['slurm_job_id'] is None
+        assert claim['execution_backend'] == allocation['execution_backend'] == 'ssh_local'
+        assert claim['execution_id'] == allocation['execution_id'] == run['execution_id']
+        assert claim['hostname'] == allocation['node']
     owned = json.loads((base/'logs/process-ledger.json').read_text())
     assert owned['run_id']==run['run_id']
     trainer=owned['jobs']['trainer']
@@ -128,7 +137,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     contract_sha = hashlib.sha256(canonical_bytes(run['budget'])).hexdigest()
     result = {}
     rank_processes=set()
-    for rank in range(8):
+    for rank in ranks(run):
         path = base/'logs'/f'scheduler-rank-{rank}.jsonl'
         raw = path.read_bytes()
         rows = [json.loads(line) for line in raw.splitlines()]
@@ -207,7 +216,10 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             assert row['source_commit']==run['source_commit'] and row['source_map_sha256']==source_map_sha
             assert row['scheduler_contract_sha256']==contract_sha
             assert row['slurm_job_id']==claim['slurm_job_id']
-            assert row['rank']==rank and row['world_size']==8
+            if run.get('execution_backend', 'slurm') == 'ssh_local':
+                assert row['execution_backend'] == 'ssh_local' and row['execution_id'] == run['execution_id']
+                assert row['hostname'] == allocation['node']
+            assert row['rank']==rank and row['world_size']==world_size(run)
             assert row['warmup_steps']==WARMUP_STEPS and row['base_learning_rate']==1e-6
             assert type(row['observed_unix']) in (int,float) and math.isfinite(row['observed_unix'])
             assert row['observed_unix'] >= previous_unix and row['observed_unix'] > 0
@@ -292,7 +304,7 @@ def accept_five_updates(checkpoint, records):
         assert saved_record['probe_version'] == r['probe_version']
         assert all(saved_record['metrics'][key] == float(r['metrics'][key]) for key in saved_record['metrics'])
     from reproduction.common8.worker_evidence import read_console_form
-    budgets = budget_rows(read_console_form(base, run['run_id']), 1, 5,complete_records=actual)
+    budgets = budget_rows(read_console_form(base, run['run_id']), 1, 5,complete_records=actual,run=run)
     scheduler_receipts = verify_scheduler_receipts(base, run, 1, 5, behavior_gates)
     from reproduction.common8.formal_inline_safety import verify_first_five,verify_plan
     artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text())

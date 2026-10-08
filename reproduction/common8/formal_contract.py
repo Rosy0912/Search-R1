@@ -4,6 +4,7 @@ import hashlib
 from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
+from reproduction.common8.topology import world_size, actor_global_micro, execution_job_id, monitor_trajectories_per_rank
 
 CONTRACT_KIND = 'fresh200_warmup57'
 TARGET_UPDATES = 200
@@ -22,6 +23,15 @@ FORMAL_MATHEMATICS.update(target_actual_outer_updates=TARGET_UPDATES,
     policy_safety_mode=SAFETY_MODE,safeguards=copy.deepcopy(FORMAL_SAFEGUARDS),
     optimizer_opportunities_per_outer=20,optimizer_completion_rule=FORMAL_COUNTING,
     optimizer_step_count_semantics='opportunities; actual successful writes reported separately')
+
+
+def formal_mathematics(run=None):
+    """The same formal objective with manifest-bound four/eight-rank placement."""
+    size = world_size(run)
+    values = copy.deepcopy(FORMAL_MATHEMATICS)
+    values.update(world_size=size, ppo_micro_batch_size=2 * size,
+                  per_rank_log_prob_micro_batch=32 // size)
+    return values
 
 
 def consumed_lr(step):
@@ -49,10 +59,16 @@ def assert_formal_run(run):
     assert type(run['acceptance_update']) is int and run['acceptance_update'] == 5
     assert run['initial_model'] == run['reference_model']
     assert run['model_revision'] == 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    size = world_size(run)
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        assert size == 4 and run['training_world_size'] == 4
+        assert execution_job_id(run) is None
+    else:
+        assert run.get('execution_backend', 'slurm') == 'slurm' and size == 8
     budget = run['budget']
     assert budget['contract_kind'] == CONTRACT_KIND and budget['profile']=='common8'
     assert budget['model_id']=='Qwen/Qwen2.5-3B-Instruct' and budget['model_revision']==run['model_revision']
-    for name, value in FORMAL_MATHEMATICS.items():
+    for name, value in formal_mathematics(run).items():
         assert canonical_bytes(budget[name]) == canonical_bytes(value), 'Formal budget differs: ' + name
     assert budget['common_manifest_sha256'] == '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
     return run
@@ -71,7 +87,7 @@ def verify_formal_config(document, run, base):
             equal = (type(actual) in (int, float) and actual == value) if type(value) is float else (
                 canonical_bytes(actual) == canonical_bytes(value))
             assert equal, label + ' differs: ' + name
-    exact(actor, dict(ppo_mini_batch_size=128, ppo_micro_batch_size=16, ppo_epochs=1,
+    exact(actor, dict(ppo_mini_batch_size=128, ppo_micro_batch_size=actor_global_micro(run), ppo_epochs=1,
         grad_clip=1.0, clip_ratio=0.2, state_masking=True, use_kl_loss=True,
         entropy_coeff=0.0, kl_loss_coef=0.0, kl_loss_type='low_var_kl',
         use_dynamic_bsz=False, ulysses_sequence_parallel_size=1), 'Actor mathematics')
@@ -99,7 +115,7 @@ def verify_formal_config(document, run, base):
     exact(actor['fsdp_config'], dict(param_offload=True,grad_offload=True,
         optimizer_offload=True), 'Actor FSDP graph')
     assert reference['fsdp_config']['param_offload'] is True
-    exact(document['trainer'], dict(n_gpus_per_node=8, nnodes=1,
+    exact(document['trainer'], dict(n_gpus_per_node=world_size(run), nnodes=1,
         total_training_steps=TARGET_UPDATES + 1, total_epochs=15, save_freq=50,
         test_freq=50, acceptance_step=5, val_only=False, val_before_train=True), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']
@@ -109,14 +125,15 @@ def verify_formal_config(document, run, base):
     policy = actor['policy_safety']
     exact(policy, dict(enabled=True,mode=SAFETY_MODE,dual_clip=FORMAL_SAFEGUARDS['dual_clip'],
         target_old_policy_kl=FORMAL_SAFEGUARDS['target_old_policy_kl'],
-        kl_log_bound=FORMAL_SAFEGUARDS['kl_log_bound'],negative_tail_limit=FORMAL_SAFEGUARDS['negative_tail_limit']), 'Prospective formal safeguards')
+        kl_log_bound=FORMAL_SAFEGUARDS['kl_log_bound'],negative_tail_limit=FORMAL_SAFEGUARDS['negative_tail_limit'],
+        monitor_trajectories_per_rank=monitor_trajectories_per_rank(run)), 'Prospective formal safeguards')
     assert policy['calibration_manifest'] == str(base / 'logs/policy-safety-calibration.json')
     repo = Path(__file__).resolve().parents[2]
     for name in ('reproduction/common8/recipe.json', 'reproduction/common8/budget.json',
                  'verl/trainer/config/ppo_trainer.yaml'):
         assert hashlib.sha256((repo / name).read_bytes()).hexdigest() == run['source_sha256'][name]
     return dict(contract_kind=CONTRACT_KIND,policy_safety_mode=SAFETY_MODE,
-        mathematical_config_sha256=hashlib.sha256(canonical_bytes(FORMAL_MATHEMATICS)).hexdigest(),
+        mathematical_config_sha256=hashlib.sha256(canonical_bytes(formal_mathematics(run))).hexdigest(),
         resolved_config_sha256=hashlib.sha256(canonical_bytes(document)).hexdigest(),
         source_map_sha256=hashlib.sha256(canonical_bytes(run['source_sha256'])).hexdigest(),
         source_snapshot_semantics='bound disk source hashes; not proof of loaded modules')

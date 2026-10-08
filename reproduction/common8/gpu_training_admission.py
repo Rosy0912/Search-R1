@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import canonical_bytes, _strict_json
+from reproduction.common8.topology import world_size, ranks, execution_job_id
 
 
 def _number(value):
@@ -83,21 +84,34 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
     """Pure receipt/sample reader; caller separately authenticates live births."""
     assert allocation['accepted'] is True and allocation['run_id'] == claim['run_id'] == run['run_id']
     assert allocation['slurm_job_id'] == claim['slurm_job_id']
+    local = run.get('execution_backend', 'slurm') == 'ssh_local'
+    size = world_size(run)
     physical = allocation['actual_allocated_indices']
-    assert len(physical) == 8 and len(set(physical)) == 8 and all(type(i) is int for i in physical)
-    assert len(allocation['physical_gpu_inventory']) == 8
-    inventory = {int(row[0]): (row[1].strip(), int(row[2])) for row in allocation['physical_gpu_inventory']}
-    assert set(inventory) == set(physical) and len({uuid for uuid, _ in inventory.values()}) == 8
+    if local:
+        assert allocation['execution_backend'] == claim['execution_backend'] == 'ssh_local'
+        assert allocation['slurm_job_id'] is None and allocation['execution_id'] == claim['execution_id'] == run['execution_id']
+        assert claim['hostname'] == allocation['node']
+        assert physical == run['training_physical_indices'] + run['auxiliary_physical_indices'] == [0, 1, 2, 3, 5, 6]
+        assert allocation['training_physical_indices'] == run['training_physical_indices'] == [0, 1, 2, 3]
+    else:
+        assert len(physical) == 8 and len(allocation['physical_gpu_inventory']) == 8
+    assert len(set(physical)) == len(physical) and all(type(i) is int for i in physical)
+    inventory = {int(row[0]): (row[1].strip(), int(row[2])) for row in allocation['physical_gpu_inventory']
+                 if int(row[0]) in physical}
+    assert set(inventory) == set(physical) and len({uuid for uuid, _ in inventory.values()}) == len(physical)
     assert all(uuid and total > 0 for uuid, total in inventory.values())
-    assert len(allocation['actual_cuda_runtime_uuids']) == 8
-    assert set(allocation['actual_cuda_runtime_uuids']) == {uuid for uuid, _ in inventory.values()}
+    assert len(allocation['actual_cuda_runtime_uuids']) == size
+    training = allocation['training_physical_indices'] if local else physical
+    assert set(allocation['actual_cuda_runtime_uuids']) == {inventory[index][0] for index in training}
+    if local:
+        assert all(allocation['assigned_gpu_uuids'][str(index)] == inventory[index][0] for index in physical)
     source_sha = hashlib.sha256(canonical_bytes(run['source_sha256'])).hexdigest()
     claimed = claim['claimed_unix']
     assert _number(claimed) and _number(entered) and run['started_unix'] <= claimed <= entered
     windows = []
     for step in range(1, 6):
         begins, completes = [], []
-        for rank in range(8):
+        for rank in ranks(run):
             selected = [row for row in scheduler_receipts[str(rank)]['selected_rows']
                         if row['logical_update'] == step]
             complete = [row for row in selected if row['kind'] == 'COMPLETE']
@@ -124,6 +138,9 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
     for row in selected:
         assert row['schema_version'] == 1 and row['role'] == 'actual_common8_gpu_occupancy'
         assert row['run_id'] == run['run_id'] and row['slurm_job_id'] == claim['slurm_job_id']
+        if local:
+            assert row['execution_backend'] == 'ssh_local' and row['execution_id'] == run['execution_id']
+            assert row['hostname'] == allocation['node']
         assert row['source_map_sha256'] == source_sha and row['sampler_identity'] == producer
         assert row['sampling_interval_seconds'] == 2
         start, end = row['query_started_unix'], row['unix']
@@ -133,7 +150,7 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
             gaps.append(end - previous)
         previous = end; durations.append(end - start)
         gpus = row['gpus']
-        assert len(gpus) == 8 and sorted(gpu['index'] for gpu in gpus) == sorted(physical), \
+        assert len(gpus) == len(physical) and sorted(gpu['index'] for gpu in gpus) == sorted(physical), \
             'Missing, duplicated or foreign actual sampled device'
         for gpu in gpus:
             index = gpu['index']
@@ -147,7 +164,7 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
         assert inside, 'No actual GPU sample inside a completed first-five optimizer window'
         window['sample_count_inside_optimizer_window'] = len(inside)
     encoded = b'\n'.join(canonical_bytes(row) for row in selected) + b'\n'
-    return dict(run_id=run['run_id'], slurm_job_id=claim['slurm_job_id'], accepted=True,
+    result = dict(run_id=run['run_id'], slurm_job_id=claim['slurm_job_id'], accepted=True,
         first_actual_update=1, last_actual_update=5, sampling_interval_seconds=2,
         training_claim_unix=claimed, actual_optimizer_windows=windows,
         first_sample_unix=selected[0]['unix'], last_sample_unix=selected[-1]['unix'],
@@ -161,10 +178,14 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
         maximum_sampling_gap_seconds=max(gaps, default=0.),
         maximum_query_duration_seconds=max(durations), selected_samples_sha256=hashlib.sha256(encoded).hexdigest(),
         semantics='Actual sampled occupancy from training claim through this same-process five gate, including '
-                  'initialization, generation and optimizer writes; all eight actual devices in every selected sample. '
+                  'initialization, generation and optimizer writes; every authorized training/auxiliary device in every selected sample. '
                   'Observed gaps and query durations are disclosed; instantaneous peaks between samples are unmeasured. '
                   'A high occupancy sample alone does not reject an otherwise completed update; actual allocation, '
                   'sample integrity, OOM and numerical failures retain their own checks.')
+    if local:
+        result.update(execution_backend='ssh_local', execution_id=run['execution_id'], hostname=allocation['node'],
+                      training_world_size=size, training_physical_indices=training)
+    return result
 
 
 def verify_training_gpu_samples(base, run, scheduler_receipts):
@@ -174,7 +195,7 @@ def verify_training_gpu_samples(base, run, scheduler_receipts):
     allocation_path = _owned(base / 'logs/native-allocation-admission.json')
     allocation_raw = allocation_path.read_bytes()
     allocation = _strict_json(allocation_raw)
-    assert claim['slurm_job_id'] == os.environ['SLURM_JOB_ID']
+    assert claim['slurm_job_id'] == execution_job_id(run)
     path, raw, rows, producer = _sample_after_entry(base, run, claim, entered)
     result = _coverage(rows, run, claim, allocation, scheduler_receipts, entered=entered)
     _live_producer(base, claim, producer)

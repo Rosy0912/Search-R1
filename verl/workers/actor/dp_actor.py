@@ -239,6 +239,7 @@ class DataParallelPPOActor(BasePPOActor):
     def _monitor_old_policy(self, frozen, safety, tail_limit, stage):
         from search_g1.policy_safety import monitor
         from reproduction.common8.worker_evidence import append
+        from reproduction.common8.topology import monitor_scope
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
         import hashlib
         current_hashes={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest() for name,value in frozen.items()}
@@ -270,7 +271,7 @@ class DataParallelPPOActor(BasePPOActor):
                       calibration_sha256=self._safety_calibration_sha,
                       monitor_identity=self._monitor_identity,
                       objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
-                      monitoring_scope='fixed four trajectories per rank across length strata; not full rollout',
+                      monitoring_scope=monitor_scope(),
                       rejection_count=getattr(self,'_policy_rejections',0)+int(not report['allowed']))
         append('POLICY_MONITOR',report,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
         if not report['allowed']:
@@ -358,10 +359,11 @@ class DataParallelPPOActor(BasePPOActor):
         common8 = __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8'
         if common8:
             from reproduction.common8.behavior_runtime import verify_worker_input
+            from reproduction.common8.topology import actor_local_mini, local_trajectories, world_size
             verify_worker_input(data, logical_update=logical_update, group=group)
             batch_gate_sha = data.meta_info['behavior_probability_gate']['sha256']
-            assert torch.distributed.get_world_size() == 8
-            assert len(data) == 320 and self.config.ppo_mini_batch_size == 16
+            assert torch.distributed.get_world_size() == world_size()
+            assert len(data) == local_trajectories() and self.config.ppo_mini_batch_size == actor_local_mini()
             assert self.config.ppo_micro_batch_size == 2 and self.config.ppo_epochs == 1
         temperature = data.meta_info['temperature']
 
@@ -393,11 +395,13 @@ class DataParallelPPOActor(BasePPOActor):
                     writes=writes_before,group=group,complete=False,
                     attempt_id=data.meta_info['attempt_id'],attempt_index=data.meta_info['attempt_index'])
                 self._inline_initial_optimizer_published=True
-            assert common8 and safety.monitor_trajectories_per_rank == 4
+            from reproduction.common8.topology import monitor_trajectories_per_rank
+            monitor_count=monitor_trajectories_per_rank()
+            assert common8 and safety.monitor_trajectories_per_rank == monitor_count
             # Freeze actual old/advantage/mask/input bytes once; select length strata.
             length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
             ordered=torch.argsort(length_mask.sum(-1),stable=True)
-            indices=ordered[torch.linspace(0,len(batch)-1,4,device=ordered.device).long()]
+            indices=ordered[torch.linspace(0,len(batch)-1,monitor_count,device=ordered.device).long()]
             require_finite({'monitor_actor_lengths':length_mask[indices].sum(-1)},
                            stage='frozen_monitor_selection_before_any_minibatch',
                            process_group=group,positive=('monitor_actor_lengths',))
@@ -484,7 +488,7 @@ class DataParallelPPOActor(BasePPOActor):
             from reproduction.common8.worker_evidence import append
             budget = dict(rank=torch.distributed.get_rank(),
                 logical_update=logical_update, local_trajectories=len(batch),
-                local_mini=16, local_micro=2, optimizer_writes=writes,
+                local_mini=self.config.ppo_mini_batch_size, local_micro=2, optimizer_writes=writes,
                 cumulative_writes=self._optimizer_writes)
             if getattr(self,'_recoverable_guard_mode',False):
                 budget.update(**attempt_meta,opportunities_processed=20,

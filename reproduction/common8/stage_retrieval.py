@@ -1,7 +1,8 @@
-"""Stage verified original retrieval inputs inside this run's native allocation.
+"""Bind verified original retrieval inputs to this run's actual resources.
 
 The temporary RAM files belong to one run/job and must be removed by its owned
 cleanup. No GPU work, foreign service, cross-cluster relay or global mount.
+Local A800 verifies existing disk assets and never owns/deletes those originals.
 """
 import argparse
 import hashlib
@@ -69,6 +70,19 @@ def binding(base):
     assert run['profile']=='common8' and run['completed_updates']==0
     admission=json.loads((base/'logs/native-allocation-admission.json').read_text())
     assert admission['accepted'] is True and admission['run_id']==run['run_id']
+    if run.get('execution_backend','slurm')=='ssh_local':
+        from reproduction.common8.topology import execution_job_id,validate_base
+        from reproduction.common8.native_allocation import local_placement
+        from reproduction.a800.owned_processes import identity
+        validate_base(base,run);local_placement(run)
+        assert execution_job_id(run) is None and admission['slurm_job_id'] is None
+        assert admission['execution_backend']=='ssh_local' and admission['execution_id']==run['execution_id']
+        assert admission['node']==socket.gethostname(), 'Local allocation belongs to another host'
+        producer=admission['pipeline_identity'];actual=identity(producer['pid'])
+        assert all(actual[k]==producer[k] for k in ('pid','start_ticks','sid','uid')) and actual['state']!='Z'
+        execution=dict(execution_backend='ssh_local',execution_id=run['execution_id'],
+            host=admission['node'],pipeline_identity=producer)
+        return run,execution,admission
     job_id=os.environ['SLURM_JOB_ID']
     assert admission['slurm_job_id']==job_id
     job=fields(subprocess.check_output(['scontrol','show','job','-o',job_id],text=True))
@@ -79,7 +93,46 @@ def binding(base):
     return run,job,admission
 
 
+def stage_local(base):
+    """Verify existing local assets; retain them outside this run's cleanup."""
+    run,execution,admission=binding(base)
+    assert execution['execution_backend']=='ssh_local'
+    paths=run['retrieval_asset_paths']
+    assert paths=={'e5_Flat.index':'/data/search-r1/assets/wiki/e5_Flat.index',
+                  'wiki-18.jsonl':'/data/search-r1/assets/wiki/wiki-18.jsonl'}
+    assert run['retrieval_encoder']=='/data/search-r1/assets/e5-base-v2'
+    memory={line.split(':',1)[0]:int(line.split()[1])*1024
+        for line in Path('/proc/meminfo').read_text().splitlines() if ':' in line}
+    # The original CPU Flat baseline remains necessary for parity. Original
+    # assets are disk-backed here, so no H100 export or staging tmpfs is needed.
+    floor=ASSETS['e5_Flat.index']['size']+32*2**30
+    resources=dict(required_host_memory_floor_bytes=floor,
+        actual_available_host_memory_bytes=memory['MemAvailable'],
+        scope='original CPU Flat parity index plus process reserve; original assets stay on local disk')
+    assert resources['actual_available_host_memory_bytes']>=floor, 'Insufficient host RAM for original CPU Flat parity baseline'
+    records={}
+    for name,expected in ASSETS.items():
+        path=Path(paths[name])
+        assert path.is_absolute() and path.is_file() and not path.is_symlink()
+        assert path.stat().st_size==expected['size'] and digest(path)==expected['sha256'], 'Local original asset differs: '+name
+        records[name]=dict(expected,path=str(path),device=path.stat().st_dev,inode=path.stat().st_ino)
+    status=dict(accepted=True,run_id=run['run_id'],slurm_job_id=None,
+        execution_backend='ssh_local',execution_id=run['execution_id'],host=execution['host'],
+        asset_origin='verified_existing_local_original_assets',temporary_original_assets=False,
+        resources=resources,files=records,checked_unix=time.time())
+    target=base/'logs/retrieval-assets.json'
+    assert not target.exists(), 'Existing retrieval asset evidence belongs to this attempt'
+    with target.open('x') as f:
+        json.dump(status,f,indent=2);f.flush();os.fsync(f.fileno())
+    fd=os.open(target.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(fd)
+    finally:os.close(fd)
+    return status
+
+
 def stage(base,port):
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    if run.get('execution_backend','slurm')=='ssh_local':return stage_local(base)
     run,job,admission=binding(base)
     assert 1024<=port<=65535
     mem={line.split(':',1)[0]:int(line.split()[1])*1024
@@ -199,5 +252,6 @@ if __name__=='__main__':
     p.add_argument('--port',type=int);p.add_argument('--cleanup',action='store_true');a=p.parse_args()
     if a.cleanup:print(json.dumps(cleanup(a.base)))
     else:
-        assert a.port is not None
+        run=json.loads((a.base/'logs/run-manifest.json').read_text())
+        assert a.port is not None or run.get('execution_backend')=='ssh_local'
         print(json.dumps(stage(a.base,a.port)))

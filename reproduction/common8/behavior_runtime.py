@@ -19,6 +19,9 @@ from reproduction.common8.behavior_trace import (
     _exclusive_private_file, _evidence_value,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
+from reproduction.common8.topology import (
+    execution_job_id, local_trajectories, logprob_local_micro, ranks, validate_base, world_size,
+)
 
 
 TOKEN_FIELDS = frozenset(('input_ids', 'prompts', 'responses', 'responses_with_info_mask',
@@ -32,12 +35,12 @@ def cast_token_fields(batch):
 
 
 def rollout_logprob_metadata(rollout):
-    """Read actual per-rank config after the worker's global32 / world8 split."""
+    """Read actual per-rank config after the worker's global32 / real-world split."""
     values = dict(micro_batch_size=rollout.log_prob_micro_batch_size,
                   temperature=rollout.temperature,
                   use_dynamic_bsz=rollout.log_prob_use_dynamic_bsz,
                   max_token_len=rollout.log_prob_max_token_len_per_gpu)
-    assert type(values['micro_batch_size']) is int and values['micro_batch_size'] == 4
+    assert type(values['micro_batch_size']) is int and values['micro_batch_size'] == logprob_local_micro()
     assert type(values['temperature']) in (int, float) and values['temperature'] == 1.0
     assert values['use_dynamic_bsz'] is False and type(values['max_token_len']) is int
     return values
@@ -45,11 +48,11 @@ def rollout_logprob_metadata(rollout):
 
 def _native_run():
     base = Path(os.environ['SEARCH_G1_BASE'])
-    assert base.is_absolute() and base.resolve() == base and str(base).startswith('/mnt/data/shaoshitong/')
     run = json.loads((base / 'logs/run-manifest.json').read_text())
+    validate_base(base, run)
     assert run['profile'] == 'common8' and run['completed_updates'] == 0
-    job = os.environ['SLURM_JOB_ID']
-    assert job.isdigit() and int(job) > 0
+    world_size(run)
+    job = execution_job_id(run)
     # This is a current disk-source identity check, not proof of loaded modules.
     for name, expected in run['source_sha256'].items():
         path = base / 'repo' / name
@@ -82,6 +85,8 @@ def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,
     identity=dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id=job,
                 logical_update=logical_update, policy_snapshot_id=snapshot,
                 parent_group_ids=parent_ids, trajectory_ids=ids, validation=validation)
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        identity.update(execution_backend='ssh_local', execution_id=run['execution_id'])
     if inline:identity.update(attempt_id=attempt_id,attempt_index=attempt_index)
     return identity
 
@@ -117,6 +122,8 @@ def context_before_forward(batch):
     base, run, job = _native_run()
     assert (run['run_id'], run['source_sha256'], job) == (
         identity['run_id'], identity['source_sha256'], identity['slurm_job_id'])
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        assert identity['execution_backend'] == 'ssh_local' and identity['execution_id'] == run['execution_id']
     rows = actor_rows(batch)
     ids = identity['trajectory_ids']
     actual_ids = batch.non_tensor_batch['behavior_trajectory_id'].tolist()
@@ -153,7 +160,7 @@ def freeze_after_probability_gate(batch, context, hf_output):
     """HF recomputation is a diagnostic; actual passed sampling LP becomes old."""
     from reproduction.common8.behavior_probability import verify
     assert hf_output.meta_info['temperature'] == batch.meta_info['behavior_sampling']['temperature'] == 1.0
-    assert hf_output.meta_info['micro_batch_size'] == 4 and hf_output.meta_info['use_dynamic_bsz'] is False
+    assert hf_output.meta_info['micro_batch_size'] == logprob_local_micro() and hf_output.meta_info['use_dynamic_bsz'] is False
     width = batch.batch['responses'].shape[1]
     actual = batch.batch['sampling_log_probs'].detach().cpu()
     authored = batch.batch['info_mask'][:, -width:].detach().cpu()
@@ -174,6 +181,8 @@ def freeze_after_probability_gate(batch, context, hf_output):
     attempt_id=identity.get('attempt_id');attempt_index=identity.get('attempt_index')
     if run.get('policy_safety_mode')=='inline_first_five':
         proof.update(attempt_id=attempt_id,attempt_index=attempt_index)
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        proof.update(execution_backend='ssh_local', execution_id=run['execution_id'])
     path = gate_path(base,run,proof['logical_update'],attempt_id=attempt_id)
     content = canonical_bytes(proof)
     descriptor = os.open(str(path), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
@@ -186,6 +195,8 @@ def freeze_after_probability_gate(batch, context, hf_output):
         os.close(directory)
     batch.meta_info['behavior_probability_gate'] = dict(path=str(path), sha256=hashlib.sha256(content).hexdigest(),
         run_id=run['run_id'], slurm_job_id=job, logical_update=proof['logical_update'])
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        batch.meta_info['behavior_probability_gate'].update(execution_backend='ssh_local', execution_id=run['execution_id'])
     if attempt_id is not None:
         batch.meta_info['behavior_probability_gate'].update(attempt_id=attempt_id,attempt_index=attempt_index)
         batch.meta_info.update(attempt_id=attempt_id,attempt_index=attempt_index)
@@ -274,6 +285,10 @@ def read_gate_receipt(base, run, step, *, update_record=None,attempt_id=None,att
     assert proof['accepted'] is True and proof['run_id'] == run['run_id']
     assert proof['source_sha256'] == run['source_sha256']
     assert proof['slurm_job_id'] == allocation['slurm_job_id']
+    if run.get('execution_backend', 'slurm') == 'ssh_local':
+        assert proof['slurm_job_id'] is None
+        assert proof['execution_backend'] == allocation['execution_backend'] == 'ssh_local'
+        assert proof['execution_id'] == allocation['execution_id'] == run['execution_id']
     assert proof['logical_update'] == step and proof['trajectory_count'] == 2560
     if run.get('policy_safety_mode')=='inline_first_five':
         assert proof['attempt_id']==attempt_id and proof['attempt_index']==attempt_index
@@ -299,7 +314,7 @@ def verify_write_receipt_links(base, gates, first, last):
     base = Path(base)
     run=json.loads((base/'logs/run-manifest.json').read_text())
     attempt_gates={}
-    for rank in range(8):
+    for rank in ranks(run):
         rows = [json.loads(line) for line in (base / 'logs' / ('optimizer-rank-' + str(rank) + '.jsonl')).read_text().splitlines()]
         for row in rows:
             if row['kind'] not in ('OPTIMIZER_WRITE', 'POLICY_MONITOR'):
@@ -336,13 +351,16 @@ def verify_worker_input(data, *, logical_update, group):
         assert proof['run_id'] == receipt['run_id'] == run['run_id']
         assert proof['source_sha256'] == run['source_sha256']
         assert proof['slurm_job_id'] == receipt['slurm_job_id'] == job
+        if run.get('execution_backend', 'slurm') == 'ssh_local':
+            assert proof['execution_backend'] == receipt['execution_backend'] == 'ssh_local'
+            assert proof['execution_id'] == receipt['execution_id'] == run['execution_id']
         assert type(logical_update) is int and proof['logical_update'] == receipt['logical_update'] == logical_update
         if run.get('policy_safety_mode')=='inline_first_five':
             assert proof['attempt_id']==receipt['attempt_id']==data.meta_info['attempt_id']
             assert proof['attempt_index']==receipt['attempt_index']==data.meta_info['attempt_index']
         assert proof['trajectory_count'] == 2560 and len(proof['row_tensor_sha256']) == 2560
         assert proof['max_abs_discrepancy'] <= 0.05 and data.meta_info['temperature'] == 1.0
-        assert len(data) == 320 and torch.equal(data.batch['old_log_probs'], data.batch['sampling_log_probs'])
+        assert len(data) == local_trajectories(run) and torch.equal(data.batch['old_log_probs'], data.batch['sampling_log_probs'])
         width = data.batch['responses'].shape[1]
         authored = data.batch['info_mask'][:, -width:]
         assert torch.equal(data.batch['loss_mask'], authored)

@@ -13,6 +13,7 @@ from reproduction.common8.policy_calibration_plan import document_sha256
 from reproduction.common8.formal_contract import (
     TARGET_UPDATES, SAVE_STEPS, PROBE_ROUNDS, FORMAL_COUNTING, assert_formal_run, verify_formal_config,
 )
+from reproduction.common8.topology import ranks
 
 
 def verify_five_scheduler_prefix(five, full):
@@ -40,7 +41,7 @@ def verify_full(base):
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
     verify_write_receipt_links(base, behavior_gates, 1, TARGET_UPDATES)
-    budgets=budget_rows(read_console_form(base,run['run_id']),1,TARGET_UPDATES,complete_records=records)
+    budgets=budget_rows(read_console_form(base,run['run_id']),1,TARGET_UPDATES,complete_records=records,run=run)
     scheduler_receipts=verify_scheduler_receipts(base,run,1,TARGET_UPDATES,behavior_gates)
     five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
     assert five['accepted'] is True and five['run_id']==run['run_id']
@@ -62,7 +63,7 @@ def verify_full(base):
     for saved,actual in zip(five['actual_updates'],records[:5]):
         assert saved['probe_version']==actual['probe_version']
         assert all(float(saved['metrics'][key])==value for key,value in actual['metrics'].items())
-    for rank in range(8):
+    for rank in ranks(run):
         verify_five_scheduler_prefix(five['scheduler_receipts'][str(rank)],scheduler_receipts[str(rank)])
     snapshots={}
     for step in SAVE_STEPS:

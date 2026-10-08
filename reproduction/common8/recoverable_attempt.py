@@ -4,10 +4,13 @@ import os
 import uuid
 from pathlib import Path
 
+from reproduction.common8.topology import execution_job_id, world_size
+
 
 class AttemptProgress:
     """Complete counters and retained physical Adam counters stay independent."""
-    def __init__(self):
+    def __init__(self, run=None):
+        self.world_size=world_size(run)
         self.completed_outer=0
         self.cumulative_writes=0
         self.attempt_index=0
@@ -22,9 +25,10 @@ class AttemptProgress:
         return dict(self.pending)
 
     def finish(self, rank_results):
-        """The driver reads all eight real Ray returns before advancing anything."""
-        assert self.pending is not None and type(rank_results) is list and len(rank_results)==8
-        assert sorted(row['rank'] for row in rank_results)==list(range(8))
+        """The driver reads every real Ray return before advancing anything."""
+        assert self.pending is not None and type(rank_results) is list and len(rank_results)==self.world_size
+        assert all(type(row['rank']) is int for row in rank_results)
+        assert sorted(row['rank'] for row in rank_results)==list(range(self.world_size))
         shared=('status','logical_update','attempt_id','attempt_index','optimizer_writes_before',
                 'optimizer_writes_after','optimizer_writes_this_attempt','opportunities_processed',
                 'opportunity_statuses','guard_stage','guard_reasons','complete_outer',
@@ -52,7 +56,7 @@ class AttemptProgress:
         else:self.aborted_attempts+=1
         self.pending=None
         result={key:value for key,value in representative.items() if key!='rank'}
-        result.update(all_ranks_agreed=True,real_rank_count=8,
+        result.update(all_ranks_agreed=True,real_rank_count=self.world_size,
                       cumulative_aborted_attempts=self.aborted_attempts)
         return result
 
@@ -66,7 +70,10 @@ def record_attempt(result):
     previous=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
     assert [row['attempt_index'] for row in previous]==list(range(1,result['attempt_index']))
     assert result['attempt_id'] not in {row['attempt_id'] for row in previous}
-    row=dict(run_id=run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],**result)
+    assert type(result['real_rank_count']) is int and result['real_rank_count']==world_size(run)
+    row=dict(run_id=run['run_id'],slurm_job_id=execution_job_id(run),**result)
+    if run.get('execution_backend', 'slurm')=='ssh_local':
+        row.update(execution_backend='ssh_local',execution_id=run['execution_id'])
     descriptor=os.open(path,os.O_WRONLY|os.O_APPEND|os.O_CREAT|os.O_NOFOLLOW,0o600)
     try:
         content=(json.dumps(row,sort_keys=True,allow_nan=False)+'\n').encode()

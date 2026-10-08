@@ -3,6 +3,8 @@ import json
 import os
 from pathlib import Path
 
+from reproduction.common8.topology import monitor_trajectories_per_rank, ranks
+
 
 def append(kind, payload, *, collective=False, group=None):
     """A receipt failure is fatal on every rank before later model collectives."""
@@ -28,7 +30,7 @@ def _append_local(kind, payload):
     base=Path(os.environ['SEARCH_G1_BASE'])
     run=json.loads((base/'logs/run-manifest.json').read_text())
     assert run['profile']=='common8'
-    rank=payload['rank'];assert rank in range(8)
+    rank=payload['rank'];assert type(rank) is int and rank in ranks(run)
     row=dict(kind=kind,run_id=run['run_id'],**payload)
     path=base/'logs'/f'optimizer-rank-{rank}.jsonl'
     fd=os.open(path,os.O_WRONLY|os.O_APPEND|os.O_CREAT,0o600)
@@ -46,7 +48,7 @@ def _append_local(kind, payload):
 def read_console_form(base, run_id):
     run=json.loads((Path(base)/'logs/run-manifest.json').read_text())
     lines=[]
-    for rank in range(8):
+    for rank in ranks(run):
         path=Path(base)/'logs'/f'optimizer-rank-{rank}.jsonl'
         monitors=[];budgets=[];opportunities=[]
         for line in path.read_text().splitlines():
@@ -85,8 +87,9 @@ def read_console_form(base, run_id):
                     assert sum(x['optimizer_write_succeeded'] for x in selected_opportunities)==budget['optimizer_writes']
                 start=budget['cumulative_writes']-budget['optimizer_writes']
                 identity=selected[0]['monitor_identity'];calibration=selected[0]['calibration_sha256']
-                assert len(identity['selection_indices'])==len(set(identity['selection_indices']))==4
-                assert len(identity['actor_token_lengths'])==4 and all(x>0 for x in identity['actor_token_lengths'])
+                count=monitor_trajectories_per_rank(run)
+                assert len(identity['selection_indices'])==len(set(identity['selection_indices']))==count
+                assert len(identity['actor_token_lengths'])==count and all(x>0 for x in identity['actor_token_lengths'])
                 for index,row in enumerate(selected):
                     mini=index//2;post=index%2
                     assert row['context']['minibatch_index']==mini

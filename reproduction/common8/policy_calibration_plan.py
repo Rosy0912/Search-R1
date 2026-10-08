@@ -43,6 +43,17 @@ MATHEMATICS = dict(
     sampling_temperature=1.0, sampling_top_p=1.0, epsilon=0.2,
     compute_dtype='float32', rollout_dtype='float32', allow_tf32=False,
 )
+
+
+def mathematics_for_world_size(size):
+    """Keep the two-row actor objective while changing actual data parallelism."""
+    _require(type(size) is int and size in (4, 8), 'Unsupported actual training topology')
+    values = copy.deepcopy(MATHEMATICS)
+    values.update(world_size=size, ppo_micro_batch_size=2 * size,
+                  per_rank_log_prob_micro_batch=32 // size)
+    return values
+
+
 PHASE_BUDGET = dict(
     outer_count=1, initial_logical_update=0, initial_optimizer_writes=0,
     optimizer_writes_per_rank=20, monitors_per_rank=40,
