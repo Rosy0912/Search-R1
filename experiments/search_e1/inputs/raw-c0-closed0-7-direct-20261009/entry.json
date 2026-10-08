@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "/usr/bin/rsync",
+    "-a",
+    "--partial",
+    "--progress",
+    "--from0",
+    "--files-from=/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/raw-c0-closed0-7-direct-20261009/files-from.private.nul",
+    "--rsync-path=env -u E1_RUN_ID CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 rsync",
+    "-e",
+    "/usr/bin/ssh -B en0 -oProxyCommand=none -oProxyJump=none -oControlMaster=no -S none -oBatchMode=yes -oConnectTimeout=10",
+    "hkust1:/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/raw-c0-closed0-7-direct-20261009/files/"
+  ],
+  "backup_is_training_dependency": false,
+  "closed_outers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "delete_source": false,
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/raw-c0-closed0-7-direct-20261009/files",
+  "file_list": {
+    "bytes": 383975,
+    "file_count": 3225,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/raw-c0-closed0-7-direct-20261009/files-from.private.nul",
+    "payload_bytes": 1929787415,
+    "sha256": "ad535f8e6316e00e6d8f9847e9d118bd16b69056105659d052d111b2bfeeea67"
+  },
+  "node_writes": false,
+  "observed_free_bytes": 32808775680,
+  "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+  "schema": "opsd-ablation-closed-raw-direct-copy-entry-v1",
+  "scope": "CPU native rsync of fixed closed raw evidence; excludes rebuildable caches and existing completed CP-covered files. Exit0 is transport only; full fixed-source/local SHA acceptance follows actual completion.",
+  "source_metadata_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-4/storage-closed-c0-0-7.stdout.json",
+    "sha256": "32e604bbe4ece2c620add4b76d700ae679893a49d8c7ccf063acb60ee32d1922"
+  },
+  "source_root": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+  "storage_needs_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-4/storage-c0-closed-0-7-coverage-summary.json",
+    "sha256": "9921567c2847ecfe985b5a912726be1bf050bd40d22a05bf26c383c45762f99e"
+  },
+  "transfer_id": "de3d127435774f44b8e22f3b762dbb66"
+}
