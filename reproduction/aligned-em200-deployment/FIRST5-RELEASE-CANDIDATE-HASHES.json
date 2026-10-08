@@ -1,0 +1,10 @@
+{
+  "deployment_directory": "tools/deployment/first5-cpu-v1",
+  "files": {
+    "FIRST5-RELEASE-CANDIDATE.md": "cfbb6a6fce3055154022bd38c5bff8d9ae94688c75a7ad81f7a7fcc65480aebc",
+    "publish_first5_release.py": "6f323917cf04cccd6a6d71528d1ff336d6638250159e1d406b80ced865d3006a",
+    "test_publish_first5_release.py": "7be8ba579e030d19eff59240991faced23840b383a69b850575fa9aeef82131a"
+  },
+  "scope": "CODE_CPU_TEST_CANDIDATE_NOT_ACTUAL_FIRST5_RELEASE",
+  "source_commit": "080ebbc46b89d61567cd33e1a5e2f1b40afd8b84"
+}
