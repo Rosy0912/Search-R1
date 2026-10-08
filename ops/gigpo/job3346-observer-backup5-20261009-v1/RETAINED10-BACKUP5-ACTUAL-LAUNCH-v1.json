@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-08T20:45:28.137129+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-08T20:45:28.015724+00:00\\\", \\\"pid\\\": 1402389, \\\"code_sha256\\\": \\\"d29281f58e31f11bb83058ed91c2cc567133212ad287abe66892bea41998200c\\\", \\\"namespace\\\": \\\"/mnt/data/shaoshitong/gigpo-e1-instruct200-independent-backup-20261009/backup5-once-v1\\\", \\\"submitted_once\\\": true, \\\"complete\\\": false}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-08T20:45:28.133630+00:00\"}\n",
+  "stderr": "",
+  "read_only": false
+}
