@@ -1,0 +1,42 @@
+{
+  "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "scope": "Actual already-executed live operation and observed metadata, no frozen training implementation changes",
+  "files": {
+    "ARCHIVE_ALREADY_EXECUTED_time_limit_3335.py": {
+      "bytes": 4669,
+      "sha256": "129a46f9b76477fb041ab560fefed740b4121a397393ff2617a02560cd1d5b6d"
+    },
+    "README.md": {
+      "bytes": 1276,
+      "sha256": "22d14808d65fa409788066557e3afdcd6bb0a8993189dfb7b75e6ef6c4e061b5"
+    },
+    "RETAINED18_FORMAL3335_DEADLINE_READONLY_PRECHECK.json": {
+      "bytes": 74615,
+      "sha256": "b9a892e0705a7ac9920e31d059b003d808c4462b53eccf821193909445a5f312"
+    },
+    "RETAINED18_FORMAL3335_DEADLINE_READONLY_PRECHECK.md": {
+      "bytes": 8526,
+      "sha256": "455cb57a23e477ed90c95125739160b15b39ddd8593691c15dbfd27406a6be4d"
+    },
+    "RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json": {
+      "bytes": 18041,
+      "sha256": "0d28e778c47f9dbda9cc46eb19d237f16516c36a54955d747489522a7eaa0d91"
+    },
+    "RETAINED18_FORMAL3335_LIVE_TIME_LIMIT_EXTENSION.json": {
+      "bytes": 8954,
+      "sha256": "86b1a0fc28a0d36d8a4924ca4c0e8933c9352ad4f6d8982fe7552340b200547f"
+    },
+    "RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json": {
+      "bytes": 4964,
+      "sha256": "9ac9240066bbeff69df7c96ebced8b57b60dd1470ed378d396abcb174dd156d6"
+    },
+    "RETAINED18_FORMAL3335_OUTER6_NONBLOCKING_CPU_STACK_DIAG.json": {
+      "bytes": 309351,
+      "sha256": "7be76cc9c67fe8bd408347f401e5648ed7f0154b438b73ea5ba06ad945d806da"
+    },
+    "RETAINED18_FORMAL3335_OUTER6_NONBLOCKING_CPU_STACK_DIAG.md": {
+      "bytes": 12722,
+      "sha256": "d2dad59b41ec6840202b7f442ccced48aa1fa6c4b6ab4cf02f9b65fc5b3a13f8"
+    }
+  }
+}

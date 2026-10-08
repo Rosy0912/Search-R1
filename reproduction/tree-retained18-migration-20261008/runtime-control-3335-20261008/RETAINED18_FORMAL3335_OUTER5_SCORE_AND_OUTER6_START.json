@@ -1,0 +1,25 @@
+{
+  "status": "OUTER5_DEV512_COMPLETE_AND_OUTER6_STARTED",
+  "job_id": 3335,
+  "observed_epoch": 1791438121.6003556,
+  "actual_completed_outer": 5,
+  "actual_outer_in_progress": 6,
+  "native_outer6_log": "epoch 0, step 6",
+  "report_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/output/validation-cost/validation-143490-1.json",
+  "report_sha256": "db9016b43a54138723d562b4ffa0bbc5ba6f8d5d8e53867e4239db4f96f5e4b6",
+  "rows": 512,
+  "source_counts": {
+    "nq": 256,
+    "hotpotqa": 256
+  },
+  "em_percent": 18.359375,
+  "f1_percent": 24.538987386605662,
+  "baseline_em_percent": 17.7734375,
+  "baseline_f1_percent": 23.40020932352884,
+  "em_delta_percentage_points": 0.5859375,
+  "f1_delta_percentage_points": 1.1387780630768205,
+  "no_final_effect_claim": true,
+  "dev_wall_seconds": 927.2354621626437,
+  "raw_step_log": "\u001b[36m(measured_task pid=143490)\u001b[0m step:5 - rollout/generated_tokens:687104 - rollout/prefill_tokens:2522940 - rollout/retrieval_calls:2045 - rollout/trajectories:2560 - rollout/padded_rows:21 - rollout/context_mismatches:0 - rollout/raw_slots:2348000 - rollout/raw_emitted_tokens:687104 - rollout/raw_retained_tokens:352226 - rollout/raw_discarded_tail_tokens:334878 - rollout/raw_inherited_leaf_tokens:74062 - rollout/semantic_prefix_scan_cpu_seconds:623.99458418899826 - rollout/semantic_prefix_scan_wall_seconds:621.83458649367094 - global_seqlen/min:260812 - global_seqlen/max:285225 - global_seqlen/minmax_diff:24413 - global_seqlen/balanced_min:267490 - global_seqlen/balanced_max:267491 - global_seqlen/mean:267490.375 - state_tokens/total:426288 - state_tokens/coverage:0.23832906782627106 - actor/kl_coef:0 - actor/kl_loss:0.0018576730818040232 - actor/entropy_loss:0.84621660294942558 - actor/pg_loss:6.7945603993601987e-05 - actor/pg_clipfrac:0.0013626229777754888 - actor/ppo_kl:0.0015566258348482759 - actor/postclip_grad_norm:0.99999950338365606 - actor/grad_norm:2.0728668637774126 - actor/behavior_mu_monitor_native_forward_calls:656 - actor/behavior_mu_additional_initial_repeat_native_forward_calls:16 - actor/behavior_mu_monitor_forward_wall_seconds:69.588269345462322 - actor/optimizer_steps:20 - actor/optimizer_opportunities_processed:20 - actor/optimizer_opportunities_skipped:0 - actor/skipped_empty_minibatches:0 - mfu/actor:0.023141852058933224 - actor/fresh_direct_rank_outer_admitted:1 - actor/lr:8.7719298245614026e-08 - actor/lr_before_outer:7.0175438596491221e-08 - actor/scheduler_step_before_outer:4 - actor/scheduler_step_after_outer:5 - training/actual_outer_updates:5 - training/attempt_id:5 - training/refused_attempts:0 - val/test_score/nq:0.203125 - val/evaluated_count/nq:256 - val/test_score/hotpotqa:0.1640625 - val/evaluated_count/hotpotqa:256 - val/qa_count/nq:256 - val/f1/nq:0.29121704192389963 - val/em/nq:0.203125 - val/answer_format/nq:0.73828125 - val/format_rate/nq:0.71875 - val/generated_tokens/nq:133.75 - val/search_calls/nq:1.078125 - val/qa_count/hotpotqa:256 - val/f1/hotpotqa:0.19956270580821336 - val/em/hotpotqa:0.1640625 - val/answer_format/hotpotqa:0.5078125 - val/format_rate/hotpotqa:0.46484375 - val/generated_tokens/hotpotqa:203.41796875 - val/search_calls/hotpotqa:1.26171875 - val/qa_count/all:512 - val/f1/all:0.24538987386605662 - val/em/all:0.18359375 - val/answer_format/all:0.623046875 - val/format_rate/all:0.591796875 - val/generated_tokens/all:168.583984375 - val/search_calls/all:1.169921875 - critic/score/mean:0.162109375 - critic/score/max:1 - critic/score/min:0 - critic/rewards/mean:0.162109375 - critic/rewards/max:1 - critic/rewards/min:0 - critic/advantages/mean:-0.0073983357287943363 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0073983357287943363 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:698.69256591796875 - response_length/max:2678 - response_length/min:54 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.21484375 - prompt_length/max:249 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.1519531249999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.96796875000000004 - env/number_of_valid_action:2.0792968749999998 - env/ratio_of_valid_action:0.98128255208333326 - env/number_of_valid_search:1.111328125 - timing_s/gen:1407.245735861361 - timing_s/ref:10.62023014202714 - timing_s/adv:224.97917767986655 - timing_s/update_actor:742.34841214120388 - timing_s/testing:965.83468219637871 - timing_s/stage_testing:7.6670199632644653e-05 - timing_s/save_checkpoint:104.17359702289104 - timing_s/step:3907.1558802910149 - timing_per_token_ms/gen:0.78676285219176723 - timing_per_token_ms/update_actor:0.34690426344368647 - timing_per_token_ms/adv:0.10513423972725493 - timing_per_token_ms/ref:0.0049629029371744404",
+  "same_job_automatic_continuation": true
+}

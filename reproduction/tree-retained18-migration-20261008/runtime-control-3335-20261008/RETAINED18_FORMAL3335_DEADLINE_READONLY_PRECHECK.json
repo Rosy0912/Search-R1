@@ -1,0 +1,709 @@
+{
+  "status": "READ_ONLY_DEADLINE_PRECHECK_COMPLETE_NO_MUTATION",
+  "local_started_utc": "2026-10-08T05:36:36.380400+00:00",
+  "local_finished_utc": "2026-10-08T05:36:42.675596+00:00",
+  "helper": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/ssh_retained18.py",
+  "target": "h100-10",
+  "target_ip": "10.33.0.18",
+  "remote_command": "python3 -c 'import subprocess,json,time,datetime,pathlib,hashlib,os\ncommands=[['\"'\"'hostname'\"'\"'],['\"'\"'id'\"'\"'],['\"'\"'date'\"'\"','\"'\"'-u'\"'\"','\"'\"'--iso-8601=seconds'\"'\"'],['\"'\"'date'\"'\"','\"'\"'--iso-8601=seconds'\"'\"'],['\"'\"'scontrol'\"'\"','\"'\"'--local'\"'\"','\"'\"'show'\"'\"','\"'\"'partition'\"'\"','\"'\"'gpu'\"'\"'],['\"'\"'scontrol'\"'\"','\"'\"'--local'\"'\"','\"'\"'show'\"'\"','\"'\"'job'\"'\"','\"'\"'3335'\"'\"']]\nout={'\"'\"'metadata_read_only'\"'\"':True,'\"'\"'target'\"'\"':'\"'\"'h100-10'\"'\"','\"'\"'target_ip'\"'\"':'\"'\"'10.33.0.18'\"'\"','\"'\"'commands'\"'\"':[],'\"'\"'started_epoch'\"'\"':time.time()}\nfor command in commands:\n before=time.time();p=subprocess.run(command,capture_output=True,text=True,timeout=20)\n out['\"'\"'commands'\"'\"'].append({'\"'\"'argv'\"'\"':command,'\"'\"'started_epoch'\"'\"':before,'\"'\"'finished_epoch'\"'\"':time.time(),'\"'\"'returncode'\"'\"':p.returncode,'\"'\"'stdout'\"'\"':p.stdout,'\"'\"'stderr'\"'\"':p.stderr})\npaths=['\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18-V11-6efb604.sbatch'\"'\"','\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_HUMAN_AUTHORITY-V11-6efb604.json'\"'\"']\nout['\"'\"'read_files'\"'\"']=[]\nfor value in paths:\n p=pathlib.Path(value);b=p.read_bytes();out['\"'\"'read_files'\"'\"'].append({'\"'\"'path'\"'\"':value,'\"'\"'bytes'\"'\"':len(b),'\"'\"'sha256'\"'\"':hashlib.sha256(b).hexdigest(),'\"'\"'text'\"'\"':b.decode()})\nout['\"'\"'finished_epoch'\"'\"']=time.time();print(json.dumps(out,ensure_ascii=False))\n'",
+  "returncode": 0,
+  "stdout": "{\"metadata_read_only\": true, \"target\": \"h100-10\", \"target_ip\": \"10.33.0.18\", \"commands\": [{\"argv\": [\"hostname\"], \"started_epoch\": 1791437802.5616922, \"finished_epoch\": 1791437802.5637755, \"returncode\": 0, \"stdout\": \"h100-10\\n\", \"stderr\": \"\"}, {\"argv\": [\"id\"], \"started_epoch\": 1791437802.5637777, \"finished_epoch\": 1791437802.567799, \"returncode\": 0, \"stdout\": \"uid=0(root) gid=0(root) groups=0(root),999(docker)\\n\", \"stderr\": \"\"}, {\"argv\": [\"date\", \"-u\", \"--iso-8601=seconds\"], \"started_epoch\": 1791437802.5678008, \"finished_epoch\": 1791437802.5711105, \"returncode\": 0, \"stdout\": \"2026-10-08T05:36:42+00:00\\n\", \"stderr\": \"\"}, {\"argv\": [\"date\", \"--iso-8601=seconds\"], \"started_epoch\": 1791437802.5711122, \"finished_epoch\": 1791437802.574325, \"returncode\": 0, \"stdout\": \"2026-10-08T13:36:42+08:00\\n\", \"stderr\": \"\"}, {\"argv\": [\"scontrol\", \"--local\", \"show\", \"partition\", \"gpu\"], \"started_epoch\": 1791437802.5743265, \"finished_epoch\": 1791437802.5804536, \"returncode\": 0, \"stdout\": \"PartitionName=gpu\\n   AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL\\n   AllocNodes=ALL Default=YES QoS=N/A\\n   DefaultTime=NONE DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO\\n   MaxNodes=UNLIMITED MaxTime=UNLIMITED MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED\\n   Nodes=h100-[8,5,10-11]\\n   PriorityJobFactor=1 PriorityTier=1 RootOnly=NO ReqResv=NO OverSubscribe=NO\\n   OverTimeLimit=NONE PreemptMode=OFF\\n   State=UP TotalCPUs=768 TotalNodes=4 SelectTypeParameters=NONE\\n   JobDefaults=(null)\\n   DefMemPerNode=UNLIMITED MaxMemPerNode=UNLIMITED\\n\\n\", \"stderr\": \"\"}, {\"argv\": [\"scontrol\", \"--local\", \"show\", \"job\", \"3335\"], \"started_epoch\": 1791437802.5804567, \"finished_epoch\": 1791437802.5905893, \"returncode\": 0, \"stdout\": \"JobId=3335 JobName=tree-fresh200-train\\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\\n   Priority=4294898731 Nice=0 Account=(null) QOS=(null)\\n   JobState=RUNNING Reason=None Dependency=(null)\\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\\n   RunTime=01:05:19 TimeLimit=7-00:00:00 TimeMin=N/A\\n   SubmitTime=2026-10-08T12:31:22 EligibleTime=2026-10-08T12:31:22\\n   AccrueTime=2026-10-08T12:31:22\\n   StartTime=2026-10-08T12:31:23 EndTime=2026-10-15T12:31:23 Deadline=N/A\\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T12:31:23 Scheduler=Main\\n   Partition=gpu AllocNode:Sid=h100-10:138026\\n   ReqNodeList=h100-10 ExcNodeList=(null)\\n   NodeList=h100-10\\n   BatchHost=h100-10\\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:*\\n   TRES=cpu=192,mem=256G,node=1,billing=192\\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\\n   MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0\\n   Features=(null) DelayBoot=00:00:00\\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\\n   Command=(null)\\n   WorkDir=/root\\n   StdErr=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3335.err\\n   StdIn=/dev/null\\n   StdOut=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3335.out\\n   Power=\\n   TresPerNode=gres:gpu:8\\n   \\n\\n\", \"stderr\": \"\"}], \"started_epoch\": 1791437802.56169, \"read_files\": [{\"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18-V11-6efb604.sbatch\", \"bytes\": 1044, \"sha256\": \"4c63bdc4428d470d34a52ec956e87822a932d82b80c5c3f95cabce9dce4df27a\", \"text\": \"#!/usr/bin/env bash\\n#SBATCH --job-name=tree-fresh200-train\\n#SBATCH --nodes=1\\n#SBATCH --nodelist=h100-10\\n#SBATCH --gres=gpu:8\\n#SBATCH --cpus-per-task=32\\n#SBATCH --mem=256G\\n#SBATCH --exclusive\\n#SBATCH --output=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/%j.out\\n#SBATCH --error=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/%j.err\\n#SBATCH --time=168:00:00\\n#SBATCH --no-requeue\\nset -euo pipefail\\nexport TREE_INSTRUCT_TOOLS=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-v11-6efb604\\nexport TREE_INSTRUCT_PACKAGE_SHA256=1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b\\nexport TREE_PRODUCTION_RELEASE_PATH=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_DIRECT_RELEASE-V11-6efb604.json\\nexport TREE_INSTRUCT_REVIEW_SHA256=b7ea8bef0bd89a0c314b70c21e35d776a909f0a13a8e09ffc7edb713522657f9\\nexec bash /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-v11-6efb604/launch.sbatch\\n\"}, {\"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_HUMAN_AUTHORITY-V11-6efb604.json\", \"bytes\": 4387, \"sha256\": \"e80f1fe8e2060325c5b3ae620631e48b6565c9b9529c209a7d68a26c5e2f986d\", \"text\": \"{\\n  \\\"status\\\": \\\"HUMAN_AUTHORIZED_DIRECT_TRAIN200\\\",\\n  \\\"scope\\\": \\\"CURRENT_FRESH200_CHAIN_CONTINUATION\\\",\\n  \\\"packet_revision\\\": 11,\\n  \\\"code_commit\\\": \\\"6efb60466a233f70bf8f50de26df32012f49b4bc\\\",\\n  \\\"current_chain_resume\\\": {\\n    \\\"protocol\\\": \\\"current_fresh200_chain_fault_repair_continuation_v1\\\",\\n    \\\"scope\\\": \\\"CURRENT_FRESH200_CHAIN_CONTINUATION\\\",\\n    \\\"parent_job_id\\\": \\\"3331\\\",\\n    \\\"parent_run_id\\\": \\\"tree-current200-continue-3331\\\",\\n    \\\"parent_code_commit\\\": \\\"9693f0c846fab483a03e1d70ce1109aeddc5e118\\\",\\n    \\\"parent_config_sha256\\\": \\\"f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7\\\",\\n    \\\"parent_manifest\\\": {\\n      \\\"path\\\": \\\"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json\\\",\\n      \\\"sha256\\\": \\\"84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73\\\"\\n    },\\n    \\\"parent_completed_outer\\\": 4,\\n    \\\"parent_training_attempts\\\": 4,\\n    \\\"parent_optimizer_calls_per_rank\\\": {\\n      \\\"0\\\": 80,\\n      \\\"1\\\": 80,\\n      \\\"2\\\": 80,\\n      \\\"3\\\": 80,\\n      \\\"4\\\": 80,\\n      \\\"5\\\": 80,\\n      \\\"6\\\": 80,\\n      \\\"7\\\": 80\\n    },\\n    \\\"parent_scheduler_step\\\": 4,\\n    \\\"parent_sampler_cursor\\\": 2048,\\n    \\\"parent_sampler_epoch\\\": 0,\\n    \\\"next_outer_update\\\": 5,\\n    \\\"completed_outer_goal\\\": 200,\\n    \\\"planned_new_completed_outer\\\": 196,\\n    \\\"environment\\\": {\\n      \\\"TREE_CURRENT_CHAIN_RESUME_MANIFEST\\\": \\\"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json\\\",\\n      \\\"TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256\\\": \\\"84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73\\\",\\n      \\\"TREE_CURRENT_CHAIN_RESUME_AUTHORITY\\\": \\\"current_fresh200_chain_fault_repair_continuation_v1\\\"\\n    },\\n    \\\"automatic_resume_supported\\\": false,\\n    \\\"exact_executor_resume\\\": false,\\n    \\\"executor_equivalence\\\": false,\\n    \\\"actual_migration_executed\\\": false,\\n    \\\"initial_evaluation_added\\\": false,\\n    \\\"step5_approval_hold_added\\\": false,\\n    \\\"parent_failed_attempt\\\": {\\n      \\\"attempt_id\\\": 5,\\n      \\\"completed_outer_credit\\\": 0,\\n      \\\"optimizer_writes\\\": null,\\n      \\\"published_rank_optimizer_record\\\": null,\\n      \\\"error_type\\\": \\\"FileNotFoundError\\\",\\n      \\\"failure_component\\\": \\\"supervisor_contract_proc_stat\\\"\\n    }\\n  },\\n  \\\"same_instance_continuation\\\": true,\\n  \\\"completed_outer_goal\\\": 200,\\n  \\\"final_evaluation_rows\\\": 51713,\\n  \\\"production_thresholds_accepted\\\": false,\\n  \\\"independent_acceptance\\\": false,\\n  \\\"training_accepted\\\": false,\\n  \\\"original_sampler_actor_gate_accepted\\\": false,\\n  \\\"configured_prospective_thresholds\\\": {\\n    \\\"target_old_policy_kl\\\": 0.2,\\n    \\\"negative_tail_limit\\\": 0.01,\\n    \\\"initial_actor_repeat_max_abs_delta\\\": 0.0\\n  },\\n  \\\"human_instruction\\\": \\\"2026-10-08\\\\u7528\\\\u6237\\\\u660e\\\\u786e\\\\uff1a\\\\u539f\\\\u8282\\\\u70b9\\\\u5c5e\\\\u4e8e\\\\u9000\\\\u5f79\\\\u8282\\\\u70b9\\\\u5219\\\\u6362\\\\u5230\\\\u4fdd\\\\u755910.33.0.18\\\\uff1b\\\\u540cH100\\\\u5171\\\\u4eab\\\\u76d8\\\\u53ef\\\\u7528\\\\u3002\\\\u7ee7\\\\u7eed\\\\u6709\\\\u6548fresh200\\\\u76ee\\\\u6807\\\\uff0c\\\\u4ece\\\\u540c\\\\u4e00\\\\u94fe\\\\u5b9e\\\\u9645\\\\u4fdd\\\\u5b58\\\\u7684rolling4\\\\u7ee7\\\\u7eed\\\\uff0c\\\\u65e0\\\\u65b0\\\\u589e0-5\\\\u9636\\\\u6bb5\\\\u3002\\\\u6700\\\\u65b0\\\\u4eba\\\\u5de5\\\\u660e\\\\u786e\\\\u53d6\\\\u6d88OPSD3304\\\\u5e76\\\\u7ee7\\\\u7eedTree\\\\uff1b3334\\\\u56e0\\\\u8fc1\\\\u79fb\\\\u8def\\\\u5f84\\\\u6bd4\\\\u8f83\\\\u9519\\\\u8bef\\\\u5728\\\\u66f4\\\\u65b0\\\\u524d\\\\u5931\\\\u8d25\\\\uff0c\\\\u4fdd\\\\u7559\\\\u5b9e\\\\u9645\\\\u5931\\\\u8d25\\\\u51ed\\\\u8bc1\\\\u540e\\\\u4fee\\\\u590d\\\\u5e76\\\\u4ece\\\\u540c\\\\u4e00rolling4\\\\u7ee7\\\\u7eed\\\\u3002\\\",\\n  \\\"human_instruction_original_time\\\": \\\"2026-10-08 Asia/Shanghai; exact message timestamp unavailable\\\",\\n  \\\"retained18_migration\\\": {\\n    \\\"original_node\\\": \\\"h100-9\\\",\\n    \\\"original_ip\\\": \\\"10.33.0.13\\\",\\n    \\\"retirement_date\\\": \\\"2026-10-08\\\",\\n    \\\"destination_node\\\": \\\"h100-10\\\",\\n    \\\"destination_ip\\\": \\\"10.33.0.18\\\",\\n    \\\"destination_retained\\\": true,\\n    \\\"preserved_parent_completed_outer\\\": 4,\\n    \\\"unpreserved3333_progress_unknown\\\": true,\\n    \\\"original3333_terminal_state\\\": null,\\n    \\\"original3333_cleanup_verified\\\": false,\\n    \\\"same_cluster_assets\\\": true,\\n    \\\"assets_local_on_destination\\\": true,\\n    \\\"output_server\\\": \\\"10.33.0.18\\\",\\n    \\\"output_server_retained\\\": true,\\n    \\\"storage_receipt_sha256\\\": \\\"04093db4cc3fae79b780b5213d2c53324ba1515b5dac9c3155c2fec0c4818b5e\\\",\\n    \\\"asset_copy_required_status\\\": \\\"LOCAL_ASSETS_AND_PARENT_FILES_COPIED_VERIFIED\\\",\\n    \\\"exact_executor_resume\\\": false,\\n    \\\"foreign_job3304_must_be_scheduled_around\\\": false,\\n    \\\"foreign_job3304_cancelled_by_latest_human\\\": true,\\n    \\\"extra_short_training_added\\\": false\\n  }\\n}\\n\"}], \"finished_epoch\": 1791437802.5909064}\n",
+  "stderr": "",
+  "remote_result": {
+    "metadata_read_only": true,
+    "target": "h100-10",
+    "target_ip": "10.33.0.18",
+    "commands": [
+      {
+        "argv": [
+          "hostname"
+        ],
+        "started_epoch": 1791437802.5616922,
+        "finished_epoch": 1791437802.5637755,
+        "returncode": 0,
+        "stdout": "h100-10\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "id"
+        ],
+        "started_epoch": 1791437802.5637777,
+        "finished_epoch": 1791437802.567799,
+        "returncode": 0,
+        "stdout": "uid=0(root) gid=0(root) groups=0(root),999(docker)\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "date",
+          "-u",
+          "--iso-8601=seconds"
+        ],
+        "started_epoch": 1791437802.5678008,
+        "finished_epoch": 1791437802.5711105,
+        "returncode": 0,
+        "stdout": "2026-10-08T05:36:42+00:00\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "date",
+          "--iso-8601=seconds"
+        ],
+        "started_epoch": 1791437802.5711122,
+        "finished_epoch": 1791437802.574325,
+        "returncode": 0,
+        "stdout": "2026-10-08T13:36:42+08:00\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "scontrol",
+          "--local",
+          "show",
+          "partition",
+          "gpu"
+        ],
+        "started_epoch": 1791437802.5743265,
+        "finished_epoch": 1791437802.5804536,
+        "returncode": 0,
+        "stdout": "PartitionName=gpu\n   AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL\n   AllocNodes=ALL Default=YES QoS=N/A\n   DefaultTime=NONE DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO\n   MaxNodes=UNLIMITED MaxTime=UNLIMITED MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED\n   Nodes=h100-[8,5,10-11]\n   PriorityJobFactor=1 PriorityTier=1 RootOnly=NO ReqResv=NO OverSubscribe=NO\n   OverTimeLimit=NONE PreemptMode=OFF\n   State=UP TotalCPUs=768 TotalNodes=4 SelectTypeParameters=NONE\n   JobDefaults=(null)\n   DefMemPerNode=UNLIMITED MaxMemPerNode=UNLIMITED\n\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "scontrol",
+          "--local",
+          "show",
+          "job",
+          "3335"
+        ],
+        "started_epoch": 1791437802.5804567,
+        "finished_epoch": 1791437802.5905893,
+        "returncode": 0,
+        "stdout": "JobId=3335 JobName=tree-fresh200-train\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\n   Priority=4294898731 Nice=0 Account=(null) QOS=(null)\n   JobState=RUNNING Reason=None Dependency=(null)\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=01:05:19 TimeLimit=7-00:00:00 TimeMin=N/A\n   SubmitTime=2026-10-08T12:31:22 EligibleTime=2026-10-08T12:31:22\n   AccrueTime=2026-10-08T12:31:22\n   StartTime=2026-10-08T12:31:23 EndTime=2026-10-15T12:31:23 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-08T12:31:23 Scheduler=Main\n   Partition=gpu AllocNode:Sid=h100-10:138026\n   ReqNodeList=h100-10 ExcNodeList=(null)\n   NodeList=h100-10\n   BatchHost=h100-10\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:*\n   TRES=cpu=192,mem=256G,node=1,billing=192\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\n   Command=(null)\n   WorkDir=/root\n   StdErr=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3335.err\n   StdIn=/dev/null\n   StdOut=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3335.out\n   Power=\n   TresPerNode=gres:gpu:8\n   \n\n",
+        "stderr": ""
+      }
+    ],
+    "started_epoch": 1791437802.56169,
+    "read_files": [
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18-V11-6efb604.sbatch",
+        "bytes": 1044,
+        "sha256": "4c63bdc4428d470d34a52ec956e87822a932d82b80c5c3f95cabce9dce4df27a",
+        "text": "#!/usr/bin/env bash\n#SBATCH --job-name=tree-fresh200-train\n#SBATCH --nodes=1\n#SBATCH --nodelist=h100-10\n#SBATCH --gres=gpu:8\n#SBATCH --cpus-per-task=32\n#SBATCH --mem=256G\n#SBATCH --exclusive\n#SBATCH --output=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/%j.out\n#SBATCH --error=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/%j.err\n#SBATCH --time=168:00:00\n#SBATCH --no-requeue\nset -euo pipefail\nexport TREE_INSTRUCT_TOOLS=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-v11-6efb604\nexport TREE_INSTRUCT_PACKAGE_SHA256=1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b\nexport TREE_PRODUCTION_RELEASE_PATH=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_DIRECT_RELEASE-V11-6efb604.json\nexport TREE_INSTRUCT_REVIEW_SHA256=b7ea8bef0bd89a0c314b70c21e35d776a909f0a13a8e09ffc7edb713522657f9\nexec bash /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-v11-6efb604/launch.sbatch\n"
+      },
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_HUMAN_AUTHORITY-V11-6efb604.json",
+        "bytes": 4387,
+        "sha256": "e80f1fe8e2060325c5b3ae620631e48b6565c9b9529c209a7d68a26c5e2f986d",
+        "text": "{\n  \"status\": \"HUMAN_AUTHORIZED_DIRECT_TRAIN200\",\n  \"scope\": \"CURRENT_FRESH200_CHAIN_CONTINUATION\",\n  \"packet_revision\": 11,\n  \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\",\n  \"current_chain_resume\": {\n    \"protocol\": \"current_fresh200_chain_fault_repair_continuation_v1\",\n    \"scope\": \"CURRENT_FRESH200_CHAIN_CONTINUATION\",\n    \"parent_job_id\": \"3331\",\n    \"parent_run_id\": \"tree-current200-continue-3331\",\n    \"parent_code_commit\": \"9693f0c846fab483a03e1d70ce1109aeddc5e118\",\n    \"parent_config_sha256\": \"f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7\",\n    \"parent_manifest\": {\n      \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json\",\n      \"sha256\": \"84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73\"\n    },\n    \"parent_completed_outer\": 4,\n    \"parent_training_attempts\": 4,\n    \"parent_optimizer_calls_per_rank\": {\n      \"0\": 80,\n      \"1\": 80,\n      \"2\": 80,\n      \"3\": 80,\n      \"4\": 80,\n      \"5\": 80,\n      \"6\": 80,\n      \"7\": 80\n    },\n    \"parent_scheduler_step\": 4,\n    \"parent_sampler_cursor\": 2048,\n    \"parent_sampler_epoch\": 0,\n    \"next_outer_update\": 5,\n    \"completed_outer_goal\": 200,\n    \"planned_new_completed_outer\": 196,\n    \"environment\": {\n      \"TREE_CURRENT_CHAIN_RESUME_MANIFEST\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json\",\n      \"TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256\": \"84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73\",\n      \"TREE_CURRENT_CHAIN_RESUME_AUTHORITY\": \"current_fresh200_chain_fault_repair_continuation_v1\"\n    },\n    \"automatic_resume_supported\": false,\n    \"exact_executor_resume\": false,\n    \"executor_equivalence\": false,\n    \"actual_migration_executed\": false,\n    \"initial_evaluation_added\": false,\n    \"step5_approval_hold_added\": false,\n    \"parent_failed_attempt\": {\n      \"attempt_id\": 5,\n      \"completed_outer_credit\": 0,\n      \"optimizer_writes\": null,\n      \"published_rank_optimizer_record\": null,\n      \"error_type\": \"FileNotFoundError\",\n      \"failure_component\": \"supervisor_contract_proc_stat\"\n    }\n  },\n  \"same_instance_continuation\": true,\n  \"completed_outer_goal\": 200,\n  \"final_evaluation_rows\": 51713,\n  \"production_thresholds_accepted\": false,\n  \"independent_acceptance\": false,\n  \"training_accepted\": false,\n  \"original_sampler_actor_gate_accepted\": false,\n  \"configured_prospective_thresholds\": {\n    \"target_old_policy_kl\": 0.2,\n    \"negative_tail_limit\": 0.01,\n    \"initial_actor_repeat_max_abs_delta\": 0.0\n  },\n  \"human_instruction\": \"2026-10-08\\u7528\\u6237\\u660e\\u786e\\uff1a\\u539f\\u8282\\u70b9\\u5c5e\\u4e8e\\u9000\\u5f79\\u8282\\u70b9\\u5219\\u6362\\u5230\\u4fdd\\u755910.33.0.18\\uff1b\\u540cH100\\u5171\\u4eab\\u76d8\\u53ef\\u7528\\u3002\\u7ee7\\u7eed\\u6709\\u6548fresh200\\u76ee\\u6807\\uff0c\\u4ece\\u540c\\u4e00\\u94fe\\u5b9e\\u9645\\u4fdd\\u5b58\\u7684rolling4\\u7ee7\\u7eed\\uff0c\\u65e0\\u65b0\\u589e0-5\\u9636\\u6bb5\\u3002\\u6700\\u65b0\\u4eba\\u5de5\\u660e\\u786e\\u53d6\\u6d88OPSD3304\\u5e76\\u7ee7\\u7eedTree\\uff1b3334\\u56e0\\u8fc1\\u79fb\\u8def\\u5f84\\u6bd4\\u8f83\\u9519\\u8bef\\u5728\\u66f4\\u65b0\\u524d\\u5931\\u8d25\\uff0c\\u4fdd\\u7559\\u5b9e\\u9645\\u5931\\u8d25\\u51ed\\u8bc1\\u540e\\u4fee\\u590d\\u5e76\\u4ece\\u540c\\u4e00rolling4\\u7ee7\\u7eed\\u3002\",\n  \"human_instruction_original_time\": \"2026-10-08 Asia/Shanghai; exact message timestamp unavailable\",\n  \"retained18_migration\": {\n    \"original_node\": \"h100-9\",\n    \"original_ip\": \"10.33.0.13\",\n    \"retirement_date\": \"2026-10-08\",\n    \"destination_node\": \"h100-10\",\n    \"destination_ip\": \"10.33.0.18\",\n    \"destination_retained\": true,\n    \"preserved_parent_completed_outer\": 4,\n    \"unpreserved3333_progress_unknown\": true,\n    \"original3333_terminal_state\": null,\n    \"original3333_cleanup_verified\": false,\n    \"same_cluster_assets\": true,\n    \"assets_local_on_destination\": true,\n    \"output_server\": \"10.33.0.18\",\n    \"output_server_retained\": true,\n    \"storage_receipt_sha256\": \"04093db4cc3fae79b780b5213d2c53324ba1515b5dac9c3155c2fec0c4818b5e\",\n    \"asset_copy_required_status\": \"LOCAL_ASSETS_AND_PARENT_FILES_COPIED_VERIFIED\",\n    \"exact_executor_resume\": false,\n    \"foreign_job3304_must_be_scheduled_around\": false,\n    \"foreign_job3304_cancelled_by_latest_human\": true,\n    \"extra_short_training_added\": false\n  }\n}\n"
+      }
+    ],
+    "finished_epoch": 1791437802.5909064
+  },
+  "dev5_metadata_read": {
+    "command": "python3 -c 'import pathlib,json,time,hashlib\nrun=pathlib.Path('\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335'\"'\"')\nout={'\"'\"'metadata_read_only'\"'\"':True,'\"'\"'job_id'\"'\"':3335,'\"'\"'observed_epoch'\"'\"':time.time(),'\"'\"'ledgers'\"'\"':[]}\nfor p in sorted((run/'\"'\"'output/validation-cost'\"'\"').glob('\"'\"'validation-143490-1.jsonl'\"'\"')):\n b=p.read_bytes();events=[];parse_errors=[]\n for i,line in enumerate(b.decode().splitlines()):\n  try:events.append(json.loads(line))\n  except Exception as e:parse_errors.append({'\"'\"'line'\"'\"':i+1,'\"'\"'error'\"'\"':type(e).__name__})\n kinds={}\n for e in events:kinds[e.get('\"'\"'kind'\"'\"')]=kinds.get(e.get('\"'\"'kind'\"'\"'),0)+1\n keep=[e for e in events if e.get('\"'\"'kind'\"'\"') in ['\"'\"'validation_start'\"'\"','\"'\"'validation_completed'\"'\"','\"'\"'real_sample_batch'\"'\"']]\n out['\"'\"'ledgers'\"'\"'].append({'\"'\"'path'\"'\"':str(p),'\"'\"'bytes'\"'\"':len(b),'\"'\"'sha256'\"'\"':hashlib.sha256(b).hexdigest(),'\"'\"'parse_errors'\"'\"':parse_errors,'\"'\"'event_count'\"'\"':len(events),'\"'\"'kinds'\"'\"':kinds,'\"'\"'selected_events'\"'\"':keep,'\"'\"'last_event'\"'\"':events[-1] if events else None})\np=run/'\"'\"'stage.log'\"'\"'\nif p.exists():\n b=p.read_bytes();out['\"'\"'stage_log_bytes'\"'\"']=len(b);out['\"'\"'timing_lines'\"'\"']=[line for line in b.decode(errors='\"'\"'replace'\"'\"').splitlines() if '\"'\"'timing_s/step'\"'\"' in line or '\"'\"'timing_raw/step'\"'\"' in line or '\"'\"'step:5'\"'\"' in line or '\"'\"'step: 5'\"'\"' in line][-8:]\nprint(json.dumps(out,ensure_ascii=False))\n'",
+    "returncode": 0,
+    "stdout": "{\"metadata_read_only\": true, \"job_id\": 3335, \"observed_epoch\": 1791437867.7745497, \"ledgers\": [{\"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/output/validation-cost/validation-143490-1.jsonl\", \"bytes\": 67071, \"sha256\": \"7ac931a850b1f94255ea5f9f5ab4111d5e35cfa171dea2531ea634bcd2bb3934\", \"parse_errors\": [], \"event_count\": 293, \"kinds\": {\"validation_start\": 1, \"real_sample_batch\": 15, \"gpu_padding_submission\": 56, \"generation_start\": 56, \"generation_completed\": 55, \"http_start\": 55, \"http_completed\": 55}, \"selected_events\": [{\"count_convention\": \"raw returned response positions != PAD; excludes PAD and also EOS when PAD==EOS; engine emission lengths unavailable\", \"dataset_rows\": 512, \"eos_token_id\": 151645, \"epoch\": 1791437027.3995922, \"event\": 1, \"global_step\": 5, \"job_id\": \"3335\", \"kind\": \"validation_start\", \"observer_source_sha256\": \"1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3\", \"pad_token_id\": 151643, \"phase\": \"acceptance\", \"pid\": 143490, \"run\": \"/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/output\", \"validation_sequence\": 1}, {\"epoch\": 1791437027.4376988, \"event\": 2, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437082.3567386, \"event\": 18, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437147.9938672, \"event\": 39, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437195.218125, \"event\": 60, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437263.3406472, \"event\": 81, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437324.5183277, \"event\": 102, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437385.180507, \"event\": 123, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437426.9847724, \"event\": 139, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437464.6005788, \"event\": 155, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437525.0876653, \"event\": 176, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437589.7933066, \"event\": 197, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437653.2398233, \"event\": 218, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437714.0093582, \"event\": 239, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437772.3952343, \"event\": 260, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}, {\"epoch\": 1791437837.5190923, \"event\": 281, \"global_step\": 5, \"kind\": \"real_sample_batch\", \"phase\": \"acceptance\", \"pid\": 143490, \"rows\": 32, \"source\": \"original_token_preserving_validation_adapter\", \"validation_sequence\": 1}], \"last_event\": {\"call\": 56, \"epoch\": 1791437866.136606, \"event\": 293, \"global_step\": 5, \"kind\": \"generation_start\", \"phase\": \"acceptance\", \"pid\": 143490, \"prefill_token_events\": 8904, \"rows\": 8, \"validation_sequence\": 1}}], \"stage_log_bytes\": 180512, \"timing_lines\": []}\n",
+    "stderr": "",
+    "local_finished_utc": "2026-10-08T05:37:47.853265+00:00",
+    "remote_result": {
+      "metadata_read_only": true,
+      "job_id": 3335,
+      "observed_epoch": 1791437867.7745497,
+      "ledgers": [
+        {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/output/validation-cost/validation-143490-1.jsonl",
+          "bytes": 67071,
+          "sha256": "7ac931a850b1f94255ea5f9f5ab4111d5e35cfa171dea2531ea634bcd2bb3934",
+          "parse_errors": [],
+          "event_count": 293,
+          "kinds": {
+            "validation_start": 1,
+            "real_sample_batch": 15,
+            "gpu_padding_submission": 56,
+            "generation_start": 56,
+            "generation_completed": 55,
+            "http_start": 55,
+            "http_completed": 55
+          },
+          "selected_events": [
+            {
+              "count_convention": "raw returned response positions != PAD; excludes PAD and also EOS when PAD==EOS; engine emission lengths unavailable",
+              "dataset_rows": 512,
+              "eos_token_id": 151645,
+              "epoch": 1791437027.3995922,
+              "event": 1,
+              "global_step": 5,
+              "job_id": "3335",
+              "kind": "validation_start",
+              "observer_source_sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3",
+              "pad_token_id": 151643,
+              "phase": "acceptance",
+              "pid": 143490,
+              "run": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/output",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437027.4376988,
+              "event": 2,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437082.3567386,
+              "event": 18,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437147.9938672,
+              "event": 39,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437195.218125,
+              "event": 60,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437263.3406472,
+              "event": 81,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437324.5183277,
+              "event": 102,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437385.180507,
+              "event": 123,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437426.9847724,
+              "event": 139,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437464.6005788,
+              "event": 155,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437525.0876653,
+              "event": 176,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437589.7933066,
+              "event": 197,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437653.2398233,
+              "event": 218,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437714.0093582,
+              "event": 239,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437772.3952343,
+              "event": 260,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            },
+            {
+              "epoch": 1791437837.5190923,
+              "event": 281,
+              "global_step": 5,
+              "kind": "real_sample_batch",
+              "phase": "acceptance",
+              "pid": 143490,
+              "rows": 32,
+              "source": "original_token_preserving_validation_adapter",
+              "validation_sequence": 1
+            }
+          ],
+          "last_event": {
+            "call": 56,
+            "epoch": 1791437866.136606,
+            "event": 293,
+            "global_step": 5,
+            "kind": "generation_start",
+            "phase": "acceptance",
+            "pid": 143490,
+            "prefill_token_events": 8904,
+            "rows": 8,
+            "validation_sequence": 1
+          }
+        }
+      ],
+      "stage_log_bytes": 180512,
+      "timing_lines": []
+    }
+  },
+  "created_at": {
+    "epoch": 1791438209.848028,
+    "utc": "2026-10-08T05:43:29.848028+00:00",
+    "beijing": "2026-10-08T13:43:29.848028+08:00"
+  },
+  "scheduler_observation_time": {
+    "epoch": 1791437802.5905893,
+    "utc": "2026-10-08T05:36:42.590589+00:00",
+    "beijing": "2026-10-08T13:36:42.590589+08:00"
+  },
+  "identity": {
+    "target": "h100-10",
+    "expected_ip": "10.33.0.18",
+    "observed_hostname": "h100-10",
+    "observed_uid": 0,
+    "job_id": 3335,
+    "run_id": "tree-current200-continue-3335",
+    "cluster_name_from_frozen_manifest": "wuhan-h100",
+    "current_global_controller_config_not_queried": true,
+    "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+    "manifest_sha256": "1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b",
+    "config_sha256": "5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb"
+  },
+  "observed_scheduler": {
+    "state": "RUNNING",
+    "start": {
+      "epoch": 1791433883.0,
+      "utc": "2026-10-08T04:31:23+00:00",
+      "beijing": "2026-10-08T12:31:23+08:00"
+    },
+    "end": {
+      "epoch": 1792038683.0,
+      "utc": "2026-10-15T04:31:23+00:00",
+      "beijing": "2026-10-15T12:31:23+08:00"
+    },
+    "TimeLimit": "7-00:00:00",
+    "hours": 168,
+    "remaining_hours_at_observation": 166.91122483630974,
+    "partition": "gpu",
+    "partition_MaxTime": "UNLIMITED",
+    "partition_DefaultTime": "NONE",
+    "partition_QoS": "N/A",
+    "partition_AllowQos": "ALL",
+    "job_QOS": "(null)",
+    "job_Account": "(null)",
+    "Restarts": 0,
+    "Requeue": 0,
+    "SuspendTime": "None",
+    "Deadline": "N/A",
+    "Deadline_NA_does_not_remove_EndTime": true,
+    "other_controller_policy_layers_not_audited": true
+  },
+  "budget_provenance": {
+    "package_launch_has_SBATCH_time_directive": false,
+    "package_launch_comment": "Resource/time directives are supplied by the separately reviewed renderer.",
+    "renderer_input": "explicit positive finite wall_hours; no default",
+    "manifest_dispatch_train_wall_hours": 168,
+    "actual_rendered_sbatch_time": "168:00:00",
+    "actual_sbatch_sha_matches_deployment": true,
+    "explicit_human_seven_day_hard_budget_found": false,
+    "negative_result_scope": "Current authority/release/STATUS/REPORT/frozen launch/manifest/deployment and assigned task inspected. Original raw goal message not in subtask context; root must preserve any independently known human hard wall/resource budget.",
+    "human_authority_completed_outer_goal": 200,
+    "human_authority_final_evaluation_rows": 51713,
+    "human_original_message_timestamp": "2026-10-08 Asia/Shanghai; exact message timestamp unavailable"
+  },
+  "startup_identity_pin_review": {
+    "original_startup_TimeLimit_exact_pin_hours": 168,
+    "original_manifest_launch_allocation_identity_must_remain_immutable": true,
+    "allocation_identity_exact_pin": "slurm_identity.py:109-142 exact TimeLimit from manifest.dispatch.train_wall_hours",
+    "startup_only_runtime_verification_calls": [
+      "launch.sbatch startup",
+      "supervisor.py:69",
+      "guard_entry.py:49"
+    ],
+    "periodic_guard_checks": "guard_entry guarded_run and NVML wrappers only verify_runtime_cgroup; no recurring verify_runtime",
+    "resource_guard_retained18_live_TimeLimit_or_scontrol_check": false,
+    "resource_guard_loop_checks": "job cgroup/PID ownership/UUID/foreign GPU occupancy; no scheduler wall limit",
+    "postload_lease_saved_allocation_pin": "owned_lease_identity validates saved original allocation-identity.json wall_hours168 and SHA; no live scheduler TimeLimit read",
+    "external_owned_runtime_local_sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+    "external_owned_runtime_hash_matches_manifest": true,
+    "external_owned_runtime_TimeLimit_or_scheduler_deadline_check": false,
+    "scope": "Local pinned static source review only; no execution test. Rerunning startup verify_runtime or guard startup after extension would mismatch original168h; do not perform them."
+  },
+  "observed_training": {
+    "parent_actually_loaded_completed_outer": 4,
+    "job_initial_new_outer_plan": 196,
+    "last_confirmed_completed_outer": 5,
+    "segment_new_completed_outer": 1,
+    "remaining_outer_from_completed5": 195,
+    "complete_outer_step_wall_published": false,
+    "predev_outer_seconds_approx": 2875.7405321598053,
+    "predev_outer_minutes_approx": 47.92900886933009,
+    "predev_interval_definition": "Actual rollout cost start to dev5 validation_start: proxy including generation/old-ref/actor/rolling boundary; not published timing_s/step; current dev/HF save excluded.",
+    "rollout_only_wall_seconds": 1407.2343087755144,
+    "rollout_start": {
+      "epoch": 1791434151.65906,
+      "utc": "2026-10-08T04:35:51.659060+00:00",
+      "beijing": "2026-10-08T12:35:51.659060+08:00"
+    },
+    "dev5_start": {
+      "epoch": 1791437027.3995922,
+      "utc": "2026-10-08T05:23:47.399592+00:00",
+      "beijing": "2026-10-08T13:23:47.399592+08:00"
+    },
+    "startup_seconds": 268.6590600013733,
+    "dev5_metadata_observed": {
+      "epoch": 1791437867.7745497,
+      "utc": "2026-10-08T05:37:47.774550+00:00",
+      "beijing": "2026-10-08T13:37:47.774550+08:00"
+    },
+    "dev5_entered_batches": 15,
+    "dev5_total_batches": 16,
+    "dev5_entered_rows": 480,
+    "entered_rows_not_scored_rows": true,
+    "validation_completed_event_observed": false,
+    "mean_14_inter_batch_transition_seconds_approx": 57.86295667716435,
+    "projected_dev512_seconds": 925.8073068346296,
+    "final_batch_count_at32": 1617,
+    "projected_final51713_seconds": 93564.40094697475,
+    "hf5_old_metadata_snapshot": {
+      "returncode": 0,
+      "stdout": "{\"job_id\": 3335, \"observed_epoch\": 1791438186.3499231, \"native_hf5_manifest_exists\": true, \"hf5_directory_exists\": true, \"no_pt_or_model_loading\": true, \"hf5_file_metadata\": [{\"name\": \"added_tokens.json\", \"bytes\": 605, \"mtime\": 1791437974.8300028}, {\"name\": \"config.json\", \"bytes\": 796, \"mtime\": 1791437968.326219}, {\"name\": \"generation_config.json\", \"bytes\": 243, \"mtime\": 1791437968.326219}, {\"name\": \"merges.txt\", \"bytes\": 1671853, \"mtime\": 1791437974.8900008}, {\"name\": \"model-00001-of-00003.safetensors\", \"bytes\": 4982131536, \"mtime\": 1791437970.9581316}, {\"name\": \"model-00002-of-00003.safetensors\", \"bytes\": 4932949336, \"mtime\": 1791437973.166058}, {\"name\": \"model-00003-of-00003.safetensors\", \"bytes\": 3673383040, \"mtime\": 1791437974.8300028}, {\"name\": \"model.safetensors.index.json\", \"bytes\": 35640, \"mtime\": 1791437974.8300028}, {\"name\": \"special_tokens_map.json\", \"bytes\": 613, \"mtime\": 1791437974.8300028}, {\"name\": \"tokenizer.json\", \"bytes\": 11421896, \"mtime\": 1791437974.9579985}, {\"name\": \"tokenizer_config.json\", \"bytes\": 7306, \"mtime\": 1791437974.8300028}, {\"name\": \"vocab.json\", \"bytes\": 2776833, \"mtime\": 1791437974.8580017}], \"manifest\": {\"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/manifest.json\", \"sha256\": \"56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260\", \"value\": {\"driver\": {\"exact_reload_verified\": true, \"logical_state_sha256\": \"06bf3ba64be939f8bd6151d190b2495b20d4128df7ce0bf0210fede6d0626567\", \"next_step\": 6, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/driver.pt\", \"sha256\": \"9c7e526a8e012ead5c2dfc395be2633b84f58424825b04034cf77db492f73ab9\"}, \"hf_checkpoint\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/actor/global_step_5\", \"hf_identity\": {\"files\": {\"added_tokens.json\": \"58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b\", \"config.json\": \"879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0\", \"generation_config.json\": \"5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96\", \"merges.txt\": \"8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5\", \"model-00001-of-00003.safetensors\": \"e2b1835ce54eb3e38a1305fe544b8e66c69eb91e12688f301dac5f11ebc9eccf\", \"model-00002-of-00003.safetensors\": \"566350fd8a823b2a650d4866fbe2f8a8c136a56b7ba0fa5df495d32e2b664874\", \"model-00003-of-00003.safetensors\": \"3b3bb71b113e23cdacef0578385047937d29da5b226da736ffb717f7c0a42549\", \"model.safetensors.index.json\": \"3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d\", \"special_tokens_map.json\": \"76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd\", \"tokenizer.json\": \"9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa\", \"tokenizer_config.json\": \"7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6\", \"vocab.json\": \"ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910\"}, \"sha256\": \"027db27af881f99f16a0b615580ecbb4c6d83da07598655104f204dda1058e84\"}, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\"}, \"limits\": \"Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence\", \"status\": \"COMPLETE_SAME_WORLD_STATE_SAVED\", \"worker_states\": [{\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 65.07668408378959, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"0\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 0, \"world_size\": 8}, \"logical_state_sha256\": \"1918a8f59a6ff50553cdec13c9e129952d3fc6e7ae8ec5b87ecad9858c83885a\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-00.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"a54cdf21eae2398e516e7954eda55820fc0a77a5f981329b82797a79b666d10f\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 66.38243842124939, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"1\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 1, \"world_size\": 8}, \"logical_state_sha256\": \"6c3db97b0a94244ed23a2c3cfd492643b3eced4a1167037f76cb5c67e09d52da\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-01.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"6c43c24d4f59086cd1662fe27d575b7cc292339c8e76beb3c06dd77b51341512\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 66.65913715213537, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"2\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 2, \"world_size\": 8}, \"logical_state_sha256\": \"d67ebbf8822e87f1918e428d68264273964d40c3d294ca1f791c9834d67dc87d\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-02.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"3c305c16997f2444b9939b6f8dabf559e0534614a1bebd987841aec921e1e60c\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 69.80295641347766, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"3\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 3, \"world_size\": 8}, \"logical_state_sha256\": \"bde2f40b90c84293e5b3affcba508a7fbf2c8d1caf520d4226f930682c621122\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-03.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"0a47e30a2fa96e23f22d1f98d05defd3608e5f53576dc6dc24682dc1fd7acf0d\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 67.89705130830407, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"4\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 4, \"world_size\": 8}, \"logical_state_sha256\": \"98891733fe0f29517e01f7ffb3a5313a136e21c0525528c9c2890d039865e12c\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-04.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"f801bfd25cd494e1cb544020bc8ef0e39b2192f7001a849e8dc53335b553274c\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 70.44942375645041, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"5\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 5, \"world_size\": 8}, \"logical_state_sha256\": \"327c7733df3f8dce39a81a0ab209894ae501854aeae9fb346c16c68e694b5657\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-05.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"5d852b8a3a661969989369253f4c99c878914af403ccb88d45787604b9acd5a2\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 70.87016865611076, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"6\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 6, \"world_size\": 8}, \"logical_state_sha256\": \"f5fb563d2d73aa6cf6e6fc9be4e320992420946fb5b4da18b76892f994a28c50\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-06.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"bfec24f34dd0f0e85dfc3261cbd9259e359e8d079731be17e8510f73861f9689\"}, {\"actual_total_optimizer_calls\": 100, \"bytes\": 6171974566, \"checkpoint_and_reload_seconds\": 67.37718925997615, \"exact_same_world_reload_verified\": true, \"full_worker_state_finite\": true, \"identity\": {\"actual_update_limit\": 200, \"code_commit\": \"6efb60466a233f70bf8f50de26df32012f49b4bc\", \"completed_step\": 5, \"config_sha256\": \"5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb\", \"cuda_visible_devices\": \"7\", \"data_identity\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"guard_continue_accounting\": {\"completed_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"completed_outer_updates\": 5, \"guard_refused_attempts\": 0, \"partial_evidence\": [], \"partial_optimizer_calls_per_rank\": {}, \"protocol\": \"tree_guard_continue_fresh_rollout_v1\", \"refused_attempts\": 0, \"total_optimizer_calls_per_rank\": {\"0\": 100, \"1\": 100, \"2\": 100, \"3\": 100, \"4\": 100, \"5\": 100, \"6\": 100, \"7\": 100}, \"training_attempts\": 5}, \"job_id\": \"3335\", \"model_identity\": \"744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0\", \"rank\": 7, \"world_size\": 8}, \"logical_state_sha256\": \"c3724d5f8b6c99a655da6113b1cc6b2d70eb66620384e73981d554deea397309\", \"observed_adam_steps\": [100], \"optimizer_lrs\": [8.771929824561403e-08], \"optimizer_state_entries\": 37, \"path\": \"/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/rank-07.pt\", \"scheduler_last_epoch\": 5, \"sha256\": \"38dad459a0358992602bd27ec52bc797f162f904b472bd6f88e8d238ef2f58cc\"}]}}}\n",
+      "stderr": ""
+    },
+    "hf5_not_refreshed_here": true,
+    "protocol": "tree_fresh200_five_leaf_v1",
+    "dev512_every_outer": 5,
+    "dev_count_in_segment": 40,
+    "HF_save_outers": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "final_rows": 51713,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "global_STATUS_REPORT_not_modified": true
+  },
+  "deadline_arithmetic": {
+    "method": "From start: startup +196 new outer(parent4 loaded) +40 dev512(5,10,...200) +final51713 +unknown saves/reload/delivery. From completed5:195outer +currentdev remainder +39futuredev +final.",
+    "assumptions": "Steady future pre-dev outer and batch cost; unchanged batch32/search/turn/token/length budgets; same mean final batch cost; no failures/retries/storage slowdown. Entered batch is not scored or completed.",
+    "scenarios_not_promised_ETA_or_measured_final_duration": [
+      {
+        "name": "observed_predev_proxy",
+        "outer_predev_minutes": 47.92900886933009,
+        "dev512_minutes": 15.43012178057716,
+        "final51713_hours": 25.990111374159653,
+        "training196_hours": 156.56809563981162,
+        "periodic40_dev_hours": 10.286747853718106,
+        "total_hours_excluding_extra_saves_reload_delivery": 192.91958238435643,
+        "nominal_finish_if_assumptions_hold": {
+          "epoch": 1792128393.4965837,
+          "utc": "2026-10-16T05:26:33.496584+00:00",
+          "beijing": "2026-10-16T13:26:33.496584+08:00"
+        },
+        "excess_over168_hours": 24.91958238435643,
+        "margin_with240_hours": 47.08041761564357
+      },
+      {
+        "name": "45min_outer_same_dev",
+        "outer_predev_minutes": 45,
+        "dev512_minutes": 15.43012178057716,
+        "final51713_hours": 25.990111374159653,
+        "training196_hours": 147.0,
+        "periodic40_dev_hours": 10.286747853718106,
+        "total_hours_excluding_extra_saves_reload_delivery": 183.35148674454481,
+        "nominal_finish_if_assumptions_hold": {
+          "epoch": 1792093948.3522804,
+          "utc": "2026-10-15T19:52:28.352280+00:00",
+          "beijing": "2026-10-16T03:52:28.352280+08:00"
+        },
+        "excess_over168_hours": 15.351486744544815,
+        "margin_with240_hours": 56.648513255455185
+      },
+      {
+        "name": "40min_outer_same_dev",
+        "outer_predev_minutes": 40,
+        "dev512_minutes": 15.43012178057716,
+        "final51713_hours": 25.990111374159653,
+        "training196_hours": 130.66666666666666,
+        "periodic40_dev_hours": 10.286747853718106,
+        "total_hours_excluding_extra_saves_reload_delivery": 167.01815341121147,
+        "nominal_finish_if_assumptions_hold": {
+          "epoch": 1792035148.3522804,
+          "utc": "2026-10-15T03:32:28.352280+00:00",
+          "beijing": "2026-10-15T11:32:28.352280+08:00"
+        },
+        "excess_over168_hours": -0.9818465887885282,
+        "margin_with240_hours": 72.98184658878853
+      },
+      {
+        "name": "35min_outer_same_dev",
+        "outer_predev_minutes": 35,
+        "dev512_minutes": 15.43012178057716,
+        "final51713_hours": 25.990111374159653,
+        "training196_hours": 114.33333333333333,
+        "periodic40_dev_hours": 10.286747853718106,
+        "total_hours_excluding_extra_saves_reload_delivery": 150.68482007787816,
+        "nominal_finish_if_assumptions_hold": {
+          "epoch": 1791976348.3522804,
+          "utc": "2026-10-14T11:12:28.352280+00:00",
+          "beijing": "2026-10-14T19:12:28.352280+08:00"
+        },
+        "excess_over168_hours": -17.315179922121843,
+        "margin_with240_hours": 89.31517992212184
+      },
+      {
+        "name": "60min_outer_20min_dev",
+        "outer_predev_minutes": 60,
+        "dev512_minutes": 20.0,
+        "final51713_hours": 33.6875,
+        "training196_hours": 196.0,
+        "periodic40_dev_hours": 13.333333333333334,
+        "total_hours_excluding_extra_saves_reload_delivery": 243.0954608500004,
+        "nominal_finish_if_assumptions_hold": {
+          "epoch": 1792309026.65906,
+          "utc": "2026-10-18T07:37:06.659060+00:00",
+          "beijing": "2026-10-18T15:37:06.659060+08:00"
+        },
+        "excess_over168_hours": 75.09546085000039,
+        "margin_with240_hours": -3.095460850000393
+      }
+    ],
+    "maximum_average_predev_outer_minutes_for168h_no_extra_overhead": 40.30056528228219,
+    "observed_proxy_training_plus_periodic_end_before_unknown_saves": {
+      "epoch": 1792034829.0956366,
+      "utc": "2026-10-15T03:27:09.095637+00:00",
+      "beijing": "2026-10-15T11:27:09.095637+08:00"
+    },
+    "risk": "Observed steady proxy about193h exceeds168h by about25h. Current deadline may expire before final completion; extra saves/slowdown may push it before outer200. Future pace may improve. Not a bound, promise, measured final duration or terminal result.",
+    "rollout_only_cannot_be_full_training_ETA": true
+  },
+  "proposed_change_not_executed": {
+    "decision_owner": "root",
+    "candidate_total_TimeLimit": "10-00:00:00",
+    "candidate_total_hours": 240,
+    "candidate_EndTime": {
+      "epoch": 1792297883.0,
+      "utc": "2026-10-18T04:31:23+00:00",
+      "beijing": "2026-10-18T12:31:23+08:00"
+    },
+    "command_argv_text_not_run": [
+      "scontrol",
+      "--local",
+      "update",
+      "JobId=3335",
+      "TimeLimit=10-00:00:00"
+    ],
+    "partition_allowed_range_observed": "No finite partition MaxTime cap.240h is not excluded by partition; jobQOS/Account null, callerroot. Actual controller acceptance still requires return and ownjob readback; other policy layers not audited.",
+    "margin_observed_proxy_hours": 47.08041761564357,
+    "margin_60min_outer_20min_dev_hours": -3.095460850000393,
+    "sensitivity": "240h covers observed proxy with about47h margin;60minouter/20mindev case about243h slightly exceeds240h. Future true cadence must be rechecked. Finite14days336h also below no observed partition cap if root decides more margin. No completion guarantee.",
+    "official_reference": "https://slurm.schedmd.com/scontrol.html",
+    "official_semantics": "Privileged user may increase running/suspended TimeLimit through scontrol update. Only ownjob3335 time metadata intended; no suspend/restart/requeue/submit.",
+    "records_required": [
+      "Preserve original frozen168h manifest/sbatch/allocation-identity.json and SHAs as startup facts; record extension separately, do not rewrite pins.",
+      "Record valid human scope/budget decision, UTC/BJ, hostname/IP/uid, source/manifest/config/run, exact before StartTime/TimeLimit/EndTime/NodeList/state/Restarts/Requeue.",
+      "Retain exact update argv/returncode/stdout/stderr; proposed or failed request is not success.",
+      "Readback only own3335: actual240h(or chosen value), EndTime, identicalStartTime/job/run/node/Restarts0/Requeue0, continuedRUNNING; separately retain fresh own resource sample.",
+      "Do not rerun startup verify_runtime or restart guard/trainer. Keep saved168h identity and source pins.",
+      "Keep200outer and all token/length/turn/update budgets, dev512every5, save5/50/100/150/200 and final51713. No hotcode/environment/manifest edits.",
+      "Preserve source backup remoteSHA proofs and final actual evaluation/reload/cost records; extension is no completion or backup proof."
+    ],
+    "executed": false
+  },
+  "local_read_sources": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/launch.sbatch",
+      "bytes": 3648,
+      "sha256": "d31de53c7780948907473570da2cc80f322dfebeed626eb24787ac3b5f41f6df"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/render_dispatch.py",
+      "bytes": 2542,
+      "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/manifest.json",
+      "bytes": 276488,
+      "sha256": "1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/slurm_identity.py",
+      "bytes": 11311,
+      "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/supervisor.py",
+      "bytes": 25504,
+      "sha256": "86479b45fc56438723c538ac9ba61779f35e2291fbf2ba26625bb481f4b8441a"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/guard_entry.py",
+      "bytes": 3993,
+      "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/resource_guard_retained18.py",
+      "bytes": 5782,
+      "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/owned_lease_identity.py",
+      "bytes": 5366,
+      "sha256": "d07b5b9eb55893ee5667b5768db0e44de819d009fa818e2b18c8fe63e308cf74"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree_shared_owned_runtime_fixed.py",
+      "bytes": 5042,
+      "sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/deployment.json",
+      "bytes": 1306,
+      "sha256": "7a22e860f62d13f1cfa4290351d7e47457b50e317ae922f89f73e4f9f11e9745"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/direct-release-v11.json",
+      "bytes": 3987,
+      "sha256": "b7ea8bef0bd89a0c314b70c21e35d776a909f0a13a8e09ffc7edb713522657f9"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/human-authority-v11.json",
+      "bytes": 4387,
+      "sha256": "e80f1fe8e2060325c5b3ae620631e48b6565c9b9529c209a7d68a26c5e2f986d"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "bytes": 346513,
+      "sha256": "5792b4b2bd32c1abe62c27ac3b93466fcdeeceba06913fe245ce22e2668f71f8"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/REPORT.md",
+      "bytes": 4046,
+      "sha256": "632f6f9a63754c53ada66e06840569ae4e4dc956307bdf5942f2347b49bd441d"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FRESH200_CURRENT3335_CANONICAL.json",
+      "bytes": 49197,
+      "sha256": "25736beb3d8b8e31758b5c65e60935709208cd7c0fe27e7c89cadd146aa25ae7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_COMPLETED_OUTER5_RUNTIME_RECEIPT.json",
+      "bytes": 1449,
+      "sha256": "d9112bcab535ee76a97190da26880c51c9fc392f296bcfd81c3977788e56c5b4"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_CURRENT_ROLLOUT_COSTS.json",
+      "bytes": 2087,
+      "sha256": "4200717cb79713f1ad22642fe0d22049306a9622ec483c765f1da38d8f2fad11"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_HF5_METADATA_OBSERVATION.json",
+      "bytes": 18041,
+      "sha256": "0d28e778c47f9dbda9cc46eb19d237f16516c36a54955d747489522a7eaa0d91"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_DEV5_LIVE_LEDGER_OBSERVATION.json",
+      "bytes": 3213,
+      "sha256": "4f386c4b3a87d38cf095c1413c0e99fa0096693faf8f76e232b0a9271425a5bc"
+    }
+  ],
+  "read_only_scope": {
+    "scheduler_update": false,
+    "training_change": false,
+    "signals": false,
+    "tests": false,
+    "model_or_PT_load": false,
+    "GPU_queries_or_new_work": false,
+    "other_jobs_or_node_queues_queried": false,
+    "other_agents_contacted": false,
+    "root_coordination_only": true,
+    "local_mutations": "Only requested deadline JSON/md"
+  }
+}
