@@ -1,0 +1,1843 @@
+{
+  "schema": "JOB3332_ACTUAL_PROBABILITY_INDEPENDENT_REVIEW_V1",
+  "status": "BLOCK",
+  "decision": "BLOCK_NUMERICAL_PROBABILITY_ADMISSION",
+  "created_utc": "2026-10-08T04:05:28.121455+00:00",
+  "scope": "GIGPO_OFFICIAL_INSTRUCT_FRESH200_RAW_ACTION_PROBABILITY_IDENTITY_V1",
+  "reviewer": "/root/job3332_actual_probability_review",
+  "identity": {
+    "actual_complete_hf_inputs_observed": true,
+    "actual_dropout_neutral_train_eval_verified": true,
+    "actual_hf_role_micro_batch_sizes": {
+      "current": 2,
+      "old": 4,
+      "reference": 4
+    },
+    "actual_hf_roles": [
+      "old",
+      "current",
+      "reference"
+    ],
+    "actual_normalizer_inputs_observed": true,
+    "actual_vllm_runner_positions_observed": true,
+    "code_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+    "decisive_normalizer_evidence_sha256": "06e85f9b95e9da6e3cd11f5318b80139a53843d052f2451740a8288545716b60",
+    "job_id": "3332",
+    "material_manifest_sha256": "7e43b667dcf0c8a4361f82b250ab3e8eaf534a20275e31eca689051c303359ab",
+    "native_binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+    "post_sampling_driver_complete_state_sha256": "b93a8f191f59c60a8c102f531b5267895044c8b0b2740cfc6525e6f4378f24f1",
+    "post_sampling_pause_raw_sha256": "87d9d8e51c50cde5d656eec4c88b89b9bd54e9ae264b2b160f8b499815a79e8c",
+    "post_sampling_worker_identities": [
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "b63a3d3d55ca3bef824a7c524a107e57c43a2c657acc839e08ff8b27e51a417c",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "205889c5f98a4ed70398cc89cd9bac89f6b66a9c8511974e00fb8090f8bab286",
+        "model_shards_sha256": "205889c5f98a4ed70398cc89cd9bac89f6b66a9c8511974e00fb8090f8bab286",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805344,
+        "rank": 0,
+        "rng_tensors_sha256": "7c728122361fd0f9c9e7f6dec20af13e0583f076cbdf2e6118a496e4c49c2d33",
+        "scheduler_step": 0,
+        "start_ticks": "2237476425"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "f5cfbfcfd2c4a19f6cbfc6c5bb3582ffe8a1b84c33da747438b748fd2da58046",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "c6d5f9699f84a3b6b40da2772b46fc3ed5f023313d6d025028a7a3f07c6e1d7a",
+        "model_shards_sha256": "c6d5f9699f84a3b6b40da2772b46fc3ed5f023313d6d025028a7a3f07c6e1d7a",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805678,
+        "rank": 1,
+        "rng_tensors_sha256": "c4d7de68b96ae0138918b8ecbbf63f6c2685e9d27da146e3646fe4926b00b2c8",
+        "scheduler_step": 0,
+        "start_ticks": "2237476974"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "13cc69d4ed30e21b7bc1b0d26440fa2dc86a3b4b310633a444c5487fecb56e8c",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "b34264367c639e1051c06a1b01bfbf1bc74fea21530c9f1b2920bac649fd8f7a",
+        "model_shards_sha256": "b34264367c639e1051c06a1b01bfbf1bc74fea21530c9f1b2920bac649fd8f7a",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805679,
+        "rank": 2,
+        "rng_tensors_sha256": "c7a13bab859e1bf630153b2af78919bb6ee36cbfb061a665ebab2d0dd7dd5ce0",
+        "scheduler_step": 0,
+        "start_ticks": "2237476976"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "f64fb9f5ba9114555175333aa76a0952730951befc78914f3f018ec2192ef74c",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "f13e149b92a71cd8b6121bec8686996dc165de1d7da5745997d9a3f3d4beedcf",
+        "model_shards_sha256": "f13e149b92a71cd8b6121bec8686996dc165de1d7da5745997d9a3f3d4beedcf",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805680,
+        "rank": 3,
+        "rng_tensors_sha256": "4a523cab7caa451cdeb76a5da9d41e967736e49bf5f3f1225f6175ce6e56ef88",
+        "scheduler_step": 0,
+        "start_ticks": "2237476977"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "0505d04a1f86991ddb942e67c0b742549b1df38d7056f7f35c4f25420c9b0e32",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "8020e4592bed3b45a450903ff4281dec96bcd8d9c686ed3f8f25aef8cf6a1160",
+        "model_shards_sha256": "8020e4592bed3b45a450903ff4281dec96bcd8d9c686ed3f8f25aef8cf6a1160",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805681,
+        "rank": 4,
+        "rng_tensors_sha256": "abc628aa493423ae5e7242cf2ff9734da2f8b270beab31adea9992f5aa40ff7e",
+        "scheduler_step": 0,
+        "start_ticks": "2237476978"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "58685a72d999a464773e8de3dcda190d330bc4a36012af0a963f92eadf8e8aa9",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "6c6db8e1c562ccdf2fefced43c7e797cf102f3128deba9b00ce47771bfa2c509",
+        "model_shards_sha256": "6c6db8e1c562ccdf2fefced43c7e797cf102f3128deba9b00ce47771bfa2c509",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805682,
+        "rank": 5,
+        "rng_tensors_sha256": "69d1d6512cbf728dd627e153e4ae75fa065f3c4e980f811db263ac80dde4675c",
+        "scheduler_step": 0,
+        "start_ticks": "2237476979"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "efc63946ee2373beefcf85ac0dc44dfbeebebf3ab2a9862a66f8b2c194384234",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "df435c6f7557b530ad5707e0277fa0337c5d2e28279057325ffeb0727b2181fb",
+        "model_shards_sha256": "df435c6f7557b530ad5707e0277fa0337c5d2e28279057325ffeb0727b2181fb",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805683,
+        "rank": 6,
+        "rng_tensors_sha256": "5a58b2fb2343aadc43d580649e71c0609218243fa941294395e0da20a990453e",
+        "scheduler_step": 0,
+        "start_ticks": "2237476979"
+      },
+      {
+        "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+        "complete_state_sha256": "ff96b344324556dc2b9946a5616d40f8dd66ef520a31c91fb6f69361a041d6f1",
+        "learning_rates": [
+          0.0
+        ],
+        "local_shards_sha256": "47caa91513534c3c0c9ff8380b3087faf2ffd2385b1d701aa0f3c10fc7ee1230",
+        "model_shards_sha256": "47caa91513534c3c0c9ff8380b3087faf2ffd2385b1d701aa0f3c10fc7ee1230",
+        "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pid": 1805684,
+        "rank": 7,
+        "rng_tensors_sha256": "0eae38ff74917f65605a2be33a2e4f6cd698e2e96f1026ba4ac995d12c95d0c2",
+        "scheduler_step": 0,
+        "start_ticks": "2237476980"
+      }
+    ],
+    "post_sampling_worker_pause_sha256": "2edc3dce3ad83e90a53701a3686fb2b422bea324a99a74af0836b68bbd66e44e",
+    "raw_alignment_schema": "RAW_ACTION_PREFIX_ALIGNMENT_V1",
+    "run_id": "gigpo-e1-fresh200-live-job3332-1791429907029168081"
+  },
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081",
+  "original_session": "2026-10-08_11-27-29_624609_1801401",
+  "driver_pid": 1804988,
+  "execution_state": {
+    "actual_phase": "WAITING_BEFORE_FIRST_ADAM",
+    "actual_adam_writes": 0,
+    "scheduler_step": 0,
+    "data_cursor": 512,
+    "completed_training_outer": 0,
+    "training_failure_claimed": false,
+    "review_block_is_not_job_cancel_pause_or_restart": true,
+    "same_original_workers_and_sampled_batch_remain_live_at_collected_pause": true,
+    "post_sampling_pause": {
+      "actual_adam_writes": 0,
+      "data_cursor": 512,
+      "driver_complete_state_sha256": "b93a8f191f59c60a8c102f531b5267895044c8b0b2740cfc6525e6f4378f24f1",
+      "driver_pid": 1804988,
+      "driver_start_ticks": "2237475182",
+      "raw": {
+        "bytes": 1376464770,
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/post-sampling-pause-state.pt",
+        "sha256": "87d9d8e51c50cde5d656eec4c88b89b9bd54e9ae264b2b160f8b499815a79e8c"
+      },
+      "scheduler": 0,
+      "scope": "GIGPO_POLICY_SAFETY_OFFICIAL_INSTRUCT_FRESH200_CALIBRATION_V1",
+      "status": "POST_SAMPLING_BEFORE_FIRST_ADAM",
+      "worker_pause_sha256": "2edc3dce3ad83e90a53701a3686fb2b422bea324a99a74af0836b68bbd66e44e",
+      "workers": [
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "b63a3d3d55ca3bef824a7c524a107e57c43a2c657acc839e08ff8b27e51a417c",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "205889c5f98a4ed70398cc89cd9bac89f6b66a9c8511974e00fb8090f8bab286",
+          "model_shards_sha256": "205889c5f98a4ed70398cc89cd9bac89f6b66a9c8511974e00fb8090f8bab286",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805344,
+          "rank": 0,
+          "rng_tensors_sha256": "7c728122361fd0f9c9e7f6dec20af13e0583f076cbdf2e6118a496e4c49c2d33",
+          "scheduler_step": 0,
+          "start_ticks": "2237476425"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "f5cfbfcfd2c4a19f6cbfc6c5bb3582ffe8a1b84c33da747438b748fd2da58046",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "c6d5f9699f84a3b6b40da2772b46fc3ed5f023313d6d025028a7a3f07c6e1d7a",
+          "model_shards_sha256": "c6d5f9699f84a3b6b40da2772b46fc3ed5f023313d6d025028a7a3f07c6e1d7a",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805678,
+          "rank": 1,
+          "rng_tensors_sha256": "c4d7de68b96ae0138918b8ecbbf63f6c2685e9d27da146e3646fe4926b00b2c8",
+          "scheduler_step": 0,
+          "start_ticks": "2237476974"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "13cc69d4ed30e21b7bc1b0d26440fa2dc86a3b4b310633a444c5487fecb56e8c",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "b34264367c639e1051c06a1b01bfbf1bc74fea21530c9f1b2920bac649fd8f7a",
+          "model_shards_sha256": "b34264367c639e1051c06a1b01bfbf1bc74fea21530c9f1b2920bac649fd8f7a",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805679,
+          "rank": 2,
+          "rng_tensors_sha256": "c7a13bab859e1bf630153b2af78919bb6ee36cbfb061a665ebab2d0dd7dd5ce0",
+          "scheduler_step": 0,
+          "start_ticks": "2237476976"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "f64fb9f5ba9114555175333aa76a0952730951befc78914f3f018ec2192ef74c",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "f13e149b92a71cd8b6121bec8686996dc165de1d7da5745997d9a3f3d4beedcf",
+          "model_shards_sha256": "f13e149b92a71cd8b6121bec8686996dc165de1d7da5745997d9a3f3d4beedcf",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805680,
+          "rank": 3,
+          "rng_tensors_sha256": "4a523cab7caa451cdeb76a5da9d41e967736e49bf5f3f1225f6175ce6e56ef88",
+          "scheduler_step": 0,
+          "start_ticks": "2237476977"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "0505d04a1f86991ddb942e67c0b742549b1df38d7056f7f35c4f25420c9b0e32",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "8020e4592bed3b45a450903ff4281dec96bcd8d9c686ed3f8f25aef8cf6a1160",
+          "model_shards_sha256": "8020e4592bed3b45a450903ff4281dec96bcd8d9c686ed3f8f25aef8cf6a1160",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805681,
+          "rank": 4,
+          "rng_tensors_sha256": "abc628aa493423ae5e7242cf2ff9734da2f8b270beab31adea9992f5aa40ff7e",
+          "scheduler_step": 0,
+          "start_ticks": "2237476978"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "58685a72d999a464773e8de3dcda190d330bc4a36012af0a963f92eadf8e8aa9",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "6c6db8e1c562ccdf2fefced43c7e797cf102f3128deba9b00ce47771bfa2c509",
+          "model_shards_sha256": "6c6db8e1c562ccdf2fefced43c7e797cf102f3128deba9b00ce47771bfa2c509",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805682,
+          "rank": 5,
+          "rng_tensors_sha256": "69d1d6512cbf728dd627e153e4ae75fa065f3c4e980f811db263ac80dde4675c",
+          "scheduler_step": 0,
+          "start_ticks": "2237476979"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "efc63946ee2373beefcf85ac0dc44dfbeebebf3ab2a9862a66f8b2c194384234",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "df435c6f7557b530ad5707e0277fa0337c5d2e28279057325ffeb0727b2181fb",
+          "model_shards_sha256": "df435c6f7557b530ad5707e0277fa0337c5d2e28279057325ffeb0727b2181fb",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805683,
+          "rank": 6,
+          "rng_tensors_sha256": "5a58b2fb2343aadc43d580649e71c0609218243fa941294395e0da20a990453e",
+          "scheduler_step": 0,
+          "start_ticks": "2237476979"
+        },
+        {
+          "buffers_sha256": "56d202dbc2e3ea6853bee3b1355e3eca7c9391766a775a47c094375f757d7c78",
+          "complete_state_sha256": "ff96b344324556dc2b9946a5616d40f8dd66ef520a31c91fb6f69361a041d6f1",
+          "learning_rates": [
+            0.0
+          ],
+          "local_shards_sha256": "47caa91513534c3c0c9ff8380b3087faf2ffd2385b1d701aa0f3c10fc7ee1230",
+          "model_shards_sha256": "47caa91513534c3c0c9ff8380b3087faf2ffd2385b1d701aa0f3c10fc7ee1230",
+          "optimizer_tensors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pid": 1805684,
+          "rank": 7,
+          "rng_tensors_sha256": "0eae38ff74917f65605a2be33a2e4f6cd698e2e96f1026ba4ac995d12c95d0c2",
+          "scheduler_step": 0,
+          "start_ticks": "2237476980"
+        }
+      ]
+    },
+    "observed_collection_utc": "2026-10-08T03:55:41.754482+00:00",
+    "live_process_requeried_by_this_reviewer": false
+  },
+  "independence": {
+    "original_runtime14_or_scientific2dd_authorship": false,
+    "authored_new_readonly_rank3_diagnostic_reader": true,
+    "reader_was_not_executed_or_used_as_admission_evidence": true,
+    "no_self_certification_of_reader_implementation": true,
+    "clean_nonauthor_reader_review_handled_separately": true
+  },
+  "evidence_integrity": {
+    "collection_receipt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/METADATA-COLLECTION-RECEIPT.json",
+      "bytes": 63889,
+      "sha256": "1cd7cd1c1ca29c99dc7446d69a28c162f13e70abc4f4fa31a2f47e616f1a2517"
+    },
+    "transport_sha_verified": true,
+    "local_payload_count_hashed": 89,
+    "exact_original_payload_count": 86,
+    "projected_payload_count": 3,
+    "manifest_entry_count": 136,
+    "collected_origin_entries_matching_manifest": 78,
+    "raw_pt_manifest_count": 58,
+    "raw_pt_manifest_total_bytes": 8989124946,
+    "integrity_errors": [],
+    "all_local_payload_and_collected_origin_hashes_match": true,
+    "raw_pt_independent_full_sha_scan": false,
+    "raw_pt_independent_reexecution_or_probability_recomputation": false,
+    "large_original_token_arrays_locally_inspected": false,
+    "projections_explicitly_distinguished_from_full_originals": true,
+    "artifact_receipts": [
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probability-identity-ready.json",
+        "origin_bytes": 15163,
+        "origin_sha256": "894c886c773ef05190ece553b1615ce7199971f043cd7e1d8fcfa7d4b61d095f",
+        "payload_bytes": 15163,
+        "payload_sha256": "894c886c773ef05190ece553b1615ce7199971f043cd7e1d8fcfa7d4b61d095f",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probability-identity-ready.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probability-material-manifest.json",
+        "origin_bytes": 50432,
+        "origin_sha256": "7e43b667dcf0c8a4361f82b250ab3e8eaf534a20275e31eca689051c303359ab",
+        "payload_bytes": 50432,
+        "payload_sha256": "7e43b667dcf0c8a4361f82b250ab3e8eaf534a20275e31eca689051c303359ab",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probability-material-manifest.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/post-sampling-pause-state.json",
+        "origin_bytes": 6707,
+        "origin_sha256": "157c0ad3b2e8871e044c4f623f5152792213e718728f21e64bded8c92405c475",
+        "payload_bytes": 6707,
+        "payload_sha256": "157c0ad3b2e8871e044c4f623f5152792213e718728f21e64bded8c92405c475",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/post-sampling-pause-state.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-probability-alignment.json",
+        "origin_bytes": 429788528,
+        "origin_sha256": "5148f6efc1c1ccdcb2084bcc66307715c8da6d6d1d1d047711a8e6c1a1c95607",
+        "payload_bytes": 606365,
+        "payload_sha256": "ef0b5ced332387da9a0155eda22ca89c5c2ccff28699e65486895b06eb10efd0",
+        "projection_only": true,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-probability-alignment.PROJECTED.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/full-old-versus-sampled-prefix.json",
+        "origin_bytes": 21409081,
+        "origin_sha256": "ebb0d5e29e816f4691bb2577e0b40bf1d691776723ccb7bc9bfd12e3170a9609",
+        "payload_bytes": 4595108,
+        "payload_sha256": "d5bf208bcab40edcbae13b1849078aa566e39811315a96117e7c0c03cfdcd45c",
+        "projection_only": true,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/full-old-versus-sampled-prefix.PROJECTED.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-decisive-normalizer-evidence.json",
+        "origin_bytes": 34051,
+        "origin_sha256": "06e85f9b95e9da6e3cd11f5318b80139a53843d052f2451740a8288545716b60",
+        "payload_bytes": 34051,
+        "payload_sha256": "06e85f9b95e9da6e3cd11f5318b80139a53843d052f2451740a8288545716b60",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-decisive-normalizer-evidence.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-vllm-backend-identity.json",
+        "origin_bytes": 98882,
+        "origin_sha256": "0967449d66973b02ebdf76565462c76f8b93830b7d92a2cc7ca77e68b7d92b57",
+        "payload_bytes": 98882,
+        "payload_sha256": "0967449d66973b02ebdf76565462c76f8b93830b7d92a2cc7ca77e68b7d92b57",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-vllm-backend-identity.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-official-zero-initialization.json",
+        "origin_bytes": 21298,
+        "origin_sha256": "4576cdcaa8e258007b2342f253ad2f1dc18ded8d39c0679587e68c61fe5c3729",
+        "payload_bytes": 21298,
+        "payload_sha256": "4576cdcaa8e258007b2342f253ad2f1dc18ded8d39c0679587e68c61fe5c3729",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-official-zero-initialization.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-native-fsdp-before-zero.json",
+        "origin_bytes": 27266,
+        "origin_sha256": "d8d83f449ff2e07685d29997b607dc5bd290fabc237840fb8eecae0363f44922",
+        "payload_bytes": 27266,
+        "payload_sha256": "d8d83f449ff2e07685d29997b607dc5bd290fabc237840fb8eecae0363f44922",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-native-fsdp-before-zero.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-baseline-state-comparison.json",
+        "origin_bytes": 11275,
+        "origin_sha256": "c20f64d693b70236ff85216bd195130154009e26c0b2bb498419470ae22156af",
+        "payload_bytes": 11275,
+        "payload_sha256": "c20f64d693b70236ff85216bd195130154009e26c0b2bb498419470ae22156af",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-baseline-state-comparison.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/baseline-evaluation.json",
+        "origin_bytes": 1186,
+        "origin_sha256": "543b6646f0cb797ad912193ed466316940427ff1bfec8beb25022e4568e2a56c",
+        "payload_bytes": 1186,
+        "payload_sha256": "543b6646f0cb797ad912193ed466316940427ff1bfec8beb25022e4568e2a56c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/baseline-evaluation.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/training-prefix-turns.json",
+        "origin_bytes": 237823396,
+        "origin_sha256": "a8936be3c20293ac50a8fdfae8d2ec5aceeeeccf0476da7cc03a3dede4be4a0f",
+        "payload_bytes": 54066,
+        "payload_sha256": "e76e45b736f8c4f9462f4bc1ecb598fbc1744c0de29d9b9b997eab9a943283d7",
+        "projection_only": true,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/training-prefix-turns.PROJECTED.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/resolved-config-C0.json",
+        "origin_bytes": 11349,
+        "origin_sha256": "a193053139b235acc364f9f8ce3defb3a32e75ac173d57aa30575b3aa0855d00",
+        "payload_bytes": 11349,
+        "payload_sha256": "a193053139b235acc364f9f8ce3defb3a32e75ac173d57aa30575b3aa0855d00",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/resolved-config-C0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/fresh200-initialization.json",
+        "origin_bytes": 14235,
+        "origin_sha256": "40b3beb025b00ba9dbafb741c3f0bbd1fd00d5e1f13443224896434ea59d316e",
+        "payload_bytes": 14235,
+        "payload_sha256": "40b3beb025b00ba9dbafb741c3f0bbd1fd00d5e1f13443224896434ea59d316e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/fresh200-initialization.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/local-http-retrieval-verification.json",
+        "origin_bytes": 551,
+        "origin_sha256": "82e82ab5d90ee1d56e3d35d866e0d5be45bd81726ca4ecb84e589dd5014824e4",
+        "payload_bytes": 551,
+        "payload_sha256": "82e82ab5d90ee1d56e3d35d866e0d5be45bd81726ca4ecb84e589dd5014824e4",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/local-http-retrieval-verification.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-exclusive-slurm-allocation.json",
+        "origin_bytes": 11299,
+        "origin_sha256": "43a31673d88cc2193c4d2e374932912b1985df8a28819881c82b4cea0f511baf",
+        "payload_bytes": 11299,
+        "payload_sha256": "43a31673d88cc2193c4d2e374932912b1985df8a28819881c82b4cea0f511baf",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-exclusive-slurm-allocation.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/actual-guard-full8-uuid-proof.json",
+        "origin_bytes": 2157,
+        "origin_sha256": "02d26cd1c0102cfb614b344f48eca972b2f597714a77ff20e29cdcfc98239b83",
+        "payload_bytes": 2157,
+        "payload_sha256": "02d26cd1c0102cfb614b344f48eca972b2f597714a77ff20e29cdcfc98239b83",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/actual-guard-full8-uuid-proof.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-4.json",
+        "origin_bytes": 670,
+        "origin_sha256": "6f0453fbf57b00a2c4bc174473712bd5c8a5c4dba8ed4ae899ee8d9d913fac7c",
+        "payload_bytes": 670,
+        "payload_sha256": "6f0453fbf57b00a2c4bc174473712bd5c8a5c4dba8ed4ae899ee8d9d913fac7c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-6.json",
+        "origin_bytes": 862,
+        "origin_sha256": "b5d6f61b3a9a10a1774112ad2212a1368841ff637044abb9b6aec3e9bfa4eb40",
+        "payload_bytes": 862,
+        "payload_sha256": "b5d6f61b3a9a10a1774112ad2212a1368841ff637044abb9b6aec3e9bfa4eb40",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-7.json",
+        "origin_bytes": 670,
+        "origin_sha256": "b1d84fb5819f167dc4a4746c5ddd801344a9917a918f914dd07ae924888fd251",
+        "payload_bytes": 670,
+        "payload_sha256": "b1d84fb5819f167dc4a4746c5ddd801344a9917a918f914dd07ae924888fd251",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-4.json",
+        "origin_bytes": 682,
+        "origin_sha256": "485a24e1e33175565ef071bb827cc2ed03ec013a3c5b95c6eb8ceaaef27a5d88",
+        "payload_bytes": 682,
+        "payload_sha256": "485a24e1e33175565ef071bb827cc2ed03ec013a3c5b95c6eb8ceaaef27a5d88",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-0.json",
+        "origin_bytes": 682,
+        "origin_sha256": "2be14d54fdbd30381190a8b0e7af044686dbe04f5dd1b7a12da4f34e85b7c65e",
+        "payload_bytes": 682,
+        "payload_sha256": "2be14d54fdbd30381190a8b0e7af044686dbe04f5dd1b7a12da4f34e85b7c65e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-2.json",
+        "origin_bytes": 682,
+        "origin_sha256": "421709c14150bda77fbd0ec492d2fe274c3fce311fa413c842c5415c1b58f7ef",
+        "payload_bytes": 682,
+        "payload_sha256": "421709c14150bda77fbd0ec492d2fe274c3fce311fa413c842c5415c1b58f7ef",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-0.json",
+        "origin_bytes": 862,
+        "origin_sha256": "c0051f0730a9027ecc70d4f8013f946433f9bd8c963e062a219f6039bc26abb9",
+        "payload_bytes": 862,
+        "payload_sha256": "c0051f0730a9027ecc70d4f8013f946433f9bd8c963e062a219f6039bc26abb9",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-2.json",
+        "origin_bytes": 679,
+        "origin_sha256": "da2714a772fce9fb6286879942e1b91607e653cc4fff50b3ed2a66584c77ba61",
+        "payload_bytes": 679,
+        "payload_sha256": "da2714a772fce9fb6286879942e1b91607e653cc4fff50b3ed2a66584c77ba61",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-7.json",
+        "origin_bytes": 682,
+        "origin_sha256": "a4492a81e1963b71be400ba6380be0be44dfdd7bb3b24ec407a2d88fa8532067",
+        "payload_bytes": 682,
+        "payload_sha256": "a4492a81e1963b71be400ba6380be0be44dfdd7bb3b24ec407a2d88fa8532067",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-0.json",
+        "origin_bytes": 679,
+        "origin_sha256": "f5ed4c867addce75b1d5eae5a35712883dd2d1dea81053068ab91b90caf53cc1",
+        "payload_bytes": 679,
+        "payload_sha256": "f5ed4c867addce75b1d5eae5a35712883dd2d1dea81053068ab91b90caf53cc1",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-7.json",
+        "origin_bytes": 862,
+        "origin_sha256": "1f797c55185b6e9cb1ceb4298404ccbc168973c4ff31a854359fbbb9ec176319",
+        "payload_bytes": 862,
+        "payload_sha256": "1f797c55185b6e9cb1ceb4298404ccbc168973c4ff31a854359fbbb9ec176319",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-4.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "535728921f2a1950b65cf17a0bc47ef4bc34b3007b9124f2d104a1454b31b820",
+        "payload_bytes": 1569,
+        "payload_sha256": "535728921f2a1950b65cf17a0bc47ef4bc34b3007b9124f2d104a1454b31b820",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-5.json",
+        "origin_bytes": 682,
+        "origin_sha256": "60fe2069a23ac3e1f0cb66f52643db404e21e5463856f5dbfda29111425b18b6",
+        "payload_bytes": 682,
+        "payload_sha256": "60fe2069a23ac3e1f0cb66f52643db404e21e5463856f5dbfda29111425b18b6",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-6.json",
+        "origin_bytes": 670,
+        "origin_sha256": "f820907053fc6c0ccad8e2bdde2b00466a315b9660a7001f07e2f9e7da171349",
+        "payload_bytes": 670,
+        "payload_sha256": "f820907053fc6c0ccad8e2bdde2b00466a315b9660a7001f07e2f9e7da171349",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-6.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "9517c18a9e1eaa05df13d44d4b32bca221e234436ed05ec8fe05f448739093c2",
+        "payload_bytes": 1569,
+        "payload_sha256": "9517c18a9e1eaa05df13d44d4b32bca221e234436ed05ec8fe05f448739093c2",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-5.json",
+        "origin_bytes": 670,
+        "origin_sha256": "8750ed4d02f02c495a56e438f6d17f7ee522a38043196c8abf97ce5b227eb968",
+        "payload_bytes": 670,
+        "payload_sha256": "8750ed4d02f02c495a56e438f6d17f7ee522a38043196c8abf97ce5b227eb968",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-2.json",
+        "origin_bytes": 670,
+        "origin_sha256": "1370715ab64c24b89ef39021b2a88414f58345d063d581a33e0768b75c0cf74e",
+        "payload_bytes": 670,
+        "payload_sha256": "1370715ab64c24b89ef39021b2a88414f58345d063d581a33e0768b75c0cf74e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-2.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "61561d424eadc60337c4c92268c2416830997e903a882c6e23e5ac557457dc16",
+        "payload_bytes": 1569,
+        "payload_sha256": "61561d424eadc60337c4c92268c2416830997e903a882c6e23e5ac557457dc16",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-6.json",
+        "origin_bytes": 682,
+        "origin_sha256": "f581908d3feba685a4de95b17d058e26460caf2aee4fb1a7c5cbd8f305e1f604",
+        "payload_bytes": 682,
+        "payload_sha256": "f581908d3feba685a4de95b17d058e26460caf2aee4fb1a7c5cbd8f305e1f604",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-7.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "b0d65af089598f1dc3300b449284df1347e1c70d09d5533dc01427ce6998a414",
+        "payload_bytes": 1569,
+        "payload_sha256": "b0d65af089598f1dc3300b449284df1347e1c70d09d5533dc01427ce6998a414",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-3.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "54d191c32ad1aa6535f4446a415d56ea79506a525b018ca0e3c9f521e9d9b219",
+        "payload_bytes": 1569,
+        "payload_sha256": "54d191c32ad1aa6535f4446a415d56ea79506a525b018ca0e3c9f521e9d9b219",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-1.json",
+        "origin_bytes": 670,
+        "origin_sha256": "4a5c8f05bf25352d78fbfc87c3f38639e1643e656b04ec67a63fc4055c14dfd8",
+        "payload_bytes": 670,
+        "payload_sha256": "4a5c8f05bf25352d78fbfc87c3f38639e1643e656b04ec67a63fc4055c14dfd8",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-5.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "e4dcc96ff9b1109778d171d48f71d7ef261384e03627fbc20211670cb26539d9",
+        "payload_bytes": 1569,
+        "payload_sha256": "e4dcc96ff9b1109778d171d48f71d7ef261384e03627fbc20211670cb26539d9",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-4.json",
+        "origin_bytes": 679,
+        "origin_sha256": "7d245fa80fe3d8d4c6f978df4c45fa3f17ff0587bdea9d608a983c8bf091229e",
+        "payload_bytes": 679,
+        "payload_sha256": "7d245fa80fe3d8d4c6f978df4c45fa3f17ff0587bdea9d608a983c8bf091229e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-7.json",
+        "origin_bytes": 679,
+        "origin_sha256": "285baac86655d506363dc9c8107878edd8bb00768b6dbc550c678944ebd2f005",
+        "payload_bytes": 679,
+        "payload_sha256": "285baac86655d506363dc9c8107878edd8bb00768b6dbc550c678944ebd2f005",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-0.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "a31c13e39a374f3043850e27d5f1f2407e30135ac46c11fc2f35e711a5608d23",
+        "payload_bytes": 1569,
+        "payload_sha256": "a31c13e39a374f3043850e27d5f1f2407e30135ac46c11fc2f35e711a5608d23",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-1.json",
+        "origin_bytes": 679,
+        "origin_sha256": "52d1e8e6169bd387ca162da8d11ff8f93fdb27e7fdee0b7ffe5bf709ff64ce2f",
+        "payload_bytes": 679,
+        "payload_sha256": "52d1e8e6169bd387ca162da8d11ff8f93fdb27e7fdee0b7ffe5bf709ff64ce2f",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-3.json",
+        "origin_bytes": 862,
+        "origin_sha256": "f9ce9025e11dfb6ecb83199bc86e6d0cd47b04fd5d74f44b12f698b20fa07d4c",
+        "payload_bytes": 862,
+        "payload_sha256": "f9ce9025e11dfb6ecb83199bc86e6d0cd47b04fd5d74f44b12f698b20fa07d4c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-3.json",
+        "origin_bytes": 679,
+        "origin_sha256": "94ddbc2c97a8c4ddc7fd10b4d08091b1582800fd121f880536639947eb28372a",
+        "payload_bytes": 679,
+        "payload_sha256": "94ddbc2c97a8c4ddc7fd10b4d08091b1582800fd121f880536639947eb28372a",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-3.json",
+        "origin_bytes": 670,
+        "origin_sha256": "00b620bd279589481f83708c05a5eb3b029ac7380be656cb0295810d1694fc06",
+        "payload_bytes": 670,
+        "payload_sha256": "00b620bd279589481f83708c05a5eb3b029ac7380be656cb0295810d1694fc06",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/old-rank-0.json",
+        "origin_bytes": 670,
+        "origin_sha256": "087111a83a558ab8061b3018c0679966baaf063532049e246bb1ae7667e3f37b",
+        "payload_bytes": 670,
+        "payload_sha256": "087111a83a558ab8061b3018c0679966baaf063532049e246bb1ae7667e3f37b",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/old-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-1.json",
+        "origin_bytes": 862,
+        "origin_sha256": "5649b86e8ade3864cf1849be875a0822d27da4e75be1ea2f4043fd7bde3fcc50",
+        "payload_bytes": 862,
+        "payload_sha256": "5649b86e8ade3864cf1849be875a0822d27da4e75be1ea2f4043fd7bde3fcc50",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-neutral-rank-1.json",
+        "origin_bytes": 1569,
+        "origin_sha256": "de5adbb4ddd547db4757ef970b92894a82e7d3a8a3758a83d6b6af5f77a01998",
+        "payload_bytes": 1569,
+        "payload_sha256": "de5adbb4ddd547db4757ef970b92894a82e7d3a8a3758a83d6b6af5f77a01998",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-neutral-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-1.json",
+        "origin_bytes": 682,
+        "origin_sha256": "27804ec6d40d708dcab6fe15f7f667b1f3968c05b3e064dc6b8df7b44cadbadc",
+        "payload_bytes": 682,
+        "payload_sha256": "27804ec6d40d708dcab6fe15f7f667b1f3968c05b3e064dc6b8df7b44cadbadc",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-rank-3.json",
+        "origin_bytes": 682,
+        "origin_sha256": "18592a2b6662f0268402e687f5cdae4d26d84b795b7521442daae5ebf22e0a77",
+        "payload_bytes": 682,
+        "payload_sha256": "18592a2b6662f0268402e687f5cdae4d26d84b795b7521442daae5ebf22e0a77",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-5.json",
+        "origin_bytes": 679,
+        "origin_sha256": "c2702b0ba684379d046b8ec931f7d413ec54355b4d6b167aaa625a85a9eb322d",
+        "payload_bytes": 679,
+        "payload_sha256": "c2702b0ba684379d046b8ec931f7d413ec54355b4d6b167aaa625a85a9eb322d",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/current-rank-6.json",
+        "origin_bytes": 679,
+        "origin_sha256": "786dad090479963d1ae4c19ced95c91dae74103dd7ca75a1aebe40d8ce033326",
+        "payload_bytes": 679,
+        "payload_sha256": "786dad090479963d1ae4c19ced95c91dae74103dd7ca75a1aebe40d8ce033326",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/current-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-2.json",
+        "origin_bytes": 862,
+        "origin_sha256": "472f720eacf2e941e258c5e9171c08e930d66efc7f3007239a83734f55607e67",
+        "payload_bytes": 862,
+        "payload_sha256": "472f720eacf2e941e258c5e9171c08e930d66efc7f3007239a83734f55607e67",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-5.json",
+        "origin_bytes": 862,
+        "origin_sha256": "2fd78d113a88f69fc0310fa8e764d5af33f9ef6fd9c579378bba641957e58245",
+        "payload_bytes": 862,
+        "payload_sha256": "2fd78d113a88f69fc0310fa8e764d5af33f9ef6fd9c579378bba641957e58245",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/complete-actions/reference-neutral-rank-4.json",
+        "origin_bytes": 862,
+        "origin_sha256": "5591005dc6300d623618ee4e7eb3dcd73cb9af06e0f20035f5b55d7e8a183602",
+        "payload_bytes": 862,
+        "payload_sha256": "5591005dc6300d623618ee4e7eb3dcd73cb9af06e0f20035f5b55d7e8a183602",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/complete-actions/reference-neutral-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-4.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "5c09491650fcb31655804c2ad3a8179870b95372504f4595f39c26dc2ffad2cc",
+        "payload_bytes": 2307,
+        "payload_sha256": "5c09491650fcb31655804c2ad3a8179870b95372504f4595f39c26dc2ffad2cc",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-2.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "a7828999e892807c6d1c0bb8f7d2f0cc2ba680cbacdc91bcf3c154448bd0a57a",
+        "payload_bytes": 2307,
+        "payload_sha256": "a7828999e892807c6d1c0bb8f7d2f0cc2ba680cbacdc91bcf3c154448bd0a57a",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-5.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "784f3687600e393e08a925cdad9f6a322605101f1b1146428ab22a997ed26392",
+        "payload_bytes": 2307,
+        "payload_sha256": "784f3687600e393e08a925cdad9f6a322605101f1b1146428ab22a997ed26392",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-5.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "ab1fedd8e5a404956f9f407ea5f13ae76eb68ff4564fc53281ec57229a44d04f",
+        "payload_bytes": 2308,
+        "payload_sha256": "ab1fedd8e5a404956f9f407ea5f13ae76eb68ff4564fc53281ec57229a44d04f",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "ab43ce18671947adcd66a426272ab2466c3544febe0d87c860705f95668bff86",
+        "payload_bytes": 2310,
+        "payload_sha256": "ab43ce18671947adcd66a426272ab2466c3544febe0d87c860705f95668bff86",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-6.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "8c4e1284826f8a422c5a460707ef5b009404dbc76d21dcea45d2d2593ca9c4cd",
+        "payload_bytes": 2307,
+        "payload_sha256": "8c4e1284826f8a422c5a460707ef5b009404dbc76d21dcea45d2d2593ca9c4cd",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-0.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "cad0ae4de4fc87084bb72f94751a17f3fa0e6f6a262437a08043584775cc9bee",
+        "payload_bytes": 2307,
+        "payload_sha256": "cad0ae4de4fc87084bb72f94751a17f3fa0e6f6a262437a08043584775cc9bee",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-7.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "3c51d3b75363c0adb2250f5656bb4f031a3af263597868c969ba54c00d5e5875",
+        "payload_bytes": 2308,
+        "payload_sha256": "3c51d3b75363c0adb2250f5656bb4f031a3af263597868c969ba54c00d5e5875",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-0.json",
+        "origin_bytes": 2306,
+        "origin_sha256": "f1500f5b677b2327f23970a2d6feaf5dc66c12f7c0088282c7dcd50744bc9448",
+        "payload_bytes": 2306,
+        "payload_sha256": "f1500f5b677b2327f23970a2d6feaf5dc66c12f7c0088282c7dcd50744bc9448",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-7.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "4e1d3213e75d31800ad5be61f482c3854a5f674a6ede0c7c1cfe8fd8e3a27835",
+        "payload_bytes": 2309,
+        "payload_sha256": "4e1d3213e75d31800ad5be61f482c3854a5f674a6ede0c7c1cfe8fd8e3a27835",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-1.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "07ad81bfb9953b5d22331fb750edf9414a1d10ecbef48e7cbec58a72959c359e",
+        "payload_bytes": 2308,
+        "payload_sha256": "07ad81bfb9953b5d22331fb750edf9414a1d10ecbef48e7cbec58a72959c359e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-5.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "12031430f4bedb30d15f3cad6f1e6a0a17048bb841b286d16f6c4da431d2998d",
+        "payload_bytes": 2310,
+        "payload_sha256": "12031430f4bedb30d15f3cad6f1e6a0a17048bb841b286d16f6c4da431d2998d",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-0.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "eafa77c252a8ccfa746ba666f9f3739ba29c24ff77fbc12b0d869e574ca2525c",
+        "payload_bytes": 2309,
+        "payload_sha256": "eafa77c252a8ccfa746ba666f9f3739ba29c24ff77fbc12b0d869e574ca2525c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-3.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "1f7dcfac216cef400031c457cb1cabdb94768cb4e139143bf382f16a193ad69e",
+        "payload_bytes": 2307,
+        "payload_sha256": "1f7dcfac216cef400031c457cb1cabdb94768cb4e139143bf382f16a193ad69e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-4.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "e975a5400711548f88aaac081e2d8e8cc55767cb18b4f8f9db11341f0d4cbb09",
+        "payload_bytes": 2310,
+        "payload_sha256": "e975a5400711548f88aaac081e2d8e8cc55767cb18b4f8f9db11341f0d4cbb09",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-4.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "a72a8cabb4cb189b111993ff69cfe7819c374d22bf5a64cd00ba95b7122291a8",
+        "payload_bytes": 2308,
+        "payload_sha256": "a72a8cabb4cb189b111993ff69cfe7819c374d22bf5a64cd00ba95b7122291a8",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-2.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "dc83444a5e6aa3a5de4c803aa1881ae66208f84dfc734bd81d6afa7d2264a949",
+        "payload_bytes": 2309,
+        "payload_sha256": "dc83444a5e6aa3a5de4c803aa1881ae66208f84dfc734bd81d6afa7d2264a949",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-7.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "3a8b241e9d25f853eda83dbb11984b960183002df3b74f948ffe6284dd61a197",
+        "payload_bytes": 2307,
+        "payload_sha256": "3a8b241e9d25f853eda83dbb11984b960183002df3b74f948ffe6284dd61a197",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-0.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "2d80731c7ae50d80b57f7ac7e95b62fb984646d716d661e502ce3e91b21dff0e",
+        "payload_bytes": 2310,
+        "payload_sha256": "2d80731c7ae50d80b57f7ac7e95b62fb984646d716d661e502ce3e91b21dff0e",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-0.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-1.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "26626604f1c4f233ae042fefda962cd92de58139092de2404ff3d8a34d819789",
+        "payload_bytes": 2308,
+        "payload_sha256": "26626604f1c4f233ae042fefda962cd92de58139092de2404ff3d8a34d819789",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-1.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "830706bd7af544e4017731bf02239d1ee7663292f460da98e88435c12b05b5d9",
+        "payload_bytes": 2309,
+        "payload_sha256": "830706bd7af544e4017731bf02239d1ee7663292f460da98e88435c12b05b5d9",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-3.json",
+        "origin_bytes": 2306,
+        "origin_sha256": "cc32c7e2be0d3b472eac2c58be5408ce35b39a24f1af746c51a43d2e13b16f20",
+        "payload_bytes": 2306,
+        "payload_sha256": "cc32c7e2be0d3b472eac2c58be5408ce35b39a24f1af746c51a43d2e13b16f20",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-2.json",
+        "origin_bytes": 2308,
+        "origin_sha256": "b3b1a87ffaf6f2fc90b91318f580a23f98637372eb1c85a639bae11034e5c846",
+        "payload_bytes": 2308,
+        "payload_sha256": "b3b1a87ffaf6f2fc90b91318f580a23f98637372eb1c85a639bae11034e5c846",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-2.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-3-rank-4.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "ed1f8361ebab6cea8967001bc1d8dc42b8b2233b4d857b9508f64986eb8db2a0",
+        "payload_bytes": 2307,
+        "payload_sha256": "ed1f8361ebab6cea8967001bc1d8dc42b8b2233b4d857b9508f64986eb8db2a0",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-3-rank-4.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-5.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "a5565a1aa0aaf1dd1250a34039e6ce94100ae6a98f7cd306bec629a71bf72f63",
+        "payload_bytes": 2307,
+        "payload_sha256": "a5565a1aa0aaf1dd1250a34039e6ce94100ae6a98f7cd306bec629a71bf72f63",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-5.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-1.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "c4bc63618dce73b427b5ec81351da04859439dfc05c15c689502b7c8c152ed1a",
+        "payload_bytes": 2309,
+        "payload_sha256": "c4bc63618dce73b427b5ec81351da04859439dfc05c15c689502b7c8c152ed1a",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-1.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-3.json",
+        "origin_bytes": 2307,
+        "origin_sha256": "9baa12a9d6edcb0f68b2a450e62a86c81e1a982524ab1eaeaf7812283dd7c3a9",
+        "payload_bytes": 2307,
+        "payload_sha256": "9baa12a9d6edcb0f68b2a450e62a86c81e1a982524ab1eaeaf7812283dd7c3a9",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-2-rank-6.json",
+        "origin_bytes": 2306,
+        "origin_sha256": "41b3ca199a24415fa0580aa6606373031b20d11b839f6560c3f6ffac6a020244",
+        "payload_bytes": 2306,
+        "payload_sha256": "41b3ca199a24415fa0580aa6606373031b20d11b839f6560c3f6ffac6a020244",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-2-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-6.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "6702fd798bdc04d6750460d3cc230da944d0ec610e400d7a3673e1983d26815c",
+        "payload_bytes": 2309,
+        "payload_sha256": "6702fd798bdc04d6750460d3cc230da944d0ec610e400d7a3673e1983d26815c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-0-rank-6.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-7.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "a3f035f68fa3f84a4aa8bd9416f9c5a5e364e885b807eed121b2da41c373830c",
+        "payload_bytes": 2310,
+        "payload_sha256": "a3f035f68fa3f84a4aa8bd9416f9c5a5e364e885b807eed121b2da41c373830c",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-7.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-3.json",
+        "origin_bytes": 2310,
+        "origin_sha256": "6a0833c33c8884553d98acf4149747267664c1b2ac7fde52454380a3cff75980",
+        "payload_bytes": 2310,
+        "payload_sha256": "6a0833c33c8884553d98acf4149747267664c1b2ac7fde52454380a3cff75980",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-3.json"
+      },
+      {
+        "remote_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-6.json",
+        "origin_bytes": 2309,
+        "origin_sha256": "dd8eb2382f86327aabfac997ed2775913c6d1aa8c3e14791d1f2f5aabe46a672",
+        "payload_bytes": 2309,
+        "payload_sha256": "dd8eb2382f86327aabfac997ed2775913c6d1aa8c3e14791d1f2f5aabe46a672",
+        "projection_only": false,
+        "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/job3332-first-probability-material-v1/probabilities/train/call-1-rank-6.json"
+      }
+    ]
+  },
+  "metadata_identity": {
+    "checks": {
+      "exact_job_source_binding": true,
+      "local_material_sha_matches_ready": true,
+      "local_decisive_sha_matches_ready": true,
+      "ready_manifest_pause_same": true,
+      "all_eight_workers_unique": true,
+      "worker_pause_typed_digest_independently_recalculated": true,
+      "ready_pause_worker_identities_equal": true,
+      "driver_pause_identity_bound": true,
+      "before_first_adam_and_scheduler_zero_cursor512": true,
+      "hf_roles_training_micro_and_dropout_declared": true,
+      "official_zero_no_populated_adam": true,
+      "baseline_model_optimizer_scheduler_unchanged": true,
+      "baseline512_common_split": true,
+      "pause_model_optimizer_matches_official_zero": true,
+      "complete_role_source_process_manifest_closure": true,
+      "all_current_reference_neutral_receipts_equal": true,
+      "all32_perturn_retained_identity_and_neutrality": true,
+      "actual_backend_source_rank_process_metadata": true
+    },
+    "role_summary": {
+      "old": {
+        "ranks": 8,
+        "actual_forward_calls_per_rank": [
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80
+        ],
+        "declared_rank_micro": 4,
+        "raw_receipts_bound_to_manifest": true
+      },
+      "current": {
+        "ranks": 8,
+        "actual_forward_calls_per_rank": [
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160
+        ],
+        "declared_rank_micro": 2,
+        "raw_receipts_bound_to_manifest": true
+      },
+      "reference": {
+        "ranks": 8,
+        "actual_forward_calls_per_rank": [
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80
+        ],
+        "declared_rank_micro": 4,
+        "raw_receipts_bound_to_manifest": true
+      }
+    },
+    "pause_worker_digest_independently_recalculated": "2edc3dce3ad83e90a53701a3686fb2b422bea324a99a74af0836b68bbd66e44e",
+    "micro_sizes_status": "READY_DECLARATION_AND_FROZEN_PRODUCER_VALIDATION_NOT_NEW_RAW_HF_MICRO_REEXECUTION",
+    "worker_rank_pids": {
+      "0": 1805344,
+      "1": 1805678,
+      "2": 1805679,
+      "3": 1805680,
+      "4": 1805681,
+      "5": 1805682,
+      "6": 1805683,
+      "7": 1805684
+    },
+    "baseline512_f1": 0.2429115394461968,
+    "baseline512_em": 0.18359375,
+    "all_checks_pass": true
+  },
+  "structural_identity": {
+    "status": "SUPPORTED_BY_FROZEN_PRODUCER_AND_HASH_BOUND_ORIGINAL_JSON_PROJECTION_SCOPE",
+    "checks": {
+      "producer_zero_mismatch_counts": true,
+      "original_json_projection_zero_mismatch_counts": true,
+      "trajectory2560_source_and_action5478_coverage": true,
+      "retained_lengths_match_all_full_checks": true,
+      "retained_token_count468211_crossclosure": true,
+      "all5478_structural_role_input_flags_true": true,
+      "original_selected_probability_chains_declared_exact": true,
+      "trajectory_token_weights_and_counts_consistent": true,
+      "all20_largest_positions_are_retained_and_scalar_chain_consistent": true
+    },
+    "trajectory_rows": 2560,
+    "recorded_actions": 5478,
+    "effective_retained_tokens": 468211,
+    "raw_support_and_internal_kernel_KV_content_independently_reverified": false,
+    "projections_preserve_counts_and_checks_but_omit_full_token_and_runner_arrays": true,
+    "no_producer_structural_failure_observed": true,
+    "all_checks_pass_at_stated_scope": true
+  },
+  "numerical_evidence": {
+    "status": "BLOCK_UNJUSTIFIED_NUMERICAL_VARIANCE",
+    "retained_perturn_receipts": [
+      {
+        "serial": 0,
+        "rank": 0,
+        "valid_tokens": 30556,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.9539461731910706,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 1,
+        "valid_tokens": 30531,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.8389523029327393,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 2,
+        "valid_tokens": 30122,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.665471613407135,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 3,
+        "valid_tokens": 27872,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.4159595966339111,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 4,
+        "valid_tokens": 28799,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.8597230911254883,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 5,
+        "valid_tokens": 28588,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.9214892387390137,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 6,
+        "valid_tokens": 30844,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.0691349506378174,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 0,
+        "rank": 7,
+        "valid_tokens": 29070,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.8175888061523438,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 0,
+        "valid_tokens": 23202,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.3791577816009521,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 1,
+        "valid_tokens": 22713,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.265265941619873,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 2,
+        "valid_tokens": 23875,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 2.4754629135131836,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 3,
+        "valid_tokens": 24653,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.9452606439590454,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 4,
+        "valid_tokens": 22644,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.4648447930812836,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 5,
+        "valid_tokens": 25513,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.9833461046218872,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 6,
+        "valid_tokens": 19963,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.390319585800171,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 1,
+        "rank": 7,
+        "valid_tokens": 21263,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.7418136596679688,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 0,
+        "valid_tokens": 5200,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.36313462257385254,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 1,
+        "valid_tokens": 3964,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.46265411376953125,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 2,
+        "valid_tokens": 4898,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.4533214569091797,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 3,
+        "valid_tokens": 5034,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.8106746673583984,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 4,
+        "valid_tokens": 3754,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.4845719337463379,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 5,
+        "valid_tokens": 4989,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.4912528991699219,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 6,
+        "valid_tokens": 4222,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.6226527690887451,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 2,
+        "rank": 7,
+        "valid_tokens": 4938,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.26268279552459717,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 0,
+        "valid_tokens": 1280,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 1.152414321899414,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 1,
+        "valid_tokens": 2237,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.30376458168029785,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 2,
+        "valid_tokens": 1213,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.48402488231658936,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 3,
+        "valid_tokens": 1433,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.24425697326660156,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 4,
+        "valid_tokens": 1827,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.6249157190322876,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 5,
+        "valid_tokens": 961,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.23916840553283691,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 6,
+        "valid_tokens": 1351,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.24927139282226562,
+        "nonfinite_effective_count": 0
+      },
+      {
+        "serial": 3,
+        "rank": 7,
+        "valid_tokens": 702,
+        "actor_old_max_abs_delta": 0.0,
+        "actor_vllm_max_abs_delta": 0.3060569763183594,
+        "nonfinite_effective_count": 0
+      }
+    ],
+    "same_perturn_hf_repeat_max_abs_delta": 0.0,
+    "retained_perturn_hf_vllm_max_abs_delta": 2.4754629135131836,
+    "perturn_nonfinite_effective_tokens": 0,
+    "full_action_metrics": {
+      "full_trajectory_vs_sample_prefix_old_max_abs": {
+        "min": 0.0,
+        "max": 0.9616069793701172,
+        "max_abs": 0.9616069793701172,
+        "nonzero_actions": 369,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": 0.0,
+          "complete_current_vs_old_max_abs": 0.0,
+          "effective_tokens": 33,
+          "effective_trajectory_token_weight": 0.006944444444444444,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.9616069793701172,
+          "full_vs_prefix_old_joint_sum_delta": 0.8323917388916016,
+          "full_vs_vllm_joint_sum_delta": 0.8063404060958135,
+          "prefix_old_vs_vllm_joint_sum_delta": -0.026051332795788085,
+          "probability_accepted": false,
+          "raw_response_offset": 544,
+          "raw_trajectory_effective_tokens": 144,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 34,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 213,
+          "step_id": 1,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      },
+      "full_vs_prefix_old_joint_sum_delta": {
+        "min": -1.327627182006836,
+        "max": 1.45623779296875,
+        "max_abs": 1.45623779296875,
+        "nonzero_actions": 369,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": 0.0,
+          "complete_current_vs_old_max_abs": 0.0,
+          "effective_tokens": 52,
+          "effective_trajectory_token_weight": 0.011764705882352941,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.38578033447265625,
+          "full_vs_prefix_old_joint_sum_delta": 1.45623779296875,
+          "full_vs_vllm_joint_sum_delta": 0.3553772632546668,
+          "prefix_old_vs_vllm_joint_sum_delta": -1.1008605297140832,
+          "probability_accepted": false,
+          "raw_response_offset": 0,
+          "raw_trajectory_effective_tokens": 85,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 98,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 955,
+          "step_id": 0,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      },
+      "complete_current_vs_old_max_abs": {
+        "min": 0.0,
+        "max": 0.8290481567382812,
+        "max_abs": 0.8290481567382812,
+        "nonzero_actions": 70,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": 0.35346412658691406,
+          "complete_current_vs_old_max_abs": 0.8290481567382812,
+          "effective_tokens": 178,
+          "effective_trajectory_token_weight": 0.0056179775280898875,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.8290481567382812,
+          "full_vs_prefix_old_joint_sum_delta": -0.35346412658691406,
+          "full_vs_vllm_joint_sum_delta": -0.06124406502286206,
+          "prefix_old_vs_vllm_joint_sum_delta": 0.292220061564052,
+          "probability_accepted": false,
+          "raw_response_offset": 0,
+          "raw_trajectory_effective_tokens": 178,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 205,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 223,
+          "step_id": 0,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      },
+      "complete_current_vs_old_joint_sum_delta": {
+        "min": -1.1738109588623047,
+        "max": 0.7863826751708984,
+        "max_abs": 1.1738109588623047,
+        "nonzero_actions": 70,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": -1.1738109588623047,
+          "complete_current_vs_old_max_abs": 0.1920318603515625,
+          "effective_tokens": 111,
+          "effective_trajectory_token_weight": 0.004166666666666667,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.0,
+          "full_vs_prefix_old_joint_sum_delta": 0.0,
+          "full_vs_vllm_joint_sum_delta": 0.4326067565631888,
+          "prefix_old_vs_vllm_joint_sum_delta": 0.4326067565631888,
+          "probability_accepted": false,
+          "raw_response_offset": 1015,
+          "raw_trajectory_effective_tokens": 240,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 112,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 638,
+          "step_id": 2,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      },
+      "full_vs_vllm_joint_sum_delta": {
+        "min": -3.485536492264373,
+        "max": 2.0238089599328006,
+        "max_abs": 3.485536492264373,
+        "nonzero_actions": 5478,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": 0.0,
+          "complete_current_vs_old_max_abs": 0.0,
+          "effective_tokens": 378,
+          "effective_trajectory_token_weight": 0.002178649237472767,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.0,
+          "full_vs_prefix_old_joint_sum_delta": 0.0,
+          "full_vs_vllm_joint_sum_delta": -3.485536492264373,
+          "prefix_old_vs_vllm_joint_sum_delta": -3.485536492264373,
+          "probability_accepted": false,
+          "raw_response_offset": 550,
+          "raw_trajectory_effective_tokens": 459,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 379,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 661,
+          "step_id": 1,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      },
+      "prefix_old_vs_vllm_joint_sum_delta": {
+        "min": -3.485536492264373,
+        "max": 2.0238089599328006,
+        "max_abs": 3.485536492264373,
+        "nonzero_actions": 5478,
+        "nonfinite_actions": 0,
+        "maximum_abs_action": {
+          "actual_complete_hf_inputs_observed": true,
+          "actual_vllm_runner_positions_observed": true,
+          "complete_current_vs_old_joint_sum_delta": 0.0,
+          "complete_current_vs_old_max_abs": 0.0,
+          "effective_tokens": 378,
+          "effective_trajectory_token_weight": 0.002178649237472767,
+          "engine_prefix_matches_generation": true,
+          "full_trajectory_vs_sample_prefix_old_max_abs": 0.0,
+          "full_vs_prefix_old_joint_sum_delta": 0.0,
+          "full_vs_vllm_joint_sum_delta": -3.485536492264373,
+          "prefix_old_vs_vllm_joint_sum_delta": -3.485536492264373,
+          "probability_accepted": false,
+          "raw_response_offset": 550,
+          "raw_trajectory_effective_tokens": 459,
+          "same_effective_mask": true,
+          "same_position_ids": true,
+          "sampled_length": 379,
+          "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+          "source": 661,
+          "step_id": 1,
+          "actual_runner_request_evidence_present_in_original": true
+        }
+      }
+    },
+    "joint_algebra_max_residual": 0.0,
+    "same_model_micro2_vs_micro4_nonzero_actions": 70,
+    "full_old_vs_perturn_nonzero_actions": 369
+  },
+  "decisive_anomaly": {
+    "actual_retained_maximum": {
+      "actual_log_prob_delta": -2.4754629135131836,
+      "formula_delta": -2.4754638671875,
+      "fp32_lse_delta": 0.9754638671875,
+      "hf": {
+        "logp": -6.1275787353515625,
+        "lse": 36.00257873535156,
+        "selected_logit": 29.875
+      },
+      "hf_branch": "flash_attn_cross_entropy",
+      "hf_input_dtype": "torch.bfloat16",
+      "hf_normalizer": {
+        "module": "verl.utils.torch_functional",
+        "name": "logprobs_from_logits",
+        "source_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/repo-v11-2ddbb0a/verl/utils/torch_functional.py",
+        "source_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575"
+      },
+      "hf_output_dtype": "torch.float32",
+      "rank": 2,
+      "request_id": "498",
+      "selected_logit_delta": -1.5,
+      "source": 661,
+      "step_id": 1,
+      "target_id": 26865,
+      "token_index": 1,
+      "vllm": {
+        "completion_output_logp": -3.652115821838379,
+        "dtype": "torch.float32",
+        "logp": -3.652115821838379,
+        "lse": 35.02711486816406,
+        "normalizer": "vllm.model_executor.layers.sampler.torch.log_softmax",
+        "prediction_position": 698,
+        "raw_sampled_dtype": "torch.float32",
+        "raw_sampled_logp": -3.652115821838379,
+        "runner_input_index": 17,
+        "selected_logit": 31.375,
+        "selected_logit_row": 17,
+        "selected_probability_chain_exact": true,
+        "selected_runner_request_sequence_owner_exact": true,
+        "seq_id": 498,
+        "sequence_output_logp": -3.652115821838379,
+        "target_id": 26865
+      }
+    },
+    "actual_complete_action": {
+      "actual_complete_hf_inputs_observed": true,
+      "actual_vllm_runner_positions_observed": true,
+      "complete_current_vs_old_joint_sum_delta": 0.0,
+      "complete_current_vs_old_max_abs": 0.0,
+      "effective_tokens": 378,
+      "effective_trajectory_token_weight": 0.002178649237472767,
+      "engine_prefix_matches_generation": true,
+      "full_trajectory_vs_sample_prefix_old_max_abs": 0.0,
+      "full_vs_prefix_old_joint_sum_delta": 0.0,
+      "full_vs_vllm_joint_sum_delta": -3.485536492264373,
+      "prefix_old_vs_vllm_joint_sum_delta": -3.485536492264373,
+      "probability_accepted": false,
+      "raw_response_offset": 550,
+      "raw_trajectory_effective_tokens": 459,
+      "same_effective_mask": true,
+      "same_position_ids": true,
+      "sampled_length": 379,
+      "sampler_position_evidence_scope": "ACTUAL_RUNNER_AND_MODEL_FORWARD_INPUTS_WITH_REQUEST_MAPPING",
+      "source": 661,
+      "step_id": 1,
+      "actual_runner_request_evidence_present_in_original": true
+    },
+    "serial": 1,
+    "rank": 2,
+    "actual_turn_source_index": 631,
+    "actual_rank_local_row": 17,
+    "actual_sampling_raw_receipt": {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.pt",
+      "bytes": 129709754,
+      "sha256": "6f2098179df870fda32fba5efae455941a90dff6b92df1ca1e23d659f5dafb95"
+    },
+    "actual_sampling_worker_pid": 1805679,
+    "logit_vs_normalizer_interpretation": "The frozen producer's matched-target metadata reports selected logits differing by -1.5 and FP32 LSE differing by +0.9754638671875. These account for actual delta -2.4754629135131836 to about 1e-6; the reported evidence indicates upstream model logits/execution variance, rather than a large normalizer residual. Independent immutable-raw selected-index/target/physical-owner verification is the next confirmation. Exact weights/kernel/packing/cache cause is not isolated by the collected metadata.",
+    "hf_normalizer_branch": "flash_attn_cross_entropy",
+    "hf_input_dtype": "torch.bfloat16",
+    "hf_output_dtype": "torch.float32",
+    "vllm_normalizer_output_dtype": "torch.float32",
+    "max_normalizer_vs_fp32_formula_delta": 3.814697265625e-06,
+    "max_cross_model_decomposition_error": 5.960462203802308e-06,
+    "normalizer_to_fp32_residuals_at_largest_position": {
+      "source": 661,
+      "step_id": 1,
+      "token_index": 1,
+      "retained": true,
+      "actual_delta_matches": true,
+      "formula_matches": true,
+      "target_and_scalar_chain_equal": true,
+      "hf_minus_fp32_formula": 0.0,
+      "vllm_minus_fp32_formula": -9.5367431640625e-07
+    },
+    "action_hf_probability_over_vllm_probability": 0.03063731733558853,
+    "bounded_anomalous_full_vocab_vector_available": null,
+    "bounded_vector_limitation": "bounded initial predictions; no claim all cross-model anomalous vectors captured",
+    "actual_full_vocab_vectors_not_transferred": true,
+    "independent_selected_scalar_index_to_raw_owner_revalidated": false
+  },
+  "tolerance_decision": {
+    "actor_recompute_abs_tolerance": null,
+    "actor_vllm_abs_tolerance": null,
+    "actor_recompute_joint_abs_tolerance": null,
+    "actor_vllm_joint_abs_tolerance": null,
+    "no_independently_justified_budget_available": true,
+    "no_max_plus_margin_selection": true,
+    "human_token_kl_0_2_not_used_as_probability_tolerance": true,
+    "negative_tail_limit": null,
+    "production_thresholds_selected": false,
+    "rationale": [
+      "Exact perturn repeats are zero, but this does not validate different full-action packing or current micro2 versus old micro4. Their actual token/joint errors are nonzero and presently unexplained.",
+      "Matched actual HF versus vLLM selected-logit/LSE difference is orders of magnitude larger than actual normalizer residuals.",
+      "A larger tolerance chosen to encompass the observed maxima would absorb unresolved model execution variance; it is not an independent numerical budget.",
+      "Joint SUM is assessed per complete retained action; token averaging, cancellation in an action or token tolerance multiplied by length does not establish admission."
+    ]
+  },
+  "required_next_actions": [
+    {
+      "priority": 1,
+      "action": "Keep this probability approval absent. Preserve the same original before-first-Adam process, sampled batch, evidence and pause under the existing bounded gate; this review does not request job cancellation, artificial restart or a new GPU job."
+    },
+    {
+      "priority": 2,
+      "action": "After independent reader implementation review, read exact saved serial1/rank2/source661/step1/token1 evidence (local row17), binding immutable deserialized bytes and selected-flat/target/physical owner. Reconfirm the actual selected-logit/LSE difference and metadata/cache/processor paths, using no model forward or resampling.",
+      "raw": {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-1-rank-2.pt",
+        "bytes": 129709754,
+        "sha256": "6f2098179df870fda32fba5efae455941a90dff6b92df1ca1e23d659f5dafb95"
+      }
+    },
+    {
+      "priority": 3,
+      "action": "Read existing complete old/current raw mapping for source223/step0 and source638/step2; independently locate affected token positions and compare actual flat packed boundaries, selected indices/target IDs, model inputs, normalizer scalars and micro2/micro4 role state. Full-old vs perturn source213/step1 is the separate maximum0.9616069793701172. Exact anomalous same-HF token indices are absent from current summary and must not be invented."
+    },
+    {
+      "priority": 4,
+      "action": "If the saved evidence isolates a scientific execution defect, prepare a narrowly scoped frozen fix for a separate nonauthor review before any authorized future execution. Do not change the running frozen source, reuse a rejected probability batch, select max-derived tolerances, replay CPU/native/control suites or run an extra GPU validation job from this report."
+    }
+  ],
+  "limitations": [
+    "This is independent reading and local hashing of genuine job3332 original metadata and explicitly projected original JSON. It is not an independent58-rawPT8.989GB SHA scan or raw probability recomputation.",
+    "Producer mapping checks report0 mismatch and independent collection projection of original JSON also reports0. Full token arrays, masks, runner request arrays and actual internal kernel KV contents were not independently re-executed here.",
+    "Full HF role micro sizes/dropout neutrality are bound to ready and frozen producer validation; raw complete-HF input arrays remainH100.",
+    "The reported logit/LSE decomposition isolates the upstream side of the numerical discrepancy; it does not prove whether weights, kernel numerics, packing implementation or cache content is the root cause.",
+    "No probability approval, production threshold, new training job, source modification, signal, cancellation or test run was performed."
+  ]
+}

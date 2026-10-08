@@ -1,0 +1,154 @@
+{
+  "schema": "JOB3332_RANK3_READONLY_DIAGNOSTIC_NONAUTHOR_REVIEW_V1",
+  "verdict": "BLOCK",
+  "status": "STATIC_NONAUTHOR_REVIEW_COMPLETE_NO_EXECUTION_NO_ACCEPTANCE",
+  "reviewer_role": "NONAUTHOR_CLEAN_CONTEXT_STATIC_REVIEW",
+  "review_date": "2026-10-08",
+  "script": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/inspect_job3332_actual_rank3_call0_readonly_v1.py",
+    "bytes": 26430,
+    "sha256": "a0b99d340588e1b4e27d0bcf69cafd01bdcb8af8b92ba5d57809667b45d9a927",
+    "sha256_and_bytes_independently_checked": true,
+    "source_modified_by_reviewer": false,
+    "executed_by_reviewer": false
+  },
+  "scope": {
+    "target": "Preexisting job3332 train serial0 rank3 raw PT and metadata only",
+    "reviewed_entire_reader": true,
+    "reviewed_entire_five_imported_frozen_helpers": true,
+    "reviewed_relevant_frozen_producer_and_hf_normalizer_source": true,
+    "reviewed_local_binding_only_for_required_identity_fields": true,
+    "reader_execution": false,
+    "tests_or_controls_execution": false,
+    "ssh_or_remote_operations": false,
+    "model_forward_or_sampling": false,
+    "gpu_use": false,
+    "approval_or_tolerance_selection": false,
+    "process_signals_or_training_mutation": false,
+    "implementation_edits": false,
+    "only_output_mutation": "This specifically requested static-review JSON report"
+  },
+  "verified_local_identities": {
+    "binding": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/FRESH200-EVIDENCE-REPAIR3325-BINDING-CANDIDATE-v1.json",
+      "bytes": 20571536,
+      "sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+      "code_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+      "calibration_phase": "probability_probe_then_wait",
+      "pad_token_id": 151643,
+      "eos_token_id": 151645,
+      "all_four_tolerances_null": true,
+      "reader_helper_and_hf_source_entries_match": true
+    },
+    "hf_normalizer_source": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/gigpo-e1-fresh200-cpufixturefix-20261007/verl/utils/torch_functional.py",
+      "bytes": 18647,
+      "sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575",
+      "relevant_functions_statically_read": "logprobs_from_logits, logprobs_from_logits_flash_attn, logprobs_from_logits_naive"
+    },
+    "frozen_helpers": [
+      {"name": "calibration_state_v1", "sha256": "e37bcc7c26613ebffdde532150c1d6c735e31e2f30a9568a9a4daef9b19caf8f", "expected_bytes": 4455},
+      {"name": "raw_hf_observation_v1", "sha256": "ac725dd92ad35563b9920f23ee3be8c154ff60f2f25a8e0bbc62bd6d457eb485", "expected_bytes": 11911},
+      {"name": "raw_runner_observation_v1", "sha256": "6a023cec9c451159a298d66e04d31f239debcc94bc4b6b8ce2c4c32bdd0ca2dd", "expected_bytes": 17239},
+      {"name": "raw_alignment_v1", "sha256": "a43943129d95175db198fe43e8c93414dde9f70da4ebb2699fe11029607cea0f", "expected_bytes": 13406},
+      {"name": "decisive_normalizer_v1", "sha256": "1359eeab58b288a48d0f0535b104271340cdbd5ac916fad393439f9e32807fa3", "expected_bytes": 24996}
+    ]
+  },
+  "expected_remote_identity_not_observed_by_this_review": {
+    "raw_path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3332-1791429907029168081/probabilities/train/call-0-rank-3.pt",
+    "raw_bytes": 91213434,
+    "raw_sha256": "313d2902783e1e0e0fd2ff1560565a82cff92bd74cb0d900201f0acbd9082085",
+    "saved_worker_pid": 1805680,
+    "saved_worker_start_ticks": "2237476977",
+    "rank": 3,
+    "serial": 0,
+    "phase": "train"
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P1",
+      "blocking": true,
+      "title": "The hash is not bound to the bytes passed into unrestricted unpickling",
+      "reader_lines": [250, 259, 396, 397],
+      "fact": "stream_receipt closes RAW after verifying its SHA and inode metadata. torch.load then reopens RAW by pathname with weights_only=False. A final independently reopened hash is checked after deserialization. The exact verified bytes are not the object supplied to the unpickler.",
+      "effect": "Replacement or modification during the reopen window can execute pickle behavior before identity checks or the final hash refuse the diagnostic. map_location='cpu' constrains tensor storage placement, not general pickle execution. This prevents the strict no-file-write/no-forward/no-state-restore assurance from following solely from the preverified artifact hash.",
+      "minimal_correction": "Deserialize an immutable byte snapshot whose exact length and SHA have been checked against RAW_BYTES/RAW_SHA, for example a verified bytes buffer passed through BytesIO to torch.load. Continue streaming the pathname receipt and final identity check if desired. Keep weights_only=False only as an explicitly limited trust decision for that exact verified frozen producer artifact; do not treat CPU mapping as a pickle sandbox. No model, controls or sampling rerun is required.",
+      "observation_limit": "No malicious payload or actual remote replacement was observed; this is a static trust-boundary failure in the reader."
+    },
+    {
+      "id": "R2",
+      "priority": "P1",
+      "blocking": true,
+      "title": "Normalizer statistic rows are not fully rebound to the same request and target",
+      "reader_lines": [141, 152, 167, 205, 212, 281],
+      "helper_lines": {
+        "decisive_normalizer_v1.py": [286, 301, 311, 314, 315],
+        "raw_hf_observation_v1.py": [119, 124, 127]
+      },
+      "fact": "The vLLM helper checks mapping target and actual normalized-logp/SequenceOutput/CompletionOutput/raw equality, but reads selected-logit and LSE arrays at i without requiring pre_normalization.selected_flat_indices[i] == mapping.selected_logit_row and pre_normalization.target_ids[i] == mapping.target_id. The reader forwards those values without adding these checks. For remove-padding HF, selected_flat_indices is used to fetch an observed position and preceding token, but is not checked against the independently derived packed start of the mapped flat row; the dense expected normalizer index is also unchecked.",
+      "effect": "The selected probability chain is well checked, but the reported selected-logit/LSE decomposition can be attached to a different statistic row or HF packed row while existing target, position or token checks coincide. The strict same-target request/sequence/position chain for the decomposition is therefore incomplete.",
+      "minimal_correction": "Before indexing each vLLM statistic, require matching statistic array lengths, selected_flat_indices[i] == selected_logit_row and target_ids[i] == mapping.target_id. In hf_token independently compute the expected normalizer flat index: cumulative prior flat attention counts plus this row's prefix length minus one plus token_index for remove-padding, or flat_row * response_width + token_index for dense. Require the captured index to equal it. Retain the existing exact prefix, prediction-position, preceding-token and probability-chain checks. Add these reader checks without changing frozen helpers or generating new observations.",
+      "observation_limit": "No actual mismapped saved row was observed because remote PT inspection is outside this review. The frozen producer constructs the intended arrays, but the strict reader does not independently verify their cross-binding."
+    },
+    {
+      "id": "R3",
+      "priority": "P2",
+      "blocking": true,
+      "title": "Vector-presence flags check descriptors but not the vector object",
+      "reader_lines": [167, 168, 169, 205, 206, 207, 208, 225],
+      "fact": "Both bounded_full_vocab_vector_present computations accept any record with matching selected_flat_index and target_id. They never access or validate that record's logits_fp32 tensor.",
+      "effect": "A descriptor containing those two labels but no logits_fp32 vector can produce bounded_full_vocab_vector_present=true, contrary to the promised absence-safe vector-existence claim.",
+      "minimal_correction": "Require exactly one matching vector record and confirm logits_fp32 exists, is a CPU torch.Tensor after CPU loading, is one-dimensional, has dtype torch.float32, and contains exactly the recorded vocabulary_size elements. Emit only the resulting presence boolean; do not emit or recalculate vector values. An empty matching set should emit false; malformed matching descriptors should refuse the diagnostic.",
+      "observation_limit": "No vector absence in the actual remote artifact was observed. This is a concrete unchecked condition in the presence predicate."
+    },
+    {
+      "id": "R4",
+      "priority": "P2",
+      "blocking": true,
+      "title": "The final newline is outside the stated stdout byte limit",
+      "reader_lines": [403, 404, 405],
+      "fact": "The success path accepts a UTF-8 JSON payload of exactly 32768 bytes and then emits one additional newline byte.",
+      "effect": "The stated stdout upper bound is 32769 bytes at the accepted boundary.",
+      "minimal_correction": "Build the complete emitted text including its newline, bound its UTF-8 byte length to MAX_STDOUT_BYTES, then write it. Apply the same explicit bound to refusal output for a single clear invariant.",
+      "observation_limit": "The actual diagnostic output size was not measured; this is the exact static boundary condition."
+    }
+  ],
+  "positive_static_checks": [
+    "All target paths and expected identities are fixed constants; command-line path/execution arguments are refused.",
+    "The reader checks explicit PYTHONDONTWRITEBYTECODE=1 and an empty CUDA_VISIBLE_DEVICES before importing frozen helpers/torch in main, and sets sys.dont_write_bytecode at module start.",
+    "Hash reads are bounded to 4 MiB blocks and check opened inode fingerprints and actual byte counts; binding JSON bytes are independently matched to the stream receipt.",
+    "All five helper source contents are verified against exact binding entries and hardcoded SHA/size before compile/exec; no unbound helper pyc or preloaded same-name helper is accepted.",
+    "The invoked frozen helper paths perform tensor/metadata validation and digesting. Observer/patching context managers, existing model-forward wrappers, new sampling, RNG restoration, process signaling and training RPC methods are not invoked.",
+    "The reader imports no model, vLLM engine, distributed trainer or scientific normalizer implementation. It reads the scientific HF normalizer file only to hash it.",
+    "Saved phase/serial/rank/PID/source/binding and repeated-probe PID/start-tick/zero-scheduler/LR identities are checked. Complete typed saved probe state digests must match exactly.",
+    "The saved raw receipt's valid-token and exact sampled-support maximum statistics are independently recomputed; the producer source uses the same sampled-support scope for that receipt.",
+    "Existing validators check contiguous real sample masks, actual HF inputs and outputs, actual vLLM prepared/model tokens and positions, request/sequence ownership, complete sample prediction coverage and chosen-probability dtype conversion.",
+    "First-turn rank3 mapping is fixed to source 960 + local for 320 rows and verifies those source/step identities and retained actor-token prefixes against actual sampled IDs and lengths. Retained support must be contained in actual sampled support, and a retained trailing EOS is rejected.",
+    "Targeted same-prefix HF/engine/source identity and target/prediction-position equality are checked. The vLLM selected normalized probability is bound exactly to SequenceOutput, CompletionOutput and the saved sampled tensor, including its real dtype conversion.",
+    "Retained-action diagnostics sum signed token differences in double precision; they do not sum absolute errors or claim complete all-turn old/current/reference action parity.",
+    "No numerical tolerance is selected or inferred. Output explicitly reports no probability acceptance and no approval, and limits the observation to saved serial0 rank3 evidence.",
+    "The script has no explicit file-writing API, training-state mutation, process-signal, model-forward, sampling, RNG draw or state-restore call. The only validator mutation adds a validation result to the separately loaded in-memory raw dictionary.",
+    "Success JSON uses allow_nan=False and is fully built before output; exceptions produce a refusal record and exit 2. Full vocabulary values are never intentionally serialized into the diagnostic."
+  ],
+  "limitations": [
+    "This is static source review only. No reader, Python model code, tests, controls, SSH, GPU operation or remote PT deserialization was executed.",
+    "The remote raw, call0 receipt, live worker and prefix snapshot were not inspected. Their expected identities are constants reviewed in source, not facts newly verified by this reviewer.",
+    "Saved PID/start-tick/probe-state checks establish archived evidence identity; they do not establish that a current live process remains unchanged.",
+    "Installed Python, torch, NumPy and standard-library import/startup behavior remain an environment trust boundary; only the five local frozen helpers are source-hash-bound by this reader.",
+    "Local matching source bytes and binding entries were inspected; no Git checkout or remote commit audit was performed.",
+    "No numerical parity judgment, tolerance, gate bypass or authorization to resume training is provided."
+  ],
+  "review_result": {
+    "blocking_findings": 4,
+    "execution_approved": false,
+    "probability_accepted": false,
+    "approval_emitted": false,
+    "selected_tolerances": null,
+    "new_forward_calls": 0,
+    "new_sampling_calls": 0,
+    "training_state_mutations": 0,
+    "remote_artifact_writes": 0,
+    "required_followup": "Correct the four localized reader conditions and statically review the resulting exact new bytes. No repeated native/CPU controls, model rerun or new sample is required by these findings."
+  }
+}

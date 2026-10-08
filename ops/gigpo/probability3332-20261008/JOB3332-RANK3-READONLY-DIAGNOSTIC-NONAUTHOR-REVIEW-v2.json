@@ -1,0 +1,111 @@
+{
+  "schema": "JOB3332_RANK3_READONLY_DIAGNOSTIC_NONAUTHOR_REVIEW_V2",
+  "verdict": "BLOCK",
+  "status": "STATIC_NONAUTHOR_REVIEW_COMPLETE_NO_EXECUTION_NO_ACCEPTANCE",
+  "reviewer_role": "NONAUTHOR_CLEAN_CONTEXT_STATIC_REVIEW",
+  "review_date": "2026-10-08",
+  "script": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/inspect_job3332_actual_rank3_call0_readonly_v2.py",
+    "bytes": 30383,
+    "sha256": "624c14fe4b275e4fce34f0bdf7583dfa04e1892c0fe17429320df970b7af4ca0",
+    "sha256_and_bytes_independently_checked": true,
+    "entire_reader_statically_read": true,
+    "source_modified_by_reviewer": false,
+    "executed_by_reviewer": false
+  },
+  "review_scope": {
+    "target": "Fixed job3332 archived train serial0 rank3 raw PT and metadata",
+    "review_type": "Static reader re-review against all four v1 findings",
+    "reader_execution": false,
+    "tests_or_controls_execution": false,
+    "ssh_or_remote_operations": false,
+    "model_forward_or_sampling": false,
+    "gpu_use": false,
+    "rng_draw_or_state_restore": false,
+    "approval_or_tolerance_selection": false,
+    "process_signals_or_training_mutation": false,
+    "implementation_edits": false,
+    "only_output_mutation": "This specifically requested static-review JSON report",
+    "transport_review": "Outside this review; external transport is to be prepared independently"
+  },
+  "v1_findings_rechecked": [
+    {
+      "id": "R1",
+      "resolution": "RESOLVED",
+      "v2_lines": [93, 95, 97, 98, 100, 102, 103, 307, 308],
+      "evidence": "read_verified_raw_bytes bounds the opened raw read to RAW_BYTES+1, validates opened/path fingerprints, requires exact bytes type and length, and hashes the immutable content against RAW_SHA. The same verified bytes are wrapped by io.BytesIO and supplied to torch.load with map_location='cpu'. The path is not reopened by torch.load.",
+      "remaining_trust_boundary": "weights_only=False remains explicitly limited to the fixed expected SHA produced by the trusted frozen worker. Installed Python/torch/NumPy imports remain trusted environment dependencies. CPU mapping alone is not a pickle sandbox, but the v1 pathname-to-unpickler gap is closed."
+    },
+    {
+      "id": "R2",
+      "resolution": "RESOLVED_FOR_EMITTED_TARGETED_SCALARS",
+      "v2_lines": [165, 167, 169, 174, 176, 177, 187, 188, 234, 235, 237, 238, 240, 241, 245, 247, 248, 249],
+      "evidence": "HF independently derives the packed prediction index from prior flat attention counts and the selected row prefix length, or derives row*response_width+token_index for the dense normalizer index. It requires the saved selected index to match and additionally checks the actual following model-input target. vLLM requires statistic selected-flat index and target to match the sampler mapping and exact-chain entry, binds the selected row through physical runner index/request/sequence/prediction position, checks its preceding input token, and checks the reported selected logit, LSE and normalized logp against the index entry.",
+      "scope": "These checks apply to the sampled-support and retained-support maxima actually emitted by targeted(). The existing frozen helper continues checking complete chosen-probability chain coverage. No all-rank or all-turn probability acceptance follows."
+    },
+    {
+      "id": "R3",
+      "resolution": "UNRESOLVED",
+      "v2_lines": [193, 194, 195, 251, 252, 253],
+      "evidence": "Both vector-presence predicates are unchanged and still inspect only selected_flat_index and target_id. Neither accesses or validates logits_fp32."
+    },
+    {
+      "id": "R4",
+      "resolution": "UNRESOLVED",
+      "v2_lines": [454, 455, 456, 463],
+      "evidence": "The success path still checks payload.encode('utf-8') before adding the newline. The refusal path has no explicit complete-emission byte-bound check."
+    }
+  ],
+  "blocking_findings": [
+    {
+      "id": "R3",
+      "priority": "P2",
+      "title": "Vector-presence flags still verify labels without verifying vector existence",
+      "reader_lines": [193, 194, 195, 251, 252, 253],
+      "fact": "A matching dictionary containing only selected_flat_index and target_id passes the current any() predicate even if logits_fp32 is absent.",
+      "effect": "bounded_full_vocab_vector_present can be true without an actual stored full-vocabulary vector. This violates the stated absence-safe presence claim.",
+      "minimal_correction": "Replace both any() predicates with a small reader-only validation helper: find matching records by selected_flat_index/target_id; return false for an empty match set; require exactly one record otherwise; require that record's logits_fp32 exists and is a one-dimensional CPU torch.Tensor of dtype torch.float32 with numel() equal to stats['vocabulary_size']; then return true. Refuse malformed or duplicate matching records. Serialize only the boolean, never the vector values.",
+      "observation_limit": "The actual remote vectors were not inspected. This is the unchanged concrete static predicate failure."
+    },
+    {
+      "id": "R4",
+      "priority": "P2",
+      "title": "The stdout cap still excludes the final newline",
+      "reader_lines": [454, 455, 456, 463],
+      "fact": "A JSON payload of exactly MAX_STDOUT_BYTES is accepted and then one newline byte is added by sys.stdout.write.",
+      "effect": "The accepted success-path upper bound is 32769 bytes instead of the required 32768-byte complete stdout cap.",
+      "minimal_correction": "Construct the final emitted string including its newline, require len(final_text.encode('utf-8')) <= MAX_STDOUT_BYTES, and only then write it. Apply the same explicit complete-output bound to the refusal string, using a short constant refusal fallback if needed. No interpreter/model/test execution is required to make this change.",
+      "observation_limit": "No actual diagnostic output size was measured. This is the unchanged exact boundary condition."
+    }
+  ],
+  "retained_positive_static_checks": [
+    "The fixed raw/binding/HF-normalizer/helper identities are unchanged from v1, including source 2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963, raw SHA313d2902783e1e0e0fd2ff1560565a82cff92bd74cb0d900201f0acbd9082085 and binding SHA2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec.",
+    "All input paths remain fixed, extra execution arguments are refused, and explicit bytecode/CUDA environment guards precede main's helper imports.",
+    "Frozen helpers are loaded only from verified exact source bytes, with no preloaded same-name helper allowed. The invoked helper call graph performs CPU tensor and metadata validation, not observer setup or any original model invocation.",
+    "The reader does not import model/vLLM/training modules or invoke the scientific normalizer. It only reads and hashes the scientific source file.",
+    "The raw is loaded onto CPU from exact verified immutable bytes, then checked for source/binding/phase/serial/rank/PID identity. Typed repeated saved state, PID/start ticks, scheduler step and LR checks remain exact.",
+    "Sample-support tensors, finite probabilities, full sample masks, exact HF inputs/outputs, actual vLLM runner/model input identities and full selected-probability chain coverage continue to use the frozen validators.",
+    "The rank3 first-turn mapping still requires 320 rows, source960+local, step0, actual retained token prefix and actual sampled lengths, with retained support contained in sampled support and trailing retained EOS excluded.",
+    "Output diagnostic sums remain signed token SUMs on the saved retained first-turn actor prefix. FP32 selected-logit/LSE residual decomposition remains observation only, and complete old/current/reference all-turn action parity is explicitly pending.",
+    "Success and refusal schema versions are both v2. probability_accepted and approval_emitted remain false, selected_tolerances remains null, and no threshold is inferred from the discrepancy.",
+    "No explicit file-write, process-signal, training RPC, new model-forward, sampling, RNG draw or state-restore call was introduced. The only raw validator mutation is in the separately loaded in-memory dictionary."
+  ],
+  "limitations": [
+    "Static review only: no reader, tests, native/CPU controls, SSH, GPU operation, model code or remote PT deserialization was executed.",
+    "The remote PT, call0 receipt, prefix snapshot, current live worker and current training state were not inspected. Constants and saved-identity validation logic do not constitute a new live-process observation.",
+    "The five frozen helpers and relevant producer/HF-normalizer source were read in the preceding clean-context v1 review; v2 retains their exact source hashes and binding constants. This review did not rerun those helper functions.",
+    "Local file reads, byte counts, hashes, source diff and report JSON parsing were used only for static review. The reader source was not changed.",
+    "No transport execution approval, numerical probability acceptance, tolerance selection, gate bypass or training-resume authorization is provided."
+  ],
+  "review_result": {
+    "resolved_v1_findings": ["R1", "R2"],
+    "unresolved_v1_findings": ["R3", "R4"],
+    "blocking_finding_count": 2,
+    "static_reader_pass": false,
+    "execution_approved": false,
+    "probability_accepted": false,
+    "approval_emitted": false,
+    "selected_tolerances": null,
+    "required_followup": "Correct only the two remaining vector-object and full-emission byte-bound conditions, then statically review the exact new script bytes. These findings do not require another forward, sample, calibration or controls run."
+  }
+}

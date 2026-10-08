@@ -1,0 +1,108 @@
+{
+  "schema": "JOB3332_RANK3_READONLY_TRANSPORT_NONAUTHOR_REVIEW_V1",
+  "verdict": "PASS",
+  "status": "STATIC_TRANSPORT_SCOPE_PASS_NOT_EXECUTED_NOT_TRAINING_ADMISSION",
+  "reviewer_role": "NONAUTHOR_CLEAN_CONTEXT_STATIC_REVIEW",
+  "review_date": "2026-10-08",
+  "wrapper": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/execute_job3332_raw_reader_v3_readonly.py",
+    "bytes": 4374,
+    "sha256": "04d81c7b63c3a88d4ba29a75214883b4d3e522fcf69a3474b586107a7bc3ad93",
+    "sha256_and_bytes_independently_checked": true,
+    "entire_wrapper_statically_read": true,
+    "source_modified_by_reviewer": false,
+    "executed_by_reviewer": false
+  },
+  "fixed_reader": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/inspect_job3332_actual_rank3_call0_readonly_v3.py",
+    "bytes": 31605,
+    "sha256": "20a5a93c68c17d57b4d6724e46f81e3da121f996dc1922a4c1bb9a6b1a9ff987",
+    "local_sha_independently_rechecked": true,
+    "static_reader_review": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/JOB3332-RANK3-READONLY-DIAGNOSTIC-NONAUTHOR-REVIEW-v3.json",
+    "scope": "Saved job3332 train serial0 rank3 CPU-only raw diagnostic",
+    "numerical_probability_accepted": false,
+    "approval_emitted": false
+  },
+  "review_scope": {
+    "static_source_and_quote_review": true,
+    "wrapper_execution": false,
+    "reader_execution": false,
+    "tests_or_controls_execution": false,
+    "ssh_or_remote_operations": false,
+    "gpu_use": false,
+    "new_model_forward_or_sampling": false,
+    "new_job_or_cancellation": false,
+    "training_state_mutation": false,
+    "implementation_edits": false,
+    "only_output_mutation": "This specifically requested static-review JSON report"
+  },
+  "findings": [],
+  "static_checks": [
+    {
+      "topic": "Fixed source integrity",
+      "lines": [11, 12, 13, 19, 20, 21, 22],
+      "result": "PASS",
+      "evidence": "The fixed local reader bytes are loaded once and rejected before intent creation or any SSH if their exact length or SHA differs. The same immutable bytes are base64 encoded into receiver source. The receiver decodes that literal and contains length/SHA assertions before compile/exec. No source pathname is transported for remote loading."
+    },
+    {
+      "topic": "Source quoting and shell boundaries",
+      "lines": [22, 23, 26, 33, 35, 38, 50],
+      "result": "PASS",
+      "evidence": "The base64 literal and expected SHA are constructed with repr. Worker arguments are assembled with shlex.join, then inserted into management Python with repr. The complete management source is shell quoted using shlex.quote for the outer SSH command. The gateway ProxyCommand and target KnownHostsCommand arguments use shlex.join. Payload quoting is not composed by ad hoc escaping, and WORKER substitution occurs before the already quoted worker is inserted."
+    },
+    {
+      "topic": "Reader environment and argv",
+      "lines": [23, 24, 25, 26, 50],
+      "result": "PASS",
+      "evidence": "Worker env explicitly removes LD_LIBRARY_PATH, sets CUDA_VISIBLE_DEVICES to the empty string, PYTHONDONTWRITEBYTECODE=1, and bounded CPU thread counts. It uses the fixed existing environment Python with -B -c. Reader exec runs in that -c main namespace and sys.argv contains only the -c entry, satisfying the fixed reader's len(sys.argv)==1 condition. Management Python also receives -B."
+    },
+    {
+      "topic": "Retained18 route construction and strict SSH options",
+      "lines": [29, 30, 31, 32, 33, 34, 35, 36, 46, 47, 48, 49, 50],
+      "result": "PASS_WITH_DECLARED_ROUTE_CONFIGURATION_TRUST_BOUNDARY",
+      "evidence": "The management source reads only the fixed retained18 public route JSON and selects the literal target h100-8. It uses the recorded management identity, BatchMode and IdentitiesOnly, StrictHostKeyChecking=yes, UpdateHostKeys=no, bounded connection attempts/timeouts and a strictly checked gateway SSH-W route when needed. Existing trusted target keys can be supplied through KnownHostsCommand; if absent, normal strict known-host validation remains enabled. The local outer connection uses mgmt-host through the fixed SOCKS proxy with the same strict host-key/update settings. Local ~/.ssh/config was read only for relevant alias/options; mgmt-host resolves to the configured management host and identity."
+    },
+    {
+      "topic": "No remote upload or persistent diagnostic write",
+      "lines": [22, 26, 27, 29, 36, 37, 50],
+      "result": "PASS_UNDER_STANDARD_TRUSTED_INTERPRETER_AND_SSH_ENVIRONMENT",
+      "evidence": "Remote management only reads the route JSON and launches SSH. The worker receives reader source in the command's in-memory base64 literal and compile/exec namespace. There is no scp, upload, remote source file, shell redirection, mkdir, remote receipt write, model call, GPU command, approval write or job submission/cancellation command. The exact reader's separately reviewed call graph remains unchanged."
+    },
+    {
+      "topic": "Once-only local intent and receipt",
+      "lines": [14, 15, 39, 40, 41, 42, 44, 45, 50, 55, 56, 57],
+      "result": "PASS",
+      "evidence": "An existing output receipt refuses replay. The fixed local intent is opened with exclusive x mode before SSH, so concurrent or subsequent invocations cannot each dispatch the diagnostic. Intent remains if SSH, timeout or receipt writing fails, preventing automatic retry. The output receipt is also exclusively created and stores reader SHA plus outer returncode/stdout/stderr. The wrapper has no retry loop or intent deletion."
+    },
+    {
+      "topic": "Stdout preservation and error propagation",
+      "lines": [36, 37, 50, 51, 52, 54, 55, 58, 59, 60, 61, 62, 63, 64],
+      "result": "PASS",
+      "evidence": "The management subprocess captures worker returncode, stdout and stderr and emits them as JSON. The outer result is retained before nested JSON parsing. Outer SSH failure is propagated; the nested worker returncode is printed and propagated as the wrapper exit status. The reader's <=32768-byte JSON line is retained inside transport JSON rather than being treated as approval. Management and outer timeouts do not trigger any retry."
+    }
+  ],
+  "limitations": [
+    "No wrapper, reader, subprocess, SSH connection, test, native/CPU control, GPU operation or job action was executed by the reviewer.",
+    "The management host's retained18 public route JSON, remote SSH configuration, trusted host-key entries, identity files and fixed worker interpreter were not read or newly verified remotely. The review checks the exact route construction and strict options, while their current contents remain an explicit trusted environment boundary.",
+    "The receiver's additional hash check uses Python assert and can be omitted by a remotely inherited Python optimization setting. The unconditional local byte/hash check, immutable base64 literal, correct quoting and authenticated SSH transport still determine the exact source being transmitted; this static PASS does not claim an optimization-independent remote assertion.",
+    "The transport wrapper's JSON envelopes and captured stderr are outside the reader's 32768-byte diagnostic cap. Only the actual reader JSON output has that byte bound; the wrapper preserves it inside JSON strings.",
+    "A management/outer timeout may leave an intent without a completed output receipt. The intent prevents replay, and any subsequent action requires inspecting that existing state; no retry is performed by the wrapper.",
+    "Strict host-key checking and UpdateHostKeys=no are explicit. Standard trusted SSH/interpreter behavior is assumed; arbitrary remote site startup hooks or changed executables are outside this static source review.",
+    "This PASS applies only to the exact v3 serial0/rank3 transport bytes. It does not cover a new reader target, a changed source SHA, a changed transport wrapper, numerical probability acceptance, a tolerance, an approval artifact or training admission.",
+    "After review was requested, the parent task explicitly directed that this wrapper be retained as a completed static record and not executed. No local intent/transport receipt was created by this reviewer."
+  ],
+  "review_result": {
+    "blocking_finding_count": 0,
+    "static_transport_scope_pass": true,
+    "execution_performed": false,
+    "current_execution_disposition": "DO_NOT_EXECUTE_THIS_V3_WRAPPER_PER_LATER_PARENT_TASK_SCOPE",
+    "approval_emitted": false,
+    "probability_accepted": false,
+    "selected_tolerances": null,
+    "remote_artifact_writes_performed": 0,
+    "new_forward_calls_performed": 0,
+    "new_sampling_calls_performed": 0,
+    "new_jobs_or_cancellations_performed": 0,
+    "training_state_mutations_performed": 0
+  }
+}
