@@ -1,0 +1,177 @@
+--- R5/first5_helpers.py
++++ behavior/first5_helpers.py
+@@ -1,16 +1,15 @@
+ #!/usr/bin/env python3
+-"""R5 read-only CPU helpers. Generic reader code reused, no historical receipts."""
++"""behavior V2 read-only CPU helpers. Generic reader code reused, no historical receipts."""
+ import hashlib,json,math,os,re,sys,time
+ from pathlib import Path
+ sys.dont_write_bytecode=True
+-ROOT=Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-safety-r5-20261006')
+-SOURCE='aec5e057093b4c491bfb0a47abd7605d98981b56'
+-RUN=ROOT/'runs/formal200-6a29642035ff40b2b7787de206f886c0-3307'
+-JOB=3307
++ROOT=Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-behavior-20261006')
++SOURCE='90755a561abd239fbb23882939410e643bb913ae'
++RUN=None # Bind only to a new actually submitted formal200 process.
++JOB=None
+ MODEL=ROOT/'assets/qwen2.5-3b-instruct-aa8e725'
+ MODEL_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+ REVIEW_SHA=None # Bind only after independent review of actual new fifth-outer evidence.
+-REUSE_SOURCE_SHA='a27674a26f4958f9514c19be6f9f5ba5fab9bfd640c586b5bf293266da29ee74'
+ def require(value,message):
+     if not value:raise ValueError(message)
+ def finite(value):return type(value)in(int,float)and math.isfinite(value)
+@@ -23,9 +22,19 @@
+ def write_new(path,value):
+     data=json.dumps(value,indent=2,allow_nan=False).encode()
+     with Path(path).open('xb')as f:f.write(data);f.flush();os.fsync(f.fileno())
++    fd=os.open(str(Path(path).parent),os.O_RDONLY)
++    try:os.fsync(fd)
++    finally:os.close(fd)
+ def owned(path):
+     path=Path(path);require(path.is_absolute()and path==path.resolve()and ROOT in path.parents and not path.is_symlink(),'Exact owned regular path required');return path
++def require_run_binding():
++    require(type(JOB) is int and JOB>0 and isinstance(RUN,Path),"UNBOUND: actual new formal run/job required")
++    require(RUN.is_absolute() and RUN.parent==ROOT/"runs" and RUN.name.endswith("-"+str(JOB)),"Exact new owned run/job binding required")
++def behavior_proof(proof):
++    require(proof.get("probability_contract")=="ACTUAL_NATIVE_BEHAVIOR_V2_HF_DIAGNOSTIC_SEPARATE" and proof.get("hf_native_drift_is_identity_gate") is False and proof.get("behavior_policy_role")=="actual_native_stochastic_sampling_policy","Actual native behavior V2 required; HF drift is diagnostic")
++    return proof
+ def bind_source():
++    require_run_binding()
+     import subprocess
+     require(not sys.flags.optimize,'Optimized Python forbidden')
+     require(sys.platform=='linux'and Path(sys.prefix).resolve()==ROOT/'env','Actual isolated target Linux env required')
+@@ -33,9 +42,9 @@
+     require(not subprocess.check_output(['git','-C',str(ROOT/'repo'),'status','--porcelain'],text=True).strip(),'Source dirty')
+     manifest=ROOT/'tools/tools-manifest.json'
+     if not manifest.exists():manifest=ROOT/'logs/tools-manifest.json'
+-    require(digest(manifest)=='a04350502f6d9b1377268c260a502d7cbca70500ebebe2016ad0a9348bf16742','Exact R5 tools manifest required')
++    require(digest(manifest)=='ec1e92369e03b141dc6a528e795a9459bc331e4296cfc65f42d895c2db0f0256','Exact behavior V2 tools manifest required')
+     tools=json.loads(manifest.read_text());require(tools['source_commit']==SOURCE and len(tools['files'])==21,'Full21 new source tools required')
+-    for name,sha in tools['files'].items():require(digest(ROOT/'tools'/name)==sha,'Frozen R5 tool changed '+name)
++    for name,sha in tools['files'].items():require(digest(ROOT/'tools'/name)==sha,'Frozen behavior V2 tool changed '+name)
+     sys.path.insert(0,str(ROOT/'repo'))
+ def official_manifest():
+     path=MODEL/'VERIFIED-MODEL-MANIFEST.json';require(digest(path)==MODEL_SHA,'Official manifest identity changed')
+--- R5/first5-extract.py
++++ behavior/first5-extract.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Read-only actual R5 fifth-outer collection; never creates a release receipt."""
++"""Read-only actual behavior V2 fifth-outer collection; never creates a release receipt."""
+ import argparse,importlib.util,json,os,subprocess,time
+ from pathlib import Path
+ from first5_helpers import *
+@@ -49,7 +49,7 @@
+             live=process_proof(r['pid'],RUN);require(str(live['start_ticks'])==p['proc_start_ticks']and p['job_id']==str(JOB)and p['run_root']==str(RUN),'Worker PIDbirth/job/run differs')
+             native.append(dict(rank=r['rank'],initial_process=p,current_process=live,roundtrip=r))
+         require(len({x['initial_process']['gpu_uuid']for x in native})==8,'Actual8 workers need distinct allocated UUIDs')
+-        proof=gate.validate_first_sampling_evidence(members,cfg,SOURCE,RUN,pause['pid'],reports)
++        proof=behavior_proof(gate.validate_first_sampling_evidence(members,cfg,SOURCE,RUN,pause['pid'],reports))
+         require(any(a['attempt_id']==proof['attempt_id']and a['candidate_outer']==proof['actual_outer']for a in accepted),'Raw proof was not an actual accepted attempt')
+         state=torch.load(member('driver.pt'),map_location='cpu',weights_only=False);reload=json.loads(member('driver-reload.json').read_text())
+         require(reload['state_digest']==state_digest(state)and reload['pid']==pause['pid']and reload['status']=='EXACT_DRIVER_RELOAD_OK','Actual driver reload differs')
+@@ -62,7 +62,7 @@
+         current=subprocess.check_output(['scontrol','show','job',str(JOB)],text=True)
+         (raw/'slurm-current.txt').write_text(current);result['allocation']=scheduler_proof(raw/'slurm-current.txt',JOB)
+         journal=RUN/'resource-watch.jsonl';before=digest(journal)
+-        spec=importlib.util.spec_from_file_location('r5_guard_replay',ROOT/'tools/guard_journal.py');guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
++        spec=importlib.util.spec_from_file_location('behavior_guard_replay',ROOT/'tools/guard_journal.py');guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+         result['resources']=guard.replay(journal,JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py')
+         require(before==digest(journal),'Guardian journal changed during replay; retry fresh collection')
+         journal_prefix=immutable_prefix(journal,raw/'resource-watch.jsonl')
+--- R5/first5-hf.py
++++ behavior/first5-hf.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Actual read-only full CPU HF/tokenizer verification of R5 first5 export."""
++"""Actual read-only full CPU HF/tokenizer verification of behavior V2 first5 export."""
+ import argparse,importlib.util,json,os,resource,subprocess,time
+ from pathlib import Path
+ from first5_helpers import *
+@@ -43,7 +43,7 @@
+         slurm=collection_path.parent/'raw/slurm-after-hf.txt'
+         slurm.write_text(subprocess.check_output(['scontrol','show','job',str(JOB)],text=True))
+         value['allocation_after_cpu_hf']=scheduler_proof(slurm,JOB);value['slurm_after_hf']=binding(slurm)
+-        spec=importlib.util.spec_from_file_location('r5_guard_replay_after_hf',ROOT/'tools/guard_journal.py')
++        spec=importlib.util.spec_from_file_location('behavior_guard_replay_after_hf',ROOT/'tools/guard_journal.py')
+         guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+         journal=RUN/'resource-watch.jsonl';before=digest(journal)
+         value['resources_after_cpu_hf']=guard.replay(journal,JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py')
+--- R5/publish-first5-release.CANDIDATE.py
++++ behavior/publish-first5-release.CANDIDATE.py
+@@ -4,7 +4,7 @@
+ from pathlib import Path
+ from first5_helpers import *
+ INDEPENDENT_REVIEW_SHA=None
+-REVIEWER_TASK='/root/fresh200_actor_safety'
++REVIEWER_TASK='/root/fresh200_driver_contract' # Independent actual-evidence reviewer; producer is actor_safety.
+ IDENTITY_KEYS=('run_root','source_commit','global_step','actual_outer_updates','horizon','warmup_steps','config_sha256','pause_nonce','protocol','mini_batch_switch_outer','update_semantics','attempt_accounting','optimizer_opportunities_before_switch','optimizer_opportunities_after_switch')
+ def validate_review(review,collection,hf,manifest):
+     require(review.get('decision')=='PASS_INDEPENDENT_ACTUAL_FRESH200_FIRST5_REVIEW','Actual independent evidence review required')
+@@ -26,6 +26,7 @@
+     require(c.get('status')=='ACTUAL_FIRST5_COLLECTION_REQUIRES_INDEPENDENT_REVIEW'and h.get('status')=='ACTUAL_CPU_HF_REQUIRES_INDEPENDENT_REVIEW','Actual collection/HF incomplete')
+     for value in (c,h):require(value.get('source_commit')==SOURCE and value.get('run_root')==str(RUN)and value.get('job_id')==JOB and value.get('native_training_accepted')is False,'Actual evidence identity differs')
+     require(h['collection']==binding(collection_path),'CPU HF bound other collection')
++    behavior_proof(c['sampling_proof'])
+     require(c['manifest']==binding(mp)and c['pause']['manifest_sha256']==digest(mp),'Manifest changed since collection')
+     require(h['proof']['hf']['status']=='REAL_CPU_HF_FINITE_FORWARD'and h['proof']['hf']['device']=='cpu'and h['proof']['parameter_delta']['changed']is True,'Actual full CPU HF/change proof absent')
+     for key in ('slurm_after_hf','resource_journal_after_cpu_hf'):require(binding(h[key]['path'])==h[key],'PostHF actual raw resource/cost evidence changed')
+--- R5/tests/test_first5_candidate.py
++++ behavior/tests/test_first5_candidate.py
+@@ -9,11 +9,13 @@
+ class CandidateTests(unittest.TestCase):
+  def setUp(self):
+   self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
++  self.oldrun,self.oldjob=m.RUN,m.JOB;m.RUN=h.ROOT/"runs/formal200-newfixture-9999";m.JOB=9999
+   self.paths=[self.root/x for x in ('collection.json','hf.json','manifest.json')]
+   for p in self.paths:p.write_text('{}')
+-  self.review=dict(decision='PASS_INDEPENDENT_ACTUAL_FRESH200_FIRST5_REVIEW',reviewer_task_id=m.REVIEWER_TASK,producer_task_id='/root/fresh200_driver_contract',source_commit=m.SOURCE,run_root=str(m.RUN),job_id=m.JOB,
++  self.review=dict(decision='PASS_INDEPENDENT_ACTUAL_FRESH200_FIRST5_REVIEW',reviewer_task_id=m.REVIEWER_TASK,producer_task_id='/root/fresh200_actor_safety',source_commit=m.SOURCE,run_root=str(m.RUN),job_id=m.JOB,
+    bindings=dict(collection_sha256=h.digest(self.paths[0]),hf_sha256=h.digest(self.paths[1]),checkpoint_manifest_sha256=h.digest(self.paths[2])),whole_200_accepted=False,release_scope='CONTINUE_SAME_PROCESS_FROM_ACCEPTED_OUTER_6_TO_200',mustfix=[])
+- def tearDown(self):self.tmp.cleanup()
++ def tearDown(self):
++  m.RUN,m.JOB=self.oldrun,self.oldjob;self.tmp.cleanup()
+  def test_unbound_cannot_publish(self):
+   with self.assertRaisesRegex(ValueError,'UNBOUND'):m.build(*self.paths)
+  def test_review_exact_current_binding(self):m.validate_review(self.review,*self.paths)
+@@ -52,4 +54,38 @@
+   self.assertEqual(progress.actual_adam_writes_per_rank,[97]*8)
+   attempts[0]['rank_write_ledger'][0]['attempt_id']=True
+   with self.assertRaises(ValueError):validate_first_five_attempts(attempts,progress.state_dict(),123)
++ def test_missing_actual_run_fail_closed(self):
++  with self.assertRaisesRegex(ValueError,'UNBOUND'):h.require_run_binding()
++ def test_v2_drift_not_identity_gate(self):
++  p=dict(probability_contract='ACTUAL_NATIVE_BEHAVIOR_V2_HF_DIAGNOSTIC_SEPARATE',hf_native_drift_is_identity_gate=False,behavior_policy_role='actual_native_stochastic_sampling_policy',max_selected_logprob_abs_diff=2.3)
++  self.assertIs(h.behavior_proof(p),p)
++  for key,value in [('hf_native_drift_is_identity_gate',True),('probability_contract','V1'),('behavior_policy_role','hf_old_policy')]:
++   bad=dict(p);bad[key]=value
++   with self.assertRaises(ValueError):h.behavior_proof(bad)
++ def test_frozen_source_and_package_binding(self):
++  self.assertEqual(h.SOURCE,'90755a561abd239fbb23882939410e643bb913ae')
++  self.assertIsNone(h.RUN);self.assertIsNone(h.JOB)
++  for name in ('first5_helpers.py','first5-extract.py','first5-hf.py','publish-first5-release.CANDIDATE.py'):
++   text=(ROOT/name).read_text()
++   self.assertNotIn('6a29642035ff40b2b7787de206f886c0',text)
++   self.assertNotIn('aec5e057093b4c491bfb0a47abd7605d98981b56',text)
++ def test_actual_behavior_alias_and_hf_separation(self):
++  import torch
++  from types import SimpleNamespace
++  from unittest.mock import patch
++  from search_r1.baselines.behavior_policy import bind_actual_behavior,validate_behavior_tensors
++  old=torch.tensor([[-3.7,-2.0]]);sampled=torch.tensor([[-1.5,-1.9]])
++  d=SimpleNamespace(batch=dict(old_log_probs=old,sampling_log_probs=sampled,sampling_mask=torch.ones_like(old,dtype=torch.bool)),meta_info={})
++  with patch('search_r1.llm_agent.sampling_tokens.audit_batch',return_value={'probability_role':'stochastic_sampling_policy'}):
++   bind_actual_behavior(d)
++   self.assertTrue(torch.equal(d.batch['frozen_hf_log_probs'],old))
++   self.assertTrue(torch.equal(d.batch['old_log_probs'],sampled))
++   self.assertTrue(validate_behavior_tensors(d))
++   with self.assertRaises(ValueError):bind_actual_behavior(d)
++   d.batch['old_log_probs'][0,0]-=.01
++   with self.assertRaises(ValueError):validate_behavior_tensors(d)
++ def test_review_typed_job_and_foreign_run_denied(self):
++  for key,value in [('job_id',True),('job_id',9999.0),('run_root','/old/foreign/run')]:
++   bad=copy.deepcopy(self.review);bad[key]=value
++   with self.assertRaises(ValueError):m.validate_review(bad,*self.paths)
+ if __name__=='__main__':unittest.main()

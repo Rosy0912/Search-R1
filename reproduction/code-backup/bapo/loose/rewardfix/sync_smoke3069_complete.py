@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+from pathlib import Path
+import json,datetime,shutil
+s=json.loads(Path('outputs/STATUS.json').read_text());x=json.loads(Path('work/evidence/rewardfix-smoke3069-gpu64-tied-extraction.json').read_text());events=[e['value'] for e in x['events'] if e['marker']=='BAPO_TRAIN_METRICS_JSON'];last=events[-1]['metrics'];c=s['current_training'];c.update(state='COMPLETED_CPU_HF_PASS_INDEPENDENT_REVIEW_PENDING',actual_outer_updates=2,current_step='actual CPU HF/hash proof passed; independent smoke acceptance pending',end_time_cluster='2026-10-04T06:42:50',exit_code='0:0',wall_seconds=692,reserved_gpu_hours=692*8/3600,latest_step_seconds=last['timing_s/step'],latest_stage_validation_rows=64,latest_stage_em=last['bapo/stage_validation'],latest_stage_wall_seconds=last['timing_s/stage_testing'],latest_step_generation_seconds=last['timing_s/gen'],latest_step_actor_update_seconds=last['timing_s/update_actor'],latest_step_checkpoint_seconds=last['timing_s/save_checkpoint'],latest_peek_evidence='work/evidence/rewardfix-smoke3069-hourly-20261003T225942.json',checkpoint_proof={'evidence':'work/evidence/rewardfix-smoke3069-gpu64-tied-extraction.json','issues':x['evidence_issues'],'hf_finite_parameters':x['checkpoint']['hf_load']['parameters'],'dtype_aligned_delta':x['checkpoint']['parameter_delta']['max_abs_delta'],'cost':x['extraction_cost']},raw_archive_sha256='d363d737c3ec00559c2f009309578e1edf3c5022b0b3fa7a07046e53d15b5675')
+s['status']='CORRECTED_SMOKE3069_COMPLETED_REAL_CPU_HF_PASS_INDEPENDENT_PENDING';s['time']=datetime.datetime.now(datetime.timezone.utc).isoformat();s['actual_outer_updates']=2;s['corrected_current_training']=c
+Path('outputs/STATUS.json').write_text(json.dumps(s,ensure_ascii=False,indent=2)+'\n')
+note='\n2026-10-04 07:00跟进：修复smoke3069已06:42:50 COMPLETED0:0/Restarts0，两实际outer（仍非五轮/正式效果），692s/1.5377778预留GPUh。step1 255.156647s/stage64 EM11/64；step2 268.517589s（含save28.596968s）/stage64 EM18/64，stage37.771527s/gen134.979693s/actor44.267990s。完整HF实际CPU有限参数3085938688、forward/loading/tied/tokenizer/12hash/state2全部PASS，issues[]，dtypealigned delta9.88319516e-06，提取29.938934s/CPU29.949047s/peakRSS13326516KiB。raw244341bytes SHA d363d737...5675已校验安全解包；独立freshsmoke审查中，尚未提交five，无完整修复500/final或匹配GRPO效果结论。\n'
+for n in ['REPORT.md','ACTIVE-FORMAL2948-HANDOFF.md']:
+ with (Path('outputs')/n).open('a') as f:f.write(note)
+d=Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo')
+for n in ['STATUS.json','REPORT.md','ACTIVE-FORMAL2948-HANDOFF.md']:shutil.copy2(Path('outputs')/n,d/n)
+for p in Path('work/evidence').glob('rewardfix-smoke3069*'):
+ if p.is_file():shutil.copy2(p,d/p.name)

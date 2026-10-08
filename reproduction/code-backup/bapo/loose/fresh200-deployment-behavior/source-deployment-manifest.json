@@ -1,0 +1,11 @@
+{
+  "source_commit": "90755a561abd239fbb23882939410e643bb913ae",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-fresh200-behavior-20261006",
+  "branch": "codex/bapo-fresh200-behavior-policy",
+  "files": {
+    "source.bundle": "68423e2ba37c6c03c5a9b40efc740e310fb5ee5525bf1985a89da703f4dafb59",
+    "source-expected.txt": "436cef531b6ee86ee84648f049239574cef171cc5ff9823d5ac3b3bc1dc64ce1",
+    "setup-isolated.py": "592c03da42500371b9513274d397e5ef615e5962e1b128f7789d6002359eaa61"
+  },
+  "scope": "SOURCE_ENV_CODE_DEPLOYMENT_ONLY_NO_GPU_OR_LAUNCH"
+}

@@ -1,0 +1,23 @@
+{
+  "status": "UNBOUND_WAITING_ACTUAL_DRIVER_REVIEW_NO_PUBLICATION",
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "job_id": 3315,
+  "source_publisher": "work/fresh200-first5-controller-initfix-3315-v4-CANDIDATE/publish-first5-release.CANDIDATE.py",
+  "source_publisher_sha256": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+  "new_publisher": "work/fresh200-first5-controller-initfix-3315-v4-bound-publisher-CANDIDATE/publish-first5-release.ACTUAL-REVIEW-BOUND.py",
+  "new_publisher_current_sha256": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+  "helper_sha256": "716f9410465c2f642b5cf9af7cbf6d7f503ff43c58aeb4e195f2c82deae525df",
+  "independent_actual_review_sha256": null,
+  "reviewer_task_id": "/root/fresh200_driver_contract",
+  "allowed_change": "One exact constant: INDEPENDENT_REVIEW_SHA=None -> actual signed Driver report SHA string; all remaining bytes equal d2ed9a source",
+  "next_steps": [
+    "Driver actual first5 review signed and exact raw SHA confirmed",
+    "Bind one constant in this NEW local file only",
+    "Math independent exactdiff/codehash review before parent deployment",
+    "Parent frozen source gate prebuild then atomic same3315/driverPID continuation6..200"
+  ],
+  "remote_execution": false,
+  "published": false,
+  "native_acceptance": false,
+  "whole_200_accepted": false
+}

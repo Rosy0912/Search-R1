@@ -1,0 +1,27 @@
+{
+  "status": "LOCAL_CANDIDATE_SELF_REVIEW_NOT_ACTUAL_LINUX25_OR_GPU_ACCEPTANCE",
+  "source_commit": "484c0b30fa73fa5354bdb3452f007134ec5db13f",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-ray-titlefix-r2-20261006",
+  "files": {
+    "deployment-tools/identity-linux-fixture.py": {
+      "bytes": 13037,
+      "sha256": "a6a7badf2b357da0a51709ca03356e8c5ec4db1f0010142afed7757c7ca55221"
+    },
+    "deployment-tools/actual-title-dependency-preflight.py": {
+      "bytes": 7145,
+      "sha256": "49907ea77619c7ebc1e1dbd94be9601cf4ee24cffb98f0aac8baf42751c88a8b"
+    },
+    "test_actual_title_dependency_preflight.py": {
+      "bytes": 2865,
+      "sha256": "48961b5e232bd09303a3ab2417712d69d5f4b5287b42f52363d333dd3df11f5b"
+    },
+    "title-dependency-preflight-local-tests.log": {
+      "bytes": 576,
+      "sha256": "646646756d9f1fabf80073e2999e83a8e37b05f50c4557b081fcefd3d8dda255"
+    }
+  },
+  "local_tests_passed": 8,
+  "actual_linux25_accepted": false,
+  "actual_gpu_accepted": false,
+  "training_authorized": false
+}

@@ -1,0 +1,36 @@
+{
+  "status": "LOCAL_NEW_ALLOCATION_HELPERS_PREPARED_NOT_PERMISSION",
+  "source_commit": "484c0b30fa73fa5354bdb3452f007134ec5db13f",
+  "job_expected": 3279,
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/capture-hardware-allocation.py",
+      "sha256": "b4c1acd8ff73076c45cbdecc4f6af5ecee57614cf74a64dbe07297e1b6c8f313"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/check-hardware-allocation.py",
+      "sha256": "c806d9ca1c48b048c23e27cebadef48642b01b5a2465c0ea0b52c28d712f583b"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/build-verify-only-permission-candidate.py",
+      "sha256": "cf508d817973f3f4358c56ef47854b27a9dc441a8542ccf83f4a05d1d1c8c437"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/test_hardware_allocation_helpers.py",
+      "sha256": "7b135fba8f9d27ba909c456957215fab0af216c509e9b9a518506b3dbcc205d6"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/hardware-allocation-helper-local-tests.log",
+      "sha256": "a05c2678f8de3d0e97a2f59d1267520a92f0ae14c0cdedd567eb3a1207ac28e4"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/HARDWARE-ALLOCATION-HELPERS-SELF-REVIEW.md",
+      "sha256": "3f3a85f51d187d5b193d5da392109069fb39ceab983abf350a1eff4af5faed16"
+    }
+  ],
+  "local_tests": 6,
+  "actual_allocation_captured": false,
+  "actual_gpu_accepted": false,
+  "permission_signed": false,
+  "training_authorized": false
+}

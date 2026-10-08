@@ -1,0 +1,13 @@
+--- unbound/first5_helpers.py
++++ 3312-v2/first5_helpers.py
+@@ -5,8 +5,8 @@
+ sys.dont_write_bytecode=True
+ ROOT=Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-behavior-20261006')
+ SOURCE='90755a561abd239fbb23882939410e643bb913ae'
+-RUN=None # Bind only to a new actually submitted formal200 process.
+-JOB=None
++RUN=ROOT/'runs/formal200-8c29851b54174f2083023a98cde9c19b-3312'
++JOB=3312
+ MODEL=ROOT/'assets/qwen2.5-3b-instruct-aa8e725'
+ MODEL_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+ REVIEW_SHA=None # Bind only after independent review of actual new fifth-outer evidence.

@@ -1,0 +1,35 @@
+{
+  "status": "LOCAL_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW",
+  "job_id": 3231,
+  "source": "39cdcdd1404213b897bb0de99cc52d72707682f0",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005",
+  "extractor_sha256": "a27674a26f4958f9514c19be6f9f5ba5fab9bfd640c586b5bf293266da29ee74",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-stabilityfix-retry3222/first5_guard3231.py",
+      "sha256": "fa90c724df0cb1f56c9f27e389e4234e2b0bc2fee6ea5daf50b57dc540b33ca3",
+      "bytes": 5934
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-stabilityfix-retry3222/validate-publish-first5-release3231.py",
+      "sha256": "629c590d148e6b8dec0214be285c51856bbef1f268f17347f4ae15f54910be6c",
+      "bytes": 2296
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-stabilityfix-retry3222/archive-first5-extraction3231.py",
+      "sha256": "151d9d3518ee54ad3904af419549e1e05364bf3aa1cd2790642ec2054aa12cdc",
+      "bytes": 2069
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-stabilityfix-retry3222/test_first5_guard3231.py",
+      "sha256": "33acaeb488da3c89b42a02b3ab8e24e502ccfa21196ed3b6109f1b82266774e6",
+      "bytes": 7801
+    }
+  ],
+  "remote_executed": false,
+  "receipt_generated": false,
+  "release_executed": false,
+  "local_helper_tests_passed": 14,
+  "independent_wrapper_tests_rerun_passed": 11,
+  "revision": "exact_slurm_fields_and_frozen_repo_subprocess_cwd"
+}

@@ -1,0 +1,8 @@
+{
+  "source_commit": "5121a8d9349eadb5a81119cc4573165338e041bd",
+  "files": {
+    "source.bundle": "cc0432436754e078854fdb9b47c345a5f6a48051352d6995ac3c86880ef72617",
+    "source-expected.txt": "1df1395f3c82d8e3c0e61417071842e501f4e009ab7d3b112f87adf8d8746529",
+    "setup-isolated.py": "76e977232084f99345b9b6d6435696a2643b79bffab43f2979c6e40e5aa5fd32"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "CODE_ONLY_PENDING_INDEPENDENT_REVIEW_NOT_FINAL3292_ACCEPTANCE",
+  "files": {
+    "final3292-readonly.py": "9d7a970c95a85ae3ce620b073b8bcb94533803b826541494507651f3951aadc2",
+    "test_final3292_readonly.py": "7bd74c24366c36cb2b21b8f5e6c0a5423fc12a455333124dd634d92f076a4492",
+    "FINAL3292-READONLY-WRAPPER-DESIGN.md": "eccef5b9d797d43d256a34093dae656bea1aa81f9f2573662a6dc36f0ac17d15",
+    "final3292-readonly-local-tests.log": "d370a598e65bc9337cf53e98cee3008c4f38cd9ce0b18e3935eeac041ffe70b2"
+  },
+  "reference_sha256": "a27674a26f4958f9514c19be6f9f5ba5fab9bfd640c586b5bf293266da29ee74",
+  "tests_passed": 10,
+  "actual_gpu_executed": false,
+  "actual_terminal_HF_executed": false,
+  "source_changed": false,
+  "frozen36_changed": false
+}

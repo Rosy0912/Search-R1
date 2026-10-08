@@ -1,0 +1,31 @@
+import sys,os,json,hashlib,importlib.util
+from pathlib import Path
+S=Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-safety-r5-20261006');sys.path.insert(0,str(S/'repo'))
+import torch
+spec=importlib.util.spec_from_file_location('probe',S/'probability-diagnostic-3307-v4-20261006/tools/hf-probe.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+raw=S/'runs/formal200-6a29642035ff40b2b7787de206f886c0-3307/checkpoints/diagnostics/formal-sampling-attempt_1/formal-first-sampling-batch.pt'
+if m.digest(raw)!=m.RAW_SHA:raise RuntimeError('exact raw required')
+p=torch.load(raw,map_location='cpu',weights_only=False);t=p['tensors']
+from verl import DataProto
+from search_r1.llm_agent.sampling_tokens import audit_batch
+from search_r1.baselines.fresh200_contract import critical_source_hashes
+if p['source_sha256']!=critical_source_hashes():raise RuntimeError('source differs')
+audit=audit_batch(DataProto.from_dict(tensors=t,non_tensors=p['non_tensor_batch'],meta_info=p['meta_info']))
+def h(x):return hashlib.sha256(json.dumps(x,separators=(',',':')).encode()).hexdigest()
+reports=[]
+POINTS=[(1595, 575), (1865, 588), (602, 589), (286, 604), (1248, 482), (1617, 562), (433, 586), (677, 739), (2172, 662), (156, 648), (2397, 807), (500, 40), (1402, 707), (2550, 726), (988, 777), (496, 696), (630, 841), (119, 106), (1164, 569), (1713, 59), (0, 89), (1, 614)]
+ACTUAL_CASES={(0, 89): {'NEW_PACKED_PROBE_MICRO4': [0, 1, 2, 3], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [0, 1280, 853, 640]}, (1, 614): {'NEW_PACKED_PROBE_MICRO4': [0, 1, 2, 3], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1281, 1, 854, 641]}, (119, 106): {'NEW_PACKED_PROBE_MICRO4': [116, 117, 118, 119], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1399, 972, 759, 119]}, (156, 648): {'NEW_PACKED_PROBE_MICRO4': [156, 157, 158, 159], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [156, 1436, 1009, 796]}, (286, 604): {'NEW_PACKED_PROBE_MICRO4': [284, 285, 286, 287], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1566, 1139, 286, 926]}, (433, 586): {'NEW_PACKED_PROBE_MICRO4': [432, 433, 434, 435], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1713, 433, 1286, 1073]}, (496, 696): {'NEW_PACKED_PROBE_MICRO4': [496, 497, 498, 499], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [496, 1776, 1349, 1136]}, (500, 40): {'NEW_PACKED_PROBE_MICRO4': [500, 501, 502, 503], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [500, 1780, 1353, 1140]}, (602, 589): {'NEW_PACKED_PROBE_MICRO4': [600, 601, 602, 603], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1882, 1455, 602, 1242]}, (630, 841): {'NEW_PACKED_PROBE_MICRO4': [628, 629, 630, 631], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1910, 1483, 630, 1270]}, (677, 739): {'NEW_PACKED_PROBE_MICRO4': [676, 677, 678, 679], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1957, 677, 1530, 1317]}, (988, 777): {'NEW_PACKED_PROBE_MICRO4': [988, 989, 990, 991], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [988, 2268, 1841, 1628]}, (1164, 569): {'NEW_PACKED_PROBE_MICRO4': [1164, 1165, 1166, 1167], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1164, 2444, 2017, 1804]}, (1248, 482): {'NEW_PACKED_PROBE_MICRO4': [1248, 1249, 1250, 1251], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1248, 2528, 2101, 1888]}, (1402, 707): {'NEW_PACKED_PROBE_MICRO4': [1400, 1401, 1402, 1403], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [122, 2255, 1402, 2042]}, (1595, 575): {'NEW_PACKED_PROBE_MICRO4': [1592, 1593, 1594, 1595], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [315, 2448, 2235, 1595]}, (1617, 562): {'NEW_PACKED_PROBE_MICRO4': [1616, 1617, 1618, 1619], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [337, 1617, 2470, 2257]}, (1713, 59): {'NEW_PACKED_PROBE_MICRO4': [1712, 1713, 1714, 1715], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [433, 1713, 6, 2353]}, (1865, 588): {'NEW_PACKED_PROBE_MICRO4': [1864, 1865, 1866, 1867], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [585, 1865, 158, 2505]}, (2172, 662): {'NEW_PACKED_PROBE_MICRO4': [2172, 2173, 2174, 2175], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [2172, 892, 465, 252]}, (2397, 807): {'NEW_PACKED_PROBE_MICRO4': [2396, 2397, 2398, 2399], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1117, 2397, 690, 477]}, (2550, 726): {'NEW_PACKED_PROBE_MICRO4': [2548, 2549, 2550, 2551], 'NEW_PACKED_PROBE_CHANGED_NEIGHBORS': [1270, 843, 2550, 630]}}
+for row,pos in POINTS:
+ turnid,off,turn=m.locate_turn(p['non_tensor_batch']['fresh200_turns'][row],pos)
+ width=t['prompts'].shape[1];labelidx=width+pos
+ ids=t['input_ids'][row];mask=t['attention_mask'][row].bool();positions=t['position_ids'][row]
+ fullprefix=ids[:labelidx+1][mask[:labelidx+1]].tolist()
+ fullpos=positions[:labelidx+1][mask[:labelidx+1]].tolist()
+ request=turn['actual_request_token_ids'];generated=turn['raw_generated_token_ids'][:off+1];actualprefix=request+generated
+ expectedpos=list(range(len(actualprefix)))
+ ok=fullprefix==actualprefix and fullpos==expectedpos and fullprefix[-1]==int(t['responses'][row,pos]) and int(positions[labelidx-1])==len(actualprefix)-2
+ if not ok:raise RuntimeError('actual prefix/position/label divergence')
+ neighbors=ACTUAL_CASES[(row,pos)]['NEW_PACKED_PROBE_MICRO4'];changed=ACTUAL_CASES[(row,pos)]['NEW_PACKED_PROBE_CHANGED_NEIGHBORS'];slot=neighbors.index(row)
+ if changed.index(row)!=slot:raise RuntimeError('actual neighbor case changed tested slot')
+ reports.append(dict(row=row,position=pos,turn=turnid,offset=off,prefix_tokens_including_label=len(actualprefix),prefix_sha256=h(actualprefix),full_prefix_sha256=h(fullprefix),position_ids_sha256=h(fullpos),prefix_and_position_and_label_exact=True,label_token=int(ids[labelidx]),full_physical_query_index=labelidx-1,full_query_position_id=int(positions[labelidx-1]),perturn_query_index=len(actualprefix)-2,full_left_padding=int((~mask[:width]).sum()),row_valid_tokens=int(mask.sum()),packed_rows=neighbors,packed_valid_tokens=[int(t['attention_mask'][i].sum()) for i in neighbors],changed_neighbor_rows=changed,changed_neighbor_valid_tokens=[int(t['attention_mask'][i].sum()) for i in changed],tested_batch_slot=slot))
+print(json.dumps(dict(scope='ACTUAL_CPU_EXACT_RAW_PREFIX_POSITION_LABEL_WITNESS_NOT_NATIVE_PROBABILITY_ACCEPTANCE',source_commit=m.SOURCE,raw_sha256=m.RAW_SHA,context_audit=audit,points=reports,all22_exact=len(reports)==22 and all(x['prefix_and_position_and_label_exact'] for x in reports),optimizer_steps=0)))

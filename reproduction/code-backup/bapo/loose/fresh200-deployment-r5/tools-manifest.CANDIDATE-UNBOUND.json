@@ -1,0 +1,30 @@
+{
+  "status": "UNBOUND_R5_CODE_ONLY_NOT_DEPLOYMENT_OR_LAUNCH_ADMISSION",
+  "source_commit": null,
+  "base_source_commit": "5121a8d9349eadb5a81119cc4573165338e041bd",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-fresh200-safety-r5-20261006",
+  "files": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "capture-runtime-executable.py": "c6c31abf24ccb839cae52469808f79eae248eaefa564ca9ef487c20d5203afef",
+    "context-budget-audit.py": "7baa66e24f1658704677385ba1870e94f29a8e23a4d45f34944e912f45485bb0",
+    "diagnostic-confirmation128.sbatch": "74296d64ceac60b8bf76efc85d8009788993e74dd399ccdc2b37980a3d8672e1",
+    "diagnostic-confirmation256.sbatch": "b1858a81c565244c138b8b8b37ccfed2052a89d261f3d890246c671523d87e0a",
+    "diagnostic-discovery128.sbatch": "0961eceb9a7e0c2acc567d1d8306f167325f4c88b2be204606b44a770916a4ee",
+    "diagnostic-discovery256.sbatch": "0c6deedd1772ba56ff26bec5b314c6160eb685f8a996e4add54a27becfdcf251",
+    "formal-environment.py": "126acec40517286f96cf7e1ade7c58a929213ba4c40a561ae9bb888874d20cc4",
+    "formal200.sbatch": "c7b5060e9f7b0bb1e0df604476ce1274f2a7723ad1de67ff0f96faa3ac4681e4",
+    "guard_journal.py": "37f86a7260809e497ad3cb80740d04aab1c7a6b7a4511fc38e5039302ca418cd",
+    "launch_return.py": "8046b14562fd554b6d4bc1e83e19a681daecabf148eea046224af47b3b9a40ba",
+    "launch_transaction.py": "46a764ebbd8eb59d6a6bfe19cd53bfb2d9026b2b588f7b2c8c4ff2774f329880",
+    "monitor.sh": "799b6857a2728a9c4afaab8da64a193130f7cd05412098b6ee695daf1666ef35",
+    "owned_processes.py": "2c8cdb3363461b402c3155091cab89739524256b1f89ab58c0f5e62334a877bd",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "001e0bd0160aa96c8c1e455a57a831f77bed3052f5758c34c820f45146d11527",
+    "run-target-cpu.py": "0fcb0395f98117cbe52a7167839f1409e12bf1f5e501a53aedbc26e618f472c5",
+    "stage-gpu-inner.sh": "8d7fe530d77a302c98fc0eb1d16efae90aa765bb46f9134b76fcdcd42ff7634e",
+    "stage.sh": "54b616e6197cb8905e680e008dbc6f0dffb5b5bc39a7fc890d6ba3b57596d304",
+    "submit.sh": "f1d854ccaa24053691f0db40f02719dbe78931d089190889b50eb7d072ccda86",
+    "verify-launch.py": "b9018dcf5c3f440ec4f9f46afd80d79acba01ec3736aee0c12ed4efee4930dd6"
+  },
+  "source_frozen": false
+}

@@ -1,0 +1,50 @@
+{
+  "INDEPENDENT-OFFLOAD-ROOT-CAUSE-REVIEW.json": {
+    "local_path": "work/fresh200-initial-state-review-3305/INDEPENDENT-OFFLOAD-ROOT-CAUSE-REVIEW.json",
+    "sha256": "73acc9a35456907e78549ce1ffba529971caa47b98b2614a368d12d061460a24"
+  },
+  "INDEPENDENT-OFFLOAD-ROOT-CAUSE-REVIEW.md": {
+    "local_path": "work/fresh200-initial-state-review-3305/INDEPENDENT-OFFLOAD-ROOT-CAUSE-REVIEW.md",
+    "sha256": "9c8146fb5021da3745c66529f3d9bef2f0b1df2b7b06d2ede3e50b9ee816d73d"
+  },
+  "INDEPENDENT-SKIP-FINAL-CODE-REVIEW.json": {
+    "local_path": "work/fresh200-deployment-r3/INDEPENDENT-SKIP-FINAL-CODE-REVIEW.json",
+    "sha256": "e12bcd1b3380da4e296f14b754931ec7e183b3278e760bdc0715211a00edd41a"
+  },
+  "INDEPENDENT-SKIP-FINAL-CODE-REVIEW.md": {
+    "local_path": "work/fresh200-deployment-r3/INDEPENDENT-SKIP-FINAL-CODE-REVIEW.md",
+    "sha256": "7cdcd938383917b6a471d940ad4fa87a6dfb93e5fce62b8332892da97c20e011"
+  },
+  "independent-skip-final-critical-tests-v3.raw.log": {
+    "local_path": "work/fresh200-deployment-r3/independent-skip-final-critical-tests-v3.raw.log",
+    "sha256": "e8986fb15e520214e2a30c33c53fbd7e137dd91749ab176dca80b7823358e36a"
+  },
+  "candidate-tests-v2.raw.log": {
+    "local_path": "work/fresh200-initial-state-review-3305/candidate-tests-v2.raw.log",
+    "sha256": "16b324c7a49cc6430ea5ed210bd75d9abe5afe92ae05260ef44c9bed8536426f"
+  },
+  "final-critical-binding-test.raw.log": {
+    "local_path": "work/fresh200-initial-state-review-3305/final-critical-binding-test.raw.log",
+    "sha256": "9493e042e277bb82f1f31730ffb058b10c5af58d5075b73df453e6cfd22477a9"
+  },
+  "INDEPENDENT-TOKEN-BOUNDARY-CODE-REVIEW.json": {
+    "local_path": "work/fresh200-tokenboundary-review-3306/INDEPENDENT-TOKEN-BOUNDARY-CODE-REVIEW.json",
+    "sha256": "f4b0ac44a75ba99ea12904638f2e01b155d81ba6e9687e50bca75d574af16854"
+  },
+  "INDEPENDENT-TOKEN-BOUNDARY-CODE-REVIEW.md": {
+    "local_path": "work/fresh200-tokenboundary-review-3306/INDEPENDENT-TOKEN-BOUNDARY-CODE-REVIEW.md",
+    "sha256": "bf9a8b10965725d220886e73f05bb4172b804e491a82da576b08f84c5e3fc441"
+  },
+  "independent-tokenboundary-tests.raw.log": {
+    "local_path": "work/fresh200-tokenboundary-review-3306/independent-tokenboundary-tests.raw.log",
+    "sha256": "31136b02a29a9b230f00e34d99c4bff646fa1f77cf53202b264e1a2da8a1c2f0"
+  },
+  "BEHAVIOR-DEPLOYMENT-INDEPENDENT-REVIEW.json": {
+    "local_path": "outputs/fresh200/BEHAVIOR-DEPLOYMENT-INDEPENDENT-REVIEW.json",
+    "sha256": "a5a7f9d6d0d38fb2e2ca70b07497b5d6c46636d5c99e48ee7a42f8ede64627ff"
+  },
+  "BEHAVIOR-POLICY-12FILE-OVERLAY-INDEPENDENT-REVIEW.json": {
+    "local_path": "outputs/fresh200/BEHAVIOR-POLICY-12FILE-OVERLAY-INDEPENDENT-REVIEW.json",
+    "sha256": "53493fa4beca0fafa49ff92b442eff7d334c748defa064fc477405ab98191a7b"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "files": {
+    "source.bundle": "08affedc9988b34e3d679b7e7fa88498af1feff44bad445b110a24be05649503",
+    "source-expected.txt": "b390d9abfa3b5a616018377bceb7d5d1af78a4901bbc87174380eaef47c3a559",
+    "setup-isolated.py": "efefa0b2e6f41696ec2d7dc58656bf9cfa077b580913aa5277ad2f9cb22c1395"
+  }
+}

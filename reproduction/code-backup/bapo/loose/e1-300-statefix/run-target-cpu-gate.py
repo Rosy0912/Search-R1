@@ -1,0 +1,10 @@
+import pathlib,sys,subprocess,os,time,json,re,hashlib
+r=pathlib.Path('/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-statefix-20261004');source='2175549691d6856e2b393b2834a32febe41ee56e'
+assert subprocess.check_output(['git','-C',str(r/'repo'),'rev-parse','HEAD'],text=True).strip()==source
+assert not subprocess.check_output(['git','-C',str(r/'repo'),'status','--porcelain'],text=True)
+log=r/'logs/cpu-gate.log';env=os.environ.copy();env['CUDA_VISIBLE_DEVICES']='';env['PYTHONDONTWRITEBYTECODE']='1';env.pop('LD_LIBRARY_PATH',None);start=time.monotonic()
+with log.open('x')as f:p=subprocess.run([str(r/'env/bin/python'),str(r/'tools/cpu-tests.py')],cwd=r/'repo',env=env,stdout=f,stderr=subprocess.STDOUT)
+raw=log.read_text();passed=re.findall(r'(\d+) passed',raw);skipped=re.findall(r'(\d+) skipped',raw);failed=re.findall(r'(\d+) failed',raw)
+record={'source_commit':source,'exit_code':p.returncode,'passed':int(passed[-1])if passed else 0,'skipped':int(skipped[-1])if skipped else 0,'failed':int(failed[-1])if failed else 0,'wall_seconds':time.monotonic()-start,'log_sha256':hashlib.sha256(log.read_bytes()).hexdigest(),'test_launcher_sha256':hashlib.sha256((r/'tools/cpu-tests.py').read_bytes()).hexdigest(),'sys_prefix':sys.prefix,'scope':'ACTUAL_TARGET_LINUX_CPU_NOT_GPU_ACCEPTANCE'}
+(r/'logs/cpu-gate.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record),flush=True)
+sys.exit(p.returncode)

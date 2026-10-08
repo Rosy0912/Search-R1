@@ -1,0 +1,22 @@
+{
+  "status": "LOCAL_TERMINAL_SEAL_CANDIDATE_NOT_HARDWARE_ACCEPTANCE",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-ray-envfix-20261006",
+  "source_commit": "a2568d0df306ead6e059760e28b5bd53ee3f6876",
+  "helper_sha256": "c0334988153496305b57aaecafb908d28d14705791b4632792f03e135c96e8c3",
+  "watcher_sha256": "53ed622dcce4aa5475d80f6489683860a3f43d7d1b6e4c6aa5657649d2a75a80",
+  "final36_manifest_sha256": "8bd3fccd459f4b58a6dd048c624328b6fe4f067f8c26333aaef81d560e32ba46",
+  "files": {
+    "seal-hardware-evidence.py": "5745ab029a8167a2f17667d57a80f9961e164ae42d8d27b050c64b5af1d9ff50",
+    "test_seal_hardware_evidence.py": "519442a4861d9dda35e86b82c9427c722c700f746ce4be5b7a46ea8205df7ffc",
+    "seal-hardware-local-tests-r3.log": "02c8b63f97841ea5afb6c45b30aab683621b65794a923c20cfbb47e2d0ae8df0"
+  },
+  "tests": {
+    "passed": 14,
+    "skipped": 0,
+    "failed": 0,
+    "seconds": 0.038
+  },
+  "remote_executed": false,
+  "actual_new_job": null,
+  "hardware_signed": false
+}

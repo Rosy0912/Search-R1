@@ -1,0 +1,151 @@
+{
+  "actual_gpu": false,
+  "actual_new_source_linux_cpu_accepted": false,
+  "files": {
+    "bapo-retrieval-parity.py": {
+      "bytes": 13610,
+      "sha256": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370"
+    },
+    "capture-runtime-executable.py": {
+      "bytes": 2152,
+      "sha256": "d2d46bbeb66554d850e9ecee5a1ba5d3f4f32d035e6a26a1ca95b5e446e68756"
+    },
+    "check-recovery-permission.py": {
+      "bytes": 1690,
+      "sha256": "e3d91720303151e32b4c0768c6e0f6416bf39c3a94fe588c3331d8757547aa6f"
+    },
+    "cpu-tests.py": {
+      "bytes": 7245,
+      "sha256": "9f73a0b3474c2c787b769a2c822bc8ceaa6a829f2ee4c5919bee33def431b872"
+    },
+    "flash_preflight.py": {
+      "bytes": 1369,
+      "sha256": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299"
+    },
+    "formal300.sbatch": {
+      "bytes": 783,
+      "sha256": "d0e4021d153422ab4ddcc31fe27d001c5d9c3b1a7214a1ea13ff6ee7765471ff"
+    },
+    "freeze_scalability_gpu_fixture.py": {
+      "bytes": 18702,
+      "sha256": "cb3cbbfd7f1a7e383157445dc5eb3320f5cd41b3677c0c6b9290ecc13f3541d1"
+    },
+    "guard_journal.py": {
+      "bytes": 17351,
+      "sha256": "16e14271d0f7710d7c86ce00e2a5e10bd0bdd754900be7951b5a0224e9574555"
+    },
+    "hardware.sbatch": {
+      "bytes": 779,
+      "sha256": "61e4b48db87d8d120b3a35ddf369e0ec409441e3362b8b9a3683fe7385d03173"
+    },
+    "hardware.sh": {
+      "bytes": 5002,
+      "sha256": "3b099816a62d3bcf7896f5d7c46d6a2c3b90476989b15a568539462fb56c8996"
+    },
+    "identity-linux-fixture.py": {
+      "bytes": 13021,
+      "sha256": "1f1a9159939952668c1e0a8db67a82f631b0961c546f17384402cc7daa1167b1"
+    },
+    "identity_evidence_validator.py": {
+      "bytes": 12744,
+      "sha256": "be212aba56495af89716729dce3782c4e4826ff92bf16d2bf53aa0e18dae62e8"
+    },
+    "monitor.sh": {
+      "bytes": 609,
+      "sha256": "8e3ca00e8912447e5453a1b925b046a5005c81d5936e49866205ecfa56af59b6"
+    },
+    "native-actor-fixture.py": {
+      "bytes": 27418,
+      "sha256": "e65003ca6123674260ad1cb29c3ccf60a1a9d4646e63b972b32c657437068fd1"
+    },
+    "native-count-fixture.py": {
+      "bytes": 2760,
+      "sha256": "b40ef907be97da16b335b322983789f6522e1a2856640e8cbb976e540c1b0c6a"
+    },
+    "native-stability-fixture.py": {
+      "bytes": 10894,
+      "sha256": "b118cc48fca0bbea0cade9b8e7ab594ef5bdb72f7ae87898f14d3210be45abe3"
+    },
+    "native-state-fixture.py": {
+      "bytes": 14693,
+      "sha256": "e5ec84a6f0248610848f3bed0b9bcaa63fe5fd51c66a43f92e63c9229824baaf"
+    },
+    "numerics-gpu-fixture.py": {
+      "bytes": 8217,
+      "sha256": "5d8004607d0be25364e13149e68baabf23b05c2f3571d06a8ab2d1e0a767b080"
+    },
+    "owned_processes.py": {
+      "bytes": 2202,
+      "sha256": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188"
+    },
+    "prepare-recovery-manifest.py": {
+      "bytes": 3387,
+      "sha256": "e8fdbb047f981891419b53c80abece9bbd4f67f1ce288235adedffc5be462f85"
+    },
+    "ray_cli_compat.py": {
+      "bytes": 587,
+      "sha256": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845"
+    },
+    "resource_watch.py": {
+      "bytes": 57287,
+      "sha256": "53ed622dcce4aa5475d80f6489683860a3f43d7d1b6e4c6aa5657649d2a75a80"
+    },
+    "stage-gpu-inner.sh": {
+      "bytes": 3716,
+      "sha256": "f1a1d74a3f3d566031910a13bbcf5f70a84fcb8fe3a1800c8a6bc23292fa29c3"
+    },
+    "stage.sh": {
+      "bytes": 4943,
+      "sha256": "06e920c667b2e1d75f6b748785b026d2274a8f5e3821778edd2bc010dc682655"
+    },
+    "submission-worker-intent.py": {
+      "bytes": 647,
+      "sha256": "fa4d1eb2e72fa7e6bd435172d8f67afbc4ec76e51550db672609f5feb29c7b7c"
+    },
+    "submit.sh": {
+      "bytes": 2078,
+      "sha256": "884509735d3c75cce97c3e5641f37d06e9834457bebc19afe5399f7196f9cece"
+    },
+    "test_freeze_scalability.py": {
+      "bytes": 11018,
+      "sha256": "aea3110a2ee34d2341cc3d130b386260e682e418a4a06bec9aec1b255186a4d5"
+    },
+    "test_guard_journal.py": {
+      "bytes": 12908,
+      "sha256": "d977d3d521ae946b556a545e40bf418d26709ddc79d95978dc3bba2b937edc1d"
+    },
+    "test_identity_evidence_validator.py": {
+      "bytes": 10447,
+      "sha256": "2a0e9f274181c9cd5c21a6f938de2370b0cabdc2a0d5afa56056bdf8ca2196c7"
+    },
+    "test_identity_linux_fixture.py": {
+      "bytes": 4037,
+      "sha256": "c1bbf053ca531769492d963a8dd96ebc6076898002968299cb56b4ecbd3ad3f7"
+    },
+    "test_ray_title_identity.py": {
+      "bytes": 12659,
+      "sha256": "f97cde4e3802cf37381ffd72c9821a31debc0c47780eaae5a6b9a2d5da3c2975"
+    },
+    "test_resource_watch_recovery.py": {
+      "bytes": 17199,
+      "sha256": "e57627fa1eab723ad31eebff4a63e4b713627fed566605a71cf7a9bb3fe26b1d"
+    },
+    "verify_hardware_receipt.py": {
+      "bytes": 43002,
+      "sha256": "69484138c6478fd9e965c539887abee189331ff523a96ee7920c7c7cb3d9f267"
+    },
+    "verify_launch.py": {
+      "bytes": 9515,
+      "sha256": "970f3231a2e8029599bb712fc8ed19fa2bbdab0dcc079bdac28f19a837a1b675"
+    },
+    "verify_shared_inputs.py": {
+      "bytes": 2976,
+      "sha256": "ea4e453d7f99596ac4210815ded2b44f3af82a59b55ead739084e4b2cf24533e"
+    }
+  },
+  "production_training_permission": false,
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-ray-titlefix-20261006",
+  "source_commit": "484c0b30fa73fa5354bdb3452f007134ec5db13f",
+  "status": "PASS_INDEPENDENT_FINAL35_TOOLS_CODE_ONLY",
+  "tools_file_count": 35
+}

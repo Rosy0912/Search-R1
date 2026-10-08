@@ -1,0 +1,21 @@
+{
+  "status": "READ_ONLY_LOCAL_CAPTURE_CANDIDATE_NO_REMOTE_NO_PERMISSION",
+  "files": {
+    "capture-hardware-allocation.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/capture-hardware-allocation.py",
+      "sha256": "40c11b24df3bbe55fe5519bc26be3dc9404f804213161165484058c892b60d2d"
+    },
+    "test_allocation_capture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_allocation_capture.py",
+      "sha256": "ff74fe3f845ebdcfc6cf1acddd51917b3c7175ba6943011e1c773f63d17a0e9b"
+    },
+    "ALLOCATION-CAPTURE-README.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/ALLOCATION-CAPTURE-README.md",
+      "sha256": "4d5fead6c3d28683fac6a552c0621ebec4dacea79315572eb57b3be5e7210df9"
+    },
+    "allocation-capture-unit-r1.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/allocation-capture-unit-r1.log",
+      "sha256": "e73c3805f810fdcf3d0167ced7085c48306c9482a952ffb710551d230cdb3e51"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+--- v2/first5_helpers.py
++++ v3/first5_helpers.py
+@@ -56,9 +56,48 @@
+     return binding(path)
+ def marked(text,marker):return [json.loads(line.split(marker,1)[1])for line in text.splitlines()if marker in line]
+ def immutable_prefix(source,target):
+-    raw=Path(source).read_bytes();require(raw.endswith(b'\n'),'Partial terminal log line')
+-    with Path(target).open('xb')as f:f.write(raw);f.flush();os.fsync(f.fileno())
+-    return dict(live_path=str(source),snapshot_path=str(target),bytes=len(raw),sha256=digest(target))
++    """Copy only complete lines inside one observed inode/size boundary."""
++    import stat
++    source=owned(source);target=owned(target)
++    started=time.time_ns();fd=os.open(source,os.O_RDONLY|os.O_NOFOLLOW)
++    try:
++        first=os.fstat(fd);require(stat.S_ISREG(first.st_mode),'Ordinary source file required')
++        observed=first.st_size;observed_time=time.time_ns();parts=[];offset=0
++        while offset<observed:
++            chunk=os.pread(fd,min(1048576,observed-offset),offset)
++            require(chunk,'Source truncated during capture');parts.append(chunk);offset+=len(chunk)
++        raw=b''.join(parts);end=raw.rfind(b'\n')+1
++        require(end>0,'No complete newline record in observed prefix')
++        prefix=raw[:end];tail=raw[end:]
++        after=os.fstat(fd);named=os.stat(source,follow_symlinks=False)
++        require(after.st_size>=observed and (first.st_dev,first.st_ino)==(named.st_dev,named.st_ino) and stat.S_ISREG(named.st_mode),'Source replaced or truncated during capture')
++        require(os.pread(fd,end,0)==prefix,'Source prefix changed during capture')
++        with target.open('xb')as f:f.write(prefix);f.flush();os.fsync(f.fileno())
++        directory=os.open(target.parent,os.O_RDONLY)
++        try:os.fsync(directory)
++        finally:os.close(directory)
++        value=dict(live_path=str(source),snapshot_path=str(target),source_dev=first.st_dev,source_inode=first.st_ino,observed_size=observed,copied_bytes=end,bytes=end,partial_tail_bytes=len(tail),partial_tail_sha256=hashlib.sha256(tail).hexdigest(),observed_bytes_sha256=hashlib.sha256(raw).hexdigest(),sha256=digest(target),opened_unix_ns=started,observed_size_unix_ns=observed_time,captured_unix_ns=time.time_ns(),coverage='COMPLETE_NEWLINE_PREFIX_AT_OBSERVED_SIZE_NOT_LATER_RECORDS')
++        verify_snapshot_prefix(value);return value
++    finally:os.close(fd)
++
++def verify_snapshot_prefix(value):
++    """Allow append only; reject replacement/truncation/edit/snapshot mutation."""
++    import stat
++    source=owned(value['live_path']);target=owned(value['snapshot_path'])
++    names=('source_dev','source_inode','observed_size','copied_bytes','partial_tail_bytes')
++    require(all(type(value.get(k))is int and value[k]>=0 for k in names) and value['copied_bytes']>0 and value['copied_bytes']+value['partial_tail_bytes']==value['observed_size'],'Typed snapshot boundary required')
++    require(value.get('coverage')=='COMPLETE_NEWLINE_PREFIX_AT_OBSERVED_SIZE_NOT_LATER_RECORDS','Explicit prefix coverage required')
++    fd=os.open(source,os.O_RDONLY|os.O_NOFOLLOW)
++    try:
++        actual=os.fstat(fd);named=os.stat(source,follow_symlinks=False)
++        require(stat.S_ISREG(actual.st_mode) and (actual.st_dev,actual.st_ino)==(value['source_dev'],value['source_inode'])==(named.st_dev,named.st_ino) and actual.st_size>=value['observed_size'],'Live source replaced or truncated')
++        raw=target.read_bytes()
++        require(len(raw)==value['copied_bytes'] and raw.endswith(b'\n') and hashlib.sha256(raw).hexdigest()==value['sha256'],'Snapshot bytes changed')
++        require(os.pread(fd,len(raw),0)==raw,'Live source prefix differs from saved snapshot')
++        again=os.stat(source,follow_symlinks=False)
++        require((again.st_dev,again.st_ino)==(actual.st_dev,actual.st_ino),'Live source replaced during verification')
++    finally:os.close(fd)
++    return value
+ 
+ def safetensor_map(root):
+     from safetensors import safe_open
+--- v2/first5-extract.py
++++ v3/first5-extract.py
+@@ -61,17 +61,17 @@
+         # Read only actual current allocation and frozen guardian. No submission/RPC/flock mutations.
+         current=subprocess.check_output(['scontrol','show','job',str(JOB)],text=True)
+         (raw/'slurm-current.txt').write_text(current);result['allocation']=scheduler_proof(raw/'slurm-current.txt',JOB)
+-        journal=RUN/'resource-watch.jsonl';before=digest(journal)
+-        spec=importlib.util.spec_from_file_location('behavior_guard_replay',ROOT/'tools/guard_journal.py');guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+-        result['resources']=guard.replay(journal,JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py')
+-        require(before==digest(journal),'Guardian journal changed during replay; retry fresh collection')
++        journal=RUN/'resource-watch.jsonl'
+         journal_prefix=immutable_prefix(journal,raw/'resource-watch.jsonl')
+-        require(journal_prefix['sha256']==result['resources']['raw_sha256'],'Guard replay and immutable journal snapshot differ')
++        from guard_snapshot import replay_snapshot
++        result['resources']=replay_snapshot(Path(journal_prefix['snapshot_path']),JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py',journal_prefix)
++        require(journal_prefix['sha256']==result['resources']['raw_sha256'],'Snapshot replay bytes differ')
+         for name in ('cpu-process-monitor.jsonl','process-monitor.csv'):
+             immutable_prefix(RUN/name,raw/name)
+         result['retriever']=live_retriever_proof(raw,RUN,result['resources']['allocated_uuids'])
+         result['leases']=lease_proof(process,result['resources']['allocated_uuids'],RUN)
+-        result['evidence']=m['files']+[binding(mp)]+[binding(p)for p in sorted(raw.iterdir())]
++        result['snapshot_adapter']=binding(Path(__file__).with_name('guard_snapshot.py').resolve())
++        result['evidence']=m['files']+[binding(mp),result['snapshot_adapter'],result['helper'],result['tool']]+[binding(p)for p in sorted(raw.iterdir())]
+         result['elapsed_collection_seconds']=time.monotonic()-started
+         write_new(output/'collection.json',result);return result
+     except BaseException as exc:
+--- v2/first5-hf.py
++++ v3/first5-hf.py
+@@ -43,14 +43,13 @@
+         slurm=collection_path.parent/'raw/slurm-after-hf.txt'
+         slurm.write_text(subprocess.check_output(['scontrol','show','job',str(JOB)],text=True))
+         value['allocation_after_cpu_hf']=scheduler_proof(slurm,JOB);value['slurm_after_hf']=binding(slurm)
+-        spec=importlib.util.spec_from_file_location('behavior_guard_replay_after_hf',ROOT/'tools/guard_journal.py')
+-        guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+-        journal=RUN/'resource-watch.jsonl';before=digest(journal)
+-        value['resources_after_cpu_hf']=guard.replay(journal,JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py')
+-        require(before==digest(journal),'Resource journal changed during postHF replay; honest retry required')
+-        snapshot=collection_path.parent/'raw/resource-watch-after-hf.jsonl';saved=immutable_prefix(journal,snapshot)
+-        require(saved['sha256']==value['resources_after_cpu_hf']['raw_sha256'],'PostHF guard replay and raw snapshot differ')
++        journal=RUN/'resource-watch.jsonl';snapshot=collection_path.parent/'raw/resource-watch-after-hf.jsonl'
++        saved=immutable_prefix(journal,snapshot)
++        from guard_snapshot import replay_snapshot
++        value['resources_after_cpu_hf']=replay_snapshot(snapshot,JOB,str(RUN),SOURCE,ROOT/'tools/resource_watch.py',saved)
++        require(saved['sha256']==value['resources_after_cpu_hf']['raw_sha256'],'PostHF snapshot replay bytes differ')
+         value['resource_journal_after_cpu_hf']=binding(snapshot)
++        value['snapshot_adapter']=binding(Path(__file__).with_name('guard_snapshot.py').resolve())
+         value.update(wall_seconds=time.monotonic()-start,cpu_seconds=time.process_time()-cpu,maxrss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,monetary_price_assumed=False)
+         write_new(out,value);return value
+     except BaseException as exc:

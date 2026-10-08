@@ -1,0 +1,17 @@
+{
+  "source_commit": "aec5e057093b4c491bfb0a47abd7605d98981b56",
+  "files": {
+    "capture-cpu-runtime.py": "658ff245727f16092374689036a593cbfaba76c6796fb7090293eaf57e9d0334",
+    "diagnostic_contract.py": "06be495b6fdf960d7ba9412172ccb3ee9990d0cfbed1ababacbc94b037d8dd8e",
+    "hf-probe.py": "ada012340292269b7aef3f6c3bd322067328b3dd92ba3ded18bb9d13585a3ce5",
+    "hf-zero-adam-replay.sbatch": "02fe643b0315ced6c98ecd9785b5556a274525ed51cd8bd67fb999188ce9a639",
+    "launch_transaction.py": "f61ee76c108982c706873ae1edf6b1a2b2260e21267a224446fd2599afed0d4e",
+    "owned_processes.py": "2c8cdb3363461b402c3155091cab89739524256b1f89ab58c0f5e62334a877bd",
+    "phase.sh": "d258b9c622769522e6c01deb1bba9abbbda2a5d132a9aeb90281b0a8c1d30b5d",
+    "resource_watch.py": "b53fb25756d039a2a55b1cf54c082d4c9f0501b27aa1884bfafa9e3f6156b5fd",
+    "run-target-tests.py": "4e8d587d11ae275f5ed14a550fecb13dee3fb9fdce8eeea4e694bf4e0265e789",
+    "stage.sh": "4fa83e006d04defc43cc9d9b56fc9d828f1fb7a54f895829fb737428f50c6dfe",
+    "submit.sh": "db56a8253429f4e14fdbda713ec52b5d1f4afe31261f18aa2c72ea795cc4db07",
+    "verify-diagnostic.py": "bdd0229a08b9fc22d57ac01025761e14a5dea5de72dfcbc21236d53d957050ac"
+  }
+}

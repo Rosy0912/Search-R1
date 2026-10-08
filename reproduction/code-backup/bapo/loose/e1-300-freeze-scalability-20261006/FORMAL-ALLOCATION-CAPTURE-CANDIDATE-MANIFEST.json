@@ -1,0 +1,21 @@
+{
+  "status": "READ_ONLY_LOCAL_FORMAL_CAPTURE_CANDIDATE_NOT_PRODUCTION_PERMISSION",
+  "files": {
+    "capture-formal-allocation.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/capture-formal-allocation.py",
+      "sha256": "73ed915a9ff391deba96631af002905e5013deae4d64b943a1856907a636b088"
+    },
+    "test_formal_allocation_capture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_formal_allocation_capture.py",
+      "sha256": "9142713f438959afe56d7fd6968f1e7776230201f6427486f01b311c657e30bb"
+    },
+    "FORMAL-ALLOCATION-CAPTURE-SELF-REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/FORMAL-ALLOCATION-CAPTURE-SELF-REVIEW.md",
+      "sha256": "a29214aa5a9e3ef832c35302184bf12d115881e84de270b7f08c1153befdb2a4"
+    },
+    "formal-allocation-capture-unit-r1.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/formal-allocation-capture-unit-r1.log",
+      "sha256": "baf49b59538192f3e136ca0404cac516ecb8dd2fe5ba1416604056f3080fa49c"
+    }
+  }
+}

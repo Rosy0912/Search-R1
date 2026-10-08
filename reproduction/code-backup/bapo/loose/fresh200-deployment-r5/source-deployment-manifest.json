@@ -1,0 +1,11 @@
+{
+  "source_commit": "aec5e057093b4c491bfb0a47abd7605d98981b56",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-fresh200-safety-r5-20261006",
+  "branch": "codex/bapo-fresh200-tokenboundaryfix",
+  "files": {
+    "source.bundle": "09198cc1bbb08b52246b09b31ad679845acf5a1fe904366c0900456754a76b6f",
+    "source-expected.txt": "5fe8d81e44d905e82fc13b6aa0a8067601608cc2136f47d561bede9809aee779",
+    "setup-isolated.py": "41d2eddaa815bbd068e36fbd89773371ce742ea63a2c4b3d1afb6c8903659694"
+  },
+  "scope": "SOURCE_ENV_CODE_DEPLOYMENT_ONLY_NO_GPU_OR_LAUNCH"
+}

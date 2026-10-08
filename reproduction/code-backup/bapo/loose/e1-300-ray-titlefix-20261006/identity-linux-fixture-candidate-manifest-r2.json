@@ -1,0 +1,25 @@
+{
+  "status": "R2_LOCAL_IDENTITY_FIXTURE_CANDIDATE_NOT_LINUX_GPU_ACCEPTANCE",
+  "superseded_fixture_sha256": "c57294430dc38264417c5f4415e006840f6b5d7d86707c2e0eb56995fedb230a",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/identity-linux-fixture.py",
+      "sha256": "1f1a9159939952668c1e0a8db67a82f631b0961c546f17384402cc7daa1167b1"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/test_identity_linux_fixture.py",
+      "sha256": "c1bbf053ca531769492d963a8dd96ebc6076898002968299cb56b4ecbd3ad3f7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/identity-linux-fixture-local-tests-r2.log",
+      "sha256": "59301d365bd2081111304188499145ced4ef8d22118b41529f8a3b7b30985b5c"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/IDENTITY-LINUX-FIXTURE-SELF-REVIEW.md",
+      "sha256": "0c8b8720b384db0cbe9bf9f697b663fbb8c01aed908b11be998f2e4067ff47ca"
+    }
+  ],
+  "tests": 8,
+  "actual_linux_accepted": false,
+  "actual_gpu_accepted": false
+}

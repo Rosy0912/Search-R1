@@ -1,0 +1,27 @@
+{
+  "source_commit": "733097feeae371b4efd8fd48940c46ff36da839b",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-monitor-r6-20261004",
+  "files": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "cpu-tests.py": "927d17df3d93621e94029c07727fc3acd98b5ff01236fd2318851e297f4ba4c4",
+    "flash_preflight.py": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299",
+    "formal300.sbatch": "fd7b8f89f3fedd9ddb9e60ecd4339f1f5367d136a7df5a6ba1c86c94264aff30",
+    "hardware.sbatch": "9ff9eabcfa9eb7fbb977dc1d4b03adf0c12775550d083dd182c68ddc0f35def4",
+    "hardware.sh": "a76ed1c0dc60f06bd4f526b61ba22fa9b28ecaf4da2a3de0f5f052b9de806bcb",
+    "monitor.sh": "58c683e495ca5dae7293b7455ec07c7e2f0d10c7239fe735519efac8fb41d7df",
+    "native-actor-fixture.py": "cd03d6782f35a03c7e9279bb3d49630387bbcd2dc5e7bb4b7cdae1cb48514fe1",
+    "native-count-fixture.py": "b40ef907be97da16b335b322983789f6522e1a2856640e8cbb976e540c1b0c6a",
+    "native-state-fixture.py": "b2e3e20cec1a62374d0f674ac9c1748037244818ae8ae3fe3c0b1083b9c216d8",
+    "numerics-gpu-fixture.py": "295916ae6a46dea30b73d45901215c797f5d2f7faa277045308c4a34da1f1ff3",
+    "owned_processes.py": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "0812ed859a16f9656e3c6cf8596d7895a31e678d40a7359c2d54c1efd37f268d",
+    "stage-gpu-inner.sh": "3f656d5beee036042297cd8826a759fcff9d84527370adfed9292cf692a94321",
+    "stage.sh": "1c6da8d6de20f619df069a8051c78e949b28b28e682a323f8802599641c91455",
+    "submission-worker-intent.py": "aeaba73400b14e01b0ddd17ed488ac2e5d5fc9c949cebad987cfcf472212dd71",
+    "submit.sh": "92b422c74a98c28bd78de86d97b877c9dfa93855dd01f35f859f839ca2a28edc",
+    "verify_hardware_receipt.py": "fc300987c305e300f3508a8b556336e569055d61f4ab9e2191e010876f099387",
+    "verify_launch.py": "b65acf97095d31392b07e30bbf747d5b6cf469382484e3d8016bd4d438f3a9f7",
+    "verify_shared_inputs.py": "a9ca1bf955547af39b805d4a38be4b8aff06d5dd0cec0c2b56628f4113434d9d"
+  }
+}

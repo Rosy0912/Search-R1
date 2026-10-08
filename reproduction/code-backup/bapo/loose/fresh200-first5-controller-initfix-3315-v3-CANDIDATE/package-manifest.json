@@ -1,0 +1,14 @@
+{
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "files": {
+    "first5_helpers.py": "716f9410465c2f642b5cf9af7cbf6d7f503ff43c58aeb4e195f2c82deae525df",
+    "first5-extract.py": "66784114061662a707b4ca2c9b4e6f437bd72c43449a16529448aaabe48e61f1",
+    "first5-hf.py": "8247e576b8d83b4858fc03d6580a408488a32c40ea6dcc0322f8e8d64cedd529",
+    "publish-first5-release.CANDIDATE.py": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+    "guard_snapshot.py": "a7124c76133c2785bc18f7d790b5cc3e2d486ce8cd0a5a51141736da1b35b621",
+    "tests/test_first5_candidate.py": "fc8ff85d5ce396e6a852111d5905930f43cccc9773fce5be263810c2617e5695",
+    "tests/test_snapshot_prefix.py": "4084007fc21873b693bb353dd47dd29c8e6d3f2ad43c25e8b089eaeefb6b31ce",
+    "reference/guard_journal.py": "a7770927930814e1cb8c39263696da1a493d52ad74fe023a090b73574f6ad6c5",
+    "DESIGN.md": "a57c03f8a2434124bdac0eb85c6a58e63251514477922c52949a46c79ea37fc1"
+  }
+}

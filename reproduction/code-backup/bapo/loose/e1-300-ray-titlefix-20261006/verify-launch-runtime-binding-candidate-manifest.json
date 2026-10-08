@@ -1,0 +1,32 @@
+{
+  "status": "LOCAL_VERIFY_LAUNCH_RUNTIME_BINDING_SELF_REVIEW_NOT_APPROVAL",
+  "source_commit": "484c0b30fa73fa5354bdb3452f007134ec5db13f",
+  "new_root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-ray-titlefix-20261006",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/deployment-tools/verify_launch.py",
+      "sha256": "970f3231a2e8029599bb712fc8ed19fa2bbdab0dcc079bdac28f19a837a1b675"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/test_verify_launch_runtime.py",
+      "sha256": "f064827d9cc33296465a70d5d6192350a8d50f0d6c05e431d77b85739ad3ce8d"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/verify-launch-runtime-local-tests.log",
+      "sha256": "b2831cd55f98f4126f7b2e5423bff0a20aa43e669a25e96136de8ec1a395a083"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/verify-launch-runtime-before.py.txt",
+      "sha256": "1110ef5c6c2f77cda92ac69789aae459dc682743831d7dad4be91eee9c533024"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/VERIFY-LAUNCH-RUNTIME-BINDING-SELF-REVIEW.md",
+      "sha256": "96625a16e4eb520c9a8f2e5a2728ac3547519928b650785c296e723315150d60"
+    }
+  ],
+  "local_mock_tests_passed": 9,
+  "original_gate_byte_exact_preserved": true,
+  "actual_linux_accepted": false,
+  "actual_gpu_accepted": false,
+  "launch_authorized": false
+}

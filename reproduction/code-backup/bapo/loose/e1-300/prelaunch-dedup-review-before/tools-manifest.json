@@ -1,0 +1,26 @@
+{
+  "source_commit": "6a7bcec66d6d7a5da527d5e703bec83819dab183",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-20261004",
+  "files": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "cpu-tests.py": "b4141b6f3770a259871014f10ae9afc15d1efbed996e49177f30f7857e979c07",
+    "flash_preflight.py": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299",
+    "formal300.sbatch": "7844166a22b4c7183d6f2c241297c324cbfeede1402e57d2e29beb489e2ce598",
+    "hardware.sbatch": "7e38a61a798e66adbc0d080c321d1824ec769f15c605878253bcff1add00ad0b",
+    "hardware.sh": "4b2e4f5576ee87b52736c6613c51d883a3ea7a569a5c0773590f998d71a2c31b",
+    "monitor.sh": "a28e08b0ed6e5a58b7ee8e166089abaceae86760e2c99d94342a1f0d7d2a8632",
+    "native-actor-fixture.py": "93b521b033ddbe6a6dee467ee9425327c766574e55253644c6d3d89f7557187c",
+    "native-state-fixture.py": "52c19f27dfe818004c74c8436115455deeb5eded8f5ef3dfa140acc2133ad844",
+    "numerics-gpu-fixture.py": "82d703db4ba2279723b2ef77ad10ebef9e86d45c7bbb20225569339cbc00497c",
+    "owned_processes.py": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "0e5b06c975c5346ccd10a4a8165d74f65639cb0e5a3af8e8dd41d1410b3f0ae3",
+    "stage-gpu-inner.sh": "78dc7a9ff9f958bf9cbd5a5b8a18a1426a143c1f42cd14eaf15bbe02afba2466",
+    "stage.sh": "3a65d27478b4c71e57653db20f58fbba19522e8ce0131e60f000133ba059785f",
+    "submission-worker-intent.py": "03760ebffe8b2c0d5f15c445aff4fadaac55610e5432b40ecea6160c18fd7f04",
+    "submit.sh": "e757ded78680418208f5713129e6e30e79409409a0f8b7355811222efbf883d3",
+    "verify_hardware_receipt.py": "c80725580e807c68da1a76f14719ed3df0dcd1ae54675b57f2d32a4dc9ddd56b",
+    "verify_launch.py": "6aa4b3c0f7de1822400096336aeb21b31be70145b467eaef0ef6e2eb593659ac",
+    "verify_shared_inputs.py": "eafd750e4a77f17b13730ee50a9a46179f507669c684c56887beb4b3320bb114"
+  }
+}

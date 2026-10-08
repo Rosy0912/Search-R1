@@ -1,0 +1,11 @@
+--- work/fresh200-first5-controller-initfix-3315-v4-CANDIDATE/publish-first5-release.CANDIDATE.py
++++ work/fresh200-first5-controller-initfix-3315-v4-bound-publisher-CANDIDATE/publish-first5-release.ACTUAL-REVIEW-BOUND.py
+@@ -3,7 +3,7 @@
+ import argparse,json,os,tempfile
+ from pathlib import Path
+ from first5_helpers import *
+-INDEPENDENT_REVIEW_SHA=None
++INDEPENDENT_REVIEW_SHA='8dda270d61fc696adb46c98828b17dcf8e2f6f412c5a2cd9a76d8f55bfdbd76f'
+ REVIEWER_TASK='/root/fresh200_driver_contract' # Independent actual-evidence reviewer; producer is actor_safety.
+ IDENTITY_KEYS=('run_root','source_commit','global_step','actual_outer_updates','horizon','warmup_steps','config_sha256','pause_nonce','protocol','mini_batch_switch_outer','update_semantics','attempt_accounting','optimizer_opportunities_before_switch','optimizer_opportunities_after_switch')
+ def validate_review(review,collection,hf,manifest):

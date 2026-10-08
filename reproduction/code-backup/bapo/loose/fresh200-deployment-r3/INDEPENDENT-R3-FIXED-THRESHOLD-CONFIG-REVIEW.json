@@ -1,0 +1,68 @@
+{
+  "decision": "CODE_ONLY_R3_HUMAN_FIXED_DEPLOYMENT_CONFIG_ACCEPTED_SOURCE_UNFROZEN_NOT_LAUNCH_PERMISSION",
+  "reviewer_task": "/root/fresh200_driver_contract",
+  "reviewed_at_utc": "2026-10-06T11:21:12.001717+00:00",
+  "training_source_commit": null,
+  "reviewed_files_sha256": {
+    "tools/formal-environment.py": "aae7677ce14f9398dd7899d6d7530b4e8f224ca9d5f18c68794e1c8a7e0348bf",
+    "tools/run-target-cpu.py": "179d6bc82fed15ed39c864693e9b9d1cfd69f28eb4e548e08fe6a11eb4d1749d",
+    "tools/stage-gpu-inner.sh": "c66c779b161e1fedcf75ce14cee637c232f9abfbfcdaa0c0fca0800964f04ff9",
+    "setup-isolated.py": "0aff2e975f882036697ddf63af8138f8c07bb9bf11f310c2bf8130ab162e64bd",
+    "publish-fixed-thresholds.py": "c6dd2a9931d5b6862058a02d7a3f3b0d2d1d043cb30f7f107c8ac117fb9b0c2e"
+  },
+  "must_fix": [],
+  "resolved_review_issues": [
+    "Publisher goalparse/hash double-read replaced exactsingle rawbytes and trustedexpectedSHA secondCLIarg.",
+    "Publisher now exacttaskthread/activegoal/typeint timestamp/nonemptyobjective; explicitowncontractmoduleorigin.",
+    "Formalenvironment now requires actualtargetLinux/h100-5/ownenv/ROOT/moduleorigin and sharedfixedthreshold verifier before shellsafeexports."
+  ],
+  "checks": [
+    "Publisher exacttrusted goalSHA supplied byparent is verified against singlecurrentgoalrawread; immutablexb fixedthresholdartifact +x config; user0.2 KL/tail/c3/skip scopes/sourcehash/model/data mathematicaldefinition hardbound. Scopedocument expressly notnativeacceptance/empiricalcalibration or launchauthorization.",
+    "7 mockedCPU publisherprovenance-envelope cases PASS: positiveactualfixedvalues, badSHA, wrongthread, booltime, floattime, blankobjective, inactivestatus. Verifier mock explicitly limits evidence to publisherenvelope, notactualLinux/source/nativecalibration.",
+    "formal-environment actually calls authorityverify_fixed_policy_safety_artifact before emitting onlyartifactpath/SHA shellquotedenv; nolegacycalibration/reviewvariables exported.",
+    "CPUrunner includes freshskip/shadowtransaction/driver/actualfit/firstfivegate plus new test_fresh200_sampling_evidence.py and gradientstructure/gradientnumeric/numericsafety suites, alongside raw sampling/core contracts. All required test files exist; CPUvisibility empty and scope notGPUproof.",
+    "Stageformalcomment now describes verifiedsourceboundhumanthresholds; diagnosticbranch notoldcalibrationrelease. Setupnewbranchcodex/bapo-fresh200-skip; previousasset/env isolationunchanged.",
+    "Current runtimewatch/journal FRESH200_SOURCE=None stillblocks anylaunch/replayadmission. Finaltrainingcommit, toolsmanifest/WATCH_SHA/sourcepinning/fullreview/newactualCPU/context/runtime receipts needed afterfreeze."
+  ],
+  "limitations": [
+    "Onlyread-onlylocalstaticreview +mockedtemporarypublisherfixtures. No remotepublish/deploy/sbatch/native/GPUaction performed.",
+    "No actualGPUprobability/eightcardupdate/realfirstfiveHF/fullstateacceptance; sameformal200process fifthouter independentrelease stillrequired.",
+    "Parentlatesthumangoalcapture exactSHA must be provided externally; timestamp/thread alone never substitutes fortrustedcaptureSHA.",
+    "Final run-target-CPU hash includes the new first-formal sampling evidence suite and prior three gradient suites. Later source/tool edits require rebind."
+  ],
+  "formal200_authorized": false,
+  "publisher_fixture_cases": [
+    "positive exact trusted human SHA/current fixed values",
+    "wrong trusted goal SHA",
+    "wrong thread ID",
+    "boolean updatedAt",
+    "floating updatedAt",
+    "blank objective",
+    "inactive goal status"
+  ],
+  "publisher_fixture_result": "7 PASS previously executed mocked temporary CPU envelope cases; publisher exact bytes unchanged, not Linux/native proof",
+  "current_tools_inventory_sha256": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "capture-runtime-executable.py": "07e706af5bf8619a6419b8b27402dab05e5ebaa19f63f83ce57ec4b708744a8d",
+    "context-budget-audit.py": "258bbde0d66e74c06638493c69b3d80a956ec3bb7c707eb22b7d5065fb7430d3",
+    "diagnostic-confirmation128.sbatch": "c5cfbce91a54b4029ff883b72841eb20510c825d2c0791ae876c2d38f867a76f",
+    "diagnostic-confirmation256.sbatch": "24aca3a220c1c601c33ecda661f59c0c051ee16cb975845144285cf70225ff51",
+    "diagnostic-discovery128.sbatch": "10d7aad418e51ec28d9f0c57d8f38ec76c209e1e5d74a1fef9786b190faadfe9",
+    "diagnostic-discovery256.sbatch": "0d92aa481e69a0bdb5a1579400d5bacd09740f28cf7d1bb241981982a895bd2e",
+    "formal-environment.py": "aae7677ce14f9398dd7899d6d7530b4e8f224ca9d5f18c68794e1c8a7e0348bf",
+    "formal200.sbatch": "66cc488534883f2ccd248ec69db28d491184f2d793f4005b27d64b7ec22d24f9",
+    "guard_journal.py": "57adf6fa4f1fc4be28bee494afd3fe739b008c8a3b05915e71fafc9f45da6dc5",
+    "launch_return.py": "8046b14562fd554b6d4bc1e83e19a681daecabf148eea046224af47b3b9a40ba",
+    "launch_transaction.py": "9606569c795364921e1130c2ff8247d149501756e7a7ffe7206a1da76d49b0c6",
+    "monitor.sh": "9824004e022a32956942e16007674bde1262e6280ceec5fe277a07fc4d209f0c",
+    "owned_processes.py": "2c8cdb3363461b402c3155091cab89739524256b1f89ab58c0f5e62334a877bd",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "e7615cfa9b55169136730eda091921ce68e888eec0de8b08e786231a6340f156",
+    "run-target-cpu.py": "179d6bc82fed15ed39c864693e9b9d1cfd69f28eb4e548e08fe6a11eb4d1749d",
+    "stage-gpu-inner.sh": "c66c779b161e1fedcf75ce14cee637c232f9abfbfcdaa0c0fca0800964f04ff9",
+    "stage.sh": "51fc7f50a38ebc509b60e3b7a5a46995da019e4f79b8f10453a36b4d98f9ad85",
+    "submit.sh": "21b91b90bea0a1da7363ed6b4ec95b5b4ed07b53d03871de57c31d2fee537d20",
+    "verify-launch.py": "14c0e0c9db9e57032caad86e0d0d86a434d18e9778ec4c1e7a969fed3f890a70"
+  },
+  "current_tools_inventory_count": 21
+}

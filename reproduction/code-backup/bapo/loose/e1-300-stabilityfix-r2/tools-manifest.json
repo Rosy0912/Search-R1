@@ -1,0 +1,30 @@
+{
+  "status": "LOCAL_R2_CANDIDATE_ONLY_NOT_LINUX_GPU_TRAINING_ACCEPTANCE",
+  "source_commit": "39cdcdd1404213b897bb0de99cc52d72707682f0",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005",
+  "count": 22,
+  "files": {
+    "resource_watch.py": "0812ed859a16f9656e3c6cf8596d7895a31e678d40a7359c2d54c1efd37f268d",
+    "native-state-fixture.py": "9ac2ef9ece3f78f0ed5a2ed71f157fec22e3e163c34388a6787b1aaa68fb2dca",
+    "hardware.sh": "23579f02dd0b4c55a778a6a9d77b899d3c52e1406070f4803fc085301dd1d58c",
+    "native-stability-fixture.py": "a92dbf8727f3a323591b9330f66bcf8e4ef5e3b2c581a742fce47746de343e63",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "flash_preflight.py": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299",
+    "stage.sh": "60dd52ff738fb4894595146f5d9c00375e83c7691e9a93c79f75083bd2e99d23",
+    "stage-gpu-inner.sh": "b6ce08db15969b323eff1cdb0ef7565f824936f7e0d324fbbc34d16cfb8f357b",
+    "native-actor-fixture.py": "eef9e80542bbc0fb72dbd4e6f94246b6fb34c2aac13dc079c24f27e2ee781309",
+    "verify_launch.py": "2bb2ab09b5546a5f805f35f0996fdaa53831ba31a136ab58d9322618d3db42d0",
+    "formal300.sbatch": "1f9014c24748a7cb44779284fe3b499e110f1188cb396fe55edec9e1118a5dd8",
+    "submit.sh": "34fdb8380fba79ca426e7080261e222a6083701d2ae9d0c06cdfc99e766c1e30",
+    "owned_processes.py": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188",
+    "hardware.sbatch": "6900d9c63ef631c29b148b68acc1e0fbbbed9d2b938dfc0a490a66afc3976e1f",
+    "verify_shared_inputs.py": "87e15cbb2ca78f1542e049d1b0f1ea06c9e1f0a879b530f8dd507c8b47463773",
+    "numerics-gpu-fixture.py": "6534e667562cc6dfe399bc144e730d5a821ac1321a074d0aa66eddfad68c8e61",
+    "monitor.sh": "be348a393fcda911fb6f853acd50cda0b5173e6f56f5f32e6bb4825e25a291e4",
+    "verify_hardware_receipt.py": "a3b5471fd911f0b7fe2802d21707821a63652fa96c638615e11577032feabee4",
+    "submission-worker-intent.py": "6901289349733c8e482d0fbd2e966a059a633725f69951e9221bdcb9a18e90a1",
+    "native-count-fixture.py": "b40ef907be97da16b335b322983789f6522e1a2856640e8cbb976e540c1b0c6a",
+    "cpu-tests.py": "97ef6b3083e8d2f064a59ea4bbcbc4e277aa55a8a1720cad63aeaadab83fcdcb"
+  }
+}

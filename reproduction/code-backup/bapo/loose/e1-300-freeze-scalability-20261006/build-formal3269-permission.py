@@ -1,0 +1,38 @@
+from pathlib import Path
+import json,hashlib
+B=Path(__file__).resolve().parent;E=B.parent/'evidence';d=json.loads((E/'freeze-scalability-formal3269-allocation-files.json').read_text());hardware=json.loads((B/'hardware3263-final-receipt.json').read_text());ROOT=d['root'];RUN=d['run_root'];SOURCE=d['source_commit'];h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+check=json.loads((E/'freeze-scalability-formal3269-independent-allocation-check.jsonlog').read_text());assert check['status']=='PASS_INDEPENDENT_FORMAL3269_ACTUAL_ALLOCATION_REVIEW_NOT_RUNTIME_RESTORE'
+report=B/'FORMAL3269-RESUME25-INDEPENDENT-PERMISSION-REVIEW.md'
+report.write_text('''# Formal3269 independent complete25 continuation permission
+
+Decision: **PASS_INDEPENDENT_BAPO_RESUME25_REVIEW** for actual job3269 only. This authorizes continuation of the existing fresh official Instruct experiment from complete25, executing outer26 through target300 after the bound runtime permission gate and genuine eight-rank/driver restoration. It is a production continuation permission, not verification-only permission. It authorizes neither a duplicate allocation nor a new fresh2/5 run, and changes no algorithm, split, retrieval location, warmup or training budget.
+
+## Actual allocation and identity
+
+The actual capture `work/evidence/freeze-scalability-formal3269-allocation-files.json` was independently read and decoded; all12 allocated files,6 referenced inputs and2 accepted hardware/report originals have exact byte count, SHA256, UTF-8 bytes and unsymlinked resolved path. Collector SHA256 is `73ed915a9ff391deba96631af002905e5013deae4d64b943a1856907a636b088`. Source is `b7119791b86951727cea36a1881e8a525c932494`; root is `/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-freeze-scalability-20261006`; actual run is `runs/bapo-instruct300-formal300-3269`.
+
+The actual Slurm record has exact JobId3269, RUNNING, Restarts0, single node h100-5, eight H100 allocation and the original new-root formal300.sbatch command. The actual process environment has SLURM_JOB_ID3269, UID0 and CUDA_VISIBLE_DEVICES0..7. All eight physical GPU UUIDs match the hardware3263 allocation and accepted resource proof. The run has its empty waiting marker, no recovery permission yet, no new GPU execution claimed by this allocation capture, and a formal300 input-preparation record bound to this manifest.
+
+The unique-submit original log records actual source/shared-input gates and `NEW_INSTRUCT300_HARDWARE_RECEIPT_GATE_PASS` before the new job. Source start and CPU source markers match exactly. The actual CPU395 zero-failure/zero-skip record SHA is `8a32af877fdc8393c8d13378756d606e2e3b89cb04b416c8025a7c011e300095`; correct new-root environment and before/after function/module import origins agree. The actual29 tools manifest SHA `4eae35dbb37cff24286d2a75720f17537d22f1ed83f15bf1946e90779e95b1cb` and launch approval SHA `00e13e918fbe706aac632830222f5038e4087697da82cedba40b4e2c4e4e1d75` are byte-identical to the independently approved frozen bundle.
+
+## Complete25 inputs, protocol and proof
+
+The actual new manifest SHA256 is `0fc65696548aed593d75816fb941c25153283702fb4ba5ceda7ed2fea9cc1593`. Target job/source/run are3269/b711/the actual formal run. Step25, actual_outer_updates25, next_step26 and world8 have been checked. All old-source/run fields, eight rank native states/reports, driver state/report, algorithm, original resolved configuration, shared-input files, HF files, historical first5 receipt and historical train prefix/live-prefix fields exactly equal those used by the independently accepted actual GPU3263 manifest. Only the new target allocation identity differs. Referenced manifests/config/prefix bytes independently match their manifest bindings. No partial50 or nonexistent complete26 checkpoint is used.
+
+The original169028 train split, official Qwen2.5-3B-Instruct revision aa8e725, sampler cursor12800/epoch0 at complete25, TP1/world8, sequence_mean, warmup114, total_training_steps301, target actual_outer_updates300, stage64 and original mini/micro/logprob budgets remain. Training uses local CUDA E5 and same-node GPU FAISS with loopback retrieval, without cross-node/A800 or production CPU retrieval. The new frozen submit/config/source cannot fall back to fresh training when the permission or restore check fails.
+
+The current hardware3263 receipt SHA256 `c75a229249db74a25b7f4a243298807d8dd17000b3117e17627309738898bedd` and its independent report are exactly the signed local originals and were actually accepted by the submission hardware gate. They bind a separate actual GPU verification job, nine distinct real native/driver restoration witnesses, eight real v3 save/reload outputs, strict14 raw-artifact kernel proof and all373 evidence bindings. Its actual29-tool/source identity is the same as this run. Its new scale raw proof establishes310 owned epochs,1.105697-second freeze, all eight finite NCCL resume records and zero foreign signals; production guard69 safe samples has no abort/unfinished recovery. No mocked fixture is substituted for these actual GPU records.
+
+This permission carries the already accepted actual3263 gpu_witnesses and gpu_validation bindings verbatim because they prove the same complete25 input set and same source in a different actual hardware job, as required by the production kernel. No old3239/3246 permission or GPU proof is reused.
+
+## Conditions and limits
+
+**LEGACY25_GENERATION_RNG_RECONSTRUCTED_NOT_BITWISE_EXACT** remains explicit. Exact new-v3 RNG round trip does not repair the historical missing-generation RNG state. Historical outer26 from a failed run has no complete checkpoint and is not counted as a new restored state; this continuation executes26..300 from the independently verified complete25 state.
+
+This report signs allocation-bound authorization, not evidence that formal3269 has already restored or completed outer26. Root must publish the report first and permission last without overwriting, then execute the frozen actual permission gate and inspect all eight actual restoration witnesses plus the driver before reporting runtime restoration success. All future progress and costs must use this actual job's records. External processes remain untouched; unknown resource measurements retain fail-closed semantics and unchanged limits. No remote submission, GPU experiment, process signal, production-tool modification or repeated CPU/GPU/HF benchmark was performed by this reviewer.
+
+Independent replayable local checker: `check-formal3269-allocation.py`; result `work/evidence/freeze-scalability-formal3269-independent-allocation-check.jsonlog` explicitly says runtime restoration is not yet verified.
+''')
+p={'status':'PASS_INDEPENDENT_BAPO_RESUME25_REVIEW','target_source_commit':SOURCE,'target_run_root':RUN,'target_job_id':3269,'manifest_sha256':d['files']['recovery-manifest.json']['sha256'],'sampling_continuity':'LEGACY25_GENERATION_RNG_RECONSTRUCTED_NOT_BITWISE_EXACT','independent_review':{'path':RUN+'/'+report.name,'sha256':h(report),'bytes':report.stat().st_size},'gpu_witnesses':hardware['gpu_witnesses'],'gpu_validation':hardware['gpu_validation'],'scope':'ACTUAL_FORMAL3269_COMPLETE25_CONTINUATION26_TO300_ONLY','actual_outer_updates_restored':25,'next_step':26,'target_actual_outer_updates':300,'hardware_receipt_sha256':h(B/'hardware3263-final-receipt.json'),'legacy_checkpoint50_complete':False,'duplicate_or_fresh_training_authorized':False}
+out=B/'formal3269-resume25-permission.json';out.write_text(json.dumps(p,indent=2)+'\n')
+print(json.dumps({'report_sha256':h(report),'report_bytes':report.stat().st_size,'permission_sha256':h(out),'permission_bytes':out.stat().st_size}))

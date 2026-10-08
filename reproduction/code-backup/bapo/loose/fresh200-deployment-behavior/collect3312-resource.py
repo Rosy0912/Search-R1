@@ -1,0 +1,2 @@
+import pathlib,hashlib,gzip,base64,json
+p=pathlib.Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-behavior-20261006/runs/formal200-8c29851b54174f2083023a98cde9c19b-3312/resource-watch.jsonl');b=p.read_bytes();assert hashlib.sha256(b).hexdigest()=='9d29f17e3e2640e586562d8c49b3c1d9f25ccf1860840d9f8ea612dc8bf81872';z=gzip.compress(b);print(json.dumps({'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b),'gzip_bytes':len(z),'data_base64':base64.b64encode(z).decode()}))

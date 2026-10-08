@@ -1,0 +1,26 @@
+{
+  "source_commit": "2175549691d6856e2b393b2834a32febe41ee56e",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct-300-statefix-r2-20261004",
+  "files": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "cpu-tests.py": "b4141b6f3770a259871014f10ae9afc15d1efbed996e49177f30f7857e979c07",
+    "flash_preflight.py": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299",
+    "formal300.sbatch": "cea7e4a39886f52610ad5d19ab8e3d33f3181e9d3d583d810669471f4c8a6222",
+    "hardware.sbatch": "43413730d646592c33aef4d3e5c80718cc4bf332c5925ecb3d48782af79abb70",
+    "hardware.sh": "0b121a13c852814e4a04396770644113fcd29d95ad40ea3cd6eee82b1e4449e8",
+    "monitor.sh": "6feb644a86c55b7862368abac4b9e8f089ed781803e22c2bde34dca7136e9656",
+    "native-actor-fixture.py": "3fad5265b16b12a809ba21166a928a1b886b2483a442223d207f079a3be07088",
+    "native-state-fixture.py": "b2e3e20cec1a62374d0f674ac9c1748037244818ae8ae3fe3c0b1083b9c216d8",
+    "numerics-gpu-fixture.py": "3f6c400a1f1e45dcca43a5b4a9cfac077b55df588d6431eb5f3f9d420317893c",
+    "owned_processes.py": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "0e5b06c975c5346ccd10a4a8165d74f65639cb0e5a3af8e8dd41d1410b3f0ae3",
+    "stage-gpu-inner.sh": "431f3a31df3fff8b9a976154a8cca360c35ac1dbadd266fd992966ac28132efd",
+    "stage.sh": "866e5e448cbd8d8cff89bd2a5b43a90fda17c684e698526afb8f6969db54c014",
+    "submission-worker-intent.py": "15c894cc278c8799dde654f70fe6c5269c95551f88e62dbfb7daa69920583e05",
+    "submit.sh": "4d83d5f37ad436982fbea5e3b962618790a35d2546dca3ac2794ef9cb22dea60",
+    "verify_hardware_receipt.py": "fc50adbe7a1a2edc61ef5517f4cc9df0d51ee72f1f6cf61b854027ca63fb3c2f",
+    "verify_launch.py": "f4a25f45253bbf442cae0c2018044e4695698e2309fffa964f95435d5afeceda",
+    "verify_shared_inputs.py": "0962d47c92ad31bd14dbaab4755adfcec0a75d807bbe43b589aa31077da3d941"
+  }
+}

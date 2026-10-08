@@ -1,0 +1,151 @@
+--- work/e1-300-precision-oracle-r5/tools/resource_watch.py	2026-10-04 17:00:34
++++ work/e1-300-monitor-r6/resource_watch.py	2026-10-04 17:37:02
+@@ -296,22 +296,78 @@
+             # inaccessible unrelated /proc entries must not block the entire node.
+             continue
+     return starts
++
++
++def lease_uuids():
++    records = json.loads(os.environ.get('SEARCH_R1_GPU_LEASES', '[]'))
++    if not isinstance(records, list) or len(records) != 8:
++        raise ValueError('Missing eight inherited UUID leases')
++    values = {r['uuid'] for r in records}
++    if len(values) != 8 or any(not isinstance(v, str) or not v.startswith('GPU-') for v in values):
++        raise ValueError('Invalid inherited UUID leases')
++    return values
++
++
++def snapshot_owned(starts, run, expected_uuids, proc_root=Path('/proc')):
++    """Capture live own epochs BEFORE GPU queries; never reconstruct a dead owner.
++
++    No environment contents are logged. Exact run, Slurm, allocated UUID set,
++    caller UID and stable stat epoch are the only recorded ownership witnesses.
++    """
++    result = {}
++    marker = ('BAPO_RUN_ID=' + run).encode()
++    job = os.environ.get('SLURM_JOB_ID')
++    if not job:
++        raise ValueError('Missing own Slurm allocation')
++    for pid, tick in starts.items():
++        path = proc_root / str(pid)
++        try:
++            first = proc_start_ticks(pid, proc_root)
++            env = (path / 'environ').read_bytes().split(b'\0')
++            if marker not in env:
++                continue
++            uid = path.stat().st_uid
++            fields = dict(item.split(b'=', 1) for item in env if b'=' in item)
++            critical = (b'BAPO_RUN_ID', b'SLURM_JOB_ID', b'SEARCH_R1_GPU_LEASES')
++            if any(sum(item.startswith(k + b'=') for item in env) != 1 for k in critical):
++                continue  # Same-run CPU siblings may not inherit GPU leases.
++            records = json.loads(fields.get(b'SEARCH_R1_GPU_LEASES', b'[]'))
++            uuids = {r['uuid'] for r in records}
++            last = proc_start_ticks(pid, proc_root)
++        except FileNotFoundError:
++            continue  # Not certified; a later referenced dead PID will fail closed.
++        except (PermissionError, ValueError, TypeError, KeyError):
++            continue
++        if first != tick or last != tick:
++            continue
++        if (uid != os.getuid() or fields.get(b'BAPO_RUN_ID') != run.encode() or
++                fields.get(b'SLURM_JOB_ID') != job.encode() or
++                not isinstance(records, list) or len(records) != 8 or uuids != expected_uuids):
++            continue  # Never certified; if GPU-referenced, checked_owner rejects.
++        result[pid] = {'start_ticks': tick, 'run': run, 'slurm_job_id': job,
++                       'uid': uid, 'lease_uuids': sorted(uuids)}
++    return result
+ 
+ 
+ def sample(run, selected):
+     attempts = []
+-    # Only proven PID lifecycle changes permit one complete replacement sample.
+-    # Stable live external unknown metrics/identity fail immediately, never pass
+-    # based on retries, and never become zero. No phase is launched during this.
+-    for attempt in range(2):
++    expected_uuids = lease_uuids()
++    exited = {}  # Only this bounded call; no successful sample or metrics reused.
++    # Four whole samples, with bounded backoff. Only a certified OWN exit allows
++    # replacement; unknown/external exits and PID reuse remain fail-closed.
++    for attempt in range(4):
+         diagnostic = {'attempt': attempt + 1}
+         try:
+             starts_before = process_starts()
++            owned_before = snapshot_owned(starts_before, run, expected_uuids)
++            diagnostic['owned_before_query'] = {str(p): r for p, r in owned_before.items()}
+             window_start_us = time.time_ns() // 1000
+             diagnostic['window_start_us'] = window_start_us
+             inventory_raw = query(['--query-gpu=index,uuid,memory.total,utilization.gpu', '--format=csv,noheader,nounits'])
+             diagnostic['raw_inventory'] = inventory_raw
+             allocated = inventory(inventory_raw, selected)
++            if {r['uuid'] for r in allocated.values()} != expected_uuids:
++                raise ValueError('Allocated UUIDs changed from inherited leases')
+             diagnostic['allocated_gpus'] = allocated
+             memory_raw = query(['--query-compute-apps=gpu_uuid,pid,used_memory', '--format=csv,noheader,nounits'])
+             diagnostic['raw_compute'] = memory_raw
+@@ -334,20 +390,53 @@
+             keys = set(sm) | set(memory) | set(fresh)
+             diagnostic['pid_start_ticks'] = {str(pid): {'before': starts_before.get(pid),
+                 'after': starts_after.get(pid)} for _, pid in keys}
++            pending_exits = []
++            def own_exit(pid, before, after):
++                gpu_uuids = {allocated[g]['uuid'] for g, p in keys if p == pid}
++                if before is not None and after is not None:
++                    raise ValueError('GPU PID reused or appeared: ' + str(pid))
++                if before is not None and after is None and pid in owned_before:
++                    prior = exited.get(pid)
++                    if prior is not None and prior['proof']['start_ticks'] != before:
++                        raise ValueError('Certified exited PID was reused: ' + str(pid))
++                    exited[pid] = {'proof': owned_before[pid], 'gpu_uuids': sorted(gpu_uuids)}
++                elif before is None and after is None and pid in exited:
++                    if set(exited[pid]['gpu_uuids']) != gpu_uuids:
++                        raise ValueError('Exited GPU PID UUID association changed: ' + str(pid))
++                else:
++                    raise ValueError('Uncertified GPU PID lifecycle change: ' + str(pid))
++                # Every row remains in the discarded sample. No occupancy zeroing.
++                diagnostic['certified_exited_pids'] = {str(p): r for p, r in exited.items()}
++                pending_exits.append(pid)
++                return True
+             def checked_owner(pid):
+                 before, after = starts_before.get(pid), starts_after.get(pid)
++                if pid in exited and (before is not None or after is not None):
++                    raise ValueError('Certified exited GPU PID reappeared: ' + str(pid))
+                 if before is None or after is None or before != after:
+-                    raise LifecycleChanged('GPU PID lifecycle changed: ' + str(pid))
++                    return own_exit(pid, before, after)
+                 first = proc_start_ticks(pid)
+                 own = own_pid(pid, run)
+                 last = proc_start_ticks(pid)
++                if ((first is not None and first != after) or
++                        (last is not None and last != after)):
++                    raise ValueError('GPU PID reused during ownership read: ' + str(pid))
+                 if first != after or last != after:
+-                    raise LifecycleChanged('GPU PID changed during ownership read: ' + str(pid))
++                    return own_exit(pid, before, last)
++                if own and pid not in owned_before:
++                    raise ValueError('Own GPU PID lacks prequery allocation proof: ' + str(pid))
++                if own and snapshot_owned({pid: after}, run, expected_uuids).get(pid) != owned_before[pid]:
++                    raise ValueError('Own GPU PID allocation proof changed: ' + str(pid))
+                 return own
+             # Validate every referenced PID before using ANY SM/memory observation.
+             # A reused PID cannot inherit an exited process's own/external status.
+             owners = {pid: checked_owner(pid) for pid in {p for _, p in keys}}
+             report = assess_with_bounds(allocated, sm, memory, lambda pid: owners[pid], nvml, window_start_us)
++            if pending_exits:
++                diagnostic['external_assessment_before_discard'] = report
++                if report['pause']:
++                    raise ValueError('External occupancy exceeds 15 percent during own exit')
++                raise LifecycleChanged('Certified own GPU PID exited: ' + str(sorted(pending_exits)))
+             report.update(diagnostic)
+             if attempts:
+                 report['discarded_lifecycle_samples'] = attempts
+@@ -355,7 +444,8 @@
+         except LifecycleChanged as exc:
+             diagnostic['error'] = str(exc)
+             attempts.append(diagnostic)
+-            if attempt == 0:
++            if attempt < 3:
++                time.sleep((0.25, 0.5, 1.0)[attempt])
+                 continue
+             raise SamplingError(exc, {'samples': attempts}) from exc
+         except Exception as exc:

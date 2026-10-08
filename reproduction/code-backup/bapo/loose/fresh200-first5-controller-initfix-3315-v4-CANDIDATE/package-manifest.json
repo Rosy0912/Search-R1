@@ -1,0 +1,23 @@
+{
+  "files": {
+    "DESIGN.md": "2578b63f61c54e8284a7e4333dbe0005003b8bb2491defcb62740a62d3ad175d",
+    "first5-extract.py": "a5ac949b4e9d80c3117377eafabacde8b5d24386e35b602fe2e550cc353d805d",
+    "first5-hf.py": "8247e576b8d83b4858fc03d6580a408488a32c40ea6dcc0322f8e8d64cedd529",
+    "first5_helpers.py": "716f9410465c2f642b5cf9af7cbf6d7f503ff43c58aeb4e195f2c82deae525df",
+    "guard_snapshot.py": "a7124c76133c2785bc18f7d790b5cc3e2d486ce8cd0a5a51141736da1b35b621",
+    "native_process_strict.py": "aa5dd74ae021363aecf1a3869bf74bfde50406c879fcfc1474938b326b9b8659",
+    "publish-first5-release.CANDIDATE.py": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+    "reference/fresh200_native_evidence.py": "258d6e15bbf6f60b7ca5beb2fd878838d42039dab021bbc1676429c520070f63",
+    "reference/guard_journal.py": "a7770927930814e1cb8c39263696da1a493d52ad74fe023a090b73574f6ad6c5",
+    "reference/native-allocation-failure.actual.json": "665399e2f93d1ba8c5bfb4643f22bcec9f0b7a687ad6cd638d9d7a064220925a",
+    "tests/test_first5_candidate.py": "fc8ff85d5ce396e6a852111d5905930f43cccc9773fce5be263810c2617e5695",
+    "tests/test_native_process_strict.py": "bc02724bcff3956563cbd7df36f738b9b2508dd58f7088f3be8958b3b4b7511e",
+    "tests/test_snapshot_prefix.py": "4084007fc21873b693bb353dd47dd29c8e6d3f2ad43c25e8b089eaeefb6b31ce"
+  },
+  "job_id": 3315,
+  "native_acceptance": false,
+  "production_release": false,
+  "protocol": "BAPO_FIRST5_3315_V4_NATIVE_FORMAT_CPU_PACKAGE_V1",
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "target_fixture_tests": 33
+}

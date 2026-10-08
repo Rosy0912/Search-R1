@@ -1,0 +1,21 @@
+{
+  "status": "INDEPENDENT_PLAN_COMPLETE_NOT_CODE_OR_GPU_ACCEPTANCE",
+  "decision": "KEEP_EXISTING_STRICT_FULL_HARDWARE_AND_RECOVERY_SCHEMA",
+  "report_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/outputs/e1-300/FREEZE-SCALABILITY-MINIMAL-REBIND-INDEPENDENT-PLAN.md",
+  "report_sha256": "541fbf0c93fd176e47c48199b2eb9b98ca91236a51ad7683f8daa1e61a5714b0",
+  "old_hardware_receipt_sha256": "6b3cb7185d0043359c2633d2739a0c162f886aabb66c1cf8c1f5dffbda6291c1",
+  "old_source": "7de6494bff08f35ffeefbf23ed9a9e1b73e5612e",
+  "complete_recovery_anchor": 25,
+  "next_step": 26,
+  "total_outer_target": 300,
+  "warmup_steps": 114,
+  "fresh_actual_gpu_required": true,
+  "scale_live_own_processes_min": 301,
+  "nccl_world_size": 8,
+  "new_two_or_five_training_required": false,
+  "carryforward_authorization_allowed": false,
+  "production_modified": false,
+  "deployed": false,
+  "submitted": false,
+  "signaled": false
+}

@@ -1,0 +1,34 @@
+{
+  "status": "CODE_ONLY_ACTUAL3312_FIRST5_BINDING_OWNER_REVIEW",
+  "source_commit": "90755a561abd239fbb23882939410e643bb913ae",
+  "run_root": "/dataset/shaoshitong/search-r1-rl/bapo-fresh200-behavior-20261006/runs/formal200-8c29851b54174f2083023a98cde9c19b-3312",
+  "job_id": 3312,
+  "nonce": "8c29851b54174f2083023a98cde9c19b",
+  "launch_approval_sha256": "10d13a25676d74a44aed63651bda2986442b50bdf777553c10cb543b64056bf6",
+  "tools_manifest_sha256": "ec1e92369e03b141dc6a528e795a9459bc331e4296cfc65f42d895c2db0f0256",
+  "files": {
+    "first5_helpers.py": "3d1c44530335d5bf398fe964e573cd91e4031288e086a541a1f2f9faa36e170d",
+    "first5-extract.py": "bbfbaab0b15b6fe51a559e155698f095e702b71efc814ae4cf829c9f2b7f2773",
+    "first5-hf.py": "e60004c170a828c3809ec583b3ea694230e550f16f43e794da42cbfcdc886bee",
+    "publish-first5-release.CANDIDATE.py": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+    "tests/test_first5_candidate.py": "a8bab10ced793c680bc069fd1759bd720dfb695cf60c91afc8cee56154fb4ae5",
+    "candidate-tests.raw.log": "6b68e6ae62058cd32e484e73620e016e98ce4bb837f62fa380ff8683a70223fb",
+    "README.md": "ca4703375a4668ee342141d3cc04e52139b8ed76d69a3da086d4d79ef138ab8f",
+    "BINDING.diff": "11aceff83a1625dac37ed29a77d9ccb59d363400fcd08de21b88a7cfb2ded5eb"
+  },
+  "producer_runtime_diff": "Only first5_helpers.RUN and JOB two lines changed from preserved unbound candidate; other three scripts exact unchanged. Tests adapt None expectations to actual binding plus retain missing-binding rejection.",
+  "actual_first5_review_sha256": null,
+  "reviewer_task_id": "/root/fresh200_driver_contract",
+  "native_acceptance": false,
+  "production_release": false,
+  "gpu_actions": false,
+  "remote_operations": false,
+  "tests": {
+    "passed": 16,
+    "ran": 16
+  },
+  "pending": [
+    "Math independent binding review",
+    "Actual sameprocess fifth-accepted-outer evidence and independent release"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "LOCAL_BUILDER_ONLY_UNSIGNED_NO_DEPLOYMENT",
+  "files": {
+    "build-final-launch-candidate.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/build-final-launch-candidate.py",
+      "sha256": "730569173f9646372f22f7e5868d241e7fe60b3ee75c0df40b2422bd924900fc"
+    },
+    "test_launch_candidate_builder.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_launch_candidate_builder.py",
+      "sha256": "6d8ef3b9df44d1013e52e8c5e83b0ef049b6664283afaa1e91b5cb4953125521"
+    },
+    "LAUNCH-CANDIDATE-BUILDER-SELF-REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/LAUNCH-CANDIDATE-BUILDER-SELF-REVIEW.md",
+      "sha256": "d4ac4272a908a5d0174920d8c38de49faba0a1b7a6c7f3051e3071714118ff14"
+    },
+    "launch-builder-unit-r1.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/launch-builder-unit-r1.log",
+      "sha256": "8b6d1cdf68ee89398dc98663b0cb2dbfb7ff4a959c7c674f86ee72c48f0df441"
+    }
+  }
+}

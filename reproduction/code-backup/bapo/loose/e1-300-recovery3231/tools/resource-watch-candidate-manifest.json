@@ -1,0 +1,20 @@
+{
+  "watcher": {
+    "path": "work/e1-300-recovery3231/tools/resource_watch.py",
+    "sha256": "5b2aeb4355968883b591ab3716427b4b283225dcecca955f3ed010ac8b952bb1"
+  },
+  "tests": {
+    "path": "work/e1-300-recovery3231/tools/test_resource_watch_recovery.py",
+    "sha256": "3f487996fdc10124d2834fe5c90718ae80bbebcc605b3796b741abd29bffa4d1"
+  },
+  "regressions": {
+    "path": "work/e1-300-recovery3231/tools/run_resource_watch_regressions.py",
+    "sha256": "4dcb4865703a8f2b01d2d1e6fa934abdb6b675a8c192d04a2c7c07588de1c7f5"
+  },
+  "self_review": {
+    "path": "outputs/e1-300/RECOVERY3231-RESOURCE-WATCH-SELF-REVIEW.md",
+    "sha256": "77dfbccd50031be24a80a7bac4b6cbb5e28bcf8fee0f8a230c0aae9d922266bd"
+  },
+  "cpu_only": true,
+  "target_gpu_acceptance": false
+}

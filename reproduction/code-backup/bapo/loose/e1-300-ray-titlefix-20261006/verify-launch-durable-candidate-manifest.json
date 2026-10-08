@@ -1,0 +1,32 @@
+{
+  "status": "LOCAL_DURABLE_LOG_GATE_IMPLEMENTER_SELF_REVIEW_NOT_LAUNCH_APPROVAL",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/deployment-tools/verify_launch.py",
+      "sha256": "28cb841903152fe08f80b63c60fd1e9292a82de936fdff79a22c91893bdc4df0"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/test_verify_launch_cpu_durable.py",
+      "sha256": "2a56d2677f7ba718aa1088521a3e2b1251ab9107c70176e57f8c756939385472"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/test_verify_launch_runtime.py",
+      "sha256": "80e4ae361c14de8e60c42a320ad9a884d6af944618e830d0eaa3f839112a18dd"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/verify-launch-combined-local-tests.log",
+      "sha256": "0bfe520772d610b488e917e177d885356306f6941122fbbf796849bef0e19fc0"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/verify-launch-durable-before.py.txt",
+      "sha256": "970f3231a2e8029599bb712fc8ed19fa2bbdab0dcc079bdac28f19a837a1b675"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/DURABLE-SOURCE-CPU-AND-LOG-GATE-INDEPENDENT-REVIEW.md",
+      "sha256": "2958cd0fbaf96a72a4abf4cdf498e69ba025245eba1b1c807b0ec0718d881536"
+    }
+  ],
+  "tests": 14,
+  "actual_gpu_accepted": false,
+  "launch_authorized": false
+}

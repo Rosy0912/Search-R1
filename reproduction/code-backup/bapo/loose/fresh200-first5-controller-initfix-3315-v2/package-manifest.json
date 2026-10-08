@@ -1,0 +1,13 @@
+{
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "files": {
+    "first5_helpers.py": "3ea5370c5812a9460d580eb1f94e2f1a848b8423a790f23ea06470e8dbabd967",
+    "first5-extract.py": "bbfbaab0b15b6fe51a559e155698f095e702b71efc814ae4cf829c9f2b7f2773",
+    "first5-hf.py": "e60004c170a828c3809ec583b3ea694230e550f16f43e794da42cbfcdc886bee",
+    "publish-first5-release.CANDIDATE.py": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+    "tests/test_first5_candidate.py": "fc8ff85d5ce396e6a852111d5905930f43cccc9773fce5be263810c2617e5695",
+    "README.md": "e1e7e60fc74ebf250e8eefef57a6050366e006dba8caff7a9828997e8a3076d6",
+    "BINDING.diff": "b39849d980b65677739f01d086848928c1e11355d6b9574dd23c47e963e97685",
+    "FIRST5-3315-BINDING-OWNER-REVIEW.json": "c430c0b2104b3d971b4b593ef689a6051ac41b91daf2d5b7c4afb10121ce6448"
+  }
+}

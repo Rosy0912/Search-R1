@@ -1,0 +1,13 @@
+--- unbound/first5_helpers.py
++++ 3315-v2/first5_helpers.py
+@@ -6,8 +6,8 @@
+ ROOT=Path('/dataset/shaoshitong/search-r1-rl/bapo-fresh200-controller-initfix-20261006')
+ SOURCE='60f566b3ddabc88ce9de56ead5ad30a3d6795dd2'
+ PRODUCTION_TOOLS_SHA='fbd0098b946e23a8eb7304912cad01b8f339e249f627c919ddec8313c2337859'
+-RUN=None # Bind only to a new actually submitted formal200 process.
+-JOB=None
++RUN=ROOT/'runs/formal200-bab8981d9fd14afc98923eb4ebb89e33-3315'
++JOB=3315
+ MODEL=ROOT/'assets/qwen2.5-3b-instruct-aa8e725'
+ MODEL_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+ REVIEW_SHA=None # Bind only after independent review of actual new fifth-outer evidence.

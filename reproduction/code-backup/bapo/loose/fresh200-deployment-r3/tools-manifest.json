@@ -1,0 +1,26 @@
+{
+  "source_commit": "379b14c65e127cd3a71524f7783deaebafbbdb41",
+  "files": {
+    "bapo-retrieval-parity.py": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+    "capture-runtime-executable.py": "07e706af5bf8619a6419b8b27402dab05e5ebaa19f63f83ce57ec4b708744a8d",
+    "context-budget-audit.py": "258bbde0d66e74c06638493c69b3d80a956ec3bb7c707eb22b7d5065fb7430d3",
+    "diagnostic-confirmation128.sbatch": "c5cfbce91a54b4029ff883b72841eb20510c825d2c0791ae876c2d38f867a76f",
+    "diagnostic-confirmation256.sbatch": "24aca3a220c1c601c33ecda661f59c0c051ee16cb975845144285cf70225ff51",
+    "diagnostic-discovery128.sbatch": "10d7aad418e51ec28d9f0c57d8f38ec76c209e1e5d74a1fef9786b190faadfe9",
+    "diagnostic-discovery256.sbatch": "0d92aa481e69a0bdb5a1579400d5bacd09740f28cf7d1bb241981982a895bd2e",
+    "formal-environment.py": "aae7677ce14f9398dd7899d6d7530b4e8f224ca9d5f18c68794e1c8a7e0348bf",
+    "formal200.sbatch": "66cc488534883f2ccd248ec69db28d491184f2d793f4005b27d64b7ec22d24f9",
+    "guard_journal.py": "9b4da61aa25f416be989b4bbe145872b8a5628e82abb1e64de447990b0c283eb",
+    "launch_return.py": "8046b14562fd554b6d4bc1e83e19a681daecabf148eea046224af47b3b9a40ba",
+    "launch_transaction.py": "9606569c795364921e1130c2ff8247d149501756e7a7ffe7206a1da76d49b0c6",
+    "monitor.sh": "9824004e022a32956942e16007674bde1262e6280ceec5fe277a07fc4d209f0c",
+    "owned_processes.py": "2c8cdb3363461b402c3155091cab89739524256b1f89ab58c0f5e62334a877bd",
+    "ray_cli_compat.py": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+    "resource_watch.py": "da34367b9b3c263a9bc47c5e7b7b42c0e873be7bbd87c612c8cf7dfe7fd246d7",
+    "run-target-cpu.py": "6f43a5dda45124a3b5335216d67269fdc140485769ccf368eb91f36ebe4a2ce8",
+    "stage-gpu-inner.sh": "c66c779b161e1fedcf75ce14cee637c232f9abfbfcdaa0c0fca0800964f04ff9",
+    "stage.sh": "51fc7f50a38ebc509b60e3b7a5a46995da019e4f79b8f10453a36b4d98f9ad85",
+    "submit.sh": "21b91b90bea0a1da7363ed6b4ec95b5b4ed07b53d03871de57c31d2fee537d20",
+    "verify-launch.py": "14c0e0c9db9e57032caad86e0d0d86a434d18e9778ec4c1e7a969fed3f890a70"
+  }
+}

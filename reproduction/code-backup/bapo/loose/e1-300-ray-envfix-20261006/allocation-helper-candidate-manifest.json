@@ -1,0 +1,11 @@
+{
+  "scope": "CODE_ONLY_PENDING_ACTUAL_ALLOCATION_NOT_PERMISSION",
+  "files": {
+    "capture-hardware-allocation.py": "f0701eda22ffe0fcd2881dbaa6aefe65e6378f234d21c1baa6afbc6c2b6fba82",
+    "check-hardware-allocation.py": "2c69c63515b86cc469d663ec8b80ee5a4adef884094dc784d8d440f006f1ff01",
+    "build-verify-only-permission-candidate.py": "b4e908445ec60072cd779cc0d4fdda9ebf1f69949024919a464ff3978dae0ef4",
+    "test_hardware_allocation_helpers.py": "6921653459df7873e6628208a224ee785681755295a6d09a0b61e6b135360ab0",
+    "ALLOCATION-HELPERS-CODE-SELF-REVIEW.md": "82501678a8932dc6fb75c9fe88ab70cb002508490bcd5273010f98468e96e380",
+    "allocation-helper-local-tests.log": "8ab4fbbf0f1d924f0b5bc1d1f0e0bb6cefa954e7989103e898a8ec43b179f07a"
+  }
+}

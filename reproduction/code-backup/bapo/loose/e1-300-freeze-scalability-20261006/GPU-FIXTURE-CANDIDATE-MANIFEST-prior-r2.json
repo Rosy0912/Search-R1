@@ -1,0 +1,30 @@
+{
+  "status": "NEW_ONLY_GPU_FIXTURE_LOCAL_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW",
+  "frozen_watch_sha256": "e56781fefcd42b3d97f06af824312ac69fd318eb480093a66c4194d1f0fcaf74",
+  "new_root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-freeze-scalability-20261006",
+  "remote_executed": false,
+  "cuda_executed": false,
+  "nccl_executed": false,
+  "files": {
+    "freeze_scalability_gpu_fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/freeze_scalability_gpu_fixture.py",
+      "bytes": 18005,
+      "sha256": "31270d3972aef0b3373257bd4281056470193207d25e95abba07d5a34b4cbff2"
+    },
+    "test_gpu_fixture_candidate.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_gpu_fixture_candidate.py",
+      "bytes": 4416,
+      "sha256": "b49d51e56ede43c437f5b237d6f06e6ab1d2cdff9023964053f605dbace73093"
+    },
+    "GPU-FIXTURE-DESIGN-AND-SELF-REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/GPU-FIXTURE-DESIGN-AND-SELF-REVIEW.md",
+      "bytes": 4557,
+      "sha256": "9bfbf5bd45f5a3e3906d45272da15a6c9ebb5e702c273dbb55814fb2d23d0013"
+    }
+  },
+  "test_log": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/gpu-fixture-local-unit-r2.log",
+    "sha256": "637ad693971420b70a01476cd5d51065ecc3c7af270c41cfe91899ec8c2db4bd",
+    "result": "8CPU tests PASS; notGPUproof"
+  }
+}

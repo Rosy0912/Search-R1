@@ -1,0 +1,22 @@
+{
+  "status": "ACTUAL_REVIEW_SHA_BOUND_PUBLISHER_CODE_ONLY_REQUIRES_MATH_EXACTDIFF_REVIEW",
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "job_id": 3315,
+  "original_publisher_path": "work/fresh200-first5-controller-initfix-3315-v4-CANDIDATE/publish-first5-release.CANDIDATE.py",
+  "original_publisher_sha256": "d2ed9a019e16a8e4e6297f99241226087c54e0467c06ed57d706a9a3dd141b9d",
+  "bound_publisher_path": "work/fresh200-first5-controller-initfix-3315-v4-bound-publisher-CANDIDATE/publish-first5-release.ACTUAL-REVIEW-BOUND.py",
+  "bound_publisher_sha256": "2d10a5d2e789a83c978b3e695e440bd9d4e655606ee3ab785ecede5aef8e2d67",
+  "independent_actual_review_path": "outputs/fresh200/3315-ACTUAL-FIRST5-INDEPENDENT-REVIEW.json",
+  "independent_actual_review_sha256": "8dda270d61fc696adb46c98828b17dcf8e2f6f412c5a2cd9a76d8f55bfdbd76f",
+  "helper_sha256": "716f9410465c2f642b5cf9af7cbf6d7f503ff43c58aeb4e195f2c82deae525df",
+  "only_change": "INDEPENDENT_REVIEW_SHA None -> actual Driver signed reportSHA",
+  "reversing_one_constant_yields_original_bytes": true,
+  "one_constant_diff_sha256": "e48f335fd282032b0f7234fd6db2376196b834d3d7952b2a5abdbb9ee995ce0b",
+  "release_scope": "CONTINUE_SAME_PROCESS_FROM_ACCEPTED_OUTER_6_TO_200",
+  "whole_200_accepted": false,
+  "remote_execution": false,
+  "receipt_published": false,
+  "producer_task_id": "/root/fresh200_actor_safety",
+  "actual_reviewer_task_id": "/root/fresh200_driver_contract",
+  "pending": "Math exactdiff review; parent frozen source gate prebuild and atomic publish only after review"
+}

@@ -1,0 +1,45 @@
+{
+  "status": "LOCAL_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW_AND_ACTUAL_TARGET_LINUX_301",
+  "base_source": "7de",
+  "new_root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-freeze-scalability-20261006",
+  "remote": false,
+  "actual_linux": false,
+  "actual_gpu": false,
+  "files": {
+    "resource_watch.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/resource_watch.py",
+      "bytes": 46659,
+      "sha256": "e56781fefcd42b3d97f06af824312ac69fd318eb480093a66c4194d1f0fcaf74"
+    },
+    "test_resource_watch_recovery.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_resource_watch_recovery.py",
+      "bytes": 17073,
+      "sha256": "b6caf52f1c2ffdec6e51bc88c3ff6545b7edeff6cacf4fca007a7df1f868c227"
+    },
+    "test_freeze_scalability.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_freeze_scalability.py",
+      "bytes": 10916,
+      "sha256": "b41ca830f6d652125216ab4852e6737b21affc9a34bdfb8f5edf835a7ef3380f"
+    },
+    "guard_journal.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/guard_journal.py",
+      "bytes": 13732,
+      "sha256": "3943166f9a5ae4370b5ad7a79b462932dbc9bcb7c0eb5032a6fe7b5ea7033c49"
+    },
+    "DESIGN-AND-SELF-REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/DESIGN-AND-SELF-REVIEW.md",
+      "bytes": 4864,
+      "sha256": "08bd2c057e97c1325acc7bd66e6d25733e9243613fbb59185d769cfbddc8cbc1"
+    },
+    "BASE-IDENTITY.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/BASE-IDENTITY.json",
+      "bytes": 501,
+      "sha256": "94fa0c11606358ea6c16dd016f37c1798017a1ff919142bddd0c641785c84361"
+    }
+  },
+  "test_log": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/local-tests-r7.log",
+    "sha256": "023554c88e705c3f8c5746cf65f4314c44bd52df833b09053a6637a70a93e6a4",
+    "result": "51 cases /48PASS/3Linux skips"
+  }
+}

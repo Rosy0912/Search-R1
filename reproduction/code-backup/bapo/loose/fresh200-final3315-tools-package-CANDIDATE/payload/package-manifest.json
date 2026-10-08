@@ -1,0 +1,20 @@
+{
+  "files": {
+    "FINAL-DESIGN.md": "83049485482e6e1001a231b1f67455f324e7b8051c041a0164ab30551bea8461",
+    "final-evidence.py": "b1362f75154e1e399f5130f555b082da318c9b9c53d7108c78650bd0cd30b78d",
+    "final_json.py": "23ac4d3317a78ea52868c6f1f94e95537d73b0083cb9c794cf50d5e399ab202e",
+    "first5_helpers.py": "3ea5370c5812a9460d580eb1f94e2f1a848b8423a790f23ea06470e8dbabd967",
+    "history_validator.py": "dc0b2810342a93ec5288a3a8fd23f886bb14399151196a9b790771ae60a8475b",
+    "milestones.py": "d006dd4d246296bdf8536733f9db3498505081e1bac4ba8eca7777a06ee01064",
+    "terminal_resource.py": "1efae7add55b139001563b519b8b0ce57b60bc89a39be3e9640ecefc39bc33cd",
+    "tests/test_final_candidate.py": "a87918772f64661a845412a8a255abf578d318eff0de6fb75113d8b043ed380b",
+    "tests/test_milestones.py": "902987ebe0159cc405fbd29ec5772085bf7e17e1d22a3101cf31c368149bfe1b",
+    "tests/test_terminal_resource.py": "dea8845e5cfa393e1b96d26be5351bcf03c7707dff1da08a60a9216227bd1112"
+  },
+  "job_id": 3315,
+  "native_acceptance": false,
+  "production_release": false,
+  "protocol": "BAPO_FINAL3315_READONLY_TOOLS_CPU_PACKAGE_V1",
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "target_fixture_tests": 36
+}

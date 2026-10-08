@@ -1,0 +1,29 @@
+{
+  "status": "LOCAL_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW",
+  "watcher_sha256": "1dffc1ac91a625201ff166ae50f427e9a1da6aa46e276401221b1ac1703d3ca5",
+  "files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-recovery3231/tools/guard_journal.py",
+      "sha256": "6d28fd7ddb029b7ce062d4a058ade36d170cdcadf52ef7b3203a9de612a465eb",
+      "bytes": 13723
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-recovery3231/tools/test_guard_journal.py",
+      "sha256": "30f7ca551516ab3f0788de94a22444b0222f58dc69fa6e9b315e93ccdda4f301",
+      "bytes": 11804
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-recovery3231/GUARD-JOURNAL-IMPLEMENTATION-SELF-REVIEW.md",
+      "sha256": "0ebb5070c261ff6778d3ddae23765adf1955465b63b555d040d168f3433f664a",
+      "bytes": 5808
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/evidence/recovery3231-guard-journal-local-tests.log",
+      "sha256": "061f6801a0cb6af90e61610679a3f204586862dabc8da4400bac9ad9a6f49a9c",
+      "bytes": 1921
+    }
+  ],
+  "tests": "24 PASS 0 skip",
+  "remote_executed": false,
+  "gpu_executed": false
+}

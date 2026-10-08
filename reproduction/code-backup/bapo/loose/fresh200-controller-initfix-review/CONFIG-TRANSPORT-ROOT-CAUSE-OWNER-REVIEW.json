@@ -1,0 +1,27 @@
+{
+  "status": "CODE_ONLY_CONFIG_TRANSPORT_FIX_OWNER_REVIEW",
+  "base_source_commit": "90755a561abd239fbb23882939410e643bb913ae",
+  "source_candidate": "work/bapo-fresh200-controller-initfix-20261006",
+  "files_sha256": {
+    "search_r1/baselines/main.py": "fd9c1df20149d7063cf3c796008b7f1167d1e4f53f7a95c46a411c0676aff99d",
+    "tests/baselines/test_fresh200_driver_config_transport.py": "adb95949f9e60367cda9cadf5141c2f0caaf81ea935527d15709f8bedcb81035"
+  },
+  "original_fault_raw_sha256": "74410fa218364b5cae21288badb21a7c1e635fb13e242a7965fe87d007284e50",
+  "diagnosis": "3312 launcher resolved config had absolute thresholdpath and correctSHA; actual Raymain_task config printed both as empty strings. Rayhead started before formal thresholdenv exports and serialized lazyoc.env resolves under older workerenv. Canonicaldocument gate correctly rejects emptyPath; no threshold-document type bug.",
+  "repair": "Driver OmegaConf.resolve(config) after existing validation and before main_task/Ray dispatch freezes alreadyverified environment-derived values. No artifact, source,hash,threshold,collective or behavior guard relaxation.",
+  "tests": {
+    "transport_cases": 3,
+    "combined_driverfit_and_transport_passed": 9,
+    "raw_log": "work/fresh200-controller-initfix-independent-combined-tests.raw.log",
+    "raw_sha256": "80dde73cf5281e944ef9ec8c6bc00278d275ffb6e4153500f6122dab25ee5348",
+    "scope": "Real pickle childprocess with thresholdenv removed reproduces lazyemptyfallback then proves actual main resolve statement retains values; missing/symlink/badhash rejected; Driverfit runtimefault/backup/heterogeneous ledger fixtures independently rerun."
+  },
+  "native_acceptance": false,
+  "production_release": false,
+  "gpu_actions": false,
+  "remote_operations": false,
+  "pending": [
+    "Independent Math wholecandidate review",
+    "Parent/Driver joint sourcefreeze and newdeployment bindings"
+  ]
+}

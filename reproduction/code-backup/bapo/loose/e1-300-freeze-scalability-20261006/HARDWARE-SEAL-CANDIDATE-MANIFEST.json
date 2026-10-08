@@ -1,0 +1,23 @@
+{
+  "status": "LOCAL_TERMINAL_SEAL_TOOL_ONLY_NOT_EXECUTED_OR_ACCEPTED",
+  "revision": "R2_ACTUAL_TRESPERNODE_SINGLE_NODE_UUID_COST_BINDING",
+  "source_commit": "b7119791b86951727cea36a1881e8a525c932494",
+  "files": {
+    "seal-hardware-evidence.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/seal-hardware-evidence.py",
+      "sha256": "6ed8cb31c18cfa18e5782ecc5e4345841b0db2a8eae7987647432b92d944ec41"
+    },
+    "test_seal_hardware_evidence.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/test_seal_hardware_evidence.py",
+      "sha256": "f78c3ebd77151dd9efe6a7a6027501bbd042c6a4eb1d5ef2491d8f15442a9657"
+    },
+    "HARDWARE-SEAL-SELF-REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/HARDWARE-SEAL-SELF-REVIEW.md",
+      "sha256": "429b41e7854365244634d36a148934ab71e7994104060d3859aa59ac30c68238"
+    },
+    "seal-hardware-unit-r2.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-freeze-scalability-20261006/seal-hardware-unit-r2.log",
+      "sha256": "74202dc09a3347400de94f86db7081b0c92ff6270bca74570c143aa53888e576"
+    }
+  }
+}

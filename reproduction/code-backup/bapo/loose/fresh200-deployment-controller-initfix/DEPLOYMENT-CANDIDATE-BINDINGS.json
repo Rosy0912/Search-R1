@@ -1,0 +1,24 @@
+{
+  "source_commit": "60f566b3ddabc88ce9de56ead5ad30a3d6795dd2",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-fresh200-controller-initfix-20261006",
+  "branch": "codex/bapo-fresh200-controller-initfix",
+  "tools_manifest_sha256": "fbd0098b946e23a8eb7304912cad01b8f339e249f627c919ddec8313c2337859",
+  "watcher_sha256": "c5fd9902ac5977978349d47709ffb40008bb93424dfcc4aa2dfd801e8df70749",
+  "files": {
+    "source.bundle": "08affedc9988b34e3d679b7e7fa88498af1feff44bad445b110a24be05649503",
+    "source-deployment.tar": "b05f8ef29736c428eec73303ca246ca5cf8fd0af082cce065f91772c0ede75a1",
+    "tools-deployment.tar": "dc1c767016cc8ec667ce6e8965aa0b26cd57a1ebca5eaea2909af41f31d82c0c",
+    "runtime-tests.tar": "7d62832a7a60ddeefe821e5a4e6ff02ddb878c21c724d3afaaebb87fefc7890e",
+    "setup-isolated.py": "efefa0b2e6f41696ec2d7dc58656bf9cfa077b580913aa5277ad2f9cb22c1395",
+    "deploy-source.py": "0537d010a078f3b69140736cd39ae6575aa88e370462efd3e4c33e124a7be2c3",
+    "deploy-tools.py": "a29ad7dbbea3f9e45557d88e7058f9ef7f5cc4f03ff23d98e3b8123b1fc3d2cf",
+    "deploy-head.py": "59a7e1079e3f225f38381132eb649dccca4520e90dce389badcbf942bfceb8c1",
+    "deploy-runtime-tests-body.py": "29cdf731af2f5e0b2995d985335369a6332e47dd4575f0a20b890d489f826d3a"
+  },
+  "actual_target_cpu_required": true,
+  "actual_target_resource_required": true,
+  "actual_target_runtime_required": true,
+  "native_acceptance": false,
+  "approval_published": false,
+  "remote_actions": false
+}

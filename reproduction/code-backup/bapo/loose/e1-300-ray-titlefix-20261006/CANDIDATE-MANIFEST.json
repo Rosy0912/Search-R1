@@ -1,0 +1,202 @@
+{
+  "status": "LOCAL_CODE_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW_NOT_DEPLOYED",
+  "revision": "R8",
+  "new_root": "/dataset/shaoshitong/search-r1-rl/bapo-e1-instruct300-ray-titlefix-20261006",
+  "source_commit_created": false,
+  "actual_linux_fixture": false,
+  "actual_gpu": false,
+  "files": {
+    "bapo-retrieval-parity.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/bapo-retrieval-parity.py",
+      "sha256": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370",
+      "bytes": 13610
+    },
+    "check-recovery-permission.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/check-recovery-permission.py",
+      "sha256": "ecf0367b98de9c4582a068f18ded98e2c9c478144a083ce528aa1eba30b909da",
+      "bytes": 1696
+    },
+    "cpu-tests.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/cpu-tests.py",
+      "sha256": "8493bc8616e35cebb6ee8e6108e353437dd7db0b964515f6199d3759f292f854",
+      "bytes": 7245
+    },
+    "flash_preflight.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/flash_preflight.py",
+      "sha256": "b5be1936a34d97cc06d681ee3b3c5605b72bab5ce42dcd3f3160261086ceb299",
+      "bytes": 1369
+    },
+    "formal300.sbatch": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/formal300.sbatch",
+      "sha256": "71b28dcfcbc534ae7107fc9b4e714a02b300fe84b78f3d6757ff5070a000f18c",
+      "bytes": 807
+    },
+    "freeze_scalability_gpu_fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/freeze_scalability_gpu_fixture.py",
+      "sha256": "2de29718f0a30fb90d0e1b814f146ee78a50e7680cc87640807fc89e9394ab80",
+      "bytes": 18708
+    },
+    "guard_journal.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/guard_journal.py",
+      "sha256": "16e14271d0f7710d7c86ce00e2a5e10bd0bdd754900be7951b5a0224e9574555",
+      "bytes": 17351
+    },
+    "hardware.sbatch": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/hardware.sbatch",
+      "sha256": "de8dcf8695d461319757dfc5f5024f6f7ce214f10748005aa7e0b2f8399fa8a5",
+      "bytes": 803
+    },
+    "hardware.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/hardware.sh",
+      "sha256": "9c63732ab437ce20e01474e7eedf72883b579089443bb38218f01cd918184607",
+      "bytes": 5008
+    },
+    "monitor.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/monitor.sh",
+      "sha256": "d33cf087840e53e1fb555660ad19a39a1eb74e9762e8944c79eea555f71d7d66",
+      "bytes": 615
+    },
+    "native-actor-fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/native-actor-fixture.py",
+      "sha256": "aadb3b4d9c5d0cbd7d21299d633ea408bee592f84a2e4e5cdd17a1747df06931",
+      "bytes": 27424
+    },
+    "native-count-fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/native-count-fixture.py",
+      "sha256": "b40ef907be97da16b335b322983789f6522e1a2856640e8cbb976e540c1b0c6a",
+      "bytes": 2760
+    },
+    "native-stability-fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/native-stability-fixture.py",
+      "sha256": "a2de22d1b6daa109fa2df352612e4312890e85d2d6714cba1cf10027d8d38e5c",
+      "bytes": 10900
+    },
+    "native-state-fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/native-state-fixture.py",
+      "sha256": "e5ec84a6f0248610848f3bed0b9bcaa63fe5fd51c66a43f92e63c9229824baaf",
+      "bytes": 14693
+    },
+    "numerics-gpu-fixture.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/numerics-gpu-fixture.py",
+      "sha256": "8944da638102e4f1d90979c2521c08873adb65e59adc9e24c2e01162713a25de",
+      "bytes": 8223
+    },
+    "owned_processes.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/owned_processes.py",
+      "sha256": "c7fd6fe7379b085bf20867da314eca750695dbe8b883b79b0cb25852ced55188",
+      "bytes": 2202
+    },
+    "prepare-recovery-manifest.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/prepare-recovery-manifest.py",
+      "sha256": "e69da5391719cbbd245cac032166f0fc53bb3f61744fe519ae744670325dda14",
+      "bytes": 3393
+    },
+    "ray_cli_compat.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/ray_cli_compat.py",
+      "sha256": "2722b814ce2bc11a5f9bd6c635c89116e6700e8585faf7d50b9175aaf6a26845",
+      "bytes": 587
+    },
+    "resource_watch.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/resource_watch.py",
+      "sha256": "53ed622dcce4aa5475d80f6489683860a3f43d7d1b6e4c6aa5657649d2a75a80",
+      "bytes": 57287
+    },
+    "stage-gpu-inner.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/stage-gpu-inner.sh",
+      "sha256": "e059c8c7e0fef8d904214634490cd206376656a5f16b3164afd636928a36e31e",
+      "bytes": 3722
+    },
+    "stage.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/stage.sh",
+      "sha256": "cf34603a1a9656359a7b4ce7d96af14df8a4f12f1e2d597696aafbb3363806c6",
+      "bytes": 4433
+    },
+    "submission-worker-intent.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/submission-worker-intent.py",
+      "sha256": "0c640e5ce0a80442d42597c9d250a328ff3f5d676cce94615cff146fd4e527e3",
+      "bytes": 653
+    },
+    "submit.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/submit.sh",
+      "sha256": "4349508d960c4712f8e5e2963046dc784aa46d5f90997840eda6482beb23222e",
+      "bytes": 2090
+    },
+    "test_freeze_scalability.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/test_freeze_scalability.py",
+      "sha256": "aea3110a2ee34d2341cc3d130b386260e682e418a4a06bec9aec1b255186a4d5",
+      "bytes": 11018
+    },
+    "test_guard_journal.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/test_guard_journal.py",
+      "sha256": "d977d3d521ae946b556a545e40bf418d26709ddc79d95978dc3bba2b937edc1d",
+      "bytes": 12908
+    },
+    "test_ray_title_identity.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/test_ray_title_identity.py",
+      "sha256": "f97cde4e3802cf37381ffd72c9821a31debc0c47780eaae5a6b9a2d5da3c2975",
+      "bytes": 12659
+    },
+    "test_resource_watch_recovery.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/test_resource_watch_recovery.py",
+      "sha256": "e57627fa1eab723ad31eebff4a63e4b713627fed566605a71cf7a9bb3fe26b1d",
+      "bytes": 17199
+    },
+    "verify_hardware_receipt.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/verify_hardware_receipt.py",
+      "sha256": "2016ff3dcd38c31ea69226d29754123e8af686a02cbb2969f287a2466cbf8c5d",
+      "bytes": 42279
+    },
+    "verify_launch.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/verify_launch.py",
+      "sha256": "6c57c37c10405c43096184032aa32df573e0f4dd1283c0b07b4d0802104fa1d1",
+      "bytes": 6596
+    },
+    "verify_shared_inputs.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tools/verify_shared_inputs.py",
+      "sha256": "3532a0b9daec7dd5cb85b97a33ba03cd70d8d81f21d0bfd618526953cffa7182",
+      "bytes": 2982
+    }
+  },
+  "changed_original_files": [
+    "guard_journal.py",
+    "resource_watch.py",
+    "test_freeze_scalability.py",
+    "test_guard_journal.py",
+    "test_resource_watch_recovery.py"
+  ],
+  "unchanged_original_files": [
+    "bapo-retrieval-parity.py",
+    "check-recovery-permission.py",
+    "cpu-tests.py",
+    "flash_preflight.py",
+    "formal300.sbatch",
+    "freeze_scalability_gpu_fixture.py",
+    "hardware.sbatch",
+    "hardware.sh",
+    "monitor.sh",
+    "native-actor-fixture.py",
+    "native-count-fixture.py",
+    "native-stability-fixture.py",
+    "native-state-fixture.py",
+    "numerics-gpu-fixture.py",
+    "owned_processes.py",
+    "prepare-recovery-manifest.py",
+    "ray_cli_compat.py",
+    "stage-gpu-inner.sh",
+    "stage.sh",
+    "submission-worker-intent.py",
+    "submit.sh",
+    "verify_hardware_receipt.py",
+    "verify_launch.py",
+    "verify_shared_inputs.py"
+  ],
+  "test_result": "92 cases /89PASS /3Linux-only skipped",
+  "test_log": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/candidate-tests-r8-final.log",
+    "sha256": "348de65a1609b259f076f81230f61e732e67d2713227eb295e67fb8b666a8af6"
+  },
+  "self_review": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/e1-300-ray-titlefix-20261006/CANDIDATE-SELF-REVIEW.md",
+    "sha256": "3e98e774cadf4faf46acf49a9eda250abdde35a9a640f31fc650bc3a7269addf"
+  }
+}

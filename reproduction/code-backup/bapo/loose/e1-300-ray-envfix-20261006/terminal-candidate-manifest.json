@@ -1,0 +1,10 @@
+{
+  "scope": "LOCAL_CODE_CANDIDATE_ACTUAL_TERMINAL_NOT_YET_RUN",
+  "files": {
+    "check-hardware-final.py": "941378ca201547823d6eb560fb54c56723697e0ce917abdd798077a4d969dc5b",
+    "build-hardware-final-receipt.py": "7536183b098b3fbb61c1ae24476e137f1e13077597c96d55f08ec1211b7ddb0d",
+    "test_terminal_unsigned_candidate.py": "b6506a0581c7d2898b49cd7eb4283374a6ad95de32b454921edb5cda54271a90",
+    "TERMINAL-HARDWARE-CANDIDATE-SELF-REVIEW.md": "c49fae671304a0e1c259a689bac63024b6c2d80fb836e5142c6a422171a52114",
+    "terminal-candidate-local-tests.log": "6f54d42b608b5af2eab1ee1d335152a4e93fbc39d0a29004a7c87b0cde84b557"
+  }
+}
