@@ -1,0 +1,233 @@
+{
+  "schema": "g1_a800_bf16_reference_forward_actual_observation_v1",
+  "recorded_unix": 1791442251.666682,
+  "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "evidence_kind": "sanitized_existing_runtime_observation",
+  "observed_unix": 1791442153.5875092,
+  "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+  "execution_id": "107ede2e32274842a8fb6cd1bb9eeb22",
+  "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+  "observation_command_exit_code": 0,
+  "precision_profile": "bf16_policy_fp32_master",
+  "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+  "rollout": {
+    "actual_active_trajectory_counts": [
+      [
+        2560,
+        2444,
+        281,
+        131,
+        83,
+        69
+      ]
+    ],
+    "observed_epoch_steps": [
+      [
+        0,
+        1
+      ]
+    ],
+    "scope": "actual rollout log scalar counts; no trajectory, token, prompt, or QA rows published"
+  },
+  "actual_reference_forward": {
+    "row_count": 4,
+    "rank_rows": [
+      {
+        "rank": 0,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 1,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 2,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      },
+      {
+        "rank": 3,
+        "role": "reference",
+        "actual_forward": true,
+        "compute_dtype": "bfloat16",
+        "master_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "logits_dtype": "torch.bfloat16",
+        "logits_device": "cuda:0",
+        "logits_shape": [
+          8,
+          4932,
+          151936
+        ],
+        "selected_log_prob_dtype": "torch.float32",
+        "autocast_cuda_enabled": true,
+        "allow_tf32_matmul": false,
+        "allow_tf32_cudnn": true,
+        "float32_matmul_precision": "highest",
+        "tf32_setting_scope": "worker process; tensor dtype and flags do not prove internal attention arithmetic",
+        "optimizer_writes": 0
+      }
+    ],
+    "scope": "actual forward observations from four reference worker ranks; cuda:0 is each worker local device ordinal"
+  },
+  "limits": {
+    "actor_actual_forward_observed": false,
+    "actor_or_backward_precision_fully_proven": false,
+    "actual_outer_ledger_exists": false,
+    "complete_outer_updates_recorded_lower_bound": 0,
+    "returned_adam_writes_recorded_lower_bound": 0,
+    "write_count_scope": "reference observation rows report optimizer_writes=0; no actor forward or optimizer write observation is included in this receipt",
+    "attention_internal_arithmetic_proven": false,
+    "source_hash_scope": "publication disk snapshots and remote blob readback; hashes alone do not prove which code an already-running process loaded",
+    "journal_existence_assessment": "not assessed by this receipt; guessed private directory inventory is omitted",
+    "fresh_200_outer_goal_complete": false,
+    "production_admission_or_first_five_acceptance_claimed": false
+  },
+  "source_publication": {
+    "checked_unix": 1791440721.065387,
+    "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "branch": "search-g1",
+    "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "remote_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true
+  },
+  "published_runtime_source_file_hashes": [
+    {
+      "path": "reproduction/a800_common/adopt_initial_probes.py",
+      "bytes": 24472,
+      "sha256": "bfc2750c2988523009b78ab0c8b4b6f1d7f45db6fb7064fbf405f6874ba308d8",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/a800_common/prepare_run.py",
+      "bytes": 8625,
+      "sha256": "af72ca95e3d8247b25ec1926f50a4522bf6cb3683d22bf4b9a2697c32d51e585",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/behavior_probability.py",
+      "bytes": 11771,
+      "sha256": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/behavior_runtime.py",
+      "bytes": 25276,
+      "sha256": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/configuration.py",
+      "bytes": 5839,
+      "sha256": "71d42ad85864a29f12633c2b39029b7663572c07cd0ce84086a1405b29b6d765",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/formal_contract.py",
+      "bytes": 8559,
+      "sha256": "d9a3b9ef63730baf911b3b930b317de7b194bdeec38d8e9ef048f59ab275e63e",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/formal_inline_safety.py",
+      "bytes": 31826,
+      "sha256": "669d066a562a60a4e94663277f7e50c87bbc5f369d495137e2a878896b1fc0a3",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/precision_contract.py",
+      "bytes": 2274,
+      "sha256": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "reproduction/common8/verify_full.py",
+      "bytes": 19876,
+      "sha256": "75087894ebf6366f129fefd212365bf983c2e0c0c593b620fdc2b0ceb3b02e55",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "verl/trainer/ppo/ray_trainer.py",
+      "bytes": 55463,
+      "sha256": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0",
+      "remote_blob_matches": true
+    },
+    {
+      "path": "verl/workers/actor/dp_actor.py",
+      "bytes": 37572,
+      "sha256": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e",
+      "remote_blob_matches": true
+    }
+  ],
+  "provenance": {
+    "runtime_observation": {
+      "path": "preparation/a800-bf16-actual-runtime-latest.json",
+      "bytes": 3614,
+      "sha256": "0a5af6b9544404f86a78423a56be36aaa4a678df34c8f80ba39614c5434f00bb"
+    },
+    "source_publication": {
+      "path": "preparation/a800-bf16-source-publication.json",
+      "bytes": 3828,
+      "sha256": "7077b4fb2967a9d8c363b03b4931d5b6726433e3b60c53602d13de8930ab5574"
+    }
+  },
+  "sanitization": "Scalar fields, short scope descriptions, identities, paths, and hashes only; no raw tokens, QA, prompts, full logs, credentials, or private directory guesses are copied."
+}
