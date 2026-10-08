@@ -147,6 +147,10 @@
     "reproduction/code-backup/topd/loose/watch_topd3224_teacher85_readonly.py": {
       "sha256": "899582cc2609585a429b6f472b24aced74ddc9fa9e87bd8f4f03dabd66e47a9b",
       "size": 2828
+    },
+    "reproduction/code-backup/topd/loose/topd_hf_stream_upload.py": {
+      "sha256": "94fce56063b3dca8c6115a69a4d9fb1b2671f9e4822fd44f4a8ec9716f161157",
+      "size": 6638
     }
   },
   "migration_scope": "User-approved offline migration H100 to HPC3 shared storage; streaming through Mac without intermediate model files",
