@@ -124,6 +124,10 @@ class SearchRollout:
             self.failure_context=dict(stage='before_generation',contexts=[s.rolling.copy() for s in states],
                 scoring_contexts=[s.prompt+s.response for s in states],raw_ledgers=[s.raw_ledger for s in states])
         try:
+            if self.token_preservation is not None:
+                from .tree_raw_tokens import tokenizer_validation_scope
+                with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
+                    return self._advance(states,meta)
             return self._advance(states, meta)
         except Exception as exc:
             if self.token_preservation is not None and os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
@@ -179,7 +183,7 @@ class SearchRollout:
             tokens, text = self.manager._postprocess_responses(raw)
         prepared_actions = None
         if self.token_preservation is not None:
-            from .tree_raw_tokens import EMISSION, sampled_action, require
+            from .tree_raw_tokens import EMISSION, sampled_action, require, _validation_context
             emissions=output.non_tensor_batch.get(EMISSION)
             require(emissions is not None and len(emissions) == len(generated),'Actual emitted length/finish metadata missing')
             self.cost['raw_slots'] += int(generated.numel())
@@ -187,6 +191,7 @@ class SearchRollout:
             self.failure_context=dict(native_emissions=emissions.tolist(),legacy_text=text,
                 contexts=[s.rolling.copy() for s in states])
             prepared_actions=[]
+            validation_context=_validation_context(self.tokenizer,self.tokenizer_identity)
             for i,s in enumerate(states):
                 record=emissions[i]
                 require(record['prompt_token_ids'] == s.rolling,'Actual native prompt differs from policy/scoring history')
@@ -194,7 +199,7 @@ class SearchRollout:
                 self.seen_sampling_ids.add(record['sample_id'])
                 action,ledger=sampled_action(self.tokenizer,record,raw[i].tolist(),
                     tokens[i][semantic_attention[i].bool()].tolist(),text[i],self.tokenizer_identity,
-                    response_mask=emitted_attention[i].tolist())
+                    response_mask=emitted_attention[i].tolist(),_context=validation_context)
                 prepared_actions.append((action,ledger))
                 self.cost['raw_retained_tokens'] += len(action)
                 self.cost['raw_discarded_tail_tokens'] += record['true_emitted_length']-len(action)
@@ -279,6 +284,13 @@ class SearchRollout:
         return snapshots
 
     def compose(self, states):
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import tokenizer_validation_scope
+            with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
+                return self._compose(states)
+        return self._compose(states)
+
+    def _compose(self, states):
         from verl import DataProto
         pad = self.tokenizer.pad_token_id
         prompts = padded([s.prompt for s in states], pad, left=True)
@@ -307,7 +319,8 @@ class SearchRollout:
                            tree_uid=object_array([s.tree for s in states]))
         if self.token_preservation is not None:
             from .tree_raw_tokens import FIELD, trajectory_projection, require
-            non_tensors[FIELD]=object_array([trajectory_projection(s,self.config.max_prompt_length) for s in states])
+            validation_contexts={}
+            non_tensors[FIELD]=object_array([trajectory_projection(s,self.config.max_prompt_length,validation_contexts) for s in states])
             occurrences={}
             total=0
             for state in states:
@@ -343,6 +356,13 @@ class SearchRollout:
         return result, np.asarray([s.source for s in states], dtype=np.int64)
 
     def run(self, gen_batch, tree=None):
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import tokenizer_validation_scope
+            with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
+                return self._run(gen_batch,tree)
+        return self._run(gen_batch,tree)
+
+    def _run(self, gen_batch, tree=None):
         self.cost = dict.fromkeys(self.cost, 0)
         states = self.initial_states(gen_batch)
         self.tree_candidate_counts = []

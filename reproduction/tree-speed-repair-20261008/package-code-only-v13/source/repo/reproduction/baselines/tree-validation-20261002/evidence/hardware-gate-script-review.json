@@ -1,0 +1,25 @@
+{
+  "scripts_sha256": {
+    "work/gpu_hardware_gate.sh": "22f295f62e3907adb6e147ddafd43dd882273a33004df21103a57a4dbc3946f8",
+    "work/gpu_hardware_probe.py": "b1b27461e89dd86dee5169a0ce96a0e9cf7455ff97ef2d2035fb0785f0cb5e00",
+    "work/expected-gpu-uuids.json": "afefc6b20298a0cfb9594b70988369ed529e4c3088e40d26c3486ce0c2c50127"
+  },
+  "shell_syntax_passed": true,
+  "python_compile_passed": true,
+  "expected_gpu_uuids_unique": 8,
+  "review_only_no_remote_execution": true,
+  "flash_probe_devices": [
+    0
+  ],
+  "nccl_bf16_devices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "model_or_retrieval_inference": false
+}

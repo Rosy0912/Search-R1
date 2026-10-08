@@ -5,6 +5,8 @@ tolerance is defined here. Unsupported boundaries reject the current batch.
 """
 import codecs
 import copy
+from contextlib import contextmanager
+from contextvars import ContextVar
 import hashlib
 import json
 import math
@@ -23,6 +25,7 @@ BYTELEVEL_DECODER_STATE = dict(type='ByteLevel',add_prefix_space=False,trim_offs
 _VALIDATION_TOKENIZERS = {}
 _TOKENIZER_FILE_SHA_CACHE = {}
 _ENCODER_SEMANTICS_CACHE = None
+_ACTIVE_VALIDATION_CONTEXT = ContextVar('tree_raw_validation_context',default=None)
 
 
 def require(value,message):
@@ -132,6 +135,18 @@ def fingerprint(value):
         ensure_ascii=False,allow_nan=False).encode()).hexdigest()
 
 
+def _same_binding(left,right):
+    """Snapshot equality with JSON's type and signed-zero distinctions."""
+    if left is right:return True
+    if type(left) is not type(right):return False
+    if type(left) is dict:
+        return left.keys()==right.keys() and all(_same_binding(value,right[key]) for key,value in left.items())
+    if type(left) in (list,tuple):
+        return len(left)==len(right) and all(_same_binding(a,b) for a,b in zip(left,right))
+    if type(left) is float:return left.hex()==right.hex()
+    return left==right
+
+
 def _bytelevel_alphabet():
     # The reversible ByteLevel alphabet uses visible Latin-1 first, then maps
     # the remaining bytes to consecutive codepoints starting at U+0100.
@@ -187,10 +202,11 @@ def _invalid_utf8_events(data,byte_start,token_prefix_length,phase):
 
 
 def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_context=None):
-    _context=_context or _TokenizerValidationContext(tokenizer,identity)
+    _context=_context or _validation_context(tokenizer,identity)
     require(type(_context) is _TokenizerValidationContext and _context.tokenizer is tokenizer and
             _context.identity==identity,'Actual tokenizer validation context differs')
-    binding=_decoder_binding(tokenizer)
+    _context.check_runtime()
+    binding=_context.identity['utf8_decoder_binding']
     require(identity.get('utf8_decoder_binding')==binding and
             identity.get('tokenizer_class')==type(tokenizer).__module__+'.'+type(tokenizer).__qualname__ and
             identity.get('clean_up_tokenization_spaces') is False and
@@ -201,6 +217,9 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
             'Frozen decoder/tokenizer/special-token identity differs')
     special=set(binding['skip_special_token_ids']);decoder=codecs.getincrementaldecoder('utf-8')('replace')
     raw=bytearray();stable='';decoded=[];complete=[];pending_events=[];prefix_hashes=[];invalid_events=[]
+    # Hash the same JSON string as fingerprint(expected), extending only the
+    # stable UTF8 portion. Pending bytes may become a different character later.
+    stable_hash=hashlib.sha256(b'"')
     for stop,token in enumerate(ids,1):
         piece=b''
         if token not in special:
@@ -209,27 +228,30 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
                     'Original token piece is not a provable ByteLevel byte sequence')
             piece=bytes(BYTELEVEL_INVERSE[x] for x in spelling)
         pending_before=decoder.getstate()[0];raw.extend(piece)
-        current=stable+decoder.decode(piece,final=False)
+        addition=decoder.decode(piece,final=False)
+        current=stable+addition
         # Native ByteLevel uses replacement decoding. Only the unfinished suffix
         # may change with later tokens; replacements already emitted are stable.
         require(current.startswith(stable),'Nonmonotonic stable native replacement prefix unsupported')
         stable=current;pending=decoder.getstate()[0]
+        stable_hash.update(json.dumps(addition,ensure_ascii=False)[1:-1].encode())
         resolved=pending_before+piece
         if pending:resolved=resolved[:-len(pending)]
         invalid_events.extend(_invalid_utf8_events(resolved,len(raw)-len(piece)-len(pending_before),
             stop,'stable_incremental'))
-        expected=bytes(raw).decode('utf-8',errors='replace')
-        require(expected==stable+pending.decode('utf-8',errors='replace'),
-                'Pending UTF8 bytes do not explain native replacement')
+        pending_text=pending.decode('utf-8',errors='replace')
+        expected=stable+pending_text
         if check_native_prefixes:
             native=tokenizer.decode(ids[:stop],skip_special_tokens=True)
             require(isinstance(native,str) and native==expected,
                     'Native prefix decode differs from proven ByteLevel replacement/cleanup')
-        prefix_hashes.append(fingerprint(expected))
+        prefix_hash=stable_hash.copy()
+        prefix_hash.update(json.dumps(pending_text,ensure_ascii=False)[1:-1].encode()+b'"')
+        expected_sha=prefix_hash.hexdigest();prefix_hashes.append(expected_sha)
         decoded.append(stable);complete.append(not pending)
         if pending:
             pending_events.append(dict(token_prefix_length=stop,pending_utf8_hex=pending.hex(),
-                native_prefix_sha256=fingerprint(expected),stable_prefix_sha256=fingerprint(stable)))
+                native_prefix_sha256=expected_sha,stable_prefix_sha256=fingerprint(stable)))
     require(complete,'Nonempty original-token emission required')
     final_pending=decoder.getstate()[0]
     invalid_events.extend(_invalid_utf8_events(final_pending,len(raw)-len(final_pending),
@@ -291,10 +313,13 @@ def _encoder_binding(tokenizer):
         semantics_sha=fingerprint(state)
         # One immutable tuple; local reads cannot mix concurrent state/hash updates.
         if type(serialized) is str:_ENCODER_SEMANTICS_CACHE=(serialized,semantics_sha)
-    flags={key:dict(present=hasattr(tokenizer,key),value=getattr(tokenizer,key,None)) for key in
+    return dict(backend_semantics_sha256=semantics_sha,hf_semantic_runtime_flags=_encoder_runtime_flags(tokenizer))
+
+
+def _encoder_runtime_flags(tokenizer):
+    return {key:dict(present=hasattr(tokenizer,key),value=getattr(tokenizer,key,None)) for key in
         ('clean_up_tokenization_spaces','split_special_tokens','add_prefix_space','do_lower_case',
          'bos_token','eos_token','pad_token','unk_token','additional_special_tokens','all_special_tokens')}
-    return dict(backend_semantics_sha256=semantics_sha,hf_semantic_runtime_flags=flags)
 
 
 def _current_tokenizer_identity(tokenizer):
@@ -309,25 +334,95 @@ def _current_tokenizer_identity(tokenizer):
 
 
 class _TokenizerValidationContext:
-    """One live-state check shared by actions of this validation call only."""
+    """Live binding and immutable action snapshots for one explicit batch/outer."""
     def __init__(self,tokenizer,identity):
         started=time.process_time()
         require(_current_tokenizer_identity(tokenizer)==identity,
                 'Actual registered tokenizer file/path/encoder/decode identity drifted')
-        self.tokenizer=tokenizer;self.identity=identity
+        self.tokenizer=tokenizer;self.identity=copy.deepcopy(identity)
+        self.identity_key=fingerprint(identity)
         self.cpu_seconds=time.process_time()-started
+        self.actions={}
+        self.native_methods=(tokenizer.decode,tokenizer.encode,tokenizer.convert_ids_to_tokens)
+        self.backend=tokenizer.backend_tokenizer
+
+    def check_runtime(self):
+        tokenizer=self.tokenizer;identity=self.identity
+        path,sha=_tokenizer_file_identity(tokenizer)
+        require(tokenizer.backend_tokenizer is self.backend and
+            (tokenizer.decode,tokenizer.encode,tokenizer.convert_ids_to_tokens)==self.native_methods and
+            path==identity['tokenizer_path'] and sha==identity['tokenizer_json_sha256'] and
+            type(tokenizer).__module__+'.'+type(tokenizer).__qualname__==identity['tokenizer_class'] and
+            tokenizer.pad_token_id==identity['pad_token_id'] and tokenizer.eos_token_id==identity['eos_token_id'] and
+            tokenizer.bos_token_id==identity['bos_token_id'] and _decoder_binding(tokenizer)==identity['utf8_decoder_binding'] and
+            _encoder_runtime_flags(tokenizer)==identity['encoder_binding']['hf_semantic_runtime_flags'],
+            'Actual registered tokenizer runtime identity drifted')
+
+    def check_complete(self):
+        require(_current_tokenizer_identity(self.tokenizer)==self.identity,
+                'Actual registered tokenizer file/path/encoder/decode identity drifted')
+
+    def action_is_validated(self,action):
+        self.check_runtime()
+        require(action['tokenizer_identity']==self.identity,'Actual tokenizer validation context differs')
+        bound={k:v for k,v in action.items() if not k.startswith('prefix_scan_') and k!='action_binding_sha256'}
+        key=action.get('action_binding_sha256');cached=self.actions.get(key)
+        if cached is not None and _same_binding(cached,bound):return True
+        require(fingerprint(bound)==key,'Inherited action ledger changed')
+        return False
+
+    def remember_action(self,action):
+        bound={k:v for k,v in action.items() if not k.startswith('prefix_scan_') and k!='action_binding_sha256'}
+        self.actions[action['action_binding_sha256']]=copy.deepcopy(bound)
+
+
+def _validation_context(tokenizer,identity):
+    context=_ACTIVE_VALIDATION_CONTEXT.get()
+    if context is not None and context.tokenizer is tokenizer:
+        require(context.identity==identity,'Actual tokenizer validation context differs')
+        return context
+    return _TokenizerValidationContext(tokenizer,identity)
+
+
+@contextmanager
+def tokenizer_validation_scope(tokenizer,identity,_context=None):
+    """Share proofs only in an explicit scope, with full live checks at its boundary.
+
+    Runtime flags/file/decoder are checked at use; the complete encoder is checked
+    again before a successful scope can return. A mutated live backend therefore
+    rejects this batch even when an inherited action used its existing proof.
+    """
+    active=_ACTIVE_VALIDATION_CONTEXT.get()
+    if active is not None and active.tokenizer is tokenizer:
+        require(active.identity==identity,'Actual tokenizer validation context differs')
+        yield active
+        return
+    context=_context or _TokenizerValidationContext(tokenizer,identity)
+    require(type(context) is _TokenizerValidationContext and context.tokenizer is tokenizer and
+            context.identity==identity,'Actual tokenizer validation context differs')
+    context.check_runtime()
+    token=_ACTIVE_VALIDATION_CONTEXT.set(context)
+    try:
+        yield context
+        context.check_complete()
+    finally:
+        _ACTIVE_VALIDATION_CONTEXT.reset(token)
 
 
 def tokenizer_identity(tokenizer,expected_sha):
     require(isinstance(expected_sha,str) and re.fullmatch('[0-9a-f]{64}',expected_sha),
             'Explicit frozen tokenizer.json SHA required')
-    identity=_current_tokenizer_identity(tokenizer)
+    context=_ACTIVE_VALIDATION_CONTEXT.get()
+    if context is not None and context.tokenizer is tokenizer:
+        context.check_runtime();identity=copy.deepcopy(context.identity)
+    else:identity=_current_tokenizer_identity(tokenizer)
     require(identity['tokenizer_json_sha256']==expected_sha,'Tokenizer file identity differs')
     # Only a live object whose real file SHA and complete decode identity were
     # checked may authorize later inherited/actor validation in this process.
     # Colocated actor/ref instances may register the same frozen identity.
     # Preserve the first trusted object instead of replacing its authority.
-    _VALIDATION_TOKENIZERS.setdefault(fingerprint(identity),tokenizer)
+    key=context.identity_key if context is not None and context.tokenizer is tokenizer else fingerprint(identity)
+    _VALIDATION_TOKENIZERS.setdefault(key,tokenizer)
     return identity
 
 
@@ -426,7 +521,7 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
     return rows
 
 
-def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity,response_mask=None):
+def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity,response_mask=None,_context=None):
     """Scan stable native prefixes; never encode a policy token or split one."""
     started=time.perf_counter(),time.process_time()
     require(emission.get('protocol')==PROTOCOL and emission.get('schema_version')==1,
@@ -437,7 +532,7 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
     native_response_mask(emission,raw_padded,pad,eos,response_mask)
     require(emission['sample_id']==fingerprint(emission['sampling_identity']), 'Sampling identity mutated')
     utf8_started=time.process_time()
-    context=_TokenizerValidationContext(tokenizer,identity)
+    context=_context or _validation_context(tokenizer,identity)
     decoded,complete,utf8_proof=_scan_utf8_prefixes(tokenizer,ids,identity,_context=context)
     utf8_cpu_seconds=time.process_time()-utf8_started
     full=decoded[-1];text=canonical_text(full)
@@ -472,11 +567,16 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
         prefix_scan_tokenizer_validation_cpu_seconds=context.cpu_seconds,
         probability_accepted=False)
     ledger['action_binding_sha256']=fingerprint({k:v for k,v in ledger.items() if not k.startswith('prefix_scan_')})
+    context.remember_action(ledger)
     return action,ledger
 
 
 def validate_action_utf8_proof(action,tokenizer,_context=None):
     """Reconstruct native replacement proof and actual full/cut decode, without resampling."""
+    _context=_context or _validation_context(tokenizer,action['tokenizer_identity'])
+    require(type(_context) is _TokenizerValidationContext and _context.tokenizer is tokenizer,
+            'Actual tokenizer validation context differs')
+    if _context.action_is_validated(action):return
     emission=action['native_emission'];cut=action['cut']
     ids,_,_=validate_native_emission(emission,tokenizer.pad_token_id,tokenizer.eos_token_id)
     decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
@@ -504,9 +604,10 @@ def validate_action_utf8_proof(action,tokenizer,_context=None):
             action['indivisible_extra_text']==projection[len(text):] and
             action['indivisible_extra_utf8_hex']==projection[len(text):].encode('utf-8').hex(),
             'Native/canonical stable original-token boundary differs')
+    _context.remember_action(action)
 
 
-def trajectory_projection(state,cap,_contexts=None):
+def _trajectory_values(state,cap,_contexts=None):
     contexts_by_identity={} if _contexts is None else _contexts
     raw=[];mask=[];semantic=[];semantic_mask=[];contexts=[]
     for turn,ledger in enumerate(state.raw_ledger):
@@ -518,11 +619,13 @@ def trajectory_projection(state,cap,_contexts=None):
         require(action['action_token_ids']==action['native_emission']['raw_emitted_token_ids'][:n] and
                 action['selected_logprobs']==action['native_emission']['raw_selected_logprobs'][:n],
                 'Inherited sampled token/scalar prefix changed')
-        bound={k:v for k,v in action.items() if not k.startswith('prefix_scan_') and k!='action_binding_sha256'}
-        require(fingerprint(bound)==action['action_binding_sha256'],'Inherited action ledger changed')
-        identity=action['tokenizer_identity'];key=fingerprint(identity)
+        identity=action['tokenizer_identity'];active=_ACTIVE_VALIDATION_CONTEXT.get()
+        key=active.identity_key if active is not None and active.identity==identity else fingerprint(identity)
         if key not in contexts_by_identity:
-            contexts_by_identity[key]=_TokenizerValidationContext(_validation_tokenizer(identity),identity)
+            tokenizer=_VALIDATION_TOKENIZERS.get(key)
+            require(tokenizer is not None,'Actual tokenizer is not registered in this process; no ledger-path loading')
+            contexts_by_identity[key]=(active if active is not None and active.identity==identity else
+                _validation_context(tokenizer,identity))
         context=contexts_by_identity[key]
         validate_action_utf8_proof(action,context.tokenizer,context)
         raw+=action['action_token_ids']+obs;mask+=[1]*n+[0]*len(obs)
@@ -530,14 +633,19 @@ def trajectory_projection(state,cap,_contexts=None):
         semantic_mask+=[1]*len(legacy)+[0]*len(obs);contexts.append(ledger['generation_context_token_ids'])
     require(raw==state.response and mask==state.model_mask and len(raw)<=cap and len(semantic)<=cap,
             'Policy/semantic score cap or retained timeline mismatch')
-    value=dict(protocol=PROTOCOL,prompt_token_ids=state.prompt.copy(),policy_response_token_ids=raw,
+    return dict(protocol=PROTOCOL,prompt_token_ids=state.prompt.copy(),policy_response_token_ids=raw,
         policy_model_mask=mask,semantic_response_token_ids=semantic,semantic_model_mask=semantic_mask,
-        raw_ledger=copy.deepcopy(state.raw_ledger),response_cap=cap)
+        raw_ledger=state.raw_ledger,response_cap=cap)
+
+
+def trajectory_projection(state,cap,_contexts=None):
+    value=_trajectory_values(state,cap,_contexts)
+    value['raw_ledger']=copy.deepcopy(value['raw_ledger'])
     value['binding_sha256']=fingerprint(value)
     return value
 
 
-def semantic_spans(item,tokenizer):
+def semantic_spans(item,tokenizer,_contexts=None):
     """Rebuild legacy contiguous spans; canonical IDs never enter policy tensors."""
     if FIELD not in item.non_tensor_batch:
         require(getattr(item,'meta_info',{}).get('tree_raw_token_protocol') is None,
@@ -561,17 +669,19 @@ def semantic_spans(item,tokenizer):
             prompt==value['prompt_token_ids'],'Semantic projection attached to different policy inputs/mask')
     state=type('ProjectionState',(),{})()
     state.prompt=prompt;state.response=ids;state.model_mask=mask;state.raw_ledger=value['raw_ledger']
-    contexts={}
-    require(trajectory_projection(state,value['response_cap'],contexts)==value, 'Semantic ledger does not reconstruct bound timeline')
+    contexts={} if _contexts is None else _contexts
+    require(_trajectory_values(state,value['response_cap'],contexts)==bound, 'Semantic ledger does not reconstruct bound timeline')
     for ledger in value['raw_ledger']:
         action=ledger['action'];identity=action['tokenizer_identity']
         require(identity['pad_token_id']==tokenizer.pad_token_id and identity['eos_token_id']==tokenizer.eos_token_id and
                 identity['clean_up_tokenization_spaces']==tokenizer.clean_up_tokenization_spaces and
                 tokenizer.decode(action['canonical_semantic_token_ids'])==action['legacy_reward_action_text'],
                 'Frozen tokenizer flags or legacy reward projection changed')
-        context=contexts[fingerprint(identity)]
-        if context.tokenizer is not tokenizer:context=_TokenizerValidationContext(tokenizer,identity)
-        validate_action_utf8_proof(action,tokenizer,context)
+        active=_ACTIVE_VALIDATION_CONTEXT.get()
+        key=active.identity_key if active is not None and active.identity==identity else fingerprint(identity)
+        context=contexts[key]
+        if context.tokenizer is not tokenizer:
+            validate_action_utf8_proof(action,tokenizer,_validation_context(tokenizer,identity))
     spans=[];start=None;tokens=value['semantic_response_token_ids'];marks=value['semantic_model_mask']
     for index,is_model in enumerate(marks):
         if is_model and start is None:start=index

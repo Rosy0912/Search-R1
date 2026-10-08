@@ -1,0 +1,1491 @@
+{
+  "status": "LOCAL_READONLY_SPEED_REVIEW_COMPLETE",
+  "saved_at_utc": "2026-10-08T05:57:59.479458+00:00",
+  "scope": "Localownsavedlogs/config/source only.NoSSH/tests/modelcalls/remoteactions/codeedits/signals/restarts/newjobs/otheragentcontacts.STATUS/REPORT read only.Live3335continues6→200.",
+  "definition": "Full=only actualcompletedouter logger timing_s/step.Regular=step-testing-stage_testing-save_checkpoint.Freshparents stage_testing is34–38srollingnative save.Current5testing965.83includesrollingboundary+927.24sactualdev;do not add nested observer timer.Jobwall,queue,startup,baseline,partialfailed steps excluded.",
+  "groups": [
+    {
+      "name": "current3335",
+      "job": 3335,
+      "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+      "config_sha256": "5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb",
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          2
+        ],
+        "leaf_trajectories": 2560,
+        "global_mini": 128,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+        "raw_preservation": true,
+        "behavior_mu": true,
+        "policy_safety": true,
+        "monitor_rows_per_rank": 32,
+        "kl_coef": 0.0,
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false,
+        "config_source": "immutable V11 manifest.configuration_overrides; stale CONFIGURATION_SPEC is not the effective launch"
+      },
+      "samples": [
+        {
+          "outer": 5,
+          "full_step_s": 3907.155880291015,
+          "regular_s": 2837.1475244015455,
+          "full_step_min": 65.11926467151692,
+          "regular_min": 47.28579207335909,
+          "timers_s": {
+            "gen": 1407.245735861361,
+            "ref": 10.62023014202714,
+            "adv": 224.97917767986655,
+            "update_actor": 742.3484121412039,
+            "testing": 965.8346821963787,
+            "stage_testing": 7.667019963264465e-05,
+            "save_checkpoint": 104.17359702289104,
+            "step": 3907.155880291015
+          },
+          "excluded_s": {
+            "testing": 965.8346821963787,
+            "stage_testing": 7.667019963264465e-05,
+            "save_checkpoint": 104.17359702289104
+          },
+          "rollout_counts": {
+            "generated_tokens": 687104.0,
+            "prefill_tokens": 2522940.0,
+            "retrieval_calls": 2045.0,
+            "trajectories": 2560.0,
+            "padded_rows": 21.0,
+            "context_mismatches": 0.0,
+            "raw_slots": 2348000.0,
+            "raw_emitted_tokens": 687104.0,
+            "raw_retained_tokens": 352226.0,
+            "raw_discarded_tail_tokens": 334878.0,
+            "raw_inherited_leaf_tokens": 74062.0,
+            "semantic_prefix_scan_cpu_seconds": 623.9945841889983,
+            "semantic_prefix_scan_wall_seconds": 621.8345864936709
+          },
+          "actor_metrics": {
+            "kl_coef": 0.0,
+            "kl_loss": 0.0018576730818040232,
+            "entropy_loss": 0.8462166029494256,
+            "pg_loss": 6.794560399360199e-05,
+            "pg_clipfrac": 0.0013626229777754888,
+            "ppo_kl": 0.0015566258348482759,
+            "postclip_grad_norm": 0.9999995033836561,
+            "grad_norm": 2.0728668637774126,
+            "behavior_mu_monitor_native_forward_calls": 656.0,
+            "behavior_mu_additional_initial_repeat_native_forward_calls": 16.0,
+            "behavior_mu_monitor_forward_wall_seconds": 69.58826934546232,
+            "optimizer_steps": 20.0,
+            "optimizer_opportunities_processed": 20.0,
+            "optimizer_opportunities_skipped": 0.0,
+            "skipped_empty_minibatches": 0.0,
+            "fresh_direct_rank_outer_admitted": 1.0,
+            "lr": 8.771929824561403e-08,
+            "lr_before_outer": 7.017543859649122e-08,
+            "scheduler_step_before_outer": 4.0,
+            "scheduler_step_after_outer": 5.0
+          },
+          "source": {
+            "file": "outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+            "selector": "raw_step_log -> step:5"
+          }
+        }
+      ],
+      "actor_checks": "8rank complete;20 successful Adam/rank,0skips,scheduler4→5;20finite nonzero norms/rank;8192-coordinate sampled parameter deltas finite/nonzero;full saved worker-state finite metadata. No tests/reload added by this review.",
+      "coverage": "One new completed step5;200 and10 not complete. Sixth started separately.",
+      "unknown": "No full profiling of update_actor or unassigned timer remainder; no controlled host A/B."
+    },
+    {
+      "name": "fresh200_parent3328",
+      "job": 3328,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          2
+        ],
+        "leaf_trajectories": 2560,
+        "global_mini": 128,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+        "raw_preservation": true,
+        "behavior_mu": true,
+        "policy_safety": true,
+        "monitor_rows_per_rank": 32,
+        "kl_coef": 0.0,
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false,
+        "config_source": "immutable V11 manifest.configuration_overrides; stale CONFIGURATION_SPEC is not the effective launch"
+      },
+      "samples": [
+        {
+          "outer": 1,
+          "full_step_s": 2787.8302502129227,
+          "regular_s": 2751.0667354539037,
+          "full_step_min": 46.46383750354871,
+          "regular_min": 45.85111225756506,
+          "timers_s": {
+            "adv": 224.13744202069938,
+            "gen": 1385.1354955397546,
+            "ref": 10.252670168876648,
+            "stage_testing": 36.76351475901902,
+            "step": 2787.8302502129227,
+            "update_actor": 683.6430090330541
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 36.76351475901902,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "context_mismatches": 0,
+            "generated_tokens": 674295,
+            "padded_rows": 23,
+            "prefill_tokens": 2494717,
+            "raw_discarded_tail_tokens": 329813,
+            "raw_emitted_tokens": 674295,
+            "raw_inherited_leaf_tokens": 76447,
+            "raw_retained_tokens": 344482,
+            "raw_slots": 2320000,
+            "retrieval_calls": 1986,
+            "semantic_prefix_scan_cpu_seconds": 609.198837688999,
+            "semantic_prefix_scan_wall_seconds": 608.3990363962948,
+            "trajectories": 2560
+          },
+          "actor_metrics": {
+            "optimizer_steps": 20
+          },
+          "source": {
+            "file": "outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json",
+            "selector": "per_completed_outer[outer=1]",
+            "original_source": {
+              "completed_original_observation": "work/tree-fresh200-direct-formal-a18f420/actual-direct-v6-dispatch/runtime-watch-3328-observation-47.json",
+              "completed_outer": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/COMPLETE_OUTER1_AND_NATIVE_ROLLING3328.json",
+              "rollout_cost": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/ROLLOUT_COST_ATTEMPT1_3328.json",
+              "rollout_original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-direct-formal-a18f420/actual-direct-v6-dispatch/runtime-watch-3328-observation-25.json"
+            }
+          }
+        },
+        {
+          "outer": 2,
+          "full_step_s": 2924.868424810469,
+          "regular_s": 2887.2729940861464,
+          "full_step_min": 48.74780708017449,
+          "regular_min": 48.12121656810244,
+          "timers_s": {
+            "adv": 225.72747160866857,
+            "gen": 1519.4753703586757,
+            "ref": 10.356969045475125,
+            "stage_testing": 37.595430724322796,
+            "step": 2924.868424810469,
+            "update_actor": 682.2291832789779
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 37.595430724322796,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "context_mismatches": 0,
+            "generated_tokens": 719286,
+            "padded_rows": 19,
+            "prefill_tokens": 2620424,
+            "raw_discarded_tail_tokens": 353119,
+            "raw_emitted_tokens": 719286,
+            "raw_inherited_leaf_tokens": 78471,
+            "raw_retained_tokens": 366167,
+            "raw_slots": 2360000,
+            "retrieval_calls": 2078,
+            "semantic_prefix_scan_cpu_seconds": 706.4583099800025,
+            "semantic_prefix_scan_wall_seconds": 705.6440113894641,
+            "trajectories": 2560
+          },
+          "actor_metrics": {
+            "optimizer_steps": 20
+          },
+          "source": {
+            "file": "outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json",
+            "selector": "per_completed_outer[outer=2]",
+            "original_source": {
+              "completed_original_observation": "work/tree-fresh200-direct-formal-a18f420/actual-direct-v6-dispatch/runtime-watch-3328-observation-70.json",
+              "completed_outer": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/COMPLETE_OUTER2_AND_NATIVE_ROLLING3328.json",
+              "rollout_cost": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/ROLLOUT_COST_ATTEMPT2_3328.json",
+              "rollout_original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-direct-formal-a18f420/actual-direct-v6-dispatch/runtime-watch-3328-observation-59.json"
+            }
+          }
+        }
+      ],
+      "actor_checks": "Every sampled real complete outer8ranks×20returned Adam,0skips,scheduler advance,rolling native state. Outer1LR0 is real writes without claimed parameter delta.",
+      "coverage": "Same fresh200 chain512×5/mini128/micro16;older core versions and historical h100-9. stage_testing34–38s is rolling state save,excluded from regular.",
+      "unknown": "No failed/partial next attempt included. Not a host-causal experiment."
+    },
+    {
+      "name": "fresh200_parent3331",
+      "job": 3331,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          2
+        ],
+        "leaf_trajectories": 2560,
+        "global_mini": 128,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+        "raw_preservation": true,
+        "behavior_mu": true,
+        "policy_safety": true,
+        "monitor_rows_per_rank": 32,
+        "kl_coef": 0.0,
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false,
+        "config_source": "immutable V11 manifest.configuration_overrides; stale CONFIGURATION_SPEC is not the effective launch"
+      },
+      "samples": [
+        {
+          "outer": 3,
+          "full_step_s": 2851.5085877832025,
+          "regular_s": 2816.536966379732,
+          "full_step_min": 47.52514312972004,
+          "regular_min": 46.94228277299553,
+          "timers_s": {
+            "adv": 228.28346108086407,
+            "gen": 1434.1447897441685,
+            "ref": 10.408932883292437,
+            "stage_testing": 34.971621403470635,
+            "step": 2851.5085877832025,
+            "update_actor": 693.6010473743081
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 34.971621403470635,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "context_mismatches": 0,
+            "generated_tokens": 721840,
+            "padded_rows": 18,
+            "prefill_tokens": 2572099,
+            "raw_discarded_tail_tokens": 340622,
+            "raw_emitted_tokens": 721840,
+            "raw_inherited_leaf_tokens": 77669,
+            "raw_retained_tokens": 381218,
+            "raw_slots": 2352000,
+            "retrieval_calls": 2044,
+            "semantic_prefix_scan_cpu_seconds": 653.0624461090047,
+            "semantic_prefix_scan_wall_seconds": 652.1890074536204,
+            "trajectories": 2560
+          },
+          "actor_metrics": {
+            "optimizer_steps": 20
+          },
+          "source": {
+            "file": "outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json",
+            "selector": "per_completed_outer[outer=3]",
+            "original_source": {
+              "rollout": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/THIRD_ROLLOUT3331_SAFE_METADATA.json",
+              "completed": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/THIRD_COMPLETED_OUTER3331_SAFE_METADATA.json",
+              "completed_and_rolling": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/THIRD_COMPLETED_OUTER_AND_ROLLING3331_SAFE_METADATA.json",
+              "latest_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-direct-formal-a18f420/actual-direct-v8-dispatch/runtime-watch-3331-observation-28.json"
+            }
+          }
+        },
+        {
+          "outer": 4,
+          "full_step_s": 2899.8943617530167,
+          "regular_s": 2865.8832248505205,
+          "full_step_min": 48.331572695883615,
+          "regular_min": 47.76472041417534,
+          "timers_s": {
+            "adv": 228.68339314311743,
+            "gen": 1488.3016259577125,
+            "ref": 10.192417507991195,
+            "stage_testing": 34.01113690249622,
+            "step": 2899.8943617530167,
+            "update_actor": 683.0921388678253
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 34.01113690249622,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "context_mismatches": 0,
+            "generated_tokens": 696889,
+            "padded_rows": 30,
+            "prefill_tokens": 2500160,
+            "raw_discarded_tail_tokens": 345491,
+            "raw_emitted_tokens": 696889,
+            "raw_inherited_leaf_tokens": 71906,
+            "raw_retained_tokens": 351398,
+            "raw_slots": 2336000,
+            "retrieval_calls": 2018,
+            "semantic_prefix_scan_cpu_seconds": 676.414111085995,
+            "semantic_prefix_scan_wall_seconds": 675.5837729554623,
+            "trajectories": 2560
+          },
+          "actor_metrics": {
+            "optimizer_steps": 20
+          },
+          "source": {
+            "file": "outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json",
+            "selector": "per_completed_outer[outer=4]",
+            "original_source": {
+              "rollout": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-direct-formal-a18f420/actual-direct-v8-dispatch/FOURTH_ROLLOUT3331_SAFE_METADATA.json",
+              "completed_and_rolling": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-direct-formal-a18f420/actual-direct-v8-dispatch/FOURTH_COMPLETED_OUTER_AND_ROLLING3331_SAFE_METADATA.json",
+              "original_completed_observation_reference": "work/tree-fresh200-direct-formal-a18f420/actual-direct-v8-dispatch/runtime-watch-3331-observation-51.json"
+            }
+          }
+        }
+      ],
+      "actor_checks": "Every sampled real complete outer8ranks×20returned Adam,0skips,scheduler advance,rolling native state. Outer1LR0 is real writes without claimed parameter delta.",
+      "coverage": "Same fresh200 chain512×5/mini128/micro16;older core versions and historical h100-9. stage_testing34–38s is rolling state save,excluded from regular.",
+      "unknown": "No failed/partial next attempt included. Not a host-causal experiment."
+    },
+    {
+      "name": "historical2971",
+      "job": 2971,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3072,
+        "global_mini": 256,
+        "global_micro": 64,
+        "old_logprob_global_micro": 128,
+        "ref_global_micro": 128,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 142,
+        "warmup_ratio": 0.285,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/qwen2.5-3b",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/common-data/fb304e076366be915cd3/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": false,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false
+      },
+      "samples": [
+        {
+          "outer": 1,
+          "full_step_s": 282.93030426837504,
+          "regular_s": 282.9302980992943,
+          "full_step_min": 4.715505071139584,
+          "regular_min": 4.7155049683215715,
+          "timers_s": {
+            "gen": 185.72589624114335,
+            "ref": 13.188729172572494,
+            "adv": 1.5772976893931627,
+            "update_actor": 68.446507319808,
+            "stage_testing": 6.16908073425293e-06,
+            "step": 282.93030426837504
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 6.16908073425293e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2502430.0,
+            "prefill_tokens": 6278053.0,
+            "retrieval_calls": 2173.0,
+            "trajectories": 3072.0,
+            "padded_rows": 25.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0009162836913674255,
+            "entropy_loss": 1.8188262547676761,
+            "pg_loss": -1.2087912182323635e-06,
+            "pg_clipfrac": 0.0,
+            "ppo_kl": 5.573297835555758e-06,
+            "grad_norm": 0.9539079467455546,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 7.04225352112676e-09
+          },
+          "source": {
+            "file": "outputs/evidence/shared-formal-2971-two-prefix.json",
+            "selector": "selected_stage_log -> step:1"
+          }
+        },
+        {
+          "outer": 2,
+          "full_step_s": 261.5431294310838,
+          "regular_s": 261.5431208256632,
+          "full_step_min": 4.35905215718473,
+          "regular_min": 4.359052013761054,
+          "timers_s": {
+            "gen": 178.30269555188715,
+            "ref": 12.874005485326052,
+            "adv": 1.583111971616745,
+            "update_actor": 54.97942772693932,
+            "stage_testing": 8.605420589447021e-06,
+            "step": 261.5431294310838
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 8.605420589447021e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2544358.0,
+            "prefill_tokens": 6335330.0,
+            "retrieval_calls": 2275.0,
+            "trajectories": 3072.0,
+            "padded_rows": 26.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0008786474862366352,
+            "entropy_loss": 1.796567374219497,
+            "pg_loss": -5.9279736888129264e-05,
+            "pg_clipfrac": 0.0001739975679441294,
+            "ppo_kl": -0.00017236386485748928,
+            "grad_norm": 0.910419262945652,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1.408450704225352e-08
+          },
+          "source": {
+            "file": "outputs/evidence/shared-formal-2971-two-prefix.json",
+            "selector": "selected_stage_log -> step:2"
+          }
+        }
+      ],
+      "actor_checks": "Existing first-two independent review16directrankrecords;12optimizer/rank/outer,finite nonzero norm;outer1LR0sampledelta0,outer2all8rank nonzero finite sample changes.",
+      "coverage": "Real firsttwo complete;job ultimately failed308after307completed. Baseline64/startup/jobwall excluded.",
+      "unknown": "Different Base model/data/reward/6leaf/mini256/micro64/warm142; historical speed only,not fair currenteffect comparison."
+    },
+    {
+      "name": "Instruct3003154",
+      "job": 3154,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3072,
+        "global_mini": 128,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "warmup_ratio": 0.0,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": false,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false,
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+      },
+      "source_commit": "f994af33c6c93b6b9844863be912cab2a4020dc1",
+      "config_sha256": "63296d0602c5978d1ff67d258b401054ce587e3a9a2c55052c35fbeac626c198",
+      "samples": [
+        {
+          "outer": 1,
+          "full_step_s": 248.88197840936482,
+          "regular_s": 248.88196897134185,
+          "full_step_min": 4.148032973489413,
+          "regular_min": 4.148032816189031,
+          "timers_s": {
+            "gen": 133.8391821589321,
+            "ref": 11.979414014145732,
+            "adv": 1.001806465908885,
+            "update_actor": 88.60417108424008,
+            "stage_testing": 9.43802297115326e-06,
+            "step": 248.88197840936482
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 9.43802297115326e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 868365.0,
+            "prefill_tokens": 3220124.0,
+            "retrieval_calls": 2478.0,
+            "trajectories": 3072.0,
+            "padded_rows": 24.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0021055236747239783,
+            "entropy_loss": 0.881131460191682,
+            "pg_loss": 8.131045130236696e-05,
+            "pg_clipfrac": 0.0002679705244128419,
+            "ppo_kl": -0.00021187549377151807,
+            "grad_norm": 3.512900529467887,
+            "optimizer_steps": 24.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1.7543859649122805e-08,
+            "lr_before_outer": 0.0,
+            "scheduler_step_before_outer": 0.0,
+            "scheduler_step_after_outer": 1.0
+          },
+          "source": {
+            "file": "work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/stage.log",
+            "line": 473
+          }
+        },
+        {
+          "outer": 2,
+          "full_step_s": 237.27179044485092,
+          "regular_s": 237.27178249135613,
+          "full_step_min": 3.9545298407475156,
+          "regular_min": 3.954529708189269,
+          "timers_s": {
+            "gen": 125.09963921830058,
+            "ref": 11.78213114105165,
+            "adv": 0.9736469648778439,
+            "update_actor": 85.93054876476526,
+            "stage_testing": 7.953494787216187e-06,
+            "step": 237.27179044485092
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 7.953494787216187e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 893853.0,
+            "prefill_tokens": 3251757.0,
+            "retrieval_calls": 2486.0,
+            "trajectories": 3072.0,
+            "padded_rows": 26.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.003026653093797904,
+            "entropy_loss": 0.9003750395301419,
+            "pg_loss": 0.0006742481261123127,
+            "pg_clipfrac": 0.0037165399914259726,
+            "ppo_kl": 0.0023514090358844517,
+            "grad_norm": 3.791492493753992,
+            "optimizer_steps": 24.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 3.508771929824561e-08,
+            "lr_before_outer": 1.7543859649122805e-08,
+            "scheduler_step_before_outer": 1.0,
+            "scheduler_step_after_outer": 2.0
+          },
+          "source": {
+            "file": "work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/stage.log",
+            "line": 483
+          }
+        }
+      ],
+      "actor_checks": "Existing accepted firstfive40rankrecords/fullstate/HF reload;24successful Adam/rank/outer;firstLR0,2–5finite nonzero sample changes.",
+      "coverage": "Closest earlier model/data/micro example: same Instruct/common0b/mini128/micro16/warm57,but512×6=3072leaves/24Adam versus current512×5/20Adam.",
+      "unknown": "No raw-prefix/sampled-mu/policy-safety profile;not a strict fair A/B. Earlysteps do not describe later policy collapse."
+    },
+    {
+      "name": "historical3103",
+      "job": 3103,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3072,
+        "global_mini": 256,
+        "global_micro": 64,
+        "old_logprob_global_micro": 128,
+        "ref_global_micro": 128,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": null,
+        "warmup_ratio": 0.285,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/qwen2.5-3b",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/common-data/fb304e076366be915cd3/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": false,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false
+      },
+      "source_commit": "296217a4b676a26a92fc729f5d9882b785dbfa96",
+      "config_sha256": "d0fe4afbb90d4e430a534af0a4f626a5564e8238f56b0bf1332a26ca6da801b6",
+      "samples": [
+        {
+          "outer": 1,
+          "full_step_s": 289.73998691886663,
+          "regular_s": 289.73998213745654,
+          "full_step_min": 4.828999781981111,
+          "regular_min": 4.828999702290942,
+          "timers_s": {
+            "gen": 190.060623312369,
+            "ref": 13.471168311312795,
+            "adv": 1.5980767607688904,
+            "update_actor": 70.80634803511202,
+            "stage_testing": 4.781410098075867e-06,
+            "step": 289.73998691886663
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 4.781410098075867e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2515079.0,
+            "prefill_tokens": 6260131.0,
+            "retrieval_calls": 2238.0,
+            "trajectories": 3072.0,
+            "padded_rows": 20.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0008920796450790173,
+            "entropy_loss": 1.8064617576698463,
+            "pg_loss": -7.88003186850498e-06,
+            "pg_clipfrac": 0.0,
+            "ppo_kl": 3.4144976119392448e-06,
+            "grad_norm": 1.0091450387056862,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06
+          },
+          "source": {
+            "file": "work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/stage.log",
+            "line": 395
+          }
+        },
+        {
+          "outer": 2,
+          "full_step_s": 263.72204703092575,
+          "regular_s": 263.7220415621996,
+          "full_step_min": 4.395367450515429,
+          "regular_min": 4.395367359369994,
+          "timers_s": {
+            "gen": 177.45596894063056,
+            "ref": 13.114817056804895,
+            "adv": 1.630589198321104,
+            "update_actor": 57.06833753362298,
+            "stage_testing": 5.46872615814209e-06,
+            "step": 263.72204703092575
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 5.46872615814209e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2526998.0,
+            "prefill_tokens": 6318215.0,
+            "retrieval_calls": 2334.0,
+            "trajectories": 3072.0,
+            "padded_rows": 26.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0013446322373056319,
+            "entropy_loss": 1.8176121829698484,
+            "pg_loss": -3.2592142815701663e-05,
+            "pg_clipfrac": 0.0007160038552619279,
+            "ppo_kl": -0.0011668132495068469,
+            "grad_norm": 1.0988871649377239,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06
+          },
+          "source": {
+            "file": "work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/stage.log",
+            "line": 405
+          }
+        },
+        {
+          "outer": 3,
+          "full_step_s": 245.86498343199492,
+          "regular_s": 245.86497793905437,
+          "full_step_min": 4.097749723866582,
+          "regular_min": 4.097749632317573,
+          "timers_s": {
+            "gen": 166.19632923975587,
+            "ref": 12.089297011494637,
+            "adv": 1.5303847715258598,
+            "update_actor": 53.46896356716752,
+            "stage_testing": 5.492940545082092e-06,
+            "step": 245.86498343199492
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 5.492940545082092e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2220018.0,
+            "prefill_tokens": 5706870.0,
+            "retrieval_calls": 2186.0,
+            "trajectories": 3072.0,
+            "padded_rows": 17.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.00393985641509668,
+            "entropy_loss": 1.764249869932731,
+            "pg_loss": -0.00022207041911315173,
+            "pg_clipfrac": 0.000927080073450976,
+            "ppo_kl": -0.001597421929322886,
+            "grad_norm": 1.1247607485051392,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06
+          },
+          "source": {
+            "file": "work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/stage.log",
+            "line": 415
+          }
+        }
+      ],
+      "actor_checks": "Existing accepted5receipt40rankrecords;12Adam/rank/outer,finite norm;stable-KL+full-window numerical diagnostic;no raw/mu monitor.",
+      "coverage": "Three real first1–3complete;not1502sjobwall/5.",
+      "unknown": "Base model/older split/reward/6leaf/mini256/micro64/short warmup differ."
+    },
+    {
+      "name": "Recovery3234_healthy110_parent",
+      "job": 3234,
+      "config": {
+        "questions": 640,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3840,
+        "global_mini": 384,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "warmup_ratio": 0.0,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": false,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false,
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+      },
+      "samples": [
+        {
+          "outer": 108,
+          "full_step_s": 461.23092095181346,
+          "regular_s": 461.23090376518667,
+          "full_step_min": 7.6871820158635575,
+          "regular_min": 7.687181729419778,
+          "timers_s": {
+            "gen": 240.36351757869124,
+            "ref": 20.397188624367118,
+            "adv": 2.3064963165670633,
+            "update_actor": 176.87958557717502,
+            "stage_testing": 1.718662679195404e-05,
+            "step": 461.23092095181346
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 1.718662679195404e-05,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 3129851.0,
+            "prefill_tokens": 12617251.0,
+            "retrieval_calls": 3285.0,
+            "trajectories": 3840.0,
+            "padded_rows": 15.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.22289692638441921,
+            "entropy_loss": 0.1559327738941647,
+            "pg_loss": 0.00012060719149076249,
+            "pg_clipfrac": 0.0008102230069980518,
+            "ppo_kl": 0.000793420396780723,
+            "grad_norm": 0.2735605424119297,
+            "optimizer_steps": 10.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06,
+            "lr_before_outer": 1e-06,
+            "scheduler_step_before_outer": 107.0,
+            "scheduler_step_after_outer": 108.0
+          },
+          "source": {
+            "file": "outputs/tree-instruct-300/failure3234/stage.log",
+            "line": 535
+          }
+        },
+        {
+          "outer": 109,
+          "full_step_s": 460.9647813346237,
+          "regular_s": 460.96477021090686,
+          "full_step_min": 7.682746355577062,
+          "regular_min": 7.682746170181781,
+          "timers_s": {
+            "gen": 241.29571356996894,
+            "ref": 20.64476729556918,
+            "adv": 2.392846019938588,
+            "update_actor": 175.19587160646915,
+            "stage_testing": 1.1123716831207275e-05,
+            "step": 460.9647813346237
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 1.1123716831207275e-05,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 3214601.0,
+            "prefill_tokens": 12697624.0,
+            "retrieval_calls": 3284.0,
+            "trajectories": 3840.0,
+            "padded_rows": 7.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.22258995602605863,
+            "entropy_loss": 0.1553238224805682,
+            "pg_loss": 0.00015240710986859086,
+            "pg_clipfrac": 0.0010219479791271093,
+            "ppo_kl": 0.0006731752797575704,
+            "grad_norm": 0.32535292222903867,
+            "optimizer_steps": 10.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06,
+            "lr_before_outer": 1e-06,
+            "scheduler_step_before_outer": 108.0,
+            "scheduler_step_after_outer": 109.0
+          },
+          "source": {
+            "file": "outputs/tree-instruct-300/failure3234/stage.log",
+            "line": 544
+          }
+        },
+        {
+          "outer": 110,
+          "full_step_s": 1072.2506356686354,
+          "regular_s": 463.40963887795806,
+          "full_step_min": 17.87084392781059,
+          "regular_min": 7.723493981299301,
+          "timers_s": {
+            "gen": 239.35582099296153,
+            "ref": 20.530992092564702,
+            "adv": 2.4216766078025103,
+            "update_actor": 179.81127765215933,
+            "testing": 537.9871656876057,
+            "stage_testing": 1.2077391147613525e-05,
+            "save_checkpoint": 70.85381902568042,
+            "step": 1072.2506356686354
+          },
+          "excluded_s": {
+            "testing": 537.9871656876057,
+            "stage_testing": 1.2077391147613525e-05,
+            "save_checkpoint": 70.85381902568042
+          },
+          "rollout_counts": {
+            "generated_tokens": 3205796.0,
+            "prefill_tokens": 12661540.0,
+            "retrieval_calls": 3275.0,
+            "trajectories": 3840.0,
+            "padded_rows": 16.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.2234504498075694,
+            "entropy_loss": 0.15560581890167668,
+            "pg_loss": 0.00017594843460528865,
+            "pg_clipfrac": 0.0008228477858181636,
+            "ppo_kl": 0.0009276510400294819,
+            "grad_norm": 0.2838688065957291,
+            "optimizer_steps": 10.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06,
+            "lr_before_outer": 1e-06,
+            "scheduler_step_before_outer": 109.0,
+            "scheduler_step_after_outer": 110.0
+          },
+          "source": {
+            "file": "outputs/tree-instruct-300/failure3234/stage.log",
+            "line": 608
+          }
+        }
+      ],
+      "actor_checks": "Accepted incremental106–110 receipt40directrankrecords;10Adam/rank/outer;240trainingmicro/rank/outer;serialized state finite/Adam2500/scheduler110;rank11010finite norms+nonzero finite sampled deltas.",
+      "coverage": "Actual108–110complete;110includes537.9871657sdev512+70.8538190ssave,removed. Same Instruct/common0b/micro16,but640×6/mini384/10Adam/restoredtrainedparent100.",
+      "unknown": "Trained-policy samples,not fresh sameweight/sampler A/B."
+    },
+    {
+      "name": "healthy110_calibration3268_EXCLUDED",
+      "job": 3268,
+      "config": {
+        "questions": 640,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3840,
+        "global_mini": 384,
+        "global_micro": 16,
+        "old_logprob_global_micro": 32,
+        "ref_global_micro": 32,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": 57,
+        "warmup_ratio": 0.0,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": true,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false
+      },
+      "samples": [],
+      "actor_checks": "Restoredparent110,newcompleted0,3BAdam0,scheduler not advanced.",
+      "coverage": "1179.975928s wholejobwall includes startup/nativegate/initial512/rollout/probabilitycalibration;not trainingstep.",
+      "unknown": "No eligible completed training-step timing."
+    },
+    {
+      "name": "earliest2879_cross_cluster_history_ONLY",
+      "job": 2879,
+      "config": {
+        "questions": 512,
+        "leaf_quotas": [
+          3,
+          3
+        ],
+        "leaf_trajectories": 3072,
+        "global_mini": 256,
+        "global_micro": 8,
+        "old_logprob_global_micro": 128,
+        "ref_global_micro": 128,
+        "epochs": 1,
+        "lr": 1e-06,
+        "warmup_steps": null,
+        "warmup_ratio": 0.285,
+        "model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/qwen2.5-3b",
+        "train_data": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/data/paper-grpo/train.parquet",
+        "raw_preservation": false,
+        "behavior_mu": false,
+        "policy_safety": false,
+        "kl_coef": 0.001,
+        "context_alignment": "report",
+        "max_turns": 4,
+        "response_length_per_turn": 500,
+        "prompt_cap": 4096,
+        "observation_cap": 500,
+        "force_final_answer": false
+      },
+      "samples": [
+        {
+          "outer": 1,
+          "full_step_s": 884.1470133513212,
+          "regular_s": 884.1470076479018,
+          "full_step_min": 14.735783555855354,
+          "regular_min": 14.735783460798363,
+          "timers_s": {
+            "gen": 707.1797838862985,
+            "ref": 13.444882662966847,
+            "adv": 1.4962198436260223,
+            "update_actor": 148.02880643494427,
+            "stage_testing": 5.7034194469451904e-06,
+            "step": 884.1470133513212
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 5.7034194469451904e-06,
+            "save_checkpoint": 0.0
+          },
+          "rollout_counts": {
+            "generated_tokens": 2553888.0,
+            "prefill_tokens": 6402040.0,
+            "retrieval_calls": 2292.0,
+            "trajectories": 3072.0,
+            "padded_rows": 28.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0008786409994033425,
+            "entropy_loss": 1.8062253360255152,
+            "pg_loss": 4.738598363474011e-06,
+            "pg_clipfrac": 4.1438434021799795e-05,
+            "ppo_kl": 2.5865185517794493e-05,
+            "grad_norm": 1.2333041926225026,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06
+          },
+          "source": {
+            "file": "outputs/evidence/tree-two-2879-completed-summary.json",
+            "selector": "records[step=1].metrics"
+          }
+        },
+        {
+          "outer": 2,
+          "full_step_s": 904.4957857094705,
+          "regular_s": 884.070874068886,
+          "full_step_min": 15.074929761824508,
+          "regular_min": 14.734514567814767,
+          "timers_s": {
+            "gen": 713.1359252799302,
+            "ref": 12.808330416679382,
+            "adv": 1.4982280377298594,
+            "update_actor": 142.67590323090553,
+            "stage_testing": 7.320195436477661e-06,
+            "save_checkpoint": 20.424904320389032,
+            "step": 904.4957857094705
+          },
+          "excluded_s": {
+            "testing": 0.0,
+            "stage_testing": 7.320195436477661e-06,
+            "save_checkpoint": 20.424904320389032
+          },
+          "rollout_counts": {
+            "generated_tokens": 2478094.0,
+            "prefill_tokens": 6194714.0,
+            "retrieval_calls": 2293.0,
+            "trajectories": 3072.0,
+            "padded_rows": 15.0,
+            "context_mismatches": 0.0
+          },
+          "actor_metrics": {
+            "kl_coef": 0.001,
+            "kl_loss": 0.0014831667804161934,
+            "entropy_loss": 1.798662609893957,
+            "pg_loss": -7.953392923809588e-05,
+            "pg_clipfrac": 0.0008603236636435782,
+            "ppo_kl": -0.000948792660235592,
+            "grad_norm": 1.1345506310462952,
+            "optimizer_steps": 12.0,
+            "skipped_empty_minibatches": 0.0,
+            "lr": 1e-06
+          },
+          "source": {
+            "file": "outputs/evidence/tree-two-2879-completed-summary.json",
+            "selector": "records[step=2].metrics"
+          }
+        }
+      ],
+      "actor_checks": "Existing functional2/HF finite-nonzero acceptance;aggregate12Adam/finite norm;no later direct8rankwriteledger.",
+      "coverage": "Reconstructs user14.9m from2actualsteps;oldCPU E5 plusA800FP32cross-clusterindex,nowretired/forbidden. Savedlocal logs only.",
+      "unknown": "Differentglobalmicro8/Base/legacydata/reward/6leaf;not currentfaircontrol or permitted execution path."
+    }
+  ],
+  "old14_9m_reconstruction": {
+    "mean_full_s": 894.3213995303959,
+    "mean_full_min": 14.905356658839931,
+    "cpu_e5_mean_wall_s": 412.7273741895333,
+    "index_cross_cluster_mean_roundtrip_s": 117.08434357959777,
+    "other_gen_by_subtraction_s": 180.34613681398332,
+    "actor_mean_s": 145.3523548329249,
+    "other_step_by_subtraction_s": 38.81119011435658,
+    "scope": "First1-query startup probe excluded;18trainingrequests4585queries. Other components are subtraction,not independent timers."
+  },
+  "measured_and_source_bounded_contributions": {
+    "current5": {
+      "regular_excluding_testing_and_HFsave_s": 2837.147601071745,
+      "regular_min": 47.28579335119575,
+      "unassigned_regular_remainder_s": 451.95404524728656
+    },
+    "raw_prefix_measured": {
+      "wall_s": 621.8345864936709,
+      "CPU_s": 623.9945841889983,
+      "fraction_of_gen": 0.4418805974303075,
+      "scope": "Existing sampled_action timer includes tokenizer identity+UTF8 prefixscan;subset ofgen,not additive. Later revalidations not timed independently."
+    },
+    "mu_monitor_measured": {
+      "total_calls_per_rank": 656,
+      "initial_repeat_calls_per_rank_SUBSET": 16,
+      "host_native_call_interval_s": 69.58826934546232,
+      "scope": "16repeat is included in656. Hostcall interval excludes possible CUDAcompletion/collective waits elsewhere;subset ofupdate_actor,not allguardcost."
+    },
+    "actual6_CPU_location": {
+      "window": {
+        "elapsed_seconds": 30.20773148536682,
+        "process_cpu_seconds_delta": 30.31,
+        "percent_of_one_core": 100.3385507934706,
+        "first_user_ticks": 358861,
+        "last_user_ticks": 361880,
+        "first_system_ticks": 9443,
+        "last_system_ticks": 9455,
+        "all_before_after_proc_states": [
+          "R",
+          "R",
+          "R",
+          "R",
+          "R",
+          "R"
+        ]
+      },
+      "samples": [
+        {
+          "sample": 1,
+          "epoch": 1791438537.1656182,
+          "active": true,
+          "owns_gil": true,
+          "frames": [
+            {
+              "name": "_encoder_binding",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 276
+            },
+            {
+              "name": "_current_tokenizer_identity",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 308
+            },
+            {
+              "name": "__init__",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 315
+            },
+            {
+              "name": "sampled_action",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 440
+            },
+            {
+              "name": "_advance",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/rollout.py",
+              "line": 195
+            }
+          ]
+        },
+        {
+          "sample": 2,
+          "epoch": 1791438552.2447453,
+          "active": true,
+          "owns_gil": true,
+          "frames": [
+            {
+              "name": "_encoder_binding",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 276
+            },
+            {
+              "name": "_current_tokenizer_identity",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 308
+            },
+            {
+              "name": "__init__",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 315
+            },
+            {
+              "name": "sampled_action",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 440
+            },
+            {
+              "name": "_advance",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/rollout.py",
+              "line": 195
+            }
+          ]
+        },
+        {
+          "sample": 3,
+          "epoch": 1791438567.3226597,
+          "active": true,
+          "owns_gil": true,
+          "frames": [
+            {
+              "name": "_encoder_binding",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 276
+            },
+            {
+              "name": "_current_tokenizer_identity",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 308
+            },
+            {
+              "name": "__init__",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 315
+            },
+            {
+              "name": "sampled_action",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/tree_raw_tokens.py",
+              "line": 440
+            },
+            {
+              "name": "_advance",
+              "file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/source/repo/search_r1/baselines/rollout.py",
+              "line": 195
+            }
+          ]
+        }
+      ],
+      "interpretation": "All3runningtargetMainThread stacks at _encoder_binding:276→tokenizer identity→validationcontext→sampled_action.30.31CPU/30.2077wall≈100.34%onecore;actual hot location,but3samples not whole-step profile. No complete6 claim."
+    },
+    "source_check_layers": {
+      "raw": "Native emission/EOS/PAD/length/provenance→peroriginaltoken ByteLevelUTF8 native prefix agreement→retainedcut/action/contextSHA→inherited projection→semantic reward reconstruction;later proofreconstruction still checksUTF8/fullcutdecode.",
+      "mu": "Collection anddriver row-local μ/context/tokenbinding;after independentβ/balance/lossmask;actorstartup;fixed32rows/rank monitoringbefore/after20writes+firstrepeat;postclipnorm;alllocalparameters+Adamfinite scan aftereachwrite;matchedcollectives andpublication.",
+      "measured_limits": "No separate causal timers for fullencoderstate serialization vsUTF8,adv semantic reward,allAdamfinite scan,metadatahash/copy/transport,oldβforward orGPUwait. Actor742s and unassigned452s cannot be attributed wholesale to any guessed guard."
+    },
+    "micro_evidence": {
+      "normalization": "fsdp_workers.py265–277 dividesglobal mini/micro/logprobby8atTP/SP1,n1;current16→local2,128mini→local16.",
+      "derived_training_microbatches_per_rank": {
+        "2879": 384,
+        "2971": 48,
+        "3103": 48,
+        "3154": 192,
+        "3234": 240,
+        "fresh200": 160
+      },
+      "monitor_derivation": "32rows/localmicro2=16chunks;40before/afterpasses+initialrepeat=41×16=656total.",
+      "conclusion": "Derivedcount≠measured causal seconds.3154sameglobalmicro16 has192trainingmicro/rank andactor86–89s;current160and742s. Microchange cannot explain currentrelative3154slowness."
+    }
+  },
+  "limitations": "Historical latency examples,not currentfair effect/performanceA/B;model/data/leaves/mini/micro/trainingage/guards differ.No full200/final51713 conclusion.",
+  "source_files": {
+    "outputs/STATUS.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "sha256": "89a932d4cf304d85a98d9c81fa543072705705d8008129c3e18eaf90fd0be193",
+      "bytes": 387792
+    },
+    "outputs/REPORT.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/REPORT.md",
+      "sha256": "be1456059e6276f4e5b3709f8c00fe16665076c74a47599052662674fd80fa99",
+      "bytes": 5026
+    },
+    "outputs/tree-fresh200/RETAINED18_CURRENT_LIVE.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_CURRENT_LIVE.json",
+      "sha256": "3219fdce7683058d775db65cd4714fc6609ab0e3f056230dc8b919dbd7efea5a",
+      "bytes": 777098
+    },
+    "outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER5_SCORE_AND_OUTER6_START.json",
+      "sha256": "9ac9240066bbeff69df7c96ebced8b57b60dd1470ed378d396abcb174dd156d6",
+      "bytes": 4964
+    },
+    "outputs/tree-fresh200/RETAINED18_FORMAL3335_COMPLETED_OUTER5_RUNTIME_RECEIPT.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_COMPLETED_OUTER5_RUNTIME_RECEIPT.json",
+      "sha256": "d9112bcab535ee76a97190da26880c51c9fc392f296bcfd81c3977788e56c5b4",
+      "bytes": 1449
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/manifest.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/manifest.json",
+      "sha256": "1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b",
+      "bytes": 276488
+    },
+    "outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/FOUR_OUTER_OBSERVED_COSTS_CURRENT_CHAIN.json",
+      "sha256": "af884b12407ea5886f92ef6d0412103fc8acc27356ab50f22b249a8adddced94",
+      "bytes": 38865
+    },
+    "outputs/evidence/shared-formal-2971-two-prefix.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/shared-formal-2971-two-prefix.json",
+      "sha256": "46a242c72a996e1b181ed9bb00697349170ac09cc19ce81843948122805992a3",
+      "bytes": 27020069
+    },
+    "outputs/FORMAL_TWO_PREFIX_REVIEW.md": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/FORMAL_TWO_PREFIX_REVIEW.md",
+      "sha256": "920d56d6d319a9aa40e0cf9267dda694253d0d3916afc5bbfda6a57829f64901",
+      "bytes": 2272
+    },
+    "work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/resolved.yaml": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/resolved.yaml",
+      "sha256": "63296d0602c5978d1ff67d258b401054ce587e3a9a2c55052c35fbeac626c198",
+      "bytes": 6758
+    },
+    "work/tree-instruct300-3154-review/ACTUAL_FIVE_RECEIPT.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-instruct300-3154-review/ACTUAL_FIVE_RECEIPT.json",
+      "sha256": "7ac01f4d44e3c8bb70ec5c4b5457373f3130f34ae6abe3f1c9c10352c784471b",
+      "bytes": 35665
+    },
+    "work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/stage.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-instruct300-3154-review/actual3154-files/runs/tree-instruct300-3154/stage.log",
+      "sha256": "178b7026ae53c3384fc1facfe2b775afc9b16aa9e874394fd03a2e00b34c9c3d",
+      "bytes": 73590
+    },
+    "work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/resolved.yaml": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/resolved.yaml",
+      "sha256": "d0fe4afbb90d4e430a534af0a4f626a5564e8238f56b0bf1332a26ca6da801b6",
+      "bytes": 6209
+    },
+    "work/tree-fixed-five-review/ACTUAL3103_RECEIPT.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fixed-five-review/ACTUAL3103_RECEIPT.json",
+      "sha256": "4dac9d6c2b71ec57751e1f6b6df886671b08bc11fe1947b334bbcdbdf59ca59f",
+      "bytes": 36098
+    },
+    "work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/stage.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fixed-five-review/actual3103-files/runs/tree-fixed-five-3103/stage.log",
+      "sha256": "d54a7a47cba70c24a918ec0816d14afe9fa2dd337d1965b531ce076773e3c74a",
+      "bytes": 61720
+    },
+    "outputs/tree-instruct-300/failure3234/resolved.yaml": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/failure3234/resolved.yaml",
+      "sha256": "e54d322ba3635beb8d930c4f8282997f1867b4dbf5a0ca727e54a569bb198f35",
+      "bytes": 6973
+    },
+    "work/tree-safety110-runtime/INCREMENTAL110_RECEIPT.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-runtime/INCREMENTAL110_RECEIPT.json",
+      "sha256": "2296c2f3e3a6e288845f0106c84e47d0f4a2c6055c144b555d0656fad19c6a76",
+      "bytes": 16711
+    },
+    "outputs/tree-instruct-300/RECOVERY3234_RANK110_PREFIX.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/RECOVERY3234_RANK110_PREFIX.json",
+      "sha256": "ef8f53d0f7520f0a8f2e3717eb8d234025f71037a996954d1d586c76be9e4d1a",
+      "bytes": 3786
+    },
+    "outputs/tree-instruct-300/failure3234/stage.log": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/failure3234/stage.log",
+      "sha256": "2d9ab3ed36713017fdc14ddce54397e90b88b2083bd9b822177c8b32dea17319",
+      "bytes": 444737
+    },
+    "outputs/tree-instruct-300/PPO_HEALTHY110_MEASUREMENT_RECEIPT.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_HEALTHY110_MEASUREMENT_RECEIPT.json",
+      "sha256": "f105b9deca8cf279c571b9e8927629f57e79535bca9be420855d713dc128126c",
+      "bytes": 8887
+    },
+    "outputs/tree-instruct-300/healthy110-3268/resolved.yaml": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/healthy110-3268/resolved.yaml",
+      "sha256": "e25214a90cf6ac063174787b7aa2c607ef5c942218fd31c2af0cfdf2c206b71b",
+      "bytes": 7286
+    },
+    "outputs/evidence/tree-two-2879-completed-summary.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-completed-summary.json",
+      "sha256": "e3985e3bb0f1bdb73a572eccf0d5442b5e38e2eae0c6293c6d218eb8622991f6",
+      "bytes": 7549
+    },
+    "outputs/evidence/two-stage-acceptance-2879.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/two-stage-acceptance-2879.json",
+      "sha256": "b1302154bfd535921dc55e6a929f264e1d87236dcfef86e53b8827a324d2ab71",
+      "bytes": 3442
+    },
+    "outputs/evidence/tree-two-2879-hybrid__encoder-requests.jsonl": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-hybrid__encoder-requests.jsonl",
+      "sha256": "f449248ae859feaae25e1d8eea636f252d8f895ea42f592649fa1f1b139e2224",
+      "bytes": 3980
+    },
+    "outputs/evidence/tree-two-2879-hybrid__index-requests.jsonl": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-hybrid__index-requests.jsonl",
+      "sha256": "ca1b65bdb88a67579d90ca39629b1d604dae2719b5489231dabc585c3a2378cd",
+      "bytes": 5051
+    },
+    "outputs/evidence/tree-two-2879-resolved.yaml": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-resolved.yaml",
+      "sha256": "54998bf22cae0c48332ca70c5c2c20e71c6e88dd34e2f4425cf7137a1501c33e",
+      "bytes": 6014
+    },
+    "outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER6_NONBLOCKING_CPU_STACK_DIAG.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/RETAINED18_FORMAL3335_OUTER6_NONBLOCKING_CPU_STACK_DIAG.json",
+      "sha256": "7be76cc9c67fe8bd408347f401e5648ed7f0154b438b73ea5ba06ad945d806da",
+      "bytes": 309351
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/tree_raw_tokens.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/tree_raw_tokens.py",
+      "sha256": "afaf6f263eb2290fa02a9d2be290669c74e205d71f983193b048abe456b92a06",
+      "bytes": 36202
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/tree_behavior_mu.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/tree_behavior_mu.py",
+      "sha256": "ce19978a0a47b28e3595cba6bd9fbd397590500ae31212ada4e531917b1b21fa",
+      "bytes": 16580
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/policy_safety_runtime.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/search_r1/baselines/policy_safety_runtime.py",
+      "sha256": "d0f4cf7166056b2292d8b9f8faea71bc078df4cfa54406eea415a52739f37e84",
+      "bytes": 24988
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/workers/actor/dp_actor.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/workers/actor/dp_actor.py",
+      "sha256": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+      "bytes": 30176
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/workers/fsdp_workers.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/workers/fsdp_workers.py",
+      "sha256": "1a1965ba4d11242591e7c0c3f66bab1e4186ae69ab871063066f58cb38219e56",
+      "bytes": 75542
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/trainer/ppo/ray_trainer.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/source/repo/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "1c26c3b8ad05f062b6c881befd320d3533f0aeef625707ec646b1db6beae3eec",
+      "bytes": 67469
+    },
+    "work/tree-retained18-migration-20261008/package-code-only-v11/rolling_training_state_hooks.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11/rolling_training_state_hooks.py",
+      "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85",
+      "bytes": 6734
+    }
+  }
+}

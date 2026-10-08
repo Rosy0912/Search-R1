@@ -1,0 +1,16 @@
+{
+  "package": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-v11-6efb604",
+  "manifest_sha": "1a2a7ea8dea6a599d7d170671fb0ff6f2a6076b2dc5c8b61653e0381642ebb6b",
+  "release_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_DIRECT_RELEASE-V11-6efb604.json",
+  "release_sha": "b7ea8bef0bd89a0c314b70c21e35d776a909f0a13a8e09ffc7edb713522657f9",
+  "authority_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_HUMAN_AUTHORITY-V11-6efb604.json",
+  "authority_sha": "e80f1fe8e2060325c5b3ae620631e48b6565c9b9529c209a7d68a26c5e2f986d",
+  "once_intent": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-retained18-current200-v11-6efb604.json",
+  "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "local_package": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008/package-code-only-v11",
+  "remote_submitted": true,
+  "script_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18-V11-6efb604.sbatch",
+  "script_sha": "4c63bdc4428d470d34a52ec956e87822a932d82b80c5c3f95cabce9dce4df27a",
+  "job_id": 3335,
+  "run_id": "tree-current200-continue-3335"
+}

@@ -1,0 +1,8 @@
+{
+  "version": "8.2.1",
+  "filename": "click-8.2.1-py3-none-any.whl",
+  "url": "https://files.pythonhosted.org/packages/85/32/10bb5764d90a8eee674e9dc6f4db6a0ab47c8c4d0d83c27f7c39ac415a4d/click-8.2.1-py3-none-any.whl",
+  "sha256": "61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b",
+  "reason": "Ray 2.40 CLI deepcopy incompatible with Click Sentinel in 8.5; official ray issue56747",
+  "prior": "8.5.0"
+}

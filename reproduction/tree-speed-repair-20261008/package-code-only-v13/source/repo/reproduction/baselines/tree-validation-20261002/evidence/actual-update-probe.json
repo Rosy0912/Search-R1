@@ -1,0 +1,18 @@
+{
+  "sha": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
+  "outer_updates": 500,
+  "global_steps": 501,
+  "optimizer_steps_per_outer": 12,
+  "saved_actual_updates": [
+    5,
+    100,
+    200,
+    300,
+    400,
+    500
+  ],
+  "final_policy_update": 500,
+  "actual_update_logs_contiguous": true,
+  "8_rank_metadata_optimizer_steps": 12,
+  "rank_metadata_aggregation": "first rank meta_info; equal optimizer step counts required by synchronized actor loop"
+}

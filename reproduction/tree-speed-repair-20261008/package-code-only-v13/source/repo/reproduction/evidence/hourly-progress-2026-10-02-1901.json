@@ -1,0 +1,127 @@
+{
+  "checked_at_utc": "2026-10-02T11:01:12.960111+00:00",
+  "updates": [
+    {
+      "step": 1,
+      "reward": 0.036
+    },
+    {
+      "step": 2,
+      "reward": 0.036
+    },
+    {
+      "step": 3,
+      "reward": 0.049
+    },
+    {
+      "step": 4,
+      "reward": 0.041
+    },
+    {
+      "step": 5,
+      "reward": 0.038
+    },
+    {
+      "step": 6,
+      "reward": 0.045
+    },
+    {
+      "step": 7,
+      "reward": 0.041
+    },
+    {
+      "step": 8,
+      "reward": 0.04
+    },
+    {
+      "step": 9,
+      "reward": 0.042
+    },
+    {
+      "step": 10,
+      "reward": 0.035
+    },
+    {
+      "step": 11,
+      "reward": 0.039
+    },
+    {
+      "step": 12,
+      "reward": 0.039
+    },
+    {
+      "step": 13,
+      "reward": 0.037
+    },
+    {
+      "step": 14,
+      "reward": 0.038
+    },
+    {
+      "step": 15,
+      "reward": 0.048
+    },
+    {
+      "step": 16,
+      "reward": 0.055
+    },
+    {
+      "step": 17,
+      "reward": 0.045
+    }
+  ],
+  "validations": [
+    {
+      "step": 0,
+      "metrics": {
+        "val/test_score/nq": 0,
+        "val/evaluated_count/nq": 10,
+        "val/test_score/triviaqa": 0.444,
+        "val/evaluated_count/triviaqa": 9,
+        "val/test_score/popqa": 0.111,
+        "val/evaluated_count/popqa": 9,
+        "val/test_score/hotpotqa": 0.111,
+        "val/evaluated_count/hotpotqa": 9,
+        "val/test_score/2wikimultihopqa": 0,
+        "val/evaluated_count/2wikimultihopqa": 9,
+        "val/test_score/musique": 0,
+        "val/evaluated_count/musique": 9,
+        "val/test_score/bamboogle": 0.111,
+        "val/evaluated_count/bamboogle": 9
+      }
+    }
+  ],
+  "active_step": [
+    "epoch 0, step 18"
+  ],
+  "stage": "2026-10-02T09:05:18Z TRAINING_64_VALIDATION_500_UPDATES",
+  "log_modified_unix": 1790938854.117102,
+  "gpu_csv": "0, 99 %, 33325 MiB, 143771 MiB\n1, 99 %, 32585 MiB, 143771 MiB\n2, 99 %, 28129 MiB, 143771 MiB\n3, 99 %, 48969 MiB, 143771 MiB\n4, 99 %, 27541 MiB, 143771 MiB\n5, 99 %, 37457 MiB, 143771 MiB\n6, 99 %, 39151 MiB, 143771 MiB\n7, 99 %, 26713 MiB, 143771 MiB\n",
+  "sample_first": "2026/10/02 17:09:34.079",
+  "sample_last": "2026/10/02 17:39:24.304",
+  "sample_peak_memory_mib": {
+    "0": 104313,
+    "1": 112347,
+    "2": 109057,
+    "3": 100087,
+    "4": 94559,
+    "5": 141877,
+    "6": 95923,
+    "7": 94967
+  },
+  "recent_errors": [],
+  "tmux": "0 bash\n",
+  "five_accepted": 5,
+  "final_acceptance_exists": false,
+  "summary": {
+    "completed_updates": 17,
+    "target_updates": 500,
+    "new_updates_since_last_success": 11,
+    "latest_reward": 0.045,
+    "reward_delta_from_last_success": 0,
+    "new_update_mean": 0.041727272727272724,
+    "new_update_min": 0.035,
+    "new_update_max": 0.055,
+    "last10_mean": 0.0418
+  }
+}

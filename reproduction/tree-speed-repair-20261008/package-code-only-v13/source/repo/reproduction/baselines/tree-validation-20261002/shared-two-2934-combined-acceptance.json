@@ -1,0 +1,335 @@
+{
+  "status": "PASS",
+  "stage": "two",
+  "code_commit": "4d133efeb1f675139d2558640f1e21d50780f133",
+  "acceptance_scope": "Combined promotion only: valid scientifically completed two2934 plus separately validated repaired operational helper; original training Slurm2934 remains FAILED1:0. Permitfreshfive, nofive/formal/effectacceptance.",
+  "actual_outer_updates": 2,
+  "scientific_training_accepted": true,
+  "original_job_id": "2934",
+  "original_job_failed": true,
+  "original_job_exit_code": "1:0",
+  "original_supervisor_status": "FAILED",
+  "original_failure_scope": "post-training cleanup, residualstates not recorded; Z cause not established",
+  "first_outer_nonzero_parameter_change_proven": false,
+  "second_outer_nonzero_parameter_change_proven": true,
+  "operational_repair_accepted": true,
+  "operational_cpu_linux_proof_job": "2953",
+  "operational_proof_exit_code": "0:0",
+  "operational_proof_gpus": 0,
+  "current_runtime_sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+  "current_supervisor_sha256": "be4e9f057c4e28a6cd25f4172ec8fd62f789549e3a9b8faeff3102028b993378",
+  "current_wrapper_sha256": "d8c941ebc259fd1db181d3fdcfc289aa247a1e8a8063e3576bc61399c4758e88",
+  "hf_cpu_job": "2945",
+  "hf_cpu_job_terminal_status": "UNAVAILABLE_EXPIRED_NOT_CLAIMED",
+  "earlier_cpu_probe_2951": "FAILED_RETAINED; incorrect cgroupZvisibility test assumption",
+  "permit_five_only": true,
+  "permitted_next_stage": "five",
+  "require_five_normal_slurm_cleanup_exit0": true,
+  "independent_review_sha256": "f4bea9eb0ff9d6a2b8eca0f3a2da811e5e5fb0fb5e625f0fa55751eee3f84277",
+  "evidence": [
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/cost.json",
+      "sha256": "e0915e692ef7f48c2716702d7db403bc6d884f4c0f6ebeadf9fd69120fc991a0"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/guard.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-hf-2945.out",
+      "sha256": "526bc56f0d6b510d891fc3db35d80a060bcca1d2e1e4bf07315a2e96263e2337"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/hf-reload-direct.json",
+      "sha256": "28eb4ff8eee3d2125a3e631c6e4f4c57ea85773b75d89e0d3687f504ff015029"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/input-config.yaml",
+      "sha256": "df88976a828354f733c427658a2fe981ac1292632a1e51d63befa7e0e3f43825"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/launch-manifest.json",
+      "sha256": "85dbf2c74948c9e39ba0991a4559f7048d5a7991fcd7c68ca61067c9fd55336d"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/algorithm/global_step_2/state.json",
+      "sha256": "cc4c84eeea684129c2e46ea5ea2282f6f7e6754fbcd024632fa3936502cd3e93"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/entry-audit/entry-config.yaml",
+      "sha256": "bdd220e91e7bf83ac1d03322ef8e6c7bed4f31086a72ed76124e9a0ad8147a25"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/entry-audit/entry.jsonl",
+      "sha256": "3605c2482a53627ed90d11fa97d8afcb2cca5cb9eead16ff2a340e2c411254ff"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-audit/step_1_rollout_1.json",
+      "sha256": "9501cc08cc6730ae300022b4ea6dd749a3b6a44ff6e0917b75154669320dfd7c"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-audit/step_1_rollout_1_policy_batch.json",
+      "sha256": "9c698f4b25b0766cb05200da3f15602259d83747a0c6455af560e441b509e3ff"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-audit/step_2_rollout_2.json",
+      "sha256": "ba26900dd07452b6a872206239d6612dfb2910008dc5d4e6d237f17213936aab"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-audit/step_2_rollout_2_policy_batch.json",
+      "sha256": "b1dc7ebc9957f96129ece6b9cdccbd5b7a1ed8836ab667eee0f7e043bd52d667"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-00.json",
+      "sha256": "7ae09d1a7dee6f410ce8887a09c2fe3df108c0d45af2441bea1e35b84fe0d427"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-01.json",
+      "sha256": "f1302788d9b842507d073102643b28439f6640855075d37031e7ad0fbea55834"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-02.json",
+      "sha256": "b822cfd5e8d1f2e558c639a40340885c3c66f70770b64c4dec90882e8ef25a71"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-03.json",
+      "sha256": "299a5815cc553df746541fff1508418d5217800a72ed06c9de5a9fd525db7cda"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-04.json",
+      "sha256": "4ed09c316cea9802b3b94f091763b9e27d0cd078c3164a0272e4cbad41ca2705"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-05.json",
+      "sha256": "284ffffba859078eea32a9d7c5c821cc5dc4401d7aab8ccb27d277fcfeb03252"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-06.json",
+      "sha256": "16e8cf1c73f26add416a154821c9d64c258dc44194504ad300da19b3967ad7e4"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000001-rank-07.json",
+      "sha256": "ed7f7f1b02afd73f7f35f4a4234410caa1a8f0e2a8b930d29dd2ea0acaed9e51"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-00.json",
+      "sha256": "b3e4c536e761a2c94378a97ac234c7f8c95fbbacce8b84ce88a5d93a82b5a1f2"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-01.json",
+      "sha256": "c63bcb49beadaafa1393cf147f9f7ced8d7d62ee89f1c90c5687c6d9c0862a77"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-02.json",
+      "sha256": "328123b2cbcecec76aa22f804e40af0ad6914c0b029de8391dd64d9e55f61faf"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-03.json",
+      "sha256": "c7228bf8ec5c5e835ac256d84987dad09f74ecb148376bc869aae55d1efea2b9"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-04.json",
+      "sha256": "29673ea2bfb58c4f7e58b33a7240ed89a7cd102563cd707c6bdafa12701f87c2"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-05.json",
+      "sha256": "0f20f3d479aecec35c706d4a5dceb4c5d25a4d10ece42eab417f8f9115fa4cde"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-06.json",
+      "sha256": "409f7cacecc26a2df3c27f39201a33224afcc6db03d81c2217e8326072ae2238"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/tree-rank-audit/step-000002-rank-07.json",
+      "sha256": "1a369795ed2f7760d5561ffe533a83830c1fce21db19fc2da05e398c198667e5"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/process-resources.jsonl",
+      "sha256": "b67a000c6b029bd28e50e45b623a011986f72f07150801eda90249edf7442fc0"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/resolved.yaml",
+      "sha256": "bdd220e91e7bf83ac1d03322ef8e6c7bed4f31086a72ed76124e9a0ad8147a25"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/resource-samples.jsonl",
+      "sha256": "6d19f4176abcf1f3332bce445c852e8dfd29aca37d497c04c1657ef179ca74ca"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/retrieval-gate.json",
+      "sha256": "15f29a24bb487ea509e7836d208d0f2821d6feeeb6b933d9eb5809f085913758"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/retriever-coexistence.json",
+      "sha256": "b74113106f846060faf8faddbeaf26c20ba03e6f68b360198aa363a24b165b9d"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/retriever.log",
+      "sha256": "254efbd2496c442b17ff4bc39d7c05044f511ff329d25f7940b1662494afcc7a"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/run-result.json",
+      "sha256": "b9ef857450157509d01ef5da24a068474aee926bf90e00e32277cd216af5d827"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/stage.log",
+      "sha256": "cbb65bd6b31919f3808a0a250260293a3d65f9b4d2904459d3f1ae77ad381097"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/termination-cost.json",
+      "sha256": "d4a9f4803bbe52479e5a4b68844dbbfa24b96e7e093955214118ddd72015c81e"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/added_tokens.json",
+      "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/config.json",
+      "sha256": "9e6d49b386e280e3ac6f340621a8e2290bd7789278852403feb1accb4680662e",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/generation_config.json",
+      "sha256": "9e9135a1f6c3c54fd52f5e8011067e4039f8ff3ad0294980137632c461ea60f7",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/merges.txt",
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/model-00001-of-00003.safetensors",
+      "sha256": "23fefc4dcb663d3ea797317419f0ed3512c6c40310ad1676a278f3b53f76f569",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/model-00002-of-00003.safetensors",
+      "sha256": "efef0451d49ab85afdb678941700ec216fbbcc315d23c44da0b44a3cf430653e",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/model-00003-of-00003.safetensors",
+      "sha256": "6eae77cf3d8e7a4567a283f2571fecf2801e89104f97282c2909550cf5549009",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/model.safetensors.index.json",
+      "sha256": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/special_tokens_map.json",
+      "sha256": "6676f091c8bc4d1b50146427cfde92073402866b87b6e39223227931b70083e9",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/tokenizer.json",
+      "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/tokenizer_config.json",
+      "sha256": "cefaa66de8fae4a09ca18a9c3a7fd8b61311ed568e5f4e634f6a3d95a2a9e889",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2934/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2/vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "hash_provenance": "actual independently audited full CPU HF reload report; not locally rehashed bigweights"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/tree_shared_owned_runtime_fixed.py",
+      "sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/tree_shared_supervisor_fixed.py",
+      "sha256": "be4e9f057c4e28a6cd25f4172ec8fd62f789549e3a9b8faeff3102028b993378"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/start_tree_shared_fixed.sh",
+      "sha256": "d8c941ebc259fd1db181d3fdcfc289aa247a1e8a8063e3576bc61399c4758e88"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/probe_tree_cleanup_fixed_zombie.py",
+      "sha256": "82c3e7cc022a671d50dec3249adae6108ff257302f4e9620285d3395c01695d3"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/check_real_checkpoint.py",
+      "sha256": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/repo/search_r1/baselines/tree_rank_audit.py",
+      "sha256": "696b221b549ef18e166561d7d4f9ff58287cec46ed9d941a0414a0dd506622ee"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/repo/verl/workers/actor/dp_actor.py",
+      "sha256": "c82b5518ae4264e1cf90b97a10cf1a649df27fbc7e7109e8e93e07dbe77b5ed5"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/repo/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "b3c9d740a3a4d7963eb48922551f0e6ff643325b58bea0c408392af478c01bf5"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/tree-cleanup-fixed-2953/orphan.log",
+      "sha256": "d72298309ef673b99a09e5a3a98ee3dd3490880ce452cfde4bb1a2a14eaf2d06"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/tree-cleanup-fixed-2953/result.json",
+      "sha256": "f81c8fe5e0fe0a648ab6dadabaae2c5db2b788fc71532b072abe195e5ff062b2"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/tree-cleanup-fixed-2953/live.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/SCIENTIFIC_TWO_AND_CLEANUP_PROMOTION_REVIEW.md",
+      "sha256": "f4bea9eb0ff9d6a2b8eca0f3a2da811e5e5fb0fb5e625f0fa55751eee3f84277"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/current-source-proof.json",
+      "sha256": "9e7456da6bd307c2981ce2cb336d1c196e9028c8b1e2d28bb8c1d33d3b5a4b21"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/independent-tests-long-wait.txt",
+      "sha256": "30d94c007e9ab46cb1e642f2a09b97836dd307bd1d26e07dd5615c2d6eedb70f"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/recompute_two.py",
+      "sha256": "32695c183ead8222d5767296416112ff084631317460e80c1ea0f34674459a6d"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/shared-two-2934-cleanup-after-scheduler.txt",
+      "sha256": "c40c04f931a5d9be4dee02d5333241df6d82730148949efd2860d13b31d9461c"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/shared-two-2934-hf-slurm.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/shared-two-2934-slurm.txt",
+      "sha256": "a2a2c9c0e812f6589548eacb0db4708c81e38af5d6ca2d2198067863c259c177"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/test_owned_cleanup_fix.py",
+      "sha256": "8bcf8e8f2a3bb86c76c5dc8585dfb6f8f0c23fc8d0e94fdc513742ab862a2486"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/tree-cleanup-fixed-2951-failed-probe.txt",
+      "sha256": "2511373af59a9522671274b25c449e9329998793ccd7a2bc359f8c25dc272df2"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/tree-cleanup-fixed-2951-slurm.txt",
+      "sha256": "73596bd37f573c45d5bdd58dd0599626c008e9b9cd9bb3ddd424557cd9e105df"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/tree-cleanup-fixed-2953-slurm.txt",
+      "sha256": "a0e99bb4fc47aa8332c50c6e2fdde4eb53cf39f5f9db13ba50228f8f02702c29"
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/shared-two-2934-review/two-independent-recomputed.json",
+      "sha256": "c450cf604753208733b8b52d17f9d0ac17575e30ad8b32fe52d23b532c16c35f"
+    }
+  ]
+}

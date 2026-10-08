@@ -1,0 +1,19 @@
+{
+  "package": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/current200-retained18-speed-v13-6227108",
+  "manifest_sha": "cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63",
+  "release_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_SPEED_DIRECT_RELEASE-V13-6227108.json",
+  "release_sha": "17a85334b491a73541d733ae676065b91dda456851d4558aa92a879e181d84a0",
+  "authority_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/CURRENT200_RETAINED18_SPEED_HUMAN_AUTHORITY-V13-6227108.json",
+  "authority_sha": "fc283828cd1d478d647314e5dcecc52054734dc4b593c98e0676434ca7790592",
+  "once_intent": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-retained18-current200-speed-v13-6227108.json",
+  "source_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "local_package": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/package-code-only-v13",
+  "remote_submitted": true,
+  "script_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/FORMAL_RETAINED18_SPEED-V13-6227108.sbatch",
+  "script_sha": "fb5b8c0851bf86715d74458ae48ec53ec741b99af007d3184b0af3f1bfd7c31d",
+  "parent_completed_outer": 5,
+  "next_outer": 6,
+  "train_wall_hours": 168,
+  "job_id": 3339,
+  "run_id": "tree-current200-continue-3339"
+}

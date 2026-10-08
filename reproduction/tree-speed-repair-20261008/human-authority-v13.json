@@ -1,0 +1,114 @@
+{
+  "status": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "packet_revision": 13,
+  "code_commit": "62271081ba1bb74d8fc3f4958d623758efa74fa5",
+  "current_chain_resume": {
+    "protocol": "current_fresh200_chain_fault_repair_continuation_v1",
+    "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+    "parent_job_id": "3335",
+    "parent_run_id": "tree-current200-continue-3335",
+    "parent_code_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+    "parent_config_sha256": "5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/manifest.json",
+      "sha256": "56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260"
+    },
+    "parent_completed_outer": 5,
+    "parent_training_attempts": 5,
+    "parent_optimizer_calls_per_rank": {
+      "0": 100,
+      "1": 100,
+      "2": 100,
+      "3": 100,
+      "4": 100,
+      "5": 100,
+      "6": 100,
+      "7": 100
+    },
+    "parent_scheduler_step": 5,
+    "parent_sampler_cursor": 2560,
+    "parent_sampler_epoch": 0,
+    "next_outer_update": 6,
+    "completed_outer_goal": 200,
+    "planned_new_completed_outer": 195,
+    "environment": {
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3335/checkpoints/training_state/global_step_5/manifest.json",
+      "TREE_CURRENT_CHAIN_RESUME_MANIFEST_SHA256": "56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260",
+      "TREE_CURRENT_CHAIN_RESUME_AUTHORITY": "current_fresh200_chain_fault_repair_continuation_v1"
+    },
+    "automatic_resume_supported": false,
+    "exact_executor_resume": false,
+    "executor_equivalence": false,
+    "actual_migration_executed": false,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "parent_failed_attempt": {
+      "attempt_id": 6,
+      "completed_outer_credit": 0,
+      "optimizer_writes": null,
+      "published_rank_optimizer_record": null,
+      "error_type": "HumanRequestedStop",
+      "failure_component": "manual_stop_slow3335"
+    }
+  },
+  "same_instance_continuation": true,
+  "completed_outer_goal": 200,
+  "final_evaluation_rows": 51713,
+  "production_thresholds_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "original_sampler_actor_gate_accepted": false,
+  "configured_prospective_thresholds": {
+    "target_old_policy_kl": 0.2,
+    "negative_tail_limit": 0.01,
+    "initial_actor_repeat_max_abs_delta": 0.0
+  },
+  "human_instruction": "47.3分钟和7分钟，差距不是一般的大，还不是你的问题啊？不用注明那么多，啥玩意啊，你就写快的版本和慢的版本的区别，你做了什么导致这个问题。。。。然后还跑啥啊大哥，你都这个速度了你还跑，重新跑啊",
+  "latest_stop_and_restart": {
+    "recorded_at": "2026-10-08T06:05:09.057844+00:00",
+    "raw_human_timestamp_available": false,
+    "source": "Latest direct human message in current conversation",
+    "instruction": "47.3分钟和7分钟，差距不是一般的大，还不是你的问题啊？不用注明那么多，啥玩意啊，你就写快的版本和慢的版本的区别，你做了什么导致这个问题。。。。然后还跑啥啊大哥，你都这个速度了你还跑，重新跑啊",
+    "object": "Current slow Tree3335 on retained18",
+    "scope": "Stop slow current job; fix introduced overhead; restart own current200 chain, preserve completed evidence",
+    "supersedes": "Prior instruction to leave healthy3335 running while background reviews proceed",
+    "not_authorized": "No cancellation of other jobs, no global goal pause, no changed batch/length/leaf budget or rollback of PPO safeguards",
+    "goal_remains_active": true
+  },
+  "speed_and_parallel_review": {
+    "recorded_at": "2026-10-08T06:11:11.387057+00:00",
+    "source": "Latest direct human messages, raw event timestamps unavailable",
+    "instructions": [
+      "就是你的速度如果没到7分钟一次迭代，那么就找出问题，速度很重要！",
+      "边启动边审查，别浪费时间"
+    ],
+    "normal_training_outer_target_seconds": 420,
+    "additional_periodic_validation_and_save_cost_reported_separately": true,
+    "code_review_context": "fork_turns none",
+    "review_mode": "Concurrent with real restarted training, no startup waiting gate",
+    "supersedes": "Earlier human pre-execution independent-review requirement for this speed repair",
+    "keep_current_protocol": true,
+    "current_chain_completed_outers_preserved": 5,
+    "goal_status": "active"
+  },
+  "original_human_time_known": false,
+  "preserved_completed_outer": 5,
+  "normal_outer_target_seconds": 420,
+  "initial_evaluation_added": false,
+  "extra0_to5_training_added": false,
+  "pre_review_hold": false,
+  "step5_approval_hold_added": false,
+  "retained18_migration": {
+    "destination_node": "h100-10",
+    "destination_ip": "10.33.0.18",
+    "same_cluster_assets": true,
+    "assets_local_on_destination": true,
+    "output_server": "10.33.0.18",
+    "output_server_retained": true,
+    "preserved_parent_completed_outer": 5,
+    "storage_receipt_sha256": "04093db4cc3fae79b780b5213d2c53324ba1515b5dac9c3155c2fec0c4818b5e",
+    "extra_short_training_added": false,
+    "exact_executor_resume": false
+  }
+}

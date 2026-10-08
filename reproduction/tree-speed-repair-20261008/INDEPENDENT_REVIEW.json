@@ -1,0 +1,85 @@
+{
+  "protocol": "tree_speed_repair_independent_static_review_v1",
+  "reviewed_at_utc": "2026-10-08T06:19:42Z",
+  "base_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "initial_reviewed_commit": "0150ee6891e6deb7ff616fd9bf416de42526e029",
+  "reviewed_commit": "48a59da5f30a6368e296137281fff1d620149d04",
+  "status": "CORE_STATIC_REVIEW_COMPLETE_P2_FIXED_ACTUAL_SPEED_PENDING",
+  "context_free_task": true,
+  "independent_tests_executed": false,
+  "ssh_executed": false,
+  "gpu_or_checkpoint_load_executed": false,
+  "training_managed_or_interrupted": false,
+  "core_source_edited": false,
+  "production_files_reviewed": [
+    "search_r1/baselines/controller.py",
+    "search_r1/baselines/policy_safety_runtime.py",
+    "search_r1/baselines/rollout.py",
+    "search_r1/baselines/tree_behavior_mu.py",
+    "search_r1/baselines/tree_current_chain_resume.py",
+    "search_r1/baselines/tree_raw_tokens.py",
+    "verl/workers/actor/dp_actor.py"
+  ],
+  "fixture_source_read": "test_tree_driver_speed_cpu.py",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": 2,
+      "kind": "guard_integrity_cache_invalidated_incompletely",
+      "file": "search_r1/baselines/policy_safety_runtime.py",
+      "lines": [43, 56, 189, 193],
+      "summary": "Same-object nested metadata/non-tensor mutations retain a valid context and skip the full mu validator",
+      "trigger": "Validate a batch and receive context, mutate nested raw/behavior binding/runtime provenance/row identities in the existing containers, construct SafetyRuntime with the same batch/context",
+      "current_production_mutation_observed": false,
+      "production_window": "dp_actor.update_policy validator return to SafetyRuntime construction, with select/audit constructor/split in between",
+      "minimal_fix": "Snapshot or canonical content-digest key metadata and complete raw/mu/row identities; compare actual content on matches, retaining tensor identity/version; changed content falls back to full validation",
+      "stop_or_restart_authority": false,
+      "resolution": "STATICALLY_CLOSED_IN_48a59da5f30a6368e296137281fff1d620149d04",
+      "closure_evidence": "Actual nested metadata/raw/mu/row identity contents and runtime provenance environment are recomputed into canonical SHA in matches; no caller binding hash alone is trusted; existing tensor identity/version gate retained",
+      "implementation_side_targeted_cpu_cases_reported": 4,
+      "independently_rerun": false
+    }
+  ],
+  "static_invariants": {
+    "tree_objective_or_leaf_quota_changed": false,
+    "ppo_thresholds_changed": false,
+    "twenty_opportunities_contract_changed": false,
+    "scheduler57_contract_changed": false,
+    "finite_parameter_and_adam_checks_removed": false,
+    "initial_actor_repeat_removed": false,
+    "all_rank_monitor_reuse_agreement_present": true,
+    "actual_monitor_calls_distinguished_from_reuse": true,
+    "native5_parent_and_ancestry_byte_binding_present": true,
+    "child_source_explicitly_differs_from_parent": true,
+    "executor_equivalence_claimed": false
+  },
+  "performance": {
+    "normal_outer_target_seconds": 420,
+    "target_met_observed": false,
+    "new_run_walltime_observed_by_reviewer": false,
+    "evaluation_and_save_costs_must_be_separate": true,
+    "monitor_native_calls_theoretical_20_writes": {"base": 656, "new": 352, "requires_19_actual_reuses": true},
+    "remaining_hotspots": ["native per-prefix decode quadratic in each new emission", "row ledger hashing/copying and mu reconstruction", "exhaustive finite parameter/Adam scans", "two FP64 gradient scans per write", "FSDP communications and actor forward/backward", "retrieval and IO"]
+  },
+  "evidence_limits": [
+    "Implementation-side CPU claims were read, not independently rerun",
+    "Synthetic tokenizer/toy Torch optimizer do not prove native-vLLM or 8-rank GPU/FSDP behavior",
+    "Tensor version assumes ordinary Torch in-place operations; data-alias/numpy writes need content proof",
+    "Actual remote startup receipt pending; local final packet hashes verified",
+    "Standalone SafetyRuntime temperature gate is a preexisting boundary and is not a new diff finding or startup blocker",
+    "Original remote native5 file bytes and actual restoration were not inspected"
+  ],
+  "reviewed_external_entry_status": "FINAL_LOCAL_PACKET_HASHES_AND_CORE_BYTES_VERIFIED_ACTUAL_REMOTE_STARTUP_PENDING",
+  "final_local_packet": {
+    "source_commit": "48a59da5f30a6368e296137281fff1d620149d04",
+    "manifest_sha256": "6b061fd4d0aa7cc6ad6f48c13a671014e5dbfee6f630a1ca80d94785cccdbe5e",
+    "manifest_file_count": 762,
+    "manifest_file_hash_failures": [],
+    "seven_core_files_equal_clean_source_checkout": true,
+    "dispatch_script_sha256": "abc94d4df6ac1902864bdde343f0bd6d63ff6d645ce357ed9442cca99e1e9dad",
+    "parent_completed_outer": 5,
+    "next_outer": 6,
+    "planned_new_completed_outer": 195,
+    "actual_remote_startup_observed_by_reviewer": false
+  }
+}

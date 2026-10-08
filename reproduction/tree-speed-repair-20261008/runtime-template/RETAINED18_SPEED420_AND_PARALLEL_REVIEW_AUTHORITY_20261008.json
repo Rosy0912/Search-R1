@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-08T06:11:11.387057+00:00",
+  "source": "Latest direct human messages, raw event timestamps unavailable",
+  "instructions": [
+    "就是你的速度如果没到7分钟一次迭代，那么就找出问题，速度很重要！",
+    "边启动边审查，别浪费时间"
+  ],
+  "normal_training_outer_target_seconds": 420,
+  "additional_periodic_validation_and_save_cost_reported_separately": true,
+  "code_review_context": "fork_turns none",
+  "review_mode": "Concurrent with real restarted training, no startup waiting gate",
+  "supersedes": "Earlier human pre-execution independent-review requirement for this speed repair",
+  "keep_current_protocol": true,
+  "current_chain_completed_outers_preserved": 5,
+  "goal_status": "active"
+}

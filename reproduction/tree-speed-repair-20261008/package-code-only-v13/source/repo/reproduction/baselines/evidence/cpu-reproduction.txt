@@ -1,0 +1,64 @@
+/Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+test_complete_final_checkpoint_and_seven_evals_pass (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_corrupt_final_shard_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_current_smoke_checkpoint_passes (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_incomplete_dataset_evaluation_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_invalid_em_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_missing_dataset_metric_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_missing_final_marker_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_missing_final_shard_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_stale_final_shard_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_stale_smoke_shard_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_unchanged_smoke_parameter_is_rejected (test_acceptance_gates.AcceptanceGatesTest) ... ok
+test_explicit_save_disabled_remains_disabled (test_final_checkpoint.FinalCheckpointTest) ... SEARCH_R1_FINAL_METRICS_JSON={"em": 1}
+ok
+test_nonterminal_off_boundary_remains_unsaved (test_final_checkpoint.FinalCheckpointTest) ... ok
+test_off_boundary_final_save_matches_final_validation (test_final_checkpoint.FinalCheckpointTest) ... SEARCH_R1_FINAL_METRICS_JSON={"em": 7}
+ok
+test_terminal_frequency_boundary_is_saved_once (test_final_checkpoint.FinalCheckpointTest) ... SEARCH_R1_FINAL_METRICS_JSON={"em": 1}
+ok
+test_entire_loop_preserves_validation_and_training_flags (test_generation_metadata.MetadataRegression) ... ok
+test_legacy_default_retains_extra_final_generation (test_generation_metadata.MetadataRegression) ... ok
+test_nine_validation_samples_keep_greedy_flags_in_eight_plus_one_tail (test_generation_metadata.MetadataRegression) ... ok
+test_padding_and_exactly_divisible_batches (test_generation_metadata.MetadataRegression) ... ok
+test_paper_action_budget_has_no_extra_fifth_generation (test_generation_metadata.MetadataRegression) ... ok
+test_501_threshold_produces_500_updates_and_identical_warmup_sequence (test_grpo_mask_and_schedule.GRPOBoundary) ... ACTIVE_TRAJ_NUM: [3, 3, 3]
+ACTIVE_TRAJ_NUM: [3, 3, 3]
+ACTIVE_TRAJ_NUM: [3, 3, 3]
+ACTIVE_TRAJ_NUM: [3, 3, 3]
+ACTIVE_TRAJ_NUM: [3, 3, 3, 3, 3, 3]
+ACTIVE_TRAJ_NUM: [8, 8]
+ACTIVE_TRAJ_NUM: [1, 1]
+ACTIVE_TRAJ_NUM: [3, 3, 3, 3, 3]
+SEARCH_R1_FINAL_METRICS_JSON={"em": 500}
+ok
+test_mixed_unique_groups_survive_permutation_and_equal_reward_group (test_grpo_mask_and_schedule.GRPOBoundary) ... ok
+test_observation_tokens_have_zero_pg_kl_and_entropy_gradient (test_grpo_mask_and_schedule.GRPOBoundary) ... ok
+test_answer_cannot_be_stitched_across_observation (test_reward_and_validation.RewardProvenance) ... ok
+test_complete_generated_answer_and_alias_normalization (test_reward_and_validation.RewardProvenance) ... ok
+test_last_complete_model_answer_and_incomplete_answer (test_reward_and_validation.RewardProvenance) ... ok
+test_legacy_standalone_api_is_preserved (test_reward_and_validation.RewardProvenance) ... ok
+test_prompt_and_observation_answers_are_not_outcomes (test_reward_and_validation.RewardProvenance) ... ok
+test_actual_metric_aggregation_reports_per_dataset_count (test_reward_and_validation.ValidationCoverage) ... ok
+test_actual_validation_loader_call_keeps_entire_tail (test_reward_and_validation.ValidationCoverage) ... ok
+test_all_manifest_entries_have_official_content_digest (test_runtime_adaptations.AssetsTest) ... ok
+test_git_blob_header_is_required (test_runtime_adaptations.AssetsTest) ... ok
+test_invalid_full_partial_is_preserved_before_fresh_download (test_runtime_adaptations.AssetsTest) ... RETAINED_REJECTED_PARTIAL /var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/tmpg9lhr5q7/assets/test/input.json.partial.rejected.1790929998528953000
+START test/input.json 21
+VERIFIED test/input.json 21
+ok
+test_network_failure_keeps_partial_and_does_not_promote (test_runtime_adaptations.AssetsTest) ... START test/input.json 21
+RELAY_NEEDED test/input.json curl_exit 28
+ok
+test_sha256_and_git_blob_reject_same_length_mutation (test_runtime_adaptations.AssetsTest) ... ok
+test_exact_identity_is_accepted (test_runtime_adaptations.IdentityTest) ... ok
+test_missing_process_and_malformed_record_fail_closed (test_runtime_adaptations.IdentityTest) ... ok
+test_real_proc_starttime_and_uid_are_parsed_without_gpu (test_runtime_adaptations.IdentityTest) ... skipped 'Linux procfs required'
+test_reused_pid_other_uid_or_other_command_is_rejected (test_runtime_adaptations.IdentityTest) ... ok
+test_same_nonretriever_identity_is_rejected (test_runtime_adaptations.IdentityTest) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in 0.113s
+
+OK (skipped=1)

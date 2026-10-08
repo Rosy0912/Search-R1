@@ -1,0 +1,22 @@
+{
+  "search_r1/llm_agent/generation_ts.py": {
+    "url": "https://raw.githubusercontent.com/AMAP-ML/Tree-GRPO/19bf3fa0c74d8b9ba70619a09a2fd480c31b9d59/search_r1/llm_agent/generation_ts.py",
+    "sha256": "8189df2c33d00300a75ccce044e3017cf3197c3f43943bc4e3cf204644e70d38"
+  },
+  "search_r1/llm_agent/tree_node.py": {
+    "url": "https://raw.githubusercontent.com/AMAP-ML/Tree-GRPO/19bf3fa0c74d8b9ba70619a09a2fd480c31b9d59/search_r1/llm_agent/tree_node.py",
+    "sha256": "643d2ee589fce25b09e973287f8aca93a136a31d8d739f6dd928c69c2afb6b96"
+  },
+  "verl/trainer/ppo/ray_trainer_ts.py": {
+    "url": "https://raw.githubusercontent.com/AMAP-ML/Tree-GRPO/19bf3fa0c74d8b9ba70619a09a2fd480c31b9d59/verl/trainer/ppo/ray_trainer_ts.py",
+    "sha256": "be85b049d3d05fef367c8525d4a3a3342eb0b9efb570b843d16cd9625e818e39"
+  },
+  "verl/trainer/ppo/core_algos.py": {
+    "url": "https://raw.githubusercontent.com/AMAP-ML/Tree-GRPO/19bf3fa0c74d8b9ba70619a09a2fd480c31b9d59/verl/trainer/ppo/core_algos.py",
+    "sha256": "6d62c3a6c20e3621c9cddef1a5ab7252867489aa44028274304124bc37813363"
+  },
+  "train_multihopqa_tree_search.sh": {
+    "url": "https://raw.githubusercontent.com/AMAP-ML/Tree-GRPO/19bf3fa0c74d8b9ba70619a09a2fd480c31b9d59/train_multihopqa_tree_search.sh",
+    "sha256": "d1dd6b8dda6ffbe7c6c97c72132c56083ea3d2c3ccc213d3cdeb36789807cba0"
+  }
+}

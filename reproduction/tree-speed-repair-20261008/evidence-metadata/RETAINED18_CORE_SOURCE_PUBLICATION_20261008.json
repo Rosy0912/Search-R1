@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-10-08T03:16:02.979284+00:00",
+  "source_commit": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "branch": "codex/tree-retained18-rolling4",
+  "push_returncode": 0,
+  "stdout": "",
+  "stderr": "remote: \nremote: Create a pull request for 'codex/tree-retained18-rolling4' on GitHub by visiting:        \nremote:      https://github.com/shaoshitong/Search-R1/pull/new/codex/tree-retained18-rolling4        \nremote: \nTo github.com:shaoshitong/Search-R1.git\n * [new branch]      codex/tree-retained18-rolling4 -> codex/tree-retained18-rolling4\n",
+  "remote_verified": true,
+  "scope": "Only approved destination host check changed; preserved rolling4 identity/math/counters unchanged",
+  "remote_sha": "6efb60466a233f70bf8f50de26df32012f49b4bc",
+  "remote_ref_verified": true,
+  "changed_file_sha256": "92a4f4e8e43414d6680507ca615615fd15334970446f807d03af575f0c9294e8",
+  "readback_sha256": "92a4f4e8e43414d6680507ca615615fd15334970446f807d03af575f0c9294e8"
+}

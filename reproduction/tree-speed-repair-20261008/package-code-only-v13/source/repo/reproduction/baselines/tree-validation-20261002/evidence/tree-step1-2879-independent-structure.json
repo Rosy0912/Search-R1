@@ -1,0 +1,46 @@
+{
+  "status": "FIRST_REAL_ROLLOUT_POLICY_STRUCTURE_REVIEW_COMPLETE_NOT_STAGE_ACCEPTANCE",
+  "job": 2879,
+  "step": 1,
+  "questions": 512,
+  "root_trees": 1024,
+  "leaves": 3072,
+  "branches": 2048,
+  "strict_branch_count_per_source": 2,
+  "nonempty_response_prefix_branches": 1225,
+  "inherited_rolling_prefix_token_events": 1232423,
+  "prefix_scope": "sum across branch events inclprompt/actions/observations; not unique tokens or pureaction reuse",
+  "uniform_composed_response_width": 3022,
+  "total_action_token_events": 2261079,
+  "total_observation_token_events": 1783029,
+  "total_padding_token_events": 5239476,
+  "all_effective_tokens_equal_raw_action_counts": true,
+  "empty_leaves": 0,
+  "mass_min": 0.9999996423721313,
+  "mass_max": 1.0000003576278687,
+  "all_generation_scoring_context_hashes_equal": true,
+  "retained_pad_token_events": 0,
+  "source_identity": {
+    "base_commit": "9ab694499ad3913b67499f7a4ea13da6b544d459",
+    "algorithm_source_commit": "68184965c532fe30fef0d89c3ea19f976ac3bd63"
+  },
+  "evidence_sha256": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-step_1_rollout_1.json": "84d90aade6990f87eda0ffd233233d6aa6c3746e655e1392934e29a8dbe4d3c3",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/tree-two-2879-step_1_rollout_1_policy_batch.json": "73d422e01be645b0c5c5507c1ead880ecb47fdb206b002538400534319130799"
+  },
+  "diagnostic_check_cost": {
+    "rollout": {
+      "scope": "hash and validation functions only; excludes generation waiting and publication IO",
+      "branch_wall_seconds": 0.8094390649348497,
+      "branch_process_cpu_seconds": 0.8109548560001656,
+      "finish_wall_seconds": 5.051439827308059,
+      "finish_process_cpu_seconds": 5.057872406000001
+    },
+    "policy": {
+      "scope": "policy batch read-only checks and prior-rollout hash IO; excludes actor update and publication IO",
+      "policy_wall_seconds": 3.448368778452277,
+      "policy_process_cpu_seconds": 3.4541380860000004
+    }
+  },
+  "limitation": "JSON contains hash/counts not raw mask/weights/logprobs/advantages; elementwise invariants are source-reviewed runtime assertions, not independently reconstructed tensors. No optimizer update/metrics/checkpoint/stage acceptance yet."
+}

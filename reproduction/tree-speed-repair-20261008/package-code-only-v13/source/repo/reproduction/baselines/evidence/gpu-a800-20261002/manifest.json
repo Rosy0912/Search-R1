@@ -1,0 +1,17 @@
+{
+  "host": "baai-a800",
+  "remote_directory": "/data/shaoshitong/search-r1-rl-validation-20261002-ca95b89",
+  "implementation_commit": "ca95b89fcd6b1c45a8d0c31e257ef1c34bacb807",
+  "exit_code": 0,
+  "script_sha256": "dd9ab572375976d85e40208cba88583cc6393b90b8bb5ac1fc33af23e61a928f",
+  "sha256": {
+    "result.json": "92699821ef0186415d072c153ca7ceb2717f6b73db1ff3faed6b76ccf8efc1c9",
+    "transfer.json": "4d4d0a26e9b68ea15cb4a3fc31c1e84e0dae3099bfb95ad206056b84196e913e",
+    "env-relay-install.log": "564a2c73a92fdae285a0bbe31a11f45138649867ddea74569649963fa537d064",
+    "rank-1.json": "a5b38b9834630a169355ee8f014b4523c9ce7a48fafce975bdd4165c0464e135",
+    "allocation.json": "8b0d54431ab24b9160d6c4e11be364148ce7244e95276c0b788c65ddb26ca8cc",
+    "rank-0.json": "1688630710e6d0b0ca71827343aec8b6e97c9c928fe8456b5b8809bc7a21ff4e",
+    "gpu-run-1.log": "c418f97e48051b7e8972f1a8784727b6bb990e1e3d084d680075f57398efff13",
+    "post-run-gpus.csv": "dc5181036d9a724f715bd0086c11338e52cb3b66ad3f17da13ebdc2c6a81cf3b"
+  }
+}

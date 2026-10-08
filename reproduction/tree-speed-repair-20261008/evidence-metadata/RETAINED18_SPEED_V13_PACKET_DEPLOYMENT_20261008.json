@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-10-08T06:31:23.821067+00:00",
+  "returncode": 0,
+  "stdout": "{\"status\": \"FROZEN_V13_SPEED_CODE_DELTA_DEPLOYED\", \"observed_epoch\": 1791441083.444191, \"manifest_sha256\": \"cbca5e1de3188eaf071ce02c295d2607475ec003c53352110a4c6fbf72cbfa63\", \"files_verified\": 762, \"archive_bytes\": 205204, \"training_submitted\": false, \"assets_transferred_via_client\": false}\n",
+  "stderr": "",
+  "changed_code_files": 27,
+  "inline_archive_bytes": 205204,
+  "archive_sha256": "1e7bf9c7e69bbe063d5ef69e32cc33357b0ef6b9122754eef1b6668e8ceed0be"
+}

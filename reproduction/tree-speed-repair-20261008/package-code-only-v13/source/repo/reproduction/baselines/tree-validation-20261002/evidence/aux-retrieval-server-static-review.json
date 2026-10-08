@@ -1,0 +1,32 @@
+{
+  "scope": "static review only; no server execution, HTTP request, GPU allocation or stage acceptance by reviewer",
+  "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/aux_retrieval_server.py",
+  "source_sha256": "0a3642348444b5df6bd8b65f1cd83ffd849c8ef046b3970c96ce4c22c27d2be8",
+  "allocation_record": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/evidence/a800-index/logs/fp32-index-20261003-0754-dispatched.json",
+  "allocation_record_sha256": "d22a52bc3054f3611d77ce8fc1dd7b5c7279e779e45550b2228760bb30024fc7",
+  "syntax_ast": "PASS",
+  "resolved_blockers": [
+    "index/corpus SHA equal baseline2854 and verified pre/post stat",
+    "baseline query hash plus original CPU embedding raw bytes SHA",
+    "platform cgroup exactly equals actual successful index dispatch allocation"
+  ],
+  "reviewed_conditions": [
+    "exact GPU4 UUID and inherited common GPU lease validation before allocation",
+    "guard initialization/ready/freshness plus compute/graphics foreign detection and bounded own lifetime; SIGTERM only own process",
+    "own env torch prefix and local FAISS overlay, one visible GPU",
+    "E5 full file SHA baseline binding before/after loading and gate",
+    "CPU FP16 E5 mean pooling max256 batch512; FP32 GPU index with 512MiB scratch",
+    "actual k3 and k50 separately, raw content SHA and matched scores, DIFFERENCE_REPORT_ONLY",
+    "CUDA synchronization around cloning and direct gate search",
+    "unchanged async retrieve endpoint and single uvicorn worker keep GPU operations on initialization thread",
+    "loopback bind; own requests and lifetime CPU/RSS/GPU sample costs"
+  ],
+  "remaining_gate": [
+    "real A800 CPU encoder results must be reviewed rather than automatically accepted",
+    "actual tunnel HTTP POST protocol/content/score parity and finite timeout must be measured",
+    "service health checker and later launcher changes require separate review",
+    "14 queries or repeated512 do not establish unique512 throughput/global equivalence",
+    "provenance endpoint is serialized behind CPU encoding; timeout does not prove NVML guard failure"
+  ],
+  "conclusion": "No remaining static blocker to candidate HTTP gate; no production or training acceptance"
+}
