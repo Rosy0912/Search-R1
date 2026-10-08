@@ -55,8 +55,9 @@ def validate_entry(config=None, environ=None):
     require(environ[ENV_PREFIX+'MANIFEST_SHA256'] == PARENT_MANIFEST_SHA256,
             'parent manifest SHA differs from the pinned rolling4 boundary')
     require(Path(environ[ENV_PREFIX+'MANIFEST']) == PARENT_MANIFEST,
-            'only the existing same-host3331 rolling4 manifest is permitted')
-    require(socket.gethostname().split('.')[0] == 'h100-9', 'parent state must stay on h100-9')
+            'only the byte-pinned preserved3331 rolling4 manifest is permitted')
+    require(socket.gethostname().split('.')[0] == 'h100-10',
+            'approved retired-node saved state must load only on retained18 h100-10')
     if config is not None:
         from .tree_fresh200 import validate_fresh200_config
         validate_fresh200_config(config)
