@@ -1,0 +1,14 @@
+{
+  "files": {
+    "__init__.py": "cba7bf875fb119750a2b78029af6ec1e760352735d17d8862f437b247e902bd1",
+    "controller.py": "edc7f73c2e5ca75443951a0e89c8e2fc5acbdde376b9807144996a7cf612b164",
+    "gates.py": "eaf79e881be83295babd746dbb60aa2fb189ffb553dc216e65103e58e2efa309",
+    "hooks.py": "730a646fb5a3a1dbc1cab085652a566d6d2b15f9b248c0c7ebe9e4766906cadb",
+    "identity.py": "70c833384b5351ce4f9ad78343cee08b7f94751ff23187963c2c7b963e9677c4",
+    "prepare_config.py": "75f23a7173ffc7325ef05fcd2325e3b903b79bca312e2e0685359f8fa16ce68a",
+    "test_native512.py": "3571655176dbddc1079e4c61acb6baac9627378dfbd77532c358c52b2f4ff3a7",
+    "utils.py": "5fa3f5621a067c320a47d73ab89a4f6ff32160a9842476857d886b6a921e441e",
+    "worker.py": "9cc509bd1e5d3f09763c17df2ad137f199261c1c1b27b1baaa77a5f45f68207f"
+  },
+  "schema": "native512-m4-source-manifest-v1"
+}

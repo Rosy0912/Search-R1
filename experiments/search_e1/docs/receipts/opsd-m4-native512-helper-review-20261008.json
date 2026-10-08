@@ -1,0 +1,80 @@
+{
+  "schema": "opsd-m4-helper-review-v1",
+  "accepted": true,
+  "created_unix": 1791436685.952533,
+  "scope": "Source and CPU correctness only. No actual native512 M4 GPU run yet.",
+  "source_manifest_sha256": "727d86ab66ad04098722e9b06d04bb1fe94f872dcbebb9842a36b6786947b19e",
+  "files": {
+    "experiments/search_e1/control/opsd_native512_eval/README.md": {
+      "bytes": 9684,
+      "sha256": "43c39f907fbe9504e87d8cd713ce81e76c0b1ae8bae9daf7dbd57e6997c67380"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/__init__.py": {
+      "bytes": 75,
+      "sha256": "cba7bf875fb119750a2b78029af6ec1e760352735d17d8862f437b247e902bd1"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/controller.py": {
+      "bytes": 15295,
+      "sha256": "edc7f73c2e5ca75443951a0e89c8e2fc5acbdde376b9807144996a7cf612b164"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/gates.py": {
+      "bytes": 12365,
+      "sha256": "eaf79e881be83295babd746dbb60aa2fb189ffb553dc216e65103e58e2efa309"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/hooks.py": {
+      "bytes": 6326,
+      "sha256": "730a646fb5a3a1dbc1cab085652a566d6d2b15f9b248c0c7ebe9e4766906cadb"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/identity.py": {
+      "bytes": 9386,
+      "sha256": "70c833384b5351ce4f9ad78343cee08b7f94751ff23187963c2c7b963e9677c4"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/prepare_config.py": {
+      "bytes": 3650,
+      "sha256": "75f23a7173ffc7325ef05fcd2325e3b903b79bca312e2e0685359f8fa16ce68a"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/source-manifest.json": {
+      "bytes": 853,
+      "sha256": "727d86ab66ad04098722e9b06d04bb1fe94f872dcbebb9842a36b6786947b19e"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/test_native512.py": {
+      "bytes": 19385,
+      "sha256": "3571655176dbddc1079e4c61acb6baac9627378dfbd77532c358c52b2f4ff3a7"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/utils.py": {
+      "bytes": 3622,
+      "sha256": "5fa3f5621a067c320a47d73ab89a4f6ff32160a9842476857d886b6a921e441e"
+    },
+    "experiments/search_e1/control/opsd_native512_eval/worker.py": {
+      "bytes": 17993,
+      "sha256": "9cc509bd1e5d3f09763c17df2ad137f199261c1c1b27b1baaa77a5f45f68207f"
+    },
+    "experiments/search_e1/control/opsd_teacher_counterfactual/M3_SPEC.md": {
+      "bytes": 23561,
+      "sha256": "0407a576aeb82614b64ac7d7da030173cabae1fa2b3adcadae97de0e0e51d4c2"
+    }
+  },
+  "independent_review": {
+    "reviewer": "/root/review_e1_spec",
+    "decision": "APPROVE",
+    "cpu_fixtures": 13,
+    "skipped": 0
+  },
+  "root_review": {
+    "ast_passed": true,
+    "cpu_fixtures": 13,
+    "skipped": 0
+  },
+  "resolved_before_run": [
+    "Frozen QA parser requires authored span list; string interface corrected and real frozen QA tested",
+    "Worker index and validation index separated in phase merge; full 1024 slots across all workers exercised"
+  ],
+  "actual_admission_still_required": [
+    "M1 controller/3 workers actual exit0 plus 192 unique finite cases and final source/weight identity",
+    "Actual GPU4-6 released and resource lock held; no foreign process",
+    "Admitted resident18005 actual live identity and source",
+    "Actual plain/hooked result and post-RNG equivalence",
+    "Complete512 source100239 and epoch1203; otherwise HOLD before update1/update5"
+  ],
+  "no_training": true
+}
