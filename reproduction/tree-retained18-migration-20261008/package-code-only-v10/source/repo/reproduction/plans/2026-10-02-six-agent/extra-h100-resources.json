@@ -1,0 +1,26 @@
+[
+  {
+    "host": "h100-5",
+    "exit": 0,
+    "stdout": "h100-5\n192\n               total        used        free      shared  buff/cache   available\nMem:         2063899       18675       51438       69327     1993784     1965677\nSwap:           8191        8191           0\nFilesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  143G  276G  35% /\n/dev/mapper/data-data               14T   10T  3.3T  76% /dataset\n10.33.0.16:/dataset/sihe-share5     14T  6.6T  7.4T  48% /mnt/shared\n/usr/bin/python3.10\ngpu* up h100-[4-5,7-11,16]\n",
+    "stderr": ""
+  },
+  {
+    "host": "h100-9",
+    "exit": 0,
+    "stdout": "h100-9\n192\n               total        used        free      shared  buff/cache   available\nMem:         2063899       19467       34027       22149     2010404     2012088\nSwap:           8191        8191           0\nFilesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  222G  197G  53% /\nh100-8:/mnt/data                    14T  2.2T   12T  17% /mnt/shared/workspace/training_data_node_8\n/dev/mapper/data-data               14T  5.5T  7.7T  42% /dataset\nh100-16:/dataset/sihe-share5        14T  6.6T  7.4T  48% /mnt/shared\n/usr/bin/python3.10\ngpu* up h100-[4-5,7-11,16]\n",
+    "stderr": ""
+  },
+  {
+    "host": "h100-11",
+    "exit": 0,
+    "stdout": "h100-11\n192\n               total        used        free      shared  buff/cache   available\nMem:         2063898       18136      299530       30554     1746231     2004819\nSwap:           8191        8191           0\nFilesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G   77G  342G  19% /\n/dev/mapper/data-data               14T  4.0T  9.3T  31% /dataset\n10.32.0.16:/dataset/sihe-share5     14T  6.6T  7.4T  48% /mnt/shared\n/usr/bin/python3.10\ngpu* up h100-[4-5,7-11,16]\n",
+    "stderr": ""
+  },
+  {
+    "host": "h100-16",
+    "exit": 0,
+    "stdout": "h100-16\n192\n               total        used        free      shared  buff/cache   available\nMem:         2063899       19209       53599        8699     1991090     2025634\nSwap:              0           0           0\nFilesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  265G  154G  64% /\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  265G  154G  64% /\n/dev/mapper/data-data               14T  6.6T  7.4T  48% /dataset\n/dev/mapper/data-data               14T  6.6T  7.4T  48% /mnt/shared\n/usr/bin/python3.10\ngpu* up h100-[4-5,7-11,16]\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "status": "AFFECTED_CPU_NINE_UNIQUE_PASSED_WITH_TARGETED_NEW_CONTRACT_CHECKS",
+  "time": "2026-10-06T08:55:18.699807+00:00",
+  "tests_unique": 9,
+  "initial": {
+    "unaffected_passed": 4,
+    "subtest_failures": 6,
+    "errors": 1,
+    "receipt": "INITIAL_CPU_FAILURE.json"
+  },
+  "repair": {
+    "tests": 3,
+    "exit_code": 0,
+    "seconds": 0.706,
+    "scope": "only failed fixture tests rerun"
+  },
+  "scope": "Actual source SearchRollout.run/compose/TreeAudit on tiny CPU tensors; actual Adam 1200 calls and native LambdaLR60 outer; no FSDP/Ray/GPU/HF acceptance",
+  "full_current_suite_same_command": false,
+  "proofs": [
+    "two questions generate exactly10 leaves with6 branches and inherited prefixes",
+    "5 trajectories perquestion; leafquotas3/2 and all generated complete paths retained",
+    "local320/mini16 gives20calls",
+    "partial19/no scheduler advance/skips cannot receive outer credit",
+    "Adam warmup initial LR0/scheduler0;20 actual calls perouter and1 scheduler advance;57 boundary constant",
+    "legacy rectangular3/3 unchanged",
+    "fresh recovery env rejected"
+  ],
+  "source_files": {
+    "search_r1/baselines/tree_fresh200.py": {
+      "sha256": "bce337c4d700437f4a3e9db88e4f4fb042d33414f011703e177c6215009118bb",
+      "bytes": 5020
+    },
+    "search_r1/baselines/controller.py": {
+      "sha256": "68f0a191e1ac02c76ed78d39264fdb375a78a6633a4f122fe88823c575df9c16",
+      "bytes": 25470
+    },
+    "search_r1/baselines/rollout.py": {
+      "sha256": "a99d6523bd53ba3ffaf1172a2f45637ef68bfd874e9ab5e50ff4688d7076897b",
+      "bytes": 21861
+    },
+    "search_r1/baselines/tree_audit.py": {
+      "sha256": "e15be9ef2ee38333be2e56b08918859f2eb0d46963e3ca636ba98f7c60312049",
+      "bytes": 12486
+    },
+    "test_tree_fresh200_cpu.py": {
+      "sha256": "49be30e520d152fb67878291cebb1bbb3361f8d43f4db76dc762164894f8581d",
+      "bytes": 10280
+    }
+  },
+  "additional_checks": [
+    {
+      "command": "test_actual_checkpoint_sampler_starts_uniterated_and_refuses_consumed_state",
+      "tests": 1,
+      "passed": true,
+      "scope": "actual CheckpointBatchSampler epoch-1/cursor0/orderNone before iteration; after actual512 iteration refuse fresh state"
+    },
+    {
+      "command": "test_fresh200_cannot_fall_back_to_uncorrected_or_unguarded_probabilities + test_fresh_contract_and_exact_twenty_calls + test_drifted_model_split_update_or_budget_refuses",
+      "tests": 3,
+      "passed": true,
+      "distinct_new": 1,
+      "scope": "updated strictmu+guard opt-in contract; rerun only affected config tests"
+    }
+  ],
+  "code_issue_fixed_before_dispatch": "Read actual CheckpointBatchSampler initialization: epoch=-1 rather than0; fit now checks real uniterated helper and new actual class test."
+}

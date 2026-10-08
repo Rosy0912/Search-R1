@@ -1,0 +1,26 @@
+{
+  "status": "OWNER_SOURCE_CONFIG_CAPTURE_CPU_FIXTURES_CORRECTED",
+  "repair_tests_run": 4,
+  "affected_tests_passed": 4,
+  "distinct_source_tests_covered": 8,
+  "previous_unaffected_tests_passed": 4,
+  "success": true,
+  "errors": 0,
+  "failures": 0,
+  "wall_seconds": 0.0026305839999999983,
+  "utc": "2026-10-06T04:14:17.821187+00:00",
+  "log": "test_default_off_preserves_legacy_configuration (test_tree_behavior_mu_config_cpu.BehaviorMuConfigTests) ... ok\ntest_optins_reject_mismatch_and_boolean_coercion (test_tree_behavior_mu_config_cpu.BehaviorMuConfigTests) ... ok\ntest_raw_guard_tree_and_protocol_are_required (test_tree_behavior_mu_config_cpu.BehaviorMuConfigTests) ... ok\ntest_actual_none_processor_field_is_captured (test_tree_behavior_mu_config_cpu.NativeProcessorCaptureTests) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nOK\n",
+  "actual_native_sampling_fields": 18,
+  "old_native_sampling_fields": 17,
+  "real_GPU_acceptance": false,
+  "thresholds_calibrated": false,
+  "initial_fixture_failure_sha256": "32ba1d09d41b5c052366dfe6ab9b331910d74f2f7875177d9c63f472042bacd4",
+  "initial_failure_cause": "Node attribute writes did not change dict.get used by actual gate; capture field count expected19 instead of actual18. Fixture corrections only; no gate implementation changed.",
+  "prewrite_cwd_failure_preserved": true,
+  "sources": {
+    "search_r1/baselines/controller.py": "8d4503d0eb2a9e253da4fe974e6d708ba2929164b351fb8fb80a6bf953ffd30d",
+    "search_r1/baselines/tree_raw_tokens.py": "ccbfc2f7faebdc8cc6603e4eb66441ac9b774dc9d2ffb5c14b79119c2c5396d5",
+    "test_tree_behavior_mu_config_cpu.py": "73dcb418fe5113617390099bbc54d68ba0f67085d6a87b781a07e815ebec41e3",
+    "verl/trainer/config/ppo_tree_safety300.yaml": "54b13fb29a935921d448f81b8db4904debf486be8501d2c207c8a2e29b8b66db"
+  }
+}

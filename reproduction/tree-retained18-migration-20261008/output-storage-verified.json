@@ -1,0 +1,24 @@
+{
+  "shared_read_verified": true,
+  "server_ip": "10.33.0.18",
+  "server_retained": true,
+  "export_root": "/mnt/data",
+  "task_root": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008",
+  "local_write_observation": {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.node-migration/shared-storage-proof.json",
+    "sha256": "239711aa56a6a7cb4085f43f0c9f4ce1de2c80c7aa84a9ef03180aacc7122af1",
+    "findmnt": "/mnt/data /dev/mapper/data-data ext4\n",
+    "df": "Filesystem                 1B-blocks           Used    Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 13721366507520 751227146240  95% /mnt/data\n"
+  },
+  "other_node_read_observation": {
+    "observer": "h100-8",
+    "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.node-migration/shared-storage-proof.json",
+    "sha256": "239711aa56a6a7cb4085f43f0c9f4ce1de2c80c7aa84a9ef03180aacc7122af1",
+    "findmnt": "/mnt/shared/workspace/training_data_node_10 10.33.0.18:/mnt/data nfs4\n"
+  },
+  "shared_read_sha256": "239711aa56a6a7cb4085f43f0c9f4ce1de2c80c7aa84a9ef03180aacc7122af1",
+  "new_export_or_mount_created": false,
+  "source_shared_server": "10.32.0.11",
+  "source_shared_server_release_date": "2026-10-21",
+  "destination_release_date": null
+}

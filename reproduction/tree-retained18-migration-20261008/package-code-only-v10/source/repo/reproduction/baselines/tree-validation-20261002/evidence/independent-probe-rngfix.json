@@ -1,0 +1,61 @@
+{
+  "cross_root_continuations": {
+    "cost": {
+      "generated_tokens": 544,
+      "prefill_tokens": 1392,
+      "retrieval_calls": 2,
+      "trajectories": 6,
+      "padded_rows": 16,
+      "context_mismatches": 0
+    },
+    "worker_rows": [
+      8,
+      8,
+      8
+    ],
+    "sources": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    "distinct_trees": 2,
+    "distinct_trajectories": 6
+  },
+  "six_leaf_advantage": {
+    "values": [
+      2.067567825317383,
+      -1.4902185201644897,
+      -1.4902185201644897,
+      -2.067567825317383,
+      1.4902184009552002,
+      1.4902184009552002
+    ],
+    "independent_zscores": true,
+    "permutation_equivariant": true
+  },
+  "unequal_length_empty_leaf": {
+    "loss": 1.9868215517249155e-08,
+    "gradient": 1.4901161193847656e-08,
+    "row_weight_sums": [
+      1.0,
+      1.0,
+      0.0
+    ]
+  },
+  "authorized_window_deviation": {
+    "mismatches": 2,
+    "retained_response": 80,
+    "rolling": 80,
+    "scoring": 98
+  },
+  "reviewed_sha256": {
+    "search_r1/baselines/rollout.py": "68ebd6bf2941f8e86b9d3f7d92279a0b5b0675ca511f860c1857f8a58a318370",
+    "search_r1/baselines/advantages.py": "d8cb2eea41021f7a6a5752f60abb4f1c316ecf88fbf959fec87346ba01254a82",
+    "search_r1/baselines/controller.py": "c2ccb6dc31c84b9426d5ef3250c49965bd20ca81ac5ef226401ee44d251b531c",
+    "search_r1/baselines/objectives.py": "c56aaa661e4e416c54e18fe66f23d31212dd4aef1f46b8d70194e01619dedfb5",
+    "verl/workers/actor/dp_actor.py": "7c2604803241dd603d34d872ece2d865017e688097c58172943df5de030e69b8"
+  }
+}

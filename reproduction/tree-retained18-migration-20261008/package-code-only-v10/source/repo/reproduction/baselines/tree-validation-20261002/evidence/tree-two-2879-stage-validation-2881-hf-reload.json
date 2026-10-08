@@ -1,0 +1,37 @@
+{
+  "status": "HF_RELOAD_PARAMETER_DELTA_ACCEPTED",
+  "base": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/qwen2.5-3b",
+  "checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-two-2879/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_2",
+  "hf_loading_info": {
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "mismatched_keys": [],
+    "error_msgs": []
+  },
+  "tokenizer_vocab_equal": true,
+  "bos_eos_equal": true,
+  "all_parameters_finite": true,
+  "changed_parameters": 3085143087,
+  "total_parameters": 3085938688,
+  "changed_tensors": 434,
+  "max_abs_parameter_delta": 1.2308359146118164e-05,
+  "cpu_forward_logits_finite": true,
+  "checkpoint_file_sha256": {
+    "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+    "config.json": "9e6d49b386e280e3ac6f340621a8e2290bd7789278852403feb1accb4680662e",
+    "generation_config.json": "9e9135a1f6c3c54fd52f5e8011067e4039f8ff3ad0294980137632c461ea60f7",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "model-00001-of-00003.safetensors": "464ed99fb8cc4e17d0feda66ce9bedfbc423c034e5004a19ea51a13690f96ae8",
+    "model-00002-of-00003.safetensors": "9b0a139b7672b5d565b025271cd5e537e1785d55d2cc6ef650068f2a0141f09d",
+    "model-00003-of-00003.safetensors": "dc115a74cd8784052e790a4535bd59f617b934f5421c2a6ed9d219d9036dcc0c",
+    "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+    "special_tokens_map.json": "6676f091c8bc4d1b50146427cfde92073402866b87b6e39223227931b70083e9",
+    "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+    "tokenizer_config.json": "cefaa66de8fae4a09ca18a9c3a7fd8b61311ed568e5f4e634f6a3d95a2a9e889",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "wall_seconds": 17.790674636140466,
+  "process_cpu_seconds": 49.414705962,
+  "peak_self_rss_bytes": 16482897920,
+  "exact_optimizer_rng_dataloader_resume": false
+}

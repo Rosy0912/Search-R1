@@ -1,0 +1,23 @@
+[
+  {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/wiki-18.jsonl.gz",
+    "size": 5123307260,
+    "sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+    "source": "read-only h100-11 TOPD own immutable assets",
+    "wall_seconds": 14.946373462677002
+  },
+  {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/part_ab",
+    "size": 21609402413,
+    "sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+    "source": "read-only h100-11 TOPD own immutable assets",
+    "wall_seconds": 63.67408347129822
+  },
+  {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/part_aa",
+    "size": 42949672960,
+    "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+    "source": "read-only h100-11 TOPD own immutable assets",
+    "wall_seconds": 128.28629517555237
+  }
+]

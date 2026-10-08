@@ -1,0 +1,1709 @@
+{
+  "cycle_started_at": "2026-10-02T13:02:13.489072+00:00",
+  "updated_at": "2026-10-02T13:02:34.893223+00:00",
+  "hosts": [
+    {
+      "hostname": "baai-sailing-h20-1",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H20-3e",
+          "util": 72,
+          "used": 93677,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "6388"
+            },
+            {
+              "pid": "3368341",
+              "memory": "87228"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H20-3e",
+          "util": 77,
+          "used": 93283,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368740",
+              "memory": "87432"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H20-3e",
+          "util": 75,
+          "used": 93285,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368741",
+              "memory": "87434"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H20-3e",
+          "util": 74,
+          "used": 93313,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368742",
+              "memory": "87462"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H20-3e",
+          "util": 69,
+          "used": 93395,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368743",
+              "memory": "87544"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H20-3e",
+          "util": 75,
+          "used": 93357,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368744",
+              "memory": "87506"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H20-3e",
+          "util": 78,
+          "used": 93397,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368745",
+              "memory": "87546"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H20-3e",
+          "util": 75,
+          "used": 93247,
+          "total": 143771,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3351795",
+              "memory": "5790"
+            },
+            {
+              "pid": "3368746",
+              "memory": "87396"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/vda2        49G   49G     0 100% /",
+      "sampled_at": "2026-10-02T13:02:17.044744+00:00",
+      "host": "jump_h20-1",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.489501+00:00"
+    },
+    {
+      "hostname": "xielab1",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 4,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  1.8T  1.5T  230G  87% /",
+      "sampled_at": "2026-10-02T13:02:18.276133+00:00",
+      "host": "hkust1",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.489831+00:00"
+    },
+    {
+      "hostname": "xielab2",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15225,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "465297",
+              "memory": "15216"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 0,
+          "total": 24564,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  1.8T  1.7T   12G 100% /",
+      "sampled_at": "2026-10-02T13:02:14.798016+00:00",
+      "host": "hkust2",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.491923+00:00"
+    },
+    {
+      "hostname": "xielab3",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664580",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664581",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664582",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664583",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664566",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664567",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664568",
+              "memory": "20996"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 21003,
+          "total": 24564,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "664569",
+              "memory": "20996"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  1.8T  1.7T   16G 100% /",
+      "sampled_at": "2026-10-02T13:02:14.900530+00:00",
+      "host": "hkust3",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.492259+00:00"
+    },
+    {
+      "hostname": "xielab5",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 33266,
+          "total": 49140,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1164838",
+              "memory": "33248"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 5666,
+          "total": 49140,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "840849",
+              "memory": "5648"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 29088,
+          "total": 49140,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3065521",
+              "memory": "29070"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 5924,
+          "total": 49140,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3295494",
+              "memory": "5906"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 12,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 12,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 12,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 12,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "文件系统        容量  已用  可用 已用% 挂载点\n/dev/sdd2       1.8T  1.6T   70G   96% /",
+      "sampled_at": "2026-10-02T13:02:15.423421+00:00",
+      "host": "hkust4",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.497260+00:00"
+    },
+    {
+      "hostname": "xie-lab-4",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 1,
+          "used": 15,
+          "total": 49140,
+          "state": "占用",
+          "processes": []
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": null,
+          "used": 7315,
+          "total": 49140,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "[N/A]",
+              "memory": "[N/A]"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA GeForce RTX 4090",
+          "util": 0,
+          "used": 15,
+          "total": 49140,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": "codex-cli 0.159.3",
+      "disk": "文件系统        容量  已用  可用 已用% 挂载点\n/dev/nvme0n1p2  1.8T  853G  887G   50% /",
+      "sampled_at": "2026-10-02T13:02:35.044628+00:00",
+      "host": "hkust5",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.497511+00:00"
+    },
+    {
+      "hostname": "mgmt-host",
+      "gpus": [],
+      "gpu_query_ok": false,
+      "codex": "codex-cli 0.159.3",
+      "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/root        96G   96G     0 100% /",
+      "sampled_at": "2026-10-02T13:02:17.867104+00:00",
+      "host": "mgmt-host",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.500662+00:00"
+    },
+    {
+      "host": "baai-a800",
+      "ok": false,
+      "checked_at": "2026-10-02T13:02:13.503082+00:00",
+      "error": "SSH/采集失败 (exit 255)"
+    },
+    {
+      "hostname": "h100-4",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27525,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2390389",
+              "memory": "1318"
+            },
+            {
+              "pid": "2391278",
+              "memory": "21400"
+            },
+            {
+              "pid": "2393086",
+              "memory": "4772"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27243,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2390390",
+              "memory": "1318"
+            },
+            {
+              "pid": "2391279",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393087",
+              "memory": "4624"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27427,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2390391",
+              "memory": "1318"
+            },
+            {
+              "pid": "2391280",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393088",
+              "memory": "4808"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 25919,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2391281",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393089",
+              "memory": "4624"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 29595,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2391282",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393090",
+              "memory": "4808"
+            },
+            {
+              "pid": "2394917",
+              "memory": "3438"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 29403,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2391283",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393091",
+              "memory": "4624"
+            },
+            {
+              "pid": "2394918",
+              "memory": "3436"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 29587,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2391284",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393092",
+              "memory": "4808"
+            },
+            {
+              "pid": "2394919",
+              "memory": "3436"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 29115,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2391285",
+              "memory": "21278"
+            },
+            {
+              "pid": "2393093",
+              "memory": "4336"
+            },
+            {
+              "pid": "2394920",
+              "memory": "3436"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda2       439G  292G  125G  70% /",
+      "sampled_at": "2026-10-02T13:02:22.259583+00:00",
+      "host": "h100-4",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:13.688445+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-5",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210497",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210498",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210499",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210500",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210501",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210502",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210503",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "2210504",
+              "memory": "1122"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  143G  276G  35% /",
+      "sampled_at": "2026-10-02T13:02:23.376571+00:00",
+      "host": "h100-5",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:14.669494+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-7",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 26049,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3027373",
+              "memory": "1318"
+            },
+            {
+              "pid": "3028008",
+              "memory": "20602"
+            },
+            {
+              "pid": "3029899",
+              "memory": "4094"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 25927,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3027374",
+              "memory": "1318"
+            },
+            {
+              "pid": "3028009",
+              "memory": "20620"
+            },
+            {
+              "pid": "3029900",
+              "memory": "3966"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 26109,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3027375",
+              "memory": "1318"
+            },
+            {
+              "pid": "3028010",
+              "memory": "20618"
+            },
+            {
+              "pid": "3029901",
+              "memory": "4150"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 24599,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3028011",
+              "memory": "20616"
+            },
+            {
+              "pid": "3029902",
+              "memory": "3966"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27997,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3028012",
+              "memory": "20618"
+            },
+            {
+              "pid": "3029903",
+              "memory": "4150"
+            },
+            {
+              "pid": "3031595",
+              "memory": "3158"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27803,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3028013",
+              "memory": "20616"
+            },
+            {
+              "pid": "3029904",
+              "memory": "3966"
+            },
+            {
+              "pid": "3031597",
+              "memory": "3156"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27989,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3028014",
+              "memory": "20618"
+            },
+            {
+              "pid": "3029905",
+              "memory": "4150"
+            },
+            {
+              "pid": "3031598",
+              "memory": "3156"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 27515,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3028015",
+              "memory": "20616"
+            },
+            {
+              "pid": "3029906",
+              "memory": "3678"
+            },
+            {
+              "pid": "3031599",
+              "memory": "3156"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda2       439G  414G  2.7G 100% /",
+      "sampled_at": "2026-10-02T13:02:23.686443+00:00",
+      "host": "h100-7",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:14.839883+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-8",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 74,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 3,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 3,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 2,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  298G  117G  72% /",
+      "sampled_at": "2026-10-02T13:02:24.176288+00:00",
+      "host": "h100-8",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:15.093831+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-9",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1680782",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1680783",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1680784",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1680785",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1696443",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1696444",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1696445",
+              "memory": "1122"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1131,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1696446",
+              "memory": "1122"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  222G  197G  53% /",
+      "sampled_at": "2026-10-02T13:02:23.918594+00:00",
+      "host": "h100-9",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:15.255712+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-10",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 0,
+          "total": 81559,
+          "state": "低占用候选",
+          "processes": []
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  300G  119G  72% /",
+      "sampled_at": "2026-10-02T13:02:25.343901+00:00",
+      "host": "h100-10",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:16.900365+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-16",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3174189",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3142608",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3186393",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3166415",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3174191",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3166416",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3174192",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "3166417",
+              "memory": "1126"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G  265G  154G  64% /",
+      "sampled_at": "2026-10-02T13:02:25.635164+00:00",
+      "host": "h100-16",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:17.854085+00:00",
+      "slurm": "IDLE"
+    },
+    {
+      "hostname": "h100-11",
+      "gpus": [
+        {
+          "index": "0",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1042865",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1042866",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "2",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1042867",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "3",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1052362",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "4",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1052363",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "5",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1052364",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "6",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1042868",
+              "memory": "1126"
+            }
+          ]
+        },
+        {
+          "index": "7",
+          "name": "NVIDIA H100 80GB HBM3",
+          "util": 0,
+          "used": 1135,
+          "total": 81559,
+          "state": "占用",
+          "processes": [
+            {
+              "pid": "1060572",
+              "memory": "1126"
+            }
+          ]
+        }
+      ],
+      "gpu_query_ok": true,
+      "codex": null,
+      "disk": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  437G   77G  342G  19% /",
+      "sampled_at": "2026-10-02T13:02:32.059898+00:00",
+      "host": "h100-11",
+      "ok": true,
+      "checked_at": "2026-10-02T13:02:22.412301+00:00",
+      "slurm": "IDLE"
+    }
+  ]
+}

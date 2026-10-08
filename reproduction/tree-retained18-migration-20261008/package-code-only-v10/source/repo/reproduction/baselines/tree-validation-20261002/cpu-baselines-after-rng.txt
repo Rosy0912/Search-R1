@@ -1,0 +1,92 @@
+/Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+test_low_diversity_bonus_high_diversity_no_bonus (test_algorithms.BoundaryAndRanker) ... ok
+test_ranking_bounds_duplicates_and_reward_threshold (test_algorithms.BoundaryAndRanker) ... ok
+test_recovered_invalid_action_cannot_earn_boundary_bonus (test_algorithms.BoundaryAndRanker) ... ok
+test_semantic_groups_do_not_cross_questions (test_algorithms.BoundaryAndRanker) ... ok
+test_stage_consecutive_stalls_and_state_roundtrip (test_algorithms.BoundaryAndRanker) ... ok
+test_teacher_target_alignment_with_padding_and_internal_hole (test_algorithms.BoundaryAndRanker) ... ok
+test_empty_action_still_participates_in_anchor_mean (test_algorithms.Estimators) ... ok
+test_full_vocab_jsd_direction_clip_and_gradient_mask (test_algorithms.Estimators) ... ok
+test_gigpo_empty_action_time_and_uid_permutation (test_algorithms.Estimators) ... ok
+test_topd_exclusive_future_actor_mean_and_mask (test_algorithms.Estimators) ... ok
+test_topd_microbatches_have_global_token_weight_and_empty_is_safe (test_algorithms.Estimators) ... ok
+test_tree_independent_inter_and_intra_normalization (test_algorithms.Estimators) ... ok
+test_budget_exhaustion_is_not_environment_completion (test_algorithms.Rollouts) ... ok
+test_first_anchor_is_question_and_does_not_include_future_answer (test_algorithms.Rollouts) ... ok
+test_inherited_context_mismatch_can_fail_before_generation (test_algorithms.Rollouts) ... ok
+test_real_dataproto_source_selection_and_metadata (test_algorithms.Rollouts) ... ok
+test_repeated_parent_snapshot_does_not_change_sampling_weight (test_algorithms.Rollouts) ... ok
+test_response_cap_and_one_final_generation (test_algorithms.Rollouts) ... ok
+test_tree_continuation_copies_prefix_without_retrieval_replay (test_algorithms.Rollouts) ... ok
+test_actor_batch_validation_before_worker_initialization (test_bapo_fixes.BapoFixes) ... ok
+test_author_reward_boundary_counterexamples (test_bapo_fixes.BapoFixes) ... ok
+test_independent_phase_frequency_and_restore_on_error (test_bapo_fixes.BapoFixes) ... ok
+test_persisted_split_reuse_and_tamper_rejection (test_bapo_fixes.BapoFixes) ... ok
+test_question_group_split_deterministic_disjoint_and_uid_guard (test_bapo_fixes.BapoFixes) ... ok
+
+
+
+test_real_ranker_parameters_update_and_invalid_main_filter (test_models_and_driver.TinyModels) ... ok
+test_real_teacher_logprob_alignment_and_student_only_opsd_update (test_models_and_driver.TinyModels) ... ok
+test_unequal_rank_lengths_and_zero_action_rank (test_distributed_normalization.GlobalTokenMean) ... huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+[W1002 21:19:40.842940000 ProcessGroupGloo.cpp:545] Warning: Unable to resolve hostname to a (local) address. Using the loopback address as fallback. Manually set the network interface to bind to with GLOO_SOCKET_IFNAME. (function operator())
+[W1002 21:19:40.842940000 ProcessGroupGloo.cpp:545] Warning: Unable to resolve hostname to a (local) address. Using the loopback address as fallback. Manually set the network interface to bind to with GLOO_SOCKET_IFNAME. (function operator())
+ok
+test_configs_preserve_actor_data_and_reject_test_holdout_alias (test_models_and_driver.Driver) ... ok
+test_real_fit_driver_gigpo_tree_bapo_topd_opsd (test_models_and_driver.Driver) ... ok
+
+
+
+test_real_ranker_parameters_update_and_invalid_main_filter (test_models_and_driver.TinyModels) ... ok
+test_real_teacher_logprob_alignment_and_student_only_opsd_update (test_models_and_driver.TinyModels) ... ok
+test_empty_mask_has_zero_loss_and_gradient (test_numeric_safety.NumericSafety) ... ok
+test_fractional_mask_denominator_is_not_clamped_to_one (test_numeric_safety.NumericSafety) ... ok
+test_invalid_supervised_probability_fails_explicitly (test_numeric_safety.NumericSafety) ... ok
+test_masked_nonfinite_logits_fail_before_entropy_jacobian (test_numeric_safety.NumericSafety) ... ok
+test_masked_overflow_never_contaminates_valid_gradient (test_numeric_safety.NumericSafety) ... ok
+test_actor_global_empty_minibatch_does_not_decay_or_move_momentum (test_objective_measures.PaperMeasures) ... ok
+test_gigpo_actions_get_equal_weight_and_joint_gradient (test_objective_measures.PaperMeasures) ... ok
+test_gigpo_joint_action_clip_differs_from_individual_token_clip (test_objective_measures.PaperMeasures) ... ok
+test_topd_question_measure_survives_micro_splitting (test_objective_measures.PaperMeasures) ... ok
+test_tree_two_unequal_length_trajectories_cancel (test_objective_measures.PaperMeasures) ... ok
+test_actor_micro_and_rank_invariance_and_no_unsupervised_decay (test_paper_ddp.PaperDDP) ... epoch 0, step 1
+epoch 0, step 1
+epoch 0, step 1
+epoch 0, step 1
+epoch 0, step 1
+epoch 0, step 1
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+/Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[W1002 21:19:48.672553000 ProcessGroupGloo.cpp:545] Warning: Unable to resolve hostname to a (local) address. Using the loopback address as fallback. Manually set the network interface to bind to with GLOO_SOCKET_IFNAME. (function operator())
+[W1002 21:19:48.672580000 ProcessGroupGloo.cpp:545] Warning: Unable to resolve hostname to a (local) address. Using the loopback address as fallback. Manually set the network interface to bind to with GLOO_SOCKET_IFNAME. (function operator())
+ok
+test_controller_tree_sampling_continues_across_updates_and_replays_seed (test_tree_batching.TreeBatching) ... ok
+test_cross_root_children_share_one_generation_batch (test_tree_batching.TreeBatching) ... ok
+test_multi_round_deduplication_and_remaining_turn_budget (test_tree_batching.TreeBatching) ... ok
+
+----------------------------------------------------------------------
+Ran 45 tests in 14.210s
+
+OK

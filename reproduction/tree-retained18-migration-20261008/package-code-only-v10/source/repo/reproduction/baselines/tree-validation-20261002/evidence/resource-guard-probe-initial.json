@@ -1,0 +1,85 @@
+{
+  "mock_only_no_real_gpu_or_scancel": true,
+  "script_sha256": "7b1a5ec3a3676ac96a6dca0eae0b9b9b2183d1c33de8b8175869be4666244691",
+  "sleep_ends_healthy_probe_by_injected_EndPoll": true,
+  "cases": [
+    {
+      "case": "baseline_notfound",
+      "completed_poll": true,
+      "exception": "EndPoll:probe end",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "foreign_memory",
+      "completed_poll": false,
+      "exception": "AssertionError:Foreign GPU activity exceeds user dual15% rule: {\"uuid\": \"GPU-toy-0\", \"total_memory_bytes\": 100, \"total_used_memory_bytes\": 1, \"total_gpu_util\": 0, \"foreign\": [{\"pid\": 10, \"memory_bytes\": 20}], \"foreign_memory_fraction\": 0.2, \"foreign_sm_peaks\": {}, \"foreign_sm_upper\": 0, \"nvml_samples\": 0}",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "foreign_sm",
+      "completed_poll": false,
+      "exception": "AssertionError:Foreign GPU activity exceeds user dual15% rule: {\"uuid\": \"GPU-toy-0\", \"total_memory_bytes\": 100, \"total_used_memory_bytes\": 1, \"total_gpu_util\": 0, \"foreign\": [{\"pid\": 10, \"memory_bytes\": 1}], \"foreign_memory_fraction\": 0.01, \"foreign_sm_peaks\": {\"10\": 16}, \"foreign_sm_upper\": 16, \"nvml_samples\": 1}",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "unknown_memory",
+      "completed_poll": false,
+      "exception": "AssertionError:Unknown foreign GPU memory",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "not_supported",
+      "completed_poll": false,
+      "exception": "Unsupported:unsupported",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "same_pid_graphics_overwrite",
+      "completed_poll": false,
+      "exception": "AssertionError:Foreign GPU activity exceeds user dual15% rule: {\"uuid\": \"GPU-toy-0\", \"total_memory_bytes\": 100, \"total_used_memory_bytes\": 1, \"total_gpu_util\": 0, \"foreign\": [{\"pid\": 10, \"memory_bytes\": 20}], \"foreign_memory_fraction\": 0.2, \"foreign_sm_peaks\": {}, \"foreign_sm_upper\": 0, \"nvml_samples\": 0}",
+      "cancellations": [
+        [
+          "scancel",
+          "--signal=TERM",
+          "1234"
+        ]
+      ]
+    },
+    {
+      "case": "foreign_cgroup_prefix",
+      "completed_poll": false,
+      "exception": "AssertionError:Guard must belong to this allocation cgroup",
+      "cancellations": []
+    }
+  ]
+}
