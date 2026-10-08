@@ -1,0 +1,25 @@
+{
+  "session": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "run_id": "8b956bc72d5d4a5f8da11d870e4354bc",
+  "runtime_source": "bd75dc76b17dcceefe488d00bc32811563d6d26f",
+  "actual_observed_unix": 1791430478.242831,
+  "failure": "Run source fingerprint changed in initial-probe-adoption; three exact original Hydra outputs added after original startup snapshot; no serialized science source changed",
+  "actual_source_diff_receipt_sha256": "70d195c6ed4453576429ca01b3b6170e420259126c6f012a4e35dec342503f76",
+  "trainer_claimed": false,
+  "actual_complete_outers": 0,
+  "actual_adam_writes_per_rank": 0,
+  "cleanup_status": {
+    "checked_unix": 1791430477.5510676,
+    "cleaned": true,
+    "scope": "only recorded project PID births and private local corpus cache"
+  },
+  "all_owned_registered_births_gone": true,
+  "observation_sha256": "4dd0c43810c13bc4fd1f937364314bd08f2780a6bd17e4a692ce977dfd3df61a",
+  "goal_active": true,
+  "goal_complete": false,
+  "next": "New published minimally fixed source; one distinct fresh run; preserve failed claimed namespace",
+  "schema_version": 1,
+  "evidence_role": "actual a800 pretrainer adoption source-enumeration failure",
+  "publication_scope": "source, scalar and SHA only; original manifests/logs/models/data/probes not published",
+  "failure_handoff_sha256": "a0cd641be724e5904dc11cfc254722b9f992721eb76141f9691d50011a67885c"
+}

@@ -27,8 +27,17 @@ LOCAL_HELPERS = frozenset((
     'reproduction/a800_common/prepare_run.py',
     'reproduction/a800_common/run_pipeline.py',
     'reproduction/a800_common/train.sh',
+    'reproduction/common8/verify_full.py',
 ))
 RAY_ENTRY = 'verl/trainer/main_ppo_eco.py'
+ORIGINAL_HYDRA_OUTPUTS = {
+    'outputs/2026-10-08/11-08-49/.hydra/config.yaml':
+        'f68a9586ff09bac9b74a5613bf6295efe0d2a05324dd8feaf17fe0a412a3fbfa',
+    'outputs/2026-10-08/11-08-49/.hydra/hydra.yaml':
+        '0e739a6da28c0047c5a90e1aa57e996f16ed06fb825ca23b3717dc398afc4cad',
+    'outputs/2026-10-08/11-08-49/.hydra/overrides.yaml':
+        '6932b54712a16f3ee80bee87ed5a2a194963d9015c05e7697f29021067c7e934',
+}
 
 
 def _check(condition, message):
@@ -48,11 +57,61 @@ def _read(path, base):
     return artifacts._read(artifacts._owned_file(Path(path), base))
 
 
-def _source_map(base, run):
+def _source_map(base, run, provenance=None):
     actual = {str(path.relative_to(base / 'repo')): digest(path)
               for path in runtime_files(base / 'repo')}
-    _check(actual == run['source_sha256'], 'Run source fingerprint changed')
-    return actual
+    expected = run['source_sha256']
+    _check(all(actual.get(name) == sha for name, sha in expected.items()),
+           'A bound run source file changed or is missing')
+    extras = {name: sha for name, sha in actual.items() if name not in expected}
+    if extras:
+        # This exact trio was read from the immutable original failed run. It
+        # was emitted after prepare_run's disk snapshot; it is not new source.
+        _check(run['run_id'] == '6de29bcb7be741cfa1bfacdf9e34efc9'
+               and run['source_commit'] == 'f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c'
+               and len(expected) == 380 and extras == ORIGINAL_HYDRA_OUTPUTS,
+               'Unrecognized files outside the bound source snapshot')
+        claim_path = artifacts._owned_file(base / 'logs/training-launch-claim.json', base)
+        claim = artifacts._read(claim_path)
+        ledger = _read(base / 'logs/process-ledger.json', base)
+        trainer = ledger['jobs']['trainer']
+        leader = trainer['leader']
+        _check(claim['run_id'] == ledger['run_id'] == run['run_id']
+               and claim['execution_id'] == run['execution_id']
+               and claim['shell_pid'] == leader['pid']
+               and claim['shell_start_ticks'] == leader['start_ticks']
+               and leader['uid'] == os.getuid() and leader['sid'] == leader['pid']
+               and trainer['arguments'] == ['bash', 'reproduction/a800_common/train.sh']
+               and trainer['state'] == 'STOPPED'
+               and type(trainer.get('exit_code')) is int and trainer['exit_code'] == 1,
+               'Hydra files have no matching actual failed trainer launch')
+        log_path = artifacts._owned_file(Path(trainer['log']), base)
+        _check(log_path == base / 'logs/trainer.log'
+               and 'OSError: AF_UNIX path length cannot exceed 107 bytes' in log_path.read_text()
+               and not any((base / 'logs').glob('optimizer-rank-*.jsonl'))
+               and not any((base / 'logs').glob('scheduler-rank-*.jsonl')),
+               'Original failure was not Ray startup before optimizer activity')
+        updates = base / 'logs/actual-updates.jsonl'
+        _check(not updates.exists() or updates.stat().st_size == 0,
+               'Original failed trainer has completed update evidence')
+        mtimes = {}
+        for name in extras:
+            path = artifacts._owned_file(base / 'repo' / name, base)
+            modified = path.stat().st_mtime
+            _check(claim['claimed_unix'] - 2 <= modified <= log_path.stat().st_mtime + 2,
+                   'Hydra output timestamp is outside the actual failed launch')
+            mtimes[name] = modified
+        proof = dict(role='authenticated_original_ray_failure_hydra_runtime_outputs',
+            run_id=run['run_id'], source_commit=run['source_commit'],
+            bound_source_map_sha256=hashlib.sha256(canonical_bytes(expected)).hexdigest(),
+            runtime_output_sha256=extras, runtime_output_mtime=mtimes,
+            training_launch_claim_sha256=digest(claim_path), trainer_log_sha256=digest(log_path),
+            trainer_job_sha256=hashlib.sha256(canonical_bytes(trainer)).hexdigest(),
+            trainer_pid=leader['pid'], trainer_start_ticks=leader['start_ticks'],
+            claimed_unix=claim['claimed_unix'], failed_log_modified_unix=log_path.stat().st_mtime)
+        if provenance is not None:
+            provenance.update(proof)
+    return dict(expected)
 
 
 def _outside_ray_bootstrap(raw):
@@ -68,7 +127,7 @@ def _outside_ray_bootstrap(raw):
     return prefix + start + end + suffix
 
 
-def _compatible(base, source, run, old):
+def _compatible(base, source, run, old, source_provenance=None):
     for candidate in (run, old):
         assert_formal_run(candidate)
         _check(candidate['execution_backend'] == 'ssh_local'
@@ -98,7 +157,7 @@ def _compatible(base, source, run, old):
         for name, sha in candidate['input_sha256'].items():
             path = artifacts._owned_file(root / 'data' / name, root)
             _check(digest(path) == sha, 'Actual shared input changed: ' + name)
-    previous, current = _source_map(source, old), _source_map(base, run)
+    previous, current = _source_map(source, old, source_provenance), _source_map(base, run)
     changed = []
     for name in sorted(set(previous) | set(current)):
         if previous.get(name) == current.get(name):
@@ -183,6 +242,14 @@ def _original_artifacts(source, old):
     return live, archive, heads, dump, files, job, calibration_log
 
 
+def _calibration_job_projection(job):
+    return dict(role='actual_original_initial0_calibration_child',
+        state=job['state'], exit_code=job['exit_code'],
+        leader={key: job['leader'][key] for key in ('pid', 'start_ticks', 'sid', 'uid')},
+        log=job['log'], module='reproduction.common8.refit', step=0,
+        model=job['arguments'][-1])
+
+
 def adopt(base, source_base):
     """Publish copied initial0 heads; leave HTTP/resource admission prospective."""
     base, source = _namespace(base), _namespace(source_base)
@@ -199,18 +266,20 @@ def adopt(base, source_base):
                'artifacts/live/manifest.json', 'logs/initial-probes-accepted.json',
                'logs/initial-probe-adoption-claim.json', 'logs/initial-probe-adoption.json')),
            'Target already fitted, admitted or claimed probe adoption')
-    changes = _compatible(base, source, run, old)
+    source_provenance = {}
+    changes = _compatible(base, source, run, old, source_provenance)
     live, archive, heads, dump, files, job, calibration_log = _original_artifacts(source, old)
     token = uuid.uuid4().hex
     round_dir = base / 'artifacts' / ('round_0-adopted-' + token)
     origin = dict(run_id=old['run_id'], source_commit=old['source_commit'],
         execution_id=old['execution_id'], base=str(source), version=live['version'],
         run_manifest_sha256=hashlib.sha256(old_raw).hexdigest(),
-        archive_sha256=digest(archive), calibration_job=job,
+        archive_sha256=digest(archive), calibration_job=_calibration_job_projection(job),
         calibration_job_sha256=hashlib.sha256(canonical_bytes(job)).hexdigest(),
         calibration_log_sha256=digest(calibration_log),
         head_sha256=live['head_sha256'], dump_sha256=live['dump_sha256'],
-        encoder_sha256=live['encoder_sha256'], calibration_report_sha256=live['calibration_report_sha256'])
+        encoder_sha256=live['encoder_sha256'], calibration_report_sha256=live['calibration_report_sha256'],
+        source_fingerprint_validation=source_provenance)
     claim = dict(schema_version=1, role='a800_initial_probe_adoption_claim',
                  run_id=run['run_id'], source_run_id=old['run_id'], source_base=str(source),
                  target_round_dir=str(round_dir), claimed_unix=time.time())
@@ -226,7 +295,7 @@ def adopt(base, source_base):
     for name, data in (
         ('original-version-manifest.json', archive.read_bytes()),
         ('original-run-manifest.json', old_raw),
-        ('original-calibration-job.json', canonical_bytes(job)),
+        ('original-calibration-job.json', canonical_bytes(_calibration_job_projection(job))),
         ('original-calibration.log', calibration_log.read_bytes()),
     ):
         artifacts._write(round_dir / 'provenance' / name, data)
@@ -236,7 +305,10 @@ def adopt(base, source_base):
            'Original calibration changed during copy; preserve partial adoption claim')
     _check(run_path.read_bytes() == run_raw, 'Target identity changed during adoption')
     _source_map(base, run)
-    _source_map(source, old)
+    source_provenance_after = {}
+    _source_map(source, old, source_provenance_after)
+    _check(source_provenance_after == source_provenance,
+           'Original source/runtime provenance changed during adoption')
     _unstarted(base, run)
     new = dict(live, run_id=run['run_id'], version=run['run_id'] + ':0:' + token,
         encoder=run['initial_model'], commit=str(round_dir / 'heads/commit_probe.pkl'),
