@@ -125,7 +125,7 @@ def _emission(action, context, expected_provenance):
     return emission
 
 
-def _row(projection, expected_provenance):
+def _row(projection, expected_provenance, validation_context=None):
     require(projection.get('protocol') == RAW_PROTOCOL and projection['response_cap'] == 4096,
             'Accepted raw/semantic protocol and fixed cap required')
     bound = {key: value for key, value in projection.items() if key != 'binding_sha256'}
@@ -134,7 +134,9 @@ def _row(projection, expected_provenance):
                             response=projection['policy_response_token_ids'],
                             model_mask=projection['policy_model_mask'],
                             raw_ledger=projection['raw_ledger'])
-    require(trajectory_projection(state, 4096) == projection,
+    rebuilt = (trajectory_projection(state, 4096) if validation_context is None else
+               trajectory_projection(state, 4096, _contexts=validation_context))
+    require(rebuilt == projection,
             'Raw/semantic projection did not reconstruct')
     require(state.prompt and len(state.prompt) <= 2048 and
             len(state.prompt) + len(state.response) <= 4096,
@@ -173,8 +175,9 @@ def compose_behavior_mu_rows(states, projections, *, response_width, expected_pr
             'Nonempty complete row collection required')
     tensor = torch.zeros((len(states), response_width), dtype=torch.float32)
     bindings = []
+    validation_context = {}
     for row, (state, projection) in enumerate(zip(states, projections)):
-        values, actions, _ = _row(projection, expected)
+        values, actions, _ = _row(projection, expected, validation_context=validation_context)
         require(projection['prompt_token_ids'] == state.prompt and
                 projection['policy_response_token_ids'] == state.response and
                 projection['policy_model_mask'] == state.model_mask and
@@ -189,6 +192,8 @@ def compose_behavior_mu_rows(states, projections, *, response_width, expected_pr
             sampled_row_fp32_sha256=fingerprint([scalar32(x) for x in tensor[row].tolist()]))
         binding['binding_sha256'] = fingerprint(binding)
         bindings.append(binding)
+    for context in validation_context.values():
+        context.check_complete()
     return tensor, bindings
 
 
@@ -216,6 +221,14 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
             'Behavior tensor dtype/shape/provenance rows changed')
     require(all(data.batch[key].ndim == 2 and data.batch[key].shape[0] == rows and
                 data.batch[key].dtype == torch.long for key in names), 'Original input tensor dtype/shape changed')
+    for key in ('response_mask', 'loss_mask'):
+        if key in data.batch:
+            require(data.batch[key].shape == (rows, width), 'Added mask shape differs from response')
+    # Stage complete tensors once. Row-at-a-time CUDA .cpu() forced a separate
+    # device wait for every row/field before doing the same Python comparisons.
+    cpu_rows = {key: data.batch[key].detach().cpu().tolist()
+                for key in names + (TENSOR, 'response_mask', 'loss_mask') if key in data.batch}
+    validation_context = {}
     seen, total = {}, 0
     for row in range(rows):
         projection = data.non_tensor_batch[RAW_FIELD][row]
@@ -227,11 +240,11 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
                 binding['tree_uid'] == data.non_tensor_batch['tree_uid'][row] and
                 binding['trajectory_uid'] == data.non_tensor_batch['trajectory_uid'][row],
                 'Row permutation lost behavior/source/leaf identity')
-        values, actions, steps = _row(projection, expected)
+        values, actions, steps = _row(projection, expected, validation_context=validation_context)
         require(binding['action_receipts'] == actions, 'Sampled action/context/identity binding changed')
-        prompt = data.batch['prompts'][row].detach().cpu().tolist()
-        response = data.batch['responses'][row].detach().cpu().tolist()
-        actual_mu = data.batch[TENSOR][row].detach().cpu().tolist()
+        prompt = cpu_rows['prompts'][row]
+        response = cpu_rows['responses'][row]
+        actual_mu = cpu_rows[TENSOR][row]
         n = len(projection['policy_response_token_ids'])
         prompt_count = len(projection['prompt_token_ids'])
         want_prompt = [151643] * (len(prompt)-prompt_count) + projection['prompt_token_ids']
@@ -246,31 +259,34 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
         want_steps = steps + [-1] * (width-n)
         require(n <= width and len(projection['prompt_token_ids']) <= len(prompt) and
                 prompt == want_prompt and response == want_response and
-                data.batch['input_ids'][row].detach().cpu().tolist() == want_prompt+want_response and
-                data.batch['attention_mask'][row].detach().cpu().tolist() == attention and
-                data.batch['info_mask'][row].detach().cpu().tolist() == info and
-                data.batch['position_ids'][row].detach().cpu().tolist() == positions and
-                data.batch['step_ids'][row].detach().cpu().tolist() == want_steps,
+                cpu_rows['input_ids'][row] == want_prompt+want_response and
+                cpu_rows['attention_mask'][row] == attention and
+                cpu_rows['info_mask'][row] == info and
+                cpu_rows['position_ids'][row] == positions and
+                cpu_rows['step_ids'][row] == want_steps,
                 'Policy prefix/token/position/attention/loss-mask/turn input changed')
         if 'response_mask' in data.batch:
             response_mask = data.batch['response_mask']
             require(response_mask.shape == (rows, width) and
-                    response_mask[row].detach().cpu().tolist() == response_attention,
+                    cpu_rows['response_mask'][row] == response_attention,
                     'Added response mask differs from explicit retained row length')
         if 'loss_mask' in data.batch:
             loss_mask = data.batch['loss_mask']
             require(loss_mask.shape == (rows, width) and
-                    loss_mask[row].detach().cpu().tolist() == info[len(prompt):],
+                    cpu_rows['loss_mask'][row] == info[len(prompt):],
                     'Added loss mask differs from original sampled actor-token mask')
         want_mu = values + [0.] * (width-n)
-        require([scalar32(x) for x in actual_mu] == [scalar32(x) for x in want_mu] and
-                fingerprint([scalar32(x) for x in actual_mu]) == binding['sampled_row_fp32_sha256'],
+        actual_bits = [scalar32(x) for x in actual_mu]
+        require(actual_bits == [scalar32(x) for x in want_mu] and
+                fingerprint(actual_bits) == binding['sampled_row_fp32_sha256'],
                 'Behavior scalar altered, missing, or present at observation/padding')
         for action in actions:
             key = action['sample_id']
             value = {k: v for k, v in action.items() if k != 'response_start'}
             require(key not in seen or seen[key] == value, 'Inherited sampled action changed between leaves')
             seen[key] = value; total += action['retained_count']
+    for context in validation_context.values():
+        context.check_complete()
     unique = sum(action['retained_count'] for action in seen.values())
     return dict(status='TREE_BEHAVIOR_MU_DATA_BINDING_VALIDATED', rows=rows,
                 leaf_effective_token_occurrences=total, unique_sampled_occurrences=unique,

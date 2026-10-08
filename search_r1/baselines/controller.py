@@ -235,8 +235,34 @@ class Controller:
         elif self.method == 'topd':
             from .distillation import FrozenTeacher
             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
+        if self.method=='tree_grpo' and option(option(self.config.tree,'token_preservation',{}),'enabled',False):
+            from .tree_raw_tokens import tokenizer_identity, tokenizer_validation_scope
+            preservation=option(self.config.tree,'token_preservation',{})
+            self._tree_raw_identity=tokenizer_identity(trainer.tokenizer,option(preservation,'tokenizer_sha256'))
+            reward_fn=trainer.reward_fn
+            def scoped_reward(*args,**kwargs):
+                with tokenizer_validation_scope(trainer.tokenizer,self._tree_raw_identity,
+                        _context=getattr(self,'_tree_validation_context',None)) as context:
+                    self._tree_validation_context=context
+                    return reward_fn(*args,**kwargs)
+            trainer.reward_fn=scoped_reward
 
     def generate(self, manager, gen_batch, qa_batch, metrics):
+        preservation=(option(self.config.tree,'token_preservation',{}) if self.method=='tree_grpo' else {})
+        if not option(preservation,'enabled',False):
+            return self._generate(manager,gen_batch,qa_batch,metrics)
+        from .tree_raw_tokens import tokenizer_identity, tokenizer_validation_scope
+        identity=getattr(self,'_tree_raw_identity',None)
+        if identity is None:
+            identity=tokenizer_identity(manager.tokenizer,option(preservation,'tokenizer_sha256'))
+            self._tree_raw_identity=identity
+        # A fresh outer has no proof cache from its predecessor. The default
+        # reward reader and actor audit reuse only this completed outer's proofs.
+        with tokenizer_validation_scope(manager.tokenizer,identity) as context:
+            self._tree_validation_context=context
+            return self._generate(manager,gen_batch,qa_batch,metrics)
+
+    def _generate(self, manager, gen_batch, qa_batch, metrics):
         preservation=(option(self.config.tree,'token_preservation',{}) if self.method=='tree_grpo' else {})
         preservation=preservation if option(preservation,'enabled',False) else None
         behavior = option(self.config.tree, 'behavior_mu', {}) if self.method == 'tree_grpo' else {}
@@ -287,9 +313,14 @@ class Controller:
 
     def audit_actor_batch(self, batch):
         if self.method=='tree_grpo' and option(option(self.config.tree,'token_preservation',{}),'enabled',False):
-            from .tree_raw_tokens import FIELD,require,semantic_spans
+            from .tree_raw_tokens import FIELD,require,semantic_spans,tokenizer_validation_scope
             require(FIELD in batch.non_tensor_batch,'Opted-in actor batch lost raw/semantic provenance')
-            for i in range(len(batch)):semantic_spans(batch[i],self.trainer.tokenizer)
+            first=batch[0].non_tensor_batch[FIELD]['raw_ledger'][0]['action']['tokenizer_identity']
+            with tokenizer_validation_scope(self.trainer.tokenizer,first,
+                    _context=getattr(self,'_tree_validation_context',None)) as context:
+                self._tree_validation_context=context
+                contexts={}
+                for i in range(len(batch)):semantic_spans(batch[i],self.trainer.tokenizer,contexts)
         if self.method != 'tree_grpo' or not os.environ.get('SEARCH_R1_TREE_AUDIT_DIR'):
             return
         audit = getattr(self, 'latest_tree_audit', None)

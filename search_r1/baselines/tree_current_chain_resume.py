@@ -1,4 +1,4 @@
-"""Explicit migration of job3331's completed rolling4 boundary, never generic recovery.
+"""Explicit migration of job3335's completed native5 boundary, never generic recovery.
 
 Only native state of this current Fresh200 chain is accepted. File hashes and
 loaded/live state comparisons execute at training startup; no executor/vLLM
@@ -16,21 +16,23 @@ from .training_state import (atomic_save, cpu_copy, digest, driver_snapshot,
     worker_snapshot)
 
 PROTOCOL = 'current_fresh200_chain_fault_repair_continuation_v1'
-PARENT_JOB = '3331'
-PARENT_RUN = 'tree-current200-continue-3331'
-PARENT_COMMIT = '9693f0c846fab483a03e1d70ce1109aeddc5e118'
-PARENT_CONFIG_SHA256 = 'f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7'
-PARENT_MANIFEST_SHA256 = '84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73'
-PARENT_COMPLETED_STEP = 4
-PARENT_OPTIMIZER_CALLS = 80
-PARENT_CURSOR = 2048
+PARENT_JOB = '3335'
+PARENT_RUN = 'tree-current200-continue-3335'
+PARENT_COMMIT = '6efb60466a233f70bf8f50de26df32012f49b4bc'
+PARENT_CONFIG_SHA256 = '5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb'
+PARENT_MANIFEST_SHA256 = '56832544db6e55cbd346575aca0d06238602141df2704309c1a7f36aa4a27260'
+PARENT_COMPLETED_STEP = 5
+PARENT_OPTIMIZER_CALLS = 100
+PARENT_CURSOR = 2560
 PARENT_NEXT_STEP = PARENT_COMPLETED_STEP + 1
 PARENT_MANIFEST = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/PARENT_RUN/\
-    'checkpoints/training_state/rolling-completed/global_step_4/manifest.json'
+    'checkpoints/training_state/global_step_5/manifest.json'
 OFFICIAL_MODEL = '/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725'
 ENV_PREFIX = 'TREE_CURRENT_CHAIN_RESUME_'
 ENV_FIELDS = {'MANIFEST', 'MANIFEST_SHA256', 'AUTHORITY'}
 COUNTS = {str(rank): PARENT_OPTIMIZER_CALLS for rank in range(8)}
+PARENT_MIGRATION_RECEIPT = PARENT_MANIFEST.parents[3]/'output/current-chain-migrated.json'
+PARENT_MIGRATION_SHA256 = '07c19b89289ba2116f874447c7bfbf1dfc93b8d115644be5fe4c2cbf24bb543c'
 
 
 def enabled(environ=None):
@@ -40,7 +42,7 @@ def enabled(environ=None):
 
 def require(condition, message):
     if not condition:
-        raise ValueError('Current-chain3331 migration: ' + message)
+        raise ValueError('Current-chain3335 migration: ' + message)
 
 
 def validate_entry(config=None, environ=None):
@@ -53,9 +55,9 @@ def validate_entry(config=None, environ=None):
     require(supplied == ENV_FIELDS, 'all three explicit entry fields are required')
     require(environ[ENV_PREFIX+'AUTHORITY'] == PROTOCOL, 'continuation scope differs')
     require(environ[ENV_PREFIX+'MANIFEST_SHA256'] == PARENT_MANIFEST_SHA256,
-            'parent manifest SHA differs from the pinned rolling4 boundary')
+            'parent manifest SHA differs from the pinned native5 boundary')
     require(Path(environ[ENV_PREFIX+'MANIFEST']) == PARENT_MANIFEST,
-            'only the byte-pinned preserved3331 rolling4 manifest is permitted')
+            'only the byte-pinned preserved3335 native5 manifest is permitted')
     require(socket.gethostname().split('.')[0] == 'h100-10',
             'approved retired-node saved state must load only on retained18 h100-10')
     if config is not None:
@@ -89,7 +91,7 @@ def parent_manifest():
     expected = dict(job_id=PARENT_JOB, run_id=PARENT_RUN, code_commit=PARENT_COMMIT,
         config_sha256=PARENT_CONFIG_SHA256, completed_step=PARENT_COMPLETED_STEP,
         actual_update_limit=200)
-    require(manifest['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED'
+    require(manifest['status'] == 'COMPLETE_SAME_WORLD_STATE_SAVED'
             and all(identity.get(k) == v for k, v in expected.items()),
             'parent status/source/config/completed boundary differs')
     for key, variable in [('data_identity', 'SEARCH_R1_BASELINE_DATA_IDENTITY'),
@@ -227,6 +229,13 @@ def migrate_trainer(trainer):
             and saved_parent_provenance.get('child_code_commit') == PARENT_COMMIT
             and saved_parent_provenance.get('child_config_sha256') == PARENT_CONFIG_SHA256,
             'saved parent continuation provenance differs')
+    parent_receipt_raw = PARENT_MIGRATION_RECEIPT.read_bytes()
+    require(hashlib.sha256(parent_receipt_raw).hexdigest() == PARENT_MIGRATION_SHA256,
+            'saved parent full ancestry receipt bytes changed')
+    parent_receipt = json.loads(parent_receipt_raw)
+    require(parent_receipt['status'] == 'COLD_CURRENT_CHAIN_STATE_MIGRATED'
+            and saved_parent_provenance == parent_receipt['provenance'],
+            'saved parent complete ancestry differs from actual3335 migration receipt')
     provenance = dict(protocol=PROTOCOL, parent_identity=manifest['identity'],
         parent_manifest_path=str(PARENT_MANIFEST), parent_manifest_sha256=PARENT_MANIFEST_SHA256,
         parent_completed_step=PARENT_COMPLETED_STEP, parent_cursor=PARENT_CURSOR,
@@ -236,8 +245,8 @@ def migrate_trainer(trainer):
         child_job_id=os.environ['SLURM_JOB_ID'], child_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
         parent_failed_attempt=dict(attempt_id=PARENT_NEXT_STEP, completed_outer_credit=0,
             optimizer_writes=None, published_rank_optimizer_record=None,
-            error_type='FileNotFoundError', failure_component='supervisor_contract_proc_stat',
-            scope='Parent supervisor failed reading a vanished proc stat; per-rank partial writes are unknown; only completed rolling4 is migrated'),
+            error_type='HumanRequestedStop', failure_component='manual_stop_slow3335',
+            scope='User stopped slow3335 after completed5; interrupted6 partial writes remain unknown; only completed native5 is migrated'),
         automatic_resume_supported=False, executor_equivalence=False, exact_executor_resume=False)
     # The existing snapshot format preserves this provenance without old env,
     # sampler migration, old300 protocol or a ten-write restriction.
@@ -253,7 +262,7 @@ def migrate_trainer(trainer):
             training_attempts=trainer.training_attempts,
             completed_optimizer_calls_per_rank=trainer.completed_optimizer_calls_per_rank),
         cold_official_initialization=trainer.fresh_initialization_provenance,
-        historical_parent_automatic_resume_supported=manifest['automatic_resume_supported'],
+        historical_parent_automatic_resume_supported=manifest.get('automatic_resume_supported', False),
         executor_equivalence=False, initial_evaluation_added=False, step5_approval_hold_added=False)
     atomic_save(receipt, Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'current-chain-migrated.json',
                 json_format=True)

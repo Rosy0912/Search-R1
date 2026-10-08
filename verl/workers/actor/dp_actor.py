@@ -55,7 +55,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         self.compute_entropy_from_logits = torch.compile(verl_F.entropy_from_logits, dynamic=True)
 
-    def _forward_micro_batch(self, micro_batch, temperature) -> Tuple[torch.Tensor, torch.Tensor]:
+    def _forward_micro_batch(self, micro_batch, temperature, compute_entropy=True) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Returns: 
             entropy: # (bs, response_len)
@@ -101,7 +101,8 @@ class DataParallelPPOActor(BasePPOActor):
                 logits_rmpad.div_(temperature)
 
                 # compute entropy
-                entropy_rmpad = self.compute_entropy_from_logits(logits_rmpad)  # ((total_nnz / sp) + pad)
+                entropy_rmpad = (self.compute_entropy_from_logits(logits_rmpad)
+                                 if compute_entropy else None)  # ((total_nnz / sp) + pad)
 
                 # if use_sp: ((total_nnz / sp) + pad) ; if not use_sp: (batch, seqlen)
                 log_probs = logprobs_from_logits(logits=logits_rmpad, labels=input_ids_rmpad_rolled)
@@ -110,22 +111,24 @@ class DataParallelPPOActor(BasePPOActor):
                 if self.use_ulysses_sp:
                     # gather and unpad for the ulysses sp
                     log_probs = gather_outpus_and_unpad(log_probs, gather_dim=0, unpad_dim=0, padding_size=pad_size)
-                    entropy_rmpad = gather_outpus_and_unpad(entropy_rmpad,
-                                                            gather_dim=0,
-                                                            unpad_dim=0,
-                                                            padding_size=pad_size)
+                    if compute_entropy:
+                        entropy_rmpad = gather_outpus_and_unpad(entropy_rmpad,
+                                                                gather_dim=0,
+                                                                unpad_dim=0,
+                                                                padding_size=pad_size)
                 # pad back to (bsz, seqlen)
-                full_entropy = pad_input(hidden_states=entropy_rmpad.unsqueeze(-1),
-                                         indices=indices,
-                                         batch=batch_size,
-                                         seqlen=seqlen)
+                full_entropy = (pad_input(hidden_states=entropy_rmpad.unsqueeze(-1),
+                                          indices=indices,
+                                          batch=batch_size,
+                                          seqlen=seqlen) if compute_entropy else None)
                 full_log_probs = pad_input(hidden_states=log_probs.unsqueeze(-1),
                                            indices=indices,
                                            batch=batch_size,
                                            seqlen=seqlen)
 
                 # only return response part:
-                entropy = full_entropy.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
+                entropy = (full_entropy.squeeze(-1)[:, -response_length - 1:-1]
+                           if compute_entropy else None)  # (bsz, response_length)
                 log_probs = full_log_probs.squeeze(-1)[:, -response_length - 1:-1]  # (bsz, response_length)
 
             else:  # not using rmpad and no ulysses sp
@@ -137,9 +140,15 @@ class DataParallelPPOActor(BasePPOActor):
                 logits.div_(temperature)
                 logits = logits[:, -response_length - 1:-1]  # (bsz, response_length)
                 log_probs = logprobs_from_logits(logits, micro_batch['responses'])
-                entropy = verl_F.entropy_from_logits(logits)  # (bsz, response_length)
+                entropy = verl_F.entropy_from_logits(logits) if compute_entropy else None  # (bsz, response_length)
 
             return entropy, log_probs
+
+    def _forward_monitor_micro_batch(self, micro_batch, temperature):
+        # Monitor admission consumes only native selected-token probabilities.
+        # Keep the original micro partition/model/logits/logprob path, while
+        # omitting the unused full-vocabulary entropy reduction.
+        return self._forward_micro_batch(micro_batch, temperature, compute_entropy=False)
 
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
@@ -153,8 +162,8 @@ class DataParallelPPOActor(BasePPOActor):
             from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
             raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True, safety_guard=True) from refusal
         if safety is not None:
-            safety.sync_valid(not torch.isfinite(grad_norm) or
-                              grad_norm > self.config.get('recovery_max_grad_norm', float('inf')),
+            safety.sync_valid(~torch.isfinite(grad_norm) |
+                              (grad_norm > self.config.get('recovery_max_grad_norm', float('inf'))),
                               'global_preclip_gradient_gate')
         else:
             if not torch.isfinite(grad_norm):
@@ -240,7 +249,8 @@ class DataParallelPPOActor(BasePPOActor):
 
         safety_config = self.config.get("policy_safety", {})
         from search_r1.baselines.policy_safety_runtime import validate_actor_probability_profile
-        corrected_profile = validate_actor_probability_profile(self, data, safety_config)
+        corrected_profile, probability_validation = validate_actor_probability_profile(
+            self, data, safety_config, return_context=True)
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
         temperature = data.meta_info['temperature']  # temperature must be in the data.meta_info to avoid slient error
@@ -276,7 +286,8 @@ class DataParallelPPOActor(BasePPOActor):
         safety = None
         if safety_config.get("enabled", False):
             from search_r1.baselines.policy_safety_runtime import PolicySafetyRuntime
-            safety = PolicySafetyRuntime(self, batch, data.meta_info, safety_config, source_data=data)
+            safety = PolicySafetyRuntime(self, batch, data.meta_info, safety_config,
+                                         source_data=data, validation_context=probability_validation)
         self._policy_safety = safety
         metrics = {}
         updates = skipped = 0
@@ -332,6 +343,9 @@ class DataParallelPPOActor(BasePPOActor):
                     micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
 
                 if safety is not None:
+                    if not safety.initial_state_checked:
+                        safety.parameters_and_adam('before_first_optimizer_parameters_and_adam')
+                        safety.initial_state_checked = True
                     safety.measure("before_optimizer")
                 self.actor_optimizer.zero_grad()
                 mini_metrics = {}
@@ -397,7 +411,7 @@ class DataParallelPPOActor(BasePPOActor):
 
                         policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
                         if paper_objective:
-                            mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
+                            mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().double()
                         else:
                             metrics['actor/kl_loss'] = kl_loss.detach().item()
                         metrics['actor/kl_coef'] = self.config.kl_loss_coef
@@ -432,23 +446,30 @@ class DataParallelPPOActor(BasePPOActor):
                             audit.failure(error)
                         raise
 
-                    micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
+                    micro_mass = policy_weights.sum().detach().double() if paper_objective else 0.
                     data = {
-                        'actor/entropy_loss': entropy_loss.detach().item(),
-                        'actor/pg_loss': pg_loss.detach().item(),
-                        'actor/pg_clipfrac': pg_clipfrac.detach().item(),
-                        'actor/ppo_kl': ppo_kl.detach().item(),
+                        'actor/entropy_loss': entropy_loss.detach(),
+                        'actor/pg_loss': pg_loss.detach(),
+                        'actor/pg_clipfrac': pg_clipfrac.detach(),
+                        'actor/ppo_kl': ppo_kl.detach(),
                     }
                     if paper_objective:
                         for key, value in data.items():
+                            value = value.double()
                             if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
-                                value *= micro_mass / metric_mass.item()
+                                value = value * (micro_mass / metric_mass.double())
                             mini_metrics[key] = mini_metrics.get(key, 0.) + value
                     else:
-                        append_to_dict(metrics, data)
+                        keys = list(data)
+                        append_to_dict(metrics, dict(zip(keys, torch.stack(
+                            [data[key] for key in keys]).cpu().tolist())))
 
                 if paper_objective:
-                    append_to_dict(metrics, mini_metrics)
+                    keys = list(mini_metrics)
+                    # One tiny host transfer per minibatch, not one per metric
+                    # and microbatch. These are detached reporting quantities.
+                    append_to_dict(metrics, dict(zip(keys, torch.stack(
+                        [mini_metrics[key] for key in keys]).cpu().tolist())))
                 try:
                     grad_norm = self._optimizer_step()
                 except Exception as error:
@@ -518,6 +539,7 @@ class DataParallelPPOActor(BasePPOActor):
             metrics['actor/behavior_mu_monitor_native_forward_calls'] = safety.monitor_native_forward_calls
             metrics['actor/behavior_mu_additional_initial_repeat_native_forward_calls'] = safety.initial_actor_repeat_native_forward_calls
             metrics['actor/behavior_mu_monitor_forward_wall_seconds'] = safety.monitor_forward_wall_seconds
+            metrics['actor/behavior_mu_reused_monitor_measurements'] = safety.reused_monitor_measurements
         metrics['actor/optimizer_steps'] = updates
         if continuing_guard:
             metrics['actor/optimizer_opportunities_processed'] = len(self._fresh_opportunity_ledger)

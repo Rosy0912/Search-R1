@@ -33,12 +33,35 @@ def behavior_mu_correction_enabled(config):
     return correction['enabled']
 
 
-def validate_actor_probability_profile(actor, data, config):
+class _ActorProbabilityValidation:
+    """Process-local, single-update proof; never accepted from batch metadata.
+
+    DataProto.select shares these exact tensors. Keep references and mutation
+    versions so replacing or writing a tensor cannot reuse a previous check.
+    No rollout/driver receipt is trusted as an actor validation result.
+    """
+    def __init__(self, source_data):
+        self.source_data = source_data
+        self.meta = source_data.meta_info
+        self.non_tensor = source_data.non_tensor_batch
+        self.tensors = tuple((key, value, value._version)
+                             for key, value in source_data.batch.items())
+
+    def matches(self, source_data):
+        return (source_data is self.source_data
+                and source_data.meta_info is self.meta
+                and source_data.non_tensor_batch is self.non_tensor
+                and len(source_data.batch.keys()) == len(self.tensors)
+                and all(source_data.batch.get(key) is value and value._version == version
+                        for key, value, version in self.tensors))
+
+
+def validate_actor_probability_profile(actor, data, config, *, return_context=False):
     """All ranks validate row-local immutable mu bindings before native forwards."""
     device = (torch.device('cuda', torch.cuda.current_device())
               if dist.is_initialized() and dist.get_backend() == 'nccl'
               else data.batch['input_ids'].device)
-    error, corrected = None, False
+    error, corrected, context = None, False, None
     try:
         corrected = behavior_mu_correction_enabled(config)
         marker = data.meta_info.get('tree_behavior_mu_corrected_profile', False)
@@ -67,16 +90,20 @@ def validate_actor_probability_profile(actor, data, config):
             if (any(type(value) is not int or value <= 0 for value in (micro, mini, epochs))
                     or mini % micro):
                 raise ValueError('Corrected actor fixed mini/micro/epoch configuration invalid')
+            finite_checks = []
             for key in ('advantages', 'policy_weights') + (('ref_log_prob',) if actor.config.use_kl_loss else ()):
                 value = data.batch[key]
-                if (value.shape != sampled.shape or not value.is_floating_point()
-                        or not torch.isfinite(value[valid]).all()):
+                if value.shape != sampled.shape or not value.is_floating_point():
                     raise ValueError('Corrected actor required float field invalid: '+key)
+                finite_checks.append(torch.isfinite(value[valid]).all())
             if (sampled.dtype != torch.float32 or old.dtype != torch.float32
                     or not beta.is_floating_point() or old.shape != sampled.shape
-                    or beta.shape != sampled.shape or not torch.equal(old, sampled)
-                    or not torch.isfinite(beta[valid]).all()):
+                    or beta.shape != sampled.shape or not torch.equal(old, sampled)):
                 raise ValueError('Fixed mu denominator / independent actor beta tensor binding invalid')
+            finite_checks.append(torch.isfinite(beta[valid]).all())
+            if not torch.stack(finite_checks).all():
+                raise ValueError('Corrected actor required float field / independent beta nonfinite')
+            context = _ActorProbabilityValidation(data)
     except Exception as exc:
         error = f'{type(exc).__name__}: {exc}'[:2048]
     flag = torch.tensor(int(error is not None), device=device)
@@ -90,13 +117,14 @@ def validate_actor_probability_profile(actor, data, config):
         dist.all_reduce(hi, op=dist.ReduceOp.MAX)
     if not torch.equal(lo, hi):
         raise PolicySafetyRefusal('Global probability-profile startup refusal: rank profile mismatch', matched_all_ranks=True)
-    return corrected
+    return (corrected, context) if return_context else corrected
 
 
 class PolicySafetyRuntime:
-    def __init__(self, actor, batch, meta, config, source_data=None):
+    def __init__(self, actor, batch, meta, config, source_data=None, validation_context=None):
         self.actor, self.batch, self.config = actor, batch, config
         self.source_data = source_data
+        self.validation_context = validation_context
         self.device = (torch.device('cuda', torch.cuda.current_device())
                        if dist.is_initialized() and dist.get_backend() == 'nccl'
                        else batch['input_ids'].device)
@@ -109,6 +137,9 @@ class PolicySafetyRuntime:
         self.monitor_forward_wall_seconds = 0.
         self.actor_monitor_beta = None
         self.initial_mu_monitor_beta_max_abs_delta = None
+        self.reused_monitor_measurements = 0
+        self._after_monitor = None
+        self.initial_state_checked = False
         error = None
         try:
             self._prepare(meta)
@@ -155,14 +186,19 @@ class PolicySafetyRuntime:
         if self.corrected_profile:
             if self.source_data is None:
                 raise ValueError('Corrected safety startup requires full row-local mu source data')
-            from .tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
-            validate_behavior_mu_batch(self.source_data, expected_provenance=runtime_provenance(os.environ), required=True)
+            shared_validation = (isinstance(self.validation_context, _ActorProbabilityValidation)
+                                 and self.validation_context.matches(self.source_data))
+            if not shared_validation:
+                from .tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
+                validate_behavior_mu_batch(self.source_data, expected_provenance=runtime_provenance(os.environ), required=True)
             for key in ('input_ids', 'responses', 'attention_mask', 'position_ids', 'loss_mask',
                         'sampled_old_log_probs', 'actor_old_log_probs', 'old_log_probs'):
                 if key not in batch.keys():
                     raise ValueError('Corrected safety batch differs from full source data: '+key)
                 selected, source = batch[key], self.source_data.batch[key]
-                if key == 'actor_old_log_probs':
+                if selected is source:
+                    same = True
+                elif key == 'actor_old_log_probs':
                     # Beta on nonsupervised observation/padding is never a policy input.
                     # Retain the original effective-token finite contract (NaN padding allowed).
                     valid = self.effective_mask(batch)
@@ -173,7 +209,7 @@ class PolicySafetyRuntime:
                 if not same:
                     raise ValueError('Corrected safety batch differs from full source data: '+key)
             valid = self.effective_mask(batch)
-            if (batch['old_log_probs'].dtype != torch.float32
+            if not shared_validation and (batch['old_log_probs'].dtype != torch.float32
                     or not torch.equal(batch['old_log_probs'], batch['sampled_old_log_probs'])
                     or not batch['actor_old_log_probs'].is_floating_point()
                     or not torch.isfinite(batch['actor_old_log_probs'][valid]).all()):
@@ -277,13 +313,39 @@ class PolicySafetyRuntime:
 
     @torch.no_grad()
     def measure(self, phase, publish=True):
+        # After Adam and before the next opportunity are the same policy state.
+        # Require agreement before bypassing FSDP forwards; a local-only cache
+        # decision could otherwise strand ranks inside the monitor collective.
+        if phase == 'before_optimizer':
+            cached = self._after_monitor
+            reusable = (cached is not None and cached[0] == self._monitor_version())
+            reuse = torch.tensor(int(reusable), device=self.device)
+            if dist.is_initialized(): dist.all_reduce(reuse, op=dist.ReduceOp.MIN)
+            if reuse.item():
+                decision = dict(cached[1], reasons=list(cached[1]['reasons']),
+                                monitor_measurement_reused=True,
+                                monitor_measurement_source_phase='after_optimizer',
+                                monitor_measurement_optimizer_calls=self.committed)
+                self.reused_monitor_measurements += 1
+                if publish: self.publish(phase, decision)
+                return decision
         devices = [self.device.index] if self.device.type == 'cuda' else []
         with torch.random.fork_rng(devices=devices):
-            return self._measure(phase, publish=publish)
+            decision = self._measure(phase, publish=publish)
+        if phase == 'after_optimizer' and decision['allowed']:
+            self._after_monitor = (self._monitor_version(),
+                                   dict(decision, reasons=list(decision['reasons'])))
+        return decision
+
+    def _monitor_version(self):
+        return (self.committed, self.actor.actor_module.training,
+                tuple((id(value), value._version) for value in self.actor.actor_module.parameters()),
+                tuple((key, id(value), value._version) for key, value in self.monitor.items()))
 
     def _native_monitor(self, data, repeat=False):
         started = time.perf_counter()
-        _, current = self.actor._forward_micro_batch(data, self.temperature)
+        forward = getattr(self.actor, '_forward_monitor_micro_batch', self.actor._forward_micro_batch)
+        _, current = forward(data, self.temperature)
         self.monitor_forward_wall_seconds += time.perf_counter() - started
         self.monitor_native_forward_calls += 1
         if repeat: self.initial_actor_repeat_native_forward_calls += 1
@@ -345,6 +407,7 @@ class PolicySafetyRuntime:
                 offset += len(data)
             self.actor_monitor_beta = frozen
         decision = admission(combined, self.target_kl, self.tail_limit)
+        decision['monitor_measurement_reused'] = False
         decision.update(global_negative_quantiles(torch.cat(negative)))
         if dist.is_initialized(): dist.all_reduce(max_abs_delta, op=dist.ReduceOp.MAX)
         decision['global_monitor_max_abs_delta'] = max_abs_delta.item()
@@ -377,13 +440,28 @@ class PolicySafetyRuntime:
         return decision
 
     @torch.no_grad()
-    def parameters_and_adam(self):
-        bad = torch.zeros((), dtype=torch.bool, device=self.device)
+    def parameters_and_adam(self, phase='post_write_all_local_parameters_and_adam'):
+        # Aggregate on the tensor's own device before transferring one flag.
+        # Adam step scalars can live on CPU even when its moment buffers are on
+        # CUDA; copying a flag per tensor adds hundreds of tiny synchronizations.
+        by_device = {}
         tensors = list(self.actor.actor_module.parameters())
         tensors += [value for state in self.actor.actor_optimizer.state.values()
                     for value in state.values() if isinstance(value, torch.Tensor)]
         for tensor in tensors:
             if tensor.is_floating_point():
-                for chunk in tensor.detach().reshape(-1).split(262144):
-                    bad |= ~torch.isfinite(chunk).all().to(self.device)
-        self.sync_valid(bad, 'post_write_all_local_parameters_and_adam')
+                by_device.setdefault(tensor.device, []).append(tensor.detach())
+        bad = torch.zeros((), dtype=torch.bool, device=self.device)
+        for device, values in by_device.items():
+            local_bad = torch.zeros((), dtype=torch.bool, device=device)
+            scalars = [value.reshape(()) for value in values if value.numel() == 1]
+            if scalars:
+                local_bad |= ~torch.isfinite(torch.stack(scalars)).all()
+            for value in values:
+                if value.numel() != 1:
+                    # Same exhaustive finite test, with bounded 4 Mi-element
+                    # boolean temporaries and 16x fewer chunks than before.
+                    for chunk in value.reshape(-1).split(4194304):
+                        local_bad |= ~torch.isfinite(chunk).all()
+            bad |= local_bad.to(self.device)
+        self.sync_valid(bad, phase)
