@@ -1,0 +1,315 @@
+{
+  "schema": "g1_a800_bf16_rank_recorder_fixed_official_fresh_launch_v1",
+  "recorded_unix": 1791444113.0029461,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "evidence_kind": "local_sanitized_scalar_and_hash_records_of_existing_publication_execute_and_observe_receipts",
+  "source_fix": {
+    "publication_role": "actual_dynamic_rank_recorder_fix_source_publication",
+    "changed_runtime_paths": [
+      "reproduction/a800_common/adopt_initial_probes.py",
+      "reproduction/a800_common/bf16-adoption-source-delta.json",
+      "reproduction/common8/update_evidence.py"
+    ],
+    "scope": "Four-card actual rank recorder correction and corresponding source adoption delta; no new scientific metric or acceptance is claimed."
+  },
+  "source_publication": {
+    "checked_unix": 1791443808.677463,
+    "branch": "search-g1",
+    "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "remote_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true,
+    "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "bundle_bytes": 2902964,
+    "bundle_sha256": "a96f9d51850d15112c50f71a91bb43f682925800c611aad0f1325a00311e18b1",
+    "verified_file_count": 5,
+    "file_readback_records": [
+      {
+        "path": "reproduction/a800_common/adopt_initial_probes.py",
+        "bytes": 24519,
+        "sha256": "0104920f51d496e41f59dd933c55dc7d7abb5e6d1421bab7484716321d7c9eb8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/a800_common/bf16-adoption-source-delta.json",
+        "bytes": 1597,
+        "sha256": "3368544c1109492e3b75eaaec1cabfd2e57ed6f0272faf4db0f2f407c3535ed8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/common8/update_evidence.py",
+        "bytes": 4424,
+        "sha256": "9e6d7c8657f9536b533889dde9def604c39c26f8c603acacc731c6ea3d30d077",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-actor-and-reference-actual-and-seven-writes.json",
+        "bytes": 21259,
+        "sha256": "cc328dbbe0f94df25d74ec333161d1de737b7e834a4ba1c61bff7f30b4dbea95",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-first-worker-outer-recorder-failure.json",
+        "bytes": 9984,
+        "sha256": "082cbc0191f323129053ef8d37d5a95fb935e2f1099ccda549aa4c7fc30612c4",
+        "remote_blob_matches": true
+      }
+    ],
+    "scope": "Actual remote commit and five blob readbacks from the saved publication receipt. Disk hashes are not proof of code loaded by a live process."
+  },
+  "prior_targeted_review_record": {
+    "checked_unix": 1791443658.90242,
+    "target": "actual four-card post-update recording and reachable first-five/refit/final chain",
+    "found_blocker": "new precise update_evidence source delta was absent from BF16_DELTA_SOURCE_FILES",
+    "blocker_fixed": true,
+    "ssh_or_tests_run": false,
+    "startup_allowed_after_publication": true,
+    "remaining_substantive_blocker_count": 0,
+    "scope": "Previously saved review outcome; this evidence-generation task did not perform a review or tests."
+  },
+  "old_failed_run": {
+    "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+    "source_commit": "7dcbc695be205e5d61db10f946efb6a3dbbf9524",
+    "observed_unix": 1791443621.0150561,
+    "worker_attempt_rows": [
+      {
+        "all_ranks_agreed": true,
+        "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+        "attempt_index": 1,
+        "complete_outer": true,
+        "completed_outer": 1,
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 0,
+        "optimizer_writes_this_attempt": 20,
+        "real_rank_count": 4,
+        "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+        "scheduler_advances": 1,
+        "status": "complete"
+      }
+    ],
+    "scheduler_complete_rank_rows": [
+      {
+        "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+        "attempt_index": 1,
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "rank": 0,
+        "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+        "scheduler_advances": 1,
+        "receipt_sha256": "c1651412e66b5a0eec75359024cf16bd8ff67ec71848f131427418e22f864484",
+        "receipt_modified_unix": 1791443306.1482341
+      },
+      {
+        "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+        "attempt_index": 1,
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "rank": 1,
+        "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+        "scheduler_advances": 1,
+        "receipt_sha256": "2dc69fe852b51412c6fea4ef7ce3df7a1a1f978594fdec543568a2e2b31d1451",
+        "receipt_modified_unix": 1791443306.1482341
+      },
+      {
+        "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+        "attempt_index": 1,
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "rank": 2,
+        "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+        "scheduler_advances": 1,
+        "receipt_sha256": "ad156bcd2220eeb5c7a6475ccd8adeac324d3582e7462fe3212751eadd36826b",
+        "receipt_modified_unix": 1791443306.1482341
+      },
+      {
+        "attempt_id": "10568a4773b04d7fa4a21898fb14022c",
+        "attempt_index": 1,
+        "kind": "COMPLETE",
+        "logical_update": 1,
+        "opportunities_processed": 20,
+        "rank": 3,
+        "run_id": "7ebb83de3f874f4a888df41cdd3417a7",
+        "scheduler_advances": 1,
+        "receipt_sha256": "9d21c3e27edce89b8af3a3d13bb5b676bb8e5551a085431ad2426464c8697841",
+        "receipt_modified_unix": 1791443306.1482341
+      }
+    ],
+    "actual_attempts_receipt_sha256": "94509c44397b00563a40d79de7643457e2266fe24e77236939794b0240d60c2f",
+    "actual_attempts_receipt_modified_unix": 1791443310.1882744,
+    "worker_completed_outers": 1,
+    "returned_adam_writes_replica_counted_once": 20,
+    "formal_actual_updates_exists": false,
+    "formal_driver_completed_outers_recorded_lower_bound": 0,
+    "checkpoint_directory_exists": false,
+    "checkpoint_children_count": 0,
+    "scope": "Worker-side first outer and 20 returned writes were recorded; formal driver outer ledger and checkpoint were absent after the recorder failure. This does not count as a saved, resumable official outer."
+  },
+  "new_fresh_launch": {
+    "handle": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.json",
+    "deployment_id": "a20f0475ec824c69ba1554f39e9ff512",
+    "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+    "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "execute_exit_code": 0,
+    "execute_failure_type": null,
+    "execute_observed_unix": 1791443979.1640313,
+    "execute_stage": "LAUNCHED",
+    "source_transport": "published_git_bundle_relay",
+    "fresh_official_completed_outer_start": 0,
+    "resume_from_old_failed_run": false,
+    "target_updates": 200,
+    "training_world_size": 4,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "same_trainer_after_five_outer_updates_required": true,
+    "execution_policy": "one explicit execution; inspect the same handle after failure or uncertainty; no automatic retry"
+  },
+  "actual_new_observation": {
+    "observed_unix": 1791443995.1063328,
+    "command_exit_code": 0,
+    "deployment_stage": "LAUNCHED",
+    "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "pipeline_status_unix": 1791443987.8233788,
+    "pipeline_pid": 1327340,
+    "pipeline_start_ticks": 552357047,
+    "pipeline_alive": true,
+    "pipeline_birth_matches": true,
+    "pipeline_process_state": "S",
+    "pipeline_claimed": true,
+    "trainer_claimed": false,
+    "owned_jobs": [
+      {
+        "name": "retrieval-stage",
+        "ledger_state": "STARTED",
+        "leader": {
+          "pid": 1327539,
+          "start_ticks": 552357914,
+          "birth_matches": true,
+          "state": "R",
+          "alive": true
+        },
+        "live_registered_count": 1,
+        "exit_code": null
+      }
+    ],
+    "actual_updates_ledger": {
+      "exists": false,
+      "malformed_complete_lines": 0,
+      "oversized_lines": 0,
+      "partial_final_line": false,
+      "matching_complete_rows": 0,
+      "identity_or_step_rejected_rows": 0
+    },
+    "new_opportunity_ledger_count": 0,
+    "complete_outer_updates_recorded_lower_bound": 0,
+    "returned_adam_writes_recorded_lower_bound": 0,
+    "new_training_log_exists": false,
+    "scope": "Actual launch and live retrieval-stage observations. No new trainer forward, complete outer, checkpoint, reward, or new EM is established by this snapshot."
+  },
+  "new_run_configuration_intent": {
+    "precision_profile": "bf16_policy_fp32_master",
+    "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "initial_probes_source_base": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef",
+    "initial_probe_policy": "reuse previously bound initial probe artifacts; skip new training-before generation and historical baseline comparison",
+    "new_baseline_measurement_claimed": false,
+    "precision_forward_observed_for_this_new_run": false,
+    "scope": "Configured launch policy; actual BF16 forward evidence from the old run is not relabeled as execution proof for this new run."
+  },
+  "new_gpu_sampling": {
+    "exists": true,
+    "matching_sample_count": 4,
+    "cumulative_sample_count": 4,
+    "identity_or_scalar_rejected_rows": 0,
+    "first_scanned_sample_unix": 1791443987.95371,
+    "latest_sample_unix": 1791443994.3329854,
+    "latest_sample_age_seconds": 0.783036470413208,
+    "maximum_scanned_sampling_gap_seconds": 2.137268543243408,
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": false,
+    "pretraining_history_only": true,
+    "sampled_run_peak_mib": {
+      "0": 4,
+      "1": 4,
+      "2": 4,
+      "3": 4,
+      "5": 4,
+      "6": 4
+    },
+    "scope_note": "Only this new run sampling window is included. At this observation training_claimed=false and the source labels these as pretraining history; old BF16 run peak is not reused, and these are not new training peaks.",
+    "peak_time_proven": false
+  },
+  "deployment_selected_source_hashes": {
+    "reproduction/common8/update_evidence.py": "9e6d7c8657f9536b533889dde9def604c39c26f8c603acacc731c6ea3d30d077",
+    "reproduction/a800_common/adopt_initial_probes.py": "0104920f51d496e41f59dd933c55dc7d7abb5e6d1421bab7484716321d7c9eb8",
+    "reproduction/a800_common/bf16-adoption-source-delta.json": "3368544c1109492e3b75eaaec1cabfd2e57ed6f0272faf4db0f2f407c3535ed8",
+    "reproduction/common8/configuration.py": "71d42ad85864a29f12633c2b39029b7663572c07cd0ce84086a1405b29b6d765",
+    "reproduction/common8/precision_contract.py": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458",
+    "reproduction/common8/behavior_probability.py": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5",
+    "reproduction/common8/behavior_runtime.py": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d",
+    "verl/trainer/ppo/ray_trainer.py": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0",
+    "verl/workers/actor/dp_actor.py": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e"
+  },
+  "goal_state": {
+    "fresh_200_complete": false,
+    "first_five_acceptance_complete": false,
+    "saved_checkpoint_for_new_run_proven": false,
+    "hourly_anchor_modified": false,
+    "automation_modified": false
+  },
+  "provenance": {
+    "execute_output": {
+      "path": "preparation/a800-rank-recorder-fixed-deployment-execute-output.json",
+      "bytes": 946,
+      "sha256": "f231074dcfadb13af1f5b477445a94a1205c5d09e7d5b8597da3a4e972d69c5e"
+    },
+    "execute_full_receipt": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.execute-1791443979176518000.json",
+      "bytes": 2914,
+      "sha256": "31b2f1e2ac9c630fd447ab3e36bd312e557689fb85268625df704a8d3c369fad"
+    },
+    "deployment_intent": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.json",
+      "bytes": 47304,
+      "sha256": "ae6d98e27e90cec0c7eb2d4504cf0dbab38e541c86bc8cfad582bd3d24fafeab"
+    },
+    "observe_output": {
+      "path": "preparation/a800-rank-recorder-fixed-deployment-observe-latest-output.json",
+      "bytes": 4927,
+      "sha256": "25b0971f427a66b42446dcf1040ecf21e14faee87f100a17241be59f4cf1fc8a"
+    },
+    "observe_full_receipt": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791443995102426000.json",
+      "bytes": 6652,
+      "sha256": "3227d443e173eab96b0ac25b9f5e074b28583caa94a532dd7a70dff9060c0aff"
+    },
+    "source_publication": {
+      "path": "preparation/a800-bf16-rank-recorder-fix-publication.json",
+      "bytes": 1949,
+      "sha256": "a027046a0340058ae73579ac3edcc323e54e4051ad674b47ad5ae9f6b451edcd"
+    },
+    "saved_targeted_review": {
+      "path": "preparation/a800-bf16-rank-recorder-fix-review.json",
+      "bytes": 977,
+      "sha256": "ab9c69979c138c0bd7856bed5b5e787f4288c12efe74aae9eeca7b22955310ad"
+    },
+    "old_failed_state": {
+      "path": "preparation/a800-bf16-failed-first-outer-state.json",
+      "bytes": 6102,
+      "sha256": "5e484baffb7de4fbbfa2945a468515a53ca5abc9a4fa91d9db829f6cc2171dd2"
+    }
+  },
+  "sanitization": "Scalar results, identities, selected source hashes, receipt hashes, and paths only; no raw QA, tokens, full logs, model content, credentials, or complete source maps are published."
+}
