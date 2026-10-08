@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 8606,
+      "sha256": "546599d3d25a1ce00ea595db7ce38433a6cb787446cc5754ebd342c737e27935"
+    },
+    "handoff.py": {
+      "bytes": 31625,
+      "sha256": "96e457820bc401e4e97564a4bc8e526a2587277f010ebe57112637dee0ecfa83"
+    },
+    "test_handoff.py": {
+      "bytes": 10912,
+      "sha256": "b9c2fc784e8fad8c8f6e1e138b0333963776c00f5797de83bd6abbd0110660f4"
+    }
+  },
+  "schema": "opsd-ablation-stats-handoff-source-v1"
+}

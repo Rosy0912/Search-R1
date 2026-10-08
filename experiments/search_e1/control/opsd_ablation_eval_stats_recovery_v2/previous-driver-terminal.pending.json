@@ -1,0 +1,17 @@
+{
+  "accepted": false,
+  "actual_exit_code": null,
+  "driver_start": null,
+  "foreground_log": null,
+  "input_manifest": {
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/observer-recovery-964d3c7-20261009/study-manifest.json",
+    "sha256": "45aca46652d14f7a8b2390bfd66e9b5ba41af13b9d3cd0f45706582a955ab3ea"
+  },
+  "live_foreground_binding": null,
+  "owner": null,
+  "pane_dead_record": null,
+  "pane_start_command": null,
+  "schema": "opsd-ablation-study-actual-terminal-v1",
+  "session": "e1-reverse-seven-observer-1a1850f7-20261009",
+  "signal_termination_not_exit0": null
+}
