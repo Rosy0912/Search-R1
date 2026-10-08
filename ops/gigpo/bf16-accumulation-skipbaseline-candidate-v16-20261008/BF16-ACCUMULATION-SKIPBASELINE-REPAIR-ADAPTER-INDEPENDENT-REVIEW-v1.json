@@ -1,0 +1,109 @@
+{
+  "schema": "BF16_ACCUMULATION_SKIPBASELINE_REPAIR_ADAPTER_INDEPENDENT_STATIC_REVIEW_V1",
+  "status": "PASS_STATIC",
+  "blocking_findings": [],
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "The two frozen once-only adapters and exact new binding/derivation delta; the unchanged prior runtime/scientific/assets scope is inherited, not re-tested."
+  },
+  "binding_sha256": "7d9f948c60174e863cfa38a75b7c33424b01daeff833eb7cf2a7108dfb23a866",
+  "derivation_sha256": "613a521452020ef65cba82dff431f7b0df9add8047e9e5a767f5b1ace68cf909",
+  "adapter_sha256": {
+    "zero_adam_stop3332_once_v1.py": "47b9ad44f52f23ecc792472f11f30b787850149fddbbbaf470b4ae6af7ebbf1e",
+    "deploy_submit_bf16accum3332_once_v1.py": "bbfbb03678e4d5c88d7d6433ed4a73ea96245fabf7d81325f1627a086a447808"
+  },
+  "binding_bytes": 20576284,
+  "derivation_bytes": 69560,
+  "adapter_bytes": {
+    "zero_adam_stop3332_once_v1.py": 18984,
+    "deploy_submit_bf16accum3332_once_v1.py": 12426
+  },
+  "parent_binding_sha256": "2c161a96fd4f1313e1c5de935a98319bf85b9247b4c7632c73afac282ed500ec",
+  "source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "runtime_version": 16,
+  "runtime_variant": "bf16accum1-skipbaseline1",
+  "namespace": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/logs/fresh200-bf16accum-skipbaseline-repair3332-once-v1",
+  "prior_v16_delta_review": {
+    "path": "outputs/gigpo-e1-instruct200/BF16-ACCUMULATION-SKIPBASELINE-REPAIR-INDEPENDENT-REVIEW-v1.json",
+    "sha256": "077b99f32ae5ddf76bca65695524920b2424c6323254c5621b6015d71f1433e9",
+    "status": "PASS_STATIC",
+    "new_binding_links_actual_review_bytes": true
+  },
+  "independent_static_binding_delta": {
+    "actual_supplied_file_sha256_match_freeze": true,
+    "exact_parent_plus_derivation_patch_and_runtime_substitutions_and_added_evidence_equals_child": true,
+    "primary_file_count": 39961,
+    "runtime_substitutions": 44,
+    "nonruntime_records_preserved_exactly": 39917,
+    "primary_order_preserved_exactly": true,
+    "original_evidence_prefix_preserved_exactly": 61,
+    "explicit_added_evidence": 5,
+    "runtime_records_unique_and_equal_reviewed_manifest_after_rows": 44,
+    "four_probability_tolerances": [null, null, null, null],
+    "allow_bf16_reduced_precision_reduction": false,
+    "formal_outer_target": 200,
+    "runtime_relative_files_digest": "4281fac1837aea4a4508e49531c71e3c8b6a860cd3ac2e0ba91d3833e3855e17",
+    "runtime_relative_digest_record_key": "relative_path",
+    "runtime_canonical_files_digest": "e6783e204b9de67f0bed19ae9e56cab80360509ecc7c4082bf7a402fa538147e",
+    "declared_primary_files_digest": "105c06e5fc11d5f58d84f8a2eda93c7a90dbcbc48851d7dd34ad1b3922adb1db",
+    "all_three_declared_digests_recomputed_and_equal": true,
+    "unchanged_assets_rescanned_or_imported": false
+  },
+  "checks": [
+    {
+      "check": "exact_current_parent_and_zero_adam_preconditions",
+      "status": "PASS_STATIC",
+      "locations": ["zero_adam_stop3332_once_v1.py:18-25,183-193,195-274"],
+      "reason": "Parent constants match the exact3332 run and parent binding. Frozen derivation ready/material SHA values match the locally retained originals. Its driver PID1804988/start2237475182 and all eight rank/PID/start records exactly equal the original ready artifact. Runtime stop requires current Slurm RUNNING onh100-8, current PID/start/run/source/binding/cgroup identity, still-zero progress and no probability approval or update artifacts. The bound complete typed pause is read on CPU and its driver and worker digests are checked; scheduler/LR/Adam tensor digest must remain Adam0. No new trained checkpoint is asserted or required."
+    },
+    {
+      "check": "single_owned_launcher_signal_and_original_cleanup",
+      "status": "PASS_STATIC",
+      "locations": ["zero_adam_stop3332_once_v1.py:224-278"],
+      "reason": "Ancestor traversal requires the exact original launcher command, interpreter, cwd and cgroup. pidfd targets that launcher, and start identity plus ready/no-update conditions are rechecked before the sole SIGTERM at line276. No helper kill/retry/foreign-job signal path exists. The original launcher's own existing cleanup60 handles its owned children; the adapter waits for its result rather than replacing cleanup."
+    },
+    {
+      "check": "factual_terminal_state_before_submission",
+      "status": "PASS_STATIC",
+      "locations": ["zero_adam_stop3332_once_v1.py:279-307", "deploy_submit_bf16accum3332_once_v1.py:24-46,58,137"],
+      "reason": "Stop facts are only written after original PIDs and cgroup disappear, actual Slurm state is FAILED, GPU compute list is empty, and original run-result records the exact signal15 interruption with no cleanup residuals or final GPU processes. Original material hashes are rechecked, and the fact explicitly records a technical interruption rather than a goal pause. Submission independently rechecks those immutable facts, original terminal bytes, live PID/cgroup absence, Slurm terminal state, no updates and GPUempty both before staging and immediately before sbatch. Missing or uncertain evidence refuses submission."
+    },
+    {
+      "check": "once_only_intents_transport_and_single_sbatch",
+      "status": "PASS_STATIC",
+      "locations": ["zero_adam_stop3332_once_v1.py:60-66,108-158,198-200", "deploy_submit_bf16accum3332_once_v1.py:49-63,101-124,136-156"],
+      "reason": "Exclusive-create local and remote intents consume each stop/submit attempt, including uncertain outcomes. The transport keeps strict accepted route/host checks and reports NEVER_REPLAY rather than retrying. Existing runtime/metadata paths cannot be overwritten. There is exactly one sbatch call, with the formal200 entry point and exact child binding SHA. Queueing is explicitly not GPU admission; original allocation, loopback service, guard and actual GPU gates remain in the unchanged runtime path."
+    },
+    {
+      "check": "publication_and_independent_exact_byte_review_gate",
+      "status": "PASS_STATIC",
+      "locations": ["zero_adam_stop3332_once_v1.py:69-105", "deploy_submit_bf16accum3332_once_v1.py:159-183"],
+      "reason": "Both actions require actual published/remote-readback proof for the exact two adapters, derivation, binding and all44 runtime files, plus nonauthor clean-context PASS_STATIC matching this binding/derivation SHA and the two exact adapter filenames/SHA values. Runtime hash inputs are read from actual local bytes. These checks precede local transport intent and any remote stop or submit action. This report certifies the gate logic; publication facts must still be supplied by the executor."
+    },
+    {
+      "check": "complete_binding_delta_and_scientific_boundaries",
+      "status": "PASS_STATIC",
+      "locations": ["deploy_submit_bf16accum3332_once_v1.py:17-21,64-100,104-130", "frozen binding/derivation delta"],
+      "reason": "The independently parsed child equals the exact parent plus only the declared patch, all44 runtime substitutions in original primary order, and61 original evidence records plus5 named additions. All39917 nonruntime records remain identical. Source2dd, target200, first-five formal counting/same-process continuation, mathematical configuration, guards and four null probability tolerances are preserved. The sole authorized baseline policy overrides initial512 only, links the actual v16 static review SHA, and hashes the historical3332 F1/EM artifacts; no old RNG/data/Adam restoration or new baseline forward is claimed."
+    }
+  ],
+  "static_only_limits": {
+    "execution_authorization_created": false,
+    "candidate_or_adapter_executed": false,
+    "tests_or_project_imports_executed": false,
+    "ssh_or_gpu_used": false,
+    "parent_actually_stopped_by_reviewer": false,
+    "new_job_submitted_by_reviewer": false,
+    "publication_performed_or_certified_as_completed_by_reviewer": false,
+    "implementation_modified": false,
+    "probability_approval_created": false,
+    "numerical_repair_success_claimed": false
+  },
+  "remaining_runtime_gates": [
+    "The actual publication record and exclusive stop/submit facts are execution-time requirements, not facts supplied by this static review.",
+    "Formal fresh200 first-batch evidence remains subject to the existing independent probability/zero-Adam acceptance; no additional CPU/native/GPU validation task is authorized or created.",
+    "Any changed adapter, binding, derivation or reviewed runtime bytes invalidate this exact-byte result."
+  ]
+}

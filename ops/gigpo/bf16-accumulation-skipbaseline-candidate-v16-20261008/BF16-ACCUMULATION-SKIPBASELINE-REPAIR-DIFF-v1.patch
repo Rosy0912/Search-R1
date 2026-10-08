@@ -1,0 +1,104 @@
+--- v15/calibration_driver_v1.py
++++ v16/calibration_driver_v1.py
+@@ -112,10 +112,17 @@
+     tokenizer = hf_tokenizer(config.actor_rollout_ref.model.path)
+     mapping = {Role.ActorRollout: 'global_pool', Role.RefPolicy: 'global_pool'}
+     manager = ResourcePoolManager(resource_pool_spec={'global_pool': [8]}, mapping=mapping)
+-    trainer = RayPPOTrainer(config=config, tokenizer=tokenizer,
++    require(config.trainer.val_before_train is False, 'User-authorized historical baseline reuse must skip initial validation')
++    # Frozen source checks its former baseline requirement while constructing
++    # the sampler. Only that constructor compatibility bit uses the old value;
++    # the actual saved/trainer/worker config remains False and fit is never used.
++    constructor_config = copy.deepcopy(config)
++    constructor_config.trainer.val_before_train = True
++    trainer = RayPPOTrainer(config=constructor_config, tokenizer=tokenizer,
+         role_worker_mapping={role: ray.remote(CalibrationActorRolloutRefWorker) for role in mapping},
+         resource_pool_manager=manager, ray_worker_group_cls=RayWorkerGroup,
+         reward_fn=RewardManager(tokenizer, 0), val_reward_fn=RewardManager(tokenizer, 1))
++    trainer.config = config
+     from metadata_colocation_v1 import scoped_metadata_colocation
+     with scoped_metadata_colocation():
+         trainer.init_workers()
+@@ -740,7 +747,7 @@
+     run = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])
+     require(os.environ.get('VLLM_ATTENTION_BACKEND') == 'FLASH_ATTN', 'Ray backend environment differs')
+     trainer = create_trainer(config)
+-    observe_bf16_accumulation(trainer, run, 'before-official-zero-and-baseline')
++    observe_bf16_accumulation(trainer, run, 'before-official-zero-and-first-batch')
+     backend_rows = trainer.actor_rollout_wg.calibration_backend_identity()
+     json_save(run / 'actual-vllm-backend-identity.json', dict(status='OBSERVED_UNREVIEWED',
+         actual_observations=backend_rows, probability_accepted=False))
+@@ -759,25 +766,32 @@
+             and all(r['finite'] for r in reference), 'Nonfinite or incomplete actual fixed reference')
+     for row in reference:
+         validate_bf16_accumulation_identity(row, role='ref')
+-    baseline = evaluate(trainer, 'baseline', run)
+-    baseline_after = trainer.actor_rollout_wg.checkpoint_pause_identity()
+-    compared_fields = ('rank', 'pid', 'model_shards_sha256', 'local_shards_sha256',
+-                       'optimizer_tensors_sha256', 'buffers_sha256', 'scheduler_step', 'learning_rates')
+-    baseline_comparison = dict(before=initial['workers'], after=baseline_after,
+-        compared_fields=list(compared_fields), changed_fields_by_worker=[dict(
+-            before_rank=old['rank'], after_rank=now['rank'],
+-            changed_fields=[key for key in compared_fields if old[key] != now[key]])
+-            for old, now in zip(initial['workers'], baseline_after)])
+-    json_save(run / 'actual-baseline-state-comparison.json', baseline_comparison)
+-    require(len(baseline_after) == len(initial['workers']) == 8
+-            and {row['rank'] for row in baseline_after} == set(range(8)),
+-            'Missing baseline-end all-eight actor identities')
+-    for old, now in zip(initial['workers'], baseline_after):
+-        require(all(old[key] == now[key] for key in compared_fields),
+-                'Baseline changed actor/model/Adam/scheduler')
++    from search_r1.baselines.recovery import file_sha256
++    reuse = binding['initial_baseline_policy']
++    require(reuse['status'] == 'REUSED_USER_AUTHORIZED_BASELINE' and reuse['parent_job'] == '3332'
++            and reuse['new_run_evaluation_forward_calls'] == 0
++            and config.trainer.val_before_train is False, 'Explicit historical baseline reuse binding required')
++    for row in (reuse['historical_evaluation'], reuse['historical_state_comparison']):
++        path = Path(row['path'])
++        require(path.is_file() and not path.is_symlink() and path.stat().st_size == row['bytes']
++                and file_sha256(path) == row['sha256'], 'Historical baseline provenance changed')
++    historical = json.loads(Path(reuse['historical_evaluation']['path']).read_bytes())
++    full = historical['full512']
++    require(historical['phase'] == 'baseline' and historical['logical_step'] == 0
++            and historical['retained_training_updates_contributed'] == 0
++            and full['val/qa_count/all'] == 512 and full['val/qa_count/nq'] == full['val/qa_count/hotpotqa'] == 256
++            and full['val/f1/all'] == .2429115394461968 and full['val/em/all'] == .18359375,
++            'Wrong historical official512 baseline')
++    baseline = dict(scope=SCOPE, phase='baseline', logical_step=0, retained_training_updates_contributed=0,
++        status='REUSED_USER_AUTHORIZED_BASELINE', historical=True, actual_new_run_evaluation=False,
++        new_run_evaluation_forward_calls=0, new_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
++        new_run_binding_sha256=os.environ['GIGPO_POLICY_NATIVE_BINDING_SHA256'],
++        new_run_actual_initialization=initial['actual_initialization'], provenance=reuse,
++        full512=copy.deepcopy(full), extra_stage64_evaluation=False)
++    json_save(run / 'reused-user-authorized-baseline.json', baseline)
+     require(trainer.recovery_sampler.cursor == 0 and reference == trainer.ref_policy_wg.calibration_reference_identity(),
+-            'Baseline advanced training data or fixed reference')
+-    # Retain natural validation RNG, then one live iterator for first5 through200.
++            'Initialization advanced training data or fixed reference')
++    # No initial validation RNG is consumed; one live iterator for first5 through200.
+     from live_continuation_v10 import run_counted_training
+     return run_counted_training(trainer, run, binding, initial, reference, baseline)
+ 
+--- v15/calibration_run_v1.py
++++ v16/calibration_run_v1.py
+@@ -150,6 +150,10 @@
+     binding = json.loads(binding_path.read_text())
+     require(binding['allow_bf16_reduced_precision_reduction'] is False,
+             'This immutable BF16 candidate requires a new binding declaring the disabled reduction flag')
++    require(binding['initial_baseline_policy']['status'] == 'REUSED_USER_AUTHORIZED_BASELINE'
++            and binding['initial_baseline_policy']['parent_job'] == '3332'
++            and binding['initial_baseline_policy']['new_run_evaluation_forward_calls'] == 0,
++            'This immutable runtime requires explicit user-authorized initial baseline reuse')
+     helpers = Path(__file__).resolve().parent
+     for name in ('calibration_run_v1.py', 'calibration_driver_v1.py',
+                  'calibration_worker_v1.py', 'calibration_state_v1.py'):
+@@ -254,6 +258,9 @@
+         OmegaConf.resolve(config)
+         from search_r1.baselines.fresh200 import validate_protocol
+         validate_protocol(config)
++        # Latest human instruction skips only the initial512 evaluation. Preserve
++        # every other frozen protocol check and save the actual False config.
++        config.trainer.val_before_train = False
+         require(config.actor_rollout_ref.model.path == config.actor_rollout_ref.ref.model_path == binding['official_model_path'],
+                 'Actual actor/reference official source differs from binding')
+         split = prepare_common_holdout(config)

@@ -1,0 +1,85 @@
+{
+  "schema": "BF16_ACCUMULATION_SKIPBASELINE_INDEPENDENT_STATIC_REVIEW_V1",
+  "status": "PASS_STATIC",
+  "reviewer": {
+    "agent": "/root/bf16accum15_clean_review",
+    "clean_context": true,
+    "candidate_author": false,
+    "scope": "Frozen v16 delta against previously reviewed v15; two changed runtime files only."
+  },
+  "candidate_runtime": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v16-bf16accum1-skipbaseline1",
+  "parent_runtime": "work/gigpo-e1-quality-resume-runtime/safety-calibration-fresh200-v15-bf16accum1",
+  "source_commit": "2ddbb0a1619ce7cde28b4c5be110ffe5bd11c963",
+  "human_override_reviewed": "Skip the new pre-training baseline and reuse the previous result; retain the formal first five updates and subsequent training/evaluation protocol.",
+  "blocking_findings": [],
+  "reviewed_sha256": {
+    "calibration_driver_v1.py": "ffd43efb0187ed7addf35f3af0fdd958e931468f3df7e8ee1f6574b6d6015853",
+    "calibration_run_v1.py": "410551032189f010f7e0eed2e1db043bad0ccd8be2bfba78473b38343a971c26",
+    "BF16-ACCUMULATION-SKIPBASELINE-REPAIR-DIFF-v1.patch": "2383fedf1dffd621601d7b739aac941cb7ef219268dd1f7a524f0341ca0d3a06",
+    "BF16-ACCUMULATION-SKIPBASELINE-REPAIR-FILE-MANIFEST-v1.json": "97abd386a21f7d954da790041fa1c2ac4841d0e85cd370519ea3ebf5e368734a"
+  },
+  "byte_scope": {
+    "driver_bytes": 55791,
+    "run_bytes": 27268,
+    "changed_files": ["calibration_driver_v1.py", "calibration_run_v1.py"],
+    "candidate_file_count": 44,
+    "unchanged_parent_files": 42,
+    "directory_comparison_matches_two_file_manifest_delta": true,
+    "actual_changed_file_sha256_match_supplied_freeze": true,
+    "v15_review_repeated": false
+  },
+  "checks": [
+    {
+      "status": "PASS_STATIC",
+      "check": "constructor_compatibility_and_actual_false_configuration",
+      "locations": [
+        "candidate/calibration_run_v1.py:258-274",
+        "candidate/calibration_driver_v1.py:115-128",
+        "source/verl/trainer/ppo/ray_trainer.py:339-387,414-492",
+        "source/search_r1/baselines/instruct300.py:19-68",
+        "source/search_r1/baselines/fresh200.py:49-96",
+        "source/search_r1/baselines/controller.py:132-135"
+      ],
+      "reason": "The full frozen protocol is checked before the one authorized actual config change. Actual resolved YAML and C0 JSON contain false. Only a deep-copy constructor view changes val_before_train to true for the two outdated sampler checks. The sampler retains size/shuffle/seed, not the old trainer baseline bit; the child Controller retains identical baselines settings and the same trainer object. Trainer.config is replaced with actual false before init_workers. Constructor optimizer injections already equal the actual config's explicit actor horizon200, save_training_state true and pre-injected critic horizon200. No mathematical, model, data, guard or probability condition is relaxed."
+    },
+    {
+      "status": "PASS_STATIC",
+      "check": "historical_baseline_is_labeled_and_not_executed_or_restored",
+      "locations": ["candidate/calibration_driver_v1.py:769-797"],
+      "reason": "The initial evaluate call and its misleading new-run baseline comparison are removed. Historical evaluation and state-comparison bytes must match bound size/SHA and non-symlink regular paths. The reused JSON explicitly sets historical true, actual_new_run_evaluation false and new_run_evaluation_forward_calls zero, and attaches the new run/binding plus actual fresh initialization separately. Only historical full512 metrics are copied; no RNG, sampler cursor, Adam, model or checkpoint is loaded from the old run. The code checks baseline phase/step0/zero updates, 512 total with256 per source, F1 0.2429115394461968 and EM0.18359375."
+    },
+    {
+      "status": "PASS_STATIC",
+      "check": "later_formal_evaluations_and_acceptance_unchanged",
+      "locations": [
+        "candidate/calibration_driver_v1.py:795-802",
+        "unchanged/live_continuation_v10.py:209-289",
+        "unchanged/calibration_contract_v1.py:67-136"
+      ],
+      "reason": "Fresh zero initialization and fixed reference checks remain. The existing same-process live iterator, independent first-batch probability/zero-Adam gate, formal first five updates, full-state first5 acceptance, and evaluation steps5/50/100/150/200 are unchanged. Baseline metrics continue to serve the existing report-only quality comparison, with the enclosing baseline artifact clearly historical. Four null tolerance fields and all original guard/acceptance rules are unchanged."
+    },
+    {
+      "status": "PASS_STATIC",
+      "check": "immutable_baseline_policy_requirement",
+      "locations": ["candidate/calibration_run_v1.py:151-161"],
+      "reason": "The launcher requires the exact historical-reuse policy status, parent3332 and zero new evaluation-forward declaration alongside the existing false BF16 flag and actual helper-byte binding gates. This review covers code requirements; the new binding itself has not yet been supplied."
+    }
+  ],
+  "scope_limits": {
+    "adapter_review_included": false,
+    "new_binding_reviewed": false,
+    "approval_or_execution_authorization": false,
+    "probability_accepted": false,
+    "numerical_fix_success_claimed": false,
+    "candidate_executed": false,
+    "imports_or_tests_executed": false,
+    "ssh_or_gpu_used": false,
+    "implementation_modified": false,
+    "commits_or_pushes_performed": false
+  },
+  "remaining_gates": [
+    "New immutable binding, baseline provenance bytes and once-only stop/deploy/submit adapters require their own exact-byte static review before execution.",
+    "This delta review inherits the v15 static result only for its unchanged42 files and certifies the exact two v16 SHA values above.",
+    "Actual formal first-batch evidence still requires the existing independent probability review; no extra CPU/native/GPU validation job is justified by this result."
+  ]
+}
