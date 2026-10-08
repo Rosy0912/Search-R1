@@ -8,9 +8,17 @@
       "sha256": "bcdffa805d6442dd02e637455f17e2fc6ac6ecf57c44ff3fe1b328dc4efa3439",
       "size": 3775
     },
+    "reproduction/code-backup/topd/loose/migrate_topd_to_hpc3_stream.py": {
+      "sha256": "59f3f09ef5924a72973746ec6994d34e6b7396b02905fd73c61f80c05d476cfd",
+      "size": 10915
+    },
+    "reproduction/code-backup/topd/loose/pack_topd_hpc3_assets.py": {
+      "sha256": "dc019ace37f30ef815237a5cc6ff382a60d7047bf640cc7fee243a368649d76e",
+      "size": 9738
+    },
     "reproduction/code-backup/topd/loose/remote_topd_retained18.py": {
-      "sha256": "2fae2d742dc6f06d2d1aaceed629ad70b89a2e4128b7e1787926ed27a0608f3f",
-      "size": 1345
+      "sha256": "2b2c054f7fc5bcd1abb6ef23088c505cb46a7229b5aead7bc7d0cd38417649c1",
+      "size": 1604
     },
     "reproduction/code-backup/topd/loose/start_topd_teacher85_approved.py": {
       "sha256": "4ae7ad6901ae5eaa98f265794be45efa195d762b28ca596bc29e1b8d79ef68d0",
@@ -133,6 +141,7 @@
       "size": 2828
     }
   },
+  "migration_scope": "User-approved offline migration H100 to HPC3 shared storage; streaming through Mac without intermediate model files",
   "scope": "new direct teacher85 launcher and retained18 transport; previous versions retained",
   "session": "01a0fcbe-15f8-7600-ae84-9487d924560a"
 }
