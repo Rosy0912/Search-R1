@@ -1,0 +1,406 @@
+{
+  "accepted": true,
+  "all70_producer_records_complete": false,
+  "coverage": {
+    "all70_complete": false,
+    "by_variant": {
+      "C0": 10,
+      "C1": 4,
+      "J": 0,
+      "M": 0,
+      "P": 0,
+      "R": 0,
+      "W": 0
+    },
+    "completed_outers": 14,
+    "expected_outers": 70
+  },
+  "fixed_heldout_curve": false,
+  "groups": {
+    "C0": {
+      "actual_adam": 100,
+      "actual_weighted_pair_exposure": 3012.0,
+      "complete": true,
+      "completed_outers": 10,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.36394943558509507
+        },
+        "raw_loss": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.37264755582515885
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.37264755582515885
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.0012055377467067314
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.37264755582515885
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 3012,
+          "observed_trajectories": 3012,
+          "value": 0.36394943558509507
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.0,
+      "precision": "bf16",
+      "raw_pair_exposure": 3012,
+      "valid_tokens": 583074
+    },
+    "C1": {
+      "actual_adam": 41,
+      "actual_weighted_pair_exposure": 1221.0,
+      "complete": false,
+      "completed_outers": 4,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.39905267662617866
+        },
+        "raw_loss": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.40871753662222343
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.40871753662222343
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.0007760059568861237
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.40871753662222343
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 1221,
+          "observed_trajectories": 1221,
+          "value": 0.39905267662617866
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.0,
+      "precision": "bf16",
+      "raw_pair_exposure": 1221,
+      "valid_tokens": 260834
+    },
+    "J": {
+      "actual_adam": 0,
+      "actual_weighted_pair_exposure": null,
+      "complete": false,
+      "completed_outers": 0,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "raw_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.1,
+      "precision": null,
+      "raw_pair_exposure": 0,
+      "valid_tokens": 0
+    },
+    "M": {
+      "actual_adam": 0,
+      "actual_weighted_pair_exposure": null,
+      "complete": false,
+      "completed_outers": 0,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "raw_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.1,
+      "precision": null,
+      "raw_pair_exposure": 0,
+      "valid_tokens": 0
+    },
+    "P": {
+      "actual_adam": 0,
+      "actual_weighted_pair_exposure": null,
+      "complete": false,
+      "completed_outers": 0,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "raw_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.0,
+      "precision": null,
+      "raw_pair_exposure": 0,
+      "valid_tokens": 0
+    },
+    "R": {
+      "actual_adam": 0,
+      "actual_weighted_pair_exposure": null,
+      "complete": false,
+      "completed_outers": 0,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "raw_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.0,
+      "precision": null,
+      "raw_pair_exposure": 0,
+      "valid_tokens": 0
+    },
+    "W": {
+      "actual_adam": 0,
+      "actual_weighted_pair_exposure": null,
+      "complete": false,
+      "completed_outers": 0,
+      "equal_pair_means": {
+        "post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "raw_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_mixture_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_outer_old_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "student_to_teacher_raw_kl": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        },
+        "weighted_post_loss": {
+          "expected_trajectories": 0,
+          "observed_trajectories": 0,
+          "value": null
+        }
+      },
+      "expected_outers": 10,
+      "mixture_alpha": 0.0,
+      "precision": null,
+      "raw_pair_exposure": 0,
+      "valid_tokens": 0
+    }
+  },
+  "scope": "Only recorded committed scalars; pending slots stay blank. No rescoring or numerical tensor re-audit.",
+  "source": {
+    "bytes": 604249,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-14/seven-closed-outer-native-facts/facts.stdout.json",
+    "sha256": "d4bd6cdec1b1355c82c7482f4d60815a0225f62ed3a6e45a309dba8aaee7713d"
+  },
+  "source_configs": [
+    {
+      "bytes": 9498,
+      "ctime_ns": 1791480422544261186,
+      "device": 2065,
+      "inode": 466421974,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+      "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+    },
+    {
+      "bytes": 9498,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421976,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/receipts/authorized-launch-20261009/config.json",
+      "sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310"
+    },
+    {
+      "bytes": 9487,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421978,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-M/receipts/authorized-launch-20261009/config.json",
+      "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+    },
+    {
+      "bytes": 9487,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421980,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-R/receipts/authorized-launch-20261009/config.json",
+      "sha256": "8cc81ae28882f0fb32a924d7a4d96fc6f7f0702b210ef62847e409c404d36ab9"
+    },
+    {
+      "bytes": 9487,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421982,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-W/receipts/authorized-launch-20261009/config.json",
+      "sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494"
+    },
+    {
+      "bytes": 9494,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421984,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/config.json",
+      "sha256": "dcc0a03750dec59651550609889a8b82ba0d967a728da01626216af6d7714412"
+    },
+    {
+      "bytes": 9494,
+      "ctime_ns": 1791480422548261169,
+      "device": 2065,
+      "inode": 466421986,
+      "mode": 33188,
+      "mtime_ns": 1791480255000000000,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-J/receipts/authorized-launch-20261009/config.json",
+      "sha256": "da6f7396970b77d3bbf2572f437ed2e05f0c3469bb2bcbe5a63dbbe12306b01f"
+    }
+  ],
+  "totals": {
+    "committed_unique_updates": 141,
+    "raw_pair_exposure": 4233,
+    "valid_tokens": 843908
+  },
+  "training_exit_or_effect_acceptance": false
+}
