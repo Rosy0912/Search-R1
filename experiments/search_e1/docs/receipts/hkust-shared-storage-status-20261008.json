@@ -1,0 +1,32 @@
+{
+  "active_m1_not_stopped": true,
+  "hkust1_data_mount": {
+    "host": "xielab1",
+    "source": "/dev/sdb1",
+    "type": "ext4"
+  },
+  "hkust4_weka3_mount": {
+    "host": "xielab5",
+    "source": "/dev/sdc1",
+    "type": "ext4"
+  },
+  "human_shared_path_or_exception_question_pending": true,
+  "m4_gpu_not_started": true,
+  "not_oom_or_model_failure": true,
+  "proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/hkust-shared-storage-readonly-20261008.json",
+    "sha256": "2e05f63fd0a870ea40ac92e4e17dabeda919d7f3e285b2f93ff057bede97532a"
+  },
+  "recorded_unix": 1791440616.656327,
+  "registered_hkust_nodes_checked": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "same_shared_object_not_verified": true,
+  "schema": "search-e1-hkust-storage-constraint-20261008",
+  "server_release_date": "UNKNOWN",
+  "shared_storage_verified": false
+}

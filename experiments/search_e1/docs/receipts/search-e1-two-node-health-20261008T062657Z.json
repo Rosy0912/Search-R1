@@ -1,0 +1,101 @@
+{
+  "checked_utc": "2026-10-08T06:31:41.476649+00:00",
+  "gpu_stages_started": false,
+  "k1_resident": {
+    "direct_continuous_memory": {
+      "foreign_compute_apps_seen": [],
+      "fresh_seconds_at_read_end": 2.2968900203704834,
+      "max_process_mib": 16110,
+      "min_free_mib": 8094,
+      "samples": 7831,
+      "updated_at_unix": 1791440984.436432
+    },
+    "fresh_source_runtime": {
+      "actual_map_sha256": "f4d2cbe9e71d946c0dd39174292bddafa5032278c1dd7e0b8be2c0e1c57e0a6b",
+      "all_match": true,
+      "errors": [],
+      "expected_files": 246,
+      "hashed_files": 246,
+      "total_bytes_hashed": 1620689
+    },
+    "gpu4_6_actual_free_each_mib": 24208,
+    "gpu4_6_no_compute_apps": true,
+    "health_ready": true,
+    "pid": 4189880,
+    "snapshot_end_unix": 1791440986.7327633,
+    "source_identity_sha256": "c1265ec3f5884e1b3cc61ca52dfedcbf21992ad50bcbf144deb0c9fd85d5152e",
+    "starttick": 922361711,
+    "uid": 1005
+  },
+  "k4_archive": {
+    "actual_gpu4_7_direct_read": [
+      {
+        "actual_free_mib": 34019,
+        "index": 4,
+        "total_mib": 49140,
+        "used_mib": 14742,
+        "utilization_percent": 100,
+        "uuid": "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65"
+      },
+      {
+        "actual_free_mib": 22561,
+        "index": 5,
+        "total_mib": 49140,
+        "used_mib": 26200,
+        "utilization_percent": 100,
+        "uuid": "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2"
+      },
+      {
+        "actual_free_mib": 28089,
+        "index": 6,
+        "total_mib": 49140,
+        "used_mib": 20672,
+        "utilization_percent": 100,
+        "uuid": "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f"
+      },
+      {
+        "actual_free_mib": 30193,
+        "index": 7,
+        "total_mib": 49140,
+        "used_mib": 18567,
+        "utilization_percent": 100,
+        "uuid": "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3"
+      }
+    ],
+    "all_runtime_sha_checks_passed": true,
+    "frozen_runtime_count": 5,
+    "frozen_runtimes_files_each": 669,
+    "latest_real_update": {
+      "actor/grad_norm": 0.619,
+      "actor/kl_loss": 0.587,
+      "actor/pg_clipfrac": 0.003,
+      "audit/score_disagreement": 0.001,
+      "audit/strict_em": 0.48,
+      "critic/rewards/mean": 0.48,
+      "step": 165,
+      "timing_s/gen": 891.466,
+      "timing_s/step": 2268.232,
+      "timing_s/update_actor": 939.02
+    },
+    "metrics_all_finite": true,
+    "native512_latest_logged_dataset_metrics": {
+      "hotpotqa_rounded": 0.512,
+      "nq_rounded": 0.387,
+      "step": 150
+    },
+    "native512_latest_recorded_step": 150,
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "shared_retriever_current_mib": 718,
+    "shared_retriever_service_peak_mib": 738,
+    "snapshot_end_unix": 1791440819.6761763,
+    "uid": 1001
+  },
+  "no_signals_sent": true,
+  "schema": "search-e1-two-node-health-compact-20261008",
+  "shared_storage_input_or_explicit_exception_pending": true,
+  "source_private_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/archive-audit/two-node-compact-hourcheck-20261008T062657Z.json",
+    "sha256": "2167bbdba3ff62c6df0e132b73892cfe1bab6c11349492bfed92a732f1a018f2"
+  },
+  "training_or_sources_mutated": false
+}

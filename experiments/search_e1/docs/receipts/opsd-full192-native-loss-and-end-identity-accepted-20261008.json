@@ -1,0 +1,71 @@
+{
+  "accepted": true,
+  "cells": {
+    "hotpotqa/all5_wrong": 32,
+    "hotpotqa/correct_correct": 32,
+    "hotpotqa/correct_wrong": 32,
+    "nq/all5_wrong": 32,
+    "nq/correct_correct": 32,
+    "nq/correct_wrong": 32
+  },
+  "completed_cases": 192,
+  "controller": {
+    "exit_code": 0,
+    "pid": 33834,
+    "starttick": 922457688,
+    "uid": 1005
+  },
+  "counts": {
+    "complete": 2688,
+    "token_rows": 2645201
+  },
+  "debug_source_manifest_sha256": "9f0d088f093b7d9f51412f6cd650c421dd4b8a8e1de09cd931535e28bacf4d16",
+  "diagnostic_strata_not_benchmark": true,
+  "ended_unix": 1791440579.354409,
+  "fresh_npy_files": 56,
+  "full_private_release": {
+    "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/analysis/m1-end-acceptance-20261008-v2/release.json",
+    "sha256": "1f997d54200506fbfa935717330e76729b72e9cd5a3b96e688fff2da023239c3"
+  },
+  "full_vocabulary_scope": "All actual dump SHA/header bytes fresh verified; only selected existing dumps independently CPU semantic-reconstructed previously. No new reconstruction claim for other arrays.",
+  "full_vocabulary_statuses": {
+    "cap_skip": 17,
+    "complete": 11,
+    "not_requested": 1764,
+    "not_requested_generated_response_scope": 896
+  },
+  "local_verified_copy": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ownership-v2-review-20261008/release.json",
+  "m1_run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "native512_gpu_not_started": true,
+  "no_cuda_or_http": true,
+  "no_signals_sent": true,
+  "process_ownership_audits": {
+    "end": {
+      "accepted": true,
+      "ended_unix": 1791440579.3477602,
+      "started_unix": 1791440579.2035077,
+      "unexpected_blockers": 0
+    },
+    "start": {
+      "accepted": true,
+      "ended_unix": 1791439726.8868132,
+      "started_unix": 1791439726.7470715,
+      "unexpected_blockers": 0
+    }
+  },
+  "schema": "m1-complete-independent-cpu-release-v1",
+  "shared_storage_info_pending": true,
+  "source_and_weight_end_verified": true,
+  "source_file_counts": {
+    "debug": 15,
+    "runtime": 305
+  },
+  "started_unix": 1791439726.7440238,
+  "teacher_invariance_scope": "Observed teacher target/topk at identical preserved history only. Missing fields/skips explicit unknown; no full-vocab q equivalence claim.",
+  "weight_manifest_sha256": "a68648d3b2266e4d51b63f27e89f108f6c059f4de3785a0c7769ab87049fb8c9",
+  "worker_counts": [
+    64,
+    64,
+    64
+  ]
+}

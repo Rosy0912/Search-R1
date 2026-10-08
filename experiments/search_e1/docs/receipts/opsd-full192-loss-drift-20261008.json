@@ -206,11 +206,49 @@
   },
   "relative_teacher_loss_reduction": 0.6650655615706755,
   "report": {
-    "bytes": 5220,
+    "bytes": 6420,
     "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/docs/opsd-full192-loss-drift-findings-20261008.md",
-    "sha256": "fc9207ad8c82d1e8627fc69ec6cc8ff4042d5e5e50c4b6abf0d4169215b1a436"
+    "sha256": "963f15a8dfee5a54bad6d820f29c0975faff21c1403eeccb2f693434a7ba4642"
+  },
+  "root_additions": {
+    "eligible128_em_reaggregated_from_full_frozen_classifier": true,
+    "teacher_own_rollout_gained": 30,
+    "teacher_own_rollout_lost": 20,
+    "teacher_own_rollout_same_eligible_cohort_base_correct": 92,
+    "teacher_own_rollout_same_eligible_cohort_teacher_correct": 102,
+    "updated_unix": 1791441029.149632
   },
   "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "same_teacher_loss_cohort_em_reaggregation": [
+    {
+      "no_reference_questions": 64,
+      "no_reference_strict_correct": 0,
+      "reference_eligible_questions": 128,
+      "reference_eligible_strict_correct": 92,
+      "version": "source100"
+    },
+    {
+      "no_reference_questions": 64,
+      "no_reference_strict_correct": 0,
+      "reference_eligible_questions": 128,
+      "reference_eligible_strict_correct": 101,
+      "version": "update1"
+    },
+    {
+      "no_reference_questions": 64,
+      "no_reference_strict_correct": 1,
+      "reference_eligible_questions": 128,
+      "reference_eligible_strict_correct": 88,
+      "version": "update5"
+    },
+    {
+      "no_reference_questions": 64,
+      "no_reference_strict_correct": 1,
+      "reference_eligible_questions": 128,
+      "reference_eligible_strict_correct": 78,
+      "version": "epoch1"
+    }
+  ],
   "schema": "opsd-full192-loss-drift-findings-v1",
   "scope": "192 balanced training diagnostic questions; not native512, population EM, historical online loss, gradient or training causal proof",
   "source_proofs": {
@@ -236,11 +274,15 @@
     }
   },
   "status": {
-    "generation_and_independent_cpu_region_checks": "complete",
-    "m1_full_numeric_end_acceptance": "pending root fresh live audit",
-    "m3_fixed64_cpu_preparation": "ready",
-    "m3_gpu_counterfactual_execution": "not started",
-    "native512_four_weights": "actual launch pending acceptance"
+    "fresh_m1_cpu_end_acceptance": true,
+    "generation_complete": true,
+    "independent_protocol_and_region_analysis_accepted": true,
+    "m1_end_receipt_sha256": "1f997d54200506fbfa935717330e76729b72e9cd5a3b96e688fff2da023239c3",
+    "m3_cpu_64_prepared": true,
+    "m3_gpu_started": false,
+    "native512_cpu_config_sha256": "4d3616bdaf4be5b545db5e20be66063969891dc783af7c156d8f5e7b54389d89",
+    "native512_gpu_started": false,
+    "shared_storage_info_or_explicit_hkust_exception_pending": true
   },
   "teacher_original_history_invariance": {
     "checks_by_status": {
