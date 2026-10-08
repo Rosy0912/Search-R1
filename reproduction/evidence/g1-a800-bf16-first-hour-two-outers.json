@@ -1,0 +1,758 @@
+{
+  "schema": "g1_a800_bf16_first_hourly_window_two_official_outers_v1",
+  "recorded_unix": 1791448103.737424,
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "evidence_kind": "local_sanitized_existing_scalar_and_hash_evidence",
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+  "deployment_id": "a20f0475ec824c69ba1554f39e9ff512",
+  "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "report_window": {
+    "name": "first hourly report for this fresh run",
+    "baseline_unix": 1791444143.1711795,
+    "last_actual_gpu_sample_unix": 1791447962.4130802,
+    "read_stop_unix": 1791447963.739353,
+    "actual_duration_seconds": 3820.5681734085083,
+    "baseline_completed_outer": 0,
+    "baseline_reward_mean": null,
+    "new_completed_outer_steps": [
+      1,
+      2
+    ],
+    "new_completed_outers": 2,
+    "new_processed_opportunities_replica_counted_once": 40,
+    "new_returned_adam_writes_replica_counted_once": 40,
+    "new_skipped_opportunities_replica_counted_once": 0,
+    "scope": "New official run only. Four rank copies are counted once; no failed previous-run worker outer is added. Report/delivery time does not extend GPU sample coverage."
+  },
+  "window_reward": {
+    "per_outer_mean_rewards": [
+      0.2033454179763794,
+      0.1992272138595581
+    ],
+    "mean": 0.20128631591796875,
+    "min": 0.1992272138595581,
+    "max": 0.2033454179763794,
+    "step2_minus_step1": -0.004118204116821289,
+    "previous_window_mean": null,
+    "previous_window_mean_change": null,
+    "calculation_source": "Original JSON floating-point reward values from the formal outer ledger, not rounded console rewards.",
+    "scope": "Mean/range of the two completed outer training reward means. No previous nonempty window exists for this run; old-run or historical baseline metrics are not substituted."
+  },
+  "formal_outer_records": {
+    "observed_unix": 1791447861.4346683,
+    "selected_records": [
+      {
+        "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+        "step": 1,
+        "metrics": {
+          "critic/rewards/mean": 0.2033454179763794,
+          "actor/pg_loss": 0.05888758734717096,
+          "actor/entropy_loss": 0.9025762509554625,
+          "actor/kl_loss": 0.0,
+          "actor/ppo_kl": 0.0014482243556901864,
+          "actor/grad_norm": 1.9790769823222731,
+          "actor/optimizer_steps_this_update": 20.0,
+          "actor/update_opportunities_this_attempt": 20.0,
+          "actor/skipped_update_opportunities": 0.0
+        },
+        "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+        "behavior_probability_gate_sha256": "e9cf963c2c034155fb0212f7ad19dbe6139d1f2102626533b61653504ab3801c",
+        "attempt_id": "088b55211c504c7c947396f706e8ef5d",
+        "attempt_index": 1,
+        "optimizer_writes_before": 0,
+        "optimizer_writes_after": 20,
+        "opportunities_processed": 20,
+        "actual_optimizer_writes": 20,
+        "metric_count": 9,
+        "all_metrics_finite": true
+      },
+      {
+        "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+        "step": 2,
+        "metrics": {
+          "critic/rewards/mean": 0.1992272138595581,
+          "actor/pg_loss": 0.04973021330081162,
+          "actor/entropy_loss": 0.8960429365746677,
+          "actor/kl_loss": 0.0,
+          "actor/ppo_kl": 0.0010232280379284474,
+          "actor/grad_norm": 2.0751104406057226,
+          "actor/optimizer_steps_this_update": 20.0,
+          "actor/update_opportunities_this_attempt": 20.0,
+          "actor/skipped_update_opportunities": 0.0
+        },
+        "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+        "behavior_probability_gate_sha256": "e30d9f0006e7b88213d188993ba3356e26738b233cfcc8ab710429b15416cc48",
+        "attempt_id": "6489da79340a4576a42d7e665a53b87c",
+        "attempt_index": 2,
+        "optimizer_writes_before": 20,
+        "optimizer_writes_after": 40,
+        "opportunities_processed": 20,
+        "actual_optimizer_writes": 20,
+        "metric_count": 9,
+        "all_metrics_finite": true
+      }
+    ],
+    "update_ledger_sha256": "f0826ce0892079a8d6aa6e8e9128b2d20e143acc4bd16f1aa382de79d942a57e",
+    "update_ledger_bytes": 1813,
+    "timing_fields_stored_in_formal_ledger": false
+  },
+  "actual_console_timing": {
+    "records": [
+      {
+        "step": 1,
+        "scalars": {
+          "actor/lr": 0.0,
+          "critic/rewards/mean": 0.203,
+          "timing_s/gen": 276.116,
+          "timing_s/ref": 203.509,
+          "timing_s/adv": 152.42,
+          "timing_s/update_actor": 976.31,
+          "timing_s/step": 1707.073
+        },
+        "line_sha256": "7413e5b6be66a4d7d82fe600daeae3ff004714f470a95647042a68d4c2df2105",
+        "precision": "three decimal console formatting"
+      },
+      {
+        "step": 2,
+        "scalars": {
+          "actor/lr": 0.0,
+          "critic/rewards/mean": 0.199,
+          "timing_s/gen": 258.558,
+          "timing_s/ref": 168.123,
+          "timing_s/adv": 146.204,
+          "timing_s/update_actor": 809.041,
+          "timing_s/step": 1470.767
+        },
+        "line_sha256": "ec1ee5ed1b44d6d8da87f2ceb0149ad61ed7cec58581a4ecbeecc20c6dfc9aa3",
+        "precision": "three decimal console formatting"
+      }
+    ],
+    "step_seconds": [
+      1707.073,
+      1470.767
+    ],
+    "scope": "Existing same-run console timers with three decimal formatting; step timers exclude initialization. adv combines reward/probe request/scoring/KL/advantages, not pure probe time.",
+    "pure_probe_duration_seconds": null,
+    "console_step2_actor_lr_rounding_note": "Console actor/lr=0.000 is formatting of the small value; actual consumed outer2 LR is preserved separately from worker receipts.",
+    "training_log_sha256": "01058070840243d51047e8dc65dcad7dd31b4a2cbba5c54f069ad7cef6556a03",
+    "training_log_bytes": 138419,
+    "epoch_step_markers": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "0",
+        "2"
+      ],
+      [
+        "0",
+        "3"
+      ]
+    ],
+    "step3_marker_is_complete_outer": false
+  },
+  "second_outer_actual_write_and_scheduler_evidence": {
+    "observed_unix": 1791447824.5951862,
+    "source_commit_parent_binding": "fe59dc164490098054879141d5421e0b418b4056",
+    "logical_update": 2,
+    "deduplicated_summary": {
+      "all_rank_norm_pairs_identical": true,
+      "consumed_learning_rates": [
+        1.7543859649122805e-08
+      ],
+      "global_gradient_norm_before_range": {
+        "max": 2.966101622040726,
+        "min": 1.4739622967083703
+      },
+      "global_gradient_norm_after_range": {
+        "max": 0.99999966271207,
+        "min": 0.9999993217241624
+      },
+      "rank_replication_count": 4,
+      "returned_adam_writes": 20,
+      "semantics": "Second outer only: write counts21..40; 20 global minibatch measurements, four rank copies counted once",
+      "norm_pair_count": 20
+    },
+    "rank_rows": [
+      {
+        "rank": 0,
+        "processed_opportunities": 20,
+        "returned_optimizer_write_count": 20,
+        "successful_opportunity_receipts": 20,
+        "skipped_opportunity_receipts": 0,
+        "consumed_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "global_gradient_norm_before_range": {
+          "max": 2.966101622040726,
+          "min": 1.4739622967083703
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.99999966271207,
+          "min": 0.9999993217241624
+        },
+        "complete_prefix_bytes": 237373,
+        "complete_prefix_sha256": "04669c69d028426572e7de6b6428e8d1b2582e828bbb42725c1f7aacb068a857",
+        "selected_second_outer_lines_sha256": "b68b120f6db97be9746ec904edcc8511403ef6812daa07898834023f8cf20389",
+        "snapshot_bytes": 237373,
+        "partial_final_line": false,
+        "norm_pair_count": 20,
+        "scheduler_complete": {
+          "rank": 0,
+          "kind": "COMPLETE",
+          "logical_update": 2,
+          "attempt_id": "6489da79340a4576a42d7e665a53b87c",
+          "attempt_index": 2,
+          "observed_unix": 1791447730.5097225,
+          "world_size": 4,
+          "warmup_steps": 57,
+          "completed_outer_before": 1,
+          "completed_outer_after": 2,
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_before": 1,
+          "scheduler_last_epoch_after": 2,
+          "scheduler_step_count_before": 2,
+          "scheduler_step_count_after": 3,
+          "actual_optimizer_writes": 20,
+          "opportunities_processed": 20,
+          "optimizer_opportunities": 20,
+          "writes_before": 20,
+          "writes_after": 40,
+          "consumed_learning_rates": [
+            1.7543859649122805e-08
+          ],
+          "next_learning_rates": [
+            3.508771929824561e-08
+          ],
+          "batch_gate_sha256": "e30d9f0006e7b88213d188993ba3356e26738b233cfcc8ab710429b15416cc48"
+        },
+        "scheduler_source_hashes": {
+          "complete_prefix_bytes": 8028,
+          "complete_prefix_sha256": "ecc8411884370ebe2cd8be245a390f2419c0d17bf52b0dfae429d90e0f9ebcce",
+          "selected_second_outer_lines_sha256": "201c06d0f08e235d4c520db9459595a9fa179b6f9142537e609712c29841ea06",
+          "snapshot_bytes": 8028,
+          "partial_final_line": false
+        }
+      },
+      {
+        "rank": 1,
+        "processed_opportunities": 20,
+        "returned_optimizer_write_count": 20,
+        "successful_opportunity_receipts": 20,
+        "skipped_opportunity_receipts": 0,
+        "consumed_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "global_gradient_norm_before_range": {
+          "max": 2.966101622040726,
+          "min": 1.4739622967083703
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.99999966271207,
+          "min": 0.9999993217241624
+        },
+        "complete_prefix_bytes": 237533,
+        "complete_prefix_sha256": "8d7232b7cb2bee1a53acb6d85fd29df5e197e453a868e1f727455b11ce0ff43c",
+        "selected_second_outer_lines_sha256": "6f773002203d815eb6b2c08ce822ae4765fbd610ba9cec63ec9b3532f72f30fb",
+        "snapshot_bytes": 237533,
+        "partial_final_line": false,
+        "norm_pair_count": 20,
+        "scheduler_complete": {
+          "rank": 1,
+          "kind": "COMPLETE",
+          "logical_update": 2,
+          "attempt_id": "6489da79340a4576a42d7e665a53b87c",
+          "attempt_index": 2,
+          "observed_unix": 1791447730.5085843,
+          "world_size": 4,
+          "warmup_steps": 57,
+          "completed_outer_before": 1,
+          "completed_outer_after": 2,
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_before": 1,
+          "scheduler_last_epoch_after": 2,
+          "scheduler_step_count_before": 2,
+          "scheduler_step_count_after": 3,
+          "actual_optimizer_writes": 20,
+          "opportunities_processed": 20,
+          "optimizer_opportunities": 20,
+          "writes_before": 20,
+          "writes_after": 40,
+          "consumed_learning_rates": [
+            1.7543859649122805e-08
+          ],
+          "next_learning_rates": [
+            3.508771929824561e-08
+          ],
+          "batch_gate_sha256": "e30d9f0006e7b88213d188993ba3356e26738b233cfcc8ab710429b15416cc48"
+        },
+        "scheduler_source_hashes": {
+          "complete_prefix_bytes": 8028,
+          "complete_prefix_sha256": "1874e68191ab4264aa08fe636eddc3330f0d837457d5bc1eaa6b8b30f09ff43f",
+          "selected_second_outer_lines_sha256": "f8049de1010c4e5990ce46105afc25a6c07711e5e9f2b082b4d52783d8846f9d",
+          "snapshot_bytes": 8028,
+          "partial_final_line": false
+        }
+      },
+      {
+        "rank": 2,
+        "processed_opportunities": 20,
+        "returned_optimizer_write_count": 20,
+        "successful_opportunity_receipts": 20,
+        "skipped_opportunity_receipts": 0,
+        "consumed_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "global_gradient_norm_before_range": {
+          "max": 2.966101622040726,
+          "min": 1.4739622967083703
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.99999966271207,
+          "min": 0.9999993217241624
+        },
+        "complete_prefix_bytes": 237413,
+        "complete_prefix_sha256": "1308c834fe0705a56e14b521160f69c5e1005b02f6ac51ef9accadf2847241e2",
+        "selected_second_outer_lines_sha256": "bc952532c68aaa01d33be3341697165b6f0a7fb8557dd0035dff48ce412dd7b8",
+        "snapshot_bytes": 237413,
+        "partial_final_line": false,
+        "norm_pair_count": 20,
+        "scheduler_complete": {
+          "rank": 2,
+          "kind": "COMPLETE",
+          "logical_update": 2,
+          "attempt_id": "6489da79340a4576a42d7e665a53b87c",
+          "attempt_index": 2,
+          "observed_unix": 1791447730.5099728,
+          "world_size": 4,
+          "warmup_steps": 57,
+          "completed_outer_before": 1,
+          "completed_outer_after": 2,
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_before": 1,
+          "scheduler_last_epoch_after": 2,
+          "scheduler_step_count_before": 2,
+          "scheduler_step_count_after": 3,
+          "actual_optimizer_writes": 20,
+          "opportunities_processed": 20,
+          "optimizer_opportunities": 20,
+          "writes_before": 20,
+          "writes_after": 40,
+          "consumed_learning_rates": [
+            1.7543859649122805e-08
+          ],
+          "next_learning_rates": [
+            3.508771929824561e-08
+          ],
+          "batch_gate_sha256": "e30d9f0006e7b88213d188993ba3356e26738b233cfcc8ab710429b15416cc48"
+        },
+        "scheduler_source_hashes": {
+          "complete_prefix_bytes": 8023,
+          "complete_prefix_sha256": "8d3ce0fda7e8fabbf3a44fb0fe486b184772d3c6c4da334b538924e1b346cbc3",
+          "selected_second_outer_lines_sha256": "ed0d9b915bb42dd5c8d307df015c42da2d2e0e9ce4ee034411ec88ebf9580337",
+          "snapshot_bytes": 8023,
+          "partial_final_line": false
+        }
+      },
+      {
+        "rank": 3,
+        "processed_opportunities": 20,
+        "returned_optimizer_write_count": 20,
+        "successful_opportunity_receipts": 20,
+        "skipped_opportunity_receipts": 0,
+        "consumed_learning_rates": [
+          1.7543859649122805e-08
+        ],
+        "global_gradient_norm_before_range": {
+          "max": 2.966101622040726,
+          "min": 1.4739622967083703
+        },
+        "global_gradient_norm_after_range": {
+          "max": 0.99999966271207,
+          "min": 0.9999993217241624
+        },
+        "complete_prefix_bytes": 237453,
+        "complete_prefix_sha256": "218f2e4578a2861b416f86c1b087249498b7702ca249be45d3f27c62df138334",
+        "selected_second_outer_lines_sha256": "782be57a1df57cb379bc03015fac27ebc42a66dbb5a1e396a662eac210954d96",
+        "snapshot_bytes": 237453,
+        "partial_final_line": false,
+        "norm_pair_count": 20,
+        "scheduler_complete": {
+          "rank": 3,
+          "kind": "COMPLETE",
+          "logical_update": 2,
+          "attempt_id": "6489da79340a4576a42d7e665a53b87c",
+          "attempt_index": 2,
+          "observed_unix": 1791447730.510447,
+          "world_size": 4,
+          "warmup_steps": 57,
+          "completed_outer_before": 1,
+          "completed_outer_after": 2,
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_before": 1,
+          "scheduler_last_epoch_after": 2,
+          "scheduler_step_count_before": 2,
+          "scheduler_step_count_after": 3,
+          "actual_optimizer_writes": 20,
+          "opportunities_processed": 20,
+          "optimizer_opportunities": 20,
+          "writes_before": 20,
+          "writes_after": 40,
+          "consumed_learning_rates": [
+            1.7543859649122805e-08
+          ],
+          "next_learning_rates": [
+            3.508771929824561e-08
+          ],
+          "batch_gate_sha256": "e30d9f0006e7b88213d188993ba3356e26738b233cfcc8ab710429b15416cc48"
+        },
+        "scheduler_source_hashes": {
+          "complete_prefix_bytes": 8026,
+          "complete_prefix_sha256": "4bb586304a7c8928b3accf235d6c7e0f5a1d7e7ca9c81ae3d6e04013541d7cea",
+          "selected_second_outer_lines_sha256": "be44d9699a5de41f2bfc1f9beec4882fd2ea5ddf77fd19536ee438b2d8e9cf1e",
+          "snapshot_bytes": 8026,
+          "partial_final_line": false
+        }
+      }
+    ],
+    "actual_consumed_lr_expression": "1e-6/57",
+    "next_lr_expression_after_completed_outer2": "2e-6/57",
+    "complete_counter_transition": [
+      1,
+      2
+    ],
+    "scope": "Second outer writes21..40; four rank scalar copies counted once. Global clipping ranges and consumed learning rates come from actual returned-write rows, not console averages."
+  },
+  "same_trainer_continues": {
+    "live_observed_unix": 1791447954.0782595,
+    "pipeline": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "alive": true,
+      "birth_matches": true,
+      "stage": "GRPO_1_TO_200"
+    },
+    "trainer": {
+      "ledger_state": "STARTED",
+      "leader": {
+        "alive": true,
+        "birth_matches": true,
+        "pid": 1337905,
+        "start_ticks": 552404529,
+        "state": "S"
+      },
+      "live_registered_count": 159,
+      "exit_code": null
+    },
+    "recorded_completed_outers": 2,
+    "last_recorded_outer": 2,
+    "cumulative_rank_ledger_rows": [
+      {
+        "rank": 0,
+        "exists": true,
+        "file_bytes": 237373,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 40,
+        "processed_opportunities_per_rank": 40,
+        "scanned_successful_writes": 40,
+        "successful_writes_per_rank": 40,
+        "cumulative_optimizer_writes": 40
+      },
+      {
+        "rank": 1,
+        "exists": true,
+        "file_bytes": 237533,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 40,
+        "processed_opportunities_per_rank": 40,
+        "scanned_successful_writes": 40,
+        "successful_writes_per_rank": 40,
+        "cumulative_optimizer_writes": 40
+      },
+      {
+        "rank": 2,
+        "exists": true,
+        "file_bytes": 237413,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 40,
+        "processed_opportunities_per_rank": 40,
+        "scanned_successful_writes": 40,
+        "successful_writes_per_rank": 40,
+        "cumulative_optimizer_writes": 40
+      },
+      {
+        "rank": 3,
+        "exists": true,
+        "file_bytes": 237453,
+        "scan_from_start": true,
+        "scan_start_byte": 0,
+        "malformed_complete_lines": 0,
+        "oversized_lines": 0,
+        "partial_final_line": false,
+        "identity_rejected_rows": 0,
+        "scanned_processed_opportunities": 40,
+        "processed_opportunities_per_rank": 40,
+        "scanned_successful_writes": 40,
+        "successful_writes_per_rank": 40,
+        "cumulative_optimizer_writes": 40
+      }
+    ],
+    "scope": "Actual live PID/birth readback at its stated observation time; epoch0/step3 marker establishes third outer entry, not completion. Later GPU sample utilization is not a liveness test."
+  },
+  "gpu_actual_window": {
+    "window_start_unix": 1791444143.1711795,
+    "window_stop_read_unix": 1791447963.739353,
+    "window_first_sample_unix": 1791444143.588132,
+    "window_last_sample_unix": 1791447962.4130802,
+    "window_start_to_first_sample_seconds": 0.41695237159729004,
+    "window_last_sample_to_stop_seconds": 1.32627272605896,
+    "window_max_gap_between_sample_completion_seconds": 2.3256168365478516,
+    "window_sample_count": 1792,
+    "window_peak": {
+      "0": {
+        "peak_fraction": 0.66134033203125,
+        "peak_memory_sample_unix": 1791445080.5616512,
+        "peak_used_mib": 54177,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444707.7331069,
+        "total_mib_at_peak": 81920
+      },
+      "1": {
+        "peak_fraction": 0.66861572265625,
+        "peak_memory_sample_unix": 1791445093.2774148,
+        "peak_used_mib": 54773,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444769.3748856,
+        "total_mib_at_peak": 81920
+      },
+      "2": {
+        "peak_fraction": 0.66854248046875,
+        "peak_memory_sample_unix": 1791444958.902632,
+        "peak_used_mib": 54767,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444784.2184694,
+        "total_mib_at_peak": 81920
+      },
+      "3": {
+        "peak_fraction": 0.66134033203125,
+        "peak_memory_sample_unix": 1791445080.5616512,
+        "peak_used_mib": 54177,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444784.2184694,
+        "total_mib_at_peak": 81920
+      },
+      "5": {
+        "peak_fraction": 0.23084716796875,
+        "peak_memory_sample_unix": 1791444665.011218,
+        "peak_used_mib": 18911,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444665.011218,
+        "total_mib_at_peak": 81920
+      },
+      "6": {
+        "peak_fraction": 0.36895751953125,
+        "peak_memory_sample_unix": 1791446369.1713045,
+        "peak_used_mib": 30225,
+        "peak_util_percent": 100,
+        "peak_util_sample_unix": 1791444665.011218,
+        "total_mib_at_peak": 81920
+      }
+    },
+    "window_receipt_selection_sha256": "bf68227d1af94e8de4c235cd000258684b84bad7c0e32000e2f3030b2eadbbab",
+    "snapshot_bytes": 2719781,
+    "complete_prefix_bytes": 2719781,
+    "complete_prefix_sha256": "cc31614465a6b6074ad6ad1aa1e5060a5012493f64fdc71a6afaab5352cf4b93",
+    "partial_final_line": false,
+    "full_run_sample_count": 1865,
+    "actual_last_query_started_unix": 1791447962.2891788,
+    "actual_last_sample_unix": 1791447962.4130802,
+    "latest_sample_age_at_read_seconds": 1.32627272605896,
+    "sampler_actual_pid_birth_readback": null,
+    "sampler_identity_claim_scope": "Existing sample receipt claim only; no /proc or live PID-birth readback performed",
+    "sampler_identity_claimed_by_latest_receipt": {
+      "pid": 1327340,
+      "sid": 1327340,
+      "start_ticks": 552357047,
+      "uid": 0
+    },
+    "source_map_sha256_claims": [
+      "469afe8501bb6a747857ae2be52a47a8cdc59b4e3f57cd386a205aa3322ce74b"
+    ],
+    "current_gpus_at_last_actual_sample": {
+      "0": {
+        "index": 0,
+        "total_mib": 81920,
+        "used_fraction": 0.03365478515625,
+        "used_mib": 2757,
+        "util_percent": 0
+      },
+      "1": {
+        "index": 1,
+        "total_mib": 81920,
+        "used_fraction": 0.03480224609375,
+        "used_mib": 2851,
+        "util_percent": 0
+      },
+      "2": {
+        "index": 2,
+        "total_mib": 81920,
+        "used_fraction": 0.03480224609375,
+        "used_mib": 2851,
+        "util_percent": 0
+      },
+      "3": {
+        "index": 3,
+        "total_mib": 81920,
+        "used_fraction": 0.03363037109375,
+        "used_mib": 2755,
+        "util_percent": 0
+      },
+      "5": {
+        "index": 5,
+        "total_mib": 81920,
+        "used_fraction": 0.21834716796875,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      "6": {
+        "index": 6,
+        "total_mib": 81920,
+        "used_fraction": 0.35645751953125,
+        "used_mib": 29201,
+        "util_percent": 0
+      }
+    },
+    "actual_report_window_duration_seconds": 3820.5681734085083,
+    "scope": "First hourly report actual window from its fixed new-run baseline to this receipt read; not a fabricated exact3600-second interval. Only selected window peaks are copied, not full-run cumulative peaks. Peaks are observed samples, not continuous instantaneous coverage.",
+    "last_sample_and_live_observer_have_distinct_times": true,
+    "zero_utilization_proves_trainer_stopped": false,
+    "no_interpolated_samples_through_delivery": true
+  },
+  "configuration_and_acceptance_scope": {
+    "precision_profile": "bf16_policy_fp32_master",
+    "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "training_world_size": 4,
+    "official_completed_outers": 2,
+    "official_target_outers": 200,
+    "first_five_acceptance_complete": false,
+    "final_acceptance_complete": false,
+    "fresh_goal_complete": false,
+    "new_dev512_em": null,
+    "new_stage64_em": null,
+    "new_final_em": null,
+    "historical_em_is_current_run_evaluation": false,
+    "backward_dtype_independently_proven": false,
+    "all_fp32_arithmetic_removed_proven": false,
+    "health_or_reproduction_success_claimed": false
+  },
+  "source_publication": {
+    "checked_unix": 1791443808.677463,
+    "branch": "search-g1",
+    "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "remote_commit": "fe59dc164490098054879141d5421e0b418b4056",
+    "published": true,
+    "actual_remote_sha_and_blobs_verified": true,
+    "verified_file_count": 5,
+    "file_readback_records": [
+      {
+        "path": "reproduction/a800_common/adopt_initial_probes.py",
+        "bytes": 24519,
+        "sha256": "0104920f51d496e41f59dd933c55dc7d7abb5e6d1421bab7484716321d7c9eb8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/a800_common/bf16-adoption-source-delta.json",
+        "bytes": 1597,
+        "sha256": "3368544c1109492e3b75eaaec1cabfd2e57ed6f0272faf4db0f2f407c3535ed8",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/common8/update_evidence.py",
+        "bytes": 4424,
+        "sha256": "9e6d7c8657f9536b533889dde9def604c39c26f8c603acacc731c6ea3d30d077",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-actor-and-reference-actual-and-seven-writes.json",
+        "bytes": 21259,
+        "sha256": "cc328dbbe0f94df25d74ec333161d1de737b7e834a4ba1c61bff7f30b4dbea95",
+        "remote_blob_matches": true
+      },
+      {
+        "path": "reproduction/evidence/g1-a800-bf16-first-worker-outer-recorder-failure.json",
+        "bytes": 9984,
+        "sha256": "082cbc0191f323129053ef8d37d5a95fb935e2f1099ccda549aa4c7fc30612c4",
+        "remote_blob_matches": true
+      }
+    ],
+    "scope": "Saved actual source commit/blob publication readback; hashes alone are not loaded-process proof."
+  },
+  "anchor_and_delivery": {
+    "hourly_anchor_modified_by_this_task": false,
+    "args_modified_by_this_task": false,
+    "automation_modified_by_this_task": false,
+    "git_actions_performed_by_this_task": false,
+    "publication_or_delivery_completed_by_this_task": false,
+    "scope": "Root publishes and delivers this concrete report before any anchor update. This file is evidence preparation only."
+  },
+  "provenance": {
+    "two_outer_metrics_and_timing": {
+      "path": "preparation/a800-db474b6-first-two-recorded-outers-and-timing.json",
+      "bytes": 3710,
+      "sha256": "2fd390970cc321201cdfa4c4d1bab7286301210f50b0154ff71795449c00ebad"
+    },
+    "second_outer_write_and_scheduler_scalars": {
+      "path": "preparation/a800-db474b6abf654ad9892b02ae67ab6f86-second-outer20-scalars-1791447824.json",
+      "bytes": 47192,
+      "sha256": "bab24c87facf9524c14507473d08f5b68d6fb92892eccf929385e892eb559c9f"
+    },
+    "latest_immutable_same_handle_live_observer": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791447954177011000.json",
+      "bytes": 16668,
+      "sha256": "4512fda6048a2aa286f1a798f3d02b42cad9fe6f907ea15300a110a52d57a3e5"
+    },
+    "earlier_immutable_two_outer_observer": {
+      "path": "preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791447736504385000.json",
+      "bytes": 16668,
+      "sha256": "dfea4db09ca01856a8a0becf26e598abe77b92465cb818724f7f12788d637bd2"
+    },
+    "actual_gpu_window": {
+      "path": "preparation/a800-db474b6-first-hour-gpu-window.json",
+      "bytes": 6426,
+      "sha256": "4dfb4aca5bdf49279d7a3925f722ee2d1a25b049bb44b10e4e1acce027ffda74"
+    },
+    "source_publication": {
+      "path": "preparation/a800-bf16-rank-recorder-fix-publication.json",
+      "bytes": 1949,
+      "sha256": "a027046a0340058ae73579ac3edcc323e54e4051ad674b47ad5ae9f6b451edcd"
+    }
+  },
+  "sanitization": "Selected source/scalar/path/hash evidence only; no models, weights, raw QA, token journals, full trajectories, prompt text, full logs, credentials, full source map, or per-minibatch payload rows copied."
+}
