@@ -1,0 +1,80 @@
+{
+  "cpu_fixture_count": 2,
+  "cpu_skipped": 0,
+  "files": {
+    "README.md": {
+      "bytes": 16063,
+      "sha256": "2ca175b0cfbd9fe724bce681bb2ec8cb59f249b302567e9613fad69647f05555"
+    },
+    "completed-c0.pending.json": {
+      "bytes": 1963,
+      "sha256": "f983c2e007e0cc2b894c3bc68349c9000abf55c36b147dc58ab8c7dbfbfa868d"
+    },
+    "completed_c0.py": {
+      "bytes": 9718,
+      "sha256": "a76b8ad45e6d24d8fc43eb486b0a69982603e1b5d980dff30922827774172668"
+    },
+    "completion.py": {
+      "bytes": 10389,
+      "sha256": "833b5ff7cb878e5e1a1ab14210ea2a13ad0474b280288afa6f19f5ba022316b9"
+    },
+    "controller.py": {
+      "bytes": 12571,
+      "sha256": "880df450fb07ba1dcebf8f4a04d903338801a91843d0fac63dc7c02b68af0a4d"
+    },
+    "cpu_merge.py": {
+      "bytes": 6288,
+      "sha256": "ec632e3ca477a4714ccbe765c1ec95b7c610f6888205b50b58ef59d2e523768f"
+    },
+    "gates.py": {
+      "bytes": 11811,
+      "sha256": "129a167249bd366942bfd6bd23568799b6dfb5fa90bc05c7587bc4035f3a2ebf"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "prepare.py": {
+      "bytes": 9973,
+      "sha256": "c2130b70f87b520350e28c580436a67d82147bb6b35739fbf29a108973a30168"
+    },
+    "previous-driver-terminal.pending.json": {
+      "bytes": 585,
+      "sha256": "95a596519f819db86eb8221998721f2985b63f292cc1d8861d2399d9d23e1501"
+    },
+    "recovery.py": {
+      "bytes": 7542,
+      "sha256": "25ef5fed9a8e5a425fe9a52630eced6468f7eccb2791033ea05f0a79d653bf08"
+    },
+    "study_runner.py": {
+      "bytes": 22292,
+      "sha256": "063c4c328dd5b0bb925544649cdd0ad66e674314ae702d00267dc42e9ee4f40c"
+    },
+    "summary.py": {
+      "bytes": 14030,
+      "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+    },
+    "test_completed_stats.py": {
+      "bytes": 8854,
+      "sha256": "5e4dcb88356919311f90b7e11726006091fe8d8c956b588417ca98b46a272c6a"
+    },
+    "test_eval.py": {
+      "bytes": 29219,
+      "sha256": "5449464d02a4d924f15054236da193932de77eac06487462143ad5e7538dea0b"
+    },
+    "test_recovery.py": {
+      "bytes": 4896,
+      "sha256": "9ba84619974bd4116e02ecd362876289f0d445c513e8775c344bac99a431da47"
+    },
+    "utils.py": {
+      "bytes": 12331,
+      "sha256": "19f7ee1693776e6654c5f9168a6d43f497eb8f03570db16cce96c75460f1e186"
+    },
+    "worker.py": {
+      "bytes": 13680,
+      "sha256": "33ab79dc7b9b3d270fe0950ce4c00c8f4955340e2376f26879101588d011587b"
+    }
+  },
+  "schema": "opsd-ablation-eval-source-manifest-v1",
+  "scope": "Independent completed-C0 control recovery and exact production full mining stats; science unchanged"
+}

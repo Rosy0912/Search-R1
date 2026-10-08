@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3760,
+      "sha256": "75d42c8a85b6501f2b19320fcb17895214b028127921f77578a13aca001f8900"
+    },
+    "collector.py": {
+      "bytes": 17971,
+      "sha256": "50fc6bf8609ef93f4ca68907b9f688252010d950e59188efc467552b5c2c220c"
+    },
+    "test_collector.py": {
+      "bytes": 8109,
+      "sha256": "c1801fd1251bcd9bbfc01e1601e1732fd8c2b10079681dbd5549a8d03f7d4f12"
+    }
+  },
+  "schema": "opsd-ablation-outer-report-source-v1"
+}

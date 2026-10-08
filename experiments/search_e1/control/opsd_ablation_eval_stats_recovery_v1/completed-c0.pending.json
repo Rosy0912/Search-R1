@@ -1,0 +1,44 @@
+{
+  "common_zero_template": null,
+  "completed_c0": {
+    "completed_training_terminal": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver-observer-964d3c7/runs/00-C0/training/group-terminal.json",
+      "sha256": null
+    },
+    "expected_dead_pane": null,
+    "previous_driver_start": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-study-driver-observer-964d3c7/runs/driver-start.json",
+      "sha256": null
+    },
+    "previous_driver_terminal": null,
+    "previous_session": "e1-reverse-seven-observer-1a1850f7-20261009",
+    "previous_study_manifest": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/observer-recovery-964d3c7-20261009/study-manifest.json",
+      "sha256": "45aca46652d14f7a8b2390bfd66e9b5ba41af13b9d3cd0f45706582a955ab3ea"
+    },
+    "raw10_checkpoint": null,
+    "schema": "opsd-ablation-completed-c0-eval-recovery-v1",
+    "training_config": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/receipts/authorized-launch-20261009/config.json",
+      "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+    },
+    "training_status": {
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C0/runs/status.json",
+      "sha256": null
+    }
+  },
+  "dtype_repair": {
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/dtype-recovery-538ac99-20261009/repair-manifest.json",
+    "sha256": "b26ef0a9c11d4acc2b08453c8248b2c532eeb8bde0956245354f42a78e4e381d"
+  },
+  "groups": null,
+  "helper_root": null,
+  "helper_source_manifest": null,
+  "output_root": null,
+  "publication": null,
+  "run_id": null,
+  "schema": "opsd-ablation-seven-sequential-study-v1",
+  "source_commit": null,
+  "state": "NOT_READY",
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777"
+}
