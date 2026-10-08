@@ -14,6 +14,8 @@ LOCAL = WORK.parent / 'outputs/hpc3-migration'
 CONFIG = '/Users/shaoshitong/Documents/remote_codex_control/access/hpc3-20261008/ssh_config'
 DEST = '/data/user/jxu957/experiments/topd-20261008'
 SOURCE = '/dataset/shaoshitong/search-r1-rl/topd/migration-hpc3-20261008'
+STREAMS = int(os.environ.get('TOPD_MIGRATION_STREAMS', '4'))
+assert 1 <= STREAMS <= 4
 
 
 def source(command, timeout=120):
@@ -134,8 +136,14 @@ def main():
     LOCAL.mkdir(parents=True, exist_ok=True)
     lock = (LOCAL / 'relay.lock').open('w')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False,'parallel_streams':4,'retry_policy':'unlimited_with_30_to_180_second_backoff'},indent=2)+'\n')
+    (LOCAL / 'controller.json').write_text(json.dumps({'pid':os.getpid(),'started_epoch':time.time(),'source':SOURCE,'destination':DEST,'local_disk_contains_models':False,'parallel_streams':STREAMS,'retry_policy':'unlimited_with_30_to_180_second_backoff'},indent=2)+'\n')
     completed = {}
+    # Retain verified receipts across controller restarts. Final acceptance still
+    # rereads every actual destination file and checks its original SHA256.
+    for receipt in LOCAL.glob('*-verified.json'):
+        item = json.loads(receipt.read_text())
+        if item.get('status') == 'ARCHIVE_AND_ALL_FILES_SHA256_VERIFIED':
+            completed[item['group']] = item
     failures = 0
     while True:
         try:
@@ -145,10 +153,13 @@ def main():
             if scan['plan']:
                 order = [r['name'] for r in scan['plan']['groups']]
                 ready = {r['group']:r for r in scan['ready'] if r.get('status')=='PACKED_SOURCE_SHA256'}
-                pending = [name for name in order if name in ready and name not in completed][:4]
-                # Four independent package streams share no destination files.
+                for name in list(completed):
+                    if name not in ready or completed[name]['archive_sha256'] != ready[name]['archive_sha256']:
+                        del completed[name]
+                pending = [name for name in order if name in ready and name not in completed][:STREAMS]
+                # Bounded independent package streams share no destination files.
                 # On restart each stream resumes its own physical partial.
-                with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=STREAMS) as pool:
                     futures = {pool.submit(transfer, ready[name]): name for name in pending}
                     errors = []
                     for future in concurrent.futures.as_completed(futures):
