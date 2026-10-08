@@ -1,0 +1,21 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7412,
+      "sha256": "fb670752c5a5552a0abfd93abeb68c87e090e3691c17f1d4bfab98a56d135764"
+    },
+    "backup.py": {
+      "bytes": 38621,
+      "sha256": "f78dfac008563aa3e5374dc448f1b6c3761ab015a5f3e66ce94c161341501fbc"
+    },
+    "queue.py": {
+      "bytes": 13625,
+      "sha256": "370c378994a8b4e1f4c9aaf803d782de4488aa8b10a015518689346ed7239290"
+    },
+    "test_backup.py": {
+      "bytes": 14895,
+      "sha256": "debf96453b06b363c90f5e13c973c7a33e292269e60e85681c2117ff328bc3dd"
+    }
+  },
+  "schema": "opsd-ablation-outer-backup-source-v1"
+}
