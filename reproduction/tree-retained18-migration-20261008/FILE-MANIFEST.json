@@ -2,11 +2,15 @@
   "session": "01a0fcbc-0b46-7502-8b66-d8b21a0e032d",
   "source_commit": "e7236b7d8729482aad864419fe986066643f3be5",
   "original_local_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-retained18-migration-20261008",
-  "scope": "Code-only management route; no credentials, environments, models or datasets",
+  "scope": "Code-only retained18 management and internal-H100 migration; no credentials, environments, models or datasets in Git",
   "files": {
+    "migrate_assets.py": {
+      "size": 5851,
+      "sha256": "a9d0572651208acbda47f4c7841338eda83fe6026f1e79de1221835b738ca356"
+    },
     "README.md": {
-      "size": 1253,
-      "sha256": "5d7e9626a705923785d6c33c01d5ae7a6c66b5c5d7cfb8cb2d6490570af48931"
+      "size": 1647,
+      "sha256": "5caa6185f377a509a3374c6cdaa40e581196cc5d2f44e81a74c91f374e71f0c1"
     },
     "ssh_retained18.py": {
       "size": 2662,

@@ -18,3 +18,9 @@ Training deployment is not included in this management-only revision. Existing
 foreign Slurm allocations, UUID GPU leases and the dual15-percent foreign-resource
 limits must be respected. This file is not authorization to cancel other jobs,
 submit duplicate training or load checkpoints from other clusters.
+
+The own rolling4 manifest is present on the same-cluster preserved NFS copy with
+SHA256 84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73.
+The migration script copies only required assets and saved-state files to retained18
+local storage, verifies saved-state hashes, and creates a task-only compatibility
+alias. It does not load tensors, claim exact resume or submit training.
