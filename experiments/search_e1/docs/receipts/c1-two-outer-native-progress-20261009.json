@@ -1,0 +1,47 @@
+{
+  "actual_memory_free_min_mib": 3145,
+  "completed_outer_count": 2,
+  "controller_identity": {
+    "pgid": 2276380,
+    "pid": 2276380,
+    "ppid": 1894801,
+    "starttick": 929210641,
+    "uid": 1005
+  },
+  "current_outer_index": 2,
+  "current_phase": "SAMPLING",
+  "native_committed_updates": 21,
+  "numeric_Adam21_independent_readback": false,
+  "observed_cst": "2026-10-09T07:19:45.048022+08:00",
+  "observer_age_seconds": 1.6545023918151855,
+  "private_snapshot_sha256": "aebae02663b6249c1d49deff891994164090582ebc84573e47c0d370a493b343",
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "sampling_model": {
+    "adapter_tensor_sha256": "4eb969873c56f09101bb1b1ce880f179027696976c7a57a5dadec91ce864194d",
+    "checkpoint": {
+      "bytes": 31966,
+      "ctime_ns": 1791501482000975190,
+      "device": 2065,
+      "inode": 466455686,
+      "mtime_ns": 1791501482000975190,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-C1/runs/checkpoints/update-00000021-outer-00001/manifest.json",
+      "sha256": "681e246b62807b661cf85457f5f1a25ac4c354dd690371d8b00e06ef2d0089e7"
+    },
+    "common_initial_adapter": {
+      "bytes": 1296,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/receipts/common-initial-adapter.json",
+      "sha256": "641e98442cdd995fe6aa571a95956b4281de81ad4db510e7795b76087a21b654"
+    },
+    "kind": "original-PEFT-CPU-BF16-merge-latest",
+    "optimizer_updates": 21,
+    "precision": {
+      "mode": "bf16"
+    },
+    "sha256": "a7c68edd43a6994d84763115941346f35c3a11894254df5d1628f58d62549702",
+    "source_model_identity": "2ef6070a328357b0f9d3a026010aaed0aa3f8840a241bc1021ed9a183e8d75f7",
+    "variant": "C1"
+  },
+  "schema": "C1-two-outer-native-snapshot-recorded-v1",
+  "scope": "Actual producer status and previous outer completion; actual CP21 sampling binding. SavedCP1/5 numeric acceptance is separate. Currentouter2 initial0rows is not a failed sampling stage.",
+  "usable_pair_exposure": 635
+}

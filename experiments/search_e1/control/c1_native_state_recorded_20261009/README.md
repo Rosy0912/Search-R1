@@ -1,0 +1,3 @@
+# Recorded C1 small native-state observation
+
+Exact supplemental read-only stdin source was captured in its actual execution receipt after the 07:19:45 observation, then persisted here. This is post-observation publication, not a claim that the supplement was published before execution. The other capture source (`04108b69…`) had already been published. No model, training, scientific source, signal, resource gate or Node file was changed. This directory records existing evidence and does not authorize repeated inference or a restart. Private original receipts, status bytes and process observations stay outside Git.
