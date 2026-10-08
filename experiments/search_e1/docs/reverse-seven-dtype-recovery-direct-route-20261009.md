@@ -161,3 +161,9 @@ BF16zero严格239/512（46.6796875%），NQ110/256、Hotpot129/256；C0 raw10严
 复用已发布summary.py按问题配对bootstrap10000次、seed42，95%差值区间[-5.078125,+0.390625]pp跨0；本批净下降事实不能升格为总体统计确定下降或单机制归因。当前新基线实际复现239，不拿历史数字凑结果。公开summary及中文说明在reports/c0-vs-common-bf16-zero-20261009，实际只读stdin源码持久备份在control/bf16_zero_phase_readonly_20261009，无问题或token正文。
 
 该验收只覆盖闭合BF16阶段。FP16目录已建立，整个common controller-complete尚未出现，不称整体exit0；同一自动driver继续FP16基线和后六组fresh10→即时512，备份不作启动条件。完整goal仍70outer/5632及中文比较/debug持久资产，不因首个比较完成而终止。
+
+### 2026-10-09 06:05 CST：闭合 BF16 基线记录已并行备份
+
+BF16 零适配器基线单阶段的全部 588 个文件（33,040,499 bytes）已直连复制并实际 rsync exit0；传输前固定源 SHA、传输后源 metadata、全部本地 member SHA 一致。保留512条完整 native capture、逐rank结果、额外控制、日志和八worker真实退出/释放记录。源节点资产保留。此边界只表示 BF16 phase 已闭合；FP16评测与总controller仍独立继续，不等待本地复制或再次模型测试。必要入口源码已推送为 `d0e16ecc5f0cb7f44d7601744c57117872f07ed8`，未改变训练/评测科学实现。
+
+完成证据见 `receipts/common-bf16-zero-full-raw-local-backup-20261009.json`；私有完整轨迹不纳入Git。
