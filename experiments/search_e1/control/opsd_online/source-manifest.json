@@ -1,8 +1,13 @@
 {
+  "explicit_human_decisions": {
+    "HKUST_node_local_storage_exception": true,
+    "component_clip": 10,
+    "outer_iterations": 200
+  },
   "files": {
     "README.md": {
-      "bytes": 13380,
-      "sha256": "45b936c5f5be92f55f8c4b82f050936ab70acde24abacc48c575cb090925a03c"
+      "bytes": 14031,
+      "sha256": "b46442d765286cdc2cd4066ce9d1bdd7abac4441cf8344fbed7a151335a246e6"
     },
     "acceptance.py": {
       "bytes": 15118,
@@ -13,20 +18,20 @@
       "sha256": "f05c657c66bbcf4e1b48ffc45df5273c8767047ff636a619ae9a6d59312c6e75"
     },
     "checkpoint.py": {
-      "bytes": 13252,
-      "sha256": "23c8c9c78d2e0bfb535b4d713bc4f50b8718efb84e7ff1be8102cd5b812c5a45"
+      "bytes": 13519,
+      "sha256": "9676eb662bb6c5f0ea21006e52c8bb9a4a2281a69fa235fcdc5cf2974a29e857"
     },
     "configschema.json": {
       "bytes": 4561,
       "sha256": "4fc2656ad577899f70b8a1c8c26fbb4f2cc873699a24cd9a7f0faddd630937c3"
     },
     "controller-source-manifest.json": {
-      "bytes": 2154,
-      "sha256": "eb422f0193141ff1ad28f99430432b2bd88749c0f26f88a01e27fbd1430db5e0"
+      "bytes": 2064,
+      "sha256": "5e2504b418e1740087d37fb2316b6dbeb5240b871c1fa28e74015b6b0c015221"
     },
     "controller.py": {
-      "bytes": 23704,
-      "sha256": "b4ec9f41ed5e78169e32f258a5e29a9a1d006312371010008fd6ad27942f7c94"
+      "bytes": 23977,
+      "sha256": "90ce3827f5be6cf76cc9cdc7dc6d156169f26571eae607ad92ee0d27e357f8ec"
     },
     "cpu_preflight.py": {
       "bytes": 3328,
@@ -61,8 +66,8 @@
       "sha256": "667e988de8fdebab2627d947d38a533271979819110800c423294c3e3903be8e"
     },
     "test_controller.py": {
-      "bytes": 25245,
-      "sha256": "bbe0a79e401cb66308bdcdbff9a0870e16e138d0980e24411c366000023266e2"
+      "bytes": 28929,
+      "sha256": "f0e87374ce0b72f1c4478f50f38872b9a1352f11596810d53e2bc737db57795c"
     },
     "test_independent_review.py": {
       "bytes": 5375,
@@ -81,12 +86,12 @@
       "sha256": "3d5a632c0be5ab52bbf1ab58cd10eb2d0d352c87954222bca1b213079c070e20"
     },
     "test_trainer.py": {
-      "bytes": 15986,
-      "sha256": "86a46ee3d54dab5fbb3522bdb4c130160252c718593fc2e43100c07ecae3e9aa"
+      "bytes": 18739,
+      "sha256": "02131abd337e5cb62e22ac87390bdbeead9a92baff1718e8c795d5afa78cd8f2"
     },
     "trainer.py": {
-      "bytes": 39021,
-      "sha256": "be46c9f3a090b927f42f9ffea732e33a4dbf6abe49f3c5a761ffe3d1de508342"
+      "bytes": 40719,
+      "sha256": "b90aa9929546d475ea46ac9bf413614c6024606fdcbceec17c2e623fa1c2b19c"
     },
     "verify_five_updates.py": {
       "bytes": 11373,
@@ -94,14 +99,6 @@
     }
   },
   "frozen_runtime_manifest_sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
-  "local_cpu_tests": {
-    "cuda_initialized": false,
-    "passed": 71,
-    "python": "3.9.6",
-    "skipped": 0,
-    "tests": 71,
-    "torch": "2.8.0"
-  },
   "node_cpu_attempt1": {
     "failed": 1,
     "failure_kind": "Linux same-tick same-size metadata test assumption; original source and log retained",
@@ -109,13 +106,17 @@
     "production_code_changed": false,
     "training_started": false
   },
-  "pending_human_inputs": [
-    "KL component clip decision",
-    "new online outer-iteration budget",
-    "verified HKUST shared output root or explicit HKUST local exception"
-  ],
-  "recorded_at_utc": "2026-10-08T08:27:56.434918+00:00",
+  "pending_human_inputs": [],
+  "prior_cpu_tests": {
+    "cuda_initialized": false,
+    "passed": 71,
+    "python": "3.9.6",
+    "skipped": 0,
+    "tests": 71,
+    "torch": "2.8.0"
+  },
+  "recorded_at_utc": "2026-10-08T09:00:31.640845+00:00",
   "schema": "opsd-online-helper-source-v1",
-  "scope": "Final local source tree; no GPU launch. Five real updates are a separate live acceptance.",
+  "scope": "Latest revised source tree; actual node CPU tests and five real updates are separate live receipts",
   "specification_sha256": "c8cd882670173d47df03091b98e6aee0be8689d054fd48680ea887aedec61a28"
 }

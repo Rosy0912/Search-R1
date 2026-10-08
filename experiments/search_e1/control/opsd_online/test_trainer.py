@@ -6,13 +6,14 @@ from pathlib import Path
 import random
 import tempfile
 import unittest
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 import numpy as np
 import torch
 from trainer import (RNG_NAMES, actual_adam_state, batches, capture_rng,
     optimizer_tensor_digest, rank_batch, restore_rng, save_torch, state_to_cpu,
     tensor_digest, validate_science, verify_rank_state, verify_resume_cursor,
-    verify_sampling_identity, verify_committed_receipts, validate_rng, verify_source100, verify_source_metadata, atomic_checkpoint_directory, use_frozen_runtime)
+    verify_sampling_identity, verify_committed_receipts, validate_rng, verify_source100, verify_source_metadata, atomic_checkpoint_directory, use_frozen_runtime, runtime_rank_identity)
 
 
 def config():
@@ -30,6 +31,38 @@ def adam(parameter):
 
 class TrainerTests(unittest.TestCase):
     def setUp(self): torch.manual_seed(42); torch.set_num_threads(1)
+    def test_runtime_uuid_torch24_properties_without_uuid_uses_actual_mapping(self):
+        # The production Torch2.4 device properties have no uuid. This fixture
+        # intentionally has only name/total_memory and never initializes CUDA.
+        cuda=SimpleNamespace(get_device_properties=Mock(return_value=SimpleNamespace(name='RTX',total_memory=24<<30)),
+            mem_get_info=Mock(return_value=(3<<30,24<<30)),
+            max_memory_allocated=Mock(return_value=12<<30),max_memory_reserved=Mock(return_value=14<<30))
+        fake_torch=SimpleNamespace(cuda=cuda)
+        owner=dict(owner=dict(physical_gpus=list(range(8)),gpu_uuids=['GPU-fixture-'+str(i) for i in range(8)]))
+        inventory='\n'.join(str(i)+', GPU-fixture-'+str(i) for i in range(8))
+        proc_stat='1234 (fixture) '+' '.join(['R','1']+['0']*17+['678'])
+        with patch.dict(os.environ,{'CUDA_VISIBLE_DEVICES':'0,1,2,3,4,5,6,7'}),patch('subprocess.check_output',return_value=inventory) as query,patch('pathlib.Path.read_text',return_value=proc_stat):
+            result=runtime_rank_identity(fake_torch,SimpleNamespace(index=2),2,owner)
+        self.assertEqual((result['physical_gpu'],result['gpu_uuid'],result['local_rank']),(2,'GPU-fixture-2',2))
+        self.assertEqual(result['actual_free_bytes'],3<<30)
+        self.assertEqual(result['starttick'],678)
+        cuda.get_device_properties.assert_not_called()
+        query.assert_called_once_with(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True)
+
+    def test_runtime_uuid_mapping_and_actual_inventory_mismatch_rejected(self):
+        cuda=SimpleNamespace(mem_get_info=Mock(),max_memory_allocated=Mock(),max_memory_reserved=Mock())
+        fake_torch=SimpleNamespace(cuda=cuda)
+        owner=dict(owner=dict(physical_gpus=list(range(8)),gpu_uuids=['GPU-fixture-'+str(i) for i in range(8)]))
+        inventory='\n'.join(str(i)+', GPU-fixture-'+str(i) for i in range(8))
+        with patch.dict(os.environ,{'CUDA_VISIBLE_DEVICES':'1,0,2,3,4,5,6,7'}),patch('subprocess.check_output',return_value=inventory) as query:
+            with self.assertRaisesRegex(ValueError,'authorized physical GPU mapping'):
+                runtime_rank_identity(fake_torch,SimpleNamespace(index=2),2,owner)
+            query.assert_not_called()
+        with patch.dict(os.environ,{'CUDA_VISIBLE_DEVICES':'0,1,2,3,4,5,6,7'}),patch('subprocess.check_output',return_value=inventory.replace('GPU-fixture-2','GPU-foreign')):
+            with self.assertRaisesRegex(ValueError,'authorized eight-GPU inventory'):
+                runtime_rank_identity(fake_torch,SimpleNamespace(index=2),2,owner)
+        cuda.mem_get_info.assert_not_called()
+
     def test_pending_human_choices_fail_closed(self):
         c=config(); validate_science(c)
         for key,value in [('component_clip','UNRESOLVED'),('outer_iterations',None),('micro_batch',4),('loss_reduction','token_mean')]:

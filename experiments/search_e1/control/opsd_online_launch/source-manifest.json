@@ -1,0 +1,25 @@
+{
+  "cpu_bootstrap_tests": {
+    "GPU_execution": false,
+    "passed": 8,
+    "skipped": 0,
+    "tests": 8
+  },
+  "files": {
+    "bootstrap.py": {
+      "bytes": 17132,
+      "sha256": "b935b79ee6d9c8da00292905f6ed576c2086d5f9db9b275cca31bb0e4b9ff325"
+    },
+    "start_run.py": {
+      "bytes": 5053,
+      "sha256": "419cb64d0c575f729065125b4a3edc5df0648c9852cf7e484aceffc9e83264ce"
+    },
+    "test_bootstrap.py": {
+      "bytes": 8749,
+      "sha256": "0fc398ce371a9f3250bc8d553938b30acd9a221521b087719ea07dfb8993009e"
+    }
+  },
+  "recorded_at_utc": "2026-10-08T09:02:04.367170+00:00",
+  "schema": "opsd-online-launch-source-v1",
+  "scope": "External launcher/bootstrap, actual same-UID pidfd retirement only exactownedresident; no model/runtime changes"
+}

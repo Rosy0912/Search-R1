@@ -176,12 +176,35 @@ def verify_source_metadata(proofs):
     return True
 
 
-def runtime_rank_identity(torch, device, rank):
+def runtime_rank_identity(torch, device, rank, config):
+    """Bind actual visible CUDA rank to nvidia-smi UUID (Torch2.4 has no props.uuid)."""
+    import subprocess
+    physical_gpus=config['owner']['physical_gpus'];expected_uuids=config['owner']['gpu_uuids']
+    visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
+    if (len(physical_gpus)!=8 or len(expected_uuids)!=8 or
+        len(set(physical_gpus))!=8 or len(set(expected_uuids))!=8 or
+        len(visible)!=8 or any(not item.strip().isdigit() for item in visible)):
+        raise ValueError('Actual eight-GPU visible-device mapping required')
+    mapping=[int(item.strip()) for item in visible]
+    if mapping!=physical_gpus or device.index!=rank or not 0<=rank<8:
+        raise ValueError('CUDA visible rank differs from authorized physical GPU mapping')
+    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True)
+    identities={}
+    for line in rows.splitlines():
+        if not line.strip():continue
+        fields=[field.strip() for field in line.split(',')]
+        if len(fields)!=2 or not fields[0].isdigit() or not fields[1].startswith('GPU-'):
+            raise ValueError('Malformed actual nvidia-smi GPU UUID inventory')
+        index=int(fields[0])
+        if index in identities:raise ValueError('Duplicate actual nvidia-smi physical GPU index')
+        identities[index]=fields[1]
+    if any(identities.get(index)!=expected for index,expected in zip(physical_gpus,expected_uuids)):
+        raise ValueError('Actual physical GPU UUID differs from authorized eight-GPU inventory')
+    physical_gpu=mapping[device.index]
     stat=Path('/proc/self/stat').read_text();tail=stat[stat.rfind(')')+2:].split()
-    props=torch.cuda.get_device_properties(device)
     free,total=torch.cuda.mem_get_info(device)
     return dict(rank=rank,pid=os.getpid(),uid=os.getuid(),starttick=int(tail[19]),
-        local_rank=device.index,gpu_uuid=str(props.uuid),actual_free_bytes=free,total_bytes=total,
+        local_rank=device.index,physical_gpu=physical_gpu,gpu_uuid=identities[physical_gpu],actual_free_bytes=free,total_bytes=total,
         allocated_peak_bytes=torch.cuda.max_memory_allocated(device),reserved_peak_bytes=torch.cuda.max_memory_reserved(device))
 
 
@@ -560,7 +583,8 @@ def main():
         reject(not torch.isfinite(norm).item() or any(not torch.isfinite(x.grad).all().item() for x in trainable),'Nonfinite global gradient; refuse Adam')
         optimizer.step(); updates+=1; exposure+=actual; cursor+=actual
         torch.cuda.synchronize()
-        all_metrics=gather(dict(rank=rank,pairs=local_metrics,grad_norm=float(norm),actual=runtime_rank_identity(torch,device,rank)))
+        actual_rank=collectively(lambda:runtime_rank_identity(torch,device,rank,config),'Actual rank physical GPU UUID identity')
+        all_metrics=gather(dict(rank=rank,pairs=local_metrics,grad_norm=float(norm),actual=actual_rank))
         if sum(len(x['pairs']) for x in all_metrics)!=actual: raise ValueError('Missing real trajectory exposure')
         valid=sum(y['valid_tokens'] for x in all_metrics for y in x['pairs']); cumulative_valid_tokens+=valid
         reject(not all(torch.isfinite(x).all().item() for x in get_peft_model_state_dict(model).values()),'Nonfinite adapter; refuse checkpoint')

@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -81,6 +82,10 @@ def latest_resume_checkpoint(output_root,config,run_id,outer_index):
     """Only accepted complete actual state; incomplete pending checkpoints never count."""
     candidates=[]
     for path in (Path(output_root)/'checkpoints').glob('*/manifest.json'):
+        # A crash after manifest fsync but before the atomic directory rename
+        # leaves a pending manifest with final-path references. It is not committed.
+        if re.fullmatch(r'update-\d{8}-outer-\d{5}',path.parent.name) is None:
+            continue
         value=json.loads(path.read_text())
         if value.get('accepted') is True and value.get('run_id')==run_id and value.get('cursor',{}).get('outer_index')==outer_index:
             ref=fileproof(path);checked,_=check_checkpoint(ref,config,run_id,expected_outer=outer_index)

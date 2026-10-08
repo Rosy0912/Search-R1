@@ -1,0 +1,17 @@
+{
+  "schema": "opsd-online-human-authorization-v1",
+  "observed_unix": 1791449704.974144,
+  "observed_timestamp_scope": "Time received/recorded by this executor; not inferred original message time",
+  "thread_id": "01a1028b-b626-7f91-93db-0099ff1623c5",
+  "text": "保留10，200，hkust存户到本地即可",
+  "component_clip": 10,
+  "outer_iterations": 200,
+  "explicit_exception": true,
+  "cluster": "HKUST",
+  "eight_gpu_execution": true,
+  "source100_weights_only_fresh_opsd": true,
+  "restart_request": "根据这个去修复：/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-key-settings-and-online-sampling-20261008.md，然后重新启动八卡OPSD，从100iter的search-r1继续训练。",
+  "run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "retention_scope": "Only new-run unprotected completed states, rollinglatest2 and source/u0/u1/u5/allouterends retained; preserve all oldassets",
+  "durable_target": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-online-launch-20261008/checkpoint-backup"
+}

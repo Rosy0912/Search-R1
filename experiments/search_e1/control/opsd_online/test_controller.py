@@ -124,6 +124,22 @@ class OnlineCPUFixtures(unittest.TestCase):
         pending=self.root/'checkpoints'/'pending-incomplete';pending.mkdir();(pending/'state.pt').write_bytes(b'partial')
         self.assertEqual(controller.latest_resume_checkpoint(self.root,self.config,self.config['run_id'],0)['sha256'],ref['sha256'])
 
+    def test_resume_ignores_unrenamed_pending_manifest_but_rejects_committed_corruption(self):
+        _,ref=checkpoint_fixture(self.root,self.config,8,K=33,cursor=32)
+        value=json.loads(Path(ref['path']).read_text())
+        pending=self.root/'checkpoints'/'update-00000009-outer-00000.pending-interrupted'
+        pending.mkdir()
+        value['optimizer_updates']=9
+        value['adapter']['path']=str(self.root/'missing-final-adapter')
+        value['ranks'][0]['file']['path']=str(self.root/'missing-final-rank0.pt')
+        cp.exclusive_json(pending/'manifest.json',value)
+        selected=controller.latest_resume_checkpoint(self.root,self.config,self.config['run_id'],0)
+        self.assertEqual(selected['sha256'],ref['sha256'])
+        committed=self.root/'checkpoints'/'update-00000009-outer-00000'
+        pending.rename(committed)
+        with self.assertRaises(FileNotFoundError):
+            controller.latest_resume_checkpoint(self.root,self.config,self.config['run_id'],0)
+
     def test_model_metadata_detects_post_hash_mutation(self):
         model=self.root/'model';model.mkdir();path=model/'weights';path.write_bytes(b'initial')
         identity=dict(path=str(model),files=[cp.fileproof(path)])
@@ -177,6 +193,44 @@ class OnlineCPUFixtures(unittest.TestCase):
         ref=cp.exclusive_json(self.root/'config.json',{k:v for k,v in self.config.items() if not k.startswith('_')})
         cp.exclusive_json(self.root/'run-identity.json',dict(run_id='f'*32,config=ref,config_sha256=ref['sha256'],retention=self.config['retention'],initial_gate=dict(accepted=True)))
         with self.assertRaises(ValueError):cp.prune_checkpoints(self.root,self.config['run_id'],ref['sha256'],dict(path='unused',sha256='0'*64))
+
+    def test_rolling_prune_preserves_uncommitted_pending_manifest_and_bytes(self):
+        config=copy.deepcopy(self.config);config.pop('_config_sha256')
+        ref=cp.exclusive_json(self.root/'config.json',config);config['_config_sha256']=ref['sha256']
+        cp.exclusive_json(self.root/'run-identity.json',dict(run_id=config['run_id'],config=ref,config_sha256=ref['sha256'],
+            retention=config['retention'],initial_gate=dict(accepted=True)))
+        refs={}
+        for updates in range(7):
+            value,refs[updates]=checkpoint_fixture(self.root,config,updates,K=512,cursor=updates*32)
+            if updates==2:pending_value=copy.deepcopy(value)
+        pending=self.root/'checkpoints'/'update-00000002-outer-00000.pending-crashed-attempt'
+        pending.mkdir();(pending/'uncommitted-state.pt').write_bytes(b'preserve failed attempt')
+        # The pre-rename manifest legitimately names final paths that may not
+        # exist. Neither validation nor deletion may consume this manifest.
+        pending_value['ranks'][0]['file']['path']=str(self.root/'not-yet-published-rank.pt')
+        cp.exclusive_json(pending/'manifest.json',pending_value)
+        before={str(p.relative_to(pending)):(p.read_bytes(),cp.stat_identity(p))
+                for p in pending.rglob('*') if p.is_file()}
+        result=cp.prune_checkpoints(self.root,config['run_id'],ref['sha256'],refs[6])
+        self.assertEqual(len(result['removed']),3)
+        after={str(p.relative_to(pending)):(p.read_bytes(),cp.stat_identity(p))
+               for p in pending.rglob('*') if p.is_file()}
+        self.assertTrue(pending.is_dir());self.assertEqual(before,after)
+        self.assertFalse((self.root/'retention-receipts'/(pending.name+'.json')).exists())
+
+    def test_rolling_prune_still_refuses_committed_checkpoint_corruption(self):
+        config=copy.deepcopy(self.config);config.pop('_config_sha256')
+        ref=cp.exclusive_json(self.root/'config.json',config);config['_config_sha256']=ref['sha256']
+        cp.exclusive_json(self.root/'run-identity.json',dict(run_id=config['run_id'],config=ref,config_sha256=ref['sha256'],
+            retention=config['retention'],initial_gate=dict(accepted=True)))
+        refs={}
+        for updates in range(7):
+            _,refs[updates]=checkpoint_fixture(self.root,config,updates,K=512,cursor=updates*32)
+        damaged=Path(refs[2]['path']).parent/'adapter'/'adapter_model.safetensors'
+        damaged.write_bytes(b'corrupted committed adapter')
+        with self.assertRaisesRegex(ValueError,'SHA mismatch'):
+            cp.prune_checkpoints(self.root,config['run_id'],ref['sha256'],refs[6])
+        self.assertTrue(damaged.exists())
 
     def test_wrong_uid_wrong_sampling_model_rejected_without_gpu(self):
         # Config/identity schemas are checked before importing Torch/vLLM.

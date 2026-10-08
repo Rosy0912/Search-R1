@@ -4,6 +4,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import shutil
 
 
@@ -142,6 +143,10 @@ def prune_checkpoints(root,run_id,config_sha,latest_manifest):
     checkpoint_root=root/'checkpoints';require(not checkpoint_root.is_symlink(),'Checkpoint root must not be a symlink')
     entries=[]
     for manifest in checkpoint_root.glob('*/manifest.json'):
+        # A durable manifest inside a pending directory is not a committed
+        # checkpoint. Preserve every pending artifact without inspecting it.
+        if re.fullmatch(r'update-\d{8}-outer-\d{5}', manifest.parent.name) is None:
+            continue
         directory=manifest.parent
         require(not directory.is_symlink() and directory.resolve().parent==checkpoint_root.resolve(),'Unsafe checkpoint directory')
         value=json.loads(manifest.read_text())

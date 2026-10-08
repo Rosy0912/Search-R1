@@ -1,33 +1,26 @@
 {
   "ast_passed": true,
-  "cpu_tests": {
-    "combined_count": 71,
-    "combined_passed": 71,
-    "combined_runtime_seconds": 1.048,
-    "own_count": 26,
-    "own_passed": 26,
-    "skipped": 0
-  },
+  "cpu_test_scope": "Prior tests historical; UUID/resume/retention revision node CPU preflight required before GPU",
   "files": {
     "README.md": {
-      "bytes": 13380,
-      "sha256": "45b936c5f5be92f55f8c4b82f050936ab70acde24abacc48c575cb090925a03c"
+      "bytes": 14031,
+      "sha256": "b46442d765286cdc2cd4066ce9d1bdd7abac4441cf8344fbed7a151335a246e6"
     },
     "candidate-config-template.json": {
       "bytes": 4278,
       "sha256": "f05c657c66bbcf4e1b48ffc45df5273c8767047ff636a619ae9a6d59312c6e75"
     },
     "checkpoint.py": {
-      "bytes": 13252,
-      "sha256": "23c8c9c78d2e0bfb535b4d713bc4f50b8718efb84e7ff1be8102cd5b812c5a45"
+      "bytes": 13519,
+      "sha256": "9676eb662bb6c5f0ea21006e52c8bb9a4a2281a69fa235fcdc5cf2974a29e857"
     },
     "configschema.json": {
       "bytes": 4561,
       "sha256": "4fc2656ad577899f70b8a1c8c26fbb4f2cc873699a24cd9a7f0faddd630937c3"
     },
     "controller.py": {
-      "bytes": 23704,
-      "sha256": "b4ec9f41ed5e78169e32f258a5e29a9a1d006312371010008fd6ad27942f7c94"
+      "bytes": 23977,
+      "sha256": "90ce3827f5be6cf76cc9cdc7dc6d156169f26571eae607ad92ee0d27e357f8ec"
     },
     "prepare.py": {
       "bytes": 9824,
@@ -38,13 +31,21 @@
       "sha256": "4e9b0ea3d4a88130b536538c2f0f39d756b3f8c10175f9382b3572ae0c339347"
     },
     "test_controller.py": {
-      "bytes": 25245,
-      "sha256": "bbe0a79e401cb66308bdcdbff9a0870e16e138d0980e24411c366000023266e2"
+      "bytes": 28929,
+      "sha256": "f0e87374ce0b72f1c4478f50f38872b9a1352f11596810d53e2bc737db57795c"
     }
   },
-  "integration_note": "Post-publication correction only to metadata fixture and documentation; production source unchanged. Node first attempt 70/71 passed; retained failed fixture did not guarantee same-tick Linux timestamp change.",
+  "integration_note": "Latest human10/200/local resolved; Torch2.4 UUID identity compatibility and committed-only resume/retention corrected, scientific objective unchanged",
   "integration_scope": "Actual frozen native rollout HTTP null-effect fixture; request objects/Response/exceptions preserved; private full JSON and protocol diagnostics only; original305 nested QA verified before imports; top32 logging first8192 validpositions per outer only",
-  "recorded_at_utc": "2026-10-08T08:27:56.404302+00:00",
-  "schema": "opsd-online-controller-source-candidate-v2",
-  "scope": "Local reviewed candidate subset only, supersedes prior candidate manifest; root full helper manifest required. No Git/deployment/CUDA. Missing human clip/outer/storage/transition approvals remain HOLD."
+  "prior_cpu_tests": {
+    "combined_count": 71,
+    "combined_passed": 71,
+    "combined_runtime_seconds": 1.048,
+    "own_count": 26,
+    "own_passed": 26,
+    "skipped": 0
+  },
+  "recorded_at_utc": "2026-10-08T09:00:31.640845+00:00",
+  "schema": "opsd-online-controller-source-candidate-v3",
+  "scope": "Revised source candidate; no GPU execution proof"
 }
