@@ -1,0 +1,88 @@
+{
+  "session": "01a101e0-90d3-7731-bae9-58c8f1fdf7e2",
+  "source_agent_session": "01a1028b-b626-7f91-93db-0099ff1623c5",
+  "base_commit": "00a64f62e42140d7e5cad6110be08b0c804b35b2",
+  "created_at": "2026-10-08T03:47:48.486560+00:00",
+  "files": [
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/evaluate_worker.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/evaluate_worker.py",
+      "bytes": 8781,
+      "sha256": "cd3b210cc6cd553145f933ff26d0baebf4310718353ff417188f0351d63ea842"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/launch_controller.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/launch_controller.py",
+      "bytes": 4814,
+      "sha256": "897d5186aa91f2c24d35bb4da4de5c93fb417f5ed59e7a2c0c18a0239e3a5ad4"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/plan.json",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/plan.json",
+      "bytes": 2678,
+      "sha256": "e1a52435e590a65ceab1032c5d9f01e3cdf9f46e61a9248fbcaf5cd67c684b00"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/__init__.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/__init__.py",
+      "bytes": 68,
+      "sha256": "30fa96aa59c1c4ee26e0e3b79c478131f5423998e3a9090cf647e64e24ab97dd"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/core.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/core.py",
+      "bytes": 3998,
+      "sha256": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/rollout.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/rollout.py",
+      "bytes": 6880,
+      "sha256": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/vllm_rollout.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/vllm_rollout.py",
+      "bytes": 3577,
+      "sha256": "acddb14f00661fdc3f928ef58e6bef3a0125c34b5582f8f9441cd7e9d7362859"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/parallel_rollout.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/parallel_rollout.py",
+      "bytes": 5139,
+      "sha256": "de7f2790dca84fca9397cbc755fe4f81357fa743f3780ed3de5e196e92213a46"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_e1/io.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_e1/io.py",
+      "bytes": 526,
+      "sha256": "97e58faa829f5300e4d8cc2e79bf636d2d60c7806d4bf755a1df1cffd458a6ce"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_r1/__init__.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_r1/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/e1-archive100-inference-prepared-20261008/search_r1/qa_protocol.py",
+      "published_relative": "reproduction/evaluations/e1-archive100-20261008/search_r1/qa_protocol.py",
+      "bytes": 2984,
+      "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd"
+    },
+    {
+      "original": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-archive100-hf-verified-receipt-20261007.json",
+      "published_relative": "reproduction/evaluations/search-e1-archive100-hf-verified-receipt-20261007.json",
+      "bytes": 4658,
+      "sha256": "a6562278427757983f4cf1685504d7415fe1e95cab142cc954bc1e4e51e38fbd",
+      "purpose": "Input checkpoint size/hash metadata; no model contents"
+    }
+  ],
+  "excluded": [
+    "data/validation.jsonl (512 QA dataset)",
+    "model/checkpoint weights",
+    "all runtime logs and predictions",
+    "all credentials/environment directories"
+  ],
+  "note": "Deployment scripts saved for source durability only; this publication does not launch evaluation."
+}

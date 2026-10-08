@@ -1,0 +1,74 @@
+{
+  "target_node": "hkust5 / xie-lab-4",
+  "gpu_preferred": [
+    0
+  ],
+  "additional_idle_candidates": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7
+  ],
+  "excluded": [
+    4
+  ],
+  "model_repository": "Sutoonq/TMP_MODEL",
+  "model_revision": "772a4c03f118aa679212708b336bbc485d2ca35d",
+  "model_prefix": "search-e1-archive4/global_step_100",
+  "model_bytes": 13604379671,
+  "python": "/home/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+  "output_storage": "/home/shaoshitong/search-e1-archive100-eval-20261008",
+  "read_only_phase_complete": true,
+  "remote_launch": false,
+  "model_download_to_mac": false,
+  "data_count": 512,
+  "data_source_counts": {
+    "hotpotqa": 256,
+    "nq": 256
+  },
+  "strict_reward_source_manifest": {
+    "search_e1/__init__.py": "30fa96aa59c1c4ee26e0e3b79c478131f5423998e3a9090cf647e64e24ab97dd",
+    "search_e1/core.py": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc",
+    "search_e1/rollout.py": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a",
+    "search_e1/vllm_rollout.py": "acddb14f00661fdc3f928ef58e6bef3a0125c34b5582f8f9441cd7e9d7362859",
+    "search_e1/parallel_rollout.py": "de7f2790dca84fca9397cbc755fe4f81357fa743f3780ed3de5e196e92213a46",
+    "search_e1/io.py": "97e58faa829f5300e4d8cc2e79bf636d2d60c7806d4bf755a1df1cffd458a6ce",
+    "search_r1/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "search_r1/qa_protocol.py": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd",
+    "data/validation.jsonl": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  },
+  "inference": {
+    "backend": "vllm",
+    "temperature": 0,
+    "k": 1,
+    "seed": 42,
+    "batch_size": 64,
+    "workers": 1,
+    "context_tokens": 8192,
+    "max_generated_tokens_per_turn": 500,
+    "max_turns": 5,
+    "max_searches": 4,
+    "retrieval_topk": 3,
+    "observation_tokens": 480,
+    "retriever_same_HKUST_cluster": "http://10.120.17.101:18004/retrieve"
+  },
+  "metrics": [
+    "terminal_model_only_strict_EM",
+    "same_extracted_answer_token_F1",
+    "format_validity",
+    "coverage",
+    "per_question_response_and_policy_spans"
+  ],
+  "caveats": [
+    "Historical44.73%alreadystrict",
+    "Freshgreedy generation differs from historical effective sampling",
+    "NoGPUreservationormodeldownloadstartedpendingpersistentoutputpath"
+  ],
+  "storage_exception": {
+    "authorized_at": "2026-10-08T03:43:53.580928+00:00",
+    "human_instruction": "HKUST没有共享目录，直接存储到HKUST5，这个不会被回收",
+    "scope": "This Search-E1 iter100 inference rerun on HKUST5, retaining full evaluation artifacts"
+  }
+}
