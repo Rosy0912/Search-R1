@@ -1,0 +1,17 @@
+{
+  "files": {
+    "backup_checkpoints.py": {
+      "bytes": 6062,
+      "sha256": "2297f3eab2c17512647db1294ec89a3b1d8ec1782d87e1c6debf8f16f24ec90a"
+    },
+    "preserve_cpu_merge_owner.py": {
+      "bytes": 12842,
+      "sha256": "886cf5eca0691bee029200659932e2af1df60df86671cde39115fc6a157781a3"
+    },
+    "test_boundary.py": {
+      "bytes": 9133,
+      "sha256": "8b1b30f343df8203f557d791a59ead96f7390efbe1cfd501ce91919fdd7f40db"
+    }
+  },
+  "schema": "opsd-online-boundary-source-manifest-v1"
+}

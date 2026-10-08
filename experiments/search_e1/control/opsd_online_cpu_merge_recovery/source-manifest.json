@@ -1,0 +1,22 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7847,
+      "sha256": "f18d50a299bebc91e0d7f1b4b777d0221ffaa255e3740c098c0d479b19ec0634"
+    },
+    "recovery.py": {
+      "bytes": 20626,
+      "sha256": "7b3a13727334f6dfd2271468b01e299c4875a55210588ae4835e53b5c2010795"
+    },
+    "test_recovery.py": {
+      "bytes": 14536,
+      "sha256": "6f83f7767c93169d6b6493ffd22355e299647957560436d475a424bb27815d20"
+    }
+  },
+  "original_config_sha256": "d0c30df9b035e73d87bb5402bbcd32c16b2314a4180c451a543522ca5b321b17",
+  "run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "schema": "opsd-online-cpu-merge-recovery-source-manifest-v1",
+  "scope": "Independent CPU subprocess boundary for unchanged original PEFT BF16 merge; reuse published2cb wait and immutable7cf scientific helper/config/305",
+  "wait_manifest_sha256": "baa072189d0213309d72dd9d04c67bdaf03361e7e7b452b137040d4bfee9a67f",
+  "wait_source_commit": "2cbcc1b4754eff51a52b213240579f5db0e10f87"
+}
