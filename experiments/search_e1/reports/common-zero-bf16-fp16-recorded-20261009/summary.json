@@ -1,0 +1,186 @@
+{
+  "C1_new_group_started": {
+    "phase": "outer0 SAMPLING",
+    "pid": 2276380,
+    "run_id": "a1a56efd32e5456d8c6813454975e38f",
+    "starttick": 929210641,
+    "uid": 1005,
+    "updates_at_observation": 0
+  },
+  "accepted": true,
+  "actual_16_workers_returncode": 0,
+  "actual_parent_wait_returncode": 0,
+  "full70_5632_complete": false,
+  "identities": {
+    "common_initial_adapter_tensor_sha256": "836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f",
+    "greedy_contract": {
+      "attention_backend": "sdpa",
+      "eos_token_id": [
+        151645,
+        151643
+      ],
+      "max_context": 8192,
+      "max_new_tokens": 500,
+      "max_search_calls": 4,
+      "observation_tokens": 480,
+      "rank_seed": 42,
+      "repetition_penalty": 1.05,
+      "temperature": 0,
+      "topk": 3,
+      "turns": 5
+    },
+    "runtime_identity": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+    "source_model_identity": "2ef6070a328357b0f9d3a026010aaed0aa3f8840a241bc1021ed9a183e8d75f7",
+    "validation_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  },
+  "models": {
+    "bf16_zero": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.50390625,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 61,
+            "2": 156,
+            "3": 31,
+            "4": 8
+          },
+          "strict_hits": 129,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 126
+        },
+        "nq": {
+          "em": 0.4296875,
+          "final_invalid": 3,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 192,
+            "2": 49,
+            "3": 13,
+            "4": 2
+          },
+          "strict_hits": 110,
+          "termination": {
+            "answer": 253,
+            "invalid_or_budget": 3
+          },
+          "valid_gold_mismatch": 143
+        }
+      },
+      "overall": {
+        "em": 0.466796875,
+        "final_invalid": 4,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 253,
+          "2": 205,
+          "3": 44,
+          "4": 10
+        },
+        "strict_hits": 239,
+        "termination": {
+          "answer": 508,
+          "invalid_or_budget": 4
+        },
+        "valid_gold_mismatch": 269
+      }
+    },
+    "fp16_zero": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.5234375,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 67,
+            "2": 128,
+            "3": 44,
+            "4": 17
+          },
+          "strict_hits": 134,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 121
+        },
+        "nq": {
+          "em": 0.43359375,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 175,
+            "2": 57,
+            "3": 22,
+            "4": 2
+          },
+          "strict_hits": 111,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 144
+        }
+      },
+      "overall": {
+        "em": 0.478515625,
+        "final_invalid": 2,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 242,
+          "2": 185,
+          "3": 66,
+          "4": 19
+        },
+        "strict_hits": 245,
+        "termination": {
+          "answer": 510,
+          "invalid_or_budget": 2
+        },
+        "valid_gold_mismatch": 265
+      }
+    }
+  },
+  "paired": {
+    "BF16zero->FP16zero": {
+      "bootstrap": {
+        "confidence": 0.95,
+        "em_difference": 0.01171875,
+        "lower": -0.013671875,
+        "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+        "question_units": 512,
+        "replicates": 10000,
+        "seed": 42,
+        "upper": 0.037109375
+      },
+      "gained_no_search": 0,
+      "lost_final_invalid": 0,
+      "lost_hits": 19,
+      "lost_no_search": 0,
+      "lost_valid_gold_mismatch": 19,
+      "net_hits": 6,
+      "net_percentage_points": 1.171875,
+      "new_hits": 25,
+      "preserved_hits": 220,
+      "questions": 512,
+      "still_wrong": 248
+    }
+  },
+  "primary_slots": 1024,
+  "private_acceptance_sha256": "165da28f4640a7688b73a3b106270fee695f3765b941a9ea1c72af1089679413",
+  "private_source_summary_sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6",
+  "run_id": "d6fb70ec8f374ff8b8a841b2e6f15450",
+  "schema": "common-zero-deployment-recorded-summary-v1",
+  "scope": "Original two accepted native512 phases, no re-inference or score recomputation",
+  "whole_controller_and_release_accepted": true
+}

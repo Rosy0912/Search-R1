@@ -1,0 +1,1 @@
+Exact actual read-only CPU capture used to record existing zero summary/exit/release and C1 process identity. Published after this observation; not a new inference or score test. Raw private results are excluded from Git.

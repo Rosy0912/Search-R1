@@ -1,0 +1,23 @@
+{
+  "backup_is_training_dependency": false,
+  "files": {
+    "README.md": {
+      "bytes": 870,
+      "sha256": "d8ecd7348a2808b02bd668613545bfe5b46badf656938598278a777a84a60eef"
+    },
+    "source-inventory.stdin.py": {
+      "bytes": 2446,
+      "sha256": "374286b2d0dfc09d8bcba8bde4b875c707a8e0c01299a2299456c97a03fc86e8"
+    },
+    "source-metadata.stdin.py": {
+      "bytes": 2422,
+      "sha256": "9ace7dc6eca118f2e59d962fa4d09cf8d15c5f47144f4f44bcd0757821b9243f"
+    },
+    "verify-local.py": {
+      "bytes": 2457,
+      "sha256": "63a91206fd9b0d70cfc773c45e79157f3d4d09dd313d2810293545f14e9e3e8e"
+    }
+  },
+  "schema": "closed-fp16-phase-operational-inputs-v1",
+  "scientific_source_changed": false
+}
