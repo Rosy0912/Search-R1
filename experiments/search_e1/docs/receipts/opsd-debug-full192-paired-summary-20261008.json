@@ -1,0 +1,1126 @@
+{
+  "schema": "full192-protocol-paired-termination-v1",
+  "checked_unix": 1791438003.3930361,
+  "run_id": "894021c8f55f436f96bb3cb146ab05bb",
+  "selected_unique_cases": 192,
+  "six_cells_each": 32,
+  "scope": "Same fixed stratified diagnostic sample; not population/native512/seven-benchmark EM",
+  "interpretation": {
+    "classes": "Mutually exclusive strict_correct/valid_wrong/final_invalid; frozen QA parser and reward",
+    "no_search": "Separate axis grounded in search_calls and actual query turn provenance",
+    "termination": "Separate recorded generation termination axis, not a new failure class",
+    "teacher": "Own privileged autoregressive rollout for 128 eligible cases; not training q on common history",
+    "literal_matches": "Diagnostic normalized literal tag matches only, never strict or semantic correctness"
+  },
+  "provenance": {
+    "summary": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-full192-20261008-v1/summary.json",
+      "sha256": "6ceb906987ade78f13bc0a345c63e4b802613cc4ae0e0a5d6b0c7360baaca62a",
+      "bytes": 19265,
+      "inode": 466389256,
+      "mtime_ns": 1791437882948429168,
+      "ctime_ns": 1791437882948429168
+    },
+    "private_cases": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-full192-20261008-v1/cases.jsonl",
+      "sha256": "f0b2eb93b4a51fbb0041a8b2a4fe244f5cc7abaad749bc37057530f9cd155903",
+      "bytes": 2566499,
+      "inode": 466389255,
+      "mtime_ns": 1791437882944431169,
+      "ctime_ns": 1791437882944431169
+    },
+    "terminal_proof": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-full192-20261008-v1/terminal-execution-proof.json",
+      "sha256": "48c6cfd42a60651710516a4824b08433b051b025331801978a5a047603f28105",
+      "bytes": 6603,
+      "inode": 466389258,
+      "mtime_ns": 1791438003388174939,
+      "ctime_ns": 1791438003388174939
+    },
+    "classification_trace_manifest": {
+      "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/runs/debug-894021c8f55f436f96bb3cb146ab05bb/protocol-audit-full192-20261008-v1/classification-trace-manifest.json",
+      "sha256": "007c2ba2f586f622deb7aaa022933d2de1aee0e8eb489d996335323fdbc25d9f",
+      "bytes": 339971,
+      "inode": 466389257,
+      "mtime_ns": 1791438003388174939,
+      "ctime_ns": 1791438003388174939
+    },
+    "postprocessor_source_sha256": "48ee5a8c6e5fe19b95140d620f42786f32eab3cb0d1ecb723197ffbc52899074"
+  },
+  "by_version": {
+    "epoch1": {
+      "analyzed": 192,
+      "final_invalid": 8,
+      "no_executed_search": 8,
+      "invalid_literal_tag_matches_gold_not_em": 3,
+      "invalid_tag_unclosed_think": 8,
+      "valid_wrong": 105,
+      "strict_correct": 79
+    },
+    "source100": {
+      "analyzed": 192,
+      "strict_correct": 92,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 100
+    },
+    "teacher": {
+      "analyzed": 128,
+      "final_invalid": 25,
+      "no_executed_search": 76,
+      "invalid_literal_tag_matches_gold_not_em": 24,
+      "invalid_tag_unclosed_think": 25,
+      "strict_correct": 102,
+      "skipped_no_reference": 64,
+      "valid_wrong": 1
+    },
+    "update1": {
+      "analyzed": 192,
+      "strict_correct": 101,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 91
+    },
+    "update5": {
+      "analyzed": 192,
+      "strict_correct": 89,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 103
+    }
+  },
+  "cells": [
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 31,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "strict_correct": 1
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 27,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 5
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 12,
+      "no_executed_search": 4,
+      "invalid_literal_tag_matches_gold_not_em": 2,
+      "invalid_tag_unclosed_think": 4,
+      "valid_wrong": 16,
+      "final_invalid": 4
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 30,
+      "no_executed_search": 2,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 2,
+      "final_invalid": 2
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "final_invalid": 2,
+      "no_executed_search": 2,
+      "invalid_literal_tag_matches_gold_not_em": 1,
+      "invalid_tag_unclosed_think": 2,
+      "valid_wrong": 6,
+      "strict_correct": 24
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "valid_wrong": 17,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "strict_correct": 15
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 31,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 1
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 15,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 17
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 31,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 1
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "valid_wrong": 17,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "strict_correct": 15
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 26,
+      "no_executed_search": 14,
+      "invalid_literal_tag_matches_gold_not_em": 6,
+      "invalid_tag_unclosed_think": 6,
+      "final_invalid": 6
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 28,
+      "no_executed_search": 6,
+      "invalid_literal_tag_matches_gold_not_em": 3,
+      "invalid_tag_unclosed_think": 3,
+      "valid_wrong": 1,
+      "final_invalid": 3
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "final_invalid": 10,
+      "no_executed_search": 31,
+      "invalid_literal_tag_matches_gold_not_em": 9,
+      "invalid_tag_unclosed_think": 10,
+      "strict_correct": 22
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "final_invalid": 6,
+      "no_executed_search": 25,
+      "invalid_literal_tag_matches_gold_not_em": 6,
+      "invalid_tag_unclosed_think": 6,
+      "strict_correct": 26
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 19,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 13
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 31,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 1
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 19,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 13
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 31,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "strict_correct": 1
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "strict_correct": 13,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 19
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "analyzed": 32,
+      "valid_wrong": 32,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "analyzed": 32,
+      "strict_correct": 30,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "valid_wrong": 2
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "analyzed": 32,
+      "valid_wrong": 19,
+      "no_executed_search": 0,
+      "invalid_literal_tag_matches_gold_not_em": 0,
+      "invalid_tag_unclosed_think": 0,
+      "strict_correct": 13
+    }
+  ],
+  "paired_from_source100": [
+    {
+      "target_version": "epoch1",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "total": 192,
+        "strict_correct->final_invalid": 4,
+        "no_search:0->1": 8,
+        "termination:answer->answer": 192,
+        "valid_wrong->valid_wrong": 84,
+        "no_search:0->0": 184,
+        "strict_correct->valid_wrong": 21,
+        "strict_correct->strict_correct": 67,
+        "valid_wrong->strict_correct": 12,
+        "valid_wrong->final_invalid": 4
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->strict_correct": 1
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 26,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->strict_correct": 1,
+        "strict_correct->valid_wrong": 5
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 8,
+        "no_search:0->0": 28,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 11,
+        "valid_wrong->strict_correct": 4,
+        "strict_correct->valid_wrong": 5,
+        "strict_correct->final_invalid": 2,
+        "no_search:0->1": 4,
+        "valid_wrong->final_invalid": 2
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 30,
+        "no_search:0->0": 30,
+        "termination:answer->answer": 32,
+        "valid_wrong->final_invalid": 2,
+        "no_search:0->1": 2
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->final_invalid": 2,
+        "no_search:0->1": 2,
+        "termination:answer->answer": 32,
+        "strict_correct->valid_wrong": 5,
+        "no_search:0->0": 30,
+        "strict_correct->strict_correct": 24,
+        "valid_wrong->valid_wrong": 1
+      }
+    },
+    {
+      "target_version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 11,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "strict_correct->strict_correct": 9,
+        "valid_wrong->strict_correct": 6,
+        "strict_correct->valid_wrong": 6
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "total": 192,
+        "strict_correct->strict_correct": 92,
+        "no_search:0->0": 192,
+        "termination:answer->answer": 192,
+        "valid_wrong->valid_wrong": 100
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 32,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 1
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 15,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 17
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 32,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 1
+      }
+    },
+    {
+      "target_version": "source100",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 17,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "strict_correct->strict_correct": 15
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "total": 192,
+        "strict_correct->strict_correct": 87,
+        "no_search:0->0": 192,
+        "termination:answer->answer": 192,
+        "valid_wrong->strict_correct": 14,
+        "valid_wrong->valid_wrong": 86,
+        "strict_correct->valid_wrong": 5
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 32,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->strict_correct": 1
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 13,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 11,
+        "valid_wrong->strict_correct": 6,
+        "strict_correct->valid_wrong": 2
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 32,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 1
+      }
+    },
+    {
+      "target_version": "update1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->strict_correct": 7,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "strict_correct->strict_correct": 12,
+        "valid_wrong->valid_wrong": 10,
+        "strict_correct->valid_wrong": 3
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "total": 192,
+        "strict_correct->strict_correct": 81,
+        "no_search:0->0": 192,
+        "termination:answer->answer": 192,
+        "valid_wrong->valid_wrong": 92,
+        "strict_correct->valid_wrong": 11,
+        "valid_wrong->strict_correct": 8
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->strict_correct": 1
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 31,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->strict_correct": 1
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 10,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "valid_wrong->valid_wrong": 14,
+        "valid_wrong->strict_correct": 3,
+        "strict_correct->valid_wrong": 5
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 32,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "total": 32,
+        "strict_correct->strict_correct": 30,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "strict_correct->valid_wrong": 1,
+        "valid_wrong->valid_wrong": 1
+      }
+    },
+    {
+      "target_version": "update5",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "total": 32,
+        "valid_wrong->valid_wrong": 14,
+        "no_search:0->0": 32,
+        "termination:answer->answer": 32,
+        "strict_correct->strict_correct": 10,
+        "strict_correct->valid_wrong": 5,
+        "valid_wrong->strict_correct": 3
+      }
+    }
+  ],
+  "termination_axis": [
+    {
+      "version": "epoch1",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "answer": 192
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "class=final_invalid",
+      "group": "ALL",
+      "counts": {
+        "answer": 8
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "class=strict_correct",
+      "group": "ALL",
+      "counts": {
+        "answer": 79
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "class=valid_wrong",
+      "group": "ALL",
+      "counts": {
+        "answer": 105
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "epoch1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "answer": 192
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "class=strict_correct",
+      "group": "ALL",
+      "counts": {
+        "answer": 92
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "class=valid_wrong",
+      "group": "ALL",
+      "counts": {
+        "answer": 100
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "source100",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "answer": 128
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "class=final_invalid",
+      "group": "ALL",
+      "counts": {
+        "answer": 25
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "class=strict_correct",
+      "group": "ALL",
+      "counts": {
+        "answer": 102
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "class=valid_wrong",
+      "group": "ALL",
+      "counts": {
+        "answer": 1
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "teacher",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "answer": 192
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "class=strict_correct",
+      "group": "ALL",
+      "counts": {
+        "answer": 101
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "class=valid_wrong",
+      "group": "ALL",
+      "counts": {
+        "answer": 91
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update1",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "ALL",
+      "group": "ALL",
+      "counts": {
+        "answer": 192
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "class=strict_correct",
+      "group": "ALL",
+      "counts": {
+        "answer": 89
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "class=valid_wrong",
+      "group": "ALL",
+      "counts": {
+        "answer": 103
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_correct",
+      "counts": {
+        "answer": 32
+      }
+    },
+    {
+      "version": "update5",
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "counts": {
+        "answer": 32
+      }
+    }
+  ]
+}
