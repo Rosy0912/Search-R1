@@ -33,3 +33,17 @@ full192已经以物理网卡直连的只读rsync续传，保留partial、无dele
 备份V1的inventory在请求archive前实际返回1：合法共同初始adapter声明只有path/SHA/bytes，闭包误要求其同时声明历史inode/时间戳。19个CP核心文件均有完整stat，故障不是网络或训练。独立V2 source554c52c仅兼容该闭包schema，仍实际固定句柄全文件SHA、当前stat前后稳定；19核心严格规则不变。15聚焦CPU fixtures与独立审查通过，新源码先push/FETCH_HEAD回读后部署新目录及新队列，V1失败目录和原源保留。备份不取训练锁、不写训练文件，不是下一轮条件。
 
 当前十轮后评测入口的源码及配置只读复核通过：每组raw10 BF16，共同BF16/FP16零adapter，P/J额外FP16raw10，总11×512=5632正式槽。各实际训练终态、完整资源释放以及真实GPU评估仍需验收；源码绑定通过不是结果。
+
+## 第五轮进展与评测统计接口修复
+
+2026-10-09 02:55 CST 实读同一 C0 控制器身份，五个 outer 完成，累计50次真实Adam、1512条可用pair曝光，第六outer开始新采样。各轮K与累计Adam依次为327/11、312/21、296/31、285/40、292/50；未重复已完成轮次。独立Adam张量实读仍仅CP1/5，后续计数来自原生完成链，不能扩大数值审计范围。
+
+提前检查发现旧964评测控制在训练十轮完成后会拒绝：它用基础miner重算stats，而实际sampling生产入口还添加严格奖励、行动协议等diagnostics，故完整stats精确比较必然失败。失败发生在原训练实际rc0及释放已落盘之后、评测配置和GPU子进程创建之前。当前训练不受影响；此问题不等于训练Adam或数据改变。
+
+独立新源码61137d2、manifest2c35301dac3cc2b536bf478492d3b6c8a56044bed74bd28c2cdcdbfba6c7a6ef已推送、FETCH_HEAD逐字节核验，并部署独立eval-stats目录。修复调用原SHA绑定的production sampling.verify_rollouts，保留全部pairs、stats和diagnostics精确比较。两个必要CPU边界测试及窄审通过；Node上实际outer0的2560轨迹/327pairs及完整生产stats重算也通过，没有模型、HTTP或GPU工作。C0必须实际完成十轮、原训练rc0、旧parent自然rc2及全释放后才能复用raw10评测，绝不再启动C0训练；其他六组保持原fresh配置。准备好的源码与待填终态模板不是实际评测启动。
+
+同提交中的只读CPU outer collector已实际读取四个完成轮次，按CP明确引用的committed receipts计数，保留实际尾批分母、K等轨迹均值、加权曝光和缺字段NA。失败重试文件不计训练量；部分四轮报告不是70轮验收，TRAIN新采样reward也不是固定512曲线。
+
+后台V2队列已实际完成前四个outer检查点的本地传输、USTAR校验、安全解包及每成员SHA；队列不获取训练锁，也不以传输结束作为下一轮条件。历史full192诊断的直连rsync实际rc0，6603文件/39,215,210,380字节/56NPY均已本地全文件SHA验收：6401项对照原接受的内容SHA并新核源metadata连续性，余202项新核Node完整SHA。没有将备份验收冒充NPY算术重建或模型效果。
+
+HKUST4 archive独立只读快照为184真实GRPO更新、185进行，严格TRAIN reward从183的0.419到184的0.019，legacy0.313与严格评分差0.294。有限的裁剪前gradnorm2.854e9为新增严重异常，原clip1保持；日志未见OOM或进程崩溃，最新固定512仍150，五组669文件冻结SHA一致。仅凭此汇总不能确定具体协议失效、非有限权重或算法根因；未停止或修改该受保护archive作业。
