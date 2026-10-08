@@ -1,0 +1,1 @@
+Candidate shared output snapshot tool for fixed BAPO3315/source60. Independent V2 review blocked; V3 fixes under review. Not deployed/executed. Actual local11 tests10PASS/1 Linux-only skip. Producing shared archive does not accept training200/HF or imply post-Oct20 persistence. No GPU, no source/training changes.
