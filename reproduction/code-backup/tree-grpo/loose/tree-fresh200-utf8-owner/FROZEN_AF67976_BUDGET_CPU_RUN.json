@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/baselines/test_actual_update_budget.py",
+    "tests/reproduction/test_final_checkpoint.py",
+    "-q"
+  ],
+  "exit_code": 0,
+  "log_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-owner/FROZEN_AF67976_BUDGET_CPU_ACTUAL.txt",
+  "log_sha256": "4e416c256394da772748f4bdb2a3657d287bee3f43f0fb8886c48147d58457a4",
+  "source_clean": true,
+  "source_commit": "af67976ec3b544eddaaa68c35411a46b9db7af68",
+  "test_summary": "..............                                                           [100%]\n14 passed in 0.67s",
+  "wall_seconds": 1.087720333
+}

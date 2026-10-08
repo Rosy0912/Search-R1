@@ -1,0 +1,244 @@
+{
+  "actual_PT_HF_loaded": false,
+  "actual_gpu_accepted": false,
+  "actual_h1009_toy_reexecuted_by_reviewer": false,
+  "actual_h1009_toy_saved_capture_sha256": "1d8e509eaad10eded86936636d0286d3c5c66922346aa4311a0110933951284a",
+  "actual_optimizer_writes": 0,
+  "actual_remote_calls": 0,
+  "adapter_sha256": "29822f98f8749cdbede4f62c91a0745d241a71c4bd16ce7e52e2f58126c3e273",
+  "case_count": 42,
+  "cases": [
+    {
+      "name": "All original runner functions AST-identical after the single config call substitution",
+      "result": "PASS"
+    },
+    {
+      "name": "Exact candidate/adapter/test bytes compile",
+      "result": "PASS"
+    },
+    {
+      "name": "Config consumer passes exact Unicode UTF8 text to create, never path load",
+      "result": "PASS"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Bundle config text differs from frozen original bytes",
+      "name": "Changed config modified value refused before create",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Bundle config text differs from frozen original bytes",
+      "name": "Changed config newline removed refused before create",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Exact original config text is required",
+      "name": "Changed config bytes instead of str refused before create",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Exact original config text is required",
+      "name": "Changed config None refused before create",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Bundle config text differs from frozen original bytes",
+      "name": "Wrong original SHA refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Duplicate JSON key",
+      "name": "Strict metadata JSON refuses {\"x\":{\"v\":1,\"v\":2}}",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Nonfinite JSON number",
+      "name": "Strict metadata JSON refuses {\"x\":[1e999]}",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Nonfinite JSON constant NaN",
+      "name": "Strict metadata JSON refuses {\"x\":[NaN]}",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Nonfinite JSON constant Infinity",
+      "name": "Strict metadata JSON refuses {\"x\":[Infinity]}",
+      "result": "REFUSED"
+    },
+    {
+      "name": "Whole normalized release binds config_text",
+      "result": "PASS"
+    },
+    {
+      "name": "Whole normalized release binds installed_versions",
+      "result": "PASS"
+    },
+    {
+      "name": "Whole normalized release binds probe_source_files",
+      "result": "PASS"
+    },
+    {
+      "name": "Whole normalized release binds original_worker_sha256",
+      "result": "PASS"
+    },
+    {
+      "name": "Whole normalized release binds hf_index",
+      "result": "PASS"
+    },
+    {
+      "name": "Release entry excluded to avoid circular self-SHA; consumed separately by bound()",
+      "result": "PASS"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Runtime output does not belong to this Slurm job",
+      "name": "Runtime output belongs to exact Slurm job",
+      "result": "REFUSED"
+    },
+    {
+      "name": "All eight declared installed imports/version/path/SHA fixture passes",
+      "result": "PASS"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Required actual installed source set changed",
+      "name": "Missing installed source refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Required actual installed source set changed",
+      "name": "Duplicate instead of full installed source set refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Installed source escaped own environment",
+      "name": "Installed source outside own env refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Actual imported implementation differs: flash_attn.bert_padding",
+      "name": "Imported implementation changed refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Required installed version identity changed",
+      "name": "Alternate local Torch version refuses",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Actual installed version differs: torch",
+      "name": "Actual installed distribution mismatch refuses",
+      "result": "REFUSED"
+    },
+    {
+      "name": "Original/probe module imported paths couple to complete source map fixture",
+      "result": "PASS"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Original AST worker is not bound to source identity",
+      "name": "Worker AST SHA is bound to original identity map",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Actual native logprob source differs",
+      "name": "Native original logprob SHA bound to actual imported helper",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Original actor/helper bytes differ: verl",
+      "name": "Changed original helper bytes refused",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Complete frozen probe source mapping required",
+      "name": "Duplicate source mapping refuses",
+      "result": "REFUSED"
+    },
+    {
+      "name": "Full prepare source body accepts complete tiny mocked metadata interface",
+      "result": "PASS"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release adapter_sha256",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release bundle_payload_sha256",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release package_manifest_sha256",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release runner_commit",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release selection_sha256",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release actual_optimizer_writes",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Release binds another source/selection",
+      "name": "Full prepare refuses wrong release actual_optimizer_writes",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Consumed HF index differs from original serialized index bytes",
+      "name": "Full prepare refuses HF index different from consumed bound JSON",
+      "result": "REFUSED"
+    },
+    {
+      "exception": "ValueError",
+      "message": "Consumed bundle config is not the original bound descriptor bytes",
+      "name": "Full prepare refuses config bytes different from bundled exact text",
+      "result": "REFUSED"
+    },
+    {
+      "name": "Saved actual h1009 toy exact adapter/config-consumer snippet pins and CPU-only scope",
+      "result": "PASS"
+    }
+  ],
+  "config_consumer_snippet_sha256": "3c846dc88edcc1ada2674d33b6f60c1efc1e9e9ea9c52003a95e06e8b50e6db3",
+  "full_prepare_is_mocked_metadata_not_real_assets": true,
+  "local_parser_is_stubbed": true,
+  "production_source_modified": false,
+  "runner_sha256": "a4fd312d36c083295493950ea3b4ceb133ce65142b49c6b6e3ffa5f356019bd4",
+  "status": "INDEPENDENT_CONFIG_AND_METADATA_DELTA_CPU_CASES_PASSED"
+}

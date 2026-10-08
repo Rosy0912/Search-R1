@@ -1,0 +1,48 @@
+{
+  "status": "READONLY_FORMAL_WALL_BINDING_AUDIT_COMPLETE_REPAIR_NOT_EXECUTED",
+  "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "actual_partition_policy_sha256": "ba2f015fba1d6853882449fd538113a7f407a2e7d6bab277d47b2dc6370c5dc0",
+  "actual_partition_policy": {"PartitionName": "gpu", "MaxTime": "UNLIMITED", "State": "UP"},
+  "selected_train_wall_hours": null,
+  "new_wall_default": null,
+  "conclusion": "Existing manifest SHA, external fork:none release and held-stdin submission can bind one explicit root-chosen finite wall. Current submission/runtime still use fixed72; deleting only builder/renderer comparisons is insufficient.",
+  "existing_binding_evidence": {
+    "build_package_draft.py:187,191,209": "Pinned inputs.dispatch.train_wall_hours is copied intact into manifest.dispatch; currently positive type is restricted to72.",
+    "production_contract.py:126-136": "External fork:none first-five release pins the exact manifest SHA and renderer/submitter bytes, hence includes dispatch.wall indirectly. No separate wall field is currently checked.",
+    "submit_once.py:72,86-91,100-110": "Manifest and script are read byte-bound; actual script equality is reconstructed with72. Held script SHA/bytes/base64 and manifest/review hashes are journaled; exactly those bytes are submitted via stdin.",
+    "production_contract.py:395-408;slurm_identity.py:160-172": "Once runtime validation binds actual job, own cluster/node/run, manifest/review SHA and intent path. It does not independently rehash recorded stdin at runtime; do not claim that it does.",
+    "slurm_identity.py:116-123,126-132": "Current allocation must have all fixed resources and TimeLimit3-00:00:00; wall_hours returned as72. No manifest wall reaches this comparison.",
+    "launch.sbatch:30;supervisor.py:69;guard_entry.py:49,54": "All three callers use verify_runtime(); guard compares saved/current wall_hours. Rebinding within verify_runtime preserves callers unchanged.",
+    "freeze_formal_v6_package.py:78,106-110": "Code filter deep-copies manifest, preserving dispatch and its explicitly selected wall without assigning a new value. CPU helpers do not select a scheduler wall."
+  },
+  "minimum_runtime_logic_delta": {
+    "build_package_draft.py": "Replace==72 with type(wall)is int and wall>0; keep value copied from pinned input and every other gate intact.",
+    "render_dispatch.py": "Accept required explicit positive exact int; no default/UNLIMITED, retain all directive bytes other than chosen time.",
+    "submit_once.py": "Reconstruct expected submitted script using already bound manifest.dispatch.train_wall_hours, never an independent CLI/default.",
+    "slurm_identity.py": "Within existing cgroup/runtime validation read own candidate manifest using existing TREE_INSTRUCT_TOOLS and TREE_INSTRUCT_PACKAGE_SHA256. Pass positive exact intW to allocation_identity; require one exact finite canonical TimeLimit derived fromW and returnW. Do not expand a TimeLimit allowlist."
+  },
+  "local_rebinder_delta": "Require --train-wall-hours with no default; record exact root-suppliedW in dispatch and truthful wall_authority. Keep actualW null in current drafts.",
+  "hash_rebinding_consequences": [
+    "New isolated runtime inventory retains33 members, repins only four wrapper bytes; CONFIGURATION_SPEC and source16+4 closure remain unchanged.",
+    "Formal CPU common requires new wrapper inventory SHA and four corresponding hashes only; entry logic can remain unchanged. Existing source-only helper review cannot be mislabeled as accepting changed common bytes.",
+    "New local rebinder/freezer paths and inventory/common/helper-review pins must be resealed; no behavioral filter, Hydra or training change.",
+    "Future actual inputs, manifest, archive, external fork:none release, rendered script and once journal receive their actual new SHA values; original V6 receipts stay immutable."
+  ],
+  "inherited_unchanged": ["source53082e and20 source byte interfaces", "official model/data identity", "fixed88 config plus actual2 bootstrap fields", "all20 opportunities and>=1 actual write for credited outer/warmup", "separate actual write count", "same live first5 then6..200", "full200 and fullfinal51713", "h100-9/wuhan-h100", "8GPU/32requestedCPU/256G/exclusive/no-requeue", "whole empty Adam/scheduler0 fresh gate", "native calibration and four real observation gates", "once/no-retry/unknown/cgroup/foreign-resource protections"],
+  "current_wrapper_sha256": {
+    "build_package_draft.py": "ea57caedc22ba0ce6b439027929a000e2e719166b13647a6982a9b48371ceab4",
+    "render_dispatch.py": "9e3d766048c173e4fd638453010d513ba9be1bd130419691d4221a6505b9b8f4",
+    "submit_once.py": "a7ed525453920df5f0d5cdbceabf2aa46d9de5cd742fd34cc86056fa82affffc",
+    "slurm_identity.py": "ec1b7b1d439f14d9a932210b2ff67cc9ecff1f35f3466bb2277f2b1750c57415"
+  },
+  "existing_runtime_inventory_sha256": "157286ed6fb486031891d0e02998a649682fe848620f6ffff3fdca5e3b379aaa",
+  "no_additional_release_wall_layer_required": true,
+  "pending": "Root-selected finite budget must be explicit and reported in the final packet; fork:none reviews minimal isolated implementation before any changed-code execution.",
+  "actual_source_execution": false,
+  "actual_tests_executed": false,
+  "actual_assets_read": false,
+  "actual_remote_executed": false,
+  "actual_gpu_executed": false,
+  "actual_job_modified": false,
+  "training_release": false
+}

@@ -1,0 +1,39 @@
+{
+  "status": "SOURCE_ONLY_SAMPLING_PARAMS_DIAGNOSIS_NOT_RUNTIME_CAUSE_PROOF",
+  "files": {
+    "work/tree-vllm-installed-source-20261006/entrypoints/llm.py": {
+      "sha256": "1393441b1b5cf4750b2e3a72ff30272a7e0db2220fa23ffa459f135265686582",
+      "actual_h1009_source": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/entrypoints/llm.py",
+      "scope": "Captured installed source bytes only; no3291 value diff"
+    },
+    "work/tree-vllm-installed-sampling-source-20261006/sampling_params.py": {
+      "sha256": "f379042fe14ca7adb2a74eeb1b746de4583481c2a10416f7fe1b05aba81952bc",
+      "actual_h1009_source": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/sampling_params.py",
+      "scope": "Captured installed source bytes only; no3291 value diff"
+    },
+    "work/tree-vllm-installed-engine-source-20261006/engine/llm_engine.py": {
+      "sha256": "f22b4b4744f694df5808913815666276e9fa18da9b4d0c360bdb8f269dbaf5f5",
+      "actual_h1009_source": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/engine/llm_engine.py",
+      "scope": "Captured installed source bytes only; no3291 value diff"
+    },
+    "work/tree-vllm-window-runner/window_runtime.py": {
+      "sha256": "3ca8405b07a0584f45c101a54477ed86a43300ae55dc4f9b9ddeee9b10fec3c5",
+      "scope": "Local source reference; actual3291 package provenance checked separately by owner"
+    },
+    "work/tree-vllm-window-runner/single_window_runner.py": {
+      "sha256": "f4e8ddab85b30762afe3b017fd9a7aa38a0bef862c6295deb1463fab5c733ee0",
+      "scope": "Local source reference; actual3291 package provenance checked separately by owner"
+    },
+    "work/tree-safety110-a632ba9-v2/source/repo/verl/workers/rollout/vllm_rollout/vllm_rollout.py": {
+      "sha256": "62eff90354b261d462aab1b6680a1acee9d2cb1698c0027685f72994dc6ef149",
+      "scope": "Local source reference; actual3291 package provenance checked separately by owner"
+    }
+  },
+  "actual3291_before_after_values_saved": false,
+  "source_hash_validation": true,
+  "tensor_assets_loaded": false,
+  "model_forwards": 0,
+  "remote_operations": 0,
+  "probability_accepted": false,
+  "activity_scope": "Only this local source diagnostic; model/remote counters are not3291 runtime counters"
+}

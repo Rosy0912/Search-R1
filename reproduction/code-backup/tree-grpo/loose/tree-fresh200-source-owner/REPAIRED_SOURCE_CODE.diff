@@ -1,0 +1,1592 @@
+diff --git a/BEHAVIOR_MU_CORRECTION.md b/BEHAVIOR_MU_CORRECTION.md
+index bfba0c3..aed6811 100644
+--- a/BEHAVIOR_MU_CORRECTION.md
++++ b/BEHAVIOR_MU_CORRECTION.md
+@@ -8,6 +8,6 @@ Keep fullbatch recomputed beta independently as actor_old_log_probs for the orig
+ 
+ Keep original Tree advantages, leaf weights and global row denominator. The new explicit fresh200 profile uses512 questions and five real leaves via root quotas[3,2], mini128/globalmicro16, DP8/local320/mini16/micro2,20 optimizer calls per complete outer; LR1e-6/57 complete-outer warmup thenconstant, entropy0/reference KL0, four searches, no forced final answer,2048/4096/500/500 lengths, temperature and fixed splits. See FRESH200_DESIGN.md for the explicit tree budget and first-outer LR0 semantics. The historical640/mini384/six-leaf/10-call protocol remains a separate legacy source profile and cannot authorize a new recovery run. The raw-token repair rejects unsupported cropping, UTF-8 projection and PAD/EOS cases rather than guessing. Greedy validation retains its original reward/text meaning and does not collect training mu.
+ 
+-The full source API now records 18 actual SamplingParams fields including logits_processors=None. It does not invent absent metadata. The initial same-partition repeat limit, sampling KL threshold and negative-tail limit must be explicit; candidate defaults leave them unset and refuse updates. The dedicated corrected zero-write endpoint keeps the original diagnostic setting disabled/enforce=true; it does not disable enforcement to call the old probability gate passed. It saves actual mu, full beta, frozen monitor beta and the selected original row bindings on h100-9.
++The full source API now records 24 actual SamplingParams fields. Integer best_of=1 and _real_n=1 are required; logits_processors, truncate_prompt_tokens, guided_decoding, logit_bias and allowed_token_ids must each be observed as None. Missing properties are rejected, not inferred from n=1 or output count. Nontrivial native controls, candidate selection, a non-integer count, or binding drift rejects the current batch. The read-only capture_native_sampling_settings helper is available before native engine processor construction and is reused by post-generation capture. The source engine can construct processors and clear their input fields before cloning, so after-only None is insufficient to establish the initial settings. Historical3295/3296 missing values remain unknown and cannot prove the new24-field contract. It does not invent absent metadata or introduce unused engine YAML settings. The initial same-partition repeat limit, sampling KL threshold and negative-tail limit must be explicit; candidate defaults leave them unset and refuse updates. The dedicated corrected zero-write endpoint keeps the original diagnostic setting disabled/enforce=true; it does not disable enforcement to call the old probability gate passed. It saves actual mu, full beta, frozen monitor beta and the selected original row bindings on h100-9.
+ 
+ Owner tests cover actual source helpers, compose paths, tiny CPU actor/Adam/SGD and two-rank Gloo. Their emulated Proto and one-parameter forwards do not prove Ray/DataProto/FSDP/NCCL, real3B probability behavior or effect. The calibration monitor now explicitly uses the same train mode as production and restores each original module flag on success/failure; fresh state is a separate empty-Adam/scheduler0 profile, never the restored checkpoint110 contract. User-required independent review with no inherited chat context precedes execution. Actual official-base zero-write evidence must precede threshold selection and actual same-instance five/HF/tokenizer/dev512 acceptance. Then that same fresh instance continues6..200. This is not an exact optimizer/RNG/data-consumption rollback guarantee.
+diff --git a/FRESH200_PARTIAL_WORKER_STATE.md b/FRESH200_PARTIAL_WORKER_STATE.md
+new file mode 100644
+index 0000000..dbe54e8
+--- /dev/null
++++ b/FRESH200_PARTIAL_WORKER_STATE.md
+@@ -0,0 +1,91 @@
++# Fresh200 controlled refusal state preservation
++
++This is an evidence path for `tree_fresh200_five_leaf_v1`, not rollback,
++checkpoint recovery, optimizer restart, probability acceptance, or training
++completion. No loss, Tree leaf measure, minibatch denominator, or LR formula is
++changed. Legacy profiles retain their scheduler/control behavior.
++
++The actor resets an independent successful-return counter at update entry. It
++increments immediately after `optimizer.step()` returns, before safety evidence
++publication and rank audit. A failure later in publication, gradient audit,
++post-write finite/KL checks, finish, or fresh scheduler accounting does not erase
++the real returned writes. An optimizer exception before returning remains a
++generic failure, whose internal partially applied state cannot be inferred from
++this counter.
++
++`PolicySafetyRefusal.matched_all_ranks` defaults to false. Only the already
++synchronized runtime startup, published global brake, and fresh scheduler
++refusals explicitly set it true. Only this typed true flag in the fresh profile
++permits the worker snapshot collectives. Generic exceptions and manually raised
++unmatched refusals propagate to the driver-only diagnostic path; they never
++start a speculative worker collective after a rank failure.
++
++Before the actor update, all ranks bind the driver context to the actual six
++run/source environment keys, the fresh training profile, attempted/completed
++outer, and a directory under this run. On a matched refusal each rank rechecks
++the same context and attempts its local raw snapshot. Invalid/mismatched context
++produces a common incomplete result without writing an untrusted path.
++
++Snapshots contain actual parameter tensors, available private local shards,
++gradients (including `None`), buffers, full local Adam state and parameter
++groups/LR, scheduler state, Python/NumPy/Torch RNG (current CUDA device RNG for
++NCCL workers), module training flags, and layout/offload metadata. Values are
++copied before the worker's normal offload. Finite classification never prevents
++preservation of nonfinite Adam, parameters, or gradients. All snapshots prohibit
++automatic resume even when finite. No HF export, state restoration or executor
++resume is attempted.
++
++The driver supplies `tree_partial_context`:
++
++```text
++protocol: tree_partial_state_v1
++identity: job_id, run_id, code_commit, config_sha256, data_identity,
++          model_identity, training_protocol, attempted_outer, completed_outer
++directory: <trainer.default_local_dir>/training_state/partial_outer_%06d
++```
++
++Each rank exclusively writes `worker-%02d.pt` and its SHA/size-bearing
++`worker-%02d.json`. The receipt self SHA is carried by the return metadata, not
++self-inserted in its JSON. Failed PT or receipt publication stays
++`PARTIAL_WORKER_STATE_INCOMPLETE`; a PT already written before receipt IO failure
++retains its actual path/hash in that incomplete result. Existing files are never
++overwritten. The underlying same-world `atomic_save` helper syncs file bytes;
++this implementation does not add a filesystem-crash or storage-latency claim.
++
++Every rank gathers the direct receipts and returns identical
++`meta_info['tree_partial_state']` with the original driver identity,
++`worker_states`, actual scheduler advancement per rank, `outer_completed=false`
++and `automatic_rollback=false`. Status is `PARTIAL_WORKER_STATE_SAVED` only if
++all ranks saved; otherwise it is incomplete. Counts can differ after partial
++progress and are recorded individually rather than averaged or zeroed. Worker
++return occurs after the all-rank save attempt, allowing the driver's stop handler
++to preserve sampler, controller, Tree RNG and consumed actor batch before
++metric reduction or any completed-outer credit.
++
++The fresh scheduler independently requires this actual counter and returned
++metric to both equal 20 with zero skips on every rank. A scheduler/write-record
++fault becomes a matched refusal. If the scheduler already advanced before the
++fault, its actual new value is saved, while the driver still gives no completed
++outer credit. First-outer LR zero can give real Adam calls with zero parameter
++delta; the existing 57-outer schedule is unchanged.
++
++Local verification uses the actual affected actor methods and worker method
++extracted by AST, plus tiny real CPU Adam/LambdaLR and two-rank Gloo. Final nine
++test methods passed, including six Gloo scenarios: update-return then publication
++IO failure; post-write audit failure; zero-write pre-brake; one-rank snapshot
++disk failure; nonfinite raw state; and wrong context. Per-rank returned envelopes
++were byte-identical. Additional tests cover a nonzero-LR parameter change,
++nonfinite Adam/gradient/local-shard/buffer preservation, unchanged RNG,
++no-clobber, scheduler-advanced IO refusal, direct-counter/metric disagreement,
++invalid preparation and exact fresh/legacy/unmatched worker control branches.
++
++The first run's post-write audit fixture lacked `__file__` in its AST execution
++namespace. That original failure log is retained. Supplying the original source
++filename fixed the fixture; the affected scenario and final suite passed. This
++was not a production-source failure or an FSDP result.
++
++Real FSDP/NCCL/Ray, full model snapshots, shared-storage capacity/latency, Slurm
++cleanup timing, production partial-refusal saves, corrected probability gates,
++fresh calibration and 200-outers training remain unverified by these CPU tests.
++The source must undergo the parent's independent review and a new clean freeze;
++the old `1e06c6` source-bound dispatch helper cannot authorize this changed source.
+diff --git a/FRESH200_REPAIR_REVIEW_TARGET.md b/FRESH200_REPAIR_REVIEW_TARGET.md
+new file mode 100644
+index 0000000..5c29813
+--- /dev/null
++++ b/FRESH200_REPAIR_REVIEW_TARGET.md
+@@ -0,0 +1,60 @@
++# Fresh200 repair review target
++
++The latest human goal is a fresh official Qwen2.5-3B-Instruct actor and reference
++at revision aa8e72537993ba99e69dfaafa59ed015b17504d1, with no restored model,
++Adam, scheduler, sampler or RNG state from previous training. Historical runs
++and their failures remain evidence, and contribute zero updates to this goal.
++
++Each complete outer uses the existing common train split (169028 questions),
++512 questions and five actual Tree leaves per question, allocated as three and
++two leaves across two roots. No sixth leaf is generated and discarded. Original
++inter/intra advantages and equal-leaf objective are retained. The 2560 leaves
++with global mini128 and epochs1 require twenty actual optimizer returns per
++rank on eight ranks. Actor micro16 (two per rank), old/reference micro32 (four
++per rank), LR1e-6, fixed57 complete-outer warmup, entropy0, referenceKL0,
++low_var_kl, PPO clip0.2, global gradient clip1 remain explicit requirements.
++
++The independent initial review of 1e06c6 identified three source blockers:
++
++- F01: a stopped outer had diagnostics but no durable partial model/Adam state.
++  Matched all-rank safety refusals now return an identical gathered envelope
++  after saving real local worker shards, optimizer, scheduler, gradients,
++  buffers, module flags and RNG. The driver saves the consumed batch, sampler
++  and controller state before raising, without crediting a completed outer.
++  The counter advances immediately after optimizer.step returns, before audit
++  IO. Nonfinite state is preserved and labelled; incomplete IO is retained as
++  INCOMPLETE. Ordinary unmatched failures start no additional collective and
++  cannot claim worker writes or saved worker state. There is no rollback or
++  supported automatic resume from a partial snapshot.
++- F02: sampled-mu provenance omitted best_of and other native controls. The
++  collector now reads 24 actual fields, with strict n/best_of/_real_n equal to
++  integer1, actual unsupported controls equal to None, and no guessed defaults
++  for missing fields. The actual vLLM facade checks before native generation
++  as well as after generation; an engine mutation refuses instead of silently
++  rebinding controls. Historical records missing controls remain UNKNOWN.
++- F03: the quota accessor assumed mapping-style configuration. It now supports
++  both mapping and attribute configuration, with affected legacy and exact-five
++  CPU regressions. Fresh configuration also requires explicit best_of1.
++
++These repairs are source and synthetic CPU evidence, not actual FSDP/NCCL/Ray
++acceptance. The original actor/vLLM probability gate stays unaccepted. Sampled
++mu is an explicit, separate objective change; neither a widened tolerance nor
++beta/mu importance weighting is silently introduced. Full beta retains the
++original reward/reference semantics; monitor beta checks same-partition repeat.
++
++Execution requires a new clean source commit and a context-free strict review
++of these bytes, the complete fifteen-file runtime wrapper, and the same-node
++preparation/dispatch helpers. Whole official model and split byte identities,
++actual Hydra resolution and official-tokenizer historical preflight remain
++necessary before zero-write eight-GPU observation. That observation must show
++zero optimizer, backward and scheduler writes. Production thresholds require
++real observation and short-training evidence; a CPU pass cannot supply them.
++
++The wrapper currently implements zero-write calibration only. Production
++training must be implemented and independently reviewed before launch. Its
++first five complete outers must pass actual state/HF/reward/resource checks,
++then the same living instance continues through outer200. Required saved
++steps are5/50/100/150/200; development is512 fixed questions, final is all seven
++datasets/51713 questions. Completion also requires actual counters, checkpoint
++reload, finite parameters, cost and owned-resource cleanup. Everything remains
++on h100-9 with loopback Ray/retrieval and the protected background processes.
+diff --git a/search_r1/baselines/partial_worker_state.py b/search_r1/baselines/partial_worker_state.py
+new file mode 100644
+index 0000000..ec80770
+--- /dev/null
++++ b/search_r1/baselines/partial_worker_state.py
+@@ -0,0 +1,145 @@
++"""Matched refusal evidence: raw local worker state, never rollback or resume."""
++import copy
++import json
++import os
++from pathlib import Path
++import time
++
++import torch
++import torch.distributed as dist
++
++from .policy_safety_runtime import PolicySafetyRefusal
++from .training_state import atomic_save, cpu_copy, digest, finite, rng_state
++
++PROTOCOL = 'tree_partial_state_v1'
++IDENTITY_KEYS = {'job_id','run_id','code_commit','config_sha256','data_identity','model_identity',
++                 'training_protocol','attempted_outer','completed_outer'}
++ENV_KEYS = {'job_id':'SLURM_JOB_ID','run_id':'SEARCH_R1_BASELINE_RUN_ID','code_commit':'SEARCH_R1_BASELINE_COMMIT',
++            'config_sha256':'SEARCH_R1_BASELINE_CONFIG_SHA256','data_identity':'SEARCH_R1_BASELINE_DATA_IDENTITY',
++            'model_identity':'SEARCH_R1_MODEL_IDENTITY'}
++
++
++def _gather(value):
++    if not dist.is_initialized():return [value]
++    values=[None]*dist.get_world_size();dist.all_gather_object(values,value);return values
++
++
++def _validated_context(worker,data):
++    if worker.config.actor.get('fresh200_protocol')!='tree_fresh200_five_leaf_v1':
++        raise ValueError('Partial worker persistence requires explicit fresh200 profile')
++    context=data.meta_info['tree_partial_context']
++    if context['protocol']!=PROTOCOL or set(context['identity'])!=IDENTITY_KEYS:
++        raise ValueError('Partial context protocol/complete driver identity differs')
++    identity=context['identity']
++    if (identity['training_protocol']!='tree_fresh200_five_leaf_v1'
++            or type(identity['attempted_outer']) is not int or type(identity['completed_outer']) is not int
++            or identity['attempted_outer']!=identity['completed_outer']+1 or not 0<=identity['completed_outer']<200
++            or data.meta_info['baseline_outer_step']!=identity['attempted_outer']):
++        raise ValueError('Partial attempted/completed outer identity invalid')
++    if any(identity[key]!=os.environ[env] for key,env in ENV_KEYS.items()):
++        raise ValueError('Partial source/run identity differs from actual worker environment')
++    directory=Path(context['directory'])
++    own_run=Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']).resolve().parent
++    if (not directory.is_absolute() or not directory.resolve().is_relative_to(own_run)
++            or directory.name!=f'partial_outer_{identity["attempted_outer"]:06d}' or directory.parent.name!='training_state'):
++        raise ValueError('Partial state directory must remain in this own run and match attempted outer')
++    # Metadata only, fixed before native update. No model/PT read occurs here.
++    json.dumps(context,sort_keys=True,allow_nan=False)
++    return copy.deepcopy(context)
++
++
++def prepare_partial_worker_context(worker,data):
++    local_error=None;context=None
++    try:context=_validated_context(worker,data)
++    except Exception as exc:local_error=repr(exc)
++    records=_gather(dict(context=context,error=local_error))
++    consistent=all(record['error'] is None and record['context']==records[0]['context'] for record in records)
++    worker._partial_prepared_context=context if consistent else None
++    if not consistent:
++        raise PolicySafetyRefusal('Global partial worker context preparation refusal; local: '+str(local_error),matched_all_ranks=True)
++    return context
++
++
++def raw_partial_worker_snapshot(worker,identity,cuda):
++    """Capture actual shards/gradients even if values are nonfinite; no gather."""
++    if cuda:torch.cuda.synchronize(torch.cuda.current_device())
++    model=worker.actor.actor_module
++    parameters=dict(model.named_parameters())
++    value=dict(version='tree_partial_worker_v1',identity=copy.deepcopy(identity),
++        parameters={name:cpu_copy(parameter) for name,parameter in parameters.items()},
++        local_shards={name:cpu_copy(parameter._local_shard) for name,parameter in parameters.items()
++                      if hasattr(parameter,'_local_shard') and isinstance(parameter._local_shard,torch.Tensor)},
++        gradients={name:None if parameter.grad is None else cpu_copy(parameter.grad) for name,parameter in parameters.items()},
++        buffers={name:cpu_copy(value) for name,value in model.named_buffers()},
++        optimizer=cpu_copy(worker.actor_optimizer.state_dict()),scheduler=cpu_copy(worker.actor_lr_scheduler.state_dict()),
++        rng=rng_state(cuda),module_training_flags=[dict(name=name,training=module.training) for name,module in model.named_modules()],
++        parameter_layout={name:dict(shape=list(parameter.shape),dtype=str(parameter.dtype),device=str(parameter.device),
++            requires_grad=parameter.requires_grad,local_shard_shape=(list(parameter._local_shard.shape)
++                if hasattr(parameter,'_local_shard') and isinstance(parameter._local_shard,torch.Tensor) else None))
++            for name,parameter in parameters.items()},
++        actual_param_offload_configured=worker._is_offload_param,actual_optimizer_offload_configured=worker._is_offload_optimizer,
++        resume_permitted=False,automatic_rollback=False,outer_completed=False)
++    state_finite=True;finite_error=None
++    try:finite(value)
++    except Exception as exc:state_finite=False;finite_error=repr(exc)
++    value.update(state_finite=state_finite,state_finite_error=finite_error)
++    return value
++
++
++def persist_matched_partial_worker(worker,data,refusal,scheduler_before):
++    """Return the same all-rank envelope after every rank attempts durable save.
++
++    Unmatched errors cannot call any collective here. IO failures are included
++    in the common result; no first Ray exception may hide another rank's save.
++    """
++    if not isinstance(refusal,PolicySafetyRefusal) or refusal.matched_all_ranks is not True:
++        raise ValueError('Only matched all-rank PolicySafetyRefusal may save distributed partial state')
++    started=time.monotonic();rank=dist.get_rank() if dist.is_initialized() else 0
++    world=dist.get_world_size() if dist.is_initialized() else 1
++    context=None;context_error=None
++    try:context=_validated_context(worker,data)
++    except Exception as exc:context_error=repr(exc)
++    contexts=_gather(dict(context=context,error=context_error))
++    consistent=all(entry['error'] is None and entry['context']==contexts[0]['context'] for entry in contexts)
++    canonical=next((entry['context'] for entry in contexts if entry['context'] is not None),None)
++    driver_identity=canonical['identity'] if canonical else {}
++    identity=dict(driver_identity,rank=rank,world_size=world)
++    count=getattr(worker.actor,'_actual_committed_optimizer_calls',None)
++    actual_after=worker.actor_lr_scheduler.last_epoch
++    receipt=dict(rank=rank,world_size=world,identity=identity,
++        attempted_outer=driver_identity.get('attempted_outer'),completed_outer=driver_identity.get('completed_outer'),
++        committed_optimizer_calls=count if type(count) is int else None,
++        scheduler_step_before_actual=scheduler_before,scheduler_step_after_actual=actual_after,
++        status='PARTIAL_WORKER_STATE_INCOMPLETE',path=None,sha256=None,bytes=0,logical_state_sha256=None,
++        state_finite=None,error=None,refusal=repr(refusal),matched_all_ranks=True,
++        optimizer_count_source='optimizer.step successful return before any audit/publish IO',
++        resume_permitted=False,exact_same_world_reload_verified=False,automatic_rollback=False,outer_completed=False)
++    try:
++        if not consistent:raise ValueError('All-rank partial context invalid/mismatched: '+str(context_error))
++        if type(count) is not int or not 0<=count<=20:raise ValueError('Actual partial optimizer return counter missing or invalid')
++        directory=Path(canonical['directory'])
++        state_path=directory/f'worker-{rank:02d}.pt';receipt_path=directory/f'worker-{rank:02d}.json'
++        cuda=dist.is_initialized() and dist.get_backend()=='nccl'
++        saved=raw_partial_worker_snapshot(worker,identity,cuda)
++        saved.update(committed_optimizer_calls=count,scheduler_step_before_actual=scheduler_before,
++                     scheduler_step_after_actual=actual_after,refusal=repr(refusal))
++        receipt['logical_state_sha256']=digest(saved)
++        receipt['state_finite']=saved['state_finite'];receipt['state_finite_error']=saved['state_finite_error']
++        receipt['path']=str(state_path);receipt['sha256']=atomic_save(saved,state_path)
++        receipt['bytes']=state_path.stat().st_size
++        del saved
++        receipt.update(status='PARTIAL_WORKER_STATE_SAVED',optimizer_state_entries=len(worker.actor_optimizer.state),
++            scheduler_advanced_actual=(actual_after!=scheduler_before),snapshot_save_seconds=time.monotonic()-started,
++            receipt_path=str(receipt_path))
++        receipt['receipt_sha256']=atomic_save(receipt,receipt_path,json_format=True)
++    except Exception as exc:
++        receipt.update(status='PARTIAL_WORKER_STATE_INCOMPLETE',error=repr(exc),snapshot_save_seconds=time.monotonic()-started)
++    workers=sorted(_gather(receipt),key=lambda record:record['rank'])
++    all_saved=(consistent and len(workers)==world and [entry['rank'] for entry in workers]==list(range(world))
++               and all(entry['status']=='PARTIAL_WORKER_STATE_SAVED' for entry in workers))
++    return dict(protocol=PROTOCOL,identity=driver_identity,identity_consistent=consistent,
++        status='PARTIAL_WORKER_STATE_SAVED' if all_saved else 'PARTIAL_WORKER_STATE_INCOMPLETE',
++        worker_states=workers,scheduler_advanced_actual=[
++            entry['scheduler_step_after_actual']!=entry['scheduler_step_before_actual'] for entry in workers],
++        resume_permitted=False,automatic_rollback=False,outer_completed=False,
++        scope='Raw actual local worker state on matched refusal; no rollback, scheduler/outer credit, HF export or reload acceptance')
+diff --git a/search_r1/baselines/policy_safety_runtime.py b/search_r1/baselines/policy_safety_runtime.py
+index 430b7a3..7505bda 100644
+--- a/search_r1/baselines/policy_safety_runtime.py
++++ b/search_r1/baselines/policy_safety_runtime.py
+@@ -10,7 +10,9 @@ from .policy_safety import update_statistics, admission, global_negative_quantil
+ 
+ 
+ class PolicySafetyRefusal(RuntimeError):
+-    pass
++    def __init__(self, message, *, matched_all_ranks=False):
++        super().__init__(message)
++        self.matched_all_ranks = matched_all_ranks
+ 
+ 
+ BEHAVIOR_MU_PROTOCOL = 'tree_behavior_mu_centered_ppo_v1'
+@@ -78,14 +80,14 @@ def validate_actor_probability_profile(actor, data, config):
+     flag = torch.tensor(int(error is not None), device=device)
+     if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
+     if flag.item():
+-        raise PolicySafetyRefusal('Global probability-profile startup refusal; local diagnosis: '+str(error))
++        raise PolicySafetyRefusal('Global probability-profile startup refusal; local diagnosis: '+str(error), matched_all_ranks=True)
+     signature = torch.tensor([int(corrected), int(bool(config.get('enabled', False)))], device=device)
+     lo, hi = signature.clone(), signature.clone()
+     if dist.is_initialized():
+         dist.all_reduce(lo, op=dist.ReduceOp.MIN)
+         dist.all_reduce(hi, op=dist.ReduceOp.MAX)
+     if not torch.equal(lo, hi):
+-        raise PolicySafetyRefusal('Global probability-profile startup refusal: rank profile mismatch')
++        raise PolicySafetyRefusal('Global probability-profile startup refusal: rank profile mismatch', matched_all_ranks=True)
+     return corrected
+ 
+ 
+@@ -113,7 +115,7 @@ class PolicySafetyRuntime:
+         flag = torch.tensor(int(error is not None), device=self.device)
+         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
+         if flag.item():
+-            raise PolicySafetyRefusal(f'Global safety startup refusal; local diagnosis: {error}')
++            raise PolicySafetyRefusal(f'Global safety startup refusal; local diagnosis: {error}', matched_all_ranks=True)
+         # Different per-rank row/chunk counts would strand an FSDP monitor forward.
+         signature = torch.tensor([len(self.batch), len(self.monitor), actor.config.ppo_micro_batch_size,
+                                   self.target_kl, self.tail_limit, self.initial_consistency_limit,
+@@ -128,7 +130,7 @@ class PolicySafetyRuntime:
+             dist.all_reduce(lo, op=dist.ReduceOp.MIN)
+             dist.all_reduce(hi, op=dist.ReduceOp.MAX)
+         if not torch.equal(lo, hi):
+-            raise PolicySafetyRefusal('Global safety startup refusal: rank configuration/count mismatch')
++            raise PolicySafetyRefusal('Global safety startup refusal: rank configuration/count mismatch', matched_all_ranks=True)
+ 
+     @staticmethod
+     def effective_mask(data):
+@@ -231,10 +233,10 @@ class PolicySafetyRuntime:
+         flag = torch.tensor(int(failed), device=self.device)
+         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
+         if flag.item():
+-            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes')
++            raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes', matched_all_ranks=True)
+         if not decision['allowed']:
+             raise PolicySafetyRefusal(f'Policy safety refusal after {self.committed} committed calls: '
+-                                      f'{decision.get("reasons")}; evidence {path}')
++                                      f'{decision.get("reasons")}; evidence {path}', matched_all_ranks=True)
+ 
+     def sync_valid(self, bad, phase):
+         flag = torch.as_tensor(bad, dtype=torch.long, device=self.device)
+diff --git a/search_r1/baselines/rollout.py b/search_r1/baselines/rollout.py
+index db31540..126af69 100644
+--- a/search_r1/baselines/rollout.py
++++ b/search_r1/baselines/rollout.py
+@@ -323,9 +323,9 @@ class SearchRollout:
+         roots = states[:]
+         snapshots = self.complete(states, gen_batch.meta_info)
+         if tree is not None:
+-            from .tree_fresh200 import leaf_quotas
++            from .tree_fresh200 import leaf_quotas, tree_option
+             quotas = leaf_quotas(tree)
+-            exact_quota = getattr(tree, 'get', lambda k, d=None: d)('leaf_quotas') is not None
++            exact_quota = tree_option(tree, 'leaf_quotas') is not None
+             if len(states) % tree.roots:
+                 raise ValueError('Tree root rows do not contain complete question groups')
+             leaves_by_root = [[root] for root in states]
+diff --git a/search_r1/baselines/tree_behavior_mu.py b/search_r1/baselines/tree_behavior_mu.py
+index a0a6843..c286f4c 100644
+--- a/search_r1/baselines/tree_behavior_mu.py
++++ b/search_r1/baselines/tree_behavior_mu.py
+@@ -24,7 +24,9 @@ PROVENANCE_KEYS = ('SEARCH_R1_BASELINE_COMMIT', 'SEARCH_R1_BASELINE_CONFIG_SHA25
+                    'SEARCH_R1_BASELINE_RUN_ID', 'SLURM_JOB_ID')
+ PLAIN_DISTRIBUTION = dict(temperature=1., top_p=1., top_k=-1, min_p=0.,
+                           presence_penalty=0., frequency_penalty=0.,
+-                          repetition_penalty=1., n=1, logits_processors=None)
++                          repetition_penalty=1., n=1, best_of=1, _real_n=1, logits_processors=None,
++                          truncate_prompt_tokens=None, guided_decoding=None,
++                          logit_bias=None, allowed_token_ids=None)
+ 
+ 
+ def require(value, message):
+@@ -59,6 +61,9 @@ def validate_distribution(value):
+             'Actual native sampling distribution metadata missing')
+     for key, expected in PLAIN_DISTRIBUTION.items():
+         actual = value[key]
++        if key in ('best_of','_real_n'):
++            require(type(actual) is int and actual == 1,
++                    'Actual '+key+' must be the recorded integer1')
+         require((actual is None if expected is None else
+                  type(actual) in (int, float) and type(actual) is not bool and actual == expected),
+                 'Unsupported actual sampling distribution: ' + key)
+diff --git a/search_r1/baselines/tree_fresh200.py b/search_r1/baselines/tree_fresh200.py
+index d44a76f..0a9d8eb 100644
+--- a/search_r1/baselines/tree_fresh200.py
++++ b/search_r1/baselines/tree_fresh200.py
+@@ -6,9 +6,14 @@ REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+ DATA_SHA256 = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
+ 
+ 
++def tree_option(tree, key, default=None):
++    getter = getattr(tree, 'get', None)
++    return getter(key, default) if callable(getter) else getattr(tree, key, default)
++
++
+ def leaf_quotas(tree):
+     """Legacy rectangular trees or explicit per-root allocation, never drop extras."""
+-    quotas = tree.get('leaf_quotas')
++    quotas = tree_option(tree, 'leaf_quotas')
+     if quotas is None:
+         return (int(tree.leaves),) * int(tree.roots)
+     quotas = tuple(quotas)
+@@ -42,6 +47,7 @@ def validate_fresh200_config(config):
+         raise ValueError('Fresh200 model/split/protocol identity changed')
+     if ((tree.roots, tree.rounds, tree.expansions, tree.leaves) != (2, 1, 2, 3)
+             or leaf_quotas(tree) != (3, 2) or rollout.n_agent != 2 or rollout.n != 1
++            or type(rollout.get('best_of')) is not int or rollout.best_of != 1
+             or config.data.train_batch_size != 512
+             or (actor.ppo_mini_batch_size, actor.ppo_micro_batch_size, actor.ppo_epochs) != (128, 16, 1)
+             or (rollout.log_prob_micro_batch_size, ref.log_prob_micro_batch_size) != (32, 32)
+diff --git a/search_r1/baselines/tree_partial_state.py b/search_r1/baselines/tree_partial_state.py
+new file mode 100644
+index 0000000..a83a32b
+--- /dev/null
++++ b/search_r1/baselines/tree_partial_state.py
+@@ -0,0 +1,140 @@
++"""Retain a stopped outer as evidence, without credit, rollback, or auto-resume."""
++import os
++import time
++from pathlib import Path
++
++from .training_state import atomic_save, cpu_copy, digest, file_sha, rng_state
++from .policy_safety_runtime import PolicySafetyRefusal
++
++PROTOCOL = 'tree_partial_state_v1'
++
++
++def partial_context(trainer):
++    outer, completed = trainer.global_steps, trainer.actual_outer_updates
++    if type(outer) is not int or type(completed) is not int or outer != completed + 1:
++        raise ValueError('Partial context requires the real attempted/completed outer boundary')
++    identity = dict(job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
++                    code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
++                    config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
++                    data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
++                    model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
++                    training_protocol=trainer.config.baselines.training_protocol,
++                    attempted_outer=outer, completed_outer=completed)
++    directory = Path(trainer.config.trainer.default_local_dir) / 'training_state' / f'partial_outer_{outer:06d}'
++    return dict(protocol=PROTOCOL, identity=identity, directory=str(directory))
++
++
++def partial_driver_snapshot(trainer, context):
++    """Different format from complete boundary snapshots: consumed batch is kept."""
++    identity = context['identity']
++    if (context['protocol'] != PROTOCOL or identity['attempted_outer'] != trainer.global_steps
++            or identity['completed_outer'] != trainer.actual_outer_updates):
++        raise ValueError('Partial driver provenance differs from the actual controller')
++    controller = trainer.baseline_controller
++    return cpu_copy(dict(version=3, snapshot_kind=PROTOCOL, identity=identity,
++        attempted_outer=trainer.global_steps, completed_outer_updates=trainer.actual_outer_updates,
++        outer_completed=False, automatic_rollback=False, automatic_resume_supported=False,
++        consumed_sampler=trainer.checkpoint_sampler.state_dict(), rng=rng_state(),
++        algorithm=dict(method=controller.method, stage=controller.stage.state_dict(),
++                       tree_rng=None if controller.tree_rng is None else controller.tree_rng.getstate()),
++        fresh_initialization_provenance=getattr(trainer, 'fresh_initialization_provenance', None),
++        recovery_provenance=getattr(trainer, 'recovery_provenance', None)))
++
++
++def _preserve_driver_and_batch(trainer, batch, context):
++    directory = Path(context['directory'])
++    saved = partial_driver_snapshot(trainer, context)
++    driver_path = directory / 'driver.pt'
++    driver = dict(path=str(driver_path), sha256=atomic_save(saved, driver_path),
++                  logical_state_sha256=digest(saved), completed_outer_updates=trainer.actual_outer_updates,
++                  consumed_cursor=saved['consumed_sampler']['cursor'],
++                  consumed_epoch=saved['consumed_sampler']['epoch'])
++    # Preserve every tensor, binding, mask, and diagnostic field, including invalid
++    # numeric values. Never truncate/filter the failed batch into a healthy batch.
++    actor_inputs = cpu_copy(dict(batch={key: batch.batch[key] for key in batch.batch.keys()},
++                                non_tensor_batch=batch.non_tensor_batch, meta_info=batch.meta_info))
++    batch_path = directory / 'actor-inputs.pt'
++    inputs = dict(path=str(batch_path), sha256=atomic_save(actor_inputs, batch_path),
++                  rows=len(batch), fields=list(actor_inputs['batch']),
++                  bytes=batch_path.stat().st_size)
++    return driver, inputs
++
++
++def _validate_workers(envelope, context, world_size):
++    if (envelope.get('protocol') != PROTOCOL or envelope.get('identity') != context['identity']
++            or envelope.get('status') != 'PARTIAL_WORKER_STATE_SAVED'
++            or envelope.get('outer_completed') is not False or envelope.get('automatic_rollback') is not False):
++        raise ValueError('Partial worker envelope identity/control mismatch')
++    workers = envelope['worker_states']
++    if (not isinstance(workers, list) or len(workers) != world_size
++            or {r['rank'] for r in workers} != set(range(world_size))):
++        raise ValueError('Partial worker rank coverage is incomplete')
++    root = Path(context['directory']).resolve()
++    for r in workers:
++        if (type(r['rank']) is not int or type(r['world_size']) is not int or r['world_size'] != world_size
++                or r['identity'] != dict(context['identity'], rank=r['rank'], world_size=world_size)
++                or type(r['committed_optimizer_calls']) is not int or not 0 <= r['committed_optimizer_calls'] <= 20
++                or type(r['scheduler_step_before_actual']) is not int
++                or type(r['scheduler_step_after_actual']) is not int
++                or r['scheduler_step_before_actual'] != context['identity']['completed_outer']
++                or r['scheduler_step_after_actual'] not in (r['scheduler_step_before_actual'],
++                                                            r['scheduler_step_before_actual'] + 1)
++                or type(r['state_finite']) is not bool or r['status'] != 'PARTIAL_WORKER_STATE_SAVED'):
++            raise ValueError('Partial worker state/count provenance is incomplete or invalid')
++        path = Path(r['path'])
++        if (path.is_symlink() or not path.is_file() or path.resolve().parent != root
++                or path.name != f"worker-{r['rank']:02d}.pt"
++                or type(r['bytes']) is not int or path.stat().st_size != r['bytes']
++                or file_sha(path) != r['sha256']):
++            raise ValueError('Partial worker persisted bytes do not match the direct receipt')
++    return workers
++
++
++def stop_on_partial_actor_result(trainer, batch, actor_output):
++    """Called before metric reduction, after_actor, scheduler/outer credit on driver."""
++    envelope = actor_output.meta_info.get('tree_partial_state')
++    if envelope is None:
++        return
++    started = time.monotonic()
++    context = partial_context(trainer)
++    error, workers = None, []
++    # Even an incomplete/invalid worker envelope retains actual driver/batch
++    # evidence. Its missing worker states must never be claimed as saved.
++    driver, inputs = _preserve_driver_and_batch(trainer, batch, context)
++    try:
++        workers = _validate_workers(envelope, context, trainer.actor_rollout_wg.world_size)
++    except Exception as exc:
++        error = f'{type(exc).__name__}: {exc}'
++    manifest = dict(status=('PARTIAL_OUTER_STATE_SAVED_CONTROLLED_STOP' if error is None
++                            else 'PARTIAL_OUTER_STATE_INCOMPLETE_CONTROLLED_STOP'),
++        protocol=PROTOCOL, identity=context['identity'], worker_outcome=envelope,
++        worker_states_verified=(error is None), verification_error=error,
++        actual_optimizer_calls_per_rank={str(r['rank']): r['committed_optimizer_calls'] for r in workers},
++        actual_scheduler_steps_per_rank={str(r['rank']): r['scheduler_step_after_actual'] for r in workers},
++        all_saved_worker_states_finite=(all(r['state_finite'] for r in workers) if error is None else None),
++        outer_completed=False, completed_outer_updates=trainer.actual_outer_updates,
++        attempted_outer=trainer.global_steps, driver=driver, actor_inputs=inputs,
++        automatic_rollback=False, automatic_resume_supported=False,
++        driver_preservation_and_verification_seconds=time.monotonic()-started,
++        limits='Actual stopped model/Adam/scheduler/RNG/consumed batch are evidence; no executor resume or HF reload claim')
++    path = Path(context['directory']) / 'manifest.json'
++    sha = atomic_save(manifest, path, json_format=True)
++    trainer.partial_outer_evidence = dict(path=str(path), sha256=sha, status=manifest['status'])
++    raise PolicySafetyRefusal(f"Stopped outer {trainer.global_steps}; complete outer remains {trainer.actual_outer_updates}; "
++                              f"actual partial state: {path}; status {manifest['status']}")
++
++
++def preserve_unmatched_actor_failure(trainer, batch, error):
++    """Driver-only best effort; never start collectives after an unpaired failure."""
++    context = partial_context(trainer)
++    context['directory'] = str(Path(context['directory']) / 'unmatched-worker-failure')
++    driver, inputs = _preserve_driver_and_batch(trainer, batch, context)
++    path = Path(context['directory']) / 'manifest.json'
++    manifest = dict(status='UNMATCHED_WORKER_FAILURE_DRIVER_ONLY', protocol=PROTOCOL,
++        identity=context['identity'], driver=driver, actor_inputs=inputs,
++        failure=f'{type(error).__name__}: {error}'[:8192],
++        actual_optimizer_calls_per_rank=None, worker_states_verified=False,
++        outer_completed=False, automatic_rollback=False, automatic_resume_supported=False,
++        limits='Worker failure was not a synchronized controlled brake; partial worker state/counts remain unknown')
++    atomic_save(manifest, path, json_format=True)
++    return str(path)
+diff --git a/search_r1/baselines/tree_raw_tokens.py b/search_r1/baselines/tree_raw_tokens.py
+index 3d5d8b8..3087d46 100644
+--- a/search_r1/baselines/tree_raw_tokens.py
++++ b/search_r1/baselines/tree_raw_tokens.py
+@@ -50,15 +50,29 @@ def canonical_text(text):
+     return text
+ 
+ 
+-def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
+-    """Called before facade padding, retaining real request IDs and scalar values."""
+-    fields=('n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
++def capture_native_sampling_settings(sampling_params):
++    """Read original native attributes; usable before engine processor construction."""
++    fields=('n','best_of','_real_n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
+         'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
+-        'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors')
++        'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors',
++        'truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids')
++    for key in fields:
++        require(hasattr(sampling_params,key), 'Explicit actual '+key+' metadata is required')
+     settings={key:copy.deepcopy(getattr(sampling_params,key)) for key in fields}
++    for key in ('best_of','_real_n'):
++        require(type(settings[key]) is int and settings[key]==1,
++                'Native raw-token protocol requires actual '+key+'=1')
++    for key in ('truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids'):
++        require(settings[key] is None, 'Native raw-token protocol requires actual '+key+'=None')
+     require(settings['logits_processors'] is None, 'Native raw-token protocol requires actual logits_processors=None')
+     require(settings['n']==1 and settings['max_tokens']==500 and settings['ignore_eos'] is False and
+             settings['min_tokens']==0 and not settings['stop'], 'Unsupported native stop/distribution protocol')
++    return settings
++
++
++def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
++    """Called before facade padding, retaining real request IDs and scalar values."""
++    settings=capture_native_sampling_settings(sampling_params)
+     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
+         'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
+     require(all(isinstance(value,str) and value for value in provenance.values()),
+diff --git a/test_fresh_calibration_worker_cpu.py b/test_fresh_calibration_worker_cpu.py
+index 51c261c..26014be 100644
+--- a/test_fresh_calibration_worker_cpu.py
++++ b/test_fresh_calibration_worker_cpu.py
+@@ -44,7 +44,7 @@ def fresh_worker(calls=20):
+     assert scheduler.last_epoch==0 and scheduler.get_last_lr()==[0.]
+     for _ in range(calls):
+         param.grad=torch.ones_like(param);opt.step();opt.zero_grad()
+-    worker=N(_is_actor=True,actor_optimizer=opt,actor_lr_scheduler=scheduler,
++    worker=N(_is_actor=True,actor=N(_actual_committed_optimizer_calls=calls),actor_optimizer=opt,actor_lr_scheduler=scheduler,
+              config=C(actor=C(fresh200_protocol='tree_fresh200_five_leaf_v1'),model=C(path='/synthetic/official-model')))
+     return worker,param
+ 
+diff --git a/test_partial_worker_state_cpu.py b/test_partial_worker_state_cpu.py
+new file mode 100644
+index 0000000..11a29e3
+--- /dev/null
++++ b/test_partial_worker_state_cpu.py
+@@ -0,0 +1,314 @@
++"""Affected actual actor/worker AST and real two-rank Gloo/Adam CPU checks.
++
++Synthetic tensors and owned temporary files only: no HF/FSDP/NCCL/Ray proof.
++"""
++import ast
++from contextlib import nullcontext
++import copy
++import hashlib
++import json
++import os
++from pathlib import Path
++import tempfile
++from types import SimpleNamespace as N
++import unittest
++from unittest.mock import patch
++
++import torch
++import torch.distributed as dist
++import torch.multiprocessing as mp
++
++import test_tree_behavior_mu_actor_cpu as fixture
++from search_r1.baselines import partial_worker_state as source
++from search_r1.baselines import policy_safety_runtime as safety_source
++from search_r1.baselines.training_state import atomic_save, digest
++
++ROOT = Path(__file__).resolve().parent
++# The actual actor refers to __file__ when constructing TreeRankAudit. Only the
++# AST execution namespace needs this original filename; production already has it.
++fixture.actor_scope['__file__'] = str(ROOT/'verl/workers/actor/dp_actor.py')
++
++
++def load_scheduler():
++    tree = ast.parse((ROOT/'verl/workers/fsdp_workers.py').read_bytes())
++    nodes = [node for node in tree.body if isinstance(node, ast.FunctionDef)
++             and node.name == 'fresh200_scheduler_after_actor']
++    assert len(nodes) == 1
++    scope = dict(torch=torch, os=os)
++    exec(compile(ast.Module(body=nodes, type_ignores=[]), 'actual-fresh-scheduler', 'exec'), scope)
++    return scope['fresh200_scheduler_after_actor']
++
++
++SCHEDULE = load_scheduler()
++
++
++def worker_and_data(factory, run):
++    cfg = fixture.config()
++    cfg['fresh200_protocol'] = 'tree_fresh200_five_leaf_v1'
++    actor = fixture.Actor(cfg)
++    data = fixture.make_data(factory, cfg)
++    data.meta_info['baseline_outer_step'] = 1
++    scheduler = torch.optim.lr_scheduler.LambdaLR(actor.actor_optimizer, lambda step: min(step/57, 1.))
++    worker = N(actor=actor, actor_optimizer=actor.actor_optimizer, actor_lr_scheduler=scheduler,
++               config=fixture.Config(actor=cfg), _is_offload_param=False, _is_offload_optimizer=False)
++    identity = {key: os.environ[value] for key, value in source.ENV_KEYS.items()}
++    identity.update(training_protocol='tree_fresh200_five_leaf_v1', attempted_outer=1, completed_outer=0)
++    data.meta_info['tree_partial_context'] = dict(protocol=source.PROTOCOL, identity=identity,
++        directory=str(Path(run)/'training_state/partial_outer_000001'))
++    return worker, data
++
++
++def read_saved(receipt):
++    path = Path(receipt['path'])
++    assert path.stat().st_size == receipt['bytes']
++    assert hashlib.sha256(path.read_bytes()).hexdigest() == receipt['sha256']
++    # Only our tiny synthetic CPU state; this is not a restore or real HF reload.
++    return torch.load(path, map_location='cpu', weights_only=False)
++
++
++class Audit:
++    def __init__(self, *args): pass
++    def epoch(self): pass
++    def micro(self, *args, **kwargs): pass
++    def gradient(self, *args):
++        if dist.get_rank() == 1: raise OSError('synthetic rank1 post-write audit IO failure')
++    def finish(self, *args): pass
++    def failure(self, *args): pass
++
++
++def gloo_worker(rank, rendezvous, run, mode):
++    dist.init_process_group('gloo', init_method='file://'+rendezvous, rank=rank, world_size=2)
++    factory = fixture.collector_fixture.BehaviorMuDataTests(); factory.setUp()
++    try:
++        env = dict(SEARCH_R1_BASELINE_OUTPUT=str(Path(run)/'output'),
++                   SEARCH_R1_TREE_RANK_AUDIT_DIR=str(Path(run)/'events'))
++        with patch.dict(os.environ, env):
++            worker, data = worker_and_data(factory, run)
++            source.prepare_partial_worker_context(worker, data)
++            original_dump = safety_source.json.dump
++            def fail_publish(record, stream, *args, **kwargs):
++                if mode == 'publish_io' and rank == 1 and record.get('phase') == 'optimizer_committed':
++                    raise OSError('synthetic rank1 publish IO after successful optimizer return')
++                return original_dump(record, stream, *args, **kwargs)
++            if mode == 'pre_guard' and rank == 1: data.batch['advantages'][0, 0] = float('nan')
++            if mode == 'context' and rank == 1: data.meta_info['tree_partial_context']['identity']['run_id'] = 'wrong'
++            with patch.object(safety_source.json, 'dump', fail_publish), \
++                 patch.object(fixture.rank_audit, 'enabled', return_value=mode == 'post_guard'), \
++                 patch.object(fixture.rank_audit, 'TreeRankAudit', Audit):
++                try:
++                    if mode in ('disk', 'nonfinite', 'context'):
++                        worker.actor._actual_committed_optimizer_calls = 0
++                        worker.actor.actor_module(torch.ones(1, 1)).sum().backward()
++                        worker.actor._optimizer_step()
++                        if mode == 'nonfinite' and rank == 1:
++                            worker.actor.actor_module.weight.data.fill_(float('nan'))
++                        raise safety_source.PolicySafetyRefusal('synthetic matched brake', matched_all_ranks=True)
++                    worker.actor.update_policy(data)
++                    raise AssertionError('All ranks must refuse this scenario')
++                except safety_source.PolicySafetyRefusal as refusal:
++                    assert refusal.matched_all_ranks is True
++                    before_count = worker.actor._actual_committed_optimizer_calls
++                    original_atomic = source.atomic_save
++                    def fail_disk(value, path, **kwargs):
++                        if mode == 'disk' and rank == 1: raise OSError('synthetic rank1 snapshot disk failure')
++                        return original_atomic(value, path, **kwargs)
++                    with patch.object(source, 'atomic_save', fail_disk):
++                        envelope = source.persist_matched_partial_worker(worker, data, refusal, 0)
++                    # Every rank gets byte-identical all-gather metadata before returning.
++                    Path(run, f'{rank}.json').write_text(json.dumps(envelope, sort_keys=True, allow_nan=False))
++                    assert envelope['outer_completed'] is False and envelope['automatic_rollback'] is False
++                    expected = 0 if mode == 'pre_guard' else 1
++                    assert before_count == expected
++                    assert worker.actor_lr_scheduler.last_epoch == 0
++                    own = envelope['worker_states'][rank]
++                    if mode not in ('context',) and not (mode == 'disk' and rank == 1):
++                        state = read_saved(own)
++                        assert state['committed_optimizer_calls'] == expected
++                        steps = [int(value['step'].item()) for value in state['optimizer']['state'].values()]
++                        assert steps == ([] if expected == 0 else [1])
++                        assert state['resume_permitted'] is False
++                        assert state['scheduler']['last_epoch'] == 0
++                        assert state['gradients']['weight'] is not None if expected else state['gradients']['weight'] is None
++                        assert digest(state) == own['logical_state_sha256']
++    finally:
++        factory.tearDown(); dist.destroy_process_group()
++
++
++class FakeTimer:
++    def __init__(self, *args, **kwargs): self.last = 1.
++    def __enter__(self): return self
++    def __exit__(self, *args): return False
++
++
++class WorkerProto:
++    def __init__(self, meta_info): self.meta_info = meta_info
++    def to(self, device): return self
++
++
++def load_actual_update_actor(scope):
++    tree = ast.parse((ROOT/'verl/workers/fsdp_workers.py').read_bytes())
++    klass = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == 'ActorRolloutRefWorker')
++    method = copy.deepcopy(next(node for node in klass.body if isinstance(node, ast.FunctionDef) and node.name == 'update_actor'))
++    method.decorator_list = []
++    exec(compile(ast.Module(body=[method], type_ignores=[]), 'actual-fsdp-worker-update-actor', 'exec'), scope)
++    return scope['update_actor']
++
++
++class Tests(unittest.TestCase):
++    def setUp(self):
++        self.factory = fixture.collector_fixture.BehaviorMuDataTests(); self.factory.setUp()
++        self.tmp = tempfile.TemporaryDirectory(); self.run = Path(self.tmp.name)/'run'; self.run.mkdir()
++        self.env = patch.dict(os.environ, dict(SEARCH_R1_BASELINE_OUTPUT=str(self.run/'output'),
++            SEARCH_R1_TREE_RANK_AUDIT_DIR=str(self.run/'events'))); self.env.start()
++    def tearDown(self): self.env.stop(); self.tmp.cleanup(); self.factory.tearDown()
++
++    def test_two_rank_real_actor_guard_write_publish_disk_and_nonfinite(self):
++        modes = ('publish_io', 'post_guard', 'pre_guard', 'disk', 'nonfinite', 'context')
++        requested = os.environ.get('TREE_PARTIAL_CPU_FIXTURE_MODE')
++        if requested is not None:
++            assert requested in modes
++            modes = (requested,)
++        for mode in modes:
++            with self.subTest(mode=mode):
++                run = self.run/mode; run.mkdir()
++                mp.spawn(gloo_worker, args=(str(run/'gloo-init'), str(run), mode), nprocs=2, join=True)
++                first, second = (run/'0.json').read_bytes(), (run/'1.json').read_bytes()
++                self.assertEqual(first, second)
++                envelope = json.loads(first)
++                evidence = os.environ.get('TREE_PARTIAL_CPU_PROOF_DIRECTORY')
++                if evidence:
++                    proof = Path(evidence); proof.mkdir(parents=True, exist_ok=True)
++                    (proof/f'gloo-{mode}.json').write_text(json.dumps(dict(
++                        scope='Real two-rank Gloo with tiny CPU Adam; temporary synthetic PT read only and removed after tests',
++                        rank_envelopes_identical=(first == second), envelope=envelope), sort_keys=True, allow_nan=False))
++                self.assertEqual(envelope['status'], 'PARTIAL_WORKER_STATE_INCOMPLETE' if mode in ('disk', 'context') else 'PARTIAL_WORKER_STATE_SAVED')
++                self.assertEqual([r['committed_optimizer_calls'] for r in envelope['worker_states']], [0, 0] if mode == 'pre_guard' else [1, 1])
++                if mode == 'nonfinite': self.assertFalse(envelope['worker_states'][1]['state_finite'])
++                if mode == 'disk': self.assertEqual(envelope['worker_states'][0]['status'], 'PARTIAL_WORKER_STATE_SAVED')
++
++    def test_actual_counter_precedes_publish_and_does_not_credit_raising_optimizer(self):
++        worker, data = worker_and_data(self.factory, self.run)
++        worker.actor._actual_committed_optimizer_calls = 0
++        # Later nonzero-LR state must also preserve real changed parameters.
++        worker.actor_optimizer.param_groups[0]['lr'] = .01
++        initial = worker.actor.actor_module.weight.detach().clone()
++        worker.actor.actor_module(torch.ones(1, 1)).sum().backward()
++        worker.actor._policy_safety = N(committed=0, sync_valid=lambda *a: None,
++            publish=lambda *a: (_ for _ in ()).throw(safety_source.PolicySafetyRefusal('after-write', matched_all_ranks=True)))
++        with self.assertRaises(safety_source.PolicySafetyRefusal): worker.actor._optimizer_step()
++        self.assertEqual(worker.actor._actual_committed_optimizer_calls, 1)
++        self.assertEqual(int(next(iter(worker.actor_optimizer.state.values()))['step'].item()), 1)
++        self.assertFalse(torch.equal(initial, worker.actor.actor_module.weight))
++        result = source.persist_matched_partial_worker(worker, data,
++            safety_source.PolicySafetyRefusal('after-write persisted', matched_all_ranks=True), 0)
++        self.assertTrue(torch.equal(read_saved(result['worker_states'][0])['parameters']['weight'], worker.actor.actor_module.weight))
++        with patch.object(worker.actor_optimizer, 'step', side_effect=RuntimeError('before successful return')):
++            with self.assertRaises(RuntimeError): worker.actor._optimizer_step()
++        self.assertEqual(worker.actor._actual_committed_optimizer_calls, 1)
++
++    def test_unmatched_refusal_never_enters_any_collective_or_model_capture(self):
++        worker, data = worker_and_data(self.factory, self.run)
++        for error in (safety_source.PolicySafetyRefusal('manual'), RuntimeError('rank-local')):
++            with self.subTest(error=error), patch.object(source, '_gather', side_effect=AssertionError('must not gather')) as gather, \
++                 patch.object(source, 'raw_partial_worker_snapshot', side_effect=AssertionError('must not snapshot')) as capture:
++                with self.assertRaises(ValueError): source.persist_matched_partial_worker(worker, data, error, 0)
++                gather.assert_not_called(); capture.assert_not_called()
++
++    def test_nonfinite_adam_gradient_local_shard_preserved_and_rng_not_changed(self):
++        worker, data = worker_and_data(self.factory, self.run)
++        worker.actor._actual_committed_optimizer_calls = 0
++        parameter = worker.actor.actor_module.weight
++        worker.actor.actor_module.register_buffer('synthetic_buffer', torch.tensor([2.]))
++        parameter._local_shard = parameter.detach().clone()
++        parameter.grad = torch.ones_like(parameter); worker.actor._optimizer_step()
++        next(iter(worker.actor_optimizer.state.values()))['exp_avg'].fill_(float('nan'))
++        parameter.grad.fill_(float('inf'))
++        before = torch.get_rng_state().clone()
++        envelope = source.persist_matched_partial_worker(worker, data,
++            safety_source.PolicySafetyRefusal('nonfinite actual Adam', matched_all_ranks=True), 0)
++        own = envelope['worker_states'][0]; state = read_saved(own)
++        self.assertEqual(envelope['status'], 'PARTIAL_WORKER_STATE_SAVED'); self.assertFalse(own['state_finite'])
++        self.assertTrue(torch.isnan(next(iter(state['optimizer']['state'].values()))['exp_avg']).all())
++        self.assertTrue(torch.isinf(state['gradients']['weight']).all())
++        self.assertEqual(set(state['local_shards']), {'weight'}); self.assertFalse(state['resume_permitted'])
++        self.assertTrue(torch.equal(state['buffers']['synthetic_buffer'], torch.tensor([2.])))
++        self.assertTrue(torch.equal(before, torch.get_rng_state())); self.assertTrue(torch.equal(before, state['rng']['torch']))
++
++    def test_snapshot_noclobber_keeps_original_bytes_and_reports_incomplete(self):
++        worker, data = worker_and_data(self.factory, self.run); worker.actor._actual_committed_optimizer_calls = 0
++        error = safety_source.PolicySafetyRefusal('before write', matched_all_ranks=True)
++        first = source.persist_matched_partial_worker(worker, data, error, 0); own = first['worker_states'][0]
++        second = source.persist_matched_partial_worker(worker, data, error, 0)
++        self.assertEqual(second['status'], 'PARTIAL_WORKER_STATE_INCOMPLETE')
++        self.assertEqual(hashlib.sha256(Path(own['path']).read_bytes()).hexdigest(), own['sha256'])
++
++    def test_preparation_invalid_context_is_matched_zero_write_and_incomplete(self):
++        worker, data = worker_and_data(self.factory, self.run); worker.actor._actual_committed_optimizer_calls = 0
++        data.meta_info['tree_partial_context']['directory'] = '/unrelated/training_state/partial_outer_000001'
++        with self.assertRaises(safety_source.PolicySafetyRefusal) as caught: source.prepare_partial_worker_context(worker, data)
++        self.assertTrue(caught.exception.matched_all_ranks)
++        result = source.persist_matched_partial_worker(worker, data, caught.exception, 0)
++        self.assertEqual(result['status'], 'PARTIAL_WORKER_STATE_INCOMPLETE')
++        self.assertEqual(result['worker_states'][0]['committed_optimizer_calls'], 0)
++        self.assertEqual(list(self.run.rglob('worker-*.pt')), [])
++
++    def test_real_scheduler_advance_io_refusal_saved_without_outer_credit(self):
++        worker, data = worker_and_data(self.factory, self.run); worker.actor._actual_committed_optimizer_calls = 0
++        for _ in range(20):
++            worker.actor.actor_module(torch.ones(1, 1)).sum().backward(); worker.actor._optimizer_step(); worker.actor_optimizer.zero_grad()
++        with patch('search_r1.baselines.training_state.atomic_save', side_effect=OSError('direct record disk failure')):
++            with self.assertRaises(safety_source.PolicySafetyRefusal) as caught:
++                SCHEDULE(worker, data, {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0}, 0, 0.)
++        self.assertTrue(caught.exception.matched_all_ranks)
++        self.assertEqual(worker.actor_lr_scheduler.last_epoch, 1)
++        envelope = source.persist_matched_partial_worker(worker, data, caught.exception, 0)
++        own = envelope['worker_states'][0]; state = read_saved(own)
++        self.assertEqual(own['committed_optimizer_calls'], 20); self.assertEqual(own['scheduler_step_after_actual'], 1)
++        self.assertEqual(state['scheduler']['last_epoch'], 1); self.assertEqual(envelope['scheduler_advanced_actual'], [True])
++        self.assertFalse(envelope['outer_completed']); self.assertEqual(int(next(iter(state['optimizer']['state'].values()))['step'].item()), 20)
++
++    def test_counter_disagrees_with_returned_metric_refuses_before_scheduler(self):
++        worker, data = worker_and_data(self.factory, self.run)
++        worker.actor._actual_committed_optimizer_calls = 19
++        with self.assertRaises(safety_source.PolicySafetyRefusal):
++            SCHEDULE(worker, data, {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0}, 0, 0.)
++        self.assertEqual(worker.actor_lr_scheduler.last_epoch, 0)
++        record = json.loads((self.run/'output/fresh-state/outer-000001-rank00.json').read_text())
++        self.assertEqual(record['actual_optimizer_calls'], 19); self.assertEqual(record['returned_optimizer_calls'], 20)
++
++    def test_actual_worker_catches_only_matched_fresh_and_returns_saved_metadata_before_offload(self):
++        worker, data = worker_and_data(self.factory, self.run)
++        worker._is_actor = True; worker._is_offload_grad = False; worker.world_size = 1
++        worker.ulysses_sharding_manager = N()
++        class Sharding:
++            def __enter__(self): return self
++            def __exit__(self, *args): return False
++            def preprocess_data(self, data): return data
++            def postprocess_data(self, data): return data
++        worker.ulysses_sharding_manager = Sharding()
++        worker.flops_counter = N(estimate_flops=lambda *args: (1., 1.))
++        data.to = lambda *args: data
++        scope = dict(torch=torch, os=os, DataProto=WorkerProto, Timer=FakeTimer, logger=None,
++            log_gpu_memory_usage=lambda *args, **kwargs: None, fresh200_scheduler_after_actor=SCHEDULE)
++        update = load_actual_update_actor(scope)
++        original_update = worker.actor.update_policy
++        def refuse_after_actual_write(data):
++            worker.actor.actor_module(torch.ones(1, 1)).sum().backward(); worker.actor._optimizer_step()
++            raise safety_source.PolicySafetyRefusal('matched worker stop', matched_all_ranks=True)
++        worker.actor.update_policy = refuse_after_actual_write
++        with patch.object(torch.cuda, 'empty_cache', lambda: None): output = update(worker, data)
++        self.assertEqual(output.meta_info['tree_partial_state']['status'], 'PARTIAL_WORKER_STATE_SAVED')
++        self.assertEqual(output.meta_info['metrics']['actor/optimizer_steps'], 1)
++        self.assertEqual(worker.actor_lr_scheduler.last_epoch, 0)
++        for profile, error in ((True, safety_source.PolicySafetyRefusal('unmatched')), (True, RuntimeError('generic')),
++                               (False, safety_source.PolicySafetyRefusal('matched legacy', matched_all_ranks=True))):
++            worker.config.actor['fresh200_protocol'] = 'tree_fresh200_five_leaf_v1' if profile else None
++            worker.actor.update_policy = lambda data, error=error: (_ for _ in ()).throw(error)
++            with patch.object(source, 'persist_matched_partial_worker', side_effect=AssertionError('must not capture')) as capture:
++                with self.assertRaises(type(error)): update(worker, data)
++                capture.assert_not_called()
++        worker.actor.update_policy = original_update
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)
+diff --git a/test_tree_behavior_mu_data_cpu.py b/test_tree_behavior_mu_data_cpu.py
+index 552030c..abc6b21 100644
+--- a/test_tree_behavior_mu_data_cpu.py
++++ b/test_tree_behavior_mu_data_cpu.py
+@@ -12,7 +12,7 @@ from unittest.mock import patch
+ import numpy as np
+ import torch
+ 
+-from test_tree_raw_tokens_cpu import Tokenizer, TinyProto, params, ENV
++from test_tree_raw_tokens_cpu import Tokenizer, TinyProto, params, ENV, source_functions
+ from search_r1.baselines.rollout import SearchRollout, State, object_array
+ from search_r1.baselines.tree_raw_tokens import (FIELD as RAW_FIELD, capture_native_emissions,
+                                                sampled_action, fingerprint)
+@@ -50,7 +50,9 @@ class BehaviorMuDataTests(unittest.TestCase):
+             finish_reason='stop' if ids[-1] == 151645 else 'length', stop_reason=None)
+         request = NS(request_id='fixture-request', finished=True, outputs=[out], prompt_token_ids=[8])
+         record = capture_native_emissions([request], p, call, 0)[0]
+-        self.assertEqual(len(record['sampling_params']), 18)
++        self.assertEqual(len(record['sampling_params']), 24)
++        self.assertEqual(record['sampling_params']['best_of'], 1)
++        self.assertEqual(record['sampling_params']['_real_n'], 1)
+         self.assertIsNone(record['sampling_params']['logits_processors'])
+         text = self.tok.decode(ids, skip_special_tokens=True)
+         from search_r1.baselines.tree_raw_tokens import canonical_text
+@@ -71,6 +73,92 @@ class BehaviorMuDataTests(unittest.TestCase):
+     def validate(self, data):
+         return validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ))
+ 
++    def test_native_best_of_is_recorded_without_defaulting(self):
++        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
++                 finish_reason='stop', stop_reason=None)
++        request = NS(request_id='best-of-fixture', finished=True, outputs=[out], prompt_token_ids=[8])
++        settings = params()
++        captured = capture_native_emissions([request], settings, 'best-of-capture', 0)[0]
++        self.assertEqual(captured['sampling_params']['best_of'], 1)
++        self.assertEqual(len(captured['sampling_params']), 24)
++        for actual in (None, 2, 1., True):
++            settings.best_of = actual
++            with self.subTest(actual=actual), self.assertRaisesRegex(ValueError, 'best_of'):
++                capture_native_emissions([request], settings, 'bad-best-of', 0)
++
++    def test_missing_native_best_of_is_not_inferred_from_n1(self):
++        settings = params(); del settings.best_of
++        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
++                 finish_reason='stop', stop_reason=None)
++        request = NS(request_id='missing-best-of', finished=True, outputs=[out], prompt_token_ids=[8])
++        with self.assertRaisesRegex(ValueError, 'best_of'):
++            capture_native_emissions([request], settings, 'missing-best-of', 0)
++
++    def test_best_of_ledger_missing_and_resealed_distribution_drift_refuse(self):
++        for actual in ('missing', None, 2, 1., True):
++            state = self.state()
++            action = state.raw_ledger[0]['action']
++            settings = action['native_emission']['sampling_params']
++            if actual == 'missing': del settings['best_of']
++            else: settings['best_of'] = actual
++            # Re-seal the actual source action to exercise the sampling contract,
++            # rather than relying only on generic ledger hash drift rejection.
++            action['action_binding_sha256'] = fingerprint({k: v for k, v in action.items()
++                if not k.startswith('prefix_scan_') and k != 'action_binding_sha256'})
++            with self.subTest(actual=actual), self.assertRaises(ValueError):
++                self.output([state])
++        data = self.output()
++        data.non_tensor_batch[RAW_FIELD][0]['raw_ledger'][0]['action']['native_emission']['sampling_params']['best_of'] = 2
++        with self.assertRaises(ValueError): self.validate(data)
++
++    def test_native_context_processor_controls_and_real_n_cannot_be_hidden(self):
++        out = NS(token_ids=[151645], logprobs=[{151645: NS(logprob=-.25)}],
++                 finish_reason='stop', stop_reason=None)
++        request = NS(request_id='native-control-fixture', finished=True, outputs=[out], prompt_token_ids=[8])
++        for key, actual in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
++                            ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
++            settings=params();setattr(settings,key,actual)
++            with self.subTest(key=key),self.assertRaisesRegex(ValueError,key):
++                capture_native_emissions([request],settings,'bad-native-control',0)
++        for key in ('truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids','_real_n'):
++            settings=params();delattr(settings,key)
++            with self.subTest(missing=key),self.assertRaisesRegex(ValueError,key):
++                capture_native_emissions([request],settings,'missing-native-control',0)
++
++    def test_native_control_missing_or_resealed_mu_binding_drift_refuses(self):
++        for key, actual in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
++                            ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
++            for missing in (False,True):
++                state=self.state();action=state.raw_ledger[0]['action'];settings=action['native_emission']['sampling_params']
++                if missing:del settings[key]
++                else:settings[key]=actual
++                action['action_binding_sha256']=fingerprint({k:v for k,v in action.items()
++                    if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
++                with self.subTest(key=key,missing=missing),self.assertRaises(ValueError):self.output([state])
++        data=self.output()
++        data.non_tensor_batch[RAW_FIELD][0]['raw_ledger'][0]['action']['native_emission']['sampling_params']['allowed_token_ids']=[151645]
++        with self.assertRaises(ValueError):self.validate(data)
++
++    def test_actual_facade_native_entry_refuses_initial_controls_before_generate(self):
++        native=source_functions('verl/third_party/vllm/vllm_v_0_6_3/llm.py','LLM',
++            ['generate_with_emission_metadata'],{})['generate_with_emission_metadata']
++        for key,value in (('truncate_prompt_tokens',1),('guided_decoding',{'json':{}}),
++                          ('logit_bias',{151645:1.}),('allowed_token_ids',[151645]),('_real_n',2)):
++            for missing in (False,True):
++                calls=[]
++                def fake_native(**kwargs):
++                    calls.append(kwargs)
++                    # An old engine might clear a processor-construction input.
++                    # This callback must never receive unsupported initial values.
++                    setattr(kwargs['sampling_params'],key,None)
++                facade=NS(generate=fake_native)
++                settings=params()
++                if missing:delattr(settings,key)
++                else:setattr(settings,key,value)
++                with self.subTest(key=key,missing=missing),self.assertRaisesRegex(ValueError,key):
++                    native(facade,sampling_params=settings)
++                self.assertEqual(calls,[],'Initial unsupported settings reached the native entrypoint')
++
+     def test_actual_compose_emits_exact_fp32_and_zero_observation_padding(self):
+         data = self.output([self.state(), self.state([7, 151645], call='second-call', obs=[])])
+         self.assertEqual(data.batch[TENSOR].dtype, torch.float32)
+diff --git a/test_tree_fresh200_cpu.py b/test_tree_fresh200_cpu.py
+index ab8e83f..59b6b1c 100644
+--- a/test_tree_fresh200_cpu.py
++++ b/test_tree_fresh200_cpu.py
+@@ -33,7 +33,7 @@ def config():
+         leaves=3, leaf_quotas=[3, 2], token_preservation=dict(enabled=True), behavior_mu=dict(enabled=True)),
+         holdout=dict(input_mode='prebuilt_manifest', manifest_sha256=DATA_SHA256)),
+         actor_rollout_ref=dict(model=dict(path='official-same-local-path'), ref=dict(model_path='official-same-local-path',
+-        log_prob_micro_batch_size=32), rollout=dict(n_agent=2, n=1, log_prob_micro_batch_size=32, tree_raw_emission=True),
++        log_prob_micro_batch_size=32), rollout=dict(n_agent=2, n=1, best_of=1, log_prob_micro_batch_size=32, tree_raw_emission=True),
+         actor=dict(ppo_mini_batch_size=128, ppo_micro_batch_size=16, ppo_epochs=1,
+         ulysses_sequence_parallel_size=1, use_dynamic_bsz=False, fresh200_protocol=PROTOCOL,
+         optim=dict(lr=1e-6, lr_warmup_steps=57, lr_warmup_steps_ratio=0, total_training_steps=200),
+@@ -96,6 +96,14 @@ class Fresh200Tests(unittest.TestCase):
+             with self.subTest(name=name), self.assertRaises(ValueError):
+                 refuse_recovery_environment({name: 'old-value'})
+ 
++    def test_fresh_sampling_cannot_select_best_of_multiple_or_guess_default(self):
++        for value in (None, 2, True, '1'):
++            c = config(); c.actor_rollout_ref.rollout.best_of = value
++            with self.subTest(value=value), self.assertRaises(ValueError):
++                validate_fresh200_config(c)
++        c = config(); del c.actor_rollout_ref.rollout['best_of']
++        with self.assertRaises(ValueError): validate_fresh200_config(c)
++
+     def test_actual_checkpoint_sampler_starts_uniterated_and_refuses_consumed_state(self):
+         from search_r1.baselines.training_state import CheckpointBatchSampler
+         sampler = CheckpointBatchSampler(169028, 512, 42, DATA_SHA256, True)
+@@ -151,10 +159,25 @@ class Fresh200Tests(unittest.TestCase):
+     def test_legacy_rectangular_quotas_remain_unchanged(self):
+         tree = node(dict(roots=2, leaves=3))
+         self.assertEqual(leaf_quotas(tree), (3, 3))
++        self.assertEqual(leaf_quotas(N(roots=2, leaves=3)), (3, 3))
+         for value in [[3], [3, 0], [True, 2], [2, 2]]:
+             tree.leaf_quotas = value
+             with self.subTest(value=value), self.assertRaises(ValueError): leaf_quotas(tree)
+ 
++    def test_actual_attribute_tree_preserves_exact_five_leaf_budget(self):
++        manager = N(tokenizer=N(pad_token_id=151643), config=N(max_start_length=2048),
++                    tensor_fn=N(create_position_ids=lambda m: (m.cumsum(-1)-1)*m))
++        engine = CompleteEngine(manager); engine.output_meta = {}
++        tree = N(roots=2, rounds=1, expansions=2, leaves=3, leaf_quotas=[3, 2])
++        batch = TinyProto(dict(input_ids=torch.tensor([[8], [8]]),
++                               attention_mask=torch.ones(2, 1, dtype=torch.long)))
++        fake = ModuleType('verl'); fake.DataProto = TinyProto
++        with patch.dict('sys.modules', {'verl': fake}):
++            output, sources = engine.run(batch, tree)
++        self.assertEqual(len(output), 5)
++        self.assertEqual(engine.cost['trajectories'], 5)
++        self.assertEqual([sources.tolist().count(i) for i in range(2)], [3, 2])
++
+     def test_actual_constant_scheduler_57_outer_warmup(self):
+         source = Path(__file__).parent/'verl/utils/torch_functional.py'
+         tree = ast.parse(source.read_text())
+diff --git a/test_tree_partial_driver_cpu.py b/test_tree_partial_driver_cpu.py
+new file mode 100644
+index 0000000..bc011a7
+--- /dev/null
++++ b/test_tree_partial_driver_cpu.py
+@@ -0,0 +1,162 @@
++"""Actual tiny CPU Adam files and driver failure flow; no Ray/GPU claims."""
++import ast
++import copy
++import os
++from pathlib import Path
++import random
++import tempfile
++from types import SimpleNamespace as N
++import unittest
++from unittest.mock import patch
++
++import torch
++
++from search_r1.baselines.training_state import (CheckpointBatchSampler, atomic_save, worker_snapshot,
++                                               restore_driver, file_sha)
++from search_r1.baselines.tree_partial_state import (PROTOCOL, partial_context, partial_driver_snapshot,
++    stop_on_partial_actor_result, preserve_unmatched_actor_failure)
++from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
++
++
++ENV = dict(SLURM_JOB_ID='cpu-only', SEARCH_R1_BASELINE_RUN_ID='synthetic-partial',
++    SEARCH_R1_BASELINE_COMMIT='cpu-source', SEARCH_R1_BASELINE_CONFIG_SHA256='cpu-config',
++    SEARCH_R1_BASELINE_DATA_IDENTITY='cpu-data', SEARCH_R1_MODEL_IDENTITY='tiny-cpu-model')
++
++
++class Batch:
++    def __init__(self):
++        self.batch = dict(input_ids=torch.tensor([[1, 2], [3, 4]]),
++                          old_log_probs=torch.tensor([[-2., float('nan')], [-3., -4.]]),
++                          loss_mask=torch.tensor([[1, 0], [1, 1]]))
++        self.non_tensor_batch = dict(binding=['a', 'b'])
++        self.meta_info = dict(temperature=1., diagnosis='keep invalid diagnostic values')
++    def __len__(self): return 2
++
++
++def trainer(directory):
++    sampler = CheckpointBatchSampler(40, 4, 42, 'tiny-data')
++    iterator = iter(sampler)
++    next(iterator); next(iterator)  # The failed second outer has already consumed its batch.
++    return N(global_steps=2, actual_outer_updates=1, checkpoint_sampler=sampler,
++        config=N(trainer=N(default_local_dir=str(directory)),
++                 baselines=N(training_protocol='tree_fresh200_five_leaf_v1')),
++        actor_rollout_wg=N(world_size=8), baseline_controller=N(method='tree_grpo',
++            tree_rng=random.Random(42), stage=N(state_dict=lambda: {'stage': 'training'})))
++
++
++def envelope_for(trainer, calls=1, scheduler_advanced=False):
++    context = partial_context(trainer)
++    records = []
++    for rank in range(8):
++        model = torch.nn.Linear(2, 1)
++        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
++        scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda k: 1.)
++        # Represent the one actually completed outer from the controller boundary.
++        optimizer.zero_grad(); model(torch.ones(1, 2)).sum().backward(); optimizer.step(); scheduler.step()
++        for _ in range(calls):
++            optimizer.zero_grad(); model(torch.ones(1, 2)).square().sum().backward(); optimizer.step()
++        if scheduler_advanced: scheduler.step()
++        identity = dict(context['identity'], rank=rank, world_size=8)
++        saved = worker_snapshot(model, optimizer, scheduler, identity)
++        path = Path(context['directory']) / f'worker-{rank:02d}.pt'
++        sha = atomic_save(saved, path)
++        records.append(dict(identity=identity, rank=rank, world_size=8,
++            committed_optimizer_calls=calls, scheduler_step_before_actual=1,
++            scheduler_step_after_actual=scheduler.last_epoch, state_finite=True,
++            status='PARTIAL_WORKER_STATE_SAVED', path=str(path), sha256=sha,
++            bytes=path.stat().st_size))
++    return dict(protocol=PROTOCOL, identity=context['identity'], status='PARTIAL_WORKER_STATE_SAVED',
++                worker_states=records, outer_completed=False, automatic_rollback=False)
++
++
++class PartialDriverTests(unittest.TestCase):
++    def test_actual_partial_adam_and_consumed_batch_saved_without_outer_credit(self):
++        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, ENV):
++            t = trainer(tmp); batch = Batch(); e = envelope_for(t, calls=19)
++            before_rng = torch.get_rng_state().clone()
++            with self.assertRaises(PolicySafetyRefusal):
++                stop_on_partial_actor_result(t, batch, N(meta_info={'tree_partial_state': e}))
++            self.assertEqual((t.global_steps, t.actual_outer_updates, t.checkpoint_sampler.cursor), (2, 1, 8))
++            self.assertTrue(torch.equal(before_rng, torch.get_rng_state()))
++            import json
++            m = json.loads(Path(t.partial_outer_evidence['path']).read_text())
++            self.assertEqual(m['status'], 'PARTIAL_OUTER_STATE_SAVED_CONTROLLED_STOP')
++            self.assertEqual(m['actual_optimizer_calls_per_rank'], {str(r): 19 for r in range(8)})
++            self.assertFalse(m['outer_completed']); self.assertFalse(m['automatic_resume_supported'])
++            saved = torch.load(m['driver']['path'], weights_only=False)
++            self.assertEqual(saved['consumed_sampler']['cursor'], 8)
++            with self.assertRaises(ValueError): restore_driver(t, saved, e['identity'])
++            inp = torch.load(m['actor_inputs']['path'], weights_only=False)
++            self.assertTrue(torch.equal(inp['batch']['input_ids'], batch.batch['input_ids']))
++            self.assertTrue(torch.isnan(inp['batch']['old_log_probs'][0, 1]))
++            for r in e['worker_states']:
++                s = torch.load(r['path'], weights_only=False)
++                self.assertTrue(all(v['step'].item() == 20 for v in s['optimizer']['state'].values()))
++                self.assertEqual(s['scheduler']['last_epoch'], 1)
++                self.assertEqual(file_sha(r['path']), r['sha256'])
++
++    def test_saved_scheduler_actual_advance_is_reported_without_outer_credit(self):
++        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, ENV):
++            t = trainer(tmp); e = envelope_for(t, calls=20, scheduler_advanced=True)
++            with self.assertRaises(PolicySafetyRefusal):
++                stop_on_partial_actor_result(t, Batch(), N(meta_info={'tree_partial_state': e}))
++            import json
++            m = json.loads(Path(t.partial_outer_evidence['path']).read_text())
++            self.assertEqual(m['actual_scheduler_steps_per_rank'], {str(r): 2 for r in range(8)})
++            self.assertEqual(t.actual_outer_updates, 1)
++
++    def test_missing_rank_or_tampered_file_is_incomplete_but_driver_not_lost(self):
++        for damage in ('missing-rank', 'bytes'):
++            with self.subTest(damage=damage), tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, ENV):
++                t = trainer(tmp); e = envelope_for(t)
++                if damage == 'missing-rank': e['worker_states'].pop()
++                else:
++                    with Path(e['worker_states'][0]['path']).open('ab') as f: f.write(b'corrupted')
++                with self.assertRaises(PolicySafetyRefusal):
++                    stop_on_partial_actor_result(t, Batch(), N(meta_info={'tree_partial_state': e}))
++                import json
++                m = json.loads(Path(t.partial_outer_evidence['path']).read_text())
++                self.assertEqual(m['status'], 'PARTIAL_OUTER_STATE_INCOMPLETE_CONTROLLED_STOP')
++                self.assertFalse(m['worker_states_verified'])
++                self.assertTrue(Path(m['driver']['path']).is_file())
++                self.assertEqual(t.actual_outer_updates, 1)
++
++    def test_prewrite_refusal_keeps_zero_counts_and_ordinary_output_is_unchanged(self):
++        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, ENV):
++            t = trainer(tmp); b = Batch()
++            stop_on_partial_actor_result(t, b, N(meta_info={'metrics': {'actor/optimizer_steps': 20}}))
++            self.assertFalse((Path(tmp) / 'training_state').exists())
++            e = envelope_for(t, calls=0)
++            with self.assertRaises(PolicySafetyRefusal):
++                stop_on_partial_actor_result(t, b, N(meta_info={'tree_partial_state': e}))
++            import json
++            m = json.loads(Path(t.partial_outer_evidence['path']).read_text())
++            self.assertEqual(m['actual_optimizer_calls_per_rank'], {str(r): 0 for r in range(8)})
++
++    def test_unmatched_worker_failure_never_requests_another_collective_or_claims_saved_workers(self):
++        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, ENV):
++            t = trainer(tmp)
++            class NoWorkerCalls:
++                def __getattr__(self, name): raise AssertionError('must not call surviving workers')
++            t.actor_rollout_wg = NoWorkerCalls()
++            path = preserve_unmatched_actor_failure(t, Batch(), RuntimeError('one rank died'))
++            import json
++            m = json.loads(Path(path).read_text())
++            self.assertEqual(m['status'], 'UNMATCHED_WORKER_FAILURE_DRIVER_ONLY')
++            self.assertIsNone(m['actual_optimizer_calls_per_rank'])
++            self.assertFalse(m['worker_states_verified'])
++
++    def test_actual_trainer_guard_handling_precedes_reduction_and_outer_credit(self):
++        source = ast.parse(Path('verl/trainer/ppo/ray_trainer.py').read_text())
++        fit = next(n for n in ast.walk(source) if isinstance(n, ast.FunctionDef) and n.name == 'fit')
++        calls = {n.func.id: n.lineno for n in ast.walk(fit) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
++                 and n.func.id in ('stop_on_partial_actor_result', 'validate_completed_outer')}
++        after_actor = [n.lineno for n in ast.walk(fit) if isinstance(n, ast.Call)
++                       and isinstance(n.func, ast.Attribute) and n.func.attr == 'after_actor']
++        actor_reduction = [n.lineno for n in ast.walk(fit) if isinstance(n, ast.Assign)
++                           and any(isinstance(t, ast.Name) and t.id == 'actor_output_metrics' for t in n.targets)]
++        self.assertLess(calls['stop_on_partial_actor_result'], min(after_actor + actor_reduction))
++        self.assertLess(calls['stop_on_partial_actor_result'], calls['validate_completed_outer'])
++
++
++if __name__ == '__main__': unittest.main()
+diff --git a/test_tree_raw_tokens_cpu.py b/test_tree_raw_tokens_cpu.py
+index 7062f2b..20ad86f 100644
+--- a/test_tree_raw_tokens_cpu.py
++++ b/test_tree_raw_tokens_cpu.py
+@@ -18,7 +18,7 @@ import string
+ import numpy as np
+ import torch
+ 
+-from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,
++from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,capture_native_sampling_settings,
+     sampled_action,canonical_text,trajectory_projection,semantic_spans,tokenizer_identity)
+ from search_r1.baselines.rollout import State,SearchRollout,object_array
+ 
+@@ -61,9 +61,10 @@ class Tokenizer:
+ 
+ 
+ def params():
+-    return NS(n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
++    return NS(n=1,best_of=1,_real_n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
+         repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
+-        include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None)
++        include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None,
++        truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None)
+ 
+ 
+ ENV={'SEARCH_R1_BASELINE_COMMIT':'a'*40,'SEARCH_R1_BASELINE_CONFIG_SHA256':'b'*64,
+@@ -298,6 +299,7 @@ class RawTokenTests(unittest.TestCase):
+         completion=NS(token_ids=ids,logprobs=[{token:NS(logprob=-.25)} for token in ids],finish_reason='stop',stop_reason=None)
+         request=NS(request_id='actual9',finished=True,outputs=[completion],prompt_token_ids=[8])
+         facade=NS(llm_engine=NS(tokenizer=self.tok),_tree_emission_call='fixture',_tree_emission_params=params())
++        facade._tree_emission_before_settings=capture_native_sampling_settings(facade._tree_emission_params)
+         with patch.dict(os.environ,ENV),patch.object(torch.distributed,'get_rank',return_value=0),patch(
+                 'search_r1.baselines.tree_raw_tokens.capture_native_emissions',side_effect=observe_native):
+             result=function(facade,[request])
+@@ -306,5 +308,32 @@ class RawTokenTests(unittest.TestCase):
+         facade._tree_emission_call=None
+         self.assertEqual(len(function(facade,[request])),2)
+ 
++    def test_actual_facade_pre_post_control_binding_and_cleanup(self):
++        from torch.nn.utils.rnn import pad_sequence
++        methods=source_functions('verl/third_party/vllm/vllm_v_0_6_3/llm.py','LLM',
++            ['generate_with_emission_metadata','_post_process_outputs'],
++            dict(torch=torch,pad_sequence=pad_sequence,List=List,Tuple=Tuple,RequestOutput=object))
++        completion=NS(token_ids=[151645],logprobs=[{151645:NS(logprob=-.25)}],finish_reason='stop',stop_reason=None)
++        request=NS(request_id='pre-post-controls',finished=True,outputs=[completion],prompt_token_ids=[8])
++        for changed in (None,('temperature',2.),('best_of',2),('guided_decoding',{'json':{}}),
++                        ('logit_bias',{151645:1.}),('allowed_token_ids',[151645])):
++            calls=[];facade=NS(llm_engine=NS(tokenizer=self.tok))
++            def generate(**kwargs):
++                calls.append('native-entry')
++                if changed:setattr(kwargs['sampling_params'],changed[0],changed[1])
++                return methods['_post_process_outputs'](facade,[request])
++            facade.generate=generate
++            with self.subTest(changed=changed),patch.dict(os.environ,ENV),patch.object(torch.distributed,'get_rank',return_value=0):
++                if changed:
++                    with self.assertRaises(ValueError):methods['generate_with_emission_metadata'](facade,sampling_params=params())
++                else:
++                    result=methods['generate_with_emission_metadata'](facade,sampling_params=params())
++                    self.assertEqual(len(result),3)
++                    self.assertEqual(len(result[2][0]['sampling_params']),24)
++                self.assertEqual(calls,['native-entry'])
++                self.assertIsNone(facade._tree_emission_call)
++                self.assertIsNone(facade._tree_emission_params)
++                self.assertIsNone(facade._tree_emission_before_settings)
++
+ 
+ if __name__=='__main__':unittest.main()
+diff --git a/verl/third_party/vllm/vllm_v_0_6_3/llm.py b/verl/third_party/vllm/vllm_v_0_6_3/llm.py
+index 4f71101..bd10857 100644
+--- a/verl/third_party/vllm/vllm_v_0_6_3/llm.py
++++ b/verl/third_party/vllm/vllm_v_0_6_3/llm.py
+@@ -166,12 +166,15 @@ class LLM(LLM):
+         import uuid
+         if getattr(self, '_tree_emission_call', None) is not None:
+             raise ValueError('Concurrent Tree native-emission capture is forbidden')
++        from search_r1.baselines.tree_raw_tokens import capture_native_sampling_settings
++        before_settings = capture_native_sampling_settings(kwargs['sampling_params'])
+         self._tree_emission_call = uuid.uuid4().hex
+         self._tree_emission_params = kwargs['sampling_params']
++        self._tree_emission_before_settings = before_settings
+         try:
+             return self.generate(**kwargs)
+         finally:
+-            self._tree_emission_call = self._tree_emission_params = None
++            self._tree_emission_call = self._tree_emission_params = self._tree_emission_before_settings = None
+ 
+     # # NOTE(shengguangming): add for verl
+     # # TODO(sgm): we can optimize it by making the dataloader yield List[int] without padding.
+@@ -186,7 +189,10 @@ class LLM(LLM):
+     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
+         metadata = None
+         if getattr(self, '_tree_emission_call', None) is not None:
+-            from search_r1.baselines.tree_raw_tokens import capture_native_emissions
++            from search_r1.baselines.tree_raw_tokens import capture_native_emissions, capture_native_sampling_settings
++            actual_settings = capture_native_sampling_settings(self._tree_emission_params)
++            if actual_settings != self._tree_emission_before_settings:
++                raise ValueError('Actual Tree native sampling controls changed during engine generation')
+             metadata = capture_native_emissions(request_outputs, self._tree_emission_params,
+                 self._tree_emission_call, torch.distributed.get_rank())
+         output_token_ids = []
+diff --git a/verl/trainer/config/ppo_tree_fresh200.yaml b/verl/trainer/config/ppo_tree_fresh200.yaml
+index 91521e5..13861ca 100644
+--- a/verl/trainer/config/ppo_tree_fresh200.yaml
++++ b/verl/trainer/config/ppo_tree_fresh200.yaml
+@@ -25,6 +25,7 @@ actor_rollout_ref:
+         protocol: tree_behavior_mu_centered_ppo_v1
+         initial_actor_repeat_max_abs_delta: null
+   rollout:
++    best_of: 1
+     tree_raw_emission: false
+     sampling_consistency:
+       enabled: false
+diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
+index 1f6827d..967e240 100644
+--- a/verl/trainer/ppo/ray_trainer.py
++++ b/verl/trainer/ppo/ray_trainer.py
+@@ -1083,7 +1083,24 @@ class RayPPOTrainer(object):
+                             if os.environ.get('TREE_PPO_CALIBRATION_ONLY') == '1':
+                                 from search_r1.baselines.sampling_consistency import finalize_calibration
+                                 return finalize_calibration(self, batch)
+-                            actor_output = self.actor_rollout_wg.update_actor(batch)
++                            if fresh200:
++                                from search_r1.baselines.tree_partial_state import partial_context
++                                batch.meta_info['tree_partial_context'] = partial_context(self)
++                            try:
++                                actor_output = self.actor_rollout_wg.update_actor(batch)
++                            except Exception as actor_error:
++                                if fresh200:
++                                    from search_r1.baselines.tree_partial_state import preserve_unmatched_actor_failure
++                                    try:
++                                        evidence = preserve_unmatched_actor_failure(self, batch, actor_error)
++                                        print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE=' + evidence, flush=True)
++                                    except Exception as evidence_error:
++                                        print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE_FAILED=' +
++                                              repr(evidence_error), flush=True)
++                                raise
++                            if fresh200:
++                                from search_r1.baselines.tree_partial_state import stop_on_partial_actor_result
++                                stop_on_partial_actor_result(self, batch, actor_output)
+                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
+                         metrics.update(actor_output_metrics)
+                         if getattr(self, 'baseline_controller', None) is not None:
+diff --git a/verl/workers/actor/dp_actor.py b/verl/workers/actor/dp_actor.py
+index 6625c88..b316624 100644
+--- a/verl/workers/actor/dp_actor.py
++++ b/verl/workers/actor/dp_actor.py
+@@ -158,6 +158,8 @@ class DataParallelPPOActor(BasePPOActor):
+             self.last_postclip_grad_norm = float(clip_grad_norm64(self.actor_module, float("inf")))
+             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
+         self.actor_optimizer.step()
++        # Record the returned write before any publish/audit that may fail.
++        self._actual_committed_optimizer_calls = getattr(self, '_actual_committed_optimizer_calls', 0) + 1
+         if safety is not None:
+             safety.committed += 1
+             safety.last_grad_preclip = float(grad_norm)
+@@ -216,6 +218,8 @@ class DataParallelPPOActor(BasePPOActor):
+         return log_probs
+ 
+     def update_policy(self, data: DataProto):
++        self._actual_committed_optimizer_calls = 0
++        self._policy_safety = None
+         # make sure we are in training mode
+         self.actor_module.train()
+         method = self.config.get('baseline_method')
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index acc1fc0..2a31f3c 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -104,7 +104,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+         if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
+         return bool(flag.item())
+     outer = data.meta_info.get('baseline_outer_step')
+-    writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
++    writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
++    returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
+     error = None
+     before_lrs = None
+     try:
+@@ -113,7 +114,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+             raise ValueError('Fresh scheduler admission requires the explicit fresh200 profile')
+         if type(outer) is not int or outer < 1:
+             raise ValueError('Fresh outer must be a positive direct driver counter')
+-        if type(writes) is not int or writes != 20 or type(skips) is not int or skips != 0:
++        if (type(writes) is not int or writes != 20 or type(returned_writes) is not int
++                or returned_writes != writes or type(skips) is not int or skips != 0):
+             raise ValueError('Fresh outer requires each rank to commit 20 optimizer calls and skip zero')
+         if (type(scheduler_before_outer) is not int or scheduler_before_outer != outer - 1
+                 or worker.actor_lr_scheduler.last_epoch != scheduler_before_outer):
+@@ -156,7 +158,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+                   observed_outer=outer if type(outer) is int else None,
+                   actual_optimizer_calls=writes if type(writes) is int else None,
+                   skipped_empty_minibatches=skips if type(skips) is int else None,
+-                  direct_count_source='actor.update_policy local return before any rank reduction',
++                  returned_optimizer_calls=returned_writes if type(returned_writes) is int else None,
++                  direct_count_source='actor optimizer.step successful-return counter before any publish/audit IO',
+                   scheduler_step_before=scheduler_before_outer, scheduler_step_after=after,
+                   scheduler_step_invoked=scheduler_step_invoked,
+                   learning_rates_before=before_lrs, learning_rates_after=after_lrs,
+@@ -184,8 +187,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+         io_error = repr(exc)
+     global_io_invalid = global_invalid(io_error)
+     if global_before_invalid or global_after_invalid or global_io_invalid:
+-        raise RuntimeError('Global fresh outer scheduler/accounting refusal; actual optimizer writes retained; local: '
+-                           +str(error or step_error or io_error))
++        from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
++        raise PolicySafetyRefusal('Global fresh outer scheduler/accounting refusal; actual optimizer writes retained; local: '
++                                  +str(error or step_error or io_error), matched_all_ranks=True)
+     metrics['actor/fresh_direct_rank_outer_admitted'] = 1
+     return dict(path=str(path), sha256=record_sha, rank=rank, actual_optimizer_calls=writes,
+                 scheduler_step_before=scheduler_before_outer, scheduler_step_after=after)
+@@ -543,30 +547,47 @@ class ActorRolloutRefWorker(Worker):
+ 
+         with self.ulysses_sharding_manager:
+             data = self.ulysses_sharding_manager.preprocess_data(data=data)
+-            # perform training
+-            with Timer(name='update_policy', logger=None) as timer:
+-                lr_before_outer = self.actor_lr_scheduler.get_last_lr()[0]
+-                scheduler_before_outer = self.actor_lr_scheduler.last_epoch
+-                metrics = self.actor.update_policy(data=data)
+-            delta_time = timer.last
+-            global_num_tokens = data.meta_info['global_token_num']
+-            estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
+-            metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
+-
+-            if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+-                fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
+-            elif metrics.get('actor/optimizer_steps', 0) > 0:
+-                self.actor_lr_scheduler.step()
+-            lr = self.actor_lr_scheduler.get_last_lr()[0]
+-            metrics['actor/lr'] = lr
+-            metrics['actor/lr_before_outer'] = lr_before_outer
+-            metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
+-            metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
++            # Preserve actual counters before any startup refusal or audit IO.
++            lr_before_outer = self.actor_lr_scheduler.get_last_lr()[0]
++            scheduler_before_outer = self.actor_lr_scheduler.last_epoch
++            self.actor._actual_committed_optimizer_calls = 0
++            from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
++            from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
++            partial = None
++            try:
++                if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
++                    prepare_partial_worker_context(self, data)
++                with Timer(name='update_policy', logger=None) as timer:
++                    metrics = self.actor.update_policy(data=data)
++                delta_time = timer.last
++                global_num_tokens = data.meta_info['global_token_num']
++                estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
++                metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
++
++                if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
++                    fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
++                elif metrics.get('actor/optimizer_steps', 0) > 0:
++                    self.actor_lr_scheduler.step()
++                lr = self.actor_lr_scheduler.get_last_lr()[0]
++                metrics['actor/lr'] = lr
++                metrics['actor/lr_before_outer'] = lr_before_outer
++                metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
++                metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
++
++            except PolicySafetyRefusal as refusal:
++                if (refusal.matched_all_ranks is not True
++                        or self.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1'):
++                    raise
++                partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
++                metrics = {'actor/optimizer_steps': self.actor._actual_committed_optimizer_calls,
++                           'actor/scheduler_step_before_outer': scheduler_before_outer,
++                           'actor/scheduler_step_after_outer': self.actor_lr_scheduler.last_epoch,
++                           'actor/partial_outer_refused': 1}
+ 
+             log_gpu_memory_usage('After update policy', logger=logger)
+ 
+             # TODO: here, we should return all metrics
+-            output = DataProto(meta_info={'metrics': metrics})
++            output = DataProto(meta_info={'metrics': metrics, **({'tree_partial_state': partial} if partial is not None else {})})
+ 
+             output = self.ulysses_sharding_manager.postprocess_data(data=output)
+             output = output.to('cpu')

@@ -1,0 +1,24 @@
+{
+  "actual_gpu_executed": false,
+  "actual_remote_executed": false,
+  "actual_slurm_executed": false,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/baselines/test_actual_update_budget.py",
+    "tests/reproduction/test_final_checkpoint.py",
+    "-q"
+  ],
+  "count": 14,
+  "exit_code": 0,
+  "log_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-v2-owner/FROZEN_02B1EA2_BUDGET_CPU_ACTUAL.txt",
+  "log_sha256": "9943d49537b412fc2526b12e01b6abb03d50ccfc520d802e2c733031de1e4a02",
+  "official_assets_loaded": false,
+  "source_clean": true,
+  "source_commit_after": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+  "source_commit_before": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+  "unittest_seconds": null,
+  "wall_seconds": 0.941571084
+}

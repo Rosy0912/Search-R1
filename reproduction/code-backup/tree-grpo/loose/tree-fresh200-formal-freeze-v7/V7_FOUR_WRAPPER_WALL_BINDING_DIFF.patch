@@ -1,0 +1,91 @@
+--- V6/build_package_draft.py
++++ V7/build_package_draft.py
+@@ -188,7 +188,7 @@
+     require(type(intent) is str and Path(intent).is_absolute() and '..' not in Path(intent).parts and Path(intent).is_relative_to(ROOT/'instruct300'),'Root must supply reviewed NEW production once intent; old zero intent cannot be inferred')
+     from submit_once import INTENT_RE
+     require(Path(intent).parent==ROOT/'instruct300' and re.fullmatch(INTENT_RE,Path(intent).name),'New production intent must match reviewed production-only once namespace')
+-    require(type(wall) is int and wall==72,'Root-reviewed formal wall hours must be72; no calibration default')
++    require(type(wall) is int and wall>0,'Explicit positive finite formal wall hours required; no default')
+     require(dispatch['cluster_name']=='wuhan-h100','Explicit own local production cluster binding missing')
+     require(dispatch['nodes']==['h100-9'] and dispatch['gpus']==8 and dispatch['cpus_per_task']==32 and dispatch['memory_gib']==256 and dispatch['exclusive'] is True and dispatch['no_requeue'] is True,'Immutable reservation differs')
+     output=Path(a.output).resolve();require(not output.exists() and str(output).startswith('/Users/'),'Local no-clobber package only')
+--- V6/render_dispatch.py
++++ V7/render_dispatch.py
+@@ -13,7 +13,7 @@
+     require(package.is_absolute() and '..' not in package.parts and package.is_relative_to(ROOT/'instruct300/candidates'),'Own same-node candidate path required')
+     require(release_path.is_absolute() and '..' not in release_path.parts and release_path.is_relative_to(ROOT),'Own same-node external release path required')
+     require(all(type(d) is str and re.fullmatch('[0-9a-f]{64}',d) for d in (manifest_sha,release_sha)),'Exact immutable SHA pins required')
+-    require(type(wall_hours) is int and wall_hours==72,'Root-reviewed formal wall hours72 required; no calibration default')
++    require(type(wall_hours) is int and wall_hours>0,'Explicit positive finite formal wall hours required; no default')
+     return '\n'.join(('#!/usr/bin/env bash','#SBATCH --job-name=tree-fresh200-train',
+         '#SBATCH --nodes=1','#SBATCH --nodelist=h100-9','#SBATCH --gres=gpu:8',
+         '#SBATCH --cpus-per-task=32','#SBATCH --mem=256G','#SBATCH --exclusive',
+--- V6/slurm_identity.py
++++ V7/slurm_identity.py
+@@ -106,8 +106,11 @@
+     require(federation.strip()=='','Federated lineage is not permitted for this own task')
+     return dict(cluster_name=CLUSTER,configuration_stdout=config,federation_stdout=federation,local_queries=True)
+ 
+-def allocation_identity(text,job,cluster):
++def allocation_identity(text,job,cluster,wall_hours):
+     require(cluster==CLUSTER and type(job) is str and re.fullmatch('[1-9][0-9]*',job),'Untrusted allocation tuple')
++    require(type(wall_hours) is int and wall_hours>0,'Explicit positive finite manifest wall hours required')
++    days,hours=divmod(wall_hours,24)
++    time_limit=(str(days)+'-' if days else '')+f'{hours:02d}:00:00'
+     pairs=re.findall(r'(?:^|\s)([A-Za-z][A-Za-z0-9_\-/]*)=([^\s]+)',text)
+     tokens={}
+     for key,value in pairs:
+@@ -115,21 +118,28 @@
+         tokens[key]=value
+     expected={'JobId':job,'JobState':'RUNNING','NodeList':NODE,'BatchHost':NODE,'NumNodes':'1',
+               'OverSubscribe':'NO','TresPerNode':'gres:gpu:8','CPUs/Task':'32',
+-              'Requeue':'0','Restarts':'0','TimeLimit':'3-00:00:00','MinMemoryNode':'256G'}
+-    require(all(tokens.get(k)==v for k,v in expected.items()),'Exact own allocation/resources/72h/no-requeue identity differs')
++              'Requeue':'0','Restarts':'0','TimeLimit':time_limit,'MinMemoryNode':'256G'}
++    require(all(tokens.get(k)==v for k,v in expected.items()),'Exact own allocation/resources/manifest time/no-requeue identity differs')
+     require(tokens.get('Cluster',CLUSTER)==CLUSTER,'Allocation declares foreign cluster')
+     require(re.fullmatch('[1-9][0-9]*',tokens.get('NumCPUs','')) is not None and int(tokens['NumCPUs'])>=32,'Actual reserved CPUs missing')
+     return dict(cluster_name=CLUSTER,job_id=int(job),node_list=NODE,requested_cpus=32,
+-                allocated_cpus=int(tokens['NumCPUs']),gpus=8,memory_gib=256,wall_hours=72,
++                allocated_cpus=int(tokens['NumCPUs']),gpus=8,memory_gib=256,wall_hours=wall_hours,
+                 no_requeue=True,restarts=0,allocation_stdout=text)
+ 
+ def verify_runtime(environment=None,hostname=None,run=subprocess.run):
+     environment=dict(os.environ if environment is None else environment)
+     job=runtime_job(environment,socket.gethostname() if hostname is None else hostname)
+     cgroup_identity=verify_runtime_cgroup(environment,hostname)
++    package=Path(environment['TREE_INSTRUCT_TOOLS'])
++    require(package.is_absolute() and '..' not in package.parts and package.resolve().is_relative_to(ROOT/'instruct300/candidates'),
++            'Expected wall must come from the own reviewed candidate')
++    manifest_sha=environment['TREE_INSTRUCT_PACKAGE_SHA256']
++    require(type(manifest_sha) is str and re.fullmatch('[0-9a-f]{64}',manifest_sha), 'Exact held manifest SHA required for runtime wall')
++    manifest,_,_=read_bound(package/'manifest.json',manifest_sha)
++    wall=manifest['dispatch']['train_wall_hours']
+     cluster=cluster_identity(run,environment)
+     raw=query(['scontrol','--local','show','job',job],run,environment)
+-    return dict(cluster,cgroup_identity=cgroup_identity,**{k:v for k,v in allocation_identity(raw,job,cluster['cluster_name']).items() if k!='cluster_name'})
++    return dict(cluster,cgroup_identity=cgroup_identity,**{k:v for k,v in allocation_identity(raw,job,cluster['cluster_name'],wall).items() if k!='cluster_name'})
+ 
+ def fsync_directory(path):
+     fd=os.open(Path(path),os.O_RDONLY|os.O_DIRECTORY)
+--- V6/submit_once.py
++++ V7/submit_once.py
+@@ -88,7 +88,8 @@
+             and release['dispatch_submitter_sha256']==manifest['files']['submit_once.py'],'Exact dispatcher/renderer source not independently bound')
+     # Verify rendered actual argv/script exactly, not substring directives.
+     from render_dispatch import render
+-    require(script==render(package_path,manifest_sha,review_path,review_sha,72).encode(),'Submitted script differs from exact reviewed production renderer')
++    wall=manifest['dispatch']['train_wall_hours']
++    require(script==render(package_path,manifest_sha,review_path,review_sha,wall).encode(),'Submitted script differs from exact reviewed production renderer')
+     lock_path=ROOT/'instruct300/FRESH200_TRAIN_DISPATCH.lock'
+     fd=os.open(lock_path,os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
+     try:
+@@ -98,7 +99,7 @@
+         # The immutable bytes below, not the filename, are the submitted program.
+         submit_argv=['sbatch','--parsable']
+         initial=dict(status='SUBMITTING',cluster_name=CLUSTER,local_cluster_identity=identity,node_list=NODE,
+-            manifest_sha256=manifest_sha,review_sha256=review_sha,dispatch_intent_path=str(path),
++            manifest_sha256=manifest_sha,review_sha256=review_sha,dispatch_intent_path=str(path),train_wall_hours=wall,
+             dispatch_script_sha256=script_sha,submit_argv=submit_argv,
+             submitted_input_sha256=hashlib.sha256(script).hexdigest(),submitted_input_bytes=len(script),
+             submitted_input_base64=base64.b64encode(script).decode('ascii'),submit_mode='verified_bytes_via_stdin',

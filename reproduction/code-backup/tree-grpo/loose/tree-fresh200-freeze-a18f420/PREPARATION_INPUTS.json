@@ -1,0 +1,40 @@
+{
+  "actual_assets_transferred": false,
+  "actual_gpu_accepted": false,
+  "actual_slurm_submitted": false,
+  "archive": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/CODE_PACKAGE.tar.gz",
+  "archive_sha256": "33bf74fe2cca6a9c2048ce7ed0e69b482b96633ea0e56e5843a9e795ae5e982a",
+  "code_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "context_byte_audit": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_BYTE_AUDIT.json",
+    "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+  },
+  "context_free_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_CONTEXT_FREE_RECEIPT.json",
+    "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+  },
+  "manifest_sha256": "388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5",
+  "max_uncompressed_bytes": 33554432,
+  "previous_terminal_evidence": {
+    "3314": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3314_PROOF_V2.json",
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    },
+    "3317": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3317_PROOF.json",
+      "sha256": "97c94827a6a7b1c83730c818cf8cf672f7b5051fb9e6bdbf652c061a2816acda"
+    }
+  },
+  "scope": "Only new same-h1009 code/CPU config preparation. New actual3317 row96 report has rows1 and limited historical replay scope; no5120 reuse, GPU, Slurm, READY or training release.",
+  "source_interface_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_INTERFACE_RECEIPT.json",
+    "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+  },
+  "stage": "fresh_mu_calibration",
+  "status": "EXACT_BYTE_CPU_PREPARATION_INPUTS_PENDING_EXECUTION_BINDING_REVIEW",
+  "target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420",
+  "tokenizer_preflight": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+    "sha256": "2122dc288ab9d0b6ea59cc996fe8251908ce87e7519abb5e7d9e60582cedccc8"
+  }
+}

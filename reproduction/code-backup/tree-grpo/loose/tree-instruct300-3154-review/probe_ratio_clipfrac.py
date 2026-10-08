@@ -1,0 +1,6 @@
+import ast,math,json,types,torch
+from pathlib import Path
+p=Path(__file__).resolve().parents[1]/'tree-instruct300-runtime-v3/source/repo/search_r1/baselines/objectives.py';tree=ast.parse(p.read_text());tree.body=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='weighted_policy_loss'];ns=dict(torch=torch,F=types.SimpleNamespace(masked_sum=lambda x,w:(x*w).sum()));exec(compile(tree,str(p),'exec'),ns)
+old=torch.tensor([[-12.]],dtype=torch.float64);current=torch.tensor([[0.]],dtype=torch.float64,requires_grad=True);adv=torch.tensor([[-1.]],dtype=torch.float64);weights=torch.ones_like(old)
+loss,frac,kl=ns['weighted_policy_loss'](old,current,adv,weights,weights,.2,1.);loss.backward();assert float(frac)==0 and float(loss)>100000 and float(current.grad)>100000
+Path(__file__).with_name('RANK76_PPO_SEMANTICS_CPU.json').write_text(json.dumps(dict(scope='Actual frozen weighted PPO function AST CPUcounterexample, masked_sum fixture equivalent on these all-valid unit weights. Illustrates why low clipfrac does not bound ratio; not actual spike cause',ratio=math.exp(12),pg_loss=float(loss),pg_clipfrac=float(frac),approx_ppo_kl=float(kl),gradient=float(current.grad),all_finite=True),indent=2)+'\n')

@@ -1,0 +1,70 @@
+{
+  "accepted_actions": [
+    "place_one_independent_zero_only_metadata_receipt",
+    "invoke_reviewed_once_zero_submit_helper"
+  ],
+  "accepted_scope": "Only exact metadata placement followed by default same-node once zero-submit helper; all dynamic gates remain required; no training continuation authorization.",
+  "actual_3b_training_accepted": false,
+  "actual_full_tree_accepted": false,
+  "actual_gpu_executed": false,
+  "actual_native24_accepted": false,
+  "actual_optimizer_writes": 0,
+  "actual_ready": false,
+  "actual_slurm_submitted": false,
+  "actual_training_accepted": false,
+  "actual_zero_accepted": false,
+  "actual_zero_ready": false,
+  "asset_transfer_authorized": false,
+  "blocking_findings": [],
+  "created_at": "2026-10-06T15:23:25.682311+00:00",
+  "exact_argv_artifact": {
+    "bytes": 18489,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-v11-actual-zero-none-review/EXACT_ZERO_ROUTE_ARGV.json",
+    "sha256": "10b69b42ad1bf9425185b4b7f9c8d0851dc47ce8e6dc39482873e00069ec49c1"
+  },
+  "final_ready_for200": false,
+  "fresh_completed_outers": 0,
+  "gpu_allocations_permitted_at_most": 1,
+  "independent_receipt": {
+    "bytes": 7818,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-v11-actual-zero-none-review/PRE_DISPATCH_RECEIPT.json",
+    "sha256": "2c21cca3a00e5a355b66cd171748ea3694c382179f051e4b3009b1ca4c0b826a"
+  },
+  "long_training_ready": false,
+  "original_sampler_actor_gate_accepted": false,
+  "placement_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/stage_zero_review_receipt.py",
+    "sha256": "be274c9dc00f6e53d2a628c5a7dde4eb0b4273e39211a55bb6f0e062e9650a1b"
+  },
+  "production_thresholds_accepted": false,
+  "reviewer_context": {
+    "fork_turns": "none",
+    "inherited_parent_conversation": false
+  },
+  "reviewer_remote_network_slurm_gpu_calls": 0,
+  "route_or_entrypoint_or_mock_executed": false,
+  "runtime_gate_state": "NOT_OBSERVED_BY_REVIEWER_MUST_RUN_FAIL_CLOSED_AT_ONCE_HELPER_AND_RUNTIME",
+  "schema_version": 1,
+  "source_actual_evidence": {
+    "actual_CPU_preparation_sha256": "6e66da9350cd249d69afd3b5a5d4224357fdf08905a01fbbd6c5bb9c547fc04d",
+    "actual_historical_CPU_preflight_sha256": "2cc2366e9e3473276e4386820fa28249db9e1bb28875ca5298889c48d09c0761",
+    "actual_resolved_config_sha256": "8f0c1df0f1c96508cd8f1be35f1b31bae6a87a152cb09ae4dfb62f667407a1bb",
+    "archive_sha256": "434f3bdaa76d037f27c1b20e614ff1a815b278c50f018ee360d6b9eb02a46bc6",
+    "code_commit": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+    "helper_inventory_sha256": "7961b68be5337e09668bc2b28979040d5d7b76cb7edff2fb2efd233d7d237b8e",
+    "helper_review_sha256": "dc71dc350375ab31c8a6445977bda899ede2b07f8599a5794bd7d654b1cd38b6",
+    "manifest_sha256": "a07925ce76951ef0966b5f03e847e28b0b2fdc115a6409e2bdede181300b00a2",
+    "source_byte_audit_sha256": "ff1d572683c5b6b62c573aabf7df5784d14893e9b5641d1ca6eed6f19df0dfd6",
+    "source_context_free_sha256": "7855b55942dc301ea022e08ba7db10e4874934d20f88ba029714c9b361b88633",
+    "source_owner_sha256": "5648c41dc787f95d750157fd876194182c6812665b6e4039db31a0ef86140ce2",
+    "wrapper_inventory_sha256": "2fc0a46782a8a3db6b531cbbbf730fe4a2b7f561250fbbf3766d55b05d2266f1"
+  },
+  "status": "EXACT_PROSPECTIVE_ZERO_EXECUTION_BINDING_ACCEPTED_NOT_EXECUTED",
+  "training_release": false,
+  "unknown_submission_must_not_retry": true,
+  "zero_dispatch_inputs": {
+    "original_future_review_sha_null_preserved": true,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/ZERO_DISPATCH_INPUTS.json",
+    "sha256": "53e332d2ee8e9a905791a15942f1af961891a089c980ab256016efadb08ba8d7"
+  }
+}

@@ -1,0 +1,205 @@
+--- work/tree-fresh200-train-runtime-v2/INPUTS.schema.json
++++ work/tree-fresh200-train-runtime-v3/INPUTS.schema.json
+@@ -1,5 +1,5 @@
+ {
+-  "status": "LOCAL_PRODUCTION_V2_PENDING_ACTUAL_ZERO_BOOTSTRAP_AND_NONE_REVIEW",
++  "status": "LOCAL_PRODUCTION_V3_P05_STDIN_FIX_PENDING_NONE_REVIEW",
+   "schema_version": 1,
+   "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
+   "source": {
+@@ -216,7 +216,7 @@
+     "TREE_FRESH_INITIALIZATION_ONLY",
+     "TREE_PPO_CALIBRATION_ONLY"
+   ],
+-  "configuration_spec_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/CONFIGURATION_SPEC.json",
++  "configuration_spec_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v3/CONFIGURATION_SPEC.json",
+   "package_context_free_review": null,
+   "package_context_free_review_pin_note": "Separate final release path/SHA at runtime, excluded from manifest to avoid digest self-reference",
+   "target_kl_authority": {
+@@ -244,19 +244,19 @@
+   },
+   "runtime_entries": {
+     "run_tree.sh": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/run_tree.sh",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v3/run_tree.sh",
+       "sha256": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b"
+     },
+     "validation_cost_entry.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/validation_cost_entry.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v3/validation_cost_entry.py",
+       "sha256": "fc1763162fcb207a3c5e43b126d1080b016f85cf61aa9ed4de1ffb37458f30b7"
+     },
+     "validation_cost_hooks_instruct300.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/validation_cost_hooks_instruct300.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v3/validation_cost_hooks_instruct300.py",
+       "sha256": "6646356027f7a1a4855b909147eeadd408d66ea03aa17b86a24ff36365e7c3b7"
+     },
+     "sitecustomize.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/sitecustomize.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v3/sitecustomize.py",
+       "sha256": "9f5a0855e3aa1029bfcfab905ae91e553716ba26ee87423b3e2d53b389783b35"
+     }
+   },
+--- work/tree-fresh200-train-runtime-v2/PLAN.md
++++ work/tree-fresh200-train-runtime-v3/PLAN.md
+@@ -43,3 +43,5 @@
+ Required before dispatch: actual zero calibration and tokenizer request preflight, actual-zero-bound tail/repeat candidates for first5; same-instance first5 independent threshold acceptance is additionally mandatory before6..200, source/interface and complete package none-context acceptance, official assets/headers revalidation, final resolved config, reviewed new once intent and fresh same-node queue/resource proofs. All currently absent inputs stay null. This candidate does not create any of those approvals.
+ 
+ V2 extends this plan with the exact staged threshold, cluster-qualified once/allocation and retained raw evidence contracts in V2_REPAIR.md. Original 24-byte freeze and rejected receipt remain unchanged. V2 is owner CPU-only, unreleased.
++
++V3 repairs only P05 script-path consumption: submit_once.py sends the checked immutable bytes through stdin, records actual input/argv, and does not reopen the script path. See V3_P05_REPAIR.md and SOURCE_CPU_RECEIPT_V3.json. V2 owner evidence remains historical; source/thresholds and all P01–P04 gates are unchanged.
+--- work/tree-fresh200-train-runtime-v2/submit_once.py
++++ work/tree-fresh200-train-runtime-v3/submit_once.py
+@@ -4,6 +4,7 @@
+ or cancellation path. All tests inject an in-memory fake scheduler.
+ """
+ import argparse
++import base64
+ import fcntl
+ import hashlib
+ import json
+@@ -48,10 +49,16 @@
+         observations.append(dict(path=str(prior),sha256=sha,accounting_stdout=raw))
+     return observations
+ 
++def submission_output(value):
++    if type(value) is bytes:return value.decode('utf-8',errors='strict')
++    require(type(value) is str,'Unexpected native submit output type')
++    return value
++
+ def parse_submission(result):
+-    require(result.returncode==0 and result.stderr=='','Submit not exactly confirmed')
+-    require(type(result.stdout) is str and re.fullmatch(r'[1-9][0-9]*(;wuhan-h100)?\n?',result.stdout),'Foreign/ambiguous submit suffix')
+-    parsable=result.stdout.rstrip('\n');return int(parsable.split(';')[0]),parsable
++    stdout,stderr=submission_output(result.stdout),submission_output(result.stderr)
++    require(result.returncode==0 and stderr=='','Submit not exactly confirmed')
++    require(re.fullmatch(r'[1-9][0-9]*(;wuhan-h100)?\n?',stdout),'Foreign/ambiguous submit suffix')
++    parsable=stdout.rstrip('\n');return int(parsable.split(';')[0]),parsable
+ 
+ def submit(package_path,manifest_sha,review_path,review_sha,script_path,script_sha,*,run=subprocess.run,hostname=None):
+     require((socket.gethostname() if hostname is None else hostname).split('.')[0]==NODE,'Dispatcher only runs on own h100-9')
+@@ -87,19 +94,29 @@
+         require(stat.S_ISREG(os.fstat(fd).st_mode),'Dispatch lock must be ordinary file')
+         fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+         prior=prior_journals_clear(path,run,environment);queue=queue_clear(run,environment)
++        # The immutable bytes below, not the filename, are the submitted program.
++        submit_argv=['sbatch','--parsable']
+         initial=dict(status='SUBMITTING',cluster_name=CLUSTER,local_cluster_identity=identity,node_list=NODE,
+             manifest_sha256=manifest_sha,review_sha256=review_sha,dispatch_intent_path=str(path),
+-            dispatch_script_sha256=script_sha,production_input_pins=pins,prior_accounting=prior,
++            dispatch_script_sha256=script_sha,submit_argv=submit_argv,
++            submitted_input_sha256=hashlib.sha256(script).hexdigest(),submitted_input_bytes=len(script),
++            submitted_input_base64=base64.b64encode(script).decode('ascii'),submit_mode='verified_bytes_via_stdin',
++            selected_script_path=str(script_path),production_input_pins=pins,prior_accounting=prior,
+             queue_stdout=queue,start_epoch=time.time(),stdout=None,stderr=None,job_id=None)
+         create_journal(path,initial)
++        result=None
+         try:
+-            result=run(['sbatch','--parsable',str(script_path)],env=environment,text=True,capture_output=True,timeout=60)
++            result=run(submit_argv,input=script,env=environment,capture_output=True,timeout=60)
+             job,parsable=parse_submission(result)
+             final=dict(initial,status='SUBMITTED',job_id=job,run_id='tree-fresh200-train-'+str(job),
+-                stdout=result.stdout,stderr=result.stderr,returncode=result.returncode,parsable_stdout=parsable,end_epoch=time.time())
++                stdout=submission_output(result.stdout),stderr=submission_output(result.stderr),returncode=result.returncode,parsable_stdout=parsable,
++                submitted_result_stdout_raw=timeout_output(result.stdout),submitted_result_stderr_raw=timeout_output(result.stderr),end_epoch=time.time())
+         except BaseException as error:
+             final=dict(initial,status='UNKNOWN',error_type=type(error).__name__,error=str(error),end_epoch=time.time(),
+-                timeout_stdout=timeout_output(getattr(error,'stdout',None)),timeout_stderr=timeout_output(getattr(error,'stderr',None)))
++                timeout_stdout=timeout_output(getattr(error,'stdout',None)),timeout_stderr=timeout_output(getattr(error,'stderr',None)),
++                submitted_returncode=None if result is None else result.returncode,
++                submitted_result_stdout_raw=timeout_output(None if result is None else result.stdout),
++                submitted_result_stderr_raw=timeout_output(None if result is None else result.stderr))
+             finalize_journal(path,final)
+             raise
+         finalize_journal(path,final);return final
+--- work/tree-fresh200-train-runtime-v2/test_production_v2_cpu.py
++++ work/tree-fresh200-train-runtime-v3/test_production_v2_cpu.py
+@@ -176,6 +176,88 @@
+                     with self.assertRaises(ValueError):submitter.submit(*args,run=run,hostname=s.NODE)
+                 self.assertEqual(sum(command[0]=='sbatch' for command,kw in calls),1)
+                 self.assertTrue(all('-M' not in command and 'SLURM_CONF' not in kw['env'] for command,kw in calls))
++    def test_v3_actual_path_toctou_cannot_change_verified_stdin(self):
++        import hashlib
++        import render_dispatch
++        import subprocess
++        for timeout in (False,True):
++            with self.subTest(timeout=timeout),tempfile.TemporaryDirectory() as temp:
++                root=Path(temp).resolve();package=root/'instruct300/candidates/frozen';package.mkdir(parents=True)
++                p,release_descriptor=observation(root/'observations')
++                intent=root/'instruct300/TREE_FRESH200_TRAIN_ONCE-cpu-fixture.json'
++                p.update(scope='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW',stage='fresh_mu_train200',
++                    bootstrap_thresholds_accepted=True,production_thresholds_accepted=False,dispatch={'once_intent':str(intent),'cluster_name':s.CLUSTER})
++                for name in ('render_dispatch.py','submit_once.py'):(package/name).write_bytes((HERE/name).read_bytes())
++                p['files']={name:hashlib.sha256((package/name).read_bytes()).hexdigest() for name in ('render_dispatch.py','submit_once.py')}
++                manifest=write(package/'manifest.json',p);release,_,_=c.read_bound(release_descriptor['path'])
++                release.update(manifest_sha256=manifest['sha256'],dispatch_intent_path=str(intent),
++                    dispatch_renderer_sha256=p['files']['render_dispatch.py'],dispatch_submitter_sha256=p['files']['submit_once.py'])
++                release_descriptor=write(root/'release.json',release);calls=[]
++                def run(command,**kw):
++                    calls.append((command,kw))
++                    if command[0]=='squeue':
++                        script.write_bytes(script.read_bytes().replace(b'--time=72:00:00',b'--time=999:00:00'))
++                        return N(returncode=0,stdout='',stderr='')
++                    if command[0]=='sbatch':
++                        self.assertEqual(command,['sbatch','--parsable'])
++                        self.assertEqual(kw['input'],reviewed_bytes)
++                        self.assertNotIn('text',kw)
++                        self.assertNotEqual(script.read_bytes(),reviewed_bytes)
++                        if timeout:raise subprocess.TimeoutExpired(command,60,output=b'\x00\xffunconfirmed',stderr=b'\xfe')
++                        return N(returncode=0,stdout=b'99;wuhan-h100\n',stderr=b'')
++                    return scheduler(command,**kw)
++                actual_inputs=c.production_inputs
++                with patch.object(submitter,'ROOT',root),patch.object(render_dispatch,'ROOT',root),patch.object(submitter,'__file__',str(package/'submit_once.py')),patch.object(submitter,'production_inputs',side_effect=lambda *a,**kw:actual_inputs(*a,**kw,trusted_root=root)):
++                    script=root/'dispatch.sbatch';script.write_text(render_dispatch.render(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],72))
++                    reviewed_bytes=script.read_bytes();script_sha=hashlib.sha256(reviewed_bytes).hexdigest()
++                    args=(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],script,script_sha)
++                    if timeout:
++                        with self.assertRaises(subprocess.TimeoutExpired):submitter.submit(*args,run=run,hostname=s.NODE)
++                    else:self.assertEqual(submitter.submit(*args,run=run,hostname=s.NODE)['job_id'],99)
++                    value=json.loads(intent.read_text());self.assertEqual(value['status'],'UNKNOWN' if timeout else 'SUBMITTED')
++                    self.assertEqual(base64.b64decode(value['submitted_input_base64']),reviewed_bytes)
++                    self.assertEqual(value['submitted_input_sha256'],script_sha)
++                    self.assertEqual(value['submitted_input_bytes'],len(reviewed_bytes))
++                    self.assertEqual(value['submit_argv'],['sbatch','--parsable'])
++                    self.assertEqual(value['submit_mode'],'verified_bytes_via_stdin')
++                    if timeout:self.assertEqual(base64.b64decode(value['timeout_stdout']['bytes']),b'\x00\xffunconfirmed')
++                    with self.assertRaises(ValueError):submitter.submit(*args,run=run,hostname=s.NODE)
++                self.assertEqual(sum(command[0]=='sbatch' for command,kw in calls),1)
++                self.assertTrue(all('-M' not in command and 'SLURM_CONF' not in kw['env'] for command,kw in calls))
++    def test_v3_invalid_utf8_or_nul_script_never_reaches_submission(self):
++        import hashlib
++        import render_dispatch
++        import subprocess
++        for invalid_suffix in (b'\xff',b'\x00'):
++            timeout=False
++            with self.subTest(invalid_suffix=invalid_suffix),tempfile.TemporaryDirectory() as temp:
++                root=Path(temp).resolve();package=root/'instruct300/candidates/frozen';package.mkdir(parents=True)
++                p,release_descriptor=observation(root/'observations')
++                intent=root/'instruct300/TREE_FRESH200_TRAIN_ONCE-cpu-fixture.json'
++                p.update(scope='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW',stage='fresh_mu_train200',
++                    bootstrap_thresholds_accepted=True,production_thresholds_accepted=False,dispatch={'once_intent':str(intent),'cluster_name':s.CLUSTER})
++                for name in ('render_dispatch.py','submit_once.py'):(package/name).write_bytes((HERE/name).read_bytes())
++                p['files']={name:hashlib.sha256((package/name).read_bytes()).hexdigest() for name in ('render_dispatch.py','submit_once.py')}
++                manifest=write(package/'manifest.json',p);release,_,_=c.read_bound(release_descriptor['path'])
++                release.update(manifest_sha256=manifest['sha256'],dispatch_intent_path=str(intent),
++                    dispatch_renderer_sha256=p['files']['render_dispatch.py'],dispatch_submitter_sha256=p['files']['submit_once.py'])
++                release_descriptor=write(root/'release.json',release);calls=[]
++                def run(command,**kw):
++                    calls.append((command,kw))
++                    if command[0]=='squeue':return N(returncode=0,stdout='',stderr='')
++                    if command[0]=='sbatch':
++                        if timeout:raise subprocess.TimeoutExpired(command,60,output=b'\x00\xffunconfirmed',stderr=b'\xfe')
++                        return N(returncode=0,stdout='99;wuhan-h100\n',stderr='')
++                    return scheduler(command,**kw)
++                actual_inputs=c.production_inputs
++                with patch.object(submitter,'ROOT',root),patch.object(render_dispatch,'ROOT',root),patch.object(submitter,'__file__',str(package/'submit_once.py')),patch.object(submitter,'production_inputs',side_effect=lambda *a,**kw:actual_inputs(*a,**kw,trusted_root=root)):
++                    script=root/'dispatch.sbatch';script.write_text(render_dispatch.render(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],72))
++                    script.write_bytes(script.read_bytes()+invalid_suffix)
++                    script_sha=hashlib.sha256(script.read_bytes()).hexdigest()
++                    args=(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],script,script_sha)
++                    with self.assertRaises(ValueError):submitter.submit(*args,run=run,hostname=s.NODE)
++                    self.assertFalse(intent.exists())
++                self.assertEqual(sum(command[0]=='sbatch' for command,kw in calls),0)
+     def test_actual_first5_original_review_bytes_need_short_assessment(self):
+         with tempfile.TemporaryDirectory() as temp:
+             run,p,proofs,assessment,review=five_fixture(Path(temp).resolve());gate=run/'output/acceptance-step5'

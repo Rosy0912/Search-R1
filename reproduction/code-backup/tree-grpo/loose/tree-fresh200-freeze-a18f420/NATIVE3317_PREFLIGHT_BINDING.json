@@ -1,0 +1,9 @@
+{
+  "historical5120_helper_byte_identity_reuse": false,
+  "limitations": "Only one historical sampled emission UTF8/identity proof. No sampled_action/legacy action-parser, all784 rows, historical5120 rows, native24 sampling support, fresh Tree/score-cap, mu, weights or training acceptance. Original sample is neither repaired nor filtered.",
+  "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+  "requires_independent_zero_release_limitations_assessment": true,
+  "rows": 1,
+  "scope": "Exactly predetermined unfiltered historical FAILED3317 row96: live official tokenizer identity, all500 original-byte UTF8/native prefixes and IDs/logprobs/context immutability only.",
+  "sha256": "2122dc288ab9d0b6ea59cc996fe8251908ce87e7519abb5e7d9e60582cedccc8"
+}

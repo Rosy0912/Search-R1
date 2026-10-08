@@ -1,0 +1,16 @@
+{
+  "status": "STARTUP_CONFIG_SOURCE_FILTER_OBSERVER_PREFIX_MATCH",
+  "config_sha256": "63296d0602c5978d1ff67d258b401054ce587e3a9a2c55052c35fbeac626c198",
+  "actual_observer_install": {
+    "pid": 4048887,
+    "job_id": "3154",
+    "trainer_source_sha256": "26f60bc68d98de8ed60929ade9ed5b495114ebf9960cbfd995eb364b04378da1",
+    "observer_source_sha256": "7d17b52594ba78542f4dac2c85b136f6cb806935c9b42bd863c6d8eae41d4eef",
+    "output": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-instruct300-3154/output"
+  },
+  "train_filtered_rows": 169028,
+  "val_filtered_rows": 512,
+  "guard_prefix_samples": 72,
+  "actual_first5_accepted": false,
+  "actual300_accepted": false
+}

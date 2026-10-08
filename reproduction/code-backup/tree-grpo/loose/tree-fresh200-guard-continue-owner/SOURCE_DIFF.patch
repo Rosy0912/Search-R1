@@ -1,0 +1,1810 @@
+diff --git a/search_r1/baselines/controller.py b/search_r1/baselines/controller.py
+index f33a089..373e131 100644
+--- a/search_r1/baselines/controller.py
++++ b/search_r1/baselines/controller.py
+@@ -262,6 +262,7 @@ class Controller:
+                                      qa_batch.non_tensor_batch['index'].tolist())
+             engine.audit.report['algorithm_source_commit'] = getattr(self.config, 'algorithm_source_commit', None)
+             engine.audit.report['base_commit'] = getattr(self.config, 'base_commit', None)
++            engine.audit.report['attempt_id'] = getattr(self.trainer, 'training_attempts', None)
+         output, sources = engine.run(gen_batch, tree)
+         if engine.audit is not None:
+             self.latest_tree_audit = engine.audit
+diff --git a/search_r1/baselines/partial_worker_state.py b/search_r1/baselines/partial_worker_state.py
+index ec80770..6f66618 100644
+--- a/search_r1/baselines/partial_worker_state.py
++++ b/search_r1/baselines/partial_worker_state.py
+@@ -10,6 +10,7 @@ import torch.distributed as dist
+ 
+ from .policy_safety_runtime import PolicySafetyRefusal
+ from .training_state import atomic_save, cpu_copy, digest, finite, rng_state
++from .tree_guard_continue import enabled, RESULT_PROTOCOL, validate_ledger
+ 
+ PROTOCOL = 'tree_partial_state_v1'
+ IDENTITY_KEYS = {'job_id','run_id','code_commit','config_sha256','data_identity','model_identity',
+@@ -28,7 +29,8 @@ def _validated_context(worker,data):
+     if worker.config.actor.get('fresh200_protocol')!='tree_fresh200_five_leaf_v1':
+         raise ValueError('Partial worker persistence requires explicit fresh200 profile')
+     context=data.meta_info['tree_partial_context']
+-    if context['protocol']!=PROTOCOL or set(context['identity'])!=IDENTITY_KEYS:
++    keys = IDENTITY_KEYS | ({'attempt_id'} if enabled(worker.config.actor) else set())
++    if context['protocol']!=PROTOCOL or set(context['identity'])!=keys:
+         raise ValueError('Partial context protocol/complete driver identity differs')
+     identity=context['identity']
+     if (identity['training_protocol']!='tree_fresh200_five_leaf_v1'
+@@ -36,12 +38,18 @@ def _validated_context(worker,data):
+             or identity['attempted_outer']!=identity['completed_outer']+1 or not 0<=identity['completed_outer']<200
+             or data.meta_info['baseline_outer_step']!=identity['attempted_outer']):
+         raise ValueError('Partial attempted/completed outer identity invalid')
++    if enabled(worker.config.actor) and (type(identity['attempt_id']) is not int
++            or identity['attempt_id'] < identity['attempted_outer']
++            or data.meta_info.get('baseline_attempt_id') != identity['attempt_id']):
++        raise ValueError('Partial attempt identity invalid')
+     if any(identity[key]!=os.environ[env] for key,env in ENV_KEYS.items()):
+         raise ValueError('Partial source/run identity differs from actual worker environment')
+     directory=Path(context['directory'])
+     own_run=Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']).resolve().parent
++    name = (f'partial_attempt_{identity["attempt_id"]:06d}_outer_{identity["attempted_outer"]:06d}'
++            if enabled(worker.config.actor) else f'partial_outer_{identity["attempted_outer"]:06d}')
+     if (not directory.is_absolute() or not directory.resolve().is_relative_to(own_run)
+-            or directory.name!=f'partial_outer_{identity["attempted_outer"]:06d}' or directory.parent.name!='training_state'):
++            or directory.name!=name or directory.parent.name!='training_state'):
+         raise ValueError('Partial state directory must remain in this own run and match attempted outer')
+     # Metadata only, fixed before native update. No model/PT read occurs here.
+     json.dumps(context,sort_keys=True,allow_nan=False)
+@@ -70,6 +78,9 @@ def raw_partial_worker_snapshot(worker,identity,cuda):
+         local_shards={name:cpu_copy(parameter._local_shard) for name,parameter in parameters.items()
+                       if hasattr(parameter,'_local_shard') and isinstance(parameter._local_shard,torch.Tensor)},
+         gradients={name:None if parameter.grad is None else cpu_copy(parameter.grad) for name,parameter in parameters.items()},
++        private_gradient_tensors={name:{attribute:cpu_copy(getattr(parameter,attribute))
++            for attribute in ('_saved_grad_shard','_cpu_grad') if isinstance(getattr(parameter,attribute,None),torch.Tensor)}
++            for name,parameter in parameters.items()},
+         buffers={name:cpu_copy(value) for name,value in model.named_buffers()},
+         optimizer=cpu_copy(worker.actor_optimizer.state_dict()),scheduler=cpu_copy(worker.actor_lr_scheduler.state_dict()),
+         rng=rng_state(cuda),module_training_flags=[dict(name=name,training=module.training) for name,module in model.named_modules()],
+@@ -83,6 +94,14 @@ def raw_partial_worker_snapshot(worker,identity,cuda):
+     try:finite(value)
+     except Exception as exc:state_finite=False;finite_error=repr(exc)
+     value.update(state_finite=state_finite,state_finite_error=finite_error)
++    # Gradients are retained verbatim but may be cleared by the next ordinary
++    # zero_grad. Parameter/Adam contamination cannot be cleared this way.
++    for key, fields in (('model_adam_finite', ('parameters','local_shards','buffers','optimizer','scheduler')),
++                        ('gradients_finite', ('gradients','private_gradient_tensors'))):
++        try:
++            finite({field:value[field] for field in fields}); value[key] = True
++        except Exception:
++            value[key] = False
+     return value
+ 
+ 
+@@ -111,7 +130,8 @@ def persist_matched_partial_worker(worker,data,refusal,scheduler_before):
+         committed_optimizer_calls=count if type(count) is int else None,
+         scheduler_step_before_actual=scheduler_before,scheduler_step_after_actual=actual_after,
+         status='PARTIAL_WORKER_STATE_INCOMPLETE',path=None,sha256=None,bytes=0,logical_state_sha256=None,
+-        state_finite=None,error=None,refusal=repr(refusal),matched_all_ranks=True,
++        state_finite=None,model_adam_finite=None,gradients_finite=None,error=None,
++        refusal=repr(refusal),matched_all_ranks=True,safety_guard=refusal.safety_guard,
+         optimizer_count_source='optimizer.step successful return before any audit/publish IO',
+         resume_permitted=False,exact_same_world_reload_verified=False,automatic_rollback=False,outer_completed=False)
+     try:
+@@ -122,9 +142,13 @@ def persist_matched_partial_worker(worker,data,refusal,scheduler_before):
+         cuda=dist.is_initialized() and dist.get_backend()=='nccl'
+         saved=raw_partial_worker_snapshot(worker,identity,cuda)
+         saved.update(committed_optimizer_calls=count,scheduler_step_before_actual=scheduler_before,
+-                     scheduler_step_after_actual=actual_after,refusal=repr(refusal))
++                     scheduler_step_after_actual=actual_after,refusal=repr(refusal),
++                     optimizer_opportunity_ledger=copy.deepcopy(getattr(worker.actor,'_fresh_opportunity_ledger',[])))
+         receipt['logical_state_sha256']=digest(saved)
+         receipt['state_finite']=saved['state_finite'];receipt['state_finite_error']=saved['state_finite_error']
++        receipt['model_adam_finite']=saved['model_adam_finite'];receipt['gradients_finite']=saved['gradients_finite']
++        receipt['total_committed_optimizer_calls']=getattr(worker.actor,'_fresh_total_committed_optimizer_calls',None)
++        receipt['optimizer_opportunity_ledger']=saved['optimizer_opportunity_ledger']
+         receipt['path']=str(state_path);receipt['sha256']=atomic_save(saved,state_path)
+         receipt['bytes']=state_path.stat().st_size
+         del saved
+@@ -137,9 +161,78 @@ def persist_matched_partial_worker(worker,data,refusal,scheduler_before):
+     workers=sorted(_gather(receipt),key=lambda record:record['rank'])
+     all_saved=(consistent and len(workers)==world and [entry['rank'] for entry in workers]==list(range(world))
+                and all(entry['status']=='PARTIAL_WORKER_STATE_SAVED' for entry in workers))
++    ledger_complete = False
++    if enabled(worker.config.actor) and all_saved:
++        try:
++            for entry in workers:
++                validate_ledger(entry['optimizer_opportunity_ledger'], entry['committed_optimizer_calls'])
++            ledger_complete = len({entry['committed_optimizer_calls'] for entry in workers}) == 1
++        except ValueError:
++            pass
+     return dict(protocol=PROTOCOL,identity=driver_identity,identity_consistent=consistent,
+         status='PARTIAL_WORKER_STATE_SAVED' if all_saved else 'PARTIAL_WORKER_STATE_INCOMPLETE',
+         worker_states=workers,scheduler_advanced_actual=[
+             entry['scheduler_step_after_actual']!=entry['scheduler_step_before_actual'] for entry in workers],
+         resume_permitted=False,automatic_rollback=False,outer_completed=False,
++        continuation_decision=('CONTINUE_FRESH_ROLLOUT' if enabled(worker.config.actor) and all_saved
++            and ledger_complete
++            and all(entry['safety_guard'] is True and entry['model_adam_finite'] is True
++                    and entry['scheduler_step_before_actual']==driver_identity['completed_outer']
++                    and entry['scheduler_step_after_actual']==driver_identity['completed_outer']
++                        + int(entry['committed_optimizer_calls'] > 0) for entry in workers)
++            else 'FAULT_STOP'),
+         scope='Raw actual local worker state on matched refusal; no rollback, scheduler/outer credit, HF export or reload acceptance')
++
++
++def completed_actor_result(worker, data, scheduler_before):
++    """Gather before DP_COMPUTE_PROTO's rank-zero-meta concat; no exception inference."""
++    rank = dist.get_rank() if dist.is_initialized() else 0
++    record = dict(rank=rank, attempt_id=data.meta_info['baseline_attempt_id'],
++        accepted_outer=data.meta_info['baseline_outer_step'],
++        completed_outer_before=data.meta_info['baseline_completed_outer'],
++        optimizer_calls=worker.actor._actual_committed_optimizer_calls,
++        total_optimizer_calls=worker.actor._fresh_total_committed_optimizer_calls,
++        scheduler_before=scheduler_before,scheduler_after=worker.actor_lr_scheduler.last_epoch,
++        direct_rank_record=copy.deepcopy(worker._fresh_direct_record),
++        opportunities_processed=len(worker.actor._fresh_opportunity_ledger),
++        opportunity_ledger=copy.deepcopy(worker.actor._fresh_opportunity_ledger),
++        opportunities_skipped=sum(e['actual_writes']==0 for e in worker.actor._fresh_opportunity_ledger))
++    ranks = sorted(_gather(record),key=lambda r:r['rank'])
++    return dict(protocol=RESULT_PROTOCOL, decision='COMPLETED_OUTER',
++        identity=copy.deepcopy(worker._partial_prepared_context['identity']),
++        attempt_id=record['attempt_id'],accepted_outer=record['accepted_outer'],
++        completed_outer_before=record['completed_outer_before'],ranks=ranks)
++
++
++def reset_saved_guard_gradients(worker, envelope):
++    """Clear only gradients after durable raw evidence; never reload model/Adam."""
++    if envelope['continuation_decision'] != 'CONTINUE_FRESH_ROLLOUT':
++        return envelope
++    error = None
++    try:
++        worker.actor_optimizer.zero_grad()
++        if any(parameter.grad is not None for parameter in worker.actor.actor_module.parameters()):
++            raise ValueError('Normal zero_grad did not clear the saved refused gradients')
++    except Exception as exc:
++        error = repr(exc)
++    rank = dist.get_rank() if dist.is_initialized() else 0
++    gradients = [parameter.grad for parameter in worker.actor.actor_module.parameters() if parameter.grad is not None]
++    gradients_finite = all(bool(torch.isfinite(gradient).all()) for gradient in gradients)
++    private_retained = sorted({attribute for parameter in worker.actor.actor_module.parameters()
++        for attribute in ('_saved_grad_shard', '_cpu_grad') if getattr(parameter,attribute,None) is not None})
++    private_tensors = [getattr(parameter,attribute) for parameter in worker.actor.actor_module.parameters()
++        for attribute in ('_saved_grad_shard','_cpu_grad') if isinstance(getattr(parameter,attribute,None),torch.Tensor)]
++    private_finite = all(bool(torch.isfinite(value).all()) for value in private_tensors)
++    if not private_finite:
++        error = error or 'Nonfinite FSDP private gradient tensor remains after normal zero_grad; no manual diagnostic reset'
++    resets = sorted(_gather(dict(rank=rank,error=error,normal_zero_grad=(error is None),
++        public_gradients_after_reset_finite=gradients_finite,
++        private_gradients_after_reset_finite=private_finite,
++        private_gradient_attributes_still_present=private_retained,
++        private_fsdp_gradient_reset_verified=False)),key=lambda r:r['rank'])
++    result = copy.deepcopy(envelope)
++    result['gradient_reset_after_raw_persistence'] = dict(ranks=resets,automatic_rollback=False,
++        parameters_reloaded=False,adam_reloaded=False,raw_saved_gradients_unchanged=True)
++    if any(record['error'] is not None for record in resets):
++        result['continuation_decision'] = 'FAULT_STOP'
++    return result
+diff --git a/search_r1/baselines/policy_safety_runtime.py b/search_r1/baselines/policy_safety_runtime.py
+index 7505bda..7d555ec 100644
+--- a/search_r1/baselines/policy_safety_runtime.py
++++ b/search_r1/baselines/policy_safety_runtime.py
+@@ -10,9 +10,10 @@ from .policy_safety import update_statistics, admission, global_negative_quantil
+ 
+ 
+ class PolicySafetyRefusal(RuntimeError):
+-    def __init__(self, message, *, matched_all_ranks=False):
++    def __init__(self, message, *, matched_all_ranks=False, safety_guard=False):
+         super().__init__(message)
+         self.matched_all_ranks = matched_all_ranks
++        self.safety_guard = safety_guard
+ 
+ 
+ BEHAVIOR_MU_PROTOCOL = 'tree_behavior_mu_centered_ppo_v1'
+@@ -145,6 +146,9 @@ class PolicySafetyRuntime:
+                 or not actor.config.state_masking):
+             raise ValueError('Safety requires fixed-micro state-masked Tree DP without sequence parallelism')
+         self.step = int(meta['baseline_outer_step'])
++        from .tree_guard_continue import evidence_suffix
++        self.attempt_suffix = evidence_suffix(meta)
++        self.attempt_id = meta.get('baseline_attempt_id')
+         self.target_kl = float(config['target_old_policy_kl'])
+         self.corrected_profile = behavior_mu_correction_enabled(config)
+         if self.corrected_profile:
+@@ -209,8 +213,8 @@ class PolicySafetyRuntime:
+ 
+     def publish(self, phase, decision):
+         self.sequence += 1
+-        path = self.root / f'step-{self.step:06d}-rank-{self.rank:02d}-event-{self.sequence:04d}.json'
+-        record = dict(outer_step=self.step, rank=self.rank, phase=phase,
++        path = self.root / f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-event-{self.sequence:04d}.json'
++        record = dict(outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank, phase=phase,
+                       committed_optimizer_calls=self.committed, micro=self.micro,
+                       outer_completed=False, scheduler_advanced=False, automatic_rollback=False,
+                       monitor_local_row_indices=self.indices.tolist(), monitor_rows=len(self.monitor),
+@@ -235,8 +239,13 @@ class PolicySafetyRuntime:
+         if flag.item():
+             raise PolicySafetyRefusal('Global safety evidence-write failure; no further optimizer writes', matched_all_ranks=True)
+         if not decision['allowed']:
++            reasons = decision.get('reasons', [])
++            faults = {'initial_actor_same_partition_repeat_inconsistency',
++                      'initial_old_current_probability_inconsistency'}
++            safety_guard = bool(reasons) and not any(reason in faults for reason in reasons)
+             raise PolicySafetyRefusal(f'Policy safety refusal after {self.committed} committed calls: '
+-                                      f'{decision.get("reasons")}; evidence {path}', matched_all_ranks=True)
++                                      f'{reasons}; evidence {path}', matched_all_ranks=True,
++                                      safety_guard=safety_guard and not phase.startswith('rank_audit'))
+ 
+     def sync_valid(self, bad, phase):
+         flag = torch.as_tensor(bad, dtype=torch.long, device=self.device)
+diff --git a/search_r1/baselines/training_state.py b/search_r1/baselines/training_state.py
+index 21d4212..24e792f 100644
+--- a/search_r1/baselines/training_state.py
++++ b/search_r1/baselines/training_state.py
+@@ -265,12 +265,18 @@ def snapshot_worker_to_file(module, optimizer, scheduler, path, identity, verify
+ 
+ def driver_snapshot(trainer, identity):
+     controller = trainer.baseline_controller
+-    return cpu_copy(dict(version=1, identity=identity, completed_step=trainer.global_steps,
++    saved = cpu_copy(dict(version=1, identity=identity, completed_step=trainer.global_steps,
+                          next_step=trainer.global_steps+1, actual_outer_updates=trainer.actual_outer_updates,
+                          recovery_provenance=getattr(trainer,'recovery_provenance',None),
+                          sampler=trainer.checkpoint_sampler.state_dict(), rng=rng_state(),
+                          algorithm=dict(method=controller.method, stage=controller.stage.state_dict(),
+                                         tree_rng=None if controller.tree_rng is None else controller.tree_rng.getstate())))
++    if 'guard_continue_accounting' in identity:
++        from .tree_guard_continue import accounting
++        saved['guard_continue_accounting'] = accounting(trainer)
++        if saved['guard_continue_accounting'] != identity['guard_continue_accounting']:
++            raise ValueError('Complete driver attempt accounting differs from worker identity')
++    return saved
+ 
+ 
+ def restore_driver(trainer, saved, identity):
+@@ -284,6 +290,32 @@ def restore_driver(trainer, saved, identity):
+     if saved['algorithm']['method'] != controller.method:
+         raise ValueError('Algorithm identity changed')
+     sampler = saved['sampler']; steps = saved['completed_step']
++    continue_state = saved.get('guard_continue_accounting')
++    if continue_state is not None:
++        from .tree_guard_continue import PROTOCOL
++        attempts, refused = continue_state['training_attempts'], continue_state['refused_attempts']
++        if (continue_state != identity.get('guard_continue_accounting') or continue_state['protocol'] != PROTOCOL
++                or type(attempts) is not int or type(refused) is not int or refused < 0
++                or attempts != steps + refused or continue_state['completed_outer_updates'] != steps
++                or len(continue_state['partial_evidence']) != continue_state['guard_refused_attempts']
++                or sum(not entry['credited_outer_candidate'] for entry in continue_state['partial_evidence']) != refused):
++            raise ValueError('Invalid complete attempt/refusal accounting')
++        rank_totals = continue_state['partial_optimizer_calls_per_rank']
++        if any(type(value) is not int or value < 0 for value in rank_totals.values()):
++            raise ValueError('Invalid historical partial optimizer writes')
++        complete_totals = continue_state['completed_optimizer_calls_per_rank']
++        if any(type(value) is not int or not steps <= value <= steps * 20 for value in complete_totals.values()):
++            raise ValueError('Invalid completed actual optimizer writes')
++        expected_totals = {str(rank): complete_totals.get(str(rank), 0) + rank_totals.get(str(rank), 0)
++                           for rank in range(trainer.actor_rollout_wg.world_size)}
++        if continue_state['total_optimizer_calls_per_rank'] != expected_totals:
++            raise ValueError('Complete optimizer totals omit historical partial writes')
++        trainer.training_attempts = attempts; trainer.refused_attempts = refused
++        trainer.guard_refused_attempts = continue_state['guard_refused_attempts']
++        trainer.completed_optimizer_calls_per_rank = cpu_copy(complete_totals)
++        trainer.partial_optimizer_calls_per_rank = cpu_copy(rank_totals)
++        trainer.partial_attempt_evidence = cpu_copy(continue_state['partial_evidence'])
++        steps = attempts  # Cursor advances once per consumed rollout attempt.
+     batches = sampler['rows'] // sampler['batch_size']
+     provenance=saved.get('recovery_provenance')
+     if provenance:
+diff --git a/search_r1/baselines/trajectory_log.py b/search_r1/baselines/trajectory_log.py
+index e77e43c..3d77f21 100644
+--- a/search_r1/baselines/trajectory_log.py
++++ b/search_r1/baselines/trajectory_log.py
+@@ -24,12 +24,14 @@ def save_rollouts(batch, tokenizer, step, directory):
+     No sampling or truncation; publication failure aborts before actor update.
+     Existing evidence is never replaced. Manifest means both payloads exist.
+     """
+-    directory=Path(directory)/f'outer-{step:06d}'
++    from .tree_guard_continue import evidence_suffix
++    directory=Path(directory)/f'outer-{step:06d}{evidence_suffix(batch.meta_info)}'
+     directory.mkdir(parents=True,exist_ok=False)
+     identity=dict(outer_step=int(step),job_id=os.environ.get('SLURM_JOB_ID'),
+         source=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+         config=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+         data=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))
++    identity['attempt_id'] = batch.meta_info.get('baseline_attempt_id')
+     tensors={k:cpu_copy(v) for k,v in batch.batch.items()}
+     required={'input_ids','responses','attention_mask','info_mask','old_log_probs',
+               'ref_log_prob','advantages','policy_weights','token_level_rewards','loss_mask'}
+diff --git a/search_r1/baselines/tree_fresh200.py b/search_r1/baselines/tree_fresh200.py
+index 0a9d8eb..81a8e6a 100644
+--- a/search_r1/baselines/tree_fresh200.py
++++ b/search_r1/baselines/tree_fresh200.py
+@@ -32,6 +32,9 @@ def validate_fresh200_config(config):
+     tree, holdout, trainer = config.baselines.tree, config.baselines.holdout, config.trainer
+     safety = actor.get('policy_safety', {})
+     correction = safety.get('sampling_probability_correction', {})
++    from .tree_guard_continue import PROTOCOL as CONTINUE_PROTOCOL
++    if actor.get('guard_continue_protocol') != CONTINUE_PROTOCOL or safety.get('target_old_policy_kl') != .2:
++        raise ValueError('Fresh200 requires explicit fresh-rollout guard continuation and sampled-policy KL 0.2')
+     if (safety.get('enabled') is not True or safety.get('dual_clip') != 3.
+             or tree.get('token_preservation', {}).get('enabled') is not True
+             or tree.get('behavior_mu', {}).get('enabled') is not True
+@@ -84,8 +87,16 @@ def validate_fresh_sampler(sampler):
+ 
+ 
+ def validate_completed_outer(metrics, outer):
+-    """Credit only a full 20-write outer and one scheduler advance."""
+-    expected = {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0,
++    """Credit twenty processed opportunities, actual writes >=1, one scheduler advance."""
++    opportunities = metrics.get('actor/optimizer_opportunities_processed')
++    writes = metrics.get('actor/optimizer_steps')
++    if opportunities is not None:
++        if opportunities != 20 or writes is None or not 1 <= writes <= 20 or writes != int(writes):
++            raise RuntimeError('Fresh200 incomplete opportunities or zero actual optimizer writes')
++        expected = {'actor/optimizer_opportunities_skipped': 20-writes,
++                    'actor/scheduler_step_before_outer': outer-1, 'actor/scheduler_step_after_outer': outer}
++    else:
++        expected = {'actor/optimizer_steps': 20, 'actor/skipped_empty_minibatches': 0,
+                 'actor/scheduler_step_before_outer': outer - 1,
+                 'actor/scheduler_step_after_outer': outer}
+     if any(metrics.get(k) != value for k, value in expected.items()):
+diff --git a/search_r1/baselines/tree_guard_continue.py b/search_r1/baselines/tree_guard_continue.py
+new file mode 100644
+index 0000000..869a152
+--- /dev/null
++++ b/search_r1/baselines/tree_guard_continue.py
+@@ -0,0 +1,132 @@
++"""Fresh-rollout continuation accounting, distinct from completed-outer credit."""
++import copy
++from pathlib import Path
++
++PROTOCOL = 'tree_guard_continue_fresh_rollout_v1'
++RESULT_PROTOCOL = 'tree_fresh_actor_result_v1'
++
++
++def enabled(actor):
++    return actor.get('guard_continue_protocol') == PROTOCOL
++
++
++def begin_attempt(trainer):
++    if trainer.global_steps != trainer.actual_outer_updates + 1:
++        raise ValueError('Fresh attempt must target the next uncredited completed outer')
++    trainer.training_attempts = getattr(trainer, 'training_attempts', 0) + 1
++    return dict(baseline_outer_step=trainer.global_steps,
++                baseline_attempt_id=trainer.training_attempts,
++                baseline_completed_outer=trainer.actual_outer_updates)
++
++
++def evidence_suffix(meta):
++    attempt = meta.get('baseline_attempt_id')
++    if attempt is None:
++        return ''
++    if type(attempt) is not int or attempt < 1:
++        raise ValueError('Evidence attempt identity must be a positive integer')
++    return f'-attempt-{attempt:06d}'
++
++
++def accounting(trainer):
++    partial = copy.deepcopy(getattr(trainer, 'partial_optimizer_calls_per_rank', {}))
++    completed = trainer.actual_outer_updates
++    complete_calls = copy.deepcopy(getattr(trainer, 'completed_optimizer_calls_per_rank', {}))
++    return dict(protocol=PROTOCOL, training_attempts=getattr(trainer, 'training_attempts', completed),
++                refused_attempts=getattr(trainer, 'refused_attempts', 0),
++                guard_refused_attempts=getattr(trainer, 'guard_refused_attempts', 0),
++                completed_outer_updates=completed, partial_optimizer_calls_per_rank=partial,
++                completed_optimizer_calls_per_rank=complete_calls,
++                total_optimizer_calls_per_rank={str(rank): complete_calls.get(str(rank), 0) + partial.get(str(rank), 0)
++                    for rank in range(trainer.actor_rollout_wg.world_size)},
++                partial_evidence=copy.deepcopy(getattr(trainer, 'partial_attempt_evidence', [])))
++
++
++def validate_ledger(ledger, writes, allow_zero=True):
++    if (not isinstance(ledger, list) or len(ledger) != 20 or type(writes) is not int
++            or not (0 if allow_zero else 1) <= writes <= 20):
++        raise ValueError('Incomplete twenty-opportunity ledger or invalid actual writes')
++    seen = []
++    for index, entry in enumerate(ledger, 1):
++        if (type(entry.get('index')) is not int or entry.get('index') != index
++                or type(entry.get('actual_writes')) is not int or entry.get('actual_writes') not in (0, 1)
++                or type(entry.get('rows')) is not int or entry['rows'] != 16
++                or entry.get('local_row_indices') != list(range(len(seen), len(seen)+entry['rows']))
++                or entry.get('status') not in ('SUCCESS_ADAM_WRITE', 'SUCCESS_ADAM_WRITE_BRAKE_AFTER_WRITE',
++                    'SKIPPED_EMPTY', 'SKIPPED_SAFETY_GUARD_BEFORE_WRITE', 'SKIPPED_BY_PRIOR_ROLLOUT_BRAKE')
++                or entry['status'].startswith('SUCCESS') != bool(entry['actual_writes'])):
++            raise ValueError('Opportunity ledger index/row/status/write differs from the real mini enumeration')
++        seen.extend(entry['local_row_indices'])
++    if sum(entry['actual_writes'] for entry in ledger) != writes:
++        raise ValueError('Opportunity ledger does not sum to successful optimizer returns')
++    if seen != list(range(320)):
++        raise ValueError('Complete fresh opportunity ledger must enumerate every actual local row exactly once')
++
++
++def validate_completed_result(trainer, output):
++    """DataProto.concat uses rank zero metadata; this result was gathered first."""
++    result = output.meta_info.get('tree_fresh_actor_result')
++    expected = dict(protocol=RESULT_PROTOCOL, decision='COMPLETED_OUTER',
++                    attempt_id=trainer.training_attempts, accepted_outer=trainer.global_steps,
++                    completed_outer_before=trainer.actual_outer_updates)
++    from .tree_partial_state import partial_context
++    from .training_state import file_sha
++    import json
++    import os
++    if not isinstance(result, dict) or result.get('identity') != partial_context(trainer)['identity']:
++        raise ValueError('Completed result source/run/context identity differs')
++    if not isinstance(result, dict) or any(result.get(key) != value for key, value in expected.items()):
++        raise ValueError('Missing or mismatched explicit all-rank completed result')
++    ranks = result.get('ranks')
++    if not isinstance(ranks, list) or len(ranks) != trainer.actor_rollout_wg.world_size:
++        raise ValueError('Incomplete explicit completed rank result')
++    for rank, value in enumerate(ranks):
++        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=False)
++        if any(type(value.get(key)) is not int for key in ('rank','attempt_id','accepted_outer',
++                'completed_outer_before','optimizer_calls','total_optimizer_calls',
++                'opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after')):
++            raise ValueError('Completed rank counters must be real integers')
++        if (value.get('rank') != rank or value.get('opportunities_processed') != 20
++                or value.get('opportunities_skipped') != 20-value['optimizer_calls']
++                or value.get('scheduler_before') != trainer.actual_outer_updates
++                or value.get('scheduler_after') != trainer.global_steps
++                or any(value.get(key) != expected[key] for key in ('attempt_id', 'accepted_outer', 'completed_outer_before'))):
++            raise ValueError('Completed actor rank count/identity/scheduler differs')
++        direct = value.get('direct_rank_record', {})
++        expected_path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/\
++            f'outer-{trainer.global_steps:06d}-attempt-{trainer.training_attempts:06d}-rank{rank:02d}.json'
++        path = Path(direct.get('path', ''))
++        if (path != expected_path or path.is_symlink() or not path.is_file()
++                or file_sha(path) != direct.get('sha256')):
++            raise ValueError('Completed direct rank physical bytes/attempt path differ')
++        physical = json.loads(path.read_text())
++        physical_expected = dict(
++                rank=rank,world_size=trainer.actor_rollout_wg.world_size,attempt_id=trainer.training_attempts,
++                observed_outer=trainer.global_steps,actual_optimizer_calls=value['optimizer_calls'],
++                opportunities_processed=20,opportunities_skipped=value['opportunities_skipped'],
++                optimizer_opportunity_ledger=value['opportunity_ledger'],
++                scheduler_step_before=trainer.actual_outer_updates,scheduler_step_after=trainer.global_steps)
++        physical_expected.update({key:result['identity'][key] for key in
++            ('job_id','run_id','code_commit','config_sha256','data_identity','model_identity')})
++        if any(physical.get(key) != expected_value for key, expected_value in physical_expected.items()):
++            raise ValueError('Completed direct rank file disagrees with gathered actual result')
++    if len({r['optimizer_calls'] for r in ranks}) != 1:
++        raise ValueError('Matched opportunities produced different per-rank successful optimizer counts')
++    totals = getattr(trainer, 'completed_optimizer_calls_per_rank', {})
++    candidate = {str(r['rank']): totals.get(str(r['rank']), 0) + r['optimizer_calls'] for r in ranks}
++    partial = getattr(trainer, 'partial_optimizer_calls_per_rank', {})
++    if any(r['total_optimizer_calls'] != candidate[str(r['rank'])] + partial.get(str(r['rank']), 0) for r in ranks):
++        raise ValueError('Actual accumulated optimizer calls omit completed or partial history')
++    return candidate
++
++
++def record_completed_result(trainer, output):
++    from .training_state import atomic_save
++    candidate = validate_completed_result(trainer, output)
++    directory = Path(trainer.config.trainer.default_local_dir)/'training_state'/'attempt-results'
++    value = dict(protocol=RESULT_PROTOCOL, status='COMPLETED_OPPORTUNITIES_OUTER_CREDITED',
++        attempt_id=trainer.training_attempts, accepted_outer=trainer.global_steps,
++        all_rank_result=output.meta_info['tree_fresh_actor_result'],
++        actual_completed_optimizer_calls_per_rank=candidate, automatic_rollback=False)
++    atomic_save(value, directory/f'attempt-{trainer.training_attempts:06d}.json', json_format=True)
++    trainer.completed_optimizer_calls_per_rank = candidate
+diff --git a/search_r1/baselines/tree_partial_state.py b/search_r1/baselines/tree_partial_state.py
+index a83a32b..591ca9a 100644
+--- a/search_r1/baselines/tree_partial_state.py
++++ b/search_r1/baselines/tree_partial_state.py
+@@ -5,6 +5,7 @@ from pathlib import Path
+ 
+ from .training_state import atomic_save, cpu_copy, digest, file_sha, rng_state
+ from .policy_safety_runtime import PolicySafetyRefusal
++from .tree_guard_continue import enabled, accounting
+ 
+ PROTOCOL = 'tree_partial_state_v1'
+ 
+@@ -20,7 +21,15 @@ def partial_context(trainer):
+                     model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
+                     training_protocol=trainer.config.baselines.training_protocol,
+                     attempted_outer=outer, completed_outer=completed)
+-    directory = Path(trainer.config.trainer.default_local_dir) / 'training_state' / f'partial_outer_{outer:06d}'
++    continuing = enabled(trainer.config.actor_rollout_ref.actor) if hasattr(trainer.config, 'actor_rollout_ref') else False
++    name = f'partial_outer_{outer:06d}'
++    if continuing:
++        attempt = trainer.training_attempts
++        if type(attempt) is not int or attempt < outer:
++            raise ValueError('Partial attempt identity does not match the consumed controller')
++        identity['attempt_id'] = attempt
++        name = f'partial_attempt_{attempt:06d}_outer_{outer:06d}'
++    directory = Path(trainer.config.trainer.default_local_dir) / 'training_state' / name
+     return dict(protocol=PROTOCOL, identity=identity, directory=str(directory))
+ 
+ 
+@@ -44,6 +53,8 @@ def partial_driver_snapshot(trainer, context):
+ def _preserve_driver_and_batch(trainer, batch, context):
+     directory = Path(context['directory'])
+     saved = partial_driver_snapshot(trainer, context)
++    if 'attempt_id' in context['identity']:
++        saved['guard_continue_accounting'] = accounting(trainer)
+     driver_path = directory / 'driver.pt'
+     driver = dict(path=str(driver_path), sha256=atomic_save(saved, driver_path),
+                   logical_state_sha256=digest(saved), completed_outer_updates=trainer.actual_outer_updates,
+@@ -71,6 +82,9 @@ def _validate_workers(envelope, context, world_size):
+         raise ValueError('Partial worker rank coverage is incomplete')
+     root = Path(context['directory']).resolve()
+     for r in workers:
++        if 'attempt_id' in context['identity'] and envelope.get('continuation_decision') == 'CONTINUE_FRESH_ROLLOUT':
++            from .tree_guard_continue import validate_ledger
++            validate_ledger(r.get('optimizer_opportunity_ledger'), r.get('committed_optimizer_calls'))
+         if (type(r['rank']) is not int or type(r['world_size']) is not int or r['world_size'] != world_size
+                 or r['identity'] != dict(context['identity'], rank=r['rank'], world_size=world_size)
+                 or type(r['committed_optimizer_calls']) is not int or not 0 <= r['committed_optimizer_calls'] <= 20
+@@ -79,7 +93,9 @@ def _validate_workers(envelope, context, world_size):
+                 or r['scheduler_step_before_actual'] != context['identity']['completed_outer']
+                 or r['scheduler_step_after_actual'] not in (r['scheduler_step_before_actual'],
+                                                             r['scheduler_step_before_actual'] + 1)
+-                or type(r['state_finite']) is not bool or r['status'] != 'PARTIAL_WORKER_STATE_SAVED'):
++                or type(r['state_finite']) is not bool or r['status'] != 'PARTIAL_WORKER_STATE_SAVED'
++                or ('attempt_id' in context['identity'] and
++                    (type(r.get('model_adam_finite')) is not bool or type(r.get('gradients_finite')) is not bool))):
+             raise ValueError('Partial worker state/count provenance is incomplete or invalid')
+         path = Path(r['path'])
+         if (path.is_symlink() or not path.is_file() or path.resolve().parent != root
+@@ -94,7 +110,7 @@ def stop_on_partial_actor_result(trainer, batch, actor_output):
+     """Called before metric reduction, after_actor, scheduler/outer credit on driver."""
+     envelope = actor_output.meta_info.get('tree_partial_state')
+     if envelope is None:
+-        return
++        return False
+     started = time.monotonic()
+     context = partial_context(trainer)
+     error, workers = None, []
+@@ -105,6 +121,21 @@ def stop_on_partial_actor_result(trainer, batch, actor_output):
+         workers = _validate_workers(envelope, context, trainer.actor_rollout_wg.world_size)
+     except Exception as exc:
+         error = f'{type(exc).__name__}: {exc}'
++    continuing = 'attempt_id' in context['identity']
++    completed_guard = continuing and actor_output.meta_info.get('tree_fresh_actor_result', {}).get('decision') == 'COMPLETED_OUTER'
++    safe_continue = (continuing and error is None and envelope.get('continuation_decision') == 'CONTINUE_FRESH_ROLLOUT'
++        and all(r.get('safety_guard') is True and r.get('model_adam_finite') is True
++                and r['scheduler_step_before_actual'] == trainer.actual_outer_updates
++                and r['scheduler_step_after_actual'] == trainer.actual_outer_updates + int(completed_guard) for r in workers))
++    if safe_continue and completed_guard:
++        from .tree_guard_continue import validate_completed_result
++        # Validate before deciding that a saved refused batch can earn credit.
++        # Accounting is applied exactly once later on the normal success path.
++        try:
++            validate_completed_result(trainer, actor_output)
++        except Exception as exc:
++            error = f'{type(exc).__name__}: {exc}'
++            safe_continue = False
+     manifest = dict(status=('PARTIAL_OUTER_STATE_SAVED_CONTROLLED_STOP' if error is None
+                             else 'PARTIAL_OUTER_STATE_INCOMPLETE_CONTROLLED_STOP'),
+         protocol=PROTOCOL, identity=context['identity'], worker_outcome=envelope,
+@@ -115,11 +146,37 @@ def stop_on_partial_actor_result(trainer, batch, actor_output):
+         outer_completed=False, completed_outer_updates=trainer.actual_outer_updates,
+         attempted_outer=trainer.global_steps, driver=driver, actor_inputs=inputs,
+         automatic_rollback=False, automatic_resume_supported=False,
++        continuation_decision='CONTINUE_FRESH_ROLLOUT' if safe_continue else 'FAULT_STOP',
++        opportunity_processing_completed=completed_guard if safe_continue else False,
++        credited_outer_candidate=completed_guard if safe_continue else False,
++        gradient_reset=envelope.get('gradient_reset_after_raw_persistence'),
+         driver_preservation_and_verification_seconds=time.monotonic()-started,
+         limits='Actual stopped model/Adam/scheduler/RNG/consumed batch are evidence; no executor resume or HF reload claim')
+     path = Path(context['directory']) / 'manifest.json'
+     sha = atomic_save(manifest, path, json_format=True)
+     trainer.partial_outer_evidence = dict(path=str(path), sha256=sha, status=manifest['status'])
++    if safe_continue:
++        trainer.guard_refused_attempts = getattr(trainer, 'guard_refused_attempts', 0) + 1
++        if not completed_guard:
++            trainer.refused_attempts = getattr(trainer, 'refused_attempts', 0) + 1
++            totals = getattr(trainer, 'partial_optimizer_calls_per_rank', {})
++            trainer.partial_optimizer_calls_per_rank = {
++                str(r['rank']): totals.get(str(r['rank']), 0) + r['committed_optimizer_calls'] for r in workers}
++        trainer.partial_attempt_evidence = getattr(trainer, 'partial_attempt_evidence', []) + [
++            dict(trainer.partial_outer_evidence, attempt_id=trainer.training_attempts,
++                 attempted_outer=trainer.global_steps,
++                 credited_outer_candidate=completed_guard,
++                 optimizer_calls_per_rank=manifest['actual_optimizer_calls_per_rank'])]
++        if not completed_guard:
++            atomic_save(dict(protocol=PROTOCOL,status='ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT',
++                identity=context['identity'],partial_evidence=trainer.partial_outer_evidence,
++                actual_optimizer_calls_per_rank=manifest['actual_optimizer_calls_per_rank'],
++                consumed_cursor=trainer.checkpoint_sampler.cursor,
++                consumed_epoch=trainer.checkpoint_sampler.epoch,
++                sampler_state_sha256=digest(trainer.checkpoint_sampler.state_dict())),
++                Path(trainer.config.trainer.default_local_dir)/'training_state'/'attempt-results'/
++                f'attempt-{trainer.training_attempts:06d}.json',json_format=True)
++        return not completed_guard
+     raise PolicySafetyRefusal(f"Stopped outer {trainer.global_steps}; complete outer remains {trainer.actual_outer_updates}; "
+                               f"actual partial state: {path}; status {manifest['status']}")
+ 
+diff --git a/search_r1/baselines/tree_rank_audit.py b/search_r1/baselines/tree_rank_audit.py
+index 33dd142..7e15b9c 100644
+--- a/search_r1/baselines/tree_rank_audit.py
++++ b/search_r1/baselines/tree_rank_audit.py
+@@ -18,6 +18,9 @@ class TreeRankAudit:
+         start = time.perf_counter()
+         self.model = model
+         self.step = int(meta['baseline_outer_step'])
++        from .tree_guard_continue import evidence_suffix
++        self.attempt_suffix = evidence_suffix(meta)
++        self.attempt_id = meta.get('baseline_attempt_id')
+         distributed = torch.distributed.is_initialized()
+         self.rank = torch.distributed.get_rank() if distributed else 0
+         self.world = torch.distributed.get_world_size() if distributed else 1
+@@ -55,7 +58,7 @@ class TreeRankAudit:
+         try:
+             root = Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR']) / 'failures'
+             root.mkdir(parents=True, exist_ok=True)
+-            target = root / (f'step-{self.step:06d}-rank-{self.rank:02d}-'
++            target = root / (f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-'
+                              f'optimizer-{len(self.grads):03d}-pid-{os.getpid()}.pt')
+             microbatches = [dict(tensors={k: v.cpu() for k, v in m['tensors'].items()},
+                                 loss_parts={k: v.cpu() for k, v in m['loss_parts'].items()})
+@@ -83,7 +86,7 @@ class TreeRankAudit:
+                 gradient_evidence.append(dict(name=name, count=flat.numel(),
+                     finite_count=finite_count, max_finite_abs=max_abs,
+                     nonfinite_sample_indices=bad_indices, nonfinite_sample_values=bad_values))
+-            record = dict(outer_step=self.step, rank=self.rank, world_size=self.world,
++            record = dict(outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank, world_size=self.world,
+                 successful_optimizer_calls=len(self.grads), exception=str(error),
+                 source_sha256=self.source,
+                 code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+@@ -125,8 +128,8 @@ class TreeRankAudit:
+                     negative_advantage_max_log_ratio=float(negative.max()) if negative.numel() else None,
+                     abs_log_ratio_over2=int((delta.abs()>2).sum()),
+                     loss_parts={k:float(v) for k,v in micro['loss_parts'].items()}))
+-            path=Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])/'ratio-tail'/f'step-{self.step:06d}-rank-{self.rank:02d}-optimizer-{len(self.grads):02d}.json'
+-            atomic_save(dict(outer_step=self.step,rank=self.rank,optimizer_call=len(self.grads)+1,
++            path=Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])/'ratio-tail'/f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}-optimizer-{len(self.grads):02d}.json'
++            atomic_save(dict(outer_step=self.step,attempt_id=self.attempt_id,rank=self.rank,optimizer_call=len(self.grads)+1,
+                              preclip_norm=value,microbatches=summaries),path,json_format=True)
+         self.grads.append(value)
+         self.pending_microbatches.clear()
+@@ -141,8 +144,8 @@ class TreeRankAudit:
+         compatible = self.layout == layout
+         root = Path(os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'])
+         root.mkdir(parents=True, exist_ok=True)
+-        target = root / f'step-{self.step:06d}-rank-{self.rank:02d}.json'
+-        record = dict(kind='tree_actor_rank', outer_step=self.step, rank=self.rank,
++        target = root / f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}.json'
++        record = dict(kind='tree_actor_rank', outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank,
+             world_size=self.world, pid=os.getpid(), job_id=os.environ.get('SLURM_JOB_ID'),
+             code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+             config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
+@@ -159,6 +162,12 @@ class TreeRankAudit:
+             local_shard_sample_after_sha256=tensor_hash(values),
+             local_shard_sample_scope='fixed up to8192 local coordinates, no gather; zero sample delta does not prove entire shard unchanged',
+             hook_body_seconds_excluding_publication=self.hook_seconds+time.perf_counter()-start)
++        if hasattr(self, 'guard_ledger'):
++            record.update(optimizer_opportunity_ledger=self.guard_ledger,
++                opportunities_processed=len(self.guard_ledger),
++                opportunities_skipped=sum(e['actual_writes']==0 for e in self.guard_ledger),
++                gradient_norm_source='Observed successful-return preclip norms retained in actual opportunity ledger',
++                rollout_braked=True)
+         pending = target.with_suffix('.pending')
+         with pending.open('x') as stream:
+             json.dump(record, stream, indent=2, allow_nan=False)
+@@ -166,3 +175,11 @@ class TreeRankAudit:
+             os.fsync(stream.fileno())
+         os.link(pending, target)
+         pending.unlink()
++
++    def guard_finish(self, updates, skips, ledger):
++        """Report the real returned writes, including a brake after optimizer return."""
++        self.guard_ledger = ledger
++        self.grads = [entry['gradient_preclip'] for entry in ledger if entry['actual_writes']]
++        if not all(value is not None and math.isfinite(value) for value in self.grads):
++            raise ValueError('Guard ledger lacks an actual finite successful-write norm')
++        self.finish(updates, skips)
+diff --git a/test_tree_behavior_mu_config_cpu.py b/test_tree_behavior_mu_config_cpu.py
+index 677367b..3b33cbe 100644
+--- a/test_tree_behavior_mu_config_cpu.py
++++ b/test_tree_behavior_mu_config_cpu.py
+@@ -67,21 +67,22 @@ class BehaviorMuConfigTests(unittest.TestCase):
+                 with self.assertRaisesRegex(ValueError,'temperature-one sampling'):validate(c)
+ class NativeProcessorCaptureTests(unittest.TestCase):
+     def params(self):
+-        return NS(n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
++        return NS(n=1,best_of=1,_real_n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
+                   repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
+-                  include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None)
++                  include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None,
++                  truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None)
+     def capture(self,params):
+         from search_r1.baselines.tree_raw_tokens import capture_native_emissions
+         env={k:'fixture-only' for k in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256','SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
+         r=NS(request_id='cpu0',finished=True,prompt_token_ids=[8],outputs=[NS(token_ids=[9],logprobs=[{9:NS(logprob=-.5)}],finish_reason='length',stop_reason=None)])
+         with patch.dict('os.environ',env):return capture_native_emissions([r],params,'cpu0',0)[0]
+     def test_actual_none_processor_field_is_captured(self):
+-        r=self.capture(self.params());self.assertEqual(len(r['sampling_params']),18)
++        r=self.capture(self.params());self.assertEqual(len(r['sampling_params']),24)
+         self.assertIsNone(r['sampling_params']['logits_processors'])
+         self.assertEqual(r['raw_selected_logprobs'],[-.5])
+     def test_missing_or_non_none_processor_does_not_get_default(self):
+         p=self.params();del p.logits_processors
+-        with self.assertRaises(AttributeError):self.capture(p)
++        with self.assertRaisesRegex(ValueError,'Explicit actual logits_processors metadata'):self.capture(p)
+         for processors in [[],[object()]]:
+             p=self.params();p.logits_processors=processors
+             with self.subTest(processors=bool(processors)),self.assertRaisesRegex(ValueError,'actual logits_processors=None'):self.capture(p)
+diff --git a/test_tree_fresh200_cpu.py b/test_tree_fresh200_cpu.py
+index 59b6b1c..8702f7e 100644
+--- a/test_tree_fresh200_cpu.py
++++ b/test_tree_fresh200_cpu.py
+@@ -35,10 +35,10 @@ def config():
+         actor_rollout_ref=dict(model=dict(path='official-same-local-path'), ref=dict(model_path='official-same-local-path',
+         log_prob_micro_batch_size=32), rollout=dict(n_agent=2, n=1, best_of=1, log_prob_micro_batch_size=32, tree_raw_emission=True),
+         actor=dict(ppo_mini_batch_size=128, ppo_micro_batch_size=16, ppo_epochs=1,
+-        ulysses_sequence_parallel_size=1, use_dynamic_bsz=False, fresh200_protocol=PROTOCOL,
++        ulysses_sequence_parallel_size=1, use_dynamic_bsz=False, fresh200_protocol=PROTOCOL, guard_continue_protocol="tree_guard_continue_fresh_rollout_v1",
+         optim=dict(lr=1e-6, lr_warmup_steps=57, lr_warmup_steps_ratio=0, total_training_steps=200),
+         entropy_coeff=0, kl_loss_coef=0, kl_loss_type='low_var_kl', clip_ratio=.2, grad_clip=1,
+-        policy_safety=dict(enabled=True, dual_clip=3., sampling_probability_correction=dict(enabled=True,
++        policy_safety=dict(enabled=True, dual_clip=3., target_old_policy_kl=.2, sampling_probability_correction=dict(enabled=True,
+         protocol='tree_behavior_mu_centered_ppo_v1')))),
+         data=dict(train_batch_size=512, max_start_length=2048, max_prompt_length=4096,
+         max_response_length=500, max_obs_length=500),
+diff --git a/test_tree_guard_continue_cpu.py b/test_tree_guard_continue_cpu.py
+new file mode 100644
+index 0000000..498327f
+--- /dev/null
++++ b/test_tree_guard_continue_cpu.py
+@@ -0,0 +1,338 @@
++"""Real tiny Adam/two-rank Gloo and actual actor/worker/driver source; no GPU claims."""
++import ast
++import copy
++import json
++import itertools
++import hashlib
++import math
++import os
++from pathlib import Path
++import random
++import tempfile
++import time
++from types import SimpleNamespace as N
++import unittest
++from unittest.mock import patch
++
++import torch
++import torch.distributed as dist
++import torch.multiprocessing as mp
++
++import test_tree_behavior_mu_actor_cpu as fixture
++import test_partial_worker_state_cpu as worker_fixture
++from test_tree_partial_driver_cpu import ENV
++from search_r1.baselines import partial_worker_state as partial
++from search_r1.baselines import policy_safety_runtime as safety
++from search_r1.baselines import gradient_norm
++from search_r1.baselines.tree_guard_continue import (PROTOCOL, begin_attempt, accounting,
++    validate_completed_result, record_completed_result, validate_ledger)
++from search_r1.baselines.tree_partial_state import partial_context, stop_on_partial_actor_result
++from search_r1.baselines.training_state import (CheckpointBatchSampler, driver_snapshot, restore_driver,
++    worker_snapshot, digest, file_sha, atomic_save)
++from search_r1.baselines.tree_fresh200 import validate_completed_outer
++
++ROOT = Path(__file__).resolve().parent
++
++
++class Sharding:
++    def __enter__(self): return self
++    def __exit__(self, *args): return False
++    def preprocess_data(self, data): return data
++    def postprocess_data(self, data): return data
++
++
++class SyntheticFSDPLinear(torch.nn.Linear):
++    """Only layout/lazy-init are synthetic; clip source and Gloo run unchanged."""
++    def __init__(self):
++        super().__init__(1,1,bias=False)
++        self.weight.data.fill_(-.5)
++        self._is_root=True;self._all_handles=[];self.compute_device=torch.device('cpu')
++        self.process_group=dist.group.WORLD;self.cpu_offload=N(offload_params=False)
++    def _assert_state(self,state):pass
++
++
++def cfg():
++    value = fixture.config(target_old_policy_kl=.2)
++    value['ppo_mini_batch_size']=16;value['ppo_micro_batch_size']=16
++    value.policy_safety['monitor_rows_per_rank']=32
++    value.update(fresh200_protocol='tree_fresh200_five_leaf_v1', guard_continue_protocol=PROTOCOL)
++    return value
++
++
++def new_data(factory, config, attempt):
++    # New immutable mu/emission/tree/leaf bindings on every attempt; this CPU
++    # factory stands in for model sampling, and is not a native vLLM proof.
++    out = factory.output([factory.state(call=f'new-attempt-{attempt}-row-{i}').branch() for i in range(320)])
++    data = fixture.Proto(out.batch, out.non_tensor_batch, out.meta_info)
++    width = data.batch['responses'].shape[1]
++    data.batch['old_log_probs'] = torch.full((320,width), -.5)
++    fixture.trainer['prepare_behavior_mu_old_policy'](data, config)
++    data.batch['loss_mask'] = data.batch['info_mask'][:,-width:].clone()
++    data.batch['advantages'] = torch.ones((320,width))
++    mask = (data.batch['loss_mask']*data.batch['attention_mask'][:,-width:]).float()
++    data.batch['policy_weights'] = mask/mask.sum(-1,keepdim=True).clamp_min(1)
++    data.meta_info.update(temperature=1., global_token_num=int(mask.sum()))
++    data.to = lambda *args: data
++    return data
++
++
++def make_worker(config):
++    actor = fixture.Actor(config)
++    actor._fresh_total_committed_optimizer_calls=0
++    actor.actor_module=SyntheticFSDPLinear()
++    actor.actor_optimizer=torch.optim.Adam(actor.actor_module.parameters(),lr=.01)
++    schedule = torch.optim.lr_scheduler.LambdaLR(actor.actor_optimizer, lambda step:min(step/57,1.))
++    worker = N(actor=actor,actor_optimizer=actor.actor_optimizer,actor_lr_scheduler=schedule,
++        config=fixture.Config(actor=config),_is_actor=True,_is_offload_param=False,
++        _is_offload_optimizer=False,_is_offload_grad=False,world_size=2,
++        ulysses_sharding_manager=Sharding(),flops_counter=N(estimate_flops=lambda *args:(1.,1.)))
++    return worker
++
++
++def actual_update():
++    scope = dict(torch=torch,os=os,DataProto=worker_fixture.WorkerProto,Timer=worker_fixture.FakeTimer,
++        logger=None,log_gpu_memory_usage=lambda *args,**kwargs:None,
++        fresh200_scheduler_after_actor=worker_fixture.SCHEDULE)
++    return worker_fixture.load_actual_update_actor(scope)
++
++
++def actual_audit():
++    path=ROOT/'search_r1/baselines/tree_rank_audit.py'
++    source=ast.parse(path.read_text())
++    klass=next(node for node in source.body if isinstance(node,ast.ClassDef) and node.name=='TreeRankAudit')
++    scope=dict(torch=torch,hashlib=hashlib,json=json,math=math,os=os,time=time,Path=Path,
++               __file__=str(path),__package__='search_r1.baselines')
++    exec(compile(ast.Module(body=[klass],type_ignores=[]),str(path),'exec'),scope)
++    return scope['TreeRankAudit']
++
++
++def tiny_trainer(run, config):
++    sampler = CheckpointBatchSampler(2048,512,42,'synthetic-fresh-data')
++    return N(global_steps=1,actual_outer_updates=0,checkpoint_sampler=sampler,
++        config=N(actor_rollout_ref=N(actor=config),trainer=N(default_local_dir=str(run)),
++            baselines=N(training_protocol='tree_fresh200_five_leaf_v1')),
++        actor_rollout_wg=N(world_size=2),baseline_controller=N(method='tree_grpo',tree_rng=random.Random(42),
++            stage=N(state_dict=lambda:{'stage':'training'},load_state_dict=lambda value:None)))
++
++
++def gloo_worker(rank, rendezvous, run, mode):
++    dist.init_process_group('gloo',init_method='file://'+rendezvous,rank=rank,world_size=2)
++    factory=fixture.collector_fixture.BehaviorMuDataTests();factory.setUp()
++    run=Path(run);config=cfg();worker=make_worker(config);update=actual_update()
++    trainer=tiny_trainer(run,config);sampler_iter=iter(trainer.checkpoint_sampler)
++    env=dict(SEARCH_R1_BASELINE_OUTPUT=str(run/'output'),SEARCH_R1_TREE_RANK_AUDIT_DIR=str(run/'events'))
++    observed=[]
++    saved_receipts=[]
++    try:
++        with patch.dict(os.environ,env),patch.object(torch.cuda,'empty_cache',lambda:None), \
++                patch.object(gradient_norm,'FSDP',SyntheticFSDPLinear), \
++                patch('torch.distributed.fsdp._runtime_utils._lazy_init',lambda *args:None), \
++                patch.object(fixture.rank_audit,'enabled',lambda:True), \
++                patch.object(fixture.rank_audit,'TreeRankAudit',actual_audit()):
++            attempts = 3 if mode=='repeated_allskip' else (2 if mode in ('allskip','gradient') else 1)
++            prior_trajectories=set()
++            for attempt in range(1,attempts+1):
++                consumed=next(sampler_iter);metadata=begin_attempt(trainer)
++                data=new_data(factory,config,attempt);data.meta_info.update(metadata)
++                data.meta_info['tree_partial_context']=partial_context(trainer)
++                trajectories=set(data.non_tensor_batch['trajectory_uid'])
++                assert not (trajectories & prior_trajectories);prior_trajectories |= trajectories
++                native_measure=safety.PolicySafetyRuntime.measure
++                def measure(runtime,phase,publish=True):
++                    active=(attempt<=2 if mode=='repeated_allskip' else attempt==1)
++                    should=(mode in ('post1','disk','nonfinite') and phase=='after_optimizer' and runtime.committed==1
++                        or mode=='pre2' and phase=='before_optimizer' and runtime.committed==1
++                        or mode in ('allskip','repeated_allskip') and phase=='before_optimizer' and runtime.committed==0
++                        or mode=='lastpost' and phase=='after_optimizer' and runtime.committed==20)
++                    if active and should:
++                        if mode=='nonfinite' and rank==1:worker.actor.actor_module.weight.data.fill_(float('nan'))
++                        runtime.sync_valid(rank==1,'synthetic_matched_numeric_guard')
++                    return native_measure(runtime,phase,publish=publish)
++                native_save=partial.atomic_save
++                def save(value,path,**kwargs):
++                    if mode=='disk' and rank==1:raise OSError('synthetic rank1 partial snapshot IO')
++                    return native_save(value,path,**kwargs)
++                hook=None
++                if mode in ('gradient','gradient_after1') and attempt==1:
++                    hook_calls=[0]
++                    def corrupt_gradient(gradient):
++                        hook_calls[0]+=1
++                        bad=rank==1 and (mode=='gradient' or hook_calls[0]>=2)
++                        return torch.full_like(gradient,float('nan')) if bad else gradient
++                    hook=worker.actor.actor_module.weight.register_hook(corrupt_gradient)
++                if mode=='ordinary':
++                    worker.actor._forward_micro_batch=lambda *args,**kwargs:(_ for _ in ()).throw(RuntimeError('ordinary actor error'))
++                try:
++                    with patch.object(safety.PolicySafetyRuntime,'measure',measure),patch.object(partial,'atomic_save',save):
++                        output=update(worker,data)
++                except RuntimeError as error:
++                    assert mode=='ordinary' and not isinstance(error,safety.PolicySafetyRefusal)
++                    assert worker.actor._actual_committed_optimizer_calls==0
++                    assert worker.actor_lr_scheduler.last_epoch==0
++                    observed.append(dict(attempt=attempt,ordinary_error=str(error),credit=0));break
++                finally:
++                    if hook is not None:hook.remove()
++                envelope=output.meta_info.get('tree_partial_state')
++                rank_path=run/'events'/f'step-{trainer.global_steps:06d}-attempt-{attempt:06d}-rank-{rank:02d}.json'
++                actor_rank=json.loads(rank_path.read_text())
++                assert actor_rank['successful_optimizer_calls']==worker.actor._actual_committed_optimizer_calls
++                assert actor_rank['finite_grad_norms']==worker.actor._actual_committed_optimizer_calls
++                if envelope:
++                    own=envelope['worker_states'][rank]
++                    if own['status']=='PARTIAL_WORKER_STATE_SAVED':
++                        saved=torch.load(own['path'],map_location='cpu',weights_only=False)
++                        assert file_sha(own['path'])==own['sha256'] and digest(saved)==own['logical_state_sha256']
++                        assert saved['optimizer_opportunity_ledger']==worker.actor._fresh_opportunity_ledger
++                        saved_receipts.append((own['path'],own['sha256']))
++                        if mode in ('gradient','gradient_after1') and rank==1:assert torch.isnan(saved['gradients']['weight']).all()
++                    if mode in ('disk','nonfinite'):
++                        assert envelope['continuation_decision']=='FAULT_STOP'
++                    else:assert envelope['continuation_decision']=='CONTINUE_FRESH_ROLLOUT'
++                common={k:v for k,v in output.meta_info.items() if k!='metrics'}
++                gathered=[None,None];dist.all_gather_object(gathered,common);assert gathered[0]==gathered[1]
++                if rank==0:
++                    if mode in ('disk','nonfinite'):
++                        try:stop_on_partial_actor_result(trainer,data,output)
++                        except safety.PolicySafetyRefusal:pass
++                        else:raise AssertionError('unsafe/incomplete state cannot continue')
++                        assert trainer.actual_outer_updates==0
++                    else:
++                        retry=stop_on_partial_actor_result(trainer,data,output)
++                        if retry:
++                            assert trainer.actual_outer_updates==0 and trainer.global_steps==1
++                        else:
++                            before=copy.deepcopy(getattr(trainer,'completed_optimizer_calls_per_rank',{}))
++                            validate_completed_result(trainer,output);assert before==getattr(trainer,'completed_optimizer_calls_per_rank',{})
++                            metrics=dict(output.meta_info['metrics'])
++                            validate_completed_outer(metrics,trainer.global_steps)
++                            record_completed_result(trainer,output)
++                            trainer.actual_outer_updates+=1;trainer.global_steps+=1
++                    observed.append(dict(attempt=attempt,consumed_question_indices=consumed,
++                        actor_result=common,accounting=accounting(trainer),sampler_cursor=trainer.checkpoint_sampler.cursor,
++                        scheduler_step=worker.actor_lr_scheduler.last_epoch))
++                # Share only driver counters needed to construct the next real
++                # worker identity. Driver/model/Adam/gradients are never reloaded.
++                sync=[dict(global_steps=trainer.global_steps,actual_outer_updates=trainer.actual_outer_updates,
++                    training_attempts=trainer.training_attempts) if rank==0 else None]
++                dist.broadcast_object_list(sync,src=0)
++                if rank!=0:
++                    for key,value in sync[0].items():setattr(trainer,key,value)
++                if mode in ('disk','nonfinite'):break
++            if rank==0:
++                if mode not in ('disk','nonfinite','ordinary'):
++                    for path,sha in saved_receipts:assert file_sha(path)==sha
++                    state=accounting(trainer)
++                    identity=dict(completed_step=trainer.actual_outer_updates,guard_continue_accounting=state)
++                    trainer.global_steps=trainer.actual_outer_updates
++                    saved=driver_snapshot(trainer,identity);before=digest(saved)
++                    restore_driver(trainer,saved,identity);assert digest(driver_snapshot(trainer,identity))==before
++                    observed.append(dict(complete_checkpoint_accounting=state,
++                        actual_adam_steps=sorted(int(value['step']) for value in worker.actor_optimizer.state.values()),
++                        checkpoint_cursor=saved['sampler']['cursor'],exact_tiny_driver_reload=True))
++                (run/'cpu-proof.json').write_text(json.dumps(observed,sort_keys=True,allow_nan=False))
++    finally:
++        factory.tearDown();dist.destroy_process_group()
++
++
++class GuardContinueTests(unittest.TestCase):
++    def test_saved_private_nonfinite_gradient_is_not_masked_by_public_zero_grad(self):
++        worker=make_worker(cfg());parameter=worker.actor.actor_module.weight
++        parameter.grad=torch.ones_like(parameter)
++        parameter._saved_grad_shard=torch.full_like(parameter,float('nan'))
++        saved=partial.raw_partial_worker_snapshot(worker,{'cpu_fixture':True},False)
++        self.assertTrue(saved['model_adam_finite']);self.assertFalse(saved['gradients_finite'])
++        with tempfile.TemporaryDirectory() as temporary:
++            path=Path(temporary)/'raw.pt';sha=atomic_save(saved,path)
++            before=parameter.detach().clone()
++            result=partial.reset_saved_guard_gradients(worker,{'continuation_decision':'CONTINUE_FRESH_ROLLOUT'})
++            self.assertEqual(result['continuation_decision'],'FAULT_STOP')
++            self.assertTrue(torch.equal(parameter,before));self.assertIsNone(parameter.grad)
++            self.assertTrue(torch.isnan(parameter._saved_grad_shard).all());self.assertEqual(file_sha(path),sha)
++            self.assertFalse(result['gradient_reset_after_raw_persistence']['ranks'][0]['private_gradients_after_reset_finite'])
++
++    def test_actual_concat_takes_rank_zero_meta_requires_pre_gathered_protocol(self):
++        # Execute the actual DataProto.concat AST with tiny storage only; this
++        # validates its API without claiming an installed Ray execution.
++        source=ast.parse((ROOT/'verl/protocol.py').read_text())
++        klass=next(node for node in source.body if isinstance(node,ast.ClassDef) and node.name=='DataProto')
++        concat=copy.deepcopy(next(node for node in klass.body if isinstance(node,ast.FunctionDef) and node.name=='concat'))
++        concat.decorator_list=[]
++        class Proto:
++            def __init__(self,batch=None,non_tensor_batch=None,meta_info=None):
++                self.batch=batch;self.non_tensor_batch=non_tensor_batch or {};self.meta_info=meta_info or {}
++        scope=dict(DataProto=Proto,List=list,torch=torch,
++            list_of_dict_to_dict_of_list=lambda list_of_dict:{})
++        exec(compile(ast.Module(body=[concat],type_ignores=[]),'actual-DataProto-concat','exec'),scope)
++        first=Proto(meta_info={'result':'rank0'});second=Proto(meta_info={'result':'rank1'})
++        self.assertEqual(scope['concat']([first,second]).meta_info,{'result':'rank0'})
++        common={'protocol':'tree_fresh_actor_result_v1','ranks':[{'rank':0},{'rank':1}]}
++        first.meta_info=copy.deepcopy(common);second.meta_info=copy.deepcopy(common)
++        self.assertEqual(scope['concat']([first,second]).meta_info,common)
++
++    def test_strict_real_local_ledger_rejects_row_and_boolean_counterexamples(self):
++        ledger=[dict(index=i+1,rows=16,local_row_indices=list(range(i*16,(i+1)*16)),
++                     status='SUCCESS_ADAM_WRITE',actual_writes=1) for i in range(20)]
++        validate_ledger(ledger,20)
++        for field,value in (('rows',1),('index',True),('actual_writes',True),('local_row_indices',[0])):
++            modified=copy.deepcopy(ledger);modified[0][field]=value
++            with self.subTest(field=field),self.assertRaises(ValueError):validate_ledger(modified,20)
++        with self.assertRaises(ValueError):validate_ledger(ledger[:19],19)
++
++    def test_actual_fresh_epoch_expression_real_sampler_consumes_six_hundred_attempts(self):
++        # Only guard/credit outcomes are simulated here. The source loop epoch
++        # expression and the seeded production sampler execute unmodified.
++        source=ast.parse((ROOT/'verl/trainer/ppo/ray_trainer.py').read_text())
++        fit=next(node for node in ast.walk(source) if isinstance(node,ast.FunctionDef) and node.name=='fit')
++        loop=next(node for node in ast.walk(fit) if isinstance(node,ast.For) and isinstance(node.target,ast.Name)
++                  and node.target.id=='epoch')
++        expression=ast.Expression(body=copy.deepcopy(loop.iter));ast.fix_missing_locations(expression)
++        epochs=eval(compile(expression,'actual-fit-epoch-expression','eval'),
++                    dict(itertools=itertools,fresh200=True,self=N(config=N(trainer=N(total_epochs=1)))))
++        sampler=CheckpointBatchSampler(169028,512,42,'unchanged-split')
++        trainer=N(global_steps=1,actual_outer_updates=0)
++        boundaries=[]
++        for epoch in epochs:
++            for batch in sampler:
++                begin_attempt(trainer)
++                if trainer.training_attempts<=400:
++                    continue
++                trainer.actual_outer_updates+=1;trainer.global_steps+=1
++                if trainer.actual_outer_updates in (5,50,100,150,200):
++                    boundaries.append((trainer.actual_outer_updates,trainer.training_attempts))
++                if trainer.actual_outer_updates==200:break
++            if trainer.actual_outer_updates==200:break
++        self.assertEqual(boundaries,[(5,405),(50,450),(100,500),(150,550),(200,600)])
++        self.assertEqual((trainer.global_steps,trainer.training_attempts,sampler.epoch,sampler.cursor),
++                         (201,600,1,138240))
++
++    def test_real_two_rank_guard_opportunities_and_fault_boundaries(self):
++        modes=('post1','pre2','allskip','repeated_allskip','lastpost','gradient','gradient_after1','disk','nonfinite','ordinary')
++        requested=os.environ.get('TREE_GUARD_CONTINUE_CPU_MODE')
++        if requested:modes=(requested,)
++        for mode in modes:
++            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as temporary:
++                run=Path(temporary)/'run';run.mkdir()
++                mp.spawn(gloo_worker,args=(str(run/'gloo-init'),str(run),mode),nprocs=2,join=True)
++                proof=json.loads((run/'cpu-proof.json').read_text())
++                directory=os.environ.get('TREE_GUARD_CONTINUE_CPU_PROOF_DIRECTORY')
++                if directory:
++                    target=Path(directory);target.mkdir(parents=True,exist_ok=True)
++                    (target/f'gloo-{mode}.json').write_text(json.dumps(proof,sort_keys=True,allow_nan=False))
++                if mode in ('post1','pre2','lastpost','gradient_after1'):
++                    rank=proof[0]['actor_result']['tree_fresh_actor_result']['ranks'][0]
++                    self.assertEqual(rank['opportunities_processed'],20)
++                    self.assertEqual(rank['optimizer_calls'],20 if mode=='lastpost' else 1)
++                    self.assertEqual(rank['scheduler_after'],1)
++                    self.assertEqual(rank['opportunities_skipped'],0 if mode=='lastpost' else 19)
++                if mode in ('allskip','gradient'):
++                    self.assertEqual([row['sampler_cursor'] for row in proof[:-1]],[512,1024])
++                    self.assertEqual([row['accounting']['completed_outer_updates'] for row in proof[:-1]],[0,1])
++                    self.assertEqual(proof[-1]['actual_adam_steps'],[20])
++                    self.assertEqual(proof[-1]['complete_checkpoint_accounting']['training_attempts'],2)
++                if mode=='repeated_allskip':
++                    self.assertEqual([row['sampler_cursor'] for row in proof[:-1]],[512,1024,1536])
++                    self.assertEqual([row['accounting']['completed_outer_updates'] for row in proof[:-1]],[0,0,1])
++                    self.assertEqual(proof[-1]['actual_adam_steps'],[20])
++
++
++if __name__=='__main__':unittest.main(verbosity=2)
+diff --git a/tests/reproduction/test_final_checkpoint.py b/tests/reproduction/test_final_checkpoint.py
+index d1bef4a..2367898 100644
+--- a/tests/reproduction/test_final_checkpoint.py
++++ b/tests/reproduction/test_final_checkpoint.py
+@@ -6,6 +6,7 @@ This checks checkpoint timing and model identity, not PPO or GPU numerics.
+ """
+ import ast
+ import json
++import os
+ from contextlib import nullcontext
+ from pathlib import Path
+ from types import SimpleNamespace
+@@ -27,14 +28,19 @@ def real_iteration_tail():
+                   and "critic_warmup" in ast.unparse(n.test))
+     body = ast.parse("batch = object(); metrics = {}; timing_raw = {}; logger = self.logger").body
+     body += step.body[update:] + batches.body[batches.body.index(step) + 1:]
++    # Keep the real loop context for the fresh guarded `continue` branch.
++    # Nonfresh tail tests still execute exactly one source iteration.
++    loop = ast.For(target=ast.Name(id='_cpu_iteration',ctx=ast.Store()),
++        iter=ast.Tuple(elts=[ast.Constant(value=0)],ctx=ast.Load()),body=body,orelse=[])
+     function = ast.FunctionDef(
+         name="iteration_tail",
+         args=ast.arguments(posonlyargs=[], args=[ast.arg(arg="self")],
+                            kwonlyargs=[], kw_defaults=[], defaults=[]),
+-        body=body, decorator_list=[])
++        body=[loop], decorator_list=[])
+     compiled = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
+     namespace = {
+-        "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,
++        "metrics": {}, "timing_raw": {}, "batch": object(), "json": json,"os":os,"fresh200":False,
++        "validate_final_behavior_mu_batch":lambda *args:None,
+         "_timer": lambda *args: nullcontext(), "reduce_metrics": lambda x: x,
+         "compute_data_metrics": lambda **kwargs: {},
+         "compute_timing_metrics": lambda **kwargs: {}, "pprint": lambda x: None,
+@@ -50,6 +56,7 @@ class FakeTrainer:
+         self.use_critic = False
+         self.config = SimpleNamespace(
+             do_search=False,
++            actor_rollout_ref=SimpleNamespace(actor=SimpleNamespace()),
+             trainer=SimpleNamespace(critic_warmup=0, save_freq=save_freq, test_freq=test_freq))
+         self.weight = 0
+         self.events = []
+diff --git a/verl/trainer/config/ppo_tree_fresh200.yaml b/verl/trainer/config/ppo_tree_fresh200.yaml
+index 13861ca..a09c2e5 100644
+--- a/verl/trainer/config/ppo_tree_fresh200.yaml
++++ b/verl/trainer/config/ppo_tree_fresh200.yaml
+@@ -7,6 +7,7 @@ actor_rollout_ref:
+     model_path: ${oc.env:TREE_INSTRUCT_MODEL}
+   actor:
+     fresh200_protocol: tree_fresh200_five_leaf_v1
++    guard_continue_protocol: tree_guard_continue_fresh_rollout_v1
+     use_kl_loss: true
+     kl_loss_coef: 0.0
+     kl_loss_type: low_var_kl
+@@ -17,7 +18,7 @@ actor_rollout_ref:
+       dual_clip: 3.0
+       kl_log_bound: 30.0
+       monitor_rows_per_rank: 32
+-      target_old_policy_kl: ???
++      target_old_policy_kl: 0.2
+       negative_tail_limit: ???
+       initial_old_logprob_max_abs_delta: ???
+       sampling_probability_correction:
+diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
+index 967e240..3c77284 100644
+--- a/verl/trainer/ppo/ray_trainer.py
++++ b/verl/trainer/ppo/ray_trainer.py
+@@ -19,6 +19,7 @@ This trainer supports model-agonistic model initialization with huggingface
+ import os
+ import uuid
+ import functools
++import itertools
+ from contextlib import contextmanager
+ from dataclasses import dataclass, field
+ from enum import Enum
+@@ -780,6 +781,9 @@ class RayPPOTrainer(object):
+                         actual_update_limit=self.config.trainer.actual_update_limit)
+         if self.actual_outer_updates != self.global_steps:
+             raise ValueError('Saved actual update counter differs from completed step')
++        from search_r1.baselines.tree_guard_continue import enabled as continue_enabled, accounting
++        if continue_enabled(self.config.actor_rollout_ref.actor):
++            identity['guard_continue_accounting'] = accounting(self)
+         directory = os.path.join(self.config.trainer.default_local_dir, 'training_state', f'global_step_{self.global_steps}')
+         verify = self.global_steps == self.config.trainer.acceptance_step
+         workers = self.actor_rollout_wg.save_training_state(directory, identity, verify=verify)
+@@ -913,7 +917,9 @@ class RayPPOTrainer(object):
+         )
+ 
+         # start training loop
+-        for epoch in range(self.config.trainer.total_epochs):
++        # Refused attempts consume real data; completed-outer target, rather
++        # than a fixed number of attempts/epochs, terminates fresh training.
++        for epoch in (itertools.count() if fresh200 else range(self.config.trainer.total_epochs)):
+             batch_iterator = iter(self.train_dataloader)
+             while True:
+                 # Wait BEFORE fetching the sixth question batch. Keep every
+@@ -935,6 +941,10 @@ class RayPPOTrainer(object):
+                 timing_raw = {}
+ 
+                 batch: DataProto = DataProto.from_single_dict(batch_dict)
++                if fresh200:
++                    from search_r1.baselines.tree_guard_continue import begin_attempt
++                    attempt_metadata = begin_attempt(self)
++                    batch.meta_info.update(attempt_metadata)
+                 batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+ 
+                 # pop those keys for generation
+@@ -1063,6 +1073,8 @@ class RayPPOTrainer(object):
+                         with _timer('update_actor', timing_raw):
+                             if self.config.do_search and self.config.actor_rollout_ref.actor.state_masking:
+                                 batch, metrics = self._create_loss_mask(batch, metrics)
++                            if fresh200:
++                                batch.meta_info.update(attempt_metadata)
+                             validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
+                             audit_controller = getattr(self, 'baseline_controller', None)
+                             if hasattr(audit_controller, 'audit_actor_batch'):
+@@ -1100,7 +1112,14 @@ class RayPPOTrainer(object):
+                                 raise
+                             if fresh200:
+                                 from search_r1.baselines.tree_partial_state import stop_on_partial_actor_result
+-                                stop_on_partial_actor_result(self, batch, actor_output)
++                                if stop_on_partial_actor_result(self, batch, actor_output):
++                                    metrics.update({'training/attempt_id': self.training_attempts,
++                                        'training/refused_attempts': self.refused_attempts,
++                                        'training/actual_outer_updates': self.actual_outer_updates})
++                                    logger.log(data=metrics, step=self.training_attempts)
++                                    continue
++                                from search_r1.baselines.tree_guard_continue import validate_completed_result
++                                validate_completed_result(self, actor_output)
+                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
+                         metrics.update(actor_output_metrics)
+                         if getattr(self, 'baseline_controller', None) is not None:
+@@ -1113,8 +1132,13 @@ class RayPPOTrainer(object):
+                         if fresh200:
+                             from search_r1.baselines.tree_fresh200 import validate_completed_outer
+                             validate_completed_outer(metrics, self.global_steps)
++                            from search_r1.baselines.tree_guard_continue import record_completed_result
++                            record_completed_result(self, actor_output)
+                         self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
+                         metrics['training/actual_outer_updates'] = self.actual_outer_updates
++                        if fresh200:
++                            metrics['training/attempt_id'] = self.training_attempts
++                            metrics['training/refused_attempts'] = getattr(self, 'refused_attempts', 0)
+                         if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:
+                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
+ 
+diff --git a/verl/workers/actor/dp_actor.py b/verl/workers/actor/dp_actor.py
+index f0ccaf0..0aec426 100644
+--- a/verl/workers/actor/dp_actor.py
++++ b/verl/workers/actor/dp_actor.py
+@@ -47,6 +47,7 @@ class DataParallelPPOActor(BasePPOActor):
+         super().__init__(config)
+         self.actor_module = actor_module
+         self.actor_optimizer = actor_optimizer
++        self._fresh_total_committed_optimizer_calls = 0
+         self.use_remove_padding = self.config.get('use_remove_padding', False)
+         print(f'Actor use_remove_padding={self.use_remove_padding}')
+         self.ulysses_sequence_parallel_size = self.config.ulysses_sequence_parallel_size
+@@ -150,7 +151,7 @@ class DataParallelPPOActor(BasePPOActor):
+             if safety is None or refusal.matched_all_ranks is not True:
+                 raise
+             from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+-            raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
++            raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True, safety_guard=True) from refusal
+         if safety is not None:
+             safety.sync_valid(not torch.isfinite(grad_norm) or
+                               grad_norm > self.config.get('recovery_max_grad_norm', float('inf')),
+@@ -167,11 +168,12 @@ class DataParallelPPOActor(BasePPOActor):
+                 if refusal.matched_all_ranks is not True:
+                     raise
+                 from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+-                raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True) from refusal
++                raise PolicySafetyRefusal(str(refusal), matched_all_ranks=True, safety_guard=True) from refusal
+             safety.sync_valid(not torch.isfinite(torch.tensor(self.last_postclip_grad_norm)) or self.last_postclip_grad_norm > float(self.config.grad_clip) + 1e-5, "measured_postclip_gradient")
+         self.actor_optimizer.step()
+         # Record the returned write before any publish/audit that may fail.
+         self._actual_committed_optimizer_calls = getattr(self, '_actual_committed_optimizer_calls', 0) + 1
++        self._fresh_total_committed_optimizer_calls = getattr(self, '_fresh_total_committed_optimizer_calls', 0) + 1
+         if safety is not None:
+             safety.committed += 1
+             safety.last_grad_preclip = float(grad_norm)
+@@ -278,185 +280,231 @@ class DataParallelPPOActor(BasePPOActor):
+         self._policy_safety = safety
+         metrics = {}
+         updates = skipped = 0
++        from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled
++        continuing_guard = guard_continue_enabled(self.config)
++        self._fresh_guard_refusal = None
++        self._fresh_opportunity_ledger = []
+         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
+         # Default E=1 preserves the reviewed reproduction's update schedule.
+         for batch_idx, data in enumerate(itertools.chain.from_iterable(
+                 dataloader for _ in range(self.config.ppo_epochs))):
+-            if audit is not None and batch_idx % len(dataloader) == 0:
+-                audit.epoch()
+-            # split batch into micro_batches
+-            mini_batch = data
+-            from search_r1.baselines.distillation import global_token_count
+-            count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
+-            total, world = global_token_count(count_mask)
+-            if total.item() == 0:
++            before_calls = self._actual_committed_optimizer_calls
++            opportunity = dict(index=batch_idx + 1, rows=len(data),
++                local_row_indices=list(range((batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size,
++                    (batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size + len(data))))
++            if continuing_guard and self._fresh_guard_refusal is not None:
++                self._fresh_opportunity_ledger.append(dict(opportunity,
++                    status='SKIPPED_BY_PRIOR_ROLLOUT_BRAKE', actual_writes=0))
+                 skipped += 1
+                 continue
+-            if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
+-                raise ValueError('Paper actor objective requires driver-computed policy_weights')
+-            topd_token_mean = self.config.get('baseline_method') == 'topd'
+-            if paper_objective:
+-                from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
+-                denominator = row_denominator(len(mini_batch), mini_batch.device)
+-                mass_weights = mini_batch['policy_weights']
+-                if safety is not None:
+-                    mass_weights = torch.where(safety.effective_mask(mini_batch), mass_weights, 0.)
+-                weight_mass, mass_world = global_token_count(mass_weights)
+-                metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
+-            elif topd_token_mean:
+-                from search_r1.baselines.advantages import token_mean_ppo
+-                denominator = total / world
+-            if self.config.use_dynamic_bsz:
+-                max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
+-                micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
+-            else:
++            try:
++                if audit is not None and batch_idx % len(dataloader) == 0:
++                    audit.epoch()
+                 # split batch into micro_batches
+-                micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
+-
+-            if safety is not None:
+-                safety.measure("before_optimizer")
+-            self.actor_optimizer.zero_grad()
+-            mini_metrics = {}
+-
+-            for data in micro_batches:
+-                data = data.cuda()  # actor device is cpu when using offload
+-                responses = data['responses']
+-                response_length = responses.size(1)
+-                attention_mask = data['attention_mask']
+-                response_mask = attention_mask[:, -response_length:]
+-                if self.config.state_masking:
+-                    response_mask = data['loss_mask']
+-                old_log_prob = data['old_log_probs']
+-                advantages = data['advantages']
+-
+-                clip_ratio = self.config.clip_ratio
+-                entropy_coeff = self.config.entropy_coeff
+-
+-                # all return: (bsz, response_length)
+-                entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
+-
+-                if safety is not None:
+-                    response_mask = safety.effective_mask(data)
+-                    safety.inputs(old_log_prob, log_prob, advantages, response_mask, data["policy_weights"], entropy, data.get("ref_log_prob", None))
+-                    # Sanitize nonsupervised padding before every loss/diagnostic operation.
+-                    # Existing rollout masks and the global row denominator stay unchanged.
+-                    old_log_prob = torch.where(response_mask, old_log_prob, 0.)
+-                    log_prob = torch.where(response_mask, log_prob, 0.)
+-                    advantages = torch.where(response_mask, advantages, 0.)
+-                    entropy = torch.where(response_mask, entropy, 0.)
+-                policy_weights = data['policy_weights'] if paper_objective else None
+-                if safety is not None:
+-                    policy_weights = torch.where(response_mask, policy_weights, 0.)
++                mini_batch = data
++                from search_r1.baselines.distillation import global_token_count
++                count_mask = mini_batch['loss_mask'] if self.config.state_masking else mini_batch['attention_mask'][:, -mini_batch['responses'].shape[1]:]
++                total, world = global_token_count(count_mask)
++                if total.item() == 0:
++                    skipped += 1
++                    if continuing_guard:
++                        self._fresh_opportunity_ledger.append(dict(opportunity, status="SKIPPED_EMPTY", actual_writes=0))
++                    continue
++                if self.config.get('baseline_method') in ('gigpo', 'tree_grpo', 'topd', 'cosearch') and not paper_objective:
++                    raise ValueError('Paper actor objective requires driver-computed policy_weights')
++                topd_token_mean = self.config.get('baseline_method') == 'topd'
+                 if paper_objective:
+-                    pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
+-                        old_log_prob, log_prob, advantages, response_mask, policy_weights,
+-                        clip_ratio, denominator, data.get('step_ids', None),
+-                        dual_clip=safety_config['dual_clip'] if safety is not None else None)
++                    from search_r1.baselines.objectives import row_denominator, weighted_policy_loss
++                    denominator = row_denominator(len(mini_batch), mini_batch.device)
++                    mass_weights = mini_batch['policy_weights']
++                    if safety is not None:
++                        mass_weights = torch.where(safety.effective_mask(mini_batch), mass_weights, 0.)
++                    weight_mass, mass_world = global_token_count(mass_weights)
++                    metric_mass = (weight_mass / mass_world).clamp_min(torch.finfo(weight_mass.dtype).tiny)
+                 elif topd_token_mean:
+-                    pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
+-                        old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
++                    from search_r1.baselines.advantages import token_mean_ppo
++                    denominator = total / world
++                if self.config.use_dynamic_bsz:
++                    max_token_len = self.config.ppo_max_token_len_per_gpu * self.ulysses_sequence_parallel_size
++                    micro_batches, _ = rearrange_micro_batches(batch=mini_batch, max_token_len=max_token_len)
+                 else:
+-                    pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
+-                                                                                  log_prob=log_prob,
+-                                                                                  advantages=advantages,
+-                                                                                  eos_mask=response_mask,
+-                                                                                  cliprange=clip_ratio)
+-                # compute entropy loss from entropy
+-                entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
+-                                if paper_objective else verl_F.masked_mean(entropy, response_mask))
+-
+-                # compute policy loss
+-                policy_loss = pg_loss - entropy_loss * entropy_coeff
+-
+-                if self.config.use_kl_loss:
+-                    ref_log_prob = data['ref_log_prob']
+-                    # compute kl loss
+-                    kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
+-                                                ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
+-                                                kl_penalty=self.config.kl_loss_type)
+-                    kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
+-                               if paper_objective else masked_mean(kld, response_mask))
+-
+-                    policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
++                    # split batch into micro_batches
++                    micro_batches = mini_batch.split(self.config.ppo_micro_batch_size)
++
++                if safety is not None:
++                    safety.measure("before_optimizer")
++                self.actor_optimizer.zero_grad()
++                mini_metrics = {}
++
++                for data in micro_batches:
++                    data = data.cuda()  # actor device is cpu when using offload
++                    responses = data['responses']
++                    response_length = responses.size(1)
++                    attention_mask = data['attention_mask']
++                    response_mask = attention_mask[:, -response_length:]
++                    if self.config.state_masking:
++                        response_mask = data['loss_mask']
++                    old_log_prob = data['old_log_probs']
++                    advantages = data['advantages']
++
++                    clip_ratio = self.config.clip_ratio
++                    entropy_coeff = self.config.entropy_coeff
++
++                    # all return: (bsz, response_length)
++                    entropy, log_prob = self._forward_micro_batch(micro_batch=data, temperature=temperature)
++
++                    if safety is not None:
++                        response_mask = safety.effective_mask(data)
++                        safety.inputs(old_log_prob, log_prob, advantages, response_mask, data["policy_weights"], entropy, data.get("ref_log_prob", None))
++                        # Sanitize nonsupervised padding before every loss/diagnostic operation.
++                        # Existing rollout masks and the global row denominator stay unchanged.
++                        old_log_prob = torch.where(response_mask, old_log_prob, 0.)
++                        log_prob = torch.where(response_mask, log_prob, 0.)
++                        advantages = torch.where(response_mask, advantages, 0.)
++                        entropy = torch.where(response_mask, entropy, 0.)
++                    policy_weights = data['policy_weights'] if paper_objective else None
++                    if safety is not None:
++                        policy_weights = torch.where(response_mask, policy_weights, 0.)
+                     if paper_objective:
+-                        mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
++                        pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
++                            old_log_prob, log_prob, advantages, response_mask, policy_weights,
++                            clip_ratio, denominator, data.get('step_ids', None),
++                            dual_clip=safety_config['dual_clip'] if safety is not None else None)
++                    elif topd_token_mean:
++                        pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
++                            old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)
+                     else:
+-                        metrics['actor/kl_loss'] = kl_loss.detach().item()
+-                    metrics['actor/kl_coef'] = self.config.kl_loss_coef
++                        pg_loss, pg_clipfrac, ppo_kl = core_algos.compute_policy_loss(old_log_prob=old_log_prob,
++                                                                                      log_prob=log_prob,
++                                                                                      advantages=advantages,
++                                                                                      eos_mask=response_mask,
++                                                                                      cliprange=clip_ratio)
++                    # compute entropy loss from entropy
++                    entropy_loss = (verl_F.masked_sum(entropy, policy_weights) / denominator
++                                    if paper_objective else verl_F.masked_mean(entropy, response_mask))
++
++                    # compute policy loss
++                    policy_loss = pg_loss - entropy_loss * entropy_coeff
+ 
+-                loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
+-                if audit is not None:
+-                    parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
+                     if self.config.use_kl_loss:
+-                        parts['kl'] = kl_loss
+-                    diagnostic = {}
+-                    if method == 'tree_grpo':
+-                        diagnostic['diagnostic_data'] = {
+-                            key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
+-                            if key in data}
+-                    audit_failed = False
+-                    try:
+-                        audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
+-                            advantages=advantages, loss_parts=parts,
+-                            ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
+-                    except Exception:
+-                        if safety is None:
+-                            raise
+-                        audit_failed = True
++                        ref_log_prob = data['ref_log_prob']
++                        # compute kl loss
++                        kld = core_algos.kl_penalty(logprob=torch.where(response_mask.bool(), log_prob, 0.),
++                                                    ref_logprob=torch.where(response_mask.bool(), ref_log_prob, 0.),
++                                                    kl_penalty=self.config.kl_loss_type)
++                        kl_loss = (verl_F.masked_sum(kld, policy_weights) / denominator
++                                   if paper_objective else masked_mean(kld, response_mask))
++
++                        policy_loss = policy_loss + kl_loss * self.config.kl_loss_coef
++                        if paper_objective:
++                            mini_metrics['actor/kl_loss'] = mini_metrics.get('actor/kl_loss', 0.) + kl_loss.detach().item()
++                        else:
++                            metrics['actor/kl_loss'] = kl_loss.detach().item()
++                        metrics['actor/kl_coef'] = self.config.kl_loss_coef
++
++                    loss = policy_loss if paper_objective or topd_token_mean else policy_loss / self.gradient_accumulation
++                    if audit is not None:
++                        parts = dict(policy=pg_loss, entropy=entropy_loss, total=loss)
++                        if self.config.use_kl_loss:
++                            parts['kl'] = kl_loss
++                        diagnostic = {}
++                        if method == 'tree_grpo':
++                            diagnostic['diagnostic_data'] = {
++                                key: data[key] for key in ('input_ids', 'responses', 'policy_weights', 'attention_mask')
++                                if key in data}
++                        audit_failed = False
++                        try:
++                            audit.micro(log_prob, old_log_prob, response_mask, loss, data.get('step_ids', None),
++                                advantages=advantages, loss_parts=parts,
++                                ref_logp=ref_log_prob if self.config.use_kl_loss else None, **diagnostic)
++                        except Exception:
++                            if safety is None:
++                                raise
++                            audit_failed = True
++                        if safety is not None:
++                            safety.sync_valid(audit_failed, 'rank_audit_micro_before_backward')
+                     if safety is not None:
+-                        safety.sync_valid(audit_failed, 'rank_audit_micro_before_backward')
+-                if safety is not None:
+-                    safety.sync_valid(~torch.isfinite(loss), "micro_loss_before_backward")
++                        safety.sync_valid(~torch.isfinite(loss), "micro_loss_before_backward")
++                    try:
++                        loss.backward()
++                    except Exception as error:
++                        if method == 'tree_grpo' and audit is not None:
++                            audit.failure(error)
++                        raise
++
++                    micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
++                    data = {
++                        'actor/entropy_loss': entropy_loss.detach().item(),
++                        'actor/pg_loss': pg_loss.detach().item(),
++                        'actor/pg_clipfrac': pg_clipfrac.detach().item(),
++                        'actor/ppo_kl': ppo_kl.detach().item(),
++                    }
++                    if paper_objective:
++                        for key, value in data.items():
++                            if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
++                                value *= micro_mass / metric_mass.item()
++                            mini_metrics[key] = mini_metrics.get(key, 0.) + value
++                    else:
++                        append_to_dict(metrics, data)
++
++                if paper_objective:
++                    append_to_dict(metrics, mini_metrics)
+                 try:
+-                    loss.backward()
++                    grad_norm = self._optimizer_step()
+                 except Exception as error:
+                     if method == 'tree_grpo' and audit is not None:
+                         audit.failure(error)
+                     raise
+-
+-                micro_mass = policy_weights.sum().detach().item() if paper_objective else 0.
+-                data = {
+-                    'actor/entropy_loss': entropy_loss.detach().item(),
+-                    'actor/pg_loss': pg_loss.detach().item(),
+-                    'actor/pg_clipfrac': pg_clipfrac.detach().item(),
+-                    'actor/ppo_kl': ppo_kl.detach().item(),
+-                }
+-                if paper_objective:
+-                    for key, value in data.items():
+-                        if key in ('actor/pg_clipfrac', 'actor/ppo_kl'):
+-                            value *= micro_mass / metric_mass.item()
+-                        mini_metrics[key] = mini_metrics.get(key, 0.) + value
+-                else:
+-                    append_to_dict(metrics, data)
+-
+-            if paper_objective:
+-                append_to_dict(metrics, mini_metrics)
+-            try:
+-                grad_norm = self._optimizer_step()
+-            except Exception as error:
+-                if method == 'tree_grpo' and audit is not None:
+-                    audit.failure(error)
+-                raise
+-            if audit is not None:
+-                if safety is None:
+-                    audit.gradient(grad_norm)
+-                else:
+-                    audit_failed = False
+-                    try:
++                if audit is not None:
++                    if safety is None:
+                         audit.gradient(grad_norm)
+-                    except Exception:
+-                        audit_failed = True
+-                    safety.sync_valid(audit_failed, "rank_audit_after_committed_write")
+-            updates += 1
+-            if safety is not None:
+-                safety.committed = updates
+-                safety.parameters_and_adam()
+-                safety.measure('after_optimizer')
+-                append_to_dict(metrics, {'actor/postclip_grad_norm': self.last_postclip_grad_norm})
+-            data = {'actor/grad_norm': grad_norm.detach().item()}
+-            append_to_dict(metrics, data)
+-        self.actor_optimizer.zero_grad()
+-        if audit is not None:
++                    else:
++                        audit_failed = False
++                        try:
++                            audit.gradient(grad_norm)
++                        except Exception:
++                            audit_failed = True
++                        safety.sync_valid(audit_failed, "rank_audit_after_committed_write")
++                updates += 1
++                if safety is not None:
++                    safety.committed = updates
++                    safety.parameters_and_adam()
++                    safety.measure('after_optimizer')
++                    append_to_dict(metrics, {'actor/postclip_grad_norm': self.last_postclip_grad_norm})
++                data = {'actor/grad_norm': grad_norm.detach().item()}
++                append_to_dict(metrics, data)
++            except Exception as error:
++                from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
++                if (not continuing_guard or not isinstance(error, PolicySafetyRefusal)
++                        or error.matched_all_ranks is not True or error.safety_guard is not True):
++                    raise
++                self._fresh_guard_refusal = error
++                actual = self._actual_committed_optimizer_calls - before_calls
++                if actual not in (0, 1):
++                    raise ValueError('One opportunity committed an invalid optimizer count') from error
++                self._fresh_opportunity_ledger.append(dict(opportunity, actual_writes=actual,
++                    status='SUCCESS_ADAM_WRITE_BRAKE_AFTER_WRITE' if actual else 'SKIPPED_SAFETY_GUARD_BEFORE_WRITE',
++                    gradient_preclip=getattr(safety, 'last_grad_preclip', None) if actual else None,
++                    gradient_postclip=getattr(safety, 'last_grad_postclip', None) if actual else None,
++                    guard_reason=str(error), matched_all_ranks=True))
++                skipped += int(actual == 0)
++                updates = self._actual_committed_optimizer_calls
++                continue
++            if continuing_guard:
++                self._fresh_opportunity_ledger.append(dict(opportunity, status='SUCCESS_ADAM_WRITE',
++                    gradient_preclip=float(grad_norm),
++                    gradient_postclip=getattr(self, 'last_postclip_grad_norm', None),
++                    actual_writes=self._actual_committed_optimizer_calls - before_calls))
++        if self._fresh_guard_refusal is None:
++            self.actor_optimizer.zero_grad()
++        elif audit is not None:
++            audit_failed = False
++            try:
++                audit.guard_finish(updates, skipped, self._fresh_opportunity_ledger)
++            except Exception:
++                audit_failed = True
++            safety.sync_valid(audit_failed, 'rank_audit_guard_finish')
++        if audit is not None and self._fresh_guard_refusal is None:
+             if safety is None:
+                 audit.finish(updates, skipped)
+             else:
+@@ -471,6 +519,9 @@ class DataParallelPPOActor(BasePPOActor):
+             metrics['actor/behavior_mu_additional_initial_repeat_native_forward_calls'] = safety.initial_actor_repeat_native_forward_calls
+             metrics['actor/behavior_mu_monitor_forward_wall_seconds'] = safety.monitor_forward_wall_seconds
+         metrics['actor/optimizer_steps'] = updates
++        if continuing_guard:
++            metrics['actor/optimizer_opportunities_processed'] = len(self._fresh_opportunity_ledger)
++            metrics['actor/optimizer_opportunities_skipped'] = sum(e['actual_writes'] == 0 for e in self._fresh_opportunity_ledger)
+         metrics['actor/skipped_empty_minibatches'] = skipped
+         if paper_objective:
+             from search_r1.baselines.objectives import reduce_paper_metrics
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index 2a31f3c..d5bbe32 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -105,6 +105,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+         return bool(flag.item())
+     outer = data.meta_info.get('baseline_outer_step')
+     writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
++    from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled, validate_ledger
++    continuing_guard = guard_continue_enabled(worker.config.actor)
++    ledger = getattr(worker.actor, '_fresh_opportunity_ledger', [])
+     returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
+     error = None
+     before_lrs = None
+@@ -114,8 +117,12 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+             raise ValueError('Fresh scheduler admission requires the explicit fresh200 profile')
+         if type(outer) is not int or outer < 1:
+             raise ValueError('Fresh outer must be a positive direct driver counter')
+-        if (type(writes) is not int or writes != 20 or type(returned_writes) is not int
+-                or returned_writes != writes or type(skips) is not int or skips != 0):
++        if continuing_guard:
++            validate_ledger(ledger, writes, allow_zero=False)
++            if returned_writes != writes or metrics.get('actor/optimizer_opportunities_processed') != 20:
++                raise ValueError('Fresh completed opportunity accounting differs from actual actor ledger')
++        elif (type(writes) is not int or writes != 20 or type(returned_writes) is not int
++              or returned_writes != writes or type(skips) is not int or skips != 0):
+             raise ValueError('Fresh outer requires each rank to commit 20 optimizer calls and skip zero')
+         if (type(scheduler_before_outer) is not int or scheduler_before_outer != outer - 1
+                 or worker.actor_lr_scheduler.last_epoch != scheduler_before_outer):
+@@ -126,8 +133,10 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+     except Exception as exc:
+         error = repr(exc)
+     # A valid counter on each rank must also identify the same outer globally.
+-    signature = torch.tensor(outer if type(outer) is int and 0 < outer < 2**53 else -1,
+-                             dtype=torch.float64, device=device)
++    signature_values = [outer if type(outer) is int and 0 < outer < 2**53 else -1]
++    if continuing_guard:
++        signature_values += [writes if type(writes) is int else -1, len(ledger), skips if type(skips) is int else -1]
++    signature = torch.tensor(signature_values, dtype=torch.float64, device=device)
+     lo, hi = signature.clone(), signature.clone()
+     if dist.is_initialized():
+         dist.all_reduce(lo, op=dist.ReduceOp.MIN); dist.all_reduce(hi, op=dist.ReduceOp.MAX)
+@@ -157,6 +166,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+     record = dict(rank=rank, world_size=world, training_protocol='tree_fresh200_five_leaf_v1',
+                   observed_outer=outer if type(outer) is int else None,
+                   actual_optimizer_calls=writes if type(writes) is int else None,
++                  opportunities_processed=len(ledger) if continuing_guard else 20,
++                  opportunities_skipped=sum(e['actual_writes']==0 for e in ledger) if continuing_guard else 0,
++                  optimizer_opportunity_ledger=ledger if continuing_guard else None,
+                   skipped_empty_minibatches=skips if type(skips) is int else None,
+                   returned_optimizer_calls=returned_writes if type(returned_writes) is int else None,
+                   direct_count_source='actor optimizer.step successful-return counter before any publish/audit IO',
+@@ -181,7 +193,9 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
+     try:
+         if any(record[key] is None for key in ('code_commit','config_sha256','data_identity','model_identity','job_id','run_id')):
+             raise ValueError('Missing fresh rank source/run identity')
+-        path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/f'outer-{outer:06d}-rank{rank:02d}.json'
++        from search_r1.baselines.tree_guard_continue import evidence_suffix
++        path = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'fresh-state'/f'outer-{outer:06d}{evidence_suffix(data.meta_info)}-rank{rank:02d}.json'
++        record['attempt_id'] = data.meta_info.get('baseline_attempt_id')
+         record_sha = atomic_save(record, path, json_format=True)
+     except Exception as exc:
+         io_error = repr(exc)
+@@ -554,18 +568,22 @@ class ActorRolloutRefWorker(Worker):
+             from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+             from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
+             partial = None
++            completed = None
+             try:
+                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+                     prepare_partial_worker_context(self, data)
+                 with Timer(name='update_policy', logger=None) as timer:
+                     metrics = self.actor.update_policy(data=data)
++                if (getattr(self.actor, '_fresh_guard_refusal', None) is not None
++                        and self.actor._actual_committed_optimizer_calls == 0):
++                    raise self.actor._fresh_guard_refusal
+                 delta_time = timer.last
+                 global_num_tokens = data.meta_info['global_token_num']
+                 estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
+                 metrics['mfu/actor'] = estimated_flops * self.config.actor.ppo_epochs / promised_flops / self.world_size
+ 
+                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
+-                    fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
++                    self._fresh_direct_record = fresh200_scheduler_after_actor(self, data, metrics, scheduler_before_outer, lr_before_outer)
+                 elif metrics.get('actor/optimizer_steps', 0) > 0:
+                     self.actor_lr_scheduler.step()
+                 lr = self.actor_lr_scheduler.get_last_lr()[0]
+@@ -573,12 +591,19 @@ class ActorRolloutRefWorker(Worker):
+                 metrics['actor/lr_before_outer'] = lr_before_outer
+                 metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
+                 metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
++                if getattr(self.actor, '_fresh_guard_refusal', None) is not None:
++                    partial = persist_matched_partial_worker(self, data, self.actor._fresh_guard_refusal, scheduler_before_outer)
++                from search_r1.baselines.tree_guard_continue import enabled as continue_enabled
++                if continue_enabled(self.config.actor):
++                    from search_r1.baselines.partial_worker_state import completed_actor_result
++                    completed = completed_actor_result(self, data, scheduler_before_outer)
+ 
+             except PolicySafetyRefusal as refusal:
+                 if (refusal.matched_all_ranks is not True
+                         or self.config.actor.get('fresh200_protocol') != 'tree_fresh200_five_leaf_v1'):
+                     raise
+-                partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
++                if partial is None:
++                    partial = persist_matched_partial_worker(self, data, refusal, scheduler_before_outer)
+                 metrics = {'actor/optimizer_steps': self.actor._actual_committed_optimizer_calls,
+                            'actor/scheduler_step_before_outer': scheduler_before_outer,
+                            'actor/scheduler_step_after_outer': self.actor_lr_scheduler.last_epoch,
+@@ -586,8 +611,14 @@ class ActorRolloutRefWorker(Worker):
+ 
+             log_gpu_memory_usage('After update policy', logger=logger)
+ 
++            if partial is not None:
++                from search_r1.baselines.partial_worker_state import reset_saved_guard_gradients
++                partial = reset_saved_guard_gradients(self, partial)
++
+             # TODO: here, we should return all metrics
+-            output = DataProto(meta_info={'metrics': metrics, **({'tree_partial_state': partial} if partial is not None else {})})
++            output = DataProto(meta_info={'metrics': metrics,
++                **({'tree_partial_state': partial} if partial is not None else {}),
++                **({'tree_fresh_actor_result': completed} if completed is not None else {})})
+ 
+             output = self.ulysses_sharding_manager.postprocess_data(data=output)
+             output = output.to('cpu')
+@@ -782,12 +813,21 @@ class ActorRolloutRefWorker(Worker):
+         from search_r1.baselines.training_state import snapshot_worker_to_file
+         identity = dict(identity, rank=self.rank, world_size=self.world_size,
+                         cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))
++        if 'guard_continue_accounting' in identity:
++            expected = identity['guard_continue_accounting']['total_optimizer_calls_per_rank'][str(self.rank)]
++            if (self.actor._fresh_total_committed_optimizer_calls != expected
++                    or self.actor_lr_scheduler.last_epoch != identity['completed_step']):
++                raise ValueError('Checkpoint actual cumulative optimizer/scheduler accounting differs')
+         path = os.path.join(local_path, f'rank-{self.rank:02d}.pt')
+         # At this boundary actor params/optimizer already occupy their configured
+         # offload devices. Restore into that same layout without reinitializing.
+-        return snapshot_worker_to_file(self.actor_module_fsdp, self.actor_optimizer,
++        receipt = snapshot_worker_to_file(self.actor_module_fsdp, self.actor_optimizer,
+                                        self.actor_lr_scheduler, path, identity,
+                                        verify=verify, cuda=True)
++        if 'guard_continue_accounting' in identity:
++            receipt['actual_total_optimizer_calls'] = self.actor._fresh_total_committed_optimizer_calls
++            receipt['observed_adam_steps'] = sorted(set(int(value['step']) for value in self.actor_optimizer.state.values()))
++        return receipt
+ 
+ 
+ class CriticWorker(Worker):

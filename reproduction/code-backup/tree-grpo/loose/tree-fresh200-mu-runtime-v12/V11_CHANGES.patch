@@ -1,0 +1,48 @@
+--- zeroV10/calibration_contract.py
++++ zeroV11/calibration_contract.py
+@@ -297,7 +297,45 @@
+     require(all(record.get(key) == val for key,val in expected.items()), 'Calibration rank identity changed')
+ 
+ 
++OFFICIAL_TOKENIZER_PATH=ROOT/'instruct300/assets/qwen2.5-3b-instruct-aa8e725'
++OFFICIAL_TOKENIZER_SHA='c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539'
++PARENT_TOKENIZER_FILES=('tokenizer.json','tokenizer_config.json','merges.txt','vocab.json')
++_PARENT_VALIDATION_TOKENIZERS={}
++
++def initialize_parent_validation_tokenizer(package):
++    """Initialize authority in THIS process using only fixed trusted package assets.
++
++    No trajectory/ledger field may choose a loader path. Keeping the actual
++    object does not cache validation: frozen source rechecks live identity at
++    every trajectory entrance, including backend, flags, path and file bytes.
++    """
++    require(socket.gethostname().split('.')[0]==LOCAL_NODE, 'Parent tokenizer remains on own h100-9')
++    path=Path(package['official_model_path'])
++    require(str(path)==str(OFFICIAL_TOKENIZER_PATH) and path.resolve(strict=True)==OFFICIAL_TOKENIZER_PATH,
++            'Parent tokenizer must use exact official fixed same-node package path')
++    files=package['model_identity']['files']
++    require(files.get('tokenizer.json')==OFFICIAL_TOKENIZER_SHA
++            and all(type(files.get(name)) is str and re.fullmatch('[0-9a-f]{64}',files[name]) for name in PARENT_TOKENIZER_FILES),
++            'Parent tokenizer fixed official SHA or bound tokenization file pins differ')
++    from build_package_draft import read_regular_bound
++    # Recheck actual bound tokenization files before every entry, even on reuse.
++    for name in PARENT_TOKENIZER_FILES:read_regular_bound(path/name,files[name])
++    key=(str(path),files['tokenizer.json'])
++    tokenizer=_PARENT_VALIDATION_TOKENIZERS.get(key)
++    if tokenizer is None:
++        from verl.utils import hf_tokenizer
++        tokenizer=hf_tokenizer(str(path),local_files_only=True,trust_remote_code=False)
++        for name in PARENT_TOKENIZER_FILES:read_regular_bound(path/name,files[name])
++        from search_r1.baselines.tree_raw_tokens import register_validation_tokenizer
++        identity=register_validation_tokenizer(tokenizer)
++        require(identity['tokenizer_json_sha256']==OFFICIAL_TOKENIZER_SHA
++                and identity['tokenizer_path']==str(path/'tokenizer.json'),
++                'Parent actual loaded tokenizer authority differs from fixed bytes/path')
++        _PARENT_VALIDATION_TOKENIZERS[key]=tokenizer
++    return tokenizer
++
+ def validate_calibration_ready(path, run, package, config_hash):
++    initialize_parent_validation_tokenizer(package)
+     import torch
+     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch
+     value, ready_sha = held_json(path)

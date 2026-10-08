@@ -1,0 +1,212 @@
+{
+  "acceptance": {
+    "actual_3b_training_accepted": false,
+    "actual_behavior_mu_accepted": false,
+    "actual_cleanup_accepted": false,
+    "actual_driver_all8_launch_runtime_config_sha_binding_accepted": true,
+    "actual_first5_accepted": false,
+    "actual_full_configuration_leaf_set_exhaustively_assessed": false,
+    "actual_full_tree_accepted": false,
+    "actual_native24_accepted": false,
+    "actual_ready": false,
+    "actual_required89_runtime_config_values_accepted": true,
+    "actual_resource_cost_accepted": false,
+    "actual_runtime_dynamic_directories_accepted": true,
+    "actual_terminal_accepted": false,
+    "actual_training_accepted": false,
+    "actual_zero_accepted": false,
+    "actual_zero_complete_accepted": false,
+    "actual_zero_ready": false,
+    "long_training_ready": false,
+    "production_thresholds_accepted": false,
+    "training_release": false
+  },
+  "blocking_findings": [],
+  "configured_geometry": {
+    "completed_outer_warmup": 57,
+    "configured_optimizer_opportunities_per_rank_per_outer": 20,
+    "derived_local_actor_microbatch": 2,
+    "derived_local_actor_minibatch": 16,
+    "derived_local_old_logprob_microbatch": 4,
+    "derived_local_reference_microbatch": 4,
+    "geometry_is_configured_not_actual_fullTree_result": true,
+    "global_actor_microbatch": 16,
+    "global_actor_minibatch": 128,
+    "global_old_logprob_microbatch": 32,
+    "global_reference_microbatch": 32,
+    "global_rows": 2560,
+    "leaves_per_question": 5,
+    "local_rows_per_rank": 320,
+    "questions": 512,
+    "root_leaf_quotas": [
+      3,
+      2
+    ],
+    "world_size": 8
+  },
+  "created_utc": "2026-10-06T17:06:18.847Z",
+  "critical_configured_values": {
+    "actor_rollout_ref.actor.optim.lr_warmup_steps": 57,
+    "actor_rollout_ref.actor.optim.total_training_steps": 200,
+    "actor_rollout_ref.actor.policy_safety.dual_clip": 3,
+    "actor_rollout_ref.actor.policy_safety.kl_log_bound": 30,
+    "actor_rollout_ref.actor.policy_safety.target_old_policy_kl": 0.2,
+    "actor_rollout_ref.actor.ppo_micro_batch_size": 16,
+    "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+    "actor_rollout_ref.model.path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+    "actor_rollout_ref.ref.log_prob_micro_batch_size": 32,
+    "actor_rollout_ref.ref.model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+    "actor_rollout_ref.rollout.log_prob_micro_batch_size": 32,
+    "actor_rollout_ref.rollout.sampling_consistency.max_abs_delta": 0.01,
+    "baselines.holdout.manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "baselines.model_repository": "Qwen/Qwen2.5-3B-Instruct",
+    "baselines.model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "baselines.tree.leaf_quotas": [
+      3,
+      2
+    ],
+    "data.train_batch_size": 512,
+    "retriever.url": "http://127.0.0.1:18082/retrieve",
+    "trainer.acceptance_step": 5
+  },
+  "decision": "accepted_partial",
+  "dynamic_output_directories": {
+    "actual": {
+      "runtime_input": {
+        "baselines.holdout.output_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/common-data",
+        "trainer.default_local_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/checkpoints/tree-fresh200"
+      },
+      "runtime_resolved": {
+        "baselines.holdout.output_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/common-data",
+        "trainer.default_local_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/checkpoints/tree-fresh200"
+      }
+    },
+    "expected": {
+      "baselines.holdout.output_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/common-data",
+      "trainer.default_local_dir": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-3317/output/checkpoints/tree-fresh200"
+    },
+    "input_and_resolved_both_exact_run3317": true,
+    "no_remote_fs_existence_or_content_claimed": true
+  },
+  "evaluation_scope": {
+    "dev512_complete_score_accepted": false,
+    "dev512_completion_verified": false,
+    "no_evaluation_request_count_or_completion_recomputed_this_review": true,
+    "submitted_request_count_used_as_completion_proof": false
+  },
+  "evidence": {
+    "cpu_preparation": {
+      "bytes": 10152,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/actual-cpu-v12/PREPARATION.json",
+      "sha256": "bddc7dbd8fe73cd823340e31dea9bed97b55f0f415d291d102bb02e38818553f"
+    },
+    "fresh_initialization": {
+      "bytes": 9469,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/actual-zero-dispatch/native3317/output/fresh-initialization.json",
+      "sha256": "9cddb8629d040345f7005d2c6152b98383f405a7432995aebca264c032a6b981"
+    },
+    "launch_manifest": {
+      "bytes": 2889,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/actual-zero-dispatch/native3317/launch-manifest.json",
+      "sha256": "f389cdd027939c846789adee09fac356e63fe19b656fce3b74fa5c4ab149c462"
+    },
+    "runtime_input": {
+      "bytes": 7869,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/actual-zero-dispatch/native3317/input-config.yaml",
+      "sha256": "d8ea3154cd2d4bc2b67ce255297e37a14c711f80edecc83362047144d3647584"
+    },
+    "runtime_resolved": {
+      "bytes": 7946,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/actual-zero-dispatch/native3317/resolved.yaml",
+      "sha256": "8b5b2d0191f95582973b5b119aca61708d1eb27c2d56714324910297945bf79b"
+    }
+  },
+  "extra_delta_scope": "The single bapo.stage_validation_files null-to-common-data path resolution lies outside the required89 comparisons. It is reported verbatim; no dataset read or BAPO execution is claimed.",
+  "identity_binding": {
+    "all_eight_worker_world_size8": true,
+    "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+    "complete_parameter_finiteness_proof_claimed": false,
+    "configured_model_path_matches_expected_official_cpu_path": true,
+    "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "driver_all8_job_run_code_model_data_identities_match": true,
+    "full_model_parameter_bytes_verified": false,
+    "hash_equals_actual_fresh_driver": true,
+    "hash_equals_actual_launch_manifest": true,
+    "hash_equals_all_eight_worker_records": true,
+    "job_id": "3317",
+    "launch_data_identity_matches_driver_and_cpu_preparation": true,
+    "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+    "run_id": "tree-fresh200-3317",
+    "runtime_config_sha256": "8b5b2d0191f95582973b5b119aca61708d1eb27c2d56714324910297945bf79b"
+  },
+  "input_to_resolved_extra_delta": [
+    {
+      "input": null,
+      "key": "baselines.bapo.stage_validation_files",
+      "resolved": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/stage.parquet"
+    }
+  ],
+  "launch_manifest_scope": {
+    "allocated_cpus": 192,
+    "allocated_gpus": 8,
+    "optimizer_committed_as_recorded": null,
+    "requested_cpus": 32,
+    "scheduler_advanced_as_recorded": null,
+    "status_as_recorded": "FAILED",
+    "status_is_not_scheduler_terminal_evidence": true,
+    "terminal_failure_or_success_not_inferred": true
+  },
+  "pending": [
+    "Current native24/fullTree/token-prefix/effective-mu result evidence and all zero-write boundaries remain required for whole-zero review.",
+    "Actual terminal outcome, cost/resource coverage, own-cgroup cleanup and protected8 preservation remain required.",
+    "Dev512 requests submitted or partial samples cannot establish complete512 coverage or final scoring.",
+    "Bootstrap threshold assessment must bind actual zero monitor observations; first5 or production6..200 remain unaccepted."
+  ],
+  "required89_comparison": {
+    "actual_runtime_resolved_bytes_sha256_verified": true,
+    "all_required89_values_semantically_equal_in_both_files": true,
+    "cpu_and_runtime_whole_file_hashes_claimed_equal": false,
+    "cpu_preparation_resolved_config_sha256": "16f3250e2379b5c2d23ff6c8f55380a6267967fbff80a0bc7e62a712c7184196",
+    "expected_values_source": "Actual CPU PREPARATION.json checked_resolved_values",
+    "numeric_int_float_equivalence_allowed_boolean_not_coerced": true,
+    "runtime_input": {
+      "checked_value_count": 89,
+      "mismatches": []
+    },
+    "runtime_resolved": {
+      "checked_value_count": 89,
+      "mismatches": []
+    },
+    "runtime_resolved_config_sha256": "8b5b2d0191f95582973b5b119aca61708d1eb27c2d56714324910297945bf79b",
+    "whole_file_sha_equality_not_required_dynamic_run_directories_verified": true
+  },
+  "reviewer_context": {
+    "fork_turns": "none",
+    "inherited_parent_conversation": false,
+    "prior_artifacts_modified": false,
+    "prior_fresh8_partial_review_sha256": "8fb93cf83b9bc654897715f12ac3300d2fce66f72968ef886b334d48c8aa1164",
+    "prospective_review_receipt_sha256": "a0edc79188c6022e55b94197088a928ce7386ba38e36a61cedf47c21bcc6563a",
+    "same_actual_none_reviewer_as_prospective_and_initialization_reviews": true
+  },
+  "reviewer_execution": {
+    "existing_external_pyyaml_safe_load_only": true,
+    "local_external_parser_only_no_project_imports": true,
+    "local_python_B_metadata_parser_process_used": true,
+    "model_weight_data_pt_or_raw_tokens_accessed": false,
+    "network_used": false,
+    "only_new_partial_review_artifact_written": true,
+    "parser": {
+      "method": "yaml.safe_load",
+      "package": "PyYAML",
+      "project_imports": false,
+      "version": "6.0.3"
+    },
+    "project_function_main_or_runtime_executed": false,
+    "remote_executed": false,
+    "source_or_native_evidence_modified": false,
+    "source_tests_or_historical_tests_rerun": false
+  },
+  "schema_version": 1,
+  "scope": "Actual run3317 input/resolved YAML required89 values, runtime output directories and driver/all8/launch config identity only; no actual zero completion or production release",
+  "status": "ACTUAL3317_RUNTIME_CONFIG_PARTIAL_REVIEW_ACCEPTED_NOT_ZERO_COMPLETE"
+}

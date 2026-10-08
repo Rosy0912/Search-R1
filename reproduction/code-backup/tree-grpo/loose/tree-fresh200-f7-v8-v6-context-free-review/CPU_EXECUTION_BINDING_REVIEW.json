@@ -1,0 +1,574 @@
+{
+  "actual_3b_training_accepted": false,
+  "actual_cpu_preparation_executed": false,
+  "actual_execution_success_signed": false,
+  "actual_gpu_accepted": false,
+  "actual_gpu_executed": false,
+  "actual_historical_PT_loaded": false,
+  "actual_new_complete_outers": 0,
+  "actual_new_optimizer_writes": 0,
+  "actual_official_assets_read_by_reviewer": false,
+  "actual_remote_executed": false,
+  "actual_remote_path_existence_observed": false,
+  "actual_slurm_executed": false,
+  "actual_tokenizer_preflight_executed": false,
+  "actual_upload_executed": false,
+  "actual_zero_READY": false,
+  "all_members_regular_utf8_text_no_symlink_hardlink_or_pax": true,
+  "archive_regular_file_count": 252,
+  "artifacts": {
+    "ACTUAL_BYTE_BINDINGS_PROOF.json": {
+      "bytes": 74069,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/ACTUAL_BYTE_BINDINGS_PROOF.json",
+      "sha256": "8ec0038ad17cdef51b2a6fc5d4896a4e1cbd3b37e927d1a0500524b660dd114d"
+    },
+    "ACTUAL_BYTE_BINDING_RUN.stderr": {
+      "bytes": 0,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/ACTUAL_BYTE_BINDING_RUN.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ACTUAL_BYTE_BINDING_RUN.stdout": {
+      "bytes": 238,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/ACTUAL_BYTE_BINDING_RUN.stdout",
+      "sha256": "32ad16319595c932346c2d52c3c395e0d59e6c334d4ad4994398b4062dd2319e"
+    },
+    "INITIAL_BYTE_BINDING_ACTUAL.stderr": {
+      "bytes": 423,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/INITIAL_BYTE_BINDING_ACTUAL.stderr",
+      "sha256": "49297605ec3d054b2a42ce9c7ed92d5f07df76a267722ca1c753d52b6f60c81c"
+    },
+    "INITIAL_BYTE_BINDING_ACTUAL.stdout": {
+      "bytes": 0,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/INITIAL_BYTE_BINDING_ACTUAL.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "INITIAL_BYTE_BINDING_EXIT.json": {
+      "bytes": 269,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/INITIAL_BYTE_BINDING_EXIT.json",
+      "sha256": "1eddd19776ebaf6ef6ed80092973f50ecc5293ccd79ebc32acc899965ee9dcba"
+    },
+    "INITIAL_BYTE_BINDING_RUNNER.py": {
+      "bytes": 13138,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/INITIAL_BYTE_BINDING_RUNNER.py",
+      "sha256": "f346ca4eba0228694792152b2f151063ade6c81e00cc03be72db8805c62e4e4c"
+    },
+    "OUTER_ROUTE_BINDING_PROOF.json": {
+      "bytes": 14329,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/OUTER_ROUTE_BINDING_PROOF.json",
+      "sha256": "daf04e408626bc22b5caa16502385a0889bfa462600f9ceea170c7d4f8375bc8"
+    },
+    "REPORT.md": {
+      "bytes": 2482,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/REPORT.md",
+      "sha256": "5d8cbea244811cea6246cba4d7d85275d19805c731ea1ffed075ac51555d5e43"
+    },
+    "independent_child_argv_proof": {
+      "bytes": 24369,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/helper-v6-independent/cpu-execution-binding/CPU_ARGV_STATIC_BYTE_PROOF.json",
+      "sha256": "849533af98dff3e1ddf22b1c5324a14e7f5d53cce2de10ffe58ad07e13fb3ab4"
+    },
+    "run_execution_binding_read_review.py": {
+      "bytes": 13308,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/cpu-execution-binding/run_execution_binding_read_review.py",
+      "sha256": "2a5fac2ab755ee1775626a4bf6c0d71eab6f1b9a8cd5434a007474dd9a64b76d"
+    }
+  },
+  "asset_payload_count_in_archive": 0,
+  "byte_binding_accepted": true,
+  "code_archive": {
+    "bytes": 481889,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CODE_PACKAGE.tar.gz",
+    "sha256": "44e9c413dccbe17a274fd5bebeadb656643a56f207acfb7b8dcb155b80bc7e12"
+  },
+  "code_manifest": {
+    "bytes": 141273,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/package-code-only/manifest.json",
+    "sha256": "aafbf0ff818f38b6cfab3e97b99889902b28ff26a63ffc102296ef6f828151be"
+  },
+  "created_utc": "2026-10-06T12:00:24.952542+00:00",
+  "cwd": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2",
+  "execution_allowed": {
+    "asset_transfer": false,
+    "exact_code_metadata_staging": true,
+    "exact_historical5120_tokenizer_parser_preflight": true,
+    "exact_same_node_cpu_preparation": true,
+    "gpu_execution": false,
+    "model_forward_or_generation": false,
+    "old_weights_Adam_scheduler_RNG_recovery": false,
+    "other_route_or_node": false,
+    "production": false,
+    "slurm_submission": false,
+    "training": false,
+    "zero_READY_release": false
+  },
+  "execution_order": [
+    "stage",
+    "prepare",
+    "historical_tokenizer_preflight"
+  ],
+  "execution_packet": {
+    "bytes": 12304,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CPU_EXECUTION_PACKET.json",
+    "sha256": "c8355641bfa1bb35ef057db050c775cec7b75ffcc58adb1a2a4127dd752e1f95"
+  },
+  "findings": [],
+  "goal_complete": false,
+  "helper_files": {
+    "fresh200_dispatch_common.py": "8c72c1946ec1fe35128768dadc2cc074369ea2e44af83bc9812fce749e61e379",
+    "prepare_tree_fresh200_package.py": "03e70aa955f1c3a7cac7d648e60f07ddd7a14c9a310ae867943b89b9761bf079",
+    "submit_tree_fresh200_once.py": "8f180d80d5128f36cc414dc1aef005ab3e1456dbfda0710fa822486344dd8d26"
+  },
+  "helper_review_receipt": {
+    "bytes": 10255,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/HELPER_V6_RECEIPT.json",
+    "sha256": "14d2986476edef7709a88a239890905dc14fdb28db4de5f3ad820c8f3ae14aaf"
+  },
+  "historical_expected_rows": 5120,
+  "historical_jobs": [
+    "3295",
+    "3296"
+  ],
+  "historical_rank_ready_metadata16": [
+    {
+      "bytes": 31001493,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-00/ready.json",
+      "rank": 0,
+      "sha256": "47c3deb63a13f0af2b304a0b9cd3b74e4cf411b06ac7fe2e9fbf993c77401156"
+    },
+    {
+      "bytes": 30471652,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-01/ready.json",
+      "rank": 1,
+      "sha256": "2c8af436ea2ab4137159b0a267bc9517a2d0fc6c2510836d5600a16b60518736"
+    },
+    {
+      "bytes": 30881187,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-02/ready.json",
+      "rank": 2,
+      "sha256": "b4e54d2dfcda78904768f2f32b4fa67ee37fb661d713b2fe14580804f30844f9"
+    },
+    {
+      "bytes": 30647327,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-03/ready.json",
+      "rank": 3,
+      "sha256": "95db015839c1600e439d588ab701703eadc5b798d147d1d9d08801739c90ce2f"
+    },
+    {
+      "bytes": 31178979,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-04/ready.json",
+      "rank": 4,
+      "sha256": "84e1076037c27e0e3e3c9ed0e23d85526d46752fa72ecebe9205d2f78f4c5600"
+    },
+    {
+      "bytes": 30436311,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-05/ready.json",
+      "rank": 5,
+      "sha256": "9bf7755cf2737e8451ed37aecaf13fd26c7aecea2250e15679037f14b150b5b2"
+    },
+    {
+      "bytes": 31202203,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-06/ready.json",
+      "rank": 6,
+      "sha256": "549d9453a72a4377fafc3cee49235413936fd7f39d9d560772ef05f85166f8bf"
+    },
+    {
+      "bytes": 30927715,
+      "job_id": "3295",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-07/ready.json",
+      "rank": 7,
+      "sha256": "8274f26d14a6c4baa5d43e92ce518654a882d5afc8013e2cf0ca7a5835761536"
+    },
+    {
+      "bytes": 31192143,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-00/ready.json",
+      "rank": 0,
+      "sha256": "ab16a97a30bca31330dc41f23a92615b603daaf336b22afd30b5e601d5185188"
+    },
+    {
+      "bytes": 30662190,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-01/ready.json",
+      "rank": 1,
+      "sha256": "e7a7370062edffe753e66fbae42f9e97d1df0ce92501e463e68397a1b55172f7"
+    },
+    {
+      "bytes": 31071744,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-02/ready.json",
+      "rank": 2,
+      "sha256": "f545336854ab0943ab8ead2a43597e7e621c278972d623133c40f4ca954fc7bc"
+    },
+    {
+      "bytes": 30837894,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-03/ready.json",
+      "rank": 3,
+      "sha256": "7e781b30c748c72d612fa5f80a5f79feaf008b8a766cba0ba748272879cce383"
+    },
+    {
+      "bytes": 31466074,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-04/ready.json",
+      "rank": 4,
+      "sha256": "bd79eadf80b78bc2c554d67d75e99fad86dc10d7a348a5d8e30d2be498b97d57"
+    },
+    {
+      "bytes": 30625719,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-05/ready.json",
+      "rank": 5,
+      "sha256": "44519f9f9c482bb03724b216b7dae230ab1754a53a5e38c86ac49a98e2ffc14a"
+    },
+    {
+      "bytes": 31392703,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-06/ready.json",
+      "rank": 6,
+      "sha256": "f6992d5130bddc1efb1a1a7c67960a42a833f051b33bbf862dd4a8219de138bd"
+    },
+    {
+      "bytes": 31118332,
+      "job_id": "3296",
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3296/gpu-records/rank-07/ready.json",
+      "rank": 7,
+      "sha256": "5aa2bd4a7966a25eaeb9d49093ff3e3aa640be1c98f8d573422f32b249c2bf71"
+    }
+  ],
+  "historical_raw_helper": {
+    "bytes": 13196,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/package-code-only/source/repo/search_r1/baselines/tree_raw_tokens.py",
+    "sha256": "22fa7b92e9aa297c87e05b03cea51c31a26d0e2ad7104b226ab61e325d140380"
+  },
+  "historical_raw_plan": {
+    "bytes": 5838,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/HISTORICAL_RAW_CPU_PLAN_DRAFT.json",
+    "sha256": "7227b2586bc584d05613b8b5c5d54657812ff1978f435d8916e60faa00443bda"
+  },
+  "historical_review_refs_metadata_only": {
+    "3295": {
+      "bytes": 20121,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_WINDOW_GPU3295_INDEPENDENT_FULL_RAW_RECEIPT.json",
+      "sha256": "c8f18426ba67c4c1e8c898486a57207459b52c6fb33247aa3d955fb0dfb2e00a"
+    },
+    "3296": {
+      "bytes": 33750,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-window-final-review/actual3296/MEASUREMENT_RECEIPT.json",
+      "sha256": "3be4923eef0171021b84753d896d97bf130b172a958aaf6815f76a43f3ea709e"
+    }
+  },
+  "limits": [
+    "Only these exact SHA-bound files, targets and complete ARGV arrays via default existing h100-9 management route are accepted",
+    "CPU preparation may read/hash all existing same-node official model/tokenizer bytes and fixed data; no model tensor load/forward, historical PT or asset movement",
+    "Actual CPU/official tokenizer/data/historical file/host/path/dependency outcomes remain unobserved and must be retained, including rejection/unknown metadata",
+    "Expected historical5120 rows do not assert parser success or fresh Tree capacity/probability acceptance",
+    "No GPU/Slurm/zero READY/production release; V8 production200 remains unimplemented and separate",
+    "Original no-clobber and power-loss durability limits remain; no automatic retry with changed paths or bypasses"
+  ],
+  "long_training_ready": false,
+  "management_route": {
+    "bytes": 1547,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+    "sha256": "6f715639275c826afc1736863a12a2da0268b98617f174f3d29efa18b682b30b"
+  },
+  "management_route_argv": {
+    "bytes": 6733,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CPU_MANAGEMENT_ROUTE_ARGV.json",
+    "sha256": "4837d17caf3c49014cdac3f75e8a4a211ac11c81629a98f4c6bb06ba9baaa018"
+  },
+  "manifest_actual_deltas": {
+    "probability_calibration": {
+      "after": {
+        "environment": {
+          "TREE_FRESH_INITIALIZATION_ONLY": "1",
+          "TREE_PPO_CALIBRATION_ONLY": "1"
+        },
+        "proposed_source_interface_receipt_sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017",
+        "ready_relative_path": "output/probability-calibration/ready.json",
+        "ready_status": "FRESH_BEHAVIOR_MU_CALIBRATION_OBSERVED_ZERO_WRITES",
+        "source_interface_reviewed": true
+      },
+      "before": {
+        "environment": {
+          "TREE_FRESH_INITIALIZATION_ONLY": "1",
+          "TREE_PPO_CALIBRATION_ONLY": "1"
+        },
+        "proposed_source_interface_receipt_sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017",
+        "ready_relative_path": "output/probability-calibration/ready.json",
+        "ready_status": "FRESH_BEHAVIOR_MU_CALIBRATION_OBSERVED_ZERO_WRITES",
+        "source_interface_reviewed": false
+      }
+    },
+    "scope": {
+      "after": "FROZEN_PENDING_INDEPENDENT_FRESH200_MU_PRE_DISPATCH_REVIEW",
+      "before": "LOCAL_DRAFT_NOT_RELEASED"
+    },
+    "source_interface_review_scope": {
+      "after": "f7/V8 source and CPU capability independently accepted; no GPU or training acceptance",
+      "before": null
+    },
+    "status": {
+      "after": "FROZEN_CPU_PREPARATION_PENDING_ACTUAL_BYTE_BINDING_REVIEW",
+      "before": "LOCAL_DRAFT_PACKAGE_MATERIALIZED_NOT_RELEASED"
+    }
+  },
+  "node": "h100-9",
+  "node_override_argument_present": false,
+  "original_sampler_actor_gate_accepted": false,
+  "outer_local_argv": {
+    "prepare_local_argv": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/prepare_tree_fresh200_package.py --archive /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/CODE_PACKAGE.tar.gz --archive-sha 44e9c413dccbe17a274fd5bebeadb656643a56f207acfb7b8dcb155b80bc7e12 --target /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8 --manifest-sha aafbf0ff818f38b6cfab3e97b99889902b28ff26a63ffc102296ef6f828151be --inputs /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/PREPARATION_INPUTS.json --inputs-sha c5c714ffb0a6eb82f59cd53373c3fe0cd77a5b025a9ecf94deae5e285113b61e --helper-review /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HELPER_SOURCE_REVIEW.json --helper-review-sha 14d2986476edef7709a88a239890905dc14fdb28db4de5f3ad820c8f3ae14aaf"
+    ],
+    "stage_local_argv": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "--stdin",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CODE_METADATA_ENVELOPE.json",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B -c '\"\"\"Stage a byte-bound code/metadata envelope on h100-9; execute nothing.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport socket\nimport sys\n\n\nDESTINATION = Path('\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006'\"'\"')\nFILES = {\n    '\"'\"'CODE_PACKAGE.tar.gz'\"'\"', '\"'\"'PREPARATION_INPUTS.json'\"'\"', '\"'\"'HISTORICAL_RAW_CPU_PLAN.json'\"'\"',\n    '\"'\"'fresh200_dispatch_common.py'\"'\"', '\"'\"'prepare_tree_fresh200_package.py'\"'\"',\n    '\"'\"'submit_tree_fresh200_once.py'\"'\"', '\"'\"'SOURCE_INTERFACE_RECEIPT.json'\"'\"',\n    '\"'\"'SOURCE_CONTEXT_FREE_RECEIPT.json'\"'\"', '\"'\"'SOURCE_BYTE_AUDIT.json'\"'\"',\n    '\"'\"'HELPER_SOURCE_REVIEW.json'\"'\"',\n}\n\n\ndef main():\n    if socket.gethostname().split('\"'\"'.'\"'\"')[0] != '\"'\"'h100-9'\"'\"':\n        raise ValueError('\"'\"'Only the existing h100-9 management route is allowed'\"'\"')\n    if len(sys.argv) != 2 or len(sys.argv[1]) != 64:\n        raise ValueError('\"'\"'Exact envelope SHA256 is required'\"'\"')\n    raw = sys.stdin.buffer.read(64 * 1024 * 1024 + 1)\n    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != sys.argv[1]:\n        raise ValueError('\"'\"'Envelope size or SHA256 differs'\"'\"')\n    envelope = json.loads(raw)\n    if envelope['\"'\"'status'\"'\"'] != '\"'\"'REVIEWED_CODE_METADATA_CPU_STAGE_ONLY'\"'\"' or set(envelope['\"'\"'files'\"'\"']) != FILES:\n        raise ValueError('\"'\"'Exact code/metadata-only inventory required'\"'\"')\n    contents = {}\n    total = 0\n    for name, record in envelope['\"'\"'files'\"'\"'].items():\n        content = base64.b64decode(record['\"'\"'base64'\"'\"'], validate=True)\n        total += len(content)\n        if total > 32 * 1024 * 1024 or len(content) != record['\"'\"'bytes'\"'\"'] or hashlib.sha256(content).hexdigest() != record['\"'\"'sha256'\"'\"']:\n            raise ValueError('\"'\"'Envelope member size/SHA256 differs: '\"'\"' + name)\n        contents[name] = content\n    if DESTINATION.parent.resolve() != DESTINATION.parent or DESTINATION.parent.name != '\"'\"'instruct300'\"'\"':\n        raise ValueError('\"'\"'Staging parent must be the existing task directory without symlinks'\"'\"')\n    os.umask(0o077)\n    DESTINATION.mkdir(exist_ok=False)\n    for name in sorted(contents):\n        with (DESTINATION / name).open('\"'\"'xb'\"'\"') as stream:\n            stream.write(contents[name])\n            stream.flush()\n            os.fsync(stream.fileno())\n    receipt = {\n        '\"'\"'status'\"'\"': '\"'\"'CODE_METADATA_STAGED_ONLY_NOT_EXECUTED'\"'\"',\n        '\"'\"'directory'\"'\"': str(DESTINATION), '\"'\"'envelope_sha256'\"'\"': sys.argv[1],\n        '\"'\"'files'\"'\"': {name: {'\"'\"'sha256'\"'\"': hashlib.sha256(content).hexdigest(), '\"'\"'bytes'\"'\"': len(content)}\n                  for name, content in contents.items()},\n        '\"'\"'asset_transfer'\"'\"': False, '\"'\"'cuda_initialized'\"'\"': False,\n        '\"'\"'slurm_submitted'\"'\"': False, '\"'\"'optimizer_writes'\"'\"': 0,\n    }\n    with (DESTINATION / '\"'\"'STAGING_RECEIPT.json'\"'\"').open('\"'\"'x'\"'\"') as stream:\n        json.dump(receipt, stream, indent=2, sort_keys=True)\n        stream.flush()\n        os.fsync(stream.fileno())\n    print(json.dumps(receipt, sort_keys=True), flush=True)\n\n\nif __name__ == '\"'\"'__main__'\"'\"':\n    main()\n' 12a75221c8d7db2f4e75be7dbe2e61af36183f6f241c4c5e1118db4f840f9b9e"
+    ],
+    "tokenizer_local_argv": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8/tokenizer_raw_preflight.py --plan /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HISTORICAL_RAW_CPU_PLAN.json --plan-sha 7227b2586bc584d05613b8b5c5d54657812ff1978f435d8916e60faa00443bda --output /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json"
+    ]
+  },
+  "preparation_inputs": {
+    "bytes": 1525,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/PREPARATION_INPUTS.json",
+    "sha256": "c5c714ffb0a6eb82f59cd53373c3fe0cd77a5b025a9ecf94deae5e285113b61e"
+  },
+  "preparation_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8",
+  "prepare_remote_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/prepare_tree_fresh200_package.py",
+    "--archive",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/CODE_PACKAGE.tar.gz",
+    "--archive-sha",
+    "44e9c413dccbe17a274fd5bebeadb656643a56f207acfb7b8dcb155b80bc7e12",
+    "--target",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8",
+    "--manifest-sha",
+    "aafbf0ff818f38b6cfab3e97b99889902b28ff26a63ffc102296ef6f828151be",
+    "--inputs",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/PREPARATION_INPUTS.json",
+    "--inputs-sha",
+    "c5c714ffb0a6eb82f59cd53373c3fe0cd77a5b025a9ecf94deae5e285113b61e",
+    "--helper-review",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HELPER_SOURCE_REVIEW.json",
+    "--helper-review-sha",
+    "14d2986476edef7709a88a239890905dc14fdb28db4de5f3ad820c8f3ae14aaf"
+  ],
+  "preserved_local_draft_manifest": {
+    "bytes": 141104,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/LOCAL_DRAFT_MANIFEST.json",
+    "sha256": "2162cad0fb2dcb9d5d474d8f44506eb9f658096c705fc2a98bf0570ca371bc03"
+  },
+  "prior_sealed_artifacts_unchanged": true,
+  "proceed_to_next_operation_requires_prior_exact_operation_success": true,
+  "production_thresholds_accepted": false,
+  "remote_no_clobber_enforced_by_reviewed_source": true,
+  "review_status": "completed",
+  "reviewer_context": {
+    "child_fork_turns": "none",
+    "continued_same_independent_reviewer": true,
+    "fork_turns": "none",
+    "inherited_parent_conversation": false,
+    "owner_PASS_not_used_as_independent_verdict": true
+  },
+  "runtime_entries4": {
+    "run_tree.sh": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "validation_cost_entry.py": "51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a",
+    "validation_cost_hooks_instruct300.py": "c4c49745b4892f169b601cbc5f27fbcab7fe9c154ae7bc4f508ba82c4440bbd1"
+  },
+  "schema_version": 1,
+  "source_byte_audit": {
+    "bytes": 30632,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/BYTE_AUDIT.json",
+    "sha256": "e13b4828490988d089581500352207e109ac38324a4f44542471503a95e52edf"
+  },
+  "source_clean_head": "f7e762af365a2beb9429e4cb3b6d5f0d808d4d7d",
+  "source_context_receipt": {
+    "bytes": 11114,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/RECEIPT.json",
+    "sha256": "6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44"
+  },
+  "source_excluded_names_metadata_only_not_loaded": 501,
+  "source_files19": {
+    "search_r1/baselines/controller.py": "2a1c5fdf6dd8dc265ebcfb3ef3717f5a9f522e0832c506cbd0e94d820a16eda6",
+    "search_r1/baselines/gradient_norm.py": "6d0b68fb35b26dcf125732c5da586425238b3130c7898fb63d779920413c664b",
+    "search_r1/baselines/partial_worker_state.py": "091a6b2efcc4d18ee4fe8e72c3ff7d74c5475243f662de552c67324b9f6546ea",
+    "search_r1/baselines/policy_safety_runtime.py": "13ef4c832335b4abda4caa5c15c0fe345275558f97c60ca9dfa52ead74b14208",
+    "search_r1/baselines/rollout.py": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "search_r1/baselines/training_state.py": "50cf8ab7eb37f198cc2833c20498b12ce6e2d8eacd6b21ed5e7a2357820f62d8",
+    "search_r1/baselines/trajectory_log.py": "93ba273f28949a0606c6ea468f297723187831dc760b7205d9c87d9730827b6f",
+    "search_r1/baselines/tree_behavior_mu.py": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+    "search_r1/baselines/tree_fresh200.py": "b97bd761679b822935696a219100efa4847d2b4466e588c4bd1258f2d216b53c",
+    "search_r1/baselines/tree_guard_continue.py": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "search_r1/baselines/tree_partial_state.py": "8e3e046c4febe7cbe841b92ca633a2e09c85ed3953ed98b9603ab6993b86ace8",
+    "search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b",
+    "search_r1/baselines/tree_raw_tokens.py": "22fa7b92e9aa297c87e05b03cea51c31a26d0e2ad7104b226ab61e325d140380",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+    "verl/trainer/config/ppo_tree_fresh200.yaml": "b7d68e3bce6247be1424965d6bcfe7a3e4723ca1428fedcd6847c3d384649d75",
+    "verl/trainer/ppo/ray_trainer.py": "55208794e8dfc14d9f08c5a45b8886b4d58889b5048daec8acd8b177ad9703f2",
+    "verl/workers/actor/dp_actor.py": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+    "verl/workers/fsdp_workers.py": "2163b98f5e51a0f3e5e66eaf3bd9e69bdf01096f1e6f64d4e4c40895bc9399e7"
+  },
+  "source_interface_receipt": {
+    "bytes": 18987,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-guard-continue-owner/REPAIRED_SOURCE_INTERFACE_CPU_RECEIPT.json",
+    "sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017"
+  },
+  "source_selected_count": 236,
+  "stage_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006",
+  "stage_envelope": {
+    "bytes": 802934,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CODE_METADATA_ENVELOPE.json",
+    "sha256": "12a75221c8d7db2f4e75be7dbe2e61af36183f6f241c4c5e1118db4f840f9b9e"
+  },
+  "stage_files10": {
+    "CODE_PACKAGE.tar.gz": {
+      "bytes": 481889,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/CODE_PACKAGE.tar.gz",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/CODE_PACKAGE.tar.gz",
+      "sha256": "44e9c413dccbe17a274fd5bebeadb656643a56f207acfb7b8dcb155b80bc7e12"
+    },
+    "HELPER_SOURCE_REVIEW.json": {
+      "bytes": 10255,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/HELPER_V6_RECEIPT.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HELPER_SOURCE_REVIEW.json",
+      "sha256": "14d2986476edef7709a88a239890905dc14fdb28db4de5f3ad820c8f3ae14aaf"
+    },
+    "HISTORICAL_RAW_CPU_PLAN.json": {
+      "bytes": 5838,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/HISTORICAL_RAW_CPU_PLAN_DRAFT.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HISTORICAL_RAW_CPU_PLAN.json",
+      "sha256": "7227b2586bc584d05613b8b5c5d54657812ff1978f435d8916e60faa00443bda"
+    },
+    "PREPARATION_INPUTS.json": {
+      "bytes": 1525,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/PREPARATION_INPUTS.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/PREPARATION_INPUTS.json",
+      "sha256": "c5c714ffb0a6eb82f59cd53373c3fe0cd77a5b025a9ecf94deae5e285113b61e"
+    },
+    "SOURCE_BYTE_AUDIT.json": {
+      "bytes": 30632,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/BYTE_AUDIT.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_BYTE_AUDIT.json",
+      "sha256": "e13b4828490988d089581500352207e109ac38324a4f44542471503a95e52edf"
+    },
+    "SOURCE_CONTEXT_FREE_RECEIPT.json": {
+      "bytes": 11114,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/RECEIPT.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_CONTEXT_FREE_RECEIPT.json",
+      "sha256": "6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44"
+    },
+    "SOURCE_INTERFACE_RECEIPT.json": {
+      "bytes": 18987,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-guard-continue-owner/REPAIRED_SOURCE_INTERFACE_CPU_RECEIPT.json",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_INTERFACE_RECEIPT.json",
+      "sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017"
+    },
+    "fresh200_dispatch_common.py": {
+      "bytes": 19130,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-v6/fresh200_dispatch_common.py",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/fresh200_dispatch_common.py",
+      "sha256": "8c72c1946ec1fe35128768dadc2cc074369ea2e44af83bc9812fce749e61e379"
+    },
+    "prepare_tree_fresh200_package.py": {
+      "bytes": 7063,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-v6/prepare_tree_fresh200_package.py",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/prepare_tree_fresh200_package.py",
+      "sha256": "03e70aa955f1c3a7cac7d648e60f07ddd7a14c9a310ae867943b89b9761bf079"
+    },
+    "submit_tree_fresh200_once.py": {
+      "bytes": 14712,
+      "local_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-v6/submit_tree_fresh200_once.py",
+      "matches_envelope": true,
+      "remote_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/submit_tree_fresh200_once.py",
+      "sha256": "8f180d80d5128f36cc414dc1aef005ab3e1456dbfda0710fa822486344dd8d26"
+    }
+  },
+  "stage_remote_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B",
+    "-c",
+    "\"\"\"Stage a byte-bound code/metadata envelope on h100-9; execute nothing.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport socket\nimport sys\n\n\nDESTINATION = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006')\nFILES = {\n    'CODE_PACKAGE.tar.gz', 'PREPARATION_INPUTS.json', 'HISTORICAL_RAW_CPU_PLAN.json',\n    'fresh200_dispatch_common.py', 'prepare_tree_fresh200_package.py',\n    'submit_tree_fresh200_once.py', 'SOURCE_INTERFACE_RECEIPT.json',\n    'SOURCE_CONTEXT_FREE_RECEIPT.json', 'SOURCE_BYTE_AUDIT.json',\n    'HELPER_SOURCE_REVIEW.json',\n}\n\n\ndef main():\n    if socket.gethostname().split('.')[0] != 'h100-9':\n        raise ValueError('Only the existing h100-9 management route is allowed')\n    if len(sys.argv) != 2 or len(sys.argv[1]) != 64:\n        raise ValueError('Exact envelope SHA256 is required')\n    raw = sys.stdin.buffer.read(64 * 1024 * 1024 + 1)\n    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != sys.argv[1]:\n        raise ValueError('Envelope size or SHA256 differs')\n    envelope = json.loads(raw)\n    if envelope['status'] != 'REVIEWED_CODE_METADATA_CPU_STAGE_ONLY' or set(envelope['files']) != FILES:\n        raise ValueError('Exact code/metadata-only inventory required')\n    contents = {}\n    total = 0\n    for name, record in envelope['files'].items():\n        content = base64.b64decode(record['base64'], validate=True)\n        total += len(content)\n        if total > 32 * 1024 * 1024 or len(content) != record['bytes'] or hashlib.sha256(content).hexdigest() != record['sha256']:\n            raise ValueError('Envelope member size/SHA256 differs: ' + name)\n        contents[name] = content\n    if DESTINATION.parent.resolve() != DESTINATION.parent or DESTINATION.parent.name != 'instruct300':\n        raise ValueError('Staging parent must be the existing task directory without symlinks')\n    os.umask(0o077)\n    DESTINATION.mkdir(exist_ok=False)\n    for name in sorted(contents):\n        with (DESTINATION / name).open('xb') as stream:\n            stream.write(contents[name])\n            stream.flush()\n            os.fsync(stream.fileno())\n    receipt = {\n        'status': 'CODE_METADATA_STAGED_ONLY_NOT_EXECUTED',\n        'directory': str(DESTINATION), 'envelope_sha256': sys.argv[1],\n        'files': {name: {'sha256': hashlib.sha256(content).hexdigest(), 'bytes': len(content)}\n                  for name, content in contents.items()},\n        'asset_transfer': False, 'cuda_initialized': False,\n        'slurm_submitted': False, 'optimizer_writes': 0,\n    }\n    with (DESTINATION / 'STAGING_RECEIPT.json').open('x') as stream:\n        json.dump(receipt, stream, indent=2, sort_keys=True)\n        stream.flush()\n        os.fsync(stream.fileno())\n    print(json.dumps(receipt, sort_keys=True), flush=True)\n\n\nif __name__ == '__main__':\n    main()\n",
+    "12a75221c8d7db2f4e75be7dbe2e61af36183f6f241c4c5e1118db4f840f9b9e"
+  ],
+  "stage_source": {
+    "bytes": 2878,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-f7-v8/stage_code_metadata_cpu.py",
+    "sha256": "e0d2d40c99e34c105acde3f0c8917a9471038068d23fec67f74517517bad5e86"
+  },
+  "status": "FRESH200_EXACT_SAME_H100_9_CPU_EXECUTION_BYTE_BINDING_REVIEWED",
+  "tokenizer_preflight_output": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+  "tokenizer_remote_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8/tokenizer_raw_preflight.py",
+    "--plan",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/HISTORICAL_RAW_CPU_PLAN.json",
+    "--plan-sha",
+    "7227b2586bc584d05613b8b5c5d54657812ff1978f435d8916e60faa00443bda",
+    "--output",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json"
+  ],
+  "uncompressed_bytes": 2138614,
+  "wrapper_files15": {
+    "CONFIGURATION_OVERRIDES.json": "51c66729aa68203f5d0cd67dc3f7c1a5ef828d3484cbe5f570bef663d18a7c07",
+    "INPUTS.schema.json": "159d36b6f0b825a64c7ea63e4e3c4fec9b627b1536f6e79cd44b8be03069c48a",
+    "PLAN.md": "95a06bd6741729e4dc4fceaa876efd2a22a599174fad949869b5a8b39f62f1c9",
+    "SOURCE_CPU_RECEIPT.json": "9bea8a2468ab07d70f75959773db57aa7dbdd87f6d073cc2b4069427681dafe8",
+    "build_package_draft.py": "7da1eadc49a63aa52f525faabd3906b2f78fb375f1fa58adfd5ef43c6cbe6ce8",
+    "calibration_contract.py": "fd881ce773b59ec3ca429f2dc9c79437e44dd36a97902d820726e2e0178174e3",
+    "launch.sbatch": "8a4ae2bbfaa744a4f86dbaa14cbbb6453283ac20d812f0a21cb5ed171843eca3",
+    "render_dispatch.py": "92921474e7d38b012adc1b9582770b55fa5b95ae350f4a2828deea5491056c11",
+    "run_tree.sh": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "supervisor.py": "d3dc55a49d796395324cf48743ae1b3eb5d952aec7b80993cab60e4248be81cf",
+    "test_runtime_contract_cpu.py": "3b179e72c544e9672473d857a8ec1a54a8092dc02cc0133266e81a8218e235db",
+    "tokenizer_raw_preflight.py": "6aa83503db0a234046b8926a2988025726e1fe5256597e5b3b955e23baeed7ed",
+    "validation_cost_entry.py": "51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a",
+    "validation_cost_hooks_instruct300.py": "c4c49745b4892f169b601cbc5f27fbcab7fe9c154ae7bc4f508ba82c4440bbd1"
+  },
+  "wrapper_inventory_sha256": "e6d3ece49a466e8aa29f72fc8c87eb4b202b5b44fa455119dee356a8e25a1956"
+}

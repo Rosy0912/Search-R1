@@ -1,0 +1,19 @@
+{
+  "actual_bound_json_read": true,
+  "actual_gpu_executed": false,
+  "actual_gpu_ready": false,
+  "actual_load_common_receipt_and_helper_hash_checks": true,
+  "actual_remote_executed": false,
+  "actual_slurm_executed": false,
+  "actual_threshold_accepted": false,
+  "audit_sha256": "397dd09b4af26bc9775b5a3253e22ff6d99e9f76006b3077b26060f72496e9c4",
+  "error": "Missing exact independent zero-write release",
+  "helper_sha256": "63cd3b1a3236327aba3425223ea72029211c21d108a8b8e61749281f667cf47b",
+  "local_path_translation_fixture": true,
+  "receipt_sha256": "0ff6a9591f53c2cf19abe38bf8bef111f84457917ca194bafe9eabd41c6d29cc",
+  "source_interface_receipt_sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017",
+  "source_receipt_rejected_by_final_submit": true,
+  "source_review_accepted": true,
+  "status": "FINAL_SAVED_SOURCE_CONTEXT_HELPER_BYTE_BINDINGS_PASS_CPU_ONLY",
+  "training_release": false
+}

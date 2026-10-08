@@ -1,0 +1,34 @@
+{
+  "_id": "67bf6133feb9ff1e07639047",
+  "id": "PeterJinGo/wiki-18-corpus",
+  "author": "PeterJinGo",
+  "sha": "69c1c00ffe7c5554c68d8548355cb22e46aabc51",
+  "lastModified": "2025-02-26T18:49:13.000Z",
+  "private": false,
+  "gated": false,
+  "disabled": false,
+  "tags": [
+    "region:us"
+  ],
+  "downloads": 3457,
+  "likes": 1,
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "1ef325f1b111266a6b26e0196871bd78baa8c2f3",
+      "size": 2461
+    },
+    {
+      "rfilename": "wiki-18.jsonl.gz",
+      "blobId": "695145df83669b910f5b519347801b3d1c60980f",
+      "size": 5123307260,
+      "lfs": {
+        "sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+        "size": 5123307260,
+        "pointerSize": 135
+      }
+    }
+  ],
+  "createdAt": "2025-02-26T18:45:07.000Z",
+  "usedStorage": 5123307260
+}

@@ -1,0 +1,80 @@
+{
+  "status": "PROSPECTIVE_ZERO_DISPATCH_INPUTS_PENDING_NEW_NONE_REVIEW_NO_EXECUTION",
+  "node": "h100-9",
+  "management_route": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+  "management_route_sha256": "6f715639275c826afc1736863a12a2da0268b98617f174f3d29efa18b682b30b",
+  "candidate_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v11",
+  "manifest_sha256": "a07925ce76951ef0966b5f03e847e28b0b2fdc115a6409e2bdede181300b00a2",
+  "code_commit": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+  "inputs": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/PREPARATION_INPUTS.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/PREPARATION_INPUTS.json",
+    "sha256": "7025499ac308460283d61596817226dfee8daa3a3724284453a087723911e0b6"
+  },
+  "preparation": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/actual-cpu/PREPARATION.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v11/CPU_PREP_CONFIG/PREPARATION.json",
+    "sha256": "6e66da9350cd249d69afd3b5a5d4224357fdf08905a01fbbd6c5bb9c547fc04d"
+  },
+  "preflight": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/actual-cpu/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+    "sha256": "2cc2366e9e3473276e4386820fa28249db9e1bb28875ca5298889c48d09c0761"
+  },
+  "helper_review": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/HELPER_SOURCE_REVIEW.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/HELPER_SOURCE_REVIEW.json",
+    "sha256": "dc71dc350375ab31c8a6445977bda899ede2b07f8599a5794bd7d654b1cd38b6"
+  },
+  "submit_helper": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/submit_tree_fresh200_once.py",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/submit_tree_fresh200_once.py",
+    "sha256": "39419badfd4de87642910d71563d54939cbd48f7e61927a8bf31974885825751"
+  },
+  "resolved_config_sha256": "8f0c1df0f1c96508cd8f1be35f1b31bae6a87a152cb09ae4dfb62f667407a1bb",
+  "review_receipt": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-v11-actual-zero-none-review/PRE_DISPATCH_RECEIPT.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v11/PRE_DISPATCH_RECEIPT.json",
+    "sha256": null,
+    "scope": "Reviewer seals this independent prospective zero-only receipt then derives exact route argv; no root-invented acceptance"
+  },
+  "review_receipt_placement_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/stage_zero_review_receipt.py",
+    "sha256": "be274c9dc00f6e53d2a628c5a7dde4eb0b4273e39211a55bb6f0e062e9650a1b"
+  },
+  "environment_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B"
+  ],
+  "prospective_actions": [
+    "place_one_independent_zero_only_metadata_receipt",
+    "invoke_reviewed_once_zero_submit_helper"
+  ],
+  "requires_actual_zero_optimizer_writes": true,
+  "requires_all5120_unfiltered_and_rejected0": true,
+  "requires_new_native24_and_fullTree_in_actual_zero_stage": true,
+  "original_sampler_actor_gate_accepted": false,
+  "production_thresholds_accepted": false,
+  "actual_gpu_or_slurm_execution": false,
+  "actual_zero_accepted": false,
+  "actual_training_accepted": false,
+  "existing_historical_report_reused_by_exact_rawhelper_and_tokenizer_identity": true,
+  "max_receipt_bytes": 524288,
+  "unknown_submission_must_not_retry": true,
+  "allocation": {
+    "nodes": [
+      "h100-9"
+    ],
+    "gpus": 8,
+    "exclusive": true,
+    "requested_cpus": 32,
+    "memory_gib": 256,
+    "wall_hours": 3,
+    "no_requeue": true
+  }
+}

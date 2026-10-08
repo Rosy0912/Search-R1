@@ -1,0 +1,464 @@
+{
+  "actual_behavior_mu_accepted": false,
+  "actual_full_tree_accepted": false,
+  "actual_gpu_accepted": false,
+  "actual_gpu_executed": false,
+  "actual_local_assembly_evidence": {
+    "builder_record_sha256": "cb66c515e1255dd3df17a5afa566cbd93124385c9728d20d7cc3b0c5ba998cd8",
+    "builder_returncode": 0,
+    "finished_utc": "2026-10-07T04:00:44.145894+00:00",
+    "intent_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f-packet-source-draft/ACTUAL_LOCAL_ASSEMBLY_INTENT.json",
+    "intent_sha256": "3fe52e4ec84e680f61e6844301f5a7012202b3f07c5efedad3e305783b5a584b",
+    "new_builder_execution_this_review": false,
+    "result_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f-packet-source-draft/ACTUAL_LOCAL_ASSEMBLY_RESULT.json",
+    "result_sha256": "580b4aa242be6fa7b7e12b4d22999b6c82bf4d45f6ee2115452cfc943332ca95",
+    "returncode": 0,
+    "source_review_binding_exact": true,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "8acc8b78641293e9ae6464faa82f5cfbb11445c832f474c0f01ff9c2de194b8c",
+    "wall_seconds": 0.46418829199999995
+  },
+  "actual_native24_accepted": false,
+  "actual_network_used": false,
+  "actual_optimizer_writes": 0,
+  "actual_ready": false,
+  "actual_remote_executed": false,
+  "actual_route_entry_or_mock_executed": false,
+  "actual_slurm_submitted": false,
+  "actual_source_runtime_executed": false,
+  "actual_tests_rerun": false,
+  "actual_zero_accepted": false,
+  "actual_zero_executed": false,
+  "actual_zero_ready": false,
+  "archive_audit": {
+    "all236_source_sha256_match_selected_source_files": true,
+    "all251_manifest_member_sha256_match_archive_and_local_package": true,
+    "all_allowlist_suffix_and_source_prefix_checks_passed": true,
+    "all_members_regular_unique_canonical_paths": true,
+    "archive_bytes": 490497,
+    "helper3_outside_archive": true,
+    "local252_files_exact_no_extra": true,
+    "manifest_bytes": 143672,
+    "manifest_members": 1,
+    "ordinary_members": 252,
+    "source_code_members": 236,
+    "tar_manifest_bytes_equal_local_manifest": true,
+    "total_uncompressed_bytes": 2167416,
+    "weight_data_index_rawtoken_tensor_asset_members": 0,
+    "wrapper_members": 15
+  },
+  "argv_binding": {
+    "CPU_empty_cuda_offline_environment_exact": true,
+    "argv_hash_encoding": "SHA256 of UTF8 JSON array, ensure_ascii=False, separators comma/colon",
+    "explicit_stdin_envelope_path_hash_exact": true,
+    "local_python3_B_default_h1009": true,
+    "no_third_action": true,
+    "no_tokenizer_replay_or5120_command": true,
+    "node_override_present": false,
+    "prepare_local_argv": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/prepare_tree_fresh200_package.py --archive /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/CODE_PACKAGE.tar.gz --archive-sha 33bf74fe2cca6a9c2048ce7ed0e69b482b96633ea0e56e5843a9e795ae5e982a --target /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420 --manifest-sha 388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5 --inputs /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/PREPARATION_INPUTS.json --inputs-sha 8eaab4d991f7d588f9f54f8cf3ba3db16f4656b1ee99715f49914d61d3399d9e --helper-review /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/HELPER_SOURCE_REVIEW.json --helper-review-sha d525ee289b55311053ed913cadbc1bfa3aecb156f77c8f9b2663ace5ccff8fba"
+    ],
+    "prepare_local_argv_sha256": "b43720d822a3771930fb735eb49f001303d3720bf124d99ebd85da6025c63d8a",
+    "prepare_remote_argv_sha256": "cb5b8ce8da92cb59bf089b3b65f3f39a22b88ad054d2e3339c33680184a37d95",
+    "stage_and_prepare_remote_commands_shlex_equal_bound_argv": true,
+    "stage_argv_inline_script_sha256": "acf1bd977f28e8e45974571bc4465bb23807a5c853a8daa5b7effbeb495f3c7e",
+    "stage_local_argv": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B -c '\"\"\"Stage a byte-bound code/metadata envelope on h100-9; execute nothing.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport socket\nimport sys\n\n\nDESTINATION = Path('\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007'\"'\"')\nFILES = {\n    '\"'\"'CODE_PACKAGE.tar.gz'\"'\"', '\"'\"'PREPARATION_INPUTS.json'\"'\"', '\"'\"'A18F_BOUNDED_CPU_RECEIPT.json'\"'\"', '\"'\"'A18F_AFFECTED_SOURCE_MANIFEST.json'\"'\"', '\"'\"'A18F_SOURCE_ONLY_REVIEW.json'\"'\"', '\"'\"'HISTORICAL_53082E_CONTEXT_RECEIPT.json'\"'\"',\n    '\"'\"'fresh200_dispatch_common.py'\"'\"', '\"'\"'prepare_tree_fresh200_package.py'\"'\"',\n    '\"'\"'submit_tree_fresh200_once.py'\"'\"', '\"'\"'SOURCE_INTERFACE_RECEIPT.json'\"'\"',\n    '\"'\"'SOURCE_CONTEXT_FREE_RECEIPT.json'\"'\"', '\"'\"'SOURCE_BYTE_AUDIT.json'\"'\"',\n    '\"'\"'HELPER_SOURCE_REVIEW.json'\"'\"', '\"'\"'RETAINED_TERMINAL3314_PROOF_V2.json'\"'\"', '\"'\"'RETAINED_TERMINAL3317_PROOF.json'\"'\"',\n}\n\n\ndef main():\n    if socket.gethostname().split('\"'\"'.'\"'\"')[0] != '\"'\"'h100-9'\"'\"':\n        raise ValueError('\"'\"'Only the existing h100-9 management route is allowed'\"'\"')\n    if len(sys.argv) != 2 or len(sys.argv[1]) != 64:\n        raise ValueError('\"'\"'Exact envelope SHA256 is required'\"'\"')\n    raw = sys.stdin.buffer.read(64 * 1024 * 1024 + 1)\n    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != sys.argv[1]:\n        raise ValueError('\"'\"'Envelope size or SHA256 differs'\"'\"')\n    envelope = json.loads(raw)\n    if envelope['\"'\"'status'\"'\"'] != '\"'\"'REVIEWED_CODE_METADATA_CPU_STAGE_ONLY'\"'\"' or set(envelope['\"'\"'files'\"'\"']) != FILES:\n        raise ValueError('\"'\"'Exact code/metadata-only inventory required'\"'\"')\n    contents = {}\n    total = 0\n    for name, record in envelope['\"'\"'files'\"'\"'].items():\n        content = base64.b64decode(record['\"'\"'base64'\"'\"'], validate=True)\n        total += len(content)\n        if total > 32 * 1024 * 1024 or len(content) != record['\"'\"'bytes'\"'\"'] or hashlib.sha256(content).hexdigest() != record['\"'\"'sha256'\"'\"']:\n            raise ValueError('\"'\"'Envelope member size/SHA256 differs: '\"'\"' + name)\n        contents[name] = content\n    if DESTINATION.parent.resolve() != DESTINATION.parent or DESTINATION.parent.name != '\"'\"'instruct300'\"'\"':\n        raise ValueError('\"'\"'Staging parent must be the existing task directory without symlinks'\"'\"')\n    os.umask(0o077)\n    DESTINATION.mkdir(exist_ok=False)\n    for name in sorted(contents):\n        with (DESTINATION / name).open('\"'\"'xb'\"'\"') as stream:\n            stream.write(contents[name])\n            stream.flush()\n            os.fsync(stream.fileno())\n    receipt = {\n        '\"'\"'status'\"'\"': '\"'\"'CODE_METADATA_STAGED_ONLY_NOT_EXECUTED'\"'\"',\n        '\"'\"'directory'\"'\"': str(DESTINATION), '\"'\"'envelope_sha256'\"'\"': sys.argv[1],\n        '\"'\"'files'\"'\"': {name: {'\"'\"'sha256'\"'\"': hashlib.sha256(content).hexdigest(), '\"'\"'bytes'\"'\"': len(content)}\n                  for name, content in contents.items()},\n        '\"'\"'asset_transfer'\"'\"': False, '\"'\"'cuda_initialized'\"'\"': False,\n        '\"'\"'slurm_submitted'\"'\"': False, '\"'\"'optimizer_writes'\"'\"': 0,\n    }\n    with (DESTINATION / '\"'\"'STAGING_RECEIPT.json'\"'\"').open('\"'\"'x'\"'\"') as stream:\n        json.dump(receipt, stream, indent=2, sort_keys=True)\n        stream.flush()\n        os.fsync(stream.fileno())\n    print(json.dumps(receipt, sort_keys=True), flush=True)\n\n\nif __name__ == '\"'\"'__main__'\"'\"':\n    main()\n' 0bea174b9775f72e6572f2a7cdc7603e4934ab6fceff8b36dddf5a42f7b45445",
+      "--stdin",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CODE_METADATA_ENVELOPE.json"
+    ],
+    "stage_local_argv_sha256": "bb77759b34033e3d15c44ad83ee8ff330c18a32b09cd950efeca2edb0e1b937e",
+    "stage_remote_argv_sha256": "a1bdc589689c262cb6264fbc90936791bedfd8d6ffee81790d2bd53dca475bed"
+  },
+  "assembler": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f-packet-source-draft/ASSEMBLE_LOCAL_PACKET_SOURCE_ONLY.py",
+    "sha256": "895f7063b92cb0fa20dcd40db50dae6931fc60357b8f783823331b39974831ce"
+  },
+  "asset_transfer": false,
+  "blocker_count": 0,
+  "blocking_findings": [],
+  "closure_audit": {
+    "common_only_commit_literal_repin": true,
+    "current_bounded27_cpu_separately_pinned": true,
+    "every_base64_member_size_sha256_matches_local_source_and_packet": true,
+    "helper3_current_review_and_copied_files_exact": true,
+    "historical_wrapper_cpu_receipt_opaque_byte_identical": true,
+    "metadata_member_count": 15,
+    "metadata_total_decoded_bytes": 638465,
+    "packet_and_original_local_seal_all_hashes_verified": true,
+    "prepare_submit_byte_identical_to_prior": true,
+    "source20_all_receipt_audit_manifest_maps_exact_and_package_bytes_equal": true,
+    "source_interface_count": 20,
+    "stage_inline_script_equals_local_source": true,
+    "stage_literal_delta_matches_prior_reviewed_source": true,
+    "unchanged19_core_prior_bytes": true,
+    "wrapper15_bytes_equal_actual_prior_v12": true
+  },
+  "code_archive_sha256": "33bf74fe2cca6a9c2048ce7ed0e69b482b96633ea0e56e5843a9e795ae5e982a",
+  "code_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "created_utc": "2026-10-07T04:12:38.955454+00:00",
+  "decision": "accepted",
+  "envelope_sha256": "0bea174b9775f72e6572f2a7cdc7603e4934ab6fceff8b36dddf5a42f7b45445",
+  "execution_scope": {
+    "exact_prepare_local_argv_accepted": true,
+    "exact_stage_local_argv_accepted": true,
+    "exclusive_runtime_mkdir_xb_guards_required": true,
+    "execution_order": [
+      "stage_code_metadata_cpu",
+      "prepare_code_assets_and_cpu_config"
+    ],
+    "gpu_zero_or_slurm_authorized": false,
+    "no_asset_transfer": true,
+    "ready_or_training_authorized": false,
+    "remote_absence_not_claimed_locally": true,
+    "same_h1009_only": true,
+    "sequential_dependency_required": true,
+    "stage_success_receipt_required_before_prepare": true,
+    "unknown_or_partial_failure_preserve_evidence_and_no_in_place_retry": true
+  },
+  "file_inventory": {
+    "A18F_AFFECTED_SOURCE_MANIFEST.json": {
+      "bytes": 6001,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/A18F_AFFECTED_SOURCE_MANIFEST.json",
+      "sha256": "2e6e0fb90a78966e80d1940efd46f34f5bd8b806c2ffae4fa6350890d6d8120d"
+    },
+    "A18F_BOUNDED_CPU_RECEIPT.json": {
+      "bytes": 11708,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/A18F_BOUNDED_CPU_RECEIPT.json",
+      "sha256": "806e505fa6c5fd475b50a35e57a9847f72b0be192f42494d9949fa6ebfe30870"
+    },
+    "A18F_SOURCE_ONLY_REVIEW.json": {
+      "bytes": 25928,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/A18F_SOURCE_ONLY_REVIEW.json",
+      "sha256": "b31c86c1b81258200580b0a2bb0346c24aba9e4ba53332e4f732bbfe0b1efdbf"
+    },
+    "BUILDER_ACTUAL_EXECUTION.json": {
+      "bytes": 1305,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/BUILDER_ACTUAL_EXECUTION.json",
+      "sha256": "cb66c515e1255dd3df17a5afa566cbd93124385c9728d20d7cc3b0c5ba998cd8"
+    },
+    "BUILDER_INPUTS.json": {
+      "bytes": 13390,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/BUILDER_INPUTS.json",
+      "sha256": "6c586f3ed0fabc13e58a1d3c3046229b5633c945622f8aa825c04e053e1d9f8f"
+    },
+    "CODE_METADATA_ENVELOPE.json": {
+      "bytes": 853936,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CODE_METADATA_ENVELOPE.json",
+      "sha256": "0bea174b9775f72e6572f2a7cdc7603e4934ab6fceff8b36dddf5a42f7b45445"
+    },
+    "CODE_PACKAGE.tar.gz": {
+      "bytes": 490497,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CODE_PACKAGE.tar.gz",
+      "sha256": "33bf74fe2cca6a9c2048ce7ed0e69b482b96633ea0e56e5843a9e795ae5e982a"
+    },
+    "CPU_EXECUTION_PACKET.json": {
+      "bytes": 20090,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CPU_EXECUTION_PACKET.json",
+      "sha256": "c879b71bf7103e78ead8d36d09cbffbadc4782f744b972efd41d964d812ea578"
+    },
+    "CPU_MANAGEMENT_ROUTE_ARGV.json": {
+      "bytes": 6467,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CPU_MANAGEMENT_ROUTE_ARGV.json",
+      "sha256": "95130a25581239fb64cae6788036e2635559a32aec11639a4e3394232be4ec88"
+    },
+    "HELPER_SOURCE_REVIEW.json": {
+      "bytes": 4029,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/HELPER_SOURCE_REVIEW.json",
+      "sha256": "d525ee289b55311053ed913cadbc1bfa3aecb156f77c8f9b2663ace5ccff8fba"
+    },
+    "HISTORICAL_53082E_CONTEXT_RECEIPT.json": {
+      "bytes": 8952,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/HISTORICAL_53082E_CONTEXT_RECEIPT.json",
+      "sha256": "ce3ef87928c463db6f47518ca547492b32204c540d709d13c98fef3646489f6d"
+    },
+    "LOCAL_PACKET_SEAL.json": {
+      "bytes": 3117,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/LOCAL_PACKET_SEAL.json",
+      "sha256": "2ada6cb13ee10c4c0a646d400a6893b090a6ac1bf4136daf1e936f066169ebee"
+    },
+    "NATIVE3317_PREFLIGHT_BINDING.json": {
+      "bytes": 840,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/NATIVE3317_PREFLIGHT_BINDING.json",
+      "sha256": "9395d450ed09e952bf5756396bddaa934943a2643cad2aaa6c8dafdb8c0731f1"
+    },
+    "PREPARATION_INPUTS.json": {
+      "bytes": 2417,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/PREPARATION_INPUTS.json",
+      "sha256": "8eaab4d991f7d588f9f54f8cf3ba3db16f4656b1ee99715f49914d61d3399d9e"
+    },
+    "RETAINED_TERMINAL3314_PROOF_V2.json": {
+      "bytes": 2437,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/RETAINED_TERMINAL3314_PROOF_V2.json",
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    },
+    "RETAINED_TERMINAL3317_PROOF.json": {
+      "bytes": 2790,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/RETAINED_TERMINAL3317_PROOF.json",
+      "sha256": "97c94827a6a7b1c83730c818cf8cf672f7b5051fb9e6bdbf652c061a2816acda"
+    },
+    "SOURCE_BYTE_AUDIT.json": {
+      "bytes": 17240,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/SOURCE_BYTE_AUDIT.json",
+      "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+    },
+    "SOURCE_CONTEXT_FREE_RECEIPT.json": {
+      "bytes": 6616,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/SOURCE_CONTEXT_FREE_RECEIPT.json",
+      "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+    },
+    "SOURCE_INTERFACE_RECEIPT.json": {
+      "bytes": 7012,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/SOURCE_INTERFACE_RECEIPT.json",
+      "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+    },
+    "fresh200_dispatch_common.py": {
+      "bytes": 19355,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/fresh200_dispatch_common.py",
+      "sha256": "5b9019b81fc862b8a3a0451a65ab849a73745fa7febaddef1da7899563a54683"
+    },
+    "package-code-only/manifest.json": {
+      "bytes": 143672,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/package-code-only/manifest.json",
+      "sha256": "388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5"
+    },
+    "prepare_tree_fresh200_package.py": {
+      "bytes": 7063,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/prepare_tree_fresh200_package.py",
+      "sha256": "03e70aa955f1c3a7cac7d648e60f07ddd7a14c9a310ae867943b89b9761bf079"
+    },
+    "stage_code_metadata_cpu.py": {
+      "bytes": 3068,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/stage_code_metadata_cpu.py",
+      "sha256": "acf1bd977f28e8e45974571bc4465bb23807a5c853a8daa5b7effbeb495f3c7e"
+    },
+    "submit_tree_fresh200_once.py": {
+      "bytes": 26420,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/submit_tree_fresh200_once.py",
+      "sha256": "0f80f3efbd08db5ca0579e7f69d9795c04d68ff402c5691cdbe715e9fa6e9149"
+    }
+  },
+  "formal200_accepted": false,
+  "formal_complete_outers": 0,
+  "formal_first5_accepted": false,
+  "helper_files": {
+    "fresh200_dispatch_common.py": "5b9019b81fc862b8a3a0451a65ab849a73745fa7febaddef1da7899563a54683",
+    "prepare_tree_fresh200_package.py": "03e70aa955f1c3a7cac7d648e60f07ddd7a14c9a310ae867943b89b9761bf079",
+    "submit_tree_fresh200_once.py": "0f80f3efbd08db5ca0579e7f69d9795c04d68ff402c5691cdbe715e9fa6e9149"
+  },
+  "helper_review_sha256": "d525ee289b55311053ed913cadbc1bfa3aecb156f77c8f9b2663ace5ccff8fba",
+  "historical_native_binding_scope": "Actual report2122 has exactly rows1/500 prefixes and preserved original hashes. It is existing same-node metadata referenced without another transfer or replay. No historical5120 helper-byte reuse, native24, fresh fullTree/mu, READY or training acceptance. Later independent zero review must assess the exact rows1 limitations.",
+  "historical_native_node_fetch_audit": {
+    "node": "h100-9",
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-actual/ROW96_NATIVE_REPORT_FETCH_RESULT.json",
+    "sha256": "e25012468d1835cccc6483b735504c1f3e19c323cf12139d2268f7cfb8ea8227"
+  },
+  "historical_native_preflight": {
+    "historical5120_helper_byte_identity_reuse": false,
+    "limitations": "Only one historical sampled emission UTF8/identity proof. No sampled_action/legacy action-parser, all784 rows, historical5120 rows, native24 sampling support, fresh Tree/score-cap, mu, weights or training acceptance. Original sample is neither repaired nor filtered.",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+    "requires_independent_zero_release_limitations_assessment": true,
+    "rows": 1,
+    "scope": "Exactly predetermined unfiltered historical FAILED3317 row96: live official tokenizer identity, all500 original-byte UTF8/native prefixes and IDs/logprobs/context immutability only.",
+    "sha256": "2122dc288ab9d0b6ea59cc996fe8251908ce87e7519abb5e7d9e60582cedccc8"
+  },
+  "long_training_ready": false,
+  "manifest_sha256": "388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5",
+  "packet_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CPU_EXECUTION_PACKET.json",
+  "packet_sha256": "c879b71bf7103e78ead8d36d09cbffbadc4782f744b972efd41d964d812ea578",
+  "preparation_inputs_sha256": "8eaab4d991f7d588f9f54f8cf3ba3db16f4656b1ee99715f49914d61d3399d9e",
+  "preparation_protocol": {
+    "actor_micro_global": 16,
+    "actor_micro_local": 2,
+    "complete_outer_limit": 200,
+    "complete_outer_requires_all20_opportunities_processed": true,
+    "development_every_outers": 5,
+    "guard_continue_protocol": "tree_guard_continue_fresh_rollout_v1",
+    "leaf_quotas": [
+      3,
+      2
+    ],
+    "leaves_per_question": 5,
+    "local_rows": 320,
+    "mini_global": 128,
+    "mini_local": 16,
+    "minimum_successful_optimizer_writes_per_complete_outer": 1,
+    "name": "tree_fresh200_five_leaf_v1",
+    "optimizer_opportunities_per_rank_per_complete_outer": 20,
+    "questions_per_outer": 512,
+    "same_instance_acceptance_outer": 5,
+    "save_outers": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "scoring_micro_global": 32,
+    "scoring_micro_local": 4,
+    "successful_optimizer_writes_counted_separately": true,
+    "total_leaves": 2560,
+    "warmup_complete_outers": 57,
+    "world_size": 8,
+    "zero_write_or_abandoned_batch_advances_scheduler": false,
+    "zero_write_or_abandoned_batch_credits_outer": false
+  },
+  "preparation_scope": {
+    "actual_remote_config_resolution_not_yet_executed": true,
+    "common_data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "configuration_override_expected_count": 89,
+    "fixed_split_counts": {
+      "development": 512,
+      "final": 51713,
+      "train": 169028
+    },
+    "fresh_no_old_checkpoint_optimizer_scheduler_state": true,
+    "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+    "model_identity_file_count": 13,
+    "official_model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+    "production_thresholds_accepted": false,
+    "protected_process_count": 8,
+    "same_living_first5_acceptance_before6_to200_required": true,
+    "trial_only": true
+  },
+  "previous_terminal_binding_scope": "Both3314 and3317 retained FAILED terminal proofs exactly equal the already-reviewed SHA-bound historical objects. They do not assert a currently live Oct7 job or any fresh zero acceptance; existing once helper must still assess live local queue/controller and unchanged own failed-run bytes before any later submission.",
+  "previous_terminal_evidence": {
+    "3314": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3314_PROOF_V2.json",
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    },
+    "3317": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3317_PROOF.json",
+      "sha256": "97c94827a6a7b1c83730c818cf8cf672f7b5051fb9e6bdbf652c061a2816acda"
+    }
+  },
+  "production_thresholds_accepted": false,
+  "rawtokens_transfer": false,
+  "reviewer_context": {
+    "followup_scope": "Requested actual materialized archive/manifest/envelope and exact two CPU management actions only; no new test or production gate.",
+    "fork_turns": "none",
+    "inherited_parent_conversation": false,
+    "same_agent_as_current_packet_source_review": true
+  },
+  "route_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/CPU_MANAGEMENT_ROUTE_ARGV.json",
+  "route_sha256": "95130a25581239fb64cae6788036e2635559a32aec11639a4e3394232be4ec88",
+  "route_source_sha256": "6f715639275c826afc1736863a12a2da0268b98617f174f3d29efa18b682b30b",
+  "schema_version": 1,
+  "scope": "exactstage_and_short_cpu_prepare_only",
+  "source_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "source_files": {
+    "search_r1/baselines/controller.py": "2a1c5fdf6dd8dc265ebcfb3ef3717f5a9f522e0832c506cbd0e94d820a16eda6",
+    "search_r1/baselines/gradient_norm.py": "6d0b68fb35b26dcf125732c5da586425238b3130c7898fb63d779920413c664b",
+    "search_r1/baselines/partial_worker_state.py": "091a6b2efcc4d18ee4fe8e72c3ff7d74c5475243f662de552c67324b9f6546ea",
+    "search_r1/baselines/policy_safety_runtime.py": "13ef4c832335b4abda4caa5c15c0fe345275558f97c60ca9dfa52ead74b14208",
+    "search_r1/baselines/rollout.py": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "search_r1/baselines/training_state.py": "50cf8ab7eb37f198cc2833c20498b12ce6e2d8eacd6b21ed5e7a2357820f62d8",
+    "search_r1/baselines/trajectory_log.py": "93ba273f28949a0606c6ea468f297723187831dc760b7205d9c87d9730827b6f",
+    "search_r1/baselines/tree_behavior_mu.py": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+    "search_r1/baselines/tree_fresh200.py": "b97bd761679b822935696a219100efa4847d2b4466e588c4bd1258f2d216b53c",
+    "search_r1/baselines/tree_guard_continue.py": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "search_r1/baselines/tree_partial_state.py": "8e3e046c4febe7cbe841b92ca633a2e09c85ed3953ed98b9603ab6993b86ace8",
+    "search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b",
+    "search_r1/baselines/tree_raw_tokens.py": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+    "verl/trainer/config/ppo_tree_fresh200.yaml": "b7d68e3bce6247be1424965d6bcfe7a3e4723ca1428fedcd6847c3d384649d75",
+    "verl/trainer/ppo/ray_trainer.py": "55208794e8dfc14d9f08c5a45b8886b4d58889b5048daec8acd8b177ad9703f2",
+    "verl/utils/fsdp_utils.py": "6cecf644779faa5abc6933ccd892a5d2da605aa45088ef42f258a3918911e0c6",
+    "verl/workers/actor/dp_actor.py": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+    "verl/workers/fsdp_workers.py": "ee91dd80d9fc59ae21f8e3411f5dd32530b97f6a558967cd266c3979cd3acc1c"
+  },
+  "source_review": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f-packet-none-review/INDEPENDENT_A18F_PACKET_SOURCE_REVIEW.json",
+    "sha256": "22d0b235c82e902ab8f59dc0157545ea9dc3b8ad496585f38f2e65d359045a45"
+  },
+  "staged_member_inventory": {
+    "A18F_AFFECTED_SOURCE_MANIFEST.json": {
+      "bytes": 6001,
+      "sha256": "2e6e0fb90a78966e80d1940efd46f34f5bd8b806c2ffae4fa6350890d6d8120d"
+    },
+    "A18F_BOUNDED_CPU_RECEIPT.json": {
+      "bytes": 11708,
+      "sha256": "806e505fa6c5fd475b50a35e57a9847f72b0be192f42494d9949fa6ebfe30870"
+    },
+    "A18F_SOURCE_ONLY_REVIEW.json": {
+      "bytes": 25928,
+      "sha256": "b31c86c1b81258200580b0a2bb0346c24aba9e4ba53332e4f732bbfe0b1efdbf"
+    },
+    "CODE_PACKAGE.tar.gz": {
+      "bytes": 490497,
+      "sha256": "33bf74fe2cca6a9c2048ce7ed0e69b482b96633ea0e56e5843a9e795ae5e982a"
+    },
+    "HELPER_SOURCE_REVIEW.json": {
+      "bytes": 4029,
+      "sha256": "d525ee289b55311053ed913cadbc1bfa3aecb156f77c8f9b2663ace5ccff8fba"
+    },
+    "HISTORICAL_53082E_CONTEXT_RECEIPT.json": {
+      "bytes": 8952,
+      "sha256": "ce3ef87928c463db6f47518ca547492b32204c540d709d13c98fef3646489f6d"
+    },
+    "PREPARATION_INPUTS.json": {
+      "bytes": 2417,
+      "sha256": "8eaab4d991f7d588f9f54f8cf3ba3db16f4656b1ee99715f49914d61d3399d9e"
+    },
+    "RETAINED_TERMINAL3314_PROOF_V2.json": {
+      "bytes": 2437,
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    },
+    "RETAINED_TERMINAL3317_PROOF.json": {
+      "bytes": 2790,
+      "sha256": "97c94827a6a7b1c83730c818cf8cf672f7b5051fb9e6bdbf652c061a2816acda"
+    },
+    "SOURCE_BYTE_AUDIT.json": {
+      "bytes": 17240,
+      "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+    },
+    "SOURCE_CONTEXT_FREE_RECEIPT.json": {
+      "bytes": 6616,
+      "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+    },
+    "SOURCE_INTERFACE_RECEIPT.json": {
+      "bytes": 7012,
+      "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+    },
+    "fresh200_dispatch_common.py": {
+      "bytes": 19355,
+      "sha256": "5b9019b81fc862b8a3a0451a65ab849a73745fa7febaddef1da7899563a54683"
+    },
+    "prepare_tree_fresh200_package.py": {
+      "bytes": 7063,
+      "sha256": "03e70aa955f1c3a7cac7d648e60f07ddd7a14c9a310ae867943b89b9761bf079"
+    },
+    "submit_tree_fresh200_once.py": {
+      "bytes": 26420,
+      "sha256": "0f80f3efbd08db5ca0579e7f69d9795c04d68ff402c5691cdbe715e9fa6e9149"
+    }
+  },
+  "status": "SEALED_INDEPENDENT_EXACT_A18F_CPU_EXECUTION_BINDING_REVIEW",
+  "subsequent_zero_gpu_requirement": "After these two exact actions succeed, actual new CPU preparation output must be independently bound with a fresh prospective zero review before any zero GPU/Slurm submission.",
+  "training_release": false,
+  "verification_scope": "Read/hash/JSON/base64/standard-library tar parsing and static AST/text inspection only. No package extraction writes, changed-code import/function/main, new or old tests/fixtures, local assembler/builder repetition, route/mock, network/remote, Slurm or GPU execution by this review.",
+  "wrapper_files": {
+    "CONFIGURATION_OVERRIDES.json": "51c66729aa68203f5d0cd67dc3f7c1a5ef828d3484cbe5f570bef663d18a7c07",
+    "INPUTS.schema.json": "159d36b6f0b825a64c7ea63e4e3c4fec9b627b1536f6e79cd44b8be03069c48a",
+    "PLAN.md": "ab6f72237b873f7c2a07e2d59c7902f00eae19c52e79bd9329774b7718ef51e9",
+    "SOURCE_CPU_RECEIPT.json": "13be65dd742db6e6adfe61dd9189dbb9a8d2aca8296741868eba844f9da737f0",
+    "build_package_draft.py": "7da1eadc49a63aa52f525faabd3906b2f78fb375f1fa58adfd5ef43c6cbe6ce8",
+    "calibration_contract.py": "598cc5acae2037935348629e626c5b461694d8a940f5f0668872b58b4dbe8827",
+    "launch.sbatch": "8a4ae2bbfaa744a4f86dbaa14cbbb6453283ac20d812f0a21cb5ed171843eca3",
+    "render_dispatch.py": "92921474e7d38b012adc1b9582770b55fa5b95ae350f4a2828deea5491056c11",
+    "run_tree.sh": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "supervisor.py": "83fc3e9066c9dfa923913b06e8a86153bd6cb0789ade8cfe29849508cae14040",
+    "test_runtime_contract_cpu.py": "3b179e72c544e9672473d857a8ec1a54a8092dc02cc0133266e81a8218e235db",
+    "tokenizer_raw_preflight.py": "6aa83503db0a234046b8926a2988025726e1fe5256597e5b3b955e23baeed7ed",
+    "validation_cost_entry.py": "51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a",
+    "validation_cost_hooks_instruct300.py": "c4c49745b4892f169b601cbc5f27fbcab7fe9c154ae7bc4f508ba82c4440bbd1"
+  }
+}

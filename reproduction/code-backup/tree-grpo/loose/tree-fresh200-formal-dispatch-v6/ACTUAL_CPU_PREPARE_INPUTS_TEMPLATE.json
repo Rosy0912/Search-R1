@@ -1,0 +1,20 @@
+{
+  "actual_cpu_prepared": false,
+  "actual_zero_accepted": false,
+  "archive": null,
+  "archive_sha256": null,
+  "bootstrap_thresholds": null,
+  "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "manifest_sha256": null,
+  "max_uncompressed_bytes": 268435456,
+  "production_inputs": {
+    "actual_calibration_acceptance": null,
+    "actual_calibration_ready": null,
+    "source_context_free_review": null,
+    "threshold_acceptance": null
+  },
+  "stage": "fresh_mu_train200",
+  "status": "FORMAL_V6_FUTURE_CPU_PREPARATION_INPUTS_NULL_NOT_EXECUTABLE",
+  "target": null,
+  "training_release": false
+}

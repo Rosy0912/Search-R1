@@ -1,0 +1,152 @@
+{
+  "accepted": true,
+  "actual_gpu_accepted": false,
+  "actual_gpu_executed": false,
+  "actual_official_tokenizer_replay_executed_by_reviewer": false,
+  "actual_ready": false,
+  "actual_remote_cpu_preparation_executed_by_reviewer": false,
+  "actual_remote_executed": true,
+  "actual_slurm_submitted": false,
+  "actual_stage_reconciliation": {
+    "all_ten_staged_files_and_receipt_match": true,
+    "local_reserialized_stage_receipt_sha256": "a31aebeecc8fdd915e43039271b508d9a441fdbccfdaef0e64551b2596b49f58",
+    "performed_by": "root through independent read-only route, not this corrected CPU mock",
+    "raw_substring_process_scan_not_valid_prepare_or_tokenizer_evidence": true,
+    "reconciliation_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v10/actual-cpu/READONLY_STAGE_RECONCILIATION.json",
+    "reconciliation_sha256": "3677c2ffce02375ad34f54c7a11208015787df415a0042f310d3e7f7ecd3f2d8",
+    "remote_physical_stage_receipt_sha256": "de2572daf6aa1cba1cdcffcba1f19af8332a5b8ac32563adf4d15f14f72a6eab"
+  },
+  "actual_zero_ready": false,
+  "artifacts": {
+    "CPU_ROUTE_SCOPE_INCIDENT_RECEIPT.json": "d5338ce32106deb38b68a117a7afa17236a0aa946e9b1191415c362b0257f413",
+    "REMAINING_ROUTE_MOCK.log": "1ffd7dc0f5c515a1f3183d97d98961266b658bfea7ebc2217f39928ccf08bb9d",
+    "REMAINING_ROUTE_MOCK_RESULT.json": "0ebe257978eb8b0911bcbfb256935a62f08743b39970d66c196f7f20a3dd15af",
+    "ROUTE_INCIDENT_ATTEMPT1_PROBE_SOURCE.py": "43bde080fb481a4cd21f8f89a6c035d7d7bbaa13827906f7dcb7a1f7f2de1022",
+    "ROUTE_INCIDENT_ATTEMPT2_PROBE_SOURCE.py": "84f51649b1d459a88e950740ac96017731ad40c1db8bd4c6b0529229e0a35cb4",
+    "ROUTE_INCIDENT_LOG_SNAPSHOT_20261006T135941Z.bin": "eeb54dd0ba74f7426308aa2f7470781220c2adae8924386774a8a55368c9ff2b",
+    "independent_remaining_route_mock.py": "3301867236917826501b5c448a67defdd3cc37eaba1f557d11b7c5fa86670f02"
+  },
+  "candidate_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10",
+  "closure": {
+    "archive_matches_manifest_and_local_package": true,
+    "archive_regular_member_count": 252,
+    "archive_source_code_metadata_matches_clean02b1_git_head": true,
+    "archive_source_count": 236,
+    "archive_wrapper_count": 15,
+    "code_metadata_only_no_asset_transfer": true,
+    "envelope_files": 10,
+    "quoted_all_three_commands_roundtrip_exact_argv": true,
+    "sealed_source_reviews_and_manifest_bound_by_real_validate_reviews": true,
+    "source19_wrapper15_helper3_test_suites_not_repeated": true,
+    "stage_source_changed_destination_only": true
+  },
+  "code_commit": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+  "corrected_mock": {
+    "actual_network_from_corrected_mock": false,
+    "default_node_and_exact_commands_verified_in_actual_remote_main_body": true,
+    "process_cpu_seconds": 0.003167999999999997,
+    "remaining_role_count": 2,
+    "stage_not_retried": true,
+    "subprocess_call_intercepted": true,
+    "subprocess_run_and_Popen_fail_closed": true
+  },
+  "exact_archive_bytes": 489132,
+  "exact_archive_sha256": "e0a87a8f68438aac11b3b59d05e11e45c169b5f825c42a4139b769aeb9f972f6",
+  "exact_envelope_sha256": "1c570392d2c53e27d48c7e5cd79ebd751a53c8a5538d0a0a418712c39a998267",
+  "exact_historical_plan_sha256": "5ef515b2e8e3422715bd1b27cc14a926d4efbbc62bf9487df27b86678ac21be2",
+  "exact_inventory_sha256": "19810b2ccaf38fb668dabe737d74f98588f3cc6360cf755bb711fa60c0971c64",
+  "exact_manifest_sha256": "e3fee8437d02cca89b4e813b6ce49c3938bf3d98662de1599b5aef476a20fd11",
+  "exact_packet_sha256": "a21179038cd5ce1820092d783ccd5a0ef03eb77b099e38d09cd3354502f32f35",
+  "exact_preparation_inputs_sha256": "ff464a3d36de01a93ffb92d49b0c2a140dd0d85cc9705820d20183f1f0dba5e7",
+  "exact_route_argv_sha256": "87acc22d496a8ef4202e7039fc6af5b351d31f2a1f288d8a1d2b0f6bcc21072c",
+  "exact_route_source_sha256": "6f715639275c826afc1736863a12a2da0268b98617f174f3d29efa18b682b30b",
+  "exact_stage_source_sha256": "eed7a38dbd8ea1c31564c85054d13e3d2184734164fcfc525a3864e131f24d6f",
+  "execution_scope": {
+    "READY_or_zero_calibration_allowed": false,
+    "asset_transfer_allowed": false,
+    "default_existing_management_route_only": true,
+    "gpu_execution_allowed": false,
+    "node": "h100-9",
+    "production_or_five_training_allowed": false,
+    "remaining_official_tokenizer_historical5120_replay_allowed": true,
+    "remaining_same_h1009_cpu_preparation_allowed": true,
+    "slurm_execution_allowed": false,
+    "stage_prior_execution_already_reconciled_not_retroactively_approved": true,
+    "stage_retry_allowed": false
+  },
+  "historical_replay": {
+    "CUDA_visible_devices_explicitly_empty": true,
+    "actual_tokenizer_or_historical_assets_read_by_reviewer": false,
+    "expected_rows": 5120,
+    "fresh_native24_or_probability_acceptance": false,
+    "generation_calls": 0,
+    "legacy_best_of_or_real_n_None_supported": false,
+    "model_weight_loads": 0,
+    "optimizer_writes": 0,
+    "physical_rows_per_rank": 320,
+    "process_every_row_without_filtering": true,
+    "ranks_per_run": 8,
+    "row_rejections_retained_in_output": true,
+    "runs": [
+      "3295",
+      "3296"
+    ],
+    "tensor_asset_loads": 0
+  },
+  "limitation": "Accepts only two exact remaining CPU commands prospectively. The previous route-scope incident is preserved; stage reconciliation does not restore first stdout/exit or supply retrospective execution-before approval. Official5120 compatibility and later exact GPU zero/five/formal acceptance remain unverified.",
+  "long_training_ready": false,
+  "no_clobber": {
+    "candidate_absence_observed_at": "2026-10-06T14:02:46.347028+00:00",
+    "candidate_absent_at_root_readonly_observation": true,
+    "preparation_helper_refuses_existing_target": true,
+    "stage_existing_do_not_retry": true,
+    "tokenizer_output_refuses_existing_output": true,
+    "unknown_or_partial_execution_never_retry_without_reconciliation": true
+  },
+  "original_sampler_actor_gate_accepted": false,
+  "permitted_remaining_remote_command_sha256": {
+    "prepare": "2b4c90fea51427204f5ef16a89964aee27957e16f37ecc9c56cdef148b1768f3",
+    "tokenizer_preflight": "3f76e948b4e21f4738f7f5e27bc405cdfe8235bf1ed31a4cd5ec04ef08b56b22"
+  },
+  "permitted_remaining_route_argv": {
+    "prepare": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006/prepare_tree_fresh200_package.py --archive /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006/CODE_PACKAGE.tar.gz --archive-sha e0a87a8f68438aac11b3b59d05e11e45c169b5f825c42a4139b769aeb9f972f6 --target /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10 --manifest-sha e3fee8437d02cca89b4e813b6ce49c3938bf3d98662de1599b5aef476a20fd11 --inputs /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006/PREPARATION_INPUTS.json --inputs-sha ff464a3d36de01a93ffb92d49b0c2a140dd0d85cc9705820d20183f1f0dba5e7 --helper-review /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006/HELPER_SOURCE_REVIEW.json --helper-review-sha abf1085dcfa1603830a5d86c2f8e20154d9be4da5f4a6c2a907bd1565e7d39b7"
+    ],
+    "tokenizer": [
+      "python3",
+      "-B",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+      "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10/tokenizer_raw_preflight.py --plan /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006/HISTORICAL_RAW_CPU_PLAN.json --plan-sha 5ef515b2e8e3422715bd1b27cc14a926d4efbbc62bf9487df27b86678ac21be2 --output /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json"
+    ]
+  },
+  "production_thresholds_accepted": false,
+  "review_completed": true,
+  "reviewer_context": {
+    "continued_original_independent_reviewer": true,
+    "fork_turns": "none",
+    "inherited_parent_conversation": false
+  },
+  "schema_version": 1,
+  "scope_incident": {
+    "actual_prior_management_route_attempts": 2,
+    "both_commands": "CODE_METADATA_STAGE_ONLY",
+    "first_actual_exit_code_unknown": true,
+    "first_execution_preapproval_not_claimed": true,
+    "first_stdout_stderr_not_recovered": true,
+    "incident_receipt_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-02b1-v10-v10-context-free-review/CPU_ROUTE_SCOPE_INCIDENT_RECEIPT.json",
+    "incident_receipt_sha256": "d5338ce32106deb38b68a117a7afa17236a0aa946e9b1191415c362b0257f413",
+    "local_owned_probe_processes_found_at135941Z": 0,
+    "second_actual_no_clobber_rejection": true,
+    "second_actual_route_exit_code": 1
+  },
+  "sealed_utc": "2026-10-06T14:05:55.983206+00:00",
+  "source_receipt_not_overwritten": true,
+  "source_scope_receipt_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-02b1-v10-v10-context-free-review/RECEIPT.json",
+  "source_scope_receipt_sha256": "c29fdcb835263b9cf03705cabe5cca80903aba72c20c07e797b8cc70e4e621c5",
+  "stage_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v10-20261006",
+  "status": "EXACT_02B1_V10_REMAINING_CPU_PREPARATION_AND_TOKENIZER_REPLAY_ACCEPTED",
+  "training_release": false
+}

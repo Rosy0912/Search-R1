@@ -1,0 +1,53 @@
+{
+  "actual_asset_hashes_verified": false,
+  "actual_gpu_accepted": false,
+  "actual_remote_path_verified": false,
+  "actual_tokenizer_preflight_executed": false,
+  "builder_inputs_sha256": "d0bf21d82304b5bb9c70214e14ebb5799f2e298cc13688d9b73f0009f993b016",
+  "changed_keys_from_v8": [
+    "actual_package_materialized",
+    "actual_remote_executed",
+    "execution_review_pending",
+    "historical_raw_cpu_preflight_inputs",
+    "review_inputs.source_interface_receipt",
+    "source.code_commit",
+    "source.source_interface_receipt_sha256",
+    "status"
+  ],
+  "historical_plan_sha256": "7227b2586bc584d05613b8b5c5d54657812ff1978f435d8916e60faa00443bda",
+  "interface_binding_matches": true,
+  "limitations": "Historical review_receipt Mac paths are unused by tokenizer_raw_preflight.main; node rank-ready and tokenizer bytes remain unverified. Rebind actual materialized package/inputs after builder; no GPU permission.",
+  "local_code_only_builder_permitted": true,
+  "production_training_accepted": false,
+  "raw_helper_binding_matches": true,
+  "review_harness_repair": "Initial allowlist omitted three explicit false/pending draft evidence fields; expanded only for these verified fields, no source/runtime/helper edit.",
+  "review_inputs_unfilled": true,
+  "runtime_entries": {
+    "run_tree.sh": {
+      "matches": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-mu-runtime-v8/run_tree.sh",
+      "same_v8_value": true,
+      "sha256": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b"
+    },
+    "sitecustomize.py": {
+      "matches": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-mu-runtime-v8/sitecustomize.py",
+      "same_v8_value": true,
+      "sha256": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0"
+    },
+    "validation_cost_entry.py": {
+      "matches": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-mu-runtime-v8/validation_cost_entry.py",
+      "same_v8_value": true,
+      "sha256": "51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a"
+    },
+    "validation_cost_hooks_instruct300.py": {
+      "matches": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-mu-runtime-v8/validation_cost_hooks_instruct300.py",
+      "same_v8_value": true,
+      "sha256": "c4c49745b4892f169b601cbc5f27fbcab7fe9c154ae7bc4f508ba82c4440bbd1"
+    }
+  },
+  "source_binding_matches": true,
+  "status": "METADATA_DRAFT_SOURCE_INTERFACE_RAW_PLAN_BINDINGS_REVIEWED_CPU_ONLY"
+}

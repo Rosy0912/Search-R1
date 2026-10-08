@@ -1,0 +1,1 @@
+# synthetic allowed CPU code

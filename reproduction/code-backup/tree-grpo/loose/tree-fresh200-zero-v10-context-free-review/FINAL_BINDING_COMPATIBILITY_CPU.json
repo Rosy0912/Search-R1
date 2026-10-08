@@ -1,0 +1,28 @@
+{
+  "actual_bound_json_read": true,
+  "actual_gpu_executed": false,
+  "actual_gpu_ready": false,
+  "actual_remote_executed": false,
+  "actual_slurm_executed": false,
+  "actual_threshold_accepted": false,
+  "audit_sha256": "b24c45689e669916cfa9f6f152bae0848680ed19f9dfcba03c723434b09a14b4",
+  "combined_zero_source_review_accepted": false,
+  "cpu_preparation_review_can_read_completed_blocked_context": true,
+  "error": "Missing exact independent zero-write release",
+  "helper_load_common_errors": {
+    "prepare": "Missing independent helper source review",
+    "submit": "Missing independent helper source review"
+  },
+  "helper_load_common_refused": true,
+  "helper_sha256": "26238b7ab7bb80dae26ff143a9a66ca571164e1901302423f2f74ce0d9e70209",
+  "local_path_translation_fixture": true,
+  "receipt_sha256": "80cdcd0cd1fcc1e5e7523d11fef17e3b5d67d6e170e633cad11f77d4dce41355",
+  "runtime_sha256": "c0b3bfc5d3bee6cbed2f54025fc69240d1b9f35b7d7f2a2274a892f8f568b1bd",
+  "source_dispatch_error": "Independent fresh calibration source review remains blocked",
+  "source_dispatch_refused": true,
+  "source_interface_receipt_sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017",
+  "source_receipt_rejected_by_final_submit": true,
+  "status": "PASS_FINAL_WRAPPER_ACCEPTANCE_AND_ZERO_HELPER_REJECTION_PRESERVED_CPU_ONLY",
+  "training_release": false,
+  "wrapper_source_review_accepted": true
+}

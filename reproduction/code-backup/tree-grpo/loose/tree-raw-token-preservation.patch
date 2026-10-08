@@ -1,0 +1,1034 @@
+diff --git a/CPU_CANDIDATE_RECEIPT.json b/CPU_CANDIDATE_RECEIPT.json
+new file mode 100644
+index 0000000..1ed9363
+--- /dev/null
++++ b/CPU_CANDIDATE_RECEIPT.json
+@@ -0,0 +1,51 @@
++{
++  "status": "SOURCE_CPU_CANDIDATE_NOT_INDEPENDENT_ACCEPTANCE",
++  "base_commit": "a632ba91840fb116aacfc0e770681a860647b295",
++  "tests_run": 15,
++  "failures": 0,
++  "errors": 0,
++  "successful": true,
++  "cpu_elapsed_seconds": 0.10720419883728027,
++  "python": "/Library/Developer/CommandLineTools/usr/bin/python3",
++  "torch_version": "2.8.0",
++  "cuda_initialized": false,
++  "distributed_initialized": false,
++  "vllm_imported": false,
++  "ray_imported": false,
++  "actual_assets_loaded": false,
++  "source_files": {
++    "RAW_TOKEN_PRESERVATION_CANDIDATE.md": "7a680d302b0d4e7ec92237aa7a618201c555de66fa48cbd3edac6b6171793ba8",
++    "search_r1/baselines/controller.py": "6dd73e1ae6b9ca84693887598f4b6fdde7ad2baf8915b29f0391cfd9cc522913",
++    "search_r1/baselines/evaluation.py": "f896b3058e0265e70c075b70d271b52e1031a02f827a7f520eab6e1cdbf373fd",
++    "search_r1/baselines/rollout.py": "d5d161e0404dbc4fcbeabe2a15b04d39844550a0651d0707c993515d0a792201",
++    "search_r1/baselines/tree_audit.py": "e5c48f435dac9866e99997f3eb3b425eb124afa9dd605b69aee792434292c5fb",
++    "search_r1/baselines/tree_raw_tokens.py": "120e2069706a1cda06d132e1b61c96d54f2087b5b1a1f393662d0696ee18fe2e",
++    "test_tree_raw_tokens_cpu.py": "f2b5785da2369d1612c0677e8ac25e1c97a1591cb5570bf1f1437d84c1cc0593",
++    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "60b1e862a358467f37eeaa1c0010b294bbb6c34af31038357519ff624f03d36d",
++    "verl/trainer/config/ppo_tree_safety300.yaml": "0395f0af8482972305eee749ee6c740aee8d137ee2c5da9494df37ac18e9fa45",
++    "verl/trainer/main_ppo.py": "0f6ea3fd9f52d717dff55869943b6335e236a2635283105741b950267b931ee9",
++    "verl/trainer/ppo/ray_trainer.py": "ef6bcc0f284031d80debde7a2cd0d1bb58a59f4610e93c97f473155bd32a2c97",
++    "verl/workers/rollout/vllm_rollout/vllm_rollout.py": "5b8af709d2d6a5c0edcc3efdf793e9c0b9278386b714785422758f448ba7bc9a"
++  },
++  "unchanged_mathematical_sources": {
++    "search_r1/baselines/advantages.py": "d8cb2eea41021f7a6a5752f60abb4f1c316ecf88fbf959fec87346ba01254a82",
++    "search_r1/baselines/objectives.py": "c74a40bfd835b17b6a43d752a27a68f00d75cf3bf4794687723947ed2dacbabb",
++    "verl/workers/actor/dp_actor.py": "48aa27763fe481dcf546a8d3466cf5ee21b7e951210ac1f00568921c07f27cd7",
++    "search_r1/baselines/policy_safety.py": "078b17afa0b836487c37b3c14f80aedc51dd65b29e7e7f067289e647ea6b4cdb"
++  },
++  "design_sha256": "0e42b1f75edc9db0ca3a9a5e65fd286c73dcd08dda9f711541bb8727b07f5b95",
++  "test_output": "test_actual_facade_keeps_lengths_before_padding_and_legacy_return_arity (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_actual_observation_cap500_keeps_observation_mask0_and_full_next_prefix (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_actual_rewardmanager_and_evaluation_hooks_preserve_legacy_qa_score (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_actual_rollout_refuses_rolling_leftcrop_and_missing_emission_metadata (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_actual_rollout_source_calls_env_once_and_keeps_raw_prefix_in_model_inputs (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_actual_tree_round_inherits_sample_ids_and_equal_leaf_weights_unchanged (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_chinese_internal_special_eos_only_and_no_tag_keep_real_ids (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_exact500_no_tag_preserves_all_emitted_and_identity_duplicate_native_refuses (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_pad_equals_eos_genuine_pad_missing_length_empty_and_over500_refuse (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_parent_branch_deepcopies_raw_and_semantics_ids_without_resampling (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_projection_rejects_scoring_prefix_positions_or_cap_ambiguity (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_semantic_projection_preserves_old_reward_and_refuses_binding_changes (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_split_tags_search_priority_and_multiple_tag_rule_match_actual_old_source (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_utf8_and_nonmonotonic_decode_refuse_without_substitute_tokens (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\ntest_whole_token_tag_tail_and_raw_scalar_prefix (test_tree_raw_tokens_cpu.RawTokenTests) ... ok\n\n----------------------------------------------------------------------\nRan 15 tests in 0.107s\n\nOK\n",
++  "source_warning_output": "[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 501 & 500\n[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 501 & 500\n",
++  "baseline_regression": {
++    "returncode": 1,
++    "stdout": "",
++    "stderr": "EE\n======================================================================\nERROR: test_tree_batching (unittest.loader._FailedTest)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_tree_batching\nTraceback (most recent call last):\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/loader.py\", line 154, in loadTestsFromName\n    module = __import__(module_name)\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/tests/baselines/test_tree_batching.py\", line 6, in <module>\n    from tests.baselines.test_algorithms import manager, batch\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/tests/baselines/test_algorithms.py\", line 13, in <module>\n    from verl import DataProto\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/verl/__init__.py\", line 22, in <module>\n    from .protocol import DataProto\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/verl/protocol.py\", line 26, in <module>\n    import tensordict\nModuleNotFoundError: No module named 'tensordict'\n\n\n======================================================================\nERROR: test_algorithms (unittest.loader._FailedTest)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_algorithms\nTraceback (most recent call last):\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/loader.py\", line 154, in loadTestsFromName\n    module = __import__(module_name)\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/tests/baselines/test_algorithms.py\", line 13, in <module>\n    from verl import DataProto\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/verl/__init__.py\", line 22, in <module>\n    from .protocol import DataProto\n  File \"/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-raw-token-preservation/verl/protocol.py\", line 26, in <module>\n    import tensordict\nModuleNotFoundError: No module named 'tensordict'\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nFAILED (errors=2)\n",
++    "meaning": "Import-stage failure; original test bodies not run if tensordict missing"
++  },
++  "no_remote_or_submit_performed": true,
++  "probability_accepted": false,
++  "training_accepted": false,
++  "finite_gpu_gradients_proven": false,
++  "nonzero_optimizer_update_proven": false,
++  "GPU_capacity_proven": false
++}
+diff --git a/RAW_TOKEN_PRESERVATION_CANDIDATE.md b/RAW_TOKEN_PRESERVATION_CANDIDATE.md
+new file mode 100644
+index 0000000..d967d23
+--- /dev/null
++++ b/RAW_TOKEN_PRESERVATION_CANDIDATE.md
+@@ -0,0 +1,39 @@
++# Tree 原始采样 token 保留候选
++
++状态：本地源码与合成 CPU 候选，默认关闭；没有部署、远端资产读取、GPU 执行或生产训练放行。基于 `a632ba91840fb116aacfc0e770681a860647b295`，独立分支 `codex/tree-raw-token-preservation`。设计依据为 `../tree-token-preservation-design/REVIEW.md`，SHA256 `0e42b1f75edc9db0ca3a9a5e65fd286c73dcd08dda9f711541bb8727b07f5b95`。
++
++## 策略 ID 与旧语义的双表示
++
++原 vLLM facade 在补 PAD 前，Tree opt-in 返回第三项行元数据：实际原生 request ID、调用 UUID／rank／物理行、源／配置／数据／模型／作业身份、原始 emitted ID、原始 selected scalar、真实长度、finish／stop 与实际 SamplingParams。原双元返回保持默认行为。adapter 逐行要求真实长度 mask 与原来的 EOS mask 完全相等，不补造 EOS 或修改 mask 来使检查通过。
++
++`sampled_action` 用固定 tokenizer 对最多 500 个完整原始前缀逐一解码；保留覆盖旧 canonical 文本 C 结尾的最短完整原始前缀。完整 raw 解码和 C 仍采用旧 `skip_special_tokens=True`、优先第一个 `</search>`，否则第一个 `</answer>` 的规则。策略 action 和后续 generation context 只使用 `raw_emitted[:cut]`；其原生 sampled scalar 按相同 cut 保留。重新编码 C 的 ID 只进入语义和审计 ledger。
++
++parser／环境继续直接使用旧 `_postprocess_responses` 得到的 C。reward／evaluation 从绑定 ledger 重建旧 canonical-ID 时间线及 model mask，按旧的连续 model spans 逐段调用 **`tokenizer.decode(ids)` 的默认 flags**。这里没有改成 `skip_special_tokens=True`，也不假定 `decode(encode(C)) == C`。观测 ID 和 loss-mask=0 的位置均保留；无观测的相邻 action 仍按原 contiguous span 合并后解码。实际源码调用 fixture 证明带 `</answer>tail` 的不可拆 token 保留 raw ID，而旧 Paris QA 的 reward、F1、EM 仍为 1。
++
++raw ID、scalar、完整 context、position、attention、cut、canonical text／ID、原生 finish／length、tokenizer flags 和采样身份随 `State.branch()` 深拷贝。actor 更新前再次绑定到实际 batch prompt／response／info-mask 并验证。greedy validation 使用同样的双表示，但保持原单轨迹评估，不扩成六叶。
++
++## 明确的协议影响与执行限制
++
++这不是旧新轨迹逐 token 等价。标签末尾位于 token 内时，其不可分尾字符仍进入下轮模型上下文及整个 token 的 loss，ledger 明记尾字节；特殊 token／EOS-only 原来可能产生零 canonical token，现在可以有 raw 有效 token。有效长度、每 token 权重和后续采样分布会因此变化；原等叶权重公式和总质量不变，但不声称每叶数值相同。
++
++候选拒绝 PAD==EOS、真正 emitted PAD、空 emitted、缺长度／scalar／finish、原生 abort、超 500、U+FFFD／非法 UTF8、任何非单调完整前缀解码、采样身份重复，以及 native 真长度和原 EOS mask 不一致。实际 tokenizer 固定 PAD151643、EOS151645；BOS 允许原来的 None。未实现另一套显式有效 mask 协议来支持 PAD 情形。
++
++start 保持 2048、rolling／response 4096、action／obs 500、四轮、无强制最终回答。观测仍使用原 `_process_next_obs` 的 500 右截断。为避免语义投影复活已丢弃答案，本候选 **拒绝任何 rolling 左裁、raw response 或 canonical semantic timeline 越过 4096**，也拒绝起始 prompt 已超过 2048。常见长轨迹确实可能触发这种拒绝，批次停止而不是默默缩短、增加预算或继续更新。因此当前不能声明 500/300 长训可执行、five 接受或 GPU READY；长度支持的后续扩展需另立协议与审查。
++
++driver 收到可检查的 emission 后发生拒绝，会在自身 output 下保存 `token-preservation-rejections` JSON，包含错误、现有成本计数与拒绝上下文；RPC 在返回前失败时只有实际已收到的证据，不捏造未知 emitted 数或 GPU 成本。原运行 observer／Slurm／资源终态仍需独立保留，不能用这里的计数替代完整作业成本。
++
++## 配置和成本口径
++
++仅 `ppo_tree_safety300.yaml` 增加默认 false 的 `actor_rollout_ref.rollout.tree_raw_emission` 和 `baselines.tree.token_preservation.enabled`。启用两者时 protocol 必须为 `tree_sampled_prefix_legacy_semantics_v1`，且明确提供同机已冻结 `tokenizer.json` 的 SHA256；没有猜测或自动下载该身份。采样 capture 要求运行包提供原 source/config/data/model/run/job 六项 provenance 环境变量。
++
++预算、LR、train640／mini384／micro16、epoch1、Tree2 roots × 每 root3 leaves、原树分叉／优势／等叶分母、四轮与评估 cadence 均未修改。`advantages.py`、`objectives.py`、原 actor 和 policy-safety 数学文件保持 base 字节。
++
++新增成本把物理槽位、实际 emitted、保留 action、丢弃 sampled 尾部／填充行、最终叶中重复继承的 sampled-token occurrence 分列。继承按 `(sample_id, original_offset)` 计重复，不冒充新采样。原 generated_tokens 计数仍保留。全前缀扫描可能二次方解码，单列 CPU／wall；这些合成 fixture 耗时不代表真实 tokenizer 或训练成本。
++
++## 证据范围和待验收项
++
++15 项合成 CPU fixtures 使用实际源码中的 `_postprocess_responses`、`_process_next_obs`、parser／env、SearchRollout、RewardManager／evaluation、facade 以及原等叶权重函数；外部 DataProto 与 native 请求仅作小桩。覆盖整 token 尾字节、分拆／双标签优先／多标签、中文／特殊 ID／EOS-only、UTF8／非单调拒绝、PAD／长度拒绝、恰好 500、真实旧 obs500 截断及 mask0／完整下一前缀、Tree 身份继承／deep-copy、score／context／position 拒绝和 reward／F1／EM 不变。它们不是实际 Ray、vLLM、FSDP、DataProto 或 tokenizer 重载验收。
++
++本机缺 `tensordict`，原 `tests.baselines.test_tree_batching` 与 `test_algorithms` 在 import 阶段失败，未执行回归；没有安装依赖掩盖这个限制。完整真实 DataProto row 重排／RPC 元数据保留、原 facade 实际链、固定 tokenizer 加载来源、分布式同步失败与成本终态尚需冻结包后的同机独立核验。
++
++候选没有改变 old-logprob 重算、native 归一化、概率容差或三项防护数学。保留 raw scalar 不意味着原 sampler 与 actor backend 数值相等；**不声称修复已观测 raw backend 1.8738 偏差**。梯度／参数 finite、真实非零更新、零写入概率、five／F1 及完整最终效果仍无新凭证。无需重跑独立窗口诊断或修改其冻结源码来使用这份 source-only 候选。
+diff --git a/search_r1/baselines/controller.py b/search_r1/baselines/controller.py
+index 02a523e..8a2268e 100644
+--- a/search_r1/baselines/controller.py
++++ b/search_r1/baselines/controller.py
+@@ -13,6 +13,11 @@ from .bapo import BoundaryStage, BoundaryReward, decode_answers, ordinary_answer
+ METHODS = ('grpo', 'gigpo', 'tree_grpo', 'bapo', 'opsd', 'topd', 'cosearch')
+ 
+ 
++def option(settings,key,default=None):
++    getter=getattr(settings,'get',None)
++    return getter(key,default) if callable(getter) else getattr(settings,key,default)
++
++
+ def canonical_paths(paths):
+     paths = [paths] if isinstance(paths, str) else list(paths)
+     return {str(Path(path).expanduser().resolve()) for path in paths}
+@@ -84,12 +89,25 @@ def validate_config(config):
+             raise ValueError('Distillation chunk_size must be positive')
+     if method == 'tree_grpo':
+         tree = config.baselines.tree
++        preservation=option(tree,'token_preservation', {})
++        enabled=option(preservation,'enabled', False)
++        if enabled:
++            from .tree_raw_tokens import PROTOCOL, require
++            require(option(preservation,'protocol') == PROTOCOL and config.actor_rollout_ref.rollout.get('tree_raw_emission', False),
++                    'Tree token preservation/native metadata configuration differs')
++            require(config.max_turns==4 and config.force_final_answer is False and
++                    (config.data.max_start_length,config.data.max_prompt_length,
++                     config.data.max_response_length,config.data.max_obs_length)==(2048,4096,500,500) and
++                    (tree.roots,tree.leaves)==(2,3), 'Fixed Tree search budgets/caps changed')
+         if config.actor_rollout_ref.rollout.n_agent != tree.roots:
+             raise ValueError('Tree roots must equal rollout.n_agent')
+         if min(tree.roots, tree.leaves, tree.expansions, tree.rounds) < 1:
+             raise ValueError('Tree budgets must be positive')
+         if tree.leaves > 1 + tree.expansions * tree.rounds:
+             raise ValueError('Insufficient expansions for selected leaves')
++    if config.actor_rollout_ref.rollout.get('tree_raw_emission', False) and not (
++            method == 'tree_grpo' and option(option(config.baselines.tree,'token_preservation',{}),'enabled',False)):
++        raise ValueError('Native raw emission metadata only accepts the explicitly opted-in Tree protocol')
+     if method == 'bapo':
+         holdout = config.baselines.bapo.stage_validation_files
+         if config.baselines.bapo.stage_validation_freq < 1:
+@@ -174,8 +192,10 @@ class Controller:
+             self.teacher = FrozenTeacher(self.config.distillation.teacher_path, trainer.tokenizer, 'cpu')
+ 
+     def generate(self, manager, gen_batch, qa_batch, metrics):
++        preservation=(option(self.config.tree,'token_preservation',{}) if self.method=='tree_grpo' else {})
++        preservation=preservation if option(preservation,'enabled',False) else None
+         engine = SearchRollout(manager, self.config.gigpo.anchor_mode, self.ranker, self.config.seed,
+-                               self.config.context_alignment)
++                               self.config.context_alignment, token_preservation=preservation)
+         if self.tree_rng is not None:
+             # Keep parent/leaf sampling continuous across outer updates while
+             # constructing a fresh engine and cost ledger for each rollout.
+@@ -217,6 +237,10 @@ class Controller:
+         return output, sources
+ 
+     def audit_actor_batch(self, batch):
++        if self.method=='tree_grpo' and option(option(self.config.tree,'token_preservation',{}),'enabled',False):
++            from .tree_raw_tokens import FIELD,require,semantic_spans
++            require(FIELD in batch.non_tensor_batch,'Opted-in actor batch lost raw/semantic provenance')
++            for i in range(len(batch)):semantic_spans(batch[i],self.trainer.tokenizer)
+         if self.method != 'tree_grpo' or not os.environ.get('SEARCH_R1_TREE_AUDIT_DIR'):
+             return
+         audit = getattr(self, 'latest_tree_audit', None)
+@@ -349,3 +373,15 @@ def ranked_validation_manager(manager, controller):
+             result, _ = engine.run(gen_batch)
+             return result
+     return Adapter()
++
++
++def token_preserving_validation_manager(manager, controller):
++    """Same greedy one-trajectory validation, with the Tree semantic projection."""
++    class Adapter:
++        timing_raw = None
++        def run_llm_loop(self, gen_batch, initial_input_ids):
++            settings=controller.config.tree.token_preservation
++            engine=SearchRollout(manager,context_alignment='error',token_preservation=settings)
++            result,_=engine.run(gen_batch)
++            return result
++    return Adapter()
+diff --git a/search_r1/baselines/evaluation.py b/search_r1/baselines/evaluation.py
+index 9bb5064..7821881 100644
+--- a/search_r1/baselines/evaluation.py
++++ b/search_r1/baselines/evaluation.py
+@@ -14,7 +14,10 @@ def batch_answer_metrics(data, tokenizer):
+         mask = item.batch['attention_mask'][-width:].bool()
+         if 'info_mask' in item.batch:
+             mask = mask & item.batch['info_mask'][-width:].bool()
+-        spans = decode_model_response_spans(tokenizer, item.batch['responses'], mask)
++        from .tree_raw_tokens import semantic_spans
++        spans = semantic_spans(item,tokenizer)
++        if spans is None:
++            spans = decode_model_response_spans(tokenizer, item.batch['responses'], mask)
+         answer = answer_from_spans(spans)
+         targets = item.non_tensor_batch['reward_model']['ground_truth']['target']
+         if isinstance(targets, str):
+diff --git a/search_r1/baselines/rollout.py b/search_r1/baselines/rollout.py
+index 49a2084..5159d14 100644
+--- a/search_r1/baselines/rollout.py
++++ b/search_r1/baselines/rollout.py
+@@ -39,6 +39,7 @@ class State:
+     steps: list = field(default_factory=list)
+     anchors: list = field(default_factory=list)
+     records: list = field(default_factory=list)
++    raw_ledger: list = field(default_factory=list)
+     observation: list = field(default_factory=list)
+     turns: int = 0
+     done: bool = False
+@@ -66,7 +67,7 @@ def padded(rows, pad, left=False):
+ 
+ 
+ class SearchRollout:
+-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report'):
++    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None):
+         self.manager = manager
+         self.tokenizer = manager.tokenizer
+         self.config = manager.config
+@@ -79,13 +80,30 @@ class SearchRollout:
+         self.ranker = ranker
+         self.rng = random.Random(seed)
+         self.audit = None
++        self.token_preservation = token_preservation
++        self.tokenizer_identity = None
++        self.seen_sampling_ids = set()
++        self.failure_context = None
++        if token_preservation is not None:
++            from .tree_raw_tokens import tokenizer_identity, require
++            require(self.tokenizer.pad_token_id == 151643 and self.tokenizer.eos_token_id == 151645,
++                    'Frozen actual PAD/EOS identity changed')
++            self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
+         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
+                          trajectories=0, padded_rows=0, context_mismatches=0)
++        if token_preservation is not None:
++            self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
++                raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
++                semantic_prefix_scan_wall_seconds=0.)
+ 
+     def initial_states(self, gen_batch):
+         states = []
+         for i in range(len(gen_batch)):
+             ids = gen_batch.batch['input_ids'][i][gen_batch.batch['attention_mask'][i].bool()].tolist()
++            if self.token_preservation is not None:
++                from .tree_raw_tokens import require
++                require(self.tokenizer.pad_token_id not in ids and len(ids) <= self.config.max_start_length,
++                        'Initial prompt PAD/left truncation is unsupported')
+             states.append(State(i, ids[-self.config.max_start_length:], ids, observation=ids))
+         return states
+ 
+@@ -94,11 +112,33 @@ class SearchRollout:
+                                   (self.config.force_final_answer and not state.final_used))
+ 
+     def advance(self, states, meta):
++        started=None
++        if self.token_preservation is not None:
++            import time
++            started=time.perf_counter(),time.process_time()
++            self.failure_context=dict(stage='before_generation',contexts=[s.rolling.copy() for s in states],
++                scoring_contexts=[s.prompt+s.response for s in states],raw_ledgers=[s.raw_ledger for s in states])
++        try:
++            return self._advance(states, meta)
++        except Exception as exc:
++            if self.token_preservation is not None and os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
++                from .training_state import atomic_save
++                directory=os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'],'token-preservation-rejections')
++                os.makedirs(directory,exist_ok=True)
++                atomic_save(dict(status='CURRENT_ROLLOUT_REJECTED_BEFORE_RETURN',error=repr(exc),
++                    cost=self.cost.copy(),failure_context=self.failure_context,
++                    tokenizer_identity=self.tokenizer_identity,probability_accepted=False,
++                    rejected_advance_wall_seconds=time.perf_counter()-started[0],
++                    rejected_advance_cpu_seconds=time.process_time()-started[1]),
++                    os.path.join(directory,uuid.uuid4().hex+'.json'),json_format=True)
++            raise
++
++    def _advance(self, states, meta):
+         from verl import DataProto
+         matches = [s.prompt + s.response == s.rolling for s in states]
+         mismatches = sum(not match for match in matches)
+         self.cost['context_mismatches'] += mismatches
+-        if mismatches and self.context_alignment == 'error':
++        if mismatches and (self.context_alignment == 'error' or self.token_preservation is not None):
+             raise ValueError('Actual rollout prefix differs from full-trajectory scoring prefix')
+         pad = self.tokenizer.pad_token_id
+         ids = padded([s.rolling for s in states], pad, left=True)
+@@ -120,6 +160,29 @@ class SearchRollout:
+         self.cost['generated_tokens'] += int((generated != pad).sum())
+         raw = generated[:len(states)]
+         tokens, text = self.manager._postprocess_responses(raw)
++        prepared_actions = None
++        if self.token_preservation is not None:
++            from .tree_raw_tokens import EMISSION, sampled_action, require
++            emissions=output.non_tensor_batch.get(EMISSION)
++            require(emissions is not None and len(emissions) == len(generated),'Actual emitted length/finish metadata missing')
++            self.cost['raw_slots'] += int(generated.numel())
++            self.cost['raw_emitted_tokens'] += sum(record['true_emitted_length'] for record in emissions)
++            self.failure_context=dict(native_emissions=emissions.tolist(),legacy_text=text,
++                contexts=[s.rolling.copy() for s in states])
++            prepared_actions=[]
++            for i,s in enumerate(states):
++                record=emissions[i]
++                require(record['prompt_token_ids'] == s.rolling,'Actual native prompt differs from policy/scoring history')
++                require(record['sample_id'] not in self.seen_sampling_ids,'Duplicate physical sampling identity')
++                self.seen_sampling_ids.add(record['sample_id'])
++                action,ledger=sampled_action(self.tokenizer,record,raw[i].tolist(),
++                    tokens[i][tokens[i] != pad].tolist(),text[i],self.tokenizer_identity)
++                prepared_actions.append((action,ledger))
++                self.cost['raw_retained_tokens'] += len(action)
++                self.cost['raw_discarded_tail_tokens'] += record['true_emitted_length']-len(action)
++                self.cost['semantic_prefix_scan_cpu_seconds'] += ledger['prefix_scan_cpu_seconds']
++                self.cost['semantic_prefix_scan_wall_seconds'] += ledger['prefix_scan_wall_seconds']
++            self.cost['raw_discarded_tail_tokens'] += sum(record['true_emitted_length'] for record in emissions[len(states):])
+         # A batch can contain normal and final-only steps. Never search for the latter.
+         normal = [s.turns < self.config.max_turns for s in states]
+         observations, dones, valid, searches = [''] * len(states), [0] * len(states), [0] * len(states), [0] * len(states)
+@@ -137,8 +200,21 @@ class SearchRollout:
+                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
+         obs_tokens = self.manager._process_next_obs(observations)
+         for i, s in enumerate(states):
+-            action = tokens[i][tokens[i] != pad].tolist()
++            action = tokens[i][tokens[i] != pad].tolist() if prepared_actions is None else prepared_actions[i][0]
+             obs = obs_tokens[i][obs_tokens[i] != pad].tolist()
++            if prepared_actions is not None:
++                from .tree_raw_tokens import require
++                ledger=prepared_actions[i][1]
++                require(len(s.response)+len(action)+len(obs) <= self.config.max_prompt_length and
++                        len(s.rolling)+len(action)+len(obs) <= self.config.max_prompt_length,
++                        'Score-cap or rolling left-crop requires a separate unambiguous projection protocol')
++                semantic_count=sum(len(x['action']['canonical_semantic_token_ids'])+len(x['observation_token_ids'])
++                                   for x in s.raw_ledger)+len(ledger['canonical_semantic_token_ids'])+len(obs)
++                require(semantic_count <= self.config.max_prompt_length,'Legacy semantic timeline would cross score cap')
++                s.raw_ledger.append(dict(turn=len(s.anchors),action=ledger,observation_token_ids=obs.copy(),
++                    observation_text=observations[i],generation_context_token_ids=s.rolling.copy(),
++                    generation_context_attention=[1]*len(s.rolling),
++                    generation_context_positions=positions[i][attention[i].bool()].tolist()))
+             key_tokens = s.rolling if self.anchor_mode == 'context' else s.observation
+             anchor = hashlib.sha256(np.asarray(key_tokens, dtype=np.int64).tobytes()).hexdigest()
+             step = len(s.anchors)
+@@ -198,8 +274,24 @@ class SearchRollout:
+                            action_records=object_array([s.records for s in states]),
+                            trajectory_uid=object_array([s.trajectory for s in states]),
+                            tree_uid=object_array([s.tree for s in states]))
++        if self.token_preservation is not None:
++            from .tree_raw_tokens import FIELD, trajectory_projection, require
++            non_tensors[FIELD]=object_array([trajectory_projection(s,self.config.max_prompt_length) for s in states])
++            occurrences={}
++            total=0
++            for state in states:
++                for record in state.raw_ledger:
++                    action=record['action'];sample=action['native_emission']['sample_id']
++                    for offset,(token,logp) in enumerate(zip(action['action_token_ids'],action['selected_logprobs'])):
++                        key=(sample,offset);value=(token,logp)
++                        require(key not in occurrences or occurrences[key]==value,'Inherited sampling occurrence changed')
++                        occurrences[key]=value;total+=1
++            self.cost['raw_inherited_leaf_tokens']=total-len(occurrences)
+         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
+         result.meta_info.update(self.output_meta)
++        if self.token_preservation is not None:
++            from .tree_raw_tokens import PROTOCOL
++            result.meta_info['tree_raw_token_protocol']=PROTOCOL
+         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
+                                      active_mask=[not s.done for s in states],
+                                      valid_action_stats=[s.valid_actions for s in states],
+diff --git a/search_r1/baselines/tree_audit.py b/search_r1/baselines/tree_audit.py
+index f614b6c..15299c6 100644
+--- a/search_r1/baselines/tree_audit.py
++++ b/search_r1/baselines/tree_audit.py
+@@ -14,7 +14,7 @@ def fingerprint(value):
+ 
+ def state_signature(state):
+     return {key: fingerprint(getattr(state, key)) for key in
+-            ('prompt', 'rolling', 'response', 'model_mask', 'steps', 'anchors', 'records', 'observation',
++            ('prompt', 'rolling', 'response', 'model_mask', 'steps', 'anchors', 'records', 'raw_ledger', 'observation',
+              'source', 'tree', 'node', 'turns', 'done', 'final_used', 'valid_actions', 'valid_searches')}
+ 
+ 
+diff --git a/search_r1/baselines/tree_raw_tokens.py b/search_r1/baselines/tree_raw_tokens.py
+new file mode 100644
+index 0000000..17fac9c
+--- /dev/null
++++ b/search_r1/baselines/tree_raw_tokens.py
+@@ -0,0 +1,194 @@
++"""Tree-only sampled-token prefixes plus separately bound legacy semantics.
++
++No token/probability is repaired, no optimizer is called and no probability
++tolerance is defined here. Unsupported boundaries reject the current batch.
++"""
++import copy
++import hashlib
++import json
++import math
++import os
++from pathlib import Path
++import re
++import time
++
++
++PROTOCOL = 'tree_sampled_prefix_legacy_semantics_v1'
++FIELD = 'tree_raw_semantics'
++EMISSION = '__tree_native_emission'
++
++
++def require(value,message):
++    if not value:raise ValueError('Tree raw-token protocol: '+message)
++
++
++def fingerprint(value):
++    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),
++        ensure_ascii=False,allow_nan=False).encode()).hexdigest()
++
++
++def tokenizer_identity(tokenizer,expected_sha):
++    require(isinstance(expected_sha,str) and re.fullmatch('[0-9a-f]{64}',expected_sha),
++            'Explicit frozen tokenizer.json SHA required')
++    path=Path(tokenizer.name_or_path)/'tokenizer.json'
++    with path.open('rb') as stream:
++        digest=hashlib.sha256()
++        for chunk in iter(lambda:stream.read(8*1024**2),b''):digest.update(chunk)
++    require(digest.hexdigest()==expected_sha,'Tokenizer file identity differs')
++    return dict(tokenizer_json_sha256=expected_sha,tokenizer_path=str(path),
++        tokenizer_class=type(tokenizer).__module__+'.'+type(tokenizer).__qualname__,
++        clean_up_tokenization_spaces=tokenizer.clean_up_tokenization_spaces,
++        policy_decode_skip_special_tokens=True,reward_decode='original_tokenizer.decode_default_flags',
++        pad_token_id=tokenizer.pad_token_id,eos_token_id=tokenizer.eos_token_id,
++        bos_token_id=tokenizer.bos_token_id)
++
++
++def canonical_text(text):
++    # Preserve the original SEARCH-first rule, not earliest-tag priority.
++    if '</search>' in text:return text.split('</search>')[0]+'</search>'
++    if '</answer>' in text:return text.split('</answer>')[0]+'</answer>'
++    return text
++
++
++def capture_native_emissions(request_outputs,sampling_params,call_id,rank):
++    """Called before facade padding, retaining real request IDs and scalar values."""
++    fields=('n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
++        'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
++        'include_stop_str_in_output','logprobs','prompt_logprobs','seed')
++    settings={key:copy.deepcopy(getattr(sampling_params,key)) for key in fields}
++    require(settings['n']==1 and settings['max_tokens']==500 and settings['ignore_eos'] is False and
++            settings['min_tokens']==0 and not settings['stop'], 'Unsupported native stop/distribution protocol')
++    provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
++        'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
++    require(all(isinstance(value,str) and value for value in provenance.values()),
++            'Own source/config/data/model/run/job provenance is required for opt-in emission capture')
++    rows=[];seen=set()
++    for row,request in enumerate(request_outputs):
++        require(request.request_id not in seen and request.finished and len(request.outputs)==1,
++                'Unique final n1 native requests required')
++        seen.add(request.request_id);out=request.outputs[0]
++        ids=[int(token) for token in out.token_ids]
++        require(0<len(ids)<=500 and out.logprobs is not None and len(out.logprobs)==len(ids),
++                'Empty/missing/over-cap native emission or scalar metadata')
++        logps=[float(values[token].logprob) for values,token in zip(out.logprobs,ids)]
++        require(all(math.isfinite(value) for value in logps),'Nonfinite sampled scalar')
++        require(out.finish_reason in ('stop','length'), 'Unsupported native abort/finish status')
++        identity=dict(call_id=call_id,rank=int(rank),request_id=request.request_id,physical_row=row,
++                      runtime_provenance=provenance.copy())
++        rows.append(dict(schema_version=1,protocol=PROTOCOL,sampling_identity=identity,
++            sample_id=fingerprint(identity),prompt_token_ids=[int(x) for x in request.prompt_token_ids],
++            raw_emitted_token_ids=ids,raw_selected_logprobs=logps,true_emitted_length=len(ids),
++            finish_reason=out.finish_reason,stop_reason=out.stop_reason,finished=True,
++            sampling_params=copy.deepcopy(settings)))
++    return rows
++
++
++def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity):
++    """Scan complete original prefixes; never encode a policy token or split one."""
++    started=time.perf_counter(),time.process_time()
++    require(emission.get('protocol')==PROTOCOL and emission.get('schema_version')==1,
++            'Native emission metadata missing')
++    pad,eos=tokenizer.pad_token_id,tokenizer.eos_token_id
++    require(type(pad) is int and type(eos) is int and pad!=eos,'PAD==EOS unsupported')
++    ids=emission['raw_emitted_token_ids'];n=emission['true_emitted_length'];values=emission['raw_selected_logprobs']
++    require(type(n) is int and 0<n<=500 and len(ids)==len(values)==n and
++            all(type(x) is int for x in ids) and all(math.isfinite(x) for x in values),
++            'Actual emitted length/IDs/scalars invalid')
++    require(pad not in ids,'Genuinely emitted PAD requires a separately reviewed explicit-mask protocol')
++    require(len(raw_padded)==500 and raw_padded[:n]==ids and all(x==pad for x in raw_padded[n:]),
++            'Raw returned row changed or invalid padded suffix')
++    require(emission['sample_id']==fingerprint(emission['sampling_identity']), 'Sampling identity mutated')
++    decoded=[];previous=''
++    for stop in range(1,n+1):
++        current=tokenizer.decode(ids[:stop],skip_special_tokens=True)
++        require(isinstance(current,str) and '\ufffd' not in current,'UTF8 replacement/ambiguous prefix decode')
++        current.encode('utf-8',errors='strict')
++        require(current.startswith(previous),'Nonmonotonic prefix decode/cleanup unsupported')
++        decoded.append(current);previous=current
++    full=decoded[-1];text=canonical_text(full)
++    require(text==legacy_text and tokenizer.encode(text,add_special_tokens=False)==legacy_ids,
++            'Legacy parser text/canonical semantic IDs differ')
++    tagged='</search>' in full or '</answer>' in full
++    if tagged:
++        choices=[i+1 for i,prefix in enumerate(decoded) if prefix.startswith(text)]
++        require(choices,'Canonical boundary not covered by a complete original token')
++        cut=choices[0]
++    else:cut=n
++    action=ids[:cut];projection=decoded[cut-1]
++    require(projection.startswith(text),'Whole-token boundary does not cover canonical semantics')
++    extra=projection[len(text):]
++    ledger=dict(protocol=PROTOCOL,tokenizer_identity=copy.deepcopy(identity),
++        native_emission=copy.deepcopy(emission),cut=cut,action_token_ids=action,
++        selected_logprobs=values[:cut],canonical_text=text,canonical_text_sha256=fingerprint(text),
++        canonical_semantic_token_ids=legacy_ids.copy(),legacy_reward_action_text=tokenizer.decode(legacy_ids),
++        whole_prefix_decode=projection,whole_prefix_decode_sha256=fingerprint(projection),
++        indivisible_extra_text=extra,indivisible_extra_utf8_hex=extra.encode('utf8').hex(),
++        boundary_reason='shortest_whole_original_prefix_covering_legacy_tag' if tagged else 'all_true_emitted_tokens_no_tag',
++        raw_emitted_tokens=n,retained_sampled_tokens=cut,discarded_sampled_tail_tokens=n-cut,
++        emitted_eos_positions=[i for i,x in enumerate(ids) if x==eos],
++        eos_retained=any(x==eos for x in action),empty_canonical=text=='',
++        prefix_scan_wall_seconds=time.perf_counter()-started[0],
++        prefix_scan_cpu_seconds=time.process_time()-started[1],
++        probability_accepted=False)
++    ledger['action_binding_sha256']=fingerprint({k:v for k,v in ledger.items() if not k.startswith('prefix_scan_')})
++    return action,ledger
++
++
++def trajectory_projection(state,cap):
++    raw=[];mask=[];semantic=[];semantic_mask=[];contexts=[]
++    for turn,ledger in enumerate(state.raw_ledger):
++        require(ledger['turn']==turn and ledger['generation_context_token_ids']==state.prompt+raw,
++                'Inherited generation context differs from complete scoring prefix')
++        require(ledger['generation_context_positions']==list(range(len(state.prompt+raw))) and
++                ledger['generation_context_attention']==[1]*len(state.prompt+raw), 'Generation position/mask history differs')
++        action=ledger['action'];obs=ledger['observation_token_ids'];n=action['cut']
++        require(action['action_token_ids']==action['native_emission']['raw_emitted_token_ids'][:n] and
++                action['selected_logprobs']==action['native_emission']['raw_selected_logprobs'][:n],
++                'Inherited sampled token/scalar prefix changed')
++        bound={k:v for k,v in action.items() if not k.startswith('prefix_scan_') and k!='action_binding_sha256'}
++        require(fingerprint(bound)==action['action_binding_sha256'],'Inherited action ledger changed')
++        raw+=action['action_token_ids']+obs;mask+=[1]*n+[0]*len(obs)
++        legacy=action['canonical_semantic_token_ids'];semantic+=legacy+obs
++        semantic_mask+=[1]*len(legacy)+[0]*len(obs);contexts.append(ledger['generation_context_token_ids'])
++    require(raw==state.response and mask==state.model_mask and len(raw)<=cap and len(semantic)<=cap,
++            'Policy/semantic score cap or retained timeline mismatch')
++    value=dict(protocol=PROTOCOL,prompt_token_ids=state.prompt.copy(),policy_response_token_ids=raw,
++        policy_model_mask=mask,semantic_response_token_ids=semantic,semantic_model_mask=semantic_mask,
++        raw_ledger=copy.deepcopy(state.raw_ledger),response_cap=cap)
++    value['binding_sha256']=fingerprint(value)
++    return value
++
++
++def semantic_spans(item,tokenizer):
++    """Rebuild legacy contiguous spans; canonical IDs never enter policy tensors."""
++    if FIELD not in item.non_tensor_batch:
++        require(getattr(item,'meta_info',{}).get('tree_raw_token_protocol') is None,
++                'Opted-in Tree semantic projection was dropped')
++        return None
++    value=item.non_tensor_batch[FIELD]
++    bound={k:v for k,v in value.items() if k!='binding_sha256'}
++    require(fingerprint(bound)==value['binding_sha256'] and value['protocol']==PROTOCOL,
++            'Semantic projection binding changed')
++    require(value['response_cap']==4096,'Frozen score cap changed')
++    width=item.batch['responses'].shape[-1]
++    valid=item.batch['attention_mask'][-width:].bool();ids=item.batch['responses'][valid].tolist()
++    mask=item.batch['info_mask'][-width:][valid].tolist()
++    prompt=item.batch['prompts'];prompt=prompt[prompt!=tokenizer.pad_token_id].tolist()
++    require(ids==value['policy_response_token_ids'] and mask==value['policy_model_mask'] and
++            prompt==value['prompt_token_ids'],'Semantic projection attached to different policy inputs/mask')
++    state=type('ProjectionState',(),{})()
++    state.prompt=prompt;state.response=ids;state.model_mask=mask;state.raw_ledger=value['raw_ledger']
++    require(trajectory_projection(state,value['response_cap'])==value, 'Semantic ledger does not reconstruct bound timeline')
++    for ledger in value['raw_ledger']:
++        action=ledger['action'];identity=action['tokenizer_identity']
++        require(identity['pad_token_id']==tokenizer.pad_token_id and identity['eos_token_id']==tokenizer.eos_token_id and
++                identity['clean_up_tokenization_spaces']==tokenizer.clean_up_tokenization_spaces and
++                tokenizer.decode(action['canonical_semantic_token_ids'])==action['legacy_reward_action_text'],
++                'Frozen tokenizer flags or legacy reward projection changed')
++    spans=[];start=None;tokens=value['semantic_response_token_ids'];marks=value['semantic_model_mask']
++    for index,is_model in enumerate(marks):
++        if is_model and start is None:start=index
++        elif not is_model and start is not None:
++            spans.append(tokenizer.decode(tokens[start:index]));start=None
++    if start is not None:spans.append(tokenizer.decode(tokens[start:]))
++    return spans
+diff --git a/test_tree_raw_tokens_cpu.py b/test_tree_raw_tokens_cpu.py
+new file mode 100644
+index 0000000..2361f19
+--- /dev/null
++++ b/test_tree_raw_tokens_cpu.py
+@@ -0,0 +1,310 @@
++"""Synthetic CPU contracts and actual source call-path fixtures; no services/assets."""
++import ast
++import copy
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import sys
++import tempfile
++from types import ModuleType,SimpleNamespace as NS
++import unittest
++from unittest.mock import patch
++from typing import Any,List,Tuple
++from collections import defaultdict
++import string
++
++import numpy as np
++import torch
++
++from search_r1.baselines.tree_raw_tokens import (PROTOCOL,FIELD,EMISSION,capture_native_emissions,
++    sampled_action,canonical_text,trajectory_projection,semantic_spans,tokenizer_identity)
++from search_r1.baselines.rollout import State,SearchRollout,object_array
++
++
++def source_functions(path,klass,names,namespace):
++    tree=ast.parse(Path(path).read_text())
++    functions=[n for node in tree.body for n in (node.body if isinstance(node,ast.ClassDef) and node.name==klass else [])
++               if isinstance(n,ast.FunctionDef) and n.name in names] if klass else [n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name in names]
++    assert len(functions)==len(names)
++    module=ast.Module(body=functions,type_ignores=[]);ast.fix_missing_locations(module)
++    exec(compile(module,path,'exec'),namespace)
++    return {name:namespace[name] for name in names}
++
++
++class Tokenizer:
++    pad_token_id=151643;eos_token_id=151645;bos_token_id=None;pad_token='<pad>'
++    clean_up_tokenization_spaces=False
++    def __init__(self,path):
++        self.name_or_path=str(path)
++        self.parts={1:'<answer>',2:'Paris',3:'</answer>tail',4:'</an',5:'swer>',6:'later',
++            7:'<search>capital</search>extra',8:'提示',9:'中文',10:'X',11:'Y'}
++        self.enc={};self.next=100
++    def decode(self,ids,skip_special_tokens=False):
++        ids=ids.tolist() if hasattr(ids,'tolist') else ids
++        result=''
++        for token in ids:
++            if token in (self.pad_token_id,self.eos_token_id,152000):
++                result+= '' if skip_special_tokens else ('<eos>' if token==self.eos_token_id else '<special>')
++            else:result+=self.parts[token]
++        return result
++    def batch_decode(self,rows,**kwargs):return [self.decode(row,**kwargs) for row in rows]
++    def encode(self,text,add_special_tokens=False):
++        if text=='':return []
++        if text not in self.enc:
++            self.enc[text]=self.next;self.parts[self.next]=text;self.next+=1
++        return [self.enc[text]]
++    def __call__(self,texts,**kwargs):
++        rows=[self.encode(text) for text in texts];width=max(1,max(map(len,rows)))
++        return {'input_ids':torch.tensor([row+[self.pad_token_id]*(width-len(row)) for row in rows])}
++
++
++def params():
++    return NS(n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
++        repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
++        include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None)
++
++
++ENV={'SEARCH_R1_BASELINE_COMMIT':'a'*40,'SEARCH_R1_BASELINE_CONFIG_SHA256':'b'*64,
++     'SEARCH_R1_BASELINE_DATA_IDENTITY':'c'*64,'SEARCH_R1_MODEL_IDENTITY':'d'*64,
++     'SEARCH_R1_BASELINE_RUN_ID':'fixture-only','SLURM_JOB_ID':'0'}
++
++
++def emission(ids,prompt=None,call='cpu-fixture',row=0):
++    out=NS(token_ids=ids,logprobs=[{token:NS(logprob=-.25*(i+1))} for i,token in enumerate(ids)],
++           finish_reason='stop' if ids and ids[-1]==151645 else 'length',stop_reason=None)
++    request=NS(request_id='real-'+str(row),finished=True,outputs=[out],prompt_token_ids=prompt or [8])
++    with patch.dict(os.environ,ENV):return capture_native_emissions([request],params(),call,0)[0]
++
++
++class TinyProto:
++    def __init__(self,batch,non_tensor_batch=None,meta_info=None):
++        self.batch=batch;self.non_tensor_batch=non_tensor_batch or {};self.meta_info=meta_info or {}
++    def __len__(self):return len(next(iter(self.batch.values())))
++    @classmethod
++    def from_dict(cls,tensors=None,non_tensors=None,meta_info=None):return cls(tensors,non_tensors,meta_info)
++    def __getitem__(self,i):
++        return NS(batch={k:v[i] for k,v in self.batch.items()},
++            non_tensor_batch={k:v[i] for k,v in self.non_tensor_batch.items()},meta_info=self.meta_info)
++
++
++class RawTokenTests(unittest.TestCase):
++    def setUp(self):
++        self.tmp=tempfile.TemporaryDirectory();path=Path(self.tmp.name)
++        (path/'tokenizer.json').write_text('{"fixture":"synthetic"}')
++        self.tok=Tokenizer(path);self.sha=hashlib.sha256((path/'tokenizer.json').read_bytes()).hexdigest()
++        self.identity=tokenizer_identity(self.tok,self.sha)
++        self.verl=ModuleType('verl');self.verl.DataProto=TinyProto
++        self.fake_verl=patch.dict(sys.modules,{'verl':self.verl});self.fake_verl.start()
++        self.ns={'torch':torch,'re':re,'List':List,'Any':Any,'Tuple':Tuple,'Dict':dict}
++        self.methods=source_functions('search_r1/llm_agent/generation.py','LLMGenerationManager',
++            ['_postprocess_responses','_process_next_obs','postprocess_predictions','execute_predictions'],self.ns)
++        self.manager=NS(tokenizer=self.tok,config=NS(no_think_rl=False,max_obs_length=500,max_start_length=2048,
++            max_prompt_length=4096,max_response_length=500,max_turns=4,num_gpus=1,force_final_answer=False))
++        self.manager._batch_tokenize=lambda texts:self.tok(texts)['input_ids']
++        for name,method in self.methods.items():setattr(self.manager,name,method.__get__(self.manager))
++        self.manager.batch_search=lambda queries:['fixture-doc']*len(queries)
++    def tearDown(self):self.fake_verl.stop();self.tmp.cleanup()
++    def action(self,ids):
++        row=ids+[self.tok.pad_token_id]*(500-len(ids))
++        legacy_ids,text=self.manager._postprocess_responses(torch.tensor([row]))
++        return sampled_action(self.tok,emission(ids),row,legacy_ids[0][legacy_ids[0]!=self.tok.pad_token_id].tolist(),text[0],self.identity)
++    def state(self,ids=None):
++        action,ledger=self.action(ids or [1,2,3,self.tok.eos_token_id])
++        state=State(0,[8],[8]+action,response=action.copy(),model_mask=[1]*len(action),steps=[0]*len(action))
++        state.raw_ledger=[dict(turn=0,action=ledger,observation_token_ids=[],observation_text='',
++            generation_context_token_ids=[8],generation_context_attention=[1],generation_context_positions=[0])]
++        return state
++    def item(self,state):
++        projection=trajectory_projection(state,4096)
++        return NS(batch=dict(prompts=torch.tensor(state.prompt),responses=torch.tensor(state.response),
++            attention_mask=torch.ones(len(state.prompt)+len(state.response),dtype=torch.long),
++            info_mask=torch.tensor([1]*len(state.prompt)+state.model_mask)),
++            non_tensor_batch={FIELD:projection},meta_info={'tree_raw_token_protocol':PROTOCOL})
++    def engine(self,raw_ids):
++        manager=self.manager;calls=[]
++        def generate(batch):
++            calls.append(batch)
++            records=[]
++            for i in range(len(batch)):
++                prompt=batch.batch['input_ids'][i][batch.batch['attention_mask'][i].bool()].tolist()
++                records.append(emission(raw_ids,prompt,call='fixture-call-'+str(len(calls)),row=i))
++            rows=torch.tensor([raw_ids+[self.tok.pad_token_id]*(500-len(raw_ids))]*len(batch))
++            return TinyProto(dict(responses=rows),{EMISSION:object_array(records)})
++        manager.actor_rollout_wg=NS(generate_sequences=generate)
++        manager.tensor_fn=NS(create_position_ids=lambda mask:(mask.cumsum(-1)-1).clamp_min(0))
++        engine=SearchRollout(manager,token_preservation={'tokenizer_sha256':self.sha})
++        return engine,calls
++
++    def test_whole_token_tag_tail_and_raw_scalar_prefix(self):
++        action,ledger=self.action([1,2,3,151645])
++        self.assertEqual(action,[1,2,3]);self.assertEqual(ledger['selected_logprobs'],[-.25,-.5,-.75])
++        self.assertEqual(ledger['canonical_text'],'<answer>Paris</answer>')
++        self.assertEqual(ledger['indivisible_extra_text'],'tail')
++        self.assertNotEqual(action,ledger['canonical_semantic_token_ids'])
++
++    def test_split_tags_search_priority_and_multiple_tag_rule_match_actual_old_source(self):
++        action,ledger=self.action([1,2,4,5,6,151645]);self.assertEqual(action,[1,2,4,5])
++        self.tok.parts[30]='<answer>A</answer><search>q</search>tail'
++        _,ledger=self.action([30,151645])
++        self.assertEqual(ledger['canonical_text'],'<answer>A</answer><search>q</search>')
++        before=self.manager.postprocess_predictions([ledger['canonical_text']])
++        after=self.manager.postprocess_predictions([canonical_text(self.tok.decode([30],skip_special_tokens=True))])
++        self.assertEqual(before,after)
++
++    def test_chinese_internal_special_eos_only_and_no_tag_keep_real_ids(self):
++        action,ledger=self.action([9,152000,151645]);self.assertEqual(action,[9,152000,151645])
++        self.assertEqual(ledger['canonical_text'],'中文')
++        action,ledger=self.action([151645]);self.assertEqual(action,[151645]);self.assertTrue(ledger['empty_canonical'])
++        self.assertEqual(ledger['canonical_semantic_token_ids'],[])
++
++    def test_utf8_and_nonmonotonic_decode_refuse_without_substitute_tokens(self):
++        for mode in ('replacement','nonmonotonic'):
++            original=self.tok.decode
++            def changed(ids,skip_special_tokens=False):
++                if skip_special_tokens and list(ids)==[1]:return '\ufffd' if mode=='replacement' else 'not-a-prefix'
++                return original(ids,skip_special_tokens)
++            with patch.object(self.tok,'decode',changed),self.assertRaises(ValueError):self.action([1,2,3,151645])
++
++    def test_pad_equals_eos_genuine_pad_missing_length_empty_and_over500_refuse(self):
++        with patch.object(self.tok,'pad_token_id',151645),self.assertRaises(ValueError):self.action([151645])
++        with self.assertRaises(ValueError):self.action([1,151643,2,3,151645])
++        with self.assertRaises(ValueError):emission([])
++        with self.assertRaises(ValueError):emission([10]*501)
++        record=emission([1,2,3,151645]);del record['true_emitted_length']
++        with self.assertRaises((KeyError,ValueError)):sampled_action(self.tok,record,[1,2,3,151645]+[151643]*496,
++            self.tok.encode('<answer>Paris</answer>'),'<answer>Paris</answer>',self.identity)
++
++    def test_exact500_no_tag_preserves_all_emitted_and_identity_duplicate_native_refuses(self):
++        action,ledger=self.action([10]*500);self.assertEqual(len(action),500);self.assertEqual(ledger['discarded_sampled_tail_tokens'],0)
++        out=NS(token_ids=[151645],logprobs=[{151645:NS(logprob=-.5)}],finish_reason='stop',stop_reason=None)
++        request=NS(request_id='same',finished=True,outputs=[out],prompt_token_ids=[8])
++        with patch.dict(os.environ,ENV),self.assertRaises(ValueError):capture_native_emissions([request,request],params(),'fixture',0)
++
++    def test_semantic_projection_preserves_old_reward_and_refuses_binding_changes(self):
++        from search_r1.qa_protocol import extract_final_answer
++        state=self.state();item=self.item(state)
++        spans=semantic_spans(item,self.tok)
++        self.assertEqual(extract_final_answer(spans),'Paris')
++        self.assertIsNone(extract_final_answer([self.tok.decode(state.response)]))
++        old=source_functions('verl/trainer/main_ppo.py',None,['decode_model_response_spans'],{})['decode_model_response_spans']
++        legacy=state.raw_ledger[0]['action']['canonical_semantic_token_ids']
++        self.assertEqual(spans,old(self.tok,torch.tensor(legacy),torch.ones(len(legacy),dtype=torch.long)))
++        item.batch['responses'][0]=10
++        with self.assertRaises(ValueError):semantic_spans(item,self.tok)
++
++    def test_parent_branch_deepcopies_raw_and_semantics_ids_without_resampling(self):
++        parent=self.state();child=parent.branch()
++        self.assertEqual(parent.raw_ledger,child.raw_ledger);self.assertNotEqual(parent.trajectory,child.trajectory)
++        child.raw_ledger[0]['action']['selected_logprobs'][0]=-99.
++        self.assertEqual(parent.raw_ledger[0]['action']['selected_logprobs'][0],-.25)
++        with self.assertRaises(ValueError):trajectory_projection(child,4096)
++
++    def test_projection_rejects_scoring_prefix_positions_or_cap_ambiguity(self):
++        for kind in ('context','position','policycap','semanticcap'):
++            state=self.state()
++            if kind=='context':state.raw_ledger[0]['generation_context_token_ids']=[9]
++            if kind=='position':state.raw_ledger[0]['generation_context_positions']=[1]
++            cap=2 if kind in ('policycap','semanticcap') else 4096
++            with self.subTest(kind=kind),self.assertRaises(ValueError):trajectory_projection(state,cap)
++
++    def test_actual_rollout_source_calls_env_once_and_keeps_raw_prefix_in_model_inputs(self):
++        engine,calls=self.engine([1,2,3,151645]);state=State(0,[8],[8],observation=[8])
++        engine.advance([state],{})
++        self.assertEqual(len(calls),1);self.assertEqual(state.response,[1,2,3]);self.assertTrue(state.done)
++        output,_=engine.compose([state])
++        self.assertEqual(output.batch['responses'][0].tolist(),[1,2,3])
++        self.assertEqual(semantic_spans(output[0],self.tok),['<answer>Paris</answer>'])
++        self.assertEqual(engine.cost['raw_emitted_tokens'],4);self.assertEqual(engine.cost['raw_retained_tokens'],3)
++        self.assertEqual(engine.cost['raw_discarded_tail_tokens'],1)
++
++    def test_actual_rollout_refuses_rolling_leftcrop_and_missing_emission_metadata(self):
++        engine,_=self.engine([1,2,3,151645]);self.manager.config.max_prompt_length=3
++        with self.assertRaises(ValueError):engine.advance([State(0,[8],[8])],{})
++        engine,_=self.engine([1,2,3,151645])
++        self.manager.actor_rollout_wg.generate_sequences=lambda batch:TinyProto({'responses':torch.tensor([[151643]*500])})
++        with self.assertRaises(ValueError):engine.advance([State(0,[8],[8])],{})
++
++    def test_actual_observation_cap500_keeps_observation_mask0_and_full_next_prefix(self):
++        engine,calls=self.engine([7,151645]);state=State(0,[8],[8],observation=[8])
++        original=self.tok.__class__.__call__
++        def long_observation(tokenizer,texts,**kwargs):
++            if all(text.lstrip().startswith('<information>') for text in texts):
++                return {'input_ids':torch.tensor([[10]*501]*len(texts))}
++            return original(tokenizer,texts,**kwargs)
++        with patch.object(self.tok.__class__,'__call__',long_observation):
++            engine.advance([state],{})
++            self.assertEqual(state.response,[7]+[10]*500)
++            self.assertEqual(state.model_mask,[1]+[0]*500)
++            engine.advance([state],{})
++        self.assertEqual(calls[1].batch['input_ids'][0].tolist(),[8,7]+[10]*500)
++        output,_=engine.compose([state])
++        self.assertEqual(len(state.raw_ledger[0]['observation_token_ids']),500)
++        self.assertEqual(semantic_spans(output[0],self.tok),[
++            '<search>capital</search>','<search>capital</search>'])
++
++    def test_actual_tree_round_inherits_sample_ids_and_equal_leaf_weights_unchanged(self):
++        engine,calls=self.engine([7,151645])
++        engine.rng.choice=lambda nodes:nodes[-1]
++        inputs=TinyProto(dict(input_ids=torch.tensor([[8],[8]]),attention_mask=torch.ones((2,1),dtype=torch.long)))
++        output,sources=engine.run(inputs,NS(rounds=1,expansions=2,leaves=3))
++        self.assertEqual(len(output),6);self.assertEqual(sources.tolist(),[0,0,0,1,1,1])
++        self.assertEqual(len(calls),5);self.assertEqual(engine.cost['retrieval_calls'],12)
++        self.assertEqual(engine.cost['raw_inherited_leaf_tokens'],12)
++        function=source_functions('search_r1/baselines/objectives.py',None,['attach_policy_weights'],
++            dict(torch=torch,defaultdict=defaultdict))['attach_policy_weights']
++        function(output,'tree_grpo')
++        self.assertTrue(torch.equal(output.batch['policy_weights'].sum(-1),torch.ones(6)))
++        self.assertTrue(all(len(s.raw_ledger)==4 and sum(s.model_mask)==4 for s in engine.last_states))
++
++    def test_actual_rewardmanager_and_evaluation_hooks_preserve_legacy_qa_score(self):
++        from search_r1.qa_protocol import extract_final_answer
++        from search_r1.baselines.bapo import answer_from_spans,token_f1,legal_action_records
++        qa=source_functions('verl/utils/reward_score/qa_em.py',None,
++            ['normalize_answer','em_check','compute_score_generated_em'],
++            dict(re=re,string=string,extract_final_answer=extract_final_answer))
++        namespace=dict(torch=torch,DataProto=TinyProto,qa_em=NS(compute_score_generated_em=qa['compute_score_generated_em']))
++        methods=source_functions('verl/trainer/main_ppo.py',None,
++            ['decode_model_response_spans','_select_rm_score_fn','RewardManager'],namespace)
++        engine,_=self.engine([1,2,3,151645]);state=State(0,[8],[8],observation=[8]);engine.advance([state],{})
++        output,_=engine.compose([state])
++        output.non_tensor_batch['reward_model']=object_array([{'ground_truth':{'target':'Paris'}}])
++        output.non_tensor_batch['data_source']=object_array(['nq'])
++        result=methods['RewardManager'](self.tok,0)(output)
++        self.assertEqual(float(result.sum()),1.)
++        original_spans=methods['decode_model_response_spans'](self.tok,torch.tensor(self.tok.encode('<answer>Paris</answer>')),torch.tensor([1]))
++        self.assertEqual(qa['compute_score_generated_em'](original_spans,{'target':'Paris'}),1.)
++        fake_main=ModuleType('verl.trainer.main_ppo');fake_main.decode_model_response_spans=methods['decode_model_response_spans']
++        evaluation=source_functions('search_r1/baselines/evaluation.py',None,['batch_answer_metrics'],
++            dict(__package__='search_r1.baselines',re=re,answer_from_spans=answer_from_spans,
++                 token_f1=token_f1,legal_action_records=legal_action_records,em_check=qa['em_check']))['batch_answer_metrics']
++        with patch.dict(sys.modules,{'verl.trainer.main_ppo':fake_main}):rows=evaluation(output,self.tok)
++        self.assertEqual((rows[0]['f1'],rows[0]['em'],rows[0]['generated_tokens']),(1.,1.,3))
++
++    def test_actual_facade_keeps_lengths_before_padding_and_legacy_return_arity(self):
++        from torch.nn.utils.rnn import pad_sequence
++        events=[]
++        def observe_native(*args):
++            events.append('native_capture')
++            return capture_native_emissions(*args)
++        def observe_pad(*args,**kwargs):
++            if facade._tree_emission_call is not None:self.assertEqual(events[0],'native_capture')
++            events.append('padding')
++            return pad_sequence(*args,**kwargs)
++        function=source_functions('verl/third_party/vllm/vllm_v_0_6_3/llm.py','LLM',['_post_process_outputs'],
++            dict(torch=torch,pad_sequence=observe_pad,List=List,Tuple=Tuple,RequestOutput=object))['_post_process_outputs']
++        ids=[1,2,3,151645]
++        completion=NS(token_ids=ids,logprobs=[{token:NS(logprob=-.25)} for token in ids],finish_reason='stop',stop_reason=None)
++        request=NS(request_id='actual9',finished=True,outputs=[completion],prompt_token_ids=[8])
++        facade=NS(llm_engine=NS(tokenizer=self.tok),_tree_emission_call='fixture',_tree_emission_params=params())
++        with patch.dict(os.environ,ENV),patch.object(torch.distributed,'get_rank',return_value=0),patch(
++                'search_r1.baselines.tree_raw_tokens.capture_native_emissions',side_effect=observe_native):
++            result=function(facade,[request])
++        self.assertEqual(len(result),3);self.assertEqual(result[2][0]['true_emitted_length'],4)
++        self.assertEqual(result[2][0]['raw_emitted_token_ids'],ids)
++        facade._tree_emission_call=None
++        self.assertEqual(len(function(facade,[request])),2)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/verl/third_party/vllm/vllm_v_0_6_3/llm.py b/verl/third_party/vllm/vllm_v_0_6_3/llm.py
+index cd3d646..4f71101 100644
+--- a/verl/third_party/vllm/vllm_v_0_6_3/llm.py
++++ b/verl/third_party/vllm/vllm_v_0_6_3/llm.py
+@@ -161,6 +161,18 @@ class LLM(LLM):
+         outputs = super()._run_engine(use_tqdm=use_tqdm)
+         return self._post_process_outputs(outputs)
+ 
++    def generate_with_emission_metadata(self, **kwargs):
++        """Tree opt-in: observe native final lengths before the existing pad path."""
++        import uuid
++        if getattr(self, '_tree_emission_call', None) is not None:
++            raise ValueError('Concurrent Tree native-emission capture is forbidden')
++        self._tree_emission_call = uuid.uuid4().hex
++        self._tree_emission_params = kwargs['sampling_params']
++        try:
++            return self.generate(**kwargs)
++        finally:
++            self._tree_emission_call = self._tree_emission_params = None
++
+     # # NOTE(shengguangming): add for verl
+     # # TODO(sgm): we can optimize it by making the dataloader yield List[int] without padding.
+     # def _pre_process_inputs(self, prompt_token_ids: torch.Tensor) -> List[int]:
+@@ -172,6 +184,11 @@ class LLM(LLM):
+ 
+     # NOTE(shengguangming): add for verl
+     def _post_process_outputs(self, request_outputs: List[RequestOutput]) -> Tuple[torch.Tensor, torch.Tensor]:
++        metadata = None
++        if getattr(self, '_tree_emission_call', None) is not None:
++            from search_r1.baselines.tree_raw_tokens import capture_native_emissions
++            metadata = capture_native_emissions(request_outputs, self._tree_emission_params,
++                self._tree_emission_call, torch.distributed.get_rank())
+         output_token_ids = []
+         logprobs = []
+         for request_output in request_outputs:  # List[RequestOutput]
+@@ -191,6 +208,8 @@ class LLM(LLM):
+         output_token_ids = pad_sequence(output_token_ids, batch_first=True, padding_value=pad_token_id)
+         if len(logprobs) > 0:
+             logprobs = pad_sequence(logprobs, batch_first=True, padding_value=pad_token_id)
++        if metadata is not None:
++            return output_token_ids, logprobs, metadata
+         return output_token_ids, logprobs
+ 
+     def sync_model_weights(self, actor_weights: Dict[str, torch.Tensor], load_format: str) -> None:
+diff --git a/verl/trainer/config/ppo_tree_safety300.yaml b/verl/trainer/config/ppo_tree_safety300.yaml
+index b455785..3a3aa93 100644
+--- a/verl/trainer/config/ppo_tree_safety300.yaml
++++ b/verl/trainer/config/ppo_tree_safety300.yaml
+@@ -4,6 +4,7 @@ defaults:
+ 
+ actor_rollout_ref:
+   rollout:
++    tree_raw_emission: false
+     sampling_consistency:
+       enabled: false
+       enforce: true
+@@ -23,3 +24,11 @@ actor_rollout_ref:
+ trainer:
+   acceptance_step: 115
+   experiment_name: tree-safety300
++
++baselines:
++  tree:
++    token_preservation:
++      enabled: false
++      protocol: tree_sampled_prefix_legacy_semantics_v1
++      # Must bind the existing healthy tokenizer; never guessed at opt-in.
++      tokenizer_sha256: null
+diff --git a/verl/trainer/main_ppo.py b/verl/trainer/main_ppo.py
+index 0d79bfa..89d0b4e 100644
+--- a/verl/trainer/main_ppo.py
++++ b/verl/trainer/main_ppo.py
+@@ -85,7 +85,10 @@ class RewardManager():
+                 model_mask = data_item.batch['info_mask'][prompt_length:prompt_length + valid_response_length]
+             else:
+                 model_mask = torch.ones_like(valid_response_ids, dtype=torch.bool)
+-            model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
++            from search_r1.baselines.tree_raw_tokens import semantic_spans
++            model_spans = semantic_spans(data_item,self.tokenizer)
++            if model_spans is None:
++                model_spans = decode_model_response_spans(self.tokenizer, valid_response_ids, model_mask)
+ 
+             ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
+ 
+diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
+index 8723401..3c96764 100644
+--- a/verl/trainer/ppo/ray_trainer.py
++++ b/verl/trainer/ppo/ray_trainer.py
+@@ -538,6 +538,10 @@ class RayPPOTrainer(object):
+         if controller is not None and controller.ranker is not None:
+             from search_r1.baselines.controller import ranked_validation_manager
+             generation_manager = ranked_validation_manager(generation_manager, controller)
++        elif (controller is not None and controller.method == 'tree_grpo' and
++              controller.config.tree.get('token_preservation',{}).get('enabled',False)):
++            from search_r1.baselines.controller import token_preserving_validation_manager
++            generation_manager = token_preserving_validation_manager(generation_manager, controller)
+ 
+         if not self.config.do_search:
+             for test_data in self.val_dataloader:
+diff --git a/verl/workers/rollout/vllm_rollout/vllm_rollout.py b/verl/workers/rollout/vllm_rollout/vllm_rollout.py
+index 48bb545..867cde7 100644
+--- a/verl/workers/rollout/vllm_rollout/vllm_rollout.py
++++ b/verl/workers/rollout/vllm_rollout/vllm_rollout.py
+@@ -175,7 +175,9 @@ class vLLMRollout(BaseRollout):
+             sampling_distribution = {key: getattr(self.sampling_params, key, None) for key in
+                 ('temperature', 'top_p', 'top_k', 'min_p', 'presence_penalty', 'frequency_penalty',
+                  'repetition_penalty', 'n', 'logits_processors')}
+-            output = self.inference_engine.generate(
++            native_method = (self.inference_engine.generate_with_emission_metadata
++                             if self.config.get('tree_raw_emission', False) else self.inference_engine.generate)
++            output = native_method(
+                 prompts=None,  # because we have already convert it to prompt token id
+                 sampling_params=self.sampling_params,
+                 prompt_token_ids=idx_list,
+@@ -224,6 +226,20 @@ class vLLMRollout(BaseRollout):
+ 
+         consistency = self.config.get('sampling_consistency', {})
+         metadata = {}
++        non_tensors = {}
++        if self.config.get('tree_raw_emission', False):
++            from search_r1.baselines.tree_raw_tokens import EMISSION, require
++            from search_r1.baselines.rollout import object_array
++            require(len(output) == 3 and len(output[2]) == len(response), 'Complete native emission rows missing')
++            require(self.pad_token_id != eos_token_id, 'PAD==EOS unsupported by Tree token preservation')
++            emitted = torch.zeros_like(response_attention_mask)
++            for row, record in enumerate(output[2]):
++                n = record['true_emitted_length']
++                require(response[row,:n].tolist() == record['raw_emitted_token_ids'] and
++                        self.pad_token_id not in record['raw_emitted_token_ids'], 'Native raw token IDs/PAD unsupported')
++                emitted[row,:n] = 1
++            require(torch.equal(emitted, response_attention_mask), 'Native finish/true emitted length disagrees with original EOS mask')
++            non_tensors[EMISSION] = object_array(output[2])
+         if consistency.get('enabled', False) and do_sample:
+             batch['__sampling_log_probs'] = log_probs
+             metadata['__sampling_distribution'] = sampling_distribution
+@@ -232,4 +248,4 @@ class vLLMRollout(BaseRollout):
+         if self.config.free_cache_engine:
+             self.inference_engine.free_cache_engine()
+ 
+-        return DataProto(batch=batch, meta_info=metadata)
++        return DataProto(batch=batch, non_tensor_batch=non_tensors, meta_info=metadata)

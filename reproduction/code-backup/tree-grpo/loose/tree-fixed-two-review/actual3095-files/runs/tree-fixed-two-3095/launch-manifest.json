@@ -1,0 +1,71 @@
+{
+  "status": "FAILED",
+  "stage": "two",
+  "job_id": "3095",
+  "code_commit": "296217a4b676a26a92fc729f5d9882b785dbfa96",
+  "actual_training_accepted": false,
+  "config_sha256": "bdfcfad95e79cdca036ff8a532a09347b6a4cc9b4acbf67f52ddf5dc0248176c",
+  "split_content_identity": "fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524",
+  "cuda_visible_devices": "0,1,2,3,4,5,6,7",
+  "gpu_leases": [
+    {
+      "uuid": "GPU-170e33e7-ea28-4e38-eeed-03ff1541801f",
+      "fd": 3
+    },
+    {
+      "uuid": "GPU-25743909-367e-cdd3-2347-9689533ca6dc",
+      "fd": 4
+    },
+    {
+      "uuid": "GPU-2f1266da-4362-3643-0840-d2f97b07e38f",
+      "fd": 5
+    },
+    {
+      "uuid": "GPU-5ce08490-ec39-8338-c2a7-e7195347bc86",
+      "fd": 6
+    },
+    {
+      "uuid": "GPU-70dab460-3cb4-9670-33da-3076434c223b",
+      "fd": 7
+    },
+    {
+      "uuid": "GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5",
+      "fd": 8
+    },
+    {
+      "uuid": "GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13",
+      "fd": 9
+    },
+    {
+      "uuid": "GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c",
+      "fd": 10
+    }
+  ],
+  "cgroup": "/sys/fs/cgroup/freezer/slurm_h100-9/uid_0/job_3095/step_batch",
+  "runtime": "same h100-9 allocation: GPU E5 and complete 8-GPU sharded FP16 index, trainer, Ray; loopback only; zero online remote RPC",
+  "supervisor_source_sha256": "53fe170e758499da00537e383868d6cb15b4a4d9400ab30345e2f468a36903fd",
+  "guard_source_sha256": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+  "owned_runtime_source_sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+  "initial_gpu": {
+    "gpus": [
+      "0, GPU-5ce08490-ec39-8338-c2a7-e7195347bc86, 1131, 81559, 0",
+      "1, GPU-170e33e7-ea28-4e38-eeed-03ff1541801f, 1131, 81559, 0",
+      "2, GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c, 1131, 81559, 0",
+      "3, GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5, 1131, 81559, 0",
+      "4, GPU-25743909-367e-cdd3-2347-9689533ca6dc, 1131, 81559, 0",
+      "5, GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13, 1131, 81559, 0",
+      "6, GPU-70dab460-3cb4-9670-33da-3076434c223b, 1131, 81559, 0",
+      "7, GPU-2f1266da-4362-3643-0840-d2f97b07e38f, 1131, 81559, 0"
+    ],
+    "processes": [
+      "GPU-5ce08490-ec39-8338-c2a7-e7195347bc86, 1680782, 1122",
+      "GPU-170e33e7-ea28-4e38-eeed-03ff1541801f, 1680783, 1122",
+      "GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c, 1680784, 1122",
+      "GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5, 1680785, 1122",
+      "GPU-25743909-367e-cdd3-2347-9689533ca6dc, 1696443, 1122",
+      "GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13, 1696444, 1122",
+      "GPU-70dab460-3cb4-9670-33da-3076434c223b, 1696445, 1122",
+      "GPU-2f1266da-4362-3643-0840-d2f97b07e38f, 1696446, 1122"
+    ]
+  }
+}

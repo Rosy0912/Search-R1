@@ -1,0 +1,11 @@
+{
+  "status": "ACTUAL_IMPORTED_ENTRY_CONFIG_DIR_REJECTED_ABSOLUTE_CONFIG_PATH_EQUAL",
+  "old_entry_returncode": 0,
+  "candidate_config_dir_returncode": 1,
+  "config_dir_error": "/Users/shaoshitong/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\nPrimary config module 'verl.trainer.config' not found.\nCheck that it's correct and contains an __init__.py file\n\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n",
+  "absolute_config_path_returncode": 0,
+  "old_and_absolute_cfg_byte_equal": true,
+  "post_holdout_resolved_byte_equal": true,
+  "canonical_sha256": "c05ff72a176de1bc1073f3326d25232280feeab59de26bff27ecde87893a64a8",
+  "scope": "Actual CPU Hydra processes with production formal config, mocked holdout relocation; noGPU/assets/Slurm/formal execution"
+}

@@ -1,0 +1,26 @@
+{
+  "status": "DRAFT_REQUIRES_SOURCE_COMMIT_AND_CALIBRATION_HOOK_REVIEW",
+  "source_commit": null,
+  "policy_safety_thresholds": {
+    "target_old_policy_kl": 0.01,
+    "negative_tail_limit": 0.01,
+    "initial_old_logprob_max_abs_delta": 0.01
+  },
+  "threshold_scope": "Explicit trial inputs for healthy110 calibration; not accepted long-run thresholds",
+  "probability_calibration": {
+    "source_interface_reviewed": false,
+    "source_contract_files": {},
+    "environment": {
+      "TREE_PPO_CALIBRATION_ONLY": "1"
+    },
+    "configuration_overrides": [
+      "actor_rollout_ref.rollout.sampling_consistency.enabled=true",
+      "actor_rollout_ref.rollout.sampling_consistency.enforce=false",
+      "actor_rollout_ref.rollout.sampling_consistency.max_abs_delta=0.01"
+    ],
+    "ready_relative_path": "output/probability-calibration/ready.json",
+    "ready_status": "CALIBRATION_OBSERVED_ZERO_WRITES",
+    "limits": "Separate zero-write calibration only. Raw same-turn vLLM logps versus FSDP old recomputation; trial 0.01 values are not accepted long-run thresholds. Normal return before update_actor/scheduler/outer credit; no115 gate or final51713 in this stage."
+  },
+  "stage": "calibration110"
+}

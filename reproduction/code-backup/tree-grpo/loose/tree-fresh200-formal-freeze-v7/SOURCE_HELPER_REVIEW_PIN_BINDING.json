@@ -1,0 +1,73 @@
+{
+  "actual_assets_read": false,
+  "actual_builder_executed": false,
+  "actual_cpu_prepared": false,
+  "actual_current_helper_files": {
+    "formal_cpu_common.py": {
+      "actual_sha256": "0f9cfc571eef4213bca06be071ad9955384624b3795b22afa5652a6cfed3a2c9",
+      "descriptor_sha256": "0f9cfc571eef4213bca06be071ad9955384624b3795b22afa5652a6cfed3a2c9",
+      "match": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-dispatch-v7/formal_cpu_common.py"
+    },
+    "prepare_formal_tree_fresh200_package.py": {
+      "actual_sha256": "324ae15b76755c4f70b508a9c9e96f3645b1a5640030757713bba3a313ce9b79",
+      "descriptor_sha256": "324ae15b76755c4f70b508a9c9e96f3645b1a5640030757713bba3a313ce9b79",
+      "match": true,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-dispatch-v7/prepare_formal_tree_fresh200_package.py"
+    }
+  },
+  "actual_first5_accepted": false,
+  "actual_gpu_executed": false,
+  "actual_helper_executed": false,
+  "actual_ready": false,
+  "actual_remote_executed": false,
+  "actual_slurm_submitted": false,
+  "actual_train_wall_hours": null,
+  "binding": {
+    "constant": "HELPER_REVIEW_SHA",
+    "historical_trailing_comment_preserved": true,
+    "inverse_replacement_equals_original": true,
+    "new_value": "e21ce57729ea6a2d71c07e4fa99af49c800eb5cfedbe6e0246fa3da2b499d113",
+    "old_value": null,
+    "only_one_literal_replacement": true,
+    "unified_diff": "--- /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-freeze-v7/freeze_formal_v6_package.py\n+++ /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-freeze-v7/freeze_formal_v7_bound_helper.py\n@@ -22,7 +22,7 @@\n RUNTIME_INVENTORY_SHA='42d225fb38510e9726107617e72e06b9deead8539acfa858998ce7830d5ca55e'\n HELPER_COMMON_SHA='0f9cfc571eef4213bca06be071ad9955384624b3795b22afa5652a6cfed3a2c9'\n HELPER_ENTRY_SHA='324ae15b76755c4f70b508a9c9e96f3645b1a5640030757713bba3a313ce9b79'\n-HELPER_REVIEW_SHA=None  # Actual root fork:none V7 source review pin is still missing.\n+HELPER_REVIEW_SHA='e21ce57729ea6a2d71c07e4fa99af49c800eb5cfedbe6e0246fa3da2b499d113'  # Actual root fork:none V7 source review pin is still missing.\n INPUT_NAMES=('actual_calibration_ready','actual_calibration_acceptance','threshold_acceptance','source_context_free_review')\n \n \n"
+  },
+  "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "helper_review_descriptor": {
+    "fork_turns": "none",
+    "package_version": "V7",
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-dispatch-v7/INDEPENDENT_FORMAL_V7_HELPER_STATIC_REVIEW.json",
+    "sha256": "e21ce57729ea6a2d71c07e4fa99af49c800eb5cfedbe6e0246fa3da2b499d113",
+    "source_review_origin": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-v7-wall-none-review/INDEPENDENT_V7_WALL_SOURCE_REVIEW.json",
+      "sha256": "c1f07695374f3e7e57cfcbb5cfb974f86ed54d4bcf51a45c202e22e45022b3ce",
+      "status": "SOURCE_ONLY_NOT_EXECUTION_RELEASED"
+    },
+    "status": "FORMAL_V6_CPU_PREPARE_HELPERS_SOURCE_ONLY_ACCEPTED"
+  },
+  "next_review": "The same actual fork:none reviewer checks this literal binding and the future exact packet before invocation. No new review layer or source version; no recalibration claim.",
+  "original": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-freeze-v7/freeze_formal_v6_package.py",
+    "preserved_byte_identical": true,
+    "sha256": "a40fa541bcd85d5666a7a220f82150cc8390ec09d0b7e3e8e0e4022227339fba"
+  },
+  "preserved_original_source_only_closure": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-freeze-v7/OWNER_V7_WALL_BINDING_SOURCE_ONLY_CLOSURE.json",
+    "preserved_byte_identical": true,
+    "sha256": "2767c24cfecbf7548bea251dda64b54b30a3f576e1c14f821193f07dd25a68a2"
+  },
+  "production_inputs": {
+    "actual_calibration_acceptance": null,
+    "actual_calibration_ready": null,
+    "source_context_free_review": null,
+    "threshold_acceptance": null
+  },
+  "scope": "Separate freezer variant. Exactly one HELPER_REVIEW_SHA literal is bound to the actual current V7 helper source review descriptor. No source logic, runtime, package, inventory or original closure edits.",
+  "status": "SOURCE_ONLY_HELPER_REVIEW_PIN_LITERAL_BINDING_PENDING_SAME_NONE_REVIEW",
+  "training_release": false,
+  "variant": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-freeze-v7/freeze_formal_v7_bound_helper.py",
+    "sha256": "77f2d4d3d1891d4e88f90ec333eb7c729ce09c7663d6082c899f054668ce489a"
+  },
+  "verification_scope": "Local byte hashing, descriptor JSON reads and literal unified diff only. No drafted project code/module/main/function/test execution."
+}

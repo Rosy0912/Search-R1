@@ -1,0 +1,168 @@
+{
+  "method": "tree_grpo",
+  "status": "two_actual_update_smoke_started",
+  "algorithm_commit": "56e626aceaceec961d90d427dacf3bde3a7bbbb9",
+  "code_parent": "0723dca0c1458482ac3e78f8ed43af04893955d2",
+  "plan_commit": "1620c2edb13809d19cc3f5af4a298ccd75488104",
+  "common_setup_commit": "297e1c140677dc621302f1d49fefdb31023fd2b7",
+  "branch": "reproduce/tree-grpo",
+  "remote_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
+  "node": "h100-9",
+  "slurm_allocation_probe": 2844,
+  "allocation_held": true,
+  "formal_outer_updates": 0,
+  "smoke_outer_updates": 0,
+  "independent_review": "INDEPENDENT_REVIEW.md",
+  "cpu_gate": {
+    "baselines_passed": 45,
+    "reproduction_tests": 61,
+    "reproduction_skipped": 1,
+    "independent_related_passed": 32,
+    "complete_pytest_passed": 151,
+    "complete_pytest_skipped": 1
+  },
+  "asset_and_split_identity": {
+    "version": 1,
+    "split_version": 1,
+    "train_sources": [
+      "640411949a2c64ad492581f3ac2242a81a0f871e4a1c86c54140a4d6baad765f"
+    ],
+    "excluded_sources": [
+      "1174a4d5b29c28ad7e82f58a42f1c25aafb2a5ac15fb64a7d980579432c41f5a",
+      "af397b98b1601b517c01663171ffe543573005b9d31d24cace482480751a6756"
+    ],
+    "fraction": 0.02,
+    "seed": 42,
+    "prompt_key": "prompt",
+    "train": {
+      "questions_sha256": "d851357d6a9f5f48098f03b104f0354ff5feb0a79554a558268f0d346ecc3eff",
+      "rows_sha256": "4b3033960e1cad9aa13f81cebf0c4d27c0948a82b79dbdf96cace4d3f7bf88a3"
+    },
+    "holdout": {
+      "questions_sha256": "ae529173ea25cbd58534f460a6d83d4f211670ee90ec411f2ff1357da766c1f5",
+      "rows_sha256": "16d5f6446474685d0f05f2f0087519ee26f896c711cab060431f235ca32190bb"
+    },
+    "sha256": "fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524"
+  },
+  "environment_ready": true,
+  "gpu_hardware_integration_passed": false,
+  "model_and_reward_protocol_changed": false,
+  "known_protocol_deviations": [
+    "Search-R1 generation/scoring context window mismatch retained and counted",
+    "four turns, no forced final action",
+    "six leaves versus five GRPO trajectories",
+    "paper equal-leaf token average differs from author token-mean implementation"
+  ],
+  "notes": "Hardware/model/retrieval gates completed. Two-update production smoke dispatched; no completed actual update observed yet.",
+  "common_cherry_pick_commit": "b5bd22605bdc1cbb5853efbb0a7a127e4d0c8334",
+  "integrated_code_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "remote_deployed_commit": "aed28e176da946dc6cff73cfb23fac5cf2a879a8",
+  "network_blocker": null,
+  "gpu_and_assets_acceptance": {
+    "nccl_bf16": true,
+    "flash_vllm": true,
+    "cpu_retrieval_equivalence": "limited_14_query_top3_only",
+    "production_tree_smoke": false,
+    "five_step_checkpoint": false,
+    "formal_500_updates": false,
+    "final_51713_questions": false,
+    "flash_bf16_math_probe": true
+  },
+  "network_progress": "SSH usable; all immutable and derived assets fully SHA verified",
+  "updated_at": "2026-10-03T05:25:01.638629+08:00",
+  "latest_cpu_gate_evidence": "cpu-all-dp-metrics-20261003.txt",
+  "metric_fix_commit": "c7091e792d930c6e2488c395a1dbd324ce0eec73",
+  "actual_update_guard_commit": "de9ef3d53b9fb5a3c6b66e24fce1d81304db5c5b",
+  "hardware_job": 2849,
+  "holdout_rows": 3393,
+  "train_rows": 166222,
+  "final_eval_question_count_planned": 51713,
+  "model_job": 2850,
+  "model_inference_passed": true,
+  "production_training_started": true,
+  "retrieval_measurements_dispatch": "independently_reviewed_dispatched_asset_waiter",
+  "training_gpu_hours": 0,
+  "hardware_model_total_gpu_hours": null,
+  "hardware_model_cost_limitation": "Slurm accounting disabled and precise allocation start/end not recorded; do not report GPU gates as zero cost.",
+  "runtime_sessions": [
+    "head:tree-two-headers-20261003 (Slurm2873)"
+  ],
+  "retrieval_gate_result": "limited_14_query_top3_sanity_accepted_after_difference_review",
+  "cross_method_split_identity_verified": false,
+  "download_supervision": "stopped own external download processes after peer source SHA verified; retained all own partials",
+  "peer_assets_source": "/dataset/shaoshitong/search-r1-rl/topd/assets-root/assets/wiki on h100-11",
+  "peer_source_sha256_verified": true,
+  "retrieval_job": 2854,
+  "immutable_assets_verified": true,
+  "derived_assets_verified": true,
+  "derived_assets": {
+    "source_manifest_sha256": "a033b9d6e5b4453374c25d8d9a33d70254c1a79ea0d71677f21afb083d94b3fd",
+    "outputs": {
+      "e5_Flat.index": {
+        "sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "size": 64559075373,
+        "source_sha256": [
+          "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+          "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11"
+        ]
+      },
+      "wiki-18.jsonl": {
+        "sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+        "size": 14393579520,
+        "source_sha256": [
+          "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db"
+        ]
+      }
+    }
+  },
+  "training_job": 2873,
+  "failed_training_initialization_jobs": [
+    {
+      "job_id": 2866,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "stage_body_gpu_hours": 0.17333333333333334,
+      "reason": "Ray CLI Click8.5 Sentinel deepcopy incompatibility"
+    },
+    {
+      "job_id": 2867,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "reason": "Ray AF_UNIX path exceeds107 bytes",
+      "cost_evidence": "evidence/two-2867-socket-failure.log"
+    },
+    {
+      "job_id": 2869,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "reason": "Ray default worker port range overlaps fixed GCS16382",
+      "cost_evidence": "evidence/two-2869-workerports-failure.log"
+    },
+    {
+      "job_id": 2870,
+      "exit_code": 1,
+      "actual_outer_updates": 0,
+      "stage_body_gpu_hours": 0.29333333333333333,
+      "reason": "Torch compile missingPython.h after8GPU model initialization"
+    }
+  ],
+  "cli_compatibility_pin": {
+    "package": "click",
+    "prior": "8.5.0",
+    "current": "8.2.1",
+    "wheel_sha256": "61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b",
+    "core_versions_unchanged": true
+  },
+  "runtime_socket_short_alias": "unique /tmp/sst-tree-SLURM_JOB_ID -> persistent own run/runtime",
+  "ray_worker_ports": [
+    22082,
+    23081
+  ],
+  "python_dev_headers": {
+    "runtime_version": "3.10.12-1~22.04.18",
+    "package_sha256": "c058675011ec4b64f5ad803d74b5fe7de0c720c3700683040da68d1fb5b44ed9",
+    "scope": "ownroot extraction + child C_INCLUDE_PATH only",
+    "cpu_header_compile_passed": true,
+    "gpu_entropy_compile_passed": true
+  }
+}

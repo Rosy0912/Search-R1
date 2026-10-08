@@ -1,0 +1,15 @@
+--- work/tree-fresh200-freeze-53082e-v12/stage_zero_review_receipt.py	2026-10-07 00:19:20
++++ work/tree-fresh200-freeze-a18f420/stage_zero_review_receipt.py	2026-10-07 12:16:31
+@@ -7,9 +7,9 @@
+ import socket
+ import sys
+ 
+-TARGET = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-53082e-v12')
+-MANIFEST_SHA = '7059407f3fab68ed9c68dfb50bae14f34ce69601f85746b171fc3b978153b2da'
+-COMMIT = '53082e1667a6ab131a036ca2ef66e004989ed1a9'
++TARGET = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420')
++MANIFEST_SHA = '388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5'
++COMMIT = 'a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98'
+ 
+ 
+ def require(condition, message):

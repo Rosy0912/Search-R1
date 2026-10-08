@@ -1,0 +1,11 @@
+--- /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-v12/fresh200_dispatch_common.py
++++ /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-a18f420/fresh200_dispatch_common.py
+@@ -11,7 +11,7 @@
+ ROOT = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
+ STAGE = 'fresh_mu_calibration'
+ PROTOCOL = 'tree_fresh200_five_leaf_v1'
+-COMMIT = "53082e1667a6ab131a036ca2ef66e004989ed1a9"
++COMMIT = "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98"
+ MODEL = ROOT/'instruct300/assets/qwen2.5-3b-instruct-aa8e725'
+ MODEL_ID = '744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0'
+ DATA_ID = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'

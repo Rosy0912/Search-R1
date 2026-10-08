@@ -1,0 +1,26 @@
+{
+  "status": "ACTUAL_BYTE_PREPARATION_INPUT_DRAFT_PENDING_V6_CONTEXT_RECEIPT",
+  "stage": "fresh_mu_calibration",
+  "code_commit": "f7e762af365a2beb9429e4cb3b6d5f0d808d4d7d",
+  "manifest_sha256": "aafbf0ff818f38b6cfab3e97b99889902b28ff26a63ffc102296ef6f828151be",
+  "archive_sha256": "44e9c413dccbe17a274fd5bebeadb656643a56f207acfb7b8dcb155b80bc7e12",
+  "archive": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/CODE_PACKAGE.tar.gz",
+  "target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-f7-v8",
+  "max_uncompressed_bytes": 33554432,
+  "source_interface_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_INTERFACE_RECEIPT.json",
+    "sha256": "bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017"
+  },
+  "context_free_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_CONTEXT_FREE_RECEIPT.json",
+    "sha256": null
+  },
+  "context_byte_audit": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-f7-v8-20261006/SOURCE_BYTE_AUDIT.json",
+    "sha256": null
+  },
+  "actual_assets_transferred": false,
+  "actual_gpu_accepted": false,
+  "actual_slurm_submitted": false,
+  "scope": "Exact same-h1009 CPU preparation only; no READY or training release"
+}

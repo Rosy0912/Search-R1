@@ -1,0 +1,28 @@
+import json,pathlib,hashlib,re,math
+R=pathlib.Path(__file__).resolve().parents[2];source=R/'outputs/evidence/shared-formal-2971-initial-prefix.json';x=json.loads(source.read_text());f=x['files'];sha=lambda b:hashlib.sha256(b).hexdigest()
+for name,v in f.items():assert sha(v['text'].encode())==v['sha256'],name
+summaryname=next(n for n in f if n.endswith('.json') and '/validation-cost/' in n);s=json.loads(f[summaryname]['text']);ledgername=summaryname+'l';ledger=[json.loads(z) for z in f[ledgername]['text'].splitlines()];assert s['ledger_sha256']==f[ledgername]['sha256']
+assert s['status']=='VALIDATION_COST_COMPLETE' and s['dataset_rows']==s['evaluated_rows']==64 and s['phase']=='pretrain' and s['global_step']==0 and s['error_type'] is None
+assert [z['event'] for z in ledger]==list(range(1,len(ledger)+1)) and all(z['pid']==s['pid'] and z['global_step']==0 for z in ledger)
+def events(kind):return [z for z in ledger if z['kind']==kind]
+a=events('generation_start');b=events('generation_completed');h=events('http_start');hc=events('http_completed');pads=events('gpu_padding_submission');c=s['counters']
+assert len(a)==len(b)==c['generation_attempts']==c['generation_completed']==4 and c['generation_failed']==0
+for k,v in {'submitted_rows':sum(z['rows'] for z in a),'returned_rows':sum(z['rows'] for z in b),'submitted_prefill_token_events':sum(z['prefill_token_events'] for z in a),'returned_nonpad_model_token_events':sum(z['nonpad_model_token_events'] for z in b),'real_sample_rows':sum(z['rows'] for z in events('real_sample_batch')),'active_row_events':sum(z['active_rows'] for z in pads),'submitted_padding_row_events':sum(z['padding_rows'] for z in pads),'http_query_events':sum(z['queries'] for z in h),'http_returned_query_rows':sum(z['query_result_rows'] for z in hc)}.items():assert c[k]==v,(k,c[k],v)
+assert len(h)==len(hc)==c['http_attempts']==c['http_completed']==4 and c['http_failed']==0
+logs=x['selected_stage_log']; installed=json.loads(next(t.split('TREE_VALIDATION_COST_INSTALLED_JSON=',1)[1] for t in logs if 'TREE_VALIDATION_COST_INSTALLED_JSON=' in t));m=json.loads(next(t.split('BASELINE_EVALUATION_METRICS_JSON=',1)[1] for t in logs if 'BASELINE_EVALUATION_METRICS_JSON=' in t));assert installed['pid']==s['pid']==3489451 and installed['job_id']==s['job_id']=='2971' and installed['observer_source_sha256']==s['observer_source_sha256']==sha((R/'work/validation_cost_hooks.py').read_bytes()) and installed['trainer_source_sha256']==sha((R/'work/tree-grpo/verl/trainer/ppo/ray_trainer.py').read_bytes())
+counts={k.split('/')[-1]:v for k,v in m.items() if k.startswith('val/evaluated_count/')};assert sum(counts.values())==m['val/qa_count/all']==64
+for name,n in counts.items():assert n==m['val/qa_count/'+name]
+for metric in ['em','f1','answer_format','format_rate','generated_tokens','search_calls']:
+ val=sum(n*m['val/'+metric+'/'+name] for name,n in counts.items())/64;assert abs(val-m['val/'+metric+'/all'])<1e-12,(metric,val)
+line=next(z for z in logs if 'step:1 - ' in z);metrics={}
+for z in line.split('step:1 - ',1)[1].split(' - '):k,v=z.rsplit(':',1);metrics[k]=float(v);assert math.isfinite(metrics[k])
+assert metrics['training/actual_outer_updates']==1 and metrics['actor/optimizer_steps']==12 and metrics['actor/skipped_empty_minibatches']==0
+rs=[json.loads(v['text']) for n,v in f.items() if '/tree-rank-audit/' in n];assert len(rs)==8 and {v['rank'] for v in rs}==set(range(8)) and len({v['pid'] for v in rs})==8
+for v in rs:
+ assert v['outer_step']==1 and v['world_size']==8 and v['job_id']=='2971' and v['code_commit']=='4d133efeb1f675139d2558640f1e21d50780f133'
+ assert (v['local_rows'],v['local_minibatch'],v['local_microbatch'],v['epochs'])==(384,32,8,1) and v['successful_optimizer_calls']==v['finite_grad_norms']==v['nonzero_grad_norms']==12 and v['skipped_empty_minibatches']==0
+ assert all(math.isfinite(n) and n>0 for n in v['existing_grad_norms']) and v['local_shard_sample_delta']['nonzero']==0 and v['local_shard_sample_delta']['finite']==8192 and v['local_shard_sample_before_sha256']==v['local_shard_sample_after_sha256']
+ assert v['actor_source_sha256']==sha((R/'work/tree-grpo/verl/workers/actor/dp_actor.py').read_bytes()) and v['auditor_source_sha256']==sha((R/'work/tree-grpo/search_r1/baselines/tree_rank_audit.py').read_bytes())
+assert len({v['config_sha256'] for v in rs})==1 and abs(metrics['actor/lr']-1e-6/142)<1e-22
+out=dict(status='INITIAL64_AND_FIRST_OUTER_PREFIX_VERIFIED_NOT_FORMAL_ACCEPTANCE',source_sha256=sha(source.read_bytes()),observer_actual_ray_task_pid=s['pid'],validation_rows=64,em=m['val/em/all'],em_correct=8,f1=m['val/f1/all'],cost_counters=c,wall_seconds=s['wall_seconds'],trainer_process_cpu_seconds=s['trainer_process_cpu_seconds'],rank_records=8,successful_calls_per_rank=12,first_outer_nonzero_parameter_change_proven=False,post_scheduler_lr=metrics['actor/lr'],warmup_steps=142,rank_config_sha256=rs[0]['config_sha256'],limitations=['No raw64answers included; F1/EM verified as count-weighted aggregate consistency, not independent answer rescoring.','Prefix contains inputconfig not actualresolved/entryboundary, so rank configSHA equality is checked but actualresolvedSHA not independently recomputed here.','Raw cost includes16paddingevents and EOS-excluded nonpad token positions; per-question retained-action metrics have different scope.64search-tag count is not identical to63actual HTTPquery events.','No Tree rollout/policy rawaudit in this prefix; previous source/gates do not replace formal step evidence.','500updates/final51713/effect/wholejobexit still pending.'])
+(R/'work/shared-formal-2971-initial-review/INITIAL_PREFIX_REVIEW.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out,indent=2))

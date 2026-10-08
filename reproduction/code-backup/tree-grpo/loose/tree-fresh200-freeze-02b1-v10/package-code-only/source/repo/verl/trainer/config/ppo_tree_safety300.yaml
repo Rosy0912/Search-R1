@@ -1,0 +1,42 @@
+defaults:
+  - ppo_tree_recovery300
+  - _self_
+
+actor_rollout_ref:
+  rollout:
+    tree_raw_emission: false
+    sampling_consistency:
+      enabled: false
+      enforce: true
+      max_abs_delta: ???
+  actor:
+    policy_safety:
+      enabled: true
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_rows_per_rank: 32
+      # Must be supplied from recorded healthy-checkpoint calibration.
+      # A missing value refuses candidate startup; .01 is only a trial value.
+      target_old_policy_kl: ???
+      negative_tail_limit: ???
+      initial_old_logprob_max_abs_delta: ???
+      sampling_probability_correction:
+        enabled: false
+        protocol: tree_behavior_mu_centered_ppo_v1
+        # Independent candidate gate; never marks the original sampler gate PASS.
+        initial_actor_repeat_max_abs_delta: null
+
+trainer:
+  acceptance_step: 115
+  experiment_name: tree-safety300
+
+baselines:
+  tree:
+    token_preservation:
+      enabled: false
+      protocol: tree_sampled_prefix_legacy_semantics_v1
+      # Must bind the existing healthy tokenizer; never guessed at opt-in.
+      tokenizer_sha256: null
+    behavior_mu:
+      enabled: false
+      protocol: tree_behavior_mu_centered_ppo_v1

@@ -1,0 +1,67 @@
+--- supervisor-candidate-r2/supervisor.py
++++ supervisor-candidate-r3/supervisor.py
+@@ -55,6 +55,28 @@
+                 sorted(cgroup_pids(scope)-owned.baseline)]),allow_nan=False)+'\n')
+             stream.flush();time.sleep(1)
+     require(probe.returncode==0,'Actual8rank diagnostic failed')
++
++
++def compiler_header_environment():
++    """Restore the original same-node Python3.10 compiler include environment.
++
++    Existing extracted headers are read only. Do not install/download headers,
++    fall back to another interpreter or bypass native compilation on failure.
++    """
++    header_root=ROOT/'python-dev'
++    include=header_root/'usr/include'
++    primary=include/'python3.10'
++    require(header_root.is_dir() and header_root.resolve()==header_root,
++            'Existing same-node Python header root missing or aliased')
++    for directory in (primary,include):
++        require(directory.is_dir() and header_root in directory.resolve().parents,
++                'Existing same-node Python include directory missing or escaped')
++    for header in (primary/'Python.h',primary/'pyconfig.h',include/'x86_64-linux-gnu/python3.10/pyconfig.h'):
++        require(header.is_file() and header_root in header.resolve().parents,
++                'Existing same-node Python header missing or escaped: '+str(header))
++        with header.open('rb') as stream:
++            require(bool(stream.read(1)),'Existing Python header unreadable or empty: '+str(header))
++    return {'C_INCLUDE_PATH':str(primary)+':'+str(include)}
+ 
+ 
+ def main():
+@@ -113,6 +135,7 @@
+         package_manifest_sha256=manifest_sha,release_sha256=release_sha))
+     for key in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy','WANDB_API_KEY','RAY_ADDRESS'):
+         os.environ.pop(key,None)
++    os.environ.update(compiler_header_environment())
+     os.environ.update(TREE_PROBE_REPO=str(package/'repo'),PYTHONPATH=str(package/'repo')+':'+str(package)+':'+str(ROOT/'tools'),
+         PYTHONUNBUFFERED='1',PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',
+         NCCL_NVLS_ENABLE='0',NCCL_SOCKET_IFNAME='lo',GLOO_SOCKET_IFNAME='lo',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',
+@@ -141,6 +164,7 @@
+             guard_path=str(guard_path),allocation_text=allocated,cgroup=str(scope),cgroup_relative=relative,
+             background_pid_start_ticks=background_before,shared_lock_fd=lock.fileno(),shared_lock_path=str(ROOT/'shared-gpu-job.lock'),
+             source_manifest_files=manifest['files'],start_epoch=started,torchrun_loopback_port=port,
++            compiler_environment=dict(C_INCLUDE_PATH=os.environ['C_INCLUDE_PATH']),
+             runtime_scope='No Ray/vLLM/retrieval/generation/backward/optimizer; fixed healthyHF110 and CPU3277 selection')
+         launch_entry=atomic_json(run/'launch.json',launch)
+         os.environ.update(TREE_PROBE_BUNDLE_PATH=bundle_entry['path'],TREE_PROBE_BUNDLE_SHA256=bundle_entry['sha256'],
+--- supervisor-candidate-r2/probe_package.py
++++ supervisor-candidate-r3/probe_package.py
+@@ -14,7 +14,7 @@
+ ROOT = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
+ SELECTION_SHA = 'bca59a4508a0627a04b3f1f64e632b69488208650fa375aac52ab7d16029f995'
+ OUTPUT_TOKEN = '@OWN_RUN_OUTPUT@'
+-DISPATCH_INTENT = str(ROOT/'instruct300/PROBABILITY_PROBE_ONCE-3268.json')
++DISPATCH_INTENT = str(ROOT/'instruct300/PROBABILITY_PROBE_HEADER_REPAIR_ONCE-3280.json')
+ RELEASE_STATUS = 'ZERO_UPDATE_GPU_PROBE_SOURCE_AND_DISPATCH_INDEPENDENTLY_RELEASED'
+ PROTOCOL = dict(node='h100-9', nodes=1, tasks=1, gpu_count=8, exclusive=True,
+                 requested_cpus=32, memory_request='256G', time_limit_minutes=30,
+@@ -147,7 +147,7 @@
+     require(type(release.get('actual_optimizer_writes')) is int and release['actual_optimizer_writes'] == 0,
+             'Probe zero-write scope differs')
+     require(str(same_node_path(release['dispatch_intent_path']))==DISPATCH_INTENT,
+-            'This probe must keep its original fixed single-attempt intent path')
++            'Header repair must use its new fixed intent; old or arbitrary intent paths are refused')
+     require(template.get('status') == 'GPU_PROBE_BUNDLE_INDEPENDENTLY_RELEASED', 'Wrong runner bundle label')
+     require(package.get('reviewed_resource_adapter') == template.get('reviewed_resource_adapter') and
+             release.get('adapter_sha256') == template['reviewed_resource_adapter']['sha256'],

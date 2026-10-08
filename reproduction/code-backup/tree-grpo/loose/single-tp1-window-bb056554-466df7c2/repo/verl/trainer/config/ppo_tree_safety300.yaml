@@ -1,0 +1,25 @@
+defaults:
+  - ppo_tree_recovery300
+  - _self_
+
+actor_rollout_ref:
+  rollout:
+    sampling_consistency:
+      enabled: false
+      enforce: true
+      max_abs_delta: ???
+  actor:
+    policy_safety:
+      enabled: true
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_rows_per_rank: 32
+      # Must be supplied from recorded healthy-checkpoint calibration.
+      # A missing value refuses candidate startup; .01 is only a trial value.
+      target_old_policy_kl: ???
+      negative_tail_limit: ???
+      initial_old_logprob_max_abs_delta: ???
+
+trainer:
+  acceptance_step: 115
+  experiment_name: tree-safety300

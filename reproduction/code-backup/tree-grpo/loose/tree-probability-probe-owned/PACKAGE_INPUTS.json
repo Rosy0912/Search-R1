@@ -1,0 +1,22 @@
+{
+  "status": "SOURCE_PACKAGE_INPUTS_PREPARED_NOT_GPU_RELEASE",
+  "runner_commit": "49a6b35ad11d5ce6a027a18a80035577822ca8dc",
+  "runner_local_repo": "work/tree-probability-probe-runner-v3",
+  "remote_package": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/probability-probe-49a6b35-29822f9",
+  "selection_file": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/probe-selection-v2-result/selection.json",
+    "sha256": "bca59a4508a0627a04b3f1f64e632b69488208650fa375aac52ab7d16029f995"
+  },
+  "config_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-safety300-3268/resolved.yaml",
+  "config_original_local_metadata": "work/tree-probability-probe-owned/ORIGINAL3268_RESOLVED.yaml",
+  "hf_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-recovery300-3234/output/checkpoints/tree-recovery300/actor/global_step_110",
+  "hf_index_original_local_metadata": "work/tree-probability-probe-owned/HF110_INDEX.json",
+  "parent_identity_original_local_metadata": "work/tree-safety110-runtime/HEALTHY110_PARENT.json",
+  "installed_original_local_metadata": "outputs/tree-instruct-300/PPO_PROBE_INSTALLED_SOURCE_METADATA_RAW.json",
+  "dispatch_intent_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/PROBABILITY_PROBE_ONCE-3268.json",
+  "protocol": {"gpu_count": 8, "requested_cpus": 32, "memory_gib": 256, "time_minutes": 30, "node": "h100-9", "exclusive": true, "requeue": false},
+  "output_template": "@OWN_RUN_OUTPUT@",
+  "actual_optimizer_writes": 0,
+  "actual_model_forwards": 0,
+  "gpu_submission_done": false
+}

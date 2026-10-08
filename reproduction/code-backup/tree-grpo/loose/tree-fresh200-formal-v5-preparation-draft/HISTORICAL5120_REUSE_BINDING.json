@@ -1,0 +1,138 @@
+{
+  "actual_gpu_executed": false,
+  "actual_remote_executed": false,
+  "fresh_full_tree_behavior_mu_current_native24_accepted": false,
+  "historical_sampling_supported_rows": 0,
+  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+  "new_full5120_execution_planned": false,
+  "original_plan_sha256": "5ef515b2e8e3422715bd1b27cc14a926d4efbbc62bf9487df27b86678ac21be2",
+  "original_report": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/actual-cpu/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+    "sha256": "2cc2366e9e3473276e4386820fa28249db9e1bb28875ca5298889c48d09c0761"
+  },
+  "original_same_node_report_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v10/CPU_PREP_CONFIG/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+  "original_sampler_actor_gate_accepted": false,
+  "original_wrapper_scope": "V10 tokenizer_raw_preflight.py same-node CPU session27284. FormalV5 config must be prepared separately.",
+  "physical_rows": 5120,
+  "raw_helper": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-behavior-mu-utf8-v2/search_r1/baselines/tree_raw_tokens.py",
+    "sha256": "15b696607846046f671e30531420c6f48cca321762f77016f4e5bdb7868ea229"
+  },
+  "rejected_rows": 0,
+  "status": "COMPLETED_HISTORICAL5120_ACTION_LOCAL_REPORT_IDENTITIES_REUSABLE_NOT_FRESH_GPU_ACCEPTANCE",
+  "tokenizer_identity": {
+    "bos_token_id": null,
+    "clean_up_tokenization_spaces": false,
+    "encoder_binding": {
+      "backend_semantics_sha256": "6dcde2bdb1c1ad1d5b19e616601655bcfd56222044f1749e09863249e788d7bd",
+      "hf_semantic_runtime_flags": {
+        "add_prefix_space": {
+          "present": false,
+          "value": null
+        },
+        "additional_special_tokens": {
+          "present": true,
+          "value": [
+            "<|im_start|>",
+            "<|im_end|>",
+            "<|object_ref_start|>",
+            "<|object_ref_end|>",
+            "<|box_start|>",
+            "<|box_end|>",
+            "<|quad_start|>",
+            "<|quad_end|>",
+            "<|vision_start|>",
+            "<|vision_end|>",
+            "<|vision_pad|>",
+            "<|image_pad|>",
+            "<|video_pad|>"
+          ]
+        },
+        "all_special_tokens": {
+          "present": true,
+          "value": [
+            "<|im_end|>",
+            "<|endoftext|>",
+            "<|im_start|>",
+            "<|object_ref_start|>",
+            "<|object_ref_end|>",
+            "<|box_start|>",
+            "<|box_end|>",
+            "<|quad_start|>",
+            "<|quad_end|>",
+            "<|vision_start|>",
+            "<|vision_end|>",
+            "<|vision_pad|>",
+            "<|image_pad|>",
+            "<|video_pad|>"
+          ]
+        },
+        "bos_token": {
+          "present": true,
+          "value": null
+        },
+        "clean_up_tokenization_spaces": {
+          "present": true,
+          "value": false
+        },
+        "do_lower_case": {
+          "present": false,
+          "value": null
+        },
+        "eos_token": {
+          "present": true,
+          "value": "<|im_end|>"
+        },
+        "pad_token": {
+          "present": true,
+          "value": "<|endoftext|>"
+        },
+        "split_special_tokens": {
+          "present": true,
+          "value": false
+        },
+        "unk_token": {
+          "present": true,
+          "value": null
+        }
+      }
+    },
+    "eos_token_id": 151645,
+    "pad_token_id": 151643,
+    "policy_decode_skip_special_tokens": true,
+    "reward_decode": "original_tokenizer.decode_default_flags",
+    "tokenizer_class": "transformers.models.qwen2.tokenization_qwen2_fast.Qwen2TokenizerFast",
+    "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725/tokenizer.json",
+    "utf8_decoder_binding": {
+      "bytelevel_alphabet_sha256": "c21c259a37c0ff1760596ca76e9a5f3c1e26a320e5a8ab9aec97f09ffd57f183",
+      "decoder_state": {
+        "add_prefix_space": false,
+        "trim_offsets": false,
+        "type": "ByteLevel",
+        "use_regex": false
+      },
+      "decoder_state_sha256": "4942970eeb62af80cf8c4eb5d864699b914996b14b6a5e083528e3eed7dfc44d",
+      "protocol": "tree_original_bytelevel_utf8_prefix_v1",
+      "skip_special_token_ids": [
+        151643,
+        151644,
+        151645,
+        151646,
+        151647,
+        151648,
+        151649,
+        151650,
+        151651,
+        151652,
+        151653,
+        151654,
+        151655,
+        151656
+      ]
+    }
+  },
+  "training_release": false,
+  "two_jobs_all8ranks_unfiltered_row0to319_verified": true,
+  "wall_seconds": 3778.682036759332
+}

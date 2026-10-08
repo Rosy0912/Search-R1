@@ -1,0 +1,26 @@
+{
+  "status": "SOURCE_ONLY_ADAPTER_PROPOSAL_NOT_GPU_ACCEPTANCE",
+  "activity_scope": "This local source reading; no3293 runtime counts inferred",
+  "files": {
+    "work/tree-vllm-window-runner/single_window_runner.py": {
+      "sha256": "73fd808b3cca7955d8383315c7c92c0f3e4f40b626d0f6c69005fd601caa769f",
+      "scope": "Local readonly source reference; actual3293 package binding is separate owner evidence"
+    },
+    "work/tree-vllm-window-runner/search_r1/baselines/probability_probe_capture.py": {
+      "sha256": "f0046c717bb551589aba550a8385914511ba1f0bcefe9fa4c2f342bf1863cfd2",
+      "scope": "Local readonly source reference; actual3293 package binding is separate owner evidence"
+    },
+    "work/tree-vllm-window-runner/search_r1/baselines/probability_probe_runner.py": {
+      "sha256": "a4fd312d36c083295493950ea3b4ceb133ce65142b49c6b6e3ffa5f356019bd4",
+      "scope": "Local readonly source reference; actual3293 package binding is separate owner evidence"
+    },
+    "work/tree-safety110-a632ba9-v2/source/repo/verl/workers/actor/dp_actor.py": {
+      "sha256": "48aa27763fe481dcf546a8d3466cf5ee21b7e951210ac1f00568921c07f27cd7",
+      "scope": "Local readonly source reference; actual3293 package binding is separate owner evidence"
+    }
+  },
+  "production_source_modified": false,
+  "new_model_forwards": 0,
+  "remote_operations": 0,
+  "probability_accepted": false
+}

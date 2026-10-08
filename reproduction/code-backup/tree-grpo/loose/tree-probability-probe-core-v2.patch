@@ -1,0 +1,223 @@
+diff --git a/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md b/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md
+index 890c1b1..df84867 100644
+--- a/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md
++++ b/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md
+@@ -1,7 +1,8 @@
+ # Healthy110 概率探针最小源码核心
+ 
+-候选基于 `a632ba91840fb116aacfc0e770681a860647b295`，分支
+-`codex/tree-probability-probe-source`。只增加独立模块和 CPU 测试；原 actor、训练
++初版基于 `a632ba91840fb116aacfc0e770681a860647b295`；本次独立修复从
++`3cbe3685a1d327b0d918c201a4472e57031b3d0c` 开始，分支
++`codex/tree-probability-probe-core-v2`。旧候选原件保留。只修改独立模块和 CPU 测试；原 actor、训练
+ 入口、rollout、配置、概率容差、learning rate、batch、奖励、长度和预算均未修改。
+ 此模块尚未接入任何运行入口，不含 HF/FSDP 加载器、Slurm 或 GPU 调度。没有
+ 启动探针，也没有执行 3B 更新。接口不是 READY 或训练接受凭证。
+@@ -26,7 +27,9 @@
+ 5. 完整有效权重观察接口：runner 在 FSDP wrap 前保留真实 module 对象与
+    exhaustive HF logical keys/属性名/full expected cast digests。在首个原前向的
+    子模块 pre-hook 内，读取真实 `.weight`/`.bias` tensor 的完整 shape/dtype/字节
+-   digest、有限性、device 和所要求的 tied storage alias。这里不依赖 pre-gather
++   digest、有限性、device 和所要求的 observed address/offset 关系。跨 gather 窗口
++   地址可能复用，地址关系仅标 `observed_address_only`，**不能证明 tied identity**；
++   runner 必须保留同一 gather 窗口的实际 tensor 引用核真实 alias。这里不依赖 pre-gather
+    flat shard 或 `named_parameters` registry，也不使用样本摘要。原参数可能在
+    autocast 运算内部再转换；该接口记录的是 forward 属性，不能代替 kernel
+    operand trace。buffer/rotary、历史冷恢复 cast 路径仍需另外核查。
+@@ -34,6 +37,9 @@
+ 权重 hook 的本地诊断失败延迟到整个原 forward 返回后抛出，以避免一 rank 在
+ FSDP 后续 collective 前提前退出。runner 必须 catch 并在所有 rank 之间同步失败
+ flag，再停止下一次原 forward；代码核心不提供全局异常协议或资源退出保证。
++只有原 forward 无异常、完整覆盖和全部检查通过后 trace exit 才设置
++`completed_successfully=true`，receipt 也强制该状态。退出失败、捕获原 forward
++异常、上下文内发布、重新进入后未覆盖，都不能再发布完整权重观察 receipt。
+ 
+ 后续 runner 的必需工作仍包括：固定 CPU selection manifest、ready/package/HF110
+ 原件身份验证、完整 HF→FSDP cast/布局/有效值证明、8-rank 实际一致调用、全模型
+diff --git a/docs/TREE_PROBE_SOURCE_CONTRACT.json b/docs/TREE_PROBE_SOURCE_CONTRACT.json
+index 50fa3e3..978ef7d 100644
+--- a/docs/TREE_PROBE_SOURCE_CONTRACT.json
++++ b/docs/TREE_PROBE_SOURCE_CONTRACT.json
+@@ -1,13 +1,15 @@
+ {
+   "acceptance": false,
++  "alias_scope": "observed_address_only_not_identity",
++  "base_probe_core_commit": "3cbe3685a1d327b0d918c201a4472e57031b3d0c",
+   "deployed": false,
+   "expected_installed_hf": {
+     "flash_helper": "2753ed0bdb9b37f72a4b4d0663e2f2833ad55a874be37d4599d69eb9a826ede0",
+     "qwen": "4568d588b45dd28152d97c37300a5e227589bc70b9fef5224af29977ecf6abdc"
+   },
+   "expected_ready_sha256": "ba948bdec0b71a3c8ff5c61db1360840134e57fccaf71fb154449f30c300c468",
+-  "new_module_sha256": "0373d3cf5b996f0d30f665e124cc0c93a375bc96b03ce6c89107b10767a20067",
+-  "new_test_sha256": "a503bdc3d67e59fd864efdc65600dfafa02e1ecc63d79db997dea2b53a64beff",
++  "new_module_sha256": "f0046c717bb551589aba550a8385914511ba1f0bcefe9fa4c2f342bf1863cfd2",
++  "new_test_sha256": "297d3880ebfb35ef94927c4bc44bc9590bea95850fd79bfdc84dd6680c19757f",
+   "observed_calibration_job": "3268",
+   "parent_code_commit": "a632ba91840fb116aacfc0e770681a860647b295",
+   "probability_tolerance_modified": false,
+diff --git a/docs/TREE_PROBE_SOURCE_CPU_PROOF.json b/docs/TREE_PROBE_SOURCE_CPU_PROOF.json
+index cd25082..109c56d 100644
+--- a/docs/TREE_PROBE_SOURCE_CPU_PROOF.json
++++ b/docs/TREE_PROBE_SOURCE_CPU_PROOF.json
+@@ -1,26 +1,24 @@
+ {
+   "acceptance": false,
++  "base_probe_core_commit": "3cbe3685a1d327b0d918c201a4472e57031b3d0c",
+   "cuda_initialized": false,
+-  "module_sha256": "0373d3cf5b996f0d30f665e124cc0c93a375bc96b03ce6c89107b10767a20067",
++  "fix_scope": [
++    "receipt_successful_exit_lifecycle",
++    "address_observation_only_not_alias_identity"
++  ],
++  "module_sha256": "f0046c717bb551589aba550a8385914511ba1f0bcefe9fa4c2f342bf1863cfd2",
+   "native_source_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575",
++  "prior_unchanged_guard_regressions": {
++    "parent_proof_sha256": "d9dbcb10ec2620e7f4530bcb7ec81f46049a7b58927314769ae90c01ffaedfc0",
++    "policy_safety": 8,
++    "sampling_consistency": 6,
++    "scope": "Previously executed and unchanged; not rerun in this fix validation"
++  },
+   "real_model_loaded": false,
+   "remote_calls": false,
+   "scope": "Original normalization AST on CPU plus mock actor; not real FSDP/GPU/weight/RNG/resource acceptance",
+   "status": "PROBE_SOURCE_CORE_CPU_PASS",
+-  "test_sha256": "a503bdc3d67e59fd864efdc65600dfafa02e1ecc63d79db997dea2b53a64beff",
+-  "tests_run": 18,
+-  "total_cpu_tests": 32,
+-  "unchanged_guard_regressions": {
+-    "policy_safety": {
+-      "count": 8,
+-      "seconds": 5.827,
+-      "status": "PASS"
+-    },
+-    "sampling_consistency": {
+-      "count": 6,
+-      "seconds": 5.807,
+-      "status": "PASS"
+-    }
+-  },
+-  "wall_seconds": 0.763034333
++  "test_sha256": "297d3880ebfb35ef94927c4bc44bc9590bea95850fd79bfdc84dd6680c19757f",
++  "tests_run": 21,
++  "wall_seconds": 0.635483208
+ }
+diff --git a/search_r1/baselines/probability_probe_capture.py b/search_r1/baselines/probability_probe_capture.py
+index 527880c..2b94437 100644
+--- a/search_r1/baselines/probability_probe_capture.py
++++ b/search_r1/baselines/probability_probe_capture.py
+@@ -55,14 +55,20 @@ class EffectiveWeightTrace:
+     logical HF key/attribute specifications and full cast-expected digests. Reading
+     actual .weight/.bias attributes avoids treating a pre-gather FSDP flat shard or
+     named_parameters registry as the effective mathematical weight. Coverage and
+-    expected tied aliases are checked; no original-3268 identity is inferred.
++    expected address observations are compared. Addresses observed at separate
++    times can be reused by FSDP; this is NOT a tied-alias identity proof. A runner
++    needs simultaneous tensor references in one gather window for that proof.
+     """
+     def __init__(self,targets):
+         require(bool(targets),'Missing exhaustive effective-weight targets')
+         self.targets=list(targets);self.records={};self.handles=[];self.storage={};self.errors=[];self.observed=set()
++        self.completed_successfully=False;self.active=False;self.address_observations={}
+         require(len({target['logical_name'] for target in targets})==len(targets),'Duplicate logical effective-weight keys')
+ 
+     def __enter__(self):
++        require(not self.active,'Nested effective-weight trace contexts are unsupported')
++        self.records={};self.handles=[];self.storage={};self.errors=[];self.observed=set();self.address_observations={}
++        self.completed_successfully=False;self.active=True
+         try:
+             for target in self.targets:
+                 def hook(module,args,target=target):
+@@ -82,26 +88,38 @@ class EffectiveWeightTrace:
+                 self.handles.append(target['module'].register_forward_pre_hook(hook))
+         except BaseException:
+             for handle in self.handles:handle.remove()
++            self.active=False
+             raise
+         return self
+ 
+     def __exit__(self,exc_type,exc_value,traceback):
+         for handle in self.handles:handle.remove()
++        self.active=False;self.completed_successfully=False
+         if exc_type is None:
+             require(not self.errors,'; '.join(self.errors))
+             require(set(self.records)=={target['logical_name'] for target in self.targets},'Incomplete effective forward logical-key coverage')
+             aliases={}
+             for target in self.targets:
+                 group=target.get('expected_storage_alias_group')
+-                if group is not None:aliases.setdefault(group,[]).append(self.storage[target['logical_name']])
+-            require(all(len(set(values))==1 for values in aliases.values()),'Expected tied effective-weight storage alias differs')
++                if group is not None:aliases.setdefault(group,[]).append((target['logical_name'],self.storage[target['logical_name']]))
++            self.address_observations={str(group):dict(logical_names=[name for name,_ in values],
++                same_observed_address_and_offset=len({address for _,address in values})==1,
++                scope='observed_address_only; different forward/gather times may reuse addresses',
++                tied_alias_identity_proven=False) for group,values in aliases.items()}
++            require(all(record['same_observed_address_and_offset'] for record in self.address_observations.values()),
++                    'Expected observed storage alias differs; address observation only, not tied identity proof')
++            self.completed_successfully=True
+         return False
+ 
+     def receipt(self):
++        require(self.completed_successfully and not self.active,
++                'Cannot publish effective-weight evidence without successful complete trace exit')
+         require(not self.errors,'Cannot publish effective-weight evidence with recorded hook failures')
+         require(set(self.records)=={target['logical_name'] for target in self.targets},'Cannot publish incomplete effective-weight evidence')
+         return dict(status='EFFECTIVE_FORWARD_WEIGHT_DIGEST_OBSERVED_NO_ACCEPTANCE',records=dict(self.records),
+             logical_tensor_count=len(self.records),exhaustiveness_is_runner_manifest_requirement=True,
++            trace_completed_successfully=True,address_observations=dict(self.address_observations),
++            tied_alias_identity_proven=False,
+             original_3268_effective_weight_identity_proven=False,acceptance=False)
+ 
+ 
+diff --git a/tests/baselines/test_probability_probe_capture.py b/tests/baselines/test_probability_probe_capture.py
+index cab77d4..ced88b8 100644
+--- a/tests/baselines/test_probability_probe_capture.py
++++ b/tests/baselines/test_probability_probe_capture.py
+@@ -190,6 +190,47 @@ class Tests(unittest.TestCase):
+         with P.EffectiveWeightTrace(targets) as trace:
+             P.capture_original_call(first,batch(),1.);P.capture_original_call(second,batch(),1.)
+         self.assertEqual(trace.receipt()['logical_tensor_count'],2)
++        self.assertFalse(trace.receipt()['tied_alias_identity_proven'])
++        self.assertEqual(trace.receipt()['address_observations']['expected_tied']['scope'],
++                         'observed_address_only; different forward/gather times may reuse addresses')
++
++    def test_alias_exit_failure_cannot_publish_complete_receipt(self):
++        first,second=Actor(),Actor()
++        targets=[dict(logical_name=str(i)+'.weight',module=actor.actor_module,attribute='weight',
++            expected_cast_digest=P.tensor_digest(actor.actor_module.weight),expected_storage_alias_group='address_group')
++            for i,actor in enumerate((first,second))]
++        trace=P.EffectiveWeightTrace(targets)
++        with self.assertRaisesRegex(ValueError,'storage alias differs'):
++            with trace:P.capture_original_call(first,batch(),1.);P.capture_original_call(second,batch(),1.)
++        self.assertFalse(trace.completed_successfully)
++        with self.assertRaisesRegex(ValueError,'successful complete trace exit'):trace.receipt()
++
++    def test_original_forward_failure_after_all_weight_observation_cannot_publish_receipt(self):
++        actor=Actor();target=dict(logical_name='weight',module=actor.actor_module,attribute='weight',expected_cast_digest=P.tensor_digest(actor.actor_module.weight))
++        trace=P.EffectiveWeightTrace([target])
++        original_entry=actor._forward_micro_batch
++        def failure_after_model(data,temperature):
++            original_entry(data,temperature)
++            raise RuntimeError('original forward failure after model observation')
++        actor._forward_micro_batch=failure_after_model
++        with self.assertRaisesRegex(RuntimeError,'original forward failure'):
++            with trace:
++                P.capture_original_call(actor,batch(),1.)
++        self.assertEqual(len(trace.records),1)
++        self.assertFalse(trace.completed_successfully)
++        with self.assertRaisesRegex(ValueError,'successful complete trace exit'):trace.receipt()
++
++    def test_in_context_receipt_is_not_success_and_context_reuse_resets_evidence(self):
++        actor=Actor();target=dict(logical_name='weight',module=actor.actor_module,attribute='weight',expected_cast_digest=P.tensor_digest(actor.actor_module.weight))
++        trace=P.EffectiveWeightTrace([target])
++        with trace:
++            P.capture_original_call(actor,batch(),1.)
++            with self.assertRaises(ValueError):trace.receipt()
++        self.assertTrue(trace.completed_successfully)
++        with self.assertRaisesRegex(ValueError,'Incomplete effective forward'):
++            with trace:pass
++        self.assertFalse(trace.completed_successfully)
++        with self.assertRaises(ValueError):trace.receipt()
+ 
+ 
+ if __name__=='__main__':

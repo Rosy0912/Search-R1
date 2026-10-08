@@ -1,0 +1,20 @@
+{
+  "actual_builder_executed": false,
+  "actual_cpu_prepared": false,
+  "actual_first5_accepted": false,
+  "actual_zero_accepted": false,
+  "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "full_completed_outer_goal": 200,
+  "full_final_evaluation_rows": 51713,
+  "helper_source_review_sha256": null,
+  "production_inputs": {
+    "actual_calibration_acceptance": null,
+    "actual_calibration_ready": null,
+    "source_context_free_review": null,
+    "threshold_acceptance": null
+  },
+  "status": "FORMAL_V7_SOURCE_ONLY_PENDING_ROOT_FORK_NONE_REVIEW_AND_ACTUAL_INPUTS",
+  "train_wall_hours": null,
+  "training_release": false,
+  "wall_default": null
+}

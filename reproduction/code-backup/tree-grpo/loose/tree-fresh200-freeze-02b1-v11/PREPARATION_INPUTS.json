@@ -1,0 +1,26 @@
+{
+  "actual_assets_transferred": false,
+  "actual_gpu_accepted": false,
+  "actual_slurm_submitted": false,
+  "archive": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/CODE_PACKAGE.tar.gz",
+  "archive_sha256": "434f3bdaa76d037f27c1b20e614ff1a815b278c50f018ee360d6b9eb02a46bc6",
+  "code_commit": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+  "context_byte_audit": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/SOURCE_BYTE_AUDIT.json",
+    "sha256": "ff1d572683c5b6b62c573aabf7df5784d14893e9b5641d1ca6eed6f19df0dfd6"
+  },
+  "context_free_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/SOURCE_CONTEXT_FREE_RECEIPT.json",
+    "sha256": "7855b55942dc301ea022e08ba7db10e4874934d20f88ba029714c9b361b88633"
+  },
+  "manifest_sha256": "a07925ce76951ef0966b5f03e847e28b0b2fdc115a6409e2bdede181300b00a2",
+  "max_uncompressed_bytes": 33554432,
+  "scope": "Exact same-h1009 CPU preparation only; source/CPU capability ACCEPT does not release execution, READY or training. Existing V10 official5120 report is reused conditionally; no second5120 execution.",
+  "source_interface_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-02b1-v11-20261006/SOURCE_INTERFACE_RECEIPT.json",
+    "sha256": "5648c41dc787f95d750157fd876194182c6812665b6e4039db31a0ef86140ce2"
+  },
+  "stage": "fresh_mu_calibration",
+  "status": "EXACT_BYTE_CPU_PREPARATION_INPUTS_PENDING_EXECUTION_BINDING_REVIEW",
+  "target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-02b1-v11"
+}

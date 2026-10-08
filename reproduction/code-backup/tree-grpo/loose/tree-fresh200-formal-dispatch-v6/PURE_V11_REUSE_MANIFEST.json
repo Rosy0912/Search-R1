@@ -1,0 +1,22 @@
+{
+  "actual_asset_or_config_execution": false,
+  "original_common_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-dispatch-v11/fresh200_dispatch_common.py",
+  "original_common_sha256": "63d115fe01f2f38e297059e4f84d4a1f430ee53a0dc4fa19d5d30046f4cf278d",
+  "reused_function_ast_sha256": {
+    "assert_host": "49815edf4b8230ab320843f76f5d2c1fa1cac86f78af0a237b6d2de17111601c",
+    "digest": "0b854b65fff3a246b9483923c448dabca49fa39ff421b7ca34bf22614fbc44db",
+    "file_sha": "e64d6dc34767e1d6e35a05c6186ddfef6dfd6e985160a9233b8122efe62e551a",
+    "json_bound": "11df62ca4bf397509a97eb173f1611eafba0bdccc7c6464a48bbd0e12a33ac07",
+    "local_path": "a5f98857e52f0188ef69c9221be54b06930436a7d893410df3c3e74c5ee76573",
+    "read_bound": "7f32b511c573665be1cd44714de419fdd246838021cf83323f454c035d6ff96c",
+    "relative_file": "584e0dc7743410e0585b5b1c364fbf7914ce895d0f526c5e7cf8d36063f07f29",
+    "require": "313409857c78ee3b13cb621d7c3a2a2e2f6a9b853025c83483ed51f4c1cbdacb",
+    "safe_extract": "b0edeaf9c1babe61c597982966e3861eba9f8aa9c9887ae8c75b7157e2761893",
+    "valid_sha": "3454569a9039ea42a1184799eb133f762475037e6cc7fca8a158ce6af5a0aea7",
+    "verify_local_assets": "30e83256d9209bdb335605c7f47e9ea84a03642eb913289482555ea54479cd13",
+    "verify_package": "03a30ded92fda7e92dab89c0d1ef3c4b822e826ebfcf29831ab54c74022965f4",
+    "write_once": "2c5c6a5449d008962415f0606adcfd87e27d85de6343bb4b2c46d739b6af90a4"
+  },
+  "selected_functions_only": true,
+  "zero_stage_and_review_logic_reused": false
+}

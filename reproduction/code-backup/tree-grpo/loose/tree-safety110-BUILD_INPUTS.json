@@ -1,0 +1,34 @@
+{
+  "policy_safety_thresholds": {
+    "initial_old_logprob_max_abs_delta": 0.01,
+    "negative_tail_limit": 0.01,
+    "target_old_policy_kl": 0.01
+  },
+  "probability_calibration": {
+    "configuration_overrides": [
+      "actor_rollout_ref.rollout.sampling_consistency.enabled=true",
+      "actor_rollout_ref.rollout.sampling_consistency.enforce=false",
+      "actor_rollout_ref.rollout.sampling_consistency.max_abs_delta=0.01"
+    ],
+    "environment": {
+      "TREE_PPO_CALIBRATION_ONLY": "1"
+    },
+    "limits": "Separate zero-write calibration only. Raw same-turn vLLM logps versus FSDP old recomputation; trial 0.01 values are not accepted long-run thresholds. Normal return before update_actor/scheduler/outer credit; no115 gate or final51713 in this stage.",
+    "ready_relative_path": "output/probability-calibration/ready.json",
+    "ready_status": "CALIBRATION_OBSERVED_ZERO_WRITES",
+    "source_contract_files": {
+      "search_r1/baselines/policy_safety_runtime.py": "60a036ea29f6bcb1d94d69ebc0cae58ddf121f13d04fa83c20517bccb51fc5d1",
+      "search_r1/baselines/sampling_consistency.py": "677c6179f83ed3c738697da5db966c10ec5fe26c272fa1860bf6a0e5cf1ddc92",
+      "verl/trainer/config/ppo_tree_safety300.yaml": "e6cd8a11ac27329888f2b5bfa4d253d14070984fb1ca063bb0f51f429fcae644",
+      "verl/trainer/ppo/ray_trainer.py": "2539204b6a3b86614d5db74526685a568ebaae73719105a537faa92063990857",
+      "verl/workers/fsdp_workers.py": "bee26eb985f5245bc6f3bb9db658b29a5d1994d88c9c46b337dab27efb2e4432",
+      "verl/workers/rollout/vllm_rollout/vllm_rollout.py": "62eff90354b261d462aab1b6680a1acee9d2cb1698c0027685f72994dc6ef149"
+    },
+    "source_interface_receipt_sha256": "96681297853c8bf891657b01d2be3cdcfbaa4c1403db5fc03e538496c82d8948",
+    "source_interface_reviewed": true
+  },
+  "source_commit": "a632ba91840fb116aacfc0e770681a860647b295",
+  "stage": "calibration110",
+  "status": "SOURCE_INTERFACE_REVIEWED_FOR_ZERO_WRITE_CALIBRATION",
+  "threshold_scope": "Explicit trial inputs for healthy110 calibration; not accepted long-run thresholds"
+}

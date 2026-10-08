@@ -1,0 +1,35 @@
+import json, hashlib
+from pathlib import Path
+root=Path.cwd(); out=root/'work/tree-fixed-five-review'; package=root/'work/tree-fixed-five-296217a'
+sha=lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+manifest=package/'manifest.json'; wrapper=root/'work/start_tree_fixed_five_296217a.sh'; collector=root/'work/check_fixed_five_afterany.py'
+checks=json.loads((out/'CPU_GATE_CHECKS.json').read_text())
+assert all(checks['pins'].values())
+assert sha(manifest)=='8f3fb72fc21037d4d629026be9db0cac00c24b00df21a45982d4a63a0fd6710b'
+assert sha(wrapper)=='b5f2932c507d75defd83b9b84e203e3634f0f0b1d94daf120377e9c59b0e624a'
+assert sha(collector)=='a6a73cf43a659d55402d56005d975749a5766536ceec54bffa8e0f364f3b96d3'
+report='''# Fresh five pre-dispatch independent review
+
+READY for the frozen fresh-five wrapper only. This is local preparation review, not actual five-update, effect, formal-500, or final-51,713 acceptance. No GPU/Slurm job was submitted by this review; no production or candidate source was edited.
+
+Candidate remains 296217a4b676a26a92fc729f5d9882b785dbfa96. Compared with accepted V3 two tools, the new package selects five actual outer updates (trainer total_training_steps=6), uses fresh-five run/output paths and a uniquely named fixed-five observer, and adds immutable actual-two prerequisites. It starts from the base Qwen2.5-3B, not HF2. Global batch512, mini256, micro64 and the Tree algorithm are unchanged. GPU KL proof and memory observer bytes are identical to V3. Same-node H100-9 eight-GPU inherited leases, guard, owned cleanup, original background process protection, and preflight remain pinned. Cross-cluster services are absent.
+
+All 27 package/helper/hash and byte-equality checks passed. The supported wrapper hardcodes manifest8f3fb72f and the signed actual3095 receipt e79c8cf1; it forwards no arbitrary caller arguments. The actual supervisor prior-check block verified all61 original remote evidence hashes and five independent small review hashes. Nineteen corruption/identity/state/count/path cases were refused, alongside the valid case. Semantic fixtures recomputed their own digest to exercise internal checks; this does not demonstrate forging the wrapper's fixed signed receipt. Standalone arbitrary supervisor arguments are outside this READY scope.
+
+Actual configuration execution confirmed five updates/total6, train512/mini256/micro64, fresh base and val_before_train=false. Actual fixed-five install accepted only a positive matching Slurm job's resolved own runs/tree-fixed-five-{job}/output; wrong job, old two/formal, other root, escaping traversal and zero job were refused. Heavy Trainer/Manager and wrapper side effects were mocked for this installation check. Resolved aliases that lead to the same legal output are treated by resolved-path identity, rather than rejecting every textual '..'.
+
+The new absolute Python entry was executed with the actual CLI --config-path and --cfg job, deliberately omitting the tools directory from PYTHONPATH. Script-directory import selected validation_cost_hooks_fixed_five; all supplied canonical configuration fields were unchanged. Observer body AST matches V3 except the exact installation-path binding. This proves local entry routing/configuration, not target Ray worker installation. Actual worker module/source/output receipt must be checked in the new run.
+
+Exact CPU afterany collector AST fixtures passed five cases. A successful parent calls the pinned full checker on actor/global_step_5 with CUDA disabled. Failed or preflight-failed parent skips HF; an unavailable terminal or residual cleanup is refused. Its successful exit on a failed parent means evidence collection only, not training/HF acceptance. These fixtures mock scontrol and the checker, and perform no actual HF reload.
+
+Actual3095 accepted two evidence remains frozen, including full HF2,16 direct rank records, four Tree audits and16 memory profiles. Earlier3083 and3088 remain real failed jobs with zero training updates; their costs and failure scopes are unchanged. Old307 steps remain old-reward-protocol incomplete formal evidence.
+
+The five run must independently prove five finite actual outer updates,40 direct rank records with12 successful optimizer calls per rank/outer,40 profile records,10 bound Tree rollout/policy audits, current retrieval/KL/dual15% checks, original eight GPU PIDs, clean body/Slurm/cleanup and full changed finite HF5. First outer can have zero sampled delta under the unchanged initial-LR-zero scheduler; later nonzero changes and HF5 are required. This smoke does not provide64-question evaluation or full effect acceptance. Two's sampled whole-device peak79.4903GiB was close to capacity; Torch allocated peak45.835GiB excludes FAISS and other allocations. Fresh-five runtime resource evidence remains necessary and no batch or microbatch change is authorized here.
+
+Evidence: CPU_GATE_CHECKS.json (27 pins,20 prior cases,7 install-path cases); AFTERANY_CASES.json (5); ACTUAL_ENTRY_ROUTE.json plus actual CLI output/import trace. No broad CPU suite was repeated.
+'''
+(out/'REVIEW.md').write_text(report)
+evidence=[{'path':str(out/n),'sha256':sha(out/n)} for n in ['CPU_GATE_CHECKS.json','AFTERANY_CASES.json','ACTUAL_ENTRY_ROUTE.json','ACTUAL_ENTRY_CFG.yaml','ACTUAL_ENTRY_IMPORTS.txt','probe_five_gates.py','probe_afterany.py']]
+r={'status':'READY_FOR_FRESH_FIVE_DISPATCH_ONLY','stage':'five','scope':'Frozen wrapper preparation only; no actual five/500/effect acceptance','code_commit':'296217a4b676a26a92fc729f5d9882b785dbfa96','actual_updates_authorized':5,'trainer_total_training_steps':6,'fresh_base':True,'same_node':'h100-9','training_gpus':8,'global_train_batch':512,'mini_batch':256,'micro_batch':64,'manifest_sha256':sha(manifest),'wrapper_sha256':sha(wrapper),'cpu_afterany_sha256':sha(collector),'prior_actual_two_receipt_sha256':'e79c8cf1f580b1aae3eb5119667aff7c31247c45ec053de085a32710d966c6c7','prior_evidence_count':61,'prior_independent_review_count':5,'fixed_five_observer_sha256':'6b60822b92f9e26b5c683198772ff2b50c3465780be55f0126660d889f6cd3b5','local_cpu_checks_passed':True,'actual_target_Ray_worker_installation_verified':False,'actual_five_verified':False,'formal_500_verified':False,'final_51713_verified':False,'no_jobs_submitted_by_reviewer':True,'required_actual_evidence':{'outer_updates':5,'rank_records':40,'tree_audit_files':10,'memory_profiles':40,'full_HF_global_step':5,'slurm_completed_exit':'0:0','cleanup_residual':{}},'review':{'path':str(out/'REVIEW.md'),'sha256':sha(out/'REVIEW.md')},'evidence':evidence,'limitations':['CPU AST probes mock heavy assets/classes and scheduler/checker; not target GPU/Ray execution','Actual first outer LR-zero delta boundary unchanged','Near-capacity prior device memory peak requires fresh runtime monitoring','No64-question or final51713 smoke evaluation; no effect or500 acceptance','Original3083/3088 failures retained']}
+(out/'PRE_DISPATCH_RECEIPT.json').write_text(json.dumps(r,indent=2)+'\n')
+print(json.dumps({'receipt_sha256':sha(out/'PRE_DISPATCH_RECEIPT.json'),'review_sha256':sha(out/'REVIEW.md')},indent=2))

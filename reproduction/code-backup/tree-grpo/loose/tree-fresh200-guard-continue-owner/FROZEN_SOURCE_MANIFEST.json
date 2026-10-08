@@ -1,0 +1,56 @@
+{
+  "actor_continue_protocol": "tree_guard_continue_fresh_rollout_v1",
+  "actual_gpu_executed": false,
+  "actual_remote_executed": false,
+  "actual_slurm_executed": false,
+  "actual_writes_per_complete_outer_per_rank": "actual integer in 1..20, independently reported",
+  "additional_changed_runtime_files": {
+    "search_r1/baselines/controller.py": "2a1c5fdf6dd8dc265ebcfb3ef3717f5a9f522e0832c506cbd0e94d820a16eda6",
+    "search_r1/baselines/training_state.py": "50cf8ab7eb37f198cc2833c20498b12ce6e2d8eacd6b21ed5e7a2357820f62d8",
+    "search_r1/baselines/trajectory_log.py": "93ba273f28949a0606c6ea468f297723187831dc760b7205d9c87d9730827b6f",
+    "search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b"
+  },
+  "base_commit": "4ff6f9dddce24572778124717ce73dfc7b655541",
+  "changed_test_files": {
+    "test_tree_behavior_mu_config_cpu.py": "ca0c679d180e2e9d79360055ed646e9555ad76868078e91d3928449d53c85d4b",
+    "test_tree_fresh200_cpu.py": "3ca87d53316de90a8dafa21a71c18ec9765ba4f09b4ed4a86b14bea27d2142a5",
+    "test_tree_guard_continue_cpu.py": "8af6ff73d672b7ff7bbac31fe35a8adab0544e81751a903319c6ef34bbbe4438",
+    "tests/reproduction/test_final_checkpoint.py": "411dc03b35df784207bcfc051bd8e94ec18440a9655e97b1d8d06b0ebc908ea2"
+  },
+  "code_commit": "f7e762af365a2beb9429e4cb3b6d5f0d808d4d7d",
+  "former_source_interface_count": 14,
+  "monitor_rows_per_rank": 32,
+  "opportunities_per_complete_outer_per_rank": 20,
+  "protocol_document": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-guard-continue-owner/PROTOCOL.md",
+    "sha256": "bbce7c47e640a9430694043d42afea1495b24cb6ee5f2fcb844a3edc03057c53"
+  },
+  "required_new_interface_key": "search_r1/baselines/tree_guard_continue.py",
+  "result_protocol": "tree_fresh_actor_result_v1",
+  "rows_per_opportunity": 16,
+  "rows_per_rank": 320,
+  "source_clean": true,
+  "source_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-behavior-mu-ppo",
+  "source_files": {
+    "search_r1/baselines/gradient_norm.py": "6d0b68fb35b26dcf125732c5da586425238b3130c7898fb63d779920413c664b",
+    "search_r1/baselines/partial_worker_state.py": "091a6b2efcc4d18ee4fe8e72c3ff7d74c5475243f662de552c67324b9f6546ea",
+    "search_r1/baselines/policy_safety_runtime.py": "13ef4c832335b4abda4caa5c15c0fe345275558f97c60ca9dfa52ead74b14208",
+    "search_r1/baselines/rollout.py": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "search_r1/baselines/tree_behavior_mu.py": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+    "search_r1/baselines/tree_fresh200.py": "b97bd761679b822935696a219100efa4847d2b4466e588c4bd1258f2d216b53c",
+    "search_r1/baselines/tree_guard_continue.py": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "search_r1/baselines/tree_partial_state.py": "8e3e046c4febe7cbe841b92ca633a2e09c85ed3953ed98b9603ab6993b86ace8",
+    "search_r1/baselines/tree_raw_tokens.py": "22fa7b92e9aa297c87e05b03cea51c31a26d0e2ad7104b226ab61e325d140380",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+    "verl/trainer/config/ppo_tree_fresh200.yaml": "b7d68e3bce6247be1424965d6bcfe7a3e4723ca1428fedcd6847c3d384649d75",
+    "verl/trainer/ppo/ray_trainer.py": "55208794e8dfc14d9f08c5a45b8886b4d58889b5048daec8acd8b177ad9703f2",
+    "verl/workers/actor/dp_actor.py": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+    "verl/workers/fsdp_workers.py": "2163b98f5e51a0f3e5e66eaf3bd9e69bdf01096f1e6f64d4e4c40895bc9399e7"
+  },
+  "source_interface_count": 15,
+  "source_owner_verification_completed": false,
+  "status": "FRESH200_GUARD_CONTINUE_SOURCE_FROZEN_CPU_PENDING",
+  "target_old_policy_kl": 0.2,
+  "training_release": false
+}

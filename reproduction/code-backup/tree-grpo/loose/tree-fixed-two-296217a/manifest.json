@@ -1,0 +1,21 @@
+{
+  "code_commit": "296217a4b676a26a92fc729f5d9882b785dbfa96",
+  "candidate_manifest_sha256": "f1d34d7fec865f2c0ccb3c572b3cd17a896c295ca9fcd702c52070b63b01285e",
+  "files": {
+    "supervisor.py": "4747cb7eda36bee4eee7654ccec558084d96c24f0fa27eb7dd2e0a9973b5cd26",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "gpu-kl-proof.py": "cdd4b655c8edff16b3dea2167ba489f1d92795c8a19ec812fc2e9a5a54777ce6",
+    "tree-native-numeric-3063-first-status.txt": "f2c5a87a08cefd6e14305e0032079a462b502795f84c4e68ff3f50d7b6c23491",
+    "NATIVE3063_ACTUAL_RECEIPT.json": "bbde9887931e5d8e09bdaf554459a1c86712b92ada141fc0543e51a075e18675",
+    "tree-native-numeric-3063-bundle.json": "e99f2f85a7d76209fe2ba856eea21ae46e497cdcd0cafd5a53435af5c14a2a74"
+  },
+  "external_helpers": {
+    "tree_shared_owned_runtime_fixed.py": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+    "resource_guard_identity.py": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+    "probe_tree_shared_retrieval.py": "335a3410bdc19fac01d5d29aa7eea3832c031fae5093f1f9f2d65f76374157b5",
+    "validation_cost_entry.py": "9d36c4df859ae152975515ae105b1ad2df10bae68064265d09cdb5fcdcc68fe8",
+    "validation_cost_hooks.py": "63fafc8555d23e78c474e311dec96526eaf1a9e8bb5b57fc7599e5fcdc323e8c",
+    "run_tree_with_validation_cost_shared.sh": "d867a3205cfb03e03fad59a1110bab908785dfa8e02f7b323012f5b52a24b74d"
+  },
+  "retriever_script_sha256": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459"
+}

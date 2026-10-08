@@ -1,0 +1,32 @@
+{
+  "actual_assets_transferred": false,
+  "actual_gpu_accepted": false,
+  "actual_slurm_submitted": false,
+  "archive": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006/CODE_PACKAGE.tar.gz",
+  "archive_sha256": "655902005446c4a647ff0189a287826084a6663f8cbc95e44ad79e7249c25794",
+  "code_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "context_byte_audit": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006/SOURCE_BYTE_AUDIT.json",
+    "sha256": "8854637daf4b22b442c341f02896ecc5a385e8079ad63b44216817350636c649"
+  },
+  "context_free_review": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006/SOURCE_CONTEXT_FREE_RECEIPT.json",
+    "sha256": "ce3ef87928c463db6f47518ca547492b32204c540d709d13c98fef3646489f6d"
+  },
+  "manifest_sha256": "7059407f3fab68ed9c68dfb50bae14f34ce69601f85746b171fc3b978153b2da",
+  "max_uncompressed_bytes": 33554432,
+  "previous_terminal_evidence": {
+    "3314": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006/RETAINED_TERMINAL3314_PROOF_V2.json",
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    }
+  },
+  "scope": "Only new same-h1009 code/CPU config preparation. Existing official5120 report reused; no second5120, GPU, Slurm, READY or training release.",
+  "source_interface_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006/SOURCE_INTERFACE_RECEIPT.json",
+    "sha256": "4e2cb43db9c572c01f9e737ca6c4e475250f67727cd523b79cb8a34375f3d403"
+  },
+  "stage": "fresh_mu_calibration",
+  "status": "EXACT_BYTE_CPU_PREPARATION_INPUTS_PENDING_EXECUTION_BINDING_REVIEW",
+  "target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-53082e-v12"
+}

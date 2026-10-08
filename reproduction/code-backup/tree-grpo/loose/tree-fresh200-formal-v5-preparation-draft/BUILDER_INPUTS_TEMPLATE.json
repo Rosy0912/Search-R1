@@ -1,0 +1,358 @@
+{
+  "actual_barriers": {
+    "actual_zero_accepted": false,
+    "bootstrap_thresholds_accepted": false,
+    "exact_formal_package_review_accepted": false,
+    "final_effect_accepted": false,
+    "formal_actual_cpu_preparation_accepted": false,
+    "formal_v5_source_cpu_review_accepted": true,
+    "long_training_accepted": false,
+    "same_instance_first5_accepted": false,
+    "short_threshold_assessment_accepted": false
+  },
+  "assets": {
+    "common_data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "common_data_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data",
+    "expected_rows": {
+      "final": 51713,
+      "train": 169028,
+      "validation": 512
+    },
+    "model_identity": {
+      "files": {
+        "LICENSE": "ef52482bb785733093dc9a2e8edd8e764c77d12d8e9d8f10a80c9b547d32d0f9",
+        "PUBLIC-SOURCE-API.json": "2182e6ac33d1c7f1116d1c85ea0531f1e14565bcdbb14668ddc69e07a37302f3",
+        "README.md": "2c74693e6ae36ba878124d465195b4dad0f71035b54ece1c9fd1553cc497ef8c",
+        "VERIFIED-MODEL-MANIFEST.json": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44",
+        "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+        "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+        "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+        "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+        "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+        "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+        "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "sha256": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+    },
+    "official_model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+  },
+  "bootstrap_thresholds": null,
+  "calibration_ready_schema": {
+    "calibration_profile": "fresh_base_zero_v1",
+    "initialized_global_steps": 0,
+    "new_completed_outer": 0,
+    "observed_outer": 1,
+    "parent_completed_outer": 0,
+    "sampler_cursor_after_observation": 512,
+    "sampler_cursor_before_outer": 0,
+    "status": "FRESH_BEHAVIOR_MU_CALIBRATION_OBSERVED_ZERO_WRITES",
+    "worker_optimizer_field": "restored_optimizer_steps",
+    "worker_post_state": "fresh_post_monitor_state"
+  },
+  "configuration_spec_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/CONFIGURATION_SPEC.json",
+  "configuration_spec_sha256": "ad6599be178c75b199b072e128d641977334c03c5e1f39d59043c68bcde5b6cb",
+  "counter_instruction_provenance": {
+    "guard_continue_goal_updated_at": 1791283459,
+    "manual_count_confirmation_original_time": null,
+    "never_infer_actual_writes_from_opportunity_count": true,
+    "observed_at": "2026-10-06 10:50:40 UTC",
+    "original_message_timestamp": null,
+    "requirement_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-fresh200/USER_GUARD_ACCOUNTING_20261006.json",
+    "requirement_sha256": "c9e92c3f45792ffeadb000974e4bb9ee7a5cf3a6a31a194f99d95ea140317862",
+    "source": "Authoritative root-saved actual user confirmation; original message timestamp unknown"
+  },
+  "current_zero_observation": {
+    "actual_calibration_ready": null,
+    "actual_independent_acceptance": null,
+    "actual_zero_accepted": false,
+    "failure_diagnosis": null,
+    "job_id": 3314,
+    "latest_parent_reported_state": "FAILED",
+    "no_old3296_substitution": true,
+    "provenance": "Parent message during this local task; no remote query by this agent",
+    "repair_outcome": null
+  },
+  "dispatch": {
+    "calibration_wall_hours": 3,
+    "cluster_name": "wuhan-h100",
+    "cpus_per_task": 32,
+    "exclusive": true,
+    "gpus": 8,
+    "independent_release": null,
+    "intent_filename_pattern": "TREE_FRESH200_TRAIN_ONCE-[A-Za-z0-9_-]+.json",
+    "memory_gib": 256,
+    "no_requeue": true,
+    "nodes": [
+      "h100-9"
+    ],
+    "once_intent": null,
+    "renderer_source": "render_dispatch.py",
+    "runtime_run_prefix": "tree-fresh200-train",
+    "submitter": "reviewed submit_once.py, invoked by root only after actual release",
+    "submitter_source": "submit_once.py",
+    "train_wall_hours": 72,
+    "wall_authority": {
+      "actual_duration_not_inferred": true,
+      "chosen_formal_hours": 72,
+      "slurm_submitted": false,
+      "source": "Root same h100-9 sinfo actual output h100-9|gpu*|up|infinite|gpu:h100:8; session71284 chunk48ffb7"
+    }
+  },
+  "existing_source_context_free_evidence": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-v5-02b1-context-free-review/SOURCE_CONTEXT_FREE_FORMAL_REVIEW.json",
+    "scope": "Actual independent FormalV5 SOURCE/CPU compact acceptance only; no zero/bootstrap/first5/production/dispatch.",
+    "sha256": "22b3b65ac908ebed169008f6f3a07f7f9fa608780b53e75a47ec96676f631f81"
+  },
+  "external_files": {
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/repo/reproduction/h20/retriever_local.py": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/check_real_checkpoint.py": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/probe_tree_shared_retrieval.py": "335a3410bdc19fac01d5d29aa7eea3832c031fae5093f1f9f2d65f76374157b5",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/resource_guard_identity.py": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/tree_shared_owned_runtime_fixed.py": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0"
+  },
+  "final_review": {
+    "fork_turns": "none",
+    "inherit_old_review_as_dispatch_permission": false,
+    "status": "FORMAL_V5_SOURCE_CPU_ONLY_ACCEPTED_22B3_FUTURE_EXACT_PACKAGE_REVIEW_PENDING"
+  },
+  "historical_raw_cpu_preflight_inputs": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-02b1-v11/actual-cpu/HISTORICAL_RAW_CPU_PREFLIGHT.json",
+    "scope": "Completed actual V10 historical call5 action-local official-tokenizer5120 report, conditionally reused because source02b1/rawhelper15b696/officialtokenizerc038 identical. Not FormalV5 config/currentnative24/fullTree/GPU acceptance; no second complete replay.",
+    "sha256": "2cc2366e9e3473276e4386820fa28249db9e1bb28875ca5298889c48d09c0761"
+  },
+  "local_preparation": {
+    "actual_gpu_executed": false,
+    "actual_local_builder_executed": false,
+    "actual_ready": false,
+    "actual_remote_executed": false,
+    "builder_requires_real_zero_and_bootstrap_inputs": true,
+    "new_official5120_execution_planned": false,
+    "prospective_candidate": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-train-02b1-v5",
+    "prospective_paths_existence_checked": false,
+    "prospective_stage": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-formal-v5-02b1-20261006",
+    "scope": "STATIC_TEMPLATE_ONLY_NO_BUILDER_STAGE_PREPARE_RELEASE_SUBMIT_EXECUTION",
+    "training_release": false
+  },
+  "package_context_free_review": null,
+  "package_context_free_review_pin_note": "Separate final release path/SHA at runtime, excluded from manifest to avoid digest self-reference",
+  "production_environment_forbidden": [
+    "TREE_FRESH_INITIALIZATION_ONLY",
+    "TREE_PPO_CALIBRATION_ONLY"
+  ],
+  "production_inputs": {
+    "actual_calibration_acceptance": null,
+    "actual_calibration_ready": null,
+    "source_context_free_review": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-formal-v5-02b1-20261006/SOURCE_CONTEXT_FREE_FORMAL_REVIEW.json",
+      "sha256": "22b3b65ac908ebed169008f6f3a07f7f9fa608780b53e75a47ec96676f631f81"
+    },
+    "threshold_acceptance": null
+  },
+  "production_metadata": {
+    "actual_calibration_acceptance": null,
+    "actual_calibration_ready": null,
+    "source_context_free_review": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-v5-02b1-context-free-review/SOURCE_CONTEXT_FREE_FORMAL_REVIEW.json",
+      "sha256": "22b3b65ac908ebed169008f6f3a07f7f9fa608780b53e75a47ec96676f631f81"
+    },
+    "threshold_acceptance": null
+  },
+  "production_threshold_acceptance": null,
+  "production_thresholds": {
+    "initial_actor_repeat_max_abs_delta": null,
+    "negative_tail_limit": null,
+    "target_old_policy_kl": 0.2
+  },
+  "protected_processes": {
+    "1680782": "1502352181",
+    "1680783": "1502352181",
+    "1680784": "1502352181",
+    "1680785": "1502352181",
+    "1696443": "1502398762",
+    "1696444": "1502398762",
+    "1696445": "1502398762",
+    "1696446": "1502398762"
+  },
+  "protocol": {
+    "actor_micro_global": 16,
+    "actor_micro_local": 2,
+    "all_skip_zero_writes_credit": false,
+    "complete_outer_limit": 200,
+    "complete_outer_requires_all20_opportunities_processed": true,
+    "completed_outer_requires": "All20 opportunities handled, >=1 actual success, no premature abandonment",
+    "development_every_outers": 5,
+    "first5_restart_forbidden": true,
+    "leaf_quotas": [
+      3,
+      2
+    ],
+    "leaves_per_question": 5,
+    "local_rows": 320,
+    "mini_global": 128,
+    "mini_local": 16,
+    "minimum_successful_optimizer_writes_per_complete_outer": 1,
+    "name": "tree_fresh200_five_leaf_v1",
+    "optimizer_opportunities_per_rank_per_complete_outer": 20,
+    "optimizer_opportunities_per_rank_per_processed_batch": 20,
+    "partial_actual_writes_not_rollback": true,
+    "partial_actual_writes_retained": true,
+    "questions_per_outer": 512,
+    "same_instance_acceptance_outer": 5,
+    "same_instance_first5_then_continue6to200": true,
+    "sampler_cursor_formula": "All consumed attempts;330 full512 batches/epoch;epoch=(attempts-1)//330,cursor=((attempts-1)%330+1)*512",
+    "save_outers": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "scoring_micro_global": 32,
+    "scoring_micro_local": 4,
+    "successful_optimizer_writes_counted_separately": true,
+    "total_leaves": 2560,
+    "warmup_complete_outers": 57,
+    "world_size": 8,
+    "zero_write_or_abandoned_batch_advances_scheduler": false,
+    "zero_write_or_abandoned_batch_credits_outer": false
+  },
+  "reference_receipts": {
+    "ACTUAL3262_RECEIPT.json": "104086becfaf0177ab8d030fc0b13d1a166d134050fd995ecca6dfde7c0b5959",
+    "scope": "Historical synthetic/native replay proofs only; no fresh model/optimizer acceptance and no repeat GPU invocation",
+    "source_package3268_manifest_sha256": "84e3e18682afa880f1053a0025eda595fca332d550ec1f6905bc1334049b5a48"
+  },
+  "required_owner_inputs": [
+    "clean full new source commit and all file hashes",
+    "fresh initialization/calibration actual RPC schema and direct before/after state proof",
+    "complete resolved config SHA + fixed57outer scheduler contract",
+    "official startup/source/data asset and headers identity",
+    "actual same-node tokenizer historical native-request preflight receipt",
+    "single source/CPU independent dispatch release",
+    "explicit user KL0.2 and accepted remaining production thresholds before any train stage",
+    "fixed new per-stage once intent; old intent forbidden"
+  ],
+  "review_inputs": {
+    "context_byte_audit": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-v5-02b1-context-free-review/BYTE_HASHES.json",
+      "sha256": "3e3257d3017ce7125be87dd8b7a7966733d0e6ed0b330bde972f00b1443f193f"
+    },
+    "context_free_review": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-formal-v5-02b1-context-free-review/SOURCE_CONTEXT_FREE_FORMAL_REVIEW.json",
+      "sha256": "22b3b65ac908ebed169008f6f3a07f7f9fa608780b53e75a47ec96676f631f81"
+    },
+    "source_interface_receipt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/SOURCE_INTERFACE_COMPATIBLE_RECEIPT.json",
+      "sha256": "455fc4519b4baa36b8faf73946f993c87a5f34ed2c8d36f608b24c2c03d3a8bb"
+    }
+  },
+  "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
+  "runtime_entries": {
+    "run_tree.sh": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/run_tree.sh",
+      "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+    },
+    "sitecustomize.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/sitecustomize.py",
+      "sha256": "cbf47d937a0286fedbf3e00ab51244d444523ed3b1b1314282e0151dc517bcf6"
+    },
+    "validation_cost_entry.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/validation_cost_entry.py",
+      "sha256": "fc1763162fcb207a3c5e43b126d1080b016f85cf61aa9ed4de1ffb37458f30b7"
+    },
+    "validation_cost_hooks_instruct300.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/validation_cost_hooks_instruct300.py",
+      "sha256": "6646356027f7a1a4855b909147eeadd408d66ea03aa17b86a24ff36365e7c3b7"
+    }
+  },
+  "schema_version": 1,
+  "source": {
+    "code_commit": "02b1ea2688ff3fb032ee6699003a7e09d651f166",
+    "config_name": "ppo_tree_fresh200",
+    "counter_interface_current_scope": "Clean02b1/19source closure plus immutable FormalV5 33wrapper SOURCE/CPU-only accepted. Latest20 opportunities+>=1actualwrite count unchanged; no actualzero/bootstrap/first5/dispatch acceptance.",
+    "counter_module_sha256": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "needs_actual_fresh_api": true,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-behavior-mu-utf8-v2",
+    "pending_actual_guard_continue_interface": false,
+    "required_additional_interface": "search_r1/baselines/tree_guard_continue.py",
+    "required_source_interface_keys": 15,
+    "source_interface_manifest": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/SOURCE_INTERFACE_COMPATIBLE_RECEIPT.json",
+      "sha256": "455fc4519b4baa36b8faf73946f993c87a5f34ed2c8d36f608b24c2c03d3a8bb"
+    },
+    "source_interface_receipt": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/SOURCE_INTERFACE_COMPATIBLE_RECEIPT.json",
+      "sha256": "455fc4519b4baa36b8faf73946f993c87a5f34ed2c8d36f608b24c2c03d3a8bb"
+    },
+    "source_interface_receipt_sha256": "455fc4519b4baa36b8faf73946f993c87a5f34ed2c8d36f608b24c2c03d3a8bb"
+  },
+  "stages": [
+    "fresh_mu_train200"
+  ],
+  "startup_evidence_schema": {
+    "calibration_profile": "fresh_base_zero_v1",
+    "initialized_global_steps": 0,
+    "parent_completed_step": 0,
+    "parent_cursor": 0,
+    "path": "output/fresh-initialization.json",
+    "worker_fields": [
+      "rank",
+      "world_size",
+      "training_protocol",
+      "calibration_profile",
+      "configured_model_path",
+      "expected_model_path",
+      "optimizer_state_entries",
+      "optimizer_step_values",
+      "scheduler_step",
+      "optimizer_committed",
+      "scheduler_advanced",
+      "checkpoint_recovery_environment_absent",
+      "complete_model_parameter_bytes_verified",
+      "code_commit",
+      "config_sha256",
+      "data_identity",
+      "model_identity",
+      "job_id",
+      "run_id"
+    ],
+    "worker_schema_status": "ALIGNED_TO_ACTUAL_INSPECT_FRESH_INITIALIZATION_RPC"
+  },
+  "status": "LOCAL_FORMAL_V5_STATIC_INPUT_TEMPLATE_PREPARATION_NOT_RELEASED",
+  "target_kl_authority": {
+    "kind": "explicit_latest_human_goal_edit",
+    "original_instruction_time": "unix:1791282960",
+    "scope": "Latest parent-delivered user goal value; original timestamp/source supplied by root, never guessed",
+    "source": "Latest explicit human active-goal edit reported by root, goal_updated_at=1791282960",
+    "value": 0.2
+  },
+  "threshold_stage_protocol": {
+    "actual_monitor_guard_count_bindings_required": true,
+    "actual_short_training_acceptance": null,
+    "bootstrap_status": "INDEPENDENT_FRESH200_MU_BOOTSTRAP_THRESHOLDS_ACCEPTED",
+    "continue_range": [
+      6,
+      200
+    ],
+    "first_credited_outers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "fullrun_accepted_before_short_training": false,
+    "live_assessment_status": "INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED",
+    "same_values_required": true
+  },
+  "trial_thresholds": null,
+  "wrapper_inventory": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/FILE_HASHES_V5.json",
+    "sha256": "5299a43d1f1615486fe3296ba04244ba03d553730c4f547b890403e6a7de2c8b"
+  },
+  "wrapper_owner_receipt": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v5/SOURCE_CPU_RECEIPT_V5.json",
+    "sha256": "58ce3e6537aa4b07bc3c309606b09cfd7c7f3d4d2d577b988e0b82029ec95b44"
+  }
+}

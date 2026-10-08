@@ -1,0 +1,21 @@
+OBSERVATION={'observed_at': '2026-10-07T08:44:23.403013+00:00', 'observation_sha256': '3f3103f3694d89e3121f6b92ae6fa01b29682628139f17329c87004c86952f3b', 'returncode': 0, 'stderr': '', 'fields': {'BatchHost': 'h100-9', 'CPUs/Task': '32', 'EndTime': '2026-10-07T16:44:13', 'ExitCode': '1:0', 'JobId': '3327', 'JobState': 'FAILED', 'MinMemoryNode': '256G', 'NodeList': 'h100-9', 'NumCPUs': '192', 'NumNodes': '1', 'NumTasks': '1', 'Reason': 'NonZeroExitCode', 'Requeue': '0', 'RunTime': '00:02:02', 'StartTime': '2026-10-07T16:42:11', 'SubmitTime': '2026-10-07T16:42:09', 'TimeLimit': '7-00:00:00'}, 'raw_stdout_retained': True, 'stdout': 'JobId=3327 JobName=tree-fresh200-train UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898739 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:02:02 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-07T16:42:09 EligibleTime=2026-10-07T16:42:09 AccrueTime=2026-10-07T16:42:09 StartTime=2026-10-07T16:42:11 EndTime=2026-10-07T16:44:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-07T16:42:11 Scheduler=Main Partition=gpu AllocNode:Sid=h100-9:1712506 ReqNodeList=h100-9 ExcNodeList=(null) NodeList=h100-9 BatchHost=h100-9 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=256G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=(null) WorkDir=/root StdErr=/root/slurm-3327.out StdIn=/dev/null StdOut=/root/slurm-3327.out Power= TresPerNode=gres:gpu:8 \n', 'raw_stdout_evidence_sha256': '2e501dd0cb2b14c117fe80de9b3b377821dd9558bc1fd847040fdcd42ef73a41'}
+import json,hashlib,subprocess,datetime,socket
+from pathlib import Path
+ROOT=Path('/dataset/shaoshitong/search-r1-rl/tree-grpo');RUN=ROOT/'runs/tree-fresh200-train-3327'
+assert socket.gethostname().split('.')[0]=='h100-9'
+def desc(path,expected=None):
+ raw=path.read_bytes();sha=hashlib.sha256(raw).hexdigest()
+ if expected:assert sha==expected,(str(path),sha)
+ return dict(path=str(path),sha256=sha),json.loads(raw)
+result,r=desc(RUN/'run-result.json','7d197727d8f4e58d2c9cd90752b66ce5881f61b3e6c96a3819c8e14f5bb2bd08')
+cost,c=desc(RUN/'cost.json','99d717308ba6ac79c76348fab9aed5d181ce5ee1570b641f304c6ae930675d2d')
+journal,j=desc(ROOT/'instruct300/SUBMISSION_ONCE-fresh200-direct-4a65e9a-v5.json')
+assert r['code_commit']=='4a65e9a3ab87e84e1e9dd283b664cdef3a224c8a' and str(r['job_id'])=='3327'
+assert r['cleanup_residual']=={} and r['original_eight_pid_start_times_preserved'] is True
+assert j['status']=='SUBMITTED' and j['job_id']==3327 and j['manifest_sha256']=='cda27d64b7114417f64cf80f23772b288cdbc7ec9ef2ce9e7c86338e08dbf1c9'
+q=subprocess.run(['squeue','--local','-h','-w','h100-9','-o','%i|%j|%T|%b'],text=True,capture_output=True,timeout=20);assert q.returncode==0 and not q.stderr
+assert not any(line.split('|')[1].startswith('tree-') for line in q.stdout.splitlines() if line.strip())
+proof=dict(status='OWN_DIRECT_TRAIN_FAILED_WITH_CLEANUP',job_id=3327,code_commit=r['code_commit'],scheduler_state='FAILED',scheduler_exit_code='1:0',observed_at=OBSERVATION['observed_at'],positive_scheduler_observation=OBSERVATION,cleanup_residual={},original_eight_pid_start_times_preserved=True,run_result=result,cost=cost,once_journal=journal,phase='BEFORE_RAY_ACTOR_STARTUP',fixed_failure_message='Identity-only wrapper is restricted to this direct V4 package',native_optimizer_committed=r.get('optimizer_committed'),native_scheduler_advanced=r.get('scheduler_advanced'),native_null_counters_not_converted_to_zero=True,empty_own_queue_observation=dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),returncode=q.returncode,stderr=q.stderr,stdout=q.stdout))
+raw=(json.dumps(proof,indent=2,ensure_ascii=False,allow_nan=False)+'\n').encode();path=RUN/'direct-training-predecessor-proof.json';assert not path.exists()
+with path.open('xb') as stream:stream.write(raw)
+print(json.dumps(dict(proof_path=str(path),proof_sha256=hashlib.sha256(raw).hexdigest(),once_journal_sha256=journal['sha256'],proof=proof),allow_nan=False))

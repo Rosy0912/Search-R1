@@ -1,0 +1,23 @@
+defaults:
+  - ppo_tree_instruct300
+  - _self_
+
+data:
+  train_batch_size: 640
+
+actor_rollout_ref:
+  ref:
+    model_path: ${oc.env:TREE_INSTRUCT_MODEL}
+  actor:
+    ppo_mini_batch_size: 384
+    ppo_micro_batch_size: 16
+    recovery_max_grad_norm: 1000.0
+
+trainer:
+  acceptance_gate_enabled: true
+  acceptance_step: 105
+  test_freq: 10
+  save_freq: 10
+  recovery_min_f1: 0.34242827316810346
+  recovery_min_train_reward: 0.1
+  experiment_name: tree-recovery300

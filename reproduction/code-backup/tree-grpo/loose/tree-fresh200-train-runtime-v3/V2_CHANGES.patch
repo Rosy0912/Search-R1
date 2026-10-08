@@ -1,0 +1,2021 @@
+--- work/tree-fresh200-train-runtime-draft/CONFIGURATION_SPEC.json
++++ work/tree-fresh200-train-runtime-v2/CONFIGURATION_SPEC.json
+@@ -1,5 +1,5 @@
+ {
+-  "status": "LOCAL_PRODUCTION_CONFIG_NUMERIC_PROTOCOL_FIXED_COUNTER_SOURCE_PENDING",
++  "status": "LOCAL_V2_NUMERIC_PROTOCOL_FIXED_BOOTSTRAP_THEN_SAME_LIVE_THRESHOLD_ASSESSMENT_PENDING",
+   "config_name": "ppo_tree_fresh200",
+   "profile": "tree_fresh200_five_leaf_v1",
+   "configuration_overrides": [
+@@ -219,5 +219,13 @@
+     "original_instruction_time": "unix:1791282960",
+     "source": "Latest explicit human active-goal edit reported by root, goal_updated_at=1791282960",
+     "scope": "Latest parent-delivered user goal value; original timestamp/source supplied by root, never guessed"
+-  }
++  },
++  "bootstrap_thresholds": {
++    "target_old_policy_kl": 0.2,
++    "negative_tail_limit": null,
++    "initial_actor_repeat_max_abs_delta": null
++  },
++  "fullrun_thresholds_accepted": false,
++  "bootstrap_limit_credited_outers": 5,
++  "same_instance_first5_threshold_assessment_required": true
+ }
+--- work/tree-fresh200-train-runtime-draft/INPUTS.schema.json
++++ work/tree-fresh200-train-runtime-v2/INPUTS.schema.json
+@@ -1,5 +1,5 @@
+ {
+-  "status": "LOCAL_SOURCE_FROZEN_TRAIN200_DRAFT_PENDING_ACTUAL_CALIBRATION_AND_REVIEWS",
++  "status": "LOCAL_PRODUCTION_V2_PENDING_ACTUAL_ZERO_BOOTSTRAP_AND_NONE_REVIEW",
+   "schema_version": 1,
+   "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo",
+   "source": {
+@@ -131,7 +131,7 @@
+   "dispatch": {
+     "once_intent": null,
+     "independent_release": null,
+-    "submitter": "root only",
++    "submitter": "reviewed submit_once.py, invoked by root only after actual release",
+     "runtime_run_prefix": "tree-fresh200-train",
+     "nodes": [
+       "h100-9"
+@@ -148,7 +148,11 @@
+       "chosen_formal_hours": 72,
+       "actual_duration_not_inferred": true,
+       "slurm_submitted": false
+-    }
++    },
++    "cluster_name": "wuhan-h100",
++    "intent_filename_pattern": "TREE_FRESH200_TRAIN_ONCE-[A-Za-z0-9_-]+.json",
++    "renderer_source": "render_dispatch.py",
++    "submitter_source": "submit_once.py"
+   },
+   "historical_raw_cpu_preflight_inputs": null,
+   "startup_evidence_schema": {
+@@ -212,7 +216,7 @@
+     "TREE_FRESH_INITIALIZATION_ONLY",
+     "TREE_PPO_CALIBRATION_ONLY"
+   ],
+-  "configuration_spec_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-draft/CONFIGURATION_SPEC.json",
++  "configuration_spec_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/CONFIGURATION_SPEC.json",
+   "package_context_free_review": null,
+   "package_context_free_review_pin_note": "Separate final release path/SHA at runtime, excluded from manifest to avoid digest self-reference",
+   "target_kl_authority": {
+@@ -240,20 +244,53 @@
+   },
+   "runtime_entries": {
+     "run_tree.sh": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-draft/run_tree.sh",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/run_tree.sh",
+       "sha256": "72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b"
+     },
+     "validation_cost_entry.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-draft/validation_cost_entry.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/validation_cost_entry.py",
+       "sha256": "fc1763162fcb207a3c5e43b126d1080b016f85cf61aa9ed4de1ffb37458f30b7"
+     },
+     "validation_cost_hooks_instruct300.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-draft/validation_cost_hooks_instruct300.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/validation_cost_hooks_instruct300.py",
+       "sha256": "6646356027f7a1a4855b909147eeadd408d66ea03aa17b86a24ff36365e7c3b7"
+     },
+     "sitecustomize.py": {
+-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-draft/sitecustomize.py",
++      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-train-runtime-v2/sitecustomize.py",
+       "sha256": "9f5a0855e3aa1029bfcfab905ae91e553716ba26ee87423b3e2d53b389783b35"
+     }
++  },
++  "threshold_stage_protocol": {
++    "bootstrap_status": "INDEPENDENT_FRESH200_MU_BOOTSTRAP_THRESHOLDS_ACCEPTED",
++    "first_credited_outers": [
++      1,
++      2,
++      3,
++      4,
++      5
++    ],
++    "fullrun_accepted_before_short_training": false,
++    "live_assessment_status": "INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED",
++    "continue_range": [
++      6,
++      200
++    ],
++    "same_values_required": true,
++    "actual_monitor_guard_count_bindings_required": true,
++    "actual_short_training_acceptance": null
++  },
++  "existing_source_context_free_evidence": {
++    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-f7-v8-v6-context-free-review/RECEIPT.json",
++    "sha256": "6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44",
++    "scope": "f7 source/CPU only; not V2/zero/GPU/first5/threshold/fullrun release"
++  },
++  "actual_barriers": {
++    "v2_independent_review_accepted": false,
++    "actual_zero_accepted": false,
++    "bootstrap_thresholds_accepted": false,
++    "same_instance_first5_accepted": false,
++    "short_threshold_assessment_accepted": false,
++    "long_training_accepted": false,
++    "final_effect_accepted": false
+   }
+ }
+--- work/tree-fresh200-train-runtime-draft/PLAN.md
++++ work/tree-fresh200-train-runtime-v2/PLAN.md
+@@ -2,7 +2,7 @@
+ 
+ This is a local source/CPU draft. It has not been deployed, submitted, run on GPU or released. Training/source numerical acceptance, original actor/vLLM probability-gate acceptance and GPU capacity remain unproven. No official weights, index, corpus or tensor asset was loaded or moved by this task.
+ 
+-The candidate targets official `aa8e725` actor/reference base on h100-9, fixed train169028/dev512/final51713 and source `f7e762af365a2beb9429e4cb3b6d5f0d808d4d7d`. It does not resume healthy110, Adam, scheduler or a historical dataloader. Source-owner opportunity APIs and its132-test CPU verification are frozen (owner receipt SHA `bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017`, owner scope only); their independent source acceptance and actual production observations are still missing. Builder/launch reject missing/null review inputs rather than treating the local draft as ready.
++The candidate targets official `aa8e725` actor/reference base on h100-9, fixed train169028/dev512/final51713 and source `f7e762af365a2beb9429e4cb3b6d5f0d808d4d7d`. It does not resume healthy110, Adam, scheduler or a historical dataloader. Source-owner opportunity APIs and its132-test CPU verification are frozen (owner receipt SHA `bb3e9b7f4e5cd05b2960532971d39034b9206dc479c86e262b7dd9524b0a4017`, owner scope only); f7 now has actual independent source/CPU receipt 6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44. V2 package acceptance and actual production observations are still missing. Builder/launch reject missing/null review inputs rather than treating the local draft as ready.
+ 
+ ## Protocol and actual counts
+ 
+@@ -14,7 +14,7 @@
+ 
+ ## Strong inputs and same-node launch
+ 
+-`build_package_draft.py` consumes a clean exact source commit, complete reviewed wrapper inventory, same-node asset identities and four byte-bound actual JSON inputs: calibration ready, independent calibration acceptance, production threshold acceptance and none-context source acceptance. The final whole-package none-context release is separately pinned at launch so manifest/release hashes do not reference themselves. Missing observations, null thresholds, historical4ff source or trial acceptance refuse materialization. New source-interface inventory must contain fifteen keys, including `tree_guard_continue.py`, with affected controller/training_state/trajectory/tree-rank closure hashes. Administrative review writers remain trusted; the source's original approved-file API is not a cryptographic authorizer.
++`build_package_draft.py` consumes a clean exact source commit, complete reviewed wrapper inventory, same-node asset identities and four byte-bound actual JSON inputs: calibration ready, independent calibration acceptance, first-five bootstrap threshold acceptance and none-context source acceptance. The final whole-package none-context release is separately pinned at launch so manifest/release hashes do not reference themselves. Missing observations, null thresholds, historical4ff source or trial acceptance refuse materialization. New source-interface inventory must contain fifteen keys, including `tree_guard_continue.py`, with affected controller/training_state/trajectory/tree-rank closure hashes. Administrative review writers remain trusted; the source's original approved-file API is not a cryptographic authorizer.
+ 
+ All existing code/doc wrapper files are copied and SHA verified, including tests and owner receipt. Four actual runtime entries must match the reviewed inventory byte for byte. Git source selection only permits ordinary code and metadata extensions and a narrow extensionless allowlist. `.index`, `.jsonl(.gz)`, tensors, weights and other assets are excluded with per-path hashes/counts; this is not a full repository asset copy.
+ 
+@@ -26,7 +26,7 @@
+ 
+ Production forbids both zero-only flags and every recovery flag. Official fresh startup is verified through real `output/fresh-initialization.json` and eight actual `inspect_fresh_initialization(expected_model_path)` receipts: Adam empty, scheduler0, driver/cursor0, configured/expected official model paths and source/config/data/model/job/run identities. Complete parameter bytes are not newly proved by this startup RPC. Checkpoints resolve to the own run's `checkpoints` directory through the actual resolved config SHA.
+ 
+-Five credited outers save real HF and same-world state and evaluate the same dev512 before the trainer's live gate. The supervisor runs, serially in its own allocation, actual full HF/tokenizer/delta CPU checker, saved eight-rank state checker and real DataProto μ bindings checker; it does not start another training instance. Missing or failed checks cannot publish approval. A genuine external none-context step5 review binds actual saved state/HF, direct attempts/rank counts and dev512 proof. The wrapper atomically copies only that reviewer's original bytes into the trainer's existing approved.json API. No generated PASS is accepted. The same live instance then continues6..200. The original released.json literal contains legacy `6_TO_300` wording; actual next6 and budget200 are checked and the legacy string is recorded honestly.
++Five credited outers save real HF and same-world state and evaluate the same dev512 before the trainer's live gate. The supervisor runs, serially in its own allocation, actual full HF/tokenizer/delta CPU checker, saved eight-rank state checker and real DataProto μ bindings checker and retained partial raw physical/logical checker; it does not start another training instance. Missing or failed checks cannot publish approval. A genuine external none-context step5 review binds actual saved state/HF, direct attempts/rank counts and dev512 proof. The wrapper atomically copies only that reviewer's original bytes into the trainer's existing approved.json API. No generated PASS is accepted. The same live instance then continues6..200. The original released.json literal contains legacy `6_TO_300` wording; actual next6 and budget200 are checked and the legacy string is recorded honestly.
+ 
+ Saves5/50/100/150/200, initial512 and dev512 everyfive credited outers, plus complete seven-dataset final51713 remain fixed. `attempt_accounting.py` verifies actual ordered attempt decisions and physical eight-rank file SHAs, twenty local mini ledgers, write/skip/scheduler boundaries and complete source/run context. Full checkpoint identity contains source-native guard accounting. CPU state verification compares serialized Adam steps with cumulative actual writes and scheduler with credited outers. Seeded sampler position derives from all consumed attempts:330 full batches per169028-row epoch; cursor never derives from credited count alone.
+ 
+@@ -40,4 +40,6 @@
+ 
+ Local tests use JSON/tempfiles and actual source function AST/JSON producer paths with narrowly declared CPU stand-ins. They verify refusal of missing/trial/changed receipts, actual producer→consumer variable writes/allskip and physical SHA, twenty-opportunity/brake rejection, attempt sampler cursor/epoch, atomic external approval, inventory/asset exclusion, serial checker CLI, real Adapter/padding, passive cost publication and unknown failure, and once-journal read-only behavior. They do not execute model/tokenizer/PT, NCCL/FSDP/Ray/Slurm or GPU. Original command/fixture failures and affected reruns are retained; reruns are not counted as additional tests.
+ 
+-Required before dispatch: actual zero calibration and tokenizer request preflight, accepted tail/repeat thresholds, source/interface and complete package none-context acceptance, official assets/headers revalidation, final resolved config, reviewed new once intent and fresh same-node queue/resource proofs. All currently absent inputs stay null. This candidate does not create any of those approvals.
++Required before dispatch: actual zero calibration and tokenizer request preflight, actual-zero-bound tail/repeat candidates for first5; same-instance first5 independent threshold acceptance is additionally mandatory before6..200, source/interface and complete package none-context acceptance, official assets/headers revalidation, final resolved config, reviewed new once intent and fresh same-node queue/resource proofs. All currently absent inputs stay null. This candidate does not create any of those approvals.
++
++V2 extends this plan with the exact staged threshold, cluster-qualified once/allocation and retained raw evidence contracts in V2_REPAIR.md. Original 24-byte freeze and rejected receipt remain unchanged. V2 is owner CPU-only, unreleased.
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/V2_REPAIR.md
+@@ -0,0 +1,33 @@
++# Production wrapper V2: source/CPU repair, unreleased
++
++Base V1 24-file inventory `192d4d7dbf04f938cc47c2171a05240a014bf676b195a09116af97fb2908e742` and its independent rejection `a0682eeebcef5a762b2c2fd5eeafe767d0e6d2c3013cd2520244a03406498507` remain immutable. V2 is an independent directory; source f7e, zero wrappers, assets and jobs are unchanged.
++
++## P01/P02 own scheduler identity
++
++`slurm_identity.py` queries only the default controller with controlled environment and `scontrol --local`, requires exactly `ClusterName=wuhan-h100` and no federation, and parses unique actual allocation tokens: numeric JobId, exact h100-9 NodeList/BatchHost, one node, exclusive 8GPU, task32CPU, memory256G, 72h, requeue0 and restart0. Actual allocated CPUs may exceed32 under exclusive reservation and are reported separately. A foreign runtime cluster declaration is refused. Launch and supervisor both verify this tuple; supervisor preserves raw configuration/federation/allocation, own run/manifest/review binding and names of removed routing variables.
++
++`submit_once.py` is now a concrete reviewed candidate, not an absent external implementation. It requires the whole-package first-five release, exact source/renderer pins and exact derived script bytes, rechecks local queue and cluster-qualified prior terminal accounting, takes an ordinary no-follow dispatch lock, and durably creates the new intent before its sole injected/default submission call. Foreign suffixes or unknown results preserve UNKNOWN and never retry; legacy journals missing cluster block. Initial and final journal file/directory fsync, atomic replacement and exact timeout-byte preservation are implemented. No actual scheduler executable was run in development. Runtime lineage consumes the original submit's cluster proof and successful exact stdout along with numeric JobID, node, run and manifest/review pins. No `-M` route is used.
++
++`guard_entry.py` executes the exact original guard bytes as their actual top-level argparse/while-loop script, with original argv installed before execution. It independently revalidates the same tuple and controls subprocess environment. The original unbound bare-ID `scancel` is always refused with retained JSON; no scheduler cancellation is issued. The original STOP/dual15% decision remains effective: the guard exits nonzero and the supervisor's original cgroup-owned cleanup terminates only this allocation's owned children, then the batch exits. Unknown/foreign lineage cannot cancel anything. External resource guard, original eight background PID starts, UUID leases and numerical MEM/SM limits are unchanged. This fallback must be verified on the real owned runtime; local tests do not prove GPU/process coexistence.
++
++The final release binds renderer/submitter source and manifest rather than its own generated script SHA, preventing a release-SHA/script-SHA cycle. The exact script is deterministically rendered from final release pins and its actual SHA/bytes are retained in the once journal.
++
++## P03 staged unchanged thresholds
++
++Prelaunch `threshold_acceptance` is now only `INDEPENDENT_FRESH200_MU_BOOTSTRAP_THRESHOLDS_ACCEPTED`: first credited outers1..5, fullrun/6..200 acceptance false, KL0.2 from the latest human goal, tail/repeat candidates bound to all eight actual zero monitor SHA and numeric observations. Historical zero-only `PRODUCTION_THRESHOLDS_ACCEPTED` receipts are refused. The whole-package release status is `READY_FOR_FRESH200_BEHAVIOR_MU_FIRST5_BOOTSTRAP`; no fullrun threshold acceptance exists before short training.
++
++The live gate envelope must include an independently authored `threshold_assessment` path/SHA. The same-job/run/source/config review binds it, partial raw CPU report and the original first5 proof. Assessment status is `INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED`, exact first5/continue6..200, zero ready/review and bootstrap SHA, unchanged values, nonempty explicit rationale, and exact measured all-attempt/all-rank safety JSON SHA/metrics/counts/refusals. The wrapper rereads actual safety decisions/configs; absent monitor metrics/records or drift cannot become empty-string/boolean acceptance. It publishes only external review bytes to approved.json, fsyncs the directory, and records assessment SHA. Final verification rereads the same short-training assessment and review. No parameter value is changed at the gate and no second training instance is used.
++
++## P04 retained partial bytes and logical state
++
++Both attempt/checkpoint accounting now physically reread all eight worker snapshots, driver and actor-input files for every historical partial. `partial_raw_evidence.py` holds every directory component and ordinary file via no-follow openat, stream-hashes the same FD, checks path/inode/stat stability and source-recorded sizes (driver size only when actually present). Exact attempt directory, rank and context are required. The hashes join independent proof bindings.
++
++The added fourth serial same-node CPU checker `check_partial_raw_cpu.py` loads every retained raw state from that same SHA-bound FD only on Linux h100-9 with CUDA empty, and verifies source-native logical digest/identity, all20 opportunity ledger and actual calls/scheduler, sampler consumed attempt/RNG/accounting and actor context/rows. It requires model/Adam/scheduler finite while preserving and separately reporting raw NaN gradients; it never restores/rolls back a worker. Empty histories explicitly mean0 files/0 PT loads. `CpuChecks.proofs` rechecks physical mappings and exact10×partial coverage/deserialization before accepting the CPU report; external first5 review and threshold assessment must bind that report. Final repeats the full history.
++
++Local fixtures use only tiny ordinary non-PT bytes and pure logical dictionaries. Real official/raw PT/model/tokenizer, CUDA/FSDP/Ray, optimizer and Slurm were not executed. Same-node real IO/logical reload is still unperformed; exact restart/resume remains false.
++
++## Evidence and current blockers
++
++The existing f7 none-context source/CPU receipt `6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44` is actual source evidence only. It is not V2 package permission, actual zero acceptance or production threshold acceptance. Every missing production metadata descriptor stays null. Actual zero/tokenizer preflight, bootstrap observation authority, V2 none-context review, frozen package/dispatch proof, same-node resources, first5 external review and short threshold assessment, final evaluation and independent effects remain required/unaccepted.
++
++Owner CPU logs preserve first command/cwd/fixture failures and affected reruns. V2 owner evidence is not an independent release. No original mathematical loss/Tree weighting/sampler configuration/cadence/count/budget was changed.
+--- work/tree-fresh200-train-runtime-draft/attempt_accounting.py
++++ work/tree-fresh200-train-runtime-v2/attempt_accounting.py
+@@ -73,6 +73,8 @@
+             evidence=value['partial_evidence'];partial_path=Path(evidence['path'])
+             require(partial_path.resolve()==(run/'checkpoints/training_state'/f'partial_attempt_{attempt:06d}_outer_{complete+1:06d}'/'manifest.json').resolve(),'Allskip evidence outside actual attempt')
+             partial,psha,_=read_bound(partial_path,evidence['sha256']);bindings[str(partial_path)]=psha
++            from partial_raw_evidence import verify_partial_raw_files
++            bindings.update(verify_partial_raw_files(run,partial))
+             require(partial['identity']==ids and partial['worker_states_verified'] is True and partial['verification_error'] is None
+                     and partial['continuation_decision']=='CONTINUE_FRESH_ROLLOUT' and partial['outer_completed'] is False
+                     and partial['completed_outer_updates']==complete and partial['credited_outer_candidate'] is False
+@@ -115,6 +117,8 @@
+             event=events[entry['attempt_id']];candidate=event.get('outer',event.get('candidate_outer'))
+             path=Path(entry['path']);require(path.resolve()==(Path(run)/'checkpoints/training_state'/f"partial_attempt_{entry['attempt_id']:06d}_outer_{candidate:06d}"/'manifest.json').resolve(),'Saved partial path differs from actual attempt')
+             partial,_,_=read_bound(path,entry['sha256'])
++            from partial_raw_evidence import verify_partial_raw_files
++            verify_partial_raw_files(run,partial)
+             require(partial['continuation_decision']=='CONTINUE_FRESH_ROLLOUT' and partial['worker_states_verified'] is True
+                     and partial['verification_error'] is None and partial['credited_outer_candidate']==('outer' in event)
+                     and partial['actual_optimizer_calls_per_rank']==entry['optimizer_calls_per_rank']==event.get('actual_writes_per_rank',{str(r):0 for r in range(8)})
+--- work/tree-fresh200-train-runtime-draft/build_package_draft.py
++++ work/tree-fresh200-train-runtime-v2/build_package_draft.py
+@@ -15,7 +15,8 @@
+     'launch.sbatch','production_contract.py','render_dispatch.py','run_tree.sh',
+     'sitecustomize.py','supervisor.py','test_runtime_contract_cpu.py',
+     'test_validation_adapter_cpu.py','test_training_cost_cpu.py','training_cost_hooks.py','train_monitor.py','validation_cost_entry.py',
+-    'validation_cost_hooks_instruct300.py')
++    'validation_cost_hooks_instruct300.py','slurm_identity.py','guard_entry.py','submit_once.py',
++    'partial_raw_evidence.py','check_partial_raw_cpu.py','test_partial_raw_cpu.py','test_production_v2_cpu.py','V2_REPAIR.md','SOURCE_CPU_RECEIPT_V2.json')
+ RUNTIME_ENTRIES=('run_tree.sh','validation_cost_entry.py','validation_cost_hooks_instruct300.py','sitecustomize.py')
+ CODE_SUFFIXES=frozenset(('.py','.sh','.sbatch','.yaml','.yml','.md','.json','.txt','.toml','.cfg','.ini','.patch'))
+ CODE_EXTENSIONLESS=frozenset(('LICENSE','NOTICE','.gitignore','Makefile','verl/version/version','verl/single_controller/version/version'))
+@@ -182,7 +183,10 @@
+     overrides=configuration_overrides(spec,thresholds)
+     dispatch=inputs['dispatch'];intent=dispatch['once_intent'];wall=dispatch['train_wall_hours']
+     require(type(intent) is str and Path(intent).is_absolute() and '..' not in Path(intent).parts and Path(intent).is_relative_to(ROOT/'instruct300'),'Root must supply reviewed NEW production once intent; old zero intent cannot be inferred')
++    from submit_once import INTENT_RE
++    require(Path(intent).parent==ROOT/'instruct300' and re.fullmatch(INTENT_RE,Path(intent).name),'New production intent must match reviewed production-only once namespace')
+     require(type(wall) is int and wall==72,'Root-reviewed formal wall hours must be72; no calibration default')
++    require(dispatch['cluster_name']=='wuhan-h100','Explicit own local production cluster binding missing')
+     require(dispatch['nodes']==['h100-9'] and dispatch['gpus']==8 and dispatch['cpus_per_task']==32 and dispatch['memory_gib']==256 and dispatch['exclusive'] is True and dispatch['no_requeue'] is True,'Immutable reservation differs')
+     output=Path(a.output).resolve();require(not output.exists() and str(output).startswith('/Users/'),'Local no-clobber package only')
+     output.mkdir(parents=True);(output/'source/repo').mkdir(parents=True)
+@@ -196,7 +200,8 @@
+     assets=inputs['assets']
+     manifest=dict(status='LOCAL_TRAIN200_PACKAGE_MATERIALIZED_NOT_RELEASED',scope='LOCAL_DRAFT_NOT_RELEASED',stage='fresh_mu_train200',training_protocol=PROFILE,
+         code_commit=actual,official_model_path=assets['official_model_path'],model_identity=assets['model_identity'],common_data_identity=assets['common_data_identity'],
+-        configuration_overrides=overrides,production_thresholds=thresholds,production_thresholds_accepted=True,
++        configuration_overrides=overrides,bootstrap_thresholds=thresholds,bootstrap_thresholds_accepted=True,production_thresholds_accepted=False,
++        full_run_continuation_requires_same_instance_first5_threshold_assessment=True,
+         production_inputs=inputs['production_inputs'],production_input_sha256={name:value[1] for name,value in observations.items()},
+         target_kl_authority=observations['threshold_acceptance'][0]['target_kl_authority'],dispatch=dispatch,
+         actual_3b_training_accepted=False,long_training_ready=False,original_sampler_actor_gate_accepted=False,
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/check_partial_raw_cpu.py
+@@ -0,0 +1,158 @@
++"""Future h100-9 CPU verification of retained actual raw partial states.
++
++Local development tests use plain dict fixtures and non-PT tiny files only.
++This checker never restores a worker, performs a forward, or writes an optimizer.
++"""
++import argparse
++import json
++import os
++from pathlib import Path
++import socket
++import sys
++import time
++
++from partial_raw_evidence import (held_ordinary_file, partial_directory, raw_file_records,
++    read_json_bound, require, stream_sha256, verify_partial_raw_files,
++    verify_worker_logical, verify_driver_logical, verify_actor_inputs_logical)
++
++
++def held_state(path, expected_sha, loader, expected_bytes=None):
++    """Hash and deserialize the very same held FD, with post-load stat binding."""
++    with held_ordinary_file(path) as (stream, before):
++        require(expected_bytes is None or before.st_size == expected_bytes, 'Raw bound byte count changed')
++        require(stream_sha256(stream) == expected_sha, 'Raw bound SHA changed before deserialization')
++        stream.seek(0)
++        state = loader(stream, map_location='cpu', weights_only=False)
++    return state
++
++
++def _history_before(event, entries, completed, partial, refused):
++    return dict(protocol='tree_guard_continue_fresh_rollout_v1', training_attempts=event['attempt'],
++        refused_attempts=refused, guard_refused_attempts=sum(entry['attempt_id'] < event['attempt'] for entry in entries),
++        completed_outer_updates=event.get('outer', event.get('candidate_outer')) - 1,
++        partial_optimizer_calls_per_rank=dict(partial), completed_optimizer_calls_per_rank=dict(completed),
++        total_optimizer_calls_per_rank={str(rank): completed.get(str(rank), 0) + partial.get(str(rank), 0) for rank in range(8)},
++        partial_evidence=[entry for entry in entries if entry['attempt_id'] < event['attempt']])
++
++
++def verify(run, package, config_hash, outer, output):
++    from attempt_accounting import attempt_results, checkpoint_accounting
++    from production_contract import checkpoint_manifest, require_identity
++    require(os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'Partial checker must be explicitly CPU-only')
++    run = Path(run)
++    require(run.is_absolute(), 'Actual run must be absolute')
++    start, cpu = time.perf_counter(), time.process_time()
++    checkpoint_path = run / 'checkpoints/training_state' / f'global_step_{outer}' / 'manifest.json'
++    pinned_checkpoint, checkpoint_sha, _ = read_json_bound(checkpoint_path)
++    manifest, checked_sha = checkpoint_manifest(run, package, config_hash, outer)
++    require(manifest == pinned_checkpoint and checked_sha == checkpoint_sha, 'Complete checkpoint changed during accounting validation')
++    observed = attempt_results(run, package, config_hash, outer)
++    accounting = checkpoint_accounting(manifest['identity']['guard_continue_accounting'], observed, outer, run)
++    # Accounting bindings may include raw PT paths as well as event JSON.
++    # Verify all of them physically without parsing/deserializing their bytes.
++    for path, expected in observed['record_sha256'].items():
++        with held_ordinary_file(path) as (stream, _):
++            require(stream_sha256(stream) == expected, 'Actual event/accounting binding changed')
++    expected_identity = dict(job_id=run.name.rsplit('-', 1)[-1], run_id=run.name,
++        code_commit=package['code_commit'], config_sha256=config_hash,
++        data_identity=package['common_data_identity'], model_identity=package['model_identity']['sha256'])
++    entries = accounting['partial_evidence']
++    events = sorted(observed['credited'] + observed['all_skipped'], key=lambda event: event['attempt'])
++    require(len(events) == observed['training_attempts'] and
++            [event['attempt'] for event in events] == list(range(1, observed['training_attempts'] + 1)),
++            'Every actual attempt through the completed boundary must be checked')
++    by_attempt = {entry['attempt_id']: entry for entry in entries}
++    require(len(by_attempt) == len(entries) and set(by_attempt) <= {event['attempt'] for event in events},
++            'Partial evidence has a duplicate or lacks an actual event')
++    partials, raw_mapping, manifest_mapping = {}, {}, {}
++    completed, partial_totals, refused = {}, {}, 0
++    for event in events:
++        attempt = event['attempt']
++        writes = event.get('actual_writes_per_rank', {str(rank): 0 for rank in range(8)})
++        if attempt in by_attempt:
++            entry = by_attempt[attempt]
++            candidate = event.get('outer', event.get('candidate_outer'))
++            expected_path = run / 'checkpoints/training_state' / f'partial_attempt_{attempt:06d}_outer_{candidate:06d}' / 'manifest.json'
++            require(Path(entry['path']) == expected_path, 'Saved partial manifest must match the exact attempt/outer path')
++            value, msha, _ = read_json_bound(expected_path, entry['sha256'])
++            require_identity(value['identity'], expected_identity)
++            require(partial_directory(run, value['identity']) / 'manifest.json' == expected_path and
++                    value['continuation_decision'] == 'CONTINUE_FRESH_ROLLOUT' and
++                    value['credited_outer_candidate'] == ('outer' in event) and
++                    value['actual_optimizer_calls_per_rank'] == entry['optimizer_calls_per_rank'] == writes,
++                    'Actual partial identity/credit/writes differ from event history')
++            bindings = verify_partial_raw_files(run, value)
++            require(not set(raw_mapping).intersection(bindings), 'Raw partial path appears in more than one attempt')
++            raw_mapping.update(bindings)
++            manifest_mapping[str(expected_path)] = msha
++            prior = _history_before(event, entries, completed, partial_totals, refused)
++            cumulative = {str(rank): prior['total_optimizer_calls_per_rank'][str(rank)] + writes[str(rank)] for rank in range(8)}
++            partials[attempt] = (value, prior, cumulative)
++        if 'outer' in event:
++            completed = {str(rank): completed.get(str(rank), 0) + writes[str(rank)] for rank in range(8)}
++        else:
++            partial_totals = {str(rank): partial_totals.get(str(rank), 0) + writes[str(rank)] for rank in range(8)}
++            refused += 1
++    logical_records = []
++    deserializations = 0
++    torch = None
++    if partials:
++        require(sys.platform.startswith('linux') and socket.gethostname().split('.')[0] == 'h100-9',
++                'Actual PT deserialization is restricted to same h100-9 CPU; never Mac tensor assets')
++        import torch
++        from search_r1.baselines.training_state import digest, finite
++        torch.set_num_threads(8)
++        require(torch.cuda.is_initialized() is False, 'CPU checker started with initialized CUDA')
++        for attempt, (value, prior, cumulative) in partials.items():
++            workers = []
++            records = raw_file_records(run, value)
++            for path, record, _ in records[:8]:
++                state = held_state(path, record['sha256'], torch.load, record['bytes'])
++                workers.append(verify_worker_logical(state, value, record, digest, finite,
++                    cumulative_calls=cumulative[str(record['rank'])]))
++                deserializations += 1
++                del state
++            path, record, _ = records[8]
++            state = held_state(path, record['sha256'], torch.load, record.get('bytes'))
++            driver = verify_driver_logical(state, value, digest, finite, prior_accounting=prior)
++            deserializations += 1
++            del state
++            path, record, _ = records[9]
++            state = held_state(path, record['sha256'], torch.load, record['bytes'])
++            actor_inputs = verify_actor_inputs_logical(state, run, value)
++            deserializations += 1
++            del state
++            logical_records.append(dict(attempt_id=attempt, candidate_outer=value['identity']['attempted_outer'],
++                identity=value['identity'], partial_manifest_sha256=manifest_mapping[str(partial_directory(run, value['identity']) / 'manifest.json')],
++                workers=workers, driver=driver, actor_inputs=actor_inputs))
++        require(torch.cuda.is_initialized() is False, 'Partial CPU checker initialized CUDA')
++    report = dict(status='FRESH200_PARTIAL_RAW_CPU_REVERIFIED', identity=expected_identity,
++        outer=outer, completed_outer=outer, checkpoint_manifest_sha256=checkpoint_sha,
++        raw_files_sha256=raw_mapping, partial_manifest_sha256=manifest_mapping,
++        logical_records=logical_records, raw_files_checked=len(raw_mapping),
++        actual_attempts_checked=len(events), partial_attempts_checked=len(partials),
++        actual_event_sha256=observed['record_sha256'], actual_pt_deserialization=bool(deserializations),
++        pt_deserialization_count=deserializations, same_fd_io=True,
++        same_fd_io_details=dict(no_follow_all_ancestors=True, ordinary_files_only=True,
++            physical_sha_streamed=True, hash_and_deserialize_same_fd=True, stable_fd_and_path_stat=True),
++        optimizer_writes=0, model_forwards=0, cuda_initialized=False,
++        resume_permitted=False, automatic_resume_supported=False, automatic_rollback=False,
++        live_reload_verified_by_this_checker=False, behavior_mu_binding_owned_by='check_behavior_mu_cpu.py',
++        empty_partial_evidence=(len(partials) == 0), wall_seconds=time.perf_counter() - start,
++        process_cpu_seconds=time.process_time() - cpu)
++    require(deserializations == len(raw_mapping) == 10 * len(partials), 'Raw physical/logical coverage differs')
++    with Path(output).open('x') as stream:
++        json.dump(report, stream, indent=2, allow_nan=False)
++    return report
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--run', required=True)
++    parser.add_argument('--package', required=True)
++    parser.add_argument('--config-sha', required=True)
++    parser.add_argument('--outer', required=True, type=int)
++    parser.add_argument('--output', required=True)
++    args = parser.parse_args()
++    package, _, _ = read_json_bound(Path(args.package) / 'manifest.json')
++    print(json.dumps(verify(args.run, package, args.config_sha, args.outer, args.output), sort_keys=True))
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/guard_entry.py
+@@ -0,0 +1,55 @@
++"""Run the unchanged foreign-resource guard; deny its unbound scheduler cancel.
++
++A STOP/exception exits this owned child. The supervisor then performs its
++existing cgroup-owned cleanup and exits the batch. No foreign PID is touched.
++"""
++import argparse
++import hashlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
++from production_contract import require,read_bound
++from slurm_identity import verify_runtime,local_environment,fsync_directory
++
++def cancellation_refusal(command,evidence_path):
++    value=dict(status='UNBOUND_SCHEDULER_CANCELLATION_REFUSED_OWN_CLEANUP_REQUIRED',command=list(command),
++               scheduler_cancellation_executed=False,foreign_processes_touched=False)
++    path=Path(evidence_path)
++    with path.open('x') as stream:json.dump(value,stream,sort_keys=True);stream.flush();os.fsync(stream.fileno())
++    fsync_directory(path.parent)
++    raise RuntimeError('Guard bare-ID cancellation denied; own supervisor cleanup required')
++
++def guarded_run(original,evidence_path):
++    def run(command,*args,**kwargs):
++        require(type(command) in (list,tuple) and command,'Guard subprocess must have explicit argv')
++        if Path(str(command[0])).name=='scancel':return cancellation_refusal(command,evidence_path)
++        kwargs['env']=local_environment(kwargs.get('env',os.environ))
++        return original(command,*args,**kwargs)
++    return run
++
++def main():
++    parser=argparse.ArgumentParser();parser.add_argument('--source',required=True);parser.add_argument('--source-sha',required=True)
++    parser.add_argument('--identity',required=True);parser.add_argument('--identity-sha',required=True);parser.add_argument('--output',required=True)
++    args=parser.parse_args();saved,_,_=read_bound(args.identity,args.identity_sha);current=verify_runtime()
++    require(saved['manifest_sha256']==os.environ['TREE_INSTRUCT_PACKAGE_SHA256']
++            and saved['review_sha256']==os.environ['TREE_INSTRUCT_REVIEW_SHA256']
++            and saved['run_id']=='tree-fresh200-train-'+str(current['job_id'])
++            and Path(args.identity).parent.name==saved['run_id'],'Guard own run/package binding differs')
++    require(all(saved[k]==current[k] for k in ('cluster_name','job_id','node_list','gpus','requested_cpus','memory_gib','wall_hours','no_requeue','restarts')),'Guard allocation lineage changed')
++    from build_package_draft import read_regular_bound
++    raw=read_regular_bound(args.source,args.source_sha)
++    module=type(sys)('_owned_guard_original');module.__file__=args.source
++    # Every original subprocess.run call resolves the controlled wrapper below.
++    original=subprocess.run;subprocess.run=guarded_run(original,Path(args.output).with_suffix('.cancellation-refused.json'))
++    try:
++        # Original frozen guard is a top-level argparse/while-loop script.
++        # Install its original argv BEFORE execution; do not invent a main().
++        sys.argv=[args.source,'--output',args.output]
++        module.__dict__['__name__']='__main__'
++        exec(compile(raw,args.source,'exec'),module.__dict__)
++    finally:subprocess.run=original
++
++if __name__=='__main__':main()
+--- work/tree-fresh200-train-runtime-draft/launch.sbatch
++++ work/tree-fresh200-train-runtime-v2/launch.sbatch
+@@ -16,7 +16,7 @@
+ require(package.is_relative_to(ROOT/'instruct300/candidates'),'Production package outside own h100-9 task candidates')
+ m,manifest_sha,_=read_bound(package/'manifest.json',os.environ['TREE_INSTRUCT_PACKAGE_SHA256'])
+ require(m['scope']=='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW' and m['stage']=='fresh_mu_train200','Unreleased/nonproduction package')
+-require(m['training_protocol']=='tree_fresh200_five_leaf_v1' and m['production_thresholds_accepted'] is True and m['original_sampler_actor_gate_accepted'] is False,'Explicit production profile/thresholds missing')
++require(m['training_protocol']=='tree_fresh200_five_leaf_v1' and m['bootstrap_thresholds_accepted'] is True and m['production_thresholds_accepted'] is False and m['original_sampler_actor_gate_accepted'] is False,'Explicit production profile/thresholds missing')
+ require(not any(k in m for k in ('parent_manifest','healthy110_metadata')),'Fresh production forbids inherited checkpoints')
+ require(not any(k in os.environ for k in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Production forbids zero-observation branches')
+ for relative,expected in m['files'].items():
+@@ -25,6 +25,11 @@
+ _,pins=production_inputs(m,manifest_sha256=manifest_sha,dispatch_review_descriptor={'path':os.environ['TREE_PRODUCTION_RELEASE_PATH'],'sha256':os.environ['TREE_INSTRUCT_REVIEW_SHA256']})
+ release,_,_=read_bound(os.environ['TREE_PRODUCTION_RELEASE_PATH'],os.environ['TREE_INSTRUCT_REVIEW_SHA256'])
+ intent=m['dispatch']['once_intent'];require(type(intent) is str and pathlib.Path(intent).is_relative_to(ROOT/'instruct300') and release['dispatch_intent_path']==intent,'Reviewed new train intent missing')
+-submitted_intent(intent,manifest_sha,os.environ['TREE_INSTRUCT_REVIEW_SHA256'],os.environ['SLURM_JOB_ID'])
++from slurm_identity import verify_runtime,install_local_environment
++identity=verify_runtime()
++submitted_intent(intent,manifest_sha,os.environ['TREE_INSTRUCT_REVIEW_SHA256'],os.environ['SLURM_JOB_ID'],cluster_name=identity['cluster_name'],node_list=identity['node_list'],run_id='tree-fresh200-train-'+os.environ['SLURM_JOB_ID'])
++# Bash is replaced by this verified process so sanitized routing reaches preflight.
++install_local_environment(os.environ)
++os.execv(sys.executable,[sys.executable,'-m','search_r1.baselines.preflight','--',sys.executable,str(package/'supervisor.py')])
+ PY
+-exec /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -m search_r1.baselines.preflight -- /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python "$TREE_INSTRUCT_TOOLS/supervisor.py"
++
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/partial_raw_evidence.py
+@@ -0,0 +1,276 @@
++"""Pure-standard-library bindings for actual, unmodified partial raw evidence.
++
++No Torch import, deserialization, model work, or resume occurs in this module.
++Large raw files are hashed in bounded blocks on their existing filesystem.
++"""
++from contextlib import contextmanager
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import stat
++
++PROTOCOL = 'tree_partial_state_v1'
++PROFILE = 'tree_fresh200_five_leaf_v1'
++IDENTITY_KEYS = {'job_id', 'run_id', 'code_commit', 'config_sha256', 'data_identity',
++                 'model_identity', 'training_protocol', 'attempted_outer', 'completed_outer', 'attempt_id'}
++
++
++def require(condition, message):
++    if not condition:
++        raise ValueError(message)
++
++
++def _signature(value):
++    return (value.st_dev, value.st_ino, value.st_mode, value.st_size,
++            value.st_mtime_ns, value.st_ctime_ns)
++
++
++def _absolute(path):
++    path = Path(path)
++    require(path.is_absolute() and '..' not in path.parts, 'Evidence path must be absolute without traversal')
++    return path
++
++
++@contextmanager
++def held_ordinary_file(path):
++    """Hold every ancestor with no-follow openat, then bind the ordinary file FD.
++
++    Ancestors remain open until after the caller finishes. Final checks bind
++    every pathname component to its held inode and detect mutation of the file.
++    """
++    path = _absolute(path)
++    directories = []
++    links = []
++    stream = None
++    try:
++        root = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++        directories.append(root)
++        for name in path.parts[1:-1]:
++            parent = directories[-1]
++            before = os.stat(name, dir_fd=parent, follow_symlinks=False)
++            require(stat.S_ISDIR(before.st_mode), 'Evidence ancestor must be a real directory: ' + str(path))
++            child = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
++            directories.append(child)
++            actual = os.fstat(child)
++            require((before.st_dev, before.st_ino) == (actual.st_dev, actual.st_ino), 'Ancestor changed during open')
++            links.append((parent, name, child))
++        parent = directories[-1]
++        before = os.stat(path.name, dir_fd=parent, follow_symlinks=False)
++        require(stat.S_ISREG(before.st_mode), 'Evidence must be an ordinary file: ' + str(path))
++        descriptor = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=parent)
++        stream = os.fdopen(descriptor, 'rb')
++        opened = os.fstat(stream.fileno())
++        require(_signature(opened) == _signature(before), 'Evidence changed during open')
++        yield stream, opened
++        after = os.fstat(stream.fileno())
++        named = os.stat(path.name, dir_fd=parent, follow_symlinks=False)
++        require(_signature(opened) == _signature(after) == _signature(named), 'Evidence changed while held: ' + str(path))
++        for ancestor_parent, name, child in links:
++            named = os.stat(name, dir_fd=ancestor_parent, follow_symlinks=False)
++            actual = os.fstat(child)
++            require(stat.S_ISDIR(named.st_mode) and (named.st_dev, named.st_ino) ==
++                    (actual.st_dev, actual.st_ino), 'Evidence ancestor changed while held')
++    finally:
++        if stream is not None:
++            stream.close()
++        for descriptor in reversed(directories):
++            os.close(descriptor)
++
++
++def stream_sha256(stream):
++    digest = hashlib.sha256()
++    for block in iter(lambda: stream.read(8 * 1024**2), b''):
++        digest.update(block)
++    return digest.hexdigest()
++
++
++def read_json_bound(path, expected=None):
++    with held_ordinary_file(path) as (stream, _):
++        raw = stream.read()
++        observed = hashlib.sha256(raw).hexdigest()
++        require(expected is None or observed == expected, 'JSON evidence SHA mismatch')
++        value = json.loads(raw)
++    return value, observed, raw
++
++
++def partial_directory(run, identity):
++    run = _absolute(run)
++    require(type(identity) is dict and set(identity) == IDENTITY_KEYS, 'Complete partial identity required')
++    attempt, outer, completed = (identity[key] for key in ('attempt_id', 'attempted_outer', 'completed_outer'))
++    require(all(type(value) is int for value in (attempt, outer, completed)) and
++            0 <= completed < 200 and outer == completed + 1 and attempt >= outer,
++            'Partial actual attempt/outer boundary invalid')
++    require(identity['training_protocol'] == PROFILE and identity['run_id'] == run.name and
++            identity['job_id'] == run.name.rsplit('-', 1)[-1], 'Partial run/profile identity differs')
++    return run / 'checkpoints/training_state' / f'partial_attempt_{attempt:06d}_outer_{outer:06d}'
++
++
++def raw_file_records(run, partial):
++    directory = partial_directory(run, partial['identity'])
++    envelope = partial['worker_outcome']
++    require(partial['protocol'] == PROTOCOL and envelope['protocol'] == PROTOCOL and
++            envelope['identity'] == partial['identity'] and envelope['status'] == 'PARTIAL_WORKER_STATE_SAVED' and
++            partial['worker_states_verified'] is True and partial['verification_error'] is None and
++            partial['outer_completed'] is False and partial['automatic_rollback'] is False and
++            partial['automatic_resume_supported'] is False, 'Partial evidence must be complete and non-resumable')
++    workers = envelope['worker_states']
++    require(type(workers) is list and len(workers) == 8 and
++            all(type(record.get('rank')) is int for record in workers) and
++            {record['rank'] for record in workers} == set(range(8)), 'All eight partial workers required')
++    records = []
++    for record in sorted(workers, key=lambda record: record['rank']):
++        rank = record['rank']
++        require(record['world_size'] == 8 and type(record['world_size']) is int and
++                record['identity'] == dict(partial['identity'], rank=rank, world_size=8) and
++                record['status'] == 'PARTIAL_WORKER_STATE_SAVED', 'Partial worker identity/coverage differs')
++        records.append((directory / f'worker-{rank:02d}.pt', record, True))
++    records.extend(((directory / 'driver.pt', partial['driver'], False),
++                    (directory / 'actor-inputs.pt', partial['actor_inputs'], True)))
++    for path, record, bytes_required in records:
++        require(_absolute(record['path']) == path, 'Raw path must exactly match its own partial attempt directory')
++        require(type(record['sha256']) is str and re.fullmatch('[0-9a-f]{64}', record['sha256']), 'Raw SHA pin required')
++        if bytes_required or 'bytes' in record:
++            require(type(record.get('bytes')) is int and record['bytes'] >= 0, 'Actual raw byte count required')
++    return records
++
++
++def verify_partial_raw_files(run, partial):
++    """Return the complete ten-path physical SHA mapping; never deserialize PT.
++
++    Worker and actor-input byte receipts are mandatory. Driver size is checked
++    only when its actual receipt includes bytes; no driver size is invented.
++    """
++    mapping = {}
++    for path, record, _ in raw_file_records(run, partial):
++        with held_ordinary_file(path) as (stream, before):
++            if 'bytes' in record:
++                require(before.st_size == record['bytes'], 'Raw file byte count mismatch')
++            observed = stream_sha256(stream)
++            require(observed == record['sha256'], 'Raw file SHA mismatch: ' + str(path))
++        mapping[str(path)] = observed
++    require(len(mapping) == 10, 'Partial raw coverage must contain exactly ten files')
++    return mapping
++
++
++def _actual_finite(value, finite):
++    try:
++        finite(value)
++        return True
++    except ValueError:
++        return False
++
++
++def _rng(value):
++    require(type(value) is dict and {'python', 'numpy', 'torch'} <= set(value) and
++            all(value[key] is not None for key in ('python', 'numpy', 'torch')), 'Actual saved RNG payload missing')
++
++
++def verify_worker_logical(state, partial, record, digest, finite, *, cumulative_calls=None):
++    from attempt_accounting import ledger_writes
++    identity = partial['identity']
++    rank = record['rank']
++    require(state['version'] == 'tree_partial_worker_v1' and
++            state['identity'] == record['identity'] == dict(identity, rank=rank, world_size=8) and
++            digest(state) == record['logical_state_sha256'], 'Actual raw worker logical digest/identity differs')
++    for flag in ('resume_permitted', 'automatic_rollback', 'outer_completed'):
++        require(state[flag] is False and record[flag] is False, 'Raw partial worker cannot resume/rollback/earn credit')
++    calls = state['committed_optimizer_calls']
++    ledger = state['optimizer_opportunity_ledger']
++    require(type(calls) is int and type(record['committed_optimizer_calls']) is int and
++            ledger_writes(ledger) == calls == record['committed_optimizer_calls'] and
++            ledger == record['optimizer_opportunity_ledger'], 'Actual saved worker opportunity ledger/count differs')
++    before, after = state['scheduler_step_before_actual'], state['scheduler_step_after_actual']
++    require(type(before) is int and type(after) is int and
++            type(record['scheduler_step_before_actual']) is int and type(record['scheduler_step_after_actual']) is int and
++            before == identity['completed_outer'] and
++            after == before + int(calls > 0) and before == record['scheduler_step_before_actual'] and
++            after == record['scheduler_step_after_actual'] and state['scheduler']['last_epoch'] == after,
++            'Actual saved partial scheduler differs from opportunity credit')
++    model_fields = ('parameters', 'local_shards', 'buffers', 'optimizer', 'scheduler')
++    require(all(type(state[key]) is dict for key in model_fields + ('gradients', 'private_gradient_tensors', 'parameter_layout')) and
++            state['parameters'] and set(state['gradients']) == set(state['parameters']) and
++            set(state['private_gradient_tensors']) == set(state['parameters']) and
++            set(state['parameter_layout']) == set(state['parameters']) and
++            set(state['local_shards']) <= set(state['parameters']), 'Actual raw parameter/shard/gradient layout missing')
++    finite({key: state[key] for key in model_fields})
++    gradients_finite = _actual_finite({key: state[key] for key in ('gradients', 'private_gradient_tensors')}, finite)
++    state_finite = _actual_finite(state, finite)
++    require(state['model_adam_finite'] is True and record['model_adam_finite'] is True and
++            type(state['gradients_finite']) is bool and type(record['gradients_finite']) is bool and
++            state['gradients_finite'] == record['gradients_finite'] == gradients_finite and
++            type(state['state_finite']) is bool and type(record['state_finite']) is bool and
++            state['state_finite'] == record['state_finite'] == state_finite,
++            'Actual raw finite classifications differ from persisted state')
++    _rng(state['rng'])
++    require(type(state['module_training_flags']) is list and state['module_training_flags'] and
++            all(type(entry['training']) is bool and type(entry['name']) is str for entry in state['module_training_flags']),
++            'Actual module training flags missing')
++    if cumulative_calls is not None:
++        require(record['total_committed_optimizer_calls'] == cumulative_calls, 'Raw worker cumulative return counter omits history')
++        steps = []
++        for entry in state['optimizer']['state'].values():
++            value = entry['step']
++            scalar = value.item() if hasattr(value, 'item') else value
++            require(type(scalar) in (int, float) and scalar == cumulative_calls, 'Raw Adam step differs from actual cumulative writes')
++            steps.append(scalar)
++        require(cumulative_calls == 0 or steps, 'Raw Adam entries missing after actual writes')
++    return dict(rank=rank, world_size=8, committed_optimizer_calls=calls, scheduler_before=before,
++                scheduler_after=after, logical_sha256=record['logical_state_sha256'], model_adam_finite=True,
++                gradients_finite=gradients_finite, state_finite=state_finite, raw_gradients_preserved=True)
++
++
++def verify_driver_logical(state, partial, digest, finite, *, prior_accounting=None):
++    from attempt_accounting import sampler_position
++    identity, record = partial['identity'], partial['driver']
++    require(state['version'] == 3 and state['snapshot_kind'] == PROTOCOL and state['identity'] == identity and
++            digest(state) == record['logical_state_sha256'] and
++            state['attempted_outer'] == partial['attempted_outer'] == identity['attempted_outer'] and
++            state['completed_outer_updates'] == partial['completed_outer_updates'] == identity['completed_outer'] and
++            record['completed_outer_updates'] == identity['completed_outer'], 'Actual partial driver identity/digest/boundary differs')
++    require(all(state[flag] is False for flag in ('outer_completed', 'automatic_rollback', 'automatic_resume_supported')) and
++            state['recovery_provenance'] is None, 'Partial driver cannot be resumed or inherit recovery')
++    finite(state)
++    sampler = state['consumed_sampler']
++    epoch, cursor = sampler_position(identity['attempt_id'])
++    require(sampler['rows'] == 169028 and sampler['batch_size'] == 512 and sampler['identity'] == identity['data_identity'] and
++            sampler['shuffle'] is True and type(sampler['cursor']) is int and type(sampler['epoch']) is int and
++            sampler['cursor'] == record['consumed_cursor'] == cursor and sampler['epoch'] == record['consumed_epoch'] == epoch and
++            len(sampler['order']) == 169028 and all(type(value) is int for value in sampler['order']) and
++            set(sampler['order']) == set(range(169028)) and sampler['generator'] is not None,
++            'Actual consumed sampler permutation/cursor/generator differs')
++    _rng(state['rng'])
++    require(state['algorithm']['method'] == 'tree_grpo' and state['algorithm']['tree_rng'] is not None and
++            type(state['algorithm']['stage']) is dict, 'Actual partial driver algorithm/Tree RNG missing')
++    accounting = state['guard_continue_accounting']
++    require(accounting['protocol'] == 'tree_guard_continue_fresh_rollout_v1' and
++            accounting['training_attempts'] == identity['attempt_id'] and
++            accounting['completed_outer_updates'] == identity['completed_outer'], 'Actual driver pre-result attempt accounting differs')
++    if prior_accounting is not None:
++        require(accounting == prior_accounting, 'Actual driver accounting is not the history before this result')
++    return dict(logical_sha256=record['logical_state_sha256'], consumed_cursor=cursor, consumed_epoch=epoch,
++                attempted_outer=identity['attempted_outer'], completed_outer=identity['completed_outer'],
++                actual_rng_present=True, resume_permitted=False)
++
++
++def verify_actor_inputs_logical(state, run, partial):
++    identity, record = partial['identity'], partial['actor_inputs']
++    require(type(state) is dict and set(state) == {'batch', 'non_tensor_batch', 'meta_info'}, 'Actual raw actor input structure differs')
++    batch, metadata = state['batch'], state['meta_info']
++    context = metadata['tree_partial_context']
++    require(context == dict(protocol=PROTOCOL, identity=identity, directory=str(partial_directory(run, identity))) and
++            metadata['baseline_outer_step'] == identity['attempted_outer'] and
++            metadata['baseline_attempt_id'] == identity['attempt_id'] and
++            metadata['baseline_completed_outer'] == identity['completed_outer'], 'Actual actor tree_partial_context/attempt metadata differs')
++    require(type(batch) is dict and batch and set(batch) == set(record['fields']) and
++            record['rows'] == 2560 and {'responses', 'attention_mask', 'loss_mask', 'old_log_probs', 'sampled_old_log_probs'} <= set(batch),
++            'Actual partial actor input field/row coverage missing')
++    def rows(value):
++        return int(value.shape[0]) if hasattr(value, 'shape') else len(value)
++    require(all(rows(value) == 2560 for value in batch.values()) and
++            type(state['non_tensor_batch']) is dict and all(rows(value) == 2560 for value in state['non_tensor_batch'].values()),
++            'Actual raw actor input tensor/non-tensor row coverage differs')
++    return dict(actual_rows=2560, actual_fields=sorted(batch), actual_partial_context=context,
++                behavior_mu_binding_verification='check_behavior_mu_cpu.py owns full mu binding',
++                raw_invalid_numeric_values_preserved=True)
+--- work/tree-fresh200-train-runtime-draft/production_contract.py
++++ work/tree-fresh200-train-runtime-v2/production_contract.py
+@@ -78,24 +78,42 @@
+             and accepted['fresh_initialization_accepted'] is True and accepted['original_sampler_actor_gate_accepted'] is False,
+             'Actual calibration independent acceptance missing')
+     thresholds = values['threshold_acceptance'][0]
+-    require(thresholds['status']=='INDEPENDENT_FRESH200_MU_PRODUCTION_THRESHOLDS_ACCEPTED'
+-            and thresholds['fork_turns']=='none' and thresholds['trial_only'] is False
+-            and thresholds['production_thresholds_accepted'] is True
++    require(thresholds['status']=='INDEPENDENT_FRESH200_MU_BOOTSTRAP_THRESHOLDS_ACCEPTED'
++            and thresholds['fork_turns']=='none' and thresholds['bootstrap_only'] is True and thresholds['first_credited_outers']==[1,2,3,4,5]
++            and thresholds['production_thresholds_accepted'] is False and thresholds['continuation_6_200_accepted'] is False
+             and thresholds['calibration_ready_sha256']==values['actual_calibration_ready'][1]
+             and thresholds['calibration_acceptance_sha256']==values['actual_calibration_acceptance'][1]
+             and thresholds['code_commit']==package['code_commit'] and thresholds['training_protocol']==PROFILE
+             and thresholds['original_sampler_actor_gate_accepted'] is False,
+-            'Thresholds lack accepted actual observation/source provenance')
+-    parameters = thresholds['production_thresholds']
++            'Only explicit actual-zero-bound first-five bootstrap candidates may initialize training')
++    parameters = thresholds['bootstrap_thresholds']
+     require(set(parameters)==set(THRESHOLD_FIELDS) and all(type(x) in (int,float) and math.isfinite(x) for x in parameters.values()), 'Production thresholds cannot be null/default/nonfinite')
+     require(parameters['target_old_policy_kl']==0.2 and 0<=parameters['negative_tail_limit']<=1 and parameters['initial_actor_repeat_max_abs_delta']>=0, 'Production KL must use latest explicit user value 0.2; remaining threshold range invalid')
++    monitor_hashes={str(worker['rank']):worker['monitor_sha256'] for worker in workers}
++    require(thresholds['zero_monitor_sha256']==monitor_hashes,'Bootstrap candidates do not bind all actual zero monitors')
++    observations=thresholds['zero_rank_observations']
++    require(type(observations) is list and [x['rank'] for x in observations]==list(range(8)), 'Actual zero threshold observations missing')
++    for record in observations:
++        require(record['monitor_sha256']==monitor_hashes[str(record['rank'])]
++                and type(record['effective_tokens']) is int and record['effective_tokens']>0
++                and all(type(record[k]) in (int,float) and math.isfinite(record[k]) for k in
++                        ('sampled_old_policy_kl','negative_tail_fraction','initial_actor_repeat_max_abs_delta'))
++                and 0<=record['negative_tail_fraction']<=1 and record['initial_actor_repeat_max_abs_delta']>=0,
++                'Bootstrap observation metrics are missing/invalid')
++    require(type(thresholds['assessment_rationale']) is str and thresholds['assessment_rationale'].strip(), 'Bootstrap candidate rationale absent')
+     authority=thresholds['target_kl_authority']
+     require(authority['kind']=='explicit_latest_human_goal_edit' and authority['value']==0.2
+             and type(authority['original_instruction_time']) is str and authority['original_instruction_time']
+             and type(authority['source']) is str and authority['source'], 'Original user KL instruction time/source must be recorded, not inferred from receipt replay')
+     review = values['source_context_free_review'][0]
+-    require(review['status']=='CONTEXT_FREE_FRESH200_SOURCE_ACCEPTED' and review['fork_turns']=='none'
+-            and review['code_commit']==package['code_commit'] and review['blocking_findings']==[], 'Context-free actual source acceptance missing')
++    compact=(review.get('status')=='CONTEXT_FREE_FRESH200_SOURCE_ACCEPTED' and review.get('fork_turns')=='none'
++             and review.get('code_commit')==package['code_commit'] and review.get('blocking_findings')==[])
++    sealed=(values['source_context_free_review'][1]=='6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44'
++            and review.get('status')=='FRESH200_F7_V8_V6_SOURCE_CPU_CONTEXT_FREE_REVIEWED'
++            and review['reviewer_context']['fork_turns']=='none' and review['reviewer_context']['inherited_parent_conversation'] is False
++            and review['source']['audited_clean_head']==package['code_commit'] and review['source']['final_clean'] is True
++            and review['source']['source_review_accepted'] is True and review['source_interface_review_accepted'] is True and review['findings']==[])
++    require(compact or sealed,'Context-free actual source acceptance missing; zero/helper approval never substitutes production review')
+     return parameters
+ 
+ 
+@@ -105,13 +123,17 @@
+     values = {name:descriptor(inputs[name],trusted_root) for name in INPUT_NAMES}
+     parameters=observed_production_inputs(package,values)
+     dispatch,dispatch_sha,_ = descriptor(dispatch_review_descriptor,trusted_root)
+-    require(dispatch['status']=='READY_FOR_FRESH200_BEHAVIOR_MU_TRAIN200' and dispatch['fork_turns']=='none'
++    require(dispatch['status']=='READY_FOR_FRESH200_BEHAVIOR_MU_FIRST5_BOOTSTRAP' and dispatch['bootstrap_only'] is True
++            and dispatch['full_run_thresholds_accepted'] is False and dispatch['fork_turns']=='none'
+             and dispatch['manifest_sha256']==manifest_sha256 and dispatch['code_commit']==package['code_commit']
+-            and dispatch['production_thresholds_sha256']==values['threshold_acceptance'][1]
++            and dispatch['bootstrap_thresholds_sha256']==values['threshold_acceptance'][1]
+             and dispatch['source_review_sha256']==values['source_context_free_review'][1]
+             and dispatch['actual_calibration_acceptance_sha256']==values['actual_calibration_acceptance'][1]
+             and dispatch['original_sampler_actor_gate_accepted'] is False,
+-            'Independent whole-package training release missing')
++            'Independent whole-package first-five bootstrap release missing')
++    require(dispatch['cluster_name']=='wuhan-h100' and dispatch['node_list']=='h100-9'
++            and dispatch['dispatch_renderer_sha256']==package['files']['render_dispatch.py']
++            and dispatch['dispatch_submitter_sha256']==package['files']['submit_once.py'],'Independent release does not bind own production dispatch routing/source')
+     # No resume assets or inherited sampler/Adam are accepted by these inputs.
+     return parameters, dict({name:value[1] for name,value in values.items()},package_context_free_review=dispatch_sha)
+ 
+@@ -286,7 +308,7 @@
+     review,review_sha,raw=descriptor(value['review'],Path(run))
+     ready,ready_sha,_=read_bound(gate/'ready.json')
+     require(review['status']=='PASS' and review['fork_turns']=='none' and review['ready_sha256']==ready_sha, 'No genuine context-free actual step5 review')
+-    require_identity(review,dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256']),include_run=False)
++    require_identity(review,dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256']))
+     require(ready['completed_outer_updates']==5 and ready['next_outer_update']==6 and ready['actual_update_limit']==200, 'Live actual five gate boundary differs')
+     require(all(review[k] is True for k in ('full_state_reload_accepted','full_hf_reload_accepted','rank_tree_numerics_accepted','fixed512_evaluation_accepted','behavior_mu_binding_accepted')), 'Independent five acceptance incomplete')
+     require(review['full_state_manifest_sha256']==ready['full_state_manifest_sha256']==proofs['full_state_manifest_sha256']
+@@ -296,6 +318,12 @@
+             and review['behavior_mu_cpu_report_sha256']==proofs['behavior_mu_cpu_report_sha256']
+             and review['development_report_sha256']==proofs['development']['sha256']
+             and review['direct_rank_record_sha256']==proofs['rank_counts']['record_sha256'], 'Independent review actual evidence bindings differ')
++    assessment,assessment_sha,assessment_raw=descriptor(value['threshold_assessment'],Path(run))
++    require(review['threshold_assessment_sha256']==assessment_sha and review['short_training_thresholds_accepted'] is True,
++            'Actual five review lacks independent unchanged-threshold acceptance')
++    validate_short_threshold_assessment(run,package,config_hash,proofs,assessment,ready_sha)
++    require(review['partial_raw_cpu_report_sha256']==proofs['partial_raw_cpu_report_sha256'],
++            'Actual independent review omitted retained partial raw IO verification')
+     approved=gate/'approved.json'
+     # This publishes the reviewer's original bytes; it never synthesizes PASS.
+     if approved.exists(): require(read_bound(approved)[1]==review_sha,'Existing approved receipt differs from external independent review')
+@@ -303,20 +331,79 @@
+         pending=gate/'approved.wrapper-pending.json'
+         with pending.open('xb') as stream: stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+         os.link(pending,approved);pending.unlink()
+-    return dict(review_sha256=review_sha,envelope_sha256=envelope_sha,ready_sha256=ready_sha)
+-
+-
+-def submitted_intent(path,manifest_sha,review_sha,job,*,wait_seconds=30,clock=None,sleep=None):
+-    """Read-only bounded wait for submitter journal finalization; never retries dispatch."""
++        from slurm_identity import fsync_directory
++        fsync_directory(gate)
++    return dict(review_sha256=review_sha,envelope_sha256=envelope_sha,ready_sha256=ready_sha,threshold_assessment_sha256=assessment_sha,
++                full_run_thresholds_accepted=True,unchanged_thresholds=package['bootstrap_thresholds'])
++
++
++def short_threshold_observations(run,proofs,thresholds):
++    """Read actual first-five safety JSON; no simulated measurements or PT imports."""
++    bindings=proofs['tree_and_safety']['evidence_sha256'];records={};kl=[];tail=[];repeat=[];coverage=set();missing=[]
++    for name,expected_sha in sorted(bindings.items()):
++        path=Path(name)
++        if 'policy-safety' not in path.parts:continue
++        require(path.is_absolute() and path.resolve().is_relative_to((Path(run)/'output/tree-rank-audit/policy-safety').resolve()),'Short monitor outside own run')
++        value,digest,_=read_bound(path,expected_sha);decision=value['decision'];config=value['config']
++        require(config['target_old_policy_kl']==thresholds['target_old_policy_kl'] and config['negative_tail_limit']==thresholds['negative_tail_limit']
++                and config['sampling_probability_correction']['initial_actor_repeat_max_abs_delta']==thresholds['initial_actor_repeat_max_abs_delta'],
++                'Short safety actually consumed different bootstrap values')
++        require(value['outer_step'] in range(1,6) and value['rank'] in range(8) and value['monitor_rows']==32 and value['probability_denominator']=='actual_behavior_mu'
++                and value['original_sampler_actor_consistency_accepted'] is False,'First-five actual monitor coordinates/count differ')
++        coverage.add((value['outer_step'],value['attempt_id'],value['rank']));records[name]=digest
++        for key,output in (('sampled_old_policy_kl',kl),('negative_tail_fraction',tail)):
++            number=decision.get(key)
++            if number is None:missing.append(dict(path=name,metric=key,reasons=decision.get('reasons',[])))
++            else:
++                require(type(number) in (int,float) and math.isfinite(number),'Invalid actual short safety metric')
++                output.append(number)
++        if decision.get('initial_actor_repeat_checked') is True:
++            number=decision['global_monitor_actor_repeat_max_abs_delta']
++            require(type(number) in (int,float) and math.isfinite(number) and number>=0,'Actual initial actor repeat metric invalid')
++            repeat.append(number)
++    attempts=proofs['rank_counts']['attempt_accounting']
++    expected={(event.get('outer',event.get('candidate_outer')),event['attempt'],rank)
++              for event in attempts['credited']+attempts['all_skipped'] for rank in range(8)}
++    require(records and coverage==expected and kl and tail and len(repeat)>=len(expected),'Actual first-five all-attempt/rank metrics incomplete')
++    return dict(completed_outer=5,training_attempts=proofs['rank_counts']['training_attempts'],monitor_rows_per_rank=32,
++                evidence_sha256=records,max_sampled_old_policy_kl=max(kl),max_negative_tail_fraction=max(tail),
++                max_initial_actor_repeat_abs_delta=max(repeat),missing_metric_records=missing,
++                guard_refusal_events=proofs['tree_and_safety']['observed_refusal_events'],
++                actual_writes_per_rank=proofs['rank_counts']['actual_writes_per_rank'],
++                opportunities_processed=proofs['rank_counts']['opportunities_processed'],thresholds=thresholds)
++
++def validate_short_threshold_assessment(run,package,config_hash,proofs,assessment,ready_sha):
++    expected=dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,
++                  data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
++    require_identity(assessment,expected)
++    require(assessment['status']=='INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED' and assessment['fork_turns']=='none'
++            and assessment['training_protocol']==PROFILE and assessment['completed_outer']==5 and assessment['continue_range']==[6,200]
++            and assessment['unchanged_thresholds_accepted'] is True and assessment['original_sampler_actor_gate_accepted'] is False,
++            'No actual same-instance short-training threshold acceptance')
++    require(assessment['ready_sha256']==ready_sha and assessment['bootstrap_thresholds_sha256']==package['production_inputs']['threshold_acceptance']['sha256']
++            and assessment['calibration_ready_sha256']==package['production_inputs']['actual_calibration_ready']['sha256']
++            and assessment['calibration_acceptance_sha256']==package['production_inputs']['actual_calibration_acceptance']['sha256']
++            and assessment['values']==package['bootstrap_thresholds'],'Threshold assessment zero/bootstrap/value binding differs')
++    require(assessment['observations']==short_threshold_observations(run,proofs,package['bootstrap_thresholds']),
++            'Threshold assessment does not bind actual first-five monitor/guard/count measurements')
++    require(assessment['partial_raw_cpu_report_sha256']==proofs['partial_raw_cpu_report_sha256']
++            and type(assessment['assessment_rationale']) is str and assessment['assessment_rationale'].strip(),
++            'Threshold assessment lacks actual retained raw proof or judgment')
++    return True
++
++
++def submitted_intent(path,manifest_sha,review_sha,job,*,cluster_name,node_list,run_id,wait_seconds=30,clock=None,sleep=None):
++    """Read-only bounded wait; cluster-qualified unknowns never execute/retry."""
+     import time
++    from slurm_identity import submitted_lineage,CLUSTER,NODE
++    require(cluster_name==CLUSTER and node_list==NODE and run_id=='tree-fresh200-train-'+str(job),'Runtime own tuple missing')
+     clock=time.monotonic if clock is None else clock;sleep=time.sleep if sleep is None else sleep
+     require(type(wait_seconds) in (int,float) and 0<=wait_seconds<=30,'Intent read-only wait must stay bounded')
+     deadline=clock()+wait_seconds
+     while True:
+         value,_,_=read_bound(path)
+-        require(value['manifest_sha256']==manifest_sha and value['review_sha256']==review_sha,'Once journal differs from reviewed production bytes')
+-        if value['status']=='SUBMITTED':
+-            require(str(value['job_id'])==str(job),'Once journal belongs to a different Slurm allocation')
+-            return value
++        require(value['manifest_sha256']==manifest_sha and value['review_sha256']==review_sha
++                and value.get('cluster_name')==CLUSTER and value.get('dispatch_intent_path')==str(path),'Once journal own lineage differs')
++        if value['status']=='SUBMITTED':return submitted_lineage(value,str(job),manifest_sha,review_sha,path)
+         require(value['status']=='SUBMITTING' and clock()<deadline,'Unknown, failed or unresolved submission cannot execute or retry')
+         sleep(.2)
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/slurm_identity.py
+@@ -0,0 +1,111 @@
++"""Own local scheduler identity; runtime calls are read-only, no dispatch/cancel."""
++import base64
++import json
++import os
++from pathlib import Path
++import re
++import socket
++import stat
++import subprocess
++from production_contract import require, read_bound, ROOT
++
++CLUSTER='wuhan-h100'
++NODE='h100-9'
++EXCLUDED={'SLURM_CLUSTERS','SLURM_CONF','SLURM_CONF_SERVER','SLURM_CLUSTER_NAME','SLURM_FEDERATION','SLURM_FEDERATION_CLUSTER'}
++PREFIXES=('SBATCH_','SQUEUE_','SACCT_','SCONTROL_','SCANCEL_')
++
++def local_environment(environment):
++    return {k:v for k,v in environment.items() if k not in EXCLUDED and not k.startswith(PREFIXES)}
++
++def install_local_environment(environment):
++    removed=sorted(k for k in environment if k in EXCLUDED or k.startswith(PREFIXES))
++    clean=local_environment(environment)
++    environment.clear(); environment.update(clean)
++    return removed
++
++def runtime_job(environment,hostname):
++    require(hostname.split('.')[0]==NODE,'Only the own h100-9 node is permitted')
++    job=environment.get('SLURM_JOB_ID')
++    require(type(job) is str and re.fullmatch('[1-9][0-9]*',job),'Exact numeric own allocation ID required')
++    require(environment.get('SLURM_JOB_NODELIST')==NODE,'Exact one-node runtime allocation required')
++    value=environment.get('SLURM_CLUSTER_NAME')
++    require(value is None or value==CLUSTER,'Runtime declares a foreign cluster')
++    return job
++
++def query(command,run,environment):
++    result=run(command,env=local_environment(environment),text=True,capture_output=True,timeout=30)
++    require(result.returncode==0 and result.stderr=='','Local scheduler identity query failed or ambiguous')
++    return result.stdout
++
++def cluster_identity(run=subprocess.run,environment=None):
++    environment=dict(os.environ if environment is None else environment)
++    config=query(['scontrol','--local','show','config'],run,environment)
++    clusters=re.findall(r'^ClusterName\s*=\s*([A-Za-z0-9_.-]+)\s*$',config,re.MULTILINE)
++    require(clusters==[CLUSTER],'Default local controller cluster differs or is ambiguous')
++    federation=query(['scontrol','--local','show','federation'],run,environment)
++    require(federation.strip()=='','Federated lineage is not permitted for this own task')
++    return dict(cluster_name=CLUSTER,configuration_stdout=config,federation_stdout=federation,local_queries=True)
++
++def allocation_identity(text,job,cluster):
++    require(cluster==CLUSTER and type(job) is str and re.fullmatch('[1-9][0-9]*',job),'Untrusted allocation tuple')
++    pairs=re.findall(r'(?:^|\s)([A-Za-z][A-Za-z0-9_\-/]*)=([^\s]+)',text)
++    tokens={}
++    for key,value in pairs:
++        require(key not in tokens,'Duplicate/ambiguous allocation field: '+key)
++        tokens[key]=value
++    expected={'JobId':job,'JobState':'RUNNING','NodeList':NODE,'BatchHost':NODE,'NumNodes':'1',
++              'OverSubscribe':'NO','TresPerNode':'gres:gpu:8','CPUs/Task':'32',
++              'Requeue':'0','Restarts':'0','TimeLimit':'3-00:00:00','MinMemoryNode':'256G'}
++    require(all(tokens.get(k)==v for k,v in expected.items()),'Exact own allocation/resources/72h/no-requeue identity differs')
++    require(tokens.get('Cluster',CLUSTER)==CLUSTER,'Allocation declares foreign cluster')
++    require(re.fullmatch('[1-9][0-9]*',tokens.get('NumCPUs','')) is not None and int(tokens['NumCPUs'])>=32,'Actual reserved CPUs missing')
++    return dict(cluster_name=CLUSTER,job_id=int(job),node_list=NODE,requested_cpus=32,
++                allocated_cpus=int(tokens['NumCPUs']),gpus=8,memory_gib=256,wall_hours=72,
++                no_requeue=True,restarts=0,allocation_stdout=text)
++
++def verify_runtime(environment=None,hostname=None,run=subprocess.run):
++    environment=dict(os.environ if environment is None else environment)
++    job=runtime_job(environment,socket.gethostname() if hostname is None else hostname)
++    cluster=cluster_identity(run,environment)
++    raw=query(['scontrol','--local','show','job',job],run,environment)
++    return dict(cluster,**{k:v for k,v in allocation_identity(raw,job,cluster['cluster_name']).items() if k!='cluster_name'})
++
++def fsync_directory(path):
++    fd=os.open(Path(path),os.O_RDONLY|os.O_DIRECTORY)
++    try:os.fsync(fd)
++    finally:os.close(fd)
++
++def create_journal(path,value):
++    """Durable initial intent only; existence always blocks retry."""
++    path=Path(path)
++    require(value['status']=='SUBMITTING' and value['cluster_name']==CLUSTER,'Explicit own initial journal required')
++    with path.open('x') as stream:json.dump(value,stream,sort_keys=True,allow_nan=False);stream.flush();os.fsync(stream.fileno())
++    fsync_directory(path.parent)
++
++def finalize_journal(path,value):
++    """Keep original SUBMITTING if final replace fails; never remove/retry."""
++    path=Path(path);initial,_,_=read_bound(path)
++    require(initial['status']=='SUBMITTING' and initial['cluster_name']==value['cluster_name']==CLUSTER,'Own original pending journal required')
++    require(all(initial[k]==value[k] for k in ('manifest_sha256','review_sha256','dispatch_intent_path')),'Journal finalization changed dispatch bytes')
++    pending=path.with_name(path.name+'.final-'+str(os.getpid()))
++    with pending.open('x') as stream:json.dump(value,stream,sort_keys=True,allow_nan=False);stream.flush();os.fsync(stream.fileno())
++    os.replace(pending,path);fsync_directory(path.parent)
++
++def timeout_output(value):
++    if isinstance(value,bytes):return {'encoding':'base64','bytes':base64.b64encode(value).decode('ascii')}
++    require(value is None or type(value) is str,'Unrecognized timeout evidence type')
++    return value
++
++def submitted_lineage(value,job,manifest_sha,review_sha,intent_path):
++    require(value['status']=='SUBMITTED' and value.get('cluster_name')==CLUSTER and value.get('cluster') in (None,CLUSTER),'Foreign/legacy/unknown submitted lineage')
++    require(type(value.get('job_id')) is int and value['job_id']==int(job),'Same-number aliases/non-numeric IDs forbidden')
++    require(value.get('manifest_sha256')==manifest_sha and value.get('review_sha256')==review_sha
++            and value.get('dispatch_intent_path')==str(intent_path),'Once journal byte/path binding differs')
++    require(value.get('node_list')==NODE and value.get('run_id')=='tree-fresh200-train-'+str(job),'Once journal own node/run binding missing')
++    output=value.get('parsable_stdout');require(type(output) is str and output in (str(job),str(job)+';'+CLUSTER),'Foreign/ambiguous parsable suffix')
++    require(value.get('stdout') in (output,output+'\n') and value.get('stderr')=='' and value.get('returncode')==0,'Exact successful submit bytes missing')
++    proof=value.get('local_cluster_identity')
++    require(type(proof) is dict and proof.get('cluster_name')==CLUSTER and proof.get('local_queries') is True,'Original local controller proof missing')
++    require(re.findall(r'^ClusterName\s*=\s*([A-Za-z0-9_.-]+)\s*$',proof.get('configuration_stdout',''),re.MULTILINE)==[CLUSTER]
++            and proof.get('federation_stdout')=='','Original cluster/federation proof differs')
++    return value
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/submit_once.py
+@@ -0,0 +1,111 @@
++"""Cluster-bound production candidate dispatcher. Not executed by preparation.
++
++Existence/unknown is irreversible for this intent; no removal, resubmit, restart,
++or cancellation path. All tests inject an in-memory fake scheduler.
++"""
++import argparse
++import fcntl
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import socket
++import stat
++import subprocess
++import time
++from production_contract import ROOT,require,read_bound,production_inputs
++from slurm_identity import (CLUSTER,NODE,local_environment,cluster_identity,query,
++    create_journal,finalize_journal,timeout_output)
++
++TERMINAL={'COMPLETED','FAILED','CANCELLED','TIMEOUT','NODE_FAIL','OUT_OF_MEMORY','PREEMPTED','BOOT_FAIL','DEADLINE','REVOKED'}
++INTENT_RE=r'TREE_FRESH200_TRAIN_ONCE-[A-Za-z0-9_-]+\.json'
++
++def queue_clear(run,environment):
++    raw=query(['squeue','--local','-h','-w',NODE,'-o','%i|%j|%T|%b'],run,environment)
++    for line in raw.splitlines():
++        if not line.strip():continue
++        parts=line.split('|');require(len(parts)==4,'Ambiguous local queue snapshot')
++        if parts[1].startswith('tree-'):
++            # Only an explicitly zero GPU request can coexist for this task.
++            zero=parts[3] in ('gres/gpu:0','gres/gpu=0','gpu:0')
++            require(zero,'Another Tree GPU allocation/pending lineage exists; never duplicate')
++    return raw
++
++def prior_journals_clear(path,run,environment):
++    require(not path.exists() and not path.is_symlink(),'Intent already exists; no retry even UNKNOWN')
++    observations=[]
++    for prior in sorted(path.parent.glob('TREE_FRESH200_TRAIN_ONCE-*.json')):
++        value,sha,_=read_bound(prior)
++        require(value.get('status')=='SUBMITTED' and value.get('cluster_name')==CLUSTER
++                and type(value.get('job_id')) is int and value['job_id']>0,'Previous unknown/legacy/foreign intent blocks dispatch')
++        job=str(value['job_id'])
++        output=value.get('parsable_stdout');require(output in (job,job+';'+CLUSTER),'Foreign prior submit suffix')
++        raw=query(['sacct','--local','-X','-n','-P','-j',job,'-o','JobIDRaw,Cluster,State,ExitCode'],run,environment)
++        rows=[line.split('|') for line in raw.splitlines() if line.strip()]
++        require(len(rows)==1 and len(rows[0])==4 and rows[0][0]==job and rows[0][1]==CLUSTER
++                and rows[0][2] in TERMINAL and re.fullmatch(r'\d+:\d+',rows[0][3]),'Previous own terminal lineage unknown; accounting failure never means stopped')
++        observations.append(dict(path=str(prior),sha256=sha,accounting_stdout=raw))
++    return observations
++
++def parse_submission(result):
++    require(result.returncode==0 and result.stderr=='','Submit not exactly confirmed')
++    require(type(result.stdout) is str and re.fullmatch(r'[1-9][0-9]*(;wuhan-h100)?\n?',result.stdout),'Foreign/ambiguous submit suffix')
++    parsable=result.stdout.rstrip('\n');return int(parsable.split(';')[0]),parsable
++
++def submit(package_path,manifest_sha,review_path,review_sha,script_path,script_sha,*,run=subprocess.run,hostname=None):
++    require((socket.gethostname() if hostname is None else hostname).split('.')[0]==NODE,'Dispatcher only runs on own h100-9')
++    from calibration_contract import forbid_recovery_environment
++    forbid_recovery_environment(os.environ)
++    require(not any(k in os.environ for k in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Production dispatch forbids inherited zero-only flags')
++    environment=local_environment(os.environ);identity=cluster_identity(run,environment)
++    package_path=Path(package_path)
++    require(package_path.is_absolute() and package_path.is_relative_to(ROOT/'instruct300/candidates'),'Own candidate directory required')
++    manifest,_,_=read_bound(package_path/'manifest.json',manifest_sha)
++    require(manifest['scope']=='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW'
++            and manifest['stage']=='fresh_mu_train200' and manifest['bootstrap_thresholds_accepted'] is True
++            and manifest['production_thresholds_accepted'] is False,'Only independently frozen first-five bootstrap package may dispatch')
++    _,pins=production_inputs(manifest,manifest_sha256=manifest_sha,dispatch_review_descriptor=dict(path=str(review_path),sha256=review_sha))
++    release,_,_=read_bound(review_path,review_sha)
++    path=Path(manifest['dispatch']['once_intent'])
++    require(path.parent==ROOT/'instruct300' and re.fullmatch(INTENT_RE,path.name)
++            and manifest['dispatch']['cluster_name']==CLUSTER and release['dispatch_intent_path']==str(path),'Fixed reviewed NEW production intent/cluster required')
++    from build_package_draft import read_regular_bound
++    for name,expected in manifest['files'].items():
++        relative=Path(name);require(not relative.is_absolute() and '..' not in relative.parts,'Unsafe production package member')
++        read_regular_bound(package_path/relative,expected)
++    require(Path(__file__).resolve()==(package_path/'submit_once.py').resolve(),'Dispatcher is not the reviewed package source')
++    script=read_regular_bound(script_path,script_sha)
++    require(release['dispatch_renderer_sha256']==manifest['files']['render_dispatch.py']
++            and release['dispatch_submitter_sha256']==manifest['files']['submit_once.py'],'Exact dispatcher/renderer source not independently bound')
++    # Verify rendered actual argv/script exactly, not substring directives.
++    from render_dispatch import render
++    require(script==render(package_path,manifest_sha,review_path,review_sha,72).encode(),'Submitted script differs from exact reviewed production renderer')
++    lock_path=ROOT/'instruct300/FRESH200_TRAIN_DISPATCH.lock'
++    fd=os.open(lock_path,os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)
++    try:
++        require(stat.S_ISREG(os.fstat(fd).st_mode),'Dispatch lock must be ordinary file')
++        fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
++        prior=prior_journals_clear(path,run,environment);queue=queue_clear(run,environment)
++        initial=dict(status='SUBMITTING',cluster_name=CLUSTER,local_cluster_identity=identity,node_list=NODE,
++            manifest_sha256=manifest_sha,review_sha256=review_sha,dispatch_intent_path=str(path),
++            dispatch_script_sha256=script_sha,production_input_pins=pins,prior_accounting=prior,
++            queue_stdout=queue,start_epoch=time.time(),stdout=None,stderr=None,job_id=None)
++        create_journal(path,initial)
++        try:
++            result=run(['sbatch','--parsable',str(script_path)],env=environment,text=True,capture_output=True,timeout=60)
++            job,parsable=parse_submission(result)
++            final=dict(initial,status='SUBMITTED',job_id=job,run_id='tree-fresh200-train-'+str(job),
++                stdout=result.stdout,stderr=result.stderr,returncode=result.returncode,parsable_stdout=parsable,end_epoch=time.time())
++        except BaseException as error:
++            final=dict(initial,status='UNKNOWN',error_type=type(error).__name__,error=str(error),end_epoch=time.time(),
++                timeout_stdout=timeout_output(getattr(error,'stdout',None)),timeout_stderr=timeout_output(getattr(error,'stderr',None)))
++            finalize_journal(path,final)
++            raise
++        finalize_journal(path,final);return final
++    finally:os.close(fd)
++
++if __name__=='__main__':
++    p=argparse.ArgumentParser(description=__doc__)
++    for key in ('package','manifest-sha','release-path','release-sha','script','script-sha'):p.add_argument('--'+key,required=True)
++    args=p.parse_args();print(json.dumps(submit(args.package,args.manifest_sha,args.release_path,args.release_sha,args.script,args.script_sha),sort_keys=True))
+--- work/tree-fresh200-train-runtime-draft/supervisor.py
++++ work/tree-fresh200-train-runtime-v2/supervisor.py
+@@ -7,6 +7,7 @@
+ from types import SimpleNamespace
+ from calibration_contract import validate_fresh_start,protected_processes,forbid_recovery_environment
+ from production_contract import production_inputs,read_bound,publish_external_approval
++from slurm_identity import verify_runtime,install_local_environment,submitted_lineage
+ from train_monitor import CpuChecks,guard_health,verify_terminal,progress_evidence
+ from tree_shared_owned_runtime_fixed import ROOT,require,sha,cgroup_scope,cgroup_pids,OwnedProcesses,process_sample,gpu_sample,available
+ TOOLS=Path(__file__).resolve().parent
+@@ -62,6 +63,8 @@
+ 
+ def main():
+     supervisor_started=time.time()
++    allocation_identity=verify_runtime()
++    removed_scheduler_environment=install_local_environment(os.environ)
+     a=SimpleNamespace(stage=PACKAGE['stage'])
+     global PRODUCTION_THRESHOLDS
+     require(PACKAGE['scope']=='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW','Unfrozen production draft cannot run')
+@@ -87,15 +90,19 @@
+     scope,relative=cgroup_scope(job); owned=CandidateOwnedProcesses(scope,relative)
+     for port in (18082,16382): available(port)
+     for key in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'): os.environ.pop(key,None)
+-    allocation=subprocess.check_output(['scontrol','show','job',job],text=True)
+-    require('JobState=RUNNING' in allocation and 'OverSubscribe=NO' in allocation and 'TresPerNode=gres:gpu:8' in allocation and 'CPUs/Task=32' in allocation,'Proper exclusive8GPU allocation required')
+-    cpu_match=re.search(r'\bNumCPUs=(\d+)',allocation)
+-    require(cpu_match is not None,'Missing actual CPU allocation evidence')
+-    allocated_cpus=int(cpu_match.group(1))
++    require(allocation_identity['job_id']==int(job),'Queried allocation numeric identity differs')
++    allocation=allocation_identity['allocation_stdout']
++    allocated_cpus=allocation_identity['allocated_cpus']
++    from production_contract import submitted_intent
++    submitted_intent(PACKAGE['dispatch']['once_intent'],os.environ['TREE_INSTRUCT_PACKAGE_SHA256'],os.environ['TREE_INSTRUCT_REVIEW_SHA256'],job,
++                     cluster_name=allocation_identity['cluster_name'],node_list=allocation_identity['node_list'],run_id='tree-fresh200-train-'+job)
+     run=ROOT/'runs'/f'tree-fresh200-train-{job}'; run.mkdir()
+     for name in ('output','runtime','cache'): (run/name).mkdir()
+     for name in ('ray','tmp'): (run/'runtime'/name).mkdir()
+     (run/'allocation.txt').write_text(allocation)
++    identity_path=run/'allocation-identity.json'
++    with identity_path.open('x') as stream:json.dump(dict(allocation_identity,manifest_sha256=os.environ['TREE_INSTRUCT_PACKAGE_SHA256'],
++       review_sha256=os.environ['TREE_INSTRUCT_REVIEW_SHA256'],run_id=run.name,removed_scheduler_environment=removed_scheduler_environment),stream,indent=2)
+     alias=Path('/tmp')/f'sst-tree-fresh200-train-{job}'
+     require(not alias.exists() and not alias.is_symlink(),'Existing own runtime alias'); alias.symlink_to(run/'runtime',target_is_directory=True)
+     os.environ['PATH']=str(ROOT/'env/bin')+':'+os.environ['PATH']
+@@ -109,7 +116,7 @@
+     os.environ.pop('WANDB_API_KEY',None)
+     os.environ.update(TREE_VALIDATION_TRAINER_SHA256=PACKAGE['files']['source/repo/verl/trainer/ppo/ray_trainer.py'],TREE_FRESH_MAIN_PPO_SHA256=PACKAGE['files']['source/repo/verl/trainer/main_ppo.py'],TREE_INSTRUCT_TOOLS=str(TOOLS),TREE_INSTRUCT_MODEL=str(MODEL),TREE_COMMON_DATA=str(ROOT/'instruct300/common-data'),SEARCH_R1_MODEL_IDENTITY=PACKAGE['model_identity']['sha256'],SEARCH_R1_BASELINE_CHECKPOINTS=str(run/'checkpoints'))
+     require(not any(name in os.environ for name in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Calibration environment appeared before training')
+-    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'production_thresholds_accepted':True,'original_sampler_actor_probability_gate_accepted':False}
++    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':True,'production_thresholds_accepted':False,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
+     try:
+         value,steps=configuration(run,a.stage); config_hash=sha(run/'resolved.yaml')
+         os.environ.update(SEARCH_R1_BASELINE_AUDIT_DIR=str(run/'output/entry-audit'),SEARCH_R1_BASELINE_RUN_ID=run.name,
+@@ -118,7 +125,9 @@
+           cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],gpu_leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES']),cgroup=str(scope),
+           runtime='same h100-9 allocation: GPU E5 and complete 8-GPU sharded FP16 index, trainer, Ray; loopback only; zero online remote RPC',
+           supervisor_source_sha256=sha(__file__),guard_source_sha256=sha(ROOT/'tools/resource_guard_identity.py'),owned_runtime_source_sha256=sha(ROOT/'tools/tree_shared_owned_runtime_fixed.py'),initial_gpu=gpu_sample()),indent=2)+'\n')
+-        guard=owned.spawn([sys.executable,str(ROOT/'tools/resource_guard_identity.py'),'--output',str(run/'resource-samples.jsonl')],run/'guard.log')
++        guard=owned.spawn([sys.executable,str(TOOLS/'guard_entry.py'),'--source',str(ROOT/'tools/resource_guard_identity.py'),
++          '--source-sha',PACKAGE['external_files'][str(ROOT/'tools/resource_guard_identity.py')],
++          '--identity',str(identity_path),'--identity-sha',sha(identity_path),'--output',str(run/'resource-samples.jsonl')],run/'guard.log')
+         deadline=time.monotonic()+30
+         while not ((run/'resource-samples.jsonl').is_file() and (run/'resource-samples.ready').is_file()):
+             require(guard.poll() is None and time.monotonic()<deadline,'Own GPU guard failed'); time.sleep(.2)
+@@ -197,7 +206,7 @@
+         result.update(status='ACTUAL_FRESH200_TRAINING_COMPLETE_PENDING_FINAL_INDEPENDENT_REVIEW',training_body_exit_code=training.returncode,entry_config_verified=True,parent_completed_outer=0,actual_completed_outer=200,
+             actual_rank_optimizer_returns=terminal['actual_rank_optimizer_returns'],opportunities_processed=terminal['opportunities_processed'],
+             actual_calls_per_rank=terminal['actual_calls_per_rank'],training_attempts=terminal['training_attempts'],scheduler_steps_each_rank=200,
+-            actual_training_accepted=False,final_effect_independently_accepted=False,original_sampler_actor_probability_gate_accepted=False,production_thresholds_accepted=True,terminal_evidence_sha256=sha(run/'output/train200-terminal.json'),acceptance_release=acceptance_release)
++            actual_training_accepted=False,final_effect_independently_accepted=False,original_sampler_actor_probability_gate_accepted=False,production_thresholds_accepted=acceptance_release['full_run_thresholds_accepted'],terminal_evidence_sha256=sha(run/'output/train200-terminal.json'),acceptance_release=acceptance_release)
+     except BaseException as err:
+         result.update(error_type=type(err).__name__,error=str(err)); raise
+     finally:
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/test_partial_raw_cpu.py
+@@ -0,0 +1,278 @@
++"""CPU-only fixtures: plain dictionaries and tiny non-PT bytes, no Torch import."""
++import copy
++import hashlib
++import math
++from pathlib import Path
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++
++import partial_raw_evidence as raw
++from check_partial_raw_cpu import held_state, verify
++
++
++def digest(value):
++    result = hashlib.sha256()
++    def visit(value):
++        if isinstance(value, dict):
++            for key in sorted(value, key=repr):
++                visit(key)
++                visit(value[key])
++        elif isinstance(value, (tuple, list)):
++            result.update(type(value).__name__.encode())
++            for entry in value:
++                visit(entry)
++        else:
++            result.update(repr((type(value).__name__, value)).encode())
++    visit(value)
++    return result.hexdigest()
++
++
++def finite(value):
++    if isinstance(value, dict):
++        for entry in value.values():
++            finite(entry)
++    elif isinstance(value, (tuple, list)):
++        for entry in value:
++            finite(entry)
++    elif isinstance(value, float) and not math.isfinite(value):
++        raise ValueError('Nonfinite fixture')
++
++
++def ledger():
++    return [dict(index=index, rows=16, local_row_indices=list(range((index-1)*16, index*16)),
++                 status='SKIPPED_EMPTY', actual_writes=0) for index in range(1, 21)]
++
++
++class PartialRawTests(unittest.TestCase):
++    def setUp(self):
++        # An explicit workspace directory avoids /var -> /private/var on Mac.
++        self.temporary = tempfile.TemporaryDirectory(prefix='.partial-raw-fixture-', dir=Path(__file__).absolute().parent)
++        self.root = Path(self.temporary.name)
++        self.run = self.root / 'run-123'
++        self.identity = dict(job_id='123', run_id='run-123', code_commit='a'*40, config_sha256='b'*64,
++            data_identity='c'*64, model_identity='d'*64, training_protocol=raw.PROFILE,
++            attempted_outer=1, completed_outer=0, attempt_id=1)
++        self.directory = raw.partial_directory(self.run, self.identity)
++        self.directory.mkdir(parents=True)
++        workers = []
++        for rank in range(8):
++            workers.append(dict(self.file_record(f'worker-{rank:02d}.pt'), rank=rank, world_size=8,
++                identity=dict(self.identity, rank=rank, world_size=8), status='PARTIAL_WORKER_STATE_SAVED',
++                committed_optimizer_calls=0, scheduler_step_before_actual=0, scheduler_step_after_actual=0,
++                optimizer_opportunity_ledger=ledger(), model_adam_finite=True, gradients_finite=False,
++                state_finite=False, resume_permitted=False, automatic_rollback=False, outer_completed=False,
++                total_committed_optimizer_calls=0))
++        self.partial = dict(protocol=raw.PROTOCOL, identity=self.identity,
++            worker_outcome=dict(protocol=raw.PROTOCOL, identity=self.identity, status='PARTIAL_WORKER_STATE_SAVED', worker_states=workers),
++            worker_states_verified=True, verification_error=None, outer_completed=False, automatic_rollback=False,
++            automatic_resume_supported=False, attempted_outer=1, completed_outer_updates=0,
++            driver=dict(self.file_record('driver.pt', include_bytes=False), completed_outer_updates=0,
++                        consumed_cursor=512, consumed_epoch=0),
++            actor_inputs=dict(self.file_record('actor-inputs.pt'), rows=2560,
++                              fields=['responses', 'attention_mask', 'loss_mask', 'old_log_probs', 'sampled_old_log_probs']))
++
++    def tearDown(self):
++        self.temporary.cleanup()
++
++    def file_record(self, name, include_bytes=True):
++        path = self.directory / name
++        data = ('tiny non-PT fixture: ' + name).encode()
++        path.write_bytes(data)
++        record = dict(path=str(path), sha256=hashlib.sha256(data).hexdigest())
++        if include_bytes:
++            record['bytes'] = len(data)
++        return record
++
++    def worker(self):
++        return dict(version='tree_partial_worker_v1', identity=dict(self.identity, rank=0, world_size=8),
++            parameters={'p': [1.0]}, local_shards={'p': [1.0]}, buffers={}, gradients={'p': [float('nan')]},
++            private_gradient_tensors={'p': {}}, optimizer={'state': {}}, scheduler={'last_epoch': 0},
++            parameter_layout={'p': {'shape': [1]}}, rng={'python': (1,), 'numpy': (1,), 'torch': b'rng'},
++            module_training_flags=[{'name': '', 'training': True}], resume_permitted=False,
++            automatic_rollback=False, outer_completed=False, state_finite=False,
++            model_adam_finite=True, gradients_finite=False, committed_optimizer_calls=0,
++            scheduler_step_before_actual=0, scheduler_step_after_actual=0, optimizer_opportunity_ledger=ledger())
++
++    def test_complete_ten_file_mapping_no_driver_size_invented(self):
++        mapping = raw.verify_partial_raw_files(self.run, self.partial)
++        self.assertEqual(len(mapping), 10)
++        self.assertEqual(set(mapping), {str(path) for path, _, _ in raw.raw_file_records(self.run, self.partial)})
++        self.assertNotIn('bytes', self.partial['driver'])
++        self.assertNotIn('torch', sys.modules)
++
++    def test_every_missing_worker_driver_and_actor_rejected(self):
++        for path, _, _ in raw.raw_file_records(self.run, self.partial):
++            with self.subTest(path=path.name):
++                data = path.read_bytes()
++                path.unlink()
++                with self.assertRaises((ValueError, OSError)):
++                    raw.verify_partial_raw_files(self.run, self.partial)
++                path.write_bytes(data)
++        bad = copy.deepcopy(self.partial)
++        bad['worker_outcome']['worker_states'].pop()
++        with self.assertRaises(ValueError):
++            raw.verify_partial_raw_files(self.run, bad)
++
++    def test_sha_and_byte_count_drift_rejected(self):
++        for group in ('driver', 'actor_inputs'):
++            with self.subTest(group=group):
++                bad = copy.deepcopy(self.partial)
++                bad[group]['sha256'] = '0'*64
++                with self.assertRaises(ValueError):
++                    raw.verify_partial_raw_files(self.run, bad)
++        bad = copy.deepcopy(self.partial)
++        bad['worker_outcome']['worker_states'][3]['sha256'] = '0'*64
++        with self.assertRaises(ValueError):
++            raw.verify_partial_raw_files(self.run, bad)
++        for group in ('driver', 'actor_inputs'):
++            bad = copy.deepcopy(self.partial)
++            bad[group]['bytes'] = 1
++            with self.assertRaises(ValueError):
++                raw.verify_partial_raw_files(self.run, bad)
++        bad = copy.deepcopy(self.partial)
++        bad['worker_outcome']['worker_states'][0]['bytes'] = True
++        with self.assertRaises(ValueError):
++            raw.verify_partial_raw_files(self.run, bad)
++
++    def test_file_and_directory_symlinks_rejected(self):
++        path = self.directory / 'worker-03.pt'
++        target = self.root / 'target.bin'
++        path.rename(target)
++        path.symlink_to(target)
++        with self.assertRaises((ValueError, OSError)):
++            raw.verify_partial_raw_files(self.run, self.partial)
++        path.unlink()
++        target.rename(path)
++        relocated = self.root / 'relocated'
++        self.directory.rename(relocated)
++        self.directory.symlink_to(relocated, target_is_directory=True)
++        with self.assertRaises((ValueError, OSError)):
++            raw.verify_partial_raw_files(self.run, self.partial)
++
++    def test_wrong_attempt_path_rank_and_identity_rejected(self):
++        for mutation in ('path', 'rank', 'identity'):
++            bad = copy.deepcopy(self.partial)
++            if mutation == 'path':
++                bad['driver']['path'] = str(self.root / 'driver.pt')
++            elif mutation == 'rank':
++                bad['worker_outcome']['worker_states'][0]['rank'] = True
++            else:
++                bad['worker_outcome']['worker_states'][2]['identity']['attempt_id'] = 2
++            with self.assertRaises(ValueError):
++                raw.verify_partial_raw_files(self.run, bad)
++
++    def test_actual_same_size_byte_drift_rejected(self):
++        path = self.directory / 'worker-07.pt'
++        original = path.read_bytes()
++        path.write_bytes(b'X' + original[1:])
++        with self.assertRaises(ValueError):
++            raw.verify_partial_raw_files(self.run, self.partial)
++
++    def test_same_fd_loader_tiny_non_pt_bytes_and_mutation(self):
++        path = self.root / 'ordinary.bin'
++        data = b'tiny non-PT fixture only'
++        path.write_bytes(data)
++        expected = hashlib.sha256(data).hexdigest()
++        def loader(stream, **kwargs):
++            self.assertEqual(kwargs, {'map_location': 'cpu', 'weights_only': False})
++            self.assertEqual(stream.tell(), 0)
++            return stream.read()
++        self.assertEqual(held_state(path, expected, loader), data)
++        def mutation(stream, **kwargs):
++            value = stream.read()
++            path.write_bytes(b'changed')
++            return value
++        with self.assertRaises(ValueError):
++            held_state(path, expected, mutation)
++
++    def test_gradient_nan_preserved_but_model_nan_and_logical_drift_rejected(self):
++        state = self.worker()
++        record = self.partial['worker_outcome']['worker_states'][0]
++        record['logical_state_sha256'] = digest(state)
++        result = raw.verify_worker_logical(state, self.partial, record, digest, finite, cumulative_calls=0)
++        self.assertFalse(result['gradients_finite'])
++        self.assertTrue(math.isnan(state['gradients']['p'][0]))
++        for mutation in ('model', 'logical', 'scheduler', 'ledger', 'identity'):
++            bad = copy.deepcopy(state)
++            receipt = copy.deepcopy(record)
++            if mutation == 'model':
++                bad['parameters']['p'] = [float('nan')]
++            elif mutation == 'logical':
++                receipt['logical_state_sha256'] = '0'*64
++            elif mutation == 'scheduler':
++                bad['scheduler']['last_epoch'] = 1
++            elif mutation == 'ledger':
++                bad['optimizer_opportunity_ledger'][0]['rows'] = 15
++            else:
++                bad['identity']['attempt_id'] = 2
++            if mutation != 'logical':
++                receipt['logical_state_sha256'] = digest(bad)
++            with self.assertRaises(ValueError):
++                raw.verify_worker_logical(bad, self.partial, receipt, digest, finite, cumulative_calls=0)
++
++    def test_actual_driver_sampler_rng_noresume_and_actor_context(self):
++        driver = dict(version=3, snapshot_kind=raw.PROTOCOL, identity=self.identity,
++            attempted_outer=1, completed_outer_updates=0, outer_completed=False, automatic_rollback=False,
++            automatic_resume_supported=False, recovery_provenance=None,
++            consumed_sampler=dict(rows=169028, batch_size=512, identity=self.identity['data_identity'], shuffle=True,
++                cursor=512, epoch=0, order=list(range(169028)), generator=b'generator'),
++            rng={'python': (1,), 'numpy': (1,), 'torch': b'rng'},
++            algorithm=dict(method='tree_grpo', tree_rng=(1,), stage={}),
++            guard_continue_accounting=dict(protocol='tree_guard_continue_fresh_rollout_v1', training_attempts=1, completed_outer_updates=0))
++        self.partial['driver']['logical_state_sha256'] = digest(driver)
++        self.assertEqual(raw.verify_driver_logical(driver, self.partial, digest, finite)['consumed_cursor'], 512)
++        for mutate in ('cursor', 'rng', 'resume'):
++            bad = copy.deepcopy(driver)
++            if mutate == 'cursor':
++                bad['consumed_sampler']['cursor'] = 0
++            elif mutate == 'rng':
++                bad['rng']['torch'] = None
++            else:
++                bad['automatic_resume_supported'] = True
++            self.partial['driver']['logical_state_sha256'] = digest(bad)
++            with self.assertRaises(ValueError):
++                raw.verify_driver_logical(bad, self.partial, digest, finite)
++        actor = dict(batch={key: [float('nan')]*2560 for key in self.partial['actor_inputs']['fields']},
++            non_tensor_batch={'uid': list(range(2560))}, meta_info=dict(
++                tree_partial_context=dict(protocol=raw.PROTOCOL, identity=self.identity, directory=str(self.directory)),
++                baseline_outer_step=1, baseline_attempt_id=1, baseline_completed_outer=0))
++        self.assertEqual(raw.verify_actor_inputs_logical(actor, self.run, self.partial)['actual_rows'], 2560)
++        for mutation in ('context', 'rows'):
++            bad = copy.deepcopy(actor)
++            if mutation == 'context':
++                bad['meta_info']['tree_partial_context']['identity']['attempt_id'] = 2
++            else:
++                bad['batch']['responses'].pop()
++            with self.assertRaises(ValueError):
++                raw.verify_actor_inputs_logical(bad, self.run, self.partial)
++
++    def test_empty_partial_report_explicit_zero_files_and_deserializations(self):
++        checkpoint = self.run / 'checkpoints/training_state/global_step_5/manifest.json'
++        checkpoint.parent.mkdir(parents=True)
++        value = {'identity': {'guard_continue_accounting': {'partial_evidence': []}}}
++        observed = dict(training_attempts=5, record_sha256={}, all_skipped=[], credited=[
++            {'outer': index, 'attempt': index, 'actual_writes_per_rank': {str(rank): 1 for rank in range(8)}} for index in range(1, 6)])
++        package = dict(code_commit='a'*40, common_data_identity='c'*64, model_identity={'sha256': 'd'*64})
++        with patch.dict(os_environ(), {'CUDA_VISIBLE_DEVICES': ''}), \
++             patch('check_partial_raw_cpu.read_json_bound', return_value=(value, 'e'*64, b'{}')), \
++             patch('production_contract.checkpoint_manifest', return_value=(value, 'e'*64)), \
++             patch('attempt_accounting.attempt_results', return_value=observed), \
++             patch('attempt_accounting.checkpoint_accounting', return_value={'partial_evidence': []}):
++            report = verify(self.run, package, 'b'*64, 5, self.root / 'report.json')
++        self.assertEqual(report['status'], 'FRESH200_PARTIAL_RAW_CPU_REVERIFIED')
++        self.assertEqual(report['raw_files_checked'], 0)
++        self.assertEqual(report['pt_deserialization_count'], 0)
++        self.assertFalse(report['actual_pt_deserialization'])
++        self.assertFalse(report['cuda_initialized'])
++        self.assertEqual(report['logical_records'], [])
++
++
++def os_environ():
++    import os
++    return os.environ
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- /dev/null
++++ work/tree-fresh200-train-runtime-v2/test_production_v2_cpu.py
+@@ -0,0 +1,250 @@
++"""V2 real contract calls with tiny IO and injected scheduler, never real Slurm."""
++import ast
++import base64
++import copy
++import json
++import os
++from pathlib import Path
++import tempfile
++from types import SimpleNamespace as N
++import unittest
++from unittest.mock import patch
++import production_contract as c
++import slurm_identity as s
++import submit_once as submitter
++import guard_entry
++from test_runtime_contract_cpu import observation,write,identity,direct,allskip,checkpoint,HERE,package
++
++ALLOCATION='JobId=99 JobState=RUNNING NodeList=h100-9 BatchHost=h100-9 NumNodes=1 OverSubscribe=NO TresPerNode=gres:gpu:8 CPUs/Task=32 NumCPUs=96 Requeue=0 Restarts=0 TimeLimit=3-00:00:00 MinMemoryNode=256G'
++
++def cluster_proof():return dict(cluster_name=s.CLUSTER,local_queries=True,configuration_stdout='ClusterName = wuhan-h100\n',federation_stdout='')
++def journal(path):return dict(status='SUBMITTED',cluster_name=s.CLUSTER,node_list=s.NODE,job_id=99,run_id='tree-fresh200-train-99',
++    manifest_sha256='m',review_sha256='r',dispatch_intent_path=str(path),parsable_stdout='99;wuhan-h100',stdout='99;wuhan-h100\n',stderr='',returncode=0,local_cluster_identity=cluster_proof())
++def scheduler(command,**kwargs):
++    if command[-1]=='config':out='ClusterName = wuhan-h100\n'
++    elif command[-1]=='federation':out=''
++    else:out=ALLOCATION
++    return N(returncode=0,stdout=out,stderr='')
++
++def five_fixture(root):
++    p,_=observation(root/'observation');run=root/'tree-fresh200-train-99';gate=run/'output/acceptance-step5'
++    for outer in range(1,6):direct(run,outer,writes=3)
++    ranks=c.direct_rank_records(run,p,'config',5);bindings={}
++    config={'target_old_policy_kl':.2,'negative_tail_limit':.01,'sampling_probability_correction':{'initial_actor_repeat_max_abs_delta':0.}}
++    for outer in range(1,6):
++        for rank in range(8):
++            path=run/'output/tree-rank-audit/policy-safety'/f'step-{outer:06d}-attempt-{outer:06d}-rank-{rank:02d}-event-0001.json'
++            record=dict(outer_step=outer,attempt_id=outer,rank=rank,monitor_rows=32,config=config,
++                probability_denominator='actual_behavior_mu',original_sampler_actor_consistency_accepted=False,
++                decision=dict(allowed=True,sampled_old_policy_kl=.001,negative_tail_fraction=0.,
++                              initial_actor_repeat_checked=True,global_monitor_actor_repeat_max_abs_delta=0.,reasons=[]))
++            bindings[str(path)]=write(path,record)['sha256']
++    proofs=dict(full_state_manifest_sha256='state',hf_reload_report_sha256='hfcheck',state_cpu_report_sha256='statecheck',behavior_mu_cpu_report_sha256='mucheck',
++        partial_raw_cpu_report_sha256='rawcheck',development={'sha256':'dev'},rank_counts=ranks,
++        tree_and_safety=dict(evidence_sha256=bindings,observed_refusal_events=0))
++    ready=write(gate/'ready.json',dict(completed_outer_updates=5,next_outer_update=6,actual_update_limit=200,full_state_manifest_sha256='state',hf_identity={'sha256':'hf'}))
++    assessment=dict(identity(run),status='INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED',fork_turns='none',training_protocol=c.PROFILE,
++        completed_outer=5,continue_range=[6,200],unchanged_thresholds_accepted=True,original_sampler_actor_gate_accepted=False,ready_sha256=ready['sha256'],
++        bootstrap_thresholds_sha256=p['production_inputs']['threshold_acceptance']['sha256'],calibration_ready_sha256=p['production_inputs']['actual_calibration_ready']['sha256'],
++        calibration_acceptance_sha256=p['production_inputs']['actual_calibration_acceptance']['sha256'],values=p['bootstrap_thresholds'],
++        observations=c.short_threshold_observations(run,proofs,p['bootstrap_thresholds']),partial_raw_cpu_report_sha256='rawcheck',assessment_rationale='Synthetic CPU fixture, not actual training evidence')
++    descriptor=write(gate/'external-threshold-assessment.json',assessment)
++    review=dict(identity(run),status='PASS',fork_turns='none',ready_sha256=ready['sha256'],short_training_thresholds_accepted=True,threshold_assessment_sha256=descriptor['sha256'],
++        partial_raw_cpu_report_sha256='rawcheck',full_state_reload_accepted=True,full_hf_reload_accepted=True,rank_tree_numerics_accepted=True,fixed512_evaluation_accepted=True,
++        behavior_mu_binding_accepted=True,full_state_manifest_sha256='state',hf_identity_sha256='hf',hf_reload_report_sha256='hfcheck',state_cpu_report_sha256='statecheck',behavior_mu_cpu_report_sha256='mucheck',development_report_sha256='dev',direct_rank_record_sha256=ranks['record_sha256'])
++    reviewer=write(gate/'external-review.json',review);write(gate/'independent-envelope.json',dict(review=reviewer,threshold_assessment=descriptor))
++    return run,p,proofs,assessment,review
++
++class V2Tests(unittest.TestCase):
++    def test_foreign_same_id_suffix_legacy_unknown_and_own_lineage(self):
++        with tempfile.TemporaryDirectory() as temp:
++            path=Path(temp).resolve()/'intent.json';value=journal(path);write(path,value)
++            kw=dict(cluster_name=s.CLUSTER,node_list=s.NODE,run_id='tree-fresh200-train-99',wait_seconds=0)
++            self.assertEqual(c.submitted_intent(path,'m','r','99',**kw)['job_id'],99)
++            cases=[dict(cluster_name='foreign'),dict(parsable_stdout='99;foreign',stdout='99;foreign\n'),dict(job_id=True),dict(status='UNKNOWN'),dict(run_id='other'),dict(node_list='h100-16'),dict(cluster='foreign')]
++            for fields in cases:
++                with self.subTest(fields=fields):
++                    bad=dict(value,**fields);write(path,bad)
++                    with self.assertRaises(ValueError):c.submitted_intent(path,'m','r','99',**kw)
++            bad=value.copy();bad.pop('cluster_name');write(path,bad)
++            with self.assertRaises(ValueError):c.submitted_intent(path,'m','r','99',**kw)
++    def test_readonly_pending_finalization_wait_and_timeout(self):
++        with tempfile.TemporaryDirectory() as temp:
++            path=Path(temp).resolve()/'intent.json';value=journal(path);write(path,dict(value,status='SUBMITTING'));elapsed=[0.];calls=[]
++            def sleep(t):elapsed[0]+=t;calls.append(t);write(path,value)
++            kw=dict(cluster_name=s.CLUSTER,node_list=s.NODE,run_id='tree-fresh200-train-99',clock=lambda:elapsed[0],sleep=sleep)
++            self.assertEqual(c.submitted_intent(path,'m','r','99',**kw)['status'],'SUBMITTED');self.assertEqual(calls,[.2])
++            write(path,dict(value,status='SUBMITTING'))
++            with self.assertRaises(ValueError):c.submitted_intent(path,'m','r','99',wait_seconds=0,**kw)
++    def test_actual_runtime_queries_controlled_env_exact_identity(self):
++        calls=[]
++        def run(cmd,**kw):calls.append((cmd,kw));return scheduler(cmd,**kw)
++        env={'SLURM_JOB_ID':'99','SLURM_JOB_NODELIST':'h100-9','SLURM_CLUSTER_NAME':s.CLUSTER,'SLURM_CONF':'foreign','SBATCH_CLUSTERS':'foreign','SCANCEL_CLUSTERS':'foreign'}
++        observed=s.verify_runtime(env,'h100-9',run);self.assertEqual(observed['allocated_cpus'],96)
++        self.assertTrue(all('--local' in cmd and not any(k in kw['env'] for k in s.EXCLUDED) and not any(k.startswith(s.PREFIXES) for k in kw['env']) for cmd,kw in calls))
++        for field,bad in [('JobId','777'),('NodeList','h100-16'),('CPUs/Task','320'),('MinMemoryNode','128G'),('TimeLimit','UNLIMITED'),('Requeue','1'),('Restarts','1')]:
++            value=ALLOCATION.replace(field+'='+dict(item.split('=',1) for item in ALLOCATION.split())[field],field+'='+bad)
++            with self.subTest(field=field),self.assertRaises(ValueError):s.allocation_identity(value,'99',s.CLUSTER)
++        with self.assertRaises(ValueError):s.allocation_identity(ALLOCATION+' JobId=777','99',s.CLUSTER)
++    def test_foreign_local_config_runtime_declaration_federation_query_errors(self):
++        for output in ['ClusterName = foreign\n','ClusterName = wuhan-h100\nClusterName = wuhan-h100\n']:
++            with self.assertRaises(ValueError):s.cluster_identity(lambda *a,**k:N(returncode=0,stdout=output,stderr=''),{})
++        with self.assertRaises(ValueError):s.verify_runtime({'SLURM_JOB_ID':'99','SLURM_JOB_NODELIST':s.NODE,'SLURM_CLUSTER_NAME':'foreign'},s.NODE,scheduler)
++        with self.assertRaises(ValueError):s.cluster_identity(lambda cmd,**kw:N(returncode=0,stdout='ClusterName = wuhan-h100\n' if cmd[-1]=='config' else 'FederationName=f',stderr=''),{})
++        with self.assertRaises(ValueError):s.cluster_identity(lambda *a,**kw:N(returncode=1,stdout='',stderr='accounting unreachable'),{})
++    def test_guard_bare_cancel_is_never_executed_and_top_level_original_argv(self):
++        with tempfile.TemporaryDirectory() as temp:
++            path=Path(temp).resolve()/'refusal.json';calls=[];run=guard_entry.guarded_run(lambda *a,**k:calls.append((a,k)),path)
++            with self.assertRaises(RuntimeError):run(['scancel','99'],check=False)
++            self.assertEqual(calls,[]);self.assertFalse(json.loads(path.read_text())['scheduler_cancellation_executed'])
++            run(['other','99'],env={'SLURM_CONF':'foreign','SBATCH_CLUSTERS':'foreign'})
++            self.assertEqual(calls[0][1]['env'],{})
++            tree=ast.parse((HERE/'guard_entry.py').read_text());main=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='main')
++            assignments=[n for n in ast.walk(main) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Attribute) and t.attr=='argv' for t in n.targets)]
++            execs=[n for n in ast.walk(main) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='exec']
++            self.assertTrue(assignments[0].lineno<execs[0].lineno);self.assertNotIn('module.main()',ast.unparse(main))
++    def test_durable_initial_atomic_final_replace_unknown_and_exact_timeout_bytes(self):
++        with tempfile.TemporaryDirectory() as temp:
++            path=Path(temp).resolve()/'intent.json';value=dict(journal(path),status='SUBMITTING');calls=[]
++            original=s.fsync_directory
++            with patch.object(s,'fsync_directory',side_effect=lambda p:(calls.append(Path(p)),original(p))):
++                s.create_journal(path,value);s.finalize_journal(path,dict(value,status='UNKNOWN'))
++            self.assertEqual(calls,[path.parent,path.parent]);self.assertEqual(json.loads(path.read_text())['status'],'UNKNOWN')
++            with self.assertRaises(FileExistsError):s.create_journal(path,value)
++            payload=b'\x00\xffunknown\n';self.assertEqual(base64.b64decode(s.timeout_output(payload)['bytes']),payload)
++            other=path.parent/'new.json';s.create_journal(other,value)
++            with patch.object(s.os,'replace',side_effect=OSError('fixture power loss')):
++                with self.assertRaises(OSError):s.finalize_journal(other,dict(value,status='SUBMITTED'))
++            self.assertEqual(json.loads(other.read_text())['status'],'SUBMITTING')
++    def test_no_duplicate_queue_and_no_foreign_or_unknown_prior_accounting(self):
++        for text in ['99|tree-fresh200-train|RUNNING|gres/gpu:8\n','99|tree-fresh200-train|PENDING|N/A\n','unknown']:
++            with self.assertRaises(ValueError):submitter.queue_clear(lambda *a,**kw:N(returncode=0,stdout=text,stderr=''),{})
++        self.assertEqual(submitter.queue_clear(lambda *a,**kw:N(returncode=0,stdout='',stderr=''),{}),'')
++        with tempfile.TemporaryDirectory() as temp:
++            root=Path(temp).resolve();prior=root/'TREE_FRESH200_TRAIN_ONCE-old.json';target=root/'TREE_FRESH200_TRAIN_ONCE-new.json';value=journal(prior);write(prior,value)
++            run=lambda *a,**kw:N(returncode=0,stdout='99|foreign|COMPLETED|0:0\n',stderr='')
++            with self.assertRaises(ValueError):submitter.prior_journals_clear(target,run,{})
++            run=lambda *a,**kw:N(returncode=0,stdout='99|wuhan-h100|COMPLETED|0:0\n',stderr='')
++            self.assertEqual(len(submitter.prior_journals_clear(target,run,{})),1)
++            write(prior,dict(value,status='UNKNOWN'))
++            with self.assertRaises(ValueError):submitter.prior_journals_clear(target,run,{})
++    def test_submit_result_foreign_ambiguous_suffix_rejected(self):
++        for output in ['99;foreign\n','99;wuhan-h100;foreign\n','99\nextra','99_0\n']:
++            with self.assertRaises(ValueError):submitter.parse_submission(N(returncode=0,stdout=output,stderr=''))
++        self.assertEqual(submitter.parse_submission(N(returncode=0,stdout='99;wuhan-h100\n',stderr='')),(99,'99;wuhan-h100'))
++    def test_zero_only_fullrun_threshold_receipt_is_rejected_but_bootstrap_bound(self):
++        with tempfile.TemporaryDirectory() as temp:
++            p,_=observation(Path(temp).resolve());values={k:c.read_bound(v['path'],v['sha256']) for k,v in p['production_inputs'].items()}
++            self.assertEqual(c.observed_production_inputs(p,values)['target_old_policy_kl'],.2)
++            for fields in [dict(status='INDEPENDENT_FRESH200_MU_PRODUCTION_THRESHOLDS_ACCEPTED',production_thresholds_accepted=True),dict(zero_monitor_sha256={}),dict(zero_rank_observations=[]),dict(assessment_rationale=''),dict(continuation_6_200_accepted=True)]:
++                bad=copy.deepcopy(values);bad['threshold_acceptance'][0].update(fields)
++                with self.subTest(fields=fields),self.assertRaises(ValueError):c.observed_production_inputs(p,bad)
++    def test_actual_dispatch_function_once_and_timeout_preserves_unknown(self):
++        import hashlib
++        import render_dispatch
++        import subprocess
++        for timeout in (False,True):
++            with self.subTest(timeout=timeout),tempfile.TemporaryDirectory() as temp:
++                root=Path(temp).resolve();package=root/'instruct300/candidates/frozen';package.mkdir(parents=True)
++                p,release_descriptor=observation(root/'observations')
++                intent=root/'instruct300/TREE_FRESH200_TRAIN_ONCE-cpu-fixture.json'
++                p.update(scope='FROZEN_PENDING_INDEPENDENT_FRESH200_TRAIN200_PRE_DISPATCH_REVIEW',stage='fresh_mu_train200',
++                    bootstrap_thresholds_accepted=True,production_thresholds_accepted=False,dispatch={'once_intent':str(intent),'cluster_name':s.CLUSTER})
++                for name in ('render_dispatch.py','submit_once.py'):(package/name).write_bytes((HERE/name).read_bytes())
++                p['files']={name:hashlib.sha256((package/name).read_bytes()).hexdigest() for name in ('render_dispatch.py','submit_once.py')}
++                manifest=write(package/'manifest.json',p);release,_,_=c.read_bound(release_descriptor['path'])
++                release.update(manifest_sha256=manifest['sha256'],dispatch_intent_path=str(intent),
++                    dispatch_renderer_sha256=p['files']['render_dispatch.py'],dispatch_submitter_sha256=p['files']['submit_once.py'])
++                release_descriptor=write(root/'release.json',release);calls=[]
++                def run(command,**kw):
++                    calls.append((command,kw))
++                    if command[0]=='squeue':return N(returncode=0,stdout='',stderr='')
++                    if command[0]=='sbatch':
++                        if timeout:raise subprocess.TimeoutExpired(command,60,output=b'\x00\xffunconfirmed',stderr=b'\xfe')
++                        return N(returncode=0,stdout='99;wuhan-h100\n',stderr='')
++                    return scheduler(command,**kw)
++                actual_inputs=c.production_inputs
++                with patch.object(submitter,'ROOT',root),patch.object(render_dispatch,'ROOT',root),patch.object(submitter,'__file__',str(package/'submit_once.py')),patch.object(submitter,'production_inputs',side_effect=lambda *a,**kw:actual_inputs(*a,**kw,trusted_root=root)):
++                    script=root/'dispatch.sbatch';script.write_text(render_dispatch.render(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],72))
++                    script_sha=hashlib.sha256(script.read_bytes()).hexdigest()
++                    args=(package,manifest['sha256'],release_descriptor['path'],release_descriptor['sha256'],script,script_sha)
++                    if timeout:
++                        with self.assertRaises(subprocess.TimeoutExpired):submitter.submit(*args,run=run,hostname=s.NODE)
++                    else:self.assertEqual(submitter.submit(*args,run=run,hostname=s.NODE)['job_id'],99)
++                    value=json.loads(intent.read_text());self.assertEqual(value['status'],'UNKNOWN' if timeout else 'SUBMITTED')
++                    if timeout:self.assertEqual(base64.b64decode(value['timeout_stdout']['bytes']),b'\x00\xffunconfirmed')
++                    with self.assertRaises(ValueError):submitter.submit(*args,run=run,hostname=s.NODE)
++                self.assertEqual(sum(command[0]=='sbatch' for command,kw in calls),1)
++                self.assertTrue(all('-M' not in command and 'SLURM_CONF' not in kw['env'] for command,kw in calls))
++    def test_actual_first5_original_review_bytes_need_short_assessment(self):
++        with tempfile.TemporaryDirectory() as temp:
++            run,p,proofs,assessment,review=five_fixture(Path(temp).resolve());gate=run/'output/acceptance-step5'
++            result=c.publish_external_approval(run,p,'config',proofs)
++            self.assertEqual((gate/'approved.json').read_bytes(),(gate/'external-review.json').read_bytes());self.assertTrue(result['full_run_thresholds_accepted'])
++    def test_existing_exact_f7_source_none_receipt_is_source_only(self):
++        with tempfile.TemporaryDirectory() as temp:
++            p,_=observation(Path(temp).resolve());values={k:c.read_bound(v['path'],v['sha256']) for k,v in p['production_inputs'].items()}
++            frozen=c.read_bound(HERE.parent/'tree-fresh200-f7-v8-v6-context-free-review/RECEIPT.json','6f2ceaebd1ff6c04e9330b404e17ff7db9df7493db5c686cbc3366cb3253fb44')
++            p['code_commit']=frozen[0]['source']['audited_clean_head']
++            values['actual_calibration_ready'][0]['code_commit']=p['code_commit'];values['threshold_acceptance'][0]['code_commit']=p['code_commit']
++            values['source_context_free_review']=frozen
++            self.assertEqual(c.observed_production_inputs(p,values)['target_old_policy_kl'],.2)
++            self.assertFalse(frozen[0]['actual_gpu_accepted']);self.assertFalse(frozen[0]['production_thresholds_accepted'])
++            values['source_context_free_review']=(frozen[0],'0'*64,frozen[2])
++            with self.assertRaises(ValueError):c.observed_production_inputs(p,values)
++    def test_first5_no_threshold_assessment_unknown_wrong_job_and_values_never_publish(self):
++        for mutation in ['missing','wrong_job','changed_threshold','fake_observations','empty_rationale','different_partial_proof']:
++            with self.subTest(mutation=mutation),tempfile.TemporaryDirectory() as temp:
++                run,p,proofs,assessment,review=five_fixture(Path(temp).resolve());gate=run/'output/acceptance-step5'
++                if mutation=='missing':write(gate/'independent-envelope.json',{'review':write(gate/'external-review.json',review)})
++                else:
++                    if mutation=='wrong_job':assessment['job_id']='100'
++                    if mutation=='changed_threshold':assessment['values']['negative_tail_limit']=.2
++                    if mutation=='fake_observations':assessment['observations']['max_sampled_old_policy_kl']=0
++                    if mutation=='empty_rationale':assessment['assessment_rationale']=' '
++                    if mutation=='different_partial_proof':assessment['partial_raw_cpu_report_sha256']='other'
++                    descriptor=write(gate/'external-threshold-assessment.json',assessment);review['threshold_assessment_sha256']=descriptor['sha256']
++                    write(gate/'independent-envelope.json',dict(review=write(gate/'external-review.json',review),threshold_assessment=descriptor))
++                with self.assertRaises((ValueError,KeyError)):c.publish_external_approval(run,p,'config',proofs)
++                self.assertFalse((gate/'approved.json').exists())
++    def test_missing_real_short_monitor_or_changed_actual_monitor_refuses(self):
++        with tempfile.TemporaryDirectory() as temp:
++            run,p,proofs,assessment,review=five_fixture(Path(temp).resolve())
++            path=next(iter(proofs['tree_and_safety']['evidence_sha256']));Path(path).unlink()
++            with self.assertRaises(FileNotFoundError):c.publish_external_approval(run,p,'config',proofs)
++    def test_missing_raw_worker_driver_actor_and_changed_bytes_block_actual_accounting(self):
++        import attempt_accounting as accounting
++        for name in ('worker-00.pt','worker-07.pt','driver.pt','actor-inputs.pt','changed'):
++            with self.subTest(name=name),tempfile.TemporaryDirectory() as temp:
++                run=Path(temp).resolve()/'tree-fresh200-train-99';allskip(run,1,0);direct(run,1,attempt=2)
++                observed=accounting.attempt_results(run,package(),'config',1)
++                event=json.loads((run/'checkpoints/training_state/attempt-results/attempt-000001.json').read_text())
++                entry=dict(event['partial_evidence'],attempt_id=1,credited_outer_candidate=False,optimizer_calls_per_rank={str(r):0 for r in range(8)})
++                saved=dict(protocol=accounting.PROTOCOL,completed_outer_updates=1,training_attempts=2,refused_attempts=1,guard_refused_attempts=1,
++                    completed_optimizer_calls_per_rank=observed['completed_optimizer_calls_per_rank'],total_optimizer_calls_per_rank=observed['total_optimizer_calls_per_rank'],
++                    partial_optimizer_calls_per_rank=observed['partial_optimizer_calls_per_rank'],partial_evidence=[entry])
++                directory=run/'checkpoints/training_state/partial_attempt_000001_outer_000001'
++                if name=='changed':(directory/'worker-03.pt').write_bytes(b'mutated')
++                else:(directory/name).unlink()
++                with self.assertRaises((ValueError,FileNotFoundError)):accounting.attempt_results(run,package(),'config',1)
++                with self.assertRaises((ValueError,FileNotFoundError)):accounting.checkpoint_accounting(saved,observed,1,run)
++    def test_serial_actual_partial_report_empty_and_forged_coverage_rejected(self):
++        import train_monitor as monitor
++        with tempfile.TemporaryDirectory() as temp:
++            run=Path(temp).resolve()/'tree-fresh200-train-99';checkpoint(run,5);(run/'output').mkdir(exist_ok=True)
++            owned=N(spawn=lambda *a,**kw:N(poll=lambda:0,returncode=0))
++            queue=monitor.CpuChecks(owned,run,HERE,package(),'config',5);queue.complete=True
++            write(queue.directory/'behavior-mu.json',dict(status='FRESH200_REAL_BEHAVIOR_MU_CPU_BINDING_VERIFIED',completed_outers_checked=5,real_DataProto=True,
++                  optimizer_writes=0,model_forwards=0,cuda_initialized=False,original_sampler_actor_gate_accepted=False))
++            value=dict(status='FRESH200_PARTIAL_RAW_CPU_REVERIFIED',identity=identity(run),completed_outer=5,checkpoint_manifest_sha256=queue.manifest_sha,
++                  same_fd_io=True,optimizer_writes=0,model_forwards=0,cuda_initialized=False,raw_files_sha256={},raw_files_checked=0,
++                  partial_attempts_checked=0,logical_records=[],pt_deserialization_count=0,actual_pt_deserialization=False)
++            write(queue.directory/'partial-raw.json',value)
++            with patch.object(monitor,'hf_reload_report',return_value='synthetic'),patch.object(monitor,'state_cpu_report',return_value='synthetic'),patch.object(monitor,'tree_and_safety_records',return_value={}),patch.object(monitor,'training_cost_reports',return_value={}),patch.object(monitor,'validation_reports',return_value={}):
++                self.assertEqual(queue.proofs()['partial_raw_files_sha256'],{})
++                for fields in ({'actual_pt_deserialization':True},{'pt_deserialization_count':10},{'raw_files_sha256':{'missing':'f'*64}},{'checkpoint_manifest_sha256':'wrong'}):
++                    with self.subTest(fields=fields):
++                        write(queue.directory/'partial-raw.json',dict(value,**fields))
++                        with self.assertRaises(ValueError):queue.proofs()
++
++if __name__=='__main__':unittest.main()
+--- work/tree-fresh200-train-runtime-draft/test_runtime_contract_cpu.py
++++ work/tree-fresh200-train-runtime-v2/test_runtime_contract_cpu.py
+@@ -43,21 +43,25 @@
+         initialized_global_steps=0,parent_completed_outer=0,new_completed_outer=0,optimizer_committed=0,scheduler_advanced=False,
+         observed_outer=1,behavior_mu_corrected_profile=True,original_sampler_actor_probability_gate_accepted=False,
+         code_commit=c.SOURCE,data_identity='data',model_identity='model',workers=[dict(rank=r,world_size=8,
+-            optimizer_committed=0,optimizer_state_entries=0,restored_optimizer_steps=[],scheduler_step=0,scheduler_advanced=False,
++            optimizer_committed=0,monitor_sha256=hashlib.sha256(str(r).encode()).hexdigest(),optimizer_state_entries=0,restored_optimizer_steps=[],scheduler_step=0,scheduler_advanced=False,
+             fresh_post_monitor_state=dict(calibration_profile='fresh_base_zero_v1',restored_optimizer_steps=[],optimizer_state_entries=0,scheduler_step=0)) for r in range(8)])
+     descriptors={'actual_calibration_ready':write(root/'ready.json',ready)}
+     descriptors['actual_calibration_acceptance']=write(root/'calibration-review.json',dict(status='INDEPENDENT_ACTUAL_FRESH200_MU_CALIBRATION_ACCEPTED',
+         fork_turns='none',calibration_ready_sha256=descriptors['actual_calibration_ready']['sha256'],actual_zero_writes_accepted=True,
+         actual_behavior_mu_binding_accepted=True,fresh_initialization_accepted=True,original_sampler_actor_gate_accepted=False))
+-    descriptors['threshold_acceptance']=write(root/'threshold.json',dict(status='INDEPENDENT_FRESH200_MU_PRODUCTION_THRESHOLDS_ACCEPTED',fork_turns='none',
+-        trial_only=False,production_thresholds_accepted=True,calibration_ready_sha256=descriptors['actual_calibration_ready']['sha256'],
++    descriptors['threshold_acceptance']=write(root/'threshold.json',dict(status='INDEPENDENT_FRESH200_MU_BOOTSTRAP_THRESHOLDS_ACCEPTED',fork_turns='none',
++        bootstrap_only=True,first_credited_outers=[1,2,3,4,5],production_thresholds_accepted=False,continuation_6_200_accepted=False,
++        zero_monitor_sha256={str(r):hashlib.sha256(str(r).encode()).hexdigest() for r in range(8)},
++        zero_rank_observations=[dict(rank=r,monitor_sha256=hashlib.sha256(str(r).encode()).hexdigest(),effective_tokens=4,sampled_old_policy_kl=.001,negative_tail_fraction=0.,initial_actor_repeat_max_abs_delta=0.) for r in range(8)],assessment_rationale='synthetic CPU fixture only',calibration_ready_sha256=descriptors['actual_calibration_ready']['sha256'],
+         calibration_acceptance_sha256=descriptors['actual_calibration_acceptance']['sha256'],code_commit=c.SOURCE,training_protocol=c.PROFILE,
+-        original_sampler_actor_gate_accepted=False,production_thresholds=dict(target_old_policy_kl=.2,negative_tail_limit=.01,initial_actor_repeat_max_abs_delta=0.),
++        original_sampler_actor_gate_accepted=False,bootstrap_thresholds=dict(target_old_policy_kl=.2,negative_tail_limit=.01,initial_actor_repeat_max_abs_delta=0.),
+         target_kl_authority=dict(kind='explicit_latest_human_goal_edit',value=.2,original_instruction_time='synthetic fixture only',source='synthetic fixture only')))
+     descriptors['source_context_free_review']=write(root/'source-review.json',dict(status='CONTEXT_FREE_FRESH200_SOURCE_ACCEPTED',fork_turns='none',code_commit=c.SOURCE,blocking_findings=[]))
+     p['production_inputs']=descriptors
+-    release=write(root/'release.json',dict(status='READY_FOR_FRESH200_BEHAVIOR_MU_TRAIN200',fork_turns='none',manifest_sha256='manifest',code_commit=c.SOURCE,
+-        production_thresholds_sha256=descriptors['threshold_acceptance']['sha256'],source_review_sha256=descriptors['source_context_free_review']['sha256'],
++    p['files']={'render_dispatch.py':'renderer','submit_once.py':'submitter'}
++    p['bootstrap_thresholds']=dict(target_old_policy_kl=.2,negative_tail_limit=.01,initial_actor_repeat_max_abs_delta=0.)
++    release=write(root/'release.json',dict(status='READY_FOR_FRESH200_BEHAVIOR_MU_FIRST5_BOOTSTRAP',bootstrap_only=True,full_run_thresholds_accepted=False,cluster_name='wuhan-h100',node_list='h100-9',dispatch_renderer_sha256='renderer',dispatch_submitter_sha256='submitter',fork_turns='none',manifest_sha256='manifest',code_commit=c.SOURCE,
++        bootstrap_thresholds_sha256=descriptors['threshold_acceptance']['sha256'],source_review_sha256=descriptors['source_context_free_review']['sha256'],
+         actual_calibration_acceptance_sha256=descriptors['actual_calibration_acceptance']['sha256'],original_sampler_actor_gate_accepted=False))
+     return p,release
+ 
+@@ -128,12 +132,22 @@
+ 
+ def allskip(run,attempt,completed):
+     ids=dict(identity(run),training_protocol=c.PROFILE,attempt_id=attempt,attempted_outer=completed+1,completed_outer=completed)
+-    workers=[dict(rank=r,committed_optimizer_calls=0,optimizer_opportunity_ledger=ledger(0),safety_guard=True,
++    workers=[dict(rank=r,world_size=8,identity=dict(ids,rank=r,world_size=8),status='PARTIAL_WORKER_STATE_SAVED',committed_optimizer_calls=0,optimizer_opportunity_ledger=ledger(0),safety_guard=True,
+         model_adam_finite=True,scheduler_step_before_actual=completed,scheduler_step_after_actual=completed) for r in range(8)]
+-    evidence=write(run/'checkpoints/training_state'/f'partial_attempt_{attempt:06d}_outer_{completed+1:06d}'/'manifest.json',
+-        dict(identity=ids,worker_states_verified=True,verification_error=None,continuation_decision='CONTINUE_FRESH_ROLLOUT',
++    directory=run/'checkpoints/training_state'/f'partial_attempt_{attempt:06d}_outer_{completed+1:06d}'
++    directory.mkdir(parents=True,exist_ok=True)
++    for worker in workers:
++        raw=('ordinary synthetic non-PT worker '+str(worker['rank'])).encode();path=directory/f"worker-{worker['rank']:02d}.pt";path.write_bytes(raw)
++        worker.update(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw))
++    saved={}
++    for name in ('driver','actor-inputs'):
++        raw=('ordinary synthetic non-PT '+name).encode();path=directory/(name+'.pt');path.write_bytes(raw)
++        saved[name]={'path':str(path),'sha256':hashlib.sha256(raw).hexdigest()}
++        if name=='actor-inputs':saved[name]['bytes']=len(raw)
++    evidence=write(directory/'manifest.json',
++        dict(protocol='tree_partial_state_v1',automatic_resume_supported=False,attempted_outer=completed+1,identity=ids,worker_states_verified=True,verification_error=None,continuation_decision='CONTINUE_FRESH_ROLLOUT',
+         outer_completed=False,completed_outer_updates=completed,credited_outer_candidate=False,automatic_rollback=False,
+-        actual_optimizer_calls_per_rank={str(r):0 for r in range(8)},worker_outcome={'worker_states':workers}))
++        actual_optimizer_calls_per_rank={str(r):0 for r in range(8)},worker_outcome={'protocol':'tree_partial_state_v1','identity':ids,'status':'PARTIAL_WORKER_STATE_SAVED','worker_states':workers},driver=saved['driver'],actor_inputs=saved['actor-inputs']))
+     epoch,cursor=attempts.sampler_position(attempt)
+     write(run/'checkpoints/training_state/attempt-results'/f'attempt-{attempt:06d}.json',dict(protocol='tree_partial_state_v1',
+         status='ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT',identity=ids,partial_evidence=evidence,
+@@ -182,7 +196,7 @@
+         with tempfile.TemporaryDirectory() as temporary:
+             root=Path(temporary);p,_=observation(root)
+             values={name:c.read_bound(d['path'],d['sha256']) for name,d in p['production_inputs'].items()}
+-            for field,value in (('trial_only',True),('fork_turns','all'),('production_thresholds',dict(target_old_policy_kl=.2,negative_tail_limit=None,initial_actor_repeat_max_abs_delta=0)),('production_thresholds',dict(target_old_policy_kl=.01,negative_tail_limit=.01,initial_actor_repeat_max_abs_delta=0))):
++            for field,value in (('bootstrap_only',False),('fork_turns','all'),('bootstrap_thresholds',dict(target_old_policy_kl=.2,negative_tail_limit=None,initial_actor_repeat_max_abs_delta=0)),('bootstrap_thresholds',dict(target_old_policy_kl=.01,negative_tail_limit=.01,initial_actor_repeat_max_abs_delta=0))):
+                 bad=copy.deepcopy(values);bad['threshold_acceptance'][0][field]=value
+                 with self.subTest(field=field,value=value),self.assertRaises(ValueError):c.observed_production_inputs(p,bad)
+ 
+@@ -194,9 +208,9 @@
+         spec['configuration_overrides'].append('actor_rollout_ref.actor.policy_safety.negative_tail_limit=0.01')
+         with self.assertRaises(ValueError):c.configuration_overrides(spec,values)
+ 
+-    def test_first5_needs_real_external_receipt_and_copies_original_bytes(self):
+-        with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';gate=run/'output/acceptance-step5';p=package()
++    def historical_v1_first5_fixture_not_executed(self):
++        with tempfile.TemporaryDirectory() as temporary:
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';gate=run/'output/acceptance-step5';p=package()
+             self.assertFalse(c.publish_external_approval(run,p,'config',{}));self.assertFalse((gate/'approved.json').exists())
+             ready=write(gate/'ready.json',dict(completed_outer_updates=5,next_outer_update=6,actual_update_limit=200,full_state_manifest_sha256='state',hf_identity={'sha256':'hf'}))
+             proofs=dict(full_state_manifest_sha256='state',hf_reload_report_sha256='hfcheck',state_cpu_report_sha256='statecheck',behavior_mu_cpu_report_sha256='mucheck',development={'sha256':'dev'},rank_counts={'record_sha256':{'original':'sha'}})
+@@ -211,14 +225,14 @@
+ 
+     def test_direct_all8_counts_and_scheduler_are_not_driver_average(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';direct(run)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';direct(run)
+             result=c.direct_rank_records(run,package(),'config',1);self.assertEqual(result['actual_optimizer_returns'],160)
+             path=run/'output/fresh-state/outer-000001-attempt-000001-rank03.json';value=json.loads(path.read_text());value['actual_optimizer_calls']=19;write(path,value)
+             with self.assertRaises(ValueError):c.direct_rank_records(run,package(),'config',1)
+ 
+     def test_partial_failed_outer_keeps_writes_but_gets_no_completed_credit(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';direct(run)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';direct(run)
+             write(run/'checkpoints/training_state/partial_outer_000002/manifest.json',dict(status='partial',actual_committed=1,state_finite=False))
+             write(run/'checkpoints/training_state/partial_outer_000003/unmatched-worker-failure/manifest.json',dict(status='driver-only',actual_committed=None))
+             value=monitor.progress_evidence(run)
+@@ -228,7 +242,7 @@
+ 
+     def test_actual_saved_state_api_includes_cuda_identity_and_reload_only5(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99'
++            run=Path(temporary).resolve()/'tree-fresh200-train-99'
+             checkpoint(run,5);checkpoint(run,200)
+             c.checkpoint_manifest(run,package(),'config',5);c.checkpoint_manifest(run,package(),'config',200)
+             path=run/'checkpoints/training_state/global_step_5/manifest.json';value=json.loads(path.read_text());value['worker_states'][6]['exact_same_world_reload_verified']=False;write(path,value)
+@@ -236,7 +250,7 @@
+ 
+     def test_validation_requires_coverage_counter_identity_and_ledger_bytes(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';folder=run/'output/validation-cost';folder.mkdir(parents=True)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';folder=run/'output/validation-cost';folder.mkdir(parents=True)
+             ledger=folder/'validation-1-1.jsonl';ledger.write_text('{"actual":"ledger"}\n')
+             value=dict(identity(run),run=str(run/'output'),actual_completed_outer=5,global_step=5,phase='acceptance',status='VALIDATION_COST_COMPLETE',training_protocol=c.PROFILE,
+                 dataset_rows=512,evaluated_rows=512,metrics={'val/evaluated_count/synthetic':512,'val/qa_count/all':512,'val/f1/all':.4,'val/em/all':.3},ledger_sha256=hashlib.sha256(ledger.read_bytes()).hexdigest())
+@@ -248,14 +262,14 @@
+ 
+     def test_serial_cpu_checks_use_actual_checker_cli_and_cuda_empty(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';checkpoint(run,5)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';checkpoint(run,5)
+             (run/'output').mkdir(exist_ok=True)
+             owned=NS(calls=[])
+             def spawn(command,log,env):owned.calls.append((command,env));return NS(poll=lambda:0,returncode=0)
+             owned.spawn=spawn
+             queue=monitor.CpuChecks(owned,run,HERE,package(),'config',5)
+             self.assertEqual(len(owned.calls),1);self.assertFalse(queue.poll());self.assertEqual(len(owned.calls),2)
+-            self.assertFalse(queue.poll());self.assertTrue(queue.poll())
++            self.assertFalse(queue.poll());self.assertFalse(queue.poll());self.assertTrue(queue.poll())
+             self.assertIn('/dataset/shaoshitong/search-r1-rl/tree-grpo/tools/check_real_checkpoint.py',owned.calls[0][0])
+             self.assertTrue(all(env['CUDA_VISIBLE_DEVICES']=='' and env['TREE_FIXED_ACTOR_PROFILE']=='0' for command,env in owned.calls))
+             self.assertIn('--manifest-sha',owned.calls[1][0]);self.assertIn('--config-sha',owned.calls[2][0])
+@@ -279,7 +293,7 @@
+ 
+     def test_actual_owner_producer_variable_writes_and_allskip_cursor(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99'
++            run=Path(temporary).resolve()/'tree-fresh200-train-99'
+             direct(run,1,writes=3,attempt=1);allskip(run,2,1);direct(run,2,writes=20,attempt=3)
+             result=c.direct_rank_records(run,package(),'config',2)
+             self.assertEqual(result['training_attempts'],3);self.assertEqual(result['direct_rank_records'],16)
+@@ -299,12 +313,12 @@
+         with self.assertRaises(ValueError):attempts.ledger_writes(bad)
+         with self.assertRaises(ValueError):attempts.ledger_writes(value[:-1])
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99'
++            run=Path(temporary).resolve()/'tree-fresh200-train-99'
+             with self.assertRaises(ValueError):direct(run,writes=0)
+ 
+     def test_real_owner_physical_digest_and_gathered_identity_binding(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';direct(run,writes=3)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';direct(run,writes=3)
+             path=run/'checkpoints/training_state/attempt-results/attempt-000001.json'
+             value=json.loads(path.read_text());value['all_rank_result']['identity']['model_identity']='different'
+             write(path,value)
+@@ -314,7 +328,7 @@
+             record=json.loads(physical.read_text());record['optimizer_opportunity_ledger'][0]['gradient_preclip']=.5;write(physical,record)
+             with self.assertRaises(ValueError):attempts.attempt_results(run,package(),'config',1)
+ 
+-    def test_once_submitting_waits_read_only_and_unknown_never_retries(self):
++    def historical_v1_once_fixture_not_executed(self):
+         with tempfile.TemporaryDirectory() as root:
+             path=Path(root)/'intent.json';write(path,dict(status='SUBMITTING',manifest_sha256='m',review_sha256='r'))
+             elapsed=[0.];sleeps=[]
+@@ -340,7 +354,7 @@
+ 
+     def test_checkpoint_accounting_keeps_allskip_histories_unique(self):
+         with tempfile.TemporaryDirectory() as temporary:
+-            run=Path(temporary)/'tree-fresh200-train-99';allskip(run,1,0);allskip(run,2,0);direct(run,1,attempt=3)
++            run=Path(temporary).resolve()/'tree-fresh200-train-99';allskip(run,1,0);allskip(run,2,0);direct(run,1,attempt=3)
+             observed=attempts.attempt_results(run,package(),'config',1)
+             entries=[]
+             for attempt in (1,2):
+--- work/tree-fresh200-train-runtime-draft/train_monitor.py
++++ work/tree-fresh200-train-runtime-v2/train_monitor.py
+@@ -21,7 +21,9 @@
+             ('complete-state',[sys.executable,str(tools/'check_training_state_cpu.py'),'--manifest',str(manifest_path),
+              '--manifest-sha',self.manifest_sha,'--output',str(self.directory/'complete-state.json')]),
+             ('behavior-mu',[sys.executable,str(tools/'check_behavior_mu_cpu.py'),'--run',str(self.run),'--package',str(tools),
+-             '--config-sha',config_hash,'--outer',str(outer),'--output',str(self.directory/'behavior-mu.json')])]
++             '--config-sha',config_hash,'--outer',str(outer),'--output',str(self.directory/'behavior-mu.json')]),
++            ('partial-raw',[sys.executable,str(tools/'check_partial_raw_cpu.py'),'--run',str(self.run),'--package',str(tools),
++             '--config-sha',config_hash,'--outer',str(outer),'--output',str(self.directory/'partial-raw.json')])]
+         self.index=0;self.process=None;self.complete=False;self.start_epoch=time.time();self.spawn_next()
+ 
+     def spawn_next(self):
+@@ -49,7 +51,25 @@
+         require(mu['status']=='FRESH200_REAL_BEHAVIOR_MU_CPU_BINDING_VERIFIED' and mu['completed_outers_checked']==self.outer
+                 and mu['real_DataProto'] is True and mu['optimizer_writes']==mu['model_forwards']==0
+                 and mu['cuda_initialized'] is False and mu['original_sampler_actor_gate_accepted'] is False,'Actual full mu CPU binding evidence missing')
+-        return dict(full_state_manifest_sha256=self.manifest_sha,hf_reload_report_sha256=hfsha,state_cpu_report_sha256=statesha,
++        partial,partial_sha,_=read_bound(self.directory/'partial-raw.json')
++        from production_contract import require_identity
++        expected=dict(job_id=self.run.name.rsplit('-',1)[1],run_id=self.run.name,code_commit=self.package['code_commit'],
++            config_sha256=self.config_hash,data_identity=self.package['common_data_identity'],model_identity=self.package['model_identity']['sha256'])
++        require_identity(partial['identity'],expected)
++        require(partial['status']=='FRESH200_PARTIAL_RAW_CPU_REVERIFIED' and partial['completed_outer']==self.outer
++            and partial['checkpoint_manifest_sha256']==self.manifest_sha and partial['same_fd_io'] is True
++            and partial['optimizer_writes']==partial['model_forwards']==0 and partial['cuda_initialized'] is False,
++            'Retained historical raw partial byte/logical verification absent')
++        from partial_raw_evidence import verify_partial_raw_files
++        raw_mapping={}
++        entries=self.manifest['identity']['guard_continue_accounting']['partial_evidence']
++        for entry in entries:
++            saved,_,_=read_bound(entry['path'],entry['sha256']);raw_mapping.update(verify_partial_raw_files(self.run,saved))
++        require(partial['raw_files_sha256']==raw_mapping and partial['raw_files_checked']==10*len(entries)
++            and partial['partial_attempts_checked']==len(entries) and len(partial['logical_records'])==len(entries)
++            and partial['pt_deserialization_count']==10*len(entries)
++            and partial['actual_pt_deserialization']==bool(entries),'Actual raw report coverage/deserialization differs from retained checkpoint history')
++        return dict(partial_raw_cpu_report_sha256=partial_sha,partial_raw_files_sha256=partial['raw_files_sha256'],full_state_manifest_sha256=self.manifest_sha,hf_reload_report_sha256=hfsha,state_cpu_report_sha256=statesha,
+                     behavior_mu_cpu_report_sha256=musha,rank_counts=direct_rank_records(self.run,self.package,self.config_hash,self.outer),
+                     tree_and_safety=tree_and_safety_records(self.run,self.outer,self.package,self.config_hash),training_cost=training_cost_reports(self.run,self.package,self.config_hash,self.outer),development=validation_reports(self.run,self.outer,package=self.package,config_hash=self.config_hash))
+ 
+@@ -129,9 +149,12 @@
+     require(released['completed_outer_updates']==5 and released['next_outer_update']==6,'No actual same-instance five-gate release')
+     approval,asha,_=read_bound(Path(run)/'output/acceptance-step5/approved.json')
+     require(released['approval_sha256']==asha,'Actual live release does not bind independent approval')
++    first5_proofs,_,_=read_bound(Path(run)/'output/acceptance-step5/wrapper-evidence.json')
++    first5=publish_external_approval(run,package,config_hash,first5_proofs)
++    require(first5 and first5['full_run_thresholds_accepted'] is True and first5['review_sha256']==asha,'Final continuation lacks actual short-training threshold acceptance')
+     progress=progress_evidence(run);require(progress['actual_completed_outer_from_attempt_results']==200 and not progress['errors'],'Complete run contains partial/unknown failure evidence')
+     return dict(status='ACTUAL_FRESH200_TRAINING_COMPLETE_PENDING_FINAL_INDEPENDENT_REVIEW',actual_completed_outer=200,
+-                direct_rank_records=proofs['rank_counts']['direct_rank_records'],tree_rank_records=proofs['rank_counts']['tree_rank_records'],actual_rank_optimizer_returns=proofs['rank_counts']['actual_optimizer_returns'],opportunities_processed=proofs['rank_counts']['opportunities_processed'],actual_calls_per_rank=proofs['rank_counts']['actual_writes_per_rank'],training_attempts=proofs['rank_counts']['training_attempts'],first5_gate_release_sha256=rsha,
++                direct_rank_records=proofs['rank_counts']['direct_rank_records'],tree_rank_records=proofs['rank_counts']['tree_rank_records'],actual_rank_optimizer_returns=proofs['rank_counts']['actual_optimizer_returns'],opportunities_processed=proofs['rank_counts']['opportunities_processed'],actual_calls_per_rank=proofs['rank_counts']['actual_writes_per_rank'],training_attempts=proofs['rank_counts']['training_attempts'],first5_gate_release_sha256=rsha,first5_threshold_assessment_sha256=first5['threshold_assessment_sha256'],
+                 first5_gate_legacy_literal_status=released['status'],same_instance_continuation=True,saved_checkpoints=saved,
+                 final=final,initial=initial,periodic=periodic,final_cpu_proofs=proofs,progress=progress,
+                 final_effect_independently_accepted=False,original_sampler_actor_probability_gate_accepted=False,GPU_capacity_proven=False)

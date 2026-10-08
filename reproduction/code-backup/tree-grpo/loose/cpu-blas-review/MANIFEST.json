@@ -1,0 +1,10 @@
+{
+  "README.md": "92ba947ad59609c87750a9aaaaff26e02afbace0fd3d69899b4eb01c970636d7",
+  "full-index-parity.py": "5016dd0d393ccd4f7077771c625ed26df0d641bb6620cc3ff6d56365e197ae72",
+  "microbenchmark-with-binding.py": "6284e67ecc7800361cb75bc086a5501c345cd992c2a7a10f2265e46b4b6ad774",
+  "isolated-microbenchmark-results.json": "2be648098e424a49dec78d2b9fc31402945a89ab784b6fa86768f07449a03f94",
+  "SMALL_BENCHMARK_SUMMARY.json": "f150c5f3cd03c1cd1f0f378fb28b33f3a523a7f45ddd1318ed8bb95d5d839430",
+  "preload-thread-identity.json": "5a021090f948c64f2c903bde1dbe3fabec3f01ffe1be5fc9ad0fa2a9efe8a7ac",
+  "default-sgemm-bindings.txt": "30453133024e55b1f7bca1a7cafc1594d6b633cb48859252af35aa39dbe191ee",
+  "preload-retry-sgemm-bindings.txt": "27c9db58d66d553fff4d1a95f742875e91ff9af800d6bb67226ff1944e3c1f9b"
+}

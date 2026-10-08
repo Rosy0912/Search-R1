@@ -1,0 +1,32 @@
+[
+  {
+    "path": "search_r1/baselines/policy_safety.py",
+    "sha256": "078b17afa0b836487c37b3c14f80aedc51dd65b29e7e7f067289e647ea6b4cdb",
+    "bytes": 6623
+  },
+  {
+    "path": "search_r1/baselines/policy_safety_runtime.py",
+    "sha256": "8a7c763ce2ddeef531e10ef061a364705736e83186261aff8eddbb9de19559a6",
+    "bytes": 7479
+  },
+  {
+    "path": "search_r1/baselines/objectives.py",
+    "sha256": "49c0610e8a35d4b5c50b6a5a8c872d1f031a4b02ea4a8f69dab3ac5f5583c681",
+    "bytes": 5874
+  },
+  {
+    "path": "verl/workers/actor/dp_actor.py",
+    "sha256": "61d30fa739841cc4314ba2cb56f097a16394120393535734d2f80157adff35e7",
+    "bytes": 23340
+  },
+  {
+    "path": "verl/trainer/config/ppo_tree_safety300.yaml",
+    "sha256": "5d6389ea6c1e3d5e893f211c6c087a4806e4a40e16bb319f2099a5d9e93c59f2",
+    "bytes": 516
+  },
+  {
+    "path": "tests/baselines/test_policy_safety.py",
+    "sha256": "ca0ead7c62e5458076bef7c484d866b815cf01edea37a62fc1e3b8196aa5dc11",
+    "bytes": 7266
+  }
+]

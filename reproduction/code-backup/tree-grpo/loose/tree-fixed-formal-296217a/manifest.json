@@ -1,0 +1,41 @@
+{
+  "code_commit": "296217a4b676a26a92fc729f5d9882b785dbfa96",
+  "candidate_manifest_sha256": "f1d34d7fec865f2c0ccb3c572b3cd17a896c295ca9fcd702c52070b63b01285e",
+  "files": {
+    "ACTUAL3095_HF3096_RECOMPUTED.json": "eb45fcaea830c56b49f56c6a9bdc20a1a0bea8e0bf6955a5d6a7301a19ed3bcd",
+    "ACTUAL3095_RANK_PROFILE_RECOMPUTED.json": "921e7d2e22467515e0ccec7c080a527c8e0605b1190c686bb39745fc98506705",
+    "ACTUAL3095_RECEIPT.json": "e79c8cf1f580b1aae3eb5119667aff7c31247c45ec053de085a32710d966c6c7",
+    "ACTUAL3095_RETRIEVAL_KL_RECOMPUTED.json": "b30422bf5f9366cecd95fdd742e66f09408c2e7f87f3fda3691af44e68deeaa4",
+    "ACTUAL3095_REVIEW.md": "e2e95df115c1479b0c657d80e1a8e70fade5a600e4ad8f195d42775c6ad07cdd",
+    "ACTUAL3095_TWO_RECOMPUTED.json": "3f61a2cc07418a9b9dcc6ea39f9fe99b079122162cf033503ac7c86ffdd5378d",
+    "ACTUAL3103_FIVE_RECOMPUTED.json": "c05b2b4ab04dc2a23ee593af5265f6013f5c52dd6cfa6f2588fa42ad747cdbc3",
+    "ACTUAL3103_HF3104_RECOMPUTED.json": "eeadb4eb7699de0ad63f938c5dd499034fe6dfc251a4a030195ae3c8065d8629",
+    "ACTUAL3103_RANK_PROFILE_RECOMPUTED.json": "be820ccde736e7b380d9e2b3b7273b768ac516f11220d491fd0bfc5e672f97e6",
+    "ACTUAL3103_RECEIPT.json": "4dac9d6c2b71ec57751e1f6b6df886671b08bc11fe1947b334bbcdbdf59ca59f",
+    "ACTUAL3103_RETRIEVAL_KL_RECOMPUTED.json": "f1f484ccf0f57ee9499511673523a09c08194cb2b1bf4c3e01d12681cad3205c",
+    "ACTUAL3103_REVIEW.md": "80deb24ba0d55e71b7528978304b8b89efa6a2eb7e4158c439d49ae45dde5fc8",
+    "NATIVE3063_ACTUAL_RECEIPT.json": "bbde9887931e5d8e09bdaf554459a1c86712b92ada141fc0543e51a075e18675",
+    "gpu-kl-proof.py": "fab0218855afef6ed8cbf199e32fa63a166ead3a3834855c2ba7601987f594ae",
+    "run_tree_with_validation_cost_fixed_short.sh": "a85736cb1ef32a1984944481a56db1b7082baa71fada141ef588e6ca5deea7e7",
+    "sitecustomize.py": "6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0",
+    "supervisor.py": "c86bfc5d3dead725c1babc3ea3d03926c26b82b2916bab2b69207e5b59a4266f",
+    "tree-native-numeric-3063-bundle.json": "e99f2f85a7d76209fe2ba856eea21ae46e497cdcd0cafd5a53435af5c14a2a74",
+    "tree-native-numeric-3063-first-status.txt": "f2c5a87a08cefd6e14305e0032079a462b502795f84c4e68ff3f50d7b6c23491",
+    "validation_cost_entry.py": "7dc8e560965d406b643b3df3c4f9fd9a3fb47500922d7da1c5637848067dfc88",
+    "validation_cost_hooks_fixed_formal.py": "4170834b9dfabe8cd6146d01443ada3c5d39297f36a288faca441f2f986e0f3d"
+  },
+  "external_helpers": {
+    "tree_shared_owned_runtime_fixed.py": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+    "resource_guard_identity.py": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+    "probe_tree_shared_retrieval.py": "335a3410bdc19fac01d5d29aa7eea3832c031fae5093f1f9f2d65f76374157b5",
+    "validation_cost_entry.py": "9d36c4df859ae152975515ae105b1ad2df10bae68064265d09cdb5fcdcc68fe8",
+    "validation_cost_hooks.py": "63fafc8555d23e78c474e311dec96526eaf1a9e8bb5b57fc7599e5fcdc323e8c",
+    "run_tree_with_validation_cost_shared.sh": "d867a3205cfb03e03fad59a1110bab908785dfa8e02f7b323012f5b52a24b74d",
+    "validate_tree_stage.py": "2c2590a7830e2433d79122d329f488607f1e5697ca110348945383aff2dd0fb9",
+    "check_fixed_formal_afterany_296217a.py": "19aac6802322dbaf5af370f13b890813456cbd940d1ab14dd5f1c0972acd6091",
+    "summarize_tree_fixed_formal_296217a.py": "6de20c7d04a5773471385a195d7977d3bf903de8ccdb72c8584b6316a1ece61b"
+  },
+  "retriever_script_sha256": "a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459",
+  "actual_two_receipt_sha256": "e79c8cf1f580b1aae3eb5119667aff7c31247c45ec053de085a32710d966c6c7",
+  "actual_five_receipt_sha256": "4dac9d6c2b71ec57751e1f6b6df886671b08bc11fe1947b334bbcdbdf59ca59f"
+}

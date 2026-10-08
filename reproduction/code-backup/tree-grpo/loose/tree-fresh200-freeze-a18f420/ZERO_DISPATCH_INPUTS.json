@@ -1,0 +1,402 @@
+{
+  "status": "PROSPECTIVE_ZERO_DISPATCH_INPUTS_PENDING_NEW_NONE_REVIEW_NO_EXECUTION",
+  "node": "h100-9",
+  "management_route": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/remote.py",
+  "management_route_sha256": "6f715639275c826afc1736863a12a2da0268b98617f174f3d29efa18b682b30b",
+  "candidate_target": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420",
+  "manifest_sha256": "388637bb913f6b199e3f06359d746cf90891718085b81ac95368bd16dc6d75f5",
+  "code_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "inputs": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/PREPARATION_INPUTS.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/PREPARATION_INPUTS.json",
+    "sha256": "8eaab4d991f7d588f9f54f8cf3ba3db16f4656b1ee99715f49914d61d3399d9e"
+  },
+  "preparation": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/actual-cpu/PREPARATION.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420/CPU_PREP_CONFIG/PREPARATION.json",
+    "sha256": "ad445aa7e741eacd5d91cefcf2b77b0c4411628e4300dc3fd6595aed0b51a6ce"
+  },
+  "preflight": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-actual/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+    "sha256": "2122dc288ab9d0b6ea59cc996fe8251908ce87e7519abb5e7d9e60582cedccc8",
+    "rows": 1,
+    "scope": "One predetermined historical3317 row96/500 UTF8/native-prefix/identity replay only; no action-parser/all784/5120/native24/fullTree/mu/weights/training acceptance."
+  },
+  "helper_review": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/HELPER_SOURCE_REVIEW.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/HELPER_SOURCE_REVIEW.json",
+    "sha256": "d525ee289b55311053ed913cadbc1bfa3aecb156f77c8f9b2663ace5ccff8fba"
+  },
+  "submit_helper": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/submit_tree_fresh200_once.py",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/submit_tree_fresh200_once.py",
+    "sha256": "0f80f3efbd08db5ca0579e7f69d9795c04d68ff402c5691cdbe715e9fa6e9149"
+  },
+  "resolved_config_sha256": "30ce78c8ef1aa9117be4e784751af253b7e36d6c5a1bc7891a6adf81ae7098e0",
+  "review_receipt": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-none-review/PRE_DISPATCH_RECEIPT.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/fresh200-mu-a18f420/PRE_DISPATCH_RECEIPT.json",
+    "sha256": null,
+    "scope": "Reviewer independently seals only prospective zero-stage authorization and exact route argv after actual CPU/config verification; no actual GPU/native/fullTree/mu/zero or formal200 acceptance."
+  },
+  "review_receipt_placement_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/stage_zero_review_receipt.py",
+    "sha256": "cd1ee69ef9d460297715dc4c912387f6240230dc1bef19d47be6b1bf097e5290",
+    "historical_source_sha256": "f661e567295e7323ac47fca84781c5c30c22dec2fafd08878b17b07c7489195d",
+    "identity_only_changes": [
+      "TARGET",
+      "MANIFEST_SHA",
+      "COMMIT"
+    ],
+    "logic_byte_identical_after_three_literal_normalization": true
+  },
+  "environment_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B"
+  ],
+  "prospective_actions": [
+    "place_one_independent_zero_only_metadata_receipt",
+    "invoke_reviewed_once_zero_submit_helper"
+  ],
+  "requires_actual_zero_optimizer_writes": true,
+  "requires_new_native24_and_fullTree_in_actual_zero_stage": true,
+  "original_sampler_actor_gate_accepted": false,
+  "production_thresholds_accepted": false,
+  "actual_gpu_or_slurm_execution": false,
+  "actual_zero_accepted": false,
+  "actual_training_accepted": false,
+  "existing_historical_report_reused_by_exact_rawhelper_and_tokenizer_identity": false,
+  "max_receipt_bytes": 524288,
+  "unknown_submission_must_not_retry": true,
+  "allocation": {
+    "nodes": [
+      "h100-9"
+    ],
+    "gpus": 8,
+    "exclusive": true,
+    "requested_cpus": 32,
+    "memory_gib": 256,
+    "wall_hours": 3,
+    "no_requeue": true
+  },
+  "previous_terminal_evidence": {
+    "3314": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3314_PROOF_V2.json",
+      "sha256": "a5358874bb9ed134196779cd9e9ed5a96479a14f74fc941ef12d701261656ac6"
+    },
+    "3317": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/RETAINED_TERMINAL3317_PROOF.json",
+      "sha256": "97c94827a6a7b1c83730c818cf8cf672f7b5051fb9e6bdbf652c061a2816acda"
+    }
+  },
+  "actual_cpu_preparation_verified": {
+    "preparation_sha256": "ad445aa7e741eacd5d91cefcf2b77b0c4411628e4300dc3fd6595aed0b51a6ce",
+    "resolved_config_sha256": "30ce78c8ef1aa9117be4e784751af253b7e36d6c5a1bc7891a6adf81ae7098e0",
+    "actual_hydra_resolved": true,
+    "checked_resolved_value_count": 89,
+    "checked_resolved_values": {
+      "actor_rollout_ref.actor.clip_ratio": 0.2,
+      "actor_rollout_ref.actor.entropy_coeff": 0,
+      "actor_rollout_ref.actor.fresh200_protocol": "tree_fresh200_five_leaf_v1",
+      "actor_rollout_ref.actor.grad_clip": 1,
+      "actor_rollout_ref.actor.guard_continue_protocol": "tree_guard_continue_fresh_rollout_v1",
+      "actor_rollout_ref.actor.kl_loss_coef": 0,
+      "actor_rollout_ref.actor.kl_loss_type": "low_var_kl",
+      "actor_rollout_ref.actor.optim.lr": 0.000001,
+      "actor_rollout_ref.actor.optim.lr_warmup_steps": 57,
+      "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio": 0,
+      "actor_rollout_ref.actor.optim.total_training_steps": 200,
+      "actor_rollout_ref.actor.optim.warmup_style": "constant",
+      "actor_rollout_ref.actor.policy_safety.dual_clip": 3,
+      "actor_rollout_ref.actor.policy_safety.enabled": true,
+      "actor_rollout_ref.actor.policy_safety.initial_old_logprob_max_abs_delta": 0.01,
+      "actor_rollout_ref.actor.policy_safety.kl_log_bound": 30,
+      "actor_rollout_ref.actor.policy_safety.monitor_rows_per_rank": 32,
+      "actor_rollout_ref.actor.policy_safety.negative_tail_limit": 0.01,
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.enabled": true,
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.initial_actor_repeat_max_abs_delta": 0,
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.protocol": "tree_behavior_mu_centered_ppo_v1",
+      "actor_rollout_ref.actor.policy_safety.target_old_policy_kl": 0.2,
+      "actor_rollout_ref.actor.ppo_epochs": 1,
+      "actor_rollout_ref.actor.ppo_micro_batch_size": 16,
+      "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+      "actor_rollout_ref.actor.use_kl_loss": true,
+      "actor_rollout_ref.model.path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+      "actor_rollout_ref.ref.log_prob_micro_batch_size": 32,
+      "actor_rollout_ref.ref.model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+      "actor_rollout_ref.rollout.best_of": 1,
+      "actor_rollout_ref.rollout.log_prob_micro_batch_size": 32,
+      "actor_rollout_ref.rollout.n": 1,
+      "actor_rollout_ref.rollout.n_agent": 2,
+      "actor_rollout_ref.rollout.sampling_consistency.enabled": false,
+      "actor_rollout_ref.rollout.sampling_consistency.enforce": true,
+      "actor_rollout_ref.rollout.sampling_consistency.max_abs_delta": 0.01,
+      "actor_rollout_ref.rollout.temperature": 1,
+      "actor_rollout_ref.rollout.tensor_model_parallel_size": 1,
+      "actor_rollout_ref.rollout.top_k": -1,
+      "actor_rollout_ref.rollout.top_p": 1,
+      "actor_rollout_ref.rollout.tree_raw_emission": true,
+      "algorithm.kl_ctrl.kl_coef": 0,
+      "baselines.context_alignment": "error",
+      "baselines.holdout.data_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data",
+      "baselines.holdout.manifest_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/manifest.json",
+      "baselines.holdout.manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "baselines.local_runtime_host": "h100-9",
+      "baselines.local_runtime_only": true,
+      "baselines.method": "tree_grpo",
+      "baselines.model_repository": "Qwen/Qwen2.5-3B-Instruct",
+      "baselines.model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "baselines.seed": 42,
+      "baselines.training_protocol": "tree_fresh200_five_leaf_v1",
+      "baselines.tree.behavior_mu.enabled": true,
+      "baselines.tree.behavior_mu.protocol": "tree_behavior_mu_centered_ppo_v1",
+      "baselines.tree.expansions": 2,
+      "baselines.tree.leaf_quotas": [
+        3,
+        2
+      ],
+      "baselines.tree.leaves": 3,
+      "baselines.tree.roots": 2,
+      "baselines.tree.rounds": 1,
+      "baselines.tree.token_preservation.enabled": true,
+      "baselines.tree.token_preservation.protocol": "tree_sampled_prefix_legacy_semantics_v1",
+      "baselines.tree.token_preservation.tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "data.final_val_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/final.parquet",
+      "data.max_obs_length": 500,
+      "data.max_prompt_length": 4096,
+      "data.max_response_length": 500,
+      "data.max_start_length": 2048,
+      "data.train_batch_size": 512,
+      "data.train_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+      "data.val_batch_size": 32,
+      "data.val_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/validation.parquet",
+      "do_search": true,
+      "force_final_answer": false,
+      "max_turns": 4,
+      "retriever.topk": 3,
+      "retriever.url": "http://127.0.0.1:18082/retrieve",
+      "trainer.acceptance_gate_enabled": true,
+      "trainer.acceptance_step": 5,
+      "trainer.actual_update_limit": 200,
+      "trainer.experiment_name": "tree-fresh200",
+      "trainer.n_gpus_per_node": 8,
+      "trainer.nnodes": 1,
+      "trainer.save_freq": 50,
+      "trainer.smoke_only": false,
+      "trainer.test_freq": 5,
+      "trainer.total_training_steps": 201,
+      "trainer.training_state_enabled": true,
+      "trainer.val_before_train": true
+    },
+    "actual_gpu_accepted": false,
+    "actual_3b_training_accepted": false,
+    "cuda_initialized": false,
+    "optimizer_writes": 0,
+    "submitted": false,
+    "source_reviews": {
+      "context_byte_audit": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_BYTE_AUDIT.json",
+        "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+      },
+      "context_free": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_CONTEXT_FREE_RECEIPT.json",
+        "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+      },
+      "source_interface": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_INTERFACE_RECEIPT.json",
+        "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+      },
+      "source_review_accepted": true
+    },
+    "budget": {
+      "actor_micro_global": 16,
+      "complete_outers": 200,
+      "epochs": 1,
+      "leaves": 5,
+      "mini_global": 128,
+      "minimum_successful_optimizer_writes_per_complete_outer": 1,
+      "old_ref_micro_global": 32,
+      "optimizer_opportunities_per_rank_per_complete_outer": 20,
+      "questions": 512,
+      "successful_optimizer_writes_counted_separately": true,
+      "total_leaves": 2560,
+      "warmup_outers": 57,
+      "zero_write_or_abandoned_batch_credits_outer": false
+    },
+    "datasets": {
+      "final": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/final.parquet",
+      "final_rows": 51713,
+      "train": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+      "train_rows": 169028,
+      "validation": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/validation.parquet",
+      "validation_rows": 512
+    },
+    "guard_optins": {
+      "behavior_mu": true,
+      "policy_safety": true,
+      "raw_emission": true,
+      "raw_tokens": true
+    },
+    "observation_scope": "Root's initial whole-stdout JSON parser failed locally after remote prepare return0 because Hydra preamble preceded the status JSON. Root read the final exact status object and fetched native bytes; no stage or preparation action was repeated."
+  },
+  "common_helper": {
+    "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-a18f420/fresh200_dispatch_common.py",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/fresh200_dispatch_common.py",
+    "sha256": "5b9019b81fc862b8a3a0451a65ab849a73745fa7febaddef1da7899563a54683"
+  },
+  "historical5120_helper_byte_identity_reuse": false,
+  "historical_preflight_limitations_accepted_for_zero_write_stage": null,
+  "historical_preflight_rows": 1,
+  "source_reviews": {
+    "source_interface": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_INTERFACE_RECEIPT.json",
+      "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+    },
+    "context_free": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_CONTEXT_FREE_RECEIPT.json",
+      "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+    },
+    "context_byte_audit": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_BYTE_AUDIT.json",
+      "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+    },
+    "source_review_accepted": true
+  },
+  "required_actual_cpu_preparation_verification": {
+    "preparation_sha256": "ad445aa7e741eacd5d91cefcf2b77b0c4411628e4300dc3fd6595aed0b51a6ce",
+    "resolved_config_sha256": "30ce78c8ef1aa9117be4e784751af253b7e36d6c5a1bc7891a6adf81ae7098e0",
+    "expected_actual_hydra_resolved": true,
+    "required_checked_resolved_value_count": 89,
+    "expected_checked_resolved_values": {
+      "baselines.method": "tree_grpo",
+      "baselines.training_protocol": "tree_fresh200_five_leaf_v1",
+      "baselines.local_runtime_only": true,
+      "baselines.local_runtime_host": "h100-9",
+      "baselines.seed": 42,
+      "baselines.tree.roots": 2,
+      "baselines.tree.rounds": 1,
+      "baselines.tree.expansions": 2,
+      "baselines.tree.leaves": 3,
+      "baselines.tree.leaf_quotas": [
+        3,
+        2
+      ],
+      "baselines.tree.token_preservation.enabled": true,
+      "baselines.tree.token_preservation.protocol": "tree_sampled_prefix_legacy_semantics_v1",
+      "baselines.tree.token_preservation.tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "baselines.tree.behavior_mu.enabled": true,
+      "baselines.tree.behavior_mu.protocol": "tree_behavior_mu_centered_ppo_v1",
+      "actor_rollout_ref.model.path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+      "actor_rollout_ref.ref.model_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+      "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+      "actor_rollout_ref.actor.ppo_micro_batch_size": 16,
+      "actor_rollout_ref.actor.ppo_epochs": 1,
+      "actor_rollout_ref.actor.entropy_coeff": 0,
+      "actor_rollout_ref.actor.clip_ratio": 0.2,
+      "actor_rollout_ref.actor.grad_clip": 1,
+      "actor_rollout_ref.actor.use_kl_loss": true,
+      "actor_rollout_ref.actor.kl_loss_coef": 0,
+      "actor_rollout_ref.actor.kl_loss_type": "low_var_kl",
+      "actor_rollout_ref.actor.optim.lr": 0.000001,
+      "actor_rollout_ref.actor.optim.lr_warmup_steps": 57,
+      "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio": 0,
+      "actor_rollout_ref.actor.optim.warmup_style": "constant",
+      "actor_rollout_ref.actor.optim.total_training_steps": 200,
+      "actor_rollout_ref.actor.policy_safety.enabled": true,
+      "actor_rollout_ref.actor.policy_safety.dual_clip": 3,
+      "actor_rollout_ref.actor.policy_safety.kl_log_bound": 30,
+      "actor_rollout_ref.actor.policy_safety.monitor_rows_per_rank": 32,
+      "actor_rollout_ref.actor.policy_safety.target_old_policy_kl": 0.2,
+      "actor_rollout_ref.actor.policy_safety.negative_tail_limit": 0.01,
+      "actor_rollout_ref.actor.policy_safety.initial_old_logprob_max_abs_delta": 0.01,
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.enabled": true,
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.protocol": "tree_behavior_mu_centered_ppo_v1",
+      "actor_rollout_ref.actor.policy_safety.sampling_probability_correction.initial_actor_repeat_max_abs_delta": 0,
+      "actor_rollout_ref.rollout.tree_raw_emission": true,
+      "actor_rollout_ref.rollout.sampling_consistency.enabled": false,
+      "actor_rollout_ref.rollout.sampling_consistency.enforce": true,
+      "actor_rollout_ref.rollout.sampling_consistency.max_abs_delta": 0.01,
+      "actor_rollout_ref.rollout.temperature": 1,
+      "actor_rollout_ref.rollout.top_p": 1,
+      "actor_rollout_ref.rollout.top_k": -1,
+      "actor_rollout_ref.rollout.n": 1,
+      "actor_rollout_ref.rollout.n_agent": 2,
+      "actor_rollout_ref.rollout.tensor_model_parallel_size": 1,
+      "actor_rollout_ref.rollout.log_prob_micro_batch_size": 32,
+      "actor_rollout_ref.ref.log_prob_micro_batch_size": 32,
+      "data.train_batch_size": 512,
+      "data.val_batch_size": 32,
+      "data.max_start_length": 2048,
+      "data.max_prompt_length": 4096,
+      "data.max_response_length": 500,
+      "data.max_obs_length": 500,
+      "data.train_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/train.parquet",
+      "data.val_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/validation.parquet",
+      "data.final_val_files": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/final.parquet",
+      "baselines.holdout.manifest_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/manifest.json",
+      "baselines.holdout.manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "baselines.holdout.data_root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data",
+      "algorithm.kl_ctrl.kl_coef": 0,
+      "trainer.total_training_steps": 201,
+      "trainer.actual_update_limit": 200,
+      "trainer.n_gpus_per_node": 8,
+      "trainer.nnodes": 1,
+      "trainer.save_freq": 50,
+      "trainer.test_freq": 5,
+      "trainer.acceptance_step": 5,
+      "trainer.acceptance_gate_enabled": true,
+      "trainer.training_state_enabled": true,
+      "trainer.val_before_train": true,
+      "trainer.smoke_only": false,
+      "trainer.experiment_name": "tree-fresh200",
+      "max_turns": 4,
+      "force_final_answer": false,
+      "do_search": true,
+      "retriever.url": "http://127.0.0.1:18082/retrieve",
+      "retriever.topk": 3,
+      "actor_rollout_ref.actor.fresh200_protocol": "tree_fresh200_five_leaf_v1",
+      "baselines.model_repository": "Qwen/Qwen2.5-3B-Instruct",
+      "baselines.model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "baselines.context_alignment": "error",
+      "actor_rollout_ref.rollout.best_of": 1,
+      "actor_rollout_ref.actor.guard_continue_protocol": "tree_guard_continue_fresh_rollout_v1"
+    },
+    "required_optimizer_writes": 0,
+    "required_cuda_initialized": false,
+    "required_submitted": false,
+    "required_actual_gpu_accepted": false,
+    "expected_source_reviews": {
+      "source_interface": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_INTERFACE_RECEIPT.json",
+        "sha256": "2b67f6dd67e58b3d0e0c3d7d34d0dd7c559486d5e50c2fd39a34c9db27108bb7"
+      },
+      "context_free": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_CONTEXT_FREE_RECEIPT.json",
+        "sha256": "b1426019f794f597beed2d29679cad158c5d5aa7d083bf49a0299c794f6a601c"
+      },
+      "context_byte_audit": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-a18f420-20261007/SOURCE_BYTE_AUDIT.json",
+        "sha256": "62463b42be6f6715939e1733b3ecffa638211fbbf39255e14f7a91e20e11fe57"
+      },
+      "source_review_accepted": true
+    }
+  },
+  "required_before_root_execution": [
+    "actual preparation receipt fetched and SHA-bound",
+    "actual resolved.yaml SHA verified and all89 values match",
+    "independent zero-only receipt with exact rows1 limitations assessment sealed",
+    "final exact prospective placement/submit argv reviewed without NULL fields"
+  ],
+  "actual_native24_accepted": false,
+  "actual_full2560_tree_mu_accepted": false,
+  "actual_full_tree_accepted": false,
+  "actual_behavior_mu_accepted": false,
+  "actual_formal_first5_or200_accepted": false,
+  "training_release": false
+}

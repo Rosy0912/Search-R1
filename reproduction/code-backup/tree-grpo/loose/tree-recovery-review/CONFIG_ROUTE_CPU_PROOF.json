@@ -1,0 +1,15 @@
+{
+  "status": "ACTUAL_ABSOLUTE_CLI_OBSERVER_AND_PLAIN_CONFIG_EQUAL",
+  "train_questions": 640,
+  "leaf_batch": 3840,
+  "rank_rows": 480,
+  "rank_mini": 48,
+  "rank_micro": 2,
+  "optimizer_calls": 10,
+  "total_driver_budget": 301,
+  "actual_logical_limit": 300,
+  "gate105": true,
+  "official_base_reference": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+  "plain_observed_raw_stdout_sha256": "4e77d4924a348eba2ab523d97dffc814b305984df9c7d95f890ecbf31bb8c0bd",
+  "limits": "Config parsing only. Default module config route fails in this local fixture; actual absolute --config-path route verified successfully."
+}

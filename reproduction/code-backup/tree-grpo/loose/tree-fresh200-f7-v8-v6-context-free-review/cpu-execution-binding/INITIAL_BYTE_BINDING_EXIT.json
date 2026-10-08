@@ -1,0 +1,4 @@
+{
+  "exit_code": 1,
+  "failure": "Reviewer prospective assertion omitted the new descriptive source_interface_review_scope field; actual diff verified to only status/scope/source_interface_reviewed plus this source-only explanation. Frozen source/packet unmodified."
+}

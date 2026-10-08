@@ -1,0 +1,233 @@
+--- V11/fresh200_dispatch_common.py
++++ V12/fresh200_dispatch_common.py
+@@ -11,7 +11,7 @@
+ ROOT = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
+ STAGE = 'fresh_mu_calibration'
+ PROTOCOL = 'tree_fresh200_five_leaf_v1'
+-COMMIT = "02b1ea2688ff3fb032ee6699003a7e09d651f166"
++COMMIT = "53082e1667a6ab131a036ca2ef66e004989ed1a9"
+ MODEL = ROOT/'instruct300/assets/qwen2.5-3b-instruct-aa8e725'
+ MODEL_ID = '744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0'
+ DATA_ID = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
+@@ -31,13 +31,17 @@
+ CODE_PLAIN_NAMES = {'LICENSE', 'NOTICE', '.gitignore', 'Makefile'}
+ CODE_VERSION_FILES = {'source/repo/verl/version/version', 'source/repo/verl/single_controller/version/version'}
+ SOURCE_ROOT_FILES = {'setup.py','pyproject.toml','requirements.txt','LICENSE','NOTICE','README.md','.gitignore','Makefile'}
+-WRAPPER_INVENTORY_ID = '2fc0a46782a8a3db6b531cbbbf730fe4a2b7f561250fbbf3766d55b05d2266f1'
++WRAPPER_INVENTORY_ID = 'c0f95b872771da3e37525c2ec56e837bcc3b53d5167e09e127b0818bca2a7c85'
+ WRAPPER_HASHES = {'CONFIGURATION_OVERRIDES.json': '51c66729aa68203f5d0cd67dc3f7c1a5ef828d3484cbe5f570bef663d18a7c07', 'INPUTS.schema.json': '159d36b6f0b825a64c7ea63e4e3c4fec9b627b1536f6e79cd44b8be03069c48a', 'PLAN.md': 'ab6f72237b873f7c2a07e2d59c7902f00eae19c52e79bd9329774b7718ef51e9', 'SOURCE_CPU_RECEIPT.json': '13be65dd742db6e6adfe61dd9189dbb9a8d2aca8296741868eba844f9da737f0', 'build_package_draft.py': '7da1eadc49a63aa52f525faabd3906b2f78fb375f1fa58adfd5ef43c6cbe6ce8', 'calibration_contract.py': '598cc5acae2037935348629e626c5b461694d8a940f5f0668872b58b4dbe8827', 'launch.sbatch': '8a4ae2bbfaa744a4f86dbaa14cbbb6453283ac20d812f0a21cb5ed171843eca3', 'render_dispatch.py': '92921474e7d38b012adc1b9582770b55fa5b95ae350f4a2828deea5491056c11', 'run_tree.sh': '72e8378ca11d44f31ce38983eff2e9b196901d6c15846ecce44ecdf13112330b', 'sitecustomize.py': '6b7e3cb0ae998b0248323efe1a8dd1815e81985412fdbf087134752f417265a0', 'supervisor.py': '83fc3e9066c9dfa923913b06e8a86153bd6cb0789ade8cfe29849508cae14040', 'test_runtime_contract_cpu.py': '3b179e72c544e9672473d857a8ec1a54a8092dc02cc0133266e81a8218e235db', 'tokenizer_raw_preflight.py': '6aa83503db0a234046b8926a2988025726e1fe5256597e5b3b955e23baeed7ed', 'validation_cost_entry.py': '51e19b3fb0c64a908beaab99f3559fe64903f6d5b4bcb8a2bafb18b9495ed26a', 'validation_cost_hooks_instruct300.py': 'c4c49745b4892f169b601cbc5f27fbcab7fe9c154ae7bc4f508ba82c4440bbd1'}
+ WRAPPER_FILES = {'CONFIGURATION_OVERRIDES.json','INPUTS.schema.json','PLAN.md','SOURCE_CPU_RECEIPT.json',
+     'build_package_draft.py','calibration_contract.py','launch.sbatch','render_dispatch.py','run_tree.sh',
+     'sitecustomize.py','supervisor.py','test_runtime_contract_cpu.py','tokenizer_raw_preflight.py',
+     'validation_cost_entry.py','validation_cost_hooks_instruct300.py'}
+ SOURCE_INTERFACE_FILES = {
++    'search_r1/baselines/controller.py',
++    'search_r1/baselines/training_state.py',
++    'search_r1/baselines/trajectory_log.py',
++    'search_r1/baselines/tree_rank_audit.py',
+     'search_r1/baselines/tree_guard_continue.py',
+     'search_r1/baselines/gradient_norm.py',
+     'search_r1/baselines/sampling_consistency.py',
+@@ -53,6 +57,7 @@
+     'verl/trainer/ppo/ray_trainer.py',
+     'verl/trainer/config/ppo_tree_fresh200.yaml',
+     'verl/third_party/vllm/vllm_v_0_6_3/llm.py',
++    'verl/utils/fsdp_utils.py',
+ }
+ 
+ 
+@@ -159,7 +164,7 @@
+             'Source-interface owner receipt must state CPU-only/no remote/no training release')
+     require(type(interface.get('source_files')) is dict
+             and SOURCE_INTERFACE_FILES.issubset(interface['source_files']),
+-            'Repaired source-interface receipt must cover all15 affected source/config files')
++            'Repaired source-interface receipt must cover all20 affected source/config/runtime files')
+     for name,value in interface['source_files'].items():
+         relative_file(name);valid_sha(value)
+         require(value==manifest['files'].get('source/repo/'+name),'Source-interface bytes changed: '+name)
+@@ -181,7 +186,7 @@
+     require(inputs['context_byte_audit']['sha256']==context['artifacts']['BYTE_AUDIT.json'] and audit['git_head']==COMMIT,
+             'Independent byte audit not bound to review/source')
+     require(type(audit['source_files']) is dict and SOURCE_INTERFACE_FILES.issubset(audit['source_files'])
+-            and audit['wrapper_files'],'Independent byte audit must cover all15 repaired source/config files')
++            and audit['wrapper_files'],'Independent byte audit must cover all20 repaired source/config/runtime files')
+     require(set(audit['wrapper_files'])==WRAPPER_FILES,'Independent byte audit must cover all15 runtime files')
+     for name,entry in audit['source_files'].items():
+         require(entry['matches_git_head'] is True and manifest['files']['source/repo/'+name]==entry['sha256'],
+--- V11/submit_tree_fresh200_once.py
++++ V12/submit_tree_fresh200_once.py
+@@ -90,6 +90,14 @@
+               'Release lacks zero-write/actual-mu constraints')
+     c.require(inputs['manifest_sha256']==review_refs['manifest'] and inputs['code_commit']==c.COMMIT
+               and inputs['stage']==c.STAGE and inputs['target']==str(target),'Submission inputs differ from prepared package')
++    previous = inputs.get('previous_terminal_evidence', {})
++    c.require(type(previous) is dict and review.get('previous_terminal_evidence', {}) == previous,
++              'Prospective prior-terminal SHA references are not bound by independent release')
++    for job,entry in previous.items():
++        c.require(type(job) is str and re.fullmatch(r'[1-9][0-9]*',job) is not None
++                  and type(entry) is dict and set(entry) == {'path','sha256'},
++                  'Prior-terminal proof reference must bind one exact numeric job/path/SHA')
++        c.local_path(entry['path']); c.valid_sha(entry['sha256'])
+     c.require(review['source_reviews']==prep['source_reviews']==c.validate_reviews(inputs,manifest,for_dispatch=True),'Source-review bindings differ')
+     c.require(review['preparation_sha256']==review_refs['preparation'] and review['tokenizer_preflight_sha256']==review_refs['preflight']
+               and review['inputs_sha256']==review_refs['inputs'] and review['helper_review_sha256']==review_refs['helper_review'],
+@@ -130,9 +138,128 @@
+     finally:os.close(fd)
+ 
+ 
+-def previous_journals_clear(c, current, run, env):
++def accounting_disabled(result):
++    """Only the explicit disabled-accounting diagnostic permits a live fallback."""
++    if result.returncode == 0 or not isinstance(result.stdout, str) or not isinstance(result.stderr, str):
++        return False
++    diagnostic = (result.stdout + '\n' + result.stderr).strip()
++    return re.fullmatch(r'(?:sacct: error: )?Slurm accounting storage is disabled\.?', diagnostic) is not None
++
++
++def read_failed_zero_run(c, prior, job, allocation):
++    """Read only the existing supervisor's fixed own-run path, on one regular FD."""
++    path = c.local_path(c.ROOT/'runs'/('tree-fresh200-'+str(job))/'run-result.json')
++    c.require(path.parent.resolve() == c.ROOT.resolve()/'runs'/('tree-fresh200-'+str(job)),
++              'Prior own failed-run path aliases another run')
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
++    with os.fdopen(fd, 'rb') as stream:
++        before = os.fstat(stream.fileno())
++        c.require(stat.S_ISREG(before.st_mode) and 0 < before.st_size <= 64*1024,
++                  'Prior own failed-run receipt must be bounded regular metadata')
++        raw = stream.read(); after = os.fstat(stream.fileno())
++        c.require((before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns) ==
++                  (after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns),
++                  'Prior own failed-run receipt changed during read')
++    value = json.loads(raw)
++    c.require(value.get('status') == 'FAILED' and value.get('stage') == c.STAGE
++              and value.get('job_id') == str(job) and value.get('code_commit') == prior['code_commit']
++              and value.get('actual_training_accepted') is False,
++              'Prior own failed-run job/source/stage/result differs')
++    c.require(type(value.get('allocated_gpus')) is int and value['allocated_gpus'] == 8
++              and type(value.get('requested_cpus')) is int and value['requested_cpus'] == 32
++              and type(value.get('allocated_cpus')) is int and value['allocated_cpus'] == int(allocation['NumCPUs'])
++              and type(value.get('cleanup_residual')) is dict and value['cleanup_residual'] == {}
++              and value.get('original_eight_pid_start_times_preserved') is True,
++              'Prior own failed-run allocation/cleanup/protected identities are incomplete')
++    return dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),status=value['status'],
++                job_id=value['job_id'],code_commit=value['code_commit'],cleanup_residual={},
++                original_eight_pid_start_times_preserved=True)
++
++
++def live_failed_zero_terminal(c, prior, job, run, env, journal_sha, previous_terminal_evidence):
++    """Disabled sacct is never terminal evidence; require new local controller data."""
++    c.require(prior.get('stage') == c.STAGE and type(prior.get('initialized_parent_outer')) is int
++              and prior['initialized_parent_outer'] == 0 and type(prior.get('expected_optimizer_writes')) is int
++              and prior['expected_optimizer_writes'] == 0 and prior.get('old_checkpoint_inherited') is False
++              and re.fullmatch(r'[0-9a-f]{40}',prior.get('code_commit','')) is not None
++              and prior.get('actual_submit_stdin_sha256') == c.WRAPPER_HASHES['launch.sbatch'],
++              'Prior journal is not the known own fresh zero-stage launch')
++    launch = c.local_path(prior['reviewed_launch_path_provenance_only'])
++    c.require(launch.name == 'launch.sbatch' and launch.parent.parent == c.ROOT/'instruct300/candidates',
++              'Prior launch does not bind the own fresh candidate scope')
++    result = run(['scontrol','--local','show','job',str(job)],env=env,
++                 text=True,capture_output=True,timeout=30)
++    expired = (result.returncode != 0 and result.stdout == ''
++               and isinstance(result.stderr,str)
++               and result.stderr.strip() == 'slurm_load_jobs error: Invalid job id specified')
++    retained = None
++    if expired:
++        entry = previous_terminal_evidence.get(str(job))
++        c.require(type(entry) is dict and set(entry) == {'path','sha256'},
++                  'Expired prior job requires an independently SHA-bound positive terminal proof')
++        retained = c.json_bound(entry)
++        c.require(retained.get('status') == 'RETAINED_POSITIVE_OWN_ZERO_TERMINAL_PROOF'
++                  and type(retained.get('job_id')) is int and retained['job_id'] == job
++                  and retained.get('cluster_name') == LOCAL_CLUSTER and retained.get('stage') == c.STAGE
++                  and retained.get('code_commit') == prior['code_commit']
++                  and retained.get('manifest_sha256') == prior['manifest_sha256']
++                  and retained.get('journal_sha256') == journal_sha,
++                  'Retained positive terminal proof differs from the exact prior journal/source/job')
++        old_queue = retained.get('squeue', {})
++        c.require(old_queue.get('returncode') == 0 and old_queue.get('stdout') == ''
++                  and old_queue.get('stderr') == '', 'Retained prior terminal capture lacks empty own queue')
++        live_queue = run(['squeue','--local','-h','-w','h100-9','-o','%i|%j|%T|%N'],env=env,
++                         text=True,capture_output=True,timeout=30)
++        c.require(live_queue.returncode == 0 and isinstance(live_queue.stdout,str)
++                  and isinstance(live_queue.stderr,str) and not live_queue.stderr.strip(),
++                  'Current global own-node queue is unavailable or unknown')
++        c.queue_clear(live_queue.stdout)
++        c.require(all(line.split('|')[0].strip() != str(job) for line in live_queue.stdout.splitlines()),
++                  'Expired prior job is present in the current queue')
++        current_result = result
++        control = retained.get('scontrol', {})
++        c.require(type(control) is dict and set(control) == {'returncode','stdout','stderr'},
++                  'Retained positive control proof has an incomplete response schema')
++        result = type('RetainedControl', (), control)()
++    c.require(result.returncode == 0 and isinstance(result.stdout,str) and isinstance(result.stderr,str)
++              and not result.stderr.strip(),'Prior live local controller state is unavailable or unknown')
++    fields = {}
++    for key,value in re.findall(r'(?:^|\s)([A-Za-z][A-Za-z0-9_\-/]*)=([^\s]+)',result.stdout):
++        c.require(key not in fields,'Ambiguous prior live allocation field: '+key)
++        fields[key] = value
++    expected = {'JobId':str(job),'JobName':'tree-fresh200-mu-zero','JobState':'FAILED',
++                'NodeList':'h100-9','BatchHost':'h100-9','NumNodes':'1','OverSubscribe':'NO',
++                'TresPerNode':'gres:gpu:8','CPUs/Task':'32','MinMemoryNode':'256G',
++                'TimeLimit':'03:00:00','Requeue':'0','Restarts':'0'}
++    c.require(all(fields.get(key) == value for key,value in expected.items())
++              and fields.get('Cluster',LOCAL_CLUSTER) == LOCAL_CLUSTER
++              and re.fullmatch(r'[1-9][0-9]*',fields.get('NumCPUs','')) is not None
++              and int(fields['NumCPUs']) >= 32
++              and re.fullmatch(r'[0-9]+:[0-9]+',fields.get('ExitCode','')) is not None
++              and fields['ExitCode'] != '0:0',
++              'Prior live failed zero-stage job/node/resources/exit identity differs')
++    failed_run = read_failed_zero_run(c,prior,job,fields)
++    if retained is not None:
++        c.require(failed_run['sha256'] == retained.get('run_result_sha256'),
++                  'Current own failed-run bytes differ from retained positive terminal proof')
++        return dict(cluster_name=LOCAL_CLUSTER,scheduler_state=fields['JobState'],exit_code=fields['ExitCode'],
++                    evidence_source='sha_bound_retained_positive_terminal_live_expired_and_empty_queue',
++                    retained_positive_proof=entry,retained_positive_scontrol_stdout=result.stdout,
++                    current_scontrol_stdout=current_result.stdout,current_scontrol_stderr=current_result.stderr,
++                    current_scontrol_returncode=current_result.returncode,
++                    current_global_queue_stdout=live_queue.stdout,current_global_queue_stderr=live_queue.stderr,
++                    failed_run=failed_run,actual_zero_or_training_accepted=False)
++    return dict(cluster_name=LOCAL_CLUSTER,scheduler_state=fields['JobState'],exit_code=fields['ExitCode'],
++                evidence_source='new_live_local_scontrol_and_fixed_own_failed_run',
++                raw_stdout=result.stdout,raw_stderr=result.stderr,failed_run=failed_run,
++                actual_zero_or_training_accepted=False)
++
++
++def previous_journals_clear(c, current, run, env, previous_terminal_evidence=None):
+     """Queue invisibility alone cannot resolve a prior submitted/unknown attempt."""
+     terminal={'COMPLETED','FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL','BOOT_FAIL','PREEMPTED','DEADLINE'}
++    previous_terminal_evidence = {} if previous_terminal_evidence is None else previous_terminal_evidence
++    c.require(type(previous_terminal_evidence) is dict, 'Unknown prospective prior-terminal proof mapping')
+     observed=[]
+     for path in sorted((c.ROOT/'instruct300').glob('SUBMISSION_ONCE-fresh200-mu-zero-*.json')):
+         if path==current:raise FileExistsError('This intent already exists; no re-attempt')
+@@ -144,6 +271,12 @@
+         job=prior['job_id'];c.require(type(job) is int and job>0,'Prior job identity is unknown')
+         result=run(['sacct','--local','-X','-n','-P','-j',str(job),'-o','JobIDRaw,Cluster,State,ExitCode'],
+                    env=env,text=True,capture_output=True,timeout=30)
++        if accounting_disabled(result):
++            live = live_failed_zero_terminal(c,prior,job,run,env,hashlib.sha256(raw).hexdigest(),previous_terminal_evidence)
++            observed.append(dict(journal=str(path),journal_sha256=hashlib.sha256(raw).hexdigest(),job_id=job,
++                                 accounting_disabled_stdout=result.stdout,accounting_disabled_stderr=result.stderr,
++                                 **live))
++            continue
+         c.require(result.returncode==0 and not result.stderr.strip(),'Prior Slurm terminal state is unknown')
+         lines=[line.split('|') for line in result.stdout.splitlines() if line.strip()]
+         c.require(len(lines)==1 and len(lines[0])==4 and lines[0][0]==str(job) and lines[0][1]==LOCAL_CLUSTER,
+@@ -181,7 +314,7 @@
+     c.require(queue.returncode==0 and not queue.stderr.strip(),'Queue inquiry failed/unknown')
+     c.queue_clear(queue.stdout)
+     journal=c.ROOT/'instruct300'/('SUBMISSION_ONCE-fresh200-mu-zero-'+manifest_sha[:12]+'.json')
+-    previous_terminal=previous_journals_clear(c,journal,run,env)
++    previous_terminal=previous_journals_clear(c,journal,run,env,refs.get('previous_terminal_evidence', {}))
+     submit_argv=['sbatch','--parsable','--nodelist=h100-9',
+         '--output='+str(c.ROOT/'logs/tree-fresh200-mu-zero-%j.out'),
+         '--error='+str(c.ROOT/'logs/tree-fresh200-mu-zero-%j.err')]
+@@ -250,6 +383,7 @@
+     refs=dict(manifest=args.manifest_sha,preparation=args.preparation_sha,inputs=args.inputs_sha,
+               preflight=args.tokenizer_preflight_sha,helper_review=args.helper_review_sha)
+     validate_dispatch(c,target,manifest,review,prep,inputs,preflight,refs)
++    refs['previous_terminal_evidence'] = inputs.get('previous_terminal_evidence', {})
+     submit_once(c,target,args.manifest_sha,args.review_sha,refs)
+ 
+ if __name__=='__main__':main()

@@ -1,0 +1,19 @@
+--- /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-freeze-53082e-v12/stage_code_metadata_cpu.py
++++ /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/stage_row96_code_metadata_cpu.py
+@@ -8,14 +8,8 @@
+ import sys
+ 
+ 
+-DESTINATION = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preparation-53082e-v12-20261006')
+-FILES = {
+-    'CODE_PACKAGE.tar.gz', 'PREPARATION_INPUTS.json', 'HISTORICAL_RAW_CPU_PLAN.json',
+-    'fresh200_dispatch_common.py', 'prepare_tree_fresh200_package.py',
+-    'submit_tree_fresh200_once.py', 'SOURCE_INTERFACE_RECEIPT.json',
+-    'SOURCE_CONTEXT_FREE_RECEIPT.json', 'SOURCE_BYTE_AUDIT.json',
+-    'HELPER_SOURCE_REVIEW.json', 'RETAINED_TERMINAL3314_PROOF_V2.json',
+-}
++DESTINATION = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007')
++FILES = {'replay_actual3317_row96_cpu.py', 'tree_raw_tokens.py', 'ACTUAL3317_ROW96_REPLAY_PLAN.json'}
+ 
+ 
+ def main():

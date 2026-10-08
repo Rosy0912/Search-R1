@@ -1,0 +1,73 @@
+{
+  "additional_runtime_files": {
+    "search_r1/baselines/controller.py": "2a1c5fdf6dd8dc265ebcfb3ef3717f5a9f522e0832c506cbd0e94d820a16eda6",
+    "search_r1/baselines/training_state.py": "50cf8ab7eb37f198cc2833c20498b12ce6e2d8eacd6b21ed5e7a2357820f62d8",
+    "search_r1/baselines/trajectory_log.py": "93ba273f28949a0606c6ea468f297723187831dc760b7205d9c87d9730827b6f",
+    "search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b"
+  },
+  "additional_source_interface_count": 4,
+  "affected_source": {
+    "search_r1/baselines/tree_raw_tokens.py": {
+      "new_sha256": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6",
+      "old_sha256": "15b696607846046f671e30531420c6f48cca321762f77016f4e5bdb7868ea229"
+    }
+  },
+  "all_other_19_interface_files_byte_identical": true,
+  "all_other_committed_files_unchanged_by_git_diff": true,
+  "base_commit": "53082e1667a6ab131a036ca2ef66e004989ed1a9",
+  "branch": "codex/fresh200-utf8-cache",
+  "changed_files": [
+    "search_r1/baselines/tree_raw_tokens.py"
+  ],
+  "code_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "full_git_tree_sha1": "b414c2ab92a45568776f519d0b6e3ea877792a4d",
+  "primary_source_files": {
+    "search_r1/baselines/gradient_norm.py": "6d0b68fb35b26dcf125732c5da586425238b3130c7898fb63d779920413c664b",
+    "search_r1/baselines/partial_worker_state.py": "091a6b2efcc4d18ee4fe8e72c3ff7d74c5475243f662de552c67324b9f6546ea",
+    "search_r1/baselines/policy_safety_runtime.py": "13ef4c832335b4abda4caa5c15c0fe345275558f97c60ca9dfa52ead74b14208",
+    "search_r1/baselines/rollout.py": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "search_r1/baselines/tree_behavior_mu.py": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+    "search_r1/baselines/tree_fresh200.py": "b97bd761679b822935696a219100efa4847d2b4466e588c4bd1258f2d216b53c",
+    "search_r1/baselines/tree_guard_continue.py": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "search_r1/baselines/tree_partial_state.py": "8e3e046c4febe7cbe841b92ca633a2e09c85ed3953ed98b9603ab6993b86ace8",
+    "search_r1/baselines/tree_raw_tokens.py": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+    "verl/trainer/config/ppo_tree_fresh200.yaml": "b7d68e3bce6247be1424965d6bcfe7a3e4723ca1428fedcd6847c3d384649d75",
+    "verl/trainer/ppo/ray_trainer.py": "55208794e8dfc14d9f08c5a45b8886b4d58889b5048daec8acd8b177ad9703f2",
+    "verl/utils/fsdp_utils.py": "6cecf644779faa5abc6933ccd892a5d2da605aa45088ef42f258a3918911e0c6",
+    "verl/workers/actor/dp_actor.py": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+    "verl/workers/fsdp_workers.py": "ee91dd80d9fc59ae21f8e3411f5dd32530b97f6a558967cd266c3979cd3acc1c"
+  },
+  "primary_source_interface_count": 16,
+  "prior_interface_receipt": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-adam-offload-owner/ADAM_OFFLOAD_SOURCE_INTERFACE_CPU_RECEIPT.json",
+    "scope": "Historical 53082e interface/evidence; not new helper CPU acceptance.",
+    "sha256": "d1b75da26ec2fe608e8be248fa3858f3cc963b263ae722bc27f57ffad5ce5bab"
+  },
+  "source_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-source",
+  "source_files": {
+    "search_r1/baselines/controller.py": "2a1c5fdf6dd8dc265ebcfb3ef3717f5a9f522e0832c506cbd0e94d820a16eda6",
+    "search_r1/baselines/gradient_norm.py": "6d0b68fb35b26dcf125732c5da586425238b3130c7898fb63d779920413c664b",
+    "search_r1/baselines/partial_worker_state.py": "091a6b2efcc4d18ee4fe8e72c3ff7d74c5475243f662de552c67324b9f6546ea",
+    "search_r1/baselines/policy_safety_runtime.py": "13ef4c832335b4abda4caa5c15c0fe345275558f97c60ca9dfa52ead74b14208",
+    "search_r1/baselines/rollout.py": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+    "search_r1/baselines/sampling_consistency.py": "887603f802ce98fcb8391bd4d9b38ec54265026d34ff9f6f5a325ce65dfe7d59",
+    "search_r1/baselines/training_state.py": "50cf8ab7eb37f198cc2833c20498b12ce6e2d8eacd6b21ed5e7a2357820f62d8",
+    "search_r1/baselines/trajectory_log.py": "93ba273f28949a0606c6ea468f297723187831dc760b7205d9c87d9730827b6f",
+    "search_r1/baselines/tree_behavior_mu.py": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+    "search_r1/baselines/tree_fresh200.py": "b97bd761679b822935696a219100efa4847d2b4466e588c4bd1258f2d216b53c",
+    "search_r1/baselines/tree_guard_continue.py": "3a46fe46fc2afa078e582d473f711b820839dd37e58b21a68c09b22cad61e574",
+    "search_r1/baselines/tree_partial_state.py": "8e3e046c4febe7cbe841b92ca633a2e09c85ed3953ed98b9603ab6993b86ace8",
+    "search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b",
+    "search_r1/baselines/tree_raw_tokens.py": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+    "verl/trainer/config/ppo_tree_fresh200.yaml": "b7d68e3bce6247be1424965d6bcfe7a3e4723ca1428fedcd6847c3d384649d75",
+    "verl/trainer/ppo/ray_trainer.py": "55208794e8dfc14d9f08c5a45b8886b4d58889b5048daec8acd8b177ad9703f2",
+    "verl/utils/fsdp_utils.py": "6cecf644779faa5abc6933ccd892a5d2da605aa45088ef42f258a3918911e0c6",
+    "verl/workers/actor/dp_actor.py": "080af9d96e391410acc5568f3a8b8cb9e7aa4d5619919f744292ec74fea90660",
+    "verl/workers/fsdp_workers.py": "ee91dd80d9fc59ae21f8e3411f5dd32530b97f6a558967cd266c3979cd3acc1c"
+  },
+  "source_interface_count": 20,
+  "status": "SOURCE_ONLY_NO_NEW_EXECUTION_ACCEPTANCE"
+}

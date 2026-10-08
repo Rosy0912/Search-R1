@@ -1,0 +1,57 @@
+--- v4/launch.sbatch
++++ v5/launch.sbatch
+@@ -31,6 +31,6 @@
+ submitted_intent(intent,manifest_sha,os.environ['TREE_INSTRUCT_REVIEW_SHA256'],os.environ['SLURM_JOB_ID'],cluster_name=identity['cluster_name'],node_list=identity['node_list'],run_id='tree-fresh200-train-'+os.environ['SLURM_JOB_ID'])
+ # Bash is replaced by this verified process so sanitized routing reaches preflight.
+ install_local_environment(os.environ)
+-os.execv(sys.executable,[sys.executable,'-m','search_r1.baselines.preflight','--',sys.executable,str(package/'supervisor.py')])
++os.execv(sys.executable,[sys.executable,'-c','from slurm_identity import guarded_preflight_main; guarded_preflight_main()','--',sys.executable,str(package/'supervisor.py')])
+ PY
+ 
+--- v4/run_tree.sh
++++ v5/run_tree.sh
+@@ -42,6 +42,6 @@
+     fi
+ done
+ if [[ "${SEARCH_R1_GPU_PREFLIGHT:-0}" == 1 ]]; then
+-    exec python -m search_r1.baselines.preflight --reuse-inherited -- python ${TREE_INSTRUCT_TOOLS:?}/validation_cost_entry.py "${overrides[@]}" "$@"
++    exec python -c 'from slurm_identity import guarded_preflight_main; guarded_preflight_main()' --reuse-inherited -- python ${TREE_INSTRUCT_TOOLS:?}/validation_cost_entry.py "${overrides[@]}" "$@"
+ fi
+-exec python -m search_r1.baselines.preflight -- python ${TREE_INSTRUCT_TOOLS:?}/validation_cost_entry.py "${overrides[@]}" "$@"
++exec python -c 'from slurm_identity import guarded_preflight_main; guarded_preflight_main()' -- python ${TREE_INSTRUCT_TOOLS:?}/validation_cost_entry.py "${overrides[@]}" "$@"
+--- v4/sitecustomize.py
++++ v5/sitecustomize.py
+@@ -2,8 +2,11 @@
+ import os
+ if os.environ.get('TREE_INSTRUCT_TOOLS'):
+     # Every inherited preflight snapshot rechecks actual cgroup before querying.
+-    from slurm_identity import install_gpu_query_guard
+-    install_gpu_query_guard()
++    try:
++        from slurm_identity import install_gpu_query_guard
++        install_gpu_query_guard()
++    except Exception as error:
++        raise SystemExit('Required Tree own-cgroup GPU-query guard bootstrap failed') from error
+ if os.environ.get('TREE_FIXED_ACTOR_PROFILE')=='1':
+     import hashlib,json,time
+     from pathlib import Path
+--- v4/slurm_identity.py
++++ v5/slurm_identity.py
+@@ -80,6 +80,17 @@
+         wrapped._tree_v4_own_cgroup_guard=True
+         preflight.gpu_snapshot=wrapped
+ 
++def guarded_preflight_main():
++    """Canonical preflight only: -m/runpy would redefine the guarded function.
++
++    Keep the original CLI flags and child exec semantics unchanged. The explicit
++    wrapper refuses wrong actual job/cgroup before any scheduler or GPU query.
++    """
++    verify_runtime_cgroup()
++    install_gpu_query_guard()
++    from search_r1.baselines import preflight
++    preflight.main()
++
+ def query(command,run,environment,*,management=False):
+     (verify_management_scope if management else verify_runtime_cgroup)(environment)
+     result=run(command,env=local_environment(environment),text=True,capture_output=True,timeout=30)

@@ -1,0 +1,9 @@
+{
+  "status": "LOCAL_TEMPLATE_STATIC_BINDING_PATH_ASSUMPTION_CORRECTED_NOT_SOURCE_FAULT",
+  "error": "Guessed rawhelper path search_r1/baselines/raw_tokens.py does not exist; no template files or builder created, only empty isolated draft directory. Resolve actual source helper filename before further binding.",
+  "source_modified": false,
+  "actual_builder_executed": false,
+  "actual_remote_executed": false,
+  "actual_gpu_executed": false,
+  "training_release": false
+}

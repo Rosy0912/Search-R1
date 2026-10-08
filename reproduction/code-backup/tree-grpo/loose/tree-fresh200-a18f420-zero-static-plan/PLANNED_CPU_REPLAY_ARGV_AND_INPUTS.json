@@ -1,0 +1,103 @@
+{
+  "actual_assets_or_raw_policy_transferred": false,
+  "actual_cpu_executed": false,
+  "actual_gpu_or_slurm_executed": false,
+  "actual_remote_executed": false,
+  "actual_route_entry_or_mock_executed": false,
+  "candidate_target": null,
+  "code_commit": "a18f4200ba4fd3e76ceeeae0cf409a43e25f7b98",
+  "expected_report_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+  "expected_report_sha256": null,
+  "independent_bounded_cpu_origin": {
+    "bytes": 11708,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-none-review/INDEPENDENT_UTF8_CACHE_BOUNDED_CPU_RESULT.json",
+    "sha256": "806e505fa6c5fd475b50a35e57a9847f72b0be192f42494d9949fa6ebfe30870"
+  },
+  "independent_source_review_origin": {
+    "bytes": 25928,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-none-review/INDEPENDENT_UTF8_CACHE_SOURCE_REVIEW.json",
+    "sha256": "b31c86c1b81258200580b0a2bb0346c24aba9e4ba53332e4f732bbfe0b1efdbf"
+  },
+  "local_producer": {
+    "bytes": 9976,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/replay_actual3317_row96_cpu.py",
+    "sha256": "5063792bd7aee4a538999f26290ae0e42934dfd5e40152fe0810c27fa31f9c05"
+  },
+  "local_replay_plan": {
+    "bytes": 2180,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/ACTUAL3317_ROW96_REPLAY_PLAN.json",
+    "sha256": "52d96784d37274fc9a10de14d62199b25be5519f0793504738d5e2d309e64e88"
+  },
+  "local_stager": {
+    "bytes": 2649,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/stage_row96_code_metadata_cpu.py",
+    "sha256": "0d561bdae6f804e8aa3c69210e3768b6d50a1e7f9706b924ec426ddb779e2b4d"
+  },
+  "node": "h100-9",
+  "producer_and_stage_code_review_required_before_execution": true,
+  "producer_review_sha256": null,
+  "producer_staged_descriptor": {
+    "bytes": 9976,
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/replay_actual3317_row96_cpu.py",
+    "sha256": "5063792bd7aee4a538999f26290ae0e42934dfd5e40152fe0810c27fa31f9c05"
+  },
+  "raw_helper_local_source": {
+    "bytes": 26409,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-utf8-cache-source/search_r1/baselines/tree_raw_tokens.py",
+    "sha256": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6"
+  },
+  "raw_helper_staged_descriptor": {
+    "bytes": 26409,
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/tree_raw_tokens.py",
+    "sha256": "5ebffa13473b111f5b73992679370d1c90603f2f9da5bdfee52db8b5736750c6"
+  },
+  "remote_replay_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "OMP_NUM_THREADS=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/replay_actual3317_row96_cpu.py",
+    "--plan",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_REPLAY_PLAN.json",
+    "--plan-sha",
+    "52d96784d37274fc9a10de14d62199b25be5519f0793504738d5e2d309e64e88",
+    "--output",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json"
+  ],
+  "remote_replay_command": "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 OMP_NUM_THREADS=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/replay_actual3317_row96_cpu.py --plan /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_REPLAY_PLAN.json --plan-sha 52d96784d37274fc9a10de14d62199b25be5519f0793504738d5e2d309e64e88 --output /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_UTF8_PREFLIGHT.json",
+  "remote_stage_argv": [
+    "env",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONOPTIMIZE=0",
+    "HF_HUB_OFFLINE=1",
+    "HF_DATASETS_OFFLINE=1",
+    "OMP_NUM_THREADS=1",
+    "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python",
+    "-B",
+    "-c",
+    "\"\"\"Stage a byte-bound code/metadata envelope on h100-9; execute nothing.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport socket\nimport sys\n\n\nDESTINATION = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007')\nFILES = {'replay_actual3317_row96_cpu.py', 'tree_raw_tokens.py', 'ACTUAL3317_ROW96_REPLAY_PLAN.json'}\n\n\ndef main():\n    if socket.gethostname().split('.')[0] != 'h100-9':\n        raise ValueError('Only the existing h100-9 management route is allowed')\n    if len(sys.argv) != 2 or len(sys.argv[1]) != 64:\n        raise ValueError('Exact envelope SHA256 is required')\n    raw = sys.stdin.buffer.read(64 * 1024 * 1024 + 1)\n    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != sys.argv[1]:\n        raise ValueError('Envelope size or SHA256 differs')\n    envelope = json.loads(raw)\n    if envelope['status'] != 'REVIEWED_CODE_METADATA_CPU_STAGE_ONLY' or set(envelope['files']) != FILES:\n        raise ValueError('Exact code/metadata-only inventory required')\n    contents = {}\n    total = 0\n    for name, record in envelope['files'].items():\n        content = base64.b64decode(record['base64'], validate=True)\n        total += len(content)\n        if total > 32 * 1024 * 1024 or len(content) != record['bytes'] or hashlib.sha256(content).hexdigest() != record['sha256']:\n            raise ValueError('Envelope member size/SHA256 differs: ' + name)\n        contents[name] = content\n    if DESTINATION.parent.resolve() != DESTINATION.parent or DESTINATION.parent.name != 'instruct300':\n        raise ValueError('Staging parent must be the existing task directory without symlinks')\n    os.umask(0o077)\n    DESTINATION.mkdir(exist_ok=False)\n    for name in sorted(contents):\n        with (DESTINATION / name).open('xb') as stream:\n            stream.write(contents[name])\n            stream.flush()\n            os.fsync(stream.fileno())\n    receipt = {\n        'status': 'CODE_METADATA_STAGED_ONLY_NOT_EXECUTED',\n        'directory': str(DESTINATION), 'envelope_sha256': sys.argv[1],\n        'files': {name: {'sha256': hashlib.sha256(content).hexdigest(), 'bytes': len(content)}\n                  for name, content in contents.items()},\n        'asset_transfer': False, 'cuda_initialized': False,\n        'slurm_submitted': False, 'optimizer_writes': 0,\n    }\n    with (DESTINATION / 'STAGING_RECEIPT.json').open('x') as stream:\n        json.dump(receipt, stream, indent=2, sort_keys=True)\n        stream.flush()\n        os.fsync(stream.fileno())\n    print(json.dumps(receipt, sort_keys=True), flush=True)\n\n\nif __name__ == '__main__':\n    main()\n",
+    "84d65ee43b5fea91ba5f013e6151dbaff45e9fb154b1650c1e6f9bc7e0e0d71f"
+  ],
+  "remote_stage_command": "env CUDA_VISIBLE_DEVICES= PYTHONOPTIMIZE=0 HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 OMP_NUM_THREADS=1 /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python -B -c '\"\"\"Stage a byte-bound code/metadata envelope on h100-9; execute nothing.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport socket\nimport sys\n\n\nDESTINATION = Path('\"'\"'/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007'\"'\"')\nFILES = {'\"'\"'replay_actual3317_row96_cpu.py'\"'\"', '\"'\"'tree_raw_tokens.py'\"'\"', '\"'\"'ACTUAL3317_ROW96_REPLAY_PLAN.json'\"'\"'}\n\n\ndef main():\n    if socket.gethostname().split('\"'\"'.'\"'\"')[0] != '\"'\"'h100-9'\"'\"':\n        raise ValueError('\"'\"'Only the existing h100-9 management route is allowed'\"'\"')\n    if len(sys.argv) != 2 or len(sys.argv[1]) != 64:\n        raise ValueError('\"'\"'Exact envelope SHA256 is required'\"'\"')\n    raw = sys.stdin.buffer.read(64 * 1024 * 1024 + 1)\n    if len(raw) > 64 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != sys.argv[1]:\n        raise ValueError('\"'\"'Envelope size or SHA256 differs'\"'\"')\n    envelope = json.loads(raw)\n    if envelope['\"'\"'status'\"'\"'] != '\"'\"'REVIEWED_CODE_METADATA_CPU_STAGE_ONLY'\"'\"' or set(envelope['\"'\"'files'\"'\"']) != FILES:\n        raise ValueError('\"'\"'Exact code/metadata-only inventory required'\"'\"')\n    contents = {}\n    total = 0\n    for name, record in envelope['\"'\"'files'\"'\"'].items():\n        content = base64.b64decode(record['\"'\"'base64'\"'\"'], validate=True)\n        total += len(content)\n        if total > 32 * 1024 * 1024 or len(content) != record['\"'\"'bytes'\"'\"'] or hashlib.sha256(content).hexdigest() != record['\"'\"'sha256'\"'\"']:\n            raise ValueError('\"'\"'Envelope member size/SHA256 differs: '\"'\"' + name)\n        contents[name] = content\n    if DESTINATION.parent.resolve() != DESTINATION.parent or DESTINATION.parent.name != '\"'\"'instruct300'\"'\"':\n        raise ValueError('\"'\"'Staging parent must be the existing task directory without symlinks'\"'\"')\n    os.umask(0o077)\n    DESTINATION.mkdir(exist_ok=False)\n    for name in sorted(contents):\n        with (DESTINATION / name).open('\"'\"'xb'\"'\"') as stream:\n            stream.write(contents[name])\n            stream.flush()\n            os.fsync(stream.fileno())\n    receipt = {\n        '\"'\"'status'\"'\"': '\"'\"'CODE_METADATA_STAGED_ONLY_NOT_EXECUTED'\"'\"',\n        '\"'\"'directory'\"'\"': str(DESTINATION), '\"'\"'envelope_sha256'\"'\"': sys.argv[1],\n        '\"'\"'files'\"'\"': {name: {'\"'\"'sha256'\"'\"': hashlib.sha256(content).hexdigest(), '\"'\"'bytes'\"'\"': len(content)}\n                  for name, content in contents.items()},\n        '\"'\"'asset_transfer'\"'\"': False, '\"'\"'cuda_initialized'\"'\"': False,\n        '\"'\"'slurm_submitted'\"'\"': False, '\"'\"'optimizer_writes'\"'\"': 0,\n    }\n    with (DESTINATION / '\"'\"'STAGING_RECEIPT.json'\"'\"').open('\"'\"'x'\"'\"') as stream:\n        json.dump(receipt, stream, indent=2, sort_keys=True)\n        stream.flush()\n        os.fsync(stream.fileno())\n    print(json.dumps(receipt, sort_keys=True), flush=True)\n\n\nif __name__ == '\"'\"'__main__'\"'\"':\n    main()\n' 84d65ee43b5fea91ba5f013e6151dbaff45e9fb154b1650c1e6f9bc7e0e0d71f",
+  "replay_plan_staged_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007/ACTUAL3317_ROW96_REPLAY_PLAN.json",
+  "stage_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/preflight-a18f420-row96-20261007",
+  "stage_stdin": {
+    "bytes": 52002,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/ROW96_CODE_METADATA_ENVELOPE.json",
+    "sha256": "84d65ee43b5fea91ba5f013e6151dbaff45e9fb154b1650c1e6f9bc7e0e0d71f"
+  },
+  "stager_binding_review_sha256": null,
+  "stager_inherited_main_ast_byte_semantics_unchanged": true,
+  "stager_only_literal_delta": {
+    "bytes": 1102,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-fresh200-a18f420-zero-static-plan/STAGE_VARIANT_LITERAL_ONLY.patch",
+    "sha256": "41ed831a27e7464bc4ab15687f9fdfaa3b9a0027c501899c883fef015f003229"
+  },
+  "standalone_stage_does_not_create_future_candidate": true,
+  "status": "SOURCE_ONLY_EXACT_PLANNED_STAGE_AND_REPLAY_ARGV_NO_EXECUTION_RELEASE",
+  "training_release": false
+}

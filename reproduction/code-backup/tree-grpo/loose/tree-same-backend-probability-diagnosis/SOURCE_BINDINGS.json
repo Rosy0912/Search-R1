@@ -1,0 +1,279 @@
+{
+  "status": "SOURCE_ONLY_DESIGN_NOT_GPU_RELEASE",
+  "scope": "Local saved JSON and source only; no remote access, GPU, actual PT/HF tensor load, source/runtime edits or job submission",
+  "report_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-same-backend-probability-diagnosis/DIAGNOSIS_AND_NEXT_MEASUREMENT.md",
+  "report_sha256": "f1f40ca7dae9aa9ba8032e00d268f15deb8a2a672cdc94b453d0ed622778cd3e",
+  "bound_metadata": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_PROBE_GPU3282_TERMINAL_RAW.json",
+      "sha256": "95b245c1f1c7f768868c74fd027c370336ebaac7c18f4fe6c0d1f927868ad909"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_PROBE_GPU3282_NUMERICAL_SUMMARY.json",
+      "sha256": "8fec892e6442d6d8dd67f876ca8b5c3418ab84e525f1e0d3f6189ef8e39cff69"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_VLLM_NATIVE_SOURCE_METADATA_RAW.json",
+      "sha256": "ba9f1f5d6a6aa250edd759f39ed7d7b9e27bbcca53b39aed18451dc3e5c47f41"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-probability-probe-owned/ORIGINAL3268_RESOLVED.yaml",
+      "sha256": "e25214a90cf6ac063174787b7aa2c607ef5c942218fd31c2af0cfdf2c206b71b"
+    }
+  ],
+  "original_source_commit": "a632ba91840fb116aacfc0e770681a860647b295",
+  "original_source_files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/workers/sharding_manager/fsdp_vllm.py",
+      "sha256": "c186b6c455d1e97c1b09c6fd8c80ea915d90f24e318b6fc377794e628583abd8"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/workers/fsdp_workers.py",
+      "sha256": "bee26eb985f5245bc6f3bb9db658b29a5d1994d88c9c46b337dab27efb2e4432"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/workers/actor/dp_actor.py",
+      "sha256": "48aa27763fe481dcf546a8d3466cf5ee21b7e951210ac1f00568921c07f27cd7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "sha256": "62eff90354b261d462aab1b6680a1acee9d2cb1698c0027685f72994dc6ef149"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/third_party/vllm/vllm_v_0_6_3/llm.py",
+      "sha256": "5bc262b93ac5e938c82cc51f0e48b22a33cf13d0f5966f02afa15b60445203ff"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/third_party/vllm/vllm_v_0_6_3/worker.py",
+      "sha256": "d63fc21f39c9a730c9ddd1e776a98f554a7adc7dc9de96ae895d63b476e0577a"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/third_party/vllm/vllm_v_0_6_3/dtensor_weight_loaders.py",
+      "sha256": "280ba6eacd660cb208f6e0fe1b427cd634c67927121328d6b3bc1226d59d0280"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py",
+      "sha256": "3f033175550ad920a7398e36a7f0b4e16859b692c4098eeb3a5eca7b97219945"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "2539204b6a3b86614d5db74526685a568ebaae73719105a537faa92063990857"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/search_r1/llm_agent/generation.py",
+      "sha256": "91e281dc853c077dfcda3f05b64a714c009c8993fe05b2069fcc2def8f114470"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-safety110-a632ba9-v2/source/repo/search_r1/baselines/sampling_consistency.py",
+      "sha256": "677c6179f83ed3c738697da5db966c10ec5fe26c272fa1860bf6a0e5cf1ddc92"
+    }
+  ],
+  "installed_source_files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/__init__.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/__init__.py",
+      "sha256": "3765abce6d9ab013abf65adc1efaa7b3b7c5352e6ee49c77605f7f2174c83ead",
+      "bytes": 1122
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/attention/backends/flash_attn.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/attention/backends/flash_attn.py",
+      "sha256": "b0432510845034d7fe623da2097115b99e7e35a8775b276f5ba904e9d2ae81f0",
+      "bytes": 32133
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/attention/layer.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/attention/layer.py",
+      "sha256": "94ea8d8c40db06cbeebeaa43d1a17228a57524eb66ea1721faa8aa0531881080",
+      "bytes": 4765
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/entrypoints/llm.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/entrypoints/llm.py",
+      "sha256": "1393441b1b5cf4750b2e3a72ff30272a7e0db2220fa23ffa459f135265686582",
+      "bytes": 38779
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/layernorm.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/layernorm.py",
+      "sha256": "d8fed1a2f5e8501d1173771841f053e5a9386a35c1b585a9995cd0ee84e4fb0d",
+      "bytes": 5829
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/linear.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/linear.py",
+      "sha256": "0dcd147ecc9b57e62b15d5f53c81ee5dfe3b46300b58acc20673f473ea5fa17c",
+      "bytes": 48841
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/logits_processor.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/logits_processor.py",
+      "sha256": "f897fccdacdf2fa36f3bd54dd75cd515c4679e0e03fd3f33419769037b9be9d3",
+      "bytes": 5908
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/rotary_embedding.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/rotary_embedding.py",
+      "sha256": "eab6a056e8f722abb8baefa3b6569a4947f6a3e5fd51b6cf55d0f088b9bee09c",
+      "bytes": 39416
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/sampler.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/sampler.py",
+      "sha256": "3f3e2f53c4fe4149cc1b51a6ba0c369e2a48083627b948bfdac8f93802e13a69",
+      "bytes": 55049
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/layers/vocab_parallel_embedding.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/vocab_parallel_embedding.py",
+      "sha256": "219bb65adbfa774141dcc23dd84ba89f8aaded069c6f69bdca83ffcda2d059e7",
+      "bytes": 21994
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/model_loader/loader.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/loader.py",
+      "sha256": "587615e5e9f926e187e6f85bdc7dd8b45070635a6612e07465e2fe510e9086b1",
+      "bytes": 53409
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/model_loader/utils.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/utils.py",
+      "sha256": "ec83e55006b92eeb5514239036a9f47d91643c045b7b26f25f820f8f083c5f4f",
+      "bytes": 1248
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/model_loader/weight_utils.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/weight_utils.py",
+      "sha256": "0cc5386b0df38bf38c501742a0034ef392f0f63c43cfe0311eb91577f5485a33",
+      "bytes": 26608
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/models/llama.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/models/llama.py",
+      "sha256": "217026da90671e5ff4bdfda40ed3afe21170284cadbdc2d511a9992535d2d420",
+      "bytes": 24612
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/models/qwen2.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/models/qwen2.py",
+      "sha256": "a5ebb7d9c1f2b66e48ef486d8a74dc9a20e87780e3696662e88d3cb57a150f3e",
+      "bytes": 17225
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/model_executor/sampling_metadata.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/sampling_metadata.py",
+      "sha256": "cf2d182b852036c0b8457fd14bf8e106abc4c9ebd0325b2ab0ff07aa246a158e",
+      "bytes": 22838
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/outputs.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/outputs.py",
+      "sha256": "b14697ef87bf1e00b49d9bb1ef842b4ad1c5f4a0fc29cb25457d8ec9de8a7c7a",
+      "bytes": 12805
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-vllm-installed-source-20261006/worker/model_runner.py",
+      "actual_remote_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/worker/model_runner.py",
+      "sha256": "17685c52eb9179bbc43a670d744ab9d26c2d8608711b0a30d8338d95a26081b7",
+      "bytes": 86691
+    }
+  ],
+  "installed_capture_is_runtime_or_historical_proof": false,
+  "ready_metadata": [
+    {
+      "rank": 0,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-00/ready.json",
+      "sha256": "9f485f839a58bb7c4ef1807789f9721c6e881d0fbe749ed8fce8db58e89949b2",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 1,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-01/ready.json",
+      "sha256": "5b5436bd97f30438182f4890de56e26da09f8e04654ce1f9bc6b855e11711a03",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 2,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-02/ready.json",
+      "sha256": "fcab6621e7bb452ae1d832c6dbe918ea781755fb2eaebf20e2175255b7a5f5fe",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 3,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-03/ready.json",
+      "sha256": "3f7a3a566dcfc7d914ad9ac59139ff9033000991caee1e3ab661bdbcc44606a5",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 4,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-04/ready.json",
+      "sha256": "e7b5696161d4cf5b942f1c9b647770c6cc8ea08666c92c7d56aa1404f210e2c8",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 5,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-05/ready.json",
+      "sha256": "3a584408ddcb08995e259e72f6f88e3c167f81b0ff90fd91f1328b743681daec",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 6,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-06/ready.json",
+      "sha256": "1e09bd2aaf24e1a87b1f13bc948afb7bf726aeaaaed3cf7b20289b98008c78a3",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    },
+    {
+      "rank": 7,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/gpu3282/gpu-records/rank-07/ready.json",
+      "sha256": "c201337b38591924e828f52f2400668ad0bf51da697fbfb6c3822705cbb99856",
+      "original_forward_calls": 85,
+      "status": "SPECIFIED_INPUT_NATIVE_FSDP_DIAGNOSTICS_COMPLETE_NO_TRAINING_ACCEPTANCE"
+    }
+  ],
+  "native_forward_calls": 680,
+  "comparisons": 672,
+  "actual_original_rollout_tp": 1,
+  "actual_original_actor_sp": 1,
+  "production_probability_accepted": false,
+  "training_accepted": false,
+  "next_scope": "One original TP1 generation_call5 whole prompt window with original order/length/distribution; exact rows and all asset identities require on-node preparation and independent review",
+  "unresolved": [
+    "Historical3268 effective sampler and actor identity not proven",
+    "Actual vLLM runtime selected classes/backend/weights and samewindow causal mapping not observed",
+    "New generation RNG/output cannot be treated as historical replay",
+    "Any loaded-state, budget or runtime release requires separate prepared body review"
+  ],
+  "analytic_counterexamples": [
+    {
+      "name": "FP64_normalization_cannot_equalize_changed_logits",
+      "logits_a": [
+        0,
+        0
+      ],
+      "logits_b": [
+        0,
+        2
+      ],
+      "selected_token": 0,
+      "logprob_a": -0.6931471805599453,
+      "logprob_b": -2.1269280110429727,
+      "absolute_difference": 1.4337808304830273
+    },
+    {
+      "name": "Same_backend_ratio_one_does_not_prove_behavior_identity",
+      "actor_old_probability": 0.5,
+      "behavior_probability": 0.1,
+      "current_actor_probability": 0.5,
+      "recomputed_ratio": 1,
+      "actual_behavior_ratio": 5
+    }
+  ],
+  "no_gpu_release": true
+}

@@ -1,0 +1,45 @@
+{
+  "configuration": {
+    "actual": 500,
+    "total": 501,
+    "initial64": true,
+    "period": 50,
+    "validation_batch": 64,
+    "train": 512,
+    "mini": 256,
+    "micro": 64,
+    "save_freq": 100,
+    "base": "/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/qwen2.5-3b"
+  },
+  "observer_cases": [
+    {
+      "case": "valid",
+      "accepted": true
+    },
+    {
+      "case": "wrongjob",
+      "accepted": false
+    },
+    {
+      "case": "oldfive",
+      "accepted": false
+    },
+    {
+      "case": "oldformal",
+      "accepted": false
+    },
+    {
+      "case": "otherroot",
+      "accepted": false
+    },
+    {
+      "case": "escape",
+      "accepted": false
+    },
+    {
+      "case": "zero",
+      "accepted": false
+    }
+  ],
+  "scope": "Actual Hydra configuration and hook.install, only assets/heavy Trainer+Manager/wrap mocked; no Slurm/GPU/remote side effects"
+}

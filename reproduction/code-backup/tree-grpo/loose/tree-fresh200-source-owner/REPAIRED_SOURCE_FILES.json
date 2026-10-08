@@ -1,0 +1,106 @@
+{
+  "code_commit": "8a3bc24db05ee1fd67660e2f89088d6f56bc0875",
+  "base_commit": "1e06c6aa6f54eee5de8e0a29dd50efea76111c10",
+  "source_clean": true,
+  "changed_files": {
+    "BEHAVIOR_MU_CORRECTION.md": {
+      "sha256": "8f884d9aba07679bc82c04120dddbcb233b8535807ead39ca8ba62f378b487aa",
+      "bytes": 4651
+    },
+    "FRESH200_PARTIAL_WORKER_STATE.md": {
+      "sha256": "af1dca5a1ac36f39b3e1cb1db8582f55601a219b27f1e20e038556f160332318",
+      "bytes": 5582
+    },
+    "FRESH200_REPAIR_REVIEW_TARGET.md": {
+      "sha256": "210479b6e5ba25acd863a23c4274b4258b3c9cfb551787a62bb8922077c53f59",
+      "bytes": 4037
+    },
+    "search_r1/baselines/partial_worker_state.py": {
+      "sha256": "0594d8a4e02bffe5f8134c0f63a5d5e3eca8f750708f05ad53a2d19e96d6964a",
+      "bytes": 9743
+    },
+    "search_r1/baselines/policy_safety_runtime.py": {
+      "sha256": "58b41f1e64eb200c991914d209a45809f69096370bbf1cb398a0f659fdf23653",
+      "bytes": 23920
+    },
+    "search_r1/baselines/rollout.py": {
+      "sha256": "012da6f036b56e2ff661b98ca3151b113c10b0769200da1d517f0b418b147bb9",
+      "bytes": 21850
+    },
+    "search_r1/baselines/tree_behavior_mu.py": {
+      "sha256": "499cb74e4c41899c8294a47835b6043458090b2ac09f7c61e53ec7c827ef2652",
+      "bytes": 16700
+    },
+    "search_r1/baselines/tree_fresh200.py": {
+      "sha256": "c0aa8c5cf2dcfc0b35193a6feaedae2c560466a5938547dded93a2d531f96f88",
+      "bytes": 5277
+    },
+    "search_r1/baselines/tree_partial_state.py": {
+      "sha256": "7c8951b9c65e07741b68d81eb2bedb5521cf245b070f1452def100d88295bfc2",
+      "bytes": 9089
+    },
+    "search_r1/baselines/tree_raw_tokens.py": {
+      "sha256": "22fa7b92e9aa297c87e05b03cea51c31a26d0e2ad7104b226ab61e325d140380",
+      "bytes": 13196
+    },
+    "test_fresh_calibration_worker_cpu.py": {
+      "sha256": "985229d09dfeb835db67d423d0f89330ef6821e3718d7b82bf2d216d43a9284b",
+      "bytes": 13943
+    },
+    "test_partial_worker_state_cpu.py": {
+      "sha256": "caea5c9db631155f049523a417228631d0c00b7951d14ab5562133c21b18ff82",
+      "bytes": 20134
+    },
+    "test_tree_behavior_mu_data_cpu.py": {
+      "sha256": "4c8d24d2a4c643dfe757bb50f921ecf61e8fd6d6a3cb8a891bc1fe8b0222d710",
+      "bytes": 18026
+    },
+    "test_tree_fresh200_cpu.py": {
+      "sha256": "2f966625ed1b8b2d21770cd552b444b641e196952f0c704485985491360a5183",
+      "bytes": 11704
+    },
+    "test_tree_partial_driver_cpu.py": {
+      "sha256": "303fd8ed39f9f52c606b0e475f14757a21540f40c03f2a3fc8cdc6c6c1e040f2",
+      "bytes": 9756
+    },
+    "test_tree_raw_tokens_cpu.py": {
+      "sha256": "dda7785527bc7eb37e72e4e9726935acce5d85834b67cdafd057c89f7a8ef6d4",
+      "bytes": 22035
+    },
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py": {
+      "sha256": "047fa0bd83bb525d6d2469154bdcd65df95fe3be3644dcfe4674d288b6cb7a72",
+      "bytes": 11820
+    },
+    "verl/trainer/config/ppo_tree_fresh200.yaml": {
+      "sha256": "3e2724331b9247b015e2530bf7b719eccde91994c7e9948ff1209c354f8852b4",
+      "bytes": 1458
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "sha256": "05d4536f268be96d2e23b9fa62ca03f432c0d3be4a0016297cb5d05a266ca042",
+      "bytes": 65144
+    },
+    "verl/workers/actor/dp_actor.py": {
+      "sha256": "7d3007593b0105dd58aafbf365905965adc34e0bc90e152ce62cf69b364b4d76",
+      "bytes": 25289
+    },
+    "verl/workers/fsdp_workers.py": {
+      "sha256": "ad1db4a2e12cbdb0e306fa04c197e3d4c758b4ef43509481b5363d45ff41bc51",
+      "bytes": 71709
+    }
+  },
+  "interface_keys": [
+    "search_r1/baselines/sampling_consistency.py",
+    "verl/workers/fsdp_workers.py",
+    "verl/workers/actor/dp_actor.py",
+    "search_r1/baselines/policy_safety_runtime.py",
+    "search_r1/baselines/partial_worker_state.py",
+    "search_r1/baselines/tree_partial_state.py",
+    "search_r1/baselines/tree_behavior_mu.py",
+    "search_r1/baselines/tree_raw_tokens.py",
+    "search_r1/baselines/tree_fresh200.py",
+    "search_r1/baselines/rollout.py",
+    "verl/trainer/ppo/ray_trainer.py",
+    "verl/trainer/config/ppo_tree_fresh200.yaml",
+    "verl/third_party/vllm/vllm_v_0_6_3/llm.py"
+  ]
+}

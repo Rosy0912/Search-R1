@@ -1,0 +1,513 @@
+diff --git a/search_r1/baselines/tree_raw_tokens.py b/search_r1/baselines/tree_raw_tokens.py
+index 00bd56d..999a12b 100644
+--- a/search_r1/baselines/tree_raw_tokens.py
++++ b/search_r1/baselines/tree_raw_tokens.py
+@@ -19,6 +19,8 @@ FIELD = 'tree_raw_semantics'
+ EMISSION = '__tree_native_emission'
+ UTF8_BOUNDARY_PROTOCOL = 'tree_original_bytelevel_utf8_prefix_v1'
+ BYTELEVEL_DECODER_STATE = dict(type='ByteLevel',add_prefix_space=False,trim_offsets=False,use_regex=False)
++_VALIDATION_TOKENIZERS = {}
++_TOKENIZER_FILE_SHA_CACHE = {}
+ 
+ 
+ def require(value,message):
+@@ -69,7 +71,10 @@ def _decoder_binding(tokenizer):
+         skip_special_token_ids=sorted(special))
+ 
+ 
+-def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True):
++def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_context=None):
++    _context=_context or _TokenizerValidationContext(tokenizer,identity)
++    require(type(_context) is _TokenizerValidationContext and _context.tokenizer is tokenizer and
++            _context.identity==identity,'Actual tokenizer validation context differs')
+     binding=_decoder_binding(tokenizer)
+     require(identity.get('utf8_decoder_binding')==binding and
+             identity.get('tokenizer_class')==type(tokenizer).__module__+'.'+type(tokenizer).__qualname__ and
+@@ -120,20 +125,84 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True):
+     return decoded,complete,proof
+ 
+ 
+-def tokenizer_identity(tokenizer,expected_sha):
+-    require(isinstance(expected_sha,str) and re.fullmatch('[0-9a-f]{64}',expected_sha),
+-            'Explicit frozen tokenizer.json SHA required')
+-    path=Path(tokenizer.name_or_path)/'tokenizer.json'
+-    with path.open('rb') as stream:
++def _tokenizer_file_identity(tokenizer):
++    path=(Path(tokenizer.name_or_path)/'tokenizer.json').resolve(strict=True)
++    stat=path.stat()
++    signature=(stat.st_dev,stat.st_ino,stat.st_size,stat.st_mtime_ns,stat.st_ctime_ns,stat.st_mode)
++    cached=_TOKENIZER_FILE_SHA_CACHE.get(str(path))
++    if cached is None or cached[0]!=signature:
+         digest=hashlib.sha256()
+-        for chunk in iter(lambda:stream.read(8*1024**2),b''):digest.update(chunk)
+-    require(digest.hexdigest()==expected_sha,'Tokenizer file identity differs')
+-    return dict(tokenizer_json_sha256=expected_sha,tokenizer_path=str(path),
++        with path.open('rb') as stream:
++            for chunk in iter(lambda:stream.read(8*1024**2),b''):digest.update(chunk)
++        after=path.stat()
++        require(signature==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns,after.st_mode),
++                'Tokenizer file changed while its actual SHA was checked')
++        cached=(signature,digest.hexdigest());_TOKENIZER_FILE_SHA_CACHE[str(path)]=cached
++    return str(path),cached[1]
++
++
++def _encoder_binding(tokenizer):
++    backend=getattr(tokenizer,'backend_tokenizer',None)
++    require(callable(getattr(backend,'to_str',None)),'Actual full native encoder state required')
++    try:state=json.loads(backend.to_str())
++    except (TypeError,ValueError,UnicodeError) as error:
++        raise ValueError('Tree raw-token protocol: Actual full native encoder state cannot be proven') from error
++    require(type(state) is dict and all(key in state for key in
++        ('model','normalizer','pre_tokenizer','post_processor','decoder','added_tokens')),
++        'Complete actual native encoder semantic state required')
++    # HF batch tokenization legitimately changes these per-call options. Neither
++    # affects encode(canonical, add_special_tokens=False), which resets them.
++    state.pop('padding',None);state.pop('truncation',None)
++    flags={key:dict(present=hasattr(tokenizer,key),value=getattr(tokenizer,key,None)) for key in
++        ('clean_up_tokenization_spaces','split_special_tokens','add_prefix_space','do_lower_case',
++         'bos_token','eos_token','pad_token','unk_token','additional_special_tokens','all_special_tokens')}
++    return dict(backend_semantics_sha256=fingerprint(state),hf_semantic_runtime_flags=flags)
++
++
++def _current_tokenizer_identity(tokenizer):
++    path,sha=_tokenizer_file_identity(tokenizer)
++    return dict(tokenizer_json_sha256=sha,tokenizer_path=path,
+         tokenizer_class=type(tokenizer).__module__+'.'+type(tokenizer).__qualname__,
+         clean_up_tokenization_spaces=tokenizer.clean_up_tokenization_spaces,
+         policy_decode_skip_special_tokens=True,reward_decode='original_tokenizer.decode_default_flags',
+         pad_token_id=tokenizer.pad_token_id,eos_token_id=tokenizer.eos_token_id,
+-        bos_token_id=tokenizer.bos_token_id,utf8_decoder_binding=_decoder_binding(tokenizer))
++        bos_token_id=tokenizer.bos_token_id,utf8_decoder_binding=_decoder_binding(tokenizer),
++        encoder_binding=_encoder_binding(tokenizer))
++
++
++class _TokenizerValidationContext:
++    """One live-state check shared by actions of this validation call only."""
++    def __init__(self,tokenizer,identity):
++        started=time.process_time()
++        require(_current_tokenizer_identity(tokenizer)==identity,
++                'Actual registered tokenizer file/path/encoder/decode identity drifted')
++        self.tokenizer=tokenizer;self.identity=identity
++        self.cpu_seconds=time.process_time()-started
++
++
++def tokenizer_identity(tokenizer,expected_sha):
++    require(isinstance(expected_sha,str) and re.fullmatch('[0-9a-f]{64}',expected_sha),
++            'Explicit frozen tokenizer.json SHA required')
++    identity=_current_tokenizer_identity(tokenizer)
++    require(identity['tokenizer_json_sha256']==expected_sha,'Tokenizer file identity differs')
++    # Only a live object whose real file SHA and complete decode identity were
++    # checked may authorize later inherited/actor validation in this process.
++    # Colocated actor/ref instances may register the same frozen identity.
++    # Preserve the first trusted object instead of replacing its authority.
++    _VALIDATION_TOKENIZERS.setdefault(fingerprint(identity),tokenizer)
++    return identity
++
++
++def register_validation_tokenizer(tokenizer):
++    """Register the worker's already loaded object, never a ledger-supplied path."""
++    _,sha=_tokenizer_file_identity(tokenizer)
++    return tokenizer_identity(tokenizer,sha)
++
++
++def _validation_tokenizer(identity):
++    tokenizer=_VALIDATION_TOKENIZERS.get(fingerprint(identity))
++    require(tokenizer is not None,'Actual tokenizer is not registered in this process; no ledger-path loading')
++    return tokenizer
+ 
+ 
+ def canonical_text(text):
+@@ -207,11 +276,16 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
+             'Raw returned row changed or invalid padded suffix')
+     require(emission['sample_id']==fingerprint(emission['sampling_identity']), 'Sampling identity mutated')
+     utf8_started=time.process_time()
+-    decoded,complete,utf8_proof=_scan_utf8_prefixes(tokenizer,ids,identity)
++    context=_TokenizerValidationContext(tokenizer,identity)
++    decoded,complete,utf8_proof=_scan_utf8_prefixes(tokenizer,ids,identity,_context=context)
+     utf8_cpu_seconds=time.process_time()-utf8_started
+     full=decoded[-1];text=canonical_text(full)
+-    require(text==legacy_text and tokenizer.encode(text,add_special_tokens=False)==legacy_ids,
++    semantic_ids=tokenizer.encode(text,add_special_tokens=False)
++    require(isinstance(semantic_ids,list) and all(type(token) is int for token in semantic_ids) and
++            isinstance(legacy_ids,list) and all(type(token) is int for token in legacy_ids) and
++            text==legacy_text and semantic_ids==legacy_ids,
+             'Legacy parser text/canonical semantic IDs differ')
++    reward_text=tokenizer.decode(semantic_ids)
+     tagged='</search>' in full or '</answer>' in full
+     if tagged:
+         choices=[i+1 for i,prefix in enumerate(decoded) if complete[i] and prefix.startswith(text)]
+@@ -224,7 +298,7 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
+     ledger=dict(protocol=PROTOCOL,tokenizer_identity=copy.deepcopy(identity),utf8_boundary_proof=utf8_proof,
+         native_emission=copy.deepcopy(emission),cut=cut,action_token_ids=action,
+         selected_logprobs=values[:cut],canonical_text=text,canonical_text_sha256=fingerprint(text),
+-        canonical_semantic_token_ids=legacy_ids.copy(),legacy_reward_action_text=tokenizer.decode(legacy_ids),
++        canonical_semantic_token_ids=semantic_ids.copy(),legacy_reward_action_text=reward_text,
+         whole_prefix_decode=projection,whole_prefix_decode_sha256=fingerprint(projection),
+         indivisible_extra_text=extra,indivisible_extra_utf8_hex=extra.encode('utf8').hex(),
+         boundary_reason='shortest_whole_original_prefix_covering_legacy_tag' if tagged else 'all_true_emitted_tokens_no_tag',
+@@ -234,33 +308,44 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
+         prefix_scan_wall_seconds=time.perf_counter()-started[0],
+         prefix_scan_cpu_seconds=time.process_time()-started[1],
+         prefix_scan_utf8_cpu_seconds=utf8_cpu_seconds,
++        prefix_scan_tokenizer_validation_cpu_seconds=context.cpu_seconds,
+         probability_accepted=False)
+     ledger['action_binding_sha256']=fingerprint({k:v for k,v in ledger.items() if not k.startswith('prefix_scan_')})
+     return action,ledger
+ 
+ 
+-def validate_action_utf8_proof(action,tokenizer):
++def validate_action_utf8_proof(action,tokenizer,_context=None):
+     """Reconstruct byte proof and check actual full/cut decode, without resampling."""
+     emission=action['native_emission'];ids=emission['raw_emitted_token_ids'];cut=action['cut']
+-    decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False)
++    decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
+     require(proof==action.get('utf8_boundary_proof'),'Bound original-token UTF8 proof differs')
+     require(type(cut) is int and 0<cut<=len(ids) and complete[cut-1],
+             'Retained boundary has incomplete UTF8 bytes')
+     full=tokenizer.decode(ids,skip_special_tokens=True)
+     projection=tokenizer.decode(ids[:cut],skip_special_tokens=True)
+     text=canonical_text(full)
++    semantic_ids=tokenizer.encode(text,add_special_tokens=False)
++    require(isinstance(semantic_ids,list) and all(type(token) is int for token in semantic_ids) and
++            isinstance(action['canonical_semantic_token_ids'],list) and
++            all(type(token) is int for token in action['canonical_semantic_token_ids']) and
++            action['canonical_semantic_token_ids']==semantic_ids and
++            action['legacy_reward_action_text']==tokenizer.decode(semantic_ids),
++            'Legacy IDs/reward text differ from actual original canonical tokenizer encode/decode')
+     tagged='</search>' in full or '</answer>' in full
+     choices=[i+1 for i,prefix in enumerate(decoded) if complete[i] and prefix.startswith(text)]
+     require(not tagged or choices,'Canonical tag has no proven complete original-token boundary')
+     require(full==decoded[-1] and projection==decoded[cut-1] and action['canonical_text']==text and
++            action['canonical_text_sha256']==fingerprint(text) and
+             action['whole_prefix_decode']==projection and cut==(choices[0] if tagged else len(ids)) and
++            action['whole_prefix_decode_sha256']==fingerprint(projection) and
+             action['action_token_ids']==ids[:cut] and action['selected_logprobs']==emission['raw_selected_logprobs'][:cut] and
+             action['indivisible_extra_text']==projection[len(text):] and
+             action['indivisible_extra_utf8_hex']==projection[len(text):].encode('utf-8').hex(),
+             'Native/canonical complete-token UTF8 boundary differs')
+ 
+ 
+-def trajectory_projection(state,cap):
++def trajectory_projection(state,cap,_contexts=None):
++    contexts_by_identity={} if _contexts is None else _contexts
+     raw=[];mask=[];semantic=[];semantic_mask=[];contexts=[]
+     for turn,ledger in enumerate(state.raw_ledger):
+         require(ledger['turn']==turn and ledger['generation_context_token_ids']==state.prompt+raw,
+@@ -273,6 +358,11 @@ def trajectory_projection(state,cap):
+                 'Inherited sampled token/scalar prefix changed')
+         bound={k:v for k,v in action.items() if not k.startswith('prefix_scan_') and k!='action_binding_sha256'}
+         require(fingerprint(bound)==action['action_binding_sha256'],'Inherited action ledger changed')
++        identity=action['tokenizer_identity'];key=fingerprint(identity)
++        if key not in contexts_by_identity:
++            contexts_by_identity[key]=_TokenizerValidationContext(_validation_tokenizer(identity),identity)
++        context=contexts_by_identity[key]
++        validate_action_utf8_proof(action,context.tokenizer,context)
+         raw+=action['action_token_ids']+obs;mask+=[1]*n+[0]*len(obs)
+         legacy=action['canonical_semantic_token_ids'];semantic+=legacy+obs
+         semantic_mask+=[1]*len(legacy)+[0]*len(obs);contexts.append(ledger['generation_context_token_ids'])
+@@ -304,14 +394,17 @@ def semantic_spans(item,tokenizer):
+             prompt==value['prompt_token_ids'],'Semantic projection attached to different policy inputs/mask')
+     state=type('ProjectionState',(),{})()
+     state.prompt=prompt;state.response=ids;state.model_mask=mask;state.raw_ledger=value['raw_ledger']
+-    require(trajectory_projection(state,value['response_cap'])==value, 'Semantic ledger does not reconstruct bound timeline')
++    contexts={}
++    require(trajectory_projection(state,value['response_cap'],contexts)==value, 'Semantic ledger does not reconstruct bound timeline')
+     for ledger in value['raw_ledger']:
+         action=ledger['action'];identity=action['tokenizer_identity']
+         require(identity['pad_token_id']==tokenizer.pad_token_id and identity['eos_token_id']==tokenizer.eos_token_id and
+                 identity['clean_up_tokenization_spaces']==tokenizer.clean_up_tokenization_spaces and
+                 tokenizer.decode(action['canonical_semantic_token_ids'])==action['legacy_reward_action_text'],
+                 'Frozen tokenizer flags or legacy reward projection changed')
+-        validate_action_utf8_proof(action,tokenizer)
++        context=contexts[fingerprint(identity)]
++        if context.tokenizer is not tokenizer:context=_TokenizerValidationContext(tokenizer,identity)
++        validate_action_utf8_proof(action,tokenizer,context)
+     spans=[];start=None;tokens=value['semantic_response_token_ids'];marks=value['semantic_model_mask']
+     for index,is_model in enumerate(marks):
+         if is_model and start is None:start=index
+diff --git a/test_tree_behavior_mu_actor_cpu.py b/test_tree_behavior_mu_actor_cpu.py
+index edc0de3..e425932 100644
+--- a/test_tree_behavior_mu_actor_cpu.py
++++ b/test_tree_behavior_mu_actor_cpu.py
+@@ -223,6 +223,30 @@ class Tests(unittest.TestCase):
+             self.assertEqual(len(actor.calls),0)
+             self.assertEqual(len(actor.actor_optimizer.state),0)
+ 
++    def test_resealed_wrong_legacy_semantics_refuse_mu_body_and_actor_before_writes(self):
++        from search_r1.baselines.tree_raw_tokens import FIELD as RAW_FIELD, fingerprint
++        for fields in ('ids','reward','both'):
++            cfg=config();actor=Actor(cfg);data=make_data(self.factory,cfg)
++            projection=data.non_tensor_batch[RAW_FIELD][0];action=projection['raw_ledger'][0]['action']
++            fake='<answer>WRONG</answer>'
++            if fields in ('ids','both'):action['canonical_semantic_token_ids']=self.factory.tok.encode(fake)
++            if fields in ('reward','both'):action['legacy_reward_action_text']=fake
++            action['action_binding_sha256']=fingerprint({k:v for k,v in action.items()
++                if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
++            obs=projection['raw_ledger'][0]['observation_token_ids']
++            projection['semantic_response_token_ids']=action['canonical_semantic_token_ids']+obs
++            projection['semantic_model_mask']=[1]*len(action['canonical_semantic_token_ids'])+[0]*len(obs)
++            projection['binding_sha256']=fingerprint({k:v for k,v in projection.items() if k!='binding_sha256'})
++            binding=data.non_tensor_batch[FIELD][0]
++            binding['raw_projection_sha256']=projection['binding_sha256']
++            binding['action_receipts'][0]['action_binding_sha256']=action['action_binding_sha256']
++            binding['binding_sha256']=fingerprint({k:v for k,v in binding.items() if k!='binding_sha256'})
++            with self.subTest(fields=fields):
++                with self.assertRaisesRegex(ValueError,'Legacy IDs/reward'):
++                    validate_behavior_mu_batch(data,expected_provenance=runtime_provenance(os.environ))
++                with self.assertRaisesRegex(PolicySafetyRefusal,'Legacy IDs/reward'):actor.update_policy(data)
++                self.assertEqual(len(actor.calls),0);self.assertEqual(len(actor.actor_optimizer.state),0)
++
+     def test_wrong_or_empty_protocol_and_missing_repeat_limit_refuse(self):
+         for bad in ('',None,'wrong'):
+             cfg=config();cfg.policy_safety.sampling_probability_correction['protocol']=bad
+diff --git a/test_tree_raw_semantics_cpu.py b/test_tree_raw_semantics_cpu.py
+new file mode 100644
+index 0000000..23cf49c
+--- /dev/null
++++ b/test_tree_raw_semantics_cpu.py
+@@ -0,0 +1,168 @@
++"""Real V2 validator calls on tiny fixed vocabularies; no model/assets/Ray/GPU."""
++import ast
++import copy
++import json
++import multiprocessing
++from pathlib import Path
++from types import SimpleNamespace as NS
++import unittest
++from unittest.mock import patch
++
++import search_r1.baselines.tree_raw_tokens as raw
++import test_tree_raw_tokens_cpu as raw_fixture
++from test_tree_raw_tokens_cpu import Tokenizer
++
++
++def rehash(action):
++    action['action_binding_sha256']=raw.fingerprint({k:v for k,v in action.items()
++        if not k.startswith('prefix_scan_') and k!='action_binding_sha256'})
++
++
++def worker_registration_statement():
++    tree=ast.parse(Path('verl/workers/fsdp_workers.py').read_text())
++    nodes=[node for node in ast.walk(tree) if isinstance(node,ast.If) and any(
++        isinstance(child,ast.Call) and isinstance(child.func,ast.Name) and
++        child.func.id=='register_validation_tokenizer' for child in ast.walk(node))]
++    # Keep only the small opt-in statement, not an enclosing model function.
++    node=min(nodes,key=lambda x:len(list(ast.walk(x))))
++    return compile(ast.fix_missing_locations(ast.Module(body=[node],type_ignores=[])),
++        'actual-fsdp-tokenizer-registration','exec')
++
++
++def registry_child(path,pieces,state_payload,identity,queue):
++    try:
++        assert not raw._VALIDATION_TOKENIZERS  # spawn has a fresh Python process
++        state=NS(**state_payload)
++        try:raw.trajectory_projection(state,4096)
++        except ValueError as error:missing=str(error)
++        else:raise AssertionError('missing process registration accepted')
++        tok=Tokenizer(path);tok.parts=pieces
++        config=NS(actor=dict(baseline_method='tree_grpo',policy_safety=dict(
++            sampling_probability_correction=dict(enabled=True))))
++        worker=NS(config=config,tokenizer=tok)
++        statement=worker_registration_statement();exec(statement,dict(self=worker))
++        assert worker._tree_raw_validation_tokenizer_identity==identity
++        projection=raw.trajectory_projection(state,4096)
++        second=Tokenizer(path);second.parts=copy.deepcopy(pieces)
++        worker.tokenizer=second;exec(statement,dict(self=worker))
++        assert raw._validation_tokenizer(identity) is tok
++        assert raw.trajectory_projection(state,4096)==projection
++        queue.put(dict(ok=True,missing_registry_refused=missing,actual_worker_statement=True,
++            duplicate_keeps_first=True,semantic_ids=projection['semantic_response_token_ids']))
++    except Exception as error:queue.put(dict(ok=False,error=repr(error)))
++
++
++class Tests(unittest.TestCase):
++    def setUp(self):
++        self.fixture=raw_fixture.RawTokenTests();self.fixture.setUp()
++        self.fixture.tok.parts.update({200:b'<answer>\xe4',201:b'\xb8\xad</answer>tail'})
++        self.state=self.fixture.state([200,201,151645])
++        self.action=self.state.raw_ledger[0]['action']
++    def tearDown(self):self.fixture.tearDown()
++
++    def test_resealed_single_double_substring_fakeanswer_semantics_refuse_every_boundary(self):
++        actual=self.action['canonical_semantic_token_ids']
++        for candidate in ('<answer>WRONG</answer>','中','<answer>中</answer>tail','<search>fake</search>'):
++            for fields in ('ids','reward','both'):
++                changed=copy.deepcopy(self.action)
++                if fields in ('ids','both'):changed['canonical_semantic_token_ids']=self.fixture.tok.encode(candidate)
++                if fields in ('reward','both'):changed['legacy_reward_action_text']=candidate
++                rehash(changed)
++                state=copy.deepcopy(self.state);state.raw_ledger[0]['action']=changed
++                with self.subTest(candidate=candidate,fields=fields):
++                    with self.assertRaises(ValueError):raw.validate_action_utf8_proof(changed,self.fixture.tok)
++                    with self.assertRaises(ValueError):raw.trajectory_projection(state,4096)
++                    # Build all projection hashes manually after the real helper
++                    # refused; this also probes the actual reward reader.
++                    item=self.fixture.item(self.state)
++                    p=item.non_tensor_batch[raw.FIELD];p['raw_ledger'][0]['action']=changed
++                    p['semantic_response_token_ids']=changed['canonical_semantic_token_ids'].copy()
++                    p['semantic_model_mask']=[1]*len(p['semantic_response_token_ids'])
++                    p['binding_sha256']=raw.fingerprint({k:v for k,v in p.items() if k!='binding_sha256'})
++                    with self.assertRaises(ValueError):raw.semantic_spans(item,self.fixture.tok)
++        self.assertEqual(self.action['canonical_semantic_token_ids'],actual)
++        self.assertEqual(raw.semantic_spans(self.fixture.item(self.state),self.fixture.tok),['<answer>中</answer>'])
++
++    def test_resealed_canonical_text_cannot_replace_actual_raw_text(self):
++        changed=copy.deepcopy(self.action);fake='<answer>WRONG</answer>'
++        changed.update(canonical_text=fake,canonical_text_sha256=raw.fingerprint(fake),
++            canonical_semantic_token_ids=self.fixture.tok.encode(fake),legacy_reward_action_text=fake)
++        rehash(changed)
++        with self.assertRaises(ValueError):raw.validate_action_utf8_proof(changed,self.fixture.tok)
++
++    def test_path_file_backend_and_default_flag_drift_refuse_registered_authority(self):
++        tok=self.fixture.tok
++        cases=(('path',None),('file',None),('vocab',None),('normalizer',None),('flags',None),('added_tokens',None))
++        for label,_ in cases:
++            with self.subTest(label=label):
++                if label=='path':
++                    other=Path(tok.name_or_path)/'other';other.mkdir(exist_ok=True)
++                    (other/'tokenizer.json').write_bytes((Path(tok.name_or_path)/'tokenizer.json').read_bytes())
++                    with patch.object(tok,'name_or_path',str(other)),self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++                elif label=='file':
++                    path=Path(tok.name_or_path)/'tokenizer.json';original=path.read_bytes();path.write_bytes(b'{"changed":true}')
++                    try:
++                        with self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++                    finally:path.write_bytes(original)
++                elif label=='vocab':
++                    with patch.dict(tok.parts,{2:'WRONG'}),self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++                elif label=='normalizer':
++                    with patch.object(tok,'backend_normalizer',dict(type='Lowercase')),self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++                elif label=='flags':
++                    with patch.object(tok,'split_special_tokens',True,create=True),self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++                else:
++                    with patch.object(tok,'all_special_ids',[151643,151645]),self.assertRaises(ValueError):raw.trajectory_projection(self.state,4096)
++        self.assertEqual(raw.semantic_spans(self.fixture.item(self.state),tok),['<answer>中</answer>'])
++
++    def test_normal_padding_truncation_changes_are_allowed_without_vocabulary_drift(self):
++        tok=self.fixture.tok;before=raw.trajectory_projection(self.state,4096)
++        tok.backend_padding=dict(strategy='BatchLongest',pad_id=151643)
++        tok.backend_truncation=dict(max_length=500,strategy='LongestFirst')
++        self.assertEqual(raw.trajectory_projection(self.state,4096),before)
++        self.assertEqual(raw.semantic_spans(self.fixture.item(self.state),tok),['<answer>中</answer>'])
++
++    def test_actual_worker_registers_already_loaded_tokenizer_in_independent_spawn_process(self):
++        context=multiprocessing.get_context('spawn');queue=context.Queue()
++        state=dict(prompt=self.state.prompt,response=self.state.response,model_mask=self.state.model_mask,
++                   raw_ledger=self.state.raw_ledger)
++        child=context.Process(target=registry_child,args=(self.fixture.tok.name_or_path,
++            self.fixture.tok.parts,state,self.action['tokenizer_identity'],queue))
++        child.start();child.join(30)
++        if child.is_alive():child.terminate();child.join();self.fail('CPU registry child timed out')
++        self.assertEqual(child.exitcode,0);result=queue.get(timeout=2)
++        self.assertTrue(result['ok'],result);self.assertTrue(result['actual_worker_statement'])
++
++    def test_inherited_two_turn_chain_is_valid_and_resealed_ancestor_change_refuses(self):
++        first=copy.deepcopy(self.state);first.response+=[10];first.model_mask+=[0]
++        first.raw_ledger[0]['observation_token_ids']=[10]
++        first.raw_ledger[0]['observation_text']='X'
++        second,ledger=self.fixture.action([1,2,3,151645])
++        context=first.prompt+first.response
++        ledger['native_emission']['prompt_token_ids']=context.copy();rehash(ledger)
++        first.raw_ledger.append(dict(turn=1,action=ledger,observation_token_ids=[],observation_text='',
++            generation_context_token_ids=context.copy(),generation_context_positions=list(range(len(context))),
++            generation_context_attention=[1]*len(context)))
++        first.response+=second;first.model_mask+=[1]*len(second)
++        self.assertEqual(raw.semantic_spans(self.fixture.item(first),self.fixture.tok),
++                         ['<answer>中</answer>','<answer>Paris</answer>'])
++        child=first.branch();ancestor=child.raw_ledger[0]['action']
++        ancestor['canonical_semantic_token_ids']=self.fixture.tok.encode('<answer>WRONG</answer>')
++        ancestor['legacy_reward_action_text']='<answer>WRONG</answer>';rehash(ancestor)
++        with self.assertRaises(ValueError):raw.trajectory_projection(child,4096)
++        self.assertEqual(raw.semantic_spans(self.fixture.item(first),self.fixture.tok),
++                         ['<answer>中</answer>','<answer>Paris</answer>'])
++
++    def test_full_backend_serialization_once_per_identity_within_one_trajectory(self):
++        state=copy.deepcopy(self.state);action=copy.deepcopy(self.action)
++        context=state.prompt+state.response;action['native_emission']['prompt_token_ids']=context;rehash(action)
++        state.raw_ledger.append(dict(turn=1,action=action,observation_token_ids=[],observation_text='',
++            generation_context_token_ids=context,generation_context_positions=list(range(len(context))),
++            generation_context_attention=[1]*len(context)))
++        state.response+=action['action_token_ids'];state.model_mask+=[1]*action['cut']
++        actual=self.fixture.tok.backend_tokenizer.to_str
++        with patch.object(self.fixture.tok.backend_tokenizer,'to_str',wraps=actual) as snapshot:
++            raw.trajectory_projection(state,4096);self.assertEqual(snapshot.call_count,1)
++        self.assertGreaterEqual(self.action['prefix_scan_tokenizer_validation_cpu_seconds'],0.)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/test_tree_raw_tokens_cpu.py b/test_tree_raw_tokens_cpu.py
+index 31782a6..259e28b 100644
+--- a/test_tree_raw_tokens_cpu.py
++++ b/test_tree_raw_tokens_cpu.py
+@@ -43,9 +43,18 @@ class Tokenizer:
+         self.parts={1:'<answer>',2:'Paris',3:'</answer>tail',4:'</an',5:'swer>',6:'later',
+             7:'<search>capital</search>extra',8:'提示',9:'中文',10:'X',11:'Y'}
+         self.enc={};self.next=100
+-        self.backend_tokenizer=NS(decoder=NS(__getstate__=lambda:json.dumps(BYTELEVEL_DECODER_STATE).encode()))
++        self.backend_padding=None;self.backend_truncation=None;self.backend_normalizer=None
++        self.backend_tokenizer=NS(decoder=NS(__getstate__=lambda:json.dumps(BYTELEVEL_DECODER_STATE).encode()),
++            to_str=self.backend_state)
++    def backend_state(self):
++        return json.dumps(dict(version='1.0',model=dict(type='SyntheticFixedByteVocabulary',
++            byte_tokens=[1000+byte for byte in range(256)],pieces={str(k):(v if isinstance(v,bytes) else v.encode()).hex()
++                for k,v in self.parts.items()}),normalizer=self.backend_normalizer,pre_tokenizer=None,
++            post_processor=None,decoder=BYTELEVEL_DECODER_STATE,
++            added_tokens=[dict(id=token,special=True) for token in self.all_special_ids],
++            padding=self.backend_padding,truncation=self.backend_truncation))
+     def convert_ids_to_tokens(self,token):
+-        piece=self.parts[token]
++        piece=bytes([token-1000]) if 1000<=token<1256 else self.parts[token]
+         data=piece if isinstance(piece,bytes) else piece.encode('utf-8')
+         alphabet={byte:character for character,byte in BYTELEVEL_INVERSE.items()}
+         return ''.join(alphabet[byte] for byte in data)
+@@ -57,14 +66,12 @@ class Tokenizer:
+                 result.extend(b'' if skip_special_tokens else
+                     ('<eos>' if token==self.eos_token_id else '<special>').encode())
+             else:
+-                piece=self.parts[token];result.extend(piece if isinstance(piece,bytes) else piece.encode('utf-8'))
++                piece=bytes([token-1000]) if 1000<=token<1256 else self.parts[token]
++                result.extend(piece if isinstance(piece,bytes) else piece.encode('utf-8'))
+         return bytes(result).decode('utf-8',errors='replace')
+     def batch_decode(self,rows,**kwargs):return [self.decode(row,**kwargs) for row in rows]
+     def encode(self,text,add_special_tokens=False):
+-        if text=='':return []
+-        if text not in self.enc:
+-            self.enc[text]=self.next;self.parts[self.next]=text;self.next+=1
+-        return [self.enc[text]]
++        return [1000+byte for byte in text.encode('utf-8')]
+     def __call__(self,texts,**kwargs):
+         rows=[self.encode(text) for text in texts];width=max(1,max(map(len,rows)))
+         return {'input_ids':torch.tensor([row+[self.pad_token_id]*(width-len(row)) for row in rows])}
+@@ -106,6 +113,7 @@ class RawTokenTests(unittest.TestCase):
+         (path/'tokenizer.json').write_text('{"fixture":"synthetic"}')
+         self.tok=Tokenizer(path);self.sha=hashlib.sha256((path/'tokenizer.json').read_bytes()).hexdigest()
+         self.identity=tokenizer_identity(self.tok,self.sha)
++        self.pinned_parts=copy.deepcopy(self.tok.parts)
+         self.verl=ModuleType('verl');self.verl.DataProto=TinyProto
+         self.fake_verl=patch.dict(sys.modules,{'verl':self.verl});self.fake_verl.start()
+         self.ns={'torch':torch,'re':re,'List':List,'Any':Any,'Tuple':Tuple,'Dict':dict}
+@@ -118,6 +126,10 @@ class RawTokenTests(unittest.TestCase):
+         self.manager.batch_search=lambda queries:['fixture-doc']*len(queries)
+     def tearDown(self):self.fake_verl.stop();self.tmp.cleanup()
+     def action(self,ids):
++        # Test-native pieces are deliberately changed by several UTF8 fixtures.
++        # Pin their declared fixed vocabulary before sampling the new fixture.
++        if self.tok.parts!=self.pinned_parts:
++            self.identity=tokenizer_identity(self.tok,self.sha);self.pinned_parts=copy.deepcopy(self.tok.parts)
+         row=ids+[self.tok.pad_token_id]*(500-len(ids))
+         legacy_ids,text=self.manager._postprocess_responses(torch.tensor([row]))
+         return sampled_action(self.tok,emission(ids),row,legacy_ids[0][legacy_ids[0]!=self.tok.pad_token_id].tolist(),text[0],self.identity)
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index d5bbe32..72573d7 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -293,6 +293,10 @@ class ActorRolloutRefWorker(Worker):
+         # note that we have to create model in fp32. Otherwise, the optimizer is in bf16, which is incorrect
+         # TODO(zhangchi.usc1992): 1. support create from random initialized model. 2. Support init with FSDP directly
+         self.tokenizer = hf_tokenizer(local_path, trust_remote_code=trust_remote_code)
++        if (self.config.actor.get('baseline_method') == 'tree_grpo' and
++                self.config.actor.get('policy_safety', {}).get('sampling_probability_correction', {}).get('enabled') is True):
++            from search_r1.baselines.tree_raw_tokens import register_validation_tokenizer
++            self._tree_raw_validation_tokenizer_identity = register_validation_tokenizer(self.tokenizer)
+ 
+         torch_dtype = fsdp_config.get('model_dtype', None)
+         if torch_dtype is None:

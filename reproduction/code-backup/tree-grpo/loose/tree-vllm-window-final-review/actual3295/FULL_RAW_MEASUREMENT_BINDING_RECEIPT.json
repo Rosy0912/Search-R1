@@ -1,0 +1,441 @@
+{
+  "CPU_suites_repeated": false,
+  "GPU_capacity_proven": false,
+  "actual_PT_or_model_assets_read": false,
+  "actual_PT_tensor_evidence_identities_bound_only": true,
+  "actual_backward_calls": 0,
+  "actual_emitted_tokens": 808994,
+  "actual_generation_invocations": 8,
+  "actual_historical_warmup_forwards": 8,
+  "actual_loaded_binary_identity_proven": false,
+  "actual_measurement_execution_verified": true,
+  "actual_optimizer_writes": 0,
+  "actual_original_prompt_rows_global": 2560,
+  "actual_scheduler_instantiated": false,
+  "actual_scoring_native_forwards": 640,
+  "all2560_generated_request_prompt_rows_and_true_lengths_complete": true,
+  "all8_original_ready_bytes_bound": true,
+  "allrank_native_four_key_original_object_receipts_and_diagnostic_allones_masks_verified": true,
+  "allrank_warmup_and_firstnew435_native_effective_weight_hashes_match_HF_BF16": true,
+  "anchors": [
+    {
+      "anchor_id": "rank00-first",
+      "context_length": 1701,
+      "rank": 0,
+      "source_coordinate": [
+        0,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank01-first",
+      "context_length": 1239,
+      "rank": 1,
+      "source_coordinate": [
+        1,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank02-first",
+      "context_length": 1773,
+      "rank": 2,
+      "source_coordinate": [
+        2,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank03-first",
+      "context_length": 133,
+      "rank": 3,
+      "source_coordinate": [
+        3,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank04-first",
+      "context_length": 1234,
+      "rank": 4,
+      "source_coordinate": [
+        4,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank04-row160-offset17",
+      "context_length": 1253,
+      "rank": 4,
+      "source_coordinate": [
+        4,
+        160,
+        17
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank05-first",
+      "context_length": 130,
+      "rank": 5,
+      "source_coordinate": [
+        5,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank06-first",
+      "context_length": 694,
+      "rank": 6,
+      "source_coordinate": [
+        6,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    },
+    {
+      "anchor_id": "rank07-first",
+      "context_length": 1246,
+      "rank": 7,
+      "source_coordinate": [
+        7,
+        0,
+        0
+      ],
+      "status": "Actual generated prefix, native input context and actor same-forward context/target/scalars/hash all match"
+    }
+  ],
+  "cleanup_residual": {},
+  "costs": {
+    "complete_consumed_CPU_hours": null,
+    "sampled_consumption_scope": "PID maxima from incomplete process snapshots; not allocation or complete exit accounting",
+    "sampled_process_CPU_maxima_sum_seconds": 3050.1300000000033,
+    "sampled_process_PID_count": 298,
+    "sampled_process_sample_count": 386,
+    "scheduler_allocated_CPU_hours": 22.346666666666668,
+    "scheduler_allocated_GPU_hours": 0.9311111111111111,
+    "supervisor_GPU_hours": 0.9207568539513482,
+    "supervisor_allocated_CPU_hours": 22.098164520263673,
+    "supervisor_wall_seconds": 414.34058380126953
+  },
+  "first_reader_refusal_preserved_sha256": "aef0de0a51eef97505fa5b10ea6c6ad14288cf36d989c9072ff3f3a619cc5bc8",
+  "full435_HF_serialized_to434_unique_records_verified": true,
+  "full640_native_receipts_verified": true,
+  "full_raw_bytes": 380729451,
+  "full_raw_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-instruct-300/PPO_WINDOW_GPU3295_ACTUAL_RAW.json",
+  "full_raw_sha256": "30deb240d598b4880732d8eae579bfdcc5a9e53fab4363c17cc2319fec244010",
+  "full_result_rank_records_equal_saved_ready": true,
+  "full_scalar_distribution_recomputed_from_PT": false,
+  "global_p99": null,
+  "historical3268_mu_identity_proven": false,
+  "intent_spent_no_retry": true,
+  "job_id": "3295",
+  "matched_same_context_anchor_count": 9,
+  "original8_background_preserved": true,
+  "original_condensed_measurement_receipt_sha256": "3fed2325d24b6a1efb91f1c77515aa4f84a304bb2dd15c1efd7ae75cf16e53d9",
+  "original_result95925907_bytes_bound": true,
+  "probability_accepted": false,
+  "rank_proofs": [
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-00/window.pt",
+        "sha256": "fd12da74fc780bcbd0b15672f56ca08ab97d312be57bce443426321fc15a9a18"
+      },
+      "emitted_tokens": 103605,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 0,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 31001493,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-00/ready.json",
+      "ready_sha256": "47c3deb63a13f0af2b304a0b9cd3b74e4cf411b06ac7fe2e9fbf993c77401156",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-01/window.pt",
+        "sha256": "077d040982f8a2da576b48867954d21db736618496cf0fb845c1b92d7f90a7f3"
+      },
+      "emitted_tokens": 98417,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 1,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 30471652,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-01/ready.json",
+      "ready_sha256": "2c8af436ea2ab4137159b0a267bc9517a2d0fc6c2510836d5600a16b60518736",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-02/window.pt",
+        "sha256": "3ca650201e49cd5dd3ee8585026cc66deaba92fba7d5f7a5b483caba3f11739d"
+      },
+      "emitted_tokens": 100608,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 2,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 30881187,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-02/ready.json",
+      "ready_sha256": "b4e54d2dfcda78904768f2f32b4fa67ee37fb661d713b2fe14580804f30844f9",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-03/window.pt",
+        "sha256": "79d50f7cfce6dd7ece2511e61fbf02464c0a11a4d5fec1864e19c95b40fd7f82"
+      },
+      "emitted_tokens": 102032,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 3,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 30647327,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-03/ready.json",
+      "ready_sha256": "95db015839c1600e439d588ab701703eadc5b798d147d1d9d08801739c90ce2f",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 28355817,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-04/window.pt",
+        "sha256": "b5dcf68eac197bdc7e318dd57b39f92ce0e20ed0c7518a1e7ac68b31ed573cd7"
+      },
+      "emitted_tokens": 102400,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 4,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 31178979,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-04/ready.json",
+      "ready_sha256": "84e1076037c27e0e3e3c9ed0e23d85526d46752fa72ecebe9205d2f78f4c5600",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-05/window.pt",
+        "sha256": "ced103b57fc44d7fe9677287d59ae491528a4c75d0f666b781f7b18ddcc8fbe2"
+      },
+      "emitted_tokens": 99412,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 5,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 30436311,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-05/ready.json",
+      "ready_sha256": "9bf7755cf2737e8451ed37aecaf13fd26c7aecea2250e15679037f14b150b5b2",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-06/window.pt",
+        "sha256": "89d2faf2a13c7f33f5b21468cc254fcc06fcd456cf62df0f671d96822ce195fd"
+      },
+      "emitted_tokens": 102875,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 6,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 31202203,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-06/ready.json",
+      "ready_sha256": "549d9453a72a4377fafc3cee49235413936fd7f39d9d560772ef05f85166f8bf",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    },
+    {
+      "HF_serialized435_verified": true,
+      "PT_identity_only_not_read": {
+        "bytes": 27443378,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-07/window.pt",
+        "sha256": "3cf67feb1d37083b66592b411084beb30d63e7c1db2ab4246316924bc9174535"
+      },
+      "emitted_tokens": 99645,
+      "full_native80_receipts_verified": true,
+      "generated_rows": 320,
+      "rank": 7,
+      "raw_allones_mask80_hashes_verified_and_native_four_keys_preserved": true,
+      "ready_bytes": 30927715,
+      "ready_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-07/ready.json",
+      "ready_sha256": "8274f26d14a6c4baa5d43e92ce518654a882d5afc8013e2cf0ca7a5835761536",
+      "warmup_and_first_new_native435_weight_digests_match_HF_cast": true
+    }
+  ],
+  "raw27_record_sizes_and_SHA_verified": true,
+  "raw_measurement_scope": "Metadata confirms source-computed full raw distributions and direct nine-anchor scalars; no PT vectors/raw actor logprobs independently re-read or recomputed. No probability threshold calibrated or accepted.",
+  "raw_resources82_guard_records_verified": true,
+  "raw_scalar_logprobs_finite": true,
+  "reader_scope": "Audit reader only: first64MiB/file cap rejected95925907-byte result; secondinventory-bounded128MiB/file512MiB/total succeeded. Not a runtime resource/train/probability gate change.",
+  "reviewed_at_utc": "2026-10-06T03:15:23.411061+00:00",
+  "reviewer_GPU_execution": false,
+  "reviewer_initial_checker_error": "Initial inline checker incorrectly required raw envelope job_id string; actual envelope int3295 identified and structural identity check corrected. No receipt or measurement acceptance written by failing checker.",
+  "reviewer_remote_access": false,
+  "reviewer_task": "/root/tree_window_final_review",
+  "second_reader_empty_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_records": [
+    {
+      "bytes": 21036,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/probe.log",
+      "sha256": "b73c95269c1098fc7996776c0586192b03a2592da66d7d3978188655fdb124f3"
+    },
+    {
+      "bytes": 95925907,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/result.json",
+      "sha256": "b086075c8fd944dbb596594cc3a710c9763ddf476232fa0bd0bebe6a824f3b25"
+    },
+    {
+      "bytes": 3297,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/initial-allocation.json",
+      "sha256": "1d5695c760227b77c345c8a4cb77bc6fdad72b0e0ea75b05932a1a4bd5da1149"
+    },
+    {
+      "bytes": 233,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/termination-cost.json",
+      "sha256": "f6c99667092f9c7c8fdf5ee20e6dde3b099e175b21e8bf27f4b6c68043749c89"
+    },
+    {
+      "bytes": 238069,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/resources.jsonl",
+      "sha256": "aa4ee2b2850d01c15ad0ea6f2b98799f4d40ddbf25f4c70ae75bb8169d712de4"
+    },
+    {
+      "bytes": 8076225,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/process-resources.jsonl",
+      "sha256": "082236079dbafe2a59e61988352c49184a520e9d06520261a01f089f6ba60ce9"
+    },
+    {
+      "bytes": 1167247,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/bundle.json",
+      "sha256": "1400d0f2f7d10c261969bdd26d63b643c49b02c3cec40a3612f93a405a8f71b4"
+    },
+    {
+      "bytes": 104907,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/launch.json",
+      "sha256": "c2ff1b4018bc48d50dfdc7f55fe6a12dfdc8f49cfb968496d9433cc085df05a9"
+    },
+    {
+      "bytes": 522,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/torchrun-command.json",
+      "sha256": "d3a02536b333acf13c5ce6b6ca929501b1c7d5460e1345b4ce1f4cbaf20ef4a7"
+    },
+    {
+      "bytes": 53970,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/probe-scheduler-observation-3295.jsonl",
+      "sha256": "4dee68c6bf1a5f4df41f9163c9ec6eedf4b3c1beac0b83c34d2d81d25eb604fa"
+    },
+    {
+      "bytes": 7914,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/logs/tree-probability-probe-3295.out",
+      "sha256": "84cefcc2db2304d9cce9e5f04de0745de76ce00a9a1d69772f5d5cfa529c7b4a"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-00/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 31001493,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-00/ready.json",
+      "sha256": "47c3deb63a13f0af2b304a0b9cd3b74e4cf411b06ac7fe2e9fbf993c77401156"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-01/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 30471652,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-01/ready.json",
+      "sha256": "2c8af436ea2ab4137159b0a267bc9517a2d0fc6c2510836d5600a16b60518736"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-02/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 30881187,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-02/ready.json",
+      "sha256": "b4e54d2dfcda78904768f2f32b4fa67ee37fb661d713b2fe14580804f30844f9"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-03/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 30647327,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-03/ready.json",
+      "sha256": "95db015839c1600e439d588ab701703eadc5b798d147d1d9d08801739c90ce2f"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-04/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 31178979,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-04/ready.json",
+      "sha256": "84e1076037c27e0e3e3c9ed0e23d85526d46752fa72ecebe9205d2f78f4c5600"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-05/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 30436311,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-05/ready.json",
+      "sha256": "9bf7755cf2737e8451ed37aecaf13fd26c7aecea2250e15679037f14b150b5b2"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-06/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 31202203,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-06/ready.json",
+      "sha256": "549d9453a72a4377fafc3cee49235413936fd7f39d9d560772ef05f85166f8bf"
+    },
+    {
+      "bytes": 2283,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-07/sampling-params-transition.json",
+      "sha256": "bc63fd59a6096be883928a82e556887c8bfb51a91c660da781c64c7bb05e4365"
+    },
+    {
+      "bytes": 30927715,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-probability-probe-3295/gpu-records/rank-07/ready.json",
+      "sha256": "8274f26d14a6c4baa5d43e92ce518654a882d5afc8013e2cf0ca7a5835761536"
+    }
+  ],
+  "status": "ACTUAL3295_FULL27_RAW_BYTE_BINDING_AND_COMPLETE_NATIVE_WINDOW_METADATA_INDEPENDENTLY_VERIFIED_NO_PROBABILITY_ACCEPTANCE",
+  "terminal_watcher_completed_verified": true,
+  "thresholds_calibrated": false,
+  "training_accepted": false
+}

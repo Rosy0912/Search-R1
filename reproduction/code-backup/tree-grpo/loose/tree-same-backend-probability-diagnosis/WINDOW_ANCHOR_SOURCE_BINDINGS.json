@@ -1,0 +1,178 @@
+{
+  "status": "SOURCE_ONLY_BINDINGS_NO_NEW_RUNTIME_PROOF",
+  "files": {
+    "work/tree-vllm-installed-source-20261006/__init__.py": {
+      "sha256": "3765abce6d9ab013abf65adc1efaa7b3b7c5352e6ee49c77605f7f2174c83ead",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/__init__.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/attention/backends/flash_attn.py": {
+      "sha256": "b0432510845034d7fe623da2097115b99e7e35a8775b276f5ba904e9d2ae81f0",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/attention/backends/flash_attn.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/attention/layer.py": {
+      "sha256": "94ea8d8c40db06cbeebeaa43d1a17228a57524eb66ea1721faa8aa0531881080",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/attention/layer.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/entrypoints/llm.py": {
+      "sha256": "1393441b1b5cf4750b2e3a72ff30272a7e0db2220fa23ffa459f135265686582",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/entrypoints/llm.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/layernorm.py": {
+      "sha256": "d8fed1a2f5e8501d1173771841f053e5a9386a35c1b585a9995cd0ee84e4fb0d",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/layernorm.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/linear.py": {
+      "sha256": "0dcd147ecc9b57e62b15d5f53c81ee5dfe3b46300b58acc20673f473ea5fa17c",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/linear.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/logits_processor.py": {
+      "sha256": "f897fccdacdf2fa36f3bd54dd75cd515c4679e0e03fd3f33419769037b9be9d3",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/logits_processor.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/rotary_embedding.py": {
+      "sha256": "eab6a056e8f722abb8baefa3b6569a4947f6a3e5fd51b6cf55d0f088b9bee09c",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/rotary_embedding.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/sampler.py": {
+      "sha256": "3f3e2f53c4fe4149cc1b51a6ba0c369e2a48083627b948bfdac8f93802e13a69",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/sampler.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/layers/vocab_parallel_embedding.py": {
+      "sha256": "219bb65adbfa774141dcc23dd84ba89f8aaded069c6f69bdca83ffcda2d059e7",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/vocab_parallel_embedding.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/model_loader/loader.py": {
+      "sha256": "587615e5e9f926e187e6f85bdc7dd8b45070635a6612e07465e2fe510e9086b1",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/loader.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/model_loader/utils.py": {
+      "sha256": "ec83e55006b92eeb5514239036a9f47d91643c045b7b26f25f820f8f083c5f4f",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/utils.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/model_loader/weight_utils.py": {
+      "sha256": "0cc5386b0df38bf38c501742a0034ef392f0f63c43cfe0311eb91577f5485a33",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/model_loader/weight_utils.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/models/llama.py": {
+      "sha256": "217026da90671e5ff4bdfda40ed3afe21170284cadbdc2d511a9992535d2d420",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/models/llama.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/models/qwen2.py": {
+      "sha256": "a5ebb7d9c1f2b66e48ef486d8a74dc9a20e87780e3696662e88d3cb57a150f3e",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/models/qwen2.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/model_executor/sampling_metadata.py": {
+      "sha256": "cf2d182b852036c0b8457fd14bf8e106abc4c9ebd0325b2ab0ff07aa246a158e",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/sampling_metadata.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/outputs.py": {
+      "sha256": "b14697ef87bf1e00b49d9bb1ef842b4ad1c5f4a0fc29cb25457d8ec9de8a7c7a",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/outputs.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-20261006/worker/model_runner.py": {
+      "sha256": "17685c52eb9179bbc43a670d744ab9d26c2d8608711b0a30d8338d95a26081b7",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/worker/model_runner.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/_custom_ops.py": {
+      "sha256": "b1065713c62e79fce4b4fb4493335ba4ae5962969e220c1d7949a6166743a569",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/_custom_ops.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/attention/selector.py": {
+      "sha256": "ff670c4507d4f26afcceaa27a296af5a94bd39e2b4c74f64e362f4bdbbc2e5a4",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/attention/selector.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/config.py": {
+      "sha256": "3a9d50709aa2f7ca3b14741b507232e2cd954936780d4a0365cabea12e6cc8b0",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/config.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/model_executor/layers/activation.py": {
+      "sha256": "be8faf6e1651c3ed47683c4df16a73e7289286a566912332c282f2ae9a7023d5",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/layers/activation.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/model_executor/models/utils.py": {
+      "sha256": "f69d4e20322739ac9bf6cb5af6f997093a644ee754088dc44c38eab9f1103786",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/models/utils.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/model_executor/parameter.py": {
+      "sha256": "53758d23614607da21818e72550e9fe27465450f6edcacf3e309da7a32455382",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/parameter.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/model_executor/utils.py": {
+      "sha256": "874e3947fe1f14f88274994a6c80f113d68233fbabcd6ce2befd2175bd4bc00a",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/model_executor/utils.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-vllm-installed-source-extra-20261006/sequence.py": {
+      "sha256": "676938ba1175d9280dd1a1149bfd67fa068ff756c34bc96c52ad1fefc3ce97c2",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/vllm/sequence.py",
+      "proof_scope": "Captured source bytes, not loaded runtime/kernel execution"
+    },
+    "work/tree-safety110-a632ba9-v2/source/repo/verl/workers/actor/dp_actor.py": {
+      "sha256": "48aa27763fe481dcf546a8d3466cf5ee21b7e951210ac1f00568921c07f27cd7",
+      "proof_scope": "Frozen a632 source bytes, not historical effective tensor identity"
+    },
+    "work/tree-safety110-a632ba9-v2/source/repo/verl/workers/fsdp_workers.py": {
+      "sha256": "bee26eb985f5245bc6f3bb9db658b29a5d1994d88c9c46b337dab27efb2e4432",
+      "proof_scope": "Frozen a632 source bytes, not historical effective tensor identity"
+    },
+    "work/tree-safety110-a632ba9-v2/source/repo/verl/third_party/vllm/vllm_v_0_6_3/model_loader.py": {
+      "sha256": "3f033175550ad920a7398e36a7f0b4e16859b692c4098eeb3a5eca7b97219945",
+      "proof_scope": "Frozen a632 source bytes, not historical effective tensor identity"
+    },
+    "work/tree-same-backend-probability-diagnosis/DIAGNOSIS_AND_NEXT_MEASUREMENT.md": {
+      "sha256": "f1f40ca7dae9aa9ba8032e00d268f15deb8a2a672cdc94b453d0ed622778cd3e",
+      "proof_scope": "Existing local metadata or prior diagnosis"
+    },
+    "outputs/tree-instruct-300/PPO_PROBE_INSTALLED_SOURCE_METADATA_RAW.json": {
+      "sha256": "91f9a44e0864211b85180ce072581e06ea2581f3b9b4b777722b33f44aa26f6f",
+      "proof_scope": "Existing local metadata or prior diagnosis"
+    },
+    "outputs/tree-instruct-300/PPO_HF110_ACTUAL_CONFIG_METADATA.json": {
+      "sha256": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+      "proof_scope": "Existing local metadata or prior diagnosis"
+    },
+    "work/tree-native-hf-body-source-20261006/transformers/modeling_flash_attention_utils.py": {
+      "sha256": "2753ed0bdb9b37f72a4b4d0663e2f2833ad55a874be37d4599d69eb9a826ede0",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/modeling_flash_attention_utils.py",
+      "proof_scope": "Captured actual HF source body, not loaded runtime/kernel execution"
+    },
+    "work/tree-native-hf-body-source-20261006/transformers/models/qwen2/modeling_qwen2.py": {
+      "sha256": "4568d588b45dd28152d97c37300a5e227589bc70b9fef5224af29977ecf6abdc",
+      "original_h1009_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py",
+      "proof_scope": "Captured actual HF source body, not loaded runtime/kernel execution"
+    },
+    "work/tree-native-hf-body-source-20261006/SOURCE_CAPTURE_RAW.json": {
+      "sha256": "14552b90f7f2495a17a4ff8ba55d9bc4f2c92f5bdcd2378830751856c4a3753d",
+      "proof_scope": "Actual h1009 code-only capture, no model/tensors/imports"
+    }
+  },
+  "source_hash_validation": true,
+  "tensor_assets_loaded": false,
+  "model_forwards": 0,
+  "remote_operations": 0,
+  "probability_accepted": false
+}

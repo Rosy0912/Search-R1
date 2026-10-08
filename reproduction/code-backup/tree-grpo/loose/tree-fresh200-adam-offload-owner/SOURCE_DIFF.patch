@@ -1,0 +1,38 @@
+diff --git a/verl/utils/fsdp_utils.py b/verl/utils/fsdp_utils.py
+index d0243cd..dc2b2cc 100644
+--- a/verl/utils/fsdp_utils.py
++++ b/verl/utils/fsdp_utils.py
+@@ -142,6 +142,8 @@ def load_fsdp_param_and_grad(module, device_id, load_grad=False):
+ def offload_fsdp_optimizer(optimizer):
+     for param_group in optimizer.param_groups:
+         for param in param_group['params']:
++            if param not in optimizer.state:
++                continue
+             state = optimizer.state[param]
+             for key, value in state.items():
+                 if isinstance(value, torch.Tensor):
+@@ -152,6 +154,8 @@ def offload_fsdp_optimizer(optimizer):
+ def load_fsdp_optimizer(optimizer, device_id):
+     for param_group in optimizer.param_groups:
+         for param in param_group['params']:
++            if param not in optimizer.state:
++                continue
+             state = optimizer.state[param]
+             for key, value in state.items():
+                 if isinstance(value, torch.Tensor):
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index 72573d7..b12789d 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -86,7 +86,10 @@ def inspect_fresh_worker_state(worker, expected_model_path):
+ 
+ 
+ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer, lr_before_outer):
+-    """Admit each rank's actual 20 writes, advance once and retain direct evidence.
++    """Admit 20 processed opportunities and at least one write with guard continue.
++
++    Advance once after admission and retain direct evidence. The legacy strict
++    branch continues to require all 20 writes and zero skips.
+ 
+     An incomplete outer retains its real optimizer writes. No rollback or mean
+     metric can turn partial progress into completed outer credit.

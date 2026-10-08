@@ -1,0 +1,607 @@
+diff --git a/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md b/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md
+new file mode 100644
+index 0000000..890c1b1
+--- /dev/null
++++ b/docs/TREE_PROBABILITY_PROBE_SOURCE_CORE.md
+@@ -0,0 +1,54 @@
++# Healthy110 概率探针最小源码核心
++
++候选基于 `a632ba91840fb116aacfc0e770681a860647b295`，分支
++`codex/tree-probability-probe-source`。只增加独立模块和 CPU 测试；原 actor、训练
++入口、rollout、配置、概率容差、learning rate、batch、奖励、长度和预算均未修改。
++此模块尚未接入任何运行入口，不含 HF/FSDP 加载器、Slurm 或 GPU 调度。没有
++启动探针，也没有执行 3B 更新。接口不是 READY 或训练接受凭证。
++
++实现范围：
++
++1. 原 micro4 完整行缓冲依次细分为 micro2/1，保留原行序和末尾部分组；八 rank
++   调用计划补齐重复对照并标 `exclude_duplicate`。补齐调用仍记成本，不能重复
++   计入概率统计。实际调用同步及异常同步由后续 runner 实施。
++2. 根据完整 attention 和响应宽度重建原 pad-back `[-R-1:-1]` 的预测位置与原
++   packed rolled labels。检索观察即使 loss mask 为零仍保留在 attention 中；
++   padding 被排除。若有效 response 的原物理前一预测位置是 padding，拒绝，
++   不移位对齐。raw 资产没有 loss mask 时，runner 应明确使用全一诊断 mask
++   再与 response attention 相交；monitor 必须使用保存的真实 loss mask。
++3. 临时 forward hook 调用 **原 actor `_forward_micro_batch` 一次**，保留该次
++   logits 的原 tensor 引用及真实 temperature 原位缩放，记录 dtype、输入
++   shape/dtype、autocast 与 mode。hook 清理保证退出后移除，不改 actor mode。
++4. 同一 temperature 后 logits、同一标签按小块比较实际导入的原归约函数、
++   原 input dtype 的 logsoftmax、FP32 与 FP64。实核函数源码 SHA/module/真实
++   availability flag，并记录每个输出的实际 dtype。报告原 actor 输出与
++   selected-row 原归约的精确匹配/差值；kernel 布局差异存在时，不能归因归约。
++5. 完整有效权重观察接口：runner 在 FSDP wrap 前保留真实 module 对象与
++   exhaustive HF logical keys/属性名/full expected cast digests。在首个原前向的
++   子模块 pre-hook 内，读取真实 `.weight`/`.bias` tensor 的完整 shape/dtype/字节
++   digest、有限性、device 和所要求的 tied storage alias。这里不依赖 pre-gather
++   flat shard 或 `named_parameters` registry，也不使用样本摘要。原参数可能在
++   autocast 运算内部再转换；该接口记录的是 forward 属性，不能代替 kernel
++   operand trace。buffer/rotary、历史冷恢复 cast 路径仍需另外核查。
++
++权重 hook 的本地诊断失败延迟到整个原 forward 返回后抛出，以避免一 rank 在
++FSDP 后续 collective 前提前退出。runner 必须 catch 并在所有 rank 之间同步失败
++flag，再停止下一次原 forward；代码核心不提供全局异常协议或资源退出保证。
++
++后续 runner 的必需工作仍包括：固定 CPU selection manifest、ready/package/HF110
++原件身份验证、完整 HF→FSDP cast/布局/有效值证明、8-rank 实际一致调用、全模型
++mode/param/buffer/RNG/输入前后 guards、lazy buffers 预热证据、同机资源门禁和
++8 UUID/背景进程保留、cost 与自身 cleanup、open-exclusive 证据持久化。所有
++模型、完整 token、权重和 `.pt` 留 h100-9。runner 不创建 optimizer/scheduler，
++不 backward，不生成/检索，不重写 3268 原件。未知历史 effective weights 必须
++标为 HF110 重建路径，不能称原 actor 逐 bit 重现。
++
++这个核心的有效权重接口只能核对 runner 提供的 exhaustive cast 期望；没有 HF
++加载器或已接受 receipt 时不独立证明该期望来自真实 HF110。所有返回值明确
++`acceptance=false`，不签概率门禁、115/300、51713 或原 3268 全量一致。
++
++CPU 验证覆盖实际冻结 normalization 函数 AST 的 fallback 分支、假 actor 的
++packed/dense 原预测位置、BF16 logits 与 FP32 归约差异、仅一前向、hook 清理、
++源/availability 拒绝、micro 调用顺序、全量权重字节绑定、缺失覆盖和 tied alias
++拒绝。没有加载真实模型或 GPU；真实 FlashCE、FSDP、effective 权重/RNG/资源
++验收尚未进行。原安全 8 项及 sampling 6 项回归另行通过。
+diff --git a/docs/TREE_PROBE_SOURCE_CONTRACT.json b/docs/TREE_PROBE_SOURCE_CONTRACT.json
+new file mode 100644
+index 0000000..50fa3e3
+--- /dev/null
++++ b/docs/TREE_PROBE_SOURCE_CONTRACT.json
+@@ -0,0 +1,38 @@
++{
++  "acceptance": false,
++  "deployed": false,
++  "expected_installed_hf": {
++    "flash_helper": "2753ed0bdb9b37f72a4b4d0663e2f2833ad55a874be37d4599d69eb9a826ede0",
++    "qwen": "4568d588b45dd28152d97c37300a5e227589bc70b9fef5224af29977ecf6abdc"
++  },
++  "expected_ready_sha256": "ba948bdec0b71a3c8ff5c61db1360840134e57fccaf71fb154449f30c300c468",
++  "new_module_sha256": "0373d3cf5b996f0d30f665e124cc0c93a375bc96b03ce6c89107b10767a20067",
++  "new_test_sha256": "a503bdc3d67e59fd864efdc65600dfafa02e1ecc63d79db997dea2b53a64beff",
++  "observed_calibration_job": "3268",
++  "parent_code_commit": "a632ba91840fb116aacfc0e770681a860647b295",
++  "probability_tolerance_modified": false,
++  "required_hf110_manifest_identity": "56df6f31c42decee1b2302875b54db32d5cfa07db5e858446502c549cb0243ef",
++  "runner_required_not_implemented": [
++    "HF/FSDP full load and cast identity",
++    "immutable selection manifest",
++    "all-rank runtime refusal synchronization",
++    "complete state/RNG/buffer guards",
++    "same-node Slurm/UUID/foreign-resource guards and cleanup",
++    "real GPU native FlashCE/numerical results"
++  ],
++  "status": "SOURCE_CORE_ONLY_UNWIRED_NO_GPU_ACCEPTANCE",
++  "submitted": false,
++  "unchanged_source_sha256": {
++    "search_r1/baselines/policy_safety_runtime.py": "60a036ea29f6bcb1d94d69ebc0cae58ddf121f13d04fa83c20517bccb51fc5d1",
++    "search_r1/baselines/sampling_consistency.py": "677c6179f83ed3c738697da5db966c10ec5fe26c272fa1860bf6a0e5cf1ddc92",
++    "search_r1/baselines/trajectory_log.py": "55c269286aeebda718d81ebb4fdf4195a745244851793a5bf4cce875fb37150b",
++    "verl/protocol.py": "ceccbe7c9ad3bfe430355f35705054881f32dc254b0862a1f0bf6800e387405d",
++    "verl/single_controller/base/decorator.py": "b6e4cd3c8ad3c4fa2eea07df3ef45344bb5dc2e1e8357c0b94a9d19a6bd4daac",
++    "verl/trainer/config/ppo_tree_safety300.yaml": "e6cd8a11ac27329888f2b5bfa4d253d14070984fb1ca063bb0f51f429fcae644",
++    "verl/trainer/ppo/ray_trainer.py": "2539204b6a3b86614d5db74526685a568ebaae73719105a537faa92063990857",
++    "verl/utils/torch_functional.py": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575",
++    "verl/workers/actor/dp_actor.py": "48aa27763fe481dcf546a8d3466cf5ee21b7e951210ac1f00568921c07f27cd7",
++    "verl/workers/fsdp_workers.py": "bee26eb985f5245bc6f3bb9db658b29a5d1994d88c9c46b337dab27efb2e4432",
++    "verl/workers/rollout/vllm_rollout/vllm_rollout.py": "62eff90354b261d462aab1b6680a1acee9d2cb1698c0027685f72994dc6ef149"
++  }
++}
+diff --git a/docs/TREE_PROBE_SOURCE_CPU_PROOF.json b/docs/TREE_PROBE_SOURCE_CPU_PROOF.json
+new file mode 100644
+index 0000000..cd25082
+--- /dev/null
++++ b/docs/TREE_PROBE_SOURCE_CPU_PROOF.json
+@@ -0,0 +1,26 @@
++{
++  "acceptance": false,
++  "cuda_initialized": false,
++  "module_sha256": "0373d3cf5b996f0d30f665e124cc0c93a375bc96b03ce6c89107b10767a20067",
++  "native_source_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575",
++  "real_model_loaded": false,
++  "remote_calls": false,
++  "scope": "Original normalization AST on CPU plus mock actor; not real FSDP/GPU/weight/RNG/resource acceptance",
++  "status": "PROBE_SOURCE_CORE_CPU_PASS",
++  "test_sha256": "a503bdc3d67e59fd864efdc65600dfafa02e1ecc63d79db997dea2b53a64beff",
++  "tests_run": 18,
++  "total_cpu_tests": 32,
++  "unchanged_guard_regressions": {
++    "policy_safety": {
++      "count": 8,
++      "seconds": 5.827,
++      "status": "PASS"
++    },
++    "sampling_consistency": {
++      "count": 6,
++      "seconds": 5.807,
++      "status": "PASS"
++    }
++  },
++  "wall_seconds": 0.763034333
++}
+diff --git a/search_r1/baselines/probability_probe_capture.py b/search_r1/baselines/probability_probe_capture.py
+new file mode 100644
+index 0000000..527880c
+--- /dev/null
++++ b/search_r1/baselines/probability_probe_capture.py
+@@ -0,0 +1,256 @@
++"""Unwired zero-update numerical probe core; not a GPU runner or acceptance gate.
++
++The original actor entry runs unchanged under a temporary forward hook. CPU tests
++exercise mapping and same-logits comparisons. A future audited runner must supply
++actual effective-weight receipts, eight-rank synchronization and state guards.
++"""
++from contextlib import nullcontext
++import hashlib
++import inspect
++import math
++from pathlib import Path
++
++import torch
++
++
++def require(condition, message):
++    if not condition:
++        raise ValueError(message)
++
++
++def file_sha(path):
++    digest=hashlib.sha256()
++    with Path(path).open('rb') as stream:
++        for block in iter(lambda:stream.read(8*1024**2),b''):
++            digest.update(block)
++    return digest.hexdigest()
++
++
++def bind_sources(entries):
++    """Expected hashes must come from an independently frozen probe manifest."""
++    require(bool(entries),'Missing frozen source contract')
++    records=[]
++    for entry in entries:
++        path=Path(entry['path']).resolve()
++        require(file_sha(path)==entry['sha256'],'Changed probe source: '+str(path))
++        records.append(dict(path=str(path),sha256=entry['sha256']))
++    return records
++
++
++def tensor_digest(tensor):
++    """Full shape/dtype/byte digest; only bounded CPU chunks, never asset export."""
++    require(isinstance(tensor,torch.Tensor),'Actual forward attribute is not a tensor')
++    require(bool(torch.isfinite(tensor).all()),'Nonfinite effective forward tensor')
++    digest=hashlib.sha256()
++    digest.update(str(tensor.dtype).encode()+b'\0'+str(tuple(tensor.shape)).encode()+b'\0')
++    flat=tensor.detach().contiguous().reshape(-1).view(torch.uint8)
++    for chunk in flat.split(8*1024**2):digest.update(chunk.cpu().numpy().tobytes())
++    return dict(dtype=str(tensor.dtype),shape=list(tensor.shape),full_shape_dtype_bytes_sha256=digest.hexdigest())
++
++
++class EffectiveWeightTrace:
++    """Observe real module attributes inside the first original native forward.
++
++    Runner retains module references BEFORE FSDP wrapping, together with exhaustive
++    logical HF key/attribute specifications and full cast-expected digests. Reading
++    actual .weight/.bias attributes avoids treating a pre-gather FSDP flat shard or
++    named_parameters registry as the effective mathematical weight. Coverage and
++    expected tied aliases are checked; no original-3268 identity is inferred.
++    """
++    def __init__(self,targets):
++        require(bool(targets),'Missing exhaustive effective-weight targets')
++        self.targets=list(targets);self.records={};self.handles=[];self.storage={};self.errors=[];self.observed=set()
++        require(len({target['logical_name'] for target in targets})==len(targets),'Duplicate logical effective-weight keys')
++
++    def __enter__(self):
++        try:
++            for target in self.targets:
++                def hook(module,args,target=target):
++                    name=target['logical_name']
++                    if name in self.observed:return
++                    self.observed.add(name)
++                    # A rank-local hook refusal midway through FSDP would strand
++                    # peers in later collectives. Defer metadata refusals until
++                    # the whole original forward has returned on all ranks.
++                    try:
++                        actual=getattr(module,target['attribute'])
++                        identity=tensor_digest(actual)
++                        require(identity==target['expected_cast_digest'],'Effective forward weight differs from full HF cast identity: '+name)
++                        self.records[name]=dict(identity,device=str(actual.device),scope='First observed original native forward attribute')
++                        self.storage[name]=(str(actual.device),actual.untyped_storage().data_ptr(),actual.storage_offset())
++                    except Exception as error:self.errors.append(type(error).__name__+': '+str(error))
++                self.handles.append(target['module'].register_forward_pre_hook(hook))
++        except BaseException:
++            for handle in self.handles:handle.remove()
++            raise
++        return self
++
++    def __exit__(self,exc_type,exc_value,traceback):
++        for handle in self.handles:handle.remove()
++        if exc_type is None:
++            require(not self.errors,'; '.join(self.errors))
++            require(set(self.records)=={target['logical_name'] for target in self.targets},'Incomplete effective forward logical-key coverage')
++            aliases={}
++            for target in self.targets:
++                group=target.get('expected_storage_alias_group')
++                if group is not None:aliases.setdefault(group,[]).append(self.storage[target['logical_name']])
++            require(all(len(set(values))==1 for values in aliases.values()),'Expected tied effective-weight storage alias differs')
++        return False
++
++    def receipt(self):
++        require(not self.errors,'Cannot publish effective-weight evidence with recorded hook failures')
++        require(set(self.records)=={target['logical_name'] for target in self.targets},'Cannot publish incomplete effective-weight evidence')
++        return dict(status='EFFECTIVE_FORWARD_WEIGHT_DIGEST_OBSERVED_NO_ACCEPTANCE',records=dict(self.records),
++            logical_tensor_count=len(self.records),exhaustiveness_is_runner_manifest_requirement=True,
++            original_3268_effective_weight_identity_proven=False,acceptance=False)
++
++
++def micro_plan(groups):
++    """Original complete micro4 buffers; subdivide in original order, never shuffle."""
++    require(bool(groups),'At least one original group is required')
++    require(all(0<len(group)<=4 and len(set(group))==len(group) for group in groups),'Invalid original micro4 group')
++    return {micro:[dict(group=number,rows=list(group[start:start+micro]),micro=micro,exclude_duplicate=False)
++        for number,group in enumerate(groups) for start in range(0,len(group),micro)] for micro in (4,2,1)}
++
++
++def synchronize_plans(plans):
++    """Plan CPU metadata only; padded duplicate forwards are explicitly uncounted."""
++    require(len(plans)==8,'All eight ranks must supply plans')
++    aligned=[]
++    for plan in plans:
++        require(set(plan)=={4,2,1} and all(plan[micro] for micro in (4,2,1)),'Missing per-rank micro comparison')
++        aligned.append({micro:[dict(call) for call in plan[micro]] for micro in (4,2,1)})
++    for micro in (4,2,1):
++        count=max(len(plan[micro]) for plan in aligned)
++        for plan in aligned:
++            while len(plan[micro])<count:
++                duplicate=dict(plan[micro][0],exclude_duplicate=True,reason='collective_count_alignment')
++                plan[micro].append(duplicate)
++    return aligned
++
++
++def response_prediction_map(data, remove_padding):
++    """Reproduce original pad-back [-R-1:-1] prediction locations and rolled labels.
++
++    Masked observations remain in attention. An effective response whose previous
++    physical position is padding has no original predictor and is rejected rather
++    than matched to a different valid token.
++    """
++    ids,positions,attention,responses,loss=(data[key] for key in
++        ('input_ids','position_ids','attention_mask','responses','loss_mask'))
++    require(ids.ndim==2 and positions.shape==attention.shape==ids.shape,'Input shapes differ')
++    require(responses.ndim==2 and loss.shape==responses.shape and responses.shape[0]==ids.shape[0],'Response shapes differ')
++    require(bool(((attention==0)|(attention==1)).all()) and bool(((loss==0)|(loss==1)).all()),'Nonbinary masks')
++    width,response_width=ids.shape[1],responses.shape[1]
++    require(0<response_width<width and torch.equal(ids[:,-response_width:],responses),'Response is not exact input suffix')
++    effective=attention[:,-response_width:].bool() & loss.bool()
++    row,col=effective.nonzero(as_tuple=True)
++    predicted_col=width-response_width-1+col
++    require(bool(attention[row,predicted_col].bool().all()),'Effective response has an attention-masked native prediction position')
++    physical_index=row*width+predicted_col
++    if remove_padding:
++        valid=attention.flatten().bool()
++        source_index=valid.long().cumsum(0)-1
++        indices=source_index[physical_index]
++        native_labels=torch.roll(ids.flatten()[valid],shifts=-1)[indices]
++        expected_logit_rows=int(valid.sum())
++    else:
++        indices=physical_index
++        native_labels=responses[row,col]
++        expected_logit_rows=ids.numel()
++    require(torch.equal(native_labels,responses[row,col]),'Original rolled labels do not match response tokens')
++    return dict(rows=row,response_positions=col,logit_indices=indices,labels=native_labels,
++        effective_mask=effective,expected_logit_rows=expected_logit_rows,remove_padding=bool(remove_padding),
++        prediction_mapping='Original physical predecessor and pad-back slice; no prefix trimming or retokenization')
++
++
++def capture_original_call(actor, data, temperature):
++    """Call the original actor forward once; no mode change, optimizer or scheduler.
++
++    Retains a reference to that call's logits until reductions finish. A hook does
++    not certify original weights; full state/RNG/weight guards belong to the runner.
++    """
++    require(math.isfinite(float(temperature)) and float(temperature)>0,'Finite positive temperature required')
++    mapping=response_prediction_map(data,actor.use_remove_padding)
++    captured=[]
++    def hook(module,args,kwargs,output):
++        logits=output.logits
++        require(isinstance(logits,torch.Tensor) and logits.ndim==3,'Unexpected original model logits')
++        flat=logits.reshape(-1,logits.shape[-1])
++        require(flat.untyped_storage().data_ptr()==logits.untyped_storage().data_ptr(),
++                'Logits reshape would copy the original forward tensor')
++        require(flat.shape[0]==mapping['expected_logit_rows'],'Original logits rows do not match packed/dense layout')
++        require(not captured,'Original actor entry called model more than once')
++        selected=torch.tensor([0,flat.numel()-1],device=flat.device)
++        captured.append(dict(logits=flat,original_logits=logits,before_temperature_dtype=str(logits.dtype),
++            samples_before=flat.flatten()[selected].detach().clone(),sample_indices=selected,
++            cuda_autocast_enabled=torch.is_autocast_enabled(),
++            cuda_autocast_dtype=torch.get_autocast_gpu_dtype(),
++            model_training=bool(module.training),forward_kwargs=tuple(sorted(kwargs)),
++            input_shapes={key:list(value.shape) for key,value in kwargs.items() if isinstance(value,torch.Tensor)},
++            input_dtypes={key:str(value.dtype) for key,value in kwargs.items() if isinstance(value,torch.Tensor)}))
++    handle=actor.actor_module.register_forward_hook(hook,with_kwargs=True)
++    try:
++        with torch.no_grad():
++            entropy,native=actor._forward_micro_batch(data,temperature)
++    finally:
++        handle.remove()
++    require(len(captured)==1,'Original actor model call was not observed')
++    value=captured[0]
++    # Only bounded samples are copied before temperature; the retained logits are
++    # the original in-place scaled tensor, not logits from another forward.
++    require(torch.equal(value['logits'].flatten()[value['sample_indices']],value['samples_before']/temperature),
++            'Original actor did not scale retained logits in place as the pinned source specifies')
++    require(native.shape==data['responses'].shape,'Original actor probability shape changed')
++    value.update(mapping=mapping,native_response_log_probs=native.detach(),entropy=entropy.detach(),
++        after_temperature_dtype=str(value['logits'].dtype),temperature=float(temperature),
++        original_actor_calls=1,weights_independently_verified=False,acceptance=False)
++    return value
++
++
++def compare_same_logits(capture, native_function, branch_receipt, block_rows=16):
++    """One retained scaled tensor, identical labels, bounded row normalization.
++
++    The native reduction is repeated on selected rows. Its comparison with the
++    original actor output is reported explicitly: a discrepancy prevents isolated
++    normalization attribution. No threshold or acceptance is inferred here.
++    """
++    require(isinstance(block_rows,int) and block_rows>0,'Positive normalization block size required')
++    source_path=inspect.getsourcefile(native_function)
++    require(source_path is not None and file_sha(source_path)==branch_receipt['source_sha256'],'Native logprob source binding changed')
++    require(native_function.__module__==branch_receipt['module'],'Native logprob module changed')
++    require(branch_receipt['flash_ce_available'] in (True,False),'Actual import availability must be supplied')
++    require(native_function.__globals__.get('FLAH_ATTN_CROSS_ENTROPY_LOSS_AVAILABLE') is branch_receipt['flash_ce_available'],
++            'Supplied native branch does not match the actual imported availability flag')
++    mapping=capture['mapping'];indices=mapping['logit_indices'];labels=mapping['labels']
++    values={key:[] for key in ('native_selected_rows','original_dtype_logsoftmax','fp32_logsoftmax','fp64_logsoftmax')}
++    output_dtypes={key:set() for key in values}
++    context=(torch.autocast('cuda',dtype=capture['cuda_autocast_dtype'])
++        if capture['cuda_autocast_enabled'] else nullcontext())
++    with torch.no_grad(),context:
++        for start in range(0,indices.numel(),block_rows):
++            logits=capture['logits'].index_select(0,indices[start:start+block_rows])
++            target=labels[start:start+block_rows]
++            native=native_function(logits=logits,labels=target)
++            output_dtypes['native_selected_rows'].add(str(native.dtype))
++            values['native_selected_rows'].append(native.detach().cpu().double())
++            for key,dtype in (('original_dtype_logsoftmax',logits.dtype),('fp32_logsoftmax',torch.float32),('fp64_logsoftmax',torch.float64)):
++                result=torch.log_softmax(logits.to(dtype),dim=-1).gather(-1,target.unsqueeze(-1)).squeeze(-1)
++                output_dtypes[key].add(str(result.dtype))
++                values[key].append(result.detach().cpu().double())
++    values={key:torch.cat(parts) if parts else torch.empty(0,dtype=torch.float64) for key,parts in values.items()}
++    original=capture['native_response_log_probs'][mapping['rows'],mapping['response_positions']].detach().cpu().double()
++    values['original_actor']=original
++    require(all(bool(torch.isfinite(value).all()) for value in values.values()),'Nonfinite same-logits evidence')
++    native_delta=values['native_selected_rows']-original
++    return dict(token_values=values,metadata=dict(status='SAME_LOGITS_DIAGNOSTIC_ONLY_NO_ACCEPTANCE',
++        effective_response_token_occurrences=indices.numel(),original_actor_calls=capture['original_actor_calls'],
++        original_forward_logits_dtype=capture['before_temperature_dtype'],scaled_logits_dtype=capture['after_temperature_dtype'],
++        original_actor_log_probs_dtype=str(capture['native_response_log_probs'].dtype),
++        normalization_actual_output_dtypes={key:sorted(value) for key,value in output_dtypes.items()},
++        cuda_autocast_enabled=capture['cuda_autocast_enabled'],cuda_autocast_dtype=str(capture['cuda_autocast_dtype']),
++        native_logprob_source=dict(branch_receipt),retained_logits_same_tensor=True,
++        selected_native_vs_original_max_abs_delta=float(native_delta.abs().max()) if native_delta.numel() else None,
++        selected_native_exactly_matches_original=bool(torch.equal(values['native_selected_rows'],original)),
++        weights_independently_verified=False,acceptance=False,
++        limits='No second model forward. Selected-row native reduction may differ in kernel layout; attribute normalization only after original-output agreement. Effective weights, RNG, modes, buffers, all-rank schedule and resources need separate audited runner evidence.'))
+diff --git a/tests/baselines/test_probability_probe_capture.py b/tests/baselines/test_probability_probe_capture.py
+new file mode 100644
+index 0000000..cab77d4
+--- /dev/null
++++ b/tests/baselines/test_probability_probe_capture.py
+@@ -0,0 +1,203 @@
++"""CPU only: original pinned normalization AST, mock actor mapping, no GPU assets."""
++import ast
++import hashlib
++import importlib.util
++import json
++from pathlib import Path
++from types import SimpleNamespace
++import unittest
++
++import torch
++import torch.nn.functional as F
++
++ROOT=Path(__file__).resolve().parents[2]
++MODULE=ROOT/'search_r1/baselines/probability_probe_capture.py'
++spec=importlib.util.spec_from_file_location('probability_probe_capture',MODULE)
++P=importlib.util.module_from_spec(spec);spec.loader.exec_module(P)
++ORIGINAL=ROOT/'verl/utils/torch_functional.py'
++tree=ast.parse(ORIGINAL.read_text())
++nodes=[node for node in tree.body if isinstance(node,ast.FunctionDef) and node.name in ('logprobs_from_logits','logprobs_from_logits_naive','gather_from_labels')]
++scope={'torch':torch,'F':F,'FLAH_ATTN_CROSS_ENTROPY_LOSS_AVAILABLE':False,'__name__':'bound_original_normalization_cpu'}
++exec(compile(ast.Module(body=nodes,type_ignores=[]),str(ORIGINAL),'exec'),scope)
++NATIVE=scope['logprobs_from_logits']
++BRANCH=dict(source_sha256=P.file_sha(ORIGINAL),module=NATIVE.__module__,flash_ce_available=False)
++
++
++def batch():
++    ids=torch.tensor([[0,1,2,3,4,0],[0,5,6,7,8,9]])
++    return dict(input_ids=ids,position_ids=torch.tensor([[9,0,1,2,3,9],[9,0,1,2,3,4]]),
++        attention_mask=torch.tensor([[0,1,1,1,1,0],[0,1,1,1,1,1]]),responses=ids[:,-3:],
++        loss_mask=torch.tensor([[0,1,0],[1,0,1]]))
++
++
++class Model(torch.nn.Module):
++    def __init__(self,dtype):
++        super().__init__();self.weight=torch.nn.Parameter(torch.tensor(1.,dtype=dtype));self.calls=0
++    def forward(self,input_ids,position_ids,attention_mask,use_cache):
++        self.calls+=1
++        value=torch.arange(16,dtype=self.weight.dtype).reshape(1,1,16)
++        logits=(value*input_ids.unsqueeze(-1).to(self.weight.dtype)/13+position_ids.unsqueeze(-1).to(self.weight.dtype)/7)
++        return SimpleNamespace(logits=logits)
++
++
++class Actor:
++    def __init__(self,remove_padding=True,dtype=torch.float64):
++        self.use_remove_padding=remove_padding;self.actor_module=Model(dtype);self.entries=0
++        self.actor_optimizer=SimpleNamespace(step=lambda: (_ for _ in ()).throw(AssertionError('optimizer forbidden')))
++    def _forward_micro_batch(self,data,temperature):
++        self.entries+=1;ids=data['input_ids'];r=data['responses'].shape[1]
++        if self.use_remove_padding:
++            valid=data['attention_mask'].flatten().bool();tokens=ids.flatten()[valid]
++            output=self.actor_module(input_ids=tokens[None,:],position_ids=data['position_ids'].flatten()[valid][None,:],attention_mask=None,use_cache=False)
++            logits=output.logits.squeeze(0);logits.div_(temperature)
++            original=NATIVE(logits,torch.roll(tokens,-1));full=torch.zeros_like(ids,dtype=original.dtype)
++            full.flatten()[valid]=original;current=full[:,-r-1:-1]
++        else:
++            output=self.actor_module(input_ids=ids,position_ids=data['position_ids'],attention_mask=data['attention_mask'],use_cache=False)
++            logits=output.logits;logits.div_(temperature)
++            current=NATIVE(logits[:,-r-1:-1],data['responses'])
++        return torch.zeros_like(current),current
++
++
++class Tests(unittest.TestCase):
++    def test_packed_predictor_indices_use_all_attention_including_masked_observation(self):
++        mapping=P.response_prediction_map(batch(),True)
++        self.assertEqual(mapping['rows'].tolist(),[0,1,1])
++        self.assertEqual(mapping['response_positions'].tolist(),[1,0,2])
++        self.assertEqual(mapping['logit_indices'].tolist(),[2,5,7])
++        self.assertEqual(mapping['labels'].tolist(),[4,7,9])
++        self.assertEqual(mapping['expected_logit_rows'],9)
++
++    def test_dense_indices_keep_full_buffer_width(self):
++        mapping=P.response_prediction_map(batch(),False)
++        self.assertEqual(mapping['logit_indices'].tolist(),[3,8,10])
++        self.assertEqual(mapping['expected_logit_rows'],12)
++
++    def test_original_packed_entry_called_once_and_same_logits_match_normalization(self):
++        actor=Actor();state=actor.actor_module.state_dict()['weight'].clone()
++        captured=P.capture_original_call(actor,batch(),2.)
++        result=P.compare_same_logits(captured,NATIVE,BRANCH,1)
++        self.assertEqual(actor.entries,1);self.assertEqual(actor.actor_module.calls,1)
++        self.assertTrue(result['metadata']['selected_native_exactly_matches_original'])
++        self.assertEqual(result['metadata']['selected_native_vs_original_max_abs_delta'],0.)
++        self.assertEqual(result['metadata']['effective_response_token_occurrences'],3)
++        self.assertTrue(torch.equal(actor.actor_module.weight,state))
++        self.assertEqual(len(actor.actor_module._forward_hooks),0)
++        self.assertFalse(result['metadata']['weights_independently_verified'])
++        self.assertFalse(result['metadata']['acceptance'])
++
++    def test_original_dense_entry_normalization_agrees_at_same_labels(self):
++        actor=Actor(False);captured=P.capture_original_call(actor,batch(),1.)
++        result=P.compare_same_logits(captured,NATIVE,BRANCH,2)
++        self.assertTrue(result['metadata']['selected_native_exactly_matches_original'])
++
++    def test_bfloat16_logits_dtype_and_actual_normalization_difference_recorded(self):
++        actor=Actor(dtype=torch.bfloat16);captured=P.capture_original_call(actor,batch(),1.)
++        result=P.compare_same_logits(captured,NATIVE,BRANCH)
++        self.assertEqual(result['metadata']['original_forward_logits_dtype'],'torch.bfloat16')
++        self.assertEqual(result['metadata']['original_actor_log_probs_dtype'],'torch.bfloat16')
++        self.assertEqual(result['metadata']['normalization_actual_output_dtypes']['fp32_logsoftmax'],['torch.float32'])
++        self.assertTrue(result['metadata']['selected_native_exactly_matches_original'])
++        self.assertTrue(bool((result['token_values']['original_dtype_logsoftmax']!=result['token_values']['fp32_logsoftmax']).any()))
++        self.assertEqual(actor.actor_module.calls,1)
++
++    def test_prediction_attention_padding_refused_not_skipped_or_shifted(self):
++        value=batch();value['attention_mask'][0,3]=0
++        with self.assertRaisesRegex(ValueError,'attention-masked native prediction'):
++            P.response_prediction_map(value,True)
++
++    def test_suffix_token_mutation_refused(self):
++        value=batch();value['responses']=value['responses'].clone();value['responses'][1,2]=10
++        with self.assertRaisesRegex(ValueError,'exact input suffix'):P.response_prediction_map(value,True)
++
++    def test_forward_hook_cleanup_on_original_entry_exception(self):
++        actor=Actor()
++        def failure(data,temperature):raise RuntimeError('synthetic entry failure')
++        actor._forward_micro_batch=failure
++        with self.assertRaisesRegex(RuntimeError,'synthetic entry failure'):P.capture_original_call(actor,batch(),1.)
++        self.assertEqual(len(actor.actor_module._forward_hooks),0)
++
++    def test_temperature_nonfinite_refused(self):
++        with self.assertRaises(ValueError):P.capture_original_call(Actor(),batch(),float('inf'))
++
++    def test_micro4_2_1_preserves_original_rows_and_partial_group(self):
++        plan=P.micro_plan([[10,11,12,13],[20]])
++        self.assertEqual([call['rows'] for call in plan[4]],[[10,11,12,13],[20]])
++        self.assertEqual([call['rows'] for call in plan[2]],[[10,11],[12,13],[20]])
++        self.assertEqual([call['rows'] for call in plan[1]],[[10],[11],[12],[13],[20]])
++
++    def test_all_rank_call_alignment_explicitly_excludes_padding_duplicates(self):
++        plans=[P.micro_plan([[0,1,2,3]]) for _ in range(7)]+[P.micro_plan([[0,1,2,3],[4,5,6,7]])]
++        aligned=P.synchronize_plans(plans)
++        for micro in (4,2,1):self.assertEqual(len(set(len(plan[micro]) for plan in aligned)),1)
++        self.assertEqual(sum(call['exclude_duplicate'] for call in aligned[0][1]),4)
++        self.assertFalse(any(call['exclude_duplicate'] for call in aligned[7][1]))
++        self.assertEqual(len(plans[0][1]),4)
++
++    def test_actual_native_availability_and_source_sha_refused_when_misreported(self):
++        capture=P.capture_original_call(Actor(),batch(),1.)
++        with self.assertRaisesRegex(ValueError,'actual imported availability'):
++            P.compare_same_logits(capture,NATIVE,dict(BRANCH,flash_ce_available=True))
++        with self.assertRaisesRegex(ValueError,'source binding changed'):
++            P.compare_same_logits(capture,NATIVE,dict(BRANCH,source_sha256='0'*64))
++
++    def test_source_binding_matches_original_parent_sha_and_rejects_change(self):
++        result=P.bind_sources([{'path':str(ORIGINAL),'sha256':P.file_sha(ORIGINAL)}])
++        self.assertEqual(result[0]['sha256'],'21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575')
++        with self.assertRaises(ValueError):P.bind_sources([{'path':str(ORIGINAL),'sha256':'0'*64}])
++
++    def test_real_forward_attribute_full_digest_not_parameter_sample(self):
++        actor=Actor();target=dict(logical_name='weight',module=actor.actor_module,attribute='weight',
++            expected_cast_digest=P.tensor_digest(actor.actor_module.weight))
++        with P.EffectiveWeightTrace([target]) as trace:P.capture_original_call(actor,batch(),1.)
++        receipt=trace.receipt()
++        self.assertEqual(receipt['logical_tensor_count'],1)
++        self.assertEqual(receipt['records']['weight']['device'],'cpu')
++        self.assertFalse(receipt['acceptance'])
++        self.assertEqual(len(actor.actor_module._forward_pre_hooks),0)
++
++    def test_forward_weight_difference_refused_and_hooks_removed(self):
++        actor=Actor();expected=P.tensor_digest(actor.actor_module.weight)
++        with torch.no_grad():actor.actor_module.weight.add_(1)
++        target=dict(logical_name='weight',module=actor.actor_module,attribute='weight',expected_cast_digest=expected)
++        with self.assertRaisesRegex(ValueError,'differs from full HF cast'):
++            with P.EffectiveWeightTrace([target]):P.capture_original_call(actor,batch(),1.)
++        self.assertEqual(actor.actor_module.calls,1) # Refusal deferred past whole native forward.
++        self.assertEqual(actor.entries,1)
++        self.assertEqual(len(actor.actor_module._forward_pre_hooks),0)
++
++    def test_unobserved_forward_weight_coverage_refused(self):
++        module=Model(torch.float64);target=dict(logical_name='unused.weight',module=module,attribute='weight',
++            expected_cast_digest=P.tensor_digest(module.weight))
++        with self.assertRaisesRegex(ValueError,'Incomplete effective forward'):
++            with P.EffectiveWeightTrace([target]):pass
++
++    def test_tied_forward_storage_alias_refused_even_if_values_equal(self):
++        first,second=Actor(),Actor()
++        targets=[dict(logical_name=str(i)+'.weight',module=actor.actor_module,attribute='weight',
++            expected_cast_digest=P.tensor_digest(actor.actor_module.weight),expected_storage_alias_group='expected_tied')
++            for i,actor in enumerate((first,second))]
++        with self.assertRaisesRegex(ValueError,'storage alias differs'):
++            with P.EffectiveWeightTrace(targets):
++                P.capture_original_call(first,batch(),1.);P.capture_original_call(second,batch(),1.)
++
++    def test_tied_forward_storage_alias_and_bfloat16_bytes_hash(self):
++        first,second=Actor(dtype=torch.bfloat16),Actor(dtype=torch.bfloat16)
++        second.actor_module.weight=first.actor_module.weight
++        targets=[dict(logical_name=str(i)+'.weight',module=actor.actor_module,attribute='weight',
++            expected_cast_digest=P.tensor_digest(actor.actor_module.weight),expected_storage_alias_group='expected_tied')
++            for i,actor in enumerate((first,second))]
++        with P.EffectiveWeightTrace(targets) as trace:
++            P.capture_original_call(first,batch(),1.);P.capture_original_call(second,batch(),1.)
++        self.assertEqual(trace.receipt()['logical_tensor_count'],2)
++
++
++if __name__=='__main__':
++    torch.set_num_threads(4)
++    suite=unittest.defaultTestLoader.loadTestsFromTestCase(Tests);result=unittest.TextTestRunner(verbosity=2).run(suite)
++    require_no_cuda=not torch.cuda.is_initialized()
++    print(json.dumps(dict(status='PROBE_SOURCE_CORE_CPU_PASS' if result.wasSuccessful() and require_no_cuda else 'FAILED',
++        tests_run=result.testsRun,cuda_initialized=torch.cuda.is_initialized(),real_model_loaded=False,remote_calls=False,
++        native_source_sha256=P.file_sha(ORIGINAL),module_sha256=P.file_sha(MODULE),test_sha256=P.file_sha(__file__),
++        acceptance=False,scope='Original normalization AST on CPU plus mock actor; not real FSDP/GPU/weight/RNG/resource acceptance'),sort_keys=True))
++    raise SystemExit(0 if result.wasSuccessful() and require_no_cuda else 1)

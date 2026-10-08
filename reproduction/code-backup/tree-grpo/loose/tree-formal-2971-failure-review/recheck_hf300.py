@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib,math,re
+R=Path(__file__).resolve().parents[2];p=R/'outputs/evidence/tree-formal-2971-hf300-job3037-full-reload.txt';raw=p.read_text();start=raw.index('{');decoder=json.JSONDecoder();hf,n=decoder.raw_decode(raw[start:]);cost,_=decoder.raw_decode(raw[start+n:].lstrip())
+assert 'JobId=3037' in raw and 'JobState=COMPLETED' in raw and 'ExitCode=0:0' in raw and 'NodeList=h100-9' in raw and 'NumCPUs=8' in raw and 'TresPerNode=gres:gpu:0' in raw and 'RunTime=00:00:25' in raw
+assert hf['status']=='HF_RELOAD_PARAMETER_DELTA_ACCEPTED' and hf['checkpoint'].endswith('/tree-formal-2971/output/checkpoints/tree_grpo-qwen2.5-3b/actor/global_step_300') and all(not x for x in hf['hf_loading_info'].values())
+assert all(hf[k] for k in ['tokenizer_vocab_equal','bos_eos_equal','all_parameters_finite','cpu_forward_logits_finite']) and 0<hf['changed_parameters']<=hf['total_parameters'] and hf['changed_tensors']==434 and math.isfinite(hf['max_abs_parameter_delta']) and hf['max_abs_parameter_delta']>0
+assert (cost['job_id'],cost['parent_job_id'],cost['allocated_cpus'],cost['allocated_gpus'],cost['exit_code'])==('3037','2971',8,0,0) and cost['end_epoch']>cost['start_epoch']
+assert len(hf['checkpoint_file_sha256'])==12 and all(re.fullmatch('[0-9a-f]{64}',v) for v in hf['checkpoint_file_sha256'].values())
+previous=json.loads((R/'outputs/evidence/shared-five-2956/stage-evidence-hf-reload.json').read_text())
+for name,h in hf['checkpoint_file_sha256'].items():
+ if not name.startswith('model-'):assert h==previous['checkpoint_file_sha256'][name],name
+out=dict(status='HF300_FULL_CPU_RELOAD_EVIDENCE_VERIFIED_NOT_RUN_ACCEPTANCE',evidence_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),hf300_reload_accepted=True,job='3037',slurm='COMPLETED0:0',allocated_gpu=0,allocated_cpu=8,scheduler_seconds=25,checkpoint=hf['checkpoint'],changed_parameters=hf['changed_parameters'],total_parameters=hf['total_parameters'],changed_tensors=434,max_abs_delta=hf['max_abs_parameter_delta'],full_parameter_finite=True,cpu_forward_finite=True,tokenizer_vocab_BOS_EOS_compatible=True,metadata_tokenizer_hashes_equal_prior_full_checkpoint=True,model_shard_sha256={k:v for k,v in hf['checkpoint_file_sha256'].items() if k.startswith('model-')},exact_resume_supported=False,parent2971_still_failed=True,parent500_accepted=False,new_reward_protocol_accepted=False,limitation='ActualCPUchecker rawreport consumed; local reviewer does not repeat full13GBweight reload. Does not diagnose step308failed gradients or verify post300weights.')
+(R/'work/tree-formal-2971-failure-review/HF300_RELOAD_ADDENDUM.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out,indent=2))

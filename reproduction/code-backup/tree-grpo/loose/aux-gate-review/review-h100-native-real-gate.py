@@ -1,0 +1,40 @@
+import pathlib,json,hashlib,collections,math
+root=pathlib.Path.cwd();e=root/'outputs/evidence';d=root/'work/aux-gate-review';gate=e/'h100-native-http-2899.json';baseline=e/'retrieval-cpu-2854.json'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+r=json.loads(gate.read_text());b=json.loads(baseline.read_text());assert sha(gate)=='279ab8460fe78d4967b4a74890066f0d77635d266c6ac2b245e8dba247c3a044';assert r['baseline_sha256']==r['instance']['baseline_sha256']==sha(baseline)
+i=r['instance'];assert i['job_id']=='2896' and i['pid']==2449148 and i['gpu_uuid']=='GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b' and i['cluster']=='wuhan-h100' and i['encoder_fp16'] is True and i['index_float16'] is False and i['encoder_device']=='cuda' and i['batch_size']==512 and i['max_query_length']==256
+for field,name in [('source_sha256','h100_gpu_retrieval_service.py'),('guard_source_sha256','h100_retrieval_resource_guard.py'),('launcher_source_sha256','start_h100_gpu_retrieval.sh')]:assert i[field]==sha(root/'work'/name)
+assert r['source_sha256']==sha(root/'work/probe_h100_gpu_retrieval_http.py') and i['retrieval_module_sha256']==sha(root/'work/tree-grpo/search_r1/search/retrieval_server.py')
+for kind in ('index','corpus'):assert i['asset_identity'][kind]['sha256']==b['asset_identity'][kind]['sha256']
+ignore={'model.safetensors.partial','model.safetensors.source.partial','model.safetensors.source.partial.aria2'};assert i['model_sha256']=={k:v for k,v in b['asset_identity']['model'].items() if k not in ignore}
+fixed={};diffs=[]
+for k in (3,50):
+ m=[x for x in r['measurements'] if x['queries']==14 and x['k']==k];assert len(m)==2 and [x['repeat'] for x in m]==[0,1] and m[0]['results']==m[1]['results'];fixed[k]=m[0]['results'];assert len(fixed[k])==14
+ for q,row in enumerate(fixed[k]):
+  old=b['results'][q][str(k)];left=dict(zip(old['corpus_ids'],zip(old['scores'],old['contents_sha256'])));right=dict(zip(row['corpus_ids'],zip(row['scores'],row['contents_sha256'])));assert len(left)==len(right)==k;shared=set(left)&set(right)
+  item={'query_index':q,'k':k,'exact_rank':row['corpus_ids']==old['corpus_ids'],'overlap':len(shared),'all_shared_content_equal':all(left[x][1]==right[x][1] for x in shared),'max_matched_score_delta':max(abs(left[x][0]-right[x][0]) for x in shared),'only_cpu':sorted(set(left)-set(right)),'only_gpu':sorted(set(right)-set(left))}
+  assert item==next(x for x in r['differences'] if x['query_index']==q and x['k']==k)
+  item['content_rank_equal']=row['contents_sha256']==old['contents_sha256'];item['changed_positions']=[{'position':j,'cpu_id':old['corpus_ids'][j],'gpu_id':row['corpus_ids'][j],'same_content':old['contents_sha256'][j]==row['contents_sha256'][j]} for j in range(k) if row['corpus_ids'][j]!=old['corpus_ids'][j]];diffs.append(item)
+summary=[];health=[]
+for label,k in [('repeated_512',3),('repeated_512_top50',50),('capacity_512_max256',3)]:
+ m=[x for x in r['measurements'] if x.get('label')==label];assert len(m)==2 and [x['repeat'] for x in m]==[0,1] and m[0]['results']==m[1]['results'];rows=m[0]['results'];assert len(rows)==512
+ for x in m:
+  assert hashlib.sha256(json.dumps(x['results'],sort_keys=True).encode()).hexdigest()==x['results_sha256'];assert x['concurrent_health_samples'];health.extend(x['concurrent_health_samples'])
+ for row in rows:assert len(row['corpus_ids'])==len(set(row['corpus_ids']))==len(row['scores'])==len(row['contents_sha256'])==k and all(math.isfinite(z) for z in row['scores'])
+ t={'label':label,'k':k,'rows':512,'repeat_stable':True,'wall_seconds':[x['wall_seconds'] for x in m],'health_samples':[len(x['concurrent_health_samples']) for x in m]}
+ if not label.startswith('capacity'):
+  compared=[]
+  for q,row in enumerate(rows):
+   ref=fixed[k][q%14];old=b['results'][q%14][str(k)];compared.append({'row':q,'source_row':q%14,'exact_rank_vs_same_gpu14':row['corpus_ids']==ref['corpus_ids'],'exact_rank_vs_cpu14':row['corpus_ids']==old['corpus_ids'],'content_rank_equal_vs_same_gpu14':row['contents_sha256']==ref['contents_sha256'],'max_position_score_delta_vs_same_gpu14':max(abs(x-y) for x,y in zip(row['scores'],ref['scores']))})
+  assert all(compared==x['compared_to_14'] for x in m)
+  t.update(exact_rank_vs_same_gpu14=sum(x['exact_rank_vs_same_gpu14'] for x in compared),exact_rank_vs_cpu14=sum(x['exact_rank_vs_cpu14'] for x in compared),content_rank_same_gpu14=sum(x['content_rank_equal_vs_same_gpu14'] for x in compared),max_position_score_delta_same_gpu14=max(x['max_position_score_delta_vs_same_gpu14'] for x in compared))
+ summary.append(t)
+gpu=[json.loads(x) for x in (e/'h100-native-retrieval-2896-gpu-samples-prefix.jsonl').read_text().splitlines()];requests=[json.loads(x) for x in (e/'h100-native-retrieval-2896-requests-gate.jsonl').read_text().splitlines()]
+assert len(gpu)==69 and len(requests)==len(r['measurements'])==10
+assert all(x['job_id']=='2896' and len(x['gpus'])==1 and x['gpus'][0]['uuid']==i['gpu_uuid'] for x in gpu)
+assert all(x['gpus'][0]['foreign_memory_fraction']<=.15 and x['gpus'][0]['foreign_sm_upper']<=15 for x in gpu)
+for q,m in zip(requests,r['measurements']):assert q['queries']==m['queries'] and q['k']==m['k'] and q['wall_seconds']<=m['wall_seconds']
+assert all(x['instance_equal'] is True and math.isfinite(x['wall_seconds']) for x in health)
+out={'decision':'LIMITED_NATIVE_TREE_TOP3_TWO_SMOKE_GATE_ACCEPTED','not_training_stage_acceptance':True,'permitted_next_stage':'two','formal_not_accepted':True,'effect_not_validated':True,'instance':i,'fixed14':{str(k):{'exact_rank':sum(x['exact_rank'] for x in diffs if x['k']==k),'all_set_overlap':all(x['overlap']==k for x in diffs if x['k']==k),'all_shared_content_equal':all(x['all_shared_content_equal'] for x in diffs if x['k']==k),'content_rank_equal_queries':sum(x['content_rank_equal'] for x in diffs if x['k']==k),'max_matched_score_delta':max(x['max_matched_score_delta'] for x in diffs if x['k']==k)} for k in (3,50)},'per_query_differences':diffs,'batch_probes':summary,'concurrent_health':{'samples':len(health),'max_wall_seconds':max(x['wall_seconds'] for x in health)},'resource_prefix':{'samples':len(gpu),'sample_interval_seconds':5,'max_total_gpu_used_bytes':max(x['gpus'][0]['total_used_memory_bytes'] for x in gpu),'max_foreign_memory_fraction':max(x['gpus'][0]['foreign_memory_fraction'] for x in gpu),'max_foreign_sm_upper':max(x['gpus'][0]['foreign_sm_upper'] for x in gpu),'foreign_pids':sorted({p['pid'] for x in gpu for p in x['gpus'][0]['foreign']}),'max_torch_allocated_bytes':max(x['cuda_peak_allocated_bytes'] for x in requests),'recorded_request_body_wall_seconds':sum(x['wall_seconds'] for x in requests),'recorded_request_cpu_seconds':sum(x['process_cpu_seconds'] for x in requests)},'cpu_probe_allocation_cpu_hours':40*2/3600,'evidence_file_sha256':{str(p):sha(p) for p in [gate,baseline,e/'h100-native-retrieval-2896-gpu-samples-prefix.jsonl',e/'h100-native-retrieval-2896-requests-gate.jsonl',e/'h100-native-retrieval-2896-probe-2899-slurm.txt']},'limitations':['14 fixed real queries and repeated512 cannot prove all-query equivalence or512unique throughput','top50 order differs for11/14 including different-content swaps, not CoSearch ranking equivalence','5-second device sample peak is observed prefix peak, not instantaneous or complete lifetime peak','torch max allocated excludes FAISS GPU allocations','auxiliary job still running; complete allocation/service lifetime cost pending','must independently validate new native two and thenfive; old cross-cluster acceptance cannot substitute']}
+out['reviewed_sources_sha256']={n:sha(root/'work'/n) for n in ['h100_gpu_retrieval_service.py','h100_retrieval_resource_guard.py','start_h100_gpu_retrieval.sh','check_h100_native_retriever.py','probe_h100_gpu_retrieval_http.py','train_tree_stage_h100_native.sh']}
+(d/'h100-native-real-gate-independent-results.json').write_text(json.dumps(out,indent=2,allow_nan=False)+'\n');print(json.dumps({k:v for k,v in out.items() if k not in ('instance','per_query_differences','evidence_file_sha256')},indent=2))
