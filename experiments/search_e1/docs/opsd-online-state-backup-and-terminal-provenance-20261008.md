@@ -43,3 +43,7 @@ HKUST4 21:12 CST 新只读记录176/200 GRPO已完成、177进行中，176 rewar
 独立在线效果入口按已发布设计实现于 `control/opsd_online_results_eval_v1`。完整冻结清单 SHA 为 `5c8fb3d21f5c3c1ab33a349cb7923bedeeb212acf090c1becc819c354a3ac664`，10个负载文件、9个 Python AST/逐文件字节与 SHA 均通过；实际本地40个 CPU fixtures、0 skip通过。独立科学审查将终态、原始 nested wait、CP218真实 CPU execution、实际 CPUmerge 四票据与生产者接口逐项对齐。候选阶段发现的接口/短命子进程/CPU控制器 CUDA准入问题均在运行前修正，没有改变正跑源码。
 
 新入口保留六个资源锁、精确 oracle 与鲜活 observer，分别核训练200轮完整链/真实退出/最终八rank实际状态，再评 source100启用的CP0、预选CP89和最终outer199 raw。所有额外零效与hook控制排除在1536正式样本之外；最终模型不由采样cache或best替代。缺失真实最终输入会HOLD；源239条件不符只标条件诊断，不改参数凑数。训练200轮、终态和效果均尚未完成；本次没有新 EM，也没有启动该评估的 GPU 工作。
+
+双独立审查均正式批准后，新入口已在 `fb0932a019379b7a17f7b74ebc8037cefb28774c` 提交、推送，12个新源码/文档逐文件从 FETCH_HEAD 回读一致。节点独立目录 `/data/shaoshitong/search-e1-opsd-online-results-20261008/source/results-eval-fb0932a/opsd_online_results_eval_v1` 的11个文件逐字节与本地相同。首 Node CPU fixture 缺少测试使用的仓库 sibling admission.py，四项路径错误已保存；补入字节相同、已经发布的原 acceptance.py 作为测试依赖，未修改 evaluator 或训练源码。原环境40项 CPU tests 随后全部通过，0 skip；这不是一次训练故障或 GPU 恢复。完整复跑票据 SHA 为 `5a311563a19e323f56d250784111fa186ba5ffbabeb482f7cd1bd7b39727f2a4`。
+
+实际 CPU prepare 对 source100/305源码/数据/CP0/CP89 身份检查通过，产生新独立 run `0aa669133f74418e818f14d217b4d9b7`。发布绑定的 `receipts/config-published-not-ready.json` SHA 为 `fe3d6eb5903fdc55334922f020bf53b9009d63d0a8155da5e3758dd90eb92d33`，自身出版与原 observer 已绑定；真实最终 checkpoint、终态和全200验收仍明确缺失，因此 ready=false/HOLD。实际 CLI exit0只表示准备完成，不能当作效果评估开始。配置绑定过程没有 import Torch，所有新阶段均未启动 GPU。
