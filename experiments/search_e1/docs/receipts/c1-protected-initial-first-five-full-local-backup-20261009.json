@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "actual_rsync_returncode": 0,
+  "all_local_full_SHA_match": true,
+  "all_source_fresh_SHA_before": true,
+  "all_source_metadata_stable_after": true,
+  "backup_is_training_dependency": false,
+  "bytes": 839690517,
+  "files": 39,
+  "manifest_pins": {
+    "update-00000000-outer-00000": "916f213785f1a65742c8a377602ba9a623323d0167523464677f010596a8185b",
+    "update-00000001-outer-00000": "2ac3a2a23119fee980ae623d2caa56bdb66b2f6561ab5e30960c50033dd3e82c",
+    "update-00000005-outer-00000": "d98e1477ceeb21e6198a2d12975a1d3fa4b785b41d7c87d2b49d9bf5557be1b0"
+  },
+  "node_originals_retained": true,
+  "numeric_Adam_acceptance_is_separate": true,
+  "private_completion": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c1-protected-0-1-5-closed-backup-20261009/complete-sha-verified.json",
+    "sha256": "86f73fed005eb9d449739229a58560a8f63763ee8cf0d0566984377690074df8"
+  },
+  "protected_updates": [
+    0,
+    1,
+    5
+  ],
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "C1-protected-0-1-5-persistent-copy-summary-v1",
+  "scope": "39 actual original protected-state files, after source before-copy SHA and post-copy metadata checks, independently read every local member SHA. Neither a new GPU training run nor extra model tests."
+}
