@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "g1_a800_four_card_trainer_actual_start",
+  "created_at_utc": "2026-10-08T04:04:48.854527+00:00",
+  "session_thread_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+  "deployment_id": "527016556c6e45e69c772b28e2e4af47",
+  "run_id": "5712571f6a974ea9a0a383f9bdf33af0",
+  "execution_id": "b5ed7a1f9e0d4ce9b72a0fdc44d6e440",
+  "source_publication": {
+    "repository": "shaoshitong/Search-R1",
+    "branch": "search-g1",
+    "checked_unix": 1791431501.4320252,
+    "source_commit": "af5d6e89d950a855275e640ed63813181c98903c",
+    "remote_branch_commit": "af5d6e89d950a855275e640ed63813181c98903c",
+    "remote_blob_readback_matches": true,
+    "source_disk_snapshot_sha256": {
+      "reproduction/a800_common/train.sh": "f8d7ff061f603e6276807b59a6948accf57123bd6cf9abb56a09880bc5cb89fa"
+    },
+    "source_transport": "published_git_bundle_relay",
+    "source_commit_recorded_by_run_manifest": "af5d6e89d950a855275e640ed63813181c98903c",
+    "file_hashes_prove_loaded_source": false,
+    "hash_scope": "Published Git and disk source snapshot. These file hashes alone do not establish which bytes a live process has loaded."
+  },
+  "actual_process_and_run_identity": {
+    "observation_unix": 1791432118.9871264,
+    "run_manifest_run_id_matches": true,
+    "run_manifest_execution_id_matches": true,
+    "pipeline": {
+      "pid": 998409,
+      "start_ticks": 551113980,
+      "alive": true,
+      "birth_matches": true,
+      "state": "S",
+      "claimed": true,
+      "stage": "GRPO_1_TO_200"
+    },
+    "trainer": {
+      "pid": 1025546,
+      "start_ticks": 551160660,
+      "alive": true,
+      "birth_matches": true,
+      "state": "S",
+      "claimed": true,
+      "ledger_state": "STARTED"
+    },
+    "ray_main_task": {
+      "observed_unix": 1791432148.8587716,
+      "pid": 1032914,
+      "expected_start_ticks": 551166565,
+      "actual_start_ticks": 551166565,
+      "birth_matches": true,
+      "alive": true,
+      "state": "S"
+    },
+    "binding_basis": "Saved deployment observation binds the run, execution, pipeline and trainer. The separate saved start record supplies the matching Ray main_task birth and startup marker."
+  },
+  "actual_ray_and_training_log": {
+    "observed_unix": 1791432148.8587716,
+    "ray_start_logged_local_time": "2026-10-08 12:01:13.240",
+    "ray_start_marker": "Started a local Ray instance.",
+    "ray_start_marker_present": true,
+    "main_task_total_training_steps_marker": 201,
+    "printed_training_step_budget_is_completed_updates": false,
+    "resolved_config_exists": true,
+    "resolved_config_content_verified_by_this_receipt": false,
+    "training_log_basename": "search-g1-common8-training.log",
+    "run_manifest_training_log_basename": "search-g1-common8-training.log",
+    "deployment_observation_log_exists": true,
+    "deployment_observation_log_bytes": 37009,
+    "deployment_observation_log_modified_unix": 1791432115.926276,
+    "actual_start_record_log_bytes": 37115
+  },
+  "setup_outcome_scalars": {
+    "retrieval_stage_exit_code": 0,
+    "initial_service_adoption_exit_code": 0,
+    "production_service_admission_exit_code": 0,
+    "basis": "Selected exit_code scalars from the saved observation; no setup ledger or content is copied."
+  },
+  "training_configuration_targets": {
+    "basis": "Authorized run configuration and numeric targets; resolved configuration existence is observed separately.",
+    "training_world_size": 4,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "per_card_actor_microbatch": 2,
+    "four_card_global_microbatch": 8,
+    "gradient_accumulation_steps": 16,
+    "actor_minibatch_size": 128,
+    "opportunity_target_per_outer_update": 20,
+    "opportunities_and_actual_writes_counted_separately": true,
+    "same_trainer_process_required_from_zero_to_200_updates": true,
+    "target_outer_updates": 200,
+    "save_interval_outer_updates": 5,
+    "first_five_outer_updates_acceptance_required": true
+  },
+  "actual_training_progress": {
+    "observation_unix": 1791432118.9871264,
+    "recorded_completed_updates": 0,
+    "recorded_completed_outer_updates": 0,
+    "recorded_adam_updates": 0,
+    "actual_updates_ledger_exists": false,
+    "actual_start_record_actual_updates_exists": false,
+    "matching_actual_update_rows": 0,
+    "last_recorded_outer": null,
+    "recorded_completed_outers": null,
+    "opportunity_ledger_count": 0,
+    "recorded_new_training_opportunities": 0,
+    "recorded_new_actual_writes": 0,
+    "new_training_reward_observed": false,
+    "new_training_score_observed": false,
+    "first_five_outer_updates_acceptance_completed": false,
+    "startup_counts_as_training_update": false,
+    "scope": "Recorded progress at these receipt timestamps; live startup does not establish completed optimizer updates or reward acceptance."
+  },
+  "gpu_scalar_observation": {
+    "latest_sample_unix": 1791432116.9822013,
+    "latest_sample_age_seconds": 2.0458695888519287,
+    "cumulative_sample_count": 264,
+    "matching_sample_count": 264,
+    "first_scanned_sample_unix": 1791431556.5956397,
+    "maximum_scanned_sampling_gap_seconds": 2.6981265544891357,
+    "scan_from_start": true,
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sample_scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "cumulative_sampled_run_peak_mib_including_setup": {
+      "0": 63089,
+      "1": 63135,
+      "2": 63135,
+      "3": 63089,
+      "5": 17967,
+      "6": 24091
+    },
+    "current_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "total_mib": 81920,
+        "used_mib": 57381,
+        "util_percent": 18,
+        "cumulative_sampled_run_peak_mib_including_setup": 63089
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "total_mib": 81920,
+        "used_mib": 57429,
+        "util_percent": 26,
+        "cumulative_sampled_run_peak_mib_including_setup": 63135
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "total_mib": 81920,
+        "used_mib": 57429,
+        "util_percent": 22,
+        "cumulative_sampled_run_peak_mib_including_setup": 63135
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "total_mib": 81920,
+        "used_mib": 57381,
+        "util_percent": 17,
+        "cumulative_sampled_run_peak_mib_including_setup": 63089
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0,
+        "cumulative_sampled_run_peak_mib_including_setup": 17967
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "total_mib": 81920,
+        "used_mib": 24091,
+        "util_percent": 0,
+        "cumulative_sampled_run_peak_mib_including_setup": 24091
+      }
+    ],
+    "peak_scope": "Sampled occupancy over this run pipeline lifetime, including service startup and setup/calibration; it is not an optimizer-only peak."
+  },
+  "goal_status": {
+    "active": true,
+    "completed": false,
+    "target_outer_updates": 200,
+    "recorded_completed_outer_updates": 0,
+    "effect_or_reward_acceptance_completed": false
+  },
+  "sources": {
+    "source_publication": {
+      "receipt_basename": "a800-train-shell-ray-fix-publication.json",
+      "receipt_sha256": "84e0f7c761ed0b0900d1ea059fdc5652ddde70c81e616594b8e3afe03f5f84df"
+    },
+    "actual_deployment_observation": {
+      "receipt_basename": "a800-common-deployment-527016556c6e45e69c772b28e2e4af47.observe-1791432119063159000.json",
+      "receipt_sha256": "72e08f9e6a602066ff616fbeb1085c6ec7370a916b7d00610f6032334171b81a"
+    },
+    "actual_ray_trainer_start": {
+      "receipt_basename": "a800-527-actual-ray-trainer-start.json",
+      "receipt_sha256": "c62187bddc4021495a86e38dba6d7a2e86ecd24ea227acecc48b67cd1136bbcc"
+    }
+  },
+  "scope": "Sanitized scalar values, process and run identities, selected startup marker, source hashes and local receipt provenance. No full logs, job ledger or content payloads are copied."
+}
