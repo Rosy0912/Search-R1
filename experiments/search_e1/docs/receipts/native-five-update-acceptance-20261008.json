@@ -1,0 +1,132 @@
+{
+  "status": "RUNNING",
+  "world_size": 8,
+  "opsd_updates": 5,
+  "source_grpo_step": 100,
+  "display_step": 105,
+  "ranks": [
+    {
+      "rank": 0,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8074035200,
+      "free_bytes": 16676225024,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 1,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8145338368,
+      "free_bytes": 16604921856,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 2,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8438939648,
+      "free_bytes": 16311320576,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 3,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8497659904,
+      "free_bytes": 16252600320,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 4,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8369733632,
+      "free_bytes": 16380526592,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 5,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8246001664,
+      "free_bytes": 16504258560,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 6,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8063549440,
+      "free_bytes": 16686710784,
+      "total_bytes": 25386352640
+    },
+    {
+      "rank": 7,
+      "updates": 5,
+      "source_grpo_step": 100,
+      "display_step": 105,
+      "finite": true,
+      "changed_from_initial": true,
+      "adam_steps": [
+        5.0
+      ],
+      "grad_norm": 0.9985244274139404,
+      "max_reserved_bytes": 8000634880,
+      "free_bytes": 16141910016,
+      "total_bytes": 25386352640
+    }
+  ],
+  "five_real_updates_accepted": true,
+  "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+  "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100"
+}

@@ -1,5 +1,7 @@
 # Eight-card OPSD from archive GRPO checkpoint100
 
+The immediate operational acceptance is complete: actual source checkpoint100 followed by five finite, changed-weight OPSD updates on eight GPUs. The full effect evaluation remains in progress.
+
 Latest human instruction on2026-10-07 supersedes the older first-GRPO200 requirement for the replacement eight-card experiment. Stop only the owned degraded aligned8 run after preserving complete eight-rank weights, Adam, scheduler and RNG. Keep archive4 training and every older stopped run unchanged. The exact human message timestamp is unavailable; remote authorization receipt records the live-turn receipt time and original text.
 
 Use archive4 global_step_100 model weights, verify every transferred file SHA256, and start OPSD directly. No additional GRPO and no GRPO optimizer restoration. The display100→105 means GRPO source checkpoint100 plus five real OPSD updates; source and OPSD counters remain separate.
@@ -12,7 +14,7 @@ New HKUST1 root: /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007.
 
 Instrumentation observes each real Adam update, finite trainable parameters and gradients, changed LoRA_B weights, actual per-rank Adam counters and GPU allocator peaks. Save actual adapter and optimizer/RNG state at OPSD update1 and5 without stopping or resetting the one continuous run. Acceptance requires real updates1–5, same source model, finite changed weights, matching Adam counters on all8 ranks and healthy observed GPU usage. Do not label GRPO metrics or source checkpoint as new OPSD updates.
 
-Current setup status: source checkpoint transferred and12 files hash-verified. Old state capture queued behind active update; new pipeline waits for full-complete.json before the narrow stop. Five OPSD updates have not yet been executed; no acceptance claimed. Original frozen runtime retained; instrumentation modifies only independent runtime/opsd copy. Hourly automation updated to new human scope; never reactivate replaced aligned8 GRPO.
+Current status, 2026-10-08 09:27 CST: the requested source100→OPSD1–5 gate is accepted. The same eight-card run has completed all845515 fresh trajectories, mined100974 usable pairs and executed one epoch of3156 unique OPSD Adam updates. Native post-epoch512 validation is active; its EM/history and final seven-benchmark evaluation are pending. The active tmux is e1-opsd100-preparation3-xformers-20261007, run914bfff786c84ede8d82414dff65f60e, with logs/preparation-3-pipeline.log and logs/preparation-3-opsd.log. Original runs, state captures and frozen runtimes remain retained. Hourly monitoring continues through effect evaluation; never reactivate replaced aligned8 GRPO. See the Oct8 acceptance section below for actual state and memory evidence.
 
 ## 2026-10-07 12:32 CST: old run preserved and replacement generating real trajectories
 
@@ -182,3 +184,46 @@ At21:03:49 CST archive has139/200 completed GRPO updates, with140 generating. Ne
 At21:03:50 CST the live preparation observer counted344640/845515 trajectories. A fresh root read at21:05:11 CST counted345280 with cache age60.7s, while controller2459676/run914bfff786c84ede8d82414dff65f60e/parent2460237, private retrieval and memory observers remain healthy. OPSD real updates are still0; no source100→105 acceptance has occurred. Around20:53 root estimated6.5–7hours of remaining generation from recent throughput, excluding mining/encoding/baseline/five updates; it is not a deadline. The60-read root polling timer completed normally without owning or stopping any remote job.
 
 No live source, configuration, affinity, job or scientific hyperparameter changed in this interval. The same full-data source100 pipeline continues directly to OPSD without extra GRPO or a short-test reset. Archive139 remains a separate original control and cannot count toward the five real OPSD updates. Preserve old failure/runtime/checkpoint evidence and wait for finite/changed-adapter, eight-Adam and actual-memory gate before claiming101–105.
+
+
+## 2026-10-08 06:05 acceptance; 09:23–09:27 CST independent confirmation
+
+The requested **source archive GRPO100 → actual OPSD1–5 (display101–105)** acceptance passed at06:05:51.818 CST. Root read the native and external receipts directly and independently checked the same-run log/config at09:27. An independent CPU audit at09:25:49.998–09:26:00.763 freshly read the actual saved tensors and all16 rank-state bundles. The source model is archive checkpoint100 with a fresh OPSD optimizer; no additional GRPO or original GRPO Adam restoration is claimed. Loss remains valid-token mean within each trajectory, followed by the mean across the actual global trajectory batch32. The final14-pair tail uses its actual denominator.
+
+| Actual OPSD update | Display index | Logged preclip gradient norm | Eight-rank actual Adam step |
+|---:|---:|---:|---:|
+| 1 | 101 | 1.231311 | 1 |
+| 2 | 102 | 1.577588 | 2 |
+| 3 | 103 | 1.379250 | 3 |
+| 4 | 104 | 0.984231 | 4 |
+| 5 | 105 | 0.998524 | 5 |
+
+All five native records report finite and changed weights. Actual saved adapters1 and5 each contain504 finite tensors, and all504 change between1 and5. The still-unselected baseline adapter has all252 LoRA-B tensors zero; update1 differs from that baseline. Each of the16 actual saved update1/update5 rank bundles was independently hashed and read on CPU: the504 Adam states and parameter groups match rank0 exactly across all8 ranks for each update, with actual counters1/5, finite moments and complete saved Torch CPU/CUDA RNG fields. CUDA was not initialized for this independent inspection. These are real saved-state checks, not simulated updates.
+
+The external observer's directly measured memory.free sample is2.983 seconds after the latest fifth-update state file; all eight cards have at least15077MiB actual free. The continuous interval begins before OPSD configuration and includes preparation through update5, preserving its historical actual minimum3099MiB. Current09:27 sampled minimum is13545MiB and private retriever peak remains654MiB. Direct memory.free excludes driver reservations; computed total-used is not used as the admission value. No new readable dmesg Xid/NVRM/CUDA match was found. The prior failed preparation2/Xid31 evidence remains preserved; current acceptance does not prove that failure's root cause was identified.
+
+Full generation completed169103×5=845515 trajectories, with105690 rows in each first seven worker shards and105685 in the last. All completed JSON/source positions and five-sibling order pass the independent audit; final partial64-question batches are expected. Old generation workers exited normally before native training. Original mining produced100974 usable pairs, skipped0. The actual config preserves epochs1/lr1e-5/LoRAr16/alpha32/contributionclip10/chunk32/context8192/seed42/world8/accumulation4/global32. The log indices1–3156 are continuous and unique, with zero duplicate indices; ceil(100974/32)=3156 includes the final14 pairs. All eight final live records report actual Adam3156 and finite, changed weights. The independently reread persistent state above is update1/5; this does not assert that a saved3156 Adam checkpoint exists.
+
+At09:27 the eight native ranks remain active in post-epoch512 validation, after the complete training epoch. The stage pointer still reads TRAIN_AND_BASELINE_VALIDATION; it is not a per-validation progress counter. No history.json or visible baseline/epoch EM exists yet, so no value or gain is invented. Report baseline, raw epoch1 and selected best separately once written. Selection of best_adapter alone cannot establish learning benefit. Native greedy512 uses different sampling, history and inference settings from archive's vLLM512; its eventual score must not be directly subtracted from archive44.73/44.92 as an OPSD gain. Continue matched evaluation and the authorized seven-benchmark report.
+
+The first09:23 runtime receipt includes a checker-scope false finding: it included the torchrun launcher in its native-rank WORLD_SIZE8 requirement. The independent [rank-scope interpretation](receipts/preparation-3-hourly-runtime-readonly-audit-1791422595-native-rank-scope-interpretation.json) verifies one launcher3588780 and exactly eight workers3588873–3588880 with the correct UID/run/argv/world8. The original raw receipt is retained; no training program or running process was changed to address this audit finding. All305 frozen source files were freshly rehashed and match. Source100 metadata remains exactly equal to the20:45 baseline; large model weights were not rehashed13GB again, while small config/tokenizer files were freshly hashed.
+
+Persistent remote paths on HKUST1:
+
+- Root: `/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007`.
+- Source weights: `assets/archive100`, originally transferred/hash-accepted from HKUST4 `/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100`.
+- Fifth-update adapter: `runs/opsd/adapter_update_5/adapter_model.safetensors`,119801528 bytes; eight actual state files `runs/opsd/update_5_rank_0_state.pt` through `update_5_rank_7_state.pt`.
+- Native proof: `runs/opsd/five-update-acceptance.json`, SHA256 `e311b200bec03918e3dcc4eda3f58233b7042dbc3ae9daadf5aeacb1e52cd6aa`.
+- External proof: `receipts/five-real-opsd-updates-accepted.json`, SHA256 `96509ab16a51dc038501153b7a41d7fb1a60d2ca62761fa793a1db635e2bb2e3`.
+- Actual config: `runs/opsd/config.json`, SHA256 `84a6167b9216c65fe0e810d03a8489f263d7feccddface605fa0ab6e726e8640`.
+- Same continuous run:914bfff786c84ede8d82414dff65f60e, controller2459676, tmux `e1-opsd100-preparation3-xformers-20261007`; no five-step stop/reset was performed.
+
+Repository copies: [external5](receipts/five-real-opsd-updates-accepted-20261008.json), [native5](receipts/native-five-update-acceptance-20261008.json), [actual config](receipts/native-opsd-config-20261008.json), [root confirmation](receipts/root-five-acceptance-and-progress-20261008.json), [independent report](receipts/preparation-3-actual-five-opsd-independent-audit-1791422595.md), [CPU actual-state proof](receipts/preparation-3-actual-five-opsd-cpu-state-readonly-1791422595.json) and [raw runtime audit](receipts/preparation-3-hourly-runtime-readonly-audit-1791422595.json). CPU proof SHA256 `9837cade78596daf587e26b14a7b63357102b5299a52732ace2aaf31e2cd683c`. Existing hourly automation is ACTIVE and updated to completed five-update acceptance plus remaining512/seven-benchmark evaluation. The immediate human gate is met; full effect reproduction is pending.
+
+## 2026-10-08 09:23:54 CST: separate archive157 and new512 step150
+
+The original HKUST4 four-card control completed157/200 GRPO updates, with158 updating actor. Latest logged reward0.512 and preclip norm0.737 are finite; the mean of the last10 rounded rewards is0.5045. The140–157 norms have maximum2.531, with no terminal error observed. Owned controller/main/workers and retriever1749337 match prior identities; three runtime maps each match669 actual hashes. Direct GPU4–7 free is30217/28197/30129/31731MiB, retriever718MiB and continuous observer127531 samples/age7.4s. No new per-tensor archive checkpoint finiteness test was executed.
+
+Native step150 validation has rounded NQ0.387 and Hotpot0.512. With exact denominators256/256, unique integer candidates are99/256 and131/256, totaling230/512=44.921875%. This is an inference from the existing rounded log, not a new evaluation. Step100 was108/256 and121/256, totaling229/512=44.7265625%; the aggregate increases1 question while NQ decreases9 and Hotpot increases10. Latest checkpoint is `/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_150`. The replacement OPSD source remains the explicitly selected100 checkpoint.
+
+[Archive receipt](receipts/archive-audit-20261008T012354Z.json), SHA256 `020ba752a150954a2065f0717eafacfa493446288b87b3a4c3e965acc3682755`, and [compact summary](receipts/archive-audit-20261008T012354Z.summary.json) retain the actual Oct8 observation time. The local clock/connection resumed after an unobserved interval; no on-time Oct7 late-hour audit is claimed. Original archive GRPO counts never enter the replacement OPSD105 gate, and no foreign GPU0–3 or process was touched.

@@ -1,0 +1,62 @@
+{
+  "source_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/archive-audit/archive-audit-20261008T012354Z.json",
+  "source_receipt_sha256": "020ba752a150954a2065f0717eafacfa493446288b87b3a4c3e965acc3682755",
+  "sample_time_cst": "2026-10-08T09:23:54.359501+08:00",
+  "timing_note": "Actual clock resumed on Oct8 09:23 CST after waiting for Oct7 22:03 target. No claim of on-time observation during the unobserved interval.",
+  "stage": "original archive round-1-grpo",
+  "completed_updates": 157,
+  "current_started_step": 158,
+  "new_completed_update_range": [
+    140,
+    157
+  ],
+  "latest_reward_from_three_decimal_log": 0.512,
+  "latest_preclip_grad_norm_from_three_decimal_log": 0.737,
+  "maximum_logged_preclip_grad_norm_after139": 2.531,
+  "latest512_evaluation": {
+    "step": 150,
+    "scores_direct_from_rounded_log": {
+      "nq": 0.387,
+      "hotpotqa": 0.512
+    },
+    "unique_count_inference": {
+      "nq": {
+        "correct": 99,
+        "n": 256,
+        "em": 0.38671875
+      },
+      "hotpotqa": {
+        "correct": 131,
+        "n": 256,
+        "em": 0.51171875
+      }
+    },
+    "count_candidates_under_native_three_decimal_rounding": {
+      "nq": [
+        99
+      ],
+      "hotpotqa": [
+        131
+      ]
+    },
+    "aggregate_em_inferred": 0.44921875
+  },
+  "comparison_to_step100": {
+    "nq_correct_delta": -9,
+    "hotpot_correct_delta": 10,
+    "total_correct_delta": 1,
+    "aggregate_percentage_point_delta": 0.1953125
+  },
+  "latest_checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_150",
+  "weight_finiteness_note": "No new tensor-level weight finite check was run; finite scalar logs do not establish all weights finite.",
+  "direct_free_mib": [
+    30217,
+    28197,
+    30129,
+    31731
+  ],
+  "observer_age_seconds": 7.39896559715271,
+  "retriever_process_mib": 718,
+  "all_three_runtime_hash_checks_passed": true,
+  "opsd_acceptance_note": "Original archive GRPO does not count toward K1 source100 OPSD101-105 acceptance."
+}

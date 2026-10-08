@@ -1,0 +1,356 @@
+{
+  "time": 1791422869.978462,
+  "base": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+  "run_id": "914bfff786c84ede8d82414dff65f60e",
+  "external_acceptance_time": 1791410751.8183272,
+  "checks": {
+    "official_status_accepted": true,
+    "source100": true,
+    "five_actual": true,
+    "display105": true,
+    "world8": true,
+    "global32": true,
+    "finite_changed": true,
+    "adam_equal": true,
+    "ranks5": true,
+    "five_updates_in_same_continuous_run": true,
+    "continuous_unique_log_updates": true,
+    "latest_allranks_finite": true,
+    "no_failed_acceptance": true,
+    "loss_trajectory_mean": true
+  },
+  "source100": 100,
+  "actual_opsd_updates_for_gate": 5,
+  "current_unique_opsd_updates": 3156,
+  "first5": [
+    {
+      "opsd_updates": 1,
+      "display_step": 101,
+      "source_grpo_step": 100,
+      "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+      "ranks_actual_adam": [
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          1.0
+        ]
+      ]
+    },
+    {
+      "opsd_updates": 2,
+      "display_step": 102,
+      "source_grpo_step": 100,
+      "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+      "ranks_actual_adam": [
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.0
+        ]
+      ]
+    },
+    {
+      "opsd_updates": 3,
+      "display_step": 103,
+      "source_grpo_step": 100,
+      "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+      "ranks_actual_adam": [
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ]
+      ]
+    },
+    {
+      "opsd_updates": 4,
+      "display_step": 104,
+      "source_grpo_step": 100,
+      "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+      "ranks_actual_adam": [
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.0
+        ]
+      ]
+    },
+    {
+      "opsd_updates": 5,
+      "display_step": 105,
+      "source_grpo_step": 100,
+      "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+      "ranks_actual_adam": [
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ]
+      ]
+    }
+  ],
+  "last_update": {
+    "status": "RUNNING",
+    "world_size": 8,
+    "opsd_updates": 3156,
+    "source_grpo_step": 100,
+    "display_step": 3256,
+    "ranks": [
+      {
+        "rank": 0,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9758048256,
+        "free_bytes": 14992211968,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 1,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9990832128,
+        "free_bytes": 14759428096,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 2,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9655287808,
+        "free_bytes": 15094972416,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 3,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9468641280,
+        "free_bytes": 15281618944,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 4,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9795796992,
+        "free_bytes": 14954463232,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 5,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9147777024,
+        "free_bytes": 15602483200,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 6,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9279897600,
+        "free_bytes": 15470362624,
+        "total_bytes": 25386352640
+      },
+      {
+        "rank": 7,
+        "updates": 3156,
+        "source_grpo_step": 100,
+        "display_step": 3256,
+        "finite": true,
+        "changed_from_initial": true,
+        "adam_steps": [
+          3156.0
+        ],
+        "grad_norm": 0.5011975169181824,
+        "max_reserved_bytes": 9940500480,
+        "free_bytes": 14202044416,
+        "total_bytes": 25386352640
+      }
+    ],
+    "five_real_updates_accepted": true,
+    "reduction": "Mean over valid response tokens per trajectory, then mean over global trajectory batch",
+    "source_model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100"
+  },
+  "native_config": {
+    "model": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/assets/archive100",
+    "pairs": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+    "validation": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/validation.jsonl",
+    "output": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd",
+    "retriever_url": "http://10.120.17.101:18004/retrieve",
+    "epochs": 1,
+    "lr": 1e-05,
+    "rank": 16,
+    "alpha": 32,
+    "clip": 10.0,
+    "chunk": 32,
+    "accumulation": 4,
+    "max_context": 8192,
+    "seed": 42,
+    "usable_pairs": 100974,
+    "skipped_pairs": 0,
+    "world_size": 8
+  },
+  "current_stage": {
+    "phase": "OPSD100_PREPARATION3_TRAIN_AND_BASELINE_VALIDATION",
+    "time": 1791407270.9718354,
+    "controller_pid": 2459676,
+    "run_id": "914bfff786c84ede8d82414dff65f60e",
+    "generation": 3,
+    "status_scope": "Latest generation3 pointer; preparation2 failed stage preserved by reviewed SHA proof"
+  },
+  "full_trajectory_rows": 845515,
+  "full_source_questions": 169103,
+  "current_memory_time": 1791422868.483854,
+  "current_min_actual_free_mib": 13545,
+  "five_gate_sample_min_free_mib": 15077,
+  "five_gate_historical_actual_min_free_mib": 3099,
+  "history_json_exists": false,
+  "source_checkpoint": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+  "adapter_checkpoint": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/opsd/adapter_update_5",
+  "scope": "Root reads existing receipts/logs/config/memory only. Independent CPU tensor/Adam comparison recorded separately. Five-update acceptance is not completed effect reproduction."
+}
