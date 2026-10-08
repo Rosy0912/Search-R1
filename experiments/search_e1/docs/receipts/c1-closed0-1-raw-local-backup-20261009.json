@@ -1,0 +1,30 @@
+{
+  "accepted": true,
+  "actual_ssh_wait_rc": 0,
+  "all_decompressed_member_SHA_verified": true,
+  "all_other_closed_attempts_and_HTTP_teacher_student_token_records_included": true,
+  "closed_outers": [
+    0,
+    1
+  ],
+  "closure_expected_real_updates": [
+    11,
+    21
+  ],
+  "compressed_sha256": "0f642597fec76829a59eae9d8a5ec88e6342e6427734e02042a5f5dbdfa2821c",
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "does_not_cover_remaining_C1_outers_or_full70_raw_debug": true,
+  "local_compressed_bytes": 82890616,
+  "observed_unix": 1791502374.749386,
+  "only_exclusion": "Each closed outer top-level merged-model-cache; surrounding merge identity/exit/device records included",
+  "original_NPY_files": 8,
+  "original_node_assets_retained": true,
+  "private_receipt_sha256": "a027302bca333ef37f533566fb337584d0dc162f247e1ef2efefd7f24ce9dcc7",
+  "schema": "search-e1-c1-closed0-1-raw-local-backup-recorded-v1",
+  "science_or_gpu_changed": false,
+  "source_files": 851,
+  "source_member_bytes": 538791070,
+  "source_noncache_fileset_stable_after": true,
+  "source_run": "a1a56efd32e5456d8c6813454975e38f",
+  "training_or_evaluation_waits_for_backup": false
+}
