@@ -1,0 +1,14 @@
+{
+  "scope": "HYDRA_COMPOSITION_ONLY_NO_GPU",
+  "validated": true,
+  "outer": 200,
+  "warmup": 57,
+  "mini": 128,
+  "micro": 16,
+  "reduction": "token_mean",
+  "ref_kl": 0.001,
+  "dual_clip": null,
+  "skip": false,
+  "stage_commit": true,
+  "training_em": true
+}

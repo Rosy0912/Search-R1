@@ -19,14 +19,20 @@ def validate_gate_config(config):
     from .fresh200_contract import validate_fresh_config
     if config['trainer'].get('fresh200_diagnostic_only',False):
         raise ValueError('Diagnostic-only runs cannot release formal fresh200 training')
+    if config.get('baseline_aligned') is True and (
+            config['trainer'].get('fresh200_gate_enabled')is not True
+            or config['trainer'].get('aligned_stage_commit_enabled')is not True
+            or config['actor_rollout_ref']['actor'].get('aligned_stage_commit_enabled')is not True
+            or config['baselines'].get('alignment',{}).get('training_em_enabled')is not True):
+        raise ValueError('Aligned first-five release requires its production gate/stage/EM profile')
     return validate_fresh_config(config)
 
 
-def validate_first_five_attempts(attempts, progress, driver_pid):
+def validate_first_five_attempts(attempts, progress, driver_pid, baseline_aligned=False):
     """Replay retained writes and accepted outers; five is not five attempts."""
     from .fresh200_driver import Fresh200Progress
     if type(driver_pid) is not int or driver_pid<=0:raise ValueError('Exact original driver PID required')
-    state=Fresh200Progress()
+    state=Fresh200Progress(baseline_aligned=baseline_aligned)
     def equal_accounting(observed):
         # Python equality considers True == 1 and 20.0 == 20; raw receipt
         # metadata must preserve the exact typed counters produced by replay.
@@ -48,6 +54,10 @@ def validate_first_five_attempts(attempts, progress, driver_pid):
         if state.completed_outers>5:raise ValueError('Fifth gate contains later accepted updates')
     if state.completed_outers!=5 or not equal_accounting(progress):
         raise ValueError('First-five gate needs five accepted complete outers, actual writes bound')
+    if baseline_aligned and (state.attempts != 5 or state.incomplete_attempts
+            or state.actual_adam_writes_per_rank != [100] * 8
+            or state.skipped_opportunities_per_rank != [0] * 8):
+        raise ValueError('Aligned fifth gate requires exactly five complete20/no-skip attempts')
     return accepted
 
 
@@ -69,20 +79,35 @@ def write_manifest(paths, directory, config, source, run, step, reports, progres
                protocol='BAPO_FRESH200_V1', mini_batch_switch_outer=50,
                update_semantics='SKIP_CONTINUE_ACCEPTED_OUTERS_V1',attempt_accounting=progress,
                optimizer_opportunities_before_switch=20,optimizer_opportunities_after_switch=10)
+    if config.get('baseline_aligned') is True:
+        value.update(version=3, protocol='BAPO_BASELINE_ALIGNED_FRESH200_V1', baseline_aligned=True,
+                     mini_batch_switch_outer=None, update_semantics='COMPLETE20_NO_SKIP_ACCEPTED_OUTERS_V1',
+                     optimizer_opportunities_after_switch=20)
+        if progress.get('baseline_aligned') is not True:
+            raise ValueError('Aligned gate progress profile differs')
     target=directory/'manifest.json';tmp=target.with_suffix('.tmp');tmp.write_text(json.dumps(value,indent=2,allow_nan=False));os.replace(tmp,target)
     return target
 
 
 def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
     manifest_path=Path(manifest_path);m=json.loads(manifest_path.read_text());r=json.loads(Path(receipt).read_text())
-    if r.get('status')!='PASS_INDEPENDENT_FRESH200_STEP5_REVIEW':raise ValueError('Independent FRESH200 step5 release missing')
+    aligned=m.get('baseline_aligned') is True
+    expected_status=('PASS_INDEPENDENT_BASELINE_ALIGNED_FRESH200_STEP5_REVIEW' if aligned else 'PASS_INDEPENDENT_FRESH200_STEP5_REVIEW')
+    if r.get('status')!=expected_status:raise ValueError('Independent profile-specific FRESH200 step5 release missing')
+    if aligned and r.get('baseline_aligned') is not True:
+        raise ValueError('Aligned release profile missing')
     for key in ('run_root','source_commit','global_step','actual_outer_updates','horizon','warmup_steps','config_sha256','pause_nonce','protocol','mini_batch_switch_outer','update_semantics','attempt_accounting','optimizer_opportunities_before_switch','optimizer_opportunities_after_switch'):
         if r.get(key)!=m.get(key):raise ValueError('Release identity mismatch '+key)
     if any(type(m.get(k)) is not int or type(r.get(k)) is not int for k in ('global_step','actual_outer_updates','horizon','warmup_steps')):
         raise ValueError('Gate counters must be integers')
     if m['global_step']!=5 or m['actual_outer_updates']!=5 or m['horizon']!=200 or m['warmup_steps']!=57:
         raise ValueError('Not a fifth-outer 200/57 gate')
-    if (m.get('version')!=2 or m.get('update_semantics')!='SKIP_CONTINUE_ACCEPTED_OUTERS_V1'
+    if aligned:
+        if (m.get('version')!=3 or m.get('update_semantics')!='COMPLETE20_NO_SKIP_ACCEPTED_OUTERS_V1'
+                or m.get('protocol')!='BAPO_BASELINE_ALIGNED_FRESH200_V1' or m.get('mini_batch_switch_outer') is not None
+                or m.get('optimizer_opportunities_before_switch')!=20 or m.get('optimizer_opportunities_after_switch')!=20):
+            raise ValueError('Aligned fixed20 optimizer/profile contract unbound')
+    elif (m.get('version')!=2 or m.get('update_semantics')!='SKIP_CONTINUE_ACCEPTED_OUTERS_V1'
             or m.get('protocol')!='BAPO_FRESH200_V1' or m.get('mini_batch_switch_outer')!=50
             or m.get('optimizer_opportunities_before_switch')!=20 or m.get('optimizer_opportunities_after_switch')!=10):
         raise ValueError('Fresh200 variable optimizer counts unbound')
@@ -107,6 +132,8 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
             or digest(configs[0]['path'])!=m['config_sha256']):
         raise ValueError('Config identity differs from actual resolved config')
     resolved_config = json.loads(Path(configs[0]['path']).read_text())
+    if (resolved_config.get('baseline_aligned') is True) != aligned:
+        raise ValueError('Resolved config and release protocol profiles differ')
     horizon, warmup_steps = validate_gate_config(resolved_config)
     if m['horizon'] != horizon or m['warmup_steps'] != warmup_steps:
         raise ValueError('Manifest counters differ from actual scheduler config')
@@ -122,6 +149,14 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
                 or not isinstance(report.get('state_digest'),str) or len(report['state_digest'])!=64):
             raise ValueError('Native rank state/report identity not bound')
         native_paths.add(str(state_path))
+        if aligned and ('aligned_pending_outer' not in report or report['aligned_pending_outer'] is not None):
+            raise ValueError('Aligned native state has missing or uncommitted pending outer')
+        if aligned and (report.get('native_state_version') != 3 or report.get('roundtrip') is not True
+                or report.get('reloaded_state_digest') != report.get('state_digest')
+                or not isinstance(report.get('generation_rng_before_digest'), str)
+                or len(report['generation_rng_before_digest']) != 64
+                or report.get('generation_rng_before_digest') != report.get('generation_rng_after_digest')):
+            raise ValueError('Aligned exact native generation/model/Adam/RNG reload missing')
     drivers=[x for x in m['files']if Path(x['path']).name=='driver-reload.json']
     driver_states=[x for x in m['files']if Path(x['path']).name=='driver.pt']
     if len(drivers)!=1 or len(driver_states)!=1:
@@ -144,7 +179,7 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
             or driver_state.get('actual_outer_updates')!=5
             or driver_state.get('progress')!=m.get('attempt_accounting')):
         raise ValueError('Actual driver sampler/RNG/BAPO reload not proven')
-    sampling_proof=validate_first_sampling_evidence(members,resolved_config,source,run,driver['pid'],reports)
+    sampling_proof=(None if aligned else validate_first_sampling_evidence(members,resolved_config,source,run,driver['pid'],reports))
     evidence=r.get('evidence',[]);bindings={x['path']:x['sha256']for x in evidence}
     if len(bindings)!=len(evidence):raise ValueError('Duplicate release evidence')
     if str(run/'source-commit.txt') not in bindings:raise ValueError('Run source not directly bound')
@@ -170,7 +205,15 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
             events.append(json.loads(line.split('BAPO_TRAIN_METRICS_JSON=',1)[1]))
         if 'FRESH200_ATTEMPT_JSON=' in line:
             attempts.append(json.loads(line.split('FRESH200_ATTEMPT_JSON=',1)[1]))
-    accepted=validate_first_five_attempts(attempts,m['attempt_accounting'],driver['pid'])
+    accepted=validate_first_five_attempts(attempts,m['attempt_accounting'],driver['pid'],baseline_aligned=aligned)
+    if aligned:
+        validate_aligned_first_five_evidence(members,resolved_config,source,run,driver['pid'],reports,attempts,events)
+        if driver_state.get('rank_write_ledger')!=attempts[-1]['rank_write_ledger']:
+            raise ValueError('Aligned driver latest rank ledger differs from actual fifth attempt')
+        final_ranks={event['rank']:event for event in attempts[-1]['rank_write_ledger']}
+        for report in reports:
+            if report.get('latest_rank_event')!=final_ranks[report['rank']]:
+                raise ValueError('Aligned native reload latest rank event differs')
     for attempt in attempts:
         path=Path(attempt.get('ledger_path',''))
         if (attempt.get('source_commit')!=m['source_commit']
@@ -185,7 +228,7 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
                 or event.get('accepted_complete_outer') is not attempt['accepted_complete_outer']
                 or event.get('metrics',{}).get('actor/optimizer_steps')!=attempt['rank_write_ledger'][0]['optimizer_steps']):
             raise ValueError('Actual metrics differ from rank write ledger')
-    if not any(a['attempt_id']==sampling_proof['attempt_id'] and a['candidate_outer']==sampling_proof['actual_outer']
+    if not aligned and not any(a['attempt_id']==sampling_proof['attempt_id'] and a['candidate_outer']==sampling_proof['actual_outer']
                and a['accepted_complete_outer'] is True for a in attempts):
         raise ValueError('Verified raw sampling proof must belong to an accepted actual attempt')
     if any(x.get('metrics',{}).get('bapo/actual_outer_updates')!=x['step']for x in complete_events):
@@ -270,3 +313,187 @@ def validate_first_sampling_evidence(members, config, source, run, driver_pid, r
                     or initial['native_process']['pid']!=checkpoint_pids.get(rank)))):
             raise ValueError('Eight rank actual fresh initial evidence is not directly bound')
     return report
+
+
+def write_aligned_step5_bindings(directory, config, source, run, driver_pid, shared_inputs):
+    """Persist factual aligned input identity; never an approval/PASS receipt."""
+    from .fresh200_contract import critical_source_hashes
+    run=Path(run).resolve();directory=Path(directory).resolve()
+    if run not in directory.parents or type(driver_pid) is not int or driver_pid<=0:
+        raise ValueError('Aligned binding needs exact original driver/run')
+    claim=run/'.aligned-startup-claim.json'
+    claim_value=json.loads(claim.read_text())
+    if (claim_value.get('source_commit')!=source or claim_value.get('scope')!='new-run-only-no-resume'
+            or type(claim_value.get('launcher_pid')) is not int or claim_value['launcher_pid']<=0):
+        raise ValueError('Aligned original new-run claim differs')
+    inputs={}
+    for name,settings,path_key,sha_key in (
+            ('shared_input_manifest',config['baselines']['holdout'],'manifest_path','manifest_sha256'),
+            ('retriever_identity_manifest',config['retriever'],'identity_manifest','identity_manifest_sha256'),
+            ('order_manifest',config['baselines']['alignment'],'order_manifest','order_sha256')):
+        path=Path(settings[path_key]).resolve()
+        if digest(path)!=settings[sha_key]:raise ValueError('Aligned pinned input changed: '+name)
+        inputs[name]=dict(path=str(path),sha256=settings[sha_key])
+    value=dict(version=1,status='ALIGNED_STEP5_FACTUAL_BINDINGS_NOT_RELEASE',
+        source_commit=source,source_sha256=critical_source_hashes(),run_root=str(run),driver_pid=driver_pid,
+        actual_outer_updates=5,next_global_step=6,
+        new_run_claim=dict(path=str(claim),sha256=digest(claim)),inputs=inputs,shared_inputs=shared_inputs)
+    target=directory/'aligned-step5-bindings.json'
+    with target.open('x') as handle:
+        json.dump(value,handle,indent=2,sort_keys=True,allow_nan=False);handle.flush();os.fsync(handle.fileno())
+    return target
+
+
+def validate_aligned_first_five_evidence(members,config,source,run,driver_pid,reports,attempts,events):
+    """Bind aligned HF-old/data/initial-state/EM evidence, without legacy LP admission."""
+    from .fresh200_contract import critical_source_hashes, fresh200_lr_factor
+    import math
+    def member(name):
+        found=[Path(path)for path in members if Path(path).name==name]
+        if len(found)!=1 or digest(found[0])!=members[str(found[0])]:
+            raise ValueError('Unique aligned first-five evidence missing: '+name)
+        return found[0]
+    value=json.loads(member('aligned-step5-bindings.json').read_text())
+    if (value.get('version')!=1 or value.get('status')!='ALIGNED_STEP5_FACTUAL_BINDINGS_NOT_RELEASE'
+            or value.get('source_commit')!=source or value.get('source_sha256')!=critical_source_hashes()
+            or value.get('run_root')!=str(run) or value.get('driver_pid')!=driver_pid
+            or type(value.get('driver_pid'))is not int or type(value.get('actual_outer_updates'))is not int
+            or type(value.get('next_global_step'))is not int
+            or value.get('actual_outer_updates')!=5 or value.get('next_global_step')!=6):
+        raise ValueError('Aligned factual driver/source/run evidence differs')
+    claim=member('.aligned-startup-claim.json');record=json.loads(claim.read_text())
+    if (value.get('new_run_claim')!=dict(path=str(claim),sha256=members[str(claim)])
+            or record.get('source_commit')!=source or record.get('scope')!='new-run-only-no-resume'
+            or type(record.get('launcher_pid'))is not int or record['launcher_pid']<=0):
+        raise ValueError('Aligned new-run source claim is unbound')
+    from .baseline_alignment import prepare_aligned_inputs
+    from omegaconf import OmegaConf
+    if prepare_aligned_inputs(OmegaConf.create(config))!=value.get('shared_inputs'):
+        raise ValueError('Aligned actual shared inputs/stage64 differ')
+    for name,settings,path_key,sha_key in (
+            ('shared_input_manifest',config['baselines']['holdout'],'manifest_path','manifest_sha256'),
+            ('retriever_identity_manifest',config['retriever'],'identity_manifest','identity_manifest_sha256'),
+            ('order_manifest',config['baselines']['alignment'],'order_manifest','order_sha256')):
+        expected=dict(path=str(Path(settings[path_key]).resolve()),sha256=settings[sha_key])
+        if value.get('inputs',{}).get(name)!=expected or digest(expected['path'])!=expected['sha256']:
+            raise ValueError('Aligned pinned input manifest changed: '+name)
+    alignment=json.loads(member('native-initial-official-alignment.json').read_text())
+    official=member('native-initial-official-hf.pt')
+    if (alignment.get('path')!=str(official) or alignment.get('sha256')!=members[str(official)]
+            or Path(alignment.get('official_model_root','')).resolve()!=Path(config['actor_rollout_ref']['model']['path']).resolve()):
+        raise ValueError('Aligned initial actor/reference official identity differs')
+    pids={report['rank']:report['pid']for report in reports}
+    from .fresh200_native_evidence import verify_native_process
+    for rank in range(8):
+        state=member(f'native-initial-rank_{rank}.pt')
+        initial=json.loads(member(f'native-initial-rank_{rank}.json').read_text())
+        if (initial.get('path')!=str(state) or initial.get('sha256')!=members[str(state)]
+                or initial.get('official_alignment')!=alignment or initial.get('source_sha256')!=value['source_sha256']
+                or initial.get('official_model_manifest_sha256')!='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+                or type(initial.get('optimizer_state_entries'))is not int or initial['optimizer_state_entries']!=0
+                or type(initial.get('scheduler_last_epoch'))is not int or initial['scheduler_last_epoch']!=0
+                or initial.get('lr')!=[1e-6/57] or initial.get('status')!='ACTUAL_INITIAL_STATE_CAPTURED_NOT_RELEASE'
+                or type(initial.get('native_process',{}).get('rank'))is not int
+                or type(initial.get('native_process',{}).get('world_size'))is not int
+                or type(initial.get('native_process',{}).get('pid'))is not int
+                or initial.get('native_process',{}).get('rank')!=rank
+                or initial.get('native_process',{}).get('world_size')!=8
+                or initial.get('native_process',{}).get('pid')!=pids[rank]):
+            raise ValueError('Aligned eight-rank fresh initial state is unbound')
+        verify_native_process(initial['native_process'],source)
+        if initial['native_process'].get('run_root')!=str(run):
+            raise ValueError('Aligned native initial process belongs to another run')
+    # The audit verifier replays exact authored terminal answers against targets
+    # and checks source/run/snapshot/attempt identities; it never grants release.
+    from .training_em import verify_training_em_audit
+    for attempt,event in zip(attempts,events):
+        outer=attempt['candidate_outer'];ordinal=attempt['attempt_id']
+        def owned_record(scope):
+            path=run/scope/f'outer_{outer:04d}-attempt_{ordinal:04d}.json'
+            if str(path)not in members or digest(path)!=members[str(path)]:
+                raise ValueError('Aligned immutable stage/prepare proof missing: '+scope)
+            return json.loads(path.read_text())
+        stage=owned_record('aligned-stage-proof')
+        stage_body={key:item for key,item in stage.items()if key!='sha256'}
+        from .aligned_outer_commit import _digest
+        if (stage.get('sha256')!=_digest(stage_body)
+                or type(stage.get('actual_outer'))is not int or type(stage.get('attempt_id'))is not int
+                or type(stage.get('driver_pid'))is not int
+                or stage.get('actual_outer')!=outer or stage.get('attempt_id')!=ordinal
+                or type(stage.get('evaluated_count'))is not int or stage['evaluated_count']!=64
+                or type(stage.get('score'))not in (int,float) or not math.isfinite(stage['score'])
+                or not 0.<=stage['score']<=1.
+                or stage.get('score')!=event['metrics'].get('bapo/stage_validation')
+                or stage.get('run_root')!=str(run) or stage.get('driver_pid')!=driver_pid
+                or stage.get('source_commit')!=source or stage.get('source_sha256')!=value['source_sha256']
+                or stage.get('common_input_binding')!=value['shared_inputs'].get('common_input_binding')
+                or stage.get('stage_input_binding')!=value['shared_inputs'].get('stage')
+                or stage.get('order_manifest')!=config['baselines']['alignment']['order_manifest']
+                or stage.get('order_manifest_sha256')!=config['baselines']['alignment']['order_sha256']
+                or event['metrics'].get('actor/scheduler_outer_steps')!=outer
+                or event['metrics'].get('bapo/stage_evaluated_count')!=64
+                or event['metrics'].get('fresh200/stage_proof_sha256')!=stage['sha256']):
+            raise ValueError('Aligned stage64/source/input/scheduler proof differs')
+        prepared=owned_record('aligned-outer-prepared')
+        if (prepared.get('status')!='WRITES_PREPARED_NOT_ACCEPTED_OUTER'
+                or prepared.get('actual_outer')!=outer or prepared.get('attempt_id')!=ordinal
+                or prepared.get('driver_pid')!=driver_pid or prepared.get('source_commit')!=source
+                or prepared.get('previous_completed_outer')!=outer-1):
+            raise ValueError('Aligned prepared write identity differs')
+        provisional={item.get('rank'):item for item in prepared.get('rank_write_ledger',[])}
+        if len(provisional)!=8 or set(provisional)!=set(range(8)):
+            raise ValueError('Aligned prepared rank coverage differs')
+        path=member(f'outer_{outer:04d}-attempt_{ordinal:04d}.jsonl')
+        expected=run/'training-em-audit'/path.name
+        if path!=expected:raise ValueError('Training EM audit outside original run path')
+        binding=dict(data_manifest_path=config['baselines']['holdout']['manifest_path'],
+            data_manifest_sha256=config['baselines']['holdout']['manifest_sha256'],
+            retrieval_manifest_path=config['retriever']['identity_manifest'],
+            retrieval_manifest_sha256=config['retriever']['identity_manifest_sha256'],
+            order_manifest_path=config['baselines']['alignment']['order_manifest'],
+            order_manifest_sha256=config['baselines']['alignment']['order_sha256'],
+            common_input_binding=value['shared_inputs'].get('common_input_binding'))
+        verified=verify_training_em_audit(path,members[str(path)],expected=dict(
+            source_commit=source,run_root=str(run),driver_pid=driver_pid,actual_outer=outer,attempt_id=ordinal,
+            expected_questions=512,siblings=5,bindings=binding,
+            policy_snapshot_id=f'{run}:attempt_{ordinal}:before_outer_{outer}'))
+        if any(event['metrics'].get(key)!=number for key,number in verified['metrics'].items()):
+            raise ValueError('Training EM audit aggregate differs from actual attempt metrics')
+        for rank_event in attempt['rank_write_ledger']:
+            rank=rank_event['rank']
+            prior=provisional[rank]
+            transitions={'outer_commit_phase','accepted_complete_outer','stage_validation',
+                         'scheduler_before','scheduler_after','scheduler_lr_before','scheduler_lr_after'}
+            if (rank_event.get('outer_commit_phase')!='STAGE_COMMITTED'
+                    or rank_event.get('accepted_complete_outer')is not True
+                    or rank_event.get('stage_validation')!=stage
+                    or rank_event.get('scheduler_before')!=outer-1 or rank_event.get('scheduler_after')!=outer
+                    or prior.get('outer_commit_phase')!='WRITES_PREPARED'
+                    or prior.get('accepted_complete_outer')is not False
+                    or prior.get('scheduler_before')!=outer-1 or prior.get('scheduler_after')!=outer-1
+                    or any(rank_event.get(key)!=item for key,item in prior.items()if key not in transitions)):
+                raise ValueError('Aligned stage-before-scheduler/write commit differs')
+            for key,completed in (('scheduler_lr_before',outer-1),('scheduler_lr_after',outer)):
+                values=rank_event.get(key)
+                expected_lr=1e-6*fresh200_lr_factor(completed)
+                if (not isinstance(values,list) or not values or any(type(lr)not in (int,float)
+                        or not math.isfinite(lr) or not math.isclose(lr,expected_lr,rel_tol=1e-14,abs_tol=0.)
+                        for lr in values)):
+                    raise ValueError('Aligned exact warmup57 LR commit differs')
+            prior_path=member(f'rank_{rank}-outer_{outer}-attempt_{ordinal}.prepared.json')
+            if json.loads(prior_path.read_text())!=prior:
+                raise ValueError('Aligned prepared rank event differs from actual driver record')
+            rank_path=member(f'rank_{rank}-outer_{outer}-attempt_{ordinal}.json')
+            if json.loads(rank_path.read_text())!=rank_event:
+                raise ValueError('Aligned rank diagnostic event differs from driver ledger')
+            monitors=rank_event.get('policy_monitor',[])
+            if (len(monitors)!=2 or [item.get('stage')for item in monitors]!=['before_adam','after_adam']
+                    or any(item.get('denominator_role')!='frozen_hf_old_policy'
+                        or item.get('diagnostic_only')is not True
+                        or item.get('monitoring_scope')!='full_frozen_rollout'
+                        or item.get('sampling_policy_kl_status')!='unavailable_on_retokenized_training_actions'
+                        or item.get('raw_sampler_diagnostic',{}).get('diagnostic_only')is not True
+                        or type(item.get('raw_sampler_diagnostic',{}).get('available'))is not bool
+                        for item in monitors)):
+                raise ValueError('Aligned HF-old and raw-sampler diagnostic roles/evidence missing')
+    return value

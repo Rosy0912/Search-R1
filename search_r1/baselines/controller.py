@@ -135,7 +135,7 @@ class Controller:
         self.ranker = self.teacher = None
         if self.method == 'bapo':
             trainer.reward_fn = BoundaryReward(trainer.tokenizer, self.stage, self.config.bapo.alpha,
-                                               self.config.bapo.bonus, profile=self.reward_profile)
+                                               self.config.bapo.bonus, profile=getattr(self, 'reward_profile', 'legacy'))
             from torch.utils.data import DataLoader
             from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
             dataset = RLHFDataset(self.config.bapo.stage_validation_files, trainer.tokenizer,
@@ -181,27 +181,55 @@ class Controller:
             self.ranker.events.clear()
         tree = self.config.tree if self.method == 'tree_grpo' else None
         output, sources = engine.run(gen_batch, tree)
+        em_journal = None
+        if self.method == 'bapo' and self.config.get('alignment', {}).get('training_em_enabled', False):
+            from .training_em import TrainingEMJournal
+            holdout = self.config.holdout
+            retrieval = self.trainer.config.retriever
+            common_binding = getattr(self.trainer, 'fresh200_shared_input_bindings', {}).get('common_input_binding')
+            em_journal = TrainingEMJournal(qa_batch, self.trainer.tokenizer,
+                actual_outer=int(self.trainer.global_steps),
+                attempt_id=int(self.trainer.fresh200_progress.attempts),
+                run_root=os.environ['BAPO_RUN_ID'],
+                policy_snapshot_id=gen_batch.meta_info['policy_snapshot_id'],
+                source_commit=self.config.algorithm_source_commit,
+                bindings=dict(data_manifest_path=holdout.manifest_path,
+                              data_manifest_sha256=holdout.manifest_sha256,
+                              retrieval_manifest_path=retrieval.identity_manifest,
+                              retrieval_manifest_sha256=retrieval.identity_manifest_sha256,
+                              order_manifest_path=self.config.alignment.order_manifest,
+                              order_manifest_sha256=self.config.alignment.order_sha256,
+                              common_input_binding=common_binding))
+            em_journal.capture(output, sources, 'initial', 0)
         costs = engine.cost.copy()
         if self.method == 'bapo' and not self.stage.early:
             states = engine.last_states
             targets = [r['ground_truth']['target'] for r in qa_batch.non_tensor_batch['reward_model']]
             uids = qa_batch.non_tensor_batch['index']
-            for _ in range(self.config.bapo.resample_attempts):
-                rows = resample_rows(decode_answers(output, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile), targets, uids, self.stage)
+            for resample_ordinal in range(1, self.config.bapo.resample_attempts + 1):
+                rows = resample_rows(decode_answers(output, self.trainer.tokenizer, require_legal=True, profile=getattr(self, 'reward_profile', 'legacy')), targets, uids, self.stage)
                 if not rows:
                     break
-                engine.run(select_rows(gen_batch, rows))
+                replacement, replacement_sources = engine.run(select_rows(gen_batch, rows))
+                if em_journal is not None:
+                    em_journal.capture(replacement, [rows[int(i)] for i in replacement_sources],
+                                       'resample', resample_ordinal)
                 for row, state in zip(rows, engine.last_states):
                     state.source = row
                     states[row] = state
                 for key, value in engine.cost.items():
                     costs[key] += value
                 output, sources = engine.compose(states)
+        if em_journal is not None:
+            em_metrics, proof = em_journal.finish(output, sources)
+            metrics.update(em_metrics)
+            self.training_em_last_proof = proof
+            print('BAPO_TRAIN_EM_AUDIT_JSON=' + json.dumps(proof, sort_keys=True), flush=True)
         metrics.update({'rollout/' + k: v for k, v in costs.items()})
         return output, sources
 
     def main_f1_reward(self, data):
-        answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
+        answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=getattr(self, 'reward_profile', 'legacy'))
         result = torch.zeros_like(data.batch['responses'], dtype=torch.float32)
         width = result.shape[1]
         mask = data.batch['info_mask'][:, -width:] * data.batch['attention_mask'][:, -width:]
@@ -260,7 +288,7 @@ class Controller:
             returns = adv.clone()
             if self.method == 'bapo':
                 from .bapo import is_idk
-                answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
+                answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=getattr(self, 'reward_profile', 'legacy'))
                 idk_count = sum(map(is_idk, answers))
                 metrics['bapo/idk_ratio'] = idk_count / max(1, len(answers))
                 metrics['bapo/answered_coverage'] = sum(a is not None and not is_idk(a) for a in answers) / max(1, len(answers))
@@ -280,7 +308,7 @@ class Controller:
             self.actual_outer_updates = getattr(self, 'actual_outer_updates', 0) + 1
             metrics['bapo/actual_outer_updates'] = self.actual_outer_updates
         if self.ranker:
-            answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=self.reward_profile)
+            answers = decode_answers(data, self.trainer.tokenizer, require_legal=True, profile=getattr(self, 'reward_profile', 'legacy'))
             outcomes = {}
             for i, uid in enumerate(data.non_tensor_batch['trajectory_uid']):
                 targets = data.non_tensor_batch['reward_model'][i]['ground_truth']['target']

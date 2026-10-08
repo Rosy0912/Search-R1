@@ -316,7 +316,8 @@ def critical_source_hashes():
     root=Path(__file__).resolve().parents[2]
     names=('search_r1/baselines/aligned_startup.py','search_r1/baselines/baseline_alignment.py','search_r1/baselines/baseline_alignment_data.py',
         'search_r1/baselines/baseline_alignment_retrieval.py','search_r1/baselines/raw_sampler_diagnostic.py',
-        'verl/trainer/config/ppo_bapo_baseline_aligned.yaml','search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
+        'verl/trainer/config/ppo_bapo_baseline_aligned.yaml','verl/trainer/config/ppo_bapo_baseline_aligned_production.yaml',
+        'search_r1/baselines/training_em.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/aligned_outer_commit.py','search_r1/baselines/objectives.py','search_r1/baselines/policy_safety.py','search_r1/baselines/gradient_norm.py','search_r1/baselines/optimizer_transaction.py',
         'search_r1/baselines/fresh200_contract.py','search_r1/baselines/fresh200_native_evidence.py',
         'search_r1/baselines/fresh200_driver.py',
         'search_r1/baselines/behavior_policy.py','search_r1/baselines/fresh200_gate.py','search_r1/baselines/main.py',

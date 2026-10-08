@@ -24,7 +24,13 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 : "${SEARCH_R1_GPU_RESOURCE_GUARD:?launch under the own UUID resource supervisor}"
 "${BAPO_PYTHON:-python}" -m search_r1.baselines.aligned_startup --run "$BAPO_FRESH200_RUN" --source "$source_commit"
+profile="${BAPO_ALIGNED_CONFIG_NAME:-ppo_bapo_baseline_aligned}"
+case "$profile" in
+  ppo_bapo_baseline_aligned|ppo_bapo_baseline_aligned_production) ;;
+  *) echo 'Unsupported aligned configuration.' >&2; exit 1 ;;
+esac
+"${BAPO_PYTHON:-python}" -c 'import os; from pathlib import Path; p=Path(os.environ["BAPO_FRESH200_RUN"])/"source-commit.txt"; f=p.open("x"); f.write(__import__("sys").argv[1]+"\n"); f.close()' "$source_commit"
 exec "${BAPO_PYTHON:-python}" -m search_r1.baselines.preflight -- \
   "${BAPO_PYTHON:-python}" -m search_r1.baselines.main \
-  --config-name ppo_bapo_baseline_aligned \
+  --config-name "$profile" \
   "baselines.algorithm_source_commit=$source_commit" "$@"

@@ -861,6 +861,50 @@ class RayPPOTrainer(object):
         self.fresh200_state_directory=directory; self.fresh200_state_reports=reports
         return directory
 
+    def _finish_aligned_outer(self, batch, metrics, timing_raw):
+        """Twenty retained writes become an outer only after prescribed stage64."""
+        from pathlib import Path
+        from search_r1.baselines.aligned_outer_commit import stage_evidence, validate_commits
+        from search_r1.baselines.fresh200_contract import critical_source_hashes
+        run = Path(os.environ['BAPO_RUN_ID']).resolve()
+        outer, attempt = self.global_steps, self.fresh200_progress.attempts
+        def persist(directory, document):
+            directory.mkdir(parents=True, exist_ok=True)
+            path = directory / f'outer_{outer:04d}-attempt_{attempt:04d}.json'
+            with path.open('x') as handle:
+                json.dump(document,handle,sort_keys=True,allow_nan=False);handle.flush();os.fsync(handle.fileno())
+            fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY)
+            try:os.fsync(fd)
+            finally:os.close(fd)
+            return path
+        try:
+            persist(run/'aligned-outer-prepared', dict(status='WRITES_PREPARED_NOT_ACCEPTED_OUTER',
+                actual_outer=outer,attempt_id=attempt,driver_pid=os.getpid(),
+                source_commit=self.config.baselines.algorithm_source_commit,
+                rank_write_ledger=self.fresh200_rank_updates,
+                previous_completed_outer=self.fresh200_progress.completed_outers))
+            with _timer('stage_testing',timing_raw):
+                metrics.update(self.baseline_controller.stage_validation(outer))
+            evidence=stage_evidence(outer,attempt,metrics,bindings=dict(
+                run_root=str(run),driver_pid=os.getpid(),source_commit=self.config.baselines.algorithm_source_commit,
+                source_sha256=critical_source_hashes(),
+                common_input_binding=self.fresh200_shared_input_bindings['common_input_binding'],
+                stage_input_binding=self.fresh200_shared_input_bindings['stage'],
+                order_manifest=self.config.baselines.alignment.order_manifest,
+                order_manifest_sha256=self.config.baselines.alignment.order_sha256))
+            persist(run/'aligned-stage-proof',evidence)
+            reports=self.actor_rollout_wg.commit_aligned_outer(outer,attempt,evidence)
+            self.fresh200_rank_updates=validate_commits(reports,outer,attempt,evidence)
+            metrics.update({'actor/lr':reports[0]['event']['scheduler_lr_after'][0],
+                'actor/scheduler_outer_steps':outer, 'fresh200/outer_commit_phase':'STAGE_COMMITTED',
+                'fresh200/stage_proof_sha256':evidence['sha256']})
+            self.baseline_controller.after_actor(batch,metrics)
+            if not self._fresh200_record_attempt(self.fresh200_rank_updates,metrics):
+                raise RuntimeError('Aligned stage-committed outer was not accepted')
+        except Exception:
+            self._fresh200_fault_backup(self.fresh200_rank_updates)
+            raise
+
     def _fresh200_record_attempt(self, rank_updates, metrics):
         """Durable outcome, including skipped opportunities and retained writes."""
         from pathlib import Path
@@ -905,6 +949,12 @@ class RayPPOTrainer(object):
                 source_commit=self.config.baselines.algorithm_source_commit,driver_pid=os.getpid(),
                 rank_write_ledger=rank_updates,validated_previous_accounting=self.fresh200_progress.state_dict(),
                 current_fault_write_scope='PER_RANK_LOCAL_COMPLETE_OR_PARTIAL_UNKNOWN_COPY_IN_RAW_LEDGER_NOT_ACCEPTED_OUTER')
+            if (self.config.trainer.get('aligned_stage_commit_enabled',False)
+                    and self.fresh200_progress.completed_outers == self.global_steps
+                    and self.baseline_controller.actual_outer_updates == self.global_steps):
+                outcome.update(fault_phase='POST_ACCEPTED_OUTER_CHECKPOINT_INFRASTRUCTURE_FAULT',
+                    accepted_complete_outer_preserved=True,
+                    current_fault_write_scope='STAGE_COMMITTED_OUTER_PRESERVED_CHECKPOINT_REQUIREMENT_INCOMPLETE')
             with (directory/'all-rank-fatal-ledger.json').open('x') as handle:
                 json.dump(outcome,handle,indent=2,default=repr,allow_nan=False);handle.flush();os.fsync(handle.fileno())
             fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY)
@@ -923,7 +973,7 @@ class RayPPOTrainer(object):
     def _fresh200_pause_after_five(self):
         from pathlib import Path
         import subprocess
-        from search_r1.baselines.fresh200_gate import write_manifest, wait_for_release
+        from search_r1.baselines.fresh200_gate import write_manifest, wait_for_release, write_aligned_step5_bindings
         source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
         if source!=self.config.baselines.algorithm_source_commit:
             raise ValueError('Fresh200 source-start differs from current source')
@@ -936,11 +986,28 @@ class RayPPOTrainer(object):
         for directory in (base/'actor'/'global_step_5',base/'algorithm'/'global_step_5',self.fresh200_state_directory):
             paths.extend(p for p in directory.rglob('*') if p.is_file())
         paths.extend((base/'diagnostics').glob('attempt_*/all-rank-write-ledger.json'))
-        proof=getattr(self,'fresh200_first_sampling_proof',None)
-        if not proof:raise ValueError('Actual verified formal sampler raw proof missing at fifth gate')
-        paths.extend([Path(proof['path']),Path(proof['path']).with_suffix('.json')])
+        aligned=self.config.get('baseline_aligned',False)
+        if aligned:
+            paths.append(run/'.aligned-startup-claim.json')
+            for outer in range(1,6):
+                audit=run/'training-em-audit'/f'outer_{outer:04d}-attempt_{outer:04d}.jsonl'
+                if not audit.is_file():raise ValueError('Aligned first-five actual training EM audit missing')
+                paths.append(audit)
+                for scope in ('aligned-stage-proof','aligned-outer-prepared'):
+                    proof_path=run/scope/f'outer_{outer:04d}-attempt_{outer:04d}.json'
+                    if not proof_path.is_file():raise ValueError('Aligned stage/prepare evidence missing')
+                    paths.append(proof_path)
+            paths.append(write_aligned_step5_bindings(self.fresh200_state_directory,
+                OmegaConf.to_container(self.config,resolve=True),source,run,os.getpid(),
+                self.fresh200_shared_input_bindings))
+        else:
+            proof=getattr(self,'fresh200_first_sampling_proof',None)
+            if not proof:raise ValueError('Actual verified formal sampler raw proof missing at fifth gate')
+            paths.extend([Path(proof['path']),Path(proof['path']).with_suffix('.json')])
         initial=Path(self.config.actor_rollout_ref.actor.fresh200_fault_dir)
         paths.extend(initial.glob('native-initial-*'))
+        if aligned:
+            paths.extend(initial.glob('rank_*-outer_*-attempt_*.json'))
         manifest=write_manifest(paths,self.fresh200_state_directory,OmegaConf.to_container(self.config,resolve=True),source,run,5,
             self.fresh200_state_reports,self.fresh200_progress.state_dict())
         wait_for_release(Path(self.config.trainer.fresh200_gate_receipt),manifest,Path.cwd())
@@ -1046,6 +1113,7 @@ class RayPPOTrainer(object):
         logger = self.logger
         self.global_steps = 0
         fresh200=self.config.trainer.get('fresh200_enabled',False)
+        aligned_stage_commit=self.config.trainer.get('aligned_stage_commit_enabled',False)
         if fresh200:
             from search_r1.baselines.fresh200_driver import Fresh200Progress
             self.fresh200_progress=Fresh200Progress(baseline_aligned=self.config.get('baseline_aligned', False))
@@ -1352,7 +1420,7 @@ class RayPPOTrainer(object):
                                 try:
                                     validate_rank_updates(self.fresh200_rank_updates,self.global_steps)
                                     metrics.update(reduce_metrics(actor_output.meta_info['metrics']))
-                                    accepted=self._fresh200_record_attempt(self.fresh200_rank_updates,metrics)
+                                    accepted=True if aligned_stage_commit else self._fresh200_record_attempt(self.fresh200_rank_updates,metrics)
                                 except Exception:
                                     self._fresh200_fault_backup(self.fresh200_rank_updates)
                                     raise
@@ -1368,19 +1436,27 @@ class RayPPOTrainer(object):
                                     continue
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
-                        if getattr(self, 'baseline_controller', None) is not None:
+                        if getattr(self, 'baseline_controller', None) is not None and not aligned_stage_commit:
                             self.baseline_controller.after_actor(batch, metrics)
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
                         self.global_steps % self.config.trainer.test_freq == 0:
                         with _timer('testing', timing_raw):
-                            val_metrics: dict = self._validate()
+                            try:
+                                val_metrics: dict = self._validate()
+                            except Exception:
+                                if aligned_stage_commit:
+                                    self._fresh200_fault_backup(self.fresh200_rank_updates)
+                                raise
                         metrics.update(val_metrics)
                     if (getattr(self, 'baseline_controller', None) is not None
                             and metrics.get('actor/optimizer_steps', 0) > 0):
-                        with _timer('stage_testing', timing_raw):
-                            metrics.update(self.baseline_controller.stage_validation(self.global_steps))
+                        if aligned_stage_commit:
+                            self._finish_aligned_outer(batch,metrics,timing_raw)
+                        else:
+                            with _timer('stage_testing', timing_raw):
+                                metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
@@ -1390,7 +1466,12 @@ class RayPPOTrainer(object):
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
-                            self._save_checkpoint()
+                            try:
+                                self._save_checkpoint()
+                            except Exception:
+                                if aligned_stage_commit:
+                                    self._fresh200_fault_backup(self.fresh200_rank_updates)
+                                raise
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
@@ -1411,7 +1492,7 @@ class RayPPOTrainer(object):
                              accepted_complete_outer=True), sort_keys=True,
                         default=lambda value: value.item(), allow_nan=False), flush=True)
 
-                if self.config.trainer.get('fresh200_enabled', False) and self.global_steps == 5 and self.config.trainer.get('fresh200_gate_enabled', False):
+                if self.config.trainer.get('fresh200_enabled', False) and self.global_steps == 5 and self.config.trainer.get('fresh200_gate_enabled', not self.config.get('baseline_aligned',False)):
                     self._fresh200_pause_after_five()
                 if getattr(self.config.trainer, 'e1_gate_enabled', False) and self.global_steps == 5:
                     self._e1_pause_after_five()

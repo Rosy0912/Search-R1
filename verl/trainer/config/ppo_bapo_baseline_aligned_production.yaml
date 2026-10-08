@@ -1,0 +1,17 @@
+# Source-fixed production profile for the newly authorized aligned fresh200 goal.
+defaults:
+  - ppo_bapo_baseline_aligned
+  - _self_
+
+actor_rollout_ref:
+  actor:
+    aligned_stage_commit_enabled: ${trainer.aligned_stage_commit_enabled}
+trainer:
+  aligned_stage_commit_enabled: true
+  fresh200_gate_enabled: true
+  experiment_name: bapo-baseline-aligned-em-instruct200
+baselines:
+  alignment:
+    training_em_enabled: true
+    common_manifest_path: ${oc.env:BAPO_FRESH200_DATA}/manifest.json
+    common_manifest_sha256: 0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24

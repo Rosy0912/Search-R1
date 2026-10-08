@@ -38,6 +38,12 @@ def validate_aligned_config(config):
                 trainer.get('total_training_steps') == 201,
                 config['baselines']['holdout'].get('input_mode') == 'baseline_aligned_manifest']
     required.extend(not trainer.get(k) for k in ('resume_full_state', 'resume_permission', 'resume_from', 'resume_path', 'resume_verify_only'))
+    if config['baselines'].get('alignment', {}).get('training_em_enabled', False):
+        required.extend([trainer.get('fresh200_gate_enabled') is True,
+                         trainer.get('aligned_stage_commit_enabled') is True,
+                         actor.get('aligned_stage_commit_enabled') is True,
+                         config['baselines']['bapo'].get('stage_validation_freq') == 1,
+                         config['baselines']['bapo'].get('stage_validation_size') == 64])
     if not all(required):
         raise ValueError('Aligned profile requires HF-old PPO, actor-only KL, mini128/20, no Dual-Clip or finite-update SKIP')
     return 200, 57
@@ -62,14 +68,48 @@ def prepare_aligned_inputs(config):
     manifest = read_bound_json(settings.manifest_path, settings.manifest_sha256)
     actual = verify_prepared_manifest(manifest, config.data.train_files, config.data.val_files,
                                      config.data.final_val_files)
+    common = verify_goal_common_inputs(config)
     if actual['splits']['validation']['rows'] != 512 or actual['splits']['test']['rows'] != 51713:
         raise ValueError('Aligned shared dev512 and final51713 required')
     stage = verify_stage_files(manifest, config.baselines.bapo.stage_validation_files,
                               config.data.train_files, config.data.val_files, config.data.final_val_files)
     if stage['stage']['rows'] != 64:
         raise ValueError('Aligned BAPO stage must contain64 questions')
-    return dict(input_mode='baseline_aligned_manifest', manifest=manifest,
+    return dict(input_mode='baseline_aligned_manifest', common_input_binding=common, manifest=manifest,
                 manifest_path=str(Path(settings.manifest_path).resolve()),
                 manifest_sha256=settings.manifest_sha256, stage=stage,
                 content_identity={'sha256': actual['splits']['train']['semantic_sha256']},
                 train_rows=actual['splits']['train']['rows'], holdout_rows=actual['splits']['validation']['rows'])
+
+
+def verify_goal_common_inputs(config):
+    """Production pins the user's original manifest as well as the alignment import."""
+    settings = config.baselines.get('alignment', {})
+    path = settings.get('common_manifest_path')
+    expected = settings.get('common_manifest_sha256')
+    enabled = settings.get('training_em_enabled', False)
+    if not path and not expected and not enabled:
+        return None  # The source-only candidate retains its original admission profile.
+    goal_sha = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
+    if expected != goal_sha:
+        raise ValueError('Production must bind the user-pinned common manifest')
+    read_bound_json(path, goal_sha)
+    from omegaconf import OmegaConf
+    from .holdout import _validate_prebuilt
+    copied = OmegaConf.create(OmegaConf.to_container(config, resolve=True))
+    copied.baselines.holdout.input_mode = 'prebuilt_manifest'
+    copied.baselines.holdout.manifest_path = str(path)
+    copied.baselines.holdout.manifest_sha256 = goal_sha
+    copied.baselines.holdout.data_root = str(Path(path).resolve().parent)
+    bound = _validate_prebuilt(copied)
+    if bound['train_rows'] != 169028:
+        raise ValueError('Production common training set must retain169028 questions')
+    actual_files = {'train': config.data.train_files, 'validation': config.data.val_files,
+                    'final': config.data.final_val_files, 'stage': config.baselines.bapo.stage_validation_files}
+    for name, supplied in actual_files.items():
+        supplied = [supplied] if isinstance(supplied, str) else list(supplied)
+        if [str(Path(p).resolve()) for p in supplied] != [bound['effective_paths'][name]]:
+            raise ValueError('Production loader path differs from common manifest: ' + name)
+    return {'manifest_path': str(Path(path).resolve()), 'manifest_sha256': goal_sha,
+            'content_identity': bound['content_identity'], 'train_rows': bound['train_rows'],
+            'effective_paths': bound['effective_paths']}

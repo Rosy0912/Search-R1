@@ -446,6 +446,10 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
+        stage_commit = getattr(self.config,'actor',{}).get('aligned_stage_commit_enabled', False)
+        if stage_commit:
+            from search_r1.baselines.aligned_outer_commit import check_ready
+            check_ready(self, data.meta_info['actual_outer'], data.meta_info['attempt_id'])
         data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         assert self._is_actor
@@ -501,6 +505,13 @@ class ActorRolloutRefWorker(Worker):
                         'expected_optimizer_steps','optimizer_opportunities_total','processed_opportunities',
                         'skipped_opportunities','unprocessed_opportunities','skipped_indices','skipped_reasons',
                         'postabort','actual_outer','attempt_id')
+                    if stage_commit:
+                        event.update(outer_commit_phase='WRITES_PREPARED', accepted_complete_outer=False,
+                                     scheduler_before=self.actor_lr_scheduler.last_epoch,
+                                     scheduler_after=self.actor_lr_scheduler.last_epoch)
+                        for item in rank_updates:
+                            item.update(outer_commit_phase='WRITES_PREPARED',accepted_complete_outer=False,
+                                scheduler_before=self.actor_lr_scheduler.last_epoch,scheduler_after=self.actor_lr_scheduler.last_epoch)
                     self._fresh200_last_update_event=event
                     fatal_update=any(item.get('status')=='INFRASTRUCTURE_FAULT' for item in rank_updates)
                     decision={key:event.get(key) for key in decision_keys}
@@ -512,7 +523,8 @@ class ActorRolloutRefWorker(Worker):
                     import json
                     fault = Path(self.config.actor.fresh200_fault_dir)
                     from search_r1.baselines.policy_safety import persist_rank_update_event
-                    path=fault / ('rank_%d-outer_%d-attempt_%s.json' % (self.rank,data.meta_info['actual_outer'],data.meta_info.get('attempt_id','missing')))
+                    suffix='.prepared.json' if stage_commit else '.json'
+                    path=fault / ('rank_%d-outer_%d-attempt_%s%s' % (self.rank,data.meta_info['actual_outer'],data.meta_info.get('attempt_id','missing'),suffix))
                     event,fatal_events=persist_rank_update_event(path,event,self.actor_module_fsdp.process_group)
                     if fatal_events is not None:
                         rank_updates=fatal_events;fatal_update=True
@@ -525,7 +537,11 @@ class ActorRolloutRefWorker(Worker):
             if fresh200:
                 from search_r1.baselines.fresh200_contract import validate_rank_updates
                 if not fatal_update and validate_rank_updates(rank_updates, data.meta_info['actual_outer']):
-                    self.actor_lr_scheduler.step()
+                    if stage_commit:
+                        from search_r1.baselines.aligned_outer_commit import prepare
+                        prepare(self, rank_updates)
+                    else:
+                        self.actor_lr_scheduler.step()
             elif metrics.get('actor/optimizer_steps', 0) > 0:
                 self.actor_lr_scheduler.step()
             lr = self.actor_lr_scheduler.get_last_lr()[0]
@@ -559,6 +575,11 @@ class ActorRolloutRefWorker(Worker):
             offload_fsdp_optimizer(optimizer=self.actor_optimizer)
         torch.cuda.empty_cache()
         return output
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def commit_aligned_outer(self, actual_outer, attempt_id, stage_validation):
+        from search_r1.baselines.aligned_outer_commit import commit
+        return commit(self, actual_outer, attempt_id, stage_validation)
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
@@ -785,6 +806,8 @@ class ActorRolloutRefWorker(Worker):
                     payload.update(diagnostic_optimizer_writes=getattr(self,'_diagnostic_write_count',0),formal_outer_updates=0,scheduler_outer_steps=self.actor_lr_scheduler.last_epoch)
                 if self.config.actor.get('fresh200_enabled',False):
                     payload['latest_rank_event']=getattr(self,'_fresh200_last_update_event',None)
+                    if self.config.actor.get('aligned_stage_commit_enabled',False):
+                        payload['aligned_pending_outer']=getattr(self,'_aligned_pending_outer',None)
                     payload['attempt_id']=None if payload['latest_rank_event'] is None else payload['latest_rank_event'].get('attempt_id')
                 if state_status is not None:
                     payload['update_status']=state_status
@@ -808,6 +831,8 @@ class ActorRolloutRefWorker(Worker):
                         generation_rng=self.rollout_sharding_manager.generation_rng_state())
                     if self.config.actor.get('fresh200_enabled',False):
                         after.update(latest_rank_event=payload.get('latest_rank_event'),attempt_id=payload.get('attempt_id'))
+                        if self.config.actor.get('aligned_stage_commit_enabled',False):
+                            after['aligned_pending_outer']=getattr(self,'_aligned_pending_outer',None)
                     if state_status is not None:
                         after.update(update_status=state_status,attempted_outer=step,previous_complete_outer=step-1 if state_status in ('PARTIAL','ABORTED','SKIPPED') else step)
                     after_digest=state_digest(after);generation_after=state_digest(after['generation_rng'])
@@ -834,6 +859,8 @@ class ActorRolloutRefWorker(Worker):
                         ranks=self.rollout_sharding_manager.device_mesh.mesh.cpu().tolist())))
             if self.config.actor.get('fresh200_enabled',False):
                 report.update(attempt_id=payload.get('attempt_id'),latest_rank_event=payload.get('latest_rank_event'))
+                if self.config.actor.get('aligned_stage_commit_enabled',False):
+                    report['aligned_pending_outer']=payload.get('aligned_pending_outer')
             if state_status in ('PARTIAL','ABORTED','SKIPPED'):
                 report.update(status=state_status+'_CURRENT_STATE_SAVED',attempted_outer=step,previous_complete_outer=step-1)
             (directory/('rank_%d.json'%self.rank)).write_text(json.dumps(report,indent=2,allow_nan=False))

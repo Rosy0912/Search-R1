@@ -1,0 +1,129 @@
+........................................................................ [ 29%]
+......................................................................F. [ 59%]
+..F..................................................................... [ 89%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+_ test_actual_fsdp_actor_rollout_ref_boundary_explicit_device[0-update_actor] __
+
+method_name = 'update_actor', logical_rank = 0
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x169ebc250>
+
+    @pytest.mark.parametrize('method_name',['update_actor','compute_log_prob','generate_sequences','compute_ref_log_prob'])
+    @pytest.mark.parametrize('logical_rank',[0,6])
+    def test_actual_fsdp_actor_rollout_ref_boundary_explicit_device(method_name,logical_rank,monkeypatch):
+        # Execute actual worker AST up to sharding-manager boundary. No CUDA/FSDP
+        # object is created; spy preserves CPU input while checking requested routes.
+        source=Path(__file__).resolve().parents[2]/'verl/workers/fsdp_workers.py'
+        tree=ast.parse(source.read_text());cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='ActorRolloutRefWorker')
+        method=copy.deepcopy(next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name==method_name))
+        method.decorator_list=[];unit=ast.Module(body=[method],type_ignores=[]);ast.fix_missing_locations(unit)
+        calls=[];monkeypatch.setattr(torch.cuda,'current_device',lambda:logical_rank)
+        class Batch:
+            def cuda(self,device=None):
+                assert device==logical_rank;calls.append(('batch.cuda',device));return self
+        class Input:
+            def __init__(self):self.batch=Batch();self.meta_info={}
+            def to(self,device):
+                assert device==torch.device('cuda',logical_rank);calls.append(('proto.to',str(device)));return self
+        class Manager:
+            def __enter__(self):return self
+            def __exit__(self,*args):return False
+            def preprocess_data(self,*args,**kwargs):raise BoundaryReached()
+        worker=SimpleNamespace(_is_actor=True,_is_rollout=True,_is_ref=True,_is_offload_param=False,
+            _is_offload_optimizer=False,ulysses_sharding_manager=Manager(),rollout_sharding_manager=Manager(),
+            tokenizer=SimpleNamespace(eos_token_id=2,pad_token_id=0),config=SimpleNamespace(
+                ref=SimpleNamespace(log_prob_micro_batch_size=4,log_prob_max_token_len_per_gpu=64,
+                    log_prob_use_dynamic_bsz=False),rollout=SimpleNamespace(temperature=1.)))
+        namespace=dict(torch=torch,DataProto=DataProto,logger=None,log_gpu_memory_usage=lambda *a,**k:None)
+        exec(compile(unit,str(source),'exec'),namespace)
+>       with pytest.raises(BoundaryReached):namespace[method_name](worker,Input())
+
+tests/baselines/test_actor_current_device.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(_is_actor=True, _is_rollout=True, _is_ref=True, _is_offload_param=False, _is_offload_optimizer=False, ulysse..._batch_size=4, log_prob_max_token_len_per_gpu=64, log_prob_use_dynamic_bsz=False), rollout=namespace(temperature=1.0)))
+data = <test_actor_current_device.test_actual_fsdp_actor_rollout_ref_boundary_explicit_device.<locals>.Input object at 0x17623d580>
+
+    def update_actor(self, data: DataProto):
+>       stage_commit = self.config.actor.get('aligned_stage_commit_enabled', False)
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'actor'
+
+verl/workers/fsdp_workers.py:449: AttributeError
+_ test_actual_fsdp_actor_rollout_ref_boundary_explicit_device[6-update_actor] __
+
+method_name = 'update_actor', logical_rank = 6
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x169e31700>
+
+    @pytest.mark.parametrize('method_name',['update_actor','compute_log_prob','generate_sequences','compute_ref_log_prob'])
+    @pytest.mark.parametrize('logical_rank',[0,6])
+    def test_actual_fsdp_actor_rollout_ref_boundary_explicit_device(method_name,logical_rank,monkeypatch):
+        # Execute actual worker AST up to sharding-manager boundary. No CUDA/FSDP
+        # object is created; spy preserves CPU input while checking requested routes.
+        source=Path(__file__).resolve().parents[2]/'verl/workers/fsdp_workers.py'
+        tree=ast.parse(source.read_text());cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='ActorRolloutRefWorker')
+        method=copy.deepcopy(next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name==method_name))
+        method.decorator_list=[];unit=ast.Module(body=[method],type_ignores=[]);ast.fix_missing_locations(unit)
+        calls=[];monkeypatch.setattr(torch.cuda,'current_device',lambda:logical_rank)
+        class Batch:
+            def cuda(self,device=None):
+                assert device==logical_rank;calls.append(('batch.cuda',device));return self
+        class Input:
+            def __init__(self):self.batch=Batch();self.meta_info={}
+            def to(self,device):
+                assert device==torch.device('cuda',logical_rank);calls.append(('proto.to',str(device)));return self
+        class Manager:
+            def __enter__(self):return self
+            def __exit__(self,*args):return False
+            def preprocess_data(self,*args,**kwargs):raise BoundaryReached()
+        worker=SimpleNamespace(_is_actor=True,_is_rollout=True,_is_ref=True,_is_offload_param=False,
+            _is_offload_optimizer=False,ulysses_sharding_manager=Manager(),rollout_sharding_manager=Manager(),
+            tokenizer=SimpleNamespace(eos_token_id=2,pad_token_id=0),config=SimpleNamespace(
+                ref=SimpleNamespace(log_prob_micro_batch_size=4,log_prob_max_token_len_per_gpu=64,
+                    log_prob_use_dynamic_bsz=False),rollout=SimpleNamespace(temperature=1.)))
+        namespace=dict(torch=torch,DataProto=DataProto,logger=None,log_gpu_memory_usage=lambda *a,**k:None)
+        exec(compile(unit,str(source),'exec'),namespace)
+>       with pytest.raises(BoundaryReached):namespace[method_name](worker,Input())
+
+tests/baselines/test_actor_current_device.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(_is_actor=True, _is_rollout=True, _is_ref=True, _is_offload_param=False, _is_offload_optimizer=False, ulysse..._batch_size=4, log_prob_max_token_len_per_gpu=64, log_prob_use_dynamic_bsz=False), rollout=namespace(temperature=1.0)))
+data = <test_actor_current_device.test_actual_fsdp_actor_rollout_ref_boundary_explicit_device.<locals>.Input object at 0x176624bb0>
+
+    def update_actor(self, data: DataProto):
+>       stage_commit = self.config.actor.get('aligned_stage_commit_enabled', False)
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'actor'
+
+verl/workers/fsdp_workers.py:449: AttributeError
+=============================== warnings summary ===============================
+../fresh200-local-test-env/lib/python3.9/site-packages/urllib3/__init__.py:35
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+../fresh200-local-test-env/lib/python3.9/site-packages/ray/util/state/util.py:54
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/ray/util/state/util.py:54: DeprecationWarning: Ray state API is no longer experimental. Please import from `ray.util.state`. instead. Importing from `ray.experimental` will be deprecated in future releases. 
+    warnings.warn(
+
+tests/baselines/test_raw_sampler_diagnostic.py::test_real_actor_forward_recomputes_raw_selected_token_probabilities
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/torch/amp/autocast_mode.py:266: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+    warnings.warn(
+
+tests/baselines/test_fresh200_driver_config_transport.py::ConfigTransport::test_actual_driver_resolve_statement_preserves_child_values
+tests/baselines/test_fresh200_driver_config_transport.py::ConfigTransport::test_original_unresolved_config_loses_post_ray_exports
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/omegaconf/grammar_visitor.py:253: UserWarning: In the sequence `BAPO_FRESH200_FIXED_THRESHOLD_ARTIFACT,` some elements are missing: please replace them with empty quoted strings. See https://github.com/omry/omegaconf/issues/572 for details.
+    warnings.warn(
+
+tests/baselines/test_fresh200_driver_config_transport.py::ConfigTransport::test_actual_driver_resolve_statement_preserves_child_values
+tests/baselines/test_fresh200_driver_config_transport.py::ConfigTransport::test_original_unresolved_config_loses_post_ray_exports
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/omegaconf/grammar_visitor.py:253: UserWarning: In the sequence `BAPO_FRESH200_FIXED_THRESHOLD_SHA256,` some elements are missing: please replace them with empty quoted strings. See https://github.com/omry/omegaconf/issues/572 for details.
+    warnings.warn(
+
+tests/baselines/test_prebuilt_holdout.py::test_real_dataset_to_dataproto_preserves_prebuilt_ids
+  /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/baselines/test_actor_current_device.py::test_actual_fsdp_actor_rollout_ref_boundary_explicit_device[0-update_actor]
+FAILED tests/baselines/test_actor_current_device.py::test_actual_fsdp_actor_rollout_ref_boundary_explicit_device[6-update_actor]
+2 failed, 239 passed, 8 warnings in 44.62s
