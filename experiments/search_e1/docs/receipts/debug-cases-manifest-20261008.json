@@ -1,0 +1,118 @@
+{
+  "cases": {
+    "path": "/data/shaoshitong/search-e1-opsd-debug-20261008/cases/cases.jsonl",
+    "rows": 192,
+    "sha256": "1703b15b1a1b3c5b91b13422fa314ab9a3b83f7bf7bf8a85dd7afcdaecdbf082"
+  },
+  "created_unix": 1791431798.2934413,
+  "evaluation_scope": "Stratified diagnostic sample; its EM is not the native512 or seven-benchmark EM",
+  "hard_reference": "No successful reference; privileged teacher and OPSD loss are not applicable",
+  "per_cell": 32,
+  "population": [
+    {
+      "dataset": "nq",
+      "group": "correct_correct",
+      "questions": 24695
+    },
+    {
+      "dataset": "nq",
+      "group": "correct_wrong",
+      "questions": 18009
+    },
+    {
+      "dataset": "nq",
+      "group": "all5_wrong",
+      "questions": 36208
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "correct_correct",
+      "questions": 32200
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "correct_wrong",
+      "questions": 26070
+    },
+    {
+      "dataset": "hotpotqa",
+      "group": "all5_wrong",
+      "questions": 31921
+    }
+  ],
+  "schema": "opsd-independent-debug-cases-v1",
+  "science": {
+    "search_e1/core.py": {
+      "bytes": 3998,
+      "ctime_ns": 1791361759586672218,
+      "device": 2065,
+      "inode": 466324161,
+      "mtime_ns": 1791118024437516198,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/core.py",
+      "sha256": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc"
+    },
+    "search_e1/opsd.py": {
+      "bytes": 11449,
+      "ctime_ns": 1791361759586672218,
+      "device": 2065,
+      "inode": 466324162,
+      "mtime_ns": 1791356643971838716,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/opsd.py",
+      "sha256": "61df9cc630bca7466f3edfb06da18ad92ddff1c713bf7c6c4a104ba88672c037"
+    },
+    "search_e1/rollout.py": {
+      "bytes": 6880,
+      "ctime_ns": 1791361759582672219,
+      "device": 2065,
+      "inode": 466324159,
+      "mtime_ns": 1791118024437516198,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/search_e1/rollout.py",
+      "sha256": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a"
+    },
+    "upstream/Search-R1/search_r1/qa_protocol.py": {
+      "bytes": 2984,
+      "ctime_ns": 1791361759586672218,
+      "device": 2065,
+      "inode": 466324181,
+      "mtime_ns": 1791118024373484200,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers/upstream/Search-R1/search_r1/qa_protocol.py",
+      "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd"
+    }
+  },
+  "seed": 42,
+  "selected_cases": 192,
+  "selection": "smallest SHA256(seed|dataset|group|question_id); no order-dependent RNG",
+  "sources": {
+    "pairs": {
+      "bytes": 829404707,
+      "ctime_ns": 1791407269983899859,
+      "device": 2065,
+      "inode": 466324470,
+      "mtime_ns": 1791407269983899859,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+      "rows": 100974,
+      "sha256": "a81a3ae61bb402f6b99dd35ae552c4bb76df8da391f3620c17fbd742ba2b1f40"
+    },
+    "rollouts": {
+      "bytes": 3866825184,
+      "ctime_ns": 1791407043581723047,
+      "device": 2065,
+      "inode": 466324430,
+      "mtime_ns": 1791407043581723047,
+      "path": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+      "rows": 845515,
+      "sha256": "fb4e94fb1efa600757a604db576807d9fd3dbd65a7c75bf36f11b0d2ba89d124"
+    },
+    "train": {
+      "bytes": 31766631,
+      "ctime_ns": 1791118440105231608,
+      "device": 2065,
+      "inode": 466293300,
+      "mtime_ns": 1791118440105231608,
+      "path": "/data/shaoshitong/search-e1-config-study-8gpu-20261004/data/train.jsonl",
+      "rows": 169103,
+      "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f"
+    }
+  },
+  "strict_reward_checked": true
+}

@@ -1,0 +1,43 @@
+{
+  "started_unix": 1791431719.6897142,
+  "source_commit": "7f029fb7860665a99cc94eb7e216b5b57c51e5c4",
+  "script_sha256": "225b4fed208718cf8d4646e9b8f9941b59d680de8df3341ec09503d1cac7bab6",
+  "cuda_visible_devices": "",
+  "children": {
+    "cases": {
+      "pid": 4183391,
+      "uid": 1005,
+      "starttick": 922342260,
+      "argv": [
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+        "/data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_debug/select_cases.py",
+        "--runtime",
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runtime/opsd-preparation3-xformers",
+        "--rollouts",
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-rollouts.jsonl",
+        "--pairs",
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/runs/preparation-3-pairs.jsonl",
+        "--train",
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/data/train.jsonl",
+        "--output",
+        "/data/shaoshitong/search-e1-opsd-debug-20261008/cases"
+      ],
+      "log": "/data/shaoshitong/search-e1-opsd-debug-20261008/logs/cpu-cases.log"
+    },
+    "weights": {
+      "pid": 4183392,
+      "uid": 1005,
+      "starttick": 922342260,
+      "argv": [
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+        "/data/shaoshitong/search-e1-opsd-debug-20261008/source/opsd_debug/prepare_weight_manifest.py",
+        "--base",
+        "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007",
+        "--output",
+        "/data/shaoshitong/search-e1-opsd-debug-20261008/receipts/weight-manifest.json"
+      ],
+      "log": "/data/shaoshitong/search-e1-opsd-debug-20261008/logs/cpu-weights.log"
+    }
+  },
+  "scope": "CPU only; source datasets and weights unchanged; not live GPU diagnostic acceptance"
+}

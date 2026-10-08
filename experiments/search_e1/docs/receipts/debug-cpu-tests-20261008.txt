@@ -1,0 +1,25 @@
+test_fallback_is_explicit_and_has_its_own_url_admission (test_admission.AdmissionTests) ... ok
+test_full_gpu_hash_mismatch_rejected (test_admission.AdmissionTests) ... ok
+test_gate_change_rejected_without_rehashing_each_case (test_admission.AdmissionTests) ... ok
+test_historical_gpu_not_ready_is_not_a_valid_gate (test_admission.AdmissionTests) ... ok
+test_pre_admit_gate_can_be_bound_then_live_ready_required (test_admission.AdmissionTests) ... ok
+test_process_source_and_gpu_identity_changes_rejected (test_admission.AdmissionTests) ... ok
+test_duplicate_sibling_rejected (test_select_cases.SelectorTests) ... ok
+test_existing_output_not_overwritten (test_select_cases.SelectorTests) ... ok
+test_false_successful_reference_rejected (test_select_cases.SelectorTests) ... ok
+test_hard_pair_cannot_be_fabricated (test_select_cases.SelectorTests) ... ok
+test_incomplete_sibling_group_rejected (test_select_cases.SelectorTests) ... ok
+test_partial_immutable_line_rejected (test_select_cases.SelectorTests) ... ok
+test_reward_provenance_is_checked (test_select_cases.SelectorTests) ... ok
+test_six_cells_repeatable_source_provenance_and_hard_no_teacher (test_select_cases.SelectorTests) ... ok
+test_all_token_offsets_masks_loss_and_native_head_shapes (test_token_probe.ProbeTests) ... ok
+test_full_vocabulary_cap_skip_keeps_all_token_losses (test_token_probe.ProbeTests) ... ok
+test_full_vocabulary_dump_has_full_finite_fp32_shapes (test_token_probe.ProbeTests) ... ok
+test_hard_case_has_no_teacher_or_opsd_loss (test_token_probe.ProbeTests) ... ok
+test_joint_context_skip_without_independent_truncation (test_token_probe.ProbeTests) ... ok
+test_new_generated_response_is_separate_diagnostic_not_training_loss (test_token_probe.ProbeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.811s
+
+OK

@@ -1,0 +1,20 @@
+{
+  "files": {
+    "worker.py": "4ecae139f6a8b741fbe4ae3c88aa9775a62bbae2cce7e98b965c978cee77d484",
+    "start_cpu_preparation.py": "225b4fed208718cf8d4646e9b8f9941b59d680de8df3341ec09503d1cac7bab6",
+    "test_select_cases.py": "735070335ca636b539f35d4c9eee8e397a97d875380bd65b250c0f119cbc9360",
+    "prepare_weight_manifest.py": "046ebd4066eebf6b5ce614d6e6213cc13358c89bdabff40839494c238987e78d",
+    "__init__.py": "0ad13104d232fc222dc85c7ed319b283fe616b89b9820642befaadeeaf2f95df",
+    "test_admission.py": "d9be0dd9b17f3051658852a1501ade853399dd481b7f20fc1ddf062356ddcb14",
+    "trace_agent.py": "d2e0ea7eff28cdc6a4ce4fd5ff1f81d323216ab8c28d3052348a86388255d906",
+    "select_cases.py": "ffe38bccda1505012a2f64b7e543bc75dc21775dd2521bf914708f786ff5660b",
+    "common.py": "63b6ef90d295e90e8a1e03af2381ce6e19d993848067b4bf8df1012283cd67da",
+    "test_token_probe.py": "5c5a6d6c97344a0cfbaf17a1bf25dc4c74b2b031df8664fc0141d458c291e1b2",
+    "launch_gpu_debug.py": "49374005e46e6ff99cab4fbf83284f9635a6e31579c7f64c09da999e90fe0db4",
+    "weight_identity.py": "dd55b22a86a64f551eec88fd4d0df38b8c237cbeaeb9b2939b26c206ad3dcebd",
+    "admission.py": "80c7116dc7472c23b509f2dce53964fabd5fb51074ca2dc7b346c8474d6f1fe9",
+    "token_probe.py": "4c75cec7e72a7b24cc4ed6cf32080f157ae519a06819079e73fca40f83c409f2",
+    "summarize_debug.py": "07705e44524a6dd226fe349e7f8efc5cc9b0149a3a77cc26fce9a7cf547b7fbe"
+  },
+  "scope": "Independent fixed-weight diagnostics; original runtime is separate, unchanged; actual live acceptance pending"
+}
