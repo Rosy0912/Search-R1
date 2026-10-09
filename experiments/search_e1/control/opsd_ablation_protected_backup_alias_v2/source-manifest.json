@@ -1,0 +1,31 @@
+{
+  "actual_node_execution_performed": false,
+  "actual_transfer_performed": false,
+  "dependency": {
+    "relative_package": "opsd_ablation_outer_backup_v2/backup.py",
+    "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 2986,
+      "sha256": "54de278eaac81eef06747e5b32328d08489297710ca9415dbeeee930dfb45750"
+    },
+    "backup.py": {
+      "bytes": 11980,
+      "sha256": "e49d90b306d023fef9212c6f4949aa38e33f7f333430e352f25cd24f4ccb44df"
+    },
+    "source-operation.py": {
+      "bytes": 17241,
+      "sha256": "b6e7274ed585b2404e4a561421c2aad5f91a1bba486702b6d4d4bb1015341316"
+    }
+  },
+  "new_fixtures_added_or_executed": false,
+  "only_source_deltas": [
+    "SSH transport prefix",
+    "PREFIX independent publication namespace"
+  ],
+  "original_backup_source_sha256": "c98e8fbed925578d7650c5a131a0973d094f29f9b98394525473b933840a04fe",
+  "original_manifest_sha256": "5fa989b316771f9845fd56d4d4aa0c403ddf0d3880e561a537594c1d9895c8a0",
+  "schema": "opsd-ablation-protected-backup-alias-source-manifest-v2",
+  "scope": "Unchanged R/W/P/J protected u0/u1/u5 transport identity; existing hkust1 alias route"
+}
