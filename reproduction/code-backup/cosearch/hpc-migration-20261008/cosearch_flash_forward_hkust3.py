@@ -7,14 +7,15 @@ from pathlib import Path
 import shlex
 import subprocess
 import time
+import sys
 
 ROOT = Path(__file__).resolve().parent
 REMOTE = '/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/migration-flash-build-20261009'
-SSH = ['ssh', '-T', '-oBatchMode=yes', '-oStrictHostKeyChecking=yes',
+SSH = ['sshpass', '-e', 'ssh', '-T', '-oBatchMode=no', '-oStrictHostKeyChecking=yes',
        '-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn',
        '-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts',
        '-oConnectTimeout=8', '-oServerAliveInterval=15', '-oServerAliveCountMax=3',
-       'jxu957@10.120.81.30']
+       'mou176@10.120.81.30']
 SHA = '46367eb890d271a68b50520127f23b3cdeee690991e5bb27ac07a9ef595d7ffe'
 SIZE = 6930216
 
@@ -37,6 +38,10 @@ def receiver(action, timeout=60):
 
 
 def main():
+    password = sys.stdin.readline().rstrip('\n')
+    assert password, 'Authorized password required via stdin'
+    os.environ['SSHPASS'] = password
+    password = None
     lock = (ROOT / 'hpc-forward.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     save('hpc-forward-controller.json', {'pid': os.getpid(), 'epoch': time.time(),
