@@ -1,0 +1,50 @@
+{
+  "analysis_publication": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/analysis-publication-235e376.json",
+    "sha256": "b19c57ec5867e02317006f573ea4bfa70c74db504e8de6c42c4ef61d6f58344d"
+  },
+  "analysis_source_commit": "235e37654e57ca6e19ce2ef33846891951deef04",
+  "analysis_source_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/analysis-235e376/opsd_signal_weight_analysis_v1/source-manifest.json",
+    "sha256": "649472b2312cd3c9225b2b5ea1e8c1ad8e70d20ca6591d51fdcbe0194dd3e4de"
+  },
+  "bootstrap_replicates": 0,
+  "configs": {
+    "G_NEG": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+    },
+    "G_POS": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    },
+    "H_NEG": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+      "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+    },
+    "H_POS": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+      "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+    }
+  },
+  "outers": [
+    {
+      "outer_index": 0,
+      "sampling_summary": {
+        "bytes": 326241,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00000.json",
+        "sha256": "fd1661e8e06d6d700ccd922862ead06f8259050252fc8ef799ef6fa16e3e9799"
+      },
+      "training_completion": {
+        "bytes": 4011,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/training/outer-complete.json",
+        "sha256": "b3be4332d1936891c90af4d3698851ebdf448f7efc4b62b8c532a46a18f9fcee"
+      },
+      "variant": "G_POS"
+    }
+  ],
+  "require_complete": false,
+  "schema": "opsd-signal-train-analysis-request-v1",
+  "scope": "Actual native consumer integration smoke only; not final100 analysis, heldoutEM, ablation comparison or gain claim",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26"
+}
