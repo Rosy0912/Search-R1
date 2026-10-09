@@ -1,0 +1,25 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 8726,
+      "sha256": "193741207545f863712ac3f8a19be1039d64b34bb963406bf7aaacf310e6835d"
+    },
+    "__init__.py": {
+      "bytes": 78,
+      "sha256": "43a27ef27863fe091af03da2e33f84509f443cd61c6eff0f9f70682ed2c9395c"
+    },
+    "common.py": {
+      "bytes": 7582,
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    "movement.py": {
+      "bytes": 24006,
+      "sha256": "b995851235fe8427f1fc48296c449721764a93e23bb53833239f55ac69a074b9"
+    },
+    "test_movement.py": {
+      "bytes": 11871,
+      "sha256": "da7551bc6f08af47285a4ed57e3f8e0f050cd88dcef30d2ff906de8b7e46f613"
+    }
+  },
+  "schema": "opsd-signal-parameter-movement-source-v1"
+}
