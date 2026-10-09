@@ -1,0 +1,16 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 5818,
+      "sha256": "a33d08c4afac8838e29e084acfcb4a2de8e632ea87b93ec3531818a29a5c0228"
+    },
+    "close_remote.py": {
+      "bytes": 15733,
+      "sha256": "709e0359fa7b640a63f2bae4a60d8c7e262f53f18dd97b8de25bc8cf21510851"
+    }
+  },
+  "processing_host": "HKUST1",
+  "schema": "opsd-ablation-remote-final-vocab-source-v1",
+  "scientific_sources_unchanged": true,
+  "validation": "One local AST parse only; no fixtures or real-run claim"
+}

@@ -1,0 +1,26 @@
+{
+  "copy_producer_sha256": "40e05812069c118b14df6605128204bd1a013286674c4cacab768a91ec48c211",
+  "files": {
+    "README.md": {
+      "bytes": 9024,
+      "sha256": "a0c685764e906fb02637a3744f6571b29ecf841192a7da1032c355a7f0443de9"
+    },
+    "derive.py": {
+      "bytes": 49950,
+      "sha256": "a929e9a7a1d77e9842e8eff60808b3fba80a2f570cbdd6e32f8fd8161ccd6288"
+    }
+  },
+  "legacy_derive_sha256": "10c9cd98e42d54ba52e99d27e33cb642bab72b80652d2fde017b4f7492870c95",
+  "schema": "opsd-ablation-recorded-precision-history-remote-source-manifest-v2",
+  "scientific_changes": false,
+  "unchanged_science_functions": [
+    "require",
+    "same_ref",
+    "load_sources",
+    "bound",
+    "scaler",
+    "precision",
+    "coverage",
+    "analyze"
+  ]
+}
