@@ -33,8 +33,10 @@ if p.exists():
  result['logs']['train']={'binding':b,'tail':tail,'marker_counts':{k:len(v) for k,v in groups.items()},'latest':{k:(v[-1] if v else None) for k,v in groups.items()},'completed_metric_history':groups['BAPO_TRAIN_METRICS_JSON='],'em_proof_history':groups['BAPO_TRAIN_EM_AUDIT_JSON='],'debug_evaluation_history':groups['BASELINE_EVALUATION_METRICS_JSON=']}
 p=RUN/'resource-watch.jsonl'
 if p.exists():
- raw,b=snapshot(p);lines,tail=complete_lines(raw);rows=[json.loads(line) for line in lines if line.strip()];counts={}
+ raw,b=snapshot(p);lines,tail=complete_lines(raw);rows=[json.loads(line) for line in lines if line.strip()];counts={};events={};notable=[]
  for row in rows:
   reason=str(row.get('reason'));counts[reason]=counts.get(reason,0)+1
- result['logs']['resources']={'binding':b,'tail':tail,'rows':len(rows),'reason_counts':counts,'latest':rows[-1] if rows else None}
+  event=str(row.get('event'));events[event]=events.get(event,0)+1
+  if row.get('pause') is True or row.get('error') is not None or row.get('event') is not None or (row.get('reason') is not None and row['reason']!='within_threshold'):notable.append(row)
+ result['logs']['resources']={'binding':b,'tail':tail,'rows':len(rows),'reason_counts':counts,'event_counts':events,'historical_notable_rows':notable,'latest':rows[-1] if rows else None}
 print(json.dumps(result,allow_nan=False))
