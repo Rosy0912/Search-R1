@@ -1,0 +1,36 @@
+{
+  "dependency": {
+    "relative_path": "../opsd_ablation_outer_backup_v2/backup.py",
+    "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 7582,
+      "sha256": "4420f1bbde5027fb0a2252083ee97b703a2d43e2b7fefe74d3fb8580d25a8a41"
+    },
+    "source-operation.py": {
+      "bytes": 15381,
+      "sha256": "34857f4a6d0cfea4da2e2c4b71a5af662aca9a49e7ee7134ab97cd3c88185222"
+    },
+    "test_scope.py": {
+      "bytes": 6772,
+      "sha256": "fcca69074b96d8cafdee927d87321b69007bf5c8ab855e5cb9f6b8d073a89763"
+    },
+    "transfer-gzip.py": {
+      "bytes": 4459,
+      "sha256": "eda77a9167aab482511b2a8b2f36a8f40f94aaeb61d02fd2e44f959fa847f422"
+    },
+    "verify-archive.py": {
+      "bytes": 6285,
+      "sha256": "47a6a69ad498c060eb22c35468be0e131ff097eb5a7fbdfaa1c216202dbf5c37"
+    }
+  },
+  "schema": "opsd-ablation-closed-raw-helper-source-manifest-v1",
+  "scope": "Candidate stdlib source/CPU fixtures only; no production transfer or numerical/effect acceptance.",
+  "test_result": {
+    "actual_returncode": 0,
+    "elapsed_seconds": 0.114,
+    "skipped": 0,
+    "tests": 5
+  }
+}
