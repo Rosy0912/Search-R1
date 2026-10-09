@@ -22,7 +22,7 @@ assert ROOT.is_dir() and ROOT.resolve() == ROOT
 assert (ROOT / 'scheduler-head/formal-submit-receipt.json').is_file()
 receipt = json.loads((ROOT / 'scheduler-head/formal-submit-receipt.json').read_text())
 assert receipt['job'] == '3359' and receipt['token'] == '16c570e111f947e2b0026983df2f7938'
-assert receipt['source_commit'] == SOURCE
+assert receipt['source'] == SOURCE
 assert TARGET.parent.resolve() == TARGET.parent and not TARGET.parent.is_symlink()
 assert hashlib.sha256(PAYLOAD).hexdigest() == EXPECTED_SHA256
 if TARGET.exists():
