@@ -18,7 +18,7 @@ def main():
     validate_admission()
     global FORMAL_FILES
     FORMAL_FILES=bindings()["tools"]
-    directory=ROOT/'tools/deployment/cohost-node11-v2-v2'
+    directory=ROOT/'tools/deployment/cohost-node11-v2'
     head=ROOT/'scheduler-head';require(head.resolve()==head,'canonical scheduler directory required')
     lock=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/submission-global.lock');require(lock.resolve()==lock and not lock.is_symlink(),'canonical submission lock required')
     require(lock.is_file() and lock.stat().st_nlink==1 and lock.stat().st_uid==os.getuid(),'existing own shared global lock required')
@@ -33,7 +33,7 @@ def main():
         queue=subprocess.check_output(['squeue','-h','-o','%i|%j|%k|%T'],text=True)
         require(not any('BAPO_ALIGNED_EM200:' in line for line in queue.splitlines()),'new-source BAPO allocation already exists')
         token=uuid.uuid4().hex;comment='BAPO_ALIGNED_EM200:formal:'+SOURCE+':'+token
-        value=dict(host='h100-11',bindings_sha256=sha(ROOT/'inputs/node11-bindings.json'),deployment_directory=str(ROOT/'tools/deployment/cohost-node11-v2-v2'),previous_failed_job='3348',source=SOURCE,root=str(ROOT),token=token,comment=comment,files=FORMAL_FILES,time=datetime.datetime.now(datetime.timezone.utc).isoformat(),scope='FORMAL_FRESH200_SINGLE_SUBMISSION_NOT_TRAINING_COMPLETION')
+        value=dict(host='h100-11',bindings_sha256=sha(ROOT/'inputs/node11-bindings.json'),deployment_directory=str(ROOT/'tools/deployment/cohost-node11-v2'),previous_failed_job='3348',source=SOURCE,root=str(ROOT),token=token,comment=comment,files=FORMAL_FILES,time=datetime.datetime.now(datetime.timezone.utc).isoformat(),scope='FORMAL_FRESH200_SINGLE_SUBMISSION_NOT_TRAINING_COMPLETION')
         write(intent,value)  # Must be durable before sbatch can create an allocation.
         command=['sbatch','--parsable','--no-requeue','--comment='+comment,str(directory/'formal.sbatch'),token]
         result=subprocess.run(command,capture_output=True,text=True,timeout=45)

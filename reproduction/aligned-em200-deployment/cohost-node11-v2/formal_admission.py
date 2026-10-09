@@ -4,7 +4,7 @@ import argparse,hashlib,json,os,shlex,subprocess,sys,time
 ROOT=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v2-20261009')
 OLDROOT=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009')
 SOURCE='080ebbc46b89d61567cd33e1a5e2f1b40afd8b84'
-DEPLOY=ROOT/'tools/deployment/cohost-node11-v2-v2'
+DEPLOY=ROOT/'tools/deployment/cohost-node11-v2'
 MODEL=Path('/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-fresh200-safety-20261006/assets/qwen2.5-3b-instruct-aa8e725')
 COMMON=Path('/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005/common-data')
 RETRIEVAL=Path('/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo/assets-root/assets')
@@ -25,7 +25,7 @@ def bindings():
 def validate_admission():
     require(sys.platform=='linux'and os.uname().nodename=='h100-11'and sys.prefix==str(ROOT/'env'),'node11 lexical isolated env required')
     require(ROOT.resolve()==ROOT,'canonical own root required')
-    for n in ('repo','env','runs','logs','scheduler-head','inputs','tools','tools/deployment/cohost-node11-v2-v2'):
+    for n in ('repo','env','runs','logs','scheduler-head','inputs','tools','tools/deployment/cohost-node11-v2'):
         require((ROOT/n).is_dir()and(ROOT/n).resolve()==ROOT/n,'canonical own directory required: '+n)
     require(subprocess.check_output(['git','-C',str(ROOT/'repo'),'rev-parse','HEAD'],text=True).strip()==SOURCE,'source080 required')
     require(not subprocess.check_output(['git','-C',str(ROOT/'repo'),'status','--porcelain'],text=True).strip(),'dirty production source')
