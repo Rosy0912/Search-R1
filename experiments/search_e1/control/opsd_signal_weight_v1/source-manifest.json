@@ -1,0 +1,190 @@
+{
+  "files": {
+    "README-controller.md": {
+      "bytes": 10983,
+      "sha256": "0c3b9ade8291b78d906904a8bbcc79d26fad99009c0561e1b729dbd832b03b36"
+    },
+    "README-mining.md": {
+      "bytes": 3673,
+      "sha256": "3369d1801e735941d92b477a8accefc760e7ca4df63a8712ded708357bfce3c5"
+    },
+    "README.md": {
+      "bytes": 3719,
+      "sha256": "938b55ccf510a9e52cedc0e8063316b1f209dee9327e2658c24610ded286253e"
+    },
+    "__init__.py": {
+      "bytes": 70,
+      "sha256": "c4c8136e2c34a5ffa9c60e74c1b68fdc5c499372cc4ee2564ed019faaddc8438"
+    },
+    "assets_prepare.py": {
+      "bytes": 7936,
+      "sha256": "74c42f30f214e35ca097fddbc256269f1bc362dfc83a91565b56963f74a76632"
+    },
+    "audit_state.py": {
+      "bytes": 4046,
+      "sha256": "61aa0785be5d70c0d58b7d34bd9629a9cafa1ae7a168acdadd7f2aeca13d421f"
+    },
+    "checkpoint.py": {
+      "bytes": 11181,
+      "sha256": "be23ae41dba6f725f78730e46b255ca1f0ce5f2f567868115524b8ba353c1019"
+    },
+    "cohort_v1.py": {
+      "bytes": 6145,
+      "sha256": "6d63290150b5eabfe312e26268ff31e833acc6b581367a4804d6e09d3e8c69c0"
+    },
+    "controller.py": {
+      "bytes": 51890,
+      "sha256": "87c767b4d1e739d0a8c4f2088c687cf36ebf1067f775b83a3775b07e6dd1763b"
+    },
+    "deployment_prepare.py": {
+      "bytes": 15732,
+      "sha256": "c7850063db783c811a147e7f7f10fbcf9b6e25a2043526aea1f19593d3d97296"
+    },
+    "evaluation.py": {
+      "bytes": 25492,
+      "sha256": "8647a6b6f7c21aac90f1f37c898b1d3bf79aabac0978b52242c2e579e8be9d42"
+    },
+    "evaluation_worker.py": {
+      "bytes": 19243,
+      "sha256": "5e648d77bc766d39b7d34ad0d56b39fc05819b77ab1bd2a856b3c644917995d5"
+    },
+    "gates.py": {
+      "bytes": 29000,
+      "sha256": "a8b7659f83380c0808ab589baa386d0f8eadb298f951f525776aed0ece65bef5"
+    },
+    "memory_observer.py": {
+      "bytes": 9233,
+      "sha256": "aed72a9a45bd752096eb6430fe0845682e9e9fe789a9d3d8b83194000c569933"
+    },
+    "miner_v1.py": {
+      "bytes": 10691,
+      "sha256": "6a5a74a562482b6f71903031b2eac12c68ff4bbee45686f75cc3466ab1135c73"
+    },
+    "objective.py": {
+      "bytes": 12317,
+      "sha256": "8ce8a7a2ac9aba92c1c60cac2a0ad30b19a259443a315a8a1f8770954721e935"
+    },
+    "owned_process_audit.py": {
+      "bytes": 13495,
+      "sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26"
+    },
+    "precision.py": {
+      "bytes": 7657,
+      "sha256": "7dd23d6378c91cb33c730241fe5cd63618768aa95eea6136bf571a7cb64358bc"
+    },
+    "prepare.py": {
+      "bytes": 14198,
+      "sha256": "0a972cf51f35f70d64026291457460a7af7e6b022433a229e8ddea9d8d6fe46e"
+    },
+    "prepare_bundle.py": {
+      "bytes": 5309,
+      "sha256": "c76b29a406d8003573a4846ff5c84d804268afcb42240e31990c22f14c257cf6"
+    },
+    "result_analysis.py": {
+      "bytes": 15513,
+      "sha256": "aac10c886b5a1ba4326b9ffe717bc8470bb72f6ea38a74dc352325d06ab0b84f"
+    },
+    "retry_state.py": {
+      "bytes": 3379,
+      "sha256": "68ffd4518df9a9f9bde201f160fd35ecbadafa375f6904613b798f50617c5b8d"
+    },
+    "sampling.py": {
+      "bytes": 21769,
+      "sha256": "7066c82774af9f8717447e10fa40fd28bb91b40bd4fe64bdb8319774e5736dd7"
+    },
+    "scoring.py": {
+      "bytes": 4488,
+      "sha256": "77bcc0e1f2d86bca3fd9c4911240f32727ad9219fd95cfcc2084ec5672fb29e3"
+    },
+    "sibling_scores.py": {
+      "bytes": 26454,
+      "sha256": "75828103d939872e9d3cc3d35880db50fa3cf0615852372fa0197e4dcb589f0e"
+    },
+    "state_storage.py": {
+      "bytes": 2105,
+      "sha256": "a1c26538362122c75517261bcee387ce0554c2cac890a12526b31e045c5738cf"
+    },
+    "study_runner.py": {
+      "bytes": 15085,
+      "sha256": "253033b3e6b200d07284aa278e5747d39632cf6bfbff65de080dc18e700d8cc5"
+    },
+    "targets.py": {
+      "bytes": 4918,
+      "sha256": "f0a6e4d7d08d443c01e553ade88d38a8f5a6bb8d1f1f0be5d687b38df95afb74"
+    },
+    "teacher_diag.py": {
+      "bytes": 11040,
+      "sha256": "77806aa9acb8351ffd168b3aa948f78b1bb51c5a8127ffc7d63c5fe8308e78aa"
+    },
+    "test_controller_v1.py": {
+      "bytes": 22396,
+      "sha256": "11a8d0701cd15383d5120a2d27737932340b6e308c8db9f40cfc7647f53262a0"
+    },
+    "test_deployment_prepare.py": {
+      "bytes": 11110,
+      "sha256": "c19b6b8d2f8fca29ae12a8167b9179bd62b533c7ed73fbade3020e6890cccfac"
+    },
+    "test_mining_cohort_v1.py": {
+      "bytes": 11339,
+      "sha256": "61d4c17d70cd46d61bb5e9507f73ee001b463a117f550d6e04fbdecee4078e66"
+    },
+    "test_objective.py": {
+      "bytes": 6646,
+      "sha256": "acb0faaba1f2cf512de9b42f3dc8c06e6532c7219992f20f64daf2597bb46060"
+    },
+    "test_precision.py": {
+      "bytes": 3271,
+      "sha256": "c2825e497b2fb6d866a69b8b4d9288f45f40e9a83e9ba61314a090152a1e6f59"
+    },
+    "test_sibling_scores.py": {
+      "bytes": 17116,
+      "sha256": "7d5ada048903a9d6b82125f3a299cf79a3a872224f5381958f582552634bb6dc"
+    },
+    "test_signal_controller.py": {
+      "bytes": 14083,
+      "sha256": "7d3d189c2b9008310c81ff239a3eab244b1d17ae5f69fe9ff4e2a79ac239a991"
+    },
+    "test_signal_evaluation.py": {
+      "bytes": 18285,
+      "sha256": "e02e739eed1694440e688b3a4a07cafb5b99ca5b07e9129616072a2e138a16ec"
+    },
+    "test_signal_state.py": {
+      "bytes": 3994,
+      "sha256": "420e4ea62040f4bc85d772e5c0d4b61fa8fdd0ef3263fb3549d0c2ea8a2faaae"
+    },
+    "test_state_storage.py": {
+      "bytes": 2053,
+      "sha256": "8c29963bace4ddeeb333dca05dc6fd18903967959cae10eb6520e8b00ba425d7"
+    },
+    "test_study_runner.py": {
+      "bytes": 12345,
+      "sha256": "5fc1530afa92ca591a9635af05c5e45ea946ffc178f361f40fe28d5ba3ca112c"
+    },
+    "test_targets.py": {
+      "bytes": 3790,
+      "sha256": "d177aaaec017acb8c6adb01148d92539f22b5404fde0c614288d6ebcbf447821"
+    },
+    "test_vocabulary_dump.py": {
+      "bytes": 2379,
+      "sha256": "b970d6baff8930a64c50ddff696cc418aad66457b539e571ee4cbc10112a2015"
+    },
+    "trainer.py": {
+      "bytes": 58102,
+      "sha256": "74b9f70e6940b03a61035224d8d22605832798967346761167cd5b9284ae25fe"
+    },
+    "training_metrics.py": {
+      "bytes": 10644,
+      "sha256": "e31c48bb89a22a54e2527d70449ca400d5101fd014ee7dbfd2e37d2865f5d4e4"
+    },
+    "vocabulary_dump.py": {
+      "bytes": 3631,
+      "sha256": "f42fee77297897b1e58c066d12510422ea639eaabf1b2d359ddd0c692b923e7b"
+    },
+    "weights_v1.py": {
+      "bytes": 1147,
+      "sha256": "324960d485b53ad3171f4e727278f5d1bcefc125f7513cce20a7daad018637a1"
+    }
+  },
+  "schema": "opsd-signal-weight-source-v1",
+  "scope": "Independent new four-card25-outer implementation; no weights, environment, credentials or private run outputs"
+}

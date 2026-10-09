@@ -1,0 +1,11 @@
+# Four-arm four-GPU execution
+
+The active human goal executes G_POS, G_NEG, H_POS and H_NEG serially on HKUST4 GPUs4–7,25 online outers each. All use identical source GRPO100 and initial FP32 LoRA; each starts fresh Adam. Latest human instruction fixes per-rank accumulation8, doubled from8-rank accumulation4, while micro1/global32, actual tail denominator and gradient SUM remain unchanged.
+
+Each outer records strict TRAIN EM over all2560 actual preupdate sampling trajectories. Commonzero native512 is run once; each arm runs posttraining raw native512 at completed outer15 and25. No best checkpoint fallback. All large products stay on HKUST; local publication contains code, configuration and compact summaries only.
+
+The new namespace is control/opsd_signal_weight_v1. It binds frozen305 scientific source, source100 twelve-file hashes,25 disjoint512-question cohorts, original uniform D and success B, live oracle identity, four-card ownership/free and all-rank optimizer/RNG/cursor state. Current preupdate all5 sibling scoring supplies detached1±.9 centered/maxabs weights. Scientific settings follow the execution goal.
+
+CPU verification:47 math/state tests passed. Lifecycle modules are run in separate fresh Python processes: controller16, signal10, evaluation36, serial-supervisor8 and deployment7 all passed, zero skips. Combining model tests with the CPU-supervisor tests contaminates sys.modules with Torch; this is preserved as a test-isolation failure, and production no-Torch supervisor admission was kept. Original mining/core fixtures remain to be verified in the actual node environment before GPU launch.
+
+Publication and CPU preparation do not count as training. Formal first-outer actual Adam1/5, finite changed adapters, four-rank states, original loss/score correspondence and actual memory must be accepted while the same formal run continues. The goal remains active until100 TRAIN records,8 complete held-out evaluations and final paired analysis are verified.
