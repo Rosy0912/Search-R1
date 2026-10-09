@@ -1,0 +1,71 @@
+{
+  "completion_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1",
+    "publication": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/completion-publication-7d9fea2.json",
+      "sha256": "0dc1375d0d760fd57d98bbf09e05ca512c78edd094f6281bb44af91515dee0d7"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/source-manifest.json",
+      "sha256": "b36aff538310bbd92c947e790e32254ce3267e9f1f62531aa4729a74bc719163"
+    }
+  },
+  "config": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+    "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+  },
+  "full_study_complete": false,
+  "outers": [
+    {
+      "end_checkpoint": {
+        "bytes": 19785,
+        "ctime_ns": 1791577189456212395,
+        "device": 2081,
+        "inode": 48114628,
+        "mtime_ns": 1791577189436212107,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000011-outer-00000/manifest.json",
+        "sha256": "0dd575fee0c8f5a0434c7f3f38aec84b274be0af95b87c24c136ab3e8005cc92"
+      },
+      "outer_complete": {
+        "bytes": 4011,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/training/outer-complete.json",
+        "sha256": "b3be4332d1936891c90af4d3698851ebdf448f7efc4b62b8c532a46a18f9fcee"
+      },
+      "outer_index": 0,
+      "outer_manifest": {
+        "bytes": 49693,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/outer-manifest.json",
+        "sha256": "bb742938d1ad4d6f2dfaf129fa87cf9b66e8b905f84db0d1ef892e4c6b52db1d"
+      },
+      "sampling_complete": {
+        "bytes": 660661,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/sampling-complete.json",
+        "sha256": "864a7e5aca9898804b2a3b21a30264177a43406774d6d8b92ddd7e0ca2b83d9e"
+      },
+      "summary": {
+        "bytes": 12977,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/summary.json",
+        "sha256": "365e16534bcc63145ff30bd1c932adc6fa2c3c931b13eabde03eb6c47c2bb3df"
+      },
+      "token_audit": {
+        "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/token-audit-d8e942d/opsd_signal_weight_token_audit_v1",
+        "mode": "recompute",
+        "publication": {
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/token-reader-source-publication-d8e942d.json",
+          "sha256": "9e2eac47f8d20cbe915105543fc8fd289acb66d784aac99eeebd8d4bde7a8036"
+        },
+        "published_manifest_sha256": "a4e64e1399b0bedb92d4cb25efbf9c015ca006625a62f0591fdf2216285bb02f",
+        "source_manifest": {
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/token-audit-d8e942d/opsd_signal_weight_token_audit_v1/source-manifest.json",
+          "sha256": "a4e64e1399b0bedb92d4cb25efbf9c015ca006625a62f0591fdf2216285bb02f"
+        }
+      },
+      "trainer_exit": {
+        "bytes": 72034,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/trainer-logs/attempt-00001-exit.json",
+        "sha256": "736ac463b22516ea4d102ab6c953bb08522c93e606db29fff8e9b562d341dd9b"
+      }
+    }
+  ],
+  "schema": "opsd-signal-first-outer-assembler-smoke-v1"
+}

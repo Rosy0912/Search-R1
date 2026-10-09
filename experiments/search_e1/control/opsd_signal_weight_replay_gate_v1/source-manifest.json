@@ -1,0 +1,25 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 5378,
+      "sha256": "be9164e3d080b7beb6bb6fa0ed256b5cd2a7ddb6d755f5d914883a414257cbda"
+    },
+    "__init__.py": {
+      "bytes": 78,
+      "sha256": "e7a64aa33966676fc66a0955347f8df69c7f1dc7eafa4cda92863e951e7b30c5"
+    },
+    "common.py": {
+      "bytes": 7582,
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    "gate.py": {
+      "bytes": 14359,
+      "sha256": "75a28d164465f2bb05c613de88f4d0b0a6c6d687ce6e809f9ccde1ed736c166d"
+    },
+    "test_gate.py": {
+      "bytes": 11408,
+      "sha256": "3821cbe67cbfc3d400bcdff44b425a29537ec6e139a067cd73332a6b3d778e7d"
+    }
+  },
+  "schema": "opsd-signal-replay-gate-source-v1"
+}

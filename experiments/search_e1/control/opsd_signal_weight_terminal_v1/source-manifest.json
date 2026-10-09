@@ -1,0 +1,21 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7702,
+      "sha256": "fa50c0d3222b18cc7b7ee8e3538fd8b043676b53fc2b6955076e32607fc395e2"
+    },
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "d8998ede0587547a414550d69c457d7e6b275163aff2fafdf33dcf243bccd1a3"
+    },
+    "capture.py": {
+      "bytes": 27780,
+      "sha256": "289020f1851e6359c23e5b23f7c4b87f2763c11112344557159f7d1a37ca80aa"
+    },
+    "test_capture.py": {
+      "bytes": 15149,
+      "sha256": "462b51c727548e12b9b38a0dfca5a32610ef84d876a77cec8dc0c6c82c6ec075"
+    }
+  },
+  "schema": "opsd-signal-weight-terminal-source-v1"
+}
