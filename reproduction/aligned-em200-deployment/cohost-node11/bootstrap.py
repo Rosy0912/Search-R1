@@ -1,6 +1,7 @@
 """Acquire true inherited eight-UUID OFD leases; start canonical cohost guard."""
 from pathlib import Path
 import argparse,fcntl,json,os,stat,sys,time
+import resource_watch
 from resource_watch import ROOT,identity,require,snapshot,admission
 
 def acquire(records,directory):
@@ -15,6 +16,7 @@ def acquire(records,directory):
 
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('--run',type=Path,required=True);parser.add_argument('--minimum-start-free-mib',type=float,default=30720);parser.add_argument('--reserve-free-mib',type=float,default=1024);parser.add_argument('command',nargs=argparse.REMAINDER);a=parser.parse_args();command=a.command[1:]if a.command[:1]==['--']else a.command
+ require(Path(resource_watch.__file__).resolve()==ROOT/'tools/resource_watch.py','canonical bound watcher import required')
  identity(a.run);require(command,'command required');admission([],a.reserve_free_mib)
  selected=[x for x in os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')if x];before=snapshot(selected);require(admission(before,a.minimum_start_free_mib),'each GPU needs >=30GiB initial free')
  leases=acquire(before,Path('/tmp')/f'search-r1-gpu-leases-{os.getuid()}');time.sleep(.2);after=snapshot(selected)
