@@ -1,0 +1,26 @@
+{
+  "schema": "opsd-ablation-teacher-terminal-audit-source-manifest-v2",
+  "files": {
+    "audit.py": {
+      "sha256": "ef4184ca0525be5b78f09d36e4107199a53f1b73348091581e3fa3c3d46e9af8",
+      "bytes": 15804
+    },
+    "test_identity.py": {
+      "sha256": "f3f1cf99d52fdaa5c36efe57a22eab195f8a27dd18cb6c938c7e932bd040e208",
+      "bytes": 961
+    },
+    "README.md": {
+      "sha256": "1f219109ff8c93286b1dc017319fb6b490a9d9aa859ef7c4edfff843aeaf8bab",
+      "bytes": 5865
+    }
+  },
+  "change": "Only original seven-field producer request config identity compatibility; optional mode exact, unknown fields reject; v1 untouched",
+  "prior_actual_failure": {
+    "pid": 59039,
+    "actual_wait_returncode": 1,
+    "stderr_sha256": "199ae1a7ae5f49917300ba28ac897657a538efcf5a65a411b1fd4325543b2fab"
+  },
+  "AST_PASS": true,
+  "tests_repeated": false,
+  "actual_data_execution": false
+}
