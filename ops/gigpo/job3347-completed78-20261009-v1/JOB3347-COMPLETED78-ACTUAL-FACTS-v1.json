@@ -1,0 +1,392 @@
+{
+  "utc": "2026-10-09T00:36:52.838725+00:00",
+  "job_id": 3347,
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576",
+  "source_observation": "outputs/gigpo-e1-instruct200/RESUME50-JOB3347-ACTUAL-STATUS-v181.json",
+  "source_observation_sha256": "1c3c1402220d77e318e6eb125a6dddf3f9d105235e480d9588102fbca2a0b8e1",
+  "completed_outer_updates": 78,
+  "actual_adam_per_rank": 1560,
+  "attempt_id": 78,
+  "opportunities_processed": 20,
+  "actual_adam_writes_per_rank": 20,
+  "gradient_micro_batches_per_rank": 160,
+  "skipped_opportunities": 0,
+  "scheduler_step": 78,
+  "data_cursor": 39936,
+  "driver_receipt": {
+    "bytes": 1018694146,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/audit/partial-updates/attempt_000078/driver.pt",
+    "sha256": "e4bc08f8d2d4ae3f823112308b5417c986949b5156d22d7a76940b0b886ffcea"
+  },
+  "rank_receipts": [
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140537,
+      "rank": 0,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140849,
+      "rank": 1,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140850,
+      "rank": 2,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140851,
+      "rank": 3,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140852,
+      "rank": 4,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140853,
+      "rank": 5,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140854,
+      "rank": 6,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 1560,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 78,
+      "completed_before": 77,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140855,
+      "rank": 7,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 78,
+      "skipped_opportunities": 0
+    }
+  ],
+  "training_reward_mean": 0.4019531309604645,
+  "training_reward_is_validation_f1": false,
+  "actual_lr_before_update": 1e-06,
+  "metrics": {
+    "actor/actual_gradient_micro_batches": 160.0,
+    "actor/attempt_counted_complete": 1.0,
+    "actor/entropy_loss": 0.6757761679356917,
+    "actor/grad_norm": 38.08869151814769,
+    "actor/grad_norm_after_clip": 0.9999999701166065,
+    "actor/kl_coef": 0.0,
+    "actor/kl_loss": 0.33818280484310925,
+    "actor/lr": 1e-06,
+    "actor/opportunities_processed": 20.0,
+    "actor/optimizer_steps": 20.0,
+    "actor/pg_clipfrac": 0.07863573857949074,
+    "actor/pg_loss": 0.020728398779841624,
+    "actor/ppo_kl": 0.1647300196738865,
+    "actor/skipped_empty_minibatches": 0.0,
+    "actor/skipped_opportunities": 0.0,
+    "critic/advantages/max": 1.600000023841858,
+    "critic/advantages/mean": -0.0003371376369614154,
+    "critic/advantages/min": -1.600000023841858,
+    "critic/returns/max": 1.600000023841858,
+    "critic/returns/mean": -0.0003371376369614154,
+    "critic/returns/min": -1.600000023841858,
+    "critic/rewards/max": 1.0,
+    "critic/rewards/mean": 0.4019531309604645,
+    "critic/rewards/min": 0.0,
+    "critic/score/max": 1.0,
+    "critic/score/mean": 0.4019531309604645,
+    "critic/score/min": 0.0,
+    "env/finish_ratio": 0.99921875,
+    "env/number_of_actions/max": 4.0,
+    "env/number_of_actions/mean": 2.113671875,
+    "env/number_of_actions/min": 1.0,
+    "env/number_of_valid_action": 2.11015625,
+    "env/number_of_valid_search": 1.1109375,
+    "env/ratio_of_valid_action": 0.9990234375,
+    "gigpo/shared_anchor_coverage": 0.8020698576972833,
+    "global_seqlen/balanced_max": 241782,
+    "global_seqlen/balanced_min": 241781,
+    "global_seqlen/max": 248136,
+    "global_seqlen/mean": 241781.625,
+    "global_seqlen/min": 236720,
+    "global_seqlen/minmax_diff": 11416,
+    "mfu/actor": 0.022978931702111998,
+    "prompt_length/clip_ratio": 0.00390625,
+    "prompt_length/max": 203.0,
+    "prompt_length/mean": 137.318359375,
+    "prompt_length/min": 128.0,
+    "response_length/clip_ratio": 0.0003906250058207661,
+    "response_length/max": 1851.0,
+    "response_length/mean": 618.2492065429688,
+    "response_length/min": 154.0,
+    "rollout/context_mismatches": 0,
+    "rollout/generated_tokens": 459576,
+    "rollout/padded_rows": 5,
+    "rollout/prefill_tokens": 2457093,
+    "rollout/retrieval_calls": 2844,
+    "rollout/trajectories": 2560,
+    "state_tokens/coverage": 0.1444091796875,
+    "state_tokens/total": 228559
+  },
+  "timings": [
+    {
+      "attempt_id": 78,
+      "category": "ordinary_training",
+      "completed_outer_updates": 77,
+      "original_call_returned": true,
+      "stage": "generation_and_retrieval_client",
+      "wall_seconds": 100.40073946863413
+    },
+    {
+      "attempt_id": 78,
+      "category": "ordinary_training",
+      "completed_outer_updates": 77,
+      "original_call_returned": true,
+      "stage": "old_policy_recompute",
+      "wall_seconds": 14.534301701933146
+    },
+    {
+      "attempt_id": 78,
+      "category": "ordinary_training",
+      "completed_outer_updates": 77,
+      "original_call_returned": true,
+      "stage": "reference_recompute",
+      "wall_seconds": 13.857796166092157
+    },
+    {
+      "attempt_id": 78,
+      "category": "ordinary_training",
+      "completed_outer_updates": 77,
+      "original_call_returned": true,
+      "stage": "advantage_mask_and_rollout_evidence",
+      "wall_seconds": 15.01677455380559
+    },
+    {
+      "attempt_id": 78,
+      "category": "ordinary_training",
+      "completed_outer_updates": 77,
+      "original_call_returned": true,
+      "stage": "actor_update_and_original_guards",
+      "wall_seconds": 229.66058024019003
+    }
+  ],
+  "independent_probability_tail_and_hf_semantic_status": "PENDING_BACKGROUND",
+  "latest_full_recoverable_outer": 50,
+  "constant_lr78_actual_readback": {
+    "worker_before": [
+      {
+        "rank": 0,
+        "pid": 3140537,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 1,
+        "pid": 3140849,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 2,
+        "pid": 3140850,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 3,
+        "pid": 3140851,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 4,
+        "pid": 3140852,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 5,
+        "pid": 3140853,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 6,
+        "pid": 3140854,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 7,
+        "pid": 3140855,
+        "scheduler_step": 77,
+        "learning_rates": [
+          1e-06
+        ]
+      }
+    ],
+    "worker_after": [
+      {
+        "rank": 0,
+        "pid": 3140537,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 1,
+        "pid": 3140849,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 2,
+        "pid": 3140850,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 3,
+        "pid": 3140851,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 4,
+        "pid": 3140852,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 5,
+        "pid": 3140853,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 6,
+        "pid": 3140854,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      },
+      {
+        "rank": 7,
+        "pid": 3140855,
+        "scheduler_step": 78,
+        "learning_rates": [
+          1e-06
+        ]
+      }
+    ]
+  }
+}
