@@ -1,0 +1,97 @@
+{
+  "assets": {
+    "bytes": 1805,
+    "ctime_ns": 1791567513503729365,
+    "device": 2081,
+    "inode": 48112345,
+    "mtime_ns": 1791567513503729365,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/assets-ready.json",
+    "sha256": "8592f83e0eefdafca73d36b60b1a044750f30fc1297bee9d0b546f6c6fcfa0bc"
+  },
+  "big_products_remote_only": true,
+  "cache_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/cache",
+  "goal_created_unix": 1791564769,
+  "goal_file": {
+    "bytes": 8492,
+    "ctime_ns": 1791567475126635608,
+    "device": 2081,
+    "inode": 48112336,
+    "mtime_ns": 1791567475126635608,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/execution-goal.md",
+    "sha256": "3ad6bc8d6be43b5223463f39aff02c1c2c26327745985fea088dcf35ca0d769b"
+  },
+  "groups": [
+    {
+      "config": {
+        "bytes": 11363,
+        "ctime_ns": 1791567687412215119,
+        "device": 2081,
+        "inode": 48112408,
+        "mtime_ns": 1791567687412215119,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "config": {
+        "bytes": 11364,
+        "ctime_ns": 1791567689308260331,
+        "device": 2081,
+        "inode": 48112415,
+        "mtime_ns": 1791567689308260331,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+        "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+      },
+      "variant": "G_NEG"
+    },
+    {
+      "config": {
+        "bytes": 11372,
+        "ctime_ns": 1791567691332308518,
+        "device": 2081,
+        "inode": 48112422,
+        "mtime_ns": 1791567691332308518,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+        "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+      },
+      "variant": "H_POS"
+    },
+    {
+      "config": {
+        "bytes": 11373,
+        "ctime_ns": 1791567693372357005,
+        "device": 2081,
+        "inode": 48112429,
+        "mtime_ns": 1791567693372357005,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+        "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+      },
+      "variant": "H_NEG"
+    }
+  ],
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1",
+  "helper_source_manifest": {
+    "bytes": 6528,
+    "ctime_ns": 1791567644319167866,
+    "device": 2081,
+    "inode": 48112375,
+    "mtime_ns": 1791567615000000000,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1/source-manifest.json",
+    "sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+  },
+  "publication": {
+    "bytes": 9082,
+    "ctime_ns": 1791567685468168688,
+    "device": 2081,
+    "inode": 48112401,
+    "mtime_ns": 1791567685468168688,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-publication.json",
+    "sha256": "e0ba3954d8d8c8b749ec04523dff64cb834649e0574609ad64444bd887a0aef7"
+  },
+  "schema": "opsd-signal-study-manifest-v1",
+  "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+  "study_base": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "tmp_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/tmp"
+}

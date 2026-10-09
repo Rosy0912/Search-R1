@@ -1,0 +1,331 @@
+{
+  "authorization": {
+    "four_gpu_execution": {
+      "cluster": "HKUST",
+      "four_rank_accumulation": 8,
+      "global_batch": 32,
+      "goal_created_unix": 1791564769,
+      "goal_file": {
+        "bytes": 8492,
+        "ctime_ns": 1791567475126635608,
+        "device": 2081,
+        "inode": 48112336,
+        "mtime_ns": 1791567475126635608,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/execution-goal.md",
+        "sha256": "3ad6bc8d6be43b5223463f39aff02c1c2c26327745985fea088dcf35ca0d769b"
+      },
+      "gpu_uuids": [
+        "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+        "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+        "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+        "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3"
+      ],
+      "latest_human_instruction": "4卡训练核心只把梯度累积double，其余不变",
+      "micro_batch": 1,
+      "node": "HKUST4",
+      "original_eight_rank_accumulation": 4,
+      "physical_gpus": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "uid": 1001
+    },
+    "four_signal_groups_25_outer": {
+      "goal_created_unix": 1791564769,
+      "goal_file": {
+        "bytes": 8492,
+        "ctime_ns": 1791567475126635608,
+        "device": 2081,
+        "inode": 48112336,
+        "mtime_ns": 1791567475126635608,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/execution-goal.md",
+        "sha256": "3ad6bc8d6be43b5223463f39aff02c1c2c26327745985fea088dcf35ca0d769b"
+      },
+      "ordinary_training_em_full2560": true,
+      "outer_iterations_each": 25,
+      "source": "Latest explicitly executing human goal",
+      "test_completed_outers": [
+        15,
+        25
+      ],
+      "variants": [
+        "G_POS",
+        "G_NEG",
+        "H_POS",
+        "H_NEG"
+      ]
+    }
+  },
+  "baseline_variant": "R",
+  "common_cohort_manifest": {
+    "bytes": 4665475,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-cohorts.json",
+    "sha256": "d1be6ec72ee30c5cc3ae349fc5cfe8c554fd90c6b87162b5ddc48aefa7e381c7"
+  },
+  "common_initial_adapter_manifest": {
+    "bytes": 1124,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-initial-adapter.json",
+    "sha256": "4d3ea3bdd7a301ae8815265b75eb83182da02bab809a6e989c6214a7d518988d"
+  },
+  "common_initial_adapter_tensor_sha256": "836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f",
+  "diagnostics": {
+    "diagnostic_precision_common_bf16": true,
+    "teacher_autoregressive": true,
+    "teacher_max_cases_per_outer": 8,
+    "teacher_precision": "bf16",
+    "teacher_seed": 42,
+    "teacher_selection_version": "opsd-ablation-privileged-teacher-autoregressive-v1",
+    "teacher_strata": [
+      "self_pair",
+      "CW",
+      "CC"
+    ],
+    "teacher_temperature": 0.0,
+    "training_or_validation_denominator_contribution": 0
+  },
+  "evaluation": {
+    "baseline_reuse": null,
+    "common_zero": true,
+    "common_zero_receipt_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-zero-evaluation.json",
+    "completed_outers": [
+      15,
+      25
+    ],
+    "logical_workers": 8,
+    "primary_rows": 512,
+    "rank_seed": 42
+  },
+  "gates": {
+    "memory_binding_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/memory-binding.json",
+    "publication": {
+      "bytes": 8527,
+      "ctime_ns": 1791567685496169357,
+      "device": 2081,
+      "inode": 48112404,
+      "mtime_ns": 1791567685496169357,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/publication.json",
+      "sha256": "6c4b2e54b4fc09eadab1c1968aba50ec8b684b9a4f9d0a398c2eae5685170a7a"
+    },
+    "resource_transition": {
+      "bytes": 956,
+      "ctime_ns": 1791567685544170505,
+      "device": 2081,
+      "inode": 48112406,
+      "mtime_ns": 1791567685544170505,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/resource-transition.json",
+      "sha256": "9c6cf88f2a3f10b865255a44aaa9c6e3c835fc45f7d20b6a2af302f814deb6a0"
+    },
+    "retriever_admission": {
+      "bytes": 455,
+      "ctime_ns": 1791567685568171078,
+      "device": 2081,
+      "inode": 48112407,
+      "mtime_ns": 1791567685568171078,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/retriever-admission.json",
+      "sha256": "87fe7e754b644232b70519010d7b1380c05fe5754de1c25b98005a3804b21d8d"
+    },
+    "scoped_cpu_processes_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/scoped-cpu-processes.json",
+    "storage": {
+      "bytes": 1417,
+      "ctime_ns": 1791567685516169835,
+      "device": 2081,
+      "inode": 48112405,
+      "mtime_ns": 1791567685516169835,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/storage.json",
+      "sha256": "ca7ba20aa0cdb3160236a0a4ab380c323048e6f1d0bab8b6cf58a0e74ead2c04"
+    }
+  },
+  "helper_source_manifest": {
+    "bytes": 6528,
+    "ctime_ns": 1791567644319167866,
+    "device": 2081,
+    "inode": 48112375,
+    "mtime_ns": 1791567615000000000,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1/source-manifest.json",
+    "sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+  },
+  "logging": {
+    "all_valid_token_losses": true,
+    "full_vocab_study_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/runs/full-vocabulary",
+    "topk": 32,
+    "topk_max_tokens_per_outer": 8192
+  },
+  "mining": {
+    "cohort_version": "search-e1-opsd-25-train-cohorts-seed42-v1",
+    "random_version": "search-e1-opsd-uniform-five-sha256-u64-rejection-v1",
+    "version": "search-e1-opsd-signal-weight-miner-v1",
+    "weights_version": "search-e1-opsd-correctness-weights-v1"
+  },
+  "owner": {
+    "gpu_uuids": [
+      "GPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65",
+      "GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2",
+      "GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f",
+      "GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3"
+    ],
+    "physical_gpus": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "uid": 1001
+  },
+  "paths": {
+    "base": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS",
+    "cache": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/cache",
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1",
+    "model": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/actor/global_step_100",
+    "output_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs",
+    "python": "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+    "receipts": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts",
+    "retriever_url": "http://10.123.4.11:18003/retrieve",
+    "runtime": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/runtime/frozen-305",
+    "study_base": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010",
+    "tmp": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/tmp",
+    "train": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/train.jsonl",
+    "validation": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.jsonl"
+  },
+  "precision": {
+    "mode": "bf16"
+  },
+  "resources": {
+    "minimum_disk_bytes": 107374182400,
+    "shared_gpu_lease_paths": [
+      "/weka_3/shaoshitong/search-e1-config-study-20261004/experiment.lock"
+    ],
+    "startup_minimum_free_mib": 20480,
+    "study_lease_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/signal-weight-gpu-experiment.lock",
+    "training_minimum_free_mib": 6144
+  },
+  "retention": {
+    "authorized": false,
+    "merged_cache_cleanup_authorized": false,
+    "mode": "keep_all"
+  },
+  "run_id": "59de0d17968b4955b97f312cb2387429",
+  "runtime_manifest": {
+    "bytes": 37563,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/frozen-runtime-manifest.json",
+    "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+  },
+  "sampling": {
+    "attention_backend": "XFORMERS",
+    "backend": "vllm",
+    "batch_questions": 64,
+    "cpu_blocks_expected": 7281,
+    "dtype": "bfloat16",
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.85,
+    "logical_rank_to_slot": [
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3
+    ],
+    "max_model_len": 8192,
+    "max_search_calls": 4,
+    "max_tokens": 500,
+    "model_merge": "original_PEFT_CPU_BF16_latest_adapter_no_best_selection",
+    "num_gpu_blocks_override": 22671,
+    "observation_tokens": 480,
+    "question_order": "shared_frozen_original_seed42_first12800_train_permutation_no_replacement",
+    "questions": 512,
+    "seed": 42,
+    "siblings": 5,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "topk": 3,
+    "turns": 5,
+    "waves": [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6,
+        7
+      ]
+    ],
+    "workers": 8
+  },
+  "schema": "opsd-signal-weight-config-v1",
+  "scientific": {
+    "chunk": 32,
+    "component_clip": 10,
+    "epochs_per_outer": 1,
+    "global_batch": 32,
+    "grad_norm_clip": 1.0,
+    "gradient_accumulation_full_batch_per_rank": 8,
+    "learning_rate": 1e-06,
+    "lora_alpha": 32,
+    "lora_dropout": 0,
+    "lora_rank": 16,
+    "loss_reduction": "trajectory_mean",
+    "max_context": 8192,
+    "micro_batch": 1,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "kind": "AdamW",
+      "weight_decay": 0.01
+    },
+    "original_eight_rank_accumulation": 4,
+    "outer_iterations": 25,
+    "scheduler": "none",
+    "seed": 42,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "teacher_frozen": true,
+    "warmup_updates": 0,
+    "world_size": 4
+  },
+  "signal": {
+    "amplitude": 0.9,
+    "direction": 1,
+    "encoding_failure": "whole_group_neutral",
+    "metric": "answer_signed_gap",
+    "missing_answer": "neutral",
+    "numerical_floor": 1e-06,
+    "timing": "current_preupdate",
+    "version": "opsd-five-sibling-centered-signal-weights-v1"
+  },
+  "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+  "source_model_manifest": {
+    "bytes": 3406,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/source100-model.json",
+    "sha256": "427ffddf55dbe2049ed7293ad06b231fe90686b24bfbd98f9de1690fead83d58"
+  },
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "train_identity": {
+    "bytes": 31766631,
+    "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/train.jsonl",
+    "sha256": "a334d768230fd85d3465e251aee906060150628775b78ab7ce15e5e789f7489f"
+  },
+  "validation_identity": {
+    "bytes": 93609,
+    "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.jsonl",
+    "sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  },
+  "variant": "G_POS"
+}
