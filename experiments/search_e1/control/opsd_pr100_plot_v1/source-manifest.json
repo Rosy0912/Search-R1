@@ -1,0 +1,14 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1299,
+      "sha256": "1eca766d759e63d65f3a344dad62833937ad26871341a3ada5af758870889154"
+    },
+    "plot.py": {
+      "bytes": 12148,
+      "sha256": "411adc2fa6b302ca177e67916f23db5f3f9e93b4cb2eae453a6f44971cb2b52c"
+    }
+  },
+  "schema": "opsd-pr100-aggregate-static-plot-helper-v1",
+  "scope": "CPU-only static rendering of accepted small PR100 aggregate reports; no raw/models/tensors/network/GPU/SSH"
+}
