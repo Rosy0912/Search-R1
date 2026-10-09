@@ -1,0 +1,30 @@
+{
+  "schema": "opsd-ablation-closed-native-backup-source-v3",
+  "files": {
+    "README.md": {
+      "bytes": 2003,
+      "sha256": "3db1b166a5373f4f242cdfc8adf315c87b0707cbca4fe497a0e16d3aa666a2bf"
+    },
+    "source-operation.py": {
+      "bytes": 17694,
+      "sha256": "086c15e619a19ba646232b5aa62653a43b316252b1862b1ba7cd4291086d5311"
+    },
+    "test_scope.py": {
+      "bytes": 10791,
+      "sha256": "d5cc52ed393866e56d6524d7271d830deab8358267129331cead43e55a1b813f"
+    },
+    "transfer-gzip.py": {
+      "bytes": 4158,
+      "sha256": "3261f0fe42364314627a18ba7a8209eb08232b28b96cd2ae0a736a6a4d0c0bda"
+    },
+    "verify-archive.py": {
+      "bytes": 6401,
+      "sha256": "00ae89d065baa10c7bc8d74500b629467864d258aee288be54ac979fdbbb2400"
+    }
+  },
+  "original_v2_manifest_sha256": "8b7c5dd63748f2132bcebdd7fc45f52e3e82f5cc8fd65668e104993f53170fd1",
+  "scope": "Only transfer local SSH prefix changes to normal hkust1 alias; remote command/operation/inventory/USTAR/gzip/after/member/actualrc logic unchanged. Frozen V2 not edited.",
+  "AST_files": 4,
+  "tests_executed": 0,
+  "actual_data_execution": false
+}
