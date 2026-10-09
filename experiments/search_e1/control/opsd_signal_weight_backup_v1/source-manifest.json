@@ -1,0 +1,27 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6116,
+      "sha256": "40b340e0e93fc77b881f468a90a8baf0627c2aee7251ea0179e09e8d3aae6068"
+    },
+    "__init__.py": {
+      "bytes": 81,
+      "sha256": "4072e250e42df9a75b12ef2c6d5d1187298d6a354031cd96e80903a7fca729ae"
+    },
+    "peer.py": {
+      "bytes": 25178,
+      "sha256": "dc3cb1e44f379bcf4627109999da03cdfa2334cd298b606606c1ae2a91909aca"
+    },
+    "test_backup.py": {
+      "bytes": 23269,
+      "sha256": "86fd450387ce5548ea3047802d296a3b0ac80084500d5132435adac79eba7ba9"
+    },
+    "transfer.py": {
+      "bytes": 10487,
+      "sha256": "6b9e65a5fd8571bf7520e8dc9d15828cb16eb714e1e1defad822daee31590a83"
+    }
+  },
+  "large_local_products": false,
+  "production_namespace_hot_modified": false,
+  "schema": "opsd-signal-pinned-backup-source-v1"
+}
