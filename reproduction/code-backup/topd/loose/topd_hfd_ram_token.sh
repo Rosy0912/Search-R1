@@ -411,7 +411,7 @@ if [[ "$TOOL" == "aria2c" ]]; then
         [[ "$line" == https://* ]] && printf ' header=Authorization: Bearer %s\n' "$HF_TOKEN"
       done < "$fileslist_file"
     }
-    hfd_ram_input | aria2c --enable-rpc=true --rpc-listen-all=false --rpc-listen-port=18609 --all-proxy=http://127.0.0.1:18092 --quiet=true --log=/dev/null --log-level=error --file-allocation=none \
+    hfd_ram_input | aria2c --enable-rpc=true --rpc-listen-all=false --rpc-listen-port=18609 --all-proxy="${TOPD_HF_PROXY:-}" --disk-cache=0 --quiet=true --log=/dev/null --log-level=error --file-allocation=none \
         --max-tries=0 --retry-wait=10 --connect-timeout=15 --timeout=30 --auto-file-renaming=false -x "$THREADS" -j "$CONCURRENT" -s "$THREADS" -k 1M -c -i - >/dev/null
     status=$?
 else

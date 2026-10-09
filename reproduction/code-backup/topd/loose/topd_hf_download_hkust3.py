@@ -31,14 +31,27 @@ def main():
     headers = {'Authorization': 'Bearer ' + token}
     plan = json.loads((ROOT / 'plan.json').read_text())
     repo = plan['repo']
+    save('controller.json', {'pid': os.getpid(), 'epoch': time.time(), 'repo': repo, 'groups': len(plan['records']), 'root': str(ROOT), 'token_persisted': False, 'proxy': os.environ.get('HTTPS_PROXY', ''), 'phase': 'HF_PREFLIGHT'})
     api = 'https://huggingface.co/api/models/' + repo
-    info = requests.get(api, headers=headers, timeout=60)
+    def api_request(method, url, **kwargs):
+        for attempt in range(1000):
+            try:
+                response = requests.request(method, url, timeout=(10, 30), **kwargs)
+                response.raise_for_status()
+                return response
+            except requests.RequestException as error:
+                if getattr(error, 'response', None) is not None and error.response.status_code in (401, 403):
+                    raise
+                save('preflight-failure.json', {'epoch': time.time(), 'retry': attempt + 1, 'error_type': type(error).__name__})
+                time.sleep(min(30, 2 + attempt))
+        raise RuntimeError('HF preflight retry limit')
+    info = api_request('GET', api, headers=headers)
     info.raise_for_status()
     assert info.json()['private'], 'Private repository required'
     records = plan['records']
     paths = ['topd-migration-20261009/archives/' + x['group'] + '.tar.zst' for x in records]
-    meta = requests.post(api + '/paths-info/main', headers=headers,
-                         json={'paths': paths}, timeout=60)
+    meta = api_request('POST', api + '/paths-info/main', headers=headers,
+                         json={'paths': paths})
     meta.raise_for_status()
     inventory = {x['path']: x for x in meta.json()}
     for record, path in zip(records, paths):
