@@ -1,0 +1,32 @@
+{
+  "absolute_order_not_claimed": true,
+  "base_v2_derive_sha256": "a929e9a7a1d77e9842e8eff60808b3fba80a2f570cbdd6e32f8fd8161ccd6288",
+  "copy_producer_sha256": "40e05812069c118b14df6605128204bd1a013286674c4cacab768a91ec48c211",
+  "cross_host_clock_calibration_unverified": true,
+  "files": {
+    "README.md": {
+      "bytes": 9757,
+      "sha256": "f2d88d3ce6d2c8c423aaf6614667e0749f9a8e510c8b1d3c3415894cb51c9293"
+    },
+    "derive.py": {
+      "bytes": 51297,
+      "sha256": "ec69e80e458483afcab28fce9c4f11d455903e9d7ae3164093eb5128667b68c4"
+    }
+  },
+  "input_schema_unchanged": "opsd-ablation-recorded-precision-history-remote-inputs-v2",
+  "schema": "opsd-ablation-recorded-precision-history-remote-source-manifest-v3",
+  "scientific_changes": false,
+  "unchanged_functions": [
+    "require",
+    "same_ref",
+    "load_sources",
+    "bound",
+    "scaler",
+    "precision",
+    "coverage",
+    "read_transport_ref",
+    "source_bytes_ref",
+    "prepare_group",
+    "analyze"
+  ]
+}
