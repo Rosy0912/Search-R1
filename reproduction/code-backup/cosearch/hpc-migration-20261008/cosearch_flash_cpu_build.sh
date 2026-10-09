@@ -25,7 +25,8 @@ s=b/'runtime/flash-attn-281-source';d=r/'src'
 if not d.exists():shutil.copytree(s,d)
 (r/'build-start.json').write_text(json.dumps({'epoch':time.time(),'cuda_initialized':False,'gpu_requested':False,'source':str(s),'build_copy':str(d)}))
 PY
-printf '#!/bin/bash\nexec "%s" -m ninja "$@"\n' "$PY" > "$R/bin/ninja"
+printf '#!/bin/bash\nexec "%s" "$@"\n' "$BASE/source/author-native/env/bin/ninja" > "$R/bin/ninja"
+"$R/bin/ninja" --version
 chmod 700 "$R/bin/ninja"
 export PATH="$R/bin:$PATH"
 cd "$R/src"
