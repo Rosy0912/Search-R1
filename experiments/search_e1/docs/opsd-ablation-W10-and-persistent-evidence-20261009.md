@@ -8,7 +8,7 @@
 
 R/W 保护检查点0/1/5的原已验收 tar 已分别压为499521972/499795968字节 XZ。两者均从磁盘独立完整解码，单CRC64流、原 tar 整体 SHA/字节精确一致。实际压缩父进程返回0后，只清理各自42份已验收 loose 重复成员和原 tar；86项删除均有持久日志。当前持久表示为 XZ 与原验收/解码/清理链，旧 receipt 描述的 tar/loose 路径不再存在，不能继续声称它们仍在。逻辑净减少2359644077字节，不冒充 APFS 实测净增。Node原资产、失败partial及其他组文件保留。
 
-W全部十轮非cache原始轨迹、HTTP、teacher/student、逐token日志及8份NPY，连同7项原闭合配置/终态引用，已实读固定清单4088文件/2426412462字节并启动独立本地压缩传输。当前只有清单及启动证明，不是备份完成；实际传输、source-after和完整本地成员验收仍待完成。其他未列入本 scope 的全局记录及研究词表ledger保持最终交付待办。备份和CPU工作均不阻塞GPU评估或P/J启动。
+W全部十轮非cache原始轨迹、HTTP、teacher/student、逐token日志及8份NPY，连同7项原闭合配置/终态引用，固定清单4088文件/2426412462成员字节已完成独立本地备份。原传输实际退出0、source-after通过，本地完整解码逐成员SHA、gzip footer及USTAR终态验证通过；压缩归档363840987字节、SHA256 `a26ee51c429a04980ef2754a48080da8c84ecf23d073d9b53708010270459ebf`。8份NPY保持原始字节，Node原件保留。其他未列入本scope的全局记录及研究词表ledger保持最终交付待办。备份和CPU工作均未阻塞GPU评估或P/J启动。
 
 新增 `control/opsd_ablation_recorded_precision_history_v1` 是只读本地报告入口。待P/J真实闭合且固定原始备份验收后，汇总所有保留attempt的 precision JSON、已提交更新scaler、retry manifests及原调用/退出记录。缺rank、缺调用、失败记录均标PARTIAL；未读取capsule PT，不把引用关联当作优化器、CUDA或RNG恢复证明。只有两份AST和一个缺rank/缺调用的小fixture，未新增模型、生成或训练测试，尚未运行真实P/J聚合。
 
