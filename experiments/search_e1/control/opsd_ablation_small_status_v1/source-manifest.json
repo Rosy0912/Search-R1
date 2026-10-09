@@ -1,0 +1,12 @@
+{
+  "files": {
+    "status.py": {
+      "bytes": 4850,
+      "sha256": "3328ba47ba9b9c33c923f199f01d73454fc1f3ef8667220bd3835b31b5c72812"
+    }
+  },
+  "model_or_tensor_read": false,
+  "node_mutations": false,
+  "raw_exports": false,
+  "schema": "readonly-small-status-source-v1"
+}
