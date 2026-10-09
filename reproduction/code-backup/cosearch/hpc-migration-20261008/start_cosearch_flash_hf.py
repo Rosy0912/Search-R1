@@ -32,16 +32,22 @@ def campus(host, command, **kwargs):
 def deploy(host, root, files):
     encoded = {name:base64.b64encode(data).decode() for name,data in files.items()}
     code = ('from pathlib import Path;import base64,json,sys;root=Path(' + repr(root) + ');'
-            'assert not root.exists(),"Existing group must be inspected";root.mkdir(parents=True);'
+            'assert not root.is_symlink();root.mkdir(parents=True,exist_ok=True);'
             'files=json.loads(sys.stdin.read())\n'
-            'for name,data in files.items():(root/name).write_bytes(base64.b64decode(data))\n'
+            'for name,data in files.items():\n'
+            ' p=root/name;b=base64.b64decode(data)\n'
+            ' if p.exists():assert not p.is_symlink() and p.read_bytes()==b,"Existing metadata differs"\n'
+            ' else:p.write_bytes(b)\n'
             'print("DEPLOYED")')
     command = 'python3 -c ' + shlex.quote(code)
     r = campus(host, command, input=json.dumps(encoded)) if host in ('hkust2','hkust3') else subprocess.run(ctl.route(host,command),input=json.dumps(encoded),capture_output=True,text=True,timeout=45)
     assert r.returncode == 0, host + ': ' + r.stderr[-500:]
 
 def start(host, root, script, token=None):
+    controller = {'cosearch_hf_stream_upload.py':'controller.json','cosearch_hf_download_hkust2.py':'controller.json',
+                  'cosearch_flash_forward_hkust2.py':'forward-controller.json','cosearch_flash_forward_hkust3.py':'hpc-forward-controller.json'}[script]
     code = ('import subprocess,sys,json;from pathlib import Path;root=Path(' + repr(root) + ');'
+            'assert not (root/' + repr(controller) + ').exists(),"Inspect existing controller; duplicate start forbidden";'
             'f=(root/' + repr(script+'.log') + ').open("ab");'
             'p=subprocess.Popen([sys.executable,str(root/' + repr(script) + ')],'
             'stdin=subprocess.PIPE,stdout=f,stderr=f,start_new_session=True);'
