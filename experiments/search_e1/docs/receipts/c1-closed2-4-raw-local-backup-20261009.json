@@ -1,0 +1,55 @@
+{
+  "accepted": true,
+  "accepted_scope": "Fixed closed outers2,3,4 only",
+  "actual_returncodes": {
+    "inventory": 0,
+    "local_verifier": 0,
+    "source_after": 0,
+    "transfer": 0
+  },
+  "all_local_decompressed_member_SHA_match": true,
+  "archive": {
+    "bytes": 111679346,
+    "sha256": "650fafe723a29c531cbe584950e73bb5a780206339be2414727b08ef22cd474f"
+  },
+  "arrays_never_cast_or_reserialized": true,
+  "backup_is_training_dependency": false,
+  "bare_duplicate_not_created": true,
+  "closed_outers": [
+    2,
+    3,
+    4
+  ],
+  "combined_nonoverlapping_raw0_4": {
+    "files": 2048,
+    "member_bytes": 1291497831,
+    "npy_files": 8
+  },
+  "completion_sha256": "4e423b4a6992acc4bf5d2b194146980677620d919b98af1f4c6bdd47d8f06fe3",
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "contiguous_regular_tar_members_verified": true,
+  "excluded_only": "Closed outer top-level merged-model-cache; adjacent identity/exit proofs kept",
+  "files": 1197,
+  "gzip_footer_and_terminal_padding_verified": true,
+  "internal_member_padding_independently_checked": false,
+  "inventory_sha256": "3517e525e0ea2666f287e08872a9927d735f8bce731e6caa0136ddf9d59d3141",
+  "member_bytes": 752706761,
+  "native_updates_at_closures": [
+    31,
+    41,
+    51
+  ],
+  "npy_files": 0,
+  "original_Node_assets_retained": true,
+  "prior_closed0_1": {
+    "completion_sha256": "a027302bca333ef37f533566fb337584d0dc162f247e1ef2efefd7f24ce9dcc7",
+    "files": 851,
+    "member_bytes": 538791070,
+    "npy_files": 8
+  },
+  "remaining_scope": "Closedouter5 onward/native512/group-wide mutable/controller evidence; other groups; full70/5632 effects/debug/persistence and originaldriver actualexit0",
+  "schema": "opsd-c1-closed2-4-compressed-local-backup-public-accepted-v1",
+  "source_after_scope": "Exact noncache regular file set/metadata and closure/config stable; stream full member SHA verified",
+  "source_commit": "8de5044fbfd6df1e1c3abe725b545e76e8e3503c",
+  "source_run": "a1a56efd32e5456d8c6813454975e38f"
+}
