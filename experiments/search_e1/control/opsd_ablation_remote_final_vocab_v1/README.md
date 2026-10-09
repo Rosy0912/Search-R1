@@ -97,3 +97,7 @@ final analysis and complete goal acceptance are separate requirements.
 ## Binding the actual ready inputs
 
 prepare_inputs.py reads the SHA-pinned actually completed all-seven recorded readers, their three child wait0 receipts and separately waited copy batches. It binds original configs, per-group evaluation training terminals, all70 facts and recorded finite coverage; source and transport receipts are on HKUST. It emits fresh private ledger/precision inputs only in a new HKUST directory. Exact dtype-repair rank receipts are selected by their recorded schema. No model/test/review/GPU run is added. Both final readers still independently enforce their original contracts.
+
+## Ordinary-alias deployment
+
+The persistent deploy.py uploads only SHA-verified FETCH_HEAD source bytes and small captured deployment/launch/wait receipts through the existing ordinary hkust1 alias. It adds connection/alive time limits, never edits SSH/VPN/auth or restarts experiments. A fresh remote analysis directory is mandatory; partial failures are retained. Actual SSH returncode/stderr and source/file pins are saved locally in a small receipt. No raw records, tensors or model packages are transported to Mac. Only actual successful source readback permits prepare_inputs.py and the two CPU reporting jobs to run.

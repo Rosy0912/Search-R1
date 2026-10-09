@@ -1,0 +1,1877 @@
+{
+  "schema": "opsd-ablation-recorded-debug-coverage-v1",
+  "accepted": true,
+  "started_unix": 1791558189.7586849,
+  "ended_unix": 1791558346.4743845,
+  "groups": {
+    "C0": {
+      "status": "COMPLETE",
+      "variant": "C0",
+      "run_id": "bfc195746b6d41aaa74db5ac4d7a8be7",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 70207,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 62015,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 69130,
+            "committed_pairs": 312,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 60938,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 55980,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 47788,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 54968,
+            "committed_pairs": 285,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46776,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 55161,
+            "committed_pairs": 292,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46969,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 57560,
+            "committed_pairs": 295,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49368,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 56205,
+            "committed_pairs": 303,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48013,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 55409,
+            "committed_pairs": 303,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 47217,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 54923,
+            "committed_pairs": 295,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46731,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 53531,
+            "committed_pairs": 304,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 45339,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 583074,
+        "saved_positions": 81920,
+        "scalar_only_positions": 501154,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "C1": {
+      "status": "COMPLETE",
+      "variant": "C1",
+      "run_id": "a1a56efd32e5456d8c6813454975e38f",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 70207,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 62015,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 68377,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 60185,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 60850,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52658,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 61400,
+            "committed_pairs": 290,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 53208,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 57905,
+            "committed_pairs": 293,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49713,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 63958,
+            "committed_pairs": 301,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55766,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 59836,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 51644,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 62559,
+            "committed_pairs": 304,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 54367,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 60728,
+            "committed_pairs": 291,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52536,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 63279,
+            "committed_pairs": 317,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55087,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 629099,
+        "saved_positions": 81920,
+        "scalar_only_positions": 547179,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "M": {
+      "status": "COMPLETE",
+      "variant": "M",
+      "run_id": "b255c1eb72e84ca0bd6315e57e3527d0",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 70207,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 62015,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 68383,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 60191,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 61016,
+            "committed_pairs": 293,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52824,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 58111,
+            "committed_pairs": 284,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49919,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 58393,
+            "committed_pairs": 291,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 50201,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 67369,
+            "committed_pairs": 312,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 59177,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 63831,
+            "committed_pairs": 300,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55639,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 63681,
+            "committed_pairs": 310,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55489,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 63159,
+            "committed_pairs": 300,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 54967,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 63230,
+            "committed_pairs": 307,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55038,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 637380,
+        "saved_positions": 81920,
+        "scalar_only_positions": 555460,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "R": {
+      "status": "COMPLETE",
+      "variant": "R",
+      "run_id": "779e853e37b540e8847336c142129377",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 62314,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 54122,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 54451,
+            "committed_pairs": 305,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46259,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 54504,
+            "committed_pairs": 298,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46312,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 51563,
+            "committed_pairs": 284,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43371,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 49255,
+            "committed_pairs": 286,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 41063,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 58161,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49969,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 51216,
+            "committed_pairs": 298,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43024,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 56301,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48109,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 53489,
+            "committed_pairs": 298,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 45297,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 56310,
+            "committed_pairs": 318,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48118,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 547564,
+        "saved_positions": 81920,
+        "scalar_only_positions": 465644,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "W": {
+      "status": "COMPLETE",
+      "variant": "W",
+      "run_id": "dc8a4e85822547548c0f79be4c87e13e",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 62314,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 54122,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 58595,
+            "committed_pairs": 307,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 50403,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 52044,
+            "committed_pairs": 291,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43852,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 50742,
+            "committed_pairs": 275,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 42550,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 54146,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 45954,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 56774,
+            "committed_pairs": 306,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48582,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 51002,
+            "committed_pairs": 298,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 42810,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 57342,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49150,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 54214,
+            "committed_pairs": 299,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 46022,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 53109,
+            "committed_pairs": 311,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 44917,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 550282,
+        "saved_positions": 81920,
+        "scalar_only_positions": 468362,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "P": {
+      "status": "COMPLETE",
+      "variant": "P",
+      "run_id": "c0a425974d2142b1955429c85a4fb9f3",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 64118,
+            "committed_pairs": 313,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55926,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 65212,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 57020,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 56377,
+            "committed_pairs": 289,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48185,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 55970,
+            "committed_pairs": 283,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 47778,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 56438,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48246,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 60110,
+            "committed_pairs": 300,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 51918,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 56599,
+            "committed_pairs": 299,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 48407,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 60360,
+            "committed_pairs": 316,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52168,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 52643,
+            "committed_pairs": 294,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 44451,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 57305,
+            "committed_pairs": 307,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49113,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 585132,
+        "saved_positions": 81920,
+        "scalar_only_positions": 503212,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 257,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    },
+    "J": {
+      "status": "COMPLETE",
+      "variant": "J",
+      "run_id": "f40bcfd2693a4c36a154de5fd81a475d",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 2,
+              "CW": 3,
+              "self_pair": 3
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 55997,
+            "committed_pairs": 313,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 47805,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 55863,
+            "committed_pairs": 310,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 47671,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 51949,
+            "committed_pairs": 290,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43757,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 50176,
+            "committed_pairs": 289,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 41984,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 51820,
+            "committed_pairs": 292,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43628,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 51456,
+            "committed_pairs": 305,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43264,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 52438,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 44246,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 53925,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 45733,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 52874,
+            "committed_pairs": 300,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 44682,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 51486,
+            "committed_pairs": 309,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 43294,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 527984,
+        "saved_positions": 81920,
+        "scalar_only_positions": 446064,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 257,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    }
+  },
+  "coverage": {
+    "completed_groups": 7,
+    "expected_groups": 7,
+    "completed_outers": 70,
+    "expected_outers": 70,
+    "subset": [
+      "C0",
+      "C1",
+      "M",
+      "R",
+      "W",
+      "P",
+      "J"
+    ],
+    "all70_debug_coverage_complete": false,
+    "shared_24GiB_ledger_complete": false
+  },
+  "provenance": {
+    "source_sha256": "99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9",
+    "aggregate_source_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+    "input_manifest_sha256": "3e42e2bb85fa9925e34df9b7b57d37bdf4e7051772c810b81eefdf4f81e4e1e3",
+    "clipmass_inputs_sha256": "d510b8f5a6e19b22c03e2a691d5f7e5328b0d04ec2762ea1cde4918578f8b850",
+    "prior_committed_proof_sha256": "5ccbaacd2dcc8dace00bd3a05fd82a68bc076e4c0394897d16c369491e300d2f",
+    "clipmass_summary_sha256": "c1752a9adb631e263905da910dd15d170f6cb91dce3b177a575c25bbfe8d8fdc"
+  },
+  "limitations": [
+    "Recorded committed artifacts only; no models, scoring, logits/KL/gradients or RNG replay.",
+    "Teacher autonomous privileged history differs from fixed-D teacher-forced training q; no scientific denominator contribution.",
+    "Student full trace/HTTP content preservation reuses accepted full member SHA; this pass does not reparse their raw content.",
+    "Teacher external phase-exit files are outside these raw archives; embedded parent rc0/release only, not independent external terminal read.",
+    "Top32 four arrays checked shape/finite/ID range, not full-vocabulary normalization or probability reconstruction.",
+    "Full-vocabulary finite payload and fresh member SHA checked; subset bytes do not verify final all-seven shared ledger or its reservations."
+  ]
+}
