@@ -1,0 +1,12 @@
+{
+  "schema": "opsd-ablation-required-cpu-check-source-v1",
+  "files": {
+    "check.py": {"sha256": "1a6c87f758fde0d654d36f472d32bf021463d9c705abf9dd8d62b7b240f79582", "bytes": 10222},
+    "README.md": {"sha256": "7cdaec5c4235536387e81cfcc30e090a8a58b1d058bfeeb37bf6617d9a79e237", "bytes": 2624}
+  },
+  "original_commit": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "original_manifest_sha256": "8b22e616d470d79022cc6a0b07dcb0774df21b8e35ebd7dbcaa9b19150236a41",
+  "preparation": "AST parsed; no check or fixture execution, no Torch/model import",
+  "resume_scope": "Not implemented; controlled full restore evidence remains missing",
+  "publish_before_execution": true
+}
