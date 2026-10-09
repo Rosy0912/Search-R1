@@ -1,0 +1,50 @@
+{
+  "Node_deployment_already_verified": true,
+  "accepted": true,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 4638,
+      "historical_source_and_FETCH_HEAD_equal": true,
+      "name": "README.md",
+      "path": "experiments/search_e1/control/opsd_signal_weight_token_audit_v1/README.md",
+      "sha256": "b0849c1dfb551d99b4348a0324ca265227e4f3a505cade4d4c464132093f49b0"
+    },
+    {
+      "bytes": 82,
+      "historical_source_and_FETCH_HEAD_equal": true,
+      "name": "__init__.py",
+      "path": "experiments/search_e1/control/opsd_signal_weight_token_audit_v1/__init__.py",
+      "sha256": "5d51420ce45b47db744ab64c4a39ae07882411d4da5a69eecb00aa62b3ff343e"
+    },
+    {
+      "bytes": 30213,
+      "historical_source_and_FETCH_HEAD_equal": true,
+      "name": "audit.py",
+      "path": "experiments/search_e1/control/opsd_signal_weight_token_audit_v1/audit.py",
+      "sha256": "6155ec7e437fd69fd9ae65b85d9378a07d3cd82f59e88b882a3611b17367ad0d"
+    },
+    {
+      "bytes": 683,
+      "historical_source_and_FETCH_HEAD_equal": true,
+      "name": "source-manifest.json",
+      "path": "experiments/search_e1/control/opsd_signal_weight_token_audit_v1/source-manifest.json",
+      "sha256": "a4e64e1399b0bedb92d4cb25efbf9c015ca006625a62f0591fdf2216285bb02f"
+    },
+    {
+      "bytes": 23246,
+      "historical_source_and_FETCH_HEAD_equal": true,
+      "name": "test_audit.py",
+      "path": "experiments/search_e1/control/opsd_signal_weight_token_audit_v1/test_audit.py",
+      "sha256": "d7a1933c0a2770d1b98af7b4c1e3f1f5d4b1e11fc849e164a25ee8aefd0f2c0d"
+    }
+  ],
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/token-audit-d8e942d/opsd_signal_weight_token_audit_v1",
+  "historical_source_commit_is_published_ancestor": true,
+  "original_Node_CPU_fixtures": 11,
+  "remote_branch_head_at_recheck": "c1cd72933f419cdcc04e304a6f1b19b08becbd91",
+  "remote_readback_sha": "d8e942d6d378350c0bc5306cd9366d458342c9db",
+  "scope": "Strict source publication reference for final coverage; original source/deployment/output unchanged",
+  "source_commit": "d8e942d6d378350c0bc5306cd9366d458342c9db",
+  "source_manifest_sha256": "a4e64e1399b0bedb92d4cb25efbf9c015ca006625a62f0591fdf2216285bb02f"
+}
