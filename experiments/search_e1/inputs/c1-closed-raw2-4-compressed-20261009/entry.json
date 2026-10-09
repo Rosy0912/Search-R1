@@ -1,0 +1,36 @@
+{
+  "backup_is_training_dependency": false,
+  "closed_outers": [
+    2,
+    3,
+    4
+  ],
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "expected_actual_updates": [
+    31,
+    41,
+    51
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 1471,
+      "sha256": "69fc0fd38a13e23994c8742ef05148b3fafa7fd337e6465a913ea14379dd6fe7"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 5108,
+      "sha256": "1273bcbcb618fb249f2ae9032b66e87089ef49acef014ee4dbd6053da96bfd85"
+    },
+    "transfer-gzip.py": {
+      "bytes": 2807,
+      "sha256": "e25ab8973d1957c6e3e2d52c79f30ef4d1868e4d980535d9c32c63cb55bfacd6"
+    },
+    "verify-archive.py": {
+      "bytes": 5411,
+      "sha256": "95bda0abd729b30b522a36b477f8a4b1c36ab2baf09190302a43de9c13fed4ab"
+    }
+  },
+  "fullraw_original_byte_scope_includes_NPY": true,
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "c1-closed2-4-raw-compressed-fixed-entry-v1",
+  "science_or_gpu_change": false
+}
