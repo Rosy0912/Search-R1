@@ -1,0 +1,114 @@
+{
+  "Mac_raw_payloads": false,
+  "accepted": true,
+  "all_actual_wait_returncodes_zero": true,
+  "child_UID_run_PID_starttick_argv_verified": true,
+  "digests": {
+    "aggregate_source_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+    "clipmass_inputs_sha256": "d510b8f5a6e19b22c03e2a691d5f7e5328b0d04ec2762ea1cde4918578f8b850",
+    "debug_complete_sha256": "17e16f318cbe2480173445c91ab925dc30b39b48217bbe1f16c56ea6bdba3d17",
+    "private_details_sha256": "697da9def52e84c22c3e03ecf12e907b11b81c59726b2869b68d360d6123aaf3",
+    "source_sha256": "ec84b9ddd0e4d8f806e2de60138319d053ce4bcd60f98d9581fb942fbeab972e"
+  },
+  "ended_unix": 1791561673.6055233,
+  "external_terminal_and_embedded_child_evidence_exactly_equal": true,
+  "external_terminal_files_independently_read": true,
+  "groups": {
+    "C0": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "C1": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "J": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "M": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "P": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "R": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    },
+    "W": {
+      "outers": 10,
+      "sampling_actual_children": 80,
+      "sampling_phases": 10,
+      "teacher_actual_children": 10,
+      "teacher_diagnostic_cases": 80,
+      "teacher_not_applicable": 0,
+      "teacher_phases": 10
+    }
+  },
+  "limitations": [
+    "Historical persisted phase exits and accepted independent copy provenance only; not new live GPU admission.",
+    "No scoring, generation, complete student trace parsing, token/logit or optimizer reconstruction.",
+    "Teacher autonomous diagnostics retain zero contribution to train/validation denominators."
+  ],
+  "native_reference_schema_normalization": {
+    "copy_spec_additional_mode_is_not_a_native_request_field": true,
+    "each_native_field_exactly_equal_to_copy_spec": true,
+    "teacher_request_config_keys": [
+      "bytes",
+      "ctime_ns",
+      "device",
+      "inode",
+      "mtime_ns",
+      "path",
+      "sha256"
+    ]
+  },
+  "no_live_process_or_GPU_recheck_claim": true,
+  "not_applicable_diagnostics_do_not_invent_children": true,
+  "original_owned_full_release_evidence_bound": true,
+  "processing_host": "HKUST1",
+  "schema": "opsd-ablation-external-phase-closure-v1",
+  "started_unix": 1791561672.1819894,
+  "totals": {
+    "outers": 70,
+    "sampling_actual_children": 560,
+    "sampling_phases": 70,
+    "teacher_actual_children": 70,
+    "teacher_diagnostic_cases": 560,
+    "teacher_not_applicable": 0,
+    "teacher_phases": 70
+  }
+}

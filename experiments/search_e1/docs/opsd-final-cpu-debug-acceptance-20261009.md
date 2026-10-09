@@ -56,3 +56,9 @@ HKUST 主目录为 `/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20
 | 70轮曲线派生清单 | `/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/public-curves/derived-manifest.json` | `7621f00c62b1fda8c08403a96467a50f5b3e988db929cdbc12c3734160eaa5a0` |
 
 公开副本的逐文件 bytes/SHA 见[本包清单](../reports/final-cpu-debug-20261009/manifest.json)。账本消费器源码 SHA 为 `0123b06b13c6abb0554d0a825bb1a28565f192e0b046ef878feda4af35f8a2a0`；精度历史 v3 为 `ec69e80e458483afcab28fce9c4f11d455903e9d7ae3164093eb5128667b68c4`；曲线派生器为 `b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583`。这些 CPU 辅助版本不改变训练 871dc46、dtype 538ac99 或评测 72e1e12 的科学实现。
+
+## 后续外部终态补充验收
+
+上述固定快照之后，独立外部 phase reader 已实际退出 0：70 个 outer 的 70 次教师自主诊断与 560 个采样子进程，逐文件核对外部 terminal 和 parent 内嵌证据一致，全部真实 wait 为 0，UID/run/PID/starttick/argv 完整匹配。560 个教师诊断 case 仍不进入 TRAIN 或验证分母。这项补充检查关闭先前明确留下的外部终态文件缺口，不倒写旧 coverage 的时点标志。
+
+实际补充路径：`/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-external-phase-v3-1791561600/closure/complete.json`，SHA `6a7ef667f0e3f7afd00fae7b6f26198b89b75c2e5508a5276971085c9615871a`；[公开计数副本](../reports/final-cpu-debug-20261009/external-phase-publication.json) SHA `d3a58e0df81cc675e7d7ff5eff3b4acd8b8ccda8cc683a49c521daaa700dfa79`。辅助 reader v1/v2 的 schema 差异错误保留在独立目录；v3 仅匹配事实存在的字段名称与 metadata 形状，训练/采样科学源码和原运行未改变。此检查不重新生成或重评原始文本，也不代替最后 J 评测与原 driver 成功终态。

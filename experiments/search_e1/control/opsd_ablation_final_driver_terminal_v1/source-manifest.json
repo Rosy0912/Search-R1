@@ -1,0 +1,15 @@
+{
+  "schema": "opsd-ablation-final-driver-terminal-source-v1",
+  "no_new_fixture_or_review": true,
+  "verification": "Static AST parsing only; actual live/terminal Node observations are separate acceptance.",
+  "files": {
+    "README.md": {
+      "bytes": 2258,
+      "sha256": "464cd803221e4fcb86514c1828ae4ce0323f275044fa9eeca31ecbbc1b01e889"
+    },
+    "capture.py": {
+      "bytes": 24247,
+      "sha256": "6b698cec4239bb341112813eecc032973e7ebcbb6fbac948078d5b138c8fa8de"
+    }
+  }
+}
