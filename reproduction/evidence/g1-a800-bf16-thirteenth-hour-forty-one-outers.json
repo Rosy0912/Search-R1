@@ -1,0 +1,285 @@
+{
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "runtime_source": "fe59dc164490098054879141d5421e0b418b4056",
+  "observed_unix": 1791510846.248956,
+  "previous_delivery_unix": 1791505502.068649,
+  "window_seconds": 5344.1803069114685,
+  "completed_outers": 41,
+  "new_complete_outers": 4,
+  "processed_opportunities": 837,
+  "returned_adam_writes": 837,
+  "new_writes_since_previous_counter_snapshot": 83,
+  "skipped": 0,
+  "reward": {
+    "latest": 0.48889297246932983,
+    "mean": 0.5101413503289223,
+    "min": 0.48889297246932983,
+    "max": 0.5317482948303223,
+    "change_from_previous_window_mean": 0.00875682383775711
+  },
+  "actual_update_records": [
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 38,
+      "metrics": {
+        "critic/rewards/mean": 0.5209940075874329,
+        "actor/pg_loss": -0.014143853075331381,
+        "actor/entropy_loss": 0.7117422772571445,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0020109155120735522,
+        "actor/grad_norm": 1.5287837629802838,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "18ae398e71992291c3855c93da858b8da60764e63bae4fb71443dc6ef30cc92d",
+      "behavior_trace_sha256": "2246e61284a062d6cdac80b7488f54cd3d50ef9cb94981428564bb25c7bdf2e2",
+      "attempt_id": "10c04acf7e214d1ebff632fa09376e33",
+      "attempt_index": 38,
+      "optimizer_writes_before": 740,
+      "optimizer_writes_after": 760,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 39,
+      "metrics": {
+        "critic/rewards/mean": 0.4989301264286041,
+        "actor/pg_loss": -0.029379012324203126,
+        "actor/entropy_loss": 0.7078585158567876,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0021208086248179826,
+        "actor/grad_norm": 1.5353741855813694,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "dd96cbe1cdf2adca7cb9991bf28e984187237ef92c805a1409c352d793d7148c",
+      "behavior_trace_sha256": "fd89a88059eab090d9519352bdf80af2a4caefa27f426733f487965a4fb424e1",
+      "attempt_id": "ec19cd3a44f24ceab9330c6b1f667ec7",
+      "attempt_index": 39,
+      "optimizer_writes_before": 760,
+      "optimizer_writes_after": 780,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 40,
+      "metrics": {
+        "critic/rewards/mean": 0.5317482948303223,
+        "actor/pg_loss": 0.047617375753927375,
+        "actor/entropy_loss": 0.6671823682961986,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0015864344216353742,
+        "actor/grad_norm": 1.5106089743810303,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "eeb70485569d20156daf1b513e005cf27183e42767049bf6b316a4b38842880f",
+      "behavior_trace_sha256": "246d4fcf85e7ec879992ccc026a989a4df846ce3c802cc53ea2e274c195679f0",
+      "attempt_id": "d01e598c239048c894d52dc44ef73168",
+      "attempt_index": 40,
+      "optimizer_writes_before": 780,
+      "optimizer_writes_after": 800,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 41,
+      "metrics": {
+        "critic/rewards/mean": 0.48889297246932983,
+        "actor/pg_loss": 0.0029209741070457956,
+        "actor/entropy_loss": 0.681502971611917,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0018806604519340908,
+        "actor/grad_norm": 1.4396787559152553,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "behavior_probability_gate_sha256": "5c936d1f98e29d5e7c18f937fbe2b39d195fd323ea6f8d5b9dbbc757fea3c796",
+      "behavior_trace_sha256": "6c19510518a59941c6abf693b24a2871f2b2b12c9e4fe08cd42edccaa70df134",
+      "attempt_id": "9e73ca0cab12494e80516b501df03460",
+      "attempt_index": 41,
+      "optimizer_writes_before": 800,
+      "optimizer_writes_after": 820,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    }
+  ],
+  "console_timing_records": [
+    {
+      "step": 38,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.521,
+        "timing_s/gen": 208.75,
+        "timing_s/ref": 170.506,
+        "timing_s/adv": 120.697,
+        "timing_s/update_actor": 811.029,
+        "timing_s/step": 1398.018
+      },
+      "line_sha256": "4d28541b96a14ac63b4d599890f4eeb37193ed35a92d8203b93224c87ac9c5e6",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 39,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.499,
+        "timing_s/gen": 194.663,
+        "timing_s/ref": 138.13,
+        "timing_s/adv": 118.92,
+        "timing_s/update_actor": 670.159,
+        "timing_s/step": 1198.541
+      },
+      "line_sha256": "ae737c39dd598d6ab7fb2bbec7bc49959c858636a5fda0dafdfa5b61122de4fe",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 40,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.532,
+        "timing_s/gen": 211.073,
+        "timing_s/ref": 156.537,
+        "timing_s/adv": 118.093,
+        "timing_s/update_actor": 762.495,
+        "timing_s/step": 1330.334
+      },
+      "line_sha256": "0ff99887829aea6c464e1eb7c27f787cc769457744a5c5f15a328b413780f3e6",
+      "precision": "three decimal console formatting"
+    },
+    {
+      "step": 41,
+      "scalars": {
+        "actor/lr": 0.0,
+        "critic/rewards/mean": 0.489,
+        "timing_s/gen": 205.35,
+        "timing_s/ref": 162.143,
+        "timing_s/adv": 119.441,
+        "timing_s/update_actor": 811.38,
+        "timing_s/step": 1383.683
+      },
+      "line_sha256": "c3920a95e3654fccfe7b6441362881ac3cf450e469c33c7215969e8f4de349e1",
+      "precision": "three decimal console formatting"
+    }
+  ],
+  "latest_stage64": {
+    "step": 5,
+    "em": 0.203125,
+    "f1": 0.2706333740454399
+  },
+  "latest_dev512": {
+    "step": 5,
+    "em": 0.17578125,
+    "f1": 0.24091333577987706
+  },
+  "new_validation": false,
+  "gpu": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/gpu-samples-db474b6abf654ad9892b02ae67ab6f86.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 45785594,
+    "scan_from_start": false,
+    "scan_start_byte": 12231162,
+    "matching_sample_count": 22947,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": null,
+    "first_scanned_sample_unix": 1791461852.0213735,
+    "latest_sample_unix": 1791510846.2873192,
+    "latest_sample_age_seconds": 0.7457671165466309,
+    "maximum_scanned_sampling_gap_seconds": 2.895707607269287,
+    "sampled_run_peak_mib": null,
+    "sampled_scanned_peak_mib": {
+      "0": 61995,
+      "1": 62429,
+      "2": 62423,
+      "3": 61579,
+      "5": 73825,
+      "6": 72504
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1327340,
+      "start_ticks": 552357047,
+      "birth_matches": true,
+      "state": "S",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 44115,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 44211,
+        "total_mib": 81920,
+        "util_percent": 92,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 44211,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 43669,
+        "total_mib": 81920,
+        "util_percent": 89,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 31043,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      }
+    ]
+  },
+  "window_peak_mib": null,
+  "window_peak_scope": "Bounded-tail scanned peak only;whole-run and exact-window peaks not recomputed",
+  "observation_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791510847047735000.json",
+  "observation_sha256": "0eade4df99a94abfe363efaf419c31d80ab5adc669c6aae2eb4959e869c08f9c",
+  "metrics_receipt_sha256": "fa2c31c11cd200eecbcf55d6941bf89a02e4687289deb24be6b638033f46a636",
+  "trainer_pid": 1337905,
+  "trainer_start_ticks": 552404529,
+  "trainer_birth_verified_alive": true,
+  "exceptions": [],
+  "goal_complete": false,
+  "in_progress_outer": 42,
+  "in_progress_returned_writes": 17
+}
