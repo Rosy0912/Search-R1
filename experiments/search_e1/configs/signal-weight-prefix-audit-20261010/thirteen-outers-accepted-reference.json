@@ -9,8 +9,23 @@
   "backup130": {
     "accepted": false,
     "actual_transfer_cli_wait": 2,
+    "current_accepted": true,
     "failure": "tar transport: source SSH1; target SSH255; no commit requested; retained originals/partial existence UNKNOWN",
-    "recovery": "In progress, original pinned helper only; no training restart",
+    "recovery": {
+      "accepted": true,
+      "actual_cli_wait": 0,
+      "actual_source_ssh_wait": 0,
+      "actual_source_tar_wait": 0,
+      "actual_target_commit_wait": 0,
+      "actual_target_ssh_wait": 0,
+      "member_bytes": 359785300,
+      "member_count": 9,
+      "no_mac_checkpoint_payload": true,
+      "prior_failed_wait_preserved": true,
+      "production_changed": false,
+      "stdout_sha256": "7181357440a39f40878c62cf969b4a689ffbbc509e720552b14c14eaaa876be1",
+      "target_marker_sha256": "027d86eafb8cfc398a2888b33a670e0057db9ce8bc41c427cded982007b9b941"
+    },
     "stdout": {
       "bytes": 1710,
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp130-actual.stdout.json",

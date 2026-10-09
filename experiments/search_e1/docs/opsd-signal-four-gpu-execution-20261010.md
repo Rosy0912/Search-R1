@@ -148,3 +148,6 @@ CP31/40/50/60/70/80/90的当前原生备份probe曾因SSH控制连接失败退�
 新CP130传输actualCLI wait2，sourceSSH1/targetSSH255，未请求commit、目标partial存在性UNKNOWN；这不影响正跑及已通过的CP130数值/token验收。原始K4 CP保留，按原556754a工具重试，同步写明实际结果，不把旧七CP probe成功冒称CP130备份成功。
 
 完整13轮debug保留审计的精确metadata request已经准备，按先发布后执行规则进入原9e1d179只读CPUauditor；此时尚未宣称审计完成。该前缀和所有数值验收均不代表四组100轮、八次heldout及最终归因完成。
+
+
+CP130备份随后以完全相同的原556754a helper和明确pin恢复：真实CLI wait0，source tar/双端SSH/targetcommit均0；九成员359785300字节在HKUST1完成freshSHA，marker027d86eafb8cfc398a2888b33a670e0057db9ce8bc41c427cded982007b9b941。源前后inventory相同，Mac payload0，训练未重启或热改。原failed CLI wait2/unknownpartial证据原样保留，不能改写为0。CP31–90的28项小metadata已经在K4独立目录完成freshSHA staging，236389字节，仅审计信息。
