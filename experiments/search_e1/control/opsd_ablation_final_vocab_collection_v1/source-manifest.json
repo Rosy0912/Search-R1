@@ -1,0 +1,23 @@
+{
+  "candidate_only": true,
+  "files": {
+    "README.md": {
+      "bytes": 7590,
+      "sha256": "660ffdd2902e207c69afc4d0bc2b8d5d69b8718ec891caeb31d2ae2c16b3564b"
+    },
+    "capture.py": {
+      "bytes": 5619,
+      "sha256": "3c6246a438c558fa61812858055bfb004adcde024f9287d462d30d9102698b16"
+    },
+    "collect.py": {
+      "bytes": 18734,
+      "sha256": "4dac0a6d607e4e62e31018ae63c85e7e9c8285cd238657c5edc60d66e8a7bff0"
+    },
+    "test_collection.py": {
+      "bytes": 12557,
+      "sha256": "db27fb05e7403d7963a6f9cea9f5caeeff912a7e88a57f4a22df45b527f40a02"
+    }
+  },
+  "schema": "opsd-ablation-final-vocab-collection-source-manifest-v1",
+  "stdlib_only": true
+}
