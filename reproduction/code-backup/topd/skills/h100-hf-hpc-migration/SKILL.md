@@ -5,7 +5,7 @@ description: 沿 H100→mgmt-host→私有 Hugging Face→HKUST2→HKUST3→HPC3
 
 # H100 经 HF 迁移至 HPC3
 
-默认按用户指定的数据路线执行：**H100 → mgmt-host → HF → HKUST2 → HKUST3 → HPC3 共享存储**。Mac 是 SSH 控制端，也可提供经实测必要的公网 HTTP 代理；它不是模型/数据落盘站。不要把 Mac 直连 HPC3 当作默认数据路线。
+默认按用户指定的数据路线执行：**H100 → mgmt-host → HF → HKUST2 → HKUST3 → HPC3 共享存储**。Mac 是 SSH 控制端；本任务用户已明确禁止使用或改动 Mac 的代理。HF 下载须使用远端直连或用户授权的远端自身出口；Mac 不是模型/数据落盘站。不要把 Mac 直连 HPC3 当作默认数据路线。
 
 ## 开始前
 
@@ -21,7 +21,7 @@ description: 沿 H100→mgmt-host→私有 Hugging Face→HKUST2→HKUST3→HPC3
 
 1. 模型/数据只落盘 H100、已授权 HF 仓库、已核实的 HKUST 中转盘和 HPC3 共享目标。mgmt-host/Mac 仅进行有界内存流转；本任务不使用通用“下载失败就本地落盘”回退。
 2. 沿用已有 SSH 身份和严格主机密钥校验，不复制私钥，不打印 token，不保存 token 到脚本、命令参数、URL、下载清单、日志、automation 或 Git。通过 stdin/进程 RAM 传递凭据；公共配置与 manifest 可落盘。
-3. 校园 SSH 默认直连；公网 HF 是否用 HTTP 代理由当次实测决定。二者分开配置，不能把 HTTP 代理必要性推成校园 SSH 也要 SOCKS。
+3. 校园 SSH 默认直连；公网 HF 只测试直连和远端自身出口，禁止回退 Mac 代理。二者分开配置，不能把 HTTP 代理必要性推成校园 SSH 也要 SOCKS。
 4. 每个目标归档只能有一个写入者。新增下载路线按组分工；发现原进程写同一组时，等待其结束或在确认归属后协调交接。保留旧部分文件和已校验文件。
 5. 不删除源资产、不停止外来进程、不重启训练、不自动申请 GPU。只修复明确属于本次迁移且已失败或无进展的组件；正常有增量的进程不打断。
 
