@@ -21,9 +21,9 @@ R 保持 reverse KL、LR1e-6、共同 source100、BF16 base/compute + FP32 LoRA�
 
 十个 outer 的 teacher 诊断父票据实际各接受 8 个案例，共 80 个，原单 child 的实际 wait0 均有记录。此计数来自原票据；完整轨迹/HTTP/token 的派生覆盖分析另行进行，不能把父票据计数当作所有 debug 语义重新核验。
 
-13:57 CST 的 R 正式评估快照为 8 个 worker 均 RUNNING、83/512 个正式结果，14:01 的实际进程身份检查确认同一 controller 仍在运行。尚未接受完整 512 覆盖，尚无 R 的最终 EM；不能将这 83 题外推或作为训练收益。正式评估绑定 R 第十轮的 raw CP99，使用与共同 BF16 起点及 C0/C1/M 相同的普通提示、HF SDPA greedy、repetition_penalty1.05、固定 NQ256/Hotpot256 和原搜索预算。
+13:57 CST 的 R 正式评估快照为 8 个 worker 均 RUNNING、83/512 个正式结果；14:16:46 实读同一 run 已有 267/512 个正式结果，八 worker 仍 RUNNING、controller 实际 UID/starttick/父进程吻合。尚未接受完整 512 覆盖，尚无 R 的最终 EM；不能将这 83 题外推或作为训练收益。正式评估绑定 R 第十轮的 raw CP99，使用与共同 BF16 起点及 C0/C1/M 相同的普通提示、HF SDPA greedy、repetition_penalty1.05、固定 NQ256/Hotpot256 和原搜索预算。
 
-已完成 C0/C1/M/R 四组训练，共 40/70 outer、400 次真实 Adam、12097 个 pair 曝光、2397117 个有效 token。已接受的正式评估仍为 2560/5632 个预测槽：共同 BF16/FP16 起点以及 C0/C1/M。W/P/J 各 10 outer 与 R/W/P/J/P-FP16/J-FP16 的完整评估继续由原顺序队列执行，剩余 30 个 outer 和 3072 个正式预测槽。四组的原生标量事实已收集 40 行，完整 clip/debug 派生结果当前仍为此前 30 轮，不能混称全部完成。
+已完成 C0/C1/M/R 四组训练，共 40/70 outer、400 次真实 Adam、12097 个 pair 曝光、2397117 个有效 token。已接受的正式评估仍为 2560/5632 个预测槽：共同 BF16/FP16 起点以及 C0/C1/M。W/P/J 各 10 outer 与 R/W/P/J/P-FP16/J-FP16 的完整评估继续由原顺序队列执行，剩余 30 个 outer 和 3072 个正式预测槽。四组的原生标量事实已收集 40 行；13:57 快照时完整 clip/debug 派生仅此前 30 轮，14:14 完成 R 派生后四十轮子集闭合，仍不能混称七十轮全部完成。
 
 现有完整 BF16 评估为 source100 239/512、C0 227/512、C1 236/512、M 237/512；R 未完成。M 相对 C1 净增 1 题、相对起点净少 2 题，配对区间跨 0，不能认定可靠提升。10 outer 各组的 K/Adam/token 曝光并不完全相同，最终报告需保留这些差异。
 
