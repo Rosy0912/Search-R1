@@ -1,0 +1,21 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3973,
+      "sha256": "e735fca2bedff23195a9ec414daf466df550847af2d268bbd97f7fc4f9ca8e40"
+    },
+    "design.md": {
+      "bytes": 1380,
+      "sha256": "599e18f346e027ac24d1568c259467c5e45bddc45001ec55cd4aeb433b70eb28"
+    },
+    "reclaim.py": {
+      "bytes": 18804,
+      "sha256": "70ea28a46393db506f3992010e7558c94781adb565dbfe14556ecc0b7ca5aa7e"
+    },
+    "test_reclaim.py": {
+      "bytes": 4317,
+      "sha256": "2cfd02ec4abbebcd9f3b43168570fcb89939e373286d20f5c1074b7918556543"
+    }
+  },
+  "schema": "local-single-original-gnu-tar-reclaim-source-v1"
+}
