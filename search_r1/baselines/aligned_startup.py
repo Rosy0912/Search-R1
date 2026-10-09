@@ -7,7 +7,7 @@ from pathlib import Path
 BOOTSTRAP_FILES = {'resource-watch.jsonl', 'resource_watch.log', 'resource-watch.log', 'watch.jsonl'}
 
 
-def claim_new_run(directory, source, partial_resume=None):
+def claim_new_run(directory, source, partial_resume=None, complete5_resume=None):
     root = Path(directory)
     if not root.is_absolute() or root.resolve() != root or root.parent.name != 'runs':
         raise ValueError('Require a canonical independent runs/<new-id> directory')
@@ -15,12 +15,17 @@ def claim_new_run(directory, source, partial_resume=None):
     for member in root.rglob('*'):
         if member.is_symlink() or (member.is_file() and member.name not in BOOTSTRAP_FILES):
             raise ValueError('Refusing prior experiment or unrecognized run artifact: ' + str(member))
+    if partial_resume is not None and complete5_resume is not None:
+        raise ValueError('Cannot mix pending and complete continuation')
+    if complete5_resume is not None:
+        from .aligned_complete5_resume import validate_manifest, require
+        require(validate_manifest(complete5_resume)==root and complete5_resume['target_source_commit']==source, 'complete5 claim binding differs')
     if partial_resume is not None:
         from .aligned_partial_resume import validate_manifest,require
         require(validate_manifest(partial_resume)==root and partial_resume['target_source_commit']==source, 'pending transaction claim binding differs')
     fd = os.open(root / '.aligned-startup-claim.json', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, 'w') as handle:
-        json.dump(dict(source_commit=source, launcher_pid=os.getpid(), scope='new-run-only-no-resume' if partial_resume is None else 'same-experiment-pending20-stage-only-resume'), handle)
+        json.dump(dict(source_commit=source, launcher_pid=os.getpid(), scope=('same-experiment-complete5-verify-only-resume' if complete5_resume is not None else ('new-run-only-no-resume' if partial_resume is None else 'same-experiment-pending20-stage-only-resume'))), handle)
         handle.flush()
         os.fsync(handle.fileno())
     return root

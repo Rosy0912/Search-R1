@@ -697,6 +697,12 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_aligned_complete5_state(self, manifest, witness_directory):
+        from search_r1.baselines.aligned_complete5_resume import load_rank,require
+        require(self._is_actor, 'COMPLETE5 restore requires actual actor')
+        return load_rank(self,manifest,witness_directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_aligned_partial_state(self, manifest, witness_directory):
         from search_r1.baselines.aligned_partial_resume import load_rank,require
         require(self._is_actor, 'pending transaction restore requires actual actor')

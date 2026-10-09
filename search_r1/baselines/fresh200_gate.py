@@ -140,6 +140,79 @@ def validate_gate_config(config):
     return validate_fresh_config(config)
 
 
+def complete5_lineage(run,source,members=None,reports=None,driver_pid=None):
+    """Bind a new verifier process to the preserved3357 COMPLETE5 transaction."""
+    from .aligned_complete5_resume import validate_manifest,exact_file,require,OLD_RUN,OLD_SOURCE
+    from .full_state import state_digest
+    import torch
+    run=Path(run).resolve();path=run/'complete5-resume/lineage.json'
+    if not path.exists():return None
+    require(path.is_file()and not path.is_symlink()and path.resolve()==path,'ordinary COMPLETE5 lineage required')
+    if members is not None:require(members.get(str(path))==digest(path),'COMPLETE5 lineage not frozen')
+    document=json.loads(path.read_text());manifest=document['manifest']
+    require(validate_manifest(manifest)==run and manifest['target_source_commit']==source,'COMPLETE5 target differs')
+    originals={};closure=manifest['original_closure']
+    require(isinstance(closure,list)and bool(closure),'COMPLETE5 original closure absent')
+    # The nested3356 closure is authorized only by its original3357 lineage.
+    old_reports=[]
+    for entry in sorted(manifest['ranks'],key=lambda x:x['rank']):
+        report=json.loads(exact_file(entry['report'],OLD_RUN).read_text())
+        require(report['path']==entry['state']['path']and report['sha256']==entry['state']['sha256'],'COMPLETE5 producer binding differs')
+        require(report.get('status')=='EXACT_FULL_STATE_RELOAD_OK'and report.get('native_state_version')==3 and report.get('roundtrip')is True and report.get('state_digest')==report.get('reloaded_state_digest')and report.get('aligned_pending_outer','missing')is None and all(type(report.get(k))is int and report[k]==v for k,v in (('rank',entry['rank']),('world_size',8),('step',5),('scheduler_last_epoch',5)))and report.get('latest_rank_event')==next(e for e in manifest['rank_write_ledger']if e['rank']==entry['rank']),'COMPLETE5 original native report differs')
+        old_reports.append(report)
+    old_driver_report=json.loads(exact_file(manifest['driver_report'],OLD_RUN).read_text())
+    old_driver=torch.load(exact_file(manifest['driver'],OLD_RUN),map_location='cpu',weights_only=False)
+    require(old_driver_report.get('status')=='EXACT_DRIVER_RELOAD_OK'and old_driver_report.get('step')==5 and old_driver_report.get('path')==manifest['driver']['path']and old_driver_report.get('sha256')==manifest['driver']['sha256']and old_driver_report['state_digest']==state_digest(old_driver)and old_driver_report['pid']==old_driver['driver_pid'],'COMPLETE5 original driver differs')
+    require(old_driver.get('status')=='COMPLETE'and old_driver.get('source_commit')==OLD_SOURCE and old_driver.get('protocol')=='BAPO_FRESH200_V1'and all(type(old_driver.get(k))is int and old_driver[k]==v for k,v in (('global_step',5),('next_global_step',6),('actual_outer_updates',5),('attempt_id',5),('previous_completed_outer',4)))and type(old_driver.get('sampler',{}).get('cursor'))is int and old_driver['sampler']['cursor']==2560,'COMPLETE5 original driver counters/source differ')
+    from .fresh200_driver import Fresh200Progress
+    expected_progress=Fresh200Progress(baseline_aligned=True,attempts=5,completed_outers=5,actual_adam_writes_per_rank=[100]*8,recorded_attempts=5).state_dict()
+    require(json.dumps(old_driver.get('progress'),sort_keys=True,allow_nan=False)==json.dumps(expected_progress,sort_keys=True,allow_nan=False),'COMPLETE5 original driver accounting differs')
+    nested=partial_lineage(OLD_RUN,OLD_SOURCE,None,old_reports,old_driver['driver_pid'])
+    require(nested is not None,'COMPLETE5 original3356 lineage absent')
+    nested_originals=nested['originals']
+    for entry in closure:
+        path_entry=Path(entry['path'])
+        require(path_entry.is_file()and not path_entry.is_symlink()and path_entry.resolve()==path_entry and type(entry['bytes'])is int and path_entry.stat().st_size==entry['bytes'],'COMPLETE5 original file/stat differs')
+        require(OLD_RUN in path_entry.parents or nested_originals.get(str(path_entry))==entry['sha256'],'COMPLETE5 original outside authorized chain')
+        require(str(path_entry)not in originals,'duplicate COMPLETE5 original')
+        originals[str(path_entry)]=entry['sha256']
+        if members is not None:require(members.get(str(path_entry))==entry['sha256'],'COMPLETE5 original not frozen')
+    for entry in [manifest['driver'],manifest['driver_report'],manifest['original_config']]+[x[k]for x in manifest['ranks']for k in ('state','report')]:
+        require(originals.get(entry['path'])==entry['sha256'],'COMPLETE5 native/config outside closure')
+    config_path=exact_file(manifest['original_config'],OLD_RUN)
+    if config_path.suffix in ('.yaml','.yml'):
+        from omegaconf import OmegaConf
+        config=OmegaConf.to_container(OmegaConf.load(config_path),resolve=True)
+    else:config=json.loads(config_path.read_text())
+    require(config.get('baseline_aligned')is True and config['baselines']['algorithm_source_commit']==OLD_SOURCE,'COMPLETE5 original config differs')
+    witnesses=document['rank_witnesses'];require(len(witnesses)==8 and all(type(w.get('rank'))is int for w in witnesses)and {w['rank']for w in witnesses}==set(range(8)),'COMPLETE5 eight witnesses absent')
+    current_pids=None if reports is None else {r['rank']:r['pid']for r in reports}
+    for w in witnesses:
+        old=old_reports[w['rank']]
+        require(w.get('status')=='EXACT_CROSS_JOB_ALIGNED_COMPLETE5_V3_RELOAD_OK'and w.get('old_pid')==old['pid']and type(w.get('new_pid'))is int and w['new_pid']>0 and w['new_pid']!=w['old_pid'],'COMPLETE5 rank process differs')
+        require(w.get('state_digest')==w.get('reloaded_state_digest')==old['state_digest']and w.get('original_state_sha256')==old['sha256'],'COMPLETE5 rank digest differs')
+        require('aligned_pending_outer'in w and w['aligned_pending_outer']is None and old.get('aligned_pending_outer','missing')is None,'COMPLETE5 pending transaction remains')
+        require(w.get('generation_rng_digest')==old['generation_rng_before_digest']==old['generation_rng_after_digest'],'COMPLETE5 generation RNG differs')
+        require(w.get('no_generation_or_optimizer_or_stage_observe_or_scheduler_step')is True,'COMPLETE5 loader performed an update')
+        for key,expected in (('world_size',8),('step',5),('attempt_id',5),('scheduler_last_epoch',5),('adam_steps',100)):
+            require(type(w.get(key))is int and w[key]==expected,'COMPLETE5 rank counters differ')
+        for key in ('old_run_root','old_source_commit','target_run_root','target_source_commit','target_job_id'):require(w.get(key)==manifest[key],'COMPLETE5 rank identity differs')
+        if current_pids is not None:
+            current=next(r for r in reports if r['rank']==w['rank'])
+            require(w['new_pid']==current_pids[w['rank']]and current['state_digest']==old['state_digest']and current['latest_rank_event']==old['latest_rank_event'],'COMPLETE5 current rank differs from saved original')
+    witness=document['driver_witness']
+    require(witness.get('status')=='EXACT_ALIGNED_COMPLETE5_DRIVER_RELOAD_OK'and witness.get('old_pid')==old_driver['driver_pid']and type(witness.get('new_pid'))is int and witness['new_pid']>0 and witness['new_pid']!=witness['old_pid'],'COMPLETE5 driver process differs')
+    if driver_pid is not None:require(witness['new_pid']==driver_pid,'COMPLETE5 current driver differs')
+    require(witness.get('loaded_state_digest')==state_digest(old_driver)and witness.get('no_generation_or_optimizer_or_stage_observe_or_scheduler_step')is True,'COMPLETE5 driver reload differs')
+    for key,expected in (('step',5),('next_global_step',6),('completed_outer_before',5),('attempt_id',5),('sampler_cursor',2560)):
+        require(type(witness.get(key))is int and witness[key]==expected,'COMPLETE5 driver counters differ')
+    for key in ('old_run_root','old_source_commit','target_run_root','target_source_commit','target_job_id'):require(witness.get(key)==manifest[key],'COMPLETE5 driver identity differs')
+    for name in ('rng','sampler','bapo'):
+        require(witness.get('saved_'+name+'_digest')==witness.get('restored_'+name+'_digest')==state_digest(old_driver[name]),'COMPLETE5 restored driver component differs')
+    require(old_driver['rank_write_ledger']==manifest['rank_write_ledger'],'COMPLETE5 original latest ledger differs')
+    return dict(document=document,manifest=manifest,originals=originals,old_run=OLD_RUN,old_source=OLD_SOURCE,old_driver_pid=old_driver['driver_pid'],config=config,reports=old_reports,driver=old_driver,nested=nested)
+
+
 def validate_first_five_attempts(attempts, progress, driver_pid, baseline_aligned=False):
     """Replay retained writes and accepted outers; five is not five attempts."""
     from .fresh200_driver import Fresh200Progress
@@ -180,12 +253,19 @@ def write_manifest(paths, directory, config, source, run, step, reports, progres
     if run not in directory.resolve().parents:raise ValueError('Checkpoint directory outside exact run')
     config_bytes=json.dumps(config,sort_keys=True,allow_nan=False).encode()
     config_path=directory/'resolved-config.json';config_path.write_bytes(config_bytes)
-    lineage=partial_lineage(run,source) if config.get('baseline_aligned')is True else None
+    lineage=(complete5_lineage(run,source)or partial_lineage(run,source)) if config.get('baseline_aligned')is True else None
     originals={}if lineage is None else lineage['originals']
     files=[]
     for p in sorted(set(Path(p).resolve()for p in paths)|{config_path.resolve()}):
-        if (run not in p.parents and originals.get(str(p))!=digest(p)) or not p.is_file() or not p.stat().st_size:raise ValueError('Missing/outside/empty checkpoint member '+str(p))
-        files.append(dict(path=str(p),sha256=digest(p),bytes=p.stat().st_size))
+        if not p.is_file():raise ValueError('Missing checkpoint member '+str(p))
+        sha=digest(p);size=p.stat().st_size
+        original_bound=originals.get(str(p))==sha
+        # Empty stderr/stdout/log files are valid original diagnostic evidence.
+        # Native checkpoints and structured proof files must still contain data.
+        empty_original_diagnostic=original_bound and p.suffix in ('.err','.out','.log')
+        if (run not in p.parents and not original_bound) or (not size and not empty_original_diagnostic):
+            raise ValueError('Outside/empty checkpoint member '+str(p))
+        files.append(dict(path=str(p),sha256=sha,bytes=size))
     if progress.get('completed_outers')!=5:raise ValueError('Gate requires fifth accepted outer')
     value=dict(version=2,run_root=str(Path(run).resolve()),source_commit=source,global_step=step,
                actual_outer_updates=step,horizon=horizon,warmup_steps=warmup_steps,config_sha256=digest(config_path),
@@ -293,8 +373,12 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
             or driver_state.get('actual_outer_updates')!=5
             or driver_state.get('progress')!=m.get('attempt_accounting')):
         raise ValueError('Actual driver sampler/RNG/BAPO reload not proven')
-    lineage=partial_lineage(run,source,members,reports,driver['pid']) if aligned else None
+    complete_lineage=complete5_lineage(run,source,members,reports,driver['pid']) if aligned else None
+    lineage=(complete_lineage or partial_lineage(run,source,members,reports,driver['pid'])) if aligned else None
     originals={}if lineage is None else lineage['originals']
+    if complete_lineage is not None:
+        if any(state_digest(driver_state[name])!=state_digest(complete_lineage['driver'][name])for name in ('rng','sampler','bapo','progress')):
+            raise ValueError('COMPLETE5 current driver differs from preserved components')
     sampling_proof=(None if aligned else validate_first_sampling_evidence(members,resolved_config,source,run,driver['pid'],reports))
     evidence=r.get('evidence',[]);bindings={x['path']:x['sha256']for x in evidence}
     if len(bindings)!=len(evidence):raise ValueError('Duplicate release evidence')
@@ -316,14 +400,23 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
             h.update(block);remaining-=len(block)
     if h.hexdigest()!=prefix['sha256']:raise ValueError('Actual live prefix differs from snapshot')
     events=[];attempts=[]
-    for line in snapshot.read_text().split('\n'):
+    timeline=snapshot
+    timeline_run=run;timeline_source=source;timeline_pid=driver['pid']
+    if complete_lineage is not None:
+        timeline=complete_lineage['old_run']/'train.log'
+        if members.get(str(timeline))!=digest(timeline):raise ValueError('COMPLETE5 original timeline missing/unbound')
+        timeline_run=complete_lineage['old_run'];timeline_source=complete_lineage['old_source'];timeline_pid=complete_lineage['old_driver_pid']
+    for line in timeline.read_text().split('\n'):
         if 'BAPO_TRAIN_METRICS_JSON=' in line:
             events.append(json.loads(line.split('BAPO_TRAIN_METRICS_JSON=',1)[1]))
         if 'FRESH200_ATTEMPT_JSON=' in line:
             attempts.append(json.loads(line.split('FRESH200_ATTEMPT_JSON=',1)[1]))
-    accepted=validate_first_five_attempts(attempts,m['attempt_accounting'],driver['pid'],baseline_aligned=aligned)
+    accepted=validate_first_five_attempts(attempts,m['attempt_accounting'],timeline_pid,baseline_aligned=aligned)
     if aligned:
-        validate_aligned_first_five_evidence(members,resolved_config,source,run,driver['pid'],reports,attempts,events)
+        if complete_lineage is None:
+            validate_aligned_first_five_evidence(members,resolved_config,source,run,driver['pid'],reports,attempts,events)
+        else:
+            validate_complete5_first_five(members,resolved_config,source,run,driver['pid'],complete_lineage,attempts,events)
         if driver_state.get('rank_write_ledger')!=attempts[-1]['rank_write_ledger']:
             raise ValueError('Aligned driver latest rank ledger differs from actual fifth attempt')
         final_ranks={event['rank']:event for event in attempts[-1]['rank_write_ledger']}
@@ -332,8 +425,8 @@ def validate_release(receipt, manifest_path, repo, expected_driver_pid=None):
                 raise ValueError('Aligned native reload latest rank event differs')
     for attempt in attempts:
         path=Path(attempt.get('ledger_path',''))
-        if (attempt.get('source_commit')!=m['source_commit']
-                or not path.is_absolute() or run not in path.resolve().parents or str(path) not in members
+        if (attempt.get('source_commit')!=timeline_source
+                or not path.is_absolute() or timeline_run not in path.resolve().parents or str(path) not in members
                 or digest(path)!=members[str(path)] or json.loads(path.read_text())!=attempt):
             raise ValueError('Raw per-attempt all-rank ledger missing or unbound')
     complete_events=[event for event in events if event.get('accepted_complete_outer') is True]
@@ -437,10 +530,11 @@ def write_aligned_step5_bindings(directory, config, source, run, driver_pid, sha
     run=Path(run).resolve();directory=Path(directory).resolve()
     if run not in directory.parents or type(driver_pid) is not int or driver_pid<=0:
         raise ValueError('Aligned binding needs exact original driver/run')
-    lineage=partial_lineage(run,source)
+    complete=complete5_lineage(run,source)
+    lineage=complete or partial_lineage(run,source)
     claim=run/'.aligned-startup-claim.json'
     claim_value=json.loads(claim.read_text())
-    if (claim_value.get('source_commit')!=source or claim_value.get('scope')!=('new-run-only-no-resume' if lineage is None else 'same-experiment-pending20-stage-only-resume')
+    if (claim_value.get('source_commit')!=source or claim_value.get('scope')!=('same-experiment-complete5-verify-only-resume' if complete is not None else ('new-run-only-no-resume' if lineage is None else 'same-experiment-pending20-stage-only-resume'))
             or type(claim_value.get('launcher_pid')) is not int or claim_value['launcher_pid']<=0):
         raise ValueError('Aligned original new-run claim differs')
     inputs={}
@@ -461,7 +555,7 @@ def write_aligned_step5_bindings(directory, config, source, run, driver_pid, sha
     return target
 
 
-def validate_aligned_first_five_evidence(members,config,source,run,driver_pid,reports,attempts,events):
+def validate_aligned_first_five_evidence(members,config,source,run,driver_pid,reports,attempts,events,*,expected_source_hashes=None):
     """Bind aligned HF-old/data/initial-state/EM evidence, without legacy LP admission."""
     from .fresh200_contract import critical_source_hashes, fresh200_lr_factor
     import math
@@ -478,7 +572,7 @@ def validate_aligned_first_five_evidence(members,config,source,run,driver_pid,re
         return found[0]
     value=json.loads(member('aligned-step5-bindings.json').read_text())
     if (value.get('version')!=1 or value.get('status')!='ALIGNED_STEP5_FACTUAL_BINDINGS_NOT_RELEASE'
-            or value.get('source_commit')!=source or value.get('source_sha256')!=critical_source_hashes()
+            or value.get('source_commit')!=source or value.get('source_sha256')!=(critical_source_hashes()if expected_source_hashes is None else expected_source_hashes)
             or value.get('run_root')!=str(run) or value.get('driver_pid')!=driver_pid
             or type(value.get('driver_pid'))is not int or type(value.get('actual_outer_updates'))is not int
             or type(value.get('next_global_step'))is not int
@@ -640,3 +734,43 @@ def validate_aligned_first_five_evidence(members,config,source,run,driver_pid,re
                         for item in monitors)):
                 raise ValueError('Aligned HF-old and raw-sampler diagnostic roles/evidence missing')
     return value
+
+
+def validate_complete5_first_five(members,config,source,run,driver_pid,lineage,attempts,events):
+    """Validate old factual five rounds and the new process's unchanged inputs."""
+    from .aligned_complete5_resume import require
+    from .fresh200_contract import critical_source_hashes
+    from .baseline_alignment import prepare_aligned_inputs
+    from omegaconf import OmegaConf
+    old_run=lineage['old_run'];old_source=lineage['old_source']
+    old_binding_paths=[Path(p)for p in members if Path(p).name=='aligned-step5-bindings.json'and old_run in Path(p).parents]
+    require(len(old_binding_paths)==1,'original COMPLETE5 factual binding absent')
+    old_binding=json.loads(old_binding_paths[0].read_text())
+    old_repo=old_run.parent.parent/'repo'
+    require(subprocess.check_output(['git','-C',str(old_repo),'rev-parse','HEAD'],text=True).strip()==old_source and not subprocess.check_output(['git','-C',str(old_repo),'status','--porcelain'],text=True).strip(),'original COMPLETE5 source changed/dirty')
+    old_hashes=old_binding['source_sha256']
+    import ast
+    contract=ast.parse((old_repo/'search_r1/baselines/fresh200_contract.py').read_text())
+    function=next(n for n in contract.body if isinstance(n,ast.FunctionDef)and n.name=='critical_source_hashes')
+    names=next(ast.literal_eval(n.value)for n in function.body if isinstance(n,ast.Assign)and any(isinstance(t,ast.Name)and t.id=='names'for t in n.targets))
+    require(isinstance(old_hashes,dict)and set(old_hashes)==set(names),'original COMPLETE5 critical source inventory differs')
+    for name,sha in old_hashes.items():
+        path=old_repo/name
+        require(not Path(name).is_absolute()and '..'not in Path(name).parts and path.is_file()and not path.is_symlink()and old_repo.resolve()in path.resolve().parents and digest(path)==sha,'original COMPLETE5 critical source bytes differ')
+    validate_aligned_first_five_evidence(members,lineage['config'],old_source,old_run,lineage['old_driver_pid'],lineage['reports'],attempts,events,expected_source_hashes=old_hashes)
+    paths=[Path(p)for p in members if Path(p).name=='aligned-step5-bindings.json'and run in Path(p).parents]
+    require(len(paths)==1,'current COMPLETE5 factual binding absent')
+    value=json.loads(paths[0].read_text());claim=run/'.aligned-startup-claim.json'
+    require(members.get(str(claim))==digest(claim),'current COMPLETE5 claim not frozen')
+    record=json.loads(claim.read_text())
+    require(record.get('scope')=='same-experiment-complete5-verify-only-resume'and record.get('source_commit')==source and type(record.get('launcher_pid'))is int and record['launcher_pid']>0,'current COMPLETE5 claim differs')
+    require(value.get('version')==1 and value.get('status')=='ALIGNED_STEP5_FACTUAL_BINDINGS_NOT_RELEASE'and value.get('source_commit')==source and value.get('source_sha256')==critical_source_hashes()and value.get('run_root')==str(run)and type(value.get('driver_pid'))is int and value['driver_pid']==driver_pid and type(value.get('actual_outer_updates'))is int and value['actual_outer_updates']==5 and type(value.get('next_global_step'))is int and value['next_global_step']==6 and value.get('new_run_claim')==dict(path=str(claim),sha256=members[str(claim)]),'current COMPLETE5 factual identity differs')
+    current_shared=prepare_aligned_inputs(OmegaConf.create(config));old_shared=prepare_aligned_inputs(OmegaConf.create(lineage['config']))
+    require(value.get('shared_inputs')==current_shared,'current COMPLETE5 shared input proof differs')
+    require(current_shared.get('content_identity')==old_shared.get('content_identity')and current_shared.get('common_input_binding',{}).get('content_identity')==old_shared.get('common_input_binding',{}).get('content_identity')and current_shared.get('common_input_binding',{}).get('train_rows')==old_shared.get('common_input_binding',{}).get('train_rows')and config['baselines']['alignment']['order_sha256']==lineage['config']['baselines']['alignment']['order_sha256'],'COMPLETE5 continuation input/order identity changed')
+    for name,settings,path_key,sha_key in (
+            ('shared_input_manifest',config['baselines']['holdout'],'manifest_path','manifest_sha256'),
+            ('retriever_identity_manifest',config['retriever'],'identity_manifest','identity_manifest_sha256'),
+            ('order_manifest',config['baselines']['alignment'],'order_manifest','order_sha256')):
+        expected=dict(path=str(Path(settings[path_key]).resolve()),sha256=settings[sha_key])
+        require(value.get('inputs',{}).get(name)==expected and digest(expected['path'])==expected['sha256'],'current COMPLETE5 pinned input changed')
