@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4370,
+      "sha256": "14cb5944eca584903dcda1e996f32942887e1c26c8f2adb7e170bd0e264ce440"
+    },
+    "recompress.py": {
+      "bytes": 13276,
+      "sha256": "9bfb249e78957e7f34c38b1d8beacf0d75cadae68b15106793b91dce212ac921"
+    },
+    "test_recompress.py": {
+      "bytes": 1364,
+      "sha256": "8a35dcbbeb2cbb95970df7f4849b9cbba8797864a534e9bb068bae651b6d55fd"
+    }
+  },
+  "schema": "local-exact-tar-recompress-source-v1"
+}
