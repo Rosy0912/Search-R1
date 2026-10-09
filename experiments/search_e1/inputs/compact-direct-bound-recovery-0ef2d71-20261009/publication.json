@@ -1,0 +1,45 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 16903,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_compact_direct_bound_recovery_v1/recover.py",
+      "sha256": "5fc589b7e135680cd413e9adb4ea1e73eef81073a434c817bd8ace583df026b1"
+    },
+    {
+      "bytes": 3468,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_compact_direct_bound_recovery_v1/README.md",
+      "sha256": "5c55a416baeb48e8f04632b58ea2fb1ac40c3fab84d8d2d45995509b9d77ec09"
+    },
+    {
+      "bytes": 9704,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_compact_direct_bound_recovery_v1/changes-vs-published23bd.diff",
+      "sha256": "36ff0cfb12d0b29481c0b6fbc6a753cfeaf0d2746a31ce8babcd4f3f1903475a"
+    },
+    {
+      "bytes": 501,
+      "equal": true,
+      "path": "experiments/search_e1/control/opsd_ablation_compact_direct_bound_recovery_v1/source-manifest.json",
+      "sha256": "29a3d37c7581257de3c857fcfa728cb7182eb90a979e0a37af04a31a3f9760ad"
+    }
+  ],
+  "observed_unix": 1791506361.660931,
+  "remote_readback_sha": "0ef2d71aefdf28cc620f71df28167a1cce7fc8fc",
+  "run_ids": {
+    "C0": "bfc195746b6d41aaa74db5ac4d7a8be7",
+    "C1": "a1a56efd32e5456d8c6813454975e38f",
+    "J": "f40bcfd2693a4c36a154de5fd81a475d",
+    "M": "b255c1eb72e84ca0bd6315e57e3527d0",
+    "P": "c0a425974d2142b1955429c85a4fb9f3",
+    "R": "779e853e37b540e8847336c142129377",
+    "W": "dc8a4e85822547548c0f79be4c87e13e"
+  },
+  "schema": "opsd-ablation-compact-direct-bound-recovery-publication-v1",
+  "scope": "Mac per-call direct SSH transport and physical archive bound; publication only, no actual queue restart/CP completion",
+  "source_commit": "0ef2d71aefdf28cc620f71df28167a1cce7fc8fc",
+  "source_manifest_sha256": "29a3d37c7581257de3c857fcfa728cb7182eb90a979e0a37af04a31a3f9760ad"
+}
