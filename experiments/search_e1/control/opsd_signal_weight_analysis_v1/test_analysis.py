@@ -261,6 +261,38 @@ class AnalysisTests(unittest.TestCase):
         rows[-1] = rows[0]
         with self.assertRaises(ValueError): summary.summarize(rows, b)
 
+    def endpoint_identities(self, rows):
+        import hashlib
+        result={}
+        for row in rows:
+            key=row['version']+'/'+str(row['completed_outer']);digest=hashlib.sha256(key.encode()).hexdigest()
+            row['current_adapter_tensor_sha256']=digest
+            result[key]=dict(version=row['version'],completed_outer=row['completed_outer'],adapter_tensor_sha256=digest,
+                raw_checkpoint=dict(kind='common_zero_adapter' if row['completed_outer']==0 else 'raw_end_of_outer',
+                    manifest=dict(path='/synthetic/'+key+'/checkpoint.json',sha256=digest)))
+        return result
+
+    def test_cross_signal_all512_pairs_keep_NA_cases_and_exact_checkpoint_ids(self):
+        b,rows=self.final_rows();identities=self.endpoint_identities(rows)
+        changed=next(row for row in rows if row['version']=='H_POS' and row['completed_outer']==25 and row['validation_index']==1)
+        self.assertIsNone(changed['replay']['metrics']['answer_gap'])
+        changed['protocol_em']=1;changed['failure_class']=None
+        result=summary.summarize(rows,b,identities);cross=result['descriptive_cross_signal_pairs']
+        self.assertEqual(len(cross),8)
+        value=cross['G_POS/25->H_POS/25']
+        self.assertEqual((value['questions'],value['gained'],value['lost']),(512,1,0))
+        self.assertEqual({k:v['questions'] for k,v in value['datasets'].items()},{'nq':256,'hotpotqa':256})
+        self.assertEqual(value['left_checkpoint_identity'],identities['G_POS/25'])
+        self.assertEqual(value['right_checkpoint_identity'],identities['H_POS/25'])
+        self.assertTrue(value['no_significance_test_or_new_family'])
+
+    def test_cross_signal_identity_requires_all_saved_endpoint_digests(self):
+        b,rows=self.final_rows();identities=self.endpoint_identities(rows)
+        identities.pop('G_POS/15')
+        with self.assertRaises(ValueError):summary.summarize(rows,b,identities)
+        identities=self.endpoint_identities(rows);rows[-1]['current_adapter_tensor_sha256']='f'*64
+        with self.assertRaises(ValueError):summary.summarize(rows,b,identities)
+
     def test_resource_boundary_blocks_foreign_gpu_and_cpu_cuda(self):
         cfg = dict(owner=dict(uid=1001, physical_gpus=[4, 5, 6, 7], gpu_uuids=['u4', 'u5', 'u6', 'u7']),
             gates={'retriever_admission': {}}, resources=dict(startup_minimum_free_mib=20480, training_minimum_free_mib=6144))

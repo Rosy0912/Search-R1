@@ -88,3 +88,17 @@ OPSD_ANALYSIS_FROZEN_HELPER_ROOT=实际已发布training helper目录 CUDA_VISIB
 实现时已用Mac现有 `python3` 的既有Torch实际运行上述数值fixture，无需下载。仍须在部署后的原Node环境复核。输入编译采用源字节SHA绑定的隔离loader，拒绝外来cached模块并绕过pyc；不会替换正跑namespace。heldout只有一条greedy响应／题，不能虚构五兄弟group权重；实际权重及loss关系仍来自原已提交TRAIN更新票据，分别报告，不能把不同TRAIN题和heldout题硬连成逐题因果。
 
 Node fixture verification revealed a real input-audit boundary: on the remote ext4 filesystem a quick same-size rewrite may retain coarse mtime/ctime. TRAIN analysis terminal stability now streams the complete input SHA and byte count again as well as checking metadata. A deterministic JSON/JSONL fixture preserves metadata while changing content. This is an independent analysis reader repair; the deployed training and its scientific settings are unchanged. Earlier analysis source and failed CPU test evidence remain preserved.
+
+## 最终机制表：独立CPU提取，保持训练定义
+
+`train_signal_analysis.py` 的原输出schema `opsd-signal-train-analysis-summary-v1` 保持，新增以下表；大规模 `private-question-features.jsonl` 和所有输入仍留HKUST，最终只复制小型聚合报告。
+
+- `selected_D_raw_signal_quantile_exposure`：分别对本variant实际训练selected D更新前forward的raw signed gap／raw all-policy entropy作预先固定分位划分。对可测量的n条题级指标取并列平均秩R，`u=(R−.5)/n`；LOW为u≤.25、HIGH为u≥.75，其余MIDDLE。相同值整块入同一桶，不按qid或随机数拆ties；ties可使桶大于或小于25%，报告实际人数，不强凑四分位。全常量只形成MIDDLE tie，排序NA；这不是题内归一r的分位，也不是给更难题加平均权重。
+- 各桶同时报full question population、实际K、可测量人数／NA原因、真实selected pair数、CC/CW、self/nonself、Σw、权重集中ESS、未加权／加权loss及采样s/5。all5wrong／无成功B／selected编码skip不被删出总体覆盖，但没有fake w=1或训练曝光。gap无答案有效payload记NA，entropy仅实际训练forward有数值；不把缺失feature填0。Σw只描述目标标量缩放，不等于梯度质量，优化分母仍实际pair数。
+- `neutral_and_self_nonself_exposure`：保留原 `normalization.neutral_reason` 原因counts和以真实K为分母的原因率；另独立列derived多轴状态：zero raw_maxabs、0<raw_maxabs<floor的衰减、`normalization.scores[selected_sibling]` 的NA、实际训练forward所选signal的NA（并单列g/h NA）、少于两可评分项、selected恰在组均值、selected w恰为1／约为1、五w全部恰为1／约为1、非恒定组里的偶然selected w=1。权重评分fallback为NA时，真正训练forward的g/h仍可能有值，不能混为同一覆盖；旧 `selected_signal_NA` 仅为 normalization NA 的兼容别名。approx容差预设1e−12，各轴可能重叠，不能合计当互斥人口类别；同时报实际K／full population／该轴可用数据三个分母。**小正dispersion低于floor是衰减，绝不改名中性或人为归零**；reason=None也不等于所有权重正在变化。self/nonself仅对实际K作未加权人数和Σw暴露，CC/CW分别列明。
+- `predeclared_training_periods`：0–14（截至正式15）和15–24（16–25）的上述表分开提取，对齐既定保存区间；记录实际observed outer indices。各汇总人数的单位为question×outer曝光，同qid在不同outer重复出现时分别计数，不能把最多12800次观测说成12800道独立题；统计区间仍按question_id整块重采样。不同区间raw score分布不同，其分位阈值也不同，仅机制描述；不能据此估计未保存的退化发生步或联结不同TRAIN题到heldout题。非恒定组偶然w=1同时给exact与1e−12近似两个轴。
+- TRAIN的Pearson／AUC以及Pearson bootstrap先以真实eligible distinct values核零方差；常量0.1等浮点值也明确NA，不靠舍入残差凑0／.5／假区间。label只有一类亦NA。原生产 `result_analysis.py` 不改；最终TRAIN关联以此独立分析表为准，避免其旧通用AUC的常量.5约定混入本计划报告。
+
+heldout `summary.py` 保持原schema，额外给同15／25时点四个G↔H交叉方向共8个 `descriptive_cross_signal_pairs`。每项全512（NQ256／Hotpot256）同题gained／lost／preserved_correct／still_wrong，右减左，**不按g/h/KL可用性筛EM**；exact native evaluation／raw checkpoint／adapter tensor digest随模型及pair绑定。此为已有4608输出的CPU描述提取，没有新显著性检验／新Holm家族／采样。正式终态主比较仍只有G_POS−G_NEG、H_POS−H_NEG两项；原same-signal main统计不被替代。
+
+最终报告最小证据组合：100条完整TRAIN及其原模型SHA＋四组独立末CP数值audit/状态链；原 `opsd-signal-weight-final-effects-v1` 的九端点EM和family2统计；本模块TRAIN summary／heldout response relations及固定B bank；所有完整报告和raw原件远端路径、backup验收、publication文件SHA。原study terminal明确 `analysis_still_required=true`，不能独自作为goal complete。结果以正式25为主；没有E25／多seed／新增pass5，不宣称优于未加权E25、跨seed收益或校准成功概率。

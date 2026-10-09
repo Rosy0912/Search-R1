@@ -82,7 +82,113 @@ class Tests(unittest.TestCase):
    t[0]['post_clip_full_vocabulary_loss']=-1.;t[0]['global_batch_contribution']=-.05;m['post_loss']=1.;m['weighted_post_loss']=.1
    measured=a.token_features([h]+t,m,sc,u);self.assertAlmostEqual(sum(v['weighted_post_contribution'] for v in measured['regions'].values()),.1)
  def test_math_midrank_auc_pearson(self):
-  self.assertEqual(a.midranks([2,1,1,3]),[3.,1.5,1.5,4.]);self.assertEqual(a.auc([1,2,3,4],[0,0,1,1]),1.);self.assertEqual(a.auc([2,2],[0,1]),.5);self.assertIsNone(a.auc([1,2],[1,1]));self.assertIsNone(a.pearson([1,1,1],[1,2,3]));self.assertAlmostEqual(a.pearson([1,2,3],[3,2,1]),-1.)
+  self.assertEqual(a.midranks([2,1,1,3]),[3.,1.5,1.5,4.]);self.assertEqual(a.auc([1,2,3,4],[0,0,1,1]),1.);self.assertIsNone(a.auc([2,2],[0,1]));self.assertIsNone(a.auc([1,2],[1,1]));self.assertIsNone(a.pearson([1,1,1],[1,2,3]));self.assertAlmostEqual(a.pearson([1,2,3],[3,2,1]),-1.)
+ def exposure_rows(self,values):
+  rows=[]
+  for i,value in enumerate(values):
+   hit=int(i%2==0)
+   rows.append(dict(question_id=str(i),trained=True,teacher_available=True,missing_reason=None,
+    answer_gap=value,student_entropy=value,selected_reward=hit,pair_class='CC' if hit else 'CW',
+    selected_weight=1.,self_pair=bool(hit and i%3==0),sampling_s_over_5=.4 if hit else .2,
+    raw_teacher_kl=1.,post_loss=.5,weighted_post_loss=.5,selected_sibling=2,
+    score_normalization=dict(scores=[-2.,-1.,0.,1.,2.],weights=[.1,.55,1.,1.45,1.9],
+      centered_scores=[-2.,-1.,0.,1.,2.],raw_maxabs=2.,available_siblings=[0,1,2,3,4],neutral_reason=None)))
+  return rows
+ def test_quantile_ties_are_never_split_or_forced_to_quarter_count(self):
+  rows=self.exposure_rows([0.]*4+[1.]*2+[2.]*2+[3.]*4)
+  value=a.quantile_exposure(rows,'answer_gap');b=value['buckets']
+  self.assertEqual([b[x]['actual_pairs'] for x in ('LOW','MIDDLE','HIGH')],[4,4,4])
+  self.assertEqual((b['LOW']['score_min'],b['LOW']['score_max']),(0.,0.))
+  self.assertEqual((b['HIGH']['score_min'],b['HIGH']['score_max']),(3.,3.))
+  self.assertAlmostEqual(b['LOW']['fraction_of_measured_actual_pairs'],1/3)
+  self.assertTrue(value['definition']['nominal_bucket_counts_not_forced'])
+ def test_constant_quantile_all_middle_and_full_population_NA_kept(self):
+  rows=self.exposure_rows([.1]*4)
+  rows.append(dict(question_id='hard',trained=False,teacher_available=False,missing_reason='all5_wrong_no_successful_B'))
+  rows.append(dict(question_id='skip',trained=False,teacher_available=True,missing_reason='selected_D_encoding_skip'))
+  value=a.quantile_exposure(rows,'student_entropy')
+  self.assertEqual((value['full_population_questions'],value['actual_trained_questions'],value['measured_actual_selected_D_questions']),(6,4,4))
+  self.assertEqual(value['ordering_NA_reason'],'zero_feature_variance')
+  self.assertEqual(value['buckets']['MIDDLE']['actual_pairs'],4)
+  self.assertEqual(value['buckets']['LOW']['actual_pairs'],0);self.assertEqual(value['buckets']['HIGH']['actual_pairs'],0)
+  self.assertEqual(value['missing_reason_counts'],{'all5_wrong_no_successful_B':1,'selected_D_encoding_skip':1})
+ def test_gap_NA_not_zero_or_fake_weight_exposure(self):
+  rows=self.exposure_rows([None,1.,2.,3.]);value=a.quantile_exposure(rows,'answer_gap')
+  self.assertEqual(value['measured_actual_selected_D_questions'],3)
+  self.assertEqual(value['missing_reason_counts'],{'no_effective_final_answer_payload_tokens':1})
+  empty=a.quantile_exposure([dict(trained=False,missing_reason='all5_wrong_no_successful_B')],'answer_gap')
+  self.assertEqual(empty['actual_trained_questions'],0)
+  self.assertEqual(empty['buckets']['LOW']['weight_sum'],0.);self.assertIsNone(empty['buckets']['LOW']['weight_mean'])
+ def test_neutral_axes_distinguish_constant_NA_mean_and_recorded_fallback(self):
+  rows=self.exposure_rows([.1,None,0.])
+  rows[0]['score_normalization'].update(scores=[.1]*5,weights=[1.]*5,centered_scores=[0.]*5,raw_maxabs=0.)
+  rows[1]['score_normalization'].update(scores=[-2.,-1.,None,1.,2.],available_siblings=[0,1,3,4])
+  rows[2]['score_normalization'].update(scores=[None]*5,weights=[1.]*5,centered_scores=[0.]*5,
+       raw_maxabs=None,available_siblings=[],neutral_reason='sibling_encoding_failure')
+  rows.append(dict(trained=False,teacher_available=False,missing_reason='all5_wrong_no_successful_B'))
+  value=a.neutral_and_pair_exposure(rows);axes=value['derived_neutral_axes']
+  self.assertEqual(value['actual_trained_questions'],3)
+  self.assertEqual(value['recorded_group_neutral_reason_counts'],{'none_recorded':2,'sibling_encoding_failure':1})
+  self.assertEqual(axes['zero_score_dispersion']['count'],1);self.assertEqual(axes['selected_signal_NA']['count'],2)
+  self.assertEqual(axes['selected_weight_approximately_one']['count'],3)
+  self.assertEqual(axes['all_five_weights_approximately_one']['count'],2)
+  self.assertAlmostEqual(axes['recorded_group_neutral_reason']['rate_over_actual_K'],1/3)
+  self.assertAlmostEqual(axes['recorded_group_neutral_reason']['rate_over_full_question_population'],1/4)
+  self.assertTrue(value['axes_overlap_and_are_not_recorded_receipt_reasons'])
+ def test_actual_self_nonself_exposure_uses_weights_not_fake_population(self):
+  rows=self.exposure_rows([0.,1.]);rows[0].update(selected_weight=.1,weighted_post_loss=.05)
+  rows[1].update(selected_weight=1.9,weighted_post_loss=.95)
+  rows.append(dict(trained=False,teacher_available=False,missing_reason='all5_wrong_no_successful_B'))
+  value=a.neutral_and_pair_exposure(rows)['self_vs_nonself']
+  self.assertEqual(value['self']['actual_pairs'],1);self.assertAlmostEqual(value['self']['weight_sum'],.1)
+  self.assertEqual(value['nonself']['actual_pairs'],1);self.assertAlmostEqual(value['nonself']['weight_sum'],1.9)
+  self.assertEqual(value['nonself']['CC_CW_counts'],{'CC':0,'CW':1})
+  self.assertTrue(value['self']['weighted_exposure_is_scalar_objective_scaling_not_gradient_mass'])
+ def test_weighting_normalization_NA_not_actual_training_forward_NA(self):
+  rows=self.exposure_rows([.1]);rows[0]['variant']='G_POS'
+  rows[0]['score_normalization'].update(scores=[None]*5,weights=[1.]*5,
+    raw_maxabs=None,available_siblings=[],neutral_reason='sibling_encoding_failure')
+  axes=a.neutral_and_pair_exposure(rows)['derived_neutral_axes']
+  self.assertEqual(axes['normalization_selected_signal_NA']['count'],1)
+  self.assertEqual(axes['selected_signal_NA']['count'],1)
+  self.assertEqual(axes['actual_forward_selected_signal_NA']['count'],0)
+  self.assertEqual(axes['actual_forward_answer_gap_NA']['count'],0)
+  self.assertEqual(axes['actual_forward_entropy_NA']['count'],0)
+  rows[0].update(variant='H_POS',answer_gap=None)
+  axes=a.neutral_and_pair_exposure(rows)['derived_neutral_axes']
+  self.assertEqual(axes['actual_forward_selected_signal_NA']['count'],0)
+  self.assertEqual(axes['actual_forward_answer_gap_NA']['count'],1)
+ def test_small_positive_dispersion_is_floor_attenuated_not_zero_or_fallback(self):
+  rows=self.exposure_rows([0.]);norm=rows[0]['score_normalization']
+  norm.update(scores=[-2e-8,-1e-8,0.,1e-8,2e-8],centered_scores=[-2e-8,-1e-8,0.,1e-8,2e-8],
+    raw_maxabs=2e-8,numerical_floor=1e-6,weights=[.982,.991,1.,1.009,1.018])
+  value=a.neutral_and_pair_exposure(rows);axes=value['derived_neutral_axes']
+  self.assertEqual(axes['zero_score_dispersion']['count'],0)
+  self.assertEqual(axes['recorded_group_neutral_reason']['count'],0)
+  self.assertEqual(axes['floor_attenuated_nonzero_dispersion']['count'],1)
+  self.assertEqual(axes['floor_attenuated_nonzero_dispersion']['data_available_denominator'],1)
+  self.assertEqual(axes['all_five_weights_exactly_one']['count'],0)
+  self.assertEqual(axes['incidental_selected_weight_one_in_nonconstant_group']['count'],1)
+  self.assertTrue(value['floor_positive_dispersion_is_attenuated_not_neutral'])
+ def test_floating_constant_feature_pearson_auc_and_bootstrap_all_NA(self):
+  rows=[dict(question_id=str(i),x=.1,y=i%2) for i in range(8)]
+  self.assertIsNone(a.pearson([.1]*8,[0,1]*4));self.assertIsNone(a.auc([.1]*8,[0,1]*4))
+  value=a.bootstrap_pearson(rows,'x','y',20)
+  self.assertEqual(value['NA_reason'],'zero_feature_variance');self.assertIsNone(value['interval95']);self.assertEqual(value['valid_replicates'],0)
+ def test_incidental_near_one_keeps_exact_and_approx_separate(self):
+  rows=self.exposure_rows([0.]);rows[0]['selected_weight']=1.+5e-13
+  rows[0]['score_normalization']['weights'][2]=rows[0]['selected_weight']
+  axes=a.neutral_and_pair_exposure(rows)['derived_neutral_axes']
+  self.assertEqual(axes['incidental_selected_weight_one_in_nonconstant_group']['count'],0)
+  self.assertEqual(axes['incidental_selected_weight_approximately_one_in_nonconstant_group']['count'],1)
+  self.assertEqual(axes['selected_weight_exactly_one']['count'],0)
+  self.assertEqual(axes['selected_weight_approximately_one']['count'],1)
+ def test_within_question_floating_constant_is_zero_dispersion_NA(self):
+  rows=[dict(question_id=str(i),teacher_available=True,sampling_rewards=[1,1,0,0,0],
+    score_siblings=[dict(sibling=j,answer_gap=.1,student_entropy=.1) for j in range(5)]) for i in range(4)]
+  value=a.within_question_associations(rows,20)['answer_gap']
+  self.assertEqual(value['equal_question_centered_covariance'],0.)
+  self.assertIsNone(value['equal_question_centered_pearson']);self.assertIsNone(value['interval95'])
  def test_qblock_bootstrap_NA_cluster_rng(self):
   rows=[dict(question_id=str(i),x=float(i),y=float(2*i)) for i in range(8)]+[dict(question_id='missing',x=None,y=0)];before=random.getstate();r=a.bootstrap_pearson(rows,'x','y',40);self.assertEqual(r['blocks'],9);self.assertEqual(r['interval95'],[1.,1.]);self.assertEqual(before,random.getstate())
   duplicated=[dict(question_id='same',x=float(i),y=float(i)) for i in range(10)];self.assertEqual(a.bootstrap_pearson(duplicated,'x','y',10)['blocks'],1);self.assertIsNone(a.bootstrap_pearson(duplicated,'x','y',10)['interval95'])

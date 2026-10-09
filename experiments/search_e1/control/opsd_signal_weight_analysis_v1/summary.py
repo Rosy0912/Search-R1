@@ -120,7 +120,9 @@ def regional_summary(rows):
 
 
 def paired_cases(left, right):
-    require([r['validation_index'] for r in left] == [r['validation_index'] for r in right], 'Unpaired fixed questions')
+    require([r['validation_index'] for r in left] == [r['validation_index'] for r in right]
+        and all(a.get('question_id') == b.get('question_id') and a['dataset'] == b['dataset']
+            and a.get('row_semantic_sha256') == b.get('row_semantic_sha256') for a,b in zip(left,right)), 'Unpaired fixed questions')
     outcome = Counter((a['protocol_em'], b['protocol_em']) for a, b in zip(left, right))
     strata = {'lost': (1, 0), 'gained': (0, 1), 'preserved_correct': (1, 1), 'still_wrong': (0, 0)}
     groups = {}
@@ -133,12 +135,22 @@ def paired_cases(left, right):
             changes[feature] = dict(paired_metric_available=len(complete), missing=len(selected)-len(complete),
                 mean_difference_right_minus_left=math.fsum(b-a for a, b in complete) / len(complete) if complete else None)
         groups[name] = dict(questions=len(selected), metric_changes=changes)
-    return dict(gained=outcome[0, 1], lost=outcome[1, 0], preserved_correct=outcome[1, 1], still_wrong=outcome[0, 0],
+    datasets={}
+    for dataset in sorted({r['dataset'] for r in left}):
+        selected=[(a,b) for a,b in zip(left,right) if a['dataset']==dataset]
+        counts=Counter((a['protocol_em'],b['protocol_em']) for a,b in selected)
+        datasets[dataset]=dict(questions=len(selected),left_hits=sum(a['protocol_em'] for a,b in selected),
+            right_hits=sum(b['protocol_em'] for a,b in selected),gained=counts[0,1],lost=counts[1,0],
+            preserved_correct=counts[1,1],still_wrong=counts[0,0],
+            delta_percentage_points=(counts[0,1]-counts[1,0])*100/len(selected))
+    return dict(questions=len(left),left_hits=sum(r['protocol_em'] for r in left),right_hits=sum(r['protocol_em'] for r in right),
+        gained=outcome[0, 1], lost=outcome[1, 0], preserved_correct=outcome[1, 1], still_wrong=outcome[0, 0],
+        delta_percentage_points=(outcome[0,1]-outcome[1,0])*100/len(left) if left else None,datasets=datasets,
         outcome_groups=groups, unit='same question; each checkpoint own saved autonomous response',
         different_response_tokens_not_position_paired=True, changed_histories_are_endogenous=True)
 
 
-def summarize(records, bank):
+def summarize(records, bank, endpoint_identities=None):
     require(len(records) == 4608 and bank.get('accepted') is True and bank['questions'] == 512,
         'Final replay relationship report requires all9 endpoints/all512 EM')
     index = {}; bank_index = {e['validation_index']: e for e in bank['entries']}
@@ -158,6 +170,13 @@ def summarize(records, bank):
             'Posthoc metrics must not masquerade as online forward/generation scores')
         index[key] = row
     require(set(index) == {(v, t, i) for v, t in ENDPOINTS for i in range(512)}, 'Incomplete final replay endpoints')
+    if endpoint_identities is not None:
+        require(set(endpoint_identities)=={v+'/'+str(t) for v,t in ENDPOINTS},'All9 exact endpoint checkpoint identities required')
+        for version,t in ENDPOINTS:
+            identity=endpoint_identities[version+'/'+str(t)]
+            require(identity['version']==version and identity['completed_outer']==t
+                and all(index[version,t,i]['current_adapter_tensor_sha256']==identity['adapter_tensor_sha256'] for i in range(512)),
+                'Actual replay adapter digest differs from exact saved checkpoint identity')
     base = [index['source100', 0, i] for i in range(512)]
     require(all(r['protocol_em'] == bank_index[i]['source_zero_em'] for i, r in enumerate(base)), 'Common-zero EM/bank changed')
     models = {}
@@ -168,14 +187,27 @@ def summarize(records, bank):
             bank_subset=counts(eligible) if eligible else None, bank_coverage=len(eligible),
             features={feature: association(rows, feature) for feature in FEATURES},
             dataset_feature_relations={d: {f: association([r for r in rows if r['dataset'] == d], f) for f in FEATURES}
-                for d in ('nq', 'hotpotqa')}, regions=regional_summary(rows))
+                for d in ('nq', 'hotpotqa')}, regions=regional_summary(rows),
+            checkpoint_identity=endpoint_identities.get(version+'/'+str(t)) if endpoint_identities is not None else None)
     paired = {}
     for v, t in sorted(ENDPOINTS - {('source100', 0)}):
         paired['source100/0->' + v + '/' + str(t)] = paired_cases(base, [index[v, t, i] for i in range(512)])
     for v in ('G_POS', 'G_NEG', 'H_POS', 'H_NEG'):
         paired[v + '/15->' + v + '/25'] = paired_cases([index[v, 15, i] for i in range(512)], [index[v, 25, i] for i in range(512)])
+    cross={}
+    for t in (15,25):
+        for left in ('G_POS','G_NEG'):
+            for right in ('H_POS','H_NEG'):
+                key=left+'/'+str(t)+'->'+right+'/'+str(t)
+                pair_result=paired_cases([index[left,t,i] for i in range(512)],[index[right,t,i] for i in range(512)])
+                require(pair_result['questions']==512 and {d:v['questions'] for d,v in pair_result['datasets'].items()}=={'nq':256,'hotpotqa':256},
+                    'Cross-signal descriptive pair cannot filter by feature availability')
+                cross[key]=dict(pair_result,descriptive_only=True,no_significance_test_or_new_family=True,
+                    delta_direction=right+'/'+str(t)+' minus '+left+'/'+str(t),
+                    left_checkpoint_identity=models[left+'/'+str(t)]['checkpoint_identity'],
+                    right_checkpoint_identity=models[right+'/'+str(t)]['checkpoint_identity'])
     return dict(schema='opsd-signal-heldout-response-relations-v1', accepted=True, formal_EM_rows=4608,
-        models=models, paired=paired, new_samples_or_training=0, pass_probability_not_measured=True,
+        models=models, paired=paired, descriptive_cross_signal_pairs=cross, new_samples_or_training=0, pass_probability_not_measured=True,
         reference_bank_gold_selected=True, baseline_bank_subset_only_one_class_NA=True,
         all512_EM_not_filtered_by_metric_coverage=True,
         scope='Fixed seed reused validation. Privileged posthoc conditional associations are not calibrated success probabilities, training gradients, or causal effects. No E25 control.',
@@ -186,13 +218,24 @@ def main():
     p = argparse.ArgumentParser()
     for name in ('request', 'request-sha256', 'output'): p.add_argument('--' + name, required=True)
     a = p.parse_args(); request, rp = read_json(dict(path=a.request, sha256=a.request_sha256)); bank, bp = read_json(request['bank'])
-    rows = []; inputs = []
+    rows = []; inputs = []; identities={}
     for ref in request['replay_receipts']:
         value, proof = read_json(ref)
         require(value.get('accepted') is True and value['actual_workers_exit_and_release'] is True
             and value['bank']['sha256'] == bp['sha256'], 'Replay complete/release/bank proof missing')
+        endpoint,ep=read_json(value['endpoint']);replay_request,request_proof=read_json(value['request'])
+        version=endpoint['version'];t=endpoint['completed_outer'];key=version+'/'+str(t)
+        require(key not in identities and (version,t) in ENDPOINTS and endpoint['accepted'] is True
+            and endpoint['primary_slots']==512 and endpoint['actual_child_exit_and_release'] is True
+            and replay_request['endpoint']['sha256']==ep['sha256']
+            and replay_request['input_identity']['expected_adapter_tensor_sha256']==endpoint['input_identity']['expected_adapter_tensor_sha256']
+            and replay_request['input_identity']['raw_checkpoint']==endpoint['raw_checkpoint'], 'Replay exact native endpoint identity changed')
+        identities[key]=dict(version=version,completed_outer=t,evaluation=ep,raw_checkpoint=endpoint['raw_checkpoint'],
+            adapter_tensor_sha256=endpoint['input_identity']['expected_adapter_tensor_sha256'],
+            source_model_manifest=endpoint['input_identity']['source_model_manifest'],
+            runtime_manifest=endpoint['input_identity']['runtime']['manifest'],validation=endpoint['input_identity']['validation'])
         rr, rr_proof = read_rows(value['results']); rows.extend(rr); inputs.extend([proof, rr_proof])
-    result = summarize(rows, bank); result.update(request=rp, bank=bp, inputs=inputs)
+    result = summarize(rows, bank,identities); result.update(request=rp, bank=bp, inputs=inputs)
     output = exclusive_json(a.output, result)
     print(json.dumps(dict(accepted=True, output=output, formal_EM_rows=4608)))
 
