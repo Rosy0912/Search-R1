@@ -1,0 +1,32 @@
+{
+  "actual_node_execution_performed": false,
+  "actual_transfer_performed": false,
+  "dependency": {
+    "relative_package": "opsd_ablation_outer_backup_v2/backup.py",
+    "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 6561,
+      "sha256": "cb26336da0e0a9d72421288eb5c97cd650bf979d7981a6e3fc26f5936789058d"
+    },
+    "source-operation.py": {
+      "bytes": 17694,
+      "sha256": "086c15e619a19ba646232b5aa62653a43b316252b1862b1ba7cd4291086d5311"
+    },
+    "test_scope.py": {
+      "bytes": 7172,
+      "sha256": "c2c0d296f0726108daada248c700a9379b251559214b2a3dc5d880f8bad83653"
+    },
+    "transfer-gzip.py": {
+      "bytes": 4251,
+      "sha256": "d1cda02fb6a3c1bff852f57b4c5a504d1558846e67ca7ce1caff578f3b6a7117"
+    },
+    "verify-archive.py": {
+      "bytes": 6391,
+      "sha256": "c9a0198ace442971fd14dc76335f1621a0c1008de5a3e1f4803e3cd1c49eec40"
+    }
+  },
+  "schema": "opsd-ablation-closed-native-backup-source-manifest-v1",
+  "scope": "Only exact study/eval72/driver8b closed group native512 BF16 or BF16+FP16 assets; CPU/read-only backup identity"
+}

@@ -1,0 +1,88 @@
+{
+  "schema": "opsd-legacy-native512-config-v1",
+  "state": "NOT_READY",
+  "run_id": null,
+  "study_id": null,
+  "variant": "L",
+  "evaluation_role": "historical_forward_appendix",
+  "common_config": {
+    "path": null,
+    "sha256": null
+  },
+  "qualification": {
+    "path": null,
+    "sha256": "3da5b18e3431901a04f146d45091134cc3f90aeeb0130b35439fd3277fe39f10"
+  },
+  "checkpoint99": {
+    "path": "/data/shaoshitong/search-e1-opsd-online-archive100-8gpu-20261008/runs/checkpoints/update-00000099-outer-00009/manifest.json",
+    "sha256": "476c1b1003d8d8f4cc4711c462b013ed249bfbddc6d4a5235686f5e2ff946ad4"
+  },
+  "mandatory_completion": {
+    "path": null,
+    "sha256": null
+  },
+  "source_commit": null,
+  "helper_source_manifest": {
+    "path": null,
+    "sha256": null
+  },
+  "paths": {
+    "base": null,
+    "output_root": null,
+    "helper_root": null,
+    "python": null,
+    "retriever_url": null
+  },
+  "owner": null,
+  "resources": null,
+  "gates": {
+    "publication": {
+      "path": null,
+      "sha256": null
+    },
+    "storage": {
+      "path": null,
+      "sha256": null
+    },
+    "retriever_admission": {
+      "path": null,
+      "sha256": null
+    },
+    "memory_observer": {
+      "path": null,
+      "sha256": null
+    },
+    "memory_observer_config": {
+      "path": null,
+      "sha256": null
+    },
+    "memory_observer_source": {
+      "path": null,
+      "sha256": null
+    },
+    "process_exclusions": [],
+    "cpu_roles": []
+  },
+  "scientific": null,
+  "models": {
+    "L_forward99_bf16": {
+      "deployment_model": null
+    }
+  },
+  "comparison_inputs": {
+    "bf16_zero": {
+      "summary": {
+        "path": null,
+        "sha256": null
+      },
+      "version": "bf16_zero"
+    },
+    "C0": {
+      "summary": {
+        "path": null,
+        "sha256": null
+      },
+      "version": "raw10_bf16"
+    }
+  }
+}

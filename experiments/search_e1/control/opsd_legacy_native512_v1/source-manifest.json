@@ -1,0 +1,90 @@
+{
+  "cpu_fixture_count": 3,
+  "cpu_skipped": 0,
+  "files": {
+    "README.md": {
+      "bytes": 7023,
+      "sha256": "4356fdd92417484da9f43ad00ce4494155803112c0e9e76ce2ba90cb23ea8732"
+    },
+    "completion.py": {
+      "bytes": 9318,
+      "sha256": "071209986c66b66c1ccd2eb3e9b5b969f1d5846e85bcfcd8602598e70c92425f"
+    },
+    "config.pending.json": {
+      "bytes": 1847,
+      "sha256": "64c54ea670c2ade22e14b45da68cac666286c4ea894cc225bbe6db7056b57ae4"
+    },
+    "controller.py": {
+      "bytes": 9635,
+      "sha256": "d6500ed2ef18acbb2df0407847874b264d52e3ae7de3a2fcefc9e9bbc85b26b7"
+    },
+    "gates.py": {
+      "bytes": 13171,
+      "sha256": "162ed2c98ca03a887825cfa8f8a3dbb567d77481a950811a34fa4c44bed8e66e"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "mandatory.pending.json": {
+      "bytes": 8306,
+      "sha256": "3409d9c5cdfb3443df64067d842b3a9d808e4081c5c2fd09188e46c53c54c4d8"
+    },
+    "prepare.py": {
+      "bytes": 6391,
+      "sha256": "ed5b8f43095a4f90e4a100e189f5ca87d45a4574afbca8948656c6b8d85fdb84"
+    },
+    "summary.py": {
+      "bytes": 13937,
+      "sha256": "2e965e199bf65ec7f6b19a8ab3923a334636342221f857fc08f6f2afe42eba9a"
+    },
+    "test_cpu.py": {
+      "bytes": 4090,
+      "sha256": "41315178b20238c73168e6027eae77bb771f3c47b993a68af367fe428d03b2da"
+    },
+    "utils.py": {
+      "bytes": 11891,
+      "sha256": "827f38a4469d979d87721f6a023da0e054de9b5a64a9315ecc5ba362d48e176e"
+    },
+    "worker.py": {
+      "bytes": 13132,
+      "sha256": "e98edbdb61c12bf06ef65c9ad8e54022b38cf50136099100af3a5c4b92bba17a"
+    }
+  },
+  "no_model_or_GPU_tests": true,
+  "original_eval72_manifest_sha256": "2e55c809d91bd3b4654d0ec0c4b0532e3ee8c413aac69a19cfd8f28bf042c842",
+  "reused_original_sources": {
+    "controller.py": {
+      "bytes": 12571,
+      "exact_copy": false,
+      "sha256": "880df450fb07ba1dcebf8f4a04d903338801a91843d0fac63dc7c02b68af0a4d"
+    },
+    "gates.py": {
+      "bytes": 11811,
+      "exact_copy": false,
+      "sha256": "3ff51bee6526947270140d20be7a2d5308f0c188b13bb332cdaa6e37290834d9"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "exact_copy": true,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "summary.py": {
+      "bytes": 14030,
+      "exact_copy": false,
+      "sha256": "609e2e3379d2a26d3af0f9ddad522dabf97df0bbbe63cf7a23d0937d52f48877"
+    },
+    "utils.py": {
+      "bytes": 12331,
+      "exact_copy": false,
+      "sha256": "19f7ee1693776e6654c5f9168a6d43f497eb8f03570db16cce96c75460f1e186"
+    },
+    "worker.py": {
+      "bytes": 13680,
+      "exact_copy": false,
+      "sha256": "33ab79dc7b9b3d270fe0950ce4c00c8f4955340e2376f26879101588d011587b"
+    }
+  },
+  "schema": "opsd-legacy-native512-source-manifest-v1",
+  "scope": "Independent optional L99 BF16 appendix preparation; original70/5632 unchanged; no actual GPU run"
+}

@@ -1,0 +1,471 @@
+{
+  "schema": "opsd-legacy-mandatory-closure-inputs-v1",
+  "state": "NOT_READY",
+  "study_id": null,
+  "driver_complete": {
+    "path": null,
+    "sha256": null
+  },
+  "driver_start": {
+    "path": null,
+    "sha256": null
+  },
+  "study_manifest": {
+    "path": null,
+    "sha256": null
+  },
+  "foreground_terminal": {
+    "path": null,
+    "sha256": null
+  },
+  "groups": {
+    "C0": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "C1": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "M": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "R": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "W": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "P": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    },
+    "J": {
+      "config": {
+        "path": null,
+        "sha256": null
+      },
+      "status": {
+        "path": null,
+        "sha256": null
+      },
+      "terminal": {
+        "path": null,
+        "sha256": null
+      },
+      "outer_completions": [
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        },
+        {
+          "path": null,
+          "sha256": null
+        }
+      ],
+      "child_history": {
+        "path": null,
+        "sha256": null
+      },
+      "result_accepted": {
+        "path": null,
+        "sha256": null
+      }
+    }
+  }
+}
