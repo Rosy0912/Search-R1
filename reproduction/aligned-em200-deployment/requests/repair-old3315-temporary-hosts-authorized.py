@@ -1,5 +1,5 @@
 """Explicitly authorized single-line temporary resolver repair; no process signals."""
-import base64,datetime,fcntl,hashlib,json,os,socket,stat,subprocess,tempfile,time,sys
+import base64,datetime,fcntl,hashlib,json,os,socket,stat,subprocess,tempfile,time,sys,signal
 from pathlib import Path
 ROOT=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009')
 P=Path('/etc/hosts'); LINE=b'10.33.0.8 h100-16 # BAPO_STOPPED3315_RESOLUTION_REPAIR_20261009_V1\n'
@@ -36,6 +36,8 @@ def main():
   raise RuntimeError('Optimized Python disables admission assertions; refuse')
  assert socket.gethostname()=='h100-5'
  assert Path('/proc/sys/kernel/random/boot_id').read_text().strip()=='9471cbc1-9ae1-4be5-8edb-1e84e850e2cc'
+ def terminate(signum,frame):raise SystemExit('Interrupted; rolling back temporary alias')
+ for sig in (signal.SIGTERM,signal.SIGHUP):signal.signal(sig,terminate)
  E.mkdir(mode=0o700,exist_ok=False)
  lock=open(E/'lock','w');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  v={'authorization':'User: 可以，怎么快怎么来 (2026-10-09); temporary hosts alias and rollback only','start_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'samples':[],'signals_sent':False}
