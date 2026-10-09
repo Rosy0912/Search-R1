@@ -1,0 +1,14 @@
+{
+  "base_source_sha256": "57191ac9f97d35bf00ac5d54a1187e82078a52b41d1ca7b9c015fbf99d89f7a7",
+  "files": {
+    "README.md": {
+      "bytes": 4358,
+      "sha256": "04d10ddf7fbe6788914823731211591f610587b2314985674253627e1751e757"
+    },
+    "aggregate_clipmass.py": {
+      "bytes": 29716,
+      "sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a"
+    }
+  },
+  "schema": "seven-group-recorded-clipmass-source-v1"
+}
