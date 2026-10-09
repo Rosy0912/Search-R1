@@ -34,7 +34,13 @@ class LifecycleFixture:
                 helper_source_manifest=self.source,publication=self.publication,groups=groups))
     def path(self,value):
         value=str(value)
-        return RealPath(str(self.root)+value[len(REMOTE):] if value.startswith(REMOTE) else value)
+        actual=RealPath(value)
+        # On the deployed Node the real published helper itself lives below
+        # REMOTE/source/<commit>/..., unlike the local Mac checkout. Preserve
+        # those actual source reads; map only synthetic study/output paths.
+        if actual==self.helper or self.helper in actual.parents:
+            return actual
+        return RealPath(str(self.root)+value[len(REMOTE):] if value==REMOTE or value.startswith(REMOTE+'/') else value)
     def finish_group(self,cfg,ref):
         output=RealPath(cfg['paths']['output_root'])
         (output/'status.json').write_text(json.dumps(dict(phase='TRAIN_COMPLETE',run_id=cfg['run_id'],config_sha256=ref['sha256'],outer_iterations=25)))
@@ -110,6 +116,15 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(runner.actual_identity(child,'same')['starttick'],10)
         with patch.object(runner.gates,'process',return_value={'uid':1001,'run_id':'different'}):
             with self.assertRaises(ValueError):runner.actual_identity(child,'same')
+    def test_deployed_helper_under_remote_root_is_not_rewritten_to_fixture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture=LifecycleFixture(directory)
+            fixture.helper=RealPath(REMOTE+'/source/training-version/opsd_signal_weight_v1')
+            self.assertEqual(fixture.path(fixture.helper),fixture.helper)
+            self.assertEqual(fixture.path(fixture.helper/'study_runner.py'),fixture.helper/'study_runner.py')
+            self.assertEqual(fixture.path(REMOTE),fixture.root)
+            self.assertEqual(fixture.path(REMOTE+'/sequence-attempts/test'),fixture.root/'sequence-attempts/test')
+            self.assertEqual(fixture.path(REMOTE+'-other'),RealPath(REMOTE+'-other'))
     def test_exited_child_is_not_actual_identity(self):
         child=types.SimpleNamespace(pid=77,poll=lambda:0,returncode=0)
         with self.assertRaises(RuntimeError):runner.actual_identity(child,'same')

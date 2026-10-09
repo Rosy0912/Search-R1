@@ -1,6 +1,8 @@
 """CPU tests of real scorer forward, state restore and weighted native gradient."""
 import copy
 import importlib.util
+import os
+import hashlib
 from pathlib import Path
 import random
 import unittest
@@ -42,7 +44,8 @@ def scored(m,group,variant='G_POS',c=None,t=None):
 
 class ScorerTests(unittest.TestCase):
     def test_region_logic_exact_original_and_invalid_final_payload(self):
-        path=Path(__file__).resolve().parent.parent/'opsd_first5_em_loss_analysis_v1/extract.py'
+        path=Path(os.environ.get('OPSD_SIGNAL_REGION_FIXTURE') or str(Path(__file__).resolve().parent.parent/'opsd_first5_em_loss_analysis_v1/extract.py'))
+        self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),'59491b6d5e93799e80a9e892b60196f28082256ba38831d84e6d964b9289124c')
         spec=importlib.util.spec_from_file_location('_original_regions',path);original=importlib.util.module_from_spec(spec);spec.loader.exec_module(original)
         for text in ('<think>x<answer>A</answer>','<answer>A</answer><answer>B</answer>',
                      '<answer></answer>','<search>q</search><information>d</information><answer>A</answer>'):

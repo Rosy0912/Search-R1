@@ -137,8 +137,8 @@
       "sha256": "c2825e497b2fb6d866a69b8b4d9288f45f40e9a83e9ba61314a090152a1e6f59"
     },
     "test_sibling_scores.py": {
-      "bytes": 17116,
-      "sha256": "7d5ada048903a9d6b82125f3a299cf79a3a872224f5381958f582552634bb6dc"
+      "bytes": 17339,
+      "sha256": "884134c408df007826ce694d3aa81436b000fdb788d0225bde5db9519cf98abb"
     },
     "test_signal_controller.py": {
       "bytes": 14083,
@@ -157,8 +157,8 @@
       "sha256": "8c29963bace4ddeeb333dca05dc6fd18903967959cae10eb6520e8b00ba425d7"
     },
     "test_study_runner.py": {
-      "bytes": 12345,
-      "sha256": "5fc1530afa92ca591a9635af05c5e45ea946ffc178f361f40fe28d5ba3ca112c"
+      "bytes": 13447,
+      "sha256": "856153b3f6b278f695460c3131c585438e293062fe9847393cc4a8a4dd44e45c"
     },
     "test_targets.py": {
       "bytes": 3790,
