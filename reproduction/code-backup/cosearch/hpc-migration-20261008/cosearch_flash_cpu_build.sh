@@ -5,7 +5,9 @@ R="$BASE/runtime/flash-attn-281-hpc-build"
 mkdir -p "$R"
 exec 9>"$R/build.lock"
 flock -n 9
+set +u
 source /etc/profile
+set -u
 module load gcc/11.5 cuda/12.8
 PY="$BASE/source/author-native/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11"
 export PYTHONPATH="$BASE/source/author-native/env/lib/python3.11/site-packages"
