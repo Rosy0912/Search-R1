@@ -21,9 +21,9 @@ C1评估明确加载末CP101的BF16 base + 未合并FP32 LoRA，未回退best。
 
 正式完整覆盖目前为4个模型、2048/5632槽，七个模型版本仍待完成。09:39快照中M正在采样；09:47:20实读同一M运行已完成outer0，生成2560条轨迹、P=K327、11次真实Adam更新。全队列已闭合21/70 outer、212次Adam、6362个pair曝光，尚余49个outer。M有效token总量尚未独立汇总，不能把此前20轮的1212173 token当作21轮合计。已保存的TRAIN曲线仍为20轮，未把训练batch reward当heldout曲线。
 
-M运行b255c1eb72e84ca0bd6315e57e3527d0，controller2630209、UID1005、starttick930160381，原driver1894801自然接续。11次更新是原生提交记录；其CP1/5的独立CPU状态验收与后续正式512结果分别记录，不能由启动或原生计数替代。显存observer鲜活，历史每卡直接余量均不低于3175MiB，没有低于1024MiB门限的记录。
+M运行b255c1eb72e84ca0bd6315e57e3527d0，controller2630209、UID1005、starttick930160381，原driver1894801自然接续。09:56实读M已闭合两轮，P/K分别327和308，共21次原生Adam提交；全队列22/70轮、222次Adam、6670个pair曝光。CP1/5独立CPU实读各实际rc0、八rank完整Adam/groups/moments有限且一致、步数准确1/5；504个adapter张量有限，首步252个B改变，第五步504个A/B改变。此核验没有加载模型或初始化CUDA，也不是效果提升证明。显存observer鲜活，历史每卡直接余量均不低于3175MiB，没有低于1024MiB门限的记录。
 
-C1十轮raw4087成员已持久备份。新增闭合全局票据151成员/1279704B独立gzip100221B，实际inventory/transfer/after/memberSHA均通过；39个原phase-exit引用已独立绑定。不重复备份已验收raw，不改生产source。V1接口误用stage导致只读inventory失败，原rc1/日志保留；独立V2按真实group phase字段修复并发表后实际成功。训练与GPU队列始终继续。
+C1十轮raw4087成员已持久备份。新增闭合全局票据151成员/1279704B独立gzip100221B，实际inventory/transfer/after/memberSHA均通过；39个原phase-exit引用已独立绑定。正式C1 native512完整原轨迹、HTTP/生成ID、worker与父进程票据另591成员/33084301B，独立gzip5038635B；源freshSHA、实际传输rc0、源metadata-after及全部解压成员SHA均通过，本地完成票据SHA29273eb14d6b512c7f6884b706efc93ab88689f7a1ec788074bed1f4dbfdc314。两份副本均保留Node原资产，备份始终不挡M训练。不重复备份已验收raw，不改生产source。V1接口误用stage导致只读inventory失败，原rc1/日志保留；独立V2按真实group phase字段修复并发表后实际成功。
 
 补足必要数学证据只运行一次隔离CPU检查，8.52秒实际rc0，真实reverse目标的B1..32含空rank×普通/混合64对照及9个原指定数学方法通过，最大梯度误差1.49e−8。CUDA未初始化。它不验证NCCL或完整生产故障恢复；完整current/old/Adam/scaler/全RNG/cursor的受控恢复证据仍需补足，不以toy或scaler-only代替。
 

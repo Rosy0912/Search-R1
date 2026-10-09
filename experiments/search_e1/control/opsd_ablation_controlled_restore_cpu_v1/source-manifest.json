@@ -1,0 +1,15 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4599,
+      "sha256": "09cdebbb91100b754fa49807a8457eb7bca8fc00ed9d2bd6ee7776fe1fb5270b"
+    },
+    "check.py": {
+      "bytes": 19807,
+      "sha256": "86ec06b6eb8063db655357457b256771d96424d3f750150c0ccc114b93ff14f1"
+    }
+  },
+  "no_execution": true,
+  "prepared_only": true,
+  "schema": "controlled-restore-cpu-source-manifest-v1"
+}
