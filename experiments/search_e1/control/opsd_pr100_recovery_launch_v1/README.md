@@ -1,0 +1,1 @@
+CPU-only binding of published recovery templates and exact previous technical-stop/train0/eval2/CP99/registry/observer evidence. Keeps original training science/config and earlier seven-group terminal; retains independent new mirror destination. Run finalize_recovery.py --help for explicit path/SHA fields. No GPU/model/HTTP or training restart.

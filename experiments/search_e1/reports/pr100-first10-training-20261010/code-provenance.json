@@ -1,0 +1,28 @@
+{
+  "metrics_recomputed": false,
+  "original_plot": {
+    "bytes": 272716,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/first10-train-em-loss.png",
+    "sha256": "734843f89762b8955ba8c54520cd6c8d5a45f9b42850a2ae98bff4b95b2eca4f"
+  },
+  "original_plot_provenance": {
+    "bytes": 1562,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/plot-provenance.json",
+    "sha256": "22cfbf36228c714f397218860a68f8bcb91c359fe83490c9999c64106d299b15"
+  },
+  "persisted_utc": "2026-10-09T18:39:52.527415+00:00",
+  "plot_rerun": false,
+  "report_complete": {
+    "bytes": 59250,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/complete.json",
+    "sha256": "1f0447b28830a34d834c751adcd51ce68cbc5ebc788c14e7cf65cc546cf1ec26"
+  },
+  "schema": "pr100-first10-plot-source-durability-v1",
+  "source_program": {
+    "bytes": 3892,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/plot_first10.py",
+    "sha256": "bb59c9cd9799c2d40da47713c188f8ded0ed11e4f59e150026e4da0e65ca9724"
+  },
+  "source_scope": "Exact inline Python plotting program previously executed, persisted without rerunning it. Existing plot, metrics, and plot-provenance.json remain unchanged.",
+  "training_run_id": "c6a79477161a4a059e4fd68fc7567f87"
+}

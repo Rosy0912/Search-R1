@@ -1,0 +1,29 @@
+{
+  "inputs": [
+    {
+      "bytes": 13501,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/summary.json",
+      "sha256": "845769b947175fa2cd008b3728fad4e2bae441f7a902bd671bb4f02a7428f94c"
+    },
+    {
+      "bytes": 15697,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/committed-adam-loss.csv",
+      "sha256": "270b1e67f7adb5864b3144e17f1b292e4b2c5ab832b4aaac5fead48e72f6f4ec"
+    },
+    {
+      "bytes": 59250,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/complete.json",
+      "sha256": "1f0447b28830a34d834c751adcd51ce68cbc5ebc788c14e7cf65cc546cf1ec26"
+    }
+  ],
+  "matplotlib_version": "3.9.4",
+  "plot": {
+    "bytes": 272716,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first10-training/first10-train-em-loss.png",
+    "sha256": "734843f89762b8955ba8c54520cd6c8d5a45f9b42850a2ae98bff4b95b2eca4f"
+  },
+  "reporter_commit": "176f50f41659bdf0361e64eb30b76eaaacb4d556",
+  "schema": "pr100-static-training-plot-v1",
+  "scope": "Aggregate-only plot. No model scoring, bootstrap, trajectory/token reads, or smoothing. Varying TRAIN cohorts; pre-update sampled EM. Loss values are recorded before optimizer update, averaged equally across actual trajectories. Heldout512 completion count is zero at this snapshot.",
+  "training_run_id": "c6a79477161a4a059e4fd68fc7567f87"
+}

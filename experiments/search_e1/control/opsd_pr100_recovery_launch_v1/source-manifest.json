@@ -1,0 +1,13 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 347,
+      "sha256": "031c699a539e392bcbad27fd47c6f66a1ed6b0e6b1d2ae457aa8f2154aa2d17d"
+    },
+    "finalize_recovery.py": {
+      "bytes": 5098,
+      "sha256": "17ad738fe2ba0a036c3f304a918e161f7eef9d6b2a5f2677ac282db565831ee8"
+    }
+  },
+  "schema": "source-manifest-v1"
+}
