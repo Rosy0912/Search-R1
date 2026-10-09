@@ -1,0 +1,17 @@
+# C1十轮debug记录核对完成，GPU队列继续
+
+2026-10-09 09:20–09:21 CST，本机只读核对C1已验收的三份闭合raw备份，实际返回0，用时16.72秒，stderr为空。入口先以`8534daa0f30ca965c5c6595a870d8f62478c91c7`推送并从FETCH_HEAD逐文件回读，再执行。没有新增fixture、GPU测试、模型前向、评分或训练；原study队列不等待这些CPU工作或备份。
+
+C1十个outer共有3023条已提交轨迹、629099个有效policy token。原clipmass验收的101个update和3023个token日志引用被复用，本次只补查实际debug字段及存储内容，没有重复计算KL或裁剪损失。
+
+实际top32覆盖81920个位置，每个outer8192，四个分布均检查32个互异、合法ID及有限logprob。其余547179个位置保留完整标量损失记录，没有假称保存top32。top32不能重建完整KL；本次没有重算排序或概率归一化。
+
+教师自主诊断共80题，每个outer固定4个CC、4个CW。选择、request、parent、child、case、完整HTTP及生成ID的SHA链与来源/透明记录标签通过；子进程RNG隔离，训练和验证分母贡献均为0。教师的自主历史不同于训练时固定D前缀上的q，不能据此证明训练教师纠错有效，也不能把80题作为512评测。parent中嵌入的实际wait0和GPU释放证据已检查；位于rawouter范围外的独立terminal文件未在本次重新读取。
+
+外轮0按原哈希预选的轨迹前两个有效位置，共8个FP32词表logprob文件、4862976字节。每文件实际shape151936，完整成员SHA、header、精确payload长度及每个浮点值有限性均通过，两个位置保存成功，实际cap_skip为0。没有重算全词表KL、概率归一化或梯度。这里只确认C1当前子集低于24GiB；七组共享ledger的最终对账仍待全部完成。
+
+学生原始25,600条训练生成及80份generation/80份HTTP文件，由已验收完整备份成员SHA绑定。本次没有再次解析全部学生轨迹内容。原题、逐token记录、词表数组和私有CLI/进程证据留在私有目录，没有提交到Git。
+
+目前C0/C1训练共20/70outer已完成，剩余M/R/W/P/J沿原八卡队列执行。C1正式native512尚未完整验收；不从部分输出估计EM。还需后五组、全部5632条正式预测、各组精度/真实曝光与debug持久化及最终中文配对统计报告，目标保持ACTIVE。
+
+公开汇总见`reports/C1-recorded-debug-coverage-20261009/`。结果SHA为`c4e6d6f03241c844f45638756d9ddd1b519aa7897bf4f9b0229864f2262d5a89`；实际入口SHA为`99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9`。完整私有证据目录为`work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-20/C1-debug-coverage-1791508696-b698f80b/`。

@@ -1,0 +1,293 @@
+{
+  "schema": "opsd-ablation-recorded-debug-coverage-v1",
+  "accepted": true,
+  "started_unix": 1791508843.008343,
+  "ended_unix": 1791508859.643865,
+  "groups": {
+    "C1": {
+      "status": "COMPLETE",
+      "variant": "C1",
+      "run_id": "a1a56efd32e5456d8c6813454975e38f",
+      "teacher_autoregressive": {
+        "total_cases": 80,
+        "max_per_outer": 8,
+        "per_outer": [
+          {
+            "outer": 0,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 1,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 2,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 3,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 4,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 5,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 6,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 7,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 8,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          },
+          {
+            "outer": 9,
+            "cases": 8,
+            "selected_strata": {
+              "CC": 4,
+              "CW": 4
+            },
+            "not_applicable": false
+          }
+        ],
+        "actual_parent_embedded_rc0_release_verified": true,
+        "external_terminal_files_independently_read": false,
+        "isolated_child_source100_common_bf16": true,
+        "training_validation_denominator": 0
+      },
+      "student_trace_persistence": {
+        "outers": 10,
+        "native_rows": 25600,
+        "original_member_SHA_binding": true,
+        "generation_trace_files": 80,
+        "HTTP_trace_files": 80,
+        "trace_contents_rescanned": false
+      },
+      "top32": {
+        "outers": [
+          {
+            "outer": 0,
+            "valid_tokens": 70207,
+            "committed_pairs": 327,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 62015,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 1,
+            "valid_tokens": 68377,
+            "committed_pairs": 308,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 60185,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 2,
+            "valid_tokens": 60850,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52658,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 3,
+            "valid_tokens": 61400,
+            "committed_pairs": 290,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 53208,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 4,
+            "valid_tokens": 57905,
+            "committed_pairs": 293,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 49713,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 5,
+            "valid_tokens": 63958,
+            "committed_pairs": 301,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55766,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 6,
+            "valid_tokens": 59836,
+            "committed_pairs": 296,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 51644,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 7,
+            "valid_tokens": 62559,
+            "committed_pairs": 304,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 54367,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 8,
+            "valid_tokens": 60728,
+            "committed_pairs": 291,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 52536,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          },
+          {
+            "outer": 9,
+            "valid_tokens": 63279,
+            "committed_pairs": 317,
+            "saved_top32_positions": 8192,
+            "scalar_only_positions": 55087,
+            "top32_cap": 8192,
+            "all_four_vectors_shape32_finite_ID_range": true,
+            "no_explicit_top32_cap_skip_field": true,
+            "selection_order_reexecuted": false
+          }
+        ],
+        "valid_tokens": 629099,
+        "saved_positions": 81920,
+        "scalar_only_positions": 547179,
+        "distributions_per_saved_position": 4,
+        "actual_arrays_shape_finite_ID_range_verified": true,
+        "numerical_rank_or_normalization_recomputed": false
+      },
+      "full_vocabulary": {
+        "requested_positions": 2,
+        "saved_positions": 2,
+        "explicit_cap_skip_positions": 0,
+        "saved_files": 8,
+        "committed_NPY_bytes": 4862976,
+        "all_backed_up_subset_NPY_bytes": 4862976,
+        "shape": [
+          151936
+        ],
+        "dtype": "float32",
+        "all_committed_payload_values_finite": true,
+        "fresh_NPY_member_SHA": true,
+        "deterministic_preselection_verified": true,
+        "selected_pair_index": 268,
+        "selected_qid_selection_digest": "0070a99f00d58f0ec96f07616e62aa009f0d004dfd3e31b22ab9fcc5f5306825",
+        "first_valid_token_positions": [
+          0,
+          1
+        ],
+        "cap_bytes": 25769803776,
+        "only_current_subset_below_cap": true,
+        "studywide_shared_ledger_verification": "PENDING",
+        "KL_or_full_distribution_normalization_recomputed": false
+      }
+    }
+  },
+  "coverage": {
+    "completed_groups": 1,
+    "expected_groups": 7,
+    "completed_outers": 10,
+    "expected_outers": 70,
+    "subset": [
+      "C1"
+    ],
+    "all70_debug_coverage_complete": false,
+    "shared_24GiB_ledger_complete": false
+  },
+  "provenance": {
+    "source_sha256": "99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9",
+    "aggregate_source_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+    "input_manifest_sha256": "c148f148aa094cb3ddfc4eb21b176474077653bf47759e3028ff4e337b989e14",
+    "clipmass_inputs_sha256": "25b0a1e9ab2d1477b1f0ff387786f368ddf7ff3a577147467586d4c394d0b533",
+    "prior_committed_proof_sha256": "3687dc5fd62ff7244660e16aa5c0d079d6d59f1a5bd7ea3f13bd7b46251cf7ea",
+    "clipmass_summary_sha256": "bf500b5a1692a247df38333a69361bb0741f256b6cc71f857516ef50117904c1"
+  },
+  "limitations": [
+    "Recorded committed artifacts only; no models, scoring, logits/KL/gradients or RNG replay.",
+    "Teacher autonomous privileged history differs from fixed-D teacher-forced training q; no scientific denominator contribution.",
+    "Student full trace/HTTP content preservation reuses accepted full member SHA; this pass does not reparse their raw content.",
+    "Teacher external phase-exit files are outside these raw archives; embedded parent rc0/release only, not independent external terminal read.",
+    "Top32 four arrays checked shape/finite/ID range, not full-vocabulary normalization or probability reconstruction.",
+    "Full-vocabulary finite payload and fresh member SHA checked; subset bytes do not verify final all-seven shared ledger or its reservations."
+  ]
+}

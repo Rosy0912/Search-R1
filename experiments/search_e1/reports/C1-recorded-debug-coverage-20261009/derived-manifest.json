@@ -1,0 +1,27 @@
+{
+  "accepted": true,
+  "source_sha256": "99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9",
+  "input_sha256": "c148f148aa094cb3ddfc4eb21b176474077653bf47759e3028ff4e337b989e14",
+  "artifacts": {
+    "debug-coverage-publication.json": {
+      "bytes": 9830,
+      "sha256": "c4e6d6f03241c844f45638756d9ddd1b519aa7897bf4f9b0229864f2262d5a89"
+    },
+    "details.private.json": {
+      "bytes": 2347361,
+      "sha256": "2ea42399543760fabd056671e952fac3b84999ed0a92961d004225c28a8cd0c0"
+    }
+  },
+  "coverage": {
+    "completed_groups": 1,
+    "expected_groups": 7,
+    "completed_outers": 10,
+    "expected_outers": 70,
+    "subset": [
+      "C1"
+    ],
+    "all70_debug_coverage_complete": false,
+    "shared_24GiB_ledger_complete": false
+  },
+  "no_node_or_model_IO": true
+}
