@@ -131,6 +131,9 @@ A minimal independent endpoint-pair reader was implemented and independently rev
 
 实际独立CPU读CP120/outer11，四rank完整Adam120/moments/groups精确一致、504个FP32 adapter全有限并相对commonzero改变，CUDA未初始化。本轮303条轨迹/53472有效token及尾批15条的实际分母通过。累计12轮3653曝光/662175有效token完成原实际forward标量、mask与权重重构；不声称重新计算logits、完整词表或答题效果。CP120九文件远端HKUST1备份完成，真实source/target/tar wait0、全部成员freshSHA；未在Mac保存CP。compact refs见twelve-outers-accepted-reference.json。
 
-CP100/110原始CLI stdout、真实当前wait0及目标29KiB元数据marker现已逐byte复制到独立K4 analysis/backup-evidence-556754a目录，保留原JSON字节；权重没有回到Mac，原K1/K4资产未删除。CP120同类输入路径已准备，必须发布后再做元数据staging。
+CP100/110原始CLI stdout、真实当前wait0及目标29KiB元数据marker现已逐byte复制到独立K4 analysis/backup-evidence-556754a目录，保留原JSON字节；权重没有回到Mac，原K1/K4资产未删除。CP120同类输入配置已实际发布并readback，随后三个小型元数据文件也在K4完成不可变staging和freshSHA读回。
 
 独立endpoint-pair source64794e8已实际部署、Node原env22CPU fixtures零skip/CLI0，六源文件前后SHA不变。测试依赖别名仅在helperroot外且resolve到已核原source，正式request仍canonical原路径。没有执行或伪造未产出的15/25结果；首次真实512结束后再读逐题新增/丢失。
+
+
+早期CP1/5/11/21又以原556754a CLI完成当前freshprobe，actualwait0/already_complete=true，不重传payload、不将旧unknownwait改成0。其真实stdout、当前execution、stderr和29KiB元数据marker共16个小文件在配置先提交推送/readback后复制到独立K4 analysis目录，全部freshSHA通过。CP100/110/120同样已staging；只闭合这些明确备份输入，不冒称108项完整。
