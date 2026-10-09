@@ -1,0 +1,51 @@
+{
+  "actual_source_inventory_performed": false,
+  "actual_transfer_performed": false,
+  "backup_is_training_dependency": false,
+  "closed_outers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c1-closed-global-terminal-compressed-20261009",
+  "expected_actual_updates": 101,
+  "expected_completed_outer_count": 10,
+  "files": {
+    "README.md": {
+      "bytes": 4369,
+      "sha256": "992955075c845220c65efc0759034dde39dc72f8c89637032ea5107804b6067f"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 11121,
+      "sha256": "1ef5eb037ea3ce0205951b812a1b4a3678e19747d67ed4bcfa2a255b3f4281d5"
+    },
+    "transfer-gzip.py": {
+      "bytes": 3142,
+      "sha256": "07fee174788cbedce53be7b30511e3ee9ff277dec82520900336ae1f1d8bbcac"
+    },
+    "verify-archive.py": {
+      "bytes": 5453,
+      "sha256": "6fb43e94f352d2f574ee055ba868a55d98897e3d8c8264436966aaa45f073959"
+    }
+  },
+  "final_checkpoint_sha256": "c633589a4585db624c4791a59523a1fd0bf06284f016a6a3beab7ba24a841bb8",
+  "group_terminal_sha256": "26d3e734986c1a5db622a46878252eea837c331d0472573369364f73201c1d61",
+  "preparation_state": "READY_SOURCE_ONLY_NOT_EXECUTED",
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "c1-closed-global-terminal-compressed-fixed-entry-v1",
+  "science_or_gpu_change": false,
+  "scope": "Closed C1 global training terminal evidence only; active study/global observer and already accepted 4087 outer raw files excluded",
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+  "source_originals_retained": true,
+  "static_ast_pass": true,
+  "status_sha256": "258d746de6994423db4318414017212b62a1b8c82ffb89e71eabcf9524394df3",
+  "variant": "C1"
+}
