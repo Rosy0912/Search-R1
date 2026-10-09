@@ -1,0 +1,28 @@
+{
+  "actual_node_execution_performed": false,
+  "actual_transfer_performed": false,
+  "dependency": {
+    "relative_package": "opsd_ablation_outer_backup_v2/backup.py",
+    "sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 5943,
+      "sha256": "313eed81d6afc4de76c163df3a98bd93612a72b1830eccfd00eaea5fccdfd5e0"
+    },
+    "backup.py": {
+      "bytes": 12065,
+      "sha256": "c98e8fbed925578d7650c5a131a0973d094f29f9b98394525473b933840a04fe"
+    },
+    "source-operation.py": {
+      "bytes": 17241,
+      "sha256": "b6e7274ed585b2404e4a561421c2aad5f91a1bba486702b6d4d4bb1015341316"
+    },
+    "test_backup.py": {
+      "bytes": 7348,
+      "sha256": "d427931b22d32a313f3bcf4e4bc34e1405041f4aa664fad302283bdf0a03bbdf"
+    }
+  },
+  "schema": "opsd-ablation-protected-backup-source-manifest-v1",
+  "scope": "R/W/P/J initial/update1/update5, current shared optimizer core, CPU read-only transport only"
+}
