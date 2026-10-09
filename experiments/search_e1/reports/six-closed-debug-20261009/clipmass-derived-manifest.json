@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "source_code_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+  "artifacts": {
+    "clipmass-publication.json": {
+      "bytes": 140890,
+      "sha256": "20f2701c0b558831995bd175277f1b3f29713deb32228d1cb68aec7ce4fc0f1e"
+    },
+    "clipmass-70-slots.csv": {
+      "bytes": 22901,
+      "sha256": "06370bdc965a03f77690eceb866154b4ef1b92913582f8363d70cdee5c3dd982"
+    },
+    "referenced-files-proof.private.json": {
+      "bytes": 13720126,
+      "sha256": "f43adb5f4606b9b57644fe81e662bda41270d72d5faa3764d9320fb039ad0a24"
+    }
+  },
+  "coverage": {
+    "completed_groups": 6,
+    "expected_groups": 7,
+    "completed_outers": 60,
+    "expected_outers": 70,
+    "pending_groups": [
+      "J"
+    ],
+    "all70_token_records_complete": false
+  },
+  "no_node_or_model_IO": true
+}

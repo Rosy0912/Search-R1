@@ -1,0 +1,48 @@
+{
+  "schema": "six-closed-public-artifacts-v1",
+  "scope": [
+    "C0",
+    "C1",
+    "M",
+    "R",
+    "W",
+    "P"
+  ],
+  "completed_outers": 60,
+  "expected_outers": 70,
+  "raw_or_tensor_payloads": false,
+  "artifacts": {
+    "README.md": {
+      "bytes": 590,
+      "sha256": "71e91cde8d0028d9359fb9c041dc2a5d9ed968b6baa13b5c23d6099ba75a43f0"
+    },
+    "aggregate-readback.json": {
+      "bytes": 1311,
+      "sha256": "b3539d8d212fed380c8e029085c7af0974c7dfb7a8c31864e028961f5b5d5b67"
+    },
+    "clipmass-70-slots.csv": {
+      "bytes": 22901,
+      "sha256": "06370bdc965a03f77690eceb866154b4ef1b92913582f8363d70cdee5c3dd982"
+    },
+    "clipmass-derived-manifest.json": {
+      "bytes": 830,
+      "sha256": "a5f03195d4d119f6dd81fb06bfbdd101af5082acfd66e0f9e3954d8112b2fb3f"
+    },
+    "clipmass-publication.json": {
+      "bytes": 140890,
+      "sha256": "20f2701c0b558831995bd175277f1b3f29713deb32228d1cb68aec7ce4fc0f1e"
+    },
+    "coverage-derived-manifest.json": {
+      "bytes": 851,
+      "sha256": "9ca872ed94fe70c9db9bc6b93eaf98d9c6f0433c357d6dddb121287235481ce1"
+    },
+    "debug-coverage-publication.json": {
+      "bytes": 50510,
+      "sha256": "e471be4a5afdfaafec09afa318e6d22f02a91196c808ec50261bb871d047c8b2"
+    },
+    "readers-complete.json": {
+      "bytes": 3422,
+      "sha256": "28fbbfdd7d1ad8f5cfd0ac4ca2230a9def7eb427c1d073dbffa7aa5abcead0cc"
+    }
+  }
+}

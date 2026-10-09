@@ -1,15 +1,20 @@
 {
-  "schema": "remote-raw-snapshot-source-v1",
   "files": {
-    "snapshot.py": {
-      "sha256": "40e05812069c118b14df6605128204bd1a013286674c4cacab768a91ec48c211",
-      "bytes": 10899
+    "README.md": {
+      "bytes": 4477,
+      "sha256": "2c15f617db21a59915877089a77afd8bd4d931a6c6371041ca5dfce1316cb2b8"
+    },
+    "run_combined_readers.py": {
+      "bytes": 8032,
+      "sha256": "c46ba36212fdfb8de2548a30a278791985eb51c660f0352193edd37307417157"
     },
     "run_existing_readers.py": {
-      "sha256": "4d8f7fc33e97d4d2554539010d8d5e4ec1691291c906c929df6fd44cc2847e9e",
-      "bytes": 7373
+      "bytes": 7373,
+      "sha256": "4d8f7fc33e97d4d2554539010d8d5e4ec1691291c906c929df6fd44cc2847e9e"
+    },
+    "snapshot.py": {
+      "bytes": 10899,
+      "sha256": "40e05812069c118b14df6605128204bd1a013286674c4cacab768a91ec48c211"
     }
-  },
-  "original_scope_source_sha256": "34857f4a6d0cfea4da2e2c4b71a5af662aca9a49e7ee7134ab97cd3c88185222",
-  "scientific_changes": false
+  }
 }

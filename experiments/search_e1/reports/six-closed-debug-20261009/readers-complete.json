@@ -1,0 +1,70 @@
+{
+  "Mac_raw_payloads": false,
+  "accepted": true,
+  "clipmass_summary": {
+    "bytes": 140890,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/six-debug-audit/clipmass/clipmass-publication.json",
+    "sha256": "20f2701c0b558831995bd175277f1b3f29713deb32228d1cb68aec7ce4fc0f1e"
+  },
+  "copies": {
+    "bytes": 3315,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-closed-raw-v2-1791553841627588000/six-closed-copies/complete.json",
+    "sha256": "6a7aa802545f9134f588737cda4f9bbbd1250b26a59e301c4380a5d96ef0e847"
+  },
+  "copies_actual_wait": {
+    "bytes": 413,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/source/copies-actual-wait.json",
+    "sha256": "4c3c5e0994e70f1b855056fdc482b76203947fb2dc7cc67513e726cc1c6bd854"
+  },
+  "debug_summary": {
+    "bytes": 50510,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/six-debug-audit/coverage/debug-coverage-publication.json",
+    "sha256": "e471be4a5afdfaafec09afa318e6d22f02a91196c808ec50261bb871d047c8b2"
+  },
+  "ended_unix": 1791555252.8344631,
+  "executions": {
+    "clipmass": {
+      "bytes": 1274,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/six-debug-audit/clipmass-execution.json",
+      "sha256": "c2c4e2374a4b0f4863c0663ff6a50883b97fe4e8d3d02f600287ec1b60dfdf20"
+    },
+    "coverage": {
+      "bytes": 1271,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/six-debug-audit/coverage-execution.json",
+      "sha256": "0cfffc8ad2f27a4c31b5d80f7083a1b19d90e0f657c3e7f9bd9bd7fdf15d4ede"
+    },
+    "facts": {
+      "bytes": 1048,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/six-debug-audit/facts-execution.json",
+      "sha256": "6c672944605b63448a016bdd77cffa4777279e9a99ac7496d030a664a3c77cc4"
+    }
+  },
+  "groups": [
+    "C0",
+    "C1",
+    "M",
+    "R",
+    "W",
+    "P"
+  ],
+  "processing_host": "HKUST1",
+  "schema": "opsd-ablation-remote-recorded-readers-v1",
+  "scope": "Recorded committed scalar/top32/NPY coverage; no logits, gradient, inference or causal reconstruction",
+  "source_refs": {
+    "clipmass": {
+      "bytes": 29716,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/source/aggregate_clipmass.py",
+      "sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a"
+    },
+    "collector": {
+      "bytes": 17971,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/source/collector.py",
+      "sha256": "50fc6bf8609ef93f4ca68907b9f688252010d950e59188efc467552b5c2c220c"
+    },
+    "coverage": {
+      "bytes": 33236,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-six-debug-readers-1791554925767941000/source/debug_coverage.py",
+      "sha256": "99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9"
+    }
+  }
+}
