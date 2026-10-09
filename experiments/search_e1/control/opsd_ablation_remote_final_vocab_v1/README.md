@@ -93,3 +93,7 @@ residual reservations preserved; it is not a training failure. An earlier wrappe
 exception preserves whatever actual stdout/stderr/execution files exist and
 must never be called complete. The 5632 formal predictions, state-tensor checks,
 final analysis and complete goal acceptance are separate requirements.
+
+## Binding the actual ready inputs
+
+prepare_inputs.py reads the SHA-pinned actually completed all-seven recorded readers, their three child wait0 receipts and separately waited copy batches. It binds original configs, per-group evaluation training terminals, all70 facts and recorded finite coverage; source and transport receipts are on HKUST. It emits fresh private ledger/precision inputs only in a new HKUST directory. Exact dtype-repair rank receipts are selected by their recorded schema. No model/test/review/GPU run is added. Both final readers still independently enforce their original contracts.
