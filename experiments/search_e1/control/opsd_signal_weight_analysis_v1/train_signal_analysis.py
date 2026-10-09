@@ -256,7 +256,7 @@ def collect_outer(reader,config,entry):
 def pearson(x,y):
     require(len(x)==len(y),'Paired lengths differ')
     n=len(x)
-    if n<3:return None
+    if n<3 or len(set(x))<2 or len(set(y))<2:return None
     mx=math.fsum(x)/n;my=math.fsum(y)/n
     xx=math.fsum((a-mx)**2 for a in x);yy=math.fsum((b-my)**2 for b in y)
     if xx<=0 or yy<=0:return None
@@ -275,7 +275,7 @@ def midranks(values):
 def auc(x,labels):
     require(all(v in (0,1) for v in labels),'AUC requires strict binary labels')
     positives=sum(labels);negatives=len(labels)-positives
-    if not positives or not negatives:return None
+    if not positives or not negatives or len(set(x))<2:return None
     ranks=midranks(x);return (sum(r for r,label in zip(ranks,labels) if label)-positives*(positives+1)/2)/(positives*negatives)
 
 def quantile(values,q):
@@ -291,13 +291,20 @@ def bootstrap_pearson(rows,key,label,replicates=2000,seed=42):
     is consumed; score NA contributes n=0 rather than an invented score0.
     """
     import numpy as np
+    complete=[(row.get(key),row.get(label)) for row in rows if row.get(key) is not None and row.get(label) is not None]
+    undefined=('fewer_than_three_measured_questions' if len(complete)<3 else 'zero_feature_variance'
+               if len({finite(a,key) for a,_ in complete})<2 else 'zero_label_variance'
+               if len({finite(b,label) for _,b in complete})<2 else None)
     clusters={}
     for row in rows:
         values=clusters.setdefault(row['question_id'],np.zeros(6,dtype=np.float64))
         a=row.get(key);b=row.get(label)
         if a is not None and b is not None:
             a=finite(a,key);b=finite(b,label);values+=np.array([1,a,b,a*a,b*b,a*b])
-    if len(clusters)<3 or replicates<=0:return dict(interval95=None,valid_replicates=0,requested_replicates=replicates,blocks=len(clusters))
+    if undefined or len(clusters)<3 or replicates<=0:
+        reason=undefined or ('fewer_than_three_question_blocks' if len(clusters)<3 else 'bootstrap_not_requested')
+        return dict(interval95=None,valid_replicates=0,requested_replicates=replicates,blocks=len(clusters),
+                    NA_reason=reason)
     matrix=np.array(list(clusters.values()));rng=np.random.default_rng(seed);estimates=[]
     for _ in range(replicates):
         n,sx,sy,sxx,syy,sxy=matrix[rng.integers(0,len(matrix),len(matrix))].sum(axis=0)
@@ -326,6 +333,137 @@ def relationships(rows,replicates=2000,seed=42,feature_keys=PAIR_KEYS):
     return result
 
 
+def exposure_table(rows,population_questions):
+    """Actual selected-D objective scaling, never invented gradients/exposures."""
+    require(all(row['trained'] for row in rows),'Only actual committed selected-D pairs have exposure')
+    weights=[finite(row['selected_weight'],'actual selected weight') for row in rows]
+    total=math.fsum(weights);squares=math.fsum(w*w for w in weights);n=len(rows)
+    return dict(actual_pairs=n,fraction_of_full_question_population=n/population_questions if population_questions else None,
+        population_unit='question_outer exposure; repeated question_id counts in each observed outer',
+        CC_CW_counts={label:sum(row['pair_class']==label for row in rows) for label in ('CC','CW')},
+        CC_CW_weight_sum={label:math.fsum(row['selected_weight'] for row in rows if row['pair_class']==label) for label in ('CC','CW')},
+        self_pair_count=sum(row['self_pair'] for row in rows),nonself_pair_count=sum(not row['self_pair'] for row in rows),
+        weight_sum=total,weight_mean=total/n if n else None,weight_ess=total*total/squares if squares else None,
+        mean_sampling_s_over_5=math.fsum(row['sampling_s_over_5'] for row in rows)/n if n else None,
+        mean_raw_teacher_KL=math.fsum(row['raw_teacher_kl'] for row in rows)/n if n else None,
+        mean_unweighted_post_loss=math.fsum(row['post_loss'] for row in rows)/n if n else None,
+        mean_weighted_post_loss=math.fsum(row['weighted_post_loss'] for row in rows)/n if n else None,
+        weighted_exposure_is_scalar_objective_scaling_not_gradient_mass=True,
+        optimization_divisor_is_actual_pairs_not_weight_sum=True)
+
+
+def quantile_exposure(population,key):
+    """Prespecified raw-score mid-CDF quartiles; never split tied score values.
+
+    LOW u<=.25, HIGH u>=.75, MIDDLE otherwise, u=(midrank-.5)/n.
+    Big ties may make bucket counts differ from nominal quartiles. All-equal
+    scores have u=.5 and remain one middle tie; no artificial low/high order.
+    """
+    measured=[row for row in population if row['trained'] and row.get(key) is not None]
+    values=[finite(row[key],key) for row in measured];n=len(values)
+    percentiles=[(r-.5)/n for r in midranks(values)] if n else []
+    groups={name:[] for name in ('LOW','MIDDLE','HIGH')}
+    for row,u in zip(measured,percentiles):
+        groups['LOW' if u<=.25 else 'HIGH' if u>=.75 else 'MIDDLE'].append(row)
+    missing=Counter()
+    for row in population:
+        if not row['trained']:missing[row['missing_reason']]+=1
+        elif row.get(key) is None:missing['no_effective_final_answer_payload_tokens' if key=='answer_gap' else 'actual_feature_unavailable']+=1
+    require(sum(missing.values())+n==len(population),'Quantile coverage silently dropped questions')
+    trained_count=sum(row['trained'] for row in population)
+    return dict(full_population_questions=len(population),actual_trained_questions=trained_count,
+        population_unit='question_outer exposure; repeated question_id counts in each observed outer',
+        measured_actual_selected_D_questions=n,missing_full_population_questions=len(population)-n,
+        missing_reason_counts=dict(missing),metric=key,
+        definition=dict(kind='raw_score_midrank_empirical_percentile',formula='u=(midrank-.5)/n',
+            low='u<=.25',high='u>=.75',middle='.25<u<.75',ties_never_split=True,
+            nominal_bucket_counts_not_forced=True,all_equal_scores='one MIDDLE tie; no ordering',
+            raw_score_is_not_within_question_normalized_r=True,
+            population='Within one variant scope; actual selected-D current-preupdate forward feature'),
+        ordering_NA_reason='no_measured_scores' if not n else 'zero_feature_variance' if len(set(values))<2 else None,
+        buckets={name:dict(exposure_table(rows,len(population)),
+            fraction_of_measured_actual_pairs=len(rows)/n if n else None,
+            fraction_of_all_actual_trained_pairs=len(rows)/trained_count if trained_count else None,
+            score_min=min(row[key] for row in rows) if rows else None,score_max=max(row[key] for row in rows) if rows else None)
+            for name,rows in groups.items()})
+
+
+def neutral_and_pair_exposure(population):
+    names=('recorded_group_neutral_reason','selected_signal_NA','normalization_selected_signal_NA',
+        'actual_forward_selected_signal_NA','actual_forward_answer_gap_NA','actual_forward_entropy_NA',
+        'fewer_than_two_available_sibling_scores',
+        'zero_score_dispersion','floor_attenuated_nonzero_dispersion','selected_weight_approximately_one',
+        'selected_weight_exactly_one','all_five_weights_approximately_one','all_five_weights_exactly_one',
+        'incidental_selected_weight_one_in_nonconstant_group',
+        'incidental_selected_weight_approximately_one_in_nonconstant_group','selected_available_score_exactly_at_group_mean')
+    trained=[row for row in population if row['trained']];n=len(trained);reason=Counter()
+    axes=Counter({key:0 for key in names});available_axes=Counter({key:0 for key in names})
+    tolerance=1e-12
+    for row in trained:
+        norm=row['score_normalization'];scores=norm['scores'];slot=row['selected_sibling']
+        signal=norm.get('signal') or ('answer_gap' if row.get('variant','G_POS').startswith('G_') else 'student_entropy')
+        require(signal in SIGNAL_KEYS,'Actual weighting signal identity missing or unknown')
+        reason['none_recorded' if norm['neutral_reason'] is None else norm['neutral_reason']]+=1
+        valid=[j for j,x in enumerate(scores) if x is not None]
+        raw_maxabs=norm.get('raw_maxabs')
+        if raw_maxabs is None and len(valid)>=2 and norm['neutral_reason'] is None:
+            anchor=scores[valid[0]];delta=[scores[j]-anchor for j in valid];mu=math.fsum(delta)/len(valid)
+            raw_maxabs=max(abs(x-mu) for x in delta)
+        dispersion_available=raw_maxabs is not None and len(valid)>=2 and norm['neutral_reason'] is None
+        selected_available=scores[slot] is not None and dispersion_available
+        for key in ('recorded_group_neutral_reason','selected_signal_NA','normalization_selected_signal_NA',
+            'actual_forward_selected_signal_NA','actual_forward_answer_gap_NA','actual_forward_entropy_NA',
+            'fewer_than_two_available_sibling_scores',
+            'selected_weight_approximately_one','selected_weight_exactly_one','all_five_weights_approximately_one',
+            'all_five_weights_exactly_one'):
+            available_axes[key]+=1
+        for key in ('zero_score_dispersion','floor_attenuated_nonzero_dispersion'):
+            available_axes[key]+=int(dispersion_available)
+        for key in ('selected_available_score_exactly_at_group_mean','incidental_selected_weight_one_in_nonconstant_group',
+            'incidental_selected_weight_approximately_one_in_nonconstant_group'):
+            available_axes[key]+=int(selected_available)
+        axes['recorded_group_neutral_reason']+=int(norm['neutral_reason'] is not None)
+        axes['selected_signal_NA']+=int(scores[slot] is None)
+        axes['normalization_selected_signal_NA']+=int(scores[slot] is None)
+        axes['actual_forward_selected_signal_NA']+=int(row.get(signal) is None)
+        axes['actual_forward_answer_gap_NA']+=int(row.get('answer_gap') is None)
+        axes['actual_forward_entropy_NA']+=int(row.get('student_entropy') is None)
+        axes['fewer_than_two_available_sibling_scores']+=int(len(valid)<2)
+        axes['zero_score_dispersion']+=int(dispersion_available and raw_maxabs==0)
+        axes['floor_attenuated_nonzero_dispersion']+=int(dispersion_available and 0<raw_maxabs<norm.get('numerical_floor',1e-6))
+        axes['selected_weight_approximately_one']+=int(abs(row['selected_weight']-1.)<=tolerance)
+        axes['selected_weight_exactly_one']+=int(row['selected_weight']==1.)
+        axes['all_five_weights_approximately_one']+=int(all(abs(w-1.)<=tolerance for w in norm['weights']))
+        axes['all_five_weights_exactly_one']+=int(all(w==1. for w in norm['weights']))
+        axes['incidental_selected_weight_one_in_nonconstant_group']+=int(selected_available and raw_maxabs>0
+            and row['selected_weight']==1. and not all(w==1. for w in norm['weights']))
+        axes['incidental_selected_weight_approximately_one_in_nonconstant_group']+=int(selected_available and raw_maxabs>0
+            and abs(row['selected_weight']-1.)<=tolerance and not all(w==1. for w in norm['weights']))
+        centered=norm.get('centered_scores')
+        if centered is None and scores[slot] is not None and valid:
+            anchor=scores[valid[0]];delta=[scores[j]-anchor for j in valid];mu=math.fsum(delta)/len(valid)
+            at_mean=(scores[slot]-anchor)-mu==0
+        else:at_mean=bool(scores[slot] is not None and centered is not None and centered[slot]==0)
+        axes['selected_available_score_exactly_at_group_mean']+=int(at_mean and norm['neutral_reason'] is None)
+    not_trained=Counter(row['missing_reason'] for row in population if not row['trained'])
+    return dict(full_population_questions=len(population),actual_trained_questions=n,
+        population_unit='question_outer exposure; repeated question_id counts in each observed outer',
+        not_trained_questions=len(population)-n,not_trained_reason_counts=dict(not_trained),
+        allwrong_or_skipped_have_no_weight_and_zero_actual_training_exposure=True,
+        recorded_group_neutral_reason_counts=dict(reason),
+        recorded_group_neutral_reason_rates_over_actual_K={key:count/n if n else None for key,count in reason.items()},
+        derived_neutral_axes={key:dict(count=count,rate_over_actual_K=count/n if n else None,
+            rate_over_full_question_population=count/len(population) if population else None,
+            data_available_denominator=available_axes[key],rate_over_available_data=count/available_axes[key] if available_axes[key] else None)
+            for key,count in axes.items()},
+        axes_overlap_and_are_not_recorded_receipt_reasons=True,weight_one_tolerance=tolerance,
+        selected_signal_NA_definition='Compatibility alias of normalization_selected_signal_NA: normalization.scores[selected_sibling] is None',
+        normalization_and_actual_training_forward_availability_are_separate=True,
+        floor_positive_dispersion_is_attenuated_not_neutral=True,
+        self_vs_nonself={name:exposure_table([row for row in trained if row['self_pair'] is flag],len(population))
+            for name,flag in (('self',True),('nonself',False))})
+
+
 def within_question_associations(rows,replicates=2000,seed=42):
     """Equal-question centered covariance removes BETWEEN-question means.
 
@@ -345,8 +483,9 @@ def within_question_associations(rows,replicates=2000,seed=42):
             observed+=1;mixed+=int(len({y for _,y in pairs})>1)
             x=[finite(a,key) for a,_ in pairs];y=[b for _,b in pairs];n=len(x)
             mx=math.fsum(x)/n;my=math.fsum(y)/n
-            contributions.append((row['question_id'],math.fsum((a-mx)*(b-my) for a,b in zip(x,y))/n,
-                math.fsum((a-mx)**2 for a in x)/n,math.fsum((b-my)**2 for b in y)/n))
+            contributions.append((row['question_id'],math.fsum((a-mx)*(b-my) for a,b in zip(x,y))/n if len(set(x))>1 and len(set(y))>1 else 0.,
+                math.fsum((a-mx)**2 for a in x)/n if len(set(x))>1 else 0.,
+                math.fsum((b-my)**2 for b in y)/n if len(set(y))>1 else 0.))
         def statistic(items):
             if not items:return None,None
             cov=math.fsum(x[1] for x in items)/len(items);vx=math.fsum(x[2] for x in items)/len(items);vy=math.fsum(x[3] for x in items)/len(items)
@@ -421,6 +560,14 @@ def aggregate_features(features,batches,replicates=2000,seed=42):
             regional_correlations_scope='Exploratory points without bootstrap CI; absent region means NA, contribution zero only when actually trained',
             per_outer_relationships={str(o):relationships([row for row in population if row['outer_index']==o],0,seed)
                                     for o in sorted({row['outer_index'] for row in population})},
+            selected_D_raw_signal_quantile_exposure={key:quantile_exposure(population,key) for key in SIGNAL_KEYS},
+            neutral_and_self_nonself_exposure=neutral_and_pair_exposure(population),
+            predeclared_training_periods={name:dict(outer_indices=list(range(start,end)),
+                observed_outer_indices=sorted({row['outer_index'] for row in population if start<=row['outer_index']<end}),
+                quantile_exposure={key:quantile_exposure([row for row in population if start<=row['outer_index']<end],key)
+                    for key in SIGNAL_KEYS},
+                neutral_and_pair_exposure=neutral_and_pair_exposure([row for row in population if start<=row['outer_index']<end]))
+                for name,start,end in (('through_15',0,15),('16_through_25',15,25))},
             scientific_limits=['TRAIN questions vary across outer; no fixed-heldout claim',
                 'Teacher/loss require successful reference; hard/noB remain denominator but numerical features NA',
                 'Sampled reward/s/5 belongs to outer-start model; replay belongs to later current-preupdate model',
