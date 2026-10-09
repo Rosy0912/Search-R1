@@ -1,0 +1,47 @@
+{
+  "schema": "optional-L-actual-adapter-content-qualification-compact-v1",
+  "accepted": true,
+  "actual_returncode": 0,
+  "scope": "Actual saved adapter content/finite/change only; historical cohort/source proof remains SHA-bound; no Adam, restore, generation or performance acceptance",
+  "label": "L_historical_forward_outer10_Adam99",
+  "historical_run_id": "1d1d67b60f0e46a2afc0536a36ab69b1",
+  "adapter_tensors": 504,
+  "adapter_finite_fp32": true,
+  "actual_tensor_sha256": "2c4a39a37d5bd47ba20b06b6e20b59dc323f86746d2d84514585bf92fedc37ce",
+  "common_actual_tensor_sha256": "836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f",
+  "change_vs_common_initial": {
+    "changed": 504,
+    "max_absolute_delta": 0.0006477353163063526,
+    "per_role": {
+      "LoRA_A": {
+        "changed": 252,
+        "max_absolute_delta": 0.0006477353163063526,
+        "tensors": 252
+      },
+      "LoRA_B": {
+        "changed": 252,
+        "max_absolute_delta": 0.0005969826015643775,
+        "tensors": 252
+      }
+    }
+  },
+  "all_three_target_and_baseline_adapter_file_SHA_fresh": true,
+  "source100_weight_bytes_fresh_hashed": false,
+  "source12_metadata_continuity": true,
+  "cuda_initialized": false,
+  "full_Adam_or_RNG_read": false,
+  "mandatory_driver_or_5632_modified": false,
+  "optional_native512_complete": false,
+  "historical_exposure": {
+    "outers": 10,
+    "Adam_updates": 99,
+    "pairs": 3021
+  },
+  "private_stdout_sha256": "3da5b18e3431901a04f146d45091134cc3f90aeeb0130b35439fd3277fe39f10",
+  "target_manifest_sha256": "476c1b1003d8d8f4cc4711c462b013ed249bfbddc6d4a5235686f5e2ff946ad4",
+  "common_initial_manifest_sha256": "b8ed9fb8cf1112252cca6f66d28579d79980c84a22a47300492095828f38833a",
+  "mandatory_scope": {
+    "outers": 70,
+    "formal_native_slots": 5632
+  }
+}
