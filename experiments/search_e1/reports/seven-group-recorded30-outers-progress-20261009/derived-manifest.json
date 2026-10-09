@@ -1,0 +1,59 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 26160,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-24/M-recorded30-curves/seven-group-recorded-curves/seven-group-70-slots.csv",
+      "sha256": "99f39556d1441c4b274276a93a64600f41e2a6c29e7fce3d524f9a5429689e71"
+    },
+    {
+      "bytes": 12462,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-24/M-recorded30-curves/seven-group-recorded-curves/seven-group-recorded-summary.json",
+      "sha256": "df7cd0d27ca22a3f3debb117b911abb2b5c035781e2f728790ee22ad55154bf1"
+    },
+    {
+      "bytes": 261037,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-24/M-recorded30-curves/seven-group-recorded-curves/seven-group-recorded-curves.png",
+      "sha256": "cad276775b762630df73824b991bebd7867e607fe89c522626d54a886539799a"
+    },
+    {
+      "bytes": 131507,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-24/M-recorded30-curves/seven-group-recorded-curves/seven-group-recorded-curves.svg",
+      "sha256": "23348d1da25a5a0947a29be8507e6a1a8a21c2273f914240ddba79a06ff0dbee"
+    }
+  ],
+  "coverage": {
+    "all70_complete": false,
+    "by_variant": {
+      "C0": 10,
+      "C1": 10,
+      "J": 0,
+      "M": 10,
+      "P": 0,
+      "R": 0,
+      "W": 0
+    },
+    "completed_outers": 30,
+    "expected_outers": 70
+  },
+  "no_model_or_gpu": true,
+  "no_new_scientific_test": true,
+  "no_remote_io": true,
+  "observed_unix": 1791515879.333802,
+  "schema": "seven-group-recorded-curves-v1",
+  "source": {
+    "bytes": 1274226,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-24/M-final-state-readonly/closed-ten-facts.stdout.json",
+    "sha256": "4c39dadc4b3f2fa02198cff7a71b8eb64c88eebe7de6e5106db82783e4d3823f"
+  },
+  "source_code": {
+    "bytes": 11645,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_recorded_curves_v1/derive.py",
+    "sha256": "b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583"
+  },
+  "totals": {
+    "committed_unique_updates": 301,
+    "raw_pair_exposure": 9067,
+    "valid_tokens": 1849553
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "CPU_fixtures": {
+    "actual_returncode": 0,
+    "scope": "Tiny artificial gzip and actual frozen verifier/FixedBackups interface; no Node/production token scans or scientific acceptance",
+    "seconds": 0.245,
+    "skipped": 0,
+    "tests": 4
+  },
+  "dependencies": {
+    "compatibility_reader_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+    "generic_source_manifest_sha256": "5ffb33951d3d9a8863c4a3fa097d9c2f3328c488ad18443e027a2ae338949228",
+    "transport_sha256": "d2a3a3dd87dfed4df36a9ec27356073a0a663bfea6da3d1e84dc5e241e916f57"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 6274,
+      "sha256": "f4e1252f2f092e4c1b1caa49eb4485bb977a9b0c5a8a389b4080cd34fe233b59"
+    },
+    "adapt.py": {
+      "bytes": 11764,
+      "sha256": "8af9579f1663f1febcb6cac6f8d6e392e4e5aab55e58dbbb94858617a47217bd"
+    },
+    "test_adapter.py": {
+      "bytes": 8659,
+      "sha256": "e2472a61b6528f4a5041604d52a810f72806f4da95b015a8a1fd73326fa04f02"
+    }
+  },
+  "real_backup_or_analysis_executed": false,
+  "schema": "opsd-ablation-closed-raw-reader-adapter-source-v1"
+}
