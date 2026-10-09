@@ -1,0 +1,1053 @@
+{
+  "groups": {
+    "J": {
+      "actual_training_invocation_terminals": 10,
+      "attempts": 10,
+      "closed_outers": 10,
+      "counts": {
+        "committed_recorded_retries": 0,
+        "committed_updates": 100,
+        "detailed_events": 327680,
+        "events_dropped": 8906260,
+        "observations": 9233940,
+        "uncommitted_update_receipts": 0
+      },
+      "dtype_observations": [
+        {
+          "count": 108432,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 1626480,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 759024,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 108432,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 1737924,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 108432,
+          "input_dtypes": [
+            "torch.float16",
+            "torch.int64",
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 759024,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 3012,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current_head",
+          "stage": "forward"
+        },
+        {
+          "count": 108432,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 1846356,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 759024,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 3012,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old_head",
+          "stage": "forward"
+        },
+        {
+          "count": 108432,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 1087332,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 3012,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 17930,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher_head",
+          "stage": "forward"
+        }
+      ],
+      "dtype_repair_external_inventory_complete": false,
+      "dtype_repair_receipts_reviewed": 80,
+      "expected_precision_rank_files": 80,
+      "historical_gradient_overflow_manifests": 0,
+      "missing_evidence_count": 0,
+      "nonzero_training_terminals": 0,
+      "outers": [
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 264861,
+          "committed_updates": 10,
+          "cumulative_updates": 10,
+          "detailed_events": 32768,
+          "events_dropped": 927016,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 10,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 959784,
+          "module_observations": 959784,
+          "outer": 0,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 262359,
+          "committed_updates": 10,
+          "cumulative_updates": 20,
+          "detailed_events": 32768,
+          "events_dropped": 917890,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 20,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 950658,
+          "module_observations": 950658,
+          "outer": 1,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 245409,
+          "committed_updates": 10,
+          "cumulative_updates": 30,
+          "detailed_events": 32768,
+          "events_dropped": 856510,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 30,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 889278,
+          "module_observations": 889278,
+          "outer": 2,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 244413,
+          "committed_updates": 10,
+          "cumulative_updates": 40,
+          "detailed_events": 32768,
+          "events_dropped": 853144,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 40,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 885912,
+          "module_observations": 885912,
+          "outer": 3,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 247044,
+          "committed_updates": 10,
+          "cumulative_updates": 50,
+          "detailed_events": 32768,
+          "events_dropped": 862528,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 50,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 895296,
+          "module_observations": 895296,
+          "outer": 4,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 257796,
+          "committed_updates": 10,
+          "cumulative_updates": 60,
+          "detailed_events": 32768,
+          "events_dropped": 901894,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 60,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 934662,
+          "module_observations": 934662,
+          "outer": 5,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 250440,
+          "committed_updates": 10,
+          "cumulative_updates": 70,
+          "detailed_events": 32768,
+          "events_dropped": 874816,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 70,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 907584,
+          "module_observations": 907584,
+          "outer": 6,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 260514,
+          "committed_updates": 10,
+          "cumulative_updates": 80,
+          "detailed_events": 32768,
+          "events_dropped": 911452,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 80,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 944220,
+          "module_observations": 944220,
+          "outer": 7,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 253761,
+          "committed_updates": 10,
+          "cumulative_updates": 90,
+          "detailed_events": 32768,
+          "events_dropped": 886954,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 90,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 919722,
+          "module_observations": 919722,
+          "outer": 8,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 261129,
+          "committed_updates": 10,
+          "cumulative_updates": 100,
+          "detailed_events": 32768,
+          "events_dropped": 914056,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 100,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 946824,
+          "module_observations": 946824,
+          "outer": 9,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        }
+      ],
+      "precision_rank_files": 80,
+      "preserved_failure_manifests": {},
+      "recorded_cross_invocation_retry_selections": 0,
+      "recorded_training_history_invocations": 10,
+      "rng_or_CUDA_resume_verified": false,
+      "status": "COMPLETE_RECORDED_ATTEMPT_COVERAGE",
+      "variant": "J",
+      "zero_preserved_gradient_overflow_proven": true
+    },
+    "P": {
+      "actual_training_invocation_terminals": 10,
+      "attempts": 10,
+      "closed_outers": 10,
+      "counts": {
+        "committed_recorded_retries": 0,
+        "committed_updates": 99,
+        "detailed_events": 327680,
+        "events_dropped": 8895964,
+        "observations": 9223644,
+        "uncommitted_update_receipts": 0
+      },
+      "dtype_observations": [
+        {
+          "count": 108180,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 1622700,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 757260,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 108180,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 1733885,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 108180,
+          "input_dtypes": [
+            "torch.float16",
+            "torch.int64",
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 757260,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 3005,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current",
+          "stage": "forward"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "current_head",
+          "stage": "forward"
+        },
+        {
+          "count": 108180,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 1842065,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 757260,
+          "input_dtypes": [
+            "torch.float32"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 3005,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old",
+          "stage": "forward"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "outer_old_head",
+          "stage": "forward"
+        },
+        {
+          "count": 108180,
+          "input_dtypes": [],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 1084805,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 3005,
+          "input_dtypes": [
+            "torch.int64"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher",
+          "stage": "forward"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher_head",
+          "stage": "backward_recompute"
+        },
+        {
+          "count": 19749,
+          "input_dtypes": [
+            "torch.float16"
+          ],
+          "output_dtypes": [
+            "torch.float16"
+          ],
+          "role": "teacher_head",
+          "stage": "forward"
+        }
+      ],
+      "dtype_repair_external_inventory_complete": false,
+      "dtype_repair_receipts_reviewed": 80,
+      "expected_precision_rank_files": 80,
+      "historical_gradient_overflow_manifests": 0,
+      "missing_evidence_count": 0,
+      "nonzero_training_terminals": 0,
+      "outers": [
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 265647,
+          "committed_updates": 10,
+          "cumulative_updates": 10,
+          "detailed_events": 32768,
+          "events_dropped": 928588,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 10,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 961356,
+          "module_observations": 961356,
+          "outer": 0,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 261618,
+          "committed_updates": 10,
+          "cumulative_updates": 20,
+          "detailed_events": 32768,
+          "events_dropped": 913660,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 20,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 946428,
+          "module_observations": 946428,
+          "outer": 1,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 245001,
+          "committed_updates": 10,
+          "cumulative_updates": 30,
+          "detailed_events": 32768,
+          "events_dropped": 854320,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 30,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 887088,
+          "module_observations": 887088,
+          "outer": 2,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 239997,
+          "committed_updates": 9,
+          "cumulative_updates": 39,
+          "detailed_events": 32768,
+          "events_dropped": 836068,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 39,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 868836,
+          "module_observations": 868836,
+          "outer": 3,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 250815,
+          "committed_updates": 10,
+          "cumulative_updates": 49,
+          "detailed_events": 32768,
+          "events_dropped": 875566,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 49,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 908334,
+          "module_observations": 908334,
+          "outer": 4,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 254451,
+          "committed_updates": 10,
+          "cumulative_updates": 59,
+          "detailed_events": 32768,
+          "events_dropped": 888334,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 59,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 921102,
+          "module_observations": 921102,
+          "outer": 5,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 253314,
+          "committed_updates": 10,
+          "cumulative_updates": 69,
+          "detailed_events": 32768,
+          "events_dropped": 884686,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 69,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 917454,
+          "module_observations": 917454,
+          "outer": 6,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 267768,
+          "committed_updates": 10,
+          "cumulative_updates": 79,
+          "detailed_events": 32768,
+          "events_dropped": 936952,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 79,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 969720,
+          "module_observations": 969720,
+          "outer": 7,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 248772,
+          "committed_updates": 10,
+          "cumulative_updates": 89,
+          "detailed_events": 32768,
+          "events_dropped": 868732,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 89,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 901500,
+          "module_observations": 901500,
+          "outer": 8,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        },
+        {
+          "attempts": 1,
+          "backward_recompute_observations": 260004,
+          "committed_updates": 10,
+          "cumulative_updates": 99,
+          "detailed_events": 32768,
+          "events_dropped": 909058,
+          "failure_before_scale_payload_read": false,
+          "final_scaler": {
+            "backoff_factor": 0.5,
+            "enabled": true,
+            "growth_factor": 2.0,
+            "growth_interval": 2000,
+            "growth_tracker": 99,
+            "scale": 65536.0,
+            "version": "synchronous-loss-scaler-v1"
+          },
+          "fp16_output_observations": 941826,
+          "module_observations": 941826,
+          "outer": 9,
+          "precision_rank_files": 8,
+          "preserved_failures": {},
+          "recorded_after_scale_max": 65536.0,
+          "recorded_after_scale_min": 65536.0
+        }
+      ],
+      "precision_rank_files": 80,
+      "preserved_failure_manifests": {},
+      "recorded_cross_invocation_retry_selections": 0,
+      "recorded_training_history_invocations": 10,
+      "rng_or_CUDA_resume_verified": false,
+      "status": "COMPLETE_RECORDED_ATTEMPT_COVERAGE",
+      "variant": "P",
+      "zero_preserved_gradient_overflow_proven": true
+    }
+  },
+  "limitations": [
+    "Only recorded installed-module input/output observations, not all kernels/activation tensors.",
+    "Detailed events capped4096 per rank/attempt; full dtype_counts retained, dropped counts explicit.",
+    "Capsule PT payloads are inventory-SHA references only, not loaded; Adam/cursor/RNG claims inside them are not independently verified.",
+    "Retry JSON records scaler_after; failure scaler_before lives in PT payloads and is not inferred or validated here.",
+    "No UUID-to-PID mapping is emitted by original trainer; invocation and directory counts compared, not a fabricated per-attempt mapping.",
+    "External dtype-repair refs are explicitly supplied only, not a full external receipt inventory.",
+    "Original independent HKUST copy source/destination full-file SHA acceptance plus source/destination metadata continuity at preparation; selected JSON is freshly hashed before/after its actual read in this reporter.",
+    "HKUST filesystem reads/writes only; no network, model, token/logits, optimizer construction, Torch, CUDA, HTTP, locks, signals or GPU gate."
+  ],
+  "pending_variants": [],
+  "schema": "opsd-ablation-recorded-precision-history-remote-summary-v3",
+  "source_sha256": "ec69e80e458483afcab28fce9c4f11d455903e9d7ae3164093eb5128667b68c4",
+  "transport_clock_evidence": {
+    "J": {
+      "absolute_order_not_claimed": true,
+      "cross_host_clock_calibration_unverified": true,
+      "raw_clock_values": {
+        "HKUST_copy_ended_unix": 1791557803.1768253,
+        "HKUST_copy_started_unix": 1791557720.3399894,
+        "controller_actual_wait_unix": 1791557877.381519,
+        "controller_launch_unix": 1791557718.977
+      },
+      "same_host_clock_order_checked": true
+    },
+    "P": {
+      "absolute_order_not_claimed": true,
+      "cross_host_clock_calibration_unverified": true,
+      "raw_clock_values": {
+        "HKUST_copy_ended_unix": 1791554420.880528,
+        "HKUST_copy_started_unix": 1791553859.127392,
+        "controller_actual_wait_unix": 1791554420.807128,
+        "controller_launch_unix": 1791553858.4457128
+      },
+      "same_host_clock_order_checked": true
+    }
+  }
+}

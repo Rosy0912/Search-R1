@@ -1,0 +1,59 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 42427,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/public-curves/seven-group-70-slots.csv",
+      "sha256": "82ef854c97f291daf369651cd58e1ec157493b685b550cf8c8acbb472ccf5cc0"
+    },
+    {
+      "bytes": 13019,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/public-curves/seven-group-recorded-summary.json",
+      "sha256": "bac08e3caac11462c649dbf78a78258fdbcc859014facb1c088294b4623feec9"
+    },
+    {
+      "bytes": 369974,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/public-curves/seven-group-recorded-curves.png",
+      "sha256": "8e5724daef850abb29787eb5f4161d0ae386bbbe3b09a10da7a7ee1e0eb19a65"
+    },
+    {
+      "bytes": 190234,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/public-curves/seven-group-recorded-curves.svg",
+      "sha256": "3722fa6d69005f3cd1789cd4568d0fcc10062d0d6b07f26308f8e6f817c9e584"
+    }
+  ],
+  "coverage": {
+    "all70_complete": true,
+    "by_variant": {
+      "C0": 10,
+      "C1": 10,
+      "J": 10,
+      "M": 10,
+      "P": 10,
+      "R": 10,
+      "W": 10
+    },
+    "completed_outers": 70,
+    "expected_outers": 70
+  },
+  "no_model_or_gpu": true,
+  "no_new_scientific_test": true,
+  "no_remote_io": true,
+  "observed_unix": 1791559958.229912,
+  "schema": "seven-group-recorded-curves-v1",
+  "source": {
+    "bytes": 2945664,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-seven-debug-1791557910/seven-debug-audit/facts.private.json",
+    "sha256": "2682eec7f76153a5d27f44dd863a8923a51ca3482d1d8a3014b131ac3e098487"
+  },
+  "source_code": {
+    "bytes": 11645,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-all70-curves-1791560000/derive.py",
+    "sha256": "b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583"
+  },
+  "totals": {
+    "committed_unique_updates": 699,
+    "raw_pair_exposure": 21132,
+    "valid_tokens": 4060515
+  }
+}

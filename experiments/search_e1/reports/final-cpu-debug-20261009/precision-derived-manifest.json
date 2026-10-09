@@ -1,0 +1,84 @@
+{
+  "Mac_raw_payloads": false,
+  "absolute_order_not_claimed": true,
+  "artifacts": [
+    {
+      "bytes": 187942,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-precision-v3-1791559870/precision-history/read-plan.private.json",
+      "sha256": "af1f08148ec704d354cbc294a5674c07b2fb2fa690afab745d1419cb995dd282"
+    },
+    {
+      "bytes": 31810,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-precision-v3-1791559870/precision-history/summary.json",
+      "sha256": "adf7c6b5cb9e931f36bd1acd6c305242466577cef22117f4245b64ac1e3e987f"
+    },
+    {
+      "bytes": 3492180,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-precision-v3-1791559870/precision-history/details.private.json",
+      "sha256": "101b50b73a20f357cea3d572431b35d7afa6633477babd5dd3201e867987d5fb"
+    }
+  ],
+  "cli_arguments": [
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-precision-v3-1791559870/derive.py",
+    "--manifest",
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-final-audits-v2-1791559800/ready-inputs/precision-inputs.private.json",
+    "--manifest-sha256",
+    "2cef52944cd9e5149a73aecd67f221a9408a887ea9c59a1d21180ef3fa0d7a56",
+    "--output",
+    "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-precision-v3-1791559870/precision-history"
+  ],
+  "created_unix": 1791559917.8195982,
+  "cross_host_clock_calibration_unverified": true,
+  "facts": {
+    "bytes": 2945664,
+    "ctime_ns": 1791558025101346862,
+    "device": 2065,
+    "inode": 466621349,
+    "mode": 33204,
+    "mtime_ns": 1791558025101346862,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-seven-debug-1791557910/seven-debug-audit/facts.private.json",
+    "sha256": "2682eec7f76153a5d27f44dd863a8923a51ca3482d1d8a3014b131ac3e098487"
+  },
+  "input": {
+    "bytes": 63329,
+    "ctime_ns": 1791559575641830871,
+    "device": 2065,
+    "inode": 466621635,
+    "mode": 33204,
+    "mtime_ns": 1791559575641830871,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-final-audits-v2-1791559800/ready-inputs/precision-inputs.private.json",
+    "sha256": "2cef52944cd9e5149a73aecd67f221a9408a887ea9c59a1d21180ef3fa0d7a56"
+  },
+  "no_network_or_GPU_IO": true,
+  "plan_only": false,
+  "processing_host": "HKUST1",
+  "schema": "opsd-ablation-precision-history-remote-derivation-v3",
+  "source_sha256": "ec69e80e458483afcab28fce9c4f11d455903e9d7ae3164093eb5128667b68c4",
+  "sources": {
+    "aggregate": {
+      "bytes": 29716,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/remote-final-audits-v2-1791559800/source/aggregate_clipmass.py",
+      "sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a"
+    },
+    "dtype_launcher": {
+      "bytes": 5033,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/dtype-538ac99/opsd_ablation_dtype_recovery_v1/trainer_launcher.py",
+      "sha256": "5b8bfe675ee5b2186aee45a598e56991b2738becb15b140cf8d0cdbb89cbeb7a"
+    },
+    "precision": {
+      "bytes": 7657,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1/precision.py",
+      "sha256": "7dd23d6378c91cb33c730241fe5cd63618768aa95eea6136bf571a7cb64358bc"
+    },
+    "retry_state": {
+      "bytes": 3380,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1/retry_state.py",
+      "sha256": "f3b4abe482b1dbc430959d4a189f282cdfeeca7372e57b78a9492c14e836c8fe"
+    },
+    "trainer": {
+      "bytes": 53870,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/source/training-871dc46/opsd_ablation_v1/trainer.py",
+      "sha256": "4dc352f5091594ab5bcae71ecc17516afd8607601b5932216cbda66befc5409c"
+    }
+  }
+}
