@@ -1,0 +1,89 @@
+{
+  "accepted": true,
+  "common_zero": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-zero-evaluation.json",
+    "sha256": "c1a984609c3280fbc36c7fbf44573f3a9d839047adce48f7e90215d0b8d54765"
+  },
+  "first_failure": {
+    "bytes": 7531,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/first-outer-failure-preserved-1791575702.json",
+    "sha256": "4caf5ed2a798c32c4abfc1bcd7faeed7e1012951716b3e33f928e9cac16cb166"
+  },
+  "first_outer": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/outer-manifest.json",
+    "sha256": "bb742938d1ad4d6f2dfaf129fa87cf9b66e8b905f84db0d1ef892e4c6b52db1d"
+  },
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/recovery-98b9326/opsd_signal_weight_recovery_v1",
+  "large_products_remote_only": true,
+  "original_configs": [
+    {
+      "bytes": 11363,
+      "ctime_ns": 1791567687412215119,
+      "device": 2081,
+      "inode": 48112408,
+      "mtime_ns": 1791567687412215119,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    },
+    {
+      "bytes": 11364,
+      "ctime_ns": 1791567689308260331,
+      "device": 2081,
+      "inode": 48112415,
+      "mtime_ns": 1791567689308260331,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+    },
+    {
+      "bytes": 11372,
+      "ctime_ns": 1791567691332308518,
+      "device": 2081,
+      "inode": 48112422,
+      "mtime_ns": 1791567691332308518,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+      "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+    },
+    {
+      "bytes": 11373,
+      "ctime_ns": 1791567693372357005,
+      "device": 2081,
+      "inode": 48112429,
+      "mtime_ns": 1791567693372357005,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+      "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+    }
+  ],
+  "original_helper_manifest": {
+    "bytes": 6528,
+    "ctime_ns": 1791567644319167866,
+    "device": 2081,
+    "inode": 48112375,
+    "mtime_ns": 1791567615000000000,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1/source-manifest.json",
+    "sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+  },
+  "publication": {
+    "bytes": 3064,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/recovery-publication-98b9326.json",
+    "sha256": "24e6c5ef1e3a53e2a9ee923d596458ecf28f41d83e4ab1165add04df469eac87"
+  },
+  "reuse_accepted_outputs": true,
+  "sampling_complete": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/sampling-complete.json",
+    "sha256": "864a7e5aca9898804b2a3b21a30264177a43406774d6d8b92ddd7e0ca2b83d9e"
+  },
+  "schema": "opsd-signal-weight-recovery-manifest-v1",
+  "scientific_parameters_unchanged": true,
+  "scope": "named_outer_old_fp32_before_setter_only",
+  "source_commit": "98b9326a782a51261571ff24f3cbdbd87932db70",
+  "source_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/recovery-98b9326/opsd_signal_weight_recovery_v1/source-manifest.json",
+    "sha256": "3f1719bedac24844949ac05c1f42a07eb1987d45a69ddffd1d400f0b3162a880"
+  },
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  },
+  "supervisor_run_id": "signal-study-recovery-d96c7fc1e0f14ea2bf3edcb01a22bfa8"
+}
