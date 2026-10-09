@@ -1,0 +1,16 @@
+{
+  "schema": "opsd-ablation-recorded-debug-coverage-source-v1",
+  "files": {
+    "derive.py": {
+      "bytes": 33236,
+      "sha256": "99e97c08e8eb1378f5b90b2437a826715d6568abb7d82c954a3923c5bc778fb9"
+    },
+    "README.md": {
+      "bytes": 3561,
+      "sha256": "8e72e0ea7fb0c13521c40c74cea9e6fec2f0b5fcf04666e559108ced45b9fc15"
+    }
+  },
+  "existing_aggregate_source_sha256": "b7a264119fd18b9ac744f452c86e8deb6db550c318050178e94adb38a1f39c8a",
+  "preparation_validation": "Static AST and producer/interface review only; no fixtures/data execution",
+  "publish_before_execution": true
+}
