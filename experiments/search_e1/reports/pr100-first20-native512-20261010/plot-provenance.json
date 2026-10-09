@@ -1,0 +1,80 @@
+{
+  "accepted": true,
+  "baseline_drawn": true,
+  "baseline_summary_references": [
+    {
+      "bytes": 104176,
+      "ctime_ns": 1791500392381489963,
+      "device": 2065,
+      "inode": 466429470,
+      "mtime_ns": 1791500392365490030,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/summary.json",
+      "sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6"
+    }
+  ],
+  "coverage": {
+    "complete_100_and_all10": false,
+    "evaluation": {
+      "all10_complete": false,
+      "baseline_em": 0.466796875,
+      "baseline_strict_hits": 239,
+      "completed_evaluations": 2,
+      "expected_evaluations": 10,
+      "formal_primary_slots": 1024
+    },
+    "training": {
+      "actual_adam": 198,
+      "all100_complete": false,
+      "completed_outers": 20,
+      "expected_outers": 100,
+      "raw_pair_exposure": 5947,
+      "valid_policy_tokens": 966617
+    }
+  },
+  "created_utc": "2026-10-09T22:13:03.790720+00:00",
+  "inputs": [
+    {
+      "bytes": 117907,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624/complete.json",
+      "sha256": "4cc16380e22b9341cf36b7af190663c97e78239c53e2ebfa738584a22b798845"
+    },
+    {
+      "bytes": 27925,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624/summary.json",
+      "sha256": "6136b34e7b89e321948a3dbd0f8049b317d20d0d9a7feec4dd6280299e43fd11"
+    },
+    {
+      "bytes": 6691,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624/train-outer-curves.csv",
+      "sha256": "f9aaf05bb69b1690b0c6abd78606e70323bf1f0e7c4cd9f14b7d3f9a0bb322ea"
+    },
+    {
+      "bytes": 31436,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624/committed-adam-loss.csv",
+      "sha256": "8cfde56907f3606ab8891069fbc918de932a14929551a3299ef0b0952b33220a"
+    },
+    {
+      "bytes": 1156,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624/native512-curves.csv",
+      "sha256": "10c6010cf1aee82efffa1109c198ac63f29c2834f9f12fc50887442cf0057956"
+    }
+  ],
+  "interpolation": false,
+  "matplotlib_version": "3.9.4",
+  "partial_evaluation_rows": 0,
+  "pipeline_run_id": "5e5c6851462d43b5822721ffaa58446e",
+  "plot": {
+    "bytes": 227122,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/search-e1-pr100-20261010/public/first20-training-native512-20261010-0624-plot/pr100-em-loss-curves.png",
+    "sha256": "2f5e2b3872eec5c400709e1351fb409c9549c7065a647bcad20b54f823e03f03"
+  },
+  "schema": "opsd-pr100-aggregate-static-plot-v1",
+  "scope": "Aggregate-only rendering; sampled pre-update TRAIN EM on varying cohorts; recorded equal-trajectory raw/post-clipping losses; closed native512 only. No model, raw, tensor, token, network or bootstrap computation.",
+  "smoothing": false,
+  "source_code": {
+    "bytes": 12149,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_pr100_plot_v1/plot.py",
+    "sha256": "f8b04e56136f3c5bc71e43f3a9f3312bf3e665fac5d9a8201a63286a7a216b81"
+  },
+  "training_run_id": "c6a79477161a4a059e4fd68fc7567f87"
+}
