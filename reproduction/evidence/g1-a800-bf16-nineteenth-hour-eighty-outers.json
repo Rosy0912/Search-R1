@@ -1,0 +1,66 @@
+{
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "runtime_source": "fe59dc164490098054879141d5421e0b418b4056",
+  "observed_unix": 1791549788.3881934,
+  "previous_delivery_unix": 1791537933.521297,
+  "window_seconds": 11854.866896152496,
+  "completed_outers": 80,
+  "new_complete_outers": 14,
+  "processed_opportunities_total": 1600,
+  "returned_adam_writes_total": 1600,
+  "new_writes_since_previous_counter_snapshot": 268,
+  "skipped": 0,
+  "reward": {
+    "latest": 0.5511949062347412,
+    "mean": 0.5691600441932678,
+    "min": 0.5371670722961426,
+    "max": 0.6200181245803833,
+    "change_from_previous_window_mean": -0.0019823789596557904
+  },
+  "actual_update_records": [
+    {"step": 67, "reward": 0.5371670722961426, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 68, "reward": 0.5597362518310547, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 69, "reward": 0.5906566381454468, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 70, "reward": 0.5597819685935974, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 71, "reward": 0.5779019594192505, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 72, "reward": 0.5902965664863586, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 73, "reward": 0.5448966026306152, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 74, "reward": 0.6200181245803833, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 75, "reward": 0.565240204334259, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 76, "reward": 0.5503082275390625, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 77, "reward": 0.5672043561935425, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 78, "reward": 0.5579329133033752, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 79, "reward": 0.5959048271179199, "opportunities_processed": 20, "actual_optimizer_writes": 20},
+    {"step": 80, "reward": 0.5511949062347412, "opportunities_processed": 20, "actual_optimizer_writes": 20}
+  ],
+  "validation_unchanged": {
+    "dev512_step": 50,
+    "dev512_em": 0.39453125,
+    "dev512_f1": 0.46546063528485404,
+    "stage64_step": 5,
+    "stage64_em": 0.203125,
+    "stage64_f1": 0.2706333740454399,
+    "dev512_identity_receipt_sha256": "2e496a8e56c2c676dcdb7a13dea5ff3d122c49801e74c61f4d231d76d996b47a"
+  },
+  "runtime_observation": {
+    "pipeline_alive": true,
+    "pipeline_stage": "GRPO_1_TO_200",
+    "trainer_pid": 1337905,
+    "trainer_start_ticks": 552404529,
+    "trainer_birth_matches": true,
+    "trainer_alive": true,
+    "trainer_process_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-db474-trainer-birth-1791549797886051000.json",
+    "gpu_current_mib_training": [2823, 2921],
+    "gpu_current_util_percent_training": [0, 0],
+    "gpu_matching_sample_count": 22956,
+    "gpu_max_scanned_sampling_gap_seconds": 2.9826717376708984,
+    "gpu_sampled_run_peak_mib": null,
+    "gpu_scope_note": "Current utilization is a point sample; the bounded observer did not compute an exact cumulative or hour-window peak."
+  },
+  "hashes": {
+    "observer_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-common-deployment-a20f0475ec824c69ba1554f39e9ff512.observe-1791549789196059000.json",
+    "actual_updates_jsonl_sha256": "f160f865874e69aa56817a3c8a770d246148def52e302caec24f67a9f09694c5",
+    "run_manifest_sha256": "943e31dcfec0023a38ee4bb5f906d0cb06af578d81a9ba928c1cc73d62af2b25"
+  },
+  "scope": "Sanitized scalar/hash evidence only; no model weights, credentials, QA text, token text, or full training log copied. No extra evaluation or model test was run."
+}
