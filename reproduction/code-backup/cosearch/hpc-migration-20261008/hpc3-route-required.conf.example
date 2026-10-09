@@ -16,6 +16,10 @@ Host hpc3
  IdentitiesOnly yes
  ProxyJump hpc3-jump
 Host *
+ # Private short socket directory (create with mode 700 before use).
+ ControlMaster auto
+ ControlPersist 600
+ ControlPath SOCKET_DIR/%C
  UserKnownHostsFile BUNDLE_DIR/known_hosts
  StrictHostKeyChecking yes
  UpdateHostKeys no
