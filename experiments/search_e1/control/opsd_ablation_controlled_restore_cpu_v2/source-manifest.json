@@ -1,0 +1,16 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 5289,
+      "sha256": "35c954d75907adbdbb35c04be56e81912eff649128059942dd703347c0506985"
+    },
+    "check.py": {
+      "bytes": 22111,
+      "sha256": "1db67db0632fce4aa36d08b0fa73620720fa22efd25b74aeec1b013e162f206d"
+    }
+  },
+  "no_execution": true,
+  "prepared_only": true,
+  "preserved_v1_source_manifest": "f9c845856e096d65598c1c0206644553070b4b2aafead243d73a6ad23744e312",
+  "schema": "controlled-restore-cpu-source-manifest-v2"
+}
