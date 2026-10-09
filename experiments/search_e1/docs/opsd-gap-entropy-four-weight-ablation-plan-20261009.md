@@ -222,7 +222,7 @@ E[w_Da_D]=\bar a+s\eta\frac1G\sum_jr_j a_j
 
 统计执行补充：两个终态主比较做双侧exact McNemar（无discordant时p=1），Holm家族α=.05；NQ/Hotpot分层、seed42、10000次question block bootstrap，所有组/时点/同题siblings一块抽，百分点差95% percentile CI为单比较区间。曲线、跨指标及对起点比较只作探索性描述。该512是反复使用的训练外验证集，不是完全未见最终测试，不能把一次正结果称为未知题集/训练seed的可靠泛化。
 
-heldout回放参考补充：EM始终统计全512。默认复用共同source100本次greedy正确响应作为固定B bank，在看四组输出前冻结并逐SHA绑定，不新增参考生成预算；所有组/时点共用同一B，不让各组自己挑成功参考。无B、teacher联合context超8192、无答案payload等记相应g/KL为NA，不填0；ordinary entropy不因无B而删题。报告全512 EM、bank及g/KL覆盖、参考子集EM；g/KL关联不代表全512。该成功资格已经使用gold，是特权事后诊断，不是普通推理可部署的正确概率。默认bank不能覆盖原错→新对题的teacher信号；额外参考生成另列预算。
+heldout回放参考补充：EM始终统计全512。默认复用共同source100本次greedy正确响应作为固定B bank，在看四组输出前冻结并逐SHA绑定，不新增参考生成预算；所有组/时点共用同一B，不让各组自己挑成功参考。无B或teacher联合context超8192时g/teacher KL记NA；无答案payload只使答案gap NA，全policy KL若其余编码/mask合法仍可算；ordinary entropy不因无B而删题。报告全512 EM、bank及各指标覆盖、参考子集EM；g/KL关联不代表全512。baseline在该参考子集EM恒1，零方差/无两类时Pearson、Spearman及EM AUC必须NA，不能填0/.5；后续各指标子集也核此条件。该成功资格已经使用gold，是特权事后诊断，不是普通推理可部署的正确概率。默认bank不能覆盖原错→新对题的teacher信号；额外参考生成另列预算。
 
 评估边界补充：完成5/10/15/20/25轮对应索引4/9/14/19/24；原子提交完整raw adapter/四rank Adam/RNG/order/cursor→训练child真实exit/release→隔离eval child→退出释放→核原checkpoint状态未变→继续下一outer。评估失败只恢复评估，不重做已提交训练Adam；不让评估消耗生产RNG或切换训练adapter。
 
