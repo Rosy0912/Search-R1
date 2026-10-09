@@ -1,0 +1,25 @@
+# Required route: Mac -> existing SOCKS -> HKUST3 -> HPC3.
+# Install only in the existing private access bundle; substitute BUNDLE_DIR.
+Host hpc3-jump
+ HostName 10.120.17.122
+ User shaoshitong
+ Port 22
+ IdentityFile BUNDLE_DIR/keys/id_rsa_hkust
+ IdentitiesOnly yes
+ ProxyCommand nc -X 5 -x 127.0.0.1:12123 %h %p
+Host hpc3
+ HostName hpc3login.hpc.hkust-gz.edu.cn
+ User jxu957
+ Port 22
+ IdentityFile BUNDLE_DIR/keys/id_ed25519_hpc3
+ IdentitiesOnly yes
+ ProxyJump hpc3-jump
+Host *
+ UserKnownHostsFile BUNDLE_DIR/known_hosts
+ StrictHostKeyChecking yes
+ UpdateHostKeys no
+ BatchMode yes
+ ConnectTimeout 10
+ ConnectionAttempts 1
+ ServerAliveInterval 10
+ ServerAliveCountMax 2
