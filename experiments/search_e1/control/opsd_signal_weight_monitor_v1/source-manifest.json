@@ -1,0 +1,23 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3377,
+      "sha256": "6e27acb61c812e4935c5afcf97b685f0123f72a27deb343cedcb4370d4c0c72e"
+    },
+    "__init__.py": {
+      "bytes": 74,
+      "sha256": "e6d8adeab273df0008b5a3672af07d1b904e47313060486f3266d879ef89d2e5"
+    },
+    "monitor.py": {
+      "bytes": 36145,
+      "sha256": "cec05fdbd625a5e6bb062f383d674465d9e95de3d2347aa55489352e5b9eaa48"
+    },
+    "test_monitor.py": {
+      "bytes": 22670,
+      "sha256": "a80cfc65dbedd886625cefc2de00549dc5719dd1eb89b1259995b2a29b04ae03"
+    }
+  },
+  "large_local_products": false,
+  "production_namespace_hot_modified": false,
+  "schema": "opsd-signal-readonly-monitor-source-v1"
+}
