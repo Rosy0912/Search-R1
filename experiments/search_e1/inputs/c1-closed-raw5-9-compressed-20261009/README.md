@@ -1,0 +1,9 @@
+# C1 closed outer5/6/7/8/9 original-byte compressed copy
+
+This fixed scope binds actual C1 run/config and CP61/CP71/CP81/CP91/CP101. Reuse the published V2 fixed-handle SHA/metadata/USTAR stream and source100 gzip/member verification logic. All noncache regular files under these five closed outer roots are included, including failed-attempt logs, teacher/student HTTP/IDs/token logs and any NPY as original file bytes. No array load/cast/save, JSON transformation, model or GPU access occurs. Only each top-level merged-model-cache is excluded; its surrounding merge identity/exit proofs remain. No small already-backed-up closure file is subtracted and no mutable group/global file or active outer is included.
+
+Publish and FETCH_HEAD byte-verify these fixed helpers before execution. Run source inventory once, SSH stream→Mac gzip level1, actual wait rc0, source after file-set/metadata/config/completion/CP identity, independent full archive/member SHA/CRC/exact-set verification, then atomic final rename/fsync and accepted proof. Space guard uses tar upper bound plus1% and5GiB, not assumed compression. Any failure retains partial/Node originals. A compressed archive is the local durable original-byte backup; no second bare payload is made. Restore separately and check member SHA. Current training/next512 never wait for this copy.
+
+This scope is C1 outer5/6/7/8/9 only, not all ten C1 or the seven-group raw/debug deliverable. Production source and old copies remain frozen.
+
+The new unused scope also uses exact USTAR EOF/20-block record padding for disk reservation; the known compact boundary formula is reused without a new test suite. Original archive bytes and previous scopes stay unchanged.

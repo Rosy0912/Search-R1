@@ -1,0 +1,41 @@
+{
+  "backup_is_training_dependency": false,
+  "closed_outers": [
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/raw-c1-closed5-9-compressed-20261009",
+  "expected_actual_updates": [
+    61,
+    71,
+    81,
+    91,
+    101
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 1713,
+      "sha256": "3072dc0fb4cef1ca3d7faff8c939b13126badc148a29c1ad553693aeea90b8b6"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 5269,
+      "sha256": "d6ff728f2a23d2877bb2a953c7871e89399ea3026b8c8a6a2649cc1c49b7748a"
+    },
+    "transfer-gzip.py": {
+      "bytes": 2861,
+      "sha256": "7b1dd6535d75eed4562f6129498e3fc799ddb383efb72c5bf767d424364d39db"
+    },
+    "verify-archive.py": {
+      "bytes": 5415,
+      "sha256": "babe90cab8c04b7f41c4b21ae87453699cc56b64648378388ff886e76cdedb97"
+    }
+  },
+  "fullraw_original_byte_scope_includes_NPY": true,
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "c1-closed5-9-raw-compressed-fixed-entry-v1",
+  "science_or_gpu_change": false
+}
