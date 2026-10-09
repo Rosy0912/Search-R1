@@ -1,0 +1,519 @@
+{
+  "M": {
+    "datasets": {
+      "hotpotqa": {
+        "em": 0.5,
+        "final_invalid": 0,
+        "no_executed_search": 0,
+        "questions": 256,
+        "search_calls": {
+          "1": 64,
+          "2": 155,
+          "3": 29,
+          "4": 8
+        },
+        "strict_hits": 128,
+        "termination": {
+          "answer": 256
+        },
+        "valid_gold_mismatch": 128
+      },
+      "nq": {
+        "em": 0.42578125,
+        "final_invalid": 0,
+        "no_executed_search": 0,
+        "questions": 256,
+        "search_calls": {
+          "1": 201,
+          "2": 42,
+          "3": 11,
+          "4": 2
+        },
+        "strict_hits": 109,
+        "termination": {
+          "answer": 256
+        },
+        "valid_gold_mismatch": 147
+      }
+    },
+    "eval_run_id": "df8481e6ce58439f9d5fc95e893efc49",
+    "final_checkpoint": {
+      "manifest_sha256": "801db6fec8888f3097d542dafcae44c3ff6a327251cdf7581695e82635e7906a",
+      "optimizer_updates": 100,
+      "outer_index": 9
+    },
+    "optimizer_updates": 100,
+    "overall": {
+      "em": 0.462890625,
+      "final_invalid": 0,
+      "no_executed_search": 0,
+      "questions": 512,
+      "search_calls": {
+        "1": 265,
+        "2": 197,
+        "3": 40,
+        "4": 10
+      },
+      "strict_hits": 237,
+      "termination": {
+        "answer": 512
+      },
+      "valid_gold_mismatch": 275
+    },
+    "training_outer_iterations": 10,
+    "variant": "M",
+    "version": "raw10_bf16"
+  },
+  "acceptance_scope": "M raw10_bf16 complete native512 and exact recorded paired-count derivation; not whole-study completion or causal efficacy acceptance",
+  "accepted": true,
+  "comparators": {
+    "C1": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.49609375,
+          "final_invalid": 0,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 71,
+            "2": 151,
+            "3": 27,
+            "4": 7
+          },
+          "strict_hits": 127,
+          "termination": {
+            "answer": 256
+          },
+          "valid_gold_mismatch": 129
+        },
+        "nq": {
+          "em": 0.42578125,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 194,
+            "2": 49,
+            "3": 12,
+            "4": 1
+          },
+          "strict_hits": 109,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 146
+        }
+      },
+      "overall": {
+        "em": 0.4609375,
+        "final_invalid": 1,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 265,
+          "2": 200,
+          "3": 39,
+          "4": 8
+        },
+        "strict_hits": 236,
+        "termination": {
+          "answer": 511,
+          "invalid_or_budget": 1
+        },
+        "valid_gold_mismatch": 275
+      },
+      "version": "raw10_bf16"
+    },
+    "bf16_zero": {
+      "datasets": {
+        "hotpotqa": {
+          "em": 0.50390625,
+          "final_invalid": 1,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 61,
+            "2": 156,
+            "3": 31,
+            "4": 8
+          },
+          "strict_hits": 129,
+          "termination": {
+            "answer": 255,
+            "invalid_or_budget": 1
+          },
+          "valid_gold_mismatch": 126
+        },
+        "nq": {
+          "em": 0.4296875,
+          "final_invalid": 3,
+          "no_executed_search": 0,
+          "questions": 256,
+          "search_calls": {
+            "1": 192,
+            "2": 49,
+            "3": 13,
+            "4": 2
+          },
+          "strict_hits": 110,
+          "termination": {
+            "answer": 253,
+            "invalid_or_budget": 3
+          },
+          "valid_gold_mismatch": 143
+        }
+      },
+      "overall": {
+        "em": 0.466796875,
+        "final_invalid": 4,
+        "no_executed_search": 0,
+        "questions": 512,
+        "search_calls": {
+          "1": 253,
+          "2": 205,
+          "3": 44,
+          "4": 10
+        },
+        "strict_hits": 239,
+        "termination": {
+          "answer": 508,
+          "invalid_or_budget": 4
+        },
+        "valid_gold_mismatch": 269
+      },
+      "version": "bf16_zero"
+    }
+  },
+  "comparisons": {
+    "C1->M": {
+      "missing_labels": [],
+      "status": "COMPLETE",
+      "strata": {
+        "hotpotqa": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": 0.00390625,
+            "lower": -0.02734375,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 256,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.03515625
+          },
+          "gained_no_search": 0,
+          "left_hits": 127,
+          "lost_final_invalid": 0,
+          "lost_hits": 7,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 7,
+          "net_hits": 1,
+          "net_percentage_points": 0.390625,
+          "new_hits": 8,
+          "preserved_hits": 120,
+          "questions": 256,
+          "right_hits": 128,
+          "still_wrong": 121
+        },
+        "nq": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": 0.0,
+            "lower": -0.01953125,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 256,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.0234375
+          },
+          "gained_no_search": 0,
+          "left_hits": 109,
+          "lost_final_invalid": 0,
+          "lost_hits": 4,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 4,
+          "net_hits": 0,
+          "net_percentage_points": 0.0,
+          "new_hits": 4,
+          "preserved_hits": 105,
+          "questions": 256,
+          "right_hits": 109,
+          "still_wrong": 143
+        },
+        "overall": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": 0.001953125,
+            "lower": -0.017578125,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 512,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.01953125
+          },
+          "gained_no_search": 0,
+          "left_hits": 236,
+          "lost_final_invalid": 0,
+          "lost_hits": 11,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 11,
+          "net_hits": 1,
+          "net_percentage_points": 0.1953125,
+          "new_hits": 12,
+          "preserved_hits": 225,
+          "questions": 512,
+          "right_hits": 237,
+          "still_wrong": 264
+        }
+      }
+    },
+    "bf16_zero->M": {
+      "missing_labels": [],
+      "status": "COMPLETE",
+      "strata": {
+        "hotpotqa": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": -0.00390625,
+            "lower": -0.03125,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 256,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.0234375
+          },
+          "gained_no_search": 0,
+          "left_hits": 129,
+          "lost_final_invalid": 0,
+          "lost_hits": 7,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 7,
+          "net_hits": -1,
+          "net_percentage_points": -0.390625,
+          "new_hits": 6,
+          "preserved_hits": 122,
+          "questions": 256,
+          "right_hits": 128,
+          "still_wrong": 121
+        },
+        "nq": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": -0.00390625,
+            "lower": -0.03515625,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 256,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.0234375
+          },
+          "gained_no_search": 0,
+          "left_hits": 110,
+          "lost_final_invalid": 0,
+          "lost_hits": 8,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 8,
+          "net_hits": -1,
+          "net_percentage_points": -0.390625,
+          "new_hits": 7,
+          "preserved_hits": 102,
+          "questions": 256,
+          "right_hits": 109,
+          "still_wrong": 139
+        },
+        "overall": {
+          "bootstrap": {
+            "confidence": 0.95,
+            "em_difference": -0.00390625,
+            "lower": -0.0234375,
+            "method": "paired nonparametric percentile bootstrap; resample question slots, never siblings",
+            "question_units": 512,
+            "replicates": 10000,
+            "seed": 42,
+            "upper": 0.015625
+          },
+          "gained_no_search": 0,
+          "left_hits": 239,
+          "lost_final_invalid": 0,
+          "lost_hits": 15,
+          "lost_no_search": 0,
+          "lost_valid_gold_mismatch": 15,
+          "net_hits": -2,
+          "net_percentage_points": -0.390625,
+          "new_hits": 13,
+          "preserved_hits": 224,
+          "questions": 512,
+          "right_hits": 237,
+          "still_wrong": 260
+        }
+      }
+    }
+  },
+  "coverage_snapshot": {
+    "R": {
+      "five_update_training_acceptance": false,
+      "optimizer_updates": 0,
+      "outer_index": 0,
+      "phase": "SAMPLING"
+    },
+    "complete_models": 5,
+    "complete_primary_slots": 2560,
+    "completed_training_outers": 30,
+    "expected_models": 11,
+    "expected_primary_slots": 5632,
+    "expected_training_outers": 70,
+    "full_goal_complete": false,
+    "pending_models": [
+      "R",
+      "W",
+      "P",
+      "J",
+      "P_fp16",
+      "J_fp16"
+    ]
+  },
+  "derived_at_cst": "2026-10-09T12:23:24+08:00",
+  "execution": {
+    "actual_read_returncode": 0,
+    "exit_codes_inferred_from_absence": false,
+    "parent_actual_wait_returncode": 0,
+    "parent_release_accepted": true,
+    "phase_release_accepted": true,
+    "worker_actual_wait_returncodes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "worker_count": 8
+  },
+  "identities": {
+    "common_initial_adapter_tensor_sha256": "836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f",
+    "greedy_contract": {
+      "attention_backend": "sdpa",
+      "eos_token_id": [
+        151645,
+        151643
+      ],
+      "max_context": 8192,
+      "max_new_tokens": 500,
+      "max_search_calls": 4,
+      "observation_tokens": 480,
+      "rank_seed": 42,
+      "repetition_penalty": 1.05,
+      "temperature": 0,
+      "topk": 3,
+      "turns": 5
+    },
+    "runtime_identity": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc",
+    "source_model_identity": "2ef6070a328357b0f9d3a026010aaed0aa3f8840a241bc1021ed9a183e8d75f7",
+    "validation_sha256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76"
+  },
+  "interpretation": {
+    "both_overall_95pct_intervals_include_zero": true,
+    "causal_mechanism_demonstrated": false,
+    "equivalence_demonstrated": false,
+    "robust_improvement_demonstrated": false
+  },
+  "limitations": [
+    "Intervals are descriptive paired percentile bootstrap intervals (seed42,10000 question-level resamples), without multiple-comparison correction.",
+    "This snapshot does not establish equivalence, a causal benefit of the mixture target, or completion of all seven groups.",
+    "This report reuses exact SHA-bound recorded native scores; it does not rerun inference, rescore answers, or reread model tensors.",
+    "Only aggregate counts, model/run identities and source byte/SHA identities are published; private question identifiers, response/token text and private file paths are excluded."
+  ],
+  "observed_at_cst": "2026-10-09T12:19:41+08:00",
+  "schema": "opsd-m-native512-results-compact-v1",
+  "source_evidence": {
+    "M_full512_release_acceptance": {
+      "bytes": 4122,
+      "sha256": "20b1c74e6e7def7c8ba7f3e6705243d6dbb0e2146542d69f4e8a700df63dad1e"
+    },
+    "M_private_records_content_identity": {
+      "bytes": 494658,
+      "sha256": "9af3b89863a47e6c6f4afd9bef2d9eb4b1f4706b423bef287e672ce8753c5837"
+    },
+    "actual_direct_read_execution": {
+      "bytes": 9184,
+      "sha256": "a10de3526fc19b05529f7c259ac8de09498ed81aa4a45a3d71079d9efeeb4b60"
+    },
+    "native_original_artifacts": {
+      "M-child-exit": {
+        "bytes": 1611,
+        "sha256": "8b3a5a13e44d98fb4fcfa63bfb38ad8a985d7a79d2bdf7fad6b723d361f5c4e8"
+      },
+      "M-child-release": {
+        "bytes": 47409,
+        "sha256": "0e84ea32abd254ded1cfe514551e6773f4e2d77b0a745ea4da69b8783dd31492"
+      },
+      "M-controller-complete": {
+        "bytes": 73734,
+        "sha256": "9bdef2308d6853a03181d9b62b6cfd04d4f0a6b500520e46f9314d08338a2675"
+      },
+      "M-eight-terminal": {
+        "bytes": 8961,
+        "sha256": "7289be9a435edcff21f3353460465a7fb24aa7c93661e1a683485026c34c18a3"
+      },
+      "M-phase-complete": {
+        "bytes": 82082,
+        "sha256": "ff00ffc5b349b7be1bff4051105e834de050e32d0551946b99587d9105b84a8d"
+      },
+      "M-result-accepted": {
+        "bytes": 182848,
+        "sha256": "33761907014ebad9934ee08836320fc8675ad0c1787dcbbc573cc2818f82b27e"
+      },
+      "M-summary": {
+        "bytes": 84399,
+        "sha256": "36f49beb705807a92788a5ba6aee61f4c6187c89113794bd74afc5e1207d84c8"
+      },
+      "R-child-start": {
+        "bytes": 1657,
+        "sha256": "433a21a56752a9141cf313ad13168e6fb389ce677829311670fe751908e1b85b"
+      },
+      "R-group-status": {
+        "bytes": 1657,
+        "sha256": "200fd96e55866a324136307ca2b746298aac6c74a553d6320bb0be0287f22524"
+      },
+      "stratified-paired-notes.zh.md": {
+        "bytes": 1379,
+        "sha256": "4c57b0ee7ac475a69fd8cf48f26319efad9517bcb49f02a50edc06a325b674bc"
+      },
+      "stratified-paired-summary.json": {
+        "bytes": 28190,
+        "sha256": "75618571a2db881b31f2d955dcdcee6e8e046331d9f687ebfda1d86e9e9ae08d"
+      },
+      "stratified-paired.csv": {
+        "bytes": 4607,
+        "sha256": "8a755ae8a6f8fd5c49fe73fb030339c9fc29b94844b7a05f629b6a6a92e1a455"
+      }
+    },
+    "original_byte_slice_verification": {
+      "bytes": 5754,
+      "sha256": "85e32d6107cb6b6189db8f5a7e003fd1100a9ea938f3a5bf128e00bbeef43177"
+    },
+    "stratified_derivation_manifest": {
+      "bytes": 3661,
+      "sha256": "87ac7392f140e3f71e42f58ca5203f51cc8cabf6e207839462ef467b3fa653c7"
+    },
+    "stratified_input_manifest": {
+      "bytes": 4111,
+      "sha256": "32401a13f32c77f0d2aed66c51fd227d919e1729d40f8ea993ef177931f0f593"
+    }
+  },
+  "statistics": {
+    "bootstrap_replicates": 10000,
+    "confidence": 0.95,
+    "interval_scope": "Descriptive marginal percentile intervals; no multiple-comparison correction or familywise claim.",
+    "multiplicity_adjusted": false,
+    "question_units": {
+      "hotpotqa": 256,
+      "nq": 256,
+      "overall": 512
+    },
+    "seed": 42
+  },
+  "study_id": "reverse-seven-a1dacc9d8c77451c8b04140e8e355777"
+}

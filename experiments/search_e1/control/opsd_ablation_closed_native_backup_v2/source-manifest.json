@@ -1,0 +1,35 @@
+{
+  "schema": "opsd-ablation-closed-native-backup-source-v2",
+  "files": {
+    "README.md": {
+      "bytes": 6953,
+      "sha256": "aa560fd77b9618c5d2e3c9225ea7d7c4ae481f66b99a9ec64f843e842f5004ba"
+    },
+    "source-operation.py": {
+      "bytes": 17694,
+      "sha256": "086c15e619a19ba646232b5aa62653a43b316252b1862b1ba7cd4291086d5311"
+    },
+    "test_scope.py": {
+      "bytes": 10791,
+      "sha256": "d5cc52ed393866e56d6524d7271d830deab8358267129331cead43e55a1b813f"
+    },
+    "transfer-gzip.py": {
+      "bytes": 4261,
+      "sha256": "ed7a61178e5ce96c716c46de41e6fc2278cbc2256bd77d2d8c46dc3efbafd2a7"
+    },
+    "verify-archive.py": {
+      "bytes": 6401,
+      "sha256": "00ae89d065baa10c7bc8d74500b629467864d258aee288be54ac979fdbbb2400"
+    }
+  },
+  "original_v1_manifest_sha256": "13167eb4dd13f1468b2f05f76cf2a786a7db32a1956a0d89d7cec22edc8dd141",
+  "scope": "Only preserve full inventory in transfer/verifier; validate_inventory continues returning original relative member mapping. No Node/GPU/transport/science changes.",
+  "focused_CPU_fixture": {
+    "tests": 1,
+    "skipped": 0,
+    "actual_returncode": 0,
+    "seconds": 0.062,
+    "old_two_fixtures_rerun": false,
+    "scope": "Actual tiny producer inventory/validator; transfer preflight reaches mocked Popen sentinel without SSH; real tiny USTAR gzip full-member verifier accepted24files178080B. Fixture relocates original operation N only."
+  }
+}
