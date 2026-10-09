@@ -1,0 +1,38 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 8075,
+      "sha256": "b37d013e6579c9f0f752a37b6e27d128ebc57f8beac66ca15d957b230c40a91e"
+    },
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "1b8ee7d7a482ed9514e7021754c5f39d8a71674d6275518dccf48d30301f1039"
+    },
+    "common.py": {
+      "bytes": 5322,
+      "sha256": "a32c4eef49efcd113398c9c6850b516fc69798ad42ff53e3da5f41241f4a0c01"
+    },
+    "fixture.py": {
+      "bytes": 14195,
+      "sha256": "09b7aaeb92f2a6a929d10c0ce54b81f3efaaefd0460b3a6c37ee15608a703264"
+    },
+    "render.py": {
+      "bytes": 23604,
+      "sha256": "3d6f327e073e469d486f7f747b790f9276f2415875f9ee7dc4a0b21d34114901"
+    },
+    "report.py": {
+      "bytes": 1824,
+      "sha256": "6a782cc05247a35677b8527267a93744c0d774ff982d34d95991aeaf5675ea71"
+    },
+    "test_report.py": {
+      "bytes": 6560,
+      "sha256": "565c655c878231279d75824e807f27340799aa3ab54e7ed4ad10d16c2bba39c0"
+    },
+    "validate.py": {
+      "bytes": 16116,
+      "sha256": "59287ba8178c27b4dcc7ef43a22cfbce97b4a3c516dbb8852d150305c917f4c0"
+    }
+  },
+  "schema": "opsd-signal-report-source-manifest-v1",
+  "scope": "Independent final-only metadata/aggregate rendering, no original math/source edits"
+}
