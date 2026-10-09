@@ -19,6 +19,8 @@ def digest(path):
 
 def main():
     source, root = map(Path, sys.argv[1:3])
+    group = sys.argv[3] if len(sys.argv) > 3 else 'retriever-supplement'
+    assert group and all(c.isalnum() or c == '-' for c in group)
     lock = (root / 'prepare.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     def save(name, obj):
@@ -33,7 +35,7 @@ def main():
         assert not p.is_absolute() and '..' not in p.parts
     files = [x for x in selected if x['kind'] == 'file']
     assert rows[-1]['kind'] == 'complete' and rows[-1]['files'] == len(files)
-    final = root / 'retriever-supplement.tar.zst'
+    final = root / (group + '.tar.zst')
     receipt = root / 'archive-verified.json'
     manifest_sha = digest(root / 'manifest.jsonl')
     if final.exists() and receipt.exists():
@@ -56,7 +58,7 @@ def main():
             save('prepare-progress.json', {'pid': os.getpid(), 'status': 'VERIFYING_SOURCE', 'files': count, 'epoch': time.time()})
     save('prepare-progress.json', {'pid': os.getpid(), 'status': 'ARCHIVING', 'files': count, 'epoch': time.time()})
     names = b''.join(x['path'].encode() + b'\0' for x in selected)
-    part = root / 'retriever-supplement.tar.zst.part'
+    part = root / (group + '.tar.zst.part')
     with part.open('wb') as out:
         tar = subprocess.Popen(['tar', '-C', str(source), '--null', '--verbatim-files-from', '-T', '-', '-cf', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         zstd = subprocess.Popen(['zstd', '-T2', '-1', '-c'], stdin=tar.stdout, stdout=out)
@@ -68,7 +70,7 @@ def main():
         os.fsync(out.fileno())
     archive_sha = digest(part)
     os.replace(str(part), str(final))
-    save('archive-verified.json', {'status': 'SOURCE_ARCHIVE_AND_FILES_SHA_VERIFIED', 'group': 'retriever-supplement', 'archive': str(final), 'archive_bytes': final.stat().st_size, 'archive_sha256': archive_sha, 'manifest_sha256': manifest_sha, 'files': len(files), 'original_bytes': sum(x['bytes'] for x in files), 'symlinks': len(selected) - len(files), 'epoch': time.time(), 'source_originals_retained': True})
+    save('archive-verified.json', {'status': 'SOURCE_ARCHIVE_AND_FILES_SHA_VERIFIED', 'group': group, 'archive': str(final), 'archive_bytes': final.stat().st_size, 'archive_sha256': archive_sha, 'manifest_sha256': manifest_sha, 'files': len(files), 'original_bytes': sum(x['bytes'] for x in files), 'symlinks': len(selected) - len(files), 'epoch': time.time(), 'source_originals_retained': True})
     save('prepare-progress.json', {'pid': os.getpid(), 'status': 'SOURCE_ARCHIVE_READY', 'epoch': time.time()})
 
 
