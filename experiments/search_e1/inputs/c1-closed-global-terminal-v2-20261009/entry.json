@@ -1,0 +1,56 @@
+{
+  "actual_source_inventory_performed": false,
+  "actual_transfer_performed": false,
+  "backup_is_training_dependency": false,
+  "closed_outers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "config_sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c1-closed-global-terminal-v2-compressed-20261009",
+  "expected_actual_updates": 101,
+  "expected_completed_outer_count": 10,
+  "files": {
+    "README.md": {
+      "bytes": 5064,
+      "sha256": "da572236d0f70ac1f93698f821a565465158d037885b4addb9a7fe974bf61f7b"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 11121,
+      "sha256": "f45e1c24b726a90bd48a1e0a8a055c7c2f9e3ff339b8fe98b0f85aa6a7dc028c"
+    },
+    "transfer-gzip.py": {
+      "bytes": 3142,
+      "sha256": "7404896d498de190ce7b4c29cf7e8da6a57ae0351f9910359843f9b0ce3e2567"
+    },
+    "verify-archive.py": {
+      "bytes": 5453,
+      "sha256": "e3bc9db9f49aa5e93d178b46e009c7f51805c21223a03a8285c2a69a568e889b"
+    }
+  },
+  "final_checkpoint_sha256": "c633589a4585db624c4791a59523a1fd0bf06284f016a6a3beab7ba24a841bb8",
+  "group_terminal_sha256": "26d3e734986c1a5db622a46878252eea837c331d0472573369364f73201c1d61",
+  "preparation_state": "READY_SOURCE_ONLY_NOT_EXECUTED",
+  "run_id": "a1a56efd32e5456d8c6813454975e38f",
+  "schema": "c1-closed-global-terminal-compressed-fixed-entry-v2",
+  "science_or_gpu_change": false,
+  "scope": "Closed C1 global training terminal evidence only; active study/global observer and already accepted 4087 outer raw files excluded",
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+  "source_originals_retained": true,
+  "static_ast_pass": true,
+  "status_sha256": "258d746de6994423db4318414017212b62a1b8c82ffb89e71eabcf9524394df3",
+  "supersedes_interface_only": {
+    "controller_terminal_field": "phase",
+    "retained_failure": "V1 actual inventory rc1 KeyError(stage); no training failure",
+    "source_directory": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/inputs/c1-closed-global-terminal-20261009"
+  },
+  "variant": "C1"
+}
