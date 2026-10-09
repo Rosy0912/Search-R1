@@ -1,0 +1,48 @@
+{
+  "accepted_execution_prefix": true,
+  "accumulation": {
+    "global_trajectory_batch": 32,
+    "micro": 1,
+    "per_rank": 8,
+    "ranks": 4
+  },
+  "checkpoint": {
+    "bytes": 28980,
+    "ctime_ns": 1791589735716123776,
+    "device": 2081,
+    "inode": 48174387,
+    "mtime_ns": 1791589735692123403,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000140-outer-00013/manifest.json",
+    "sha256": "1e2d572bad8baa0f814020550600d7ad52562691c776c368cb43c49761590b97"
+  },
+  "complete_outers": 14,
+  "effective_token_rows": 769590,
+  "full_study_complete": false,
+  "last_train_correct": 1200,
+  "latest_backup": {
+    "bytes": 2846,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp140-local-stage-prepared.json",
+    "sha256": "bce4407bc41e47559206a3e4ba911a25e9e84f055b1f50e424169e8daf0fb623"
+  },
+  "latest_numeric": {
+    "bytes": 5915,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp140-numeric-actual.json",
+    "sha256": "ee56e8147a2392baa5f94566797be4996d0640c347bda6a362f3feb95b1b64c7"
+  },
+  "latest_tail_pairs": 12,
+  "latest_token": {
+    "bytes": 6033,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp140-token-actual.json",
+    "sha256": "e73bb33187830e866f627ed0aa3afa4a5bee721eb911b13277bc7173368816e0"
+  },
+  "native_heldout15_25_complete": 0,
+  "original_science_config_unchanged": true,
+  "pair_exposures": 4260,
+  "real_completed_chain_updates": 140,
+  "schema": "opsd-signal-fourteen-outer-accepted-reference-v1",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "train_denominator": 2560,
+  "train_em": 0.46875,
+  "train_scope": "All unfiltered fresh samples before this outer training; different training cohorts, not heldout performance",
+  "variant": "G_POS"
+}

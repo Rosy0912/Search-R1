@@ -151,3 +151,10 @@ CP31/40/50/60/70/80/90的当前原生备份probe曾因SSH控制连接失败退�
 
 
 CP130备份随后以完全相同的原556754a helper和明确pin恢复：真实CLI wait0，source tar/双端SSH/targetcommit均0；九成员359785300字节在HKUST1完成freshSHA，marker027d86eafb8cfc398a2888b33a670e0057db9ce8bc41c427cded982007b9b941。源前后inventory相同，Mac payload0，训练未重启或热改。原failed CLI wait2/unknownpartial证据原样保留，不能改写为0。CP31–90的28项小metadata已经在K4独立目录完成freshSHA staging，236389字节，仅审计信息。
+
+
+## 第14轮与外部debug输入修复
+
+同一控制器已完成G_POS14/25、140次Adam、4260条所选轨迹曝光。最新实际CP140/outer13独立CPU numeric/token CLI均wait0：四rank全Adam140/moments/groups精确一致，504个FP32 adapter有限且相对初始全部改变，各rank完整RNG/cursor/scaler有效，CUDAfalse。本轮300轨迹/52063有效token、末12条实际分母及10次更新131–140通过；累计769590有效token为原保存forward重构，不是fresh logits或逐梯度因果。第14轮全部更新前TRAIN1200/2560=46.875%；原生15/25固定512仍未产出。CP140九成员远端备份真实wait0/source tar和双SSH及commit0、freshSHA通过；marker695a021f95fcdbd5869605cff4966ef0649298339d5501fede9f469339e00732，Mac没有checkpoint内容。
+
+13轮debug保留审计原9e1d179 actualCLI wait2，错误Completed outer raw/config/runtime/cumulative sampling identity differs。逐条件诊断确认outer0/1全true，outer2–12仅previous_complete_checkpoint/outer_old_adapter整字典比较失败：我准备的输入省略了原引用的ctime/device/inode/mtime；所有path/SHA/bytes、run/config/runtime/model/common/contract均相同。新rich-v2不可变请求仅从原outer_complete.checkpoint恢复完整引用；未改原9e审计、科学源码或正跑，未降低任何门禁。原6f4输入、failed stdout/actualwait2和诊断b9eed6db5b373d16dd07d4236fc4c47f1e02f7e4b47be633056184c1eff22f1a保留。新9698920e请求须发布/readback后实际执行，不能把输入修正当审计成功。

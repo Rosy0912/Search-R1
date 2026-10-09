@@ -7,10 +7,17 @@
     "ranks": 4
   },
   "backup130": {
-    "accepted": false,
-    "actual_transfer_cli_wait": 2,
-    "current_accepted": true,
-    "failure": "tar transport: source SSH1; target SSH255; no commit requested; retained originals/partial existence UNKNOWN",
+    "accepted": true,
+    "original_failed_attempt": {
+      "accepted": false,
+      "actual_cli_wait": 2,
+      "failure": "tar transport: source SSH1; target SSH255; no commit requested; retained originals/partial existence UNKNOWN",
+      "stdout": {
+        "bytes": 1710,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp130-actual.stdout.json",
+        "sha256": "b17c9336ab196ebd4d94c6c951f20972c0953086e9e0ead521941c04e1ad1c81"
+      }
+    },
     "recovery": {
       "accepted": true,
       "actual_cli_wait": 0,
@@ -25,11 +32,6 @@
       "production_changed": false,
       "stdout_sha256": "7181357440a39f40878c62cf969b4a689ffbbc509e720552b14c14eaaa876be1",
       "target_marker_sha256": "027d86eafb8cfc398a2888b33a670e0057db9ce8bc41c427cded982007b9b941"
-    },
-    "stdout": {
-      "bytes": 1710,
-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp130-actual.stdout.json",
-      "sha256": "b17c9336ab196ebd4d94c6c951f20972c0953086e9e0ead521941c04e1ad1c81"
     }
   },
   "complete_outers": 13,

@@ -1,0 +1,535 @@
+{
+  "configs": {
+    "G_NEG": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+    },
+    "G_POS": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    },
+    "H_NEG": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+      "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+    },
+    "H_POS": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+      "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+    }
+  },
+  "currentN": 13,
+  "mode": "prefix",
+  "outers": [
+    {
+      "end_checkpoint": {
+        "bytes": 19785,
+        "ctime_ns": 1791577189456212395,
+        "device": 2081,
+        "inode": 48114628,
+        "mtime_ns": 1791577189436212107,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000011-outer-00000/manifest.json",
+        "sha256": "0dd575fee0c8f5a0434c7f3f38aec84b274be0af95b87c24c136ab3e8005cc92"
+      },
+      "outer_complete": {
+        "bytes": 4011,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/training/outer-complete.json",
+        "sha256": "b3be4332d1936891c90af4d3698851ebdf448f7efc4b62b8c532a46a18f9fcee"
+      },
+      "outer_index": 0,
+      "outer_manifest": {
+        "bytes": 49693,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/outer-manifest.json",
+        "sha256": "bb742938d1ad4d6f2dfaf129fa87cf9b66e8b905f84db0d1ef892e4c6b52db1d"
+      },
+      "sampling_complete": {
+        "bytes": 660661,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/sampling-complete.json",
+        "sha256": "864a7e5aca9898804b2a3b21a30264177a43406774d6d8b92ddd7e0ca2b83d9e"
+      },
+      "teacher_parent": {
+        "bytes": 87980,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/teacher-diagnostics/complete.json",
+        "sha256": "873f590b7f842420a8a47164ecfdc68aa77068290cef0844382273e1a5d08f50"
+      },
+      "trainer_exit": {
+        "bytes": 72034,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00000/trainer-logs/attempt-00001-exit.json",
+        "sha256": "736ac463b22516ea4d102ab6c953bb08522c93e606db29fff8e9b562d341dd9b"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28975,
+        "ctime_ns": 1791578107678206665,
+        "device": 2081,
+        "inode": 48115532,
+        "mtime_ns": 1791578107650206551,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000021-outer-00001/manifest.json",
+        "sha256": "855f410d09d8c00d6c7f0e24827a988f98740169eb6e74f25f3cbb90511d8499"
+      },
+      "outer_complete": {
+        "bytes": 4163,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/training/outer-complete.json",
+        "sha256": "454903f531925f6c8e54616fdeadb114150191e073adcd5580e18f8ebed179fa"
+      },
+      "outer_index": 1,
+      "outer_manifest": {
+        "bytes": 59687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/outer-manifest.json",
+        "sha256": "dff1d923f5d2db55cdb5fa02079ccb3848442e7f628ea1dc849be28e5d95826b"
+      },
+      "sampling_complete": {
+        "bytes": 701968,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/sampling-complete.json",
+        "sha256": "36b31890e15e2902e7e201da209c89925e1029b2a2e7b0a1be52f66ff826ed34"
+      },
+      "teacher_parent": {
+        "bytes": 94978,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/teacher-diagnostics/complete.json",
+        "sha256": "3df8c7799deec796b04c38648a466a2abd0597c1b77a77f877210a00b1ffcc82"
+      },
+      "trainer_exit": {
+        "bytes": 90519,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/trainer-logs/attempt-00000-exit.json",
+        "sha256": "715f9f79122fccd9913840c0e5b55854d809852f9a2f5138703ba6fa18a30f06"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28975,
+        "ctime_ns": 1791579063905215325,
+        "device": 2081,
+        "inode": 48116417,
+        "mtime_ns": 1791579063877215070,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000031-outer-00002/manifest.json",
+        "sha256": "d28d3fe7d6bd2e531802612f3ea7173a88783dd911636bec378a2561b2be1cf4"
+      },
+      "outer_complete": {
+        "bytes": 4163,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/training/outer-complete.json",
+        "sha256": "87b9961b85a478c734b4577e80af03a9d7821e528f4a995e4a3ad92ac8c2dfeb"
+      },
+      "outer_index": 2,
+      "outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/outer-manifest.json",
+        "sha256": "aca4b149b87616ae145e7d68dc66a3422402cbff37eb3ffe4a5dd71a8ed7ed86"
+      },
+      "sampling_complete": {
+        "bytes": 761084,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/sampling-complete.json",
+        "sha256": "0e9a90891227279c54d8a86e52978b1027966bf12e5b2f7ee0bb91c9226f1878"
+      },
+      "teacher_parent": {
+        "bytes": 114098,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/teacher-diagnostics/complete.json",
+        "sha256": "b1b58c68c94c90b8d6dc0277a01ff6a67bf08c886d5b90d3dfb3664d48560831"
+      },
+      "trainer_exit": {
+        "bytes": 109009,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/trainer-logs/attempt-00000-exit.json",
+        "sha256": "7a371289fc0efa58a40f96a03ec2912e98a3d6635905963e4b8a503717c0fb58"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28546,
+        "ctime_ns": 1791580032866011230,
+        "device": 2081,
+        "inode": 48117227,
+        "mtime_ns": 1791580032846010548,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000040-outer-00003/manifest.json",
+        "sha256": "80dd5060fccf4eb27b1d500ee5ff30b392accc02718a331c2b6ca2a053c26941"
+      },
+      "outer_complete": {
+        "bytes": 4162,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/training/outer-complete.json",
+        "sha256": "4bb742d458f1346ecb8b4a04dbe5ff4162264224bdd5a7651333194d4343473c"
+      },
+      "outer_index": 3,
+      "outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/outer-manifest.json",
+        "sha256": "f298c5c2c9ba9c43ad0896ef23231c1e962b1b10198156494c555a4ad20b12fe"
+      },
+      "sampling_complete": {
+        "bytes": 821176,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/sampling-complete.json",
+        "sha256": "0265ce2a6c52bb0e2ab6e55adb39b2274fec5f579a43f0a0b09066c8075cda81"
+      },
+      "teacher_parent": {
+        "bytes": 133397,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/teacher-diagnostics/complete.json",
+        "sha256": "cbca240cd3c1c112da36a5cade932355d4b1c9980969eb070f6f61aa76138a9e"
+      },
+      "trainer_exit": {
+        "bytes": 127491,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/trainer-logs/attempt-00000-exit.json",
+        "sha256": "5859eb1d82be5c1dba78dedafe7117c6ef730d214bcd1e7b32a0f30a045252be"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28975,
+        "ctime_ns": 1791580959096865643,
+        "device": 2081,
+        "inode": 48118116,
+        "mtime_ns": 1791580959080865331,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000050-outer-00004/manifest.json",
+        "sha256": "c372317f98fd16b4d73b56efd26ca08520229c19bf325f757d3caff5db1ff930"
+      },
+      "outer_complete": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/training/outer-complete.json",
+        "sha256": "72e89ac0e4d0443997fb1d076056913e28da909b0be6da7f0f8a4576c7ae076c"
+      },
+      "outer_index": 4,
+      "outer_manifest": {
+        "bytes": 59687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/outer-manifest.json",
+        "sha256": "ef63fb9ac0a30f45cff97333778c2bf24aa24101afaf16e22ec8349804c56590"
+      },
+      "sampling_complete": {
+        "bytes": 881473,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/sampling-complete.json",
+        "sha256": "8ca8588be21a1cea93c86e8047128c95661f388dbcad9ed5b43e8793e07cb0f5"
+      },
+      "teacher_parent": {
+        "bytes": 152349,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/teacher-diagnostics/complete.json",
+        "sha256": "eacd1cadab606924d03647cada786783813c6df2ad101180d4498947dc442e72"
+      },
+      "trainer_exit": {
+        "bytes": 145982,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/trainer-logs/attempt-00000-exit.json",
+        "sha256": "f8c49ab630d318c8bffa402d1c7aa1cf98fb33f1a8ac08ad97dfb2e60dd9b9cc"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28976,
+        "ctime_ns": 1791582002128391055,
+        "device": 2081,
+        "inode": 48119047,
+        "mtime_ns": 1791582002096391148,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000060-outer-00005/manifest.json",
+        "sha256": "b4b8572491422ce59a7f6a116218d2fde4fa651ed35ce3bdbf671e520d7df8a1"
+      },
+      "outer_complete": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/training/outer-complete.json",
+        "sha256": "24121453fdb2d2539ff735f737351f5f5f3439caf775f5daab58e8bcc50d1706"
+      },
+      "outer_index": 5,
+      "outer_manifest": {
+        "bytes": 59688,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/outer-manifest.json",
+        "sha256": "ae15c43315966e6200edb550fc354c9b66dd8cc8c367a17eeffc51919a425349"
+      },
+      "sampling_complete": {
+        "bytes": 962945,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/sampling-complete.json",
+        "sha256": "ae7471291291465379b711151bb42012c570e4daaf27594df75beda6f5e825ae"
+      },
+      "teacher_parent": {
+        "bytes": 171641,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/teacher-diagnostics/complete.json",
+        "sha256": "190587cfe14adbdb0406ca6643500d96d6c6618d68cf0c2ccd337063255baf92"
+      },
+      "trainer_exit": {
+        "bytes": 164579,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/trainer-logs/attempt-00000-exit.json",
+        "sha256": "d26d5e6161d26fcd286e7c80caea651c0640a8b67ec7fc6e17c3ec78d8853308"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28976,
+        "ctime_ns": 1791583001430480133,
+        "device": 2081,
+        "inode": 48119962,
+        "mtime_ns": 1791583001406479872,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000070-outer-00006/manifest.json",
+        "sha256": "17f120aff907d88797d600a66ceaefd1c4ed34e476141a3c92e34a816c9e8400"
+      },
+      "outer_complete": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/training/outer-complete.json",
+        "sha256": "bb017d28ed27c1055aa753767c6c945028de49c238b6ee8a16f861f03a90c174"
+      },
+      "outer_index": 6,
+      "outer_manifest": {
+        "bytes": 59688,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/outer-manifest.json",
+        "sha256": "8720487af3f3fa656207c4bdc74dfd2b3e8a0cd2fc2fe3fc2aa208ce56a3d55a"
+      },
+      "sampling_complete": {
+        "bytes": 1000921,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/sampling-complete.json",
+        "sha256": "f5a1a8d145422b6d9a7656e72f2acd1d80d55647e3a8ce6c12b273f68007105b"
+      },
+      "teacher_parent": {
+        "bytes": 190595,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/teacher-diagnostics/complete.json",
+        "sha256": "74d12a2e038528bc993740208f7743acf859b8987c1e6ad62b44d0d807a2ebe2"
+      },
+      "trainer_exit": {
+        "bytes": 182954,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/trainer-logs/attempt-00000-exit.json",
+        "sha256": "616fed10081997c6339649fc08e7aabd71eb30183fcf878ab18b88fbd6dbe705"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28976,
+        "ctime_ns": 1791583946576155374,
+        "device": 2081,
+        "inode": 48169026,
+        "mtime_ns": 1791583946552155278,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000080-outer-00007/manifest.json",
+        "sha256": "0071ab6fed88ff1fa19f6925368c1bedf9e4d70959fcd204cf64b8de0200ad14"
+      },
+      "outer_complete": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/training/outer-complete.json",
+        "sha256": "1ba262b5ee0d273f8eb17489bc3a90ea4373dae290edd7308640d5eadd6f2434"
+      },
+      "outer_index": 7,
+      "outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/outer-manifest.json",
+        "sha256": "da42ac2dd2aafed6ee0e546e5ba32094105b4287a61ed2113aa97c92fb6b4187"
+      },
+      "sampling_complete": {
+        "bytes": 1060798,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/sampling-complete.json",
+        "sha256": "7e0e31a4b83cf314733b4dd49d5e9fdd188d1e61e3e199464c382f6e7989b3ec"
+      },
+      "teacher_parent": {
+        "bytes": 209719,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/teacher-diagnostics/complete.json",
+        "sha256": "a20ef0720887f76734659dd1c934f9f9cae0c870c099080ff6f4343649477dc3"
+      },
+      "trainer_exit": {
+        "bytes": 201440,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/trainer-logs/attempt-00000-exit.json",
+        "sha256": "5f5564e535592f8856670c4ae3e0410f55b476c300f4537d1004c50d370e2cdc"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28976,
+        "ctime_ns": 1791584800086737255,
+        "device": 2081,
+        "inode": 48169886,
+        "mtime_ns": 1791584800062737018,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000090-outer-00008/manifest.json",
+        "sha256": "bdf41188b071d646043c105f662d5dea0b088930e8acb953f72ec7c88d04f8bd"
+      },
+      "outer_complete": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/training/outer-complete.json",
+        "sha256": "ccee495bd09fb878b3e061e9e554769d376a94647fc21dfb9602c78d3846eaac"
+      },
+      "outer_index": 8,
+      "outer_manifest": {
+        "bytes": 59672,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/outer-manifest.json",
+        "sha256": "97ed782d9d0e68a6bf9b24904cbdeb2834d680e7cfd8d33cf89b5aaa3e217a31"
+      },
+      "sampling_complete": {
+        "bytes": 1120817,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/sampling-complete.json",
+        "sha256": "74017cebaad6e558ded840f2a8ac8fa74a30b121446ad4c35e36eeec47c147af"
+      },
+      "teacher_parent": {
+        "bytes": 228839,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/teacher-diagnostics/complete.json",
+        "sha256": "8b0f90397231ce78e4f848434315bcc09da6e754067a3ad72e05034af9222c4d"
+      },
+      "trainer_exit": {
+        "bytes": 219929,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/trainer-logs/attempt-00000-exit.json",
+        "sha256": "aa946d22252936ccd5992bc9da3f14e6b866c6a30a5b9421586599a0bb5299da"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28977,
+        "ctime_ns": 1791585751804840593,
+        "device": 2081,
+        "inode": 48170783,
+        "mtime_ns": 1791585751776840284,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000100-outer-00009/manifest.json",
+        "sha256": "311e7a3dd8569091e14e75e26c667b6602c903b9b2b8769c379c8c7ef064c652"
+      },
+      "outer_complete": {
+        "bytes": 4165,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/training/outer-complete.json",
+        "sha256": "9f5481999216bbfd3ea96a487248df3a4fdf1124dca5d9400521d2e898fd7aed"
+      },
+      "outer_index": 9,
+      "outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/outer-manifest.json",
+        "sha256": "f5b9e948752b0fc834cb0d795f7c36d9f2fb6e0e8861794c6b3ab95fcae68d6b"
+      },
+      "sampling_complete": {
+        "bytes": 1180917,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/sampling-complete.json",
+        "sha256": "101da08f82afc156717bde842717a38bf5e9b0cdf766671f3161c2a2509030d7"
+      },
+      "teacher_parent": {
+        "bytes": 247962,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/teacher-diagnostics/complete.json",
+        "sha256": "5de16355860e035efa4b3b64d8332c01bda23d76e823a58a81d433e09960a148"
+      },
+      "trainer_exit": {
+        "bytes": 238416,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/trainer-logs/attempt-00000-exit.json",
+        "sha256": "398f9462eced3368c418d4fc100f5f46fe2979a797af6e8f8adbd0a6a3bc0808"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28980,
+        "ctime_ns": 1791586835673646631,
+        "device": 2081,
+        "inode": 48171697,
+        "mtime_ns": 1791586835657646506,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000110-outer-00010/manifest.json",
+        "sha256": "d0f88fdd050eda754a121501a36fead19705412aaaa84f5f47b0e010cdeca753"
+      },
+      "outer_complete": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/training/outer-complete.json",
+        "sha256": "300e69296b323e5483e15f912c2ed5fd375f01cc07e76556db7f3b1b657ea0b3"
+      },
+      "outer_index": 10,
+      "outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/outer-manifest.json",
+        "sha256": "fdfc49bf3476a6001da32959b01b8de90003d69fc8d5af73f36d4552c8db2ea2"
+      },
+      "sampling_complete": {
+        "bytes": 1240450,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/sampling-complete.json",
+        "sha256": "5bb87f763d4134bf1fd25bd2fba4fe7a010d76585ffe8b0a251c49476f50f645"
+      },
+      "teacher_parent": {
+        "bytes": 267085,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/teacher-diagnostics/complete.json",
+        "sha256": "6974f89f6d0089deb134e3bbd87e45248b23a230ff8ce03d1cc06e79278dc238"
+      },
+      "trainer_exit": {
+        "bytes": 257544,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/trainer-logs/attempt-00000-exit.json",
+        "sha256": "839240ecc32796bfdd9d3a91c196a2e6beb8bc642c4dd5a7ccbe70aec44d76a5"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28980,
+        "ctime_ns": 1791587793930093868,
+        "device": 2081,
+        "inode": 48172570,
+        "mtime_ns": 1791587793910093681,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000120-outer-00011/manifest.json",
+        "sha256": "730bc7816187bbb10023e16c73f72a894dd450bf4ff5f09b3d54dc188a0a55d2"
+      },
+      "outer_complete": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/training/outer-complete.json",
+        "sha256": "d8814ca61a2315d1f4c38ade94890c41753c9888d959f6c833946236a9b6baf4"
+      },
+      "outer_index": 11,
+      "outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/outer-manifest.json",
+        "sha256": "c2aed1d7da28bc7f63df4fa90ae07fe526ae0284d9b3f6e0b5218636d7b41610"
+      },
+      "sampling_complete": {
+        "bytes": 1301271,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/sampling-complete.json",
+        "sha256": "7fb11dece5133eaaaacabb6fc357776f42156c32d1b8a06e1fe32186011480ae"
+      },
+      "teacher_parent": {
+        "bytes": 286380,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/teacher-diagnostics/complete.json",
+        "sha256": "8d4cfe1a95604f6623dcf27c6977d335bddea592135c1066212f86f87db72001"
+      },
+      "trainer_exit": {
+        "bytes": 275392,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/trainer-logs/attempt-00000-exit.json",
+        "sha256": "b26b5a6f0da4578322351a747400d5a9e70f61b4da0459ce4886c74582e85a66"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28980,
+        "ctime_ns": 1791588799792372155,
+        "device": 2081,
+        "inode": 48173491,
+        "mtime_ns": 1791588799768371693,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000130-outer-00012/manifest.json",
+        "sha256": "97fbeec28a87e30f5376dc955aafc6cac2755267b2e775c2a3aa3961710f031f"
+      },
+      "outer_complete": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/training/outer-complete.json",
+        "sha256": "063e5f67a9054bc9ff84dc78f9b7aad036ba943a851ad4eb3b2f07d5fd67ac3b"
+      },
+      "outer_index": 12,
+      "outer_manifest": {
+        "bytes": 59694,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/outer-manifest.json",
+        "sha256": "87c6436e04a3c656aea0ea07f0d27edd1093e085174d06596557149abd90e9a3"
+      },
+      "sampling_complete": {
+        "bytes": 1360687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/sampling-complete.json",
+        "sha256": "570c471fea05fe51878ec9329cd310f96172190e54f7bf72ea03b305692fe868"
+      },
+      "teacher_parent": {
+        "bytes": 305331,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/teacher-diagnostics/complete.json",
+        "sha256": "e706ad906869e86e3be2d14b03a3645d371a784604b70ebbcf4730809f37376f"
+      },
+      "trainer_exit": {
+        "bytes": 293988,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/trainer-logs/attempt-00000-exit.json",
+        "sha256": "ff4dcd6c6f1be1022c19454647337042f967d6c8305b24e1d8fa6b8df90c72f7"
+      },
+      "variant": "G_POS"
+    }
+  ],
+  "retention_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/debug-retention-9e1d179/opsd_signal_weight_debug_retention_v1",
+    "publication": {
+      "bytes": 2332,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/debug-retention-publication-9e1d179.json",
+      "sha256": "a5a5df3af59be1bc0e76c44d0b749a48b103f2dfe1b41b09dd09a9b4142bc11c"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/debug-retention-9e1d179/opsd_signal_weight_debug_retention_v1/source-manifest.json",
+      "sha256": "8bd9d5d6c46710954e7f9e7d2d71e21943e0ac94a4fa2748e6725a9094d5ef2a"
+    }
+  },
+  "schema": "opsd-signal-debug-retention-request-v1",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  }
+}
