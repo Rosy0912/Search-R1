@@ -8,7 +8,10 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--review',type=Path,required=True);p.add_argument('--inventory',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
  raw=a.review.read_bytes();review=json.loads(raw)
  if (review.get('status')!='PASS_INDEPENDENT_ALIGNED_HARDWARE_REVIEW' or review.get('scope')!='ACTUAL_8RANK_SYNTHETIC_AND_LIVE_RETRIEVAL_NOT_TRAINING' or review.get('source')!=SOURCE or review.get('root')!=ROOT or str(review.get('job'))!='3345'):raise RuntimeError('Actual independently accepted hardware3345 receipt required')
- here=Path(__file__).resolve().parent;files=json.loads(a.inventory.read_text())['files']
+ here=Path(__file__).resolve().parent;inventory=json.loads(a.inventory.read_text());files=inventory['files']
+ expected={'formal.sbatch','formal_worker.sh','formal_inner.sh','formal_driver.py','ray_cli_compat.py','formal_service_proof.py','bind_retrieval_proof.py'}
+ if inventory.get('source')!=SOURCE or set(files)!=expected:raise RuntimeError('Exact reviewed source080 seven-file inventory required')
+ if sha((here/'formal_admission.py').read_bytes())!='4bdb78376158c3a22a549cabbfdc05b594684bb9a8214611c0df3aa8281d671f' or sha((here/'submit_formal.py').read_bytes())!='d2800301767a62ef41e65da5baeed38ad58a69505ce655cc81cb9d5b57a70562':raise RuntimeError('Independently reviewed admission/submit bytes changed')
  for n,h in files.items():
   if sha((here/n).read_bytes())!=h:raise RuntimeError('Reviewed formal candidate changed: '+n)
  auth={'status':'AUTHORIZED_SINGLE_FRESH200_ALIGNED_LAUNCH','scope':'EXPLICIT_FORMAL_LAUNCH_AUTHORIZATION_NOT_COMPLETED_TRAINING','source':SOURCE,'root':ROOT,'hardware_review_sha256':sha(raw),'same_process_first5_gate':True,'authority':'Existing human-authorized baseline-aligned fresh200 execution goal; does not request new authorization or reuse old3315','configuration':'Full mini128/20writes, reference KL.001, ordinaryPPO, 57outerwarmup,4tool+finalnosearch,perouter initial/any5/retained EM; retain BAPO reward/stage mechanisms','prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
