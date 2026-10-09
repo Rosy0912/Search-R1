@@ -69,6 +69,30 @@ def native_process(rank,world):
         source_head=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip())
 
 
+def allocation_has_eight_gpus(allocation):
+    """Parse Slurm resource fields, including21.08 typed TresPerNode GRES."""
+    import re,shlex
+    # Comments are free text; resource-looking prose is not allocation evidence.
+    text=re.sub(r'(?:^|\s)(?:Comment|AdminComment|SystemComment)=.*?(?=\s(?:StdErr|StdIn|StdOut|Power)=|$)',' ',allocation,flags=re.S)
+    try:fields=shlex.split(text)
+    except ValueError:return False
+    counts=[];seen=set()
+    for field in fields:
+        name,sep,value=field.partition('=')
+        if name not in ('TRES','AllocTRES','TresPerNode'):continue
+        if not sep or name in seen:return False
+        seen.add(name);generic=[];typed=[]
+        for entry in value.split(','):
+            pattern=(r'gres:gpu(?::([A-Za-z0-9_.-]+))?:(\d+)'if name=='TresPerNode'else r'gres/gpu(?::([A-Za-z0-9_.-]+))?=(\d+)')
+            match=re.fullmatch(pattern,entry)
+            if match:(typed if match[1]is not None else generic).append(int(match[2]))
+            elif entry.startswith('gres:gpu'if name=='TresPerNode'else'gres/gpu'):return False
+        if len(generic)>1:return False
+        if generic:counts.append(generic[0])
+        elif typed:counts.append(sum(typed))
+    return bool(counts)and all(count==8 for count in counts)
+
+
 def verify_native_process(process,source):
     require(process.get('source_head')==source,'actual startup source HEAD mismatch')
     stat=process.get('proc_stat_raw','');require(stat.startswith(str(process.get('pid'))+' ('),'native PID raw stat mismatch')
@@ -84,7 +108,7 @@ def verify_native_process(process,source):
             and process.get('run_root') in process.get('resource_guard_cmdline',''),'actual guardian PID birth/run binding invalid')
     job=process.get('job_id');allocation=process.get('allocation_raw','')
     require('JobId='+str(job)+' ' in allocation and 'JobState=RUNNING' in allocation,'actual running Slurm allocation mismatch')
-    require('gres/gpu=8' in allocation or 'gres/gpu:' in allocation and ':8' in allocation,'actual eight-GPU allocation not established')
+    require(allocation_has_eight_gpus(allocation),'actual eight-GPU allocation not established')
     require(str(job) in process.get('proc_cgroup_raw',''),'native process not bound to actual Slurm job cgroup')
     import csv
     inventory=[list(map(str.strip,row)) for row in csv.reader(process.get('nvidia_smi_raw','').splitlines())]
