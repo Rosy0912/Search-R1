@@ -47,6 +47,7 @@ def main():
         raise ValueError('Actual source push/readback required')
     pipeline.update(source_commit=commit, helper_source_manifest=manifest,
                     startup_previous_driver_terminal=proof(a.previous_terminal))
+    pipeline['mirror_root'] = original_storage['backup_policy']['durable_target']
     pipeline['publication'] = save(receipt_root / 'pipeline-publication.json', dict(
         publication, run_id=pipeline['run_id'], source_manifest_sha256=manifest['sha256']))
     published_templates = []
