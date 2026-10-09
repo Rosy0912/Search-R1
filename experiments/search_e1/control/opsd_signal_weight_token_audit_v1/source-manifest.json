@@ -1,0 +1,23 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4638,
+      "sha256": "b0849c1dfb551d99b4348a0324ca265227e4f3a505cade4d4c464132093f49b0"
+    },
+    "__init__.py": {
+      "bytes": 82,
+      "sha256": "5d51420ce45b47db744ab64c4a39ae07882411d4da5a69eecb00aa62b3ff343e"
+    },
+    "audit.py": {
+      "bytes": 30213,
+      "sha256": "6155ec7e437fd69fd9ae65b85d9378a07d3cd82f59e88b882a3611b17367ad0d"
+    },
+    "test_audit.py": {
+      "bytes": 23246,
+      "sha256": "d7a1933c0a2770d1b98af7b4c1e3f1f5d4b1e11fc849e164a25ee8aefd0f2c0d"
+    }
+  },
+  "large_local_products": false,
+  "production_namespace_hot_modified": false,
+  "schema": "opsd-signal-committed-token-audit-source-v1"
+}

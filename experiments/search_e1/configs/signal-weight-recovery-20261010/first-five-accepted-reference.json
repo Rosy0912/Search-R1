@@ -1,0 +1,28 @@
+{
+  "accepted": true,
+  "actual_numeric_updates": [
+    1,
+    5,
+    11
+  ],
+  "actual_supervised_pairs": 327,
+  "actual_token_endpoint_update": 11,
+  "execution_overlay": "98b9326a782a51261571ff24f3cbdbd87932db70",
+  "four_rank_accumulation": 8,
+  "global_full_pairs": 32,
+  "goal_complete": false,
+  "large_products_remain_HKUST": true,
+  "original_science_source": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+  "reference": {
+    "bytes": 3291,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/first-five-token-d8e942d/first-five-execution-accepted.json",
+    "sha256": "fe8662f51f989cc419505444928752a5673b25869e1cca113df51121e24074f6"
+  },
+  "run_id": "59de0d17968b4955b97f312cb2387429",
+  "schema": "opsd-signal-first-five-published-reference-v1",
+  "scope": "Five actual Adam updates and first outer execution only; independent saved preupdate token scalar/weight/mask reconstruction and numeric Adam reads; no new logits, gradient attribution or EM gain",
+  "tail_actual_pairs": 7,
+  "token_reader_source": "d8e942d6d378350c0bc5306cd9366d458342c9db",
+  "valid_token_rows": 62314,
+  "variant": "G_POS"
+}
