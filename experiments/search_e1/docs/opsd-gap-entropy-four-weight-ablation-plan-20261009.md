@@ -4,6 +4,8 @@
 
 **2026-10-10数学审核修订。** 用户最新明确将基线/关联等作为成立的假设，本次核心审核是权重、0–2范围、平均1/无偏、梯度与归一化顺序。结论：当前中心化公式数学自洽；它对任意有限group已经严格平均1，不需要等待group趋于无穷。数学通过不代替生产实现或GPU验收。本次只读本地代码和规则，不判断当前远端作业状态。完整证明与边界见 [数学审核](opsd-gap-entropy-four-weight-ablation-plan-review-20261010.md)。原始版本SHA `c8fa402de0a128417e1ae027abb7f4af67658ee19702026e091b14e42bc027ed` 已另存。
 
+**2026-10-10最新执行口径：** 四个消融各25轮保持；每轮记录全512题×5的TRAIN strict EM，第15和25轮训练结束后才评固定512测试EM，取代旧5/10/15/20/25安排。执行goal已写为 [待发送执行指令](opsd-gap-entropy-four-ablation-execution-goal-20261010.md)，用户重新发送后再启动；本次仅制定，不创建活动goal或启动训练。消融公式/幅度等保持原计划。
+
 ## 1. 先绑定基线，避免做错实验
 
 实读指定线程、已发布矩阵与 `opsd_ablation_v1/miner_v1.py`，实际组名是 C0/C1/M/R/W/P/J，没有E。已完整评估的BF16组为：共同零更新239/512、C0=227、C1=236、M=237、R=240。R是用户所述“唯一没有下降”的候选，但其净增1题的配对区间跨0，不能称可靠提升。已向用户一次性核对E是否指R；回复前不把E强行映射，也不启动依赖此身份的新训练。
@@ -214,9 +216,9 @@ E[w_Da_D]=\bar a+s\eta\frac1G\sum_jr_j a_j
 
 ### 8.1 固定验证曲线与主终点
 
-每组保留raw checkpoint outer5/10/15/20/25；分别评估同一512题（NQ256/Hotpot256），共同source100零效果基线同四卡协议评一次。普通提示、原HF SDPA、BF16 base＋未合并FP32 LoRA、greedy／repetition1.05／原EOS／8192／500／5turn4search/top3/480、原严格final-action scorer不变。不能使用best回退，也不能用采样cache代替实际outer末raw权重。
+每组保留完整raw状态，每轮记录本轮最新学生生成的全部512题×5条轨迹TRAIN strict EM，分母2560，包括all5_wrong，不按pair/K筛选。这是本轮采样起点权重的更新前表现；逐轮题集不同，不单凭TRAIN曲线判断退化。第15、25轮训练完成后的末raw checkpoint分别评同一512题（NQ256/Hotpot256）；共同source100零效果基线同四卡协议评一次，已有完全同条件且完整身份/逐题输出验收者可复用。普通提示、原HF SDPA、BF16 base＋未合并FP32 LoRA、greedy／repetition1.05／原EOS／8192／500／5turn4search/top3/480、原严格final-action scorer不变。不能使用best回退，也不能用采样cache代替实际outer末raw权重。
 
-主终点预先指定为**outer25的heldout strict EM**；中间点用于退化／保护曲线，不能挑最高点当最终结果。四组5时点＋共同基线共10752条正式greedy预测；score hook、teacher独立生成及控制样本不计入512。
+主终点预先指定为**outer25的heldout strict EM**；第15轮是预设中间点，不能挑较高者当最终结果。四组2时点共4096条正式greedy预测，加共同基线512共4608条；若已有同条件基线验收可复用，新生成数相应为4096。第5/10/20轮不做正式512评估，checkpoint/debug保留规则不因此取消；score hook、teacher独立生成及控制样本不计入512。
 
 按同题配对报告：hits/512、NQ/Hotpot、相对共同起点及四方向间的gained/lost/preserved/stillwrong；lost分为最终协议无效和协议有效但gold mismatch两互斥类，搜索次数/终止另轴。题级bootstrap区间与多重比较范围明确；预先主比较为 G_POS↔G_NEG、H_POS↔H_NEG，另报四组对起点的描述比较。有单seed只能说明本seed／题集，不能假称已估算法跨seed不确定性。
 
@@ -224,11 +226,11 @@ E[w_Da_D]=\bar a+s\eta\frac1G\sum_jr_j a_j
 
 heldout回放参考补充：EM始终统计全512。默认复用共同source100本次greedy正确响应作为固定B bank，在看四组输出前冻结并逐SHA绑定，不新增参考生成预算；所有组/时点共用同一B，不让各组自己挑成功参考。无B或teacher联合context超8192时g/teacher KL记NA；无答案payload只使答案gap NA，全policy KL若其余编码/mask合法仍可算；ordinary entropy不因无B而删题。报告全512 EM、bank及各指标覆盖、参考子集EM；g/KL关联不代表全512。baseline在该参考子集EM恒1，零方差/无两类时Pearson、Spearman及EM AUC必须NA，不能填0/.5；后续各指标子集也核此条件。该成功资格已经使用gold，是特权事后诊断，不是普通推理可部署的正确概率。默认bank不能覆盖原错→新对题的teacher信号；额外参考生成另列预算。
 
-评估边界补充：完成5/10/15/20/25轮对应索引4/9/14/19/24；原子提交完整raw adapter/四rank Adam/RNG/order/cursor→训练child真实exit/release→隔离eval child→退出释放→核原checkpoint状态未变→继续下一outer。评估失败只恢复评估，不重做已提交训练Adam；不让评估消耗生产RNG或切换训练adapter。
+评估边界补充：完成15/25轮对应索引14/24；原子提交完整raw adapter/四rank Adam/RNG/order/cursor→训练child真实exit/release→隔离eval child→退出释放→核原checkpoint状态未变→继续下一outer。评估失败只恢复评估，不重做已提交训练Adam；不让评估消耗生产RNG或切换训练adapter。
 
 ### 8.2 Pass评估：与greedy EM分开
 
-首要交付是上述EM。若需要真正的heldout成功概率关系，预设第二优先级：共同起点＋四组outer25，各在同512题独立采样5次（另12800条轨迹），固定同一HF SearchAgent表示、temperature1/top_p1、原processor及预算、独立种子表；报告s/5、经验pass@5及同题差值。s/5只是五次试验的粗估计，不是精确概率；在“至少成功一次”的训练配对子集上pass@5恒1，不能关联loss。
+本次执行goal仅要求上述greedy EM，不自动启动附加pass评测。若后续另行执行真正heldout成功概率关系，备选预算为共同起点＋四组outer25，各在同512题独立采样5次（另12800条轨迹），固定同一HF SearchAgent表示、temperature1/top_p1、原processor及预算、独立种子表；报告s/5、经验pass@5及同题差值。s/5只是五次试验的粗估计，不是精确概率；在“至少成功一次”的训练配对子集上pass@5恒1，不能关联loss。
 
 不能把TRAIN某轮s/5冒充heldout pass：TRAIN每outer题不同、经过本轮选样，且量发生在更新前。附加pass评测不改变训练25轮，分开登记推理预算／执行协议；不以温度采样指标替换原greedy结果。
 
@@ -236,7 +238,7 @@ heldout回放参考补充：EM始终统计全512。默认复用共同source100�
 
 - TRAIN端按同题五兄弟保存g/h/w、strict结果及s/5、每类pair曝光。比较加权前后CC/CW、自配对／非自配对、低／高gap与entropy分位桶、NA/neutral比例；特别检查G_NEG/H_NEG是否仅减少错误轨迹训练曝光。
 - 每个正式heldout时点保留实际自主轨迹；随后独立固定模型replay，可对同题同response核g/h、teacher KL、old drift与区域贡献，标签为posthoc，不冒充历史在线loss。新paired分析以题为单位，不能将不同文本的第t词视为同事件。
-- 将上一次评估正确／错误转换与此前训练中权重分布、weighted/unweighted KL、更新幅度和clip变化对齐到保存时段；仅5/10/15/20/25点不能插值精确退化步。
+- 将共同起点、15和25轮的正确／错误转换与此前训练权重分布、weighted/unweighted KL、更新幅度和clip变化对齐到保存时段；仅这三个固定点不能插值精确退化步。
 - 评估可报告题级EM与g/h的Pearson／Spearman、AUC及控制长度/搜索/dataset后的关系；对筛选规则、训练／验证不同题和模型生成文本内生性明确限制。词logprob高不等于题正确概率高。
 - 若有E25，检验加权是否提高heldout EM及减少lost；没有E25，不从“本组loss更低／gap更小／entropy更小”得出加权有效。答案信号只决定整轨迹w，区域loss贡献不是参数梯度贡献。
 
@@ -248,7 +250,7 @@ heldout回放参考补充：EM始终统计全512。默认复用共同source100�
 
 保留全部student轨迹／检索请求文档／生成IDs、配对参考；独立teacher自主生成每outer最多8例，保持原诊断用途、与训练q同前缀评分分开。梯度主证据为batch norm／clip／参数变化，不宣称保存了逐token参数梯度。原题、完整HTTP/token/权重/凭据不进Git。
 
-里程碑顺序：E身份绑定与旧archive窄停止→独立四rank/25outer/评分实现及CPU核验→源码发布／资源验收→四组同run首outer与五真实更新→每5outer原生512、连续到25→配对EM及权重／loss／概率解释→源码／raw权重／配置／报告绝对路径与备份验收。四组顺序预先固定G_POS、G_NEG、H_POS、H_NEG；不因中间优劣换预算。没有新训练或自动调lr／clip／η的授权扩展。
+里程碑顺序：独立四rank/25outer/评分实现及CPU核验→源码发布／资源验收→四组同run首outer与五真实更新→每轮TRAIN EM、第15/25轮原生512、连续到25→配对EM及权重／loss／概率解释→源码／raw权重／配置／报告绝对路径与远端保留/备份验收。四组顺序预先固定G_POS、G_NEG、H_POS、H_NEG；不因中间优劣换预算。不自动调lr／clip／η或增加训练消融。此段为待激活执行口径，不改变已停止旧archive或其他线程作业。
 
 ## 10. 当前完成与待执行
 
