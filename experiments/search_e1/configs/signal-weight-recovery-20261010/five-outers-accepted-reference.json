@@ -1,0 +1,35 @@
+{
+  "accepted": true,
+  "actual_Adam_updates": 50,
+  "actual_pair_exposures": 1501,
+  "actual_valid_token_rows": 278239,
+  "completion_helper_Node_CPU_tests": 18,
+  "completion_helper_source_commit": "7d9fea2333d85716cce1bd08c3d10ee0f3248e28",
+  "execution_only": true,
+  "execution_overlay": "98b9326a782a51261571ff24f3cbdbd87932db70",
+  "first_actual_TRAIN_bridge": {
+    "bytes": 326241,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00000.json",
+    "sha256": "fd1661e8e06d6d700ccd922862ead06f8259050252fc8ef799ef6fa16e3e9799"
+  },
+  "full_study_complete": false,
+  "native_five_complete_outers": 5,
+  "no_Mac_large_products": true,
+  "numeric_and_token_execution_evidence": {
+    "bytes": 6474,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/five-outers-execution-515491d/five-outers-execution-evidence.json",
+    "sha256": "f1f671192d2d5b524e922aab10a062d0866b0006257aff7a1fb1c1f2852d202c"
+  },
+  "same_formal_run_continues": true,
+  "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  },
+  "terminal_helper_source_commit": "515491d142c7bcd2a732b890c4f97eeb0367a893",
+  "terminal_live_binding": {
+    "bytes": 22083,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/terminal-live-binding-515491d.raw.json",
+    "sha256": "61ab162ed87242e41e32cb538a2709b5e8234df3ff99af26454ba5a71ecdba28"
+  }
+}
