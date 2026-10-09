@@ -18,10 +18,9 @@ if p.exists():
 lock=(root/'downloader.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);fcntl.flock(lock,fcntl.LOCK_UN)
 (root/'plan-before-remote-missing.json').write_text((root/'plan.json').read_text());os.replace(root/'pending-missing-plan.json',root/'plan.json')
 env={k:v for k,v in os.environ.items() if k.lower() not in ['https_proxy','http_proxy','all_proxy','no_proxy']};env['HTTPS_PROXY']=env['HTTP_PROXY']='http://127.0.0.1:17894'
-log=(root/'downloader.log').open('ab');d=subprocess.Popen(['python3','-u',str(root/'topd_hf_download_hkust3.py')],stdin=subprocess.PIPE,stdout=log,stderr=log,env=env,start_new_session=True);d.stdin.write((token+'
-').encode());d.stdin.close()
+log=(root/'downloader.log').open('ab');d=subprocess.Popen(['python3','-u',str(root/'topd_hf_download_hkust3.py')],stdin=subprocess.PIPE,stdout=log,stderr=log,env=env,start_new_session=True);d.stdin.write((token+chr(10)).encode());d.stdin.close()
 flog=(root/'missing-forward.log').open('ab');f=subprocess.Popen(['python3','-u',str(root/'topd_remote_missing_forward.py')],stdin=subprocess.DEVNULL,stdout=flog,stderr=flog,start_new_session=True)
 r={'epoch':time.time(),'downloader_pid':d.pid,'forward_pid':f.pid,'replaced_downloader_pid':pid,'groups':[x['group'] for x in json.loads((root/'plan.json').read_text())['records']],'mac_data_used':False,'mac_proxy_for_HF':False,'partials_preserved':True};(root/'missing-launch.json').write_text(json.dumps(r));print(json.dumps(r))
 '''
-p=subprocess.run(['ssh','hkust2','python3 -c '+shlex.quote(code)],input=secret+'\n',capture_output=True,text=True,timeout=30);print(p.stdout);print('exit',p.returncode);assert p.returncode==0
+p=subprocess.run(['ssh','hkust2','python3 -c '+shlex.quote(code)],input=secret+'\n',capture_output=True,text=True,timeout=30);print(p.stdout);print('exit',p.returncode);print(p.stderr[-1800:] if p.returncode else '');assert p.returncode==0
 (work.parent/'outputs/hpc3-migration/remote-missing-launch.json').write_text(p.stdout)
