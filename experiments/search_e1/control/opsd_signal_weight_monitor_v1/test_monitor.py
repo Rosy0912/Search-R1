@@ -164,10 +164,14 @@ class MonitorContracts(unittest.TestCase):
         child=self.put(str((directory/'child-complete.json').relative_to(self.root)),dict(accepted=True,run_id=self.cfg['run_id'],variant='G_POS',evaluation_id=request['evaluation_id'],
             config={'sha256':self.cfg['_config_sha256']},completed_outer=0,primary_slots=512,actual_child_exit_and_release=True,
             child_exit_evidence=[{'actual_wait_returncode':0}]*8,summary=summary,results=cp.fileproof(results)))
+        pending=monitor.evaluation_progress(self.cfg,0)
+        self.assertEqual(pending['saved_complete_primary_rows'],512);self.assertEqual(pending['completed_logical_workers'],list(range(8)))
+        self.assertEqual(pending['state'],'IN_PROGRESS_OR_PRESERVED_PARTIAL');self.assertTrue(pending['partial_not_a_final_metric'])
         parent=self.put(str((directory/'parent-complete.json').relative_to(self.root)),dict(accepted=True,run_id=self.cfg['run_id'],config_sha256=self.cfg['_config_sha256'],
             completed_outer=0,child=child,exit_proof=self.actual_exit('evaluation-running')))
         value=monitor.evaluation_progress(self.cfg,0)
         self.assertEqual(value['state'],'ACCEPTED_512_WITH_ACTUAL_PARENT_WAIT_RELEASE');self.assertEqual(value['overall']['hits'],256)
+        self.assertFalse(value['partial_not_a_final_metric'])
         wrong=json.loads(Path(summary['path']).read_text());wrong['overall']['hits']=257;wrong['overall']['em']=257/512
         Path(summary['path']).write_text(json.dumps(wrong))
         body=json.loads(Path(child['path']).read_text());body['summary']=monitor.proof(summary['path']);Path(child['path']).write_text(json.dumps(body))

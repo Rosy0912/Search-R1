@@ -1,20 +1,20 @@
 {
   "files": {
     "README.md": {
-      "bytes": 3377,
-      "sha256": "6e27acb61c812e4935c5afcf97b685f0123f72a27deb343cedcb4370d4c0c72e"
+      "bytes": 3566,
+      "sha256": "5efe8aa9acd5c4357ed8881158cf4256fa62b0358dc383361a23efb038be284b"
     },
     "__init__.py": {
       "bytes": 74,
       "sha256": "e6d8adeab273df0008b5a3672af07d1b904e47313060486f3266d879ef89d2e5"
     },
     "monitor.py": {
-      "bytes": 36145,
-      "sha256": "cec05fdbd625a5e6bb062f383d674465d9e95de3d2347aa55489352e5b9eaa48"
+      "bytes": 36178,
+      "sha256": "f80f09f7ebeac8503c201b4beae809f1fd7f32923b1f871ca3b3c782581bc408"
     },
     "test_monitor.py": {
-      "bytes": 22670,
-      "sha256": "a80cfc65dbedd886625cefc2de00549dc5719dd1eb89b1259995b2a29b04ae03"
+      "bytes": 23060,
+      "sha256": "9d73ceb99a70afbd05944dc9e88dcae42d9e954385c5c3ae451f7bcf2c592dee"
     }
   },
   "large_local_products": false,

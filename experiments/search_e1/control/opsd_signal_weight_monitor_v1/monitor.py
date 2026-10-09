@@ -316,7 +316,7 @@ def evaluation_progress(config,completed_outer):
         require(all(summary['overall'][k]==v for k,v in partial['stored_strict_counts'].items()),'Summary strict counts differ from complete512 rows')
         checked(child['results'])
         result.update(state='ACCEPTED_512_WITH_ACTUAL_PARENT_WAIT_RELEASE',parent=pref,child=cref,summary=sref,
-            actual_parent_wait=actual,overall=summary['overall'],datasets=summary['datasets'])
+            actual_parent_wait=actual,overall=summary['overall'],datasets=summary['datasets'],partial_not_a_final_metric=False)
     return result
 
 

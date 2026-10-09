@@ -28,7 +28,9 @@ Exit2 is attention or unknown evidence, not an instruction to stop a job.
 The monitor distinguishes native completed outers, controller-accepted outers,
 committed Adam updates, actual tail/pair exposures, preupdate2560-slot TRAIN EM,
 partial heldout512 slot progress, and accepted zero/15/25 heldout512 with actual
-parent wait/release evidence. A missing process yields ABSENT/UNKNOWN wait; no
+parent wait/release evidence. `partial_not_a_final_metric` becomes false only
+after all512 slots, strict counts, eight worker exits and actual parent wait/release
+are accepted; complete saved rows alone remain partial. A missing process yields ABSENT/UNKNOWN wait; no
 monitor converts disappearance to exit0. Status HOLD/FAILED and an absent active
 controller are explicit attention items. Logs expose keyword markers and line
 SHA only, without raw question/answer text; a log marker is not a return code.
