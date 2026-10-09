@@ -1,0 +1,1411 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 3608,
+      "ctime_ns": 1791575799645181326,
+      "device": 2065,
+      "inode": 466754457,
+      "mtime_ns": 1791575799645181326,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-native512-20261010-0417/train-outer-curves.csv",
+      "sha256": "0cb3ae72d84012109964495c741d08c83c6bb398f75a32278e61ea9199343de1"
+    },
+    {
+      "bytes": 15697,
+      "ctime_ns": 1791575799685182567,
+      "device": 2065,
+      "inode": 466754458,
+      "mtime_ns": 1791575799685182567,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-native512-20261010-0417/committed-adam-loss.csv",
+      "sha256": "270b1e67f7adb5864b3144e17f1b292e4b2c5ab832b4aaac5fead48e72f6f4ec"
+    },
+    {
+      "bytes": 899,
+      "ctime_ns": 1791575799685182567,
+      "device": 2065,
+      "inode": 466754459,
+      "mtime_ns": 1791575799685182567,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-native512-20261010-0417/native512-curves.csv",
+      "sha256": "31c1bd897190d6bf4bc509a725a50eed8fd2c65f1497e4aee03a160b6098d487"
+    },
+    {
+      "bytes": 14773,
+      "ctime_ns": 1791575799689182691,
+      "device": 2065,
+      "inode": 466754460,
+      "mtime_ns": 1791575799689182691,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-native512-20261010-0417/summary.json",
+      "sha256": "97c426c1374633b490d72588ce6e4d01d98428b16377674a0901656e29ec2c46"
+    },
+    {
+      "bytes": 1903,
+      "ctime_ns": 1791575799689182691,
+      "device": 2065,
+      "inode": 466754461,
+      "mtime_ns": 1791575799689182691,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-native512-20261010-0417/report.md",
+      "sha256": "03295fa2d345e8de3b3af89cf98b11b264cb39725c69fda65253a652a1c8870c"
+    }
+  ],
+  "coverage": {
+    "complete_100_and_all10": false,
+    "evaluation": {
+      "all10_complete": false,
+      "baseline_em": 0.466796875,
+      "baseline_strict_hits": 239,
+      "completed_evaluations": 1,
+      "expected_evaluations": 10,
+      "formal_primary_slots": 512
+    },
+    "training": {
+      "actual_adam": 99,
+      "all100_complete": false,
+      "completed_outers": 10,
+      "expected_outers": 100,
+      "raw_pair_exposure": 3002,
+      "valid_policy_tokens": 512724
+    }
+  },
+  "input_json_references": [
+    {
+      "bytes": 9022,
+      "ctime_ns": 1791565747321514108,
+      "device": 2065,
+      "inode": 466717918,
+      "mtime_ns": 1791565747321514108,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/receipts/training-config.json",
+      "sha256": "651dfb40b1bf22fb5f604b9b17c45ffe8619f20baf521f399bc8059b11d6aa91"
+    },
+    {
+      "bytes": 8524,
+      "ctime_ns": 1791571612291354511,
+      "device": 2065,
+      "inode": 466753829,
+      "mtime_ns": 1791571612291354511,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/pipeline-config.json",
+      "sha256": "e1f9ec99ade143f3b07f6018995d76a280d6c2b720536c19a8b8b697ec6da185"
+    },
+    {
+      "bytes": 40483,
+      "ctime_ns": 1791566215556031432,
+      "device": 2065,
+      "inode": 466748933,
+      "mtime_ns": 1791566215528030564,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000001.json",
+      "sha256": "47888f4a6105716032ebf4867ac2b63ed7013d2de83ca346da5a23da9b6b9e6c"
+    },
+    {
+      "bytes": 41027,
+      "ctime_ns": 1791566223080264717,
+      "device": 2065,
+      "inode": 466748980,
+      "mtime_ns": 1791566223076264593,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000002.json",
+      "sha256": "e2909cb3f4571873ab417ead0ff1de8a055e4e046d815e9209a4d2f385692a2e"
+    },
+    {
+      "bytes": 41063,
+      "ctime_ns": 1791566230984509784,
+      "device": 2065,
+      "inode": 466749026,
+      "mtime_ns": 1791566230980509660,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000003.json",
+      "sha256": "4cdb5efe8e6ba2b805f94d69f393bdaaf8238ce4e47d029140754038c4ec4079"
+    },
+    {
+      "bytes": 41062,
+      "ctime_ns": 1791566238616746417,
+      "device": 2065,
+      "inode": 466749072,
+      "mtime_ns": 1791566238604746045,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000004.json",
+      "sha256": "904bc9925e68ffde1dd7c0bb5c3fea97943abb80450eb021abfd954c8b7488f8"
+    },
+    {
+      "bytes": 41060,
+      "ctime_ns": 1791566246384987267,
+      "device": 2065,
+      "inode": 466749108,
+      "mtime_ns": 1791566246384987267,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000005.json",
+      "sha256": "1baa02432f4697535e120982d88b34b5bb004724fbc92007bc9fc72cbc624a83"
+    },
+    {
+      "bytes": 41059,
+      "ctime_ns": 1791566253961222165,
+      "device": 2065,
+      "inode": 466749144,
+      "mtime_ns": 1791566253957222041,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000006.json",
+      "sha256": "bc18af9aba77b52a76d69647a87e76bbef401055dbcdcff09b301daeaa1980c1"
+    },
+    {
+      "bytes": 41078,
+      "ctime_ns": 1791566261593458798,
+      "device": 2065,
+      "inode": 466749180,
+      "mtime_ns": 1791566261581458426,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000007.json",
+      "sha256": "df11dca01078606d12eab72283780c67cc5c1bbbf6011994b095ccf691faf077"
+    },
+    {
+      "bytes": 41068,
+      "ctime_ns": 1791566269377700145,
+      "device": 2065,
+      "inode": 466749226,
+      "mtime_ns": 1791566269365699772,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000008.json",
+      "sha256": "523ad7a0c099d017d3024c83b5f37a7d786dfa71767891ba48e038e15396c7fe"
+    },
+    {
+      "bytes": 41075,
+      "ctime_ns": 1791566277473951164,
+      "device": 2065,
+      "inode": 466749262,
+      "mtime_ns": 1791566277469951040,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000009.json",
+      "sha256": "0fb61a662caffcc0526e19d47956d8599ca5562181194c730cfaea9926cc756b"
+    },
+    {
+      "bytes": 33735,
+      "ctime_ns": 1791566285742207517,
+      "device": 2065,
+      "inode": 466749291,
+      "mtime_ns": 1791566285718206773,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/attempt-37dfbfc4c79145a5a996180719675e52/update-00000010.json",
+      "sha256": "afd0bfd581bfa8069ccc6b23bec391a5c9e4e1a1f033478719fe86dadde2cfe7"
+    },
+    {
+      "bytes": 4698,
+      "ctime_ns": 1791566289090311323,
+      "device": 2065,
+      "inode": 466749236,
+      "mtime_ns": 1791566289090311323,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/training/outer-complete.json",
+      "sha256": "1b522a6b4b57b50081a884e9e34d76c1949e2f5dc10dc33e0babb7ef590f36b2"
+    },
+    {
+      "bytes": 57107,
+      "ctime_ns": 1791566179146902587,
+      "device": 2065,
+      "inode": 466718053,
+      "mtime_ns": 1791566179146902587,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/outer-manifest.json",
+      "sha256": "1c6521cd6ed9b8e31e0d2cc0226cc98e5b5abad51d4255a13356bd2fef6ce5ef"
+    },
+    {
+      "bytes": 29592,
+      "ctime_ns": 1791566288386289495,
+      "device": 2065,
+      "inode": 466749304,
+      "mtime_ns": 1791566288366288875,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000010-outer-00000/manifest.json",
+      "sha256": "a9c1d7a8bf209d491bb76989d784ae5d76183991cb91af1478d5a046b9717bec"
+    },
+    {
+      "bytes": 146597,
+      "ctime_ns": 1791566179110901471,
+      "device": 2065,
+      "inode": 466718052,
+      "mtime_ns": 1791566179110901471,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00000/sampling-complete.json",
+      "sha256": "84a4ce293b39b6cc90cea45a0362fcbdb21a95ffb794260ff254103da71dd6dc"
+    },
+    {
+      "bytes": 40607,
+      "ctime_ns": 1791566660845837412,
+      "device": 2065,
+      "inode": 466749424,
+      "mtime_ns": 1791566660833837039,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000011.json",
+      "sha256": "9bf75c29286a73c4496b1a16bf2cb93f5e62204925d9e0379efc00e115bbe46a"
+    },
+    {
+      "bytes": 41213,
+      "ctime_ns": 1791566668586077394,
+      "device": 2065,
+      "inode": 466749553,
+      "mtime_ns": 1791566668586077394,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000012.json",
+      "sha256": "2fbb47727badfb9c0bd55c26d08bafec2048359c73ab3af83e4e5c34df6e7541"
+    },
+    {
+      "bytes": 41209,
+      "ctime_ns": 1791566676954336848,
+      "device": 2065,
+      "inode": 466749590,
+      "mtime_ns": 1791566676954336848,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000013.json",
+      "sha256": "6586aea204d7a6b971bbfe312ab41a777c147081f5de91f12fa33fb4bcbd6817"
+    },
+    {
+      "bytes": 41176,
+      "ctime_ns": 1791566684794579930,
+      "device": 2065,
+      "inode": 466749625,
+      "mtime_ns": 1791566684786579682,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000014.json",
+      "sha256": "161ea0dc82b8e8eb7ad587eb4fbd2792810671c18e13b8555abeddc55ed5b1e0"
+    },
+    {
+      "bytes": 41210,
+      "ctime_ns": 1791566692662823881,
+      "device": 2065,
+      "inode": 466749660,
+      "mtime_ns": 1791566692646823385,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000015.json",
+      "sha256": "1e15dfea400d22371f60445b42008cf35c46f6425ef74dc26d9e665326d4d63a"
+    },
+    {
+      "bytes": 41174,
+      "ctime_ns": 1791566700359062499,
+      "device": 2065,
+      "inode": 466749696,
+      "mtime_ns": 1791566700331061631,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000016.json",
+      "sha256": "2e9ddea097f5facdd003609efef77f0dd92fa2a7fe72d500015e12c7fa65c7b7"
+    },
+    {
+      "bytes": 41191,
+      "ctime_ns": 1791566708531315876,
+      "device": 2065,
+      "inode": 466749732,
+      "mtime_ns": 1791566708527315752,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000017.json",
+      "sha256": "b388f3947eb8ded16ed2b703c6663b4db4074950703478c8d3f318489999cd83"
+    },
+    {
+      "bytes": 41182,
+      "ctime_ns": 1791566716259555486,
+      "device": 2065,
+      "inode": 466749768,
+      "mtime_ns": 1791566716243554990,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000018.json",
+      "sha256": "7db9d5f288cc959296f2a94eb276b8bf442331ab779282966da585e75dc5738d"
+    },
+    {
+      "bytes": 41194,
+      "ctime_ns": 1791566724179801049,
+      "device": 2065,
+      "inode": 466749804,
+      "mtime_ns": 1791566724175800925,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000019.json",
+      "sha256": "f0b1445b4f8a2160a49109b5360eb38a134210865adf6f6dfe29b563e1718abf"
+    },
+    {
+      "bytes": 25520,
+      "ctime_ns": 1791566731184018212,
+      "device": 2065,
+      "inode": 466749825,
+      "mtime_ns": 1791566731148017095,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/attempt-da84a8fcb7234d069f86cd6b4be94beb/update-00000020.json",
+      "sha256": "9d512fd3426bed229f33d04b2349d019a06ffd459c759456ee634e087333f701"
+    },
+    {
+      "bytes": 4825,
+      "ctime_ns": 1791566734460119785,
+      "device": 2065,
+      "inode": 466749778,
+      "mtime_ns": 1791566734456119661,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/training/outer-complete.json",
+      "sha256": "4648f05e54137e51be02bc21e54012c4b59023b6929b87a99985d4932ffd4c4d"
+    },
+    {
+      "bytes": 58651,
+      "ctime_ns": 1791566619364551306,
+      "device": 2065,
+      "inode": 466718057,
+      "mtime_ns": 1791566619364551306,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/outer-manifest.json",
+      "sha256": "17c42703093d0c9a659334833caf19a1c64fad25fc976244f4936e8fb1c49cb6"
+    },
+    {
+      "bytes": 30836,
+      "ctime_ns": 1791566733840100562,
+      "device": 2065,
+      "inode": 466749838,
+      "mtime_ns": 1791566733840100562,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000020-outer-00001/manifest.json",
+      "sha256": "3a086232e02c11f6750e15a85a4d6c491d7b4339b00acb649bcbe0ad04f47a28"
+    },
+    {
+      "bytes": 164593,
+      "ctime_ns": 1791566619344550685,
+      "device": 2065,
+      "inode": 466718056,
+      "mtime_ns": 1791566619344550685,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00001/sampling-complete.json",
+      "sha256": "750e1a9b3448c7b44647c199dcb75fcebdd707166be37b648b20a4ff1e324eee"
+    },
+    {
+      "bytes": 40593,
+      "ctime_ns": 1791567083094929033,
+      "device": 2065,
+      "inode": 466749946,
+      "mtime_ns": 1791567083074928413,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000021.json",
+      "sha256": "d456123d627942ac0c51b1ec9d42844b6da35881697e7771505df9efc8f3415e"
+    },
+    {
+      "bytes": 41184,
+      "ctime_ns": 1791567091475188859,
+      "device": 2065,
+      "inode": 466749993,
+      "mtime_ns": 1791567091471188735,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000022.json",
+      "sha256": "64ca668be901f06550f2ff3e646999035887cb5e86e93e07d43b80dec441f1fd"
+    },
+    {
+      "bytes": 41197,
+      "ctime_ns": 1791567099327432313,
+      "device": 2065,
+      "inode": 466750029,
+      "mtime_ns": 1791567099311431817,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000023.json",
+      "sha256": "c4543c434df1e710b32bc2f888b50670107463e483945c56e47b2c5b6760a030"
+    },
+    {
+      "bytes": 41219,
+      "ctime_ns": 1791567107187676016,
+      "device": 2065,
+      "inode": 466750065,
+      "mtime_ns": 1791567107167675396,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000024.json",
+      "sha256": "fd02339a013867800fc6a619e2d2156c78160b94d534ea5176849578e318ce5c"
+    },
+    {
+      "bytes": 41236,
+      "ctime_ns": 1791567115235925548,
+      "device": 2065,
+      "inode": 466750101,
+      "mtime_ns": 1791567115235925548,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000025.json",
+      "sha256": "ed67caa2e3844901160369ea05d61aaae9923d1f63df1ce5226c97de4e8132c8"
+    },
+    {
+      "bytes": 41200,
+      "ctime_ns": 1791567123236173592,
+      "device": 2065,
+      "inode": 466750137,
+      "mtime_ns": 1791567123228173344,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000026.json",
+      "sha256": "47c99753d48bd071620570e716b3ecbcf79fbf6bf022a0050c7bf2ed71d9cc59"
+    },
+    {
+      "bytes": 41172,
+      "ctime_ns": 1791567131780438502,
+      "device": 2065,
+      "inode": 466750173,
+      "mtime_ns": 1791567131776438378,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000027.json",
+      "sha256": "75fe13d33bb806c730b3b9d3480542ce5de68c85e64144c20fd43a2dc5ef077c"
+    },
+    {
+      "bytes": 41186,
+      "ctime_ns": 1791567139116665958,
+      "device": 2065,
+      "inode": 466750209,
+      "mtime_ns": 1791567139116665958,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000028.json",
+      "sha256": "237d123be234a1ef8e86a52bf36c4ad6c76e96e2fcae35d6c0dff388ced37f6b"
+    },
+    {
+      "bytes": 41199,
+      "ctime_ns": 1791567147116914002,
+      "device": 2065,
+      "inode": 466750245,
+      "mtime_ns": 1791567147112913878,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000029.json",
+      "sha256": "4c04c66d2d7602e5a85d7dbb560bbfd71e96dfcc2cbb7594e4680cb70b684dc0"
+    },
+    {
+      "bytes": 12955,
+      "ctime_ns": 1791567152185071138,
+      "device": 2065,
+      "inode": 466750180,
+      "mtime_ns": 1791567152185071138,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/attempt-3f12a9b880d24b8e99f5725dcc84abd7/update-00000030.json",
+      "sha256": "f749bc9684c182a7e9564290480ab8b0d9f9844a97a4feace58ebf6ac6d2f361"
+    },
+    {
+      "bytes": 4825,
+      "ctime_ns": 1791567155533174944,
+      "device": 2065,
+      "inode": 466750219,
+      "mtime_ns": 1791567155493173704,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/training/outer-complete.json",
+      "sha256": "72be8a05d231707680bec5ffa2d8aa0e443aac0d76c8dd464fda26626ebaf069"
+    },
+    {
+      "bytes": 58700,
+      "ctime_ns": 1791567042741677900,
+      "device": 2065,
+      "inode": 466749897,
+      "mtime_ns": 1791567042741677900,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/outer-manifest.json",
+      "sha256": "dd86194972cd96aef3481e8ec7b5febff88ef491342593f469398dc4311ecfe7"
+    },
+    {
+      "bytes": 30836,
+      "ctime_ns": 1791567154865154233,
+      "device": 2065,
+      "inode": 466750267,
+      "mtime_ns": 1791567154865154233,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000030-outer-00002/manifest.json",
+      "sha256": "6fda4d84e57b8f0fca52910e9e6fe6d994cc982fa38aa5cb645c8c7e943013d3"
+    },
+    {
+      "bytes": 181456,
+      "ctime_ns": 1791567042729677528,
+      "device": 2065,
+      "inode": 466749896,
+      "mtime_ns": 1791567042729677528,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00002/sampling-complete.json",
+      "sha256": "80afbf40474c78c7fc60c06b10058f42935e007886cbc3a458548c4c0f137de0"
+    },
+    {
+      "bytes": 40582,
+      "ctime_ns": 1791567504187984813,
+      "device": 2065,
+      "inode": 466750378,
+      "mtime_ns": 1791567504171984317,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000031.json",
+      "sha256": "c68d5db5aab01d911a2c5cfc89aaec8411a0e7d5a6851fe333b203beec73c646"
+    },
+    {
+      "bytes": 41211,
+      "ctime_ns": 1791567511840222067,
+      "device": 2065,
+      "inode": 466750425,
+      "mtime_ns": 1791567511836221943,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000032.json",
+      "sha256": "d0d36fee923a60a828da40ca2bd2a753ec34c19e8ef8ec88d9786730ccabebb8"
+    },
+    {
+      "bytes": 41215,
+      "ctime_ns": 1791567519672464902,
+      "device": 2065,
+      "inode": 466750461,
+      "mtime_ns": 1791567519672464902,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000033.json",
+      "sha256": "a5f399dbe6121ab0bc96a820e26c0958ac640f4888307bfe73ab1662286a371e"
+    },
+    {
+      "bytes": 41170,
+      "ctime_ns": 1791567527344702776,
+      "device": 2065,
+      "inode": 466750497,
+      "mtime_ns": 1791567527324702156,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000034.json",
+      "sha256": "8959e249aede4f70304ffaeafbdb8023204bd2c6bd344fe70a49992839eb914c"
+    },
+    {
+      "bytes": 41199,
+      "ctime_ns": 1791567535180945734,
+      "device": 2065,
+      "inode": 466750533,
+      "mtime_ns": 1791567535176945610,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000035.json",
+      "sha256": "fd437d28d1ff5432dbaf67288682cec310ac86b356e997a016415a774b7d6664"
+    },
+    {
+      "bytes": 41222,
+      "ctime_ns": 1791567542449171082,
+      "device": 2065,
+      "inode": 466750569,
+      "mtime_ns": 1791567542449171082,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000036.json",
+      "sha256": "1be7a8d6ca96fddb98dcbd51701b912959f7aaa0c9c00e20814c17cf59fa38c5"
+    },
+    {
+      "bytes": 41164,
+      "ctime_ns": 1791567549957403871,
+      "device": 2065,
+      "inode": 466750605,
+      "mtime_ns": 1791567549937403251,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000037.json",
+      "sha256": "29feded0501a0c4a848f6d009125785fd266d0cce4c946039583ef598ec020ba"
+    },
+    {
+      "bytes": 41185,
+      "ctime_ns": 1791567557369633683,
+      "device": 2065,
+      "inode": 466750641,
+      "mtime_ns": 1791567557369633683,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000038.json",
+      "sha256": "5018b68ddfb8e4321f13df3514abc27a09050eb9a1c990ac7018a9546b360a35"
+    },
+    {
+      "bytes": 31787,
+      "ctime_ns": 1791567564277847869,
+      "device": 2065,
+      "inode": 466750668,
+      "mtime_ns": 1791567564273847745,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/attempt-c44c2cfe67494dc5b88224568173e531/update-00000039.json",
+      "sha256": "51058a57174c14f3d7c124b560826432135c89f739fc4a34f5dc155b583d9b1a"
+    },
+    {
+      "bytes": 4824,
+      "ctime_ns": 1791567567765956016,
+      "device": 2065,
+      "inode": 466750615,
+      "mtime_ns": 1791567567765956016,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/training/outer-complete.json",
+      "sha256": "a35a96c77f9024a021c82be5a6b84eb479d26a81762337d6f82df595c4f5d25b"
+    },
+    {
+      "bytes": 58683,
+      "ctime_ns": 1791567463414720658,
+      "device": 2065,
+      "inode": 466750329,
+      "mtime_ns": 1791567463414720658,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/outer-manifest.json",
+      "sha256": "6e70fa44ff7f4fe8d98eacd7ff757179e0067690ce2a15bcc71a0d979fa9e976"
+    },
+    {
+      "bytes": 30428,
+      "ctime_ns": 1791567567125936173,
+      "device": 2065,
+      "inode": 466750681,
+      "mtime_ns": 1791567567125936173,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000039-outer-00003/manifest.json",
+      "sha256": "b53ab1fde22e82b2bc08efe1b583ecb9ed5d4688bb0ba8c65fb196417d51196d"
+    },
+    {
+      "bytes": 198934,
+      "ctime_ns": 1791567463406720410,
+      "device": 2065,
+      "inode": 466750328,
+      "mtime_ns": 1791567463406720410,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00003/sampling-complete.json",
+      "sha256": "8474c277869a80a6982f120ae54b3dfcf58142f6231f03774f148367345dbb2a"
+    },
+    {
+      "bytes": 40613,
+      "ctime_ns": 1791567929949185327,
+      "device": 2065,
+      "inode": 466750792,
+      "mtime_ns": 1791567929929184706,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000040.json",
+      "sha256": "014e09ad8b8aa7899747d4f0fe4383f9203337678fa16e2a0e136cf59de7249a"
+    },
+    {
+      "bytes": 41243,
+      "ctime_ns": 1791567937397416255,
+      "device": 2065,
+      "inode": 466750839,
+      "mtime_ns": 1791567937397416255,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000041.json",
+      "sha256": "a9c273da802d409f5ab4a395e48a1349a63bd0e66ed1597e75285aa9eaea8271"
+    },
+    {
+      "bytes": 41193,
+      "ctime_ns": 1791567945405664547,
+      "device": 2065,
+      "inode": 466750875,
+      "mtime_ns": 1791567945401664423,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000042.json",
+      "sha256": "0707510cca86dda58af765143086d1aa14b9158d880068556b47c92b72fac326"
+    },
+    {
+      "bytes": 41181,
+      "ctime_ns": 1791567952965898948,
+      "device": 2065,
+      "inode": 466750911,
+      "mtime_ns": 1791567952961898824,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000043.json",
+      "sha256": "41e232cb561bcf6a7d238b5e9fa553023986e08e31bdd132337e7ef2c80fb7e9"
+    },
+    {
+      "bytes": 41179,
+      "ctime_ns": 1791567960758140543,
+      "device": 2065,
+      "inode": 466750947,
+      "mtime_ns": 1791567960746140171,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000044.json",
+      "sha256": "3657e16d0d40e02f9ca33f090b8bc7820d23b52e26d705994e031f4e64322ed3"
+    },
+    {
+      "bytes": 41194,
+      "ctime_ns": 1791567968374376681,
+      "device": 2065,
+      "inode": 466750983,
+      "mtime_ns": 1791567968374376681,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000045.json",
+      "sha256": "bf6dad3357c1d201682090f6494ec0e627910b07934af0eeb54d5ce82c1f6899"
+    },
+    {
+      "bytes": 41188,
+      "ctime_ns": 1791567976294622244,
+      "device": 2065,
+      "inode": 466751019,
+      "mtime_ns": 1791567976282621872,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000046.json",
+      "sha256": "b89ebe11c32b9f0679bc069f13c32a73ed38b7b14939351e14d2f4cbdbf48296"
+    },
+    {
+      "bytes": 41214,
+      "ctime_ns": 1791567984470875744,
+      "device": 2065,
+      "inode": 466751055,
+      "mtime_ns": 1791567984454875248,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000047.json",
+      "sha256": "44be9e91e3078e388796f0b510a93ad62bfa64bc25c8895a8ad711fd8a5befc8"
+    },
+    {
+      "bytes": 41203,
+      "ctime_ns": 1791567992143113618,
+      "device": 2065,
+      "inode": 466751091,
+      "mtime_ns": 1791567992139113494,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000048.json",
+      "sha256": "ed465f5cd0ff49d1acb2efb62f177ee3f17ad34fd4764a001c42c90918861699"
+    },
+    {
+      "bytes": 13999,
+      "ctime_ns": 1791567996911261453,
+      "device": 2065,
+      "inode": 466751027,
+      "mtime_ns": 1791567996907261328,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/attempt-33e2d3916a194897bad69e41a2175aa9/update-00000049.json",
+      "sha256": "2c1f59ef0c797a1b2f63b7695bde6bb11a24211f263f19e451efb10f9dbd734b"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791568000299366499,
+      "device": 2065,
+      "inode": 466751065,
+      "mtime_ns": 1791568000299366499,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/training/outer-complete.json",
+      "sha256": "20ee653adc01209080c423ee3dc3e35f3b0420f04c1fb4024eb336a01ef508ff"
+    },
+    {
+      "bytes": 58719,
+      "ctime_ns": 1791567888327894879,
+      "device": 2065,
+      "inode": 466750743,
+      "mtime_ns": 1791567888327894879,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/outer-manifest.json",
+      "sha256": "b6e53836c8b5a9e7f2b3e214c27a0e0d8ee7dd4f9453f096f3bc574f564c7eb7"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791567999679347275,
+      "device": 2065,
+      "inode": 466751114,
+      "mtime_ns": 1791567999675347151,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000049-outer-00004/manifest.json",
+      "sha256": "7a907cfc37195c8ab0dfd2cd5372be229568b3b0761f9930fb0d965e5af50360"
+    },
+    {
+      "bytes": 215344,
+      "ctime_ns": 1791567888311894383,
+      "device": 2065,
+      "inode": 466750742,
+      "mtime_ns": 1791567888311894383,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00004/sampling-complete.json",
+      "sha256": "2256a72b94b587e0058c07866ab4ec5ba5979c0f9b0fa9aaa06a8b3c4b2437af"
+    },
+    {
+      "bytes": 40587,
+      "ctime_ns": 1791568348202153051,
+      "device": 2065,
+      "inode": 466751225,
+      "mtime_ns": 1791568348198152927,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000050.json",
+      "sha256": "6ec5a80d3685b0df3a9ee1bf135d2703e0c5e5c7993bd5e1d37b1d4f566d6a4a"
+    },
+    {
+      "bytes": 41204,
+      "ctime_ns": 1791568356042396134,
+      "device": 2065,
+      "inode": 466751272,
+      "mtime_ns": 1791568356026395638,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000051.json",
+      "sha256": "a5989620b89aeed7ba0d93bd9fcdc289bc9fbfe2f8cb728b0fb484d2dc4265b3"
+    },
+    {
+      "bytes": 41212,
+      "ctime_ns": 1791568364170648147,
+      "device": 2065,
+      "inode": 466751308,
+      "mtime_ns": 1791568364154647651,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000052.json",
+      "sha256": "14e383a369490c1ffc496615ab3bcab46f1d5fd29e075f9df26e40eb887292f1"
+    },
+    {
+      "bytes": 41212,
+      "ctime_ns": 1791568371682881060,
+      "device": 2065,
+      "inode": 466751344,
+      "mtime_ns": 1791568371682881060,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000053.json",
+      "sha256": "9b6855473171d70f0961061a10576cfa39e65f7f2f4703102f42f4d043ee260d"
+    },
+    {
+      "bytes": 41208,
+      "ctime_ns": 1791568379163112980,
+      "device": 2065,
+      "inode": 466751380,
+      "mtime_ns": 1791568379159112856,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000054.json",
+      "sha256": "10fa90505f76a21561738a3b5ea1baa384c94768893cf9148f467ce2a67a21bd"
+    },
+    {
+      "bytes": 41209,
+      "ctime_ns": 1791568387015356435,
+      "device": 2065,
+      "inode": 466751416,
+      "mtime_ns": 1791568387007356187,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000055.json",
+      "sha256": "e2cf08e03dbb1e9f1026f0fa6ea146f29e50bf9e1a15c1c2a0ff79041dd37b5c"
+    },
+    {
+      "bytes": 41206,
+      "ctime_ns": 1791568395107607332,
+      "device": 2065,
+      "inode": 466751452,
+      "mtime_ns": 1791568395071606215,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000056.json",
+      "sha256": "456e9a710a4974eb9d31a4ef3e2582109d3505a33c945fb86c258fd85020c01d"
+    },
+    {
+      "bytes": 41196,
+      "ctime_ns": 1791568402507836772,
+      "device": 2065,
+      "inode": 466751488,
+      "mtime_ns": 1791568402507836772,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000057.json",
+      "sha256": "87d806ee38f638b6143b62375c14667309f35e4b7f01d7e67f2b5fad040adac6"
+    },
+    {
+      "bytes": 41203,
+      "ctime_ns": 1791568410192075018,
+      "device": 2065,
+      "inode": 466751660,
+      "mtime_ns": 1791568410192075018,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000058.json",
+      "sha256": "f852855a7ff6132bc86f89c0a9cf73ad3aedfbd884d1fb587230d9162e0133b2"
+    },
+    {
+      "bytes": 20290,
+      "ctime_ns": 1791568416288264027,
+      "device": 2065,
+      "inode": 466751676,
+      "mtime_ns": 1791568416276263655,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/attempt-d52ad7e7a9a344b2bd55c6a475324a57/update-00000059.json",
+      "sha256": "e43c90ec2ec75baf46da671186ec698919bc5dd9126ccd53914639ffb4165c09"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791568419680369198,
+      "device": 2065,
+      "inode": 466751634,
+      "mtime_ns": 1791568419680369198,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/training/outer-complete.json",
+      "sha256": "54e323a02bddd10b1baf98177ba41fd81621839d06fcd06505586e3649b53bad"
+    },
+    {
+      "bytes": 58700,
+      "ctime_ns": 1791568306764868309,
+      "device": 2065,
+      "inode": 466751176,
+      "mtime_ns": 1791568306764868309,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/outer-manifest.json",
+      "sha256": "5cf07c09465d52d03228766dd05675de3551e42082c0006bf80ffde56c9f72d8"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791568419068350223,
+      "device": 2065,
+      "inode": 466751689,
+      "mtime_ns": 1791568419064350099,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000059-outer-00005/manifest.json",
+      "sha256": "ebf08193656ed2bb0f7694f033be56e44ddcd1ff5cacb39a35d290d5c5a976a5"
+    },
+    {
+      "bytes": 232260,
+      "ctime_ns": 1791568306736867441,
+      "device": 2065,
+      "inode": 466751175,
+      "mtime_ns": 1791568306736867441,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00005/sampling-complete.json",
+      "sha256": "e944b6cf31e76843fc23f5ff4b1e94e55bb18692ce02437eca61dfdcbf6aca22"
+    },
+    {
+      "bytes": 40626,
+      "ctime_ns": 1791568774499370183,
+      "device": 2065,
+      "inode": 466751799,
+      "mtime_ns": 1791568774495370059,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000060.json",
+      "sha256": "78fa17c9bfcaaa76790f6d7efd6b318742cac383856a4afd8c325a27c66df480"
+    },
+    {
+      "bytes": 41200,
+      "ctime_ns": 1791568782331613017,
+      "device": 2065,
+      "inode": 466751846,
+      "mtime_ns": 1791568782331613017,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000061.json",
+      "sha256": "33dbcd8820da3c9fa09f06caea4ff7ce8846af621c913e3d03be25d81134d3ff"
+    },
+    {
+      "bytes": 41220,
+      "ctime_ns": 1791568789963849651,
+      "device": 2065,
+      "inode": 466751882,
+      "mtime_ns": 1791568789947849155,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000062.json",
+      "sha256": "ceb0a4b34ae763755d1ddddfe952a62adf6c65508080ec5647ab8ceb27628449"
+    },
+    {
+      "bytes": 41149,
+      "ctime_ns": 1791568797292076859,
+      "device": 2065,
+      "inode": 466751918,
+      "mtime_ns": 1791568797288076735,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000063.json",
+      "sha256": "49980a18f1d1ac23762b8a48d74b67c42c9fa056dba9a3f36b374745de388405"
+    },
+    {
+      "bytes": 41201,
+      "ctime_ns": 1791568805248323538,
+      "device": 2065,
+      "inode": 466751954,
+      "mtime_ns": 1791568805248323538,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000064.json",
+      "sha256": "3939a7c85dc67c50db4e454dc656d6edd499a3dd832b160a597055ed05684920"
+    },
+    {
+      "bytes": 41197,
+      "ctime_ns": 1791568813204570218,
+      "device": 2065,
+      "inode": 466751990,
+      "mtime_ns": 1791568813196569970,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000065.json",
+      "sha256": "7fd85189af49dfba0e3484023e986ae1995130cd01ab6267b1ee6504cf624731"
+    },
+    {
+      "bytes": 41174,
+      "ctime_ns": 1791568820964810820,
+      "device": 2065,
+      "inode": 466752026,
+      "mtime_ns": 1791568820960810696,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000066.json",
+      "sha256": "816cdc57a3d778e2368f01ff93ae4ea3bc064663f6bd51bf49baaeb4de719852"
+    },
+    {
+      "bytes": 41219,
+      "ctime_ns": 1791568828545045842,
+      "device": 2065,
+      "inode": 466752062,
+      "mtime_ns": 1791568828541045718,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000067.json",
+      "sha256": "15c989b2411194db6ce2ddee0c8c3a5199453e43c4ccf7e402450c329ea59d31"
+    },
+    {
+      "bytes": 41217,
+      "ctime_ns": 1791568836405289545,
+      "device": 2065,
+      "inode": 466752098,
+      "mtime_ns": 1791568836389289049,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000068.json",
+      "sha256": "084587b814faa4e95c99fc3637ee90fa2c75f3300e6dc618966fe5e61f3cedb3"
+    },
+    {
+      "bytes": 15058,
+      "ctime_ns": 1791568840973431178,
+      "device": 2065,
+      "inode": 466752035,
+      "mtime_ns": 1791568840969431054,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/attempt-395d9132d1f446688d73cad1aff0a020/update-00000069.json",
+      "sha256": "eecb2843d2cb29970d043645d35f2b1cabeeffbd7aaacc177717109a34381cf5"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791568844069527171,
+      "device": 2065,
+      "inode": 466752072,
+      "mtime_ns": 1791568844065527047,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/training/outer-complete.json",
+      "sha256": "36a2209a64e84907099d48909a350bc34e35dfdf9b9d7b988b0bd0a5f1529c7e"
+    },
+    {
+      "bytes": 58650,
+      "ctime_ns": 1791568733482098462,
+      "device": 2065,
+      "inode": 466751750,
+      "mtime_ns": 1791568733482098462,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/outer-manifest.json",
+      "sha256": "0117566bacb0dc50d8e3ebc978bad485f1de614432dd84bbc011d254e4d83651"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791568843445507823,
+      "device": 2065,
+      "inode": 466752122,
+      "mtime_ns": 1791568843441507699,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000069-outer-00006/manifest.json",
+      "sha256": "a86d020db0105560f2084e5344faad2d3b1cd46cd2ace7d2a168197e673e8b71"
+    },
+    {
+      "bytes": 249372,
+      "ctime_ns": 1791568733438097098,
+      "device": 2065,
+      "inode": 466751749,
+      "mtime_ns": 1791568733438097098,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00006/sampling-complete.json",
+      "sha256": "3114fd7e52efa2ec8bb17651c469e2e65268a30efe9cb2603553cddbf2d826bc"
+    },
+    {
+      "bytes": 40617,
+      "ctime_ns": 1791569194304386029,
+      "device": 2065,
+      "inode": 466752233,
+      "mtime_ns": 1791569194304386029,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000070.json",
+      "sha256": "a8e81079531816c47850e58191c02ff37cc290add782e791a1149670cef3bf9c"
+    },
+    {
+      "bytes": 41197,
+      "ctime_ns": 1791569202884652056,
+      "device": 2065,
+      "inode": 466752280,
+      "mtime_ns": 1791569202872651684,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000071.json",
+      "sha256": "2625e76b633c862966eb420ef09580a9b3c24b88173d611cfd4315df48ee893a"
+    },
+    {
+      "bytes": 41215,
+      "ctime_ns": 1791569210908900843,
+      "device": 2065,
+      "inode": 466752316,
+      "mtime_ns": 1791569210904900719,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000072.json",
+      "sha256": "e36c7ae76b0306f1663bdd4c2544c5e442bc4f13f79ab83cff981f5cfdfd0fa4"
+    },
+    {
+      "bytes": 41247,
+      "ctime_ns": 1791569218165125819,
+      "device": 2065,
+      "inode": 466752352,
+      "mtime_ns": 1791569218165125819,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000073.json",
+      "sha256": "fd7396de692a53ae005c667efa8560345ed3c60ee68638cc68d37670afa74936"
+    },
+    {
+      "bytes": 41210,
+      "ctime_ns": 1791569226965398667,
+      "device": 2065,
+      "inode": 466752388,
+      "mtime_ns": 1791569226961398543,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000074.json",
+      "sha256": "d1de99767e1e760f178acd8e0b9300937da9eb8f155c64cfa8a6e84e7e9c56c9"
+    },
+    {
+      "bytes": 41210,
+      "ctime_ns": 1791569234489631952,
+      "device": 2065,
+      "inode": 466752424,
+      "mtime_ns": 1791569234461631084,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000075.json",
+      "sha256": "b60e00ceba841d1ad068d2e5e3bdc7b9a2704bab36f5cffdec52277c42134b3f"
+    },
+    {
+      "bytes": 41201,
+      "ctime_ns": 1791569242493880120,
+      "device": 2065,
+      "inode": 466752460,
+      "mtime_ns": 1791569242489879996,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000076.json",
+      "sha256": "837c1cac2333485b8645c734fa73edd42fc9fa4133615bbcbbf3614e1d447d97"
+    },
+    {
+      "bytes": 41184,
+      "ctime_ns": 1791569249966111793,
+      "device": 2065,
+      "inode": 466752496,
+      "mtime_ns": 1791569249966111793,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000077.json",
+      "sha256": "4eff6c5440de7823b4abf71f1f2cd5583473d489347620c52f77cfb5b91ff637"
+    },
+    {
+      "bytes": 41209,
+      "ctime_ns": 1791569257830355620,
+      "device": 2065,
+      "inode": 466752532,
+      "mtime_ns": 1791569257826355496,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000078.json",
+      "sha256": "97714b08e41a5977e620f2623baf34012b5dde6841b8b6c07f27e44d8ca686d1"
+    },
+    {
+      "bytes": 33884,
+      "ctime_ns": 1791569264814572162,
+      "device": 2065,
+      "inode": 466752561,
+      "mtime_ns": 1791569264814572162,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/attempt-862aeba5412844f4b28ec87d46142c3a/update-00000079.json",
+      "sha256": "d40ead949d28ec2ad5538af99f2500ec093d1d33451e8eaf0b3631d29294b98a"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791569268314680681,
+      "device": 2065,
+      "inode": 466752506,
+      "mtime_ns": 1791569268310680557,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/training/outer-complete.json",
+      "sha256": "a0803bbc4cb59d6de7829c68a21f43a5d94736fb9dd204888623d86bd759b593"
+    },
+    {
+      "bytes": 58699,
+      "ctime_ns": 1791569151795068049,
+      "device": 2065,
+      "inode": 466752184,
+      "mtime_ns": 1791569151795068049,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/outer-manifest.json",
+      "sha256": "405c746fae808c848ba2a807c789badbace3c3f93e0278332a103aac4ff82a3b"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791569267630659473,
+      "device": 2065,
+      "inode": 466752574,
+      "mtime_ns": 1791569267606658729,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000079-outer-00007/manifest.json",
+      "sha256": "1005d742e61996de4ea6dd3624e54c025ae9d1143cd607fa0ac5579beb40a497"
+    },
+    {
+      "bytes": 266126,
+      "ctime_ns": 1791569151775067429,
+      "device": 2065,
+      "inode": 466752183,
+      "mtime_ns": 1791569151775067429,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00007/sampling-complete.json",
+      "sha256": "4fcb7f8586036170df1c71038ff1d4bce3886894c950b0bf13d5e5a7f6468d2e"
+    },
+    {
+      "bytes": 40634,
+      "ctime_ns": 1791569614937427546,
+      "device": 2065,
+      "inode": 466752685,
+      "mtime_ns": 1791569614933427422,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000080.json",
+      "sha256": "b7838ad3d001550ad2222d8e7ebd3cf33c81050e16a572c15d5e2ab9d2a8869f"
+    },
+    {
+      "bytes": 41203,
+      "ctime_ns": 1791569623141681915,
+      "device": 2065,
+      "inode": 466752732,
+      "mtime_ns": 1791569623137681791,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000081.json",
+      "sha256": "f4b416cfc173d252abc6ded6c099df34b8946a7d0bacfcc4dc29ebc3765579dd"
+    },
+    {
+      "bytes": 41205,
+      "ctime_ns": 1791569631037926734,
+      "device": 2065,
+      "inode": 466752768,
+      "mtime_ns": 1791569631037926734,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000082.json",
+      "sha256": "1a16108c0f41081040c5bcb71ccb57c7098f9c8a81a1d8d1c7c3b75734f3de66"
+    },
+    {
+      "bytes": 41185,
+      "ctime_ns": 1791569638798167336,
+      "device": 2065,
+      "inode": 466752804,
+      "mtime_ns": 1791569638794167212,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000083.json",
+      "sha256": "454fd0bd04fea5e235b090f559c75c1ffcfb83e7ce2248ba77a7c638efa044f8"
+    },
+    {
+      "bytes": 41221,
+      "ctime_ns": 1791569646666411288,
+      "device": 2065,
+      "inode": 466752840,
+      "mtime_ns": 1791569646666411288,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000084.json",
+      "sha256": "348e9f5bb8a300d21beedceb74a10cbfc26b762636f2a8501a6f9d24f380eb0c"
+    },
+    {
+      "bytes": 41207,
+      "ctime_ns": 1791569654726661191,
+      "device": 2065,
+      "inode": 466752876,
+      "mtime_ns": 1791569654722661067,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000085.json",
+      "sha256": "13ae840723cbfac3871d533d27717520e97d02520c6483d67a808b481a2bed2d"
+    },
+    {
+      "bytes": 41220,
+      "ctime_ns": 1791569662594905143,
+      "device": 2065,
+      "inode": 466752912,
+      "mtime_ns": 1791569662590905019,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000086.json",
+      "sha256": "e2292849de82f80085b3c3ab1d04dae87133c0ce43d2333111b033ef36f89ce7"
+    },
+    {
+      "bytes": 41199,
+      "ctime_ns": 1791569669891131358,
+      "device": 2065,
+      "inode": 466752948,
+      "mtime_ns": 1791569669891131358,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000087.json",
+      "sha256": "25b8187713cdacecee26ff089f86f69ce1316aae20ca6f985e6b081fec1a4b1e"
+    },
+    {
+      "bytes": 41221,
+      "ctime_ns": 1791569677599370349,
+      "device": 2065,
+      "inode": 466752984,
+      "mtime_ns": 1791569677595370225,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000088.json",
+      "sha256": "c13addd3f5cb9becd08e8a5ebf2328f32aec5de2abed0c7e4c86ea23ece6bd81"
+    },
+    {
+      "bytes": 21326,
+      "ctime_ns": 1791569683523554025,
+      "device": 2065,
+      "inode": 466753001,
+      "mtime_ns": 1791569683503553405,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/attempt-91ff8a20af5240738805503009de9ae7/update-00000089.json",
+      "sha256": "1e02c98e8105e79e6d00055dd08174fdcc88410f2b5c83891e9632bac065d65c"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791569686771654730,
+      "device": 2065,
+      "inode": 466752958,
+      "mtime_ns": 1791569686771654730,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/training/outer-complete.json",
+      "sha256": "0a4a3ff6298c23a4e131e10a4f4393d3bb3dcf4409031dc00f5a32bf1808f413"
+    },
+    {
+      "bytes": 58682,
+      "ctime_ns": 1791569573684148509,
+      "device": 2065,
+      "inode": 466752636,
+      "mtime_ns": 1791569573684148509,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/outer-manifest.json",
+      "sha256": "11c8850f233751ace28991fc286d8f956f23b3c846c9a1b3d7d6229682df483a"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791569686127634763,
+      "device": 2065,
+      "inode": 466753014,
+      "mtime_ns": 1791569686115634391,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000089-outer-00008/manifest.json",
+      "sha256": "f7a467599b8595e72df0a767e2a0345505b7ef47e9a7f83b9d8397091f9c9215"
+    },
+    {
+      "bytes": 283163,
+      "ctime_ns": 1791569573652147516,
+      "device": 2065,
+      "inode": 466752635,
+      "mtime_ns": 1791569573652147516,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00008/sampling-complete.json",
+      "sha256": "b5baaef5c12c73be62c89317192fbc027f9f7e2ae1d503fa1d68ea46a6765235"
+    },
+    {
+      "bytes": 40613,
+      "ctime_ns": 1791570022430061652,
+      "device": 2065,
+      "inode": 466753125,
+      "mtime_ns": 1791570022430061652,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000090.json",
+      "sha256": "ba9ea183ac18d2d13c55a30fa0e6298feb7380659ab8f6afccb0f0f39e4ae3f9"
+    },
+    {
+      "bytes": 41178,
+      "ctime_ns": 1791570029834291216,
+      "device": 2065,
+      "inode": 466753172,
+      "mtime_ns": 1791570029802290224,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000091.json",
+      "sha256": "9a79f5f44e1a2730513039e8f8728a9c8aa7d9e6c001b7265e0a3c7368451a3f"
+    },
+    {
+      "bytes": 41198,
+      "ctime_ns": 1791570037254521276,
+      "device": 2065,
+      "inode": 466753208,
+      "mtime_ns": 1791570037254521276,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000092.json",
+      "sha256": "e43d5c7ab05c141a11185bcca6d0cd3fbc554dd3a950d9740f9351ca595b2008"
+    },
+    {
+      "bytes": 41223,
+      "ctime_ns": 1791570044670751213,
+      "device": 2065,
+      "inode": 466753244,
+      "mtime_ns": 1791570044666751089,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000093.json",
+      "sha256": "0740afce2cf4adb1b5f172afb2c542614c71388181d4cc9ad1cd793107f469b6"
+    },
+    {
+      "bytes": 41204,
+      "ctime_ns": 1791570052150983134,
+      "device": 2065,
+      "inode": 466753280,
+      "mtime_ns": 1791570052150983134,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000094.json",
+      "sha256": "fe00fadf56b2f7f955e2aa984492f5153c0f8d33307a62bb445cac4c408ec119"
+    },
+    {
+      "bytes": 41213,
+      "ctime_ns": 1791570059419208482,
+      "device": 2065,
+      "inode": 466753316,
+      "mtime_ns": 1791570059419208482,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000095.json",
+      "sha256": "35089b6975057656d85a13edbbb89d87471abd3d9ea66d3fcec7aadc87e02dab"
+    },
+    {
+      "bytes": 41151,
+      "ctime_ns": 1791570066695434078,
+      "device": 2065,
+      "inode": 466753352,
+      "mtime_ns": 1791570066675433457,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000096.json",
+      "sha256": "6aaeb6968b28654e24c50d58c13dd6e6bf1c22de27a52a9d69cac4252bccf934"
+    },
+    {
+      "bytes": 41213,
+      "ctime_ns": 1791570074419673564,
+      "device": 2065,
+      "inode": 466753388,
+      "mtime_ns": 1791570074415673440,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000097.json",
+      "sha256": "26015f453bf516f62599370d6ca690b87f82d40fe5b83d7bd325eb76adaddad4"
+    },
+    {
+      "bytes": 41198,
+      "ctime_ns": 1791570082203914910,
+      "device": 2065,
+      "inode": 466753424,
+      "mtime_ns": 1791570082183914290,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000098.json",
+      "sha256": "8a2d3080fc9638f5932a23bba959e02df6e3d392d3b5fa1a54f2d91d3956ee0f"
+    },
+    {
+      "bytes": 29719,
+      "ctime_ns": 1791570088800119422,
+      "device": 2065,
+      "inode": 466753449,
+      "mtime_ns": 1791570088800119422,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/attempt-8050953a303045a4984d67a4723b9363/update-00000099.json",
+      "sha256": "8e40467fb0232a92189e65c25e576c374174e7c0103bfa614611313b2f092e72"
+    },
+    {
+      "bytes": 4826,
+      "ctime_ns": 1791570092028219508,
+      "device": 2065,
+      "inode": 466753398,
+      "mtime_ns": 1791570092028219508,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/training/outer-complete.json",
+      "sha256": "4dc95764f0845ab04e48fc40346c7f55fb9d1b610d9574f99a0a4e789bcaf1e6"
+    },
+    {
+      "bytes": 58682,
+      "ctime_ns": 1791569980212752725,
+      "device": 2065,
+      "inode": 466753076,
+      "mtime_ns": 1791569980212752725,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/outer-manifest.json",
+      "sha256": "7d8af0205214af936907145d538e16abe8d914483931ed9226be4f91600ca365"
+    },
+    {
+      "bytes": 30837,
+      "ctime_ns": 1791570091356198672,
+      "device": 2065,
+      "inode": 466753462,
+      "mtime_ns": 1791570091356198672,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/checkpoints/update-00000099-outer-00009/manifest.json",
+      "sha256": "1ed5329cf6f84c518cf01dcc219dddf254500137a0f3164410f053cecd710258"
+    },
+    {
+      "bytes": 299976,
+      "ctime_ns": 1791569980192752105,
+      "device": 2065,
+      "inode": 466753075,
+      "mtime_ns": 1791569980192752105,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/outers/outer-00009/sampling-complete.json",
+      "sha256": "00aed7108e12df2a609a1e872b4906afd73a1f87d1d1cea0a54c471c678fd7c7"
+    },
+    {
+      "bytes": 104176,
+      "ctime_ns": 1791500392381489963,
+      "device": 2065,
+      "inode": 466429470,
+      "mtime_ns": 1791500392365490030,
+      "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/summary.json",
+      "sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6"
+    },
+    {
+      "bytes": 3450,
+      "ctime_ns": 1791575733771138935,
+      "device": 2065,
+      "inode": 466754449,
+      "mtime_ns": 1791575733771138935,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/pipeline/curve-through-010.json",
+      "sha256": "8e4399af9a0f267d8ad53fdd2268863d83e52d3081fd6945a02e13f2c4a10821"
+    },
+    {
+      "bytes": 2948,
+      "ctime_ns": 1791575733771138935,
+      "device": 2065,
+      "inode": 466754448,
+      "mtime_ns": 1791575733747138191,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/pipeline/outer-010/boundary-result.json",
+      "sha256": "19e0dd93ae9f2dc83d5dca235ec4af249b867570431ae5c98c88d5db6a883a3e"
+    },
+    {
+      "bytes": 77773,
+      "ctime_ns": 1791575727762952654,
+      "device": 2065,
+      "inode": 466754444,
+      "mtime_ns": 1791575727746952158,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/eval-010/runs/summary.json",
+      "sha256": "25a43c5359f83f7a29d9946847161abdc0c07e2bdf1a6d4a7ba8ce102ebfab44"
+    },
+    {
+      "bytes": 1458,
+      "ctime_ns": 1791575729555008216,
+      "device": 2065,
+      "inode": 466754446,
+      "mtime_ns": 1791575729539007720,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/pipeline/outer-010/evaluation/actual-child-exit.json",
+      "sha256": "0a8f78b4c2489e3a604a50637549fb0269c338af19a47311a35a44d67ff35e6a"
+    },
+    {
+      "bytes": 44963,
+      "ctime_ns": 1791575731635072707,
+      "device": 2065,
+      "inode": 466754447,
+      "mtime_ns": 1791575731631072583,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/pipeline/outer-010/evaluation/actual-child-release.json",
+      "sha256": "76df531334c00eca6f786b0bcb611ecd680f120f668c5e1de08cafd3ac20acc3"
+    }
+  ],
+  "no_bootstrap_recomputation": true,
+  "no_gpu": true,
+  "no_new_scoring": true,
+  "no_tensor_or_fullvocab_read": true,
+  "observed_unix": 1791575799.6911447,
+  "original_node_outputs_modified": false,
+  "output_private_questions": false,
+  "schema": "opsd-pr100-readonly-cpu-report-complete-v1",
+  "source_code": {
+    "bytes": 22820,
+    "ctime_ns": 1791566603116047529,
+    "device": 2065,
+    "inode": 466749361,
+    "mtime_ns": 1791566603116047529,
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/source/reports-176f50f/opsd_pr100_reports_v1/report.py",
+    "sha256": "89bbd1984f8e0c68014ab11f2c4f2617fabefb2819a1f459ab41f35080f1d9ba"
+  }
+}
