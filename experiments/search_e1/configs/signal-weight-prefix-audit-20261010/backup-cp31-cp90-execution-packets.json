@@ -1,0 +1,258 @@
+{
+  "accepted": true,
+  "checkpoints": 7,
+  "full_study_complete": false,
+  "node_staging_complete": false,
+  "packets": [
+    {
+      "execution": {
+        "bytes": 3399,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp31-fresh-actual-retry2.execution.json",
+        "sha256": "99af3fe02f67fa8b92041bbd39122bbae3c3c2344773df97de7e8b13e21c2d5b"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28958,
+        "ctime_ns": 1791581314623169692,
+        "device": 2065,
+        "inode": 466759430,
+        "mtime_ns": 1791581314623169692,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000031-outer-00002/complete-sha-verified.json",
+        "sha256": "4799a9ae5e46887940c1aaf19035279662b47170b346dc9be58600529715338e"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp31-fresh-actual-retry2.stdout.json",
+        "sha256": "1abee30503cac94f1878807e3bdac21183d1783f60f7780220a66ed4491886e9"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28958,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp31-target-marker-retry2.raw.json",
+        "sha256": "4799a9ae5e46887940c1aaf19035279662b47170b346dc9be58600529715338e"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3400,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp40-fresh-actual-retry1.execution.json",
+        "sha256": "8bb74be0fd7135b897e18933f13951f680848990ece4403e213f04ae68fcfe82"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28957,
+        "ctime_ns": 1791581429826741521,
+        "device": 2065,
+        "inode": 466759465,
+        "mtime_ns": 1791581429826741521,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000040-outer-00003/complete-sha-verified.json",
+        "sha256": "d2d5395a1f17dec44317b8f95a485c29613caddca02f815c94cb99e4b1c16e1e"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp40-fresh-actual-retry1.stdout.json",
+        "sha256": "cebf12397cbfdaf98188920c8ae8fabdb9e22418280357e540dbf1ecbc054272"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28957,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp40-target-marker-retry1.raw.json",
+        "sha256": "d2d5395a1f17dec44317b8f95a485c29613caddca02f815c94cb99e4b1c16e1e"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3400,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp50-fresh-actual-retry1.execution.json",
+        "sha256": "19d40b0fdb13bc8fab0264632914b4b4e911b897211f0e66ffed1cdfe203d770"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28958,
+        "ctime_ns": 1791581516781437508,
+        "device": 2065,
+        "inode": 466759476,
+        "mtime_ns": 1791581516781437508,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000050-outer-00004/complete-sha-verified.json",
+        "sha256": "1451c2a5daff3b09acad4ee90b445a847b855d394d0ba1cbf79c7657782cf11e"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp50-fresh-actual-retry1.stdout.json",
+        "sha256": "5454b725b632cc45e2e3b8abe3cf4394d4174779d9abcdfc354cb1ccfbc4686d"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28958,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp50-target-marker-retry1.raw.json",
+        "sha256": "1451c2a5daff3b09acad4ee90b445a847b855d394d0ba1cbf79c7657782cf11e"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3399,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp60-fresh-actual-retry1.execution.json",
+        "sha256": "2cdb69e6958f15d8ba3f7ad39558473b600980a9da7fb7521e0c6d0308ad3891"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28958,
+        "ctime_ns": 1791582958266130022,
+        "device": 2065,
+        "inode": 466781803,
+        "mtime_ns": 1791582958266130022,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000060-outer-00005/complete-sha-verified.json",
+        "sha256": "6b9aa3caa561ac581a05dcd5339e76791423c94ff265528d0e6f32fb5315eda2"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp60-fresh-actual-retry1.stdout.json",
+        "sha256": "728ef4fbf3919cd161c9edfd7f7f413ac1f8cb902d335898183103b2d7bc9851"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28958,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp60-target-marker-retry1.raw.json",
+        "sha256": "6b9aa3caa561ac581a05dcd5339e76791423c94ff265528d0e6f32fb5315eda2"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3399,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp70-fresh-actual-retry1.execution.json",
+        "sha256": "2b832b09daedf327a7f000be8402ffc09dd17a802789b0343ddae898f6fc764c"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28958,
+        "ctime_ns": 1791583419728437431,
+        "device": 2065,
+        "inode": 466781873,
+        "mtime_ns": 1791583419728437431,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000070-outer-00006/complete-sha-verified.json",
+        "sha256": "cd59259a03430cc15a3b4156016c0c65f9936c361415ce9c9a31561741a22fad"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp70-fresh-actual-retry1.stdout.json",
+        "sha256": "f15f2780e7a3fde48ced2e49fdc3d0b86923984cc5f6f3f47094a8c9c4c75013"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28958,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp70-target-marker-retry1.raw.json",
+        "sha256": "cd59259a03430cc15a3b4156016c0c65f9936c361415ce9c9a31561741a22fad"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3400,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp80-fresh-actual-retry1.execution.json",
+        "sha256": "bf1119b4c049c4ce2e4fe5c744996a1182e75e1fbcde3f2633dfdc94c8a855ad"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28959,
+        "ctime_ns": 1791584078792871394,
+        "device": 2065,
+        "inode": 466781984,
+        "mtime_ns": 1791584078792871394,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000080-outer-00007/complete-sha-verified.json",
+        "sha256": "29f4830c29a84cd4efa112abd6b4a0bec0fa14a47405b8d6a0d272306b60094a"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp80-fresh-actual-retry1.stdout.json",
+        "sha256": "c9c23647dee50fe71a93b082b501126e14aaa0f7e75077f622486d171281e8bd"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28959,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp80-target-marker-retry1.raw.json",
+        "sha256": "29f4830c29a84cd4efa112abd6b4a0bec0fa14a47405b8d6a0d272306b60094a"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 3399,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp90-fresh-actual-retry1.execution.json",
+        "sha256": "486b489984dc2396e3872dc88cdf8c509371514854249acd3b1488ed8a9a6d11"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28959,
+        "ctime_ns": 1791585075627777764,
+        "device": 2065,
+        "inode": 466783038,
+        "mtime_ns": 1791585075627777764,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000090-outer-00008/complete-sha-verified.json",
+        "sha256": "3812b0b0017cef4c66545cc4d69f0bb873b86e1aa5dcb53a4b2d9a6a0b3af5e0"
+      },
+      "output": {
+        "bytes": 1408,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp90-fresh-actual-retry1.stdout.json",
+        "sha256": "b00c365578c3b1f742f6b8f53006b0a8390fe5fd4af89db3a1e2f1c20789defc"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28959,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp90-target-marker-retry1.raw.json",
+        "sha256": "3812b0b0017cef4c66545cc4d69f0bb873b86e1aa5dcb53a4b2d9a6a0b3af5e0"
+      }
+    }
+  ],
+  "schema": "opsd-signal-pinned-backup-execution-packets-v1",
+  "scope": "Seven recovered new actual CLI stdout/wait0 packets; existing remote-only backup payloads freshly probed without retransmission, metadata copies only on Mac; original unsuccessful attempts and historical waits stay preserved.",
+  "state": "PREPARED_LOCAL_PENDING_ROOT_PUBLICATION_AND_NODE_STAGING",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "variant": "G_POS"
+}

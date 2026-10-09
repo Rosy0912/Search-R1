@@ -1,0 +1,55 @@
+{
+  "accepted_execution_prefix": true,
+  "accumulation": {
+    "global_trajectory_batch": 32,
+    "micro": 1,
+    "per_rank": 8,
+    "ranks": 4
+  },
+  "backup130": {
+    "accepted": false,
+    "actual_transfer_cli_wait": 2,
+    "failure": "tar transport: source SSH1; target SSH255; no commit requested; retained originals/partial existence UNKNOWN",
+    "recovery": "In progress, original pinned helper only; no training restart",
+    "stdout": {
+      "bytes": 1710,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp130-actual.stdout.json",
+      "sha256": "b17c9336ab196ebd4d94c6c951f20972c0953086e9e0ead521941c04e1ad1c81"
+    }
+  },
+  "complete_outers": 13,
+  "debug_request_prepared": {
+    "bytes": 2056,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix-thirteen-input-prepared.json",
+    "sha256": "b47efd8269f4352bf2f5927c2d1d50c69180360807df4be310a863159574bed0"
+  },
+  "effective_token_rows": 717527,
+  "full_study_complete": false,
+  "last_train_correct": 1238,
+  "latest_numeric": {
+    "bytes": 5915,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp130-numeric-actual.json",
+    "sha256": "c92df9ec6a6b29edfdf8ff9764c87e217f10bf1fda4d692191eb83a0c49e06cf"
+  },
+  "latest_token": {
+    "bytes": 6038,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp130-token-actual.json",
+    "sha256": "00424661a3e8ccaf602e6dddfcd37178989ff146883e01dbdf1f8df3c7c4ee68"
+  },
+  "native_heldout15_25_complete": 0,
+  "numeric_scope": "Saved actual full Adam payload and four distinct RNG/scaler/cursor bindings; no tokenizer/logits or all-history token recomputation",
+  "older_seven_fresh_probe_input": {
+    "bytes": 23414,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/backup-cp31-cp90-local-stage-prepared.json",
+    "sha256": "0dde60c2063842d20505dd951af49c2329e7e6c5de2ab4b82da3c97a6c08aa48"
+  },
+  "pair_exposures": 3960,
+  "real_completed_chain_updates": 130,
+  "schema": "opsd-signal-thirteen-outer-accepted-reference-v1",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "token_scope": "Committed saved actual-forward scalar/mask/weight reconstruction only; no new logits, tokenizer, full-vocabulary arrays, Adam/RNG restoration, generation or EM acceptance",
+  "train_denominator": 2560,
+  "train_em": 0.48359375,
+  "train_scope": "Complete unfiltered fresh sampling model before this outer updates, different training cohorts; not fixed heldout curve",
+  "variant": "G_POS"
+}

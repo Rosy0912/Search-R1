@@ -137,3 +137,14 @@ CP100/110原始CLI stdout、真实当前wait0及目标29KiB元数据marker现已
 
 
 早期CP1/5/11/21又以原556754a CLI完成当前freshprobe，actualwait0/already_complete=true，不重传payload、不将旧unknownwait改成0。其真实stdout、当前execution、stderr和29KiB元数据marker共16个小文件在配置先提交推送/readback后复制到独立K4 analysis目录，全部freshSHA通过。CP100/110/120同样已staging；只闭合这些明确备份输入，不冒称108项完整。
+
+
+## 第13轮数值验收与备份连接恢复
+
+同一G_POS run59de0d17968b4955b97f312cb2387429已完成13/25个outer、130次真实Adam和3960条所选轨迹曝光。CP130/outer12 manifest97fbeec28a87e30f5376dc955aafc6cac2755267b2e775c2a3aa3961710f031f通过实际独立CPU读取：四rank完整Adam130/moments/groups精确一致有限，504个FP32 adapter有限且相对共同初始状态改变，保存的各rank RNG/cursor/scaler有效，CUDA未初始化。本轮307轨迹/55352有效token及尾批19的实际分母通过；累计717527有效token为保存的实际更新前forward重构，不是重新推理或逐token梯度。第13轮完整更新前TRAIN为1238/2560=48.359375%，其他组及15/25 heldout端点仍未完成。四卡累积8/global32保持不变。
+
+CP31/40/50/60/70/80/90的当前原生备份probe曾因SSH控制连接失败退出。一次明确诊断实查源inventory SSH0、目标10.120.17.101:22 Operation timed out/SSH255；不能把其他仅有stderr摘要的失败一概定位为同一原因。连接恢复后这七个明确pinned CP分别真实CLI wait0/already_complete=true、sourceinventory/probe0及全成员freshSHA，未重传权重。七组实际stdout/execution/原始目标marker输入先持久发布，随后按原字节独立staging；旧失败记录保留。
+
+新CP130传输actualCLI wait2，sourceSSH1/targetSSH255，未请求commit、目标partial存在性UNKNOWN；这不影响正跑及已通过的CP130数值/token验收。原始K4 CP保留，按原556754a工具重试，同步写明实际结果，不把旧七CP probe成功冒称CP130备份成功。
+
+完整13轮debug保留审计的精确metadata request已经准备，按先发布后执行规则进入原9e1d179只读CPUauditor；此时尚未宣称审计完成。该前缀和所有数值验收均不代表四组100轮、八次heldout及最终归因完成。
