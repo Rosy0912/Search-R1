@@ -1,0 +1,72 @@
+{
+  "accepted": true,
+  "accumulation": {
+    "actual_readonly_proof_sha256": "0614f58ea2f7e2f6240d87cdc38cb49eb66cf2b7aa0932b1f21970e75b8eb81e",
+    "all_four_scientific_configs_unchanged": true,
+    "full_batch_accumulation_per_rank": 8,
+    "global_actual_full_batch": 32,
+    "gradient_SUM_no_extra_world_or_weight_normalization": true,
+    "micro_per_rank": 1,
+    "original_eight_rank_accumulation_per_rank": 4,
+    "tail_actual_N": true,
+    "world_size": 4
+  },
+  "backup": {
+    "accepted": true,
+    "destination": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000120-outer-00011",
+    "member_bytes": 359785556,
+    "member_count": 9,
+    "receipt": {
+      "bytes": 28962,
+      "ctime_ns": 1791587958965174200,
+      "device": 2065,
+      "inode": 466786451,
+      "mtime_ns": 1791587958965174200,
+      "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000120-outer-00011/complete-sha-verified.json",
+      "sha256": "57c7d4a37287578f68f505545781d107ab8b312cf756633286baf7490300c5fc"
+    },
+    "state": "COMPLETE_FRESH_SHA_READBACK"
+  },
+  "checkpoint": {
+    "bytes": 28980,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000120-outer-00011/manifest.json",
+    "sha256": "730bc7816187bbb10023e16c73f72a894dd450bf4ff5f09b3d54dc188a0a55d2"
+  },
+  "completed_chain_Adam": 120,
+  "completed_chain_pair_exposures": 3653,
+  "completed_outers": 12,
+  "formal_native_15_25_completed": 0,
+  "full_study_complete": false,
+  "independently_validated_effective_token_rows": 662175,
+  "numeric_CPU": {
+    "Adam": 120,
+    "CUDA_initialized": false,
+    "accepted": true,
+    "actual_wait_returncode": 0,
+    "adapter_tensors": 504,
+    "all_four_exact_full_adam": true,
+    "finite_changed_vs_common_initial": 504,
+    "small_output_sha256": "8f0c723944b9ca06d2b73804b4a63bef7b99915e5285ccb141d37ea70c22a1df"
+  },
+  "other_arms_completed_outers": 0,
+  "preupdate_TRAIN_latest": {
+    "denominator": 2560,
+    "em": 0.469921875,
+    "hits": 1203,
+    "not_heldout": true,
+    "sampling_outer_index": 11
+  },
+  "schema": "opsd-signal-twelve-outer-accepted-reference-v1",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "token_actual_saved_forward": {
+    "accepted": true,
+    "actual_tail_pairs": 15,
+    "actual_wait_returncode": 0,
+    "not_fresh_logits_or_full_vocab": true,
+    "pairs_this_outer": 303,
+    "six_scorer_errors_zero": true,
+    "small_output_sha256": "efffc4fe0c09b8338dde688cc520486b10240ac9806214a188f41a95f48d52b3",
+    "valid_tokens_this_outer": 53472
+  },
+  "variant": "G_POS"
+}

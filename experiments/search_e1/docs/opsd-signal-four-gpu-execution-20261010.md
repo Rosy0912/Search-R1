@@ -121,3 +121,16 @@ The original remote-only backup CLI accepted CP110 with9 members/359785300 bytes
 The compact ten-outer reference now uses the authoritative config study_id signal-four-1fd4da344d9147e7be99c62e5d7c2d26;its previous directory-basename identifier was a summary-field mistake. Native manifests/configs/source/running jobs were already correct and unchanged.
 
 A minimal independent endpoint-pair reader was implemented and independently reviewed with22 CPU fixtures. It reuses native complete-outer/512 evaluator validation, 7d recordedwait0/release and235 paired_cases, without modifying any original scorer or statistic. It will read actual15/25 raw14/24 only once available, compare both verified512 arrays to G_POS-bound commonzero, and retain per-validation-slot gained/lost/preserved/stillwrong remotely. All probability-replay fields are explicitly NA and full_study_complete=false. No actual15/25 input or result exists at this implementation milestone.
+
+
+## 第12轮与四卡累积合同实际复核
+
+实读快照1791587822.5874598确认同一G_POS控制器完成12/25个outer、120次真实Adam、3653条所选轨迹曝光。第12轮的全部更新前TRAIN严格EM为1203/2560=46.9921875%；不同轮使用不同训练题，不能把它解释为固定测试曲线。第13轮继续；三个其他组和15/25固定512测试尚未开始。
+
+最新人工强调的四卡设置已经在四个实际immutable config及远端原源码逐SHA核对：world4、micro1、每卡完整批累积8、global32，对应原world8/累积4。各组共同scientific字典完全相同；差别仅为计划规定的gap/entropy及正负方向。梯度跨卡求和，每轨迹有效token均值按实际批数N平均；没有额外除卡数、权重和或5。无需重启、热改或更换超参数。
+
+实际独立CPU读CP120/outer11，四rank完整Adam120/moments/groups精确一致、504个FP32 adapter全有限并相对commonzero改变，CUDA未初始化。本轮303条轨迹/53472有效token及尾批15条的实际分母通过。累计12轮3653曝光/662175有效token完成原实际forward标量、mask与权重重构；不声称重新计算logits、完整词表或答题效果。CP120九文件远端HKUST1备份完成，真实source/target/tar wait0、全部成员freshSHA；未在Mac保存CP。compact refs见twelve-outers-accepted-reference.json。
+
+CP100/110原始CLI stdout、真实当前wait0及目标29KiB元数据marker现已逐byte复制到独立K4 analysis/backup-evidence-556754a目录，保留原JSON字节；权重没有回到Mac，原K1/K4资产未删除。CP120同类输入路径已准备，必须发布后再做元数据staging。
+
+独立endpoint-pair source64794e8已实际部署、Node原env22CPU fixtures零skip/CLI0，六源文件前后SHA不变。测试依赖别名仅在helperroot外且resolve到已核原source，正式request仍canonical原路径。没有执行或伪造未产出的15/25结果；首次真实512结束后再读逐题新增/丢失。

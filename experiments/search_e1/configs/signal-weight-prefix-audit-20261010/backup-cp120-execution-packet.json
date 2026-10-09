@@ -1,0 +1,46 @@
+{
+  "accepted": true,
+  "checkpoints": 1,
+  "full_study_complete": false,
+  "packets": [
+    {
+      "execution": {
+        "bytes": 2709,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp120-actual.execution.json",
+        "sha256": "5a00879d8fa1d6033f7b5c4c516b58d42c75c5121e576814b2d3b58e88e733d2"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28962,
+        "ctime_ns": 1791587958965174200,
+        "device": 2065,
+        "inode": 466786451,
+        "mtime_ns": 1791587958965174200,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000120-outer-00011/complete-sha-verified.json",
+        "sha256": "57c7d4a37287578f68f505545781d107ab8b312cf756633286baf7490300c5fc"
+      },
+      "output": {
+        "bytes": 3655,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp120-actual.stdout.json",
+        "sha256": "ad8e7ba2f223dfac2353c40cfe8ce5925939c36ec23e5e109468f9279d214676"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28962,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp120-target-marker.raw.json",
+        "sha256": "57c7d4a37287578f68f505545781d107ab8b312cf756633286baf7490300c5fc"
+      }
+    }
+  ],
+  "schema": "opsd-signal-pinned-backup-execution-packets-v1",
+  "scope": "Prepared input paths; original actual CLI/wait0 and metadata marker copy staging after Git publication. No payload local.",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "variant": "G_POS"
+}
