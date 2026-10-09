@@ -104,6 +104,24 @@ class AlignedGenerationParity(unittest.TestCase):
                                     position_ids=helper['TensorHelper'].create_position_ids(None, attention)),
                                meta_info=dict(meta))
 
+    def test_raw_only_tensordict_sampling_probabilities(self):
+        from tensordict import TensorDict
+        manager, worker, _ = self.manager(1000, 80)
+        original = worker.generate_sequences
+        def generate(batch):
+            output = original(batch)
+            values = dict(output.batch)
+            values['raw_sampling_log_probs'] = values.pop('sampling_log_probs')
+            output.batch = TensorDict(values, batch_size=[len(batch)])
+            return output
+        worker.generate_sequences = generate
+        engine = SearchRollout(manager)
+        with patch.dict(sys.modules, {'verl': SimpleNamespace(DataProto=Proto)}):
+            output, rows = engine.run(self.input(dict(do_sample=False, validate=True)))
+        self.assertEqual(rows.tolist(), [0, 1, 2])
+        self.assertEqual(len(worker.calls), 5)
+        self.assertEqual(output.meta_info['turns_stats'], [1, 5, 5])
+
     def test_train_and_eval_tensors_requests_and_retrieval_match(self):
         # Both right-side truncation and rolling context truncation are exercised.
         for cap, obs_cap in ((1000, 80), (90, 24)):

@@ -155,7 +155,9 @@ class SearchRollout:
             # Native traces describe the raw sampler output. Retokenized policy
             # actions cannot inherit those selected-token probabilities.
             native = output.non_tensor_batch.get('fresh200_sampling')
-            selected = output.batch.get('raw_sampling_log_probs', output.batch.get('sampling_log_probs'))
+            selected = output.batch.get('raw_sampling_log_probs', None)
+            if selected is None:
+                selected = output.batch.get('sampling_log_probs', None)
             for i, state in enumerate(states):
                 diagnostic = dict(raw_generated_token_ids=raw[i].tolist(),
                                   probability_alignment='raw_sampler_only',
