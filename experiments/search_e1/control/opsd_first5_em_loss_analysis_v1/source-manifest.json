@@ -12,6 +12,16 @@
       "sha256": "4ef3ccbeba0caf334a04cedc142343b446ae5837efcce1fa0952f2112640a7b9"
     },
     {
+      "bytes": 1880,
+      "path": "README-formal-followups.md",
+      "sha256": "e46f12b142dba8d15df611dc21a51083dd20dcec25ac85ef197ec03a26428c41"
+    },
+    {
+      "bytes": 2650,
+      "path": "README-plots.md",
+      "sha256": "c3453c1284250878aae5aaeb27b529b0112f5b0311145208d9ac983cbf86e5cd"
+    },
+    {
       "bytes": 8816,
       "path": "README-stats.md",
       "sha256": "f23b34108fd7f76352c8720e02fd6f358cdd1d479b87553b39412e6838bc4e0c"
@@ -30,6 +40,21 @@
       "bytes": 13125,
       "path": "formal_existing.py",
       "sha256": "5520ffbec178c47fd57e702cb18f567cd6c4c1b0692f2785906619a448033a95"
+    },
+    {
+      "bytes": 6363,
+      "path": "formal_overlap.py",
+      "sha256": "e7523578a275df3491553ebde4ea203cb9cfbb802175e8c44902af5a148de802"
+    },
+    {
+      "bytes": 4753,
+      "path": "formal_retention.py",
+      "sha256": "1671e72132c0459812b853134590a2f03cdab15ce27db074acdfc8870ddc32b2"
+    },
+    {
+      "bytes": 13937,
+      "path": "plots.py",
+      "sha256": "fa03a4862b275690509178c97219903da6320fba09dd170b6b6f11c4e8c60243"
     },
     {
       "bytes": 41336,
