@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 9693,
+      "sha256": "41787183ee426e8a5f42a5ff30f2d08526166c3f767c111f330a14628225a3c9"
+    },
+    "__init__.py": {
+      "bytes": 73,
+      "sha256": "ccb00226086c815c4030f0ad6f7274b3ddf5b330adf62075e7b04487e0150b6c"
+    },
+    "assemble.py": {
+      "bytes": 43722,
+      "sha256": "5edc358aaedc0c59cb7830bd4dad6c99660b06c0b625e4c036f40b1f5334b37d"
+    },
+    "bridge.py": {
+      "bytes": 1170,
+      "sha256": "e1df4e54e8419c3551b4e0e7c703d4d1cb4af0083bb4caec351f65658a167226"
+    },
+    "common.py": {
+      "bytes": 7582,
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    "test_completion.py": {
+      "bytes": 28476,
+      "sha256": "1751228281b8ff5ee564ab25c8ecc6c90824e4b64e699e19ded8b82746a16adc"
+    }
+  },
+  "schema": "opsd-signal-weight-completion-source-v1"
+}
