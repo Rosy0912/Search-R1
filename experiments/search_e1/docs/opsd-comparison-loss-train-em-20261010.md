@@ -56,4 +56,4 @@ C0 的 loss 降了 13.77%，但固定验证最差，说明目标分布匹配得�
 
 [完整逐轮 CSV](../reports/final-cpu-debug-20261009/seven-group-70-slots.csv) · [六面板科学曲线](../reports/final-cpu-debug-20261009/seven-group-recorded-curves.png) · [原生汇总](../reports/final-cpu-debug-20261009/seven-group-recorded-summary.json)
 
-本报告使用已验九模型、刚闭合的 J BF16 原生 512 分数与完整 70 轮训练记录。J BF16 的八 worker 各 64 条、实际 wait0 和唯一覆盖已核对；本次读数尚未独立重跑 QA 评分，且单 phase 结束不等于整个 J controller/driver 成功。待 J FP16、独立评分与最终配对统计完成，再给完整结论。
+本报告使用已验九模型、刚闭合的 J BF16 原生 512 分数与完整 70 轮训练记录。J BF16 的八 worker 各 64 条、实际 wait0 和唯一覆盖已核对；随后独立 CPU 按冻结 native QA/core/worker 重评分全部 512 条，全部一致：242 正确、270 合法但 gold 不匹配、0 最终协议无效、全部实际执行搜索并以 answer 终止。单 phase 结束不等于整个 J controller/driver 成功；J FP16 与最终配对区间仍在继续。补充验收位于 HKUST `analysis/remote-J-bf16-result-v3-1791563300/result/complete.json`，SHA `af86b8ed63d54950c15e126f69ae5a5d887aa038642f230156604abbbeecd690`。
