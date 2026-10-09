@@ -148,6 +148,8 @@ for 原顺序每个实际global minibatch(≤32):
 
 纯CPU权重参考与测试已随本计划提供：`control/opsd_signal_weight_plan_v1/weights_reference.py`；它**不是已经可启动的训练controller**。生产实现应进入独立 `opsd_signal_weight_v1`，冻结现有source/runtime，发布后再部署。
 
+部署必须绑定已确认E的原始已发布helper、完整冻结runtime及环境清单；若基线是当前R，使用其原305文件runtime，不凭HKUST4已存在的 `opsd-runtime/archive` 目录名就认定同版本。实读Torch／PEFT／Transformers／vLLM／tokenizer与评分模块版本、精度、源commit和文件SHA；环境差异在独立副本做兼容与数值检查，不升级共享环境，也不把四卡迁移和权重干预混作同一项科学变化。
+
 | 模块 | 必须落实的改动与核验 |
 | --- | --- |
 | prepare/config | 新schema，4个variant及显式base-E身份、outer25、score timing current_preupdate、region/dtype/version、η.9/floor1e−6、四UUID/UID；拒绝借旧八卡10轮配置启动 |
