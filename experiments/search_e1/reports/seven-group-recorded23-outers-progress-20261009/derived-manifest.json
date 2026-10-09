@@ -1,0 +1,110 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 1636,
+      "path": "experiments/search_e1/reports/seven-group-recorded23-outers-progress-20261009/notes.zh.md",
+      "sha256": "d714f8c2b0ad564ab4285293d91ebb71dd4713f7c3d3f5fdcdfe26e5ee27e9c9"
+    },
+    {
+      "bytes": 23388,
+      "path": "experiments/search_e1/reports/seven-group-recorded23-outers-progress-20261009/seven-group-70-slots.csv",
+      "sha256": "d31cf08078d49ad861810a4027a9d8dedc5ac69f9ed685926d980de0d3829d25"
+    },
+    {
+      "bytes": 245441,
+      "path": "experiments/search_e1/reports/seven-group-recorded23-outers-progress-20261009/seven-group-recorded-curves.png",
+      "sha256": "8601208fa813f007f92614eabb2fd021a1248d4221977597be1b401f3637b7e3"
+    },
+    {
+      "bytes": 126230,
+      "path": "experiments/search_e1/reports/seven-group-recorded23-outers-progress-20261009/seven-group-recorded-curves.svg",
+      "sha256": "1b3985355b40d955a0ebdd7635fdacf1830cc6895b66f211a91949a7d6a26c7e"
+    },
+    {
+      "bytes": 11041,
+      "path": "experiments/search_e1/reports/seven-group-recorded23-outers-progress-20261009/seven-group-recorded-summary.json",
+      "sha256": "bef523e791951767788f23c926bd5de34ac273159ba8ee19469bdbf1c5c21c1b"
+    }
+  ],
+  "control_source_or_production_changes": false,
+  "coverage": {
+    "all70_complete": false,
+    "by_variant": {
+      "C0": 10,
+      "C1": 10,
+      "J": 0,
+      "M": 3,
+      "P": 0,
+      "R": 0,
+      "W": 0
+    },
+    "completed_outers": 23,
+    "expected_outers": 70
+  },
+  "no_raw_question_token_weight_or_process_network_details": true,
+  "original_CSV_PNG_SVG_byte_equal": true,
+  "prior20_complete_fact_rows_exact_unchanged": true,
+  "private_completion_proof_sha256": "29cbcce9a81cbcca667e882992e511d0da23dfcff2a7bc6a68ab4d6c601f91fd",
+  "private_derivation_identity": {
+    "bytes": 2609,
+    "sha256": "c119f61e27b7cf1acbcdda89938f191ff90e9bb439bfb7e7ac05834ed96c5f39"
+  },
+  "public_summary_transformation": "Metadata redaction only: private source paths and config stat metadata removed; original groups/counts unchanged. Formal coverage and scope annotations added.",
+  "recorded_fact_collection_and_derivation_actual_returncodes": [
+    0,
+    0
+  ],
+  "schema": "seven-group-recorded23-outers-publication-v1",
+  "scientific_test_or_effect_acceptance": false,
+  "snapshot_CST": "2026-10-09T10:10:39.357456+08:00",
+  "source_code": {
+    "collector": {
+      "path": "experiments/search_e1/control/opsd_ablation_outer_report_v1/collector.py",
+      "sha256": "50fc6bf8609ef93f4ca68907b9f688252010d950e59188efc467552b5c2c220c"
+    },
+    "formatter": {
+      "path": "experiments/search_e1/control/opsd_ablation_recorded_curves_v1/derive.py",
+      "sha256": "b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583"
+    }
+  },
+  "source_config_identities": {
+    "C0": {
+      "bytes": 9498,
+      "sha256": "11cdb1841e69df7ca4a452dea5265a7e6b0fbe3da462611b2c349f8df84045c8"
+    },
+    "C1": {
+      "bytes": 9498,
+      "sha256": "13fdbd51cc290bc6d23b0577c67bf8160a17292fab6f315fbfb07ea3f6ed3310"
+    },
+    "J": {
+      "bytes": 9494,
+      "sha256": "da6f7396970b77d3bbf2572f437ed2e05f0c3469bb2bcbe5a63dbbe12306b01f"
+    },
+    "M": {
+      "bytes": 9487,
+      "sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12"
+    },
+    "P": {
+      "bytes": 9494,
+      "sha256": "dcc0a03750dec59651550609889a8b82ba0d967a728da01626216af6d7714412"
+    },
+    "R": {
+      "bytes": 9487,
+      "sha256": "8cc81ae28882f0fb32a924d7a4d96fc6f7f0702b210ef62847e409c404d36ab9"
+    },
+    "W": {
+      "bytes": 9487,
+      "sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494"
+    }
+  },
+  "source_facts_identity": {
+    "bytes": 984178,
+    "sha256": "f29016a0543d5f601998a0b95c7877da0d02230f6df733d9629c19ceeb52116d"
+  },
+  "totals": {
+    "committed_unique_updates": 232,
+    "raw_pair_exposure": 6963,
+    "valid_tokens": 1411779
+  }
+}

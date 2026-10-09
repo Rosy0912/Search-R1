@@ -11,3 +11,11 @@ V2仅在独立fixture中立即clone捕获adapter、deepcopy完整Adam，前后�
 受控对象为真实tiny Qwen2、36层七投影的504个LoRA张量；八个磁盘rank文件分别恢复。共享Adam的八digest声明是fixture构造，不是八个独立生产rank的前序执行。CUDA RNG transport明确由CPU generator模拟，NCCL未执行；未加载source100，未覆盖BF16/FP16 GPU算术、完整atomic checkpoint writer或分布式活性。因此即使CPU对照通过，也不称为全GPU故障恢复验收。
 
 K1当前SSH观测出现超时；最后一次实际读取确认M第三轮TEACHER_DIAGNOSTIC且controller UID/starttick正确。超时不证明训练终止，未修改网络/VPN、生产源码、科学参数或资源路由，保持同一handle重新观察。未用缺失current scalar字段或历史known_children断言故障。全目标仍为七组各10outer、11固定模型版本共5632正式槽、完整曲线/debug/持久副本及配对统计；本CPU页面不缩减验收范围。
+
+## 10:12 CST 实际V2补证
+
+V2已在独立CPU scratch实际执行一次，17.77秒、退出0；stdout SHA为`1b40466912318b6c508101871a6b6afbc0091f22a13951d1e6b423f2c0f3b2e9`，独立范围审计SHA为`583a381e2da30eb2d624c74ec8ef2c5853ba76a386f27487b8bf4bae42351ecd`。每个磁盘rank恢复current/outer-old/完整Adam/scaler/cursor/order后，四类小词表分布在两位置共64个tensor对照严格相同；八rank的下一步loss、504个scaled梯度、更新后的current/Adam/scaler与RNG均严格相同。该cursor与曝光是fixture构造，不计入生产TRAIN预算。
+
+此通过补齐受控CPU范围，保留V1失败，不覆盖其原退出值。CUDA是CPU generator模拟，仍没有NCCL、source100数值、GPU BF16/FP16溢出或完整writer/main故障恢复证据。不得将本页称为完整生产GPU恢复验收。
+
+原M继续运行，没有等本检查或备份。10:10固定采集为三轮/31次真实Adam；10:22本机无代理直连恢复，实际读取同一controller已进入outer4训练（第5轮），记录前序40次提交。四、五轮的完整曲线须后续原生receipt采集后更新，不能用该状态推算曝光或loss。临时同HKUST观察转发的实际命令另存私有；未改变全局网络或生产路由。
