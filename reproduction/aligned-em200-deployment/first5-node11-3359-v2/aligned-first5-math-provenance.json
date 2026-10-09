@@ -1,0 +1,13 @@
+{
+  "scope": "generic functions only; old root/source/job/behavior policy excluded",
+  "original_file_sha256": "3ea5370c5812a9460d580eb1f94e2f1a848b8423a790f23ea06470e8dbabd967",
+  "functions": [
+    "digest",
+    "finite",
+    "require",
+    "resolve_qwen2_tied_alias",
+    "safetensor_map",
+    "tokenizer_proof"
+  ],
+  "extracted_sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+}
