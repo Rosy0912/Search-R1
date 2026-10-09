@@ -1,0 +1,21 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4376,
+      "sha256": "14182766518ff78e64830690f850f4529ae851a69fcade2a7b82d72127cf8bfc"
+    },
+    "design.md": {
+      "bytes": 1493,
+      "sha256": "16a7bfb3521a2dcd23ff72f23c12d640f5a2feb3ec407821b69dcc91e5281ce7"
+    },
+    "reclaim.py": {
+      "bytes": 19667,
+      "sha256": "4c4d2518c9fc44f8ef75ef0ef31c3fe51d7cb00f2de0242932587c26f2bd3e6c"
+    },
+    "test_reclaim.py": {
+      "bytes": 7386,
+      "sha256": "1fa716dad4651b44bcbfcc466c23490a2c9fdcf265e5832e9430db85b92daaa2"
+    }
+  },
+  "schema": "opsd-backup-duplicate-reclaim-source-manifest-v1"
+}
