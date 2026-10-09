@@ -1,0 +1,59 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 38119,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/direct-continuation-1791550000865224000/sixty-outer-curves/seven-group-70-slots.csv",
+      "sha256": "b60c187df6050b1e44d25095dbe81b53b8e1a0216000ae3fede87198fc99502e"
+    },
+    {
+      "bytes": 12879,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/direct-continuation-1791550000865224000/sixty-outer-curves/seven-group-recorded-summary.json",
+      "sha256": "6ec24f15b3ca3fa4af87b4aeba6f477d4b33982c7a5f8db8898c9902f433f6cf"
+    },
+    {
+      "bytes": 353185,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/direct-continuation-1791550000865224000/sixty-outer-curves/seven-group-recorded-curves.png",
+      "sha256": "0b7d36f28b03a018c12ba71af5c1b908abfd1e9cffee376325ac85b63022a527"
+    },
+    {
+      "bytes": 166531,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/direct-continuation-1791550000865224000/sixty-outer-curves/seven-group-recorded-curves.svg",
+      "sha256": "05ccbc1ed772e4ef4d7b847e3e49da71ce1a7013ce9419df1790736bf1c4bac9"
+    }
+  ],
+  "coverage": {
+    "all70_complete": false,
+    "by_variant": {
+      "C0": 10,
+      "C1": 10,
+      "J": 0,
+      "M": 10,
+      "P": 10,
+      "R": 10,
+      "W": 10
+    },
+    "completed_outers": 60,
+    "expected_outers": 70
+  },
+  "no_model_or_gpu": true,
+  "no_new_scientific_test": true,
+  "no_remote_io": true,
+  "observed_unix": 1791550110.427933,
+  "schema": "seven-group-recorded-curves-v1",
+  "source": {
+    "bytes": 2524212,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/direct-continuation-1791550000865224000/facts.stdout.json",
+    "sha256": "7c42bd6cfaa91bef45d9af5801360c6f0e42a0aeaae774bc7718e1a7981cc902"
+  },
+  "source_code": {
+    "bytes": 11645,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_recorded_curves_v1/derive.py",
+    "sha256": "b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583"
+  },
+  "totals": {
+    "committed_unique_updates": 599,
+    "raw_pair_exposure": 18120,
+    "valid_tokens": 3532531
+  }
+}
