@@ -1,0 +1,53 @@
+{
+  "cpu_only": true,
+  "files": [
+    {
+      "bytes": 7631,
+      "path": "README-extraction.md",
+      "sha256": "2b07794eeb21bb96d3be8b49f2c2ee16d0db9dddda4bcd60f13fd961bc148fbf"
+    },
+    {
+      "bytes": 2457,
+      "path": "README-formal-existing.md",
+      "sha256": "4ef3ccbeba0caf334a04cedc142343b446ae5837efcce1fa0952f2112640a7b9"
+    },
+    {
+      "bytes": 8816,
+      "path": "README-stats.md",
+      "sha256": "f23b34108fd7f76352c8720e02fd6f358cdd1d479b87553b39412e6838bc4e0c"
+    },
+    {
+      "bytes": 6933,
+      "path": "execute.py",
+      "sha256": "0a9283b70ebc9977030e9ed103640318631518b81bb540397ef2edf146a4df53"
+    },
+    {
+      "bytes": 40292,
+      "path": "extract.py",
+      "sha256": "59491b6d5e93799e80a9e892b60196f28082256ba38831d84e6d964b9289124c"
+    },
+    {
+      "bytes": 13125,
+      "path": "formal_existing.py",
+      "sha256": "5520ffbec178c47fd57e702cb18f567cd6c4c1b0692f2785906619a448033a95"
+    },
+    {
+      "bytes": 40714,
+      "path": "stats.py",
+      "sha256": "f4856abbcc87bdcf92d4a1b4744ac4731062da2b269d570d86ce07d9e04f89a4"
+    },
+    {
+      "bytes": 8460,
+      "path": "test_extract.py",
+      "sha256": "5a365dc9c576961b97a081409469816040f6720fa25429d4aa92f2fd87bb7491"
+    },
+    {
+      "bytes": 3549,
+      "path": "test_stats.py",
+      "sha256": "fb589d05a5541134a7e56e293978c0827396593d8493ac0d26244864aca75808"
+    }
+  ],
+  "new_training": false,
+  "schema": "opsd-first5-em-loss-analysis-source-v1",
+  "source_ids_bound_by_private_execution_request": true
+}
