@@ -1,0 +1,11 @@
+{
+  "schema": "remote-raw-snapshot-source-v1",
+  "files": {
+    "snapshot.py": {
+      "sha256": "e5b3da4e91e9b6e4a2eb2ddac6f7e813070e27c812debc00229288c6c0fc22ae",
+      "bytes": 10295
+    }
+  },
+  "original_scope_source_sha256": "34857f4a6d0cfea4da2e2c4b71a5af662aca9a49e7ee7134ab97cd3c88185222",
+  "scientific_changes": false
+}
