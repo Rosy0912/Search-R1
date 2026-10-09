@@ -23,9 +23,9 @@ def main():
     configs = [
         ('retriever310', candidate / 'bin/python3.10',
          SOURCE / 'env/lib/python3.10/site-packages', candidate / 'lib'),
-        ('training311', SOURCE / 'author-native/python/cpython-3.11-linux-x86_64-gnu/bin/python3.11',
+        ('training311', SOURCE / 'author-native/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11',
          SOURCE / 'author-native/env/lib/python3.11/site-packages',
-         SOURCE / 'author-native/python/cpython-3.11-linux-x86_64-gnu/lib')]
+         SOURCE / 'author-native/python/cpython-3.11.17-linux-x86_64-gnu/lib')]
     for role, binary, packages, lib in configs:
         if len(sys.argv) > 1 and role != sys.argv[1]:
             continue
