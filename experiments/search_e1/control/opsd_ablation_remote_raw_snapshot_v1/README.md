@@ -11,3 +11,9 @@ Example: original env Python -B snapshot.py --groups C0,C1,M,R,W,P --source-oper
 AST parsing was performed locally; no extra fixtures, review rounds or model/inference tests were run. Real copy acceptance requires the actual execution and source/destination SHA checks, not this document.
 
 The first actual request stopped before any payload copy because recovered C0 has no newly invented training/group-terminal.json under the current driver. This revision resolves all terminal refs from each actual bound evaluation config and SHA-checks that original terminal. The failed output and old deployed source remain preserved; no original task was restarted or modified.
+
+## Recorded readers on HKUST
+
+run_existing_readers.py requires captured actual whole-copy SSH wait0 plus the exact independent snapshot completion SHA. It invokes unchanged SHA-pinned native facts, committed clipmass and debug-coverage readers on the original HKUST Python, writes their full private inputs/proofs only in a new HKUST analysis directory, and records each actual child wait. Existing FixedBackups direct inputs refer to the actual independent copies on the processing host. Only public aggregates and small execution metadata return to Mac. This is remote filesystem processing, not a claim that no Node filesystem was read; legacy reader no_node_or_model_IO flags refer to their absence of network/model calls. Scalar/top32/NPY coverage remains distinct from logits/gradient/causal reconstruction and the final all-seven shared ledger.
+
+The original readers are unchanged: collector SHA50fc6bf..., aggregate b7a264..., coverage99e97c... . No repeated model fixtures or reviewer rounds. Completed subset analysis remains explicitly partial until J and all70 are included.

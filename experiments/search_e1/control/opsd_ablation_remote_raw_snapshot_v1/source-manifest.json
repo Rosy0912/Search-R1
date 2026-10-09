@@ -4,6 +4,10 @@
     "snapshot.py": {
       "sha256": "40e05812069c118b14df6605128204bd1a013286674c4cacab768a91ec48c211",
       "bytes": 10899
+    },
+    "run_existing_readers.py": {
+      "sha256": "4d8f7fc33e97d4d2554539010d8d5e4ec1691291c906c929df6fd44cc2847e9e",
+      "bytes": 7373
     }
   },
   "original_scope_source_sha256": "34857f4a6d0cfea4da2e2c4b71a5af662aca9a49e7ee7134ab97cd3c88185222",
