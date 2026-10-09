@@ -1,0 +1,855 @@
+{
+  "utc": "2026-10-09T03:41:17.536186+00:00",
+  "job_id": 3347,
+  "run": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576",
+  "source_observation": "outputs/gigpo-e1-instruct200/RESUME50-JOB3347-ACTUAL-STATUS-v250.json",
+  "source_observation_sha256": "8a4887e53496ee5fe27b350d6e6bb348732c4c568776ab8e1625c08c622ed58a",
+  "completed_outer_updates": 102,
+  "actual_adam_per_rank": 2040,
+  "attempt_id": 102,
+  "opportunities_processed": 20,
+  "actual_adam_writes_per_rank": 20,
+  "gradient_micro_batches_per_rank": 160,
+  "skipped_opportunities": 0,
+  "scheduler_step": 102,
+  "data_cursor": 52224,
+  "driver_receipt": {
+    "bytes": 998385474,
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/audit/partial-updates/attempt_000102/driver.pt",
+    "sha256": "89b0a5d5403c2376a669f0d78779d840e4af26a0d7f12227e7897c657478eab2"
+  },
+  "rank_receipts": [
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140537,
+      "rank": 0,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140849,
+      "rank": 1,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140850,
+      "rank": 2,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140851,
+      "rank": 3,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140852,
+      "rank": 4,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140853,
+      "rank": 5,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140854,
+      "rank": 6,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "counted_complete": true,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "pid": 3140855,
+      "rank": 7,
+      "refusals": [],
+      "safe_to_continue": true,
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    }
+  ],
+  "training_reward_mean": 0.4332031309604645,
+  "training_reward_is_validation_f1": false,
+  "actual_lr_before_update": 1e-06,
+  "metrics": {
+    "actor/actual_gradient_micro_batches": 160.0,
+    "actor/attempt_counted_complete": 1.0,
+    "actor/entropy_loss": 0.6281431433977559,
+    "actor/grad_norm": 29.822174187714914,
+    "actor/grad_norm_after_clip": 0.9999999641136089,
+    "actor/kl_coef": 0.0,
+    "actor/kl_loss": 0.4651347616296869,
+    "actor/lr": 1e-06,
+    "actor/opportunities_processed": 20.0,
+    "actor/optimizer_steps": 20.0,
+    "actor/pg_clipfrac": 0.08468732289227744,
+    "actor/pg_loss": 0.013882222089009152,
+    "actor/ppo_kl": 0.08167364190308773,
+    "actor/skipped_empty_minibatches": 0.0,
+    "actor/skipped_opportunities": 0.0,
+    "critic/advantages/max": 1.6333333253860474,
+    "critic/advantages/mean": -0.00016506262181792408,
+    "critic/advantages/min": -1.6357142925262451,
+    "critic/returns/max": 1.6333333253860474,
+    "critic/returns/mean": -0.00016506262181792408,
+    "critic/returns/min": -1.6357142925262451,
+    "critic/rewards/max": 1.0,
+    "critic/rewards/mean": 0.4332031309604645,
+    "critic/rewards/min": 0.0,
+    "critic/score/max": 1.0,
+    "critic/score/mean": 0.4332031309604645,
+    "critic/score/min": 0.0,
+    "env/finish_ratio": 0.998828125,
+    "env/number_of_actions/max": 4.0,
+    "env/number_of_actions/mean": 2.4625,
+    "env/number_of_actions/min": 1.0,
+    "env/number_of_valid_action": 2.4609375,
+    "env/number_of_valid_search": 1.462109375,
+    "env/ratio_of_valid_action": 0.999609375,
+    "gigpo/shared_anchor_coverage": 0.7958439086294417,
+    "global_seqlen/balanced_max": 296671,
+    "global_seqlen/balanced_min": 296670,
+    "global_seqlen/max": 310700,
+    "global_seqlen/mean": 296670.625,
+    "global_seqlen/min": 283068,
+    "global_seqlen/minmax_diff": 27632,
+    "mfu/actor": 0.03021604222214592,
+    "prompt_length/clip_ratio": 0.001953125,
+    "prompt_length/max": 209.0,
+    "prompt_length/mean": 137.744140625,
+    "prompt_length/min": 127.0,
+    "response_length/clip_ratio": 0.0003906250058207661,
+    "response_length/max": 1757.0,
+    "response_length/mean": 789.3515625,
+    "response_length/min": 58.0,
+    "rollout/context_mismatches": 0,
+    "rollout/generated_tokens": 518672,
+    "rollout/padded_rows": 8,
+    "rollout/prefill_tokens": 3531954,
+    "rollout/retrieval_calls": 3743,
+    "rollout/trajectories": 2560,
+    "state_tokens/coverage": 0.11505339294672012,
+    "state_tokens/total": 232493
+  },
+  "timings": [
+    {
+      "attempt_id": 102,
+      "category": "ordinary_training",
+      "completed_outer_updates": 101,
+      "original_call_returned": true,
+      "stage": "generation_and_retrieval_client",
+      "wall_seconds": 114.88391770794988
+    },
+    {
+      "attempt_id": 102,
+      "category": "ordinary_training",
+      "completed_outer_updates": 101,
+      "original_call_returned": true,
+      "stage": "old_policy_recompute",
+      "wall_seconds": 16.54062172025442
+    },
+    {
+      "attempt_id": 102,
+      "category": "ordinary_training",
+      "completed_outer_updates": 101,
+      "original_call_returned": true,
+      "stage": "reference_recompute",
+      "wall_seconds": 15.532955065369606
+    },
+    {
+      "attempt_id": 102,
+      "category": "ordinary_training",
+      "completed_outer_updates": 101,
+      "original_call_returned": true,
+      "stage": "advantage_mask_and_rollout_evidence",
+      "wall_seconds": 13.97908903285861
+    },
+    {
+      "attempt_id": 102,
+      "category": "ordinary_training",
+      "completed_outer_updates": 101,
+      "original_call_returned": true,
+      "stage": "actor_update_and_original_guards",
+      "wall_seconds": 215.1599613726139
+    }
+  ],
+  "independent_probability_tail_and_hf_semantic_status": "PENDING_BACKGROUND",
+  "latest_full_recoverable_outer": 50,
+  "constant_lr99_actual_readback": {
+    "worker_before": [
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140537,
+        "rank": 0,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140849,
+        "rank": 1,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140850,
+        "rank": 2,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140851,
+        "rank": 3,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140852,
+        "rank": 4,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140853,
+        "rank": 5,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140854,
+        "rank": 6,
+        "scheduler_step": 98
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140855,
+        "rank": 7,
+        "scheduler_step": 98
+      }
+    ],
+    "worker_after": [
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140537,
+        "rank": 0,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140849,
+        "rank": 1,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140850,
+        "rank": 2,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140851,
+        "rank": 3,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140852,
+        "rank": 4,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140853,
+        "rank": 5,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140854,
+        "rank": 6,
+        "scheduler_step": 99
+      },
+      {
+        "learning_rates": [
+          1e-06
+        ],
+        "pid": 3140855,
+        "rank": 7,
+        "scheduler_step": 99
+      }
+    ]
+  },
+  "latest_saved_complete_state_outer": 100,
+  "checkpoint100_independent_full_sha_and_reload_status": "PENDING",
+  "actual_completed100_through102_native_ledger_receipts": [
+    {
+      "abandoned": false,
+      "actual_adam_total": 2000,
+      "actual_adam_total_before": 1980,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 100,
+      "completed_before": 99,
+      "config_epoch": 0,
+      "config_sha256": "b63c2c1fc4f29f77e89d974c023e12c778415c89bda192b84612063733066e4c",
+      "counted_complete": true,
+      "driver_pid": 3140067,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "rank_receipts": [
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140537,
+          "rank": 0,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140849,
+          "rank": 1,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140850,
+          "rank": 2,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140851,
+          "rank": 3,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140852,
+          "rank": 4,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140853,
+          "rank": 5,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140854,
+          "rank": 6,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2000,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 100,
+          "completed_before": 99,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140855,
+          "rank": 7,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 100,
+          "skipped_opportunities": 0
+        }
+      ],
+      "safe_to_continue": true,
+      "sampler_position": {
+        "cursor": 51200,
+        "epoch": 0,
+        "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+        "size": 169028
+      },
+      "scheduler_step": 100,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2020,
+      "actual_adam_total_before": 2000,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 101,
+      "completed_before": 100,
+      "config_epoch": 0,
+      "config_sha256": "b63c2c1fc4f29f77e89d974c023e12c778415c89bda192b84612063733066e4c",
+      "counted_complete": true,
+      "driver_pid": 3140067,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "rank_receipts": [
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140537,
+          "rank": 0,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140849,
+          "rank": 1,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140850,
+          "rank": 2,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140851,
+          "rank": 3,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140852,
+          "rank": 4,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140853,
+          "rank": 5,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140854,
+          "rank": 6,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2020,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 101,
+          "completed_before": 100,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140855,
+          "rank": 7,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 101,
+          "skipped_opportunities": 0
+        }
+      ],
+      "safe_to_continue": true,
+      "sampler_position": {
+        "cursor": 51712,
+        "epoch": 0,
+        "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+        "size": 169028
+      },
+      "scheduler_step": 101,
+      "skipped_opportunities": 0
+    },
+    {
+      "abandoned": false,
+      "actual_adam_total": 2040,
+      "actual_adam_total_before": 2020,
+      "actual_successful_adam_writes": 20,
+      "attempt_id": 102,
+      "completed_before": 101,
+      "config_epoch": 0,
+      "config_sha256": "b63c2c1fc4f29f77e89d974c023e12c778415c89bda192b84612063733066e4c",
+      "counted_complete": true,
+      "driver_pid": 3140067,
+      "gradient_micro_batches": 160,
+      "opportunities_processed": 20,
+      "rank_receipts": [
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140537,
+          "rank": 0,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140849,
+          "rank": 1,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140850,
+          "rank": 2,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140851,
+          "rank": 3,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140852,
+          "rank": 4,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140853,
+          "rank": 5,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140854,
+          "rank": 6,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        },
+        {
+          "abandoned": false,
+          "actual_adam_total": 2040,
+          "actual_successful_adam_writes": 20,
+          "attempt_id": 102,
+          "completed_before": 101,
+          "counted_complete": true,
+          "gradient_micro_batches": 160,
+          "opportunities_processed": 20,
+          "pid": 3140855,
+          "rank": 7,
+          "refusals": [],
+          "safe_to_continue": true,
+          "scheduler_step": 102,
+          "skipped_opportunities": 0
+        }
+      ],
+      "safe_to_continue": true,
+      "sampler_position": {
+        "cursor": 52224,
+        "epoch": 0,
+        "permutation_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+        "size": 169028
+      },
+      "scheduler_step": 102,
+      "skipped_opportunities": 0
+    }
+  ]
+}
