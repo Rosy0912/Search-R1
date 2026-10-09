@@ -3,7 +3,7 @@ import pathlib,subprocess,shlex
 with open('/dev/tty') as f:token=f.readline().strip()
 code=r'''import pathlib,yaml,json,socket,subprocess,time,requests,os,shutil,sys,hashlib
 source=yaml.safe_load(pathlib.Path('/home/shaoshitong/project/clash-for-linux/runtime/config.yaml').read_text());token=sys.stdin.readline().strip();nodes=[x for x in source.get('proxies',[]) if x.get('server')];results=[]
-for i in range(2,min(8,len(nodes))):
+for i in range(8,min(26,len(nodes))):
  node=nodes[i];port=18400+i;s=socket.socket()
  try:s.bind(('127.0.0.1',port))
  except OSError:continue
@@ -27,6 +27,6 @@ for i in range(2,min(8,len(nodes))):
    shutil.rmtree(root)
 '''
 args=['ssh','-T','-B','en0','-oProxyCommand=none','-oProxyJump=none','-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','hkust2']
-r=subprocess.run(args+['python3 -c '+shlex.quote(code)],input=token+chr(10),capture_output=True,text=True,timeout=115)
+r=subprocess.run(args+['python3 -c '+shlex.quote(code)],input=token+chr(10),capture_output=True,text=True,timeout=240)
 print(r.stdout);print('exit',r.returncode)
 pathlib.Path('outputs/evidence/native-x-hpc-hf-additional-exit-probe-20261009.json').write_text(r.stdout)
