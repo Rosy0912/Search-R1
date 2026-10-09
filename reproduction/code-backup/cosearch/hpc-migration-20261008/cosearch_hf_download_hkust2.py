@@ -32,14 +32,20 @@ def main():
     for key in list(os.environ):
         if key.lower().endswith('_proxy'):
             os.environ.pop(key, None)
+    network_path = ROOT / 'download-network.json'
+    network = json.loads(network_path.read_text()) if network_path.exists() else {}
+    endpoint = network.get('endpoint', 'https://huggingface.co')
+    assert endpoint in ('https://huggingface.co', 'https://hf-mirror.com')
     exit_path = ROOT / 'own-exit.json'
     exit_port = json.loads(exit_path.read_text())['port'] if exit_path.exists() else 17894
-    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:' + str(exit_port)
-    os.environ['HTTP_PROXY'] = os.environ['HTTPS_PROXY']
+    proxy = network.get('proxy', 'http://127.0.0.1:' + str(exit_port))
+    if proxy:
+        os.environ['HTTPS_PROXY'] = proxy
+        os.environ['HTTP_PROXY'] = proxy
     plan = json.loads((ROOT / 'plan.json').read_text())
     repo = plan['repo']
     save('controller.json', {'pid': os.getpid(), 'epoch': time.time(), 'repo': repo, 'groups': len(plan['records']), 'root': str(ROOT), 'token_persisted': False, 'proxy': os.environ.get('HTTPS_PROXY', ''), 'phase': 'HF_PREFLIGHT'})
-    api = 'https://huggingface.co/api/models/' + repo
+    api = endpoint + '/api/models/' + repo
     def api_request(method, url, **kwargs):
         for attempt in range(1000):
             try:
@@ -86,7 +92,7 @@ def main():
                     h = dict(headers)
                     if offset:
                         h['Range'] = 'bytes=%d-' % offset
-                    url = 'https://huggingface.co/' + repo + '/resolve/main/' + path
+                    url = endpoint + '/' + repo + '/resolve/main/' + path
                     with requests.get(url, headers=h, stream=True, timeout=(30, 120)) as response:
                         response.raise_for_status()
                         if offset:
