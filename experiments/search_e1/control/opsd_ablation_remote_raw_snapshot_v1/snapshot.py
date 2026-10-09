@@ -93,7 +93,15 @@ def scope(op, variant):
     require(status['phase'] == 'TRAIN_COMPLETE' and status['outer_iterations'] == 10,
             'Only a genuinely closed ten-outer writer may be copied')
     index = ORDER.index(variant)
-    terminal_ref, _ = ref(DRIVER / ('%02d-%s' % (index, variant)) / 'training/group-terminal.json')
+    # C0 reuses its original completed writer. Resolve every terminal through
+    # the actual bound evaluation config rather than inventing a new path.
+    evaluation_ref, raw = ref(DRIVER / ('%02d-%s' % (index, variant)) / 'evaluation-config.json')
+    evaluation = json.loads(raw)
+    require(evaluation['training']['config']['sha256'] == cfg_ref['sha256'] and
+            evaluation['training']['run_id'] == config['run_id'], 'Bound evaluation training identity differs')
+    bound_terminal = evaluation['training']['terminal']
+    terminal_ref, _ = ref(bound_terminal['path'])
+    require(terminal_ref['sha256'] == bound_terminal['sha256'], 'Actual original terminal differs from bound evaluation')
     outers = []
     for index in range(10):
         complete_ref, raw = ref(group / 'runs/outers' / ('outer-%05d' % index) / 'training/outer-complete.json')

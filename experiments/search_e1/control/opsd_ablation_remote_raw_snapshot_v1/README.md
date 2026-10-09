@@ -9,3 +9,5 @@ Run only published exact bytes with original UID1005, empty CUDA visibility and 
 Example: original env Python -B snapshot.py --groups C0,C1,M,R,W,P --source-operation /ABS/EXACT/PUBLISHED/source-operation.py --output /data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/analysis/NEW-SNAPSHOT-DIRECTORY
 
 AST parsing was performed locally; no extra fixtures, review rounds or model/inference tests were run. Real copy acceptance requires the actual execution and source/destination SHA checks, not this document.
+
+The first actual request stopped before any payload copy because recovered C0 has no newly invented training/group-terminal.json under the current driver. This revision resolves all terminal refs from each actual bound evaluation config and SHA-checks that original terminal. The failed output and old deployed source remain preserved; no original task was restarted or modified.
