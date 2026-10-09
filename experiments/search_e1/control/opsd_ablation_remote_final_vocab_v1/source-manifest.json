@@ -1,8 +1,8 @@
 {
   "files": {
     "README.md": {
-      "bytes": 7052,
-      "sha256": "ec3b031c076ea72f1f08f1f75fb31ff8bb10f51eab7e36a34de2b245fc564787"
+      "bytes": 7547,
+      "sha256": "7a8201e153e4d0324d9d8d2c79993c5ec31013b4ef0edc4891f1fb51f048cac9"
     },
     "close_remote.py": {
       "bytes": 15733,
@@ -11,6 +11,10 @@
     "deploy.py": {
       "bytes": 3995,
       "sha256": "a045ec194f4d5a73e2bcaca7d68c27746cc6e3629f1f048f64bb6d91a3ad6f81"
+    },
+    "deploy_v2.py": {
+      "bytes": 4462,
+      "sha256": "be46b6a7af7ce4fb7267ee48f6d0fadf202a0c3343a8467940352c7dfac8c80d"
     },
     "prepare_inputs.py": {
       "bytes": 6361,
