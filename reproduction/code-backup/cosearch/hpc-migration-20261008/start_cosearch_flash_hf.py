@@ -31,13 +31,13 @@ def campus(host, command, **kwargs):
 
 def deploy(host, root, files):
     encoded = {name:base64.b64encode(data).decode() for name,data in files.items()}
-    code = ('from pathlib import Path;import base64,json;root=Path(' + repr(root) + ');'
+    code = ('from pathlib import Path;import base64,json,sys;root=Path(' + repr(root) + ');'
             'assert not root.exists(),"Existing group must be inspected";root.mkdir(parents=True);'
-            'files=' + repr(encoded) + '\n'
+            'files=json.loads(sys.stdin.read())\n'
             'for name,data in files.items():(root/name).write_bytes(base64.b64decode(data))\n'
             'print("DEPLOYED")')
     command = 'python3 -c ' + shlex.quote(code)
-    r = campus(host, command) if host in ('hkust2','hkust3') else subprocess.run(ctl.route(host,command),capture_output=True,text=True,timeout=45)
+    r = campus(host, command, input=json.dumps(encoded)) if host in ('hkust2','hkust3') else subprocess.run(ctl.route(host,command),input=json.dumps(encoded),capture_output=True,text=True,timeout=45)
     assert r.returncode == 0, host + ': ' + r.stderr[-500:]
 
 def start(host, root, script, token=None):
