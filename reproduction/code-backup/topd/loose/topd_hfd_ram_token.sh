@@ -405,8 +405,14 @@ MON_PID=$!
 trap 'kill "$MON_PID" 2>/dev/null' EXIT
 
 if [[ "$TOOL" == "aria2c" ]]; then
-    aria2c --conf-path=<(printf 'header=Authorization: Bearer %s\n' "$HF_TOKEN") --quiet=true --log=/dev/null --log-level=error --file-allocation=none \
-        --max-tries=0 --retry-wait=10 --connect-timeout=15 --timeout=30 --auto-file-renaming=false -x "$THREADS" -j "$CONCURRENT" -s "$THREADS" -k 1M -c -i "$fileslist_file" >/dev/null
+    hfd_ram_input() {
+      while IFS= read -r line; do
+        printf '%s\n' "$line"
+        [[ "$line" == https://* ]] && printf ' header=Authorization: Bearer %s\n' "$HF_TOKEN"
+      done < "$fileslist_file"
+    }
+    hfd_ram_input | aria2c --quiet=true --log=/dev/null --log-level=error --file-allocation=none \
+        --max-tries=0 --retry-wait=10 --connect-timeout=15 --timeout=30 --auto-file-renaming=false -x "$THREADS" -j "$CONCURRENT" -s "$THREADS" -k 1M -c -i - >/dev/null
     status=$?
 else
     wget -x -nH --cut-dirs="$CUT_DIRS" ${HF_TOKEN:+--header="Authorization: Bearer $HF_TOKEN"} \
