@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "bytes": 108152,
+      "path": "01-main-sampling-fraction-associations.png",
+      "sha256": "5bc166644123aa29215345c576d744aa38a3d1b3105c8b015dfa65330a9521e4"
+    },
+    {
+      "bytes": 25934,
+      "path": "01-main-sampling-fraction-associations.svg",
+      "sha256": "d41b9e711b6ff0cba822d5cad8c2561afae605863950db1de4420676eb010bbc"
+    },
+    {
+      "bytes": 178376,
+      "path": "02-regional-distribution-associations.png",
+      "sha256": "f06ca18a264a8b57dd0aac1590b0c572059a3a1620c0fb9aa729a7da7f8a8b05"
+    },
+    {
+      "bytes": 78437,
+      "path": "02-regional-distribution-associations.svg",
+      "sha256": "4a0a064b84e4fd9d1bd26cb09d28ac2d88ef560537123025aaf64224b9d5fde0"
+    },
+    {
+      "bytes": 154017,
+      "path": "03-oof-information-increments.png",
+      "sha256": "293358785d90ba61add80283a8c2482a2f40e95425cdbb69610aa231371c2fca"
+    },
+    {
+      "bytes": 24911,
+      "path": "03-oof-information-increments.svg",
+      "sha256": "7288b8608fccde0499c34f279211ed872484d92102dd0c85c253b786b60e0345"
+    },
+    {
+      "bytes": 213695,
+      "path": "04-answer-probability-and-teacher-kl-bins.png",
+      "sha256": "399881280c89ec9362eba18df7d5f0c76220d6e84c87f04eae2fa8022d432a7c"
+    },
+    {
+      "bytes": 60505,
+      "path": "04-answer-probability-and-teacher-kl-bins.svg",
+      "sha256": "02350a5e0205d0ee0551d742ee2e11e24dac2cc09e7a938785ee2385b88169cc"
+    },
+    {
+      "bytes": 488980,
+      "path": "aggregates.json",
+      "sha256": "2fef1485048fe80aecd8d6ef5b364a05877f2646dc7d44d535ba3b4c76eede6d"
+    },
+    {
+      "bytes": 48218,
+      "path": "descriptive-bins.csv",
+      "sha256": "89a4d8eaa41f6746ba10d7fcdc86dce47bd13c17a0349892ba64a2beea439380"
+    },
+    {
+      "bytes": 79126,
+      "path": "figure-data.json",
+      "sha256": "344afd8e08da5b25a96775a45aa243258bb1c41cca6979afd7565719e43c3fb9"
+    },
+    {
+      "bytes": 47708,
+      "path": "univariate.csv",
+      "sha256": "667bb610906d9ad43bee1e7e80c7ecd3de91a03b4ae846147a47dcc80d233c13"
+    }
+  ],
+  "no_questions_or_tokens_or_weights": true,
+  "report": {
+    "path": "experiments/search_e1/docs/opsd-first5-em-loss-relationship-findings-20261009.md",
+    "sha256": "d1a055731553ce96cece20586d0b54e6a1142eddd8f63925c8bcc45c0e1888fa"
+  },
+  "schema": "opsd-first5-em-loss-public-artifacts-v1"
+}
