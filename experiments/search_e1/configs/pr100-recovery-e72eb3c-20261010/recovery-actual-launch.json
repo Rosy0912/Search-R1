@@ -1,0 +1,25 @@
+{
+  "schema": "opsd-pr100-recovery-actual-launch-v1",
+  "launch_command_actual_returncode": 0,
+  "session": "e1-pr100-recovery-e72eb3c-20261010",
+  "pane": "$76|%76|1465428|0||exec env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 E1_RUN_ID=5e5c6851462d43b5822721ffaa58446e /data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -B /data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/source/recovery-e72eb3c/opsd_pr100_periodic_v1/supervisor.py --pipeline-config /data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/pipeline-config.json --pipeline-config-sha256 e1f9ec99ade143f3b07f6018995d76a280d6c2b720536c19a8b8b697ec6da185 > /data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/logs/supervisor-recovery-e72eb3c.log 2>&1\n",
+  "pipeline_run_id": "5e5c6851462d43b5822721ffaa58446e",
+  "pipeline_config": {
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/pipeline-config.json",
+    "sha256": "e1f9ec99ade143f3b07f6018995d76a280d6c2b720536c19a8b8b697ec6da185"
+  },
+  "source_commit": "e72eb3cdbf444625824c3d8369890e1c4d76c688",
+  "training_run_id": "c6a79477161a4a059e4fd68fc7567f87",
+  "identity": {
+    "pid": 1465428,
+    "uid": 1005,
+    "starttick": 936338578,
+    "state": "S",
+    "ppid": 2373025,
+    "run_id": "5e5c6851462d43b5822721ffaa58446e",
+    "argv": "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python -B /data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/source/recovery-e72eb3c/opsd_pr100_periodic_v1/supervisor.py --pipeline-config /data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/pipeline-config.json --pipeline-config-sha256 e1f9ec99ade143f3b07f6018995d76a280d6c2b720536c19a8b8b697ec6da185 "
+  },
+  "checked_unix": 1791571750.7159553,
+  "launch_is_not_512_or_goal_acceptance": true,
+  "metadata_capture_retry_only": "Previous metadataKeyError occurred after tmux launch; no job relaunched"
+}

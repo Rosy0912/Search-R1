@@ -11,3 +11,5 @@ TRAIN 采样正确数为12326/25600（48.1484375%）；outer1/10分别50.625%/49
 恢复首动作是从已验收TRAIN_BOUNDARY10/CP99做512评测，随后原训练run按完整状态`--resume --until-outer20`，继续20…100与每10轮评测。启动和初始化不算512验收；最终100及10次完整评测仍待真实产出。所有原始状态/轨迹/损失留HKUST，本机只保留代码及这份小型聚合报告。
 
 图表和CSV位于 `../reports/pr100-first10-training-20261010/`。远端原始小型报表 `/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/analysis/first10-training-20261010`；reporter源码commit `176f50f41659bdf0361e64eb30b76eaaacb4d556`。
+
+恢复实际已启动：新source commit `e72eb3cdbf444625824c3d8369890e1c4d76c688`，pipeline run `5e5c6851462d43b5822721ffaa58446e`，supervisor1465428/UID1005/tick936338578，tmux `$76/%76`。新eval run `740dc6a8b01140c297cb24a16be3f200`，controller1465564/UID1005/tick936338806；八GPU worker实际/proc/run/父进程匹配、RUNNING，未完整512。新mirror1465550已实际wait0回收，证明生命周期修复真实执行。原observer1146725保持运行/PPID1，当前实际最小free16495MiB、历史below0。此为该次快照，不替代后续新读。新不可变pipelineconfig SHA `e1f9ec99ade143f3b07f6018995d76a280d6c2b720536c19a8b8b697ec6da185`，小型配置/实际启动记录位于 `configs/pr100-recovery-e72eb3c-20261010`。此恢复启动不算效果或全100验收。

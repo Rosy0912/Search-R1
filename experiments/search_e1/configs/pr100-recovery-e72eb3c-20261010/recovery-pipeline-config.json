@@ -1,0 +1,196 @@
+{
+  "baseline_summary": {
+    "bytes": 104176,
+    "path": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/eval-stats-v2-72e1e12-8b641cb51b4c478684f596f75c603851/zero/runs/summary.json",
+    "sha256": "3dbf1830eb7669ed2ee23f531fb6a33dc3a1336fb89c24ba3d46fe8518b9f5e6"
+  },
+  "baseline_version": "bf16_zero",
+  "created_unix": 1791571612.2475975,
+  "evaluations": [
+    {
+      "completed_outers": 10,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-010-published-template.json",
+        "sha256": "7a6ae8b832973dae67f978e594dc2600de4aa2dbf7b8dce43313360f0e7390a6"
+      }
+    },
+    {
+      "completed_outers": 20,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-020-published-template.json",
+        "sha256": "1d34c46416604b9b1b487efe275662e73d88fef4ef34e24b0f3a9ad9a7cbe11c"
+      }
+    },
+    {
+      "completed_outers": 30,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-030-published-template.json",
+        "sha256": "b2294cf46b04748fad1040baff9789f1f0a36353eb96e4ac24197ae4df87044d"
+      }
+    },
+    {
+      "completed_outers": 40,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-040-published-template.json",
+        "sha256": "ae080bf6a3ef8f9c098a5b379645d0c2ae34da42ead56ca851cad0161006164a"
+      }
+    },
+    {
+      "completed_outers": 50,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-050-published-template.json",
+        "sha256": "37d0bc203afa8632dadbddf7aab1ee89acf2b52f8b442c226e20bcc2d76f3f33"
+      }
+    },
+    {
+      "completed_outers": 60,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-060-published-template.json",
+        "sha256": "805148b7110d8fcad9304b8f199bf2166d7a5ed1a619e5b1e6babc5675bab81a"
+      }
+    },
+    {
+      "completed_outers": 70,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-070-published-template.json",
+        "sha256": "7ef54b252469219f94aa22e75bfd296b08ecf5dd3f344d086fc0d8c965523921"
+      }
+    },
+    {
+      "completed_outers": 80,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-080-published-template.json",
+        "sha256": "25c206f15cb60e7dec90932cc6d025804e2629c27b59d87c23c9363050dde5e8"
+      }
+    },
+    {
+      "completed_outers": 90,
+      "template": {
+        "bytes": 5531,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-090-published-template.json",
+        "sha256": "b6bed91a039939a2fec600660540adc72f5807f44fc09193339ac58b3361f939"
+      }
+    },
+    {
+      "completed_outers": 100,
+      "template": {
+        "bytes": 5532,
+        "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/eval-100-published-template.json",
+        "sha256": "1a971c89529a98a49971dffe88392f69e30e7843b44bfe3064c3cc48ceae6d72"
+      }
+    }
+  ],
+  "helper_root": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/source/recovery-e72eb3c/opsd_pr100_periodic_v1",
+  "helper_source_manifest": {
+    "bytes": 1693,
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/source/recovery-e72eb3c/opsd_pr100_periodic_v1/source-manifest.json",
+    "sha256": "85130b878d67525f9c537386305a3455bb9e4053fc0d45ed58ad92ed8abb4bae"
+  },
+  "instructions": {
+    "evaluate_every": 10,
+    "evaluate_raw_boundary": true,
+    "no_additional_fp16_evaluation": true,
+    "no_best_fallback": true,
+    "no_checkpoint_transfer_start_condition": true,
+    "no_new_baseline_generation": true,
+    "outer_iterations": 100,
+    "outputs_remote_only": true,
+    "primary_slots": 5120,
+    "resume_same_training_run": true
+  },
+  "mirror_root": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/boundary-checkpoint-copies",
+  "output_root": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/pipeline",
+  "pipeline_lock": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic/pipeline.lock",
+  "publication": {
+    "bytes": 7277,
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic-recovery-e72eb3c/receipts/pipeline-publication.json",
+    "sha256": "deeaf59f8b7c61a8663837cf1676bdc9601f46ba2a46d6e85f10a013dfe8d33d"
+  },
+  "recovery": {
+    "completed_boundary": {
+      "bytes": 250066,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/runs/boundaries/outer-00010.json",
+      "sha256": "0bf51fa917783f3322aeea5cad72f97bd16804d3479d2f84d5436d00a9559d2b"
+    },
+    "completed_training_terminal": {
+      "bytes": 2143,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic/pipeline/outer-010/training/training-terminal.json",
+      "sha256": "759d64874c656cd5395f2266b093befe2687ca16b0615ee4de1baff8e57c209b"
+    },
+    "failed_evaluation_actual_exit": {
+      "bytes": 1455,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic/pipeline/outer-010/evaluation/actual-child-exit.json",
+      "sha256": "94254a85a86854752e8f4d3de09deaac00824e42ea28159ed2f029c3c747219a"
+    },
+    "no_checkpoint_reset": true,
+    "observer_binding": {
+      "bytes": 575,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/receipts/memory-binding.json",
+      "sha256": "6cb9da0062234917574417dd6deccb184120a747f2f71b8d2b965648439e50f1"
+    },
+    "old_mirror_returncode": "UNKNOWN",
+    "preserve_original_failed_evaluation": true,
+    "previous_cpu_registry": {
+      "bytes": 4017,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/preserved/periodic-eval10-mirror-zombie-1791570796914376174/receipts/scoped-cpu-processes.json",
+      "sha256": "22bd50f50fe8a28bf871c0e5903f2c1db315ef5e87b2729c923519a49bacbb13"
+    },
+    "previous_pipeline_config": {
+      "bytes": 5684,
+      "ctime_ns": 1791565818579723417,
+      "device": 2065,
+      "inode": 466717962,
+      "mtime_ns": 1791565818579723417,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/periodic/receipts/pipeline-config.json",
+      "sha256": "3a7643138883c63287db1517f574fe4642395da4bf164df238d9b7b5412435d6"
+    },
+    "previous_supervisor_terminal": {
+      "bytes": 8857,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/preserved/periodic-eval10-mirror-zombie-1791570796914376174/previous-supervisor-terminal-v2.json",
+      "sha256": "d3de750758734e2fe3153728d273fc76ad4a620baa54eb7139885c298fc85980"
+    },
+    "reuse_live_observer": true,
+    "schema": "opsd-pr100-evaluation10-recovery-v1",
+    "skip_train10": true,
+    "unchanged_training_config": {
+      "bytes": 9022,
+      "ctime_ns": 1791565747321514108,
+      "device": 2065,
+      "inode": 466717918,
+      "mtime_ns": 1791565747321514108,
+      "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/receipts/training-config.json",
+      "sha256": "651dfb40b1bf22fb5f604b9b17c45ffe8619f20baf521f399bc8059b11d6aa91"
+    }
+  },
+  "resources": {
+    "exclusive_gpu_sequence": true,
+    "parent_holds_gpu_locks": false
+  },
+  "run_id": "5e5c6851462d43b5822721ffaa58446e",
+  "schema": "opsd-pr100-periodic-pipeline-v1",
+  "source_commit": "e72eb3cdbf444625824c3d8369890e1c4d76c688",
+  "startup_previous_driver_terminal": {
+    "bytes": 10101,
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/receipts/prior-driver-terminal.json",
+    "sha256": "fe04dcad58279394f8dcc78134b2dcbb42490639256fd460396b8b88f410824f"
+  },
+  "state": "READY",
+  "study_id": "pr100-7a447312dff345fe95762c69bd2cbaa1",
+  "training_config": {
+    "bytes": 9022,
+    "ctime_ns": 1791565747321514108,
+    "device": 2065,
+    "inode": 466717918,
+    "mtime_ns": 1791565747321514108,
+    "path": "/data/shaoshitong/search-e1-opsd-pr100-8gpu-20261010/receipts/training-config.json",
+    "sha256": "651dfb40b1bf22fb5f604b9b17c45ffe8619f20baf521f399bc8059b11d6aa91"
+  }
+}
