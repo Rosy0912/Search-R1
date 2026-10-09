@@ -1,0 +1,27 @@
+# Formal3348 Ray same-host startup failure review
+
+Scope: READONLY_CODE_AND_ACTUAL_RECORD_REVIEW. Reviewer: alignment_generation_review. No source edits, remote operation, service restart, hardware rerun or new submission occurred.
+
+## Actual failure
+
+Original observation: work/evidence/aligned-em200-formal3348-user-status-logs1.actual.json, SHA256a0b11ddea8996932bfbe97558ee8e5dcb2dcfb3c4ed32b735f68cf172e6198c7, observed2026-10-09T02:34:01.745311Z. Exact RUN ends66cb18840a404586ab3333f8c393b8b7-3348 and source080. train.log1806B ends at asset/retriever preflight and contains no outer/Adam markers in this complete small log. driver-time.log shows Ray connecting successfully to10.33.0.5:16383, then traceback from formal_service_proof.py:99 rejecting NodeManagerAddress!='127.0.0.1'. ray-head.log independently advertises Local node IP10.33.0.5. Original exit is1, cleanup exit0, own cleanup remaining[]. Current scontrol/squeue return Invalid job id; this is unavailable retained scheduler history, not a reconstructed scheduler terminal proof. The observed failure precedes production main/training; no accepted outer/Adam work is reported.
+
+Faulting helper remains reviewed SHA704909275113fe079c287e8652c07ef000e4cfa06f7cf904781b93dc9bed6a96. The error is the loopback-only string assumption for Ray's advertised node address. It does not establish a foreign Ray node. Actual local Ray normalizes the requested loopback address to the host interface IP. A rerun with unchanged helper would fail again.
+
+## Minimal launch correction
+
+Keep the loopback GCS client request address and all existing exact owner/birth/UID/RUN/job, GCS-to-CLI ancestry, singleAlive node, GPU8, local NodeManagerPort socket ownership, raylet executable/CLI ancestry and canonical exclusive session checks. Replace only the advertised NodeManagerAddress loopback-equality condition with a checked actual local address:
+
+1. Read numeric IPv4 interface addresses from bounded ip -j -4 address show on fixed h100-5; accept only actually UP local interfaces, never hostname/DNS-derived candidates or arbitrary private addresses. Require advertised address to be127.0.0.1 or one of these exact actual local addresses;10.33.0.5 must be locally proven, not accepted merely because this log contains it. Bad/unknown interface output fails closed.
+2. Continue binding the advertised NodeManagerPort to the unique locally-owned raylet socket. Observe raylet's stable birth/job/RUN/UID, follow its ancestry to the already-frozen own Ray CLI epoch, and compare the actual raylet identity again after session and service checks. If an actual raylet node-IP command option is available, record/check it against advertised address rather than inventing an absent flag. The live interface snapshot plus local born raylet/socket proof supplies same-host identity even when CLI input127 was normalized.
+3. Freeze advertised address, local-interface evidence, raylet identity, CLI chain, GPU8/node record and actual session. Preserve canonical GCS client address separately. Never drop owner proof, accept allIPs, bypass the check, or treat Ray connection alone as ownership.
+
+Targeted CPU fixtures should cover actual-local10.33.0.5 acceptance with own proof, loopback, foreign-IP refusal, unknown interface output refusal, wrong raylet/ancestry/session and changed birth rejection. Their result would be code validation, not actual target Ray acceptance. A fresh retry must record its own actual successful connection evidence before calling unchanged source080 main.
+
+## Isolate a retry without rewriting3348
+
+Preserve original bound canonical tools, logs/receipts, RUN, exit/cleanup evidence and independent hardware3345 receipt. Create a new exclusive fixed launch namespace, for example ROOT/tools/deployment/formal-rayip-v2 and ROOT/scheduler-head/formal-rayip-v2, plus a fresh token/job/RUN. Install reviewed new tool hashes only in that prefix; import admission/service helpers from that same prefix. Keep ROOT/repo/env/assets and SOURCE080 unchanged. Hardware3345 acceptance remains the same separately checked completed fixture; no new hardware job is needed for this tool-only correction.
+
+Explicitly route every wrapper/driver/service-proof/admission path and actual submit intent/response/receipt consumer to the new fixed namespace. Original shell/driver paths are hard-coded to canonical deployment, and admission/CPU evidence consumers read the original scheduler receipt; merely copying a helper into a new directory is insufficient. Bind these launcher-only path changes and Ray-check change in a new immutable launch manifest. Preserve the sameROOT global submission lock and full BAPO queue uniqueness guard, refuse an existing or unknown retry intent, and verify3348 is no longer live plus its own cleanup remains closed before any eventual new submission. Do not delete or rename the old intent to satisfy the old single-submit tool.
+
+First5 CPU/release/monitor consumers must separately bind the new actual receipt path/job/token rather than reading3348's preserved receipt. Use a reviewed attempt-specific consumer path/receipt binding; no historical credential substitution or modification of source080 is warranted. Root can publish/install the candidate and verify admission as separate observed steps, then perform any authorized new launch. This report itself authorizes no remote action and makes no retry-success or training-completion claim.
