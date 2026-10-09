@@ -1,0 +1,24 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7205,
+      "sha256": "a205969dc91c3031ba0fcda943af59f8a0dccdfb764156df973f196a4b4db09f"
+    },
+    "close_ledger.py": {
+      "bytes": 27834,
+      "sha256": "0123b06b13c6abb0554d0a825bb1a28565f192e0b046ef878feda4af35f8a2a0"
+    },
+    "test_close_ledger.py": {
+      "bytes": 3707,
+      "sha256": "a0369175b2da56b771c9f79e38ac2e2f1b129d5e7650f90418e4cce22e5541d6"
+    }
+  },
+  "real_final_ledger_read": false,
+  "schema": "opsd-ablation-final-vocab-ledger-source-v1",
+  "scope": "Local final-only reference reconciliation after all70 native writers actualexit0 and release; no producer/Node/NPY execution",
+  "synthetic_checks": {
+    "actual_returncode": 0,
+    "skips": 0,
+    "tests": 3
+  }
+}
