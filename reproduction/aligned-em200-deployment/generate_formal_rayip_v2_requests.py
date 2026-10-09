@@ -34,7 +34,7 @@ locks=[]
 for name in ('submission-global.lock','execution-global.lock'):
  p=R/'scheduler-head'/name
  need(p.is_file() and not p.is_symlink() and p.resolve()==p,'existing global lock required')
- f=p.open('rb');st=os.fstat(f.fileno());need((st.st_dev,st.st_ino)==(p.stat().st_dev,p.stat().st_ino),'lock identity race');need(st.st_nlink==1 and st.st_uid==os.getuid(),'lock ownership');fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB);locks.append(f)
+ f=p.open('r+b');st=os.fstat(f.fileno());need((st.st_dev,st.st_ino)==(p.stat().st_dev,p.stat().st_ino),'lock identity race');need(st.st_nlink==1 and st.st_uid==os.getuid(),'lock ownership');fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB);locks.append(f)
 before=originals()
 '''
 BEGIN=r'''

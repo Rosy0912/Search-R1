@@ -40,7 +40,7 @@ def test_static_no_launch_or_global_write(tmp_path):
  out=g.generate(HERE/'formal-rayip-v2',tmp_path/'requests');verify=(out/'verify-actual-linux.py').read_text()
  assert "'actual_admission'" in verify and "'29 passed'" in verify
  assert "'claim'" not in verify and "['sbatch'" not in verify and "['srun'" not in verify
- assert "p.open('rb')" in verify and 'LOCK_NB' in verify
+ assert "p.open('r+b')" in verify and 'LOCK_NB' in verify
  assert "CUDA_VISIBLE_DEVICES=''" in verify and "HF_HUB_OFFLINE='1'" in verify
  assert "sys.prefix==" in verify and "not torch.cuda.is_initialized()" in verify
  assert "actual-linux-cpu-verification-intent.json" in verify
