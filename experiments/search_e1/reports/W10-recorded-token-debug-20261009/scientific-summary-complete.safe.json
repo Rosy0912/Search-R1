@@ -1,0 +1,128 @@
+{
+  "schema": "W-whole10-recorded-analysis-with-external-waits-safe-summary-v1",
+  "variant": "W",
+  "run_id": "dc8a4e85822547548c0f79be4c87e13e",
+  "config_sha256": "c7f48e13328835c84c4c09a9b7bd51be74c99e902e68d1f4ddb21ef989dd1494",
+  "analysis_scope": "W closed outer0..9 recorded committed training/debug only",
+  "closed_outers": 10,
+  "actual_optimizer_updates": 100,
+  "actual_pair_exposures": 3018,
+  "actual_weighted_pair_exposure": 3030.5629811691415,
+  "clipmass_complete": true,
+  "clipmass": {
+    "valid_token_rows": 550282,
+    "clipped_vocabulary_count": 1116,
+    "auxiliary_vocabulary_dump_rows": 2,
+    "hit_token_count": 1114,
+    "hit_token_fraction": 0.002024416571866788,
+    "vocabulary_slots": 83607645952,
+    "vocabulary_sizes": [
+      151936
+    ],
+    "pooled_vocabulary_fraction": 1.3348061499551213e-08,
+    "masses": {
+      "student": {
+        "sum_over_valid_tokens": 950.6590836942196,
+        "pooled_valid_token_mean": 0.001727585281172598,
+        "hit_token_mean": 0.8533744018799099,
+        "equal_trajectory_token_mean": 0.0019297511887938247,
+        "maximum_token_mass": 1.0
+      },
+      "teacher": {
+        "sum_over_valid_tokens": 0.004093536046476851,
+        "pooled_valid_token_mean": 7.4389786445437995e-09,
+        "hit_token_mean": 3.674628407968448e-06,
+        "equal_trajectory_token_mean": 8.602890967098753e-09,
+        "maximum_token_mass": 4.5397850044537336e-05
+      },
+      "mixture": {
+        "sum_over_valid_tokens": 0.004093536046476851,
+        "pooled_valid_token_mean": 7.4389786445437995e-09,
+        "hit_token_mean": 3.674628407968448e-06,
+        "equal_trajectory_token_mean": 8.602890967098753e-09,
+        "maximum_token_mass": 4.5397850044537336e-05
+      }
+    },
+    "loss": {
+      "raw": {
+        "pooled_valid_token_mean": 0.4841088010378358,
+        "equal_trajectory_token_mean": 0.5113397215244233
+      },
+      "post": {
+        "pooled_valid_token_mean": 0.47749875070207265,
+        "equal_trajectory_token_mean": 0.5039179665670446
+      }
+    },
+    "all_inspected_metric_fields_finite": true
+  },
+  "loss_contract": {
+    "reduction": "trajectory_mean",
+    "micro_batch": 1,
+    "global_actual_pairs_from_each_committed_receipt": true,
+    "logged_global_contribution_matches": "pair_weight * post_loss_per_token / valid_trajectory_tokens / actual_global_pairs",
+    "weighted_pair_exposure_is_not_normalization_denominator": true,
+    "mass_unweighted": true,
+    "raw_post_pooled_and_equal_trajectory_diagnostics_are_not_100_update_equal_mean": true
+  },
+  "debug_coverage_complete": true,
+  "debug": {
+    "teacher_autoregressive_cases": 80,
+    "teacher_per_outer_max": 8,
+    "teacher_common_bf16_source100": true,
+    "teacher_training_or_validation_denominator": 0,
+    "teacher_parent_embedded_rc0_release": true,
+    "student_native_rows_preserved": 25600,
+    "student_generation_trace_files": 80,
+    "student_HTTP_trace_files": 80,
+    "student_raw_trace_content_rescanned": false,
+    "top32": {
+      "valid_tokens": 550282,
+      "saved_positions": 81920,
+      "scalar_only_positions": 468362,
+      "distributions_per_saved_position": 4,
+      "actual_arrays_shape_finite_ID_range_verified": true,
+      "numerical_rank_or_normalization_recomputed": false
+    },
+    "full_vocabulary": {
+      "requested_positions": 2,
+      "saved_positions": 2,
+      "explicit_cap_skip_positions": 0,
+      "saved_files": 8,
+      "committed_NPY_bytes": 4862976,
+      "shape": [
+        151936
+      ],
+      "dtype": "float32",
+      "all_committed_payload_values_finite": true,
+      "fresh_NPY_member_SHA": true,
+      "deterministic_preselection_verified": true,
+      "only_current_subset_below_cap": true,
+      "studywide_shared_ledger_verification": "PENDING",
+      "KL_or_full_distribution_normalization_recomputed": false
+    }
+  },
+  "teacher_external_terminal": {
+    "audit_program_actual_returncode": 0,
+    "complete": true,
+    "verified_external_wait_count": 10,
+    "missing_external_wait_count": 0,
+    "missing_external_wait_bytes": 0,
+    "status": "EXTERNAL_WAIT_VERIFIED",
+    "raw_small_readback_files": 10,
+    "raw_small_readback_bytes": 17096,
+    "source_and_child_identity_run_config_UID_starttick_and_actual_wait0_verified": true,
+    "release_scope": "parent embedded historical all_owned_release only; no independent release/live rescan",
+    "first_pass_missing_evidence_preserved": true
+  },
+  "limitations": [
+    "W only; existing C0/C1/M/R accepted scopes are not repeated here. This is not all70/5632 or final shared24GiB ledger closure.",
+    "Committed logged scalar/mask/actual-denominator checks, not logits, gradient, normalization, model evaluation or causal re-computation.",
+    "W mass values are unweighted; teacher and mixture equality is the expected non-mixture target alias.",
+    "High student mass conditional on clipped positions is not mass at every training position or answer probability.",
+    "Native TRAIN cohorts differ by outer; these losses are not a heldout512 benefit curve.",
+    "Top32/full-vocabulary payload checks cover recorded saved values; no claim of full-vocabulary KL semantic recomputation.",
+    "Student traces reuse accepted original full-member SHA. Current passes inherit whole-archive SHA with metadata continuity; selected referenced members were freshly SHA checked.",
+    "No new Node/GPU/model/scoring/testing/Git work or changes to production.",
+    "Teacher80 cases: all ten independent external wait0 files are now SHA-bound and matched to their parent child/run/config/UID/starttick evidence. Release remains embedded historical evidence; no independent live/release rescan."
+  ]
+}
