@@ -1,0 +1,24 @@
+{
+  "schema": "opsd-ablation-teacher-terminal-audit-source-manifest-v1",
+  "files": {
+    "audit.py": {
+      "sha256": "deaabc930b583fc0f4065dbdf563797f9780ebb079dc67cc912b7ef45a9434d6",
+      "bytes": 15204
+    },
+    "test_identity.py": {
+      "sha256": "f3f1cf99d52fdaa5c36efe57a22eab195f8a27dd18cb6c938c7e932bd040e208",
+      "bytes": 961
+    },
+    "README.md": {
+      "sha256": "f6c77da21086de3dfc9bd7a65167fa93ea57cb12c0b79c7d61afceaedf6f62a9",
+      "bytes": 5053
+    }
+  },
+  "CPU_example": {
+    "tests": 1,
+    "skips": 0,
+    "actual_returncode": 0,
+    "scope": "Tiny mismatched external/embedded child starttick rejection only; no actual data/archive scan"
+  },
+  "actual_data_execution": false
+}
