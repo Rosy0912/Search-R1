@@ -1,0 +1,105 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 5404,
+      "sha256": "36b5c3b49596f3d956db4361413c17f76b5e8088f143eca1bca50ee290d7134e"
+    },
+    "__init__.py": {
+      "bytes": 70,
+      "sha256": "c4c8136e2c34a5ffa9c60e74c1b68fdc5c499372cc4ee2564ed019faaddc8438"
+    },
+    "audit_state.py": {
+      "bytes": 4048,
+      "sha256": "7bfde1c08c421ba50fafa936c39a53305bc0966c06fdb8a58514708630bafe8a"
+    },
+    "checkpoint.py": {
+      "bytes": 15703,
+      "sha256": "d34d28517591284373bda43ff81579b72f4f5561f8a66409310792d917aecca3"
+    },
+    "cohort_v1.py": {
+      "bytes": 6154,
+      "sha256": "3e5e0d1953bfb9b13f07e8533025cc2bce5119d7b4944cecca36d419f1781e1a"
+    },
+    "controller.py": {
+      "bytes": 49598,
+      "sha256": "0eada524c305fb14b974648974706669a2b0aa95fce6edb55a35f98160b2de69"
+    },
+    "gates.py": {
+      "bytes": 25303,
+      "sha256": "11061f886fa734b636d6b69444c001d16fd704e5ba175bd8e34493f41744605d"
+    },
+    "memory_observer.py": {
+      "bytes": 4843,
+      "sha256": "e4dc1d824a6a6739c814ca7b981c38e626a953a66d9540ad82017a6a149601ae"
+    },
+    "miner_v1.py": {
+      "bytes": 10659,
+      "sha256": "12e4495bfa9512e42bea8dc45bf14a04ebfe81fd8fa31be6350eb065bc00a614"
+    },
+    "objective.py": {
+      "bytes": 11607,
+      "sha256": "b54324db304a34a3be02d8d5269d1f6bb6968207ede386d0e86138e0fa787892"
+    },
+    "owned_process_audit.py": {
+      "bytes": 13495,
+      "sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26"
+    },
+    "precision.py": {
+      "bytes": 7657,
+      "sha256": "7dd23d6378c91cb33c730241fe5cd63618768aa95eea6136bf571a7cb64358bc"
+    },
+    "prepare.py": {
+      "bytes": 14013,
+      "sha256": "9251e1d14ba3ff32f214d5df81ae47444a0243d97e90b3e96911941eb13db7f9"
+    },
+    "prepare_bundle.py": {
+      "bytes": 5291,
+      "sha256": "0eadc6c3dfec0aeb9f0ceec0488dcc168609599e25185395ac382f229363a377"
+    },
+    "retry_state.py": {
+      "bytes": 3380,
+      "sha256": "f3b4abe482b1dbc430959d4a189f282cdfeeca7372e57b78a9492c14e836c8fe"
+    },
+    "sampling.py": {
+      "bytes": 21576,
+      "sha256": "c784a9c3cb6e24cad1934fa1f901a38ad80dbba5f33974164f308223b3cb0b6f"
+    },
+    "scoring.py": {
+      "bytes": 4488,
+      "sha256": "77bcc0e1f2d86bca3fd9c4911240f32727ad9219fd95cfcc2084ec5672fb29e3"
+    },
+    "state_storage.py": {
+      "bytes": 2111,
+      "sha256": "0277bb1acd4fef9e3fc973d1697b1b5afcfd4b0a6418105dae4e560af9527dbd"
+    },
+    "targets.py": {
+      "bytes": 4918,
+      "sha256": "f0a6e4d7d08d443c01e553ade88d38a8f5a6bb8d1f1f0be5d687b38df95afb74"
+    },
+    "teacher_diag.py": {
+      "bytes": 11032,
+      "sha256": "d891d98b10305735cce65bd73d68bb768d226c9c2006f6dcafe55d5b3e34bee7"
+    },
+    "test_contract.py": {
+      "bytes": 7798,
+      "sha256": "76911763566e39193b54adac00d583b93eb7fc2a853b007299edfb3f67b6c464"
+    },
+    "trainer.py": {
+      "bytes": 56304,
+      "sha256": "c549605a1dd62f4a5bc7e26453cacfe76e8bcb5f79def48c0f71c755a5f42aaa"
+    },
+    "vocabulary_dump.py": {
+      "bytes": 3631,
+      "sha256": "f42fee77297897b1e58c066d12510422ea639eaabf1b2d359ddd0c692b923e7b"
+    },
+    "weights_v1.py": {
+      "bytes": 1147,
+      "sha256": "324960d485b53ad3171f4e727278f5d1bcefc125f7513cce20a7daad018637a1"
+    }
+  },
+  "new_debug_scope": "top32cap0/fullvocabdisabled/autonomousdiagnosticdisabled; essential actual loss/state/recovery only",
+  "original_training_commit": "871dc46f9ae436e5b4115dd33e51715b858ee57d",
+  "proven_dtype_repair_commit": "538ac99",
+  "schema": "opsd-pr100-training-helper-source-v1",
+  "scientific_scope": "C1+P precision+R uniform-five D, teacher-only unit weights, same-run100 online outers with ten periodic evaluation boundaries"
+}
