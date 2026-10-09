@@ -1,12 +1,12 @@
 {
   "files": {
     "README.md": {
-      "bytes": 1299,
-      "sha256": "1eca766d759e63d65f3a344dad62833937ad26871341a3ada5af758870889154"
+      "bytes": 1376,
+      "sha256": "58622add1c0eb2550eba40ef2766d7244fd42b60e08360d6c8cc631483ca7c9a"
     },
     "plot.py": {
-      "bytes": 12148,
-      "sha256": "411adc2fa6b302ca177e67916f23db5f3f9e93b4cb2eae453a6f44971cb2b52c"
+      "bytes": 12149,
+      "sha256": "f8b04e56136f3c5bc71e43f3a9f3312bf3e665fac5d9a8201a63286a7a216b81"
     }
   },
   "schema": "opsd-pr100-aggregate-static-plot-helper-v1",

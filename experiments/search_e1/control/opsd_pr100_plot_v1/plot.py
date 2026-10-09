@@ -161,7 +161,7 @@ def render(summary, train, updates, evaluations, baseline, output):
                    ha="center", fontsize=10, color="#555555", wrap=True)
         d.set(title="D  Closed fixed512 validation EM", xlabel="Completed online outer", ylabel="Strict EM (%)")
         if baseline is not None or evaluations:
-            d.legend(frameon=False, fontsize=9, loc="lower left")
+            d.legend(frameon=False, fontsize=9, loc="upper right")
         n = len(train)
         for ax in (a, b):
             ax.set_xlim(.5, max(1.5, n + .5))

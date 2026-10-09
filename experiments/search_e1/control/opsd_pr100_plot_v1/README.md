@@ -16,6 +16,7 @@ not per-Adam EM or a heldout curve. No smoothing, interpolated points or partial
 512 evaluation rows are used. Source100's horizontal baseline is shown only
 when the accepted report records its actual zero-summary path/SHA; its value is
 taken from that report, never filled from a remembered result.
+The validation legend sits in the upper right to keep point labels readable.
 
 The helper checks the small input artifact hashes against `complete.json`, and
 records exact input/source/output hashes and completed coverage in provenance.
