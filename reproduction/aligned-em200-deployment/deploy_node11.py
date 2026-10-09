@@ -6,18 +6,26 @@ d=Path(__file__).parent/'cohost-node11'
 names=['formal.sbatch','formal_worker.sh','formal_inner.sh','formal_driver.py','formal_service_proof.py','bind_retrieval_proof.py','ray_cli_compat.py','bootstrap.py','formal_admission.py','submit_formal.py','resource_watch.py']
 payload={n:{'sha256':hashlib.sha256((d/n).read_bytes()).hexdigest(),'base64':base64.b64encode((d/n).read_bytes()).decode()} for n in names}
 receiver=r'''
-import os,json,hashlib,base64,subprocess,datetime,re
+import os,json,hashlib,base64,subprocess,datetime,re,sys,stat
 from pathlib import Path
+if sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE'):raise RuntimeError('optimized receiver forbidden')
 assert os.uname().nodename=='h100-11'
 r=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-20261009');old=r.parent/'bapo-baseline-aligned-em200-20261009';source='080ebbc46b89d61567cd33e1a5e2f1b40afd8b84'
 assert r.resolve()==r
-for n in ['runs','logs','inputs','tools/deployment/cohost-node11','scheduler-head','cache','lib/driver']:(r/n).mkdir(parents=True,exist_ok=True)
+for n in ['runs','logs','inputs','tools','tools/deployment','tools/deployment/cohost-node11','scheduler-head','cache','lib','lib/driver']:
+ p=r/n
+ if p.is_symlink():raise RuntimeError('symlink install directory')
+ p.mkdir(parents=True,exist_ok=True)
+ if p.resolve()!=p or not p.is_dir():raise RuntimeError('noncanonical install directory')
 repo=r/'repo'
 if not repo.exists():subprocess.run(['git','clone','--shared','--no-checkout',str(old/'repo'),str(repo)],check=True,capture_output=True,text=True,timeout=45);subprocess.run(['git','-C',str(repo),'checkout','--detach',source],check=True,capture_output=True,text=True,timeout=45)
 assert subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()==source
 assert not subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],text=True).strip()
 def write(p,raw):
- if p.exists():assert p.read_bytes()==raw,str(p)
+ if p.parent.resolve()!=p.parent or p.is_symlink():raise RuntimeError('noncanonical write path')
+ if p.exists():
+  if not stat.S_ISREG(p.stat().st_mode):raise RuntimeError('nonregular install file')
+  assert p.read_bytes()==raw,str(p)
  else:
   with p.open('xb')as f:f.write(raw);f.flush();os.fsync(f.fileno())
 for n,x in PAYLOAD.items():
