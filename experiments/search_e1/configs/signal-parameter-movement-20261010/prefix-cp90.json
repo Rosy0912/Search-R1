@@ -1,0 +1,43 @@
+{
+  "audit_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/parameter-movement-3474dca/opsd_signal_weight_parameter_movement_v1",
+    "publication": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/parameter-movement-publication-3474dca.json",
+      "sha256": "17e172b57cca9841c2795528a751c7fb1b8241c7b4a585f2455624c9a9f1aa5c"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/parameter-movement-3474dca/opsd_signal_weight_parameter_movement_v1/source-manifest.json",
+      "sha256": "47c19539e593e439a16791044853fe4370b176920fe5abc9614cd1122a76abb2"
+    }
+  },
+  "common_initial": {
+    "bytes": 1124,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-initial-adapter.json",
+    "sha256": "4d3ea3bdd7a301ae8815265b75eb83182da02bab809a6e989c6214a7d518988d"
+  },
+  "configs": {
+    "G_POS": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    }
+  },
+  "endpoints": {
+    "G_POS": [
+      {
+        "checkpoint": {
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000090-outer-00008/manifest.json",
+          "sha256": "bdf41188b071d646043c105f662d5dea0b088930e8acb953f72ec7c88d04f8bd"
+        },
+        "cumulative_pair_exposure": 2729,
+        "optimizer_updates": 90,
+        "outer_index": 8
+      }
+    ]
+  },
+  "mode": "prefix",
+  "schema": "opsd-signal-parameter-movement-request-v1",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  }
+}
