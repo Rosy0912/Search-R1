@@ -140,6 +140,8 @@ for 原顺序每个实际global minibatch(≤32):
 
 用户本次最新人工“那个search-e1已经崩溃可以停掉了”覆盖旧heartbeat的K4继续安排，仅限archive run `f04fe593830c4831918ede872812c016` 及其已核验supervisor／子进程。原pipeline会自动进入后续OPSD，故停止须覆盖supervisor；按精确PID/UID/starttick/run与pidfd执行，保存真实停止票据。原目录／日志／checkpoint／冻结runtime保留；**检索1749337、两个observer及GPU0–3他人作业不在停止范围**。停止后的实际GPU与checkpoint状态另附receipt；本段是此前只读快照。
 
+**17:05:42 CST 实际释放完成：** 原run188个历史身份已无活跃进程（ABSENT_OR_ZOMBIE），GPU4–6直接free各48749MiB，GPU7 free47995MiB／仅保留738MiB原检索；两个原observer也保留。4449个证据副本共91891952bytes独立fresh SHA通过。最新完整actor仍150；50/100/150原36文件保留，不声称199的Adam/RNG已捕获。原停止脚本因进程退出瞬间argv变化留下rc2/HOLD；独立只读终态已真实rc0/accepted，旧HOLD未改写。详见 [实际停止与证据](opsd-signal-weight-archive-stop-20261009.md)。本次人工停止取代该旧run的“继续K4”历史安排，禁止自动重启它；K1七组及检索不受此停止范围影响。
+
 新任务拟用 `/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261009` 独立目录、四组独立run/config/tmux/log。四卡合用顺序跑四组，不分成四个单卡组。资源租约绑定实际GPU UUID，启动前确认旧run已停止、自有GPU4–7没有外来compute、真实memory.free及retriever准入。公共检索按已验收全FP32索引／CPU FP32 E5 batch128／query64／TF32false，路由不改；若沿用K4 GPU7共享检索，保持进程≤1GiB、实际运行余量≥6GiB，新的48G worker utilization/cache仅按物理内存验收修改，不能改上下文/生成科学预算。HKUST1的既有七组消融继续，不等待其备份或抢占其GPU。
 
 `/weka_3`该次可用约8.2TiB；Mac本次可用约14GiB并有他任务备份，不能承诺全量未压缩输出都能立即回本地。节点保存完整原件，源码／配置／compact结果及分块压缩证据持续备份并逐SHA核验；空间不足只暂停相应传输并保留Node原件，不能借此阻塞独立GPU实验或删除唯一证据。不得释放尚无持久副本的唯一资产。HKUST本地盘使用沿用用户明确例外，禁止跨集群。
@@ -147,6 +149,8 @@ for 原顺序每个实际global minibatch(≤32):
 ## 7. 代码实施清单：独立版本，不热改七组
 
 纯CPU权重参考与测试已随本计划提供：`control/opsd_signal_weight_plan_v1/weights_reference.py`；它**不是已经可启动的训练controller**。生产实现应进入独立 `opsd_signal_weight_v1`，冻结现有source/runtime，发布后再部署。
+
+部署必须绑定已确认E的原始已发布helper、完整冻结runtime及环境清单；若基线是当前R，使用其原305文件runtime，不凭HKUST4已存在的 `opsd-runtime/archive` 目录名就认定同版本。实读Torch／PEFT／Transformers／vLLM／tokenizer与评分模块版本、精度、源commit和文件SHA；环境差异在独立副本做兼容与数值检查，不升级共享环境，也不把四卡迁移和权重干预混作同一项科学变化。
 
 | 模块 | 必须落实的改动与核验 |
 | --- | --- |
