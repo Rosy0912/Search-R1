@@ -1,0 +1,14 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 2729,
+      "sha256": "7323927e50505158f8cca3975defeafb51a2ae718da37b6bb0956f292a9dc218"
+    },
+    "report.py": {
+      "bytes": 22820,
+      "sha256": "89bbd1984f8e0c68014ab11f2c4f2617fabefb2819a1f459ab41f35080f1d9ba"
+    }
+  },
+  "schema": "opsd-pr100-readonly-reports-helper-v1",
+  "scope": "CPU-only accepted recorded TRAIN/loss and existing native512 summaries; no rawrollouts/models/token-vocabulary/tensor/bootstrap/scorer recomputation"
+}
