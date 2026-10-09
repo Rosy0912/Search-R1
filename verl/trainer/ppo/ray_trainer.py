@@ -696,6 +696,13 @@ class RayPPOTrainer(object):
             self.resume_witness_directory=witness
         elif self.config.trainer.get('resume_verify_only') or self.config.trainer.get('resume_permission'):
             raise ValueError('Recovery flags require complete manifest')
+        self.aligned_partial_manifest = None
+        partial_path = os.environ.get('BAPO_ALIGNED_PARTIAL_RESUME')
+        if partial_path:
+            if self.resume_manifest is not None:
+                raise ValueError('Pending aligned transaction cannot mix legacy recovery')
+            from search_r1.baselines.aligned_partial_driver import prepare
+            prepare(self,partial_path)
         self.resource_pool_manager.create_resource_pool()
 
         self.resource_pool_to_cls = {pool: {} for pool in self.resource_pool_manager.resource_pool_dict.values()}
@@ -766,6 +773,11 @@ class RayPPOTrainer(object):
         # we should create rollout at the end so that vllm can have a better estimation of kv cache memory
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
+        if self.aligned_partial_manifest is not None:
+            from search_r1.baselines.aligned_partial_resume import require
+            reports=self.actor_rollout_wg.load_aligned_partial_state(self.aligned_partial_manifest,str(self.aligned_partial_witness_directory))
+            require(len(reports)==8 and {r['rank']for r in reports}==set(range(8)) and all(r['status']=='EXACT_CROSS_JOB_ALIGNED_PARTIAL_V3_RELOAD_OK'for r in reports),'pending restore lacks exact8rank witnesses')
+            self.aligned_partial_rank_witnesses=reports
         if self.resume_manifest is not None:
             from search_r1.baselines.recovery import require
             reports=self.actor_rollout_wg.load_training_state(self.resume_manifest,str(self.resume_witness_directory))
@@ -989,7 +1001,12 @@ class RayPPOTrainer(object):
         aligned=self.config.get('baseline_aligned',False)
         if aligned:
             paths.append(run/'.aligned-startup-claim.json')
-            for outer in range(1,6):
+            partial=getattr(self,'aligned_partial_manifest',None)
+            if partial:
+                paths.extend(p for p in (run/'partial-resume').rglob('*')if p.is_file())
+                paths.extend(Path(entry['path'])for entry in partial['original_closure'])
+                paths.append(run/'aligned-stage-proof/outer_0001-attempt_0001.json')
+            for outer in range(2 if partial else 1,6):
                 audit=run/'training-em-audit'/f'outer_{outer:04d}-attempt_{outer:04d}.jsonl'
                 if not audit.is_file():raise ValueError('Aligned first-five actual training EM audit missing')
                 paths.append(audit)
@@ -1005,7 +1022,8 @@ class RayPPOTrainer(object):
             if not proof:raise ValueError('Actual verified formal sampler raw proof missing at fifth gate')
             paths.extend([Path(proof['path']),Path(proof['path']).with_suffix('.json')])
         initial=Path(self.config.actor_rollout_ref.actor.fresh200_fault_dir)
-        paths.extend(initial.glob('native-initial-*'))
+        if not getattr(self,'aligned_partial_manifest',None):
+            paths.extend(initial.glob('native-initial-*'))
         if aligned:
             paths.extend(initial.glob('rank_*-outer_*-attempt_*.json'))
         manifest=write_manifest(paths,self.fresh200_state_directory,OmegaConf.to_container(self.config,resolve=True),source,run,5,
@@ -1189,6 +1207,9 @@ class RayPPOTrainer(object):
             print('BAPO_RECOVERY_DRIVER_JSON='+json.dumps(witness,allow_nan=False),flush=True)
             if self.config.trainer.resume_verify_only:
                 return witness
+        if getattr(self,'aligned_partial_manifest',None) is not None:
+            from search_r1.baselines.aligned_partial_driver import restore_driver_and_commit
+            resume_iterator,start_epoch=restore_driver_and_commit(self)
         # Only complete continuation contributes to the unchanged total300.
         import itertools
         epochs=itertools.count(start_epoch) if fresh200 else range(start_epoch,self.config.trainer.total_epochs)

@@ -697,6 +697,12 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_aligned_partial_state(self, manifest, witness_directory):
+        from search_r1.baselines.aligned_partial_resume import load_rank,require
+        require(self._is_actor, 'pending transaction restore requires actual actor')
+        return load_rank(self,manifest,witness_directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_training_state(self, manifest, witness_directory):
         """Fresh-process same-topology restore; historical generation RNG is absent."""
         if self.config.actor.get('fresh200_enabled', False):

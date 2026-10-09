@@ -119,7 +119,9 @@ def weighted_validation(metrics):
             count += n
     if not count:
         raise ValueError('Empty stage validation')
-    return total / count
+    # Validation aggregates can be NumPy scalars; stage evidence requires a
+    # native numeric value at this serialization/commit boundary.
+    return float(total / count)
 
 
 class Controller:
