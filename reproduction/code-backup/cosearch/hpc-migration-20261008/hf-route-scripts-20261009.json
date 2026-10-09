@@ -1,0 +1,10 @@
+{
+  "repo": "Sutoonq/TMP_MODEL",
+  "route": "H100 -> mgmt RAM -> private HF -> HKUST2 -> HKUST3 -> HPC3",
+  "token_persisted": false,
+  "files": {
+    "cosearch_hf_stream_upload.py": "362ca2673e703d3e02c1a7148084f3a96460e9472806c1d63473b03c00482d49",
+    "cosearch_hf_download_hkust2.py": "c1853ff725143d2d5cb39aa0116029056e3c95cd84c0bb8dbe0a78beba9bf49b",
+    "cosearch_hf_forward_hkust2.py": "45ff424b2f41816b88f64a4f83980b1614c47ccdea212a8821e8e3e01aa31a1e"
+  }
+}
