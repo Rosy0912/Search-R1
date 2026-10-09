@@ -1,12 +1,15 @@
 {
-  "repo": "Sutoonq/TMP_MODEL",
-  "route": "H100 -> mgmt RAM -> private HF -> HKUST2 -> HKUST3 -> HPC3",
-  "token_persisted": false,
-  "files": {
-    "cosearch_hf_stream_upload.py": "362ca2673e703d3e02c1a7148084f3a96460e9472806c1d63473b03c00482d49",
-    "cosearch_hf_download_hkust2.py": "f0ec1fb1e71c036fb13d5ce6fcf8027b3ca637c92dc1d2a6d384e653219b7e00",
+  "scripts": {
+    "cosearch_hf_accept_supplement.py": "171b1ec35d9f59c4bc57ab707146eceb962d0cfb10d997657f8c09c3365a22e8",
+    "cosearch_hf_download_hkust2.py": "42107cfe33b261b7ccfec6c4dbd08501bc7dcf36b77610299e57e363854031dc",
     "cosearch_hf_forward_hkust2.py": "45ff424b2f41816b88f64a4f83980b1614c47ccdea212a8821e8e3e01aa31a1e",
-    "cosearch_hf_recover_download.py": "48e178f38f1dc7dd954e3515da2b03dd1c5f89e9a70d60dd9275f24574dda954"
+    "cosearch_hf_forward_hkust3.py": "390c9f2020541f82710819ee4f03df0e5276ae4f2ed31f7b65b76a6f94c4ec50",
+    "cosearch_hf_hpc_receiver.py": "d7cf31a1c994e9882b44c21af4804c18948327bc1e0c6e07328a25e52c27a107",
+    "cosearch_hf_probe_exit.py": "88fa16633555880d72ae454a0f80714ac85151d29fe7f80e30f9bea09dc51973",
+    "cosearch_hf_recover_download.py": "5b295756907b9039923ae11b96c29f513f4edafd4e1695e942632201d93d812f",
+    "cosearch_hf_stream_upload.py": "362ca2673e703d3e02c1a7148084f3a96460e9472806c1d63473b03c00482d49",
+    "cosearch_hf_supplement_guard.py": "f52151ae10e539a1f2ebed2d77db571e9413655d6902c75d6e99584e7786f0f0",
+    "prepare_cosearch_hf_archive.py": "f88fe366d75f7ae0f0082382c2bb7db353021005bd7ad1485846f523cfefe19a"
   },
-  "recovery": "Only after as-is alias failure, per-connection interface/proxy override restored strict existing-key SSH; remote independent exit and authenticated1MiB archive range passed before own failed TLS downloader restart. No global settings changes."
+  "includes_credentials": false
 }
