@@ -43,3 +43,7 @@ an artifact SHA derivation manifest. They contain no raw questions, question/row
 IDs or private input paths. Source and input manifests remain separate private
 provenance; failure leaves any incomplete output rather than claiming success.
 This source has been prepared locally, not executed as an experimental result.
+
+## 2026-10-09 remote-only storage amendment
+
+The latest human storage instruction supersedes copying private per-question inputs to Mac. Run the unchanged derive.py on HKUST against its original remote native summaries/records; copy only the resulting public aggregates and small SHA/exit summaries to Mac. prepare_remote_inputs.py binds only summaries with original accepted controller-complete and full native version coverage, hashes original remote record bytes, and writes a fresh independent analysis input manifest under the study's remote analysis directory. It does not modify an evaluation, sample a model or copy raw records. Missing groups remain pending. No extra review or fixtures are required for this read-only input binding.

@@ -1,0 +1,11 @@
+{
+  "schema": "remote-native-input-preparation-source-v1",
+  "files": {
+    "prepare_remote_inputs.py": {
+      "bytes": 3474,
+      "sha256": "09ea304e7ec9856abf4a8a5abb8d047f15789a2f2f9e85ecd58a958336cdde64"
+    }
+  },
+  "Mac_raw_records": false,
+  "science_changed": false
+}
