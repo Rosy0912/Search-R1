@@ -1,0 +1,30 @@
+{
+  "CPU_fixtures": {
+    "actual_returncode": 0,
+    "scope": "Two narrow stdlib rejection fixtures; no actual adapter, model, Node or GPU qualification",
+    "seconds": 0.03568720817565918,
+    "skipped": 0,
+    "tests": 2
+  },
+  "actual_Node_adapter_qualification_performed": false,
+  "dependencies": {
+    "original_online_helper_manifest": "66cb43dd0830b9a7776bd644a0ef5bbf3d1661a3db3b159cc9e781db582c5233",
+    "read_checkpoint_cpu.py": "7b26007cc4b0a79930bea938cf8e902ba6773613afcb690b492c2fd47cf37e03"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 3294,
+      "sha256": "3aac3a3ea85f1f59d1c2862e970dde70d031c40c4d08c7d4f840a300fc41bb7f"
+    },
+    "qualify.py": {
+      "bytes": 9727,
+      "sha256": "6d4c1673446b85fea3791db69cf392293537e81d091de561dc30ee88a100c485"
+    },
+    "test_qualify.py": {
+      "bytes": 1333,
+      "sha256": "bbeee97be4dc9fffc4ffbdddb54034ba845d66fa281ad4fc3bf1647777e6b656"
+    }
+  },
+  "optional_not_one_of_seven": true,
+  "schema": "optional-L-adapter-only-source-v1"
+}
