@@ -1,8 +1,8 @@
 {
   "files": {
     "README.md": {
-      "bytes": 8620,
-      "sha256": "89e755b65f1ff0bad95d414679f4d545d468f1ae322a95c6142b1bd4baf2cb7f"
+      "bytes": 9153,
+      "sha256": "49a439b58a4e6b83dfd335b997115d73456e9369b340a36f3f8842b5506725ef"
     },
     "__init__.py": {
       "bytes": 86,
@@ -37,16 +37,16 @@
       "sha256": "86d52879630e0c573f34e0ad9f6303456fe1ab921bcfbf6a8024bd6b0f0ef505"
     },
     "test_train_signal_analysis.py": {
-      "bytes": 9320,
-      "sha256": "9bcdef40a4ecaf64f0f9939cad9b72ee4f06b415e0a10d747852e765b15f39e0"
+      "bytes": 10452,
+      "sha256": "a26a9bd30c2e08afd2ceb93dcf8f77549bac6727886aabcf427d2c9dee97d029"
     },
     "test_vocabulary_cpu.py": {
       "bytes": 2119,
       "sha256": "98479aee05450596d4885ad035a3c972c63cf3034c054884995679960a09036b"
     },
     "train_signal_analysis.py": {
-      "bytes": 35568,
-      "sha256": "18ea59c4c2a0f3f18efbf745ad672922f742850c2c4e27ab1c5825b5054c8f56"
+      "bytes": 36510,
+      "sha256": "f2686a03263063f163af39cf36e8c83fba3d1905cf4f0e9f97ee690a893307b2"
     }
   },
   "schema": "opsd-signal-heldout-analysis-source-v1",

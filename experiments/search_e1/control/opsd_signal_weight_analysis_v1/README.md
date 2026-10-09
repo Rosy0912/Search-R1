@@ -86,3 +86,5 @@ OPSD_ANALYSIS_FROZEN_HELPER_ROOT=实际已发布training helper目录 CUDA_VISIB
 真实检查full-vocab entropy、reverse方向、signed分量clip10、source100普通drift及无B覆盖与原native `vocabulary_metrics` 一致。不能把纯CPUfixtures、源码发布或bank创建说成GPU replay／效果分析完成。
 
 实现时已用Mac现有 `python3` 的既有Torch实际运行上述数值fixture，无需下载。仍须在部署后的原Node环境复核。输入编译采用源字节SHA绑定的隔离loader，拒绝外来cached模块并绕过pyc；不会替换正跑namespace。heldout只有一条greedy响应／题，不能虚构五兄弟group权重；实际权重及loss关系仍来自原已提交TRAIN更新票据，分别报告，不能把不同TRAIN题和heldout题硬连成逐题因果。
+
+Node fixture verification revealed a real input-audit boundary: on the remote ext4 filesystem a quick same-size rewrite may retain coarse mtime/ctime. TRAIN analysis terminal stability now streams the complete input SHA and byte count again as well as checking metadata. A deterministic JSON/JSONL fixture preserves metadata while changing content. This is an independent analysis reader repair; the deployed training and its scientific settings are unchanged. Earlier analysis source and failed CPU test evidence remain preserved.

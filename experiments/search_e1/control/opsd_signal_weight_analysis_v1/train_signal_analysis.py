@@ -38,7 +38,7 @@ def close(left,right,name):
     require(math.isclose(finite(left,name),finite(right,name),abs_tol=2e-5,rel_tol=2e-5),'Reconstruction differs '+name)
 
 class Reader:
-    """Fresh stream SHA every input, stable before/after metadata; no large copy."""
+    """Fresh stream SHA on read AND final audit; metadata is not content proof."""
     def __init__(self):self.proofs={}
     @staticmethod
     def metadata(path):
@@ -66,7 +66,22 @@ class Reader:
         require(str(path) not in self.proofs or self.proofs[str(path)]==proof,'Repeated JSON changed')
         self.proofs[str(path)]=proof;return json.loads(raw)
     def stable_end(self):
-        for path,proof in self.proofs.items():require(list(self.metadata(Path(path)))==proof['metadata'],'Previously read input changed')
+        # Some remote filesystems expose coarse timestamps. A same-size rewrite
+        # can therefore leave every recorded metadata field unchanged. Re-read
+        # every pinned input in bounded blocks instead of treating stat as SHA.
+        for filename,proof in self.proofs.items():
+            path=Path(filename)
+            require(path.is_absolute() and not path.is_symlink() and path.is_file(),
+                    'Previously read input is no longer a pinned regular file')
+            before=self.metadata(path)
+            require(list(before)==proof['metadata'],'Previously read input metadata changed')
+            digest=hashlib.sha256();size=0
+            with path.open('rb') as stream:
+                for block in iter(lambda:stream.read(4<<20),b''):
+                    digest.update(block);size+=len(block)
+            require(self.metadata(path)==before,'Previously read input changed during final SHA audit')
+            require(size==proof['bytes'] and digest.hexdigest()==proof['sha256'],
+                    'Previously read input content/SHA changed')
 
 
 def sampling_questions(summary,variant,outer):

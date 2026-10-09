@@ -1,10 +1,12 @@
 """CPU synthetic fixtures; no remote, Torch, model or real data."""
 import copy
 import hashlib
+import os
 from pathlib import Path
 import random
 import tempfile
 import unittest
+from unittest.mock import patch
 import train_signal_analysis as a
 class Writer:
  def __init__(self,path):self.path=Path(path);self.n=0
@@ -44,6 +46,21 @@ class Tests(unittest.TestCase):
    with self.assertRaises(ValueError):a.Reader().json(ref)
    ref=w.put([{'a':1}],True);r=a.Reader();list(r.lines(ref));Path(ref['path']).write_text('{"a":3}\n')
    with self.assertRaises(ValueError):r.stable_end()
+ def test_final_SHA_recheck_same_size_preserved_mtime_coarse_metadata(self):
+  # JSON and streamed JSONL must both fail even when a coarse remote stat
+  # reports identical metadata after a same-size content rewrite.
+  for as_lines in (False,True):
+   with self.subTest(lines=as_lines),tempfile.TemporaryDirectory() as d:
+    w=Writer(d);ref=w.put([{'a':1}] if as_lines else {'a':1},as_lines)
+    path=Path(ref['path']);original=path.stat();metadata=a.Reader.metadata(path);r=a.Reader()
+    with patch.object(r,'metadata',return_value=metadata):
+     list(r.lines(ref)) if as_lines else r.json(ref)
+     r.stable_end() # Unchanged content remains accepted under the same stat.
+     replacement=path.read_bytes().replace(b'1',b'2');self.assertEqual(len(replacement),original.st_size)
+     path.write_bytes(replacement);os.utime(path,ns=(original.st_atime_ns,original.st_mtime_ns))
+     self.assertEqual(path.stat().st_size,original.st_size)
+     self.assertEqual(path.stat().st_mtime_ns,original.st_mtime_ns)
+     with self.assertRaisesRegex(ValueError,'content/SHA changed'):r.stable_end()
  def test_model_row_weight_tampering_refused(self):
   with tempfile.TemporaryDirectory() as d:
    cfg,e,s,sc,u,m,*_=fixture(Writer(d));q=s['per_question'][0]
