@@ -94,7 +94,7 @@
   "schema": "opsd-signal-ten-outers-accepted-reference-v1",
   "scientific_source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
   "scope": "Ten complete G_POS outers; no heldout15/25 result or cross-arm effect",
-  "study_id": "search-e1-opsd-signal-weight-4gpu-20261010",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
   "train_denominator_total": 25600,
   "train_em_rows": [
     {

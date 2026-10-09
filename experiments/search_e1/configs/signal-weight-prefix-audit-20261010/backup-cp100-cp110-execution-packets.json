@@ -1,0 +1,81 @@
+{
+  "accepted": true,
+  "checkpoints": 2,
+  "full_study_complete": false,
+  "packets": [
+    {
+      "execution": {
+        "bytes": 2656,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp100-fresh-actual.execution.json",
+        "sha256": "90168fcfa1846e1b5c98a01e5a7a2881ea5f2feec4521b87b167c67420feff7e"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28960,
+        "ctime_ns": 1791586020549074578,
+        "device": 2065,
+        "inode": 466784433,
+        "mtime_ns": 1791586020549074578,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000100-outer-00009/complete-sha-verified.json",
+        "sha256": "aa6c026c57fae460db114c89fb8bcce3c4b27abe9f26d7106df12879be5268d5"
+      },
+      "output": {
+        "bytes": 1413,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp100-fresh-actual.stdout.json",
+        "sha256": "38003084399df1683a58d3f5965349d5d5466acce14614856519dd9692a4d960"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28960,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp100-target-marker.raw.json",
+        "sha256": "aa6c026c57fae460db114c89fb8bcce3c4b27abe9f26d7106df12879be5268d5"
+      }
+    },
+    {
+      "execution": {
+        "bytes": 2657,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp110-fresh-actual.execution.json",
+        "sha256": "c51ec05ddc01a9f5f34e27fbeb561f8c0749fc7818e37edbfe82c654addc5b7c"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28962,
+        "ctime_ns": 1791587009943750264,
+        "device": 2065,
+        "inode": 466785378,
+        "mtime_ns": 1791587009943750264,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000110-outer-00010/complete-sha-verified.json",
+        "sha256": "d197a1d034f49b51b8cb4a5f2171fb7f3d05032982b2ac9a2d6a82e4681bf81d"
+      },
+      "output": {
+        "bytes": 1412,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp110-fresh-actual.stdout.json",
+        "sha256": "8ba37bcbf6488eba94bdbc6688bb5c535f17f6b63536a2d4db67d5bc6f1f646b"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28962,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp110-target-marker.raw.json",
+        "sha256": "d197a1d034f49b51b8cb4a5f2171fb7f3d05032982b2ac9a2d6a82e4681bf81d"
+      }
+    }
+  ],
+  "schema": "opsd-signal-pinned-backup-execution-packets-v1",
+  "scope": "Small real current CLI stdout/wait evidence and byte-identical metadata marker copy; no models/checkpoints copied locally",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "variant": "G_POS"
+}
