@@ -1,0 +1,26 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 9134,
+      "sha256": "9a999763d63e282ed7fdc349e73048300c0d5ec893e4eb007e01329fe3d8f920"
+    },
+    "__init__.py": {
+      "bytes": 88,
+      "sha256": "c706bdd871aa5d268fae230171123c59f13c7da39560f8b8fbca01fb1a087437"
+    },
+    "audit.py": {
+      "bytes": 33066,
+      "sha256": "e43d0bc4e164521dbaae0d2eb54b08e5bd4ad1e606afd4bf9d5ab7398ef0d495"
+    },
+    "common.py": {
+      "bytes": 7582,
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    "test_retention.py": {
+      "bytes": 31638,
+      "sha256": "2a3a4db6d1671ed9563925e7f75a36b585e0a8b46f70dd62c91eed7ecbea8265"
+    }
+  },
+  "schema": "opsd-signal-debug-retention-source-v1",
+  "scope": "Independent CPU-only fresh native debug retention; no weights, private traces, environment or production writes"
+}
