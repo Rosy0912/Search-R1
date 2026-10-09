@@ -1,0 +1,59 @@
+{
+  "accepted": true,
+  "artifacts": [
+    {
+      "bytes": 22223,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-19/twenty-closed-outer-native-facts-1791507373-1408f293/seven-group-recorded-curves/seven-group-70-slots.csv",
+      "sha256": "c8b93b6baffd045e4e0fac6aeca61a9ed71177d2b07d6a689ea9a0764e14faa8"
+    },
+    {
+      "bytes": 12334,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-19/twenty-closed-outer-native-facts-1791507373-1408f293/seven-group-recorded-curves/seven-group-recorded-summary.json",
+      "sha256": "cbeb2a64cbfb08a300d56577a89e590995410239a4e624b9c79fbecfd82930ff"
+    },
+    {
+      "bytes": 263290,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-19/twenty-closed-outer-native-facts-1791507373-1408f293/seven-group-recorded-curves/seven-group-recorded-curves.png",
+      "sha256": "eb875785ccdf0ab2c370d3445ac8a809e00655c563b26ba1fb023841abc66508"
+    },
+    {
+      "bytes": 120553,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-19/twenty-closed-outer-native-facts-1791507373-1408f293/seven-group-recorded-curves/seven-group-recorded-curves.svg",
+      "sha256": "db1f0119647b19775372af6926d43e617f43f942b91a56de8ae06df40266cd94"
+    }
+  ],
+  "coverage": {
+    "all70_complete": false,
+    "by_variant": {
+      "C0": 10,
+      "C1": 10,
+      "J": 0,
+      "M": 0,
+      "P": 0,
+      "R": 0,
+      "W": 0
+    },
+    "completed_outers": 20,
+    "expected_outers": 70
+  },
+  "no_model_or_gpu": true,
+  "no_new_scientific_test": true,
+  "no_remote_io": true,
+  "observed_unix": 1791507413.833575,
+  "schema": "seven-group-recorded-curves-v1",
+  "source": {
+    "bytes": 855239,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-19/twenty-closed-outer-native-facts-1791507373-1408f293/facts.stdout.json",
+    "sha256": "8b902baf444a9dd98b216fa9257e25d26c64aa7ad305fdf551c9f28166c871ad"
+  },
+  "source_code": {
+    "bytes": 11645,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_recorded_curves_v1/derive.py",
+    "sha256": "b41944178bfda97514cf3179c5651d350fa97a552e3af9b48b5162d718e69583"
+  },
+  "totals": {
+    "committed_unique_updates": 201,
+    "raw_pair_exposure": 6035,
+    "valid_tokens": 1212173
+  }
+}

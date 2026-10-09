@@ -1,0 +1,639 @@
+{
+  "schema": "seven-group-committed-clipmass-v1",
+  "accepted": true,
+  "groups": {
+    "C1": {
+      "status": "COMPLETE",
+      "variant": "C1",
+      "run_id": "a1a56efd32e5456d8c6813454975e38f",
+      "actual_updates": 101,
+      "pair_exposures": 3023,
+      "outers": [
+        {
+          "variant": "C1",
+          "outer_index": 0,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 327,
+          "actual_weighted_pair_exposure": 327.0,
+          "committed_updates": 11,
+          "recorded_retries": 0,
+          "valid_token_rows": 70207,
+          "clipped_vocabulary_count": 132,
+          "auxiliary_vocabulary_dump_rows": 2,
+          "hit_token_count": 132,
+          "hit_token_fraction": 0.0018801544005583488,
+          "vocabulary_slots": 10666970752,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.237464722355695e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 117.50252708792686,
+              "pooled_valid_token_mean": 0.001673658283190093,
+              "hit_token_mean": 0.8901706597570217,
+              "equal_trajectory_token_mean": 0.0020080733921701917,
+              "maximum_token_mass": 0.9999992847442627
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.00045767736019842347,
+              "pooled_valid_token_mean": 6.518970475856018e-09,
+              "hit_token_mean": 3.4672527287759354e-06,
+              "equal_trajectory_token_mean": 7.927380346807892e-09,
+              "maximum_token_mass": 4.0853254176909104e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.00045767736019842347,
+              "pooled_valid_token_mean": 6.518970475856018e-09,
+              "hit_token_mean": 3.4672527287759354e-06,
+              "equal_trajectory_token_mean": 7.927380346807892e-09,
+              "maximum_token_mass": 4.0853254176909104e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.3691437082006985,
+              "equal_trajectory_token_mean": 0.404792944243954
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3607836397649458,
+              "equal_trajectory_token_mean": 0.39452557598061566
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 1,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 308,
+          "actual_weighted_pair_exposure": 308.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 68377,
+          "clipped_vocabulary_count": 137,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 136,
+          "hit_token_fraction": 0.001988972900244234,
+          "vocabulary_slots": 10388927872,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.3187116292263348e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 121.10383081436157,
+              "pooled_valid_token_mean": 0.0017711193941582926,
+              "hit_token_mean": 0.8904693442232469,
+              "equal_trajectory_token_mean": 0.0020745764852114945,
+              "maximum_token_mass": 1.0
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0006488573424851923,
+              "pooled_valid_token_mean": 9.489409340643671e-09,
+              "hit_token_mean": 4.77100987121465e-06,
+              "equal_trajectory_token_mean": 1.267426104967643e-08,
+              "maximum_token_mass": 3.534725328790955e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0006488573424851923,
+              "pooled_valid_token_mean": 9.489409340643671e-09,
+              "hit_token_mean": 4.77100987121465e-06,
+              "equal_trajectory_token_mean": 1.267426104967643e-08,
+              "maximum_token_mass": 3.534725328790955e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.36534739893381896,
+              "equal_trajectory_token_mean": 0.4041766937403932
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3579829905458559,
+              "equal_trajectory_token_mean": 0.39560241473529034
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 2,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 296,
+          "actual_weighted_pair_exposure": 296.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 60850,
+          "clipped_vocabulary_count": 114,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 113,
+          "hit_token_fraction": 0.001857025472473295,
+          "vocabulary_slots": 9245305600,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.2330582128080223e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 101.8394992351532,
+              "pooled_valid_token_mean": 0.001673615435253134,
+              "hit_token_mean": 0.9012345065057805,
+              "equal_trajectory_token_mean": 0.0019910569614405077,
+              "maximum_token_mass": 0.9999996423721313
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.00047754544682858895,
+              "pooled_valid_token_mean": 7.847912026763993e-09,
+              "hit_token_mean": 4.226065901137955e-06,
+              "equal_trajectory_token_mean": 8.481486534128443e-09,
+              "maximum_token_mass": 3.157358514727093e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.00047754544682858895,
+              "pooled_valid_token_mean": 7.847912026763993e-09,
+              "hit_token_mean": 4.226065901137955e-06,
+              "equal_trajectory_token_mean": 8.481486534128443e-09,
+              "maximum_token_mass": 3.157358514727093e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.37486189023812816,
+              "equal_trajectory_token_mean": 0.4192418271768481
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3674288836098457,
+              "equal_trajectory_token_mean": 0.4101428054399177
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 3,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 290,
+          "actual_weighted_pair_exposure": 290.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 61400,
+          "clipped_vocabulary_count": 126,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 125,
+          "hit_token_fraction": 0.002035830618892508,
+          "vocabulary_slots": 9328870400,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.3506458402509268e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 111.57610389590263,
+              "pooled_valid_token_mean": 0.001817200389184082,
+              "hit_token_mean": 0.8926088311672211,
+              "equal_trajectory_token_mean": 0.0021226820037207094,
+              "maximum_token_mass": 0.9999993443489075
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0005424535384104801,
+              "pooled_valid_token_mean": 8.834748182581108e-09,
+              "hit_token_mean": 4.339628307283841e-06,
+              "equal_trajectory_token_mean": 1.0234336306134575e-08,
+              "maximum_token_mass": 3.523440318531357e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0005424535384104801,
+              "pooled_valid_token_mean": 8.834748182581108e-09,
+              "hit_token_mean": 4.339628307283841e-06,
+              "equal_trajectory_token_mean": 1.0234336306134575e-08,
+              "maximum_token_mass": 3.523440318531357e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.36275319617350754,
+              "equal_trajectory_token_mean": 0.40722350666059925
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.35361936684855544,
+              "equal_trajectory_token_mean": 0.39650220919385404
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 4,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 293,
+          "actual_weighted_pair_exposure": 293.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 57905,
+          "clipped_vocabulary_count": 139,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 139,
+          "hit_token_fraction": 0.002400483550643295,
+          "vocabulary_slots": 8797854080,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.5799307278349403e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 122.09184208512306,
+              "pooled_valid_token_mean": 0.0021084853136192567,
+              "hit_token_mean": 0.8783585761519644,
+              "equal_trajectory_token_mean": 0.002338819901829551,
+              "maximum_token_mass": 1.0
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0007008942795332922,
+              "pooled_valid_token_mean": 1.210420999107663e-08,
+              "hit_token_mean": 5.042404888728721e-06,
+              "equal_trajectory_token_mean": 1.3539083623758065e-08,
+              "maximum_token_mass": 3.632666266639717e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0007008942795332922,
+              "pooled_valid_token_mean": 1.210420999107663e-08,
+              "hit_token_mean": 5.042404888728721e-06,
+              "equal_trajectory_token_mean": 1.3539083623758065e-08,
+              "maximum_token_mass": 3.632666266639717e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.3855172100499443,
+              "equal_trajectory_token_mean": 0.4217742999779467
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3771378884455871,
+              "equal_trajectory_token_mean": 0.4125195452777556
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 5,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 301,
+          "actual_weighted_pair_exposure": 301.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 63958,
+          "clipped_vocabulary_count": 103,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 102,
+          "hit_token_fraction": 0.0015947965852590763,
+          "vocabulary_slots": 9717522688,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.0599409263761526e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 90.48405253887177,
+              "pooled_valid_token_mean": 0.0014147417451901524,
+              "hit_token_mean": 0.8870985543026644,
+              "equal_trajectory_token_mean": 0.001538262674600547,
+              "maximum_token_mass": 1.0
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0004093536630406173,
+              "pooled_valid_token_mean": 6.400351215494814e-09,
+              "hit_token_mean": 4.013271206280562e-06,
+              "equal_trajectory_token_mean": 7.641141673162956e-09,
+              "maximum_token_mass": 4.110152440262027e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0004093536630406173,
+              "pooled_valid_token_mean": 6.400351215494814e-09,
+              "hit_token_mean": 4.013271206280562e-06,
+              "equal_trajectory_token_mean": 7.641141673162956e-09,
+              "maximum_token_mass": 4.110152440262027e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.3605061588803603,
+              "equal_trajectory_token_mean": 0.3927161397824754
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.35474657547929395,
+              "equal_trajectory_token_mean": 0.3865594333411072
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 6,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 296,
+          "actual_weighted_pair_exposure": 296.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 59836,
+          "clipped_vocabulary_count": 89,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 89,
+          "hit_token_fraction": 0.0014873988903001537,
+          "vocabulary_slots": 9091242496,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 9.789640969224896e-09,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 80.98395889997482,
+              "pooled_valid_token_mean": 0.0013534320292127619,
+              "hit_token_mean": 0.9099321224716272,
+              "equal_trajectory_token_mean": 0.0015462677716342108,
+              "maximum_token_mass": 1.0
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0003397787722786002,
+              "pooled_valid_token_mean": 5.678500773424029e-09,
+              "hit_token_mean": 3.8177390143662945e-06,
+              "equal_trajectory_token_mean": 6.277268950315675e-09,
+              "maximum_token_mass": 4.401898695505224e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0003397787722786002,
+              "pooled_valid_token_mean": 5.678500773424029e-09,
+              "hit_token_mean": 3.8177390143662945e-06,
+              "equal_trajectory_token_mean": 6.277268950315675e-09,
+              "maximum_token_mass": 4.401898695505224e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.36131501823706713,
+              "equal_trajectory_token_mean": 0.3959577359934529
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3559345712237268,
+              "equal_trajectory_token_mean": 0.38947695099934004
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 7,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 304,
+          "actual_weighted_pair_exposure": 304.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 62559,
+          "clipped_vocabulary_count": 105,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 104,
+          "hit_token_fraction": 0.0016624306654518136,
+          "vocabulary_slots": 9504964224,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.1046859043916796e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 91.8559881746769,
+              "pooled_valid_token_mean": 0.0014683097264130964,
+              "hit_token_mean": 0.8832306555257394,
+              "equal_trajectory_token_mean": 0.0016316291923136252,
+              "maximum_token_mass": 0.9999993443489075
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.00039491911308393765,
+              "pooled_valid_token_mean": 6.312746576574716e-09,
+              "hit_token_mean": 3.7972991642686314e-06,
+              "equal_trajectory_token_mean": 7.404510627784854e-09,
+              "maximum_token_mass": 3.711895988089964e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.00039491911308393765,
+              "pooled_valid_token_mean": 6.312746576574716e-09,
+              "hit_token_mean": 3.7972991642686314e-06,
+              "equal_trajectory_token_mean": 7.404510627784854e-09,
+              "maximum_token_mass": 3.711895988089964e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.35319923467358333,
+              "equal_trajectory_token_mean": 0.38182067101089023
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.34710260384572145,
+              "equal_trajectory_token_mean": 0.37509347851097213
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 8,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 291,
+          "actual_weighted_pair_exposure": 291.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 60728,
+          "clipped_vocabulary_count": 126,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 126,
+          "hit_token_fraction": 0.0020748254511922014,
+          "vocabulary_slots": 9226769408,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.3655917301970574e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 109.18222612142563,
+              "pooled_valid_token_mean": 0.0017978893775758404,
+              "hit_token_mean": 0.8665256041382986,
+              "equal_trajectory_token_mean": 0.0020489886724763223,
+              "maximum_token_mass": 1.0
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0005202836569712425,
+              "pooled_valid_token_mean": 8.56744264542291e-09,
+              "hit_token_mean": 4.129235372787638e-06,
+              "equal_trajectory_token_mean": 9.800927421376036e-09,
+              "maximum_token_mass": 4.147226718487218e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0005202836569712425,
+              "pooled_valid_token_mean": 8.56744264542291e-09,
+              "hit_token_mean": 4.129235372787638e-06,
+              "equal_trajectory_token_mean": 9.800927421376036e-09,
+              "maximum_token_mass": 4.147226718487218e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.36132423440643024,
+              "equal_trajectory_token_mean": 0.39630890572974725
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3519345371180909,
+              "equal_trajectory_token_mean": 0.38501093820699284
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        },
+        {
+          "variant": "C1",
+          "outer_index": 9,
+          "status": "COMPLETE",
+          "precision": "bf16",
+          "mixture_alpha": 0.0,
+          "pair_exposures": 317,
+          "actual_weighted_pair_exposure": 317.0,
+          "committed_updates": 10,
+          "recorded_retries": 0,
+          "valid_token_rows": 63279,
+          "clipped_vocabulary_count": 122,
+          "auxiliary_vocabulary_dump_rows": 0,
+          "hit_token_count": 122,
+          "hit_token_fraction": 0.001927969784604687,
+          "vocabulary_slots": 9614358144,
+          "vocabulary_sizes": [
+            151936
+          ],
+          "pooled_vocabulary_fraction": 1.268935462697904e-08,
+          "masses": {
+            "student": {
+              "sum_over_valid_tokens": 110.90031135082245,
+              "pooled_valid_token_mean": 0.001752561060554409,
+              "hit_token_mean": 0.9090189454985447,
+              "equal_trajectory_token_mean": 0.0018737057992799153,
+              "maximum_token_mass": 0.9999996423721313
+            },
+            "teacher": {
+              "sum_over_valid_tokens": 0.0007772625474711637,
+              "pooled_valid_token_mean": 1.2283104149420245e-08,
+              "hit_token_mean": 6.371004487468555e-06,
+              "equal_trajectory_token_mean": 1.2673346845181578e-08,
+              "maximum_token_mass": 4.539772271527909e-05
+            },
+            "mixture": {
+              "sum_over_valid_tokens": 0.0007772625474711637,
+              "pooled_valid_token_mean": 1.2283104149420245e-08,
+              "hit_token_mean": 6.371004487468555e-06,
+              "equal_trajectory_token_mean": 1.2673346845181578e-08,
+              "maximum_token_mass": 4.539772271527909e-05
+            }
+          },
+          "loss": {
+            "raw": {
+              "pooled_valid_token_mean": 0.3697645104017689,
+              "equal_trajectory_token_mean": 0.4029453004608827
+            },
+            "post": {
+              "pooled_valid_token_mean": 0.3632393696480905,
+              "equal_trajectory_token_mean": 0.39547835072634424
+            }
+          },
+          "all_inspected_metric_fields_finite": true
+        }
+      ],
+      "totals": {
+        "valid_token_rows": 629099,
+        "clipped_vocabulary_count": 1193,
+        "auxiliary_vocabulary_dump_rows": 2,
+        "hit_token_count": 1188,
+        "hit_token_fraction": 0.0018884150189397853,
+        "vocabulary_slots": 95582785664,
+        "vocabulary_sizes": [
+          151936
+        ],
+        "pooled_vocabulary_fraction": 1.2481326963975771e-08,
+        "masses": {
+          "student": {
+            "sum_over_valid_tokens": 1057.520340204239,
+            "pooled_valid_token_mean": 0.0016810078226228923,
+            "hit_token_mean": 0.8901686365355547,
+            "equal_trajectory_token_mean": 0.0019162297292657701,
+            "maximum_token_mass": 1.0
+          },
+          "teacher": {
+            "sum_over_valid_tokens": 0.005269025720301538,
+            "pooled_valid_token_mean": 8.3755111998295e-09,
+            "hit_token_mean": 4.435206835270655e-06,
+            "equal_trajectory_token_mean": 9.665862432899026e-09,
+            "maximum_token_mass": 4.539772271527909e-05
+          },
+          "mixture": {
+            "sum_over_valid_tokens": 0.005269025720301538,
+            "pooled_valid_token_mean": 8.3755111998295e-09,
+            "hit_token_mean": 4.435206835270655e-06,
+            "equal_trajectory_token_mean": 9.665862432899026e-09,
+            "maximum_token_mass": 4.539772271527909e-05
+          }
+        },
+        "loss": {
+          "raw": {
+            "pooled_valid_token_mean": 0.3662668571339723,
+            "equal_trajectory_token_mean": 0.40263581403858
+          },
+          "post": {
+            "pooled_valid_token_mean": 0.35888542976293825,
+            "equal_trajectory_token_mean": 0.3940404728826483
+          }
+        },
+        "all_inspected_metric_fields_finite": true
+      }
+    }
+  },
+  "coverage": {
+    "completed_groups": 1,
+    "expected_groups": 7,
+    "completed_outers": 10,
+    "expected_outers": 70,
+    "pending_groups": [
+      "C0",
+      "M",
+      "R",
+      "W",
+      "P",
+      "J"
+    ],
+    "all70_token_records_complete": false
+  },
+  "definitions": {
+    "hit_token_fraction": "Policy-valid positions with any clipped component / valid positions; not vocab fraction",
+    "pooled_vocabulary_fraction": "Clipped vocabulary components / sum vocabulary size over valid positions",
+    "mass": "Each independent distribution probability on same student reverse-component>10 set; exposure sums are not one probability",
+    "means": "Separate pooled token, hit-token-only and equal-trajectory means; masses are never multiplied by W weights",
+    "nonmixture": "mixture field is teacher target alias for groups other than M/J",
+    "loss": "Native raw/post logged metrics; weighted objective separate, not gradient contribution"
+  },
+  "limitations": "Recorded committed forward logs only; no logits/top32/fullNPY/model/tensor/EM/causal reconstruction. Recorded retries are not all failed attempts.",
+  "input_digests": {
+    "manifest": "25b0a1e9ab2d1477b1f0ff387786f368ddf7ff3a577147467586d4c394d0b533",
+    "facts": "8b902baf444a9dd98b216fa9257e25d26c64aa7ad305fdf551c9f28166c871ad"
+  }
+}
