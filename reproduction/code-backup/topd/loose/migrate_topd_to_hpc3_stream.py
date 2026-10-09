@@ -38,7 +38,7 @@ def target(code, timeout=120):
     return json.loads(r.stdout)
 
 
-def transfer(record):
+def transfer(record, source_reader=None):
     name = record['group']
     sha = record['archive_sha256']
     folder = DEST + '/migration/archives'
@@ -60,7 +60,7 @@ def transfer(record):
     last_report = start
     with (LOCAL / (name + '-source-stderr.log')).open('ab') as srcerr, (LOCAL / (name + '-destination-stderr.log')).open('ab') as dsterr:
       if not state['archive_complete']:
-        src = subprocess.Popen(['python3', str(WORK / 'remote_topd_retained18.py'), '--timeout', '43200'],
+        src = subprocess.Popen(source_reader or ['python3', str(WORK / 'remote_topd_retained18.py'), '--timeout', '43200'],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=srcerr)
         dst = subprocess.Popen(ssh_args('python3 -c ' + shlex.quote(dst_code)),
                                stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=dsterr)
