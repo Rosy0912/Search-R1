@@ -1,0 +1,17 @@
+{
+  "source": "080ebbc46b89d61567cd33e1a5e2f1b40afd8b84",
+  "root": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009",
+  "hardware_sha256": "fea2f12a1bbc54008cdc4176d2156105e2988681c435738451dde44200b6d49f",
+  "authorization_sha256": "7475bbfb06ec6d1d31589fc24e3ea725466b1a91320b1540692f6e72db83cc24",
+  "admission_sha256": "c31f162d85b11de833d05dc70dd0dc71bc888144a2fefe47e3d6b4df4b751bf1",
+  "files": {
+    "formal.sbatch": "1ac3e2a317488593d18f0fdecb130c068a30e8987540cbd67f8739980c9f81cd",
+    "formal_worker.sh": "f65e3d8cde4aa935d0fe941da11840c003dc6d381e81901f59a4c622cd7efcb7",
+    "formal_inner.sh": "671625f8b8671518144a09feba280a58dceb303a1eccc399a68810b00f263cbc",
+    "formal_driver.py": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a",
+    "ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "formal_service_proof.py": "704909275113fe079c287e8652c07ef000e4cfa06f7cf904781b93dc9bed6a96",
+    "bind_retrieval_proof.py": "3ae4f0095b775716b0f2d3180b513906a7be51837d1f2786b3ec72447733704d"
+  },
+  "scope": "ACTUAL_REVIEW_BOUND_PREPARATION_NOT_SUBMITTED"
+}
