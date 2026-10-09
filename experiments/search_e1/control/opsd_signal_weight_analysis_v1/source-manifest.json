@@ -1,0 +1,54 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 8620,
+      "sha256": "89e755b65f1ff0bad95d414679f4d545d468f1ae322a95c6142b1bd4baf2cb7f"
+    },
+    "__init__.py": {
+      "bytes": 86,
+      "sha256": "1e37255b73690d58cc5eb21f124a7bc0163af5e7fb0f3c26146a1dff9dfe34c7"
+    },
+    "bank.py": {
+      "bytes": 6160,
+      "sha256": "22c40b3fad9144ed2cd9f4263f8d8ce004185c288a506548f1617f519f21a35e"
+    },
+    "common.py": {
+      "bytes": 8351,
+      "sha256": "9eab251dc1af8da9f3a01432d4b80004419b7865fd81c8c628d68b85a96f3bb8"
+    },
+    "replay.py": {
+      "bytes": 16232,
+      "sha256": "15af290089f959fd22f05cda026e53bcbd22ed8f0ebf16ab946b6d199be8f0d6"
+    },
+    "replay_math.py": {
+      "bytes": 11789,
+      "sha256": "082e421452d4e0aafcae55d8cec640cde401d3d6383e112c6ec16dfd18491933"
+    },
+    "replay_worker.py": {
+      "bytes": 9434,
+      "sha256": "a438fd3e35524a1ba1017220f5366c2fa2aeed22944972776a5b6fc2e1077223"
+    },
+    "summary.py": {
+      "bytes": 12398,
+      "sha256": "90a5986ee31fc4c4c5020069c15cc3ef3a8050f6d777a173f5945d159ab55435"
+    },
+    "test_analysis.py": {
+      "bytes": 18829,
+      "sha256": "86d52879630e0c573f34e0ad9f6303456fe1ab921bcfbf6a8024bd6b0f0ef505"
+    },
+    "test_train_signal_analysis.py": {
+      "bytes": 9320,
+      "sha256": "9bcdef40a4ecaf64f0f9939cad9b72ee4f06b415e0a10d747852e765b15f39e0"
+    },
+    "test_vocabulary_cpu.py": {
+      "bytes": 2119,
+      "sha256": "98479aee05450596d4885ad035a3c972c63cf3034c054884995679960a09036b"
+    },
+    "train_signal_analysis.py": {
+      "bytes": 35568,
+      "sha256": "18ea59c4c2a0f3f18efbf745ad672922f742850c2c4e27ab1c5825b5054c8f56"
+    }
+  },
+  "schema": "opsd-signal-heldout-analysis-source-v1",
+  "scope": "Independent fixed-common-zero heldout replay and actual TRAIN signal analysis; no optimizer or new sampling"
+}
