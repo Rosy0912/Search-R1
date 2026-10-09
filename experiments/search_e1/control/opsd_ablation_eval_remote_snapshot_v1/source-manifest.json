@@ -1,0 +1,16 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7042,
+      "sha256": "648046951f6b108d87079603a330e055391fbc19d3268676e38a76f0cbfbe502"
+    },
+    "native_scope.py": {
+      "bytes": 18116,
+      "sha256": "83b8f20730ebc615cd25837bc197ef5e81042f41863f062b3da886ecb067eb83"
+    },
+    "snapshot.py": {
+      "bytes": 21347,
+      "sha256": "13387332238451c726a510310b7e009883c1b326f8e72606e5d4f8e120d37035"
+    }
+  }
+}
