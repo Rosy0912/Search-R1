@@ -13,4 +13,13 @@ for n in ['formal-supervisor.log','retriever.log','ray-head.log','train.log','re
 for name in ['out','err']:
  p=r/'logs'/('slurm-formal-3352.'+name)
  if p.exists():out['logs']['slurm_'+name]=p.read_text()[-10000:]
+birth=run/'own-formal-retriever-birth.json'
+if birth.exists():
+ value=json.loads(birth.read_text());out['retriever_birth']=value
+ ident=value['identity'];proc=Path('/proc')/str(ident['pid'])
+ for name in ['stat','status','wchan','io']:
+  try:out['retriever_'+name]=(proc/name).read_text()
+  except OSError as exc:out['retriever_'+name]=repr(exc)
+ try:out['retriever_open_files']=[os.readlink(q) for q in (proc/'fd').iterdir()]
+ except OSError as exc:out['retriever_open_files']=repr(exc)
 print(json.dumps(out))
