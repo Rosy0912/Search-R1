@@ -41,7 +41,8 @@ def install(p,b,mode=0o644):
   part1+='install(R/"logs"/'+repr(n)+',base64.b64decode('+repr(base64.b64encode(blobs[n]).decode())+'))\n'
  part2=header+write+"C=R/'tools/deployment/candidate-formal-v1'\n"
  for n,h in files.items():
-  part2+='b=(C/'+repr(n)+').read_bytes()\nif hashlib.sha256(b).hexdigest()!='+repr(h)+":raise RuntimeError('Candidate bytes changed')\ninstall(R/'tools/deployment'/"+repr(n)+",b,"+('0o755' if n.endswith(('.sh','.sbatch')) else '0o644')+')\n'
+  origin="R/'tools/deployment'" if n=='bind_retrieval_proof.py' else 'C'
+  part2+='b=('+origin+'/'+repr(n)+').read_bytes()\nif hashlib.sha256(b).hexdigest()!='+repr(h)+":raise RuntimeError('Candidate bytes changed')\ninstall(R/'tools/deployment'/"+repr(n)+",b,"+('0o755' if n.endswith(('.sh','.sbatch')) else '0o644')+')\n'
  n='submit_formal.py';h=sha((here/n).read_bytes());part2+='b=(C/'+repr(n)+').read_bytes()\nif hashlib.sha256(b).hexdigest()!='+repr(h)+":raise RuntimeError('Submit candidate changed')\ninstall(R/'tools/deployment'/"+repr(n)+",b)\n"
  part2+='install(R/"tools/deployment/formal_admission.py",base64.b64decode('+repr(base64.b64encode(blobs['formal_admission.py']).decode())+'))\n'
  for i,t in enumerate((part1,part2),1):
