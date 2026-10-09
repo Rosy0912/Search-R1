@@ -93,6 +93,14 @@ def rows(ref):
     return result, proof
 
 
+def bind_extractor_outputs(pair_proof, cohort_proof, audit):
+    require(audit.get('schema') == 'opsd-first5-em-loss-extraction-summary-v1' and audit.get('accepted') is True,
+            'Accepted exact native extractor summary schema required')
+    digests = audit['record_SHA256_before_summary']
+    require(pair_proof['sha256'] == digests['pair_feature'], 'Pair-feature bytes differ from accepted native extractor stream')
+    require(cohort_proof['sha256'] == digests['cohort_feature'], 'Cohort-feature bytes differ from accepted native extractor stream')
+
+
 def validate(pairs, cohorts):
     ci = {}
     qident = {}
@@ -577,6 +585,7 @@ def run(manifest_ref, output):
     cohorts, cohort_proof = rows(manifest['cohort_features'])
     audit_raw, audit_proof = fixed_bytes(manifest['extraction_summary'])
     audit = json.loads(audit_raw)
+    bind_extractor_outputs(pair_proof, cohort_proof, audit)
     require(audit.get('accepted') is True and audit['counts'] == dict(pairs=4529, valid_tokens=940295,
             cohort_rows=7680, outers=15, optimizer_updates=151), 'Accepted native-extractor first-five counts required')
     execution_raw, execution_proof = fixed_bytes(manifest['root_execution'])

@@ -21,6 +21,15 @@ def row(q, group='C0', value=1.):
 
 
 class StatsTests(unittest.TestCase):
+    def test_native_extractor_feature_SHA_identity_guard(self):
+        audit = dict(schema='opsd-first5-em-loss-extraction-summary-v1', accepted=True,
+                     record_SHA256_before_summary={'pair_feature': 'a' * 64, 'cohort_feature': 'b' * 64})
+        s.bind_extractor_outputs({'sha256': 'a' * 64}, {'sha256': 'b' * 64}, audit)
+        with self.assertRaisesRegex(ValueError, 'Pair-feature bytes'):
+            s.bind_extractor_outputs({'sha256': 'c' * 64}, {'sha256': 'b' * 64}, audit)
+        with self.assertRaisesRegex(ValueError, 'Cohort-feature bytes'):
+            s.bind_extractor_outputs({'sha256': 'a' * 64}, {'sha256': 'c' * 64}, audit)
+
     def test_auc_ties_and_weighted_sampling(self):
         x = np.array([0., 1., 1., 3.]); y = np.array([0., 0., 1., 1.]); w = np.array([2., 1., 3., 1.])
         brute = sum(w[i] * w[j] * (float(x[i] > x[j]) + .5 * float(x[i] == x[j]))

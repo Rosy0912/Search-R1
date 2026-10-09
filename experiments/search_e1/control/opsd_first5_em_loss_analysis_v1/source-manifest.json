@@ -32,9 +32,9 @@
       "sha256": "5520ffbec178c47fd57e702cb18f567cd6c4c1b0692f2785906619a448033a95"
     },
     {
-      "bytes": 40714,
+      "bytes": 41336,
       "path": "stats.py",
-      "sha256": "f4856abbcc87bdcf92d4a1b4744ac4731062da2b269d570d86ce07d9e04f89a4"
+      "sha256": "b01d44d927cbdd0c539207da25b78cfcd8b008a97483e659c4534df08de8cf98"
     },
     {
       "bytes": 8460,
@@ -42,9 +42,9 @@
       "sha256": "5a365dc9c576961b97a081409469816040f6720fa25429d4aa92f2fd87bb7491"
     },
     {
-      "bytes": 3549,
+      "bytes": 4212,
       "path": "test_stats.py",
-      "sha256": "fb589d05a5541134a7e56e293978c0827396593d8493ac0d26244864aca75808"
+      "sha256": "af608813e6b48fe1ebdbb8ae4883fecd6bf1660ad16019b0c3989cbf8e0f124a"
     }
   ],
   "new_training": false,
