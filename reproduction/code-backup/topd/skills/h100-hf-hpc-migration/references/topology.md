@@ -2,7 +2,7 @@
 
 ## 路线与权限
 
-数据路线：H100 源归档 → mgmt-host 内存流 → 私有 HF → HKUST2 实盘 → HKUST3 实盘 → HPC3 共享存储。Mac 仅控制 SSH、可转发字节而不落盘，并可为 HF 公网建立 HTTP 反向隧道。不要随意省掉用户指定的 HKUST3 中转；若用户另授权 HKUST2 直接转目标，记录例外。
+数据路线：H100 源归档 → mgmt-host 内存流 → 私有 HF → HKUST2 实盘 → HKUST3 实盘 → HPC3 共享存储。新路线在远端完成下载和传输，Mac 仅控制 SSH；禁止使用、修改或恢复 Mac 代理。不要随意省掉用户指定的 HKUST3 中转；若用户另授权 HKUST2 直接转目标，记录例外。
 
 旧全局记忆可能禁止跨集群；本次用户后来明确授权的特定迁移覆盖该任务范围内的旧冲突，不扩展到其他资产/任务。一般下载记忆的 Mac 落盘回退也不适用于本迁移的明确约束。
 
@@ -37,16 +37,16 @@ ssh -T -B en0 -o ProxyCommand=none -o ProxyJump=none -o BatchMode=yes hkust3 hos
 
 HPC3 必须确认共享目标，不把计算节点临时盘当最终成品。rclone 远端配置不要包含新复制的私钥；先测试真实认证与仅本任务目录的读写。
 
-## HF 公网代理
+## HF 远端自身出口
 
-若远端直接访问官方 HF 失败，但 Mac 已有 HTTP 代理实测可用，可以建立该节点专用反向转发：
+先测远端官方 HF 直连；若失败，调查用户授权范围内可读的远端工具、服务状态和配置路径。可以检查其他用户/root 可访问的文件元数据与下载方式，但不能打印凭据、接管外来服务或绕过权限。优先复用用户自身已授权出口。本案例找到 HKUST2 的 `/home/shaoshitong/project/clash-for-linux/runtime/config.yaml` 和 `runtime/bin/mihomo`；原服务 inactive，以独立本任务进程和 RAM 配置恢复出口，不改原服务。
 
-```sh
-ssh -T -N -B en0 -o ProxyCommand=none -o ProxyJump=none \
-  -o ExitOnForwardFailure=yes -o ServerAliveInterval=10 \
-  -R 127.0.0.1:18092:127.0.0.1:7892 hkust2
-```
+本案例使用 HKUST2 loopback `127.0.0.1:17894` 下载；供 HKUST3 使用的校园出口绑定 `10.120.17.102:17895`，仅允许 HKUST3 `10.120.17.122/32`。控制端口只绑定 loopback，配置位于 `/dev/shm`、权限0600。地址、端口和节点均须重新核实，不能直接覆盖已有监听者。API secret、节点认证和 HF token只在RAM使用，不输出配置全文。
 
-端口先检查，使用绑定127.0.0.1的现有代理，不向公网暴露。保持隧道并记录真实 PID/身份；不重复建同端口。先清除下载子进程继承的 `http_proxy/https_proxy/all_proxy/no_proxy` 大小写变量，再设置本次代理。旧小写 `https_proxy` 曾覆盖新大写设置，导致请求连错7890。
+清除下载子进程继承的大小写 proxy 变量，再设置已测通的远端出口；必要时给 aria2 显式指定本次远端代理。校园 SSH 仍直连。节点按真实私有归档 Range 测速选择，历史节点或测速不保证当前可用。出现 TLS EOF/连接重置时检查本任务出口的脱敏上游超时证据，采用有限单次超时与退避重试，保留断点；禁止关闭 TLS 验证或回退 Mac 代理。
 
-requests/curl/aria2 对环境代理处理不同。aria2 必要时显式 `--all-proxy=http://127.0.0.1:18092`；校园 SSH 仍直连。不要在全局 shell 配置写 token。
+## 两跳远端传输
+
+先从 HKUST2 实际验证到 HKUST3 的 SSH 认证，再在 HKUST2 执行 rclone SFTP `copyto`；归档在 HKUST3 落盘并完整SHA通过后，才在 HKUST3 执行到 HPC3 的直接 SSH 续传和解包验收。两跳都不经过 Mac 数据流。
+
+使用既有远端身份及严格主机密钥校验。缺少主机公钥时，可以从已核验 known_hosts复制公开主机密钥；这不授权复制登录私钥。TCP22可达、工具退出成功或字节传完，都不能代替实际认证与独立SHA回执。历史已授权旧流单独核实当前组和单写状态，不因切换文档而盲目中断。

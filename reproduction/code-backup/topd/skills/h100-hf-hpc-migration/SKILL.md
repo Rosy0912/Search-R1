@@ -5,7 +5,7 @@ description: 沿 H100→mgmt-host→私有 Hugging Face→HKUST2→HKUST3→HPC3
 
 # H100 经 HF 迁移至 HPC3
 
-默认按用户指定的数据路线执行：**H100 → mgmt-host → HF → HKUST2 → HKUST3 → HPC3 共享存储**。Mac 是 SSH 控制端；本任务用户已明确禁止使用或改动 Mac 的代理。HF 下载须使用远端直连或用户授权的远端自身出口；Mac 不是模型/数据落盘站。不要把 Mac 直连 HPC3 当作默认数据路线。
+默认按用户指定的数据路线执行：**H100 → mgmt-host → HF → HKUST2 → HKUST3 → HPC3 共享存储**。新路线的下载和两跳传输都在远端执行，Mac 仅是 SSH 控制端；本任务用户已明确禁止使用或改动 Mac 的代理。HF 下载须使用远端直连或用户授权的远端自身出口；Mac 不是模型/数据落盘站。不要把 Mac 直连 HPC3 当作默认数据路线。
 
 ## 开始前
 
@@ -19,7 +19,7 @@ description: 沿 H100→mgmt-host→私有 Hugging Face→HKUST2→HKUST3→HPC3
 
 ## 必须保持的资产与凭据约束
 
-1. 模型/数据只落盘 H100、已授权 HF 仓库、已核实的 HKUST 中转盘和 HPC3 共享目标。mgmt-host/Mac 仅进行有界内存流转；本任务不使用通用“下载失败就本地落盘”回退。
+1. 模型/数据只落盘 H100、已授权 HF 仓库、已核实的 HKUST 中转盘和 HPC3 共享目标。mgmt-host 仅进行有界内存流转，Mac 仅控制新路线；本任务不使用通用“下载失败就本地落盘”回退。
 2. 沿用已有 SSH 身份和严格主机密钥校验，不复制私钥，不打印 token，不保存 token 到脚本、命令参数、URL、下载清单、日志、automation 或 Git。通过 stdin/进程 RAM 传递凭据；公共配置与 manifest 可落盘。
 3. 校园 SSH 默认直连；公网 HF 只测试直连和远端自身出口，禁止回退 Mac 代理。二者分开配置，不能把 HTTP 代理必要性推成校园 SSH 也要 SOCKS。
 4. 每个目标归档只能有一个写入者。新增下载路线按组分工；发现原进程写同一组时，等待其结束或在确认归属后协调交接。保留旧部分文件和已校验文件。
@@ -29,7 +29,7 @@ description: 沿 H100→mgmt-host→私有 Hugging Face→HKUST2→HKUST3→HPC3
 
 源端先生成归档、归档 SHA256、所有原始文件的 path/size/SHA256 和来源记录。mgmt-host 从源读取内存流提交私有 HF，逐组记录 commit，并用 HF 官方 paths-info 的 LFS SHA/大小对源复核。全部计划上传验收后推进 HF 下载；已运行任务沿用用户后来明确接受的并行分工。
 
-下载端先核实真实可写挂载和空间。比较官方/镜像、直连/代理；用同一个真实私有归档和相同字节区间测速。hfd 可使用 aria2 多连接，但须先处理 token 落盘和稀疏文件进度问题。下载通过源/HF SHA 后，按默认链路 HKUST2→HKUST3→HPC3 逐跳续传。rclone 可用于已验证认证的 SFTP 路线；不因为 TCP22 可达就声称认证和传输已可用。
+下载端先核实真实可写挂载和空间。比较官方/镜像、直连/远端自身出口；用同一个真实私有归档和相同字节区间测速。hfd 可使用 aria2 多连接，但须先处理 token 落盘和稀疏文件进度问题。下载通过源/HF SHA 后，按默认链路 HKUST2→HKUST3→HPC3 逐跳续传。rclone 可用于已验证认证的 SFTP 路线；不因为 TCP22 可达就声称认证和传输已可用。
 
 **只有以下全部通过才能宣告迁移完成：**
 
