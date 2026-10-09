@@ -53,8 +53,17 @@ def main():
     if terminal_ref['sha256'] != args.previous_terminal_sha256:
         raise ValueError('Previous driver terminal changed')
     terminal = json.loads(Path(args.previous_terminal).read_text())
-    if terminal.get('accepted') is not True or terminal.get('actual_exit_code') != 0:
-        raise ValueError('Previous driver must actually finish successfully')
+    successful = terminal.get('accepted') is True and terminal.get('actual_exit_code') == 0
+    failed_and_released = (
+        terminal.get('schema') == 'pr100-prior-driver-observed-terminal-v1'
+        and terminal.get('original_driver_pid') == 1894801
+        and terminal.get('original_driver_absent') is True
+        and terminal.get('original_driver_actual_foreground_exit_code') == 2
+        and terminal.get('pane', {}).get('raw') == '$74\t%74\t1894801\t1\t2\tbash\n'
+        and terminal.get('gpu_compute', {}).get('actual_command_returncode') == 0
+        and not Path('/proc/1894801').exists())
+    if not (successful or failed_and_released):
+        raise ValueError('Previous driver must be actually terminal; fresh GPU admission below still applies')
     receipts = base / 'receipts'
     receipts.mkdir(parents=True, exist_ok=True)
     old = json.loads(Path('/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008/group-P/receipts/authorized-launch-20261009/config.json').read_text())

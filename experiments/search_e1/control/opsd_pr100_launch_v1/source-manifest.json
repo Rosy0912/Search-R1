@@ -5,8 +5,8 @@
       "sha256": "6e1613d258afc0f46bce33afbb6ee56296f0471aac11b9125772cd27a4ad048d"
     },
     "prepare_node.py": {
-      "bytes": 7825,
-      "sha256": "296ff48a6bc5c099f2a76fca02a32cea23460ed8b5aeb652869d4c204983db8f"
+      "bytes": 8426,
+      "sha256": "98c82171dde247bf117f35db717d3da08f06f524e2f422d7ca02e710f8ad3b48"
     }
   },
   "schema": "opsd-pr100-launch-source-v1"

@@ -39,7 +39,14 @@ def validate_manifest(value):
     paths=[Path(p).resolve() for p in outputs]
     require(len(set(paths))==len(paths) and not any(a!=b and (a.is_relative_to(b) or b.is_relative_to(a)) for a in paths for b in paths),'Independent outputs overlap')
     previous,_=checked_json(value['startup_previous_driver_terminal'])
-    require(previous.get('accepted') is True and previous.get('actual_exit_code')==0,'Previous eight-card driver has not actually finished0')
+    successful=previous.get('accepted') is True and previous.get('actual_exit_code')==0
+    observed_failure=(previous.get('schema')=='pr100-prior-driver-observed-terminal-v1'
+        and previous.get('original_driver_pid')==1894801 and previous.get('original_driver_absent') is True
+        and previous.get('original_driver_actual_foreground_exit_code')==2
+        and previous.get('pane',{}).get('raw')=='$74\t%74\t1894801\t1\t2\tbash\n'
+        and previous.get('gpu_compute',{}).get('actual_command_returncode')==0
+        and not Path('/proc/1894801').exists())
+    require(successful or observed_failure,'Previous eight-card driver remains live or terminal evidence is missing')
     baseline,bp=checked_json(value['baseline_summary'])
     require(baseline['accepted'] is True and value['baseline_version']=='bf16_zero'
         and baseline['models']['bf16_zero']['overall']['questions']==512

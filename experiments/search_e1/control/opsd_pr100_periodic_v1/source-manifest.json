@@ -1,1 +1,58 @@
-{"files":{"README.md":{"bytes":4842,"sha256":"de52c360b5ee54c2f973db518f1af2e32b2d4de5d6363b1d4d6abbab39e7224c"},"completion.py":{"bytes":3908,"sha256":"aa94a4c5c5cd906d8440ab9130c8ee69767c2a69ce7979410c7999ef21c3ae51"},"controller.py":{"bytes":9929,"sha256":"15264337e5d82cf5d73d4259ff0b48afe82d1eccdd96306b4854a7bc78da85a5"},"gates.py":{"bytes":11797,"sha256":"c090e3c2bf8eaa04f0b7d55e04a191140f13da97bb24484cdae4c07dc345d68b"},"hooks.py":{"bytes":5071,"sha256":"df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"},"mirror.py":{"bytes":2906,"sha256":"5fff3031bd77fde274c73a7b620a0157d7b7fc14515e4e3fd891531291a280d0"},"prepare.py":{"bytes":5863,"sha256":"0dbed59bc0397717cec2c3cc15bff10fdf426354978a16c419f573d76899bc03"},"prepare_pipeline.py":{"bytes":2401,"sha256":"50ef4d10c431888709da41ac97e4e072372c0623bcc3bb7441ab28eb2297b706"},"summary.py":{"bytes":10587,"sha256":"350048f9ed1e007659bef12eabc6600474f1a3b2fadc0ae0128ece6bca039480"},"supervisor.py":{"bytes":18778,"sha256":"57fa9db425b803928865a142064b68b0caa40d3cbc210503705d6607d28dd883"},"test_periodic.py":{"bytes":4063,"sha256":"3bcb7549b6a2f42925d561bce5d0ab94bcd2e93bf0494c03b5720a44f3447e42"},"utils.py":{"bytes":12261,"sha256":"e66f0a0866c0348b7579303264d9a6943319aaba9335c4faf2acbb87d6048abe"},"worker.py":{"bytes":13134,"sha256":"c90561f9bf11dfd0de7ccf5c328e3ba41d9cb570016bca7735dd3c3118e44ea9"}},"schema":"opsd-pr100-periodic-source-v1","scope":"New immutable supervisor and periodic BF16 native512 evaluator; no actual GPU execution implied."}
+{
+  "files": {
+    "README.md": {
+      "bytes": 4990,
+      "sha256": "9407df2f6dbf46cdf38931684d2746c335ce981646a12cc7af3de9462cbc6b95"
+    },
+    "completion.py": {
+      "bytes": 3908,
+      "sha256": "aa94a4c5c5cd906d8440ab9130c8ee69767c2a69ce7979410c7999ef21c3ae51"
+    },
+    "controller.py": {
+      "bytes": 9929,
+      "sha256": "15264337e5d82cf5d73d4259ff0b48afe82d1eccdd96306b4854a7bc78da85a5"
+    },
+    "gates.py": {
+      "bytes": 11797,
+      "sha256": "c090e3c2bf8eaa04f0b7d55e04a191140f13da97bb24484cdae4c07dc345d68b"
+    },
+    "hooks.py": {
+      "bytes": 5071,
+      "sha256": "df3b63386839bdcc7107e5357313ab2e46789be7da4e4130388782a7d5014a03"
+    },
+    "mirror.py": {
+      "bytes": 2906,
+      "sha256": "5fff3031bd77fde274c73a7b620a0157d7b7fc14515e4e3fd891531291a280d0"
+    },
+    "prepare.py": {
+      "bytes": 5863,
+      "sha256": "0dbed59bc0397717cec2c3cc15bff10fdf426354978a16c419f573d76899bc03"
+    },
+    "prepare_pipeline.py": {
+      "bytes": 2401,
+      "sha256": "50ef4d10c431888709da41ac97e4e072372c0623bcc3bb7441ab28eb2297b706"
+    },
+    "summary.py": {
+      "bytes": 10587,
+      "sha256": "350048f9ed1e007659bef12eabc6600474f1a3b2fadc0ae0128ece6bca039480"
+    },
+    "supervisor.py": {
+      "bytes": 19322,
+      "sha256": "7d168a7facd00379143ebbad9babc955e37bde4ac1deec0bf4d7d018d7709997"
+    },
+    "test_periodic.py": {
+      "bytes": 4063,
+      "sha256": "3bcb7549b6a2f42925d561bce5d0ab94bcd2e93bf0494c03b5720a44f3447e42"
+    },
+    "utils.py": {
+      "bytes": 12261,
+      "sha256": "e66f0a0866c0348b7579303264d9a6943319aaba9335c4faf2acbb87d6048abe"
+    },
+    "worker.py": {
+      "bytes": 13134,
+      "sha256": "c90561f9bf11dfd0de7ccf5c328e3ba41d9cb570016bca7735dd3c3118e44ea9"
+    }
+  },
+  "schema": "opsd-pr100-periodic-source-v1",
+  "scope": "New immutable supervisor and periodic BF16 native512 evaluator; no actual GPU execution implied."
+}

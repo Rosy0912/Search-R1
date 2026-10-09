@@ -43,7 +43,9 @@ one new final pipeline config with `state=READY`. Planned observer refs are
 present but their nonexistent SHA stays null until actual startup; no fake
 checkpoint/terminal/observer hash is introduced during preparation.
 
-The previous original eight-card driver must have an actual accepted0 terminal.
+The previous original eight-card driver must have a real observed terminal.
+Its actual final summary exit2 is preserved as a failure, not converted to0;
+the exact retained pane/PID and released GPU inventory admit the new goal.
 Fresh native GPU/oracle/transition admission still rejects any current foreign
 or unreleased work. The supervisor holds only `pipeline.lock`; training and
 evaluation child controllers take the same existing GPU/study/group leases.
