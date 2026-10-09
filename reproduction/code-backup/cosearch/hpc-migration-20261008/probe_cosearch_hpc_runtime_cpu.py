@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import sys
 
 BASE = Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008')
 OUT = BASE / 'migration-hf-20261009/runtime-cpu-probe.json'
@@ -22,10 +23,12 @@ def main():
     configs = [
         ('retriever310', candidate / 'bin/python3.10',
          SOURCE / 'env/lib/python3.10/site-packages', candidate / 'lib'),
-        ('training311', SOURCE / 'author-native/python/bin/python3.11',
+        ('training311', SOURCE / 'author-native/python/cpython-3.11-linux-x86_64-gnu/bin/python3.11',
          SOURCE / 'author-native/env/lib/python3.11/site-packages',
-         SOURCE / 'author-native/python/lib')]
+         SOURCE / 'author-native/python/cpython-3.11-linux-x86_64-gnu/lib')]
     for role, binary, packages, lib in configs:
+        if len(sys.argv) > 1 and role != sys.argv[1]:
+            continue
         for module in ('numpy', 'torch', 'faiss', 'transformers', 'datasets',
                        'fastapi', 'uvicorn', 'pyarrow', 'ray', 'verl'):
             env['LD_LIBRARY_PATH'] = str(lib)
@@ -48,10 +51,11 @@ def main():
             result = {'status': 'CPU_DEPENDENCY_DIAGNOSTICS_ONLY', 'epoch': time.time(),
                       'rows': rows, 'gpu_used': False, 'training_started': False,
                       'runtime_acceptance': False}
-            tmp = OUT.with_suffix('.tmp')
+            destination = OUT if len(sys.argv) == 1 else OUT.with_name('runtime-cpu-probe-' + role + '.json')
+            tmp = destination.with_suffix('.tmp')
             tmp.write_text(json.dumps(result, indent=2) + '\n')
-            os.replace(tmp, OUT)
-    print(OUT.read_text())
+            os.replace(tmp, destination)
+    print(destination.read_text())
 
 if __name__ == '__main__':
     main()
