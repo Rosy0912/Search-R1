@@ -25,7 +25,7 @@ def sample():
  dt=time.time()-start;return {'epoch':time.time(),'valid_all_8_ranges':valid,'bytes':33554432 if valid else None,'seconds':dt,'MB_s':33.554432/dt if valid else None}
 for cycle in range(100):
  for node in nodes:
-  if (MIG/'download-complete.json').exists():
+  if (MIG/'teacher_model-00029-of-00029-download-verified.json').exists() and (MIG/'wiki_index-download-verified.json').exists():
    save('speed-optimizer-result.json',{'epoch':time.time(),'phase':'DOWNLOAD_FINISHED_NO_HANDOFF','mac_used':False});sys.exit(0)
   try:
    api('/proxies/GLOBAL','PUT',{'name':node});a=sample();a.update(node=node,cycle=cycle,mac_used=False);save('speed-optimizer-latest.json',a)
@@ -34,21 +34,33 @@ for cycle in range(100):
    b=sample();save('speed-optimizer-confirm.json',b)
    if not b['valid_all_8_ranges'] or b['MB_s']<5:continue
    # Do not interrupt an existing writer that is already faster.
-   def total():return sum(p.stat().st_size for p in MIG.glob('*.part'))+sum(p.stat().st_size for p in MIG.glob('*.tar.zst'))
+   def total():return sum(p.stat().st_size for p in MIG.rglob('*.part'))+sum(p.stat().st_size for p in MIG.rglob('*.tar.zst'))
    before=total();t=time.time();time.sleep(20);baseline=(total()-before)/(time.time()-t)/1e6
    if baseline>=min(a['MB_s'],b['MB_s']):
     save('speed-optimizer-result.json',{'epoch':time.time(),'phase':'EXISTING_WRITER_FASTER','baseline_MB_s':baseline,'candidate_MB_s':b['MB_s'],'mac_used':False});sys.exit(0)
-   c=json.loads((MIG/'controller.json').read_text());pid=c['pid'];cmd=pathlib.Path('/proc/'+str(pid)+'/cmdline').read_bytes();assert b'topd_hf_download_hkust3.py' in cmd and str(MIG).encode() in cmd
-   os.kill(pid,signal.SIGTERM);writer_lock=(MIG/'downloader.lock').open('a')
+   active=MIG if not (MIG/'download-complete.json').exists() else MIG/'index-download'
+   c=json.loads((active/'controller.json').read_text());pid=c['pid'];cmd=pathlib.Path('/proc/'+str(pid)+'/cmdline').read_bytes();assert str(active/'topd_hf_download_hkust3.py').encode() in cmd
+   os.kill(pid,signal.SIGTERM);writer_lock=(active/'downloader.lock').open('a')
    for i in range(100):
     try:fcntl.flock(writer_lock,fcntl.LOCK_EX|fcntl.LOCK_NB);break
     except BlockingIOError:time.sleep(.1)
    else:raise RuntimeError('Prior writer lock retained')
    fcntl.flock(writer_lock,fcntl.LOCK_UN);writer_lock.close()
    newenv=dict(env,HTTP_PROXY='http://127.0.0.1:17897',HTTPS_PROXY='http://127.0.0.1:17897',TOPD_REUSE_VERIFIED_INVENTORY='1')
-   with (MIG/'download.log').open('ab') as log:
-    p=subprocess.Popen(['python3',str(MIG/'topd_hf_download_hkust3.py')],env=newenv,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.DEVNULL,start_new_session=True);p.stdin.write((TOKEN+'\n').encode());p.stdin.close()
-   save('speed-optimizer-result.json',{'epoch':time.time(),'phase':'FAST_EXIT_HANDOFF','old_pid':pid,'new_pid':p.pid,'node':node,'samples':[a,b],'baseline_MB_s':baseline,'partials_retained':True,'mac_used':False});sys.exit(0)
+   with (active/'download.log').open('ab') as log:
+    p=subprocess.Popen(['python3',str(active/'topd_hf_download_hkust3.py')],env=newenv,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.DEVNULL,start_new_session=True);p.stdin.write((TOKEN+'\n').encode());p.stdin.close()
+   index_new_pid=None;idx=MIG/'index-download'
+   if active!=idx and idx.exists() and not (idx/'download-complete.json').exists():
+    ic=json.loads((idx/'controller.json').read_text());old_index=ic['pid'];icmd=pathlib.Path('/proc/'+str(old_index)+'/cmdline').read_bytes();assert str(idx/'topd_hf_download_hkust3.py').encode() in icmd
+    os.kill(old_index,signal.SIGTERM);il=(idx/'downloader.lock').open('a')
+    for _ in range(100):
+     try:fcntl.flock(il,fcntl.LOCK_EX|fcntl.LOCK_NB);break
+     except BlockingIOError:time.sleep(.1)
+    else:raise RuntimeError('Index writer lock retained')
+    fcntl.flock(il,fcntl.LOCK_UN);il.close()
+    with (idx/'download.log').open('ab') as log:
+     ip=subprocess.Popen(['python3',str(idx/'topd_hf_download_hkust3.py')],env=newenv,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.DEVNULL,start_new_session=True);ip.stdin.write((TOKEN+'\n').encode());ip.stdin.close();index_new_pid=ip.pid
+   save('speed-optimizer-result.json',{'epoch':time.time(),'phase':'FAST_EXIT_HANDOFF','old_pid':pid,'new_pid':p.pid,'index_new_pid':index_new_pid,'node':node,'samples':[a,b],'baseline_MB_s':baseline,'partials_retained':True,'mac_used':False});sys.exit(0)
   except Exception as e:save('speed-optimizer-failure.json',{'epoch':time.time(),'node':node,'cycle':cycle,'error_type':type(e).__name__})
  time.sleep(30)
 save('speed-optimizer-result.json',{'epoch':time.time(),'phase':'SEARCH_LIMIT_REACHED_NO_FAST_EXIT','mac_used':False})
