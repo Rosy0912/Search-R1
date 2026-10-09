@@ -1,0 +1,20 @@
+{
+  "S": 602654208,
+  "accepted": true,
+  "actual_cp61_inventory_count": 3,
+  "all_corrected_lengths_match_standard_tarfile": true,
+  "backup_not_training_dependency": true,
+  "corrected_bound": 602664960,
+  "cp61_member_bytes": 602628560,
+  "cp61_members": 31,
+  "normal_padding_shortfall": 512,
+  "old_accepted_archives_not_recompressed": true,
+  "old_bound": 602664448,
+  "old_bound_failure_residue": 9728,
+  "previous_terminal_not_yet_accepted": true,
+  "private_proof_sha256": "023b6fcbc66ffaf44954fa8a174fa69aa0a1e10db92cc38abbf13f1cc8b21e19",
+  "schema": "opsd-compact-ustar-bound-focused-regression-public-v1",
+  "scope": "Physical archive length only; no science/model/actual backup completion",
+  "source_sha256": "34a6ae5737416a96fb065563e9aa13f51c8853fab8d3ce0790e5ae5dbaae60bb",
+  "tarfile_cases": 20
+}

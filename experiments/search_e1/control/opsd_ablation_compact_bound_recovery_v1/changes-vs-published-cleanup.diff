@@ -1,0 +1,126 @@
+--- published275-cleanup/recover.py
++++ bound-recovery/recover.py
+@@ -1,4 +1,4 @@
+-"""Mac-only external recovery of compact V1 empty-directory reclamation."""
++"""Mac-only external USTAR bound recovery, retaining published empty-directory reclamation."""
+ import argparse
+ import ast
+ import hashlib
+@@ -13,7 +13,11 @@
+ 
+ sys.dont_write_bytecode = True
+ HERE = Path(__file__).absolute().parent
+-PREFIX = 'experiments/search_e1/control/opsd_ablation_compact_cleanup_recovery_v1/'
++PREFIX = 'experiments/search_e1/control/opsd_ablation_compact_bound_recovery_v1/'
++PREVIOUS_CLEANUP_COMMIT = '275aa9bd561f6c9d9694c097132d82204062f749'
++PREVIOUS_CLEANUP_MANIFEST = '8be3fa8be436873aa17bb2e5c200af488163e56edaeac0d801f172e78ff0e856'
++PREVIOUS_LAUNCH = '/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-7/compact-cleanup-recovery-actual-launch.json'
++PREVIOUS_LAUNCH_SHA = '17823334beb45b4e94bc0c216d67f72dc170a5fbe5424337896cc4c8abe5ce65'
+ ORIGINAL_MANIFEST = '63e1c9aa3d6fd50a8c80e23143e4375360da658bfa5170069855ede1e5f2f13c'
+ ORIGINAL_COMMIT = '4d2065e81e3350abc69a6a5861b33be64803a458'
+ ORIGINAL_CORE_SHA = 'a8b6f8e42202c595578cf8b9e71d65ab2681ce3e529967b9bf930acaeff6ca19'
+@@ -68,6 +72,19 @@
+     return namespace['reclaim_legacy']
+ 
+ 
++def raw_upper(inventory):
++    """Original whole USTAR bytes: two EOF blocks, then 20-block record padding."""
++    members = sum(512 + ((row['bytes'] + 511) // 512) * 512 for row in inventory['files'])
++    return ((members + 1024 + 10239) // 10240) * 10240
++
++
++def absent_pid(b, pid):
++    b.require(type(pid) is int and pid > 0, 'Explicit prior owned PID required')
++    result = subprocess.run(['ps', '-p', str(pid), '-o', 'pid='], capture_output=True, check=False)
++    b.require(result.returncode == 1 and not result.stdout.strip() and not result.stderr.strip(),
++              'Prior owned PID alive/reused or absence uncertain')
++
++
+ def own_publication(b, args, run):
+     manifest, mp = b.checked_json(HERE/'source-manifest.json', args.recovery_manifest_sha256)
+     b.require({p.name for p in HERE.iterdir()} == set(manifest['files'])|{'source-manifest.json'}, 'Recovery source inventory differs')
+@@ -106,8 +123,8 @@
+         own=own_publication(b,launch_args,groups[0]['run_id'])
+         terminal,tp=b.checked_json(launch_args.previous_queue_terminal,launch_args.previous_queue_terminal_sha256)
+         b.require(terminal.get('schema')=='opsd-ablation-compact-queue-terminal-v1' and terminal.get('accepted') is True
+-            and terminal['pid']==45060 and terminal['uid']==os.getuid()==os.geteuid()==501
+-            and type(terminal['actual_exit_code']) is int and terminal['source_commit']==ORIGINAL_COMMIT
++            and terminal['pid']==3547 and terminal['uid']==os.getuid()==os.geteuid()==501
++            and type(terminal['actual_exit_code']) is int and terminal['source_commit']==PREVIOUS_CLEANUP_COMMIT
+             and terminal['goal_sha256']==option(forwarded,'goal_identity_sha256')
+             and terminal['no_live_transfer'] is True and terminal['owned_children_terminal'] is True,
+             'Original queue terminal proof differs; absence is not an exit code')
+@@ -119,17 +136,36 @@
+         b.require(terminal['queue_identity']==status['identity']==identity,'Terminal queue identity differs')
+         previous_launch,_=b.checked_json(terminal['launch']['path'],terminal['launch']['sha256'])
+         destination=b.checked_path(Path(option(forwarded,'destination')).absolute(),directory=True)
+-        b.require(previous_launch['source_commit']==ORIGINAL_COMMIT and
+-            Path(previous_launch['queue_path'])==destination/'queue-status.json' and previous_launch['status']['identity']==identity,
+-            'Destination differs from the actual original queue launch')
++        b.require(terminal['launch']['path']==PREVIOUS_LAUNCH and terminal['launch']['sha256']==PREVIOUS_LAUNCH_SHA,
++            'Previous launch must be the actual published cleanup recovery launch')
++        b.require(previous_launch.get('schema')=='opsd-ablation-compact-cleanup-recovery-launch-v1'
++            and previous_launch.get('accepted') is True and previous_launch['pid']==3547 and previous_launch['uid']==501
++            and previous_launch['recovery_source']['source_commit']==PREVIOUS_CLEANUP_COMMIT
++            and previous_launch['recovery_source']['manifest']['sha256']==PREVIOUS_CLEANUP_MANIFEST
++            and previous_launch['queue_identity']==identity
++            and Path(option(previous_launch['argv'],'destination'))==destination,
++            'Destination/source/identity differs from the actual cleanup queue launch')
++        prior_recovery=previous_launch['recovery_source']
++        for fp in prior_recovery['sources']+[prior_recovery['manifest'],prior_recovery['publication']]:
++            b.fileproof(fp['path'],fp)
++        prior_manifest,_=b.checked_json(prior_recovery['manifest']['path'],PREVIOUS_CLEANUP_MANIFEST)
++        prior_pub,_=b.checked_json(prior_recovery['publication']['path'],prior_recovery['publication']['sha256'])
++        b.require(prior_pub.get('accepted') is True and prior_pub['source_commit']==prior_pub['remote_readback_sha']==PREVIOUS_CLEANUP_COMMIT
++            and prior_pub['source_manifest_sha256']==PREVIOUS_CLEANUP_MANIFEST,
++            'Actual previous cleanup publication differs')
++        b.require({Path(fp['path']).name for fp in prior_recovery['sources']}==set(prior_manifest['files']),
++            'Previous cleanup source inventory differs')
+         actual_status,_=b.checked_json(destination/'queue-status.json',b.fileproof(destination/'queue-status.json')['sha256'])
+         b.require(actual_status==status,'Current queue differs from preserved terminal status; do not create/recompress a new queue')
+-        live=subprocess.run(['ps','-p','45060','-o','pid='],capture_output=True,check=False)
+-        b.require(live.returncode==1 and not live.stdout.strip(),'Old PID alive/reused or absence uncertain')
++        known=terminal['known_owned_processes']
++        b.require(isinstance(known,list) and known and all(type(p['pid']) is int and p['uid']==501 for p in known)
++            and 3547 in [p['pid'] for p in known] and len({p['pid'] for p in known})==len(known),
++            'Prior controller and all captured owned descendants must be explicitly bound')
++        for process in known: absent_pid(b,process['pid'])
+         b.require(forwarded[0]=='queue' and '--reclaim-legacy' in forwarded,'Recovery resumes the original queue with reclamation')
+         target=Path(launch_args.recovery_launch_receipt).absolute(); b.checked_path(target.parent,directory=True)
+         b.require(not target.exists(),'Exclusive recovery launch receipt required')
+-        lp=b.write_json(target,dict(schema='opsd-ablation-compact-cleanup-recovery-launch-v1',accepted=True,
++        lp=b.write_json(target,dict(schema='opsd-ablation-compact-bound-recovery-launch-v1',accepted=True,
+             scope='Source/PID preflight only; original queue lease remains mandatory',pid=os.getpid(),uid=os.getuid(),
+             observed_unix=time.time(),argv=launch_args.actual_launch_argv,original_source=dict(legacy=old,compact=compact),
+             recovery_source=own,previous_queue_terminal=tp,queue_identity=identity,no_signal_sent=True))
+@@ -137,11 +173,11 @@
+         def reclaim(b,reference,job,args):
+             for fp in own['sources']+[own['manifest'],own['publication'],lp,tp]: b.stable(fp)
+             result=fixed(b,reference,job,args)
+-            record=Path(reference['path']).parent/('cleanup-recovery-'+launch_args.recovery_source_commit+'.json')
+-            body=dict(schema='opsd-ablation-compact-cleanup-recovery-complete-v1',accepted=True,
++            record=Path(reference['path']).parent/('bound-recovery-'+launch_args.recovery_source_commit+'.json')
++            body=dict(schema='opsd-ablation-compact-bound-recovery-complete-v1',accepted=True,
+                 compact_receipt=reference,legacy_reclaimed=result,recovery_launch=lp,recovery_source=own,
+                 original_compact_commit=ORIGINAL_COMMIT,original_compact_manifest=ORIGINAL_MANIFEST,
+-                previous_queue_terminal=tp,scope='Empty-directory cleanup only; exact original tar/member identity unchanged')
++                previous_queue_terminal=tp,scope='Exact USTAR EOF/record bound and preserved empty-tree cleanup; whole tar/member identity unchanged')
+             if record.exists():
+                 saved,_=b.checked_json(record,b.fileproof(record)['sha256'])
+                 prior,_=b.checked_json(saved['recovery_launch']['path'],saved['recovery_launch']['sha256'])
+@@ -151,6 +187,15 @@
+             else: b.write_json(record,body)
+             return result
+         core.reclaim_legacy=reclaim
++        core.raw_upper=raw_upper
++        prior_save_complete=core.save_complete
++        def save_complete(b,destination,inventory,ip,job,raw,verification,publications,legacy=None):
++            for fp in own['sources']+[own['manifest'],own['publication'],lp,tp]: b.stable(fp)
++            b.require('bound_recovery' not in publications,'Do not overwrite a prior bound provenance')
++            enriched=dict(publications,bound_recovery=dict(source=own,launch=lp,previous_queue_terminal=tp,
++                scope='Tar EOF+record padding bound only; original whole USTAR bytes and SHA unchanged'))
++            return prior_save_complete(b,destination,inventory,ip,job,raw,verification,enriched,legacy)
++        core.save_complete=save_complete
+         return core
+     original.load_source=load
+ 
