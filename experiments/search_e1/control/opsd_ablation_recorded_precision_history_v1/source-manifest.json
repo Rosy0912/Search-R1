@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7442,
+      "sha256": "cc52ca05c70e90e544e89654dbf9e736501655ef5684a9e828b3ebcee98aadcd"
+    },
+    "derive.py": {
+      "bytes": 33389,
+      "sha256": "10c9cd98e42d54ba52e99d27e33cb642bab72b80652d2fde017b4f7492870c95"
+    },
+    "test_coverage.py": {
+      "bytes": 784,
+      "sha256": "7f6374e5a0ccebb3c2f48ff1b33487cdbe8364c9feebbfdb571d28a0fe4f3059"
+    }
+  },
+  "schema": "opsd-ablation-recorded-precision-history-source-manifest-v1"
+}
