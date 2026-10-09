@@ -1,0 +1,37 @@
+{
+  "CP0_fresh_actual_manifest_sha256": "5181cf3dfcdcdb741b3f7fe41ccd0c28fcd10584d24dd62f5ee3df0e4cd5abd2",
+  "CP0_native_cat_actual_returncode": 0,
+  "CP1_fresh_actual_manifest_sha256": "017afe7f6f586889186141c2c9c8e1bfe2a17472d0d6aa78847f0b99c3caea21",
+  "CP5_fresh_actual_manifest_sha256": "6f8ac377840255e5ae5a115b73e7477167b9ea436e99d7d2aba43737ce69d19e",
+  "actual_payload_SHA_readback_performed": false,
+  "actual_pin_source_proof_sha256": "3d5f98774f081be95c1e0357e35815cc472ac6b861a63c5b62915a934cc6121b",
+  "actual_transfer_performed": false,
+  "backup_is_training_dependency": false,
+  "config_sha256": "d075fc3223e4ee43e20378d6b63cfb661ee3ee5ba9737fd1364f0261a334fd12",
+  "expected_declared_member_bytes": 839690451,
+  "expected_member_count": 39,
+  "files": {
+    "README.md": {
+      "bytes": 2185,
+      "sha256": "9ccc306cd2336f9870c4182b4cbf8617d7fa00afe15705cbdfcff983db3fb54b"
+    },
+    "source-inventory.stdin.py": {
+      "bytes": 2831,
+      "sha256": "6e7b6f870fe38a659f9b11b5a56795cc060a5cdb69922f9b8b82c4bb31abc29a"
+    },
+    "source-metadata.stdin.py": {
+      "bytes": 1802,
+      "sha256": "9381047bc46ad346f367ff7fdcfb9e8534bd1bbd3784bfd575de0c601ecf07ac"
+    },
+    "verify-local.py": {
+      "bytes": 2483,
+      "sha256": "01af9ae0bf8f2980295ef69ddda888e84ce6e59c60565ae713393849329e8ec4"
+    }
+  },
+  "numeric_Adam_acceptance_performed": false,
+  "ready": true,
+  "run_id": "b255c1eb72e84ca0bd6315e57e3527d0",
+  "schema": "M-protected-state-backup-fixed-operational-entry-v1",
+  "science_or_gpu_change": false,
+  "scope": "M only initial/update1/update5 at outer0; separate from outer-end queue"
+}

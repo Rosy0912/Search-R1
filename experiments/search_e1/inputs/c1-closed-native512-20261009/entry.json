@@ -1,0 +1,49 @@
+{
+  "actual_parent_exit_sha256": "3e1cef2cded1ae7c7c49cfe98909e3014c6ae4b48226ae6a500f14207fa20afb",
+  "actual_parent_release_sha256": "0d03622ad8bcd5decf24a7e36da26e6608de555bbf8b6c744203bb33e6f9d9ab",
+  "actual_source_inventory_performed": false,
+  "actual_terminal_sha256": "0cab3aec6a7bca8932303c471ffb0cbff6cb54acc7f3e3eaaf17e1bf9a130b7d",
+  "actual_transfer_performed": false,
+  "backup_is_training_dependency": false,
+  "config_sha256": "804e7b13849cecda959fc820e872a8809960279d5ffb77578e2e86583c1592ee",
+  "controller_complete_sha256": "23888ac519fdcbbe6a838d87e32656eee09504e8ff6d6a453a0a99bfee4f37b4",
+  "destination": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/c1-closed-native512-compressed-20261009",
+  "existing_hotpot_hits": 127,
+  "existing_nq_hits": 109,
+  "existing_primary_slots": 512,
+  "existing_strict_hits": 236,
+  "files": {
+    "README.md": {
+      "bytes": 3951,
+      "sha256": "88bacf766115b80797976cb63df5e8c85f1bd97d315d44cc0116af4e9a518e3a"
+    },
+    "source-operation.stdin.py": {
+      "bytes": 7674,
+      "sha256": "2e15465dc9d9edcc221ebe3d61db371b2f9e5ae90cf2f59eaa5a063ac12d4c95"
+    },
+    "transfer-gzip.py": {
+      "bytes": 3133,
+      "sha256": "59ed2bd6cbfd8a2fcbc54f8aebc7d46e8361f1a0993a0542801486e82f53cbe9"
+    },
+    "verify-archive.py": {
+      "bytes": 5461,
+      "sha256": "20ee1f3bfc6d83bfa4babd1fad76be48a5bc5dfd24b90f6276e574f5e55076e9"
+    }
+  },
+  "phase_complete_sha256": "f1906a1eaeabd12ce7e978c6c439caa0c27de6cc7bf1430513ba8c3946cb0fa2",
+  "preparation_state": "READY_SOURCE_ONLY_NOT_EXECUTED",
+  "result_accepted_sha256": "1454ad37b284c99e96118c9766d653b2145f5b6d5f1fb689f565988069dc6b05",
+  "run_id": "8d74046ea72b409d9fdf6682f5637bd8",
+  "schema": "c1-closed-native512-compressed-fixed-entry-v1",
+  "science_or_gpu_change": false,
+  "scope": "Closed native C1 evaluation only, original parent evaluation scope and immutable config; active study/M/observer excluded",
+  "source": "/data/shaoshitong/search-e1-opsd-ablation-archive100-8gpu-20261008",
+  "source_SHA_origin": "Original concatenated JSON bytes, summary/controller/phase additionally match embedded source fileproofs; never reformatted local JSON SHA",
+  "source_originals_retained": true,
+  "static_ast_pass": true,
+  "summary_sha256": "25ddf5ec110b21db929e94a5c4ef1d169f34c02cd0f9567e2ccc5f18215e688a",
+  "variant": "C1",
+  "versions": [
+    "raw10_bf16"
+  ]
+}
