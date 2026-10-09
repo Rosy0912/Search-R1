@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6035,
+      "sha256": "44e35b1a2501d34bbc019059a6aa43ba41907b94a4375c1ae77afd3ca66d78f1"
+    },
+    "compact.py": {
+      "bytes": 21844,
+      "sha256": "929d7142914572f42505489338ba7c5eb5ec5a3385d8dbace9843e45310c88bc"
+    },
+    "test_compact.py": {
+      "bytes": 2455,
+      "sha256": "bc4a37439b73248447406fa26b30525ed98a6827f4bb0632c146bf9701675834"
+    }
+  },
+  "schema": "opsd-ablation-protected-compact-source-manifest-v1"
+}

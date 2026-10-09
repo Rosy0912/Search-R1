@@ -1,0 +1,9 @@
+{
+  "backup": {
+    "bytes": 30670,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-analysis-output/opsd-ablation-execution-20261008/goal-continuation-20261009-35/W-protected-u0-u1-u5-v1-direct-9a48a1a2771a48eb8d393e14b632fb62/complete-sha-verified.json",
+    "sha256": "a37c9724555e1a2a69c61b156716ff0eb591c0b8ddea549dc96ebacac693d31d"
+  },
+  "schema": "opsd-ablation-protected-compact-input-v1",
+  "variant": "W"
+}
