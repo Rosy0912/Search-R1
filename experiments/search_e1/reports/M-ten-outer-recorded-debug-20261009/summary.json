@@ -1,0 +1,48 @@
+{
+  "schema": "M-whole10-recorded-debug-compact-v1",
+  "accepted_for_M_only": true,
+  "run_id": "b255c1eb72e84ca0bd6315e57e3527d0",
+  "actual_updates": 100,
+  "completed_outers": 10,
+  "pair_exposures": 3032,
+  "valid_token_rows": 637380,
+  "clip_gt10_component_hits": 0,
+  "hit_token_count": 0,
+  "mixture_alpha": 0.1,
+  "equal_trajectory_mean_logged_loss": 0.006581888019591935,
+  "pooled_token_mean_logged_loss": 0.006024752896651373,
+  "raw_equals_post": true,
+  "teacher_autonomous_cases": 80,
+  "student_native_rows": 25600,
+  "generation_trace_files": 80,
+  "HTTP_trace_files": 80,
+  "top32_saved_positions": 81920,
+  "scalar_only_positions": 555460,
+  "full_vocabulary_saved_positions": 2,
+  "full_vocabulary_NPY_files": 8,
+  "full_vocabulary_NPY_bytes": 4862976,
+  "full_vocabulary_payload_finite": true,
+  "limitations": [
+    "Recorded committed artifacts only; no models, scoring, logits/KL/gradients or RNG replay.",
+    "Teacher autonomous privileged history differs from fixed-D teacher-forced training q; no scientific denominator contribution.",
+    "Student full trace/HTTP content preservation reuses accepted full member SHA; this pass does not reparse their raw content.",
+    "Teacher external phase-exit files are outside these raw archives; embedded parent rc0/release only, not independent external terminal read.",
+    "Top32 four arrays checked shape/finite/ID range, not full-vocabulary normalization or probability reconstruction.",
+    "Full-vocabulary finite payload and fresh member SHA checked; subset bytes do not verify final all-seven shared ledger or its reservations."
+  ],
+  "formal512_result_complete": false,
+  "studywide70_or5632_accepted": false,
+  "sources": {
+    "actual_derivation": {
+      "bytes": 6256,
+      "sha256": "00dcb1b2cb5da34820bb593fcdda7f8e7e9c06f05ffd10e9052876608a647365"
+    },
+    "clipmass_summary": {
+      "sha256": "94b963eed367f9686fb14b2725a665972f3be553e23fa12beeb2c4cebc614f82"
+    },
+    "coverage_summary": {
+      "sha256": "7def77e5a93da538876b69650a5a900f25a86e600bdaf5715c26a8956298889a"
+    },
+    "original_complete_proof_sha256": "72386b8927918f051515bfadf747ec5a2009af556676f1d08146789b8f05f876"
+  }
+}
