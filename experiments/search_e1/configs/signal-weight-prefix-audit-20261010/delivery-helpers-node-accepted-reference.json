@@ -1,0 +1,65 @@
+{
+  "accepted": true,
+  "debug_retention": {
+    "Mac_CPU_tests": 35,
+    "Node_CPU_tests": 35,
+    "actual_prefix_accepted": true,
+    "actual_prefix_output": {
+      "bytes": 5146,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/debug-retention-9e1d179/actual-prefix-first-outer.stdout.json",
+      "sha256": "efda6adf4174fb7b2d07cac4aa62c2a6075a1701e5f99c72baaf36bbe6c7c1b6"
+    },
+    "complete_outers": 1,
+    "full_study_complete": false,
+    "independent_review": "APPROVE",
+    "sampling_workers": 8,
+    "scope": "Real completeouter0 fresh rawgeneration/HTTPbody/parsedJSON retained; not all100",
+    "source_commit": "9e1d179664573128f42a2fb0f2bbc72f89fb9ed6",
+    "source_manifest_sha256": "8bd9d5d6c46710954e7f9e7d2d71e21943e0ac94a4fa2748e6725a9094d5ef2a",
+    "source_publication": {
+      "bytes": 2332,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/debug-retention-publication-9e1d179.json",
+      "sha256": "a5a5df3af59be1bc0e76c44d0b749a48b103f2dfe1b41b09dd09a9b4142bc11c"
+    },
+    "teacher_cases": 8,
+    "teacher_parents": 1
+  },
+  "formal_goal_complete": false,
+  "parameter_movement": {
+    "Mac_CPU_tests": 22,
+    "Node_CPU_tests": 22,
+    "actual_prefix_accepted": true,
+    "actual_prefix_output": {
+      "bytes": 42343,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/parameter-movement-3474dca/actual-prefix-cp90.stdout.json",
+      "sha256": "2d8944581672090ff0641dcf4d5159a9114592af426baf1b634751e04810c9ff"
+    },
+    "full_study_complete": false,
+    "independent_review": "APPROVE",
+    "scope": "Common-zero to savedCP90 LoRA A/B coordinate displacement only",
+    "source_commit": "3474dcaceac1776c5cd99674ca2c350b13dec27f",
+    "source_manifest_sha256": "47c19539e593e439a16791044853fe4370b176920fe5abc9614cd1122a76abb2",
+    "source_publication": {
+      "bytes": 2389,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/parameter-movement-publication-3474dca.json",
+      "sha256": "17e172b57cca9841c2795528a751c7fb1b8241c7b4a585f2455624c9a9f1aa5c"
+    }
+  },
+  "production_source_changed": false,
+  "report_renderer": {
+    "Mac_CPU_tests": 11,
+    "Node_CPU_tests": 11,
+    "formal_report_rendered": false,
+    "independent_review": "APPROVE",
+    "scope": "Published independent source and NodeCPU/fixture layout only;100/4608/final effects still required",
+    "source_commit": "a044e42e46caeaed97f786a46e574f421f8fcf3c",
+    "source_manifest_sha256": "415a8e9bbe76b4a8582d0b4126a7cade0aa4a5e5c5325a2b55bdc8184afd8b5c",
+    "source_publication": {
+      "bytes": 3102,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/report-publication-a044e42.json",
+      "sha256": "991781de4783b88a25bac99353f6f824ff79831dfd3020d5fc1e1219b48ec84d"
+    },
+    "synthetic_visual_QA": "v3 all3 readable,explicit notexperiment"
+  },
+  "schema": "opsd-signal-independent-delivery-helpers-node-acceptance-v1"
+}
