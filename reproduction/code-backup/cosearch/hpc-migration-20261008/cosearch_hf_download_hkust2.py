@@ -32,8 +32,10 @@ def main():
     for key in list(os.environ):
         if key.lower().endswith('_proxy'):
             os.environ.pop(key, None)
-    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:17894'
-    os.environ['HTTP_PROXY'] = 'http://127.0.0.1:17894'
+    exit_path = ROOT / 'own-exit.json'
+    exit_port = json.loads(exit_path.read_text())['port'] if exit_path.exists() else 17894
+    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:' + str(exit_port)
+    os.environ['HTTP_PROXY'] = os.environ['HTTPS_PROXY']
     plan = json.loads((ROOT / 'plan.json').read_text())
     repo = plan['repo']
     save('controller.json', {'pid': os.getpid(), 'epoch': time.time(), 'repo': repo, 'groups': len(plan['records']), 'root': str(ROOT), 'token_persisted': False, 'proxy': os.environ.get('HTTPS_PROXY', ''), 'phase': 'HF_PREFLIGHT'})
