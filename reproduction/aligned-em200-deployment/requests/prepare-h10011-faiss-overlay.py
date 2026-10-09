@@ -5,7 +5,7 @@ assert os.uname().nodename=='h100-11'
 old=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/retriever-gpu-lib');target=old
 if old.is_symlink():
  raw=os.readlink(old)
- target=Path('/mnt/shared/workspace/training_data_node_5'+raw) if raw.startswith('/dataset/') else old.resolve()
+ target=Path('/mnt/shared/workspace/training_data_node_5'+raw[len('/dataset'):]) if raw.startswith('/dataset/') else old.resolve()
 assert target.is_dir(),str(target)
 r=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-20261009');p=r/'retriever-gpu-lib'
 if p.is_symlink():assert os.readlink(p)==str(target)
