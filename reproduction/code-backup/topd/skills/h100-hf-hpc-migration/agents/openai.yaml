@@ -1,0 +1,4 @@
+interface:
+  display_name: "H100 经 HF 迁移至 HPC3"
+  short_description: "经管理机、HF与港科大中转迁移模型和数据，支持断点恢复与逐文件校验"
+  default_prompt: "使用 $h100-hf-hpc-migration 沿 H100→mgmt-host→HF→HKUST2→HKUST3→HPC3 迁移已授权资产并报告实际进度。"
