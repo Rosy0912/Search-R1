@@ -30,6 +30,119 @@ def archive_module():
     return module
 
 
+LOWSPACE_ENTRY_SHA = 'c80ef742f2ac1da93f01db54a0b05d902b20371817675eb372f37157caa4cfc6'
+
+
+def lowspace_module():
+    path = Path(__file__).parent / 'trajectory_lowspace_budget_candidate.py'
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != LOWSPACE_ENTRY_SHA:
+        raise RuntimeError('Frozen lowspace policy changed')
+    module = types.ModuleType('own3341_lowspace'); module.__file__ = str(path)
+    exec(compile(raw, str(path), 'exec'), module.__dict__)
+    return module
+
+
+def current_latest(a, paths):
+    latest, _ = a.read_json(a.RUN/'checkpoints/training_state/rolling-completed/latest.json',paths)
+    i = latest['identity']; outer = i['completed_step']
+    expected = dict(job_id='3341',run_id=a.RUN.name,code_commit=a.CODE,config_sha256=a.CONFIG,data_identity=a.DATA,model_identity=a.MODEL)
+    path = a.RUN/'checkpoints/training_state/rolling-completed'/('global_step_'+str(outer))/'manifest.json'
+    described = Path(latest['manifest_path']); alias = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
+    if described.is_relative_to(alias):
+        described = a.ROOT/described.relative_to(alias)
+    native, raw = a.read_json(path,paths)
+    a.require(described == path and a.digest(raw) == latest['manifest_sha256']
+              and latest['status'] == native['status'] == 'COMPLETE_NATIVE_ROLLING_STATE_SAVED'
+              and native['identity'] == i and all(i.get(k) == v for k,v in expected.items()), 'Own latest native phase identity changed')
+    workers = native['worker_states']
+    a.require(len(workers) == 8 and sorted(w['identity']['rank'] for w in workers) == list(range(8))
+              and all(all(w['identity'].get(k) == v for k,v in expected.items()) and w['identity']['world_size'] == 8
+                      and w['identity']['completed_step'] == outer for w in workers), 'Own latest phase eight-rank identity differs')
+    return outer
+
+
+def lowspace_archive_preserve(name, request, approval):
+    """Source resident already; cap compressed bytes; reserve one later CPU temp.
+
+This profile refuses current low capacity. It never borrows the next native
+save reserve, and has no automatic path from FAILED/PARTIAL to replacement.
+"""
+    a = archive_module(); budget = lowspace_module()
+    with a.own_lock() as paths:
+        directory, manifest, proof = a.completed_directory(name,paths)
+        source = directory/'actor-inputs.pt'; before = paths.signature(source)
+        free, block = budget.available(paths)
+        capacity_plan = budget.estimate(free,before['bytes'],current_latest(a,paths),block)
+        a.require(capacity_plan['may_begin_new_archive'], 'LOWSPACE_REFUSED_BEFORE_INTENT: '+json.dumps(capacity_plan,sort_keys=True))
+        target = a.ARCHIVES/name; paths.mkdir(target)
+        paths.write_json_new(target/'intent.json',dict(request_id=request,approval_reference=approval,
+                             status='BOUNDED_DISK_ARCHIVE_PRESERVE_INTENT_ONLY',source=str(source),source_signature=before,
+                             capacity_plan=capacity_plan,lowspace_entry_sha256=LOWSPACE_ENTRY_SHA,**proof))
+        partial = target/'actor-inputs.pt.gz.partial'; final = target/'actor-inputs.pt.gz'
+        owned = None; published = False
+        with paths.parent(partial) as (parent,leaf):
+            try:
+                fd = os.open(leaf,os.O_RDWR|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600,dir_fd=parent)
+                with os.fdopen(fd,'w+b',buffering=0) as out, os.fdopen(paths.open(source,os.O_RDONLY),'rb') as original:
+                    st = os.fstat(out.fileno()); owned = (st.st_dev,st.st_ino)
+                    a.require(st.st_dev == paths.device and a.signature_fd(original.fileno()) == before,'Original or own partial identity differs')
+                    writer = budget.CappedArchiveWriter(out,paths,current_latest(a,paths),before['bytes'])
+                    reader = a.LimitedReader(original)
+                    with gzip.GzipFile(filename='',fileobj=writer,mode='wb',compresslevel=1,mtime=0) as encoded:
+                        while True:
+                            data = reader.read()
+                            if not data: break
+                            writer.latest = current_latest(a,paths)
+                            encoded.write(data)
+                    out.flush(); os.fsync(out.fileno())
+                    a.require(reader.bytes == before['bytes'] and reader.sha.hexdigest() == manifest['payloads']['actor-inputs.pt']
+                              and a.signature_fd(original.fileno()) == before and paths.signature(source) == before,'Original full SHA or pinned source differs')
+                    archived_bytes = os.fstat(out.fileno()).st_size
+                    encoded_reader = a.LimitedReader(out); out.seek(0)
+                    while encoded_reader.read(): pass
+                    a.require(encoded_reader.bytes == archived_bytes and archived_bytes < before['bytes'],'Archive not smaller; source retained')
+                    out.seek(0)
+                    with gzip.GzipFile(fileobj=out,mode='rb') as decoded:
+                        restored = a.LimitedReader(decoded)
+                        while restored.read():
+                            a.require(restored.bytes <= before['bytes'],'Decoded bound exceeded')
+                            budget.guard(paths,current_latest(a,paths),writer.temp,'decode-hash-no-temp')
+                    a.require(restored.bytes == before['bytes'] and restored.sha.hexdigest() == reader.sha.hexdigest(),'Full decoded SHA differs')
+                    source_blocks = os.fstat(original.fileno()).st_blocks*512
+                    archive_blocks = os.fstat(out.fileno()).st_blocks*512
+                    a.require(source_blocks > archive_blocks,'No actual positive allocated-block savings; preserve source')
+                    budget.guard(paths,current_latest(a,paths),writer.temp,'publish-before-future-cpu')
+                    check = os.stat(leaf,dir_fd=parent,follow_symlinks=False)
+                    a.require(stat.S_ISREG(check.st_mode) and (check.st_dev,check.st_ino) == owned,'Own partial leaf changed')
+                    os.link(leaf,final.name,src_dir_fd=parent,dst_dir_fd=parent,follow_symlinks=False)
+                    final_stat = os.stat(final.name,dir_fd=parent,follow_symlinks=False)
+                    a.require((final_stat.st_dev,final_stat.st_ino) == owned,'Published archive inode differs')
+                    published = True
+                    os.unlink(leaf,dir_fd=parent); os.fsync(parent)
+                    receipt = dict(status='COMPLETE_LOSSLESS_ARCHIVE_ORIGINAL_RETAINED',request_id=request,approval_reference=approval,
+                         original_path=str(source),original_bytes=before['bytes'],original_sha256=reader.sha.hexdigest(),original_signature=before,
+                         archive_path=str(final),archive_bytes=archived_bytes,archive_sha256=encoded_reader.sha.hexdigest(),
+                         full_decompression_sha256=restored.sha.hexdigest(),original_retained=True,reclaimed_source_bytes=0,
+                         source_allocated_bytes=source_blocks,archive_allocated_bytes=archive_blocks,
+                         positive_allocated_savings_before_original_unlink=source_blocks-archive_blocks,
+                         capacity_profile=budget.PROFILE,capacity_plan=capacity_plan,lowspace_entry_sha256=LOWSPACE_ENTRY_SHA,
+                         source_manifest_and_jsonl_unchanged=True,training_unchanged=True,**proof)
+                    # Final path pinned again and independently byte-hashed before complete.
+                    sha,size = a.hash_file(final,paths)
+                    a.require(sha == receipt['archive_sha256'] and size == archived_bytes and paths.signature(source) == before,'Final archive/readback or source differs')
+                    paths.write_json_new(target/'.complete.json',receipt)
+                    return receipt
+            finally:
+                # Only this call's unpublished partial inode can be reclaimed.
+                # Final archive/intent survive any unknown publication outcome.
+                if owned is not None and not published:
+                    try: st = os.stat(leaf,dir_fd=parent,follow_symlinks=False)
+                    except FileNotFoundError: st = None
+                    if st is not None and stat.S_ISREG(st.st_mode) and (st.st_dev,st.st_ino) == owned:
+                        os.unlink(leaf,dir_fd=parent); os.fsync(parent)
+
+
 def write_bytes_new(paths, path, raw):
     with paths.parent(path) as (parent, leaf):
         pending = '.' + leaf + '.pending-%d' % os.getpid()
@@ -116,6 +229,8 @@ def verified_archive_input(name, request, expected_original):
         receipt, raw = a.read_json(a.ARCHIVES / name / '.complete.json', paths)
         expected = dict(original=expected_original, archive=receipt['archive_sha256'], receipt=a.digest(raw))
         directory, target, _, _, receipt, _ = bound_archive(a, paths, name, expected)
+        budget = lowspace_module()
+        budget.guard(paths,current_latest(a,paths),receipt['original_bytes'],'cpu-before-single-temp')
         tmp = target / ('audit-temp-' + request + '.actor-inputs.pt')
         a.require(re.fullmatch('[a-z0-9-]{8,80}', request), 'Safe unique owned audit request required')
         with paths.parent(tmp) as (parent, leaf):
@@ -133,6 +248,7 @@ def verified_archive_input(name, request, expected_original):
                             if not block:
                                 break
                             a.require(reader.bytes <= receipt['original_bytes'], 'Archive decompression exceeds original size')
+                            budget.guard(paths,current_latest(a,paths),receipt['original_bytes']-reader.bytes+len(block),'cpu-decode')
                             out.write(block)
                         out.flush(); os.fsync(out.fileno()); os.fchmod(out.fileno(), 0o400)
                     a.require(reader.bytes == receipt['original_bytes'] and reader.sha.hexdigest() == expected_original
@@ -143,6 +259,7 @@ def verified_archive_input(name, request, expected_original):
                     a.require(stat.S_ISREG(st.st_mode) and (st.st_dev,st.st_ino) == owned, 'Owned audit temp replaced')
                     handle = a.VerifiedActorInput(paths, held.fileno(), directory/'actor-inputs.pt', parent, leaf)
                     handle.archive_sha256 = expected['archive']; handle.archive_receipt_sha256 = expected['receipt']
+                    budget.guard(paths,current_latest(a,paths),0,'cpu-consume-held-temp')
                     yield handle
             finally:
                 if owned is not None:
@@ -171,7 +288,8 @@ def bound_cpu_receipt(a, paths, name, expected, proof):
               and adapter['original_verification_logic_unchanged'] is True
               and adapter['original_checker_sha256'] == 'c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc'
               and adapter['replacement_entry_sha256'] == hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-              and adapter['archive_entry_sha256'] == ARCHIVE_ENTRY_SHA, 'Actual original-logic archive-aware CPU acceptance missing')
+              and adapter['archive_entry_sha256'] == ARCHIVE_ENTRY_SHA
+              and adapter['lowspace_entry_sha256'] == LOWSPACE_ENTRY_SHA, 'Actual original-logic archive-aware CPU acceptance missing')
     matching = [r for r in adapter['actor_inputs'] if r['directory'] == name and r['archive_used'] is True
                 and r['actor_input_sha256'] == expected['original'] and r['archive_sha256'] == expected['archive']
                 and r['archive_receipt_sha256'] == expected['receipt']]
@@ -181,11 +299,17 @@ def bound_cpu_receipt(a, paths, name, expected, proof):
     return a.digest(raw)
 
 
+def replacement_metadata_guard(a,paths):
+    free,_ = lowspace_module().available(paths)
+    a.require(free >= lowspace_module().METADATA_ALLOWANCE,'Insufficient replacement metadata headroom; preserve source/staging')
+
+
 def replace_existing(name, request, approval, expected):
     a = archive_module()
     with a.own_lock() as paths:
         directory, target, manifest, proof, receipt, receipt_raw = bound_archive(a, paths, name, expected)
         cpu_sha = bound_cpu_receipt(a, paths, name, expected, proof)
+        replacement_metadata_guard(a,paths)
         source = directory / 'actor-inputs.pt'
         staging = target / ('.replacement-staging-' + request)
         quarantine = staging / 'actor-inputs.pt'
@@ -227,6 +351,7 @@ def replace_existing(name, request, approval, expected):
                              original_manifest_sha256=proof['original_manifest_sha256'], full_decompression_verified=True)
                 ready['archive_aware_cpu_receipt_sha256'] = cpu_sha
                 ready['owned_staging_path'] = str(quarantine)
+                replacement_metadata_guard(a,paths)
                 paths.write_json_new(target / '.replacement.ready.json', ready)
                 # Re-pin/recheck source immediately before the only destructive
                 # operation. Both actual parent FD and original FD stay held.
@@ -243,6 +368,7 @@ def replace_existing(name, request, approval, expected):
                 # before removing it. A swapped source is preserved, never
                 # deleted on a stale check-before-unlink identity assertion.
                 with paths.parent(quarantine) as (stage_parent, stage_leaf):
+                    replacement_metadata_guard(a,paths)
                     rename_no_replace(parent, leaf, stage_parent, stage_leaf)
                     os.fsync(parent); os.fsync(stage_parent)
                     captured = os.open(stage_leaf, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=stage_parent)
@@ -289,6 +415,7 @@ def reconcile(name, request, approval, expected):
         with os.fdopen(paths.open(target / 'actor-inputs.pt.gz', os.O_RDONLY), 'rb') as compressed:
             actual = verify_archive(a, compressed, receipt)
             a.require(actual == ready['archive_signature'], 'Archive changed since durable pre-unlink ready proof')
+        replacement_metadata_guard(a,paths)
         paths.write_json_new(target / ('.reconcile-intent-' + request + '.json'),
                              dict(request_id=request, approval_reference=approval, original_request_id=intent['request_id']))
         expected_staging = target / ('.replacement-staging-' + intent['request_id']) / 'actor-inputs.pt'
@@ -301,6 +428,7 @@ def reconcile(name, request, approval, expected):
                     a.require(verified_stream(a, held, expected['original'], receipt['original_bytes']) == ready['source_signature'], 'Staging inode/full SHA differs; preserve all files')
                     st = os.stat(leaf, dir_fd=parent, follow_symlinks=False)
                     a.require(stat.S_ISREG(st.st_mode) and (st.st_dev,st.st_ino) == (ready['source_signature']['device'],ready['source_signature']['inode']), 'Own staging leaf replaced')
+                    replacement_metadata_guard(a,paths)
                     os.unlink(leaf, dir_fd=parent); os.fsync(parent); staging_unlinked = True
         final = dict(status='RECONCILED_SOURCE_ABSENT_VERIFIED_ARCHIVE_RETAINED', request_id=request,
                      approval_reference=approval, original_request_id=intent['request_id'], expected_pins=expected,
@@ -326,12 +454,13 @@ def main():
         with a.OwnPaths() as paths:
             directory, manifest, proof = a.completed_directory(args.directory, paths)
             print(json.dumps(dict(status='PLAN_ONLY_UNAPPROVED_NO_ASSET_CHANGE', source=str(directory/'actor-inputs.pt'),
-                                  original_sha256=manifest['payloads']['actor-inputs.pt'], **proof), indent=2))
+                                  original_sha256=manifest['payloads']['actor-inputs.pt'],
+                                  lowspace_budget=lowspace_module().estimate(lowspace_module().available(paths)[0],paths.signature(directory/'actor-inputs.pt')['bytes'],current_latest(a,paths),lowspace_module().available(paths)[1]), **proof), indent=2))
         return
     a.require(args.execute and args.approval_reference and args.request_id and re.fullmatch('[a-z0-9-]{8,80}', args.request_id),
               'Future explicit human authorization plus execute/reference/unique request required')
     if args.action == 'archive-preserve':
-        result = a.archive_preserve(args.directory, args.request_id, args.approval_reference)
+        result = lowspace_archive_preserve(args.directory, args.request_id, args.approval_reference)
     else:
         expected = {name:getattr(args, 'expected_' + name + '_sha256') for name in ('original','archive','receipt','cpu')}
         a.require(all(type(x) is str and re.fullmatch('[a-f0-9]{64}', x) for x in expected.values()), 'Specific approved original/archive/receipt SHA pins required')

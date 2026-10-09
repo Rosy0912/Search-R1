@@ -1,10 +1,12 @@
 # 待明确许可：3341同机actor-inputs归档替换与CPU验收候选
 
+低空间更新以同目录`TRAJECTORY_LOWSPACE_RECOVERY_PREPARE_PLAN.md`为准；当前profile明确拒绝10:25:49Z容量下的新归档，不声称已经解决。
+
 本轮只在Mac本地准备和发布源码；没有新增远端读取、部署、压缩、删除、替换、GPU测试或Slurm作业。主线3341继续到200。已PASS的79f3归档入口原样保留，本计划补齐实际释放空间和最终验收的候选入口，不能把保留原文件的归档（释放0 B）视作解决容量缺口。
 
 固定范围是h100-10/H10018原ext4、run `tree-current200-continue-3341`的`output/trajectories/outer-######-attempt-######/actor-inputs.pt`。候选只选择已有完整credited attempt、八rank实际JSON/SHA、原manifest/source/config/data/model身份绑定的轮，并满足outer≤最新完整native−2。原manifest及已gzip的`trajectories.jsonl.gz`不改；native、模型权重、数据集、训练源码和保存协议不改。所有新增产物留在同一run的`.trajectory-actorinput-archives-20261009`，没有Mac/NFS/其它节点资产中转。
 
-`trajectory_actorinput_replacement_candidate.py`默认为metadata-only plan。未来明确批准`archive-preserve`后先调用固定SHA79f3接口，以nice19/ionice3、一CPU线程、8MiB/s、gzip level1生成归档；核原SHA、压缩SHA、完整解压原SHA/bytes且压缩更小，原文件仍保留。压缩率和真实可节省量当前未知，不能承诺足以覆盖04:04预算缺口34.67–41.49GB或49.38GB缓冲。
+`trajectory_actorinput_replacement_candidate.py`默认为metadata-only plan。未来明确批准`archive-preserve`后复用固定SHA79f3的FD/身份/锁/证明接口，由新增bounded-disk profile以nice19/ionice3、单线程、8MiB/s、gzip level1生成归档；压缩硬上限和单CPU解压预算详见低空间计划；核原SHA、压缩SHA、完整解压原SHA/bytes且压缩更小，原文件仍保留。压缩率和真实可节省量当前未知，不能承诺足以覆盖04:04预算缺口34.67–41.49GB或49.38GB缓冲。
 
 未来独立CPU入口是`check_behavior_mu_archive_cpu_candidate.py`，默认只打印计划，不打开tensor或写运行文件。实际verify同样需要明确许可、execute、approval reference和唯一request；CPU只绑定一个核心、低优先级，CUDA必须显式为空。它在固定V14 package目录用FD读入SHA绑定的原checker `c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc`及四份原helpers，并保留原behavior-mu/DataProto/真实原SHA、Tree身份、beta、tokenizer、无optimizer/forward/CUDA等校验逻辑。只把文件访问改为同机固定FD；attempt枚举仅作机械IO替换，其派生源码SHA另记，不改变原accounting验证分支。原checker/trainer文件不会被热改。
 

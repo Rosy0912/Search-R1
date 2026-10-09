@@ -16,7 +16,7 @@ import stat
 import sys
 import types
 
-REPLACEMENT_ENTRY_SHA = 'c60168dedea2214dadabf8898cde713bfb4268e588e142fdc11f84b6faf0924f'
+REPLACEMENT_ENTRY_SHA = 'f641d463d65f2f6a7b1e9a8334cb89b9a6a175342c88616467e0e5669ec239eb'
 PACKAGE_MANIFEST_SHA = '9774e8854889ace8e618335d5f09c8cfbe229bd265c9b6f454d46ebc8cdfbc88'
 PINS = {
     'production_contract.py':'c57001c3c790d7218973587e534e19f657cdee5b7d9d97f82298842e7886c476',
@@ -188,6 +188,7 @@ def verify(outer, request, approval):
                     break
         finally:
             os.close(attempts)
+        helper.lowspace_module().guard(paths,helper.current_latest(a,paths),0,'cpu-before-intent')
         audit_root = a.ARCHIVES / 'cpu-audits'; paths.mkdir(audit_root, exist_ok=True)
         lease = paths.open(audit_root / '.single-audit.lock', os.O_RDWR | os.O_CREAT)
         try:
@@ -216,12 +217,13 @@ def verify(outer, request, approval):
             result['archive_adapter'] = dict(status='INDEPENDENT_ARCHIVE_AWARE_CPU_ACCESS_COMPLETED', request_id=request,
                 approval_reference=approval, original_checker_sha256=PINS['check_behavior_mu_cpu.py'], original_checker_output_sha256=a.digest(original_raw),
                 package_manifest_sha256=PACKAGE_MANIFEST_SHA, frozen_helper_sha256=PINS, replacement_entry_sha256=REPLACEMENT_ENTRY_SHA,
-                archive_entry_sha256=helper.ARCHIVE_ENTRY_SHA, new_entry_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                archive_entry_sha256=helper.ARCHIVE_ENTRY_SHA, lowspace_entry_sha256=helper.LOWSPACE_ENTRY_SHA, new_entry_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 accounting_io_adapted_executable_sha256=attempt_executable_sha,
                 io_adaptations='Pinned own JSON/hash/enumeration and actor-input FD routing; original validation/accounting checks retained',
                 actor_inputs=records, one_file_temporary_at_a_time=True, cpu_affinity_cores=1,
                 original_verification_logic_unchanged=True, training_checker_source_unchanged=True, model_weights_loaded=False,
                 tokenizer_loading='Original checker package-bound tokenizer metadata/CPU loader retained', optimizer_writes=0, model_forwards=0)
+            helper.lowspace_module().guard(paths,helper.current_latest(a,paths),0,'cpu-final-metadata')
             paths.write_json_new(target / '.complete.json', result)
             os.fsync(parent)
         return result
