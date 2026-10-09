@@ -1,0 +1,17 @@
+{
+  "schema": "opsd-ablation-final-driver-terminal-source-v2",
+  "previous_source_directory": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/search-e1-publish/experiments/search_e1/control/opsd_ablation_final_driver_terminal_v1",
+  "change": "One derived top-level accepted_no_owned_or_opaque flag only; v1 live binding remains valid unchanged.",
+  "no_new_fixture_or_review": true,
+  "verification": "One static AST parse; actual Node terminal acceptance is separate.",
+  "files": {
+    "README.md": {
+      "bytes": 1610,
+      "sha256": "2539e8eabddf863789e38115bb2c23c1ba971de47da620985885744dd11e2349"
+    },
+    "capture.py": {
+      "bytes": 24297,
+      "sha256": "b391e3b6744203640a1e4e32ec1cdbe65df96c7d6c2d29970bd6ed27c93dbc2c"
+    }
+  }
+}
