@@ -45,20 +45,28 @@ def main():
                 save('preflight-failure.json', {'epoch': time.time(), 'retry': attempt + 1, 'error_type': type(error).__name__})
                 time.sleep(min(30, 2 + attempt))
         raise RuntimeError('HF preflight retry limit')
-    info = api_request('GET', api, headers=headers)
-    info.raise_for_status()
-    assert info.json()['private'], 'Private repository required'
     records = plan['records']
     paths = ['topd-migration-20261009/archives/' + x['group'] + '.tar.zst' for x in records]
-    meta = api_request('POST', api + '/paths-info/main', headers=headers,
-                         json={'paths': paths})
-    meta.raise_for_status()
-    inventory = {x['path']: x for x in meta.json()}
+    cached = ROOT / 'hf-source-sha-inventory.json'
+    reuse = os.environ.get('TOPD_REUSE_VERIFIED_INVENTORY') == '1' and cached.exists()
+    if reuse:
+        prior = json.loads(cached.read_text())
+        assert prior['status'] == 'ALL_HF_SOURCE_ARCHIVE_SHA_MATCH'
+        inventory = prior['inventory']
+    else:
+        info = api_request('GET', api, headers=headers)
+        info.raise_for_status()
+        assert info.json()['private'], 'Private repository required'
+        meta = api_request('POST', api + '/paths-info/main', headers=headers,
+                             json={'paths': paths})
+        meta.raise_for_status()
+        inventory = {x['path']: x for x in meta.json()}
     for record, path in zip(records, paths):
         entry = inventory[path]
         assert entry['size'] == record['archive_bytes']
         assert entry['lfs']['oid'] == record['archive_sha256']
-    save('hf-source-sha-inventory.json', {'epoch': time.time(), 'status': 'ALL_HF_SOURCE_ARCHIVE_SHA_MATCH', 'inventory': inventory})
+    if not reuse:
+        save('hf-source-sha-inventory.json', {'epoch': time.time(), 'status': 'ALL_HF_SOURCE_ARCHIVE_SHA_MATCH', 'inventory': inventory})
     save('controller.json', {'pid': os.getpid(), 'epoch': time.time(), 'repo': repo, 'groups': len(records), 'root': str(ROOT), 'token_persisted': False})
     for record, path in zip(records, paths):
         name = record['group']
@@ -67,7 +75,9 @@ def main():
         receipt = ROOT / (name + '-download-verified.json')
         if receipt.exists() and final.exists() and digest(final) == record['archive_sha256']:
             continue
-        failures = 0
+        old_failure = ROOT / (name + '-failure.json')
+        failures = json.loads(old_failure.read_text()).get('count', 0) if old_failure.exists() else 0
+        consecutive_failures = 0
         while True:
             try:
                 offset = part.stat().st_size if part.exists() else 0
@@ -77,7 +87,7 @@ def main():
                     if offset:
                         h['Range'] = 'bytes=%d-' % offset
                     url = 'https://huggingface.co/' + repo + '/resolve/main/' + path
-                    with requests.get(url, headers=h, stream=True, timeout=(30, 120)) as response:
+                    with requests.get(url, headers=h, stream=True, timeout=(8, 20)) as response:
                         response.raise_for_status()
                         if offset:
                             assert response.status_code == 206
@@ -92,6 +102,7 @@ def main():
                                 assert offset + len(b) <= record['archive_bytes']
                                 out.write(b)
                                 offset += len(b)
+                                consecutive_failures = 0
                                 if time.time() - last >= 15:
                                     out.flush()
                                     save(name + '-progress.json', {'epoch': time.time(), 'group': name, 'bytes': offset, 'total': record['archive_bytes'], 'status': 'DOWNLOADING'})
@@ -106,9 +117,11 @@ def main():
                 break
             except Exception as error:
                 failures += 1
-                save(name + '-failure.json', {'epoch': time.time(), 'group': name, 'count': failures, 'error_type': type(error).__name__})
+                consecutive_failures += 1
+                retry_seconds = min(20, 2 * consecutive_failures)
+                save(name + '-failure.json', {'epoch': time.time(), 'group': name, 'count': failures, 'consecutive_failures': consecutive_failures, 'retry_seconds': retry_seconds, 'error_type': type(error).__name__})
                 print(json.dumps({'group': name, 'status': 'RETRY', 'count': failures, 'error_type': type(error).__name__}), flush=True)
-                time.sleep(min(180, failures * 30))
+                time.sleep(retry_seconds)
     save('download-complete.json', {'epoch': time.time(), 'status': 'ALL_PLANNED_HF_DOWNLOAD_ARCHIVES_SHA_VERIFIED', 'groups': len(records)})
 
 if __name__ == '__main__':

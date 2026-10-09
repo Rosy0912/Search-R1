@@ -3,7 +3,7 @@ import json,pathlib,shlex,subprocess,sys
 code=r'''
 import concurrent.futures,json,os,pathlib,subprocess,sys,time,yaml,socket
 token=sys.stdin.readline().strip();source=yaml.safe_load(pathlib.Path('/dev/shm/topd-hkust2-network.yaml').read_text())
-nodes=source['proxies'];wanted=[n['name'] for n in nodes if n['type'] not in ('http','socks5')]
+nodes=source['proxies'];wanted=[n['name'] for n in nodes if '公告' not in n['name']]
 def run(case):
  i,name=case;port=18116+i
  for p in (port,port+1000):
