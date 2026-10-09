@@ -1,0 +1,39 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6895,
+      "sha256": "6e38adb420ee474959b983f7ba3606a6363471d8fee3ac021438f2daec029d79"
+    },
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "a9321550784c00ff54da3d2a498af06c817067330e83d8f24b19f775834465fc"
+    },
+    "entry.py": {
+      "bytes": 23863,
+      "sha256": "a1233ae72d72b01c46ff0f837672c97f237717985a0c50b1925ba94db3b86ce6"
+    },
+    "node_peft_cpu_fixture.py": {
+      "bytes": 6898,
+      "sha256": "5eca1d42bdb991cda00eccf7c8edef56752f7e8a7bb2e85871b71bb47d40d1e8"
+    },
+    "recovery_common.py": {
+      "bytes": 7247,
+      "sha256": "02423120a3566de966c22e7b77a8ffde0f50c51028406607b02a691c88c31f99"
+    },
+    "test_entry.py": {
+      "bytes": 16905,
+      "sha256": "fb891bc945f95cc6ad6e4e37f294d60bc1716cc48e9b04d71c4876ebad63bba1"
+    },
+    "test_trainer_recovery.py": {
+      "bytes": 9411,
+      "sha256": "cca3e5a038374f9166079885b4193ac3a40ca5486f962be5daed926415c4880d"
+    },
+    "trainer_launcher.py": {
+      "bytes": 7056,
+      "sha256": "32cde05279516c5d474e38676870710b3d352146a971b3fd477c8d7bf05d7784"
+    }
+  },
+  "large_local_products": false,
+  "original_production_changed": false,
+  "schema": "opsd-signal-weight-named-adapter-recovery-source-v1"
+}
