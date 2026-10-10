@@ -165,6 +165,39 @@ def compact_accepted(summary_path, output, update, C_base):
         original_online_row_rewards_available=False)
 
 
+def known_diagnostic_identities(request, run):
+    """Authenticate each producer separately before recognizing cross-cohort PID.
+
+    A retained producer on GPU2 can observe the new recovery on the same device.
+    That process is accepted as a *diagnostic role* only from another explicitly
+    requested, fresh source/config/inputs binding; same UID by itself is useless.
+    """
+    identities = []
+    for item in request['producers']:
+        try:
+            cfg, cfg_sha = read_json(item['config_path'], item['config_sha256'])
+            source = Path(item['source_directory'])
+            man, man_sha = read_json(source / 'source-manifest.json', item['source_manifest_sha256'])
+            require(all(sha_file(source / name) == sha for name, sha in man['source_sha256'].items()), 'diagnostic_source_binding_mismatch')
+            require(cfg['expected_run_id'] == run['run_id'] and cfg['selected_steps'] == item['selected_steps'] and
+                    cfg['gpu_index'] == item['gpu_index'], 'diagnostic_config_binding_mismatch')
+            p = Path(cfg['output']) / 'inputs.json'
+            if not p.is_file():
+                continue
+            inputs, digest = read_json(p)
+            require(inputs['original_run_id'] == run['run_id'] and inputs['config_sha256'] == cfg_sha and
+                    inputs['source_manifest_sha256'] == man_sha and
+                    inputs['requested_replay_steps'] == item['selected_steps'] and inputs['raw_online_R_saved'] is False,
+                    'diagnostic_execution_binding_mismatch')
+            identities.append(dict(gpu_index=item['gpu_index'], producer_id=item['producer_id'],
+                identity=inputs['own_identity'], inputs_sha256=digest))
+        except Exception:
+            # Unauthenticated identities are not whitelisted. The detailed per-
+            # producer report below records their actual read/binding failure.
+            continue
+    return identities
+
+
 def report(request):
     require(sys.platform.startswith('linux') and socket.gethostname() == request['expected_node'] and
             os.environ.get('CUDA_VISIBLE_DEVICES') == '' and 'torch' not in sys.modules, 'wrong_remote_readonly_CPU_context')
@@ -177,6 +210,7 @@ def report(request):
     updates = [json.loads(x) for x in raw.splitlines()]
     require(len({x['step'] for x in updates}) == len(updates), 'duplicate_native_steps')
     update_map = {x['step']: x for x in updates}
+    known_diagnostics = known_diagnostic_identities(request, run)
     producer_reports = []; available_steps = set()
     for item in request['producers']:
         r = dict(producer_id=item['producer_id'], requested_steps=item['selected_steps'], GPU_index=item['gpu_index'])
@@ -213,8 +247,9 @@ def report(request):
                 r['last_memory_observer'] = dict(observed_utc=mem['observed_utc'], actual_free_mib=mem['candidate']['actual_free_mib'],
                     process_memory_mib={str(p['pid']): p['memory_mib'] for p in mem['processes']}, bytes=mem_bytes,
                     stale_observer_is_not_fresh_GPU_query=True)
-            r['stdout'] = compact_stdout(Path(request['logs_directory']) / ('gpu' + str(item['gpu_index']) + '.stdout.jsonl'))
-            r['stderr'] = compact_log(Path(request['logs_directory']) / ('gpu' + str(item['gpu_index']) + '.stderr.log'))
+            logs = Path(item.get('logs_directory', request['logs_directory']))
+            r['stdout'] = compact_stdout(logs / ('gpu' + str(item['gpu_index']) + '.stdout.jsonl'))
+            r['stderr'] = compact_log(logs / ('gpu' + str(item['gpu_index']) + '.stderr.log'))
             r['accepted_steps'] = []
             for step in item['selected_steps']:
                 p = out / ('TRAIN-' + str(step) + '-summary.json')
@@ -227,14 +262,16 @@ def report(request):
             pf = importlib.util.module_from_spec(spec); spec.loader.exec_module(pf)
             snap = pf.resource_snapshot(base, run, item['gpu_index'])
             processes = []
-            own = inputs['own_identity'] if inputs else None
             for proc in snap['compute_processes']:
-                is_own = own is not None and pf.same_process(proc, own) and proc['command_sha256'] == own['command_sha256']
+                exact = [d for d in known_diagnostics if d['gpu_index'] == item['gpu_index'] and
+                    pf.same_process(proc, d['identity']) and proc['command_sha256'] == d['identity']['command_sha256']]
+                require(len(exact) <= 1, 'duplicate_exact_diagnostic_PID_binding')
                 processes.append(dict(pid=proc['pid'], start_ticks=proc['start_ticks'], sid=proc['sid'], uid=proc['uid'],
                     memory_mib=proc['memory_mib'], command_sha256=proc['command_sha256'],
                     recorded_command_sha256=proc.get('recorded_command_sha256'),
-                    role='exact_diagnostic' if is_own else proc['recorded_role'],
-                    allowed=bool(is_own or proc['matched_recorded_pid_tick_sid_uid'])))
+                    role='exact_diagnostic' if exact else proc['recorded_role'],
+                    diagnostic_producer_id=exact[0]['producer_id'] if exact else None,
+                    allowed=bool(exact or proc['matched_recorded_pid_tick_sid_uid'])))
             require(snap['candidate_gpu']['uuid'] == config['gpu_uuid'], 'producer_GPU_UUID_changed')
             r['fresh_GPU'] = dict(snap['candidate_gpu'], processes=processes,
                 foreign_or_unbound_pids=[p['pid'] for p in processes if not p['allowed']],
