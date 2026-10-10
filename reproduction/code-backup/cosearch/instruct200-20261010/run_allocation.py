@@ -49,7 +49,12 @@ def main():
     for key in ('RAY_ADDRESS','RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES','RAY_EXPERIMENTAL_NOSET_ROCR_VISIBLE_DEVICES','ROCR_VISIBLE_DEVICES','HIP_VISIBLE_DEVICES','GPU_DEVICE_ORDINAL'):
         env.pop(key,None)
         os.environ.pop(key,None)
-    env['PYTHONPATH']=':'.join([str(ROOT/'tools'),str(ROOT/'repo'),str(ROOT/'repo/verl'),str(BASE/'runtime/flash-attn-281-hpc-build/lib'),str(BASE/'source/author-native/env/lib/python3.11/site-packages')])
+    scorer=BASE/'runtime/pytrec-eval-05-hpc-build'
+    scorer_receipt=json.loads((scorer/'build-complete.json').read_text())
+    extension=Path(scorer_receipt['extension'])
+    if scorer_receipt['status']!='PYTREC_05_NATIVE_IMPORT_METRICS_PASS' or hashlib.sha256(extension.read_bytes()).hexdigest()!=scorer_receipt['sha256']:
+        raise RuntimeError('Native scorer compatibility build not verified')
+    env['PYTHONPATH']=':'.join([str(ROOT/'tools'),str(ROOT/'repo'),str(ROOT/'repo/verl'),str(extension.parent),str(BASE/'runtime/flash-attn-281-hpc-build/lib'),str(BASE/'source/author-native/env/lib/python3.11/site-packages')])
     python=str(BASE/'source/author-native/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11')
     children=[];logs=[]
     def launch(command,name,child_env):
