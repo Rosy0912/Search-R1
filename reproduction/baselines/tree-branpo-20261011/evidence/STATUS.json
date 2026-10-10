@@ -179,6 +179,6 @@
   "cost_summary": "COST_SUMMARY-3360.json",
   "latest_observation": "64 direct rank records/8 credited attempts; actual epoch0 step9 confirmed OUTER9_STARTED-3360.json",
   "safety_summary": "SAFETY_SUMMARY-3360.json",
-  "verified_wait": "VERIFIED_WAIT-3360.json",
-  "inflight_rollout": "INFLIGHT_ROLLOUT8-3360.json"
+  "latest_live_snapshot": "CURRENT-3360.json",
+  "last_progress_receipt": "OUTER9_STARTED-3360.json"
 }
