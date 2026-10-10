@@ -48,7 +48,7 @@ R 相对 C 的全轨迹优势平方和为2.265647595倍，RMS为1.505206828倍�
 \ell_i=-\sum_t M_{it}\log\mu(a_{it}\mid H_{it})/\sum_tM_{it}.
 \]
 
-最终 PG loss 已含有带正负号的 A、概率比和 clip，并另加 reference KL，因此不能拿其标量当自信度。当前实现已有 `sampling_log_probs`/`old_log_probs` 与对应真实 mask。复用它求每轨迹负均值，不新增模型前向；它是采样分布 μ 的行为 NLL，不静默称未经处理模型 π 的 NLL。新增 EMA/CDF/exp 为小型统计计算，实际增量时间尚未测量。
+最终 PG loss 已含有带正负号的 A、概率比和 clip，因此不能拿其标量当自信度。完整 policy loss 可以另含 reference KL/entropy；当前已核 common8 recipe 的两个系数均为0，不能说当前有非零 KL 项。当前实现已有 `sampling_log_probs`/`old_log_probs` 与对应真实 mask。复用它求每轨迹负均值，不新增模型前向；它是采样分布 μ 的行为 NLL，不静默称未经处理模型 π 的 NLL。新增 EMA/CDF/exp 为小型统计计算，实际增量时间尚未测量。
 
 ## 审计身份
 

@@ -75,3 +75,15 @@ CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅�
 21:52 CST实际进展：G_NEG14/25、末CP138/index13 SHA b77ed31584a98ba284b227e54637b33aaf9c1a3b163d270c1364aae340646293；原生trainer实际exit0，TRAIN更新前1189/2560=46.4453125%，累计四组39/100。第15轮真实采样4071821bytes并增长，无error。CP138远端备份9成员359785300bytes/逐SHA与两端exit0完成。新posthoc兼容源码ef1db16821dcdbdca7bbe8947c2abc48908ef4a3仅CPU部署source/batched-replay-v1-ef1db16，Node3新转换检查通过，科学回放公式与worker未改，未GPU开始。训练部署仍0146350，不把分析代码部署当训练或效果完成。
 
 后续未启动GPU的结果准备以7e7a415为准：batched_eval_v4仅将已执行的每波GPU释放检查返回值及代码身份落盘，worker/merge/admission函数体与v3逐字节相同；batched_replay_v2仅补齐完整raw_checkpoint身份及新typed端点的汇总入口，普通概率/KL/区域数学函数未改。Node原环境CPU导入成功且4项兼容检查通过，没有额外生成/训练/审核轮。旧v3/v1保留为CPU准备历史，不自动启动。G_NEG第15轮采样2560完整后已TRAINING，实际native更新143，无error；属于同一恢复后run，未开始测试。
+
+22:08 CST实际里程碑：G_NEG15/25完成、CP148/index14 SHA48a4738999172e2bd21f8bec0e64aa1c4f4aa9033a8d20ba69b74d44e0a95127，真实trainerwait0、P=K299、累计曝光4548。TRAIN更新前1198/2560=46.796875%，全study40/100条完整记录。第16轮直接采样，trace从5573496增长至13628637bytes，无error，没有启动15轮补测。raw15的四rank完整状态已跨HKUST节点备份9成员359785492bytes，实际两端exit0及逐SHA通过；新版本v4/v2都仅CPU准备，不代表八次512或最终分析完成。
+
+22:25 CST实际进展：G_NEG16/25、CP158/index15 SHA40adeea6c8694fa7c45a33e754b7751a36672e0c49454a38c4693e6a6e71f7e3，原生trainer实际exit0；P=K307、累计pair曝光4855，TRAIN更新前1249/2560=48.7890625%。四组41/100完整TRAIN记录；第17轮采样trace从2462209增长至18404567bytes、无error，未GPU测试或新增审核。CP158远端备份9成员359785300bytes/两端SSHexit0和逐SHA完成；native记录/备份不冒充本CP独立全Adam张量CPU实读。训练仍原0146350部署，所有已完成更新未重跑。
+
+22:38 CST实际进展：G_NEG17/25、CP168/index16 SHA090c7aed5ea319d6c839ff417de0be9e51a46615180ef65abc8a55b25a630393，trainer真实exit0；P=K311、累计曝光5166，TRAIN更新前1244/2560=48.59375%，四组42/100。第18轮已实际采样、后续trace继续增长；CP168远端备份9成员359785236bytes/两端exit0及逐SHA完成，无新增GPU测试或审核。
+
+评测保真待处理：原执行goal明确HF SDPA/BF16 base+未合并FP32 LoRA，已CPU准备的v4是vLLM合并BF16，二者数值条件不同。目前GPU测试0/8；不能凭改协议并重评baseline就称原native设置全部满足。下一步CPU检查原冻结SearchAgent的可批量实现，优先保持原LoRA/attention/generation设置完成提速；训练继续，保留v4为未运行候选，不隐藏精度差异、不重复已有更新。
+
+23:11 CST实际推进：G_NEG18/25 CP178/index17（P=K293，累计曝光5459，TRAIN更新前1210/2560=47.265625%）及19/25 CP188/index18（P=K295，累计曝光5754，1183/2560=46.2109375%）均真实trainerexit0；四组44/100完整记录。第20轮已真实采样，两个CP远端9成员备份均两端exit0/逐SHA完成，无Mac权重或新增GPU测试。
+
+原精度提速CPU核心0f226d21998ae70326b14be8587a83638b99f9ff已部署source/hf-batch-core-0f226d2：活跃题联合HF generate，原SearchAgent逐题独立终止/forced/context/HTTP单查询/480obs逻辑不改，原SDPA/BF16 base/未合并FP32 LoRA保留。左填充EOS不进入重复惩罚，结束题不延长有效生成；直接执行冻结原SearchAgent类作3场景对照，加原NodeTorch2.4/HF4.46CPU的2项padding/停止检查，5项全通过且CUDA未初始化。当前只是核心/fixture准备，没有完整controller/模型GPU加载/正式512，不能算效果验收；下一步接独立all100后置正式入口，训练继续，v4合并BF16保留为未运行候选不混用。
