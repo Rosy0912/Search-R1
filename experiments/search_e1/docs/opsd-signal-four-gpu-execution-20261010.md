@@ -174,3 +174,6 @@ rich-v2输入发布后，原9e1d179实际CPU/SSH审计wait0、stderr0、accepted
 
 
 CP150/outer14原556754a远端备份也已真实完成：source inventory先验明150/outer14/nextcursor308/full pin，实际CLI wait0、source tar/双SSH/commit各0、source beforeafter inventory相同；9成员359785492字节仅HKUST1持久保存/freshSHA，marker2a96d4ae9dcb28e7fc13d790f7dc8da7685f1ad990ae2ee96c4e49df8e2681cc。没有影响第15轮GPU评测或将CP写Mac；四个小metadata按先发布/readback再K4 staging规则推进，备份不代替EM结果。
+
+
+CP150实际stdout/execution/target marker及stderr四项小metadata在先发布/readback后完成K4 freshSHA staging，proof50f1458dbae3a94faa1547b9678171640a15040039a654cbb2de90831b7bde21。1791591348.609的只读verifiedwait再次实查原controller1554467、eval parent1715934及wave0四worker真实/proc LIVE/同UID/run/tick；当前33/512 unique primary rows（6/8/10/9），wave1尚未自然启动。observerLIVE/fresh0.858s、10729samples/below0，现有report直接free41527/41471/41665/40891MiB；未调用新GPU/HTTP或重做full305/modelhash。没有parent/child/summary/wave terminal或fullrelease，不能报正式测试EM；execution e48f470dc320be9031bd8bb581482532f9074429c933ce0d3b9bbb9de93fca82，保留原同一eval继续。
