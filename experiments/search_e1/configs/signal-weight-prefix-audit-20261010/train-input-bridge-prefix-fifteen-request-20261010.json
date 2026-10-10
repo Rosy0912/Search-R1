@@ -1,0 +1,788 @@
+{
+  "bridge_entry": {
+    "bytes": 1170,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+    "sha256": "e1df4e54e8419c3551b4e0e7c703d4d1cb4af0083bb4caec351f65658a167226"
+  },
+  "bridge_execution_completed": false,
+  "bridge_publication": {
+    "bytes": 2343,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/completion-publication-7d9fea2.json",
+    "sha256": "0dc1375d0d760fd57d98bbf09e05ca512c78edd094f6281bb44af91515dee0d7"
+  },
+  "bridge_source_commit": "7d9fea2333d85716cce1bd08c3d10ee0f3248e28",
+  "bridge_source_manifest": {
+    "bytes": 868,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/source-manifest.json",
+    "sha256": "b36aff538310bbd92c947e790e32254ce3267e9f1f62531aa4729a74bc719163"
+  },
+  "commands": [
+    {
+      "actual_outer_manifest": {
+        "bytes": 59687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/outer-manifest.json",
+        "sha256": "dff1d923f5d2db55cdb5fa02079ccb3848442e7f628ea1dc849be28e5d95826b"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "07c8d06d59f1ff16fb1984fb4458994d7e9a48fafd3e2a8ed65a09442fb7ed8b"
+      },
+      "actual_training_completion": {
+        "bytes": 4163,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/training/outer-complete.json",
+        "sha256": "454903f531925f6c8e54616fdeadb114150191e073adcd5580e18f8ebed179fa"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "36b31890e15e2902e7e201da209c89925e1029b2a2e7b0a1be52f66ff826ed34",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00001.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 1,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00001.json",
+      "sampling_complete": {
+        "bytes": 701968,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00001/sampling-complete.json",
+        "sha256": "36b31890e15e2902e7e201da209c89925e1029b2a2e7b0a1be52f66ff826ed34"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/outer-manifest.json",
+        "sha256": "aca4b149b87616ae145e7d68dc66a3422402cbff37eb3ffe4a5dd71a8ed7ed86"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "69f78396db3410057ef9f8bd5a67403aaca0696d53db0d1941b2f94c41414a15"
+      },
+      "actual_training_completion": {
+        "bytes": 4163,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/training/outer-complete.json",
+        "sha256": "87b9961b85a478c734b4577e80af03a9d7821e528f4a995e4a3ad92ac8c2dfeb"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "0e9a90891227279c54d8a86e52978b1027966bf12e5b2f7ee0bb91c9226f1878",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00002.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 2,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00002.json",
+      "sampling_complete": {
+        "bytes": 761084,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00002/sampling-complete.json",
+        "sha256": "0e9a90891227279c54d8a86e52978b1027966bf12e5b2f7ee0bb91c9226f1878"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/outer-manifest.json",
+        "sha256": "f298c5c2c9ba9c43ad0896ef23231c1e962b1b10198156494c555a4ad20b12fe"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "7199c4153f2abe1a5fb3a9b5b1b362f7761c6c866d5707aba6926b4222d698c2"
+      },
+      "actual_training_completion": {
+        "bytes": 4162,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/training/outer-complete.json",
+        "sha256": "4bb742d458f1346ecb8b4a04dbe5ff4162264224bdd5a7651333194d4343473c"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "0265ce2a6c52bb0e2ab6e55adb39b2274fec5f579a43f0a0b09066c8075cda81",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00003.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 3,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00003.json",
+      "sampling_complete": {
+        "bytes": 821176,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00003/sampling-complete.json",
+        "sha256": "0265ce2a6c52bb0e2ab6e55adb39b2274fec5f579a43f0a0b09066c8075cda81"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/outer-manifest.json",
+        "sha256": "ef63fb9ac0a30f45cff97333778c2bf24aa24101afaf16e22ec8349804c56590"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "326fc27fc751a3c740b69dc90ddeaa8bffd02989150af578c7886f18d5c1b4e5"
+      },
+      "actual_training_completion": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/training/outer-complete.json",
+        "sha256": "72e89ac0e4d0443997fb1d076056913e28da909b0be6da7f0f8a4576c7ae076c"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "8ca8588be21a1cea93c86e8047128c95661f388dbcad9ed5b43e8793e07cb0f5",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00004.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 4,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00004.json",
+      "sampling_complete": {
+        "bytes": 881473,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00004/sampling-complete.json",
+        "sha256": "8ca8588be21a1cea93c86e8047128c95661f388dbcad9ed5b43e8793e07cb0f5"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59688,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/outer-manifest.json",
+        "sha256": "ae15c43315966e6200edb550fc354c9b66dd8cc8c367a17eeffc51919a425349"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18943,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "dbc420c29855d11c5de6cc6d1611a244f21c4a3c8f4971c9b356dcdddda22325"
+      },
+      "actual_training_completion": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/training/outer-complete.json",
+        "sha256": "24121453fdb2d2539ff735f737351f5f5f3439caf775f5daab58e8bcc50d1706"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "ae7471291291465379b711151bb42012c570e4daaf27594df75beda6f5e825ae",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00005.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 5,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00005.json",
+      "sampling_complete": {
+        "bytes": 962945,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00005/sampling-complete.json",
+        "sha256": "ae7471291291465379b711151bb42012c570e4daaf27594df75beda6f5e825ae"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59688,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/outer-manifest.json",
+        "sha256": "8720487af3f3fa656207c4bdc74dfd2b3e8a0cd2fc2fe3fc2aa208ce56a3d55a"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18943,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "1aecc5a60a8046a68efa8c27cf67c58c4c0b61b262d98d2eaec679cd3d1754cc"
+      },
+      "actual_training_completion": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/training/outer-complete.json",
+        "sha256": "bb017d28ed27c1055aa753767c6c945028de49c238b6ee8a16f861f03a90c174"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "f5a1a8d145422b6d9a7656e72f2acd1d80d55647e3a8ce6c12b273f68007105b",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00006.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 6,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00006.json",
+      "sampling_complete": {
+        "bytes": 1000921,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00006/sampling-complete.json",
+        "sha256": "f5a1a8d145422b6d9a7656e72f2acd1d80d55647e3a8ce6c12b273f68007105b"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/outer-manifest.json",
+        "sha256": "da42ac2dd2aafed6ee0e546e5ba32094105b4287a61ed2113aa97c92fb6b4187"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "500d8e1392acf48f580ee63e53bb6764bb44f3f0196505cc908e365003684365"
+      },
+      "actual_training_completion": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/training/outer-complete.json",
+        "sha256": "1ba262b5ee0d273f8eb17489bc3a90ea4373dae290edd7308640d5eadd6f2434"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "7e0e31a4b83cf314733b4dd49d5e9fdd188d1e61e3e199464c382f6e7989b3ec",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00007.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 7,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00007.json",
+      "sampling_complete": {
+        "bytes": 1060798,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00007/sampling-complete.json",
+        "sha256": "7e0e31a4b83cf314733b4dd49d5e9fdd188d1e61e3e199464c382f6e7989b3ec"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59672,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/outer-manifest.json",
+        "sha256": "97ed782d9d0e68a6bf9b24904cbdeb2834d680e7cfd8d33cf89b5aaa3e217a31"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "8120a023cd6466a9cf6ae14c03e37099830521a39021d00b43fcb69a3d1e0282"
+      },
+      "actual_training_completion": {
+        "bytes": 4164,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/training/outer-complete.json",
+        "sha256": "ccee495bd09fb878b3e061e9e554769d376a94647fc21dfb9602c78d3846eaac"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "74017cebaad6e558ded840f2a8ac8fa74a30b121446ad4c35e36eeec47c147af",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00008.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 8,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00008.json",
+      "sampling_complete": {
+        "bytes": 1120817,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00008/sampling-complete.json",
+        "sha256": "74017cebaad6e558ded840f2a8ac8fa74a30b121446ad4c35e36eeec47c147af"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59671,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/outer-manifest.json",
+        "sha256": "f5b9e948752b0fc834cb0d795f7c36d9f2fb6e0e8861794c6b3ab95fcae68d6b"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "6cb16c011042ccb27fd1150863783643a9aad9bdf85adf4f091ca1af36f5e82e"
+      },
+      "actual_training_completion": {
+        "bytes": 4165,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/training/outer-complete.json",
+        "sha256": "9f5481999216bbfd3ea96a487248df3a4fdf1124dca5d9400521d2e898fd7aed"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "101da08f82afc156717bde842717a38bf5e9b0cdf766671f3161c2a2509030d7",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00009.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 9,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00009.json",
+      "sampling_complete": {
+        "bytes": 1180917,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00009/sampling-complete.json",
+        "sha256": "101da08f82afc156717bde842717a38bf5e9b0cdf766671f3161c2a2509030d7"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/outer-manifest.json",
+        "sha256": "fdfc49bf3476a6001da32959b01b8de90003d69fc8d5af73f36d4552c8db2ea2"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "897d54696b7b99232620f9b3be8635cbba2d64216bc9b2707fc365c5ffb60565"
+      },
+      "actual_training_completion": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/training/outer-complete.json",
+        "sha256": "300e69296b323e5483e15f912c2ed5fd375f01cc07e76556db7f3b1b657ea0b3"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "5bb87f763d4134bf1fd25bd2fba4fe7a010d76585ffe8b0a251c49476f50f645",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00010.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 10,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00010.json",
+      "sampling_complete": {
+        "bytes": 1240450,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00010/sampling-complete.json",
+        "sha256": "5bb87f763d4134bf1fd25bd2fba4fe7a010d76585ffe8b0a251c49476f50f645"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/outer-manifest.json",
+        "sha256": "c2aed1d7da28bc7f63df4fa90ae07fe526ae0284d9b3f6e0b5218636d7b41610"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18943,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "4741d125ea933557322c9fc6def663c5758896e343dd51fbde1c62038952c737"
+      },
+      "actual_training_completion": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/training/outer-complete.json",
+        "sha256": "d8814ca61a2315d1f4c38ade94890c41753c9888d959f6c833946236a9b6baf4"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "7fb11dece5133eaaaacabb6fc357776f42156c32d1b8a06e1fe32186011480ae",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00011.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 11,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00011.json",
+      "sampling_complete": {
+        "bytes": 1301271,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00011/sampling-complete.json",
+        "sha256": "7fb11dece5133eaaaacabb6fc357776f42156c32d1b8a06e1fe32186011480ae"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59694,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/outer-manifest.json",
+        "sha256": "87c6436e04a3c656aea0ea07f0d27edd1093e085174d06596557149abd90e9a3"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "6058ca10ab7bead7970216505bd291b4f4c011cc8ac6ce6db40cfd1f701f635d"
+      },
+      "actual_training_completion": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/training/outer-complete.json",
+        "sha256": "063e5f67a9054bc9ff84dc78f9b7aad036ba943a851ad4eb3b2f07d5fd67ac3b"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "570c471fea05fe51878ec9329cd310f96172190e54f7bf72ea03b305692fe868",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00012.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 12,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00012.json",
+      "sampling_complete": {
+        "bytes": 1360687,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00012/sampling-complete.json",
+        "sha256": "570c471fea05fe51878ec9329cd310f96172190e54f7bf72ea03b305692fe868"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/outer-manifest.json",
+        "sha256": "f6b63fbc19704f028c1c7f1a3701c582c07ff37ada51205ec1135680b08a2a68"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "c73462a76b4ffe338937725e2ae18e58d00e4b0fd9773edf900ad2549f502758"
+      },
+      "actual_training_completion": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/training/outer-complete.json",
+        "sha256": "ab5a24a2a6aaf9b0f932e7528a9ccfaa10f476e8a2d66d5299558a7e6f37779c"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "56d8ef8d0c34b20ec89966da8956f46d7565c84b95c1fcaa68527845480ef7a0",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00013.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 13,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00013.json",
+      "sampling_complete": {
+        "bytes": 1420303,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/sampling-complete.json",
+        "sha256": "56d8ef8d0c34b20ec89966da8956f46d7565c84b95c1fcaa68527845480ef7a0"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    },
+    {
+      "actual_outer_manifest": {
+        "bytes": 59677,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/outer-manifest.json",
+        "sha256": "c09ad4f494136b0c3ec557588cf02d09d0095b271fa60b94342d93364478c20e"
+      },
+      "actual_sampling_terminal": {
+        "bytes": 18944,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/sampling-attempt-00000/eight-logical-worker-terminal.json",
+        "sha256": "ceac0de2a43f7d7d7e5e9e01fa3c0afe7fa002732822217fc39c3c40876075c7"
+      },
+      "actual_training_completion": {
+        "bytes": 4166,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/training/outer-complete.json",
+        "sha256": "d01eb7bae2c3b7d28e82c67e4f14e9aeb8ae0d848a807dd99b4e64996b9bc7eb"
+      },
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "OMP_NUM_THREADS=4",
+        "MKL_NUM_THREADS=4",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/bridge.py",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--sampling-complete",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/sampling-complete.json",
+        "--sampling-complete-sha256",
+        "4a9e9d374ae912b4975257ac1da9e280f9608804d53148190255ae88d51624aa",
+        "--output",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00014.json"
+      ],
+      "config": {
+        "bytes": 11363,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+      },
+      "outer_index": 14,
+      "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00014.json",
+      "sampling_complete": {
+        "bytes": 1480017,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/sampling-complete.json",
+        "sha256": "4a9e9d374ae912b4975257ac1da9e280f9608804d53148190255ae88d51624aa"
+      },
+      "target_exists_at_collection": false,
+      "variant": "G_POS"
+    }
+  ],
+  "config": {
+    "bytes": 11363,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+    "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+  },
+  "execution_discipline": [
+    "Publish/readback this immutable request before running already published original bridge.py.",
+    "Fresh verify explicit source/config/sampling pins and target nonexistence; an existing valid original bridge may be read-only reused, never overwritten.",
+    "For each CLI save only actual stdout file ref and actual wait returncode/stderr/source binding locally; output body remains remote."
+  ],
+  "original_completed_outer_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "ready_for_root_publication": true,
+  "reuse_outputs": [
+    {
+      "outer_index": 0,
+      "output": {
+        "bytes": 326241,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/train-input-bridge-7d9fea2/G_POS-outer-00000.json",
+        "sha256": "fd1661e8e06d6d700ccd922862ead06f8259050252fc8ef799ef6fa16e3e9799"
+      }
+    }
+  ],
+  "run_id": "59de0d17968b4955b97f312cb2387429",
+  "schema": "opsd-signal-train-input-bridge-prefix-request-v1",
+  "scope": "Only input-format copying of14 original full2560 preupdate TRAIN EM bodies into independent remote files; keep payloads on Node. No EM recalculation or final100 analysis/heldout completion.",
+  "source_pins": {
+    "bytes": 46432,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.json",
+    "sha256": "801907aeb32ab550636ea09e106f1fd6f792ab6a4232cfd254897a7f7e5d3f2e"
+  },
+  "source_pins_actual_execution": {
+    "bytes": 1585,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.execution.json",
+    "sha256": "be1097f2991397909266945b3347fe5e33b1e63a95f5c2e858a78258853fba64"
+  },
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "variant": "G_POS"
+}

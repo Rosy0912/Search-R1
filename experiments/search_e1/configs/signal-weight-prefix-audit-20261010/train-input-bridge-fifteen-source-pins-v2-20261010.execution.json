@@ -1,0 +1,34 @@
+{
+  "actual_ssh_wait_returncode": 0,
+  "argv": [
+    "ssh",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ConnectTimeout=15",
+    "hkust4",
+    "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -"
+  ],
+  "finished_at_unix": 1791594885.069924,
+  "no_bridge_execution": true,
+  "no_gpu_http_model_rng_signals": true,
+  "no_node_writes": true,
+  "previous_local_reader_interface_rejection": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-20261010.execution.json",
+    "reason": "Local metadata collector key spelling helper_manifest; native key helper_source_manifest. No bridge or production execution."
+  },
+  "readonly": true,
+  "schema": "opsd-signal-readonly-source-pins-execution-v1",
+  "started_at_unix": 1791594884.496616,
+  "stderr": {
+    "bytes": 0,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdin_script_sha256": "48b40f34718de3c3db7ca0efc953918fb4513dbf4e58d6297509b92d9bb7848d",
+  "stdout": {
+    "bytes": 46432,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.json",
+    "sha256": "801907aeb32ab550636ea09e106f1fd6f792ab6a4232cfd254897a7f7e5d3f2e"
+  }
+}
