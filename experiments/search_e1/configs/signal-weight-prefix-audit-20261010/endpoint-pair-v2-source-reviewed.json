@@ -1,0 +1,20 @@
+{
+  "schema": "opsd-signal-endpoint-reader-v2-source-review-v1",
+  "approved_scope": "Local source, exact topology and CPU fixtures; not a production endpoint or remote binding acceptance",
+  "independent_review": "APPROVE",
+  "source_manifest_sha256": "582b8869d11654b433fcac40ede4a230910b69f78bcc4f14bc1dbabdea27d337",
+  "reader_sha256": "87b799ba3757673d9478891bbd7221bf552fc6772232dd6bc45ab4836be6d11a",
+  "local_actual_execution": {
+    "sha256": "6490b7706904743de8db4151c48f4891a3dbd9e427c6a0f053a1b909a0d85aa2",
+    "actual_wait_returncode": 0,
+    "tests": 46,
+    "skips": 0,
+    "stderr_unittest_report_sha256": "1c141f5bbaa9a322f7402c1c52e0727b42d4cbdcfe2292be5523019725117652"
+  },
+  "old_v1_retained": true,
+  "unchanged_function_AST": ["published", "verify_target", "verify_zero", "pair_counts", "run"],
+  "unchanged_files": ["common.py", "__init__.py", "test_reader.py"],
+  "actual_node_binding_preflight_accepted": false,
+  "actual_endpoint_accepted": false,
+  "full_study_accepted": false
+}
