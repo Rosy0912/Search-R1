@@ -15,7 +15,7 @@ def main():
     if resume is not None:
         overrides.extend(['trainer.resume_mode=resume_path','++trainer.resume_from_path='+str(root/'checkpoints'/('global_step_'+str(resume)))])
     if args.phase=='final_eval':
-        overrides.extend(['data.val_files=['+str(root/'data/final.parquet')+']','++trainer.val_only=True'])
+        overrides.extend(['data.val_files=['+str(root/'data/final.parquet')+']','++trainer.val_only=True','trainer.validation_data_dir='+str(root/'final-evaluation')])
     with initialize_config_dir(config_dir=str(root/'repo/config'),version_base=None):
         config=compose(config_name='co_search_trainer',overrides=overrides)
     if config.trainer.n_gpus_per_node!=4 or not config.reranker_actor_rollout_ref.trainable:raise RuntimeError('Invalid joint protocol')
@@ -23,12 +23,34 @@ def main():
         def run(self,c):
             original=native.CoSearchRayTrainer
             class Trainer(original):
+                def _load_checkpoint(self):
+                    result=super()._load_checkpoint()
+                    if resume is not None:
+                        import torch
+                        from runtime_audit import digest
+                        expected=torch.load(root/'checkpoints'/('global_step_'+str(resume))/'data.pt',weights_only=False)
+                        actual=self.train_dataloader.state_dict()
+                        if digest(expected)!=digest(actual):raise RuntimeError('Restored data progress differs')
+                        if self.global_steps!=resume:raise RuntimeError('Restored outer step differs')
+                        (root/('data-recovery-'+str(resume)+'.json')).write_text(json.dumps({'step':resume,'data_state_sha256':digest(actual),'equal':True})+'\n')
+                    return result
                 def fit(self):
                     assert len(self.train_dataset)==169028
                     assert len(self.val_dataset)==(51713 if args.phase=='final_eval' else 512)
                     assert self.total_training_steps==200
                     from runtime_fixes import install_controller
                     install_controller(self,original)
+                    if args.phase=='final_eval':
+                        # Never enter the PPO fit loop; its val_only flag depends on val_before_train.
+                        self.global_steps=0
+                        self._load_checkpoint()
+                        assert self.global_steps==200
+                        import phase_sampling
+                        metrics=phase_sampling.json_metadata(self._validate())
+                        from verify_updates import finite
+                        if not metrics or not finite(metrics):raise RuntimeError('Invalid final evaluation metrics')
+                        (root/'final-evaluation-metrics.json').write_text(json.dumps(metrics,allow_nan=False,indent=2)+'\n')
+                        return
                     # Workers keep the200 horizon. Only this phase's stopping boundary changes.
                     if args.phase=='short5':self.total_training_steps=5
                     return super().fit()
