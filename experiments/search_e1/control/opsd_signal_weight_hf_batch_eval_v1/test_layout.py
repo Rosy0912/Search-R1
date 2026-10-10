@@ -17,9 +17,11 @@ class Layout(unittest.TestCase):
             'raw_checkpoint':{'kind':'raw_end_of_outer','manifest':{'path':'cp','sha256':'a'*64},
                 'cursor':{'next_pair_cursor':301},'optimizer_updates':149,'rank_count':4,'no_best_or_cache':True}}
         module=types.ModuleType('evaluation');seen=[]
-        def reader(config,completed,checkpoint):seen.append((completed,checkpoint));return identity,[{}]*512
+        def reader(config,completed,checkpoint):
+            self.assertEqual(config['_config_sha256'],'e'*64)
+            seen.append((completed,checkpoint));return identity,[{}]*512
         module.input_identity=reader
-        request={'config':{},'completed_outer':15,'checkpoint':{'path':'cp','sha256':'a'*64},'data':{'sha256':'d'*64}}
+        request={'config':{'path':'cfg','sha256':'e'*64},'completed_outer':15,'checkpoint':{'path':'cp','sha256':'a'*64},'data':{'sha256':'d'*64}}
         with tempfile.TemporaryDirectory() as tmp,patch.object(evaluate,'read',return_value={}),patch.object(evaluate,'modules'),patch.dict(sys.modules,{'evaluation':module}):
             evaluate.prepare_endpoint(request,Path(tmp))
             saved=json.loads((Path(tmp)/'model-identity.json').read_text())

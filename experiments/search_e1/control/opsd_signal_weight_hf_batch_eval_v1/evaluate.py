@@ -43,7 +43,7 @@ def admission(config,allowed_run=None,start=True):
 
 def prepare_endpoint(request,directory):
     # Original identity reader: raw15/25 and common zero, never cache/best/merge.
-    config=read(request['config']);modules(config)
+    config=read(request['config']);config['_config_sha256']=request['config']['sha256'];modules(config)
     import evaluation
     identity,data=evaluation.input_identity(config,request['completed_outer'],request['checkpoint'])
     require(identity['validation']['sha256']==request['data']['sha256'],'Fixed512 identity differs')
