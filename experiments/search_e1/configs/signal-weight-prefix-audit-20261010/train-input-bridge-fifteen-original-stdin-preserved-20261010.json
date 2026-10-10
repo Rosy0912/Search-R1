@@ -1,0 +1,60 @@
+{
+  "accepted": true,
+  "no_fixture_or_script_execution": true,
+  "no_node_changes": true,
+  "publication_at_original_collection": false,
+  "publication_scope": "Later persistent Git backup only; original collection times and actual waits are preserved separately; do not claim precollection publication.",
+  "remote_access_used": false,
+  "saved_at_unix": 1791595095.5125482,
+  "schema": "opsd-signal-original-source-pin-stdin-preservation-v1",
+  "scripts": [
+    {
+      "byte_identity_accepted": true,
+      "original_actual_execution": {
+        "bytes": 1215,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-20261010.execution.json",
+        "sha256": "3df551e0164dca4dc62900f58814b40d47ccf5f3ff8d411a0ef94abf59114ce5"
+      },
+      "original_actual_ssh_wait_returncode": 1,
+      "original_finished_at_unix": 1791594826.761722,
+      "original_started_at_unix": 1791594826.351936,
+      "original_stdin_sha256": "8903a603323de0bcf71124c18457034ca2b896ccf0d706d0220ed9548931d664",
+      "original_tool_event": {
+        "call_id": "call_LG7q017QqGqtjCeUQpyHn5Q6",
+        "event_timestamp": "2026-10-10T01:13:46.303Z",
+        "line": 1545,
+        "path": "/Users/shaoshitong/.codex/sessions/2026/10/10/rollout-2026-10-10T06-23-11-01a122c3-5cfa-7410-9c68-a0280b5fe479.jsonl"
+      },
+      "reexecuted": false,
+      "script": {
+        "bytes": 8504,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-20261010.py",
+        "sha256": "8903a603323de0bcf71124c18457034ca2b896ccf0d706d0220ed9548931d664"
+      }
+    },
+    {
+      "byte_identity_accepted": true,
+      "original_actual_execution": {
+        "bytes": 1585,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.execution.json",
+        "sha256": "be1097f2991397909266945b3347fe5e33b1e63a95f5c2e858a78258853fba64"
+      },
+      "original_actual_ssh_wait_returncode": 0,
+      "original_finished_at_unix": 1791594885.069924,
+      "original_started_at_unix": 1791594884.496616,
+      "original_stdin_sha256": "48b40f34718de3c3db7ca0efc953918fb4513dbf4e58d6297509b92d9bb7848d",
+      "original_tool_event": {
+        "call_id": "call_lm8FVRqgJltC6hZiQuwqDuyJ",
+        "event_timestamp": "2026-10-10T01:14:44.455Z",
+        "line": 1559,
+        "path": "/Users/shaoshitong/.codex/sessions/2026/10/10/rollout-2026-10-10T06-23-11-01a122c3-5cfa-7410-9c68-a0280b5fe479.jsonl"
+      },
+      "reexecuted": false,
+      "script": {
+        "bytes": 7896,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.py",
+        "sha256": "48b40f34718de3c3db7ca0efc953918fb4513dbf4e58d6297509b92d9bb7848d"
+      }
+    }
+  ]
+}
