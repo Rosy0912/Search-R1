@@ -69,3 +69,5 @@ CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅�
 完整分析尚未完成：原HF239成功B bank和旧HF endpoint/replay接口保留为历史；新的vLLM结果不能混用其baseline指标。正式新共同zero生成后、看到其余八端点输出前，需按原计划冻结该次成功参考bank；随后做固定模型posthoc g/h/KL回放并适配新端点输入，明确NA、覆盖和constant-label情况。它不增加fresh参考/额外pass采样预算，不能拿TRAIN某轮s/5冒充heldout pass。当前CPU补测终态准备不等于以上分析已完成。
 
 21:42 CST实际复核：G_POS25、G_NEG13、H_POS0、H_NEG0，共38条完整TRAIN记录。G_NEG末raw CP128/index12，末轮更新前EM1243/2560=48.5546875%；第14轮真实采样文件从27836239增长到29186428bytes，无error，原controller2300905继续。补测未占卡、不阻塞续训。原评测慢在四卡HF逐题生成，对比训练vLLM批量生成；后续统一四卡批量评测，现有raw15/25保留。
+
+后续CPU准备：v3源码3a3fb40已仅CPU部署source/batched-eval-v3-3a3fb40，Node新增2项bank转换测试通过，无GPU开始。新opsd_signal_weight_batched_replay_v1复用原replay_math/replay_worker/summary逐字节代码，仅将新vLLM九个全512端点与已冻结的新共同zero bank转换为明确标注新协议的posthoc输入；新增3项CPU兼容测试通过，尚未实际概率回放。无B时teacher/g/KL为NA、普通h保留，不新增参考或pass采样，不用旧HF239 bank。CP128已远端到远端备份9成员359785300bytes，两端实际exit0/逐SHA完成，Mac大payload0。
