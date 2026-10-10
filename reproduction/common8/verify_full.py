@@ -32,9 +32,12 @@ def checkpoint_tokenizer_hashes(checkpoint, official):
             merges.append(pair)
         model['merges']=merges
         model.setdefault('ignore_merges',False)
+        assert type(model['ignore_merges']) is bool
         return value
-    assert normalized(checkpoint/'tokenizer.json')==normalized(official/'tokenizer.json'), 'Checkpoint tokenizer semantics changed'
-    assert json.loads((checkpoint/'tokenizer_config.json').read_text())==json.loads((official/'tokenizer_config.json').read_text()), 'Checkpoint tokenizer configuration changed'
+    def canonical(value):
+        return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+    assert canonical(normalized(checkpoint/'tokenizer.json'))==canonical(normalized(official/'tokenizer.json')), 'Checkpoint tokenizer semantics changed'
+    assert canonical(json.loads((checkpoint/'tokenizer_config.json').read_text()))==canonical(json.loads((official/'tokenizer_config.json').read_text())), 'Checkpoint tokenizer configuration changed'
     return {name:digest(checkpoint/name) for name in ('tokenizer.json','tokenizer_config.json')}
 
 
