@@ -28,5 +28,7 @@
 - 实施者发现 `build_package_draft.read_regular_bound` 使用 `re.fullmatch` 而未import re，真实 guard入口会NameError；独立审查已核对修复为 `import os,stat,hashlib,re`。本地只以隔离production_contract.require stub加载真实helper，并用临时小文件运行实际read_regular_bound，导入、regex与SHA读取均通过。修复文件SHA256：`b07c9cab8c500dcc202a00eda3af724ae14fb27bad1e5a7fa4c9abf0dc27815a`。未运行GPU/远端，不重复18项测试。
 - builder已禁止output为repo本身或repo内部，避免归档后输出反过来污染来源；`tar.extractall`移除了本地Python3.9不支持的filter参数，保留逐member拒绝symlink/hardlink、绝对路径及`..`检查。仅归档committed Git代码。
 - 本地work runtime与隔离repo/reproduction runtime逐文件比较：27个非pycache文件完全一致、0差异。最终第二commit/push需包含这些字节与本审查；独立release receipt再绑定实际发布身份。
+- 启动owner末次扫描又修复两处遗留run identity阻断：`production_contract.submitted_intent` 与 `validation_cost_hooks_instruct300.install` 已核对使用 `tree-branpo-fresh200-JOB`，与supervisor/oncejournal/slurm_identity/owned_lease/guard路径一致。禁止恢复检查现覆盖 `TREE_CURRENT_CHAIN_RESUME_`；experiment_name统一为 `tree-branpo-officialfresh200`（源码yaml、manifest、supervisor三处一致）。已独立再次扫描runtime全部Python/JSON，未残留tree-current200或tree-fresh200旧run身份。
+- 新增 `make_release.py` 只生成小型发布JSON，不网络/dispatch；核包内全部文件hash、manifest/build receipt、remote_source_sha等于包commit与审查接受标记，输出review哈希、remote SHA、验证时间、authority/dispatcher/onceintent绑定。actual_remote_source_sha仍须由root实测输入，不能由字符串相等检查冒充远端观测。最终work/repo再次逐字比较为28文件0差异；采用单独receipt无自引用commit循环。
 
 数学接受边界见同目录 `MATH_REVIEW.md`：保留原 Tree estimator；不能声称完整 BranPO复现、保证五叶混奖或无偏PG；prefix不得叠加额外loss，不可先均值优势再调用一次PPO冒充原目标。

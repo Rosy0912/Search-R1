@@ -5,8 +5,8 @@
   "code_only_files": [
     {
       "file": "LAUNCH_PLAN.md",
-      "sha256": "dbbe9d36af3cca35c6a3ecd815adfadd20b5731c1467885d36f8f959a0bb6fdc",
-      "bytes": 5378
+      "sha256": "70bc184bc3d1ccd5e0a44cdf58ac989098dbe27d78bc2dd9312606cfa0de2cc0",
+      "bytes": 5347
     },
     {
       "file": "attempt_accounting.py",
@@ -25,8 +25,8 @@
     },
     {
       "file": "calibration_contract.py",
-      "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0",
-      "bytes": 21362
+      "sha256": "152644a42c87fa4046ccc1b7aaac892a6e9bbfb388e305469ba54646384698cb",
+      "bytes": 21393
     },
     {
       "file": "deploy_package.py",
@@ -49,9 +49,14 @@
       "bytes": 3543
     },
     {
+      "file": "make_release.py",
+      "sha256": "b0684d0a5d804ade2a611cc3954bd6a1f4851636d536b9020b72a16f28991cb4",
+      "bytes": 2103
+    },
+    {
       "file": "manifest.template.json",
-      "sha256": "4da63ddc0bc2ab811ca83ae0a7cae803eb3e2ba67e5305a71f2526d3c44dd53b",
-      "bytes": 8382
+      "sha256": "489779f5e3c441eff5916978e40a47e4b15721b29a7d7d95a47413f235ac9d48",
+      "bytes": 8397
     },
     {
       "file": "owned_lease_identity.py",
@@ -65,8 +70,8 @@
     },
     {
       "file": "production_contract.py",
-      "sha256": "cf90b07bd90733a81c059cc72d32e96ef5e06aca73817485951b5ba3b66c9dc4",
-      "bytes": 37914
+      "sha256": "df82d7641d66f3ac6d21ae8b4df6976d9fa8c204bd1909ad2648e3cee2e80b8f",
+      "bytes": 37910
     },
     {
       "file": "render_dispatch.py",
@@ -115,8 +120,8 @@
     },
     {
       "file": "supervisor.py",
-      "sha256": "830ce5670a8487417bb73d8913985095dad70e61d65135dc466918eb023f7814",
-      "bytes": 24357
+      "sha256": "ceca3b1e658e41aa47c6ddfca166ec7c765cdb4f542d1c16ead26f49b56e0cac",
+      "bytes": 24372
     },
     {
       "file": "train_monitor.py",
@@ -135,8 +140,8 @@
     },
     {
       "file": "validation_cost_hooks_instruct300.py",
-      "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3",
-      "bytes": 12866
+      "sha256": "50c026bfab5e60f3c8becef7ecdf797562ed6b6b48365ec64436eef14f731dab",
+      "bytes": 12862
     }
   ],
   "not_included": [
@@ -146,5 +151,5 @@
     "checkpoints",
     "credentials"
   ],
-  "total_bytes": 214602
+  "total_bytes": 216727
 }

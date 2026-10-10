@@ -424,7 +424,7 @@ def submitted_intent(path,manifest_sha,review_sha,job,*,cluster_name,node_list,r
     """Read-only bounded wait; cluster-qualified unknowns never execute/retry."""
     import time
     from slurm_identity import submitted_lineage,CLUSTER,NODE
-    require(cluster_name==CLUSTER and node_list==NODE and run_id=='tree-current200-continue-'+str(job),'Runtime own tuple missing')
+    require(cluster_name==CLUSTER and node_list==NODE and run_id=='tree-branpo-fresh200-'+str(job),'Runtime own tuple missing')
     clock=time.monotonic if clock is None else clock;sleep=time.sleep if sleep is None else sleep
     require(type(wait_seconds) in (int,float) and 0<=wait_seconds<=30,'Intent read-only wait must stay bounded')
     deadline=clock()+wait_seconds

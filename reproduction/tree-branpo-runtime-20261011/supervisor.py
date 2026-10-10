@@ -61,7 +61,7 @@ def configuration(run,stage):
     require(sampling.enabled is False and sampling.enforce is True and sampling.max_abs_delta==.01,'Old probability gate must remain explicit/unaccepted')
     require(tree.branch_sampling=='branpo_tail_v1' and tree.continuation_budget_per_question==3,'Tail sampler/budget changed')
     require(value.trainer.val_before_train is False,'Initial baseline forbidden')
-    require(value.trainer.experiment_name=='tree-fresh200','Run/checkpoint name changed')
+    require(value.trainer.experiment_name=='tree-branpo-officialfresh200','Run/checkpoint name changed')
     return value,200
 
 def main():

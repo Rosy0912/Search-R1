@@ -152,7 +152,7 @@ def install():
  expected=os.environ['TREE_VALIDATION_TRAINER_SHA256'];assert sha(source)==expected
  output=os.environ['SEARCH_R1_BASELINE_OUTPUT'];path=pathlib.Path(output).resolve()
  job=os.environ['SLURM_JOB_ID'];assert re.fullmatch(r'[1-9][0-9]*',job)
- assert path==(pathlib.Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/('tree-current200-continue-'+job)/'output').resolve(), 'Observer output must match this fixed-formal Slurm job'
+ assert path==(pathlib.Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/('tree-branpo-fresh200-'+job)/'output').resolve(), 'Observer output must match this fixed-formal Slurm job'
  wrap_trainer(RayPPOTrainer,LLMGenerationManager,path/'validation-cost',final_expected_rows=51713,controller_module=controller_module)
  print('TREE_VALIDATION_COST_INSTALLED_JSON='+json.dumps(dict(pid=os.getpid(),job_id=os.environ['SLURM_JOB_ID'],trainer_source_sha256=expected,observer_source_sha256=sha(__file__),output=str(path),calibration_only=False)),flush=True)
 

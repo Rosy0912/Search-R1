@@ -97,7 +97,7 @@
     "trainer.acceptance_gate_enabled=true",
     "trainer.training_state_enabled=true",
     "trainer.smoke_only=false",
-    "trainer.experiment_name=tree-fresh200",
+    "trainer.experiment_name=tree-branpo-officialfresh200",
     "max_turns=4",
     "force_final_answer=false",
     "do_search=true",

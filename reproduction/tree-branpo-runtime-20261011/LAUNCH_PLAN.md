@@ -21,7 +21,17 @@ Second command is dryrun by default and uses the existing ssh_retained18.route(c
 
 ## Root's pinned release
 
-Create release JSON on retained18 under ROOT/instruct300 (ROOT=/dataset/shaoshitong/search-r1-rl/tree-grpo), with these actual fields: scope=FRESH_BRANPO_TAIL_TRAIN200; code_commit=full packaged Git commit; manifest_sha256=SHA of remote manifest.json; human_training_authority_sha256=manifest.human_training_authority.sha256; cluster_name=wuhan-h100; node_list=h100-10; dispatch_intent_path=manifest.dispatch.once_intent; independent_source_review_complete=true; independent_runtime_review_complete=true; dispatch_renderer_sha256=manifest.files.render_dispatch.py; dispatch_submitter_sha256=manifest.files.submit_once.py. Those review flags mean source/runtime static review, never empirical training acceptance. Record review receipts separately in this release if desired.
+Use reviewed `make_release.py` after actual push equality and review are observed, without self-reference:
+
+```sh
+python3 work/tree-branpo-runtime-20261011/make_release.py \
+ --package work/tree-branpo-package-COMMIT \
+ --review outputs/tree-branpo/CODE_REVIEW.md \
+ --remote-source-sha ACTUAL_PUSHED_SHA --verified-at ACTUAL_UTC_TIME \
+ --output work/tree-branpo-release-COMMIT.json
+```
+
+This pins accepted independent review bytes, actual remote source SHA, package manifest, authority and dispatcher hashes; never implies empirical training acceptance. Copy this small release through the same route to ROOT/instruct300/branpo-release-COMMIT.json before renderer invocation. Release remains outside package manifest to avoid self-reference.
 
 ## Route root commands to retained18
 

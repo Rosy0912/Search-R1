@@ -144,7 +144,7 @@ def final_gpu_process_observation(snapshot,own_relative,background):
 
 
 def forbid_recovery_environment(environ):
-    present = [name for name in environ if name.startswith('TREE_RECOVERY_')]
+    present = [name for name in environ if name.startswith(('TREE_RECOVERY_','TREE_CURRENT_CHAIN_RESUME_'))]
     require(not present, 'Fresh200 forbids inherited recovery environment: '+str(present))
 
 
